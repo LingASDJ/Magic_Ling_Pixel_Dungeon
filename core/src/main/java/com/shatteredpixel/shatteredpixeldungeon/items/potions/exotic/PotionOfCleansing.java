@@ -83,6 +83,7 @@ public class PotionOfCleansing extends ExoticPotion {
 				((Hunger) b).satisfy(Hunger.STARVING);
 			}
 		}
+		ch.venodamage = 0;
 		Buff.affect(ch, Cleanse.class, duration);
 	}
 

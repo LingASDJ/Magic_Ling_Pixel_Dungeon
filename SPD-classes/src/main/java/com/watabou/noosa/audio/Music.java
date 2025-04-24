@@ -50,6 +50,15 @@ public enum Music {
 	float[] trackChances;
 	private final ArrayList<String> trackQueue = new ArrayList<>();
 	boolean shuffle = false;
+
+	//解决电脑端高质量ogg的线程安全闪退问题
+	public static void playModeBGM(String name, boolean loop) {
+		if(DeviceCompat.isDesktop()){
+			Game.runOnRenderThread(() -> Music.INSTANCE.play(name, loop));
+		} else {
+			Music.INSTANCE.play(name, loop);
+		}
+	}
 	
 	public synchronized void play( String assetName, boolean looping ) {
 
@@ -86,7 +95,7 @@ public enum Music {
 		}
 
 		//iOS cannot play ogg, so we use an mp3 alternative instead
-		if (tracks != null && DeviceCompat.isiOS()){
+		if (DeviceCompat.isiOS()){
 			for (int i = 0; i < tracks.length; i ++){
 				tracks[i] = tracks[i].replace(".ogg", ".mp3");
 			}
@@ -166,26 +175,12 @@ public enum Music {
 		}
 	}
 
-	private com.badlogic.gdx.audio.Music.OnCompletionListener trackLooper = new com.badlogic.gdx.audio.Music.OnCompletionListener() {
-		@Override
-		public void onCompletion(com.badlogic.gdx.audio.Music music) {
-			//don't play the next track if we're currently in the middle of a fade
-			if (fadeTotal == -1f) {
-				//we do this in a separate thread to avoid graphics hitching while the music is prepared
-				if (!DeviceCompat.isDesktop()) {
-					new Thread() {
-						@Override
-						public void run() {
-							playNextTrack(music);
-						}
-					}.start();
-				} else {
-					//don't use a separate thread on desktop, causes errors and makes no performance difference
-					playNextTrack(music);
-				}
-			}
-		}
-	};
+	private com.badlogic.gdx.audio.Music.OnCompletionListener trackLooper = music -> {
+        //don't play the next track if we're currently in the middle of a fade
+        if (fadeTotal == -1f) {
+            new Thread(() -> playNextTrack(music)).start();
+        }
+    };
 
 	private synchronized void playNextTrack(com.badlogic.gdx.audio.Music music){
 		if (trackList == null || trackList.length == 0 || music != player || player.isLooping()){

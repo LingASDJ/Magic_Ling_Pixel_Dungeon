@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MagicFlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElectricalSmoke;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -65,8 +66,11 @@ public class MagicTorch extends MeleeWeapon {
      */
     @Override
     public int STRReq(int lvl) {
-        return (6 + tier * 3) - (int) (Math.sqrt(8 * lvl + 1) - 1) / 2;
-        //19 base strength req, up from 18
+        int req = (6 + tier * 3) - (int) (Math.sqrt(8 * lvl + 1) - 1) / 2;
+        if (masteryPotionBonus){
+            req -= 2;
+        }
+        return req;
     }
 
     /**
@@ -82,6 +86,7 @@ public class MagicTorch extends MeleeWeapon {
             if (Dungeon.hero.buff(LighS.class) != null || Dungeon.hero.buff(Light.class) != null) {
                 GLog.n(Messages.get(this,"mustload"));
             } else {
+                if(hero.buff(ElectricalSmoke.SmokingAlloy.class)!=null) GLog.i(Messages.get(ElectricalSmoke.class,"conversation_light"));
                 Buff.affect(hero, MagicLight.class).set((100), 1);
             }
 

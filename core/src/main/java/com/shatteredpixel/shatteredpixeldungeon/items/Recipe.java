@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfTo
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
@@ -64,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.FlareBullet;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -74,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVeno
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.thanks.GrilledHerring;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.watabou.utils.Reflection;
 
@@ -114,7 +117,7 @@ public abstract class Recipe {
 		}
 		
 		@Override
-		public final boolean testIngredients(ArrayList<Item> ingredients) {
+		public boolean testIngredients(ArrayList<Item> ingredients) {
 			
 			int[] needed = inQuantity.clone();
 			
@@ -137,12 +140,12 @@ public abstract class Recipe {
 			return true;
 		}
 		
-		public final int cost(ArrayList<Item> ingredients){
+		public int cost(ArrayList<Item> ingredients){
 			return cost;
 		}
 		
 		@Override
-		public final Item brew(ArrayList<Item> ingredients) {
+		public Item brew(ArrayList<Item> ingredients) {
 			if (!testIngredients(ingredients)) return null;
 			
 			int[] needed = inQuantity.clone();
@@ -232,10 +235,10 @@ public abstract class Recipe {
 			new PotionOfNoWater.Recipe(),
 			new UnstableSpell.Recipe(),
 			new Alchemize.Recipe(),
-			//new SmallLightHeader.Recipe(),
+			new SmallLightHeader.Recipe(),
 
 			new ScrollOfRoseShiled.Recipe(),
-			new IceFishSword.Recipe(),
+
 			new WaterSoul.Recipe(),
 	};
 	
@@ -251,7 +254,9 @@ public abstract class Recipe {
 			new MIME.GOLD_FIVE.Recipe(),
 			new WandOfScale.Recipe(),
 			new JAmulet.Recipe(),
+			new FlareBullet.Recipe(),
 			new WandOfVenom.Recipe(),
+			new IceFishSword.Recipe(),
 	};
 	
 	public static ArrayList<Recipe> findRecipes(ArrayList<Item> ingredients){
@@ -292,7 +297,7 @@ public abstract class Recipe {
 	public static boolean usableInRecipe(Item item){
 		if (item instanceof EquipableItem){
 			//only thrown weapons and wands allowed among equipment items
-			return item.isIdentified() && !item.cursed && (item instanceof MissileWeapon||item instanceof ChaliceOfBlood && !item.isEquipped(hero)||item instanceof LifeTreeSword && !item.isEquipped(hero));
+			return item.isIdentified() && !item.cursed && (item instanceof MissileWeapon ||item instanceof ChaliceOfBlood && !item.isEquipped(hero)||item instanceof LifeTreeSword && !item.isEquipped(hero)||item instanceof GrilledHerring && !item.isEquipped(hero));
 		} else if (item instanceof Wand) {
 			return item.isIdentified() && !item.cursed;
 		} else {

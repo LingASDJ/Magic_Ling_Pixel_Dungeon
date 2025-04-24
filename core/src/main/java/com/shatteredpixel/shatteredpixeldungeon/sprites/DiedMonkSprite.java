@@ -57,9 +57,12 @@ public class DiedMonkSprite extends MobSprite {
         die.frames( frames, 1, 7, 8, 8, 9, 10 );
 
         spray = centerEmitter();
-        spray.autoKill = false;
-        spray.pour( DiedParticle.FACTORY, 0.04f );
-        spray.on = false;
+        if (spray != null) {
+            spray.autoKill = false;
+            spray.pour( DiedParticle.FACTORY, 0.04f );
+            spray.on = false;
+        }
+
 
         play( idle );
     }
@@ -141,8 +144,10 @@ public class DiedMonkSprite extends MobSprite {
     @Override
     public void update() {
         super.update();
-        spray.pos(center());
-        spray.visible = visible;
+        if(spray != null){
+            spray.pos(center());
+            spray.visible = visible;
+        }
     }
 
     @Override

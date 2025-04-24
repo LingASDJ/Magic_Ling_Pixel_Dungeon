@@ -2,12 +2,16 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMastery;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.watabou.noosa.audio.Music;
+import com.watabou.utils.Random;
 
 public class AncityLevel extends Level {
     private static final int[] pre_map = {
@@ -35,11 +39,10 @@ public class AncityLevel extends Level {
         color2 = 12179041;
     }
 
-//    public void occupyCell(Char ch) {
-//        super.occupyCell(ch);
-//        GLog.p(String.valueOf(hero.pos));
-//        GLog.b(String.valueOf(Statistics.zeroItemLevel));
-//    }
+    @Override
+    public void playLevelMusic() {
+        Music.playModeBGM(Assets.Music.ANCITY, true);
+    }
 
     public AncityLevel() {
         this.viewDistance = 34;
@@ -80,7 +83,7 @@ public class AncityLevel extends Level {
 
 
         int entranceCell =  (this.width * 8 + 8);
-        int exitCell =  0;
+        int exitCell =  59;
 
         LevelTransition enter = new LevelTransition(this, entranceCell, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(enter);
@@ -93,6 +96,15 @@ public class AncityLevel extends Level {
             this.map[var1] = mapToTerrain(pre_map[var1]);
         }
         return true;
+    }
+
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE) {
+            return false;
+        } else {
+            return super.activateTransition(hero,transition);
+        }
     }
 
     public Mob createMob() {
@@ -115,7 +127,8 @@ public class AncityLevel extends Level {
         drop( new PotionOfExperience(), 145 );
         drop( new PotionOfExperience(), 161 );
         drop( new PotionOfExperience(), 127 );
-        drop( new KingGold(), 144 );
+        drop( new KingGold(Random.NormalIntRange(1,5)), 144 );
+        drop( new PotionOfMastery(), 59 );
     }
 
     public int randomRespawnCell() {

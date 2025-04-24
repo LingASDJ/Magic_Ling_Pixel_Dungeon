@@ -72,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Bloomi
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Corrupting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crushing;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.DeadBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.HaloBlazing;
@@ -79,6 +80,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kineti
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.TimeReset;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -131,6 +133,9 @@ public class ElementalStrike extends ArmorAbility {
 
 		effectTypes.put(HaloBlazing.class,     MagicMissile.HALOFIRE);
 		effectTypes.put(Crushing.class,     MagicMissile.RAINBOW_CONE);
+
+		effectTypes.put(TimeReset.class,     MagicMissile.POISON);
+		effectTypes.put(DeadBomb.class,     MagicMissile.BLOOD_CONE);
 
 		effectTypes.put(null,               MagicMissile.MAGIC_MISS_CONE);
 	}
@@ -375,7 +380,7 @@ public class ElementalStrike extends ArmorAbility {
 		//*** no enchantment ***
 		if (ench == null) {
 			for (Char ch : affected){
-				ch.damage(Math.round(powerMulti* Char.combatRoll(6, 12)), ElementalStrike.this);
+				ch.damage(Math.round(powerMulti* Hero.heroDamageIntRange(6, 12)), ElementalStrike.this);
 			}
 
 		//*** Kinetic ***
@@ -543,7 +548,7 @@ public class ElementalStrike extends ArmorAbility {
 		} else if (ench instanceof Polarized){
 			for (Char ch : affected){
 				if (Random.Float() < 0.5f*powerMulti){
-					ch.damage(Char.combatRoll(24, 36), ElementalStrike.this);
+					ch.damage(Hero.heroDamageIntRange(24, 36), ElementalStrike.this);
 				}
 			}
 

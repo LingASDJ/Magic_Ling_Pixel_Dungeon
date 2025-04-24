@@ -13,7 +13,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ENTRANCE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EXIT;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.MINE_CRYSTAL;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.PEDESTAL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.STATUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
@@ -34,6 +33,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.FayiNa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
@@ -43,6 +45,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.obSir;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BzmdrLand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.DeepSea;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.DreamLezi;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Gudazi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.HollowKnight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.JIT;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.KongFu;
@@ -51,10 +55,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Mint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.PianoLe;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Question;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteYan;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.XiaYuan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroTomb;
@@ -87,10 +91,12 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.List;
 
@@ -130,8 +136,6 @@ public class ZeroCityLevel extends Level {
 
     private static final int Q = CRYSTAL_DOOR;
 
-    private static final int X = PEDESTAL;
-
     private static final int[] codedMap = {
             P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,M,P,P,P,P,S,P,P,P,P,P,P,P,P,P,P,P,M,M,M,M,M,M,P,
             P,P,P,M,D,D,D,P,P,D,P,M,M,P,M,P,P,P,P,P,P,P,M,M,M,M,M,M,M,P,P,P,P,P,P,P,P,P,P,P,D,D,D,M,P,S,P,P,P,P,P,P,P,P,P,P,P,M,M,P,D,D,D,M,
@@ -141,8 +145,8 @@ public class ZeroCityLevel extends Level {
             P,P,D,D,D,D,K,D,D,D,D,D,D,D,D,M,M,P,P,P,M,D,D,D,D,D,D,M,D,A,D,D,D,D,D,D,M,D,D,D,I,D,I,D,D,D,D,D,D,D,D,D,D,D,M,M,P,D,M,P,D,D,D,M,
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,M,M,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,I,D,I,D,R,R,D,D,D,D,D,D,D,D,D,M,P,D,M,M,M,B,M,M,
             P,P,D,D,A,D,D,D,A,D,D,D,A,D,D,D,M,M,M,M,M,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,I,D,I,D,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,A,D,D,D,P,
-            P,P,D,D,D,D,D,D,D,I,D,D,D,D,D,D,O,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,I,D,I,D,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,
-            P,P,D,D,D,D,D,D,D,R,R,R,R,R,R,D,M,M,M,M,M,M,M,M,M,D,D,M,M,M,M,D,D,D,D,D,M,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,
+            P,P,D,D,D,D,D,D,D,I,D,D,D,D,D,D,O,M,M,M,M,M,M,M,M,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,I,D,I,D,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,
+            P,P,D,D,D,D,D,D,D,R,R,R,R,R,R,D,M,D,D,D,D,D,D,D,M,D,D,M,M,M,M,D,D,D,D,D,M,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,
             P,P,D,D,J,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,Y,Y,D,M,D,D,P,P,P,M,D,D,M,M,M,M,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,P,
             P,P,D,D,R,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,D,D,D,M,D,D,P,P,P,M,B,M,M,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,P,P,P,D,M,D,D,D,P,
             P,P,D,D,R,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,Y,Y,D,M,D,D,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,P,P,D,D,M,G,D,D,P,
@@ -186,14 +190,14 @@ public class ZeroCityLevel extends Level {
             P,P,D,D,D,D,D,P,P,P,P,P,P,P,P,D,D,D,D,D,I,D,D,D,D,D,P,P,P,P,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,I,D,D,D,D,D,M,D,D,D,D,D,M,D,P,P,P,
             P,P,D,D,D,P,P,P,R,R,R,R,R,R,P,P,P,P,D,D,D,D,D,D,D,P,P,R,R,R,R,R,R,R,R,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,M,D,P,R,P,
             P,P,P,P,P,P,R,R,R,R,R,R,R,R,R,R,R,P,P,D,D,D,P,P,P,P,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,M,D,P,R,P,
-            P,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,P,P,P,P,R,R,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,M,D,P,R,P,
+            P,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,P,R,R,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,M,D,P,R,P,
             P,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,M,M,M,M,S,P,R,P,
             P,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,
-            P,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,
-            P,D,D,D,D,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,D,D,I,D,D,D,D,D,D,D,D,I,D,D,D,D,D,D,D,D,D,D,D,D,D,P,
-            P,D,D,D,D,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,D,D,D,D,D,D,D,D,D,P,
-            P,S,S,D,D,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,P,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,D,D,D,D,D,D,D,D,D,P,
-            P,P,S,D,D,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,I,D,D,D,D,P,P,R,R,P,D,D,D,I,D,D,D,D,P,P,
+            P,R,R,R,R,R,R,R,R,R,R,R,R,R,R,M,M,M,M,M,B,M,M,M,M,M,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,
+            P,D,D,D,D,R,R,R,R,R,R,R,R,R,R,M,R,M,R,R,R,R,R,M,R,M,R,R,R,R,R,R,R,R,R,R,R,P,D,D,I,D,D,D,D,D,D,D,D,I,D,D,D,D,D,D,D,D,D,D,D,D,D,P,
+            P,D,D,D,D,R,R,R,R,R,R,R,R,R,R,M,M,Q,R,R,R,R,R,Q,M,M,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,D,D,D,D,D,D,D,D,D,P,
+            P,S,S,D,D,R,R,R,R,R,R,R,R,R,R,M,R,M,R,R,R,R,R,M,R,M,R,R,R,R,R,R,R,R,R,R,R,P,P,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,D,D,D,D,D,D,D,D,D,P,
+            P,P,S,D,D,R,R,R,R,R,R,R,R,R,R,M,M,M,M,M,M,M,M,M,M,M,R,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,I,D,D,D,D,P,P,R,R,P,D,D,D,I,D,D,D,D,P,P,
             P,P,S,D,D,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,P,D,D,D,D,D,D,D,P,P,P,R,R,R,P,D,D,D,D,D,D,D,P,P,P,
             P,P,S,D,D,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,P,P,P,P,P,P,P,P,R,R,R,R,R,P,P,D,D,D,D,D,P,P,P,P,
             P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,
@@ -408,9 +412,9 @@ public class ZeroCityLevel extends Level {
             npc3.pos = 382;
             mobs.add(npc3);
 
-            Question npc6 = new Question();
-            npc6.pos = 3757;
-            mobs.add(npc6);
+//            Question npc6 = new Question();
+//            npc6.pos = 3757;
+//            mobs.add(npc6);
 
             LanFire npc7 = new LanFire();
             npc7.pos = 3020;
@@ -425,7 +429,7 @@ public class ZeroCityLevel extends Level {
             mobs.add(npc10);
 
             MoonLow npc11 = new MoonLow();
-            npc11.pos = 2728;
+            npc11.pos = Random.Float()>0.5f ? 2728 : 2598;
             mobs.add(npc11);
 
             KongFu npc12 = new KongFu();
@@ -481,11 +485,67 @@ public class ZeroCityLevel extends Level {
             WaloKe npc14 = new WaloKe();
             npc14.pos = 479;
             mobs.add(npc14);
+
+
         }
+
+
+
+        DreamLezi npc24 = new DreamLezi();
+        npc24.pos = 3796;
+        mobs.add(npc24);
 
         ZeroDreamShop npc1111 = new ZeroDreamShop();
         npc1111.pos = 1214;
         mobs.add(npc1111);
+
+        Gudazi gdz = new Gudazi();
+        gdz.pos = 3083;
+        mobs.add(gdz);
+
+        XiaYuan dz = new XiaYuan();
+        dz.pos = 2957;
+        mobs.add(dz);
+
+        //3664,3792,3672,3800
+
+        int RS = Random.NormalIntRange(0,100);
+
+        if(RS<=30){
+            Mob mobA = Random.NormalIntRange(1,100)>=50 ?new YogFist.HaloFist() : new YogFist.BurningFist();
+            mobA.pos = 3664;
+            mobs.add(mobA);
+
+            Mob mobB = Random.NormalIntRange(1,100)>=50 ?new YogFist.RustedFist() : new YogFist.FreezingFist();
+            mobB.pos = 3792;
+            mobs.add(mobB);
+
+            Mob mobC = Random.NormalIntRange(1,100)>=50 ?new YogFist.DarkFist() : new YogFist.BrightFist();
+            mobC.pos = 3672;
+            mobs.add(mobC);
+
+            Mob mobD = Random.NormalIntRange(1,100)>=50 ?new YogFist.SoiledFist() : new YogFist.RottingFist();
+            mobD.pos = 3800;
+            mobs.add(mobD);
+        } else {
+            Mob mobA = Reflection.newInstance(MobSpawner.getMobRotation(Random.NormalIntRange(1,4)).get(0));
+            mobA.pos = 3664;
+            mobs.add(mobA);
+
+            Mob mobB = Reflection.newInstance(MobSpawner.getMobRotation(Random.NormalIntRange(6,9)).get(0));
+            mobB.pos = 3792;
+            mobs.add(mobB);
+
+            Mob mobC = Reflection.newInstance(MobSpawner.getMobRotation(Random.NormalIntRange(11,14)).get(0));
+            mobC.pos = 3672;
+            mobs.add(mobC);
+
+            Mob mobD = Random.NormalIntRange(1,100)>=50 ? Reflection.newInstance(MobSpawner.getMobRotation(Random.NormalIntRange(16,19)).get(0)) : Reflection.newInstance(MobSpawner.getMobRotation(Random.NormalIntRange(21,24)).get(0));
+            mobD.pos = 3800;
+            mobs.add(mobD);
+        }
+
+
 
     }
 
@@ -553,7 +613,7 @@ public class ZeroCityLevel extends Level {
                         Heap.Type.FOR_SALE;
             }
             for (int i : SALEPOS_THREE) {
-                drop((Generator.random(Generator.Category.WEAPON)), i).type =
+                drop((Generator.random(Generator.Category.WEP_T2)), i).type =
                         Heap.Type.FOR_SALE;
             }
             if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
@@ -580,11 +640,13 @@ public class ZeroCityLevel extends Level {
             drop( new Food(), 853  );
         }
 
-
-
-
         drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 3193);
         drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 2937);
+    }
+
+    @Override
+    public void playLevelMusic() {
+        Music.playModeBGM(Assets.Music.TOWN, true);
     }
 
 }

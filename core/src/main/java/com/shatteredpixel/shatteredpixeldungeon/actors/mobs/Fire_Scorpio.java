@@ -18,6 +18,7 @@ public class Fire_Scorpio extends Scorpio{
 
         EXP = 14;
         maxLvl = 27;
+        isAnimal = true;
 
         loot = Generator.Category.FOOD;
         lootChance = 0.8f;

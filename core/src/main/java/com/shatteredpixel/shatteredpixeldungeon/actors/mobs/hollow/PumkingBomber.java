@@ -26,21 +26,22 @@ public class PumkingBomber extends Mob {
     {
         spriteClass = PumkingBomberSprite.class;
 
-        HP = HT = 120;
-        defenseSkill = 22;
+        HP = HT = 140;
         viewDistance = Light.DISTANCE;
 
         loot = Pasty.class;
-        lootChance = 0.01f;
+        lootChance = 0.15f;
+
+        defenseSkill = Random.NormalIntRange(25,35);
 
         EXP = 19;
 
-        maxLvl = 40;
+        maxLvl = 35;
 
         HUNTING = new Hunting();
 
         baseSpeed = 0.75f;
-
+        properties.add( Property.HOLLOW );
         properties.add(Char.Property.DEMONIC);
         properties.add(Char.Property.UNDEAD);
     }
@@ -52,12 +53,12 @@ public class PumkingBomber extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 25, 40 );
+        return Random.NormalIntRange( 25, 45 );
     }
 
     @Override
     public int attackSkill( Char target ) {
-        return 30;
+        return 50;
     }
 
     @Override
@@ -67,7 +68,7 @@ public class PumkingBomber extends Mob {
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 4);
+        return super.drRoll() + Random.NormalIntRange(2, 4);
     }
 
     private static final String LAST_ENEMY_POS = "last_enemy_pos";

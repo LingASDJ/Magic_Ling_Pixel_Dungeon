@@ -88,8 +88,8 @@ public class WandOfMagicMissile extends DamageWand {
 		}
 
 	}
-	
-	protected int initialCharges() {
+
+	public int initialCharges() {
 		return 3;
 	}
 

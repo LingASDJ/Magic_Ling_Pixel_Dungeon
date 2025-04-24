@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="restart">Restart</string>
+    <string name="no_configuration_found">No configuration information found. Please restart the program manually.</string>
+    <string name="copy_error_report">Copy error report</string>
+    <string name="copy_complete">Copy complete</string>
+</resources>

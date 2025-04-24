@@ -86,7 +86,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 	@Override
 	public float iconFadePercent() {
 		float time;
-		int point=Dungeon.hero.pointsInTalent(Talent.KEEP_VIGILANCE);
+		int point=Dungeon.hero.pointsInTalent(Talent.CLEAVE);
 		switch (point){
 			case 1:
 				time=6;
@@ -109,23 +109,14 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		return Integer.toString((int)comboTime);
 	}
 
-	public void hit() {
-		count++;
+	public void hit(Char enemy) {
+		if(count <50) count++;
 		if(count%2==1)couldUseTime++;
-		int point=Dungeon.hero.pointsInTalent(Talent.KEEP_VIGILANCE);
-		switch (point){
-			case 1:
-				comboTime=6;
-				break;
-			case 2:
-				comboTime=15;
-				break;
-			case 3:
-				comboTime=999;
-				break;
-			default:
-				comboTime=4;
-				break;
+
+		comboTime = 5;
+
+		if (!enemy.isAlive() || (enemy.buff(Corruption.class) != null && enemy.HP == enemy.HT)){
+			comboTime = Math.max(comboTime, 15*((Hero)target).pointsInTalent(Talent.CLEAVE));
 		}
 
 		if (count >0&&couldUseTime>0) {
@@ -296,7 +287,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		}
 		return true;
 	}
-	public void useMove(ComboMove move){
+	public void useMove(ComboMove move , Char enemy){
 		if (move == ComboMove.PARRY){
 			parryUsed = true;
 			comboTime = 5f;
@@ -308,8 +299,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		} else if(move == ComboMove.FINISH){
 			isFinish=true;
 			if (Dungeon.hero.hasTalent(Talent.VENT_NOPLACE)){
-				hit();
-				if (Dungeon.hero.pointsInTalent(Talent.VENT_NOPLACE)==3)hit();
+				hit(enemy);
+				if (Dungeon.hero.pointsInTalent(Talent.VENT_NOPLACE)==3)hit(enemy);
 			}
 			GameScene.show(new WndCombo(this));
 		}else if (move==ComboMove.CALM){
@@ -438,10 +429,10 @@ public class Combo extends Buff implements ActionIndicator.Action {
 							}
 						}
 				case FURY:
-					if (!isFinish)hit();
+					if (!isFinish)hit(enemy);
 					break;
 				default:
-					hit();
+					hit(enemy);
 					break;
 			}
 		}
@@ -453,7 +444,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 					if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
 						Combo.this.resetCombo();
 						count = count / 2 - 1;
-						hit();
+						hit(enemy);
 						couldUseTime = (count + 1) / 2;
 					} else {
 						cleaveUsed=true;
@@ -494,7 +485,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 				case CLEAVE:
 					cleaveUsed=true;
 					if(!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)){
-						hit();
+						hit(enemy);
 					}
 					hero.spendAndNext(hero.attackDelay());
 					break;
@@ -506,7 +497,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 							@Override
 							public void call() {
 								if (hero.attack(enemy, 0.75f, 0, 0.85f)){
-									hit();
+									hit(enemy);
 								}
 								hero.spendAndNext(hero.attackDelay());
 							}

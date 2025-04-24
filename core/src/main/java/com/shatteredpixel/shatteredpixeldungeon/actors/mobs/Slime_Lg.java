@@ -21,13 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LgSprites;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class Slime_Lg extends Slime {
@@ -35,6 +32,22 @@ public class Slime_Lg extends Slime {
         spriteClass = LgSprites.class;
         maxLvl = -200;
         properties.add(Property.ACIDIC);
+        HP = HT = 60;
+    }
+
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange(20, 25);
+    }
+
+    @Override
+    public int attackSkill( Char target ) {
+        return 60;
+    }
+
+    @Override
+    public int drRoll() {
+        return super.drRoll() + Random.NormalIntRange(0, 5);
     }
 
     @Override
@@ -45,18 +58,5 @@ public class Slime_Lg extends Slime {
         }
 
         return super.attackProc( enemy, damage );
-    }
-
-    @Override
-    public void rollToDropLoot() {
-        if (Dungeon.hero.lvl > maxLvl + 2) return;
-
-        super.rollToDropLoot();
-
-        int ofs;
-        do {
-            ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
-        } while (!Dungeon.level.passable[pos + ofs]);
-        Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
     }
 }

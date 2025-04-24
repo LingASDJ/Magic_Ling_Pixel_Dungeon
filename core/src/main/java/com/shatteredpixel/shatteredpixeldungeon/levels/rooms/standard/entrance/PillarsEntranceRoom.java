@@ -25,8 +25,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.PillarsRoom;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Point;
 
 public class PillarsEntranceRoom extends PillarsRoom {
 
@@ -39,7 +41,10 @@ public class PillarsEntranceRoom extends PillarsRoom {
 	public boolean isEntrance() {
 		return true;
 	}
-
+	@Override
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
+		return false;
+	}
 	@Override
 	public void paint(Level level) {
 		super.paint(level);
@@ -59,6 +64,10 @@ public class PillarsEntranceRoom extends PillarsRoom {
 
 		} while (level.findMob(entrance) != null || level.map[entrance] == Terrain.WALL || !valid);
 		Painter.set( level, entrance, Terrain.ENTRANCE );
+
+		for (Room.Door door : connected.values()) {
+			if(door != null ) level.BottleWraith(door, level, left, right, top, bottom);
+		}
 
 		level.transitions.add(new LevelTransition(level, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
 	}

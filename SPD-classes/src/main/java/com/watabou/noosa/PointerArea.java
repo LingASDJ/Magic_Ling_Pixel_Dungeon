@@ -25,7 +25,7 @@ import com.watabou.input.GameAction;
 import com.watabou.input.PointerEvent;
 import com.watabou.utils.Signal;
 
-public abstract class PointerArea extends Visual implements Signal.Listener<PointerEvent> {
+public class PointerArea extends Visual implements Signal.Listener<PointerEvent> {
 	
 	// Its target can be pointerarea itself
 	public Visual target;

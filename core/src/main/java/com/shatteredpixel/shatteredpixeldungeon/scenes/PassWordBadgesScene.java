@@ -31,7 +31,9 @@ public class PassWordBadgesScene extends PixelScene {
         Badges.HDEX();
         fadeIn();
         //Music.INSTANCE.play( Assets.Music.THEME, true );
+        PaswordBadges.loadGlobal();
 
+        List<PaswordBadges.Badge> badges = PaswordBadges.filtered( true );
         PixelScene.uiCamera.visible = false;
 
         int w = Camera.main.width;
@@ -44,7 +46,9 @@ public class PassWordBadgesScene extends PixelScene {
         float left = 5;
         float top = 20;
 
-        RenderedTextBlock title = PixelScene.renderTextBlock( Messages.get(this, "title"), 9 );
+        int Now = badges.size();
+
+        RenderedTextBlock title = PixelScene.renderTextBlock( Messages.get(this, "title",Now), 9 );
         title.hardlight(Window.TITLE_COLOR);
         title.setPos(
                 (w - title.width()) / 2f,
@@ -53,9 +57,7 @@ public class PassWordBadgesScene extends PixelScene {
         align(title);
         add(title);
 
-        PaswordBadges.loadGlobal();
 
-        List<PaswordBadges.Badge> badges = PaswordBadges.filtered( true );
 
         int blankBadges = 1;
         blankBadges -= badges.size();

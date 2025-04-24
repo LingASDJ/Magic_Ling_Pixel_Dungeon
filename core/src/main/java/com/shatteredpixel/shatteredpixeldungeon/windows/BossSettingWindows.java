@@ -23,7 +23,9 @@ public class BossSettingWindows extends Window {
     private static final int GAP= 2;
 
     private final ArrayList<CheckBox> cbs;
-    OptionSlider level3;
+
+    OptionSlider level1;
+
     public BossSettingWindows(){
         resize(WIDTH, HEIGHT);
 
@@ -35,13 +37,13 @@ public class BossSettingWindows extends Window {
         float pos = TTL_HEIGHT + GAP;
         cbs = new ArrayList<>();
 
-        for(int i = 0; i<5; ++i){
+        for(int i = 0; i<5; ++i) {
             int finalI = i;
-            CheckBox cb = new CheckBox(Messages.get(this, "boss_"+ (finalI + 1))){
-                public void checked( boolean value ) {
+            CheckBox cb = new CheckBox(Messages.get(this, "boss_" + (finalI + 1))) {
+                public void checked(boolean value) {
                     if (checked != value) {
                         checked = value;
-                        icon.copy( Icons.get( checked ? Icons.CHECKED : Icons.UNCHECKED ) );
+                        icon.copy(Icons.get(checked ? Icons.CHECKED : Icons.UNCHECKED));
                     }
                 }
             };
@@ -52,12 +54,17 @@ public class BossSettingWindows extends Window {
             cbs.add(cb);
             pos += BOX_HEIGHT + GAP;
 
-            if(i == 0|| i==3){
+            if (i == 0 && Badges.isUnlocked(Badges.Badge.KILL_APPLE) ){
+                cb.alpha(0f);
+                cb.active=false;
+                cb.checked(false);
+                cb.visible = false;
+            } else if(i==3){
                 cb.alpha(0f);
                 cb.active=false;
                 cb.visible = false;
                 cb.checked(false);
-            } else if(i == 1 && !Badges.isUnlocked(Badges.Badge.KILL_SM) || i==4 ){
+            } else if(i == 0 && !Badges.isUnlocked(Badges.Badge.KILL_APPLE) || i == 1 && !Badges.isUnlocked(Badges.Badge.KILL_SM) || i==4 ){
                 cb.alpha(0.4f);
                 cb.active=false;
                 cb.checked(false);
@@ -68,15 +75,6 @@ public class BossSettingWindows extends Window {
             }
 
         }
-        StyledButton button;
-        button = new StyledButton(Chrome.Type.RED_BUTTON,Badges.isUnlocked(Badges.Badge.KILL_FIRE_DRAGON) ? Messages.get(this, "kill_firedragon") : Messages.get(this, "un_kill_firedragon")) {
-            @Override
-            protected void onClick() {
-                add(new WndMessage(Badges.isUnlocked(Badges.Badge.KILL_FIRE_DRAGON) ? Messages.get(this, "forest_killinfo") : Messages.get(this, "forest_needkillinfo")));
-            }
-        };
-        button.setRect(GAP, 14, WIDTH - GAP * 2, BOX_HEIGHT);
-        add(button);
 
         StyledButton button2;
         button2 = new StyledButton(Chrome.Type.RED_BUTTON, SPDSettings.KillDwarf() ? Messages.get(this, "kill_dwn") : Messages.get(this, "un_kill_dwn")) {
@@ -88,38 +86,23 @@ public class BossSettingWindows extends Window {
         button2.setRect(GAP, 68, WIDTH - GAP * 2, BOX_HEIGHT);
         add(button2);
 
-//        level3 = new OptionSlider("", Messages.get(this, "dm300"),
-//                Messages.get(this, "ice"), 1, 3) {
-//
-//            @Override
-//            protected void onChange() {
-//                    ShatteredPixelDungeon.scene().add(new WndOptions(new ItemSprite(ItemSpriteSheet.GOLD),
-//                            Messages.get(BossSettingWindows.class, "bossattack"),
-//                            Messages.get(BossSettingWindows.class, "bossgold") + ((2 + 1) * (Math.max(depth / 5,
-//                                    1)) * 200),
-//                            Messages.get(BossSettingWindows.class, "bug"), Messages.get(BossSettingWindows.class,
-//                            "not_yet")) {
-//                        @Override
-//                        protected void onSelect(int index) {
-//                            if (index == 0 && Dungeon.gold >= ((2 + 1) * (Math.max(depth / 5, 1)) * 200)) {
-//                                Dungeon.gold -= ((2 + 1) * (Math.max(depth / 5, 1)) * 200);
-//                                GLog.w(Messages.get(BossSettingWindows.class, "getboss") + Messages.get(BossSettingWindows.class, "boss_" + (2 + 1)));
-//                                SPDSettings.level3boss(getSelectedValue());
-//                            } else if (index == 1) {
-//                                GLog.w(Messages.get(BossSettingWindows.class, "cancal"));
-//                                SPDSettings.level3boss(9);
-//                            } else if (Dungeon.gold < ((2 + 1) * (Math.max(depth / 10, 1)) * 200)) {
-//                                GLog.w(Messages.get(BossSettingWindows.class, "no_money"));
-//                                SPDSettings.level3boss(9);
-//                            }
-//                        }
-//                    });
-//                }
-//
-//        };
-//        level3.setRect(GAP, 50, WIDTH - GAP * 2, BOX_HEIGHT);
-//        //level3.setSelectedValue(SPDSettings.level3boss());
-//        add(level3);
+        level1 = new OptionSlider(Messages.get(this, "random"), Messages.get(this, "norf"),
+                Messages.get(this, "sync"), 1, 3) {
+            @Override
+            protected void onChange() {
+                SPDSettings.level1boss(getSelectedValue());
+             }
+            @Override
+            public int getTitleTextSize(){
+                return 6;
+            }
+
+        };
+        level1.setRect(GAP, 14, WIDTH - GAP * 2, BOX_HEIGHT);
+        level1.setSelectedValue(SPDSettings.level1boss());
+        if(Badges.isUnlocked(Badges.Badge.KILL_APPLE)){
+            add(level1);
+        }
 
         resize(WIDTH, HEIGHT);
     }

@@ -87,7 +87,7 @@ public class DungeonWallsTilemap extends DungeonTilemap {
 		} else if (Dungeon.level.insideMap(pos) && map[pos+mapWidth] == Terrain.OPEN_DOOR ) {
 			return DungeonTileSheet.DOOR_OVERHANG_OPEN;
 		} else if (tile == Terrain.SIGN ||tile == Terrain.SIGN_SP) {
-			return DungeonTileSheet.RAISED_WALL;
+			return Dungeon.depth == 0 ? DungeonTileSheet.RAISED_WALL : DungeonTileSheet.RAISED_MINE_CRYSTAL;
 		} else if (Dungeon.level.insideMap(pos) && map[pos+mapWidth] == Terrain.CRYSTAL_DOOR ) {
 			return DungeonTileSheet.DOOR_OVERHANG_CRYSTAL;
 		} else if (pos + mapWidth < size && map[pos+mapWidth] == Terrain.STATUE){

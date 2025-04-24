@@ -83,17 +83,14 @@ public class Sai extends MeleeWeapon {
 		}
 	}
 
-
 	@Override
-	public int max(int lvl) {
-		return  Math.round(1.2f*(tier+1)) +     //10 base, down from 20
-				lvl*Math.round(1.2f*(tier+1));  //+2 per level, down from +4
+	public int min(int lvl) {
+		return 3 + lvl * 2;
 	}
 
 	@Override
-	public int min(int lvl) {
-		return  Math.round(0.74f*(tier+1)) +     //10 base, down from 20
-				lvl*Math.round(0.65f*(tier+1));  //+2 per level, down from +4
+	public int max(int lvl) {
+		return 15 + lvl * 2;
 	}
 
 	//TODO 武技
@@ -117,6 +114,10 @@ public class Sai extends MeleeWeapon {
 		} else {
 			return Messages.get(this, "typical_ability_desc", augment.damageFactor(dmgBoost));
 		}
+	}
+
+	public String upgradeAbilityStat(int level){
+		return "+" + augment.damageFactor(3 + Math.round(0.67f*level));
 	}
 
 	public static void comboStrikeAbility(Hero hero, Integer target, float multiPerHit, int boostPerHit, MeleeWeapon wep){

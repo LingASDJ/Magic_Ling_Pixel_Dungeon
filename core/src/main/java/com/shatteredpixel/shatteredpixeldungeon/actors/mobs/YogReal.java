@@ -7,13 +7,13 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.DemonLord;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
@@ -130,7 +131,7 @@ public class YogReal extends Boss {
     private ArrayList<Class> regularSummons = new ArrayList<>();
     {
         for (int i = 0; i < SUMMON_DECK_SIZE; i++){
-            if (i >= Statistics.spawnersAlive){
+            if (i >= Statistics.spawnersAlive && !Statistics.bossRushMode){
                 regularSummons.add(Larva.class);
             } else {
                 regularSummons.add(YogRealRipper.class);
@@ -384,6 +385,9 @@ public class YogReal extends Boss {
     @Override
     protected boolean act() {
 
+        //Fixed 0 HP
+        if(HP<1) die(null);
+
         for (Buff buff : hero.buffs()) {
             if (buff instanceof RoseShiled) {
                 buff.detach();
@@ -427,7 +431,31 @@ public class YogReal extends Boss {
             yell(Messages.get(this, "time"));
             summonCD = -20;
             phase = 5;
-            regularSummons.add(YogRealRipper.class);
+
+
+            if(Statistics.bossRushMode){
+                Warlock warlock = new Warlock();
+                warlock.HP=warlock.HT=100;
+                warlock.pos = pos+2;
+                GameScene.add(warlock);
+
+                Golem golem = new Golem();
+                golem.HP=golem.HT=150;
+                golem.pos = pos-2;
+                GameScene.add(golem);
+
+                Ice_Scorpio iceScorpio = new Ice_Scorpio();
+                iceScorpio.HP=iceScorpio.HT=120;
+                iceScorpio.pos = pos+3;
+                GameScene.add(iceScorpio);
+
+                DemonLord demonLord = new DemonLord();
+                demonLord.HP=demonLord.HT=180;
+                demonLord.pos = pos-3;
+            } else {
+                regularSummons.add(RipperDemon.class);
+            }
+
             YogFist.FreezingFist freezingFist = new YogFist.FreezingFist();
             freezingFist.HP=freezingFist.HT=600;
             freezingFist.pos = pos-3;
@@ -468,13 +496,16 @@ public class YogReal extends Boss {
 
             Statistics.NoTime = true;
 
+
+
+
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
                     Music.INSTANCE.fadeOut(5f, new Callback() {
                         @Override
                         public void call() {
-                            Music.INSTANCE.play(Assets.BGM_BOSSE4, true);
+                            //TODO Music.INSTANCE.play(Assets.BGM_BOSSE4, true);
                         }
                     });
                 }
@@ -486,6 +517,16 @@ public class YogReal extends Boss {
             haloFist.HP=haloFist.HT=500;
             haloFist.pos = pos+3;
             GameScene.add(haloFist);
+
+
+            if(Dungeon.isChallenged(Challenges.CS)){
+                if(Statistics.bossRushMode){
+                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                        Buff.affect(mob,ChampionEnemy.AloneCity.class);
+                    }
+                }
+            }
+
         }
 
         spend(TICK);
@@ -576,7 +617,6 @@ public class YogReal extends Boss {
             Statistics.qualifiedForBossChallengeBadge = false;
         }
         if(Statistics.RandMode){
-            PaswordBadges.KILLALLBOSS();
             PaswordBadges.BOSSRUSH();
             Statistics.questScores[4] += 30000;
             Dungeon.win( Nxhy.class );
@@ -597,7 +637,6 @@ public class YogReal extends Boss {
                     new float[]{1, 1},
                     false);
         } else if(Statistics.bossRushMode){
-            PaswordBadges.KILLALLBOSS();
             PaswordBadges.BOSSRUSH();
             Statistics.questScores[4] += 30000;
             Dungeon.win( BossRushBloodGold.class );
@@ -617,6 +656,12 @@ public class YogReal extends Boss {
                     new String[]{Assets.Music.THEME_2, Assets.Music.THEME_1},
                     new float[]{1, 1},
                     false);
+        }
+
+        PaswordBadges.KILLALLBOSS();
+
+        if(Challenges.activeChallenges() > SPDSettings.RecordChallengs()){
+            SPDSettings.RecordChallengs(Challenges.activeChallenges());
         }
 
         Statistics.bossScores[4] += 10000 + 2250*Statistics.spawnersAlive;
@@ -700,7 +745,7 @@ public class YogReal extends Boss {
                 }
             }
             GameScene.bossReady();
-            BGMPlayer.playBoss();
+            //BGMPlayer.playBoss();
             if (phase == 0) {
                 phase = 1;
             }

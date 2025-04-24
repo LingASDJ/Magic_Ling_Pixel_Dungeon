@@ -35,7 +35,7 @@ public class ATRIPlot extends Plot {
             switch (process) {
                 default:
                 case 1:
-                    process_to_1();//Mostly process to 1 is made directly when creating,it might not be used,just in case
+                    process_to_1();
                     break;
 //                case 2:
 //                    process_to_2();
@@ -121,7 +121,7 @@ public class ATRIPlot extends Plot {
         public void process() {
             if (diagulewindow != null) {
                 if (process == 1) {
-                    process_to_1();//Mostly process to 1 is made directly when creating,it might not be used,just in case
+                    process_to_1();
                 }
                 diagulewindow.update();
                 process++;
@@ -179,7 +179,7 @@ public class ATRIPlot extends Plot {
         public void process() {
             if (diagulewindow != null) {
                 if (process == 1) {
-                    process_to_1();//Mostly process to 1 is made directly when creating,it might not be used,just in case
+                    process_to_1();
                 }
                 diagulewindow.update();
                 process++;

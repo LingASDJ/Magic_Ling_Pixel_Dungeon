@@ -83,7 +83,7 @@ public class ZeroBoat extends NTNPC {
 
         if( !first && rd ){
             Buff.affect( hero, Levitation.class, Levitation.DURATION );
-            Buff.affect( hero, TrueInvisibiity.class, Levitation.DURATION );
+            //Buff.affect( hero, TrueInvisibiity.class, Levitation.DURATION );
             ScrollOfTeleportation.appear(hero,1357);
             ScrollOfTeleportation.appear(this,1357);
             Dungeon.observe();

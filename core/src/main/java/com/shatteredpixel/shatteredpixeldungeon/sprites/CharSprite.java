@@ -104,7 +104,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	protected Animation idle;
 	protected Animation run;
-	protected Animation attack;
+	public Animation attack;
 	protected Animation operate;
 	protected Animation toss;
 	protected Animation zap;
@@ -240,7 +240,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public void showStatus(int color, String text, Object... args) {
 		//TODO 实验性功能 ICONTYPE
-		if(SPDSettings.ClassSkin()){
+		if(SPDSettings.V2IconDamage()){
 			showStatusWithIcon(color, text, IconFloatingText.NO_ICON, args);
 		} else {
 			if (visible) {
@@ -524,7 +524,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				soling.pour(SmokeFlameParticle.FACTORY, 0.06f);
 				break;
 			case ROSESHIELDED:
-				GameScene.effect(roseshield = new RoseHalo(this));
+				if (roseshield != null) {
+					roseshield.killAndErase();
+				}
+				GameScene.effect( roseshield = new RoseHalo( this ));
 				break;
 			case MUTATION_1:
 				mutation = emitter();

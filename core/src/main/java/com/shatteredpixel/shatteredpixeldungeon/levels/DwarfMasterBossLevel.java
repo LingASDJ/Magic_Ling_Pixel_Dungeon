@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -45,6 +46,16 @@ public class DwarfMasterBossLevel extends Level {
     {
         color1 = 0x48763c;
         color2 = 0x59994a;
+    }
+
+    @Override
+    public void playBossMusic(){
+        Music.playModeBGM(Assets.Music.BGM_BOSSD2,true);
+    }
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.BGM_4,true);
     }
 
     private static final int WIDTH = 38;

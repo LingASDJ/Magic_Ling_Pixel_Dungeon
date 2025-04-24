@@ -61,6 +61,22 @@ public class WndGameInProgress extends Window {
 	
 	private float pos;
 	Clipboard clipboard;
+
+	private String ChallengesDesc(GamesInProgress.Info info,int slot) {
+		StringBuilder allChallengesDesc = new StringBuilder();
+		if (info.challenges != 0) {
+			allChallengesDesc.append("\n");
+			for (int i = 0; i < Challenges.MASKS.length; i++) {
+				int challengeFlag = Challenges.MASKS[i];
+				if ((info.challenges & challengeFlag) != 0) {
+					allChallengesDesc.append("\n_-_ ").append(Messages.get(Challenges.class, Challenges.NAME_IDS[i]));
+				}
+			}
+		} else {
+			allChallengesDesc.append(Messages.get(Challenges.class, "no_challenge"));
+		}
+		return allChallengesDesc.toString();
+	}
 	
 	public WndGameInProgress(final int slot){
 		clipboard = Gdx.app.getClipboard();
@@ -72,7 +88,7 @@ public class WndGameInProgress extends Window {
 		} else {
 			className = info.heroClass.title();
 		}
-		
+
 		IconTitle title = new IconTitle();
 		title.icon( HeroSprite.avatar(info.heroClass, info.armorTier) );
 
@@ -109,7 +125,8 @@ public class WndGameInProgress extends Window {
 				}
 			};
 			btnChallenges.icon(Icons.get(Icons.CHALLENGE_ON));
-			btnChallenges.setRect( 2, pos, btnChallenges.reqWidth() + 1 , 18 );
+			float btnW = btnChallenges.reqWidth() + 2;
+			btnChallenges.setRect( ((WIDTH - btnW)/2)+3.5f, pos, btnW , 18 );
 			add( btnChallenges );
 
 			btnGameInfo = new RedButton( Messages.get(this, "gameinfo") ) {
@@ -167,28 +184,27 @@ public class WndGameInProgress extends Window {
 
 				boolean seedType = (info.challenges & Challenges.MOREROOM) != 0;
 
-				clipboard.setContents(M.L(WndGameInProgress.class, "seed_copy",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,(seedType ? "B" : "A"),info.version));
+				clipboard.setContents(M.L(WndGameInProgress.class, "seed_copy",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,(seedType ? "B" : "A"),ChallengesDesc(info,slot)));
 
-				Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMessage(M.L(WndGameInProgress.class, "seed_copied",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,(seedType ? "B" : "A"),info.version))));
+				Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMessage(M.L(WndGameInProgress.class, "seed_copied",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,(seedType ? "B" : "A"), ChallengesDesc(info,slot)))));
 			}
 		};
 		add(buttonSeed);
 		boolean multiLine=btnGameInfo.right()+buttonSeed.reqWidth()>WIDTH;
-		float btnX,btnY;
+		float btnX;
 		btnX = multiLine?2:btnGameInfo.right()+2;
-		btnY = multiLine?btnGameInfo.bottom()+2:pos;
-		buttonSeed.setRect(btnX, btnY, buttonSeed.reqWidth() + 1, 18);
+		buttonSeed.setRect(btnX, pos, buttonSeed.reqWidth() + 1, 18);
 
-		RedButton btDLC = new RedButton( Messages.get(this, "dlc") ) {
-			@Override
-			protected void onClick() {
-				//
-			}
-		};
-		btDLC.icon(new ItemSprite(ItemSpriteSheet.DIFFCULTBOOT));
-		btDLC.alpha(0.7f);
-		btDLC.setRect( 80, title.y, 40 , 18 );
-		//add( btDLC );
+//		RedButton btDLC = new RedButton( Messages.get(this, "dlc") ) {
+//			@Override
+//			protected void onClick() {
+//				//
+//			}
+//		};
+//		btDLC.icon(new ItemSprite(ItemSpriteSheet.DIFFCULTBOOT));
+//		btDLC.alpha(0.7f);
+//		btDLC.setRect( 80, title.y, 40 , 18 );
+//		//add( btDLC );
 
 		pos = buttonSeed.bottom() + GAP;
 		
@@ -261,7 +277,9 @@ public class WndGameInProgress extends Window {
 		
 		resize(WIDTH, (int)cont.bottom()+1);
 	}
-	
+
+
+
 	private void statSlot( String label, String value ) {
 		
 		RenderedTextBlock txt = PixelScene.renderTextBlock( label, 8 );

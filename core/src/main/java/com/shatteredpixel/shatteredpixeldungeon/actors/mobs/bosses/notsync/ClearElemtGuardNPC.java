@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.ClearElemtPlot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearGuardSprite;
@@ -19,8 +20,10 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 
 public class ClearElemtGuardNPC extends NTNPC {
 
@@ -29,7 +32,7 @@ public class ClearElemtGuardNPC extends NTNPC {
     private boolean rd=true;
     private boolean sd=true;
 
-    private int progress = 1;
+    public int progress = 1;
 
     private static final String FIRST = "first";
     private static final String SECNOD = "secnod";
@@ -307,6 +310,26 @@ public class ClearElemtGuardNPC extends NTNPC {
                             });
                         }
                     });
+                break;
+                default:
+                    //we do a little raw position shuffling here so that the characters are never
+                    // on the same cell when logic such as occupyCell() is triggered
+                    int oldPos = pos;
+                    int newPos = c.pos;
+                    PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+                    if (PathFinder.distance[pos] == Integer.MAX_VALUE){
+                        return true;
+                    }
+                    if(progress == 10){
+                        yell(Messages.get(ClearElemtGuard.class, "no_road",hero.name()));
+                        progress++;
+                    }
+                    pos = newPos;
+                    c.pos = oldPos;
+                    ScrollOfTeleportation.appear(this, newPos);
+                    ScrollOfTeleportation.appear(c, oldPos);
+                    Dungeon.observe();
+                    GameScene.updateFog();
                 break;
             }
         }

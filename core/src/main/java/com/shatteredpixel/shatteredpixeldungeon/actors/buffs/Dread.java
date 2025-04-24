@@ -34,7 +34,7 @@ public class Dread extends Buff {
 	protected int left = (int)DURATION;
 	public int object = 0;
 
-	public static final float DURATION = 20f;
+	public static final float DURATION = Dungeon.branch == 4 ? 1000f : 20f;
 
 	{
 		type = buffType.NEGATIVE;

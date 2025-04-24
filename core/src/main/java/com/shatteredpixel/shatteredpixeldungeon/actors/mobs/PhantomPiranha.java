@@ -21,10 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -40,9 +43,19 @@ public class PhantomPiranha extends Piranha {
 
 	{
 		spriteClass = PhantomPiranhaSprite.class;
-
+		if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+			immunities.add( CrivusFruits.DiedBlobs.class );
+		}
 		loot = PhantomMeat.class;
 		lootChance = 1f;
+
+		//TODO 暂时无法特判 为此只能检测含有buff进行处理 需要玩家进行行动以更新回合机会
+		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
+			if(buff != null){
+				buff.detach();
+			}
+		}
+
 	}
 
 	@Override
@@ -91,6 +104,10 @@ public class PhantomPiranha extends Piranha {
 	}
 
 	private boolean teleportAway(){
+
+		if (flying){
+			return false;
+		}
 
 		ArrayList<Integer> inFOVCandidates = new ArrayList<>();
 		ArrayList<Integer> outFOVCandidates = new ArrayList<>();

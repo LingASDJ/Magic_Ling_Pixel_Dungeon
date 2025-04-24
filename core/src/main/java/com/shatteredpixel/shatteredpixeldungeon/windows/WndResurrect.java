@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.KillMazeMimic;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.TPDoorDieds;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel3;
@@ -178,7 +179,7 @@ public class WndResurrect extends Window {
 				if(TPDoorDieds){
 					TPDoorDieds = false;
 				}
-
+				KillMazeMimic = 0;
 				DragonGirlBlue.Quest.four_used_points = 0;
 
 				Statistics.sakaBackStage = 0;
@@ -202,35 +203,35 @@ public class WndResurrect extends Window {
 
 		@Override
 		public boolean itemSelectable(Item item) {
-			//cannot select ankhs or bags or equippable items that aren't equipped
+			// 不能选择某些物品（例如Ankh、Bag等）
 			return !(item instanceof Ankh || item instanceof Bag);
 		}
 
 		@Override
-		public void onSelect( Item item ) {
+		public void onSelect(Item item) {
 			if (item != null && btnPressed.parent != null) {
-				btnPressed.item( item );
+				btnPressed.item(item);  // 设置当前按钮的物品
 
-				if (btnItem1.item == btnItem2.item){
-					if (btnPressed == btnItem1){
-						btnItem2.clear();
-					} else {
-						btnItem1.clear();
+				// 定义按钮数组
+				WndBlacksmith.ItemButtonX[] buttons = {btnItem1, btnItem2, btnItem3, btnItem4};
+
+				// 遍历按钮数组，检查是否有相同物品
+				for (int i = 0; i < buttons.length; i++) {
+					for (int j = i + 1; j < buttons.length; j++) {
+						if (buttons[i].item != null && buttons[i].item.equals(buttons[j].item)) {
+							// 如果找到重复物品，清空另一个按钮的物品
+							if (btnPressed == buttons[i]) {
+								buttons[j].clear();
+							} else {
+								buttons[i].clear();
+							}
+						}
 					}
 				}
-
-				if (btnItem3.item == btnItem4.item){
-					if (btnPressed == btnItem3){
-						btnItem4.clear();
-					} else {
-						btnItem3.clear();
-					}
-				}
-
 			}
 		}
 	};
-	
+
 	@Override
 	public void destroy() {
 		super.destroy();

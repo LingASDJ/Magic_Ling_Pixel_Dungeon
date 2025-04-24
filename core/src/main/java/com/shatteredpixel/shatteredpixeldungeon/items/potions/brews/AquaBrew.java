@@ -21,10 +21,25 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions.brews;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStormClouds;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.PathFinder;
 
 public class AquaBrew extends Brew {
 
@@ -35,17 +50,57 @@ public class AquaBrew extends Brew {
 	}
 
 	@Override
-	public void shatter(int cell) {
-		GeyserTrap geyser = new GeyserTrap();
-		geyser.pos = cell;
-		geyser.source = this;
-
-		int userPos = curUser.pos;
-		Ballistica aim = new Ballistica(userPos, cell, Ballistica.STOP_TARGET);
-		if (aim.path.size() > aim.dist+1) {
-			geyser.centerKnockBackDirection = aim.path.get(aim.dist + 1);
+	public String desc() {
+		String desc = Messages.get(this, "desc");
+		if(Dungeon.isChallenged(Challenges.AQUAPHOBIA)){
+			desc += "\n\n" + Messages.get(this, "salt");
 		}
-		geyser.activate();
+		return desc;
+	}
+
+	protected void DEM(int cell) {
+		final int color = splashColor();
+		Char ch = Actor.findChar(cell);
+		if (ch != null) {
+			Buff.affect(ch, Burning.class).reignite(ch, 8f);
+			Buff.affect(ch, Blindness.class, 8f);
+			Splash.at(ch.sprite.center(), color, 5);
+		} else {
+			Splash.at(cell, color, 5);
+		}
+	}
+
+	@Override
+	public void shatter(int cell) {
+
+		if (Dungeon.level.map[cell] == Terrain.SALT_WATER) {
+			for (int offset : PathFinder.NEIGHBOURS9) {
+				if (Dungeon.level.map[cell + offset] == Terrain.SALT_WATER) {
+					Level.set(cell + offset, Terrain.EMPTY_SP);
+					DEM(cell + offset);
+					GameScene.add(Blob.seed(cell + offset, 5, Fire.class));
+					GameScene.updateMap(cell + offset);
+					Dungeon.level.addVisuals();
+				}
+			}
+		} else {
+			GeyserTrap geyser = new GeyserTrap();
+			geyser.pos = cell;
+			geyser.source = this;
+			int userPos = curUser.pos;
+			if (userPos != cell){
+				Ballistica aim = new Ballistica(userPos, cell, Ballistica.STOP_TARGET);
+				if (aim.path.size() > aim.dist+1) {
+					geyser.centerKnockBackDirection = aim.path.get(aim.dist + 1);
+				}
+			}
+			geyser.activate();
+		}
+
+
+
+
+
 	}
 
 	@Override

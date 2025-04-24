@@ -87,7 +87,7 @@ public class DictFish extends Mob {
 
     @Override
     public int attackSkill( Char target ) {
-        return 10;
+        return 50;
     }
 
     @Override

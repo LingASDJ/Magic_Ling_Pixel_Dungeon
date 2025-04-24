@@ -35,8 +35,14 @@ public class MoloHR extends Boss {
 
     public MoloHR() {
         this.spriteClass = MolotovHuntsmanSprite.BossMolotovHuntsmanSprite.class;
-        this.HT = 180;
-        this.HP = 180;
+
+        if(Statistics.bossRushMode){
+            this.HT = 120;
+            this.HP = 120;
+        } else {
+            this.HT = 180;
+            this.HP = 180;
+        }
         HUNTING = new Hunting();
         state = HUNTING;
         this.defenseSkill = 10;
@@ -74,7 +80,7 @@ public class MoloHR extends Boss {
                 break;
             }
         }
-        return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && invulnerable;
+        return (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) || Statistics.bossRushMode) && invulnerable;
     }
 
     public int attackSkill(Char var1) {
@@ -90,7 +96,7 @@ public class MoloHR extends Boss {
     }
 
     public int damageRoll() {
-        return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? Random.NormalIntRange(15, 20) : Random.NormalIntRange(30, 40);
+        return Statistics.bossRushMode ? Random.NormalIntRange(15, 50) :Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? Random.NormalIntRange(15, 20) : Random.NormalIntRange(30, 40);
     }
     public static Brew food;
     public static ExoticScroll scrolls;

@@ -57,7 +57,7 @@ public abstract class ConnectionRoom extends Room {
 		rooms.add(RingBridgeRoom.class);
 	}
 	
-	private static float[][] chances = new float[32][];
+	private static float[][] chances = new float[43][];
 	static {
 		chances[1] =  new float[]{20, 1,    0, 2,       2, 1};
 		chances[4] =  chances[3] = chances[2] = chances[1];
@@ -79,6 +79,11 @@ public abstract class ConnectionRoom extends Room {
 
 		chances[27] = new float[]{15, 4,    0, 2,       3, 2};
 		chances[28] = chances[29] = chances[30] = chances[31] = chances[27];
+
+		chances[31] =  new float[]{7, 4,    5, 2,       3, 2};
+		chances[42] = chances[41] = chances[40] = chances[39]
+				= chances[38] = chances[37] = chances[36] = chances[35]
+				= chances[34] = chances[33] = chances[32] = chances[31];
 	}
 	
 	public static ConnectionRoom createRoom(){

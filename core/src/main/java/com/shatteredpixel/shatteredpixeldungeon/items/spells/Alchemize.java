@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -30,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -46,11 +48,28 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class Alchemize extends Spell {
-	
+
 	{
 		image = ItemSpriteSheet.ALCHEMIZE;
 
 		talentChance = 1/(float)Recipe.OUT_QUANTITY;
+	}
+
+	@Override
+	public ArrayList<String> actions(Hero hero) {
+		if (Statistics.bossRushMode) {
+			return new ArrayList<>(); //no actions in boss rush mode
+		}
+		return super.actions(hero);
+	}
+
+	@Override
+	public String desc() {
+		String desc = super.desc();
+		if(Statistics.bossRushMode){
+			desc = Messages.get(this, "No_desc");
+		}
+		return desc;
 	}
 
 	private static WndBag parentWnd;
@@ -92,7 +111,7 @@ public class Alchemize extends Spell {
 
 		@Override
 		public int cost(ArrayList<Item> ingredients) {
-			return 2;
+			return Statistics.bossRushMode ? 999999 : 2;
 		}
 
 		@Override
@@ -208,7 +227,7 @@ public class Alchemize extends Spell {
 					RedButton btnEnergize = new RedButton(Messages.get(this, "energize", item.energyVal())) {
 						@Override
 						protected void onClick() {
-							WndEnergizeItem.energize(item);
+							WndEnergizeItem.energizeAll(item);
 							hide();
 							consumeAlchemize();
 						}
@@ -236,7 +255,7 @@ public class Alchemize extends Spell {
 					RedButton btnEnergizeAll = new RedButton(Messages.get(this, "energize_all", energyAll)) {
 						@Override
 						protected void onClick() {
-							WndEnergizeItem.energize(item);
+							WndEnergizeItem.energizeAll(item);
 							hide();
 							consumeAlchemize();
 						}
@@ -268,6 +287,7 @@ public class Alchemize extends Spell {
 				}
 				GameScene.selectItem(itemSelector);
 			}
+			Catalog.countUse(getClass());
 			if (curItem instanceof Alchemize && Random.Float() < ((Alchemize)curItem).talentChance){
 				Talent.onScrollUsed(curUser, curUser.pos, ((Alchemize) curItem).talentFactor);
 			}

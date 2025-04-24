@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -28,6 +29,7 @@ public class DimandMimic extends Mimic {
     {
         spriteClass = MimicSprite.Dimand.class;
         properties.add( Property.ICY );
+        properties.add( Property.MINIBOSS );
     }
 
     public DimandMimic() {
@@ -70,13 +72,30 @@ public class DimandMimic extends Mimic {
     }
 
     @Override
-    public int attackProc(Char var1, int var2) {
-        var2 = super.attackProc(var1, var2 / 2);
+    public int attackProc(Char enemy, int damage ) {
+        damage = super.attackProc(enemy, damage / 2);
         if (Random.Int(2) == 0) {
-            ((Bleeding)Buff.affect(var1, Bleeding.class)).set((float)(var2 * 1));
+            Buff.affect(enemy, Bleeding.class).set((float)(damage));
         }
 
-        return var2;
+        return damage;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return true;
+    }
+
+    @Override
+    public boolean act() {
+       if(HP<=0){
+
+           ScrollOfTeleportation.appear(this,  Dungeon.level.randomRespawnCell(this));
+           HP = 60;
+           chainsUsed = false;
+       }
+
+        return super.act();
     }
 
     private class Hunting extends Mob.Hunting{
@@ -155,6 +174,21 @@ public class DimandMimic extends Mimic {
             Dungeon.observe();
             GameScene.updateFog();
         }
+    }
+
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 3,18 );
+    }
+
+    @Override
+    public int drRoll() {
+        return 3;
+    }
+
+    @Override
+    public int attackSkill( Char target ) {
+        return 6 + Dungeon.hero.lvl;
     }
 
     @Override

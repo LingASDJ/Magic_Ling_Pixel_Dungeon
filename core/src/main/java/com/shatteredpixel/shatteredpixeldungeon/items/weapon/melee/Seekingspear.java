@@ -102,7 +102,7 @@ public class Seekingspear extends MeleeWeapon{
 
         }
         private void staffFx(StaffParticle particle) {
-            particle.color( 0x8E236B );//改颜色
+            particle.color( 0x6E1B1B );//改颜色
             particle.am = 0.8f;//不透明度
             particle.setLifespan(2f);//影响大小，相当于影响衰减完所需全程
             particle.speed.set(0, 8);//粒子运动速度

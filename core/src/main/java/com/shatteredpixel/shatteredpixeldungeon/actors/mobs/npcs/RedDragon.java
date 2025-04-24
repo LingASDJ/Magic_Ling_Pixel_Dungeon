@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
@@ -196,7 +197,9 @@ public class RedDragon extends NPC {
                     break;
 
             }
-
+            if(Statistics.bossRushMode){
+                Dungeon.level.drop(new Pickaxe(), hero.pos).sprite.drop();
+            }
             questBoss.pos = Dungeon.level.randomRespawnCell( this );
 
             if (questBoss.pos != -1) {
@@ -235,7 +238,9 @@ public class RedDragon extends NPC {
 
         public static Weapon.Enchantment enchant;
         public static Armor.Glyph glyph;
-
+        public static boolean active(){
+            return spawned && given && !processed && depth == Dungeon.depth;
+        }
         public static void reset() {
             spawned = false;
             weapon = null;
@@ -374,18 +379,22 @@ public class RedDragon extends NPC {
                 //50%:+0, 30%:+1, 15%:+2, 5%:+3
                 float itemLevelRoll = Random.Float();
                 int itemLevel;
-                if (itemLevelRoll < 0.5f){
+                if (itemLevelRoll < 0.25f){
                     itemLevel = 0;
-                } else if (itemLevelRoll < 0.8f){
+                } else if (itemLevelRoll < 0.35f){
                     itemLevel = 1;
-                } else if (itemLevelRoll < 0.95f){
+                } else if (itemLevelRoll < 0.55f) {
                     itemLevel = 2;
-                } else {
+                } else if (itemLevelRoll < 0.66f){
                     itemLevel = 3;
+                } else if (itemLevelRoll < 0.7f){
+                    itemLevel = 4;
+                } else {
+                    itemLevel = 5;
                 }
-                weapon.upgrade(itemLevel);
-                food.upgrade(itemLevel);
-                RingT.upgrade(itemLevel);
+                weapon.level(itemLevel);
+                food.level(itemLevel);
+                RingT.upgrade(itemLevel-1);
 
                 //10% to be enchanted. We store it separately so enchant status isn't revealed early
                 if (Random.Int(10) == 0){
@@ -401,6 +410,7 @@ public class RedDragon extends NPC {
                 GLog.b( Messages.get(RedDragon.class, "find_me") );
                 //Sample.INSTANCE.play( Assets.Sounds.GHOST );
                 processed = true;
+                GameScene.bossSlain();
                 Statistics.questScores[2] += 8000;
             }
         }

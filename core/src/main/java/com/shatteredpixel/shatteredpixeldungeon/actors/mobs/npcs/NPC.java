@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -46,6 +47,15 @@ public abstract class NPC extends Mob {
 			Dungeon.level.drop( heap.pickUp(), n ).sprite.drop( pos );
 		}
 	}
+	@Override
+	protected boolean act() {
+		if (Dungeon.level.heroFOV[pos]){
+			Bestiary.setSeen(getClass());
+		}
+
+		return super.act();
+	}
+
 	@Override
 	public void beckon( int cell ) {
 	}

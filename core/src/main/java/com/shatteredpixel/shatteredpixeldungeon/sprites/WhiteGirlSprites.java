@@ -13,7 +13,7 @@ public class WhiteGirlSprites extends MobSprite {
         texture( Assets.Sprites.WHITE );
 
         TextureFilm textureFilm = new TextureFilm(this.texture, 16, 16);
-        idle = new MovieClip.Animation(2, true);
+        idle = new MovieClip.Animation(1, true);
         idle.frames(textureFilm, 0,1,2);
 
         run = new MovieClip.Animation(10, true);

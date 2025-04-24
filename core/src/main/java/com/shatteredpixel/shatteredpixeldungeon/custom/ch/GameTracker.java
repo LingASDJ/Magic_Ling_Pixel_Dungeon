@@ -77,8 +77,10 @@ public class GameTracker extends Buff {
             }
             for(Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                 if(m instanceof Mimic){
-                    for(Item item: ((Mimic) m).items){
-                        appendDesc(item, info, "MIMIC_HOLD");
+                    if(Dungeon.branch == 0){
+                        for(Item item: ((Mimic) m).items){
+                            appendDesc(item, info, "MIMIC_HOLD");
+                        }
                     }
                 }
                 if(m instanceof Ghost){

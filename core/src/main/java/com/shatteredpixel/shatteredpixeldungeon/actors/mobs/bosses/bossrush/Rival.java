@@ -1,9 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -12,14 +12,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.RivalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -40,8 +44,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFirebolt;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -59,6 +63,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
@@ -68,7 +73,14 @@ public class Rival extends Boss implements Callback {
 
     @Override
     public String name() {
-        return Messages.get(this,"name",hero.name());
+
+        if(Dungeon.hero != null){
+            return Messages.get(this,"name",hero.name());
+        } else {
+            return Messages.get(this,"namex");
+        }
+
+
     }
 
 
@@ -77,6 +89,12 @@ public class Rival extends Boss implements Callback {
         properties.add(Property.BOSS);
         HUNTING = new Hunting();
         WANDERING = new Wandering();
+
+        if(Statistics.bossRushMode){
+            immunities.add(Corrosion.class);
+            immunities.add(Chill.class);
+            immunities.add(FrostBurning.class);
+        }
     }
 
     public MeleeWeapon weapon;
@@ -87,27 +105,6 @@ public class Rival extends Boss implements Callback {
     public MissileWeapon missile;
 
     private int blinkCooldown = 0;
-
-    @Override
-    protected boolean getCloser( int target ) {
-        if(HP<HT/2 && state == HUNTING){
-            return enemySeen && getFurther( target );
-        } else if (fieldOfView[target] && Dungeon.level.distance( pos, target ) > 2 && blinkCooldown <= 0 && !rooted) {
-
-            if (blink( target )) {
-                spend(-1 / speed());
-                return true;
-            } else {
-                return false;
-            }
-
-        } else {
-
-            blinkCooldown--;
-            return super.getCloser( target );
-
-        }
-    }
 
     private boolean blink( int target ) {
 
@@ -126,13 +123,13 @@ public class Rival extends Boss implements Callback {
         if (Actor.findChar( cell ) != null && cell != this.pos)
             cell = route.path.get(route.dist-1);
 
-        if (Dungeon.level.avoid[ cell ] || (properties().contains(Property.LARGE) && !Dungeon.level.openSpace[cell])){
+        if (level.avoid[ cell ] || (properties().contains(Property.LARGE) && !level.openSpace[cell])){
             ArrayList<Integer> candidates = new ArrayList<>();
             for (int n : PathFinder.NEIGHBOURS8) {
                 cell = route.collisionPos + n;
-                if (Dungeon.level.passable[cell]
+                if (level.passable[cell]
                         && Actor.findChar( cell ) == null
-                        && (!properties().contains(Property.LARGE) || Dungeon.level.openSpace[cell])) {
+                        && (!properties().contains(Property.LARGE) || level.openSpace[cell])) {
                     candidates.add( cell );
                 }
             }
@@ -153,50 +150,58 @@ public class Rival extends Boss implements Callback {
     public Rival() {
         super();
 
-        int lvl = hero.lvl;
+        int lvl = Dungeon.hero == null ? 30 : hero.lvl;
 
-        //melee
-        do {
-            weapon = (MeleeWeapon)Generator.random(Generator.Category.WEAPON);
-        } while (weapon.cursed);
-        weapon.enchant(Enchantment.random());
-        weapon.identify();
+        if(hero != null){
+            //melee
+            do {
+                weapon = (MeleeWeapon)Generator.random(Generator.Category.WEAPON);
+            } while (weapon.cursed);
+            weapon.enchant(Enchantment.random());
+            weapon.identify();
 
-        flying = true;
+            flying = true;
 
-        //armor
-        do {
-            armor = (Armor)Generator.random(Generator.Category.ARMOR);
-        } while (armor.cursed);
-        armor.inscribe(Glyph.random());
-        armor.identify();
+            //armor
+            do {
+                armor = (Armor)Generator.random(Generator.Category.ARMOR);
+            } while (armor.cursed);
+            armor.inscribe(Glyph.random());
+            armor.identify();
 
-        //misc1
-        do {
-            misc1 = (KindofMisc)Generator.random(Generator.Category.RING);
-        } while (misc1.cursed);
-        misc1.identify();
+            //misc1
+            do {
+                misc1 = (KindofMisc)Generator.random(Generator.Category.RING);
+            } while (misc1.cursed);
+            misc1.identify();
 
-        //misc2
-        do {
-            misc2 = (KindofMisc)Generator.random(Generator.Category.RING);
-        } while (misc2.cursed);
-        misc2.identify();
+            //misc2
+            do {
+                misc2 = (KindofMisc)Generator.random(Generator.Category.RING);
+            } while (misc2.cursed);
+            misc2.identify();
 
-        //wand
-        do {
-            wand = RandomWand();
-        } while (wand.cursed);
-        wand.updateLevel();
-        wand.curCharges = 20;
-        wand.identify();
+            //wand
+            do {
+                wand = RandomWand();
+            } while (wand.cursed);
+            wand.updateLevel();
+            wand.curCharges = 20;
+            wand.identify();
 
-        //missile
-        do {
-            missile = (MissileWeapon)Generator.random(Generator.Category.MISSILE);
-        } while (missile.cursed);
+            //missile
+            do {
+                missile = (MissileWeapon)Generator.random(Generator.Category.MISSILE);
+            } while (missile.cursed);
+
+            defenseSkill = (int)(armor.evasionFactor( this, 7 + lvl ));
+        } else {
+            defenseSkill = 7 + lvl;
+        }
+
+
         HP = HT = 50 + lvl * 5;
-        defenseSkill = (int)(armor.evasionFactor( this, 7 + lvl ));
+
 
         EXP = lvl * 17;
 
@@ -274,49 +279,90 @@ public class Rival extends Boss implements Callback {
         return speed;
     }
 
-
     @Override
-    protected boolean canAttack( Char enemy ) {
-        if(HP<HT/2){
-            return !Dungeon.level.adjacent( pos, enemy.pos )
-                    && (super.canAttack(enemy) || new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos);
+    protected boolean getCloser(int target) {
+        // 判断远程攻击能力是否失效
+        boolean hasRangedOption;
+        if (HP < HT / 2) {
+            // 半血以下时，投掷武器是否可用？
+            hasRangedOption = missile != null && missile.quantity > 0;
         } else {
-            return super.canAttack(enemy) || weapon.canReach(this, enemy.pos) || (new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos);
+            // 半血以上时，法杖充能是否可用？
+            hasRangedOption = wand != null && wand.curCharges > 0;
+        }
+
+        // 如果没有远程攻击手段，强制逼近玩家
+        if (!hasRangedOption) {
+            return super.getCloser(target);
+        }
+
+        // 如果有远程攻击手段，执行原有逻辑
+        if (HP < HT / 2 && state == HUNTING) {
+            // 半血以下且处于 HUNTING 状态时，远离玩家
+            return enemySeen && getFurther(target);
+        } else if (fieldOfView[target] && level.distance(pos, target) > 2 && blinkCooldown <= 0 && !rooted) {
+            // 使用闪烁技能逼近玩家
+            if (blink(target)) {
+                spend(-1 / speed());
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            // 其他情况，正常逼近玩家
+            blinkCooldown--;
+            return super.getCloser(target);
         }
     }
 
-    protected boolean doAttack( Char enemy ) {
+    @Override
+    protected boolean canAttack(Char enemy) {
+        boolean canRanged = (HP < HT/2 && missile.quantity > 0)
+                || (HP >= HT/2 && wand.curCharges > 0);
+        boolean canMelee = level.adjacent(pos, enemy.pos) || weapon.canReach(this, enemy.pos);
+        return canRanged || canMelee || super.canAttack(enemy);
+    }
 
-        if (Dungeon.level.adjacent( pos, enemy.pos ) || weapon.canReach(this, enemy.pos)) {
+    @Override
+    protected boolean doAttack(Char enemy) {
+        // 检查是否在近战范围内
+        boolean inMeleeRange = level.adjacent(pos, enemy.pos) || weapon.canReach(this, enemy.pos);
 
-            return super.doAttack( enemy );
-
-        } else {
-
+        // 如果不在近战范围内，尝试远程攻击
+        if (!inMeleeRange) {
             boolean visible = fieldOfView[pos] || fieldOfView[enemy.pos];
-            if (wand.curCharges > 0) {
+
+            // 半血以下时，优先使用投掷武器
+            if (HP < HT / 2 && missile != null && missile.quantity > 0) {
                 if (visible) {
-                    sprite.zap( enemy.pos );
+                    sprite.toss(enemy.pos); // 可见时播放投掷动画
                 } else {
-                    zap();
+                    toss(); // 不可见时直接投掷
                 }
-                wand.curCharges--;
-            } else if (missile.quantity() > 0) {
-                if (visible) {
-                    sprite.toss( enemy.pos );
-                } else {
-                    toss();
-                }
+                missile.quantity--; // 消耗投掷武器弹药
+                return !visible; // 返回是否不可见
             }
 
-            return !visible;
+            // 半血以上时，优先使用法杖
+            if (wand != null && wand.curCharges > 0) {
+                if (visible) {
+                    sprite.zap(enemy.pos); // 可见时播放法杖动画
+                } else {
+                    zap(); // 不可见时直接施法
+                }
+                wand.curCharges--; // 消耗法杖充能
+                return !visible; // 返回是否不可见
+            }
         }
+
+        // 如果没有远程攻击条件，或者已经在近战范围内，切换到近战攻击
+        return super.doAttack(enemy);
     }
 
     private void zap() {
         spend( TIME_TO_ZAP );
 
-        final Ballistica shot = new Ballistica( pos, enemy.pos, wand.collisionProperties);
+        final Ballistica shot = new Ballistica( pos, enemy == null ? 0 :enemy.pos, wand.collisionProperties);
 
         wand.rivalOnZap( shot, this );
     }
@@ -366,10 +412,54 @@ public class Rival extends Boss implements Callback {
         }
     }
 
+    private int SummonMob() {
+        int order;
+        DeepShadowLevel.State state = ((DeepShadowLevel) level).state();
+        switch(state) {
+            case PHASE_3:
+                order = Random.NormalIntRange(16, 19);
+                break;
+            case PHASE_4:
+                order = Random.NormalIntRange(21, 24);
+                break;
+            case PHASE_2:case PHASE_1:
+                order =  Random.NormalIntRange(11, 14);
+                break;
+            default:
+                order = Random.NormalIntRange(6, 9);;
+                break;
+        }
+        return order;
+    }
+
+    public void summon(int Rpos) {
+        if(Statistics.bossRushMode){
+            sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
+            Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
+            int numberOfMobs = Random.Int(2, 6);
+            for(int i = 0;i <= numberOfMobs ; i++){
+                Mob syncmob = Reflection.newInstance(MobSpawner.getMobRotation(SummonMob()).get(0));
+                syncmob.state = syncmob.WANDERING;
+                syncmob.pos = Rpos;
+                if (SummonMob() > 20) {
+                    syncmob.HP = (int) (syncmob.HT * 0.75f);
+                    syncmob.defenseSkill = syncmob.defenseSkill / 2;
+                }
+                syncmob.immunities.add(Corrosion.class);
+                syncmob.immunities.add(Chill.class);
+                GameScene.add(syncmob);
+                syncmob.beckon(hero.pos);
+            }
+
+            yell( Messages.get(this, "arise") );
+        }
+    }
+
     @Override
     public void die( Object cause ) {
-        Dungeon.level.unseal();
-        DeepShadowLevel.State state = ((DeepShadowLevel)Dungeon.level).state();
+        level.unseal();
+        DeepShadowLevel.State state = ((DeepShadowLevel) level).state();
+
         if (state != DeepShadowLevel.State.WON) {
 
             //cures doom and drops missile weapons
@@ -383,11 +473,10 @@ public class Rival extends Boss implements Callback {
             switch(state) {
                 case BRIDGE:
                     HP = 1;
-
                     PotionOfHealing.cure(this);
                     Buff.detach(this, Paralysis.class);
 
-                    ((DeepShadowLevel)Dungeon.level).progress();
+                    ((DeepShadowLevel) level).progress();
 
                     yell( Messages.get(this, "interrobang") );
                     return;
@@ -396,22 +485,23 @@ public class Rival extends Boss implements Callback {
                 case PHASE_3:
                 case PHASE_4:
                     HP = HT;
-                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                    for (Mob mob : level.mobs.toArray(new Mob[0])){
                         if(mob instanceof Rival){
                             Buff.affect(mob, Dread.class);
                         }
                     }
+
                     PotionOfHealing.cure(this);
                     Buff.detach(this, Paralysis.class);
 
-                    if (Dungeon.level.heroFOV[pos] && hero.isAlive()) {
+                    if (level.heroFOV[pos] && hero.isAlive()) {
                         new Flare(8, 32).color(0xFFFF66, true).show(sprite, 2f);
                         CellEmitter.get(this.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
                         Sample.INSTANCE.play( Assets.Sounds.TELEPORT );
                         GLog.w( Messages.get(this, "revive") );
                     }
 
-                    ((DeepShadowLevel)Dungeon.level).progress();
+                    ((DeepShadowLevel) level).progress();
 
                     yell( Messages.get(this, "exclamation") );
 
@@ -421,6 +511,7 @@ public class Rival extends Boss implements Callback {
                             wand.curCharges = 20;
                             wand.level(3);
                             wand.updateLevel();
+                            missile.quantity = 2;
                             break;
                         case PHASE_2:
                             wand = new WandOfBlastWave();
@@ -428,6 +519,7 @@ public class Rival extends Boss implements Callback {
                             misc1 = new RingOfHaste();
                             wand.level(2);
                             wand.updateLevel();
+                            missile.quantity = 2;
                             break;
                         case PHASE_3:
                             wand = new WandOfFirebolt();
@@ -435,20 +527,21 @@ public class Rival extends Boss implements Callback {
                             wand.level(1);
                             wand.updateLevel();
                             wand.curCharges = 80;
+                            missile.quantity = 3;
                             break;
                         case PHASE_4:
-                            wand = new WandOfGodIce();
+                            wand = new WandOfVenom();
                             wand.curCharges = 10;
                             wand.level(4);
                             wand.updateLevel();
-                            misc1 = new RingOfTenacity();
+                            missile.quantity = Random.IntRange(2, 4);
                             break;
                     }
                     HP = HT;
                     missile = (MissileWeapon)Generator.random(Generator.Category.MISSILE);
                     return;
                 case PHASE_5:
-                    ((DeepShadowLevel)Dungeon.level).progress();
+                    ((DeepShadowLevel) level).progress();
                     super.die( cause );
                     wand = new WandOfMagicMissile();
                     misc1 = new RingOfTenacity();
@@ -473,8 +566,10 @@ public class Rival extends Boss implements Callback {
     @Override
     public void notice() {
         super.notice();
-        Dungeon.level.seal();
-        BGMPlayer.playBoss();
+        level.seal();
+
+        //BGMPlayer.playBGM(Assets.BGM_YOU, true);
+
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "question"));
@@ -486,13 +581,19 @@ public class Rival extends Boss implements Callback {
     public String description() {
         String desc = super.description();
 
-        desc += Messages.get(this, "weapon", weapon.toString() );
-        desc += Messages.get(this, "armor", armor.toString() );
-        desc += Messages.get(this, "ring", misc1.toString() );
-        desc += Messages.get(this, "ring", misc2.toString() );
-        desc += Messages.get(this, "wand", wand.toString() );
-        desc += Messages.get(this, "missile", missile.toString() );
-        desc += Messages.get(this, "ankhs");
+        if(Dungeon.hero != null){
+            desc += Messages.get(this, "weapon", weapon.toString() );
+            desc += Messages.get(this, "armor", armor.toString() );
+            desc += Messages.get(this, "ring", misc1.toString() );
+            desc += Messages.get(this, "ring", misc2.toString() );
+            desc += Messages.get(this, "wand", wand.toString() );
+            desc += Messages.get(this, "missile", missile.toString() );
+            desc += Messages.get(this, "ankhs");
+        } else {
+            desc += "";
+        }
+
+
 
         return desc;
     }
@@ -535,7 +636,7 @@ public class Rival extends Boss implements Callback {
             //of two potential wander positions, picks the one closest to the hero
             int pos1 = super.randomDestination();
             int pos2 = super.randomDestination();
-            PathFinder.buildDistanceMap(Dungeon.hero.pos, Dungeon.level.passable);
+            PathFinder.buildDistanceMap(Dungeon.hero.pos, level.passable);
             if (PathFinder.distance[pos2] < PathFinder.distance[pos1]){
                 return pos2;
             } else {

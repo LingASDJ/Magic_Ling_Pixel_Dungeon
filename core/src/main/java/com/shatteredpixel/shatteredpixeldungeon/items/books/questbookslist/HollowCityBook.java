@@ -41,36 +41,20 @@ public class HollowCityBook extends Books {
                         @Override
                         protected void onSelect(int index) {
                             if (index == 0 && !Statistics.endingbald) {
-                                if (Dungeon.branch == 5) {
-                                    InterlevelScene.mode = InterlevelScene.Mode.AMULET;
-                                    TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-                                    if (timeFreeze != null) timeFreeze.disarmPresses();
-                                    Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-                                    Statistics.endingbald = true;
-                                    if (timeBubble != null) timeBubble.disarmPresses();
-                                    InterlevelScene.curTransition = new LevelTransition();
-                                    InterlevelScene.curTransition.destDepth = 25;
-                                    InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
-                                    InterlevelScene.curTransition.destBranch = 4;
-                                    InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
-                                    InterlevelScene.curTransition.centerCell  = -1;
-                                    Game.switchScene(InterlevelScene.class);
-                                } else {
-                                    InterlevelScene.mode = InterlevelScene.Mode.AMULET;
-                                    TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-                                    if (timeFreeze != null) timeFreeze.disarmPresses();
-                                    Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-                                    if (timeBubble != null) timeBubble.disarmPresses();
-                                    InterlevelScene.curTransition = new LevelTransition();
-                                    InterlevelScene.curTransition.destDepth = 25;
-                                    InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
-
-                                    InterlevelScene.curTransition.destBranch = 4;
-
-                                    InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
-                                    InterlevelScene.curTransition.centerCell  = -1;
-                                    Game.switchScene(InterlevelScene.class);
-                                }
+                                Statistics.Hollow_Holiday = true;
+                                InterlevelScene.mode = InterlevelScene.Mode.AMULET;
+                                TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                                if (timeFreeze != null) timeFreeze.disarmPresses();
+                                Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                                Statistics.endingbald = true;
+                                if (timeBubble != null) timeBubble.disarmPresses();
+                                InterlevelScene.curTransition = new LevelTransition();
+                                InterlevelScene.curTransition.destDepth = 26;
+                                InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+                                InterlevelScene.curTransition.destBranch = 0;
+                                InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+                                InterlevelScene.curTransition.centerCell  = -1;
+                                Game.switchScene(InterlevelScene.class);
                                 detach( hero.belongings.backpack );
                             }
                         }

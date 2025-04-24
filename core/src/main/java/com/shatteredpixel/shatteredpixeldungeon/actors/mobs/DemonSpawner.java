@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -63,7 +62,7 @@ public class DemonSpawner extends Mob {
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Char.combatRoll(0, 12);
+		return super.drRoll() + Random.NormalIntRange(0, 12);
 	}
 
 	@Override
@@ -85,10 +84,6 @@ public class DemonSpawner extends Mob {
 		if (!spawnRecorded){
 			Statistics.spawnersAlive++;
 			spawnRecorded = true;
-		}
-
-		if (Dungeon.level.visited[pos]){
-			Notes.add( Notes.Landmark.DEMON_SPAWNER );
 		}
 
 		if (Dungeon.hero.buff(AscensionChallenge.class) != null && spawnCooldown > 20){
@@ -146,10 +141,15 @@ public class DemonSpawner extends Mob {
 	}
 
 	@Override
+	public Notes.Landmark landmark() {
+		return Notes.Landmark.DEMON_SPAWNER;
+	}
+
+	@Override
 	public void die(Object cause) {
 		if (spawnRecorded){
 			Statistics.spawnersAlive--;
-			Notes.remove(Notes.Landmark.DEMON_SPAWNER);
+			Notes.remove(landmark());
 		}
 		GLog.h(Messages.get(this, "on_death"));
 		super.die(cause);

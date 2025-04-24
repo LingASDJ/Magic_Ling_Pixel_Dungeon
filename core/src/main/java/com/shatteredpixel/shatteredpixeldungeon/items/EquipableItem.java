@@ -41,14 +41,15 @@ public abstract class EquipableItem extends Item {
 	public static final String AC_EQUIP = "EQUIP";
 	public static final String AC_UNEQUIP = "UNEQUIP";
 	public String customName = "";
-
+	public int customNoteID = -1;
 	public String name() {
 		return this.customName.equals("") ? super.name() : this.customName;
 	}
-
+	private static final String CUSTOM_NOTE_ID = "custom_note_id";
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
+		if (bundle.contains(CUSTOM_NOTE_ID))    customNoteID = bundle.getInt(CUSTOM_NOTE_ID);
 		if (bundle.contains("customName")) {
 			this.customName = bundle.getString("customName");
 		}
@@ -57,6 +58,7 @@ public abstract class EquipableItem extends Item {
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
+		if (customNoteID != -1)     bundle.put(CUSTOM_NOTE_ID, customNoteID);
 		if (!this.customName.equals("")) {
 			bundle.put("customName", this.customName);
 		}
@@ -102,8 +104,8 @@ public abstract class EquipableItem extends Item {
 			if (slot != -1) {
 				Dungeon.quickslot.setSlot( slot, this );
 				updateQuickslot();
-			//if this item wasn't quickslotted, but the item it is replacing as equipped was
-			//then also have the item occupy the unequipped item's quickslot
+				//if this item wasn't quickslotted, but the item it is replacing as equipped was
+				//then also have the item occupy the unequipped item's quickslot
 			} else if (slotOfUnequipped != -1 && defaultAction() != null) {
 				Dungeon.quickslot.setSlot( slotOfUnequipped, this );
 				updateQuickslot();

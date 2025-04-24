@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
@@ -32,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.ItemStatusHandler;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TheGriefOfSpeechless;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
@@ -49,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfShock;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.AlchemyScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -62,6 +65,11 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 public abstract class Scroll extends Item {
+
+	@Override
+	public String anonymousName() {
+		return Messages.get(this, rune);
+	}
 	
 	public static final String AC_READ	= "READ";
 	
@@ -101,6 +109,10 @@ public abstract class Scroll extends Item {
 	@SuppressWarnings("unchecked")
 	public static void initLabels() {
 		handler = new ItemStatusHandler<>( (Class<? extends Scroll>[])Generator.Category.SCROLL.classes, runes );
+	}
+
+	public static void clearLabels(){
+		handler = null;
 	}
 	
 	public static void save( Bundle bundle ) {
@@ -149,6 +161,9 @@ public abstract class Scroll extends Item {
 		if (handler != null && handler.contains(this)) {
 			image = handler.image(this);
 			rune = handler.label(this);
+		} else {
+			image = ItemSpriteSheet.SCROLL_KAUNAN;
+			rune = "KAUNAN";
 		}
 	}
 	
@@ -174,6 +189,9 @@ public abstract class Scroll extends Item {
 					&& hero.buff(UnstableSpellbook.bookRecharge.class).isCursed()
 					&& !(this instanceof ScrollOfRemoveCurse || this instanceof ScrollOfAntiMagic)){
 				GLog.n( Messages.get(this, "cursed") );
+			} else if (hero.belongings.getItem(TheGriefOfSpeechless.class)!=null && Random.Int(1,100)<=25 && this.getClass() != ScrollOfUpgrade.class) {
+				GLog.w(Messages.get(TheGriefOfSpeechless.class,"grief"));
+				detach(curUser.belongings.backpack);
 			} else {
 				doRead();
 			}
@@ -183,14 +201,17 @@ public abstract class Scroll extends Item {
 	
 	public abstract void doRead();
 
-	protected void readAnimation() {
+	public void readAnimation() {
 		Invisibility.dispel();
 		curUser.spend( TIME_TO_READ );
 		curUser.busy();
 		((HeroSprite)curUser.sprite).read();
 
-		if (!anonymous && Random.Float() < talentChance) {
-			Talent.onScrollUsed(curUser, curUser.pos, talentFactor);
+		if (!anonymous) {
+			Catalog.countUse(getClass());
+			if (Random.Float() < talentChance) {
+				Talent.onScrollUsed(curUser, curUser.pos, talentFactor);
+			}
 		}
 
 	}
@@ -206,7 +227,7 @@ public abstract class Scroll extends Item {
 				updateQuickslot();
 			}
 			
-			if (Dungeon.hero.isAlive()) {
+			if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
 				Catalog.setSeen(getClass());
 			}
 		}
@@ -226,12 +247,16 @@ public abstract class Scroll extends Item {
 	public String name() {
 		return isKnown() ? super.name() : Messages.get(this, rune);
 	}
-	
+
 	@Override
 	public String info() {
-		return isKnown() ?
-			desc() :
-			Messages.get(this, "unknown_desc");
+		//skip custom notes if anonymized and un-Ided
+		return (anonymous && (handler == null || !handler.isKnown( this ))) ? desc() : super.info();
+	}
+
+	@Override
+	public String desc() {
+		return isKnown() ? super.desc() : Messages.get(this, "unknown_desc");
 	}
 	
 	@Override
@@ -253,7 +278,7 @@ public abstract class Scroll extends Item {
 	}
 	
 	public static boolean allKnown() {
-		return handler.known().size() == Generator.Category.SCROLL.classes.length;
+		return handler != null && handler.known().size() == Generator.Category.SCROLL.classes.length;
 	}
 	
 	@Override
@@ -328,7 +353,13 @@ public abstract class Scroll extends Item {
 			Scroll s = (Scroll) ingredients.get(0);
 			
 			s.quantity(s.quantity() - 1);
-			s.identify();
+			if (ShatteredPixelDungeon.scene() instanceof AlchemyScene){
+				if (!s.isIdentified()){
+					((AlchemyScene) ShatteredPixelDungeon.scene()).showIdentify(s);
+				}
+			} else {
+				s.identify();
+			}
 			
 			return Reflection.newInstance(stones.get(s.getClass())).quantity(2);
 		}

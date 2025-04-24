@@ -29,7 +29,15 @@ public class BeamTowerAdbility extends Buff {
                     ch.damage(Random.IntRange(5, 8), CrystalDiedTower.class);
                     Statistics.bossScores[3] -= 300;
                     //hero.sprite.showStatus(CharSprite.NEGATIVE, "300");
-                    Buff.affect(ch, Cripple.class, 2f);
+                    if(Statistics.bossRushMode){
+                        Buff.prolong(hero, Chill.class, 2f);
+                        Buff.prolong(hero, Blindness.class, Blindness.DURATION/5f);
+                        Buff.prolong( hero, Cripple.class, Cripple.DURATION/5f );
+                        Buff.prolong( hero, Hex.class, Hex.DURATION/10f );
+                    } else {
+                        Buff.affect(ch, Cripple.class, 2f);
+                    }
+
                     if (ch == hero && !ch.isAlive()) {
                         Dungeon.fail(getClass());
                     }

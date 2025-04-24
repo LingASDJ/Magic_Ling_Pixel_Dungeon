@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -31,7 +31,6 @@ public class SPSLScene extends PixelScene {
     @Override
     public void create() {
         super.create();
-       playBGM( Assets.Music.SHOP, true );
         final float colWidth = Camera.main.width / (landscape() ? 2 : 1);
         final float colTop = (Camera.main.height / 2) - (landscape() ? 30 : 90);
         final float colOffset = landscape() ? colWidth : 0;

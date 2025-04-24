@@ -85,6 +85,7 @@ public class EntranceRoom extends StandardRoom {
 
 		for (Room.Door door : connected.values()) {
 			door.set( Room.Door.Type.REGULAR );
+			level.BottleWraith(door, level, left, right, top, bottom);
 		}
 
 		int entrance;
@@ -122,7 +123,7 @@ public class EntranceRoom extends StandardRoom {
 				//can't be on bottom row of tiles
 				pos = level.pointToCell(new Point( Random.IntRange( left + 1, right - 1 ),
 						Random.IntRange( top + 1, bottom - 2 )));
-			} while (pos == level.entrance() || level.findMob(level.entrance()) != null);
+			} while (pos == level.entrance() || level.findMob(level.entrance()) != null || level.solid[pos]);
 			GuidePage p = new GuidePage();
 			p.page(Document.GUIDE_SEARCHING);
 			level.drop( p, pos );
@@ -152,7 +153,7 @@ public class EntranceRoom extends StandardRoom {
 		rooms.add(RitualEntranceRoom.class);
 	}
 
-	private static float[][] chances = new float[31][];
+	private static float[][] chances = new float[43][];
 	static {
 		chances[1] =  new float[]{1,  0,0, 0,0, 0,0, 0,0, 0,0};
 		chances[2] =  chances[1];
@@ -171,6 +172,11 @@ public class EntranceRoom extends StandardRoom {
 		chances[21] = new float[]{3,  0,0, 0,0, 0,0, 0,0, 6,1};
 		chances[30] = chances[29] = chances[28] = chances[27] = chances[26] =
 		chances[25] = chances[24] = chances[23] = chances[22] = chances[21];
+
+		chances[31] = new float[]{3,  1,2, 3,4, 5,5, 4,3, 6,1};
+		chances[42] = chances[41] = chances[40] = chances[39]
+		= chances[38] = chances[37] = chances[36] = chances[35]
+		= chances[34] = chances[33] = chances[32] = chances[31];
 	}
 
 	public static StandardRoom createEntrance(){

@@ -56,6 +56,11 @@ public class ExitRoom extends StandardRoom {
 	}
 
 	@Override
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
+		return false;
+	}
+
+	@Override
 	public boolean isExit() {
 		return true;
 	}
@@ -99,7 +104,7 @@ public class ExitRoom extends StandardRoom {
 		rooms.add(RitualExitRoom.class);
 	}
 
-	private static float[][] chances = new float[31][];
+	private static float[][] chances = new float[43][];
 	static {
 		chances[1] =  new float[]{3,  6,1, 0,0, 0,0, 0,0, 0,0};
 		chances[5] =  chances[4] = chances[3] = chances[2] = chances[1];
@@ -116,6 +121,11 @@ public class ExitRoom extends StandardRoom {
 		chances[21] = new float[]{3,  0,0, 0,0, 0,0, 0,0, 6,1};
 		chances[30] = chances[29] = chances[28] = chances[27] = chances[26] =
 		chances[25] = chances[24] = chances[23] = chances[22] = chances[21];
+
+		chances[31] = new float[]{3,  1,2, 3,4, 5,5, 4,3, 6,1};
+		chances[42] = chances[41] = chances[40] = chances[39]
+				= chances[38] = chances[37] = chances[36] = chances[35]
+				= chances[34] = chances[33] = chances[32] = chances[31];
 	}
 
 	public static StandardRoom createExit(){

@@ -18,7 +18,11 @@ public class ScaryImmunitiesBuff extends ElementalFABuff {
         announced = true;
     }
 
-    public static final float DURATION	= Random.NormalIntRange(100,200);
+    public void damgeScary() {
+        DURATION = DURATION/2;
+    }
+
+    public static float DURATION	= Random.NormalIntRange(90,145);
 
     @Override
     public int icon() {

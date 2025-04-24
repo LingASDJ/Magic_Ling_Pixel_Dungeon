@@ -23,25 +23,34 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.GoldMob;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.QsSprites;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class Slime_Qs extends Slime {
+public class Slime_Qs extends GoldMob {
     {
         spriteClass = QsSprites.class;
-        maxLvl = -200;
-        properties.add(Property.ACIDIC);
+        HP = HT = 16;
+        defenseSkill = 5;
+
+        EXP = 4;
+        maxLvl = 9;
+
+        lootChance = 0.2f; //by default, see lootChance()
     }
 
     @Override
     public int attackProc( Char enemy, int damage ) {
         if (Random.Int( 2 ) == 0) {
-            Buff.affect( enemy, Poison.class ).set( Poison.DURATION );
-            enemy.sprite.burst( 0x000000, 5 );
+            Buff.affect( enemy, Roots.class, 3f );
         }
 
         return super.attackProc( enemy, damage );
@@ -59,4 +68,43 @@ public class Slime_Qs extends Slime {
         } while (!Dungeon.level.passable[pos + ofs]);
         Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
     }
+
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 2, 5 );
+    }
+
+    @Override
+    public int attackSkill( Char target ) {
+        return 12;
+    }
+
+    @Override
+    public void damage(int dmg, Object src) {
+        float scaleFactor = AscensionChallenge.statModifier(this);
+        int scaledDmg = Math.round(dmg/scaleFactor);
+        if (scaledDmg >= 5){
+            //takes 5/6/7/8/9/10 dmg at 5/7/10/14/19/25 incoming dmg
+            scaledDmg = 4 + (int)(Math.sqrt(8*(scaledDmg - 4) + 1) - 1)/2;
+        }
+        dmg = (int)(scaledDmg*AscensionChallenge.statModifier(this));
+        super.damage(dmg, src);
+    }
+
+    @Override
+    public float lootChance(){
+        //each drop makes future drops 1/4 as likely
+        // so loot chance looks like: 1/5, 1/20, 1/80, 1/320, etc.
+        return super.lootChance() * (float)Math.pow(1/4f, Dungeon.LimitedDrops.SLIME_WEP.count);
+    }
+
+    @Override
+    public Item createLoot() {
+        Dungeon.LimitedDrops.SLIME_WEP.count++;
+        Generator.Category c = Generator.Category.WEP_T2;
+        MeleeWeapon w = (MeleeWeapon)Generator.randomUsingDefaults(Generator.Category.WEP_T2);
+        w.level(0);
+        return w;
+    }
+
 }

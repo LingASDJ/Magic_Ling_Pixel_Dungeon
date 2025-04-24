@@ -21,7 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.features;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -120,7 +122,7 @@ public class Chasm implements Hero.Doom {
 		Sample.INSTANCE.play( Assets.Sounds.FALLING );
 
 		Level.beforeTransition();
-		if(Dungeon.depth == 5 && Dungeon.branch == 0 || Dungeon.depth == 4 && Statistics.bossRushMode) {
+		if(Dungeon.depth == 5 && Dungeon.branch == 0 && Statistics.ExFruit || Dungeon.depth == 7 && Statistics.bossRushMode) {
 			int SafePos = 0;
 			switch (Random.NormalIntRange(0, 4)) {
 				case 0:
@@ -142,6 +144,17 @@ public class Chasm implements Hero.Doom {
 			if (Statistics.crivusfruitslevel2) {
 				hero.damage(3, CrivusStarFruits.class);
 			}
+		} else if(branch!=0){
+			ScrollOfTeleportation.appear(hero, level.entrance());
+			Dungeon.hero.interrupt();
+			Dungeon.observe();
+		} else if(Dungeon.depth == 37 && Statistics.bossRushMode) {
+			GLog.n(Messages.get(Imp.class,"must_god"));
+			ScrollOfTeleportation.appear(hero, level.entrance());
+			Dungeon.hero.interrupt();
+			Dungeon.observe();
+		} else if(Dungeon.depth > 28) {
+			GLog.n(Messages.get(Imp.class,"must_go"));
 		} else if(Statistics.DwarfMasterKing && Dungeon.depth == 19 && !Statistics.dwarfKill) {
 			GLog.n(Messages.get(Imp.class,"mustdown"));
 		} else if (Dungeon.hero.isAlive() && Dungeon.branch == 0 && Dungeon.depth!=30|| Statistics.bossRushMode) {
@@ -173,7 +186,7 @@ public class Chasm implements Hero.Doom {
 		
 		if (b != null){
 			hero.sprite.emitter().burst( Speck.factory( Speck.JET ), 20);
-			b.detach();
+			b.processFall();
 			return;
 		}
 		
@@ -184,7 +197,7 @@ public class Chasm implements Hero.Doom {
 
 		//The lower the hero's HP, the more bleed and the less upfront damage.
 		//Hero has a 50% chance to bleed out at 66% HP, and begins to risk instant-death at 25%
-		Buff.affect( hero, Bleeding.class).set( Math.round(hero.HT / (6f + (6f*(hero.HP/(float)hero.HT)))));
+		Buff.affect( hero, Bleeding.class).set( Math.round(hero.HT / (6f + (6f*(hero.HP/(float)hero.HT)))), Chasm.class);
 		hero.damage( Math.max( hero.HP / 2, Random.NormalIntRange( hero.HP / 2, hero.HT / 4 )), new Chasm() );
 	}
 

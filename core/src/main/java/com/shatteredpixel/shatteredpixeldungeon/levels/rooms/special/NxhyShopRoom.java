@@ -3,6 +3,7 @@
 //
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -10,8 +11,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DeathRongShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRongShop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
@@ -150,7 +151,10 @@ public class NxhyShopRoom extends SpecialRoom {
         itemsToSpawn2.add(w);
         itemsToSpawn2.add(TippedDart.randomTipped(2));
         //itemsToSpawn2.add(new MerchantsBeacon());
-        itemsToSpawn2.add(ChooseBag(Dungeon.hero.belongings));
+        Bag bag = ChooseBag(Dungeon.hero.belongings);
+        if (bag != null) {
+            itemsToSpawn2.add(bag);
+        }
         itemsToSpawn2.add(new ScrollOfTransmutation());
         //itemsToSpawn2.add(new DriedRose());
         itemsToSpawn2.add(Generator.randomUsingDefaults(Generator.Category.POTION));
@@ -162,7 +166,9 @@ public class NxhyShopRoom extends SpecialRoom {
             itemsToSpawn2.add(new PotionOfMastery());
         }
 
-        if(lanterfireactive) {
+        if(Dungeon.isChallenged(DHXD)){
+            itemsToSpawn2.add(new OilPotion());
+        } else if(lanterfireactive) {
             if(Challenges.activeChallenges() > 6){
                 itemsToSpawn2.add(new OilPotion());
                 itemsToSpawn2.add(new OilPotion());

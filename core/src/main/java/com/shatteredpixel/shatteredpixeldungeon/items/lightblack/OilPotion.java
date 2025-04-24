@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.lightblack;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -36,6 +38,22 @@ public class OilPotion extends Item {
         }
     }
 
+//    @Override
+//    public boolean doPickUp(Hero hero, int pos) {
+//        if (super.doPickUp(hero, pos) && Statistics.AutoOilPotion) {
+//            OilLantern lantern = Dungeon.hero.belongings.getItem(OilLantern.class);
+//            if(lantern != null) {
+//                Refill(lantern);
+//                GLog.i(Messages.get(OilLantern.class, "lanterreload"));
+//            } else {
+//                GLog.i(Messages.get(OilLantern.class, "must"));
+//            }
+//
+//        }
+//        return true;
+//    }
+
+
     public void Refill(OilLantern lantern) {
         lantern.flasks++;
         detach(Dungeon.hero.belongings.backpack);
@@ -43,6 +61,6 @@ public class OilPotion extends Item {
 
     @Override
     public int value() {
-        return quantity * 20;
+        return Dungeon.isChallenged(DHXD) ? quantity * 40 : quantity * 20;
     }
 }

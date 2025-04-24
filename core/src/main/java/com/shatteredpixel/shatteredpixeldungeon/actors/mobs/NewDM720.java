@@ -21,8 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -33,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
@@ -78,10 +80,10 @@ import com.watabou.utils.RectF;
 
 import java.util.ArrayList;
 
-public class NewDM720 extends MolotovHuntsman {
+public class NewDM720 extends MolotovHuntsman implements Mob.NoMobSpawn {
 
     public int totalPylonsToActivate(){
-        return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 4 : 2;
+        return (Statistics.bossRushMode || Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) ? 4 : 2;
     }
 
     private static final float TIME_TO_BURN	= 1f;
@@ -89,7 +91,7 @@ public class NewDM720 extends MolotovHuntsman {
         //TODO improved sprite
         spriteClass = DM720Sprite.class;
 
-        HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 405 : 270;
+        HP = HT = Statistics.bossRushMode ? 720 : Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 405 : 270;
         EXP = 40;
         defenseSkill = 15;
         properties.add(Property.BOSS);
@@ -352,12 +354,12 @@ public class NewDM720 extends MolotovHuntsman {
 
     @Override
     public void notice() {
-        super.notice();
+
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             turnsSinceLastAbility = 0;
             yell(Messages.get(this, "notice"));
-            BGMPlayer.playBoss();
+            level.playBossMusic();
             for (Char ch : Actor.chars()){
                 if (ch instanceof DriedRose.GhostHero){
                     ((DriedRose.GhostHero) ch).sayBoss();
@@ -476,7 +478,7 @@ public class NewDM720 extends MolotovHuntsman {
         if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg);
 
         int threshold;
-        if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+        if ( (Statistics.bossRushMode || Dungeon.isChallenged(Challenges.STRONGER_BOSSES))){
             threshold = HT / 7 * (4 - pylonsActivated);
         } else {
             threshold = HT / 3 * (2 - pylonsActivated);
@@ -525,10 +527,15 @@ public class NewDM720 extends MolotovHuntsman {
         if (pylonsActivated < totalPylonsToActivate()){
             yell(Messages.get(this, "charge_lost"));
 
-            if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && pylonsActivated == 2){
+            if( (Statistics.bossRushMode || Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) && pylonsActivated == 2){
                 MoloHR m = new MoloHR();
                 m.pos = 478;
                 GameScene.add(m);
+
+                if(Statistics.bossRushMode){
+                    Buff.affect(m, ChampionEnemy.Blessed.class);
+                }
+
                 Buff.affect(m, ChampionHero.Light.class, ChampionHero.DURATION*200f);
                 m.notice();
                 GLog.w(Messages.get(MoloHR.class, "attack_lost"));
@@ -553,7 +560,7 @@ public class NewDM720 extends MolotovHuntsman {
 
         super.die(cause);
 
-        if(!Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+        if(!Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && !Statistics.bossRushMode){
             cause = new MoloHR();
             ((MoloHR) cause).pos = pos;
             GameScene.add(((Mob) (cause)));

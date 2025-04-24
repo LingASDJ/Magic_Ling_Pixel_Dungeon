@@ -67,17 +67,11 @@ public class Challenges {
 
 	public static final int[] MASKS = {
 			NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS
-			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,DHXD,MOREROOM,CS,
+			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,DHXD,MOREROOM,CS
 	};
 	public String name;
 
 	public static boolean isItemBlocked(Item item) {
-		//取消
-//		if (Dungeon.isChallenged(NO_FOOD)) {
-//			if (item instanceof Food && !(item instanceof SmallRation || item instanceof MeatPie)) {
-//				return true;
-//			}
-//		}
 
 		if(InterlevelScene.mode == InterlevelScene.Mode.RESET){
 			if (item instanceof Ankh) {
@@ -85,26 +79,13 @@ public class Challenges {
 			}
 		}
 
-//		if (Dungeon.isChallenged(NO_ARMOR)) {
-//			if (item instanceof Armor && !(item instanceof ClothArmor || item instanceof ClassArmor|| item instanceof CustomArmor)) {
-//				//GLog.n("这片大地吃布甲之外的护甲从不挑食,侦查到作弊行为，已移除"+item);
-//				GLog.n(Messages.get(Challenges.class, "no_armorx"), item);
-//				return true;
-//			}
-//		}
-
-//		if (Dungeon.isChallenged(NO_HEALING)) {
-//			if (item instanceof PotionOfHealing) {
-//				return true;
-//			} else if (item instanceof Blandfruit
-//					&& ((Blandfruit) item).potionAttrib instanceof PotionOfHealing) {
-//				return true;
-//			}
-//		}
-
-		if (Dungeon.isChallenged(NO_HERBALISM) && !(Dungeon.depth == 5 && Dungeon.branch == 3)) {
-			return item instanceof Dewdrop;
+		if (Dungeon.isChallenged(NO_HERBALISM)) {
+			return item instanceof Dewdrop ;
 		}
+
+//		if (Dungeon.isChallenged(BLOOD_DIED)) {
+//			return item instanceof ChaliceOfBlood || item instanceof Sungrass.Seed;
+//		}
 
 		return false;
 
@@ -113,7 +94,8 @@ public class Challenges {
 	public static int activeChallenges(){
 		int chCount = 0;
 		for (int ch : Challenges.MASKS){
-			if ((Dungeon.challenges & ch) != 0) chCount++;
+			if ((Dungeon.challenges & ch) != 0)
+				chCount++;
 		}
 
 		return chCount;

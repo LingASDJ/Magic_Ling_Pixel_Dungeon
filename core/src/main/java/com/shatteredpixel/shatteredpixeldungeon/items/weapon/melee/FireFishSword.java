@@ -42,19 +42,14 @@ public class FireFishSword extends MeleeWeapon{
         return result;
     }
 
-
-
-
     @Override
     public int min(int lvl) {
-        return  (tier + 1)+ +     //10 base, down from 20
-                lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
+        return 2 + lvl * 3;
     }
 
     @Override
     public int max(int lvl) {
-        return  2*(tier+2) +     //10 base, down from 20
-                lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
+        return 6 + lvl * 7;
     }
 
 
@@ -83,6 +78,56 @@ public class FireFishSword extends MeleeWeapon{
             }
         }
 
+    }
+
+    @Override
+    public String info() {
+
+        String info = desc();
+
+        if (levelKnown && Dungeon.hero != null) {
+            info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
+            if (STRReq() > Dungeon.hero.STR()) {
+                info += " " + Messages.get(Weapon.class, "too_heavy");
+            } else if (Dungeon.hero.STR() > STRReq()){
+                info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+            }
+        } else {
+            info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
+
+            if(Dungeon.hero !=null){
+                if (STRReq(0) > Dungeon.hero.STR()) {
+                    info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
+                }
+            }
+        }
+
+        switch (augment) {
+            case SPEED:
+                info += " " + Messages.get(Weapon.class, "faster");
+                break;
+            case DAMAGE:
+                info += " " + Messages.get(Weapon.class, "stronger");
+                break;
+            case NONE:
+        }
+
+        if (enchantment != null && (cursedKnown || !enchantment.curse())){
+            info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
+            info += " " + Messages.get(enchantment, "desc");
+        }
+
+        if(Dungeon.hero != null){
+            if (cursed && isEquipped( Dungeon.hero ) ) {
+                info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
+            } else if (cursedKnown && cursed) {
+                info += "\n\n" + Messages.get(Weapon.class, "cursed");
+            } else if (!isIdentified() && cursedKnown){
+                info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
+            }
+        }
+
+        return info;
     }
 
     protected void fx(Ballistica bolt, Callback callback) {

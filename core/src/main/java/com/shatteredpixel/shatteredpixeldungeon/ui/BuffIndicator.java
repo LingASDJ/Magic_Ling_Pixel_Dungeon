@@ -102,7 +102,7 @@ public class BuffIndicator extends Component {
 	public static final int ANKH        = 52;
 
 	public static final int NOINV       = 53;
-	public static final int RANDOM = 54;
+	public static final int DISGUISE = 54;
 	public static final int FIREDIED = 55;
 	public static final int  ROSEBARRIER= 56;
 	public static final int HALOMETHANEBURNING    = 57;
@@ -111,21 +111,20 @@ public class BuffIndicator extends Component {
 	public static final int LANTERFIRE_TWO    = 59;
 	public static final int LANTERFIRE_THREE    = 60;
 	public static final int LANTERFIRE_FOUR    = 61;
-    public static final int LANTERFIRE_FIVE = 62;
-    public static final int LANTERFIRE_SIX = 63;
+	public static final int LANTERFIRE_FIVE = 62;
+	public static final int LANTERFIRE_SIX = 63;
 
-    public static final int DEBUFF_DOWN = 64;
-    public static final int GOBUFF_UPRD = 65;
+	public static final int DEBUFF_DOWN = 64;
+	public static final int GOBUFF_UPRD = 65;
 
-    public static final int ICE_SWORDDOWN = 66;
+	public static final int ICE_SWORDDOWN = 66;
 
-    public static final int LIGHT_DIED = 67;
+	public static final int LIGHT_DIED = 67;
 
-
-    //SPD 221
+    //SPD BUFFS
 	public static final int TARGETED    = 68;
 	public static final int IMBUE       = 69;
-	public static final int ENDURE      = 70;
+	public static final int WAND      = 70;
 	public static final int INVERT_MARK = 71;
 	public static final int NATURE_POWER= 72;
 	public static final int AMULET      = 73;
@@ -158,6 +157,18 @@ public class BuffIndicator extends Component {
 
 	//ELEMENTS
 	public static final int SCARY        = 112;
+	public static final int SCARY_RED        = 113;
+	public static final int SCARY_PINK        = 114;
+
+	public static final int SMOKING        = 115;
+
+	public static final int DK        = 116;
+
+	public static final int QUEST       = 117;
+
+	public static final int KILLER        = 118;
+	public static final int GOODLUCK        = 119;
+
 
     public static final int SIZE_SMALL = 7;
     public static final int SIZE_LARGE = 16;

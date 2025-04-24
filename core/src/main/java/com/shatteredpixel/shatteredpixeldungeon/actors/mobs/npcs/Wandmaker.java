@@ -65,19 +65,21 @@ public class Wandmaker extends NPC {
 
 		properties.add(Property.IMMOVABLE);
 	}
-	
+
+	@Override
+	public Notes.Landmark landmark() {
+		return Notes.Landmark.WANDMAKER;
+	}
+
 	@Override
 	protected boolean act() {
 		if (Dungeon.hero.buff(AscensionChallenge.class) != null){
 			die(null);
 			return true;
 		}
-		if (Dungeon.level.visited[pos] && Quest.wand1 != null){
-			Notes.add( Notes.Landmark.WANDMAKER );
-		}
 		return super.act();
 	}
-	
+
 	@Override
 	public int defenseSkill( Char enemy ) {
 		return INFINITE_EVASION;
@@ -89,15 +91,15 @@ public class Wandmaker extends NPC {
 	}
 
 	@Override
-	public boolean add(Buff buff ) {
+	public boolean add( Buff buff ) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean reset() {
 		return true;
 	}
-	
+
 	@Override
 	public boolean interact(Char c) {
 		sprite.turnTo( pos, Dungeon.hero.pos );
@@ -107,7 +109,7 @@ public class Wandmaker extends NPC {
 		}
 
 		if (Quest.given) {
-			
+
 			Item item;
 			switch (Quest.type) {
 				case 1:
@@ -149,7 +151,7 @@ public class Wandmaker extends NPC {
 					}
 				});
 			}
-			
+
 		} else {
 
 			String msg1 = "";
@@ -189,7 +191,7 @@ public class Wandmaker extends NPC {
 			msg2 += Messages.get(this, "intro_2");
 			final String msg1Final = msg1;
 			final String msg2Final = msg2;
-			
+
 			Game.runOnRenderThread(new Callback() {
 				@Override
 				public void call() {
@@ -204,27 +206,25 @@ public class Wandmaker extends NPC {
 			});
 
 			Quest.given = true;
-			Notes.add( Notes.Landmark.WANDMAKER );
 		}
 
 		return true;
 	}
-	
+
 	public static class Quest {
 
 		public static int type;
-        public static int depth;
-        // 1 = corpse dust quest
+		// 1 = corpse dust quest
 		// 2 = elemental embers quest
 		// 3 = rotberry quest
-		
+
 		private static boolean spawned;
-		
-		private static boolean given;
-		
+
+		public static boolean given;
+
 		public static Wand wand1;
 		public static Wand wand2;
-		
+
 		public static void reset() {
 			spawned = false;
 			type = 0;
@@ -232,9 +232,9 @@ public class Wandmaker extends NPC {
 			wand1 = null;
 			wand2 = null;
 		}
-		
+
 		private static final String NODE		= "wandmaker";
-		
+
 		private static final String SPAWNED		= "spawned";
 		private static final String TYPE		= "type";
 		private static final String GIVEN		= "given";
@@ -242,19 +242,19 @@ public class Wandmaker extends NPC {
 		private static final String WAND2		= "wand2";
 
 		private static final String RITUALPOS	= "ritualpos";
-		
+
 		public static void storeInBundle( Bundle bundle ) {
-			
+
 			Bundle node = new Bundle();
-			
+
 			node.put( SPAWNED, spawned );
-			
+
 			if (spawned) {
-				
+
 				node.put( TYPE, type );
-				
+
 				node.put( GIVEN, given );
-				
+
 				node.put( WAND1, wand1 );
 				node.put( WAND2, wand2 );
 
@@ -263,20 +263,20 @@ public class Wandmaker extends NPC {
 				}
 
 			}
-			
+
 			bundle.put( NODE, node );
 		}
-		
+
 		public static void restoreFromBundle( Bundle bundle ) {
 
 			Bundle node = bundle.getBundle( NODE );
-			
+
 			if (!node.isNull() && (spawned = node.getBoolean( SPAWNED ))) {
 
 				type = node.getInt(TYPE);
-				
+
 				given = node.getBoolean( GIVEN );
-				
+
 				wand1 = (Wand)node.get( WAND1 );
 				wand2 = (Wand)node.get( WAND2 );
 
@@ -288,14 +288,14 @@ public class Wandmaker extends NPC {
 				reset();
 			}
 		}
-		
+
 		private static boolean questRoomSpawned;
-		
+
 		public static void spawnWandmaker( Level level, Room room ) {
 			if (questRoomSpawned) {
-				
+
 				questRoomSpawned = false;
-				
+
 				Wandmaker npc = new Wandmaker();
 				boolean validPos;
 				//Do not spawn wandmaker on the entrance, in front of a door, or on bad terrain.
@@ -336,17 +336,17 @@ public class Wandmaker extends NPC {
 				}
 				wand2.cursed = false;
 				wand2.upgrade();
-				
+
 			}
 		}
-		
+
 		public static ArrayList<Room> spawnRoom( ArrayList<Room> rooms) {
 			questRoomSpawned = false;
 			if (!spawned && (type != 0 || (Dungeon.depth > 6 && Random.Int( 10 - Dungeon.depth ) == 0))) {
 
 				// decide between 1,2, or 3 for quest type.
 				if (type == 0) type = Random.Int(3)+1;
-				
+
 				switch (type){
 					case 1: default:
 						rooms.add(new MassGraveRoom());
@@ -358,9 +358,9 @@ public class Wandmaker extends NPC {
 						rooms.add(new RotGardenRoom());
 						break;
 				}
-		
+
 				questRoomSpawned = true;
-				
+
 			}
 			return rooms;
 		}
@@ -437,17 +437,21 @@ public class Wandmaker extends NPC {
 				return false;
 			}
 		}
-		
+
 		public static void complete() {
 			wand1 = null;
 			wand2 = null;
-			Statistics.questScores[1] = 2000;
+
 			Notes.remove( Notes.Landmark.WANDMAKER );
 			Statistics.questScores[1] = 2000;
 		}
 
+		public static boolean processed() {
+			return spawned;
+		}
 		public static int type() {
 			return type;
 		}
+
 	}
 }

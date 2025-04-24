@@ -4,7 +4,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class LethalDefense extends Buff{
     public float duration;
@@ -49,7 +48,7 @@ public class LethalDefense extends Buff{
     @Override
     public float iconFadePercent() {
         float time = 0;
-        int point=Dungeon.hero.pointsInTalent(Talent.KEEP_VIGILANCE);
+        int point=Dungeon.hero.pointsInTalent(Talent.CLEAVE);
         switch (point){
             case 1:
                 time=2f;

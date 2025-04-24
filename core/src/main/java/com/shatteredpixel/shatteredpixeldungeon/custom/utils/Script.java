@@ -16,7 +16,7 @@ public class Script {
     //By Teller 2021/8/20
 
     public enum Character{
-        NOBODY,REN,SMALLB,RED,EXUSIAI,FROSTNOVA
+        NOBODY,REN,SMALLB,RED,EXUSIAI,FROSTNOVA,SLICE
     }
 
     public enum FormalPlot
@@ -55,11 +55,11 @@ public class Script {
 
     public static String Name(Character character)
     {
-        String str = "";
+        String str;
         switch (character) {
             default:
             case NOBODY:
-                str = "Test";
+                str = Messages.get(Script.class,"name_empty");
                 break;
             case REN:
                 str = Messages.get(Script.class,"name_ren");
@@ -75,6 +75,9 @@ public class Script {
                 break;
             case FROSTNOVA:
                 str = Messages.get(Script.class,"name_frostnova");
+                break;
+            case SLICE:
+                str = Messages.get(Script.class,"name_slice");
                 break;
         }
         //GLog.i(str);

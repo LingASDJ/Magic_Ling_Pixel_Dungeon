@@ -38,6 +38,7 @@ import com.watabou.glwrap.Matrix;
 import com.watabou.glwrap.Vertexbuffer;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.NoosaScript;
 import com.watabou.noosa.audio.Sample;
@@ -124,6 +125,16 @@ public class ItemSprite extends MovieClip {
 		}
 	}
 
+	@Override
+	public void copy(Image other) {
+		super.copy(other);
+
+		if (other instanceof ItemSprite && ((ItemSprite) other).glowing != null){
+			glow(((ItemSprite) other).glowing);
+		}
+
+	}
+
 	public void visible(boolean value){
 		this.visible = value;
 		if (emitter != null && !visible){
@@ -186,7 +197,11 @@ public class ItemSprite extends MovieClip {
 		}
 	}
 
-	public ItemSprite view( Item item ){
+	public ItemSprite view(Item item){
+		return view(item,false);
+	}
+
+	public ItemSprite view( Item item,boolean b){
 		view(item.image(), item.glowing());
 		Emitter emitter = item.emitter();
 
@@ -198,7 +213,7 @@ public class ItemSprite extends MovieClip {
 
 		//有布尔且必须是继承的AnimationItem才有动画
 		//避免与其他Item的view冲突
-		if (item.animation && item instanceof Item.AnimationItem) {
+		if (!b && item.animation && item instanceof Item.AnimationItem && parent != null) {
 			item.frames(this);
 		}
 
@@ -212,7 +227,7 @@ public class ItemSprite extends MovieClip {
 		
 		switch (heap.type) {
 			case HEAP: case FOR_SALE:case FOR_ICE:case FOR_RUSH:
-				return view( heap.peek() );
+				return view( heap.peek(),true );
 			case CHEST:
 				return view( ItemSpriteSheet.CHEST, null );
 			case LOCKED_CHEST:

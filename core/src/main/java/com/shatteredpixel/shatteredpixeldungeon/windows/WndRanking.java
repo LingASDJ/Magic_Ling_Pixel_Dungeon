@@ -124,7 +124,7 @@ public class WndRanking extends WndTabbed {
 
 		if (Dungeon.hero != null) {
 			Icons[] icons =
-					{Icons.RANKINGS, Icons.TALENT, Icons.BACKPACK_LRG, Icons.BADGES, Icons.CHALLENGE_ON};
+					{Icons.RANKINGS, Icons.TALENT, Icons.BACKPACK_LRG, Icons.BADGES, Icons.CHANGES};
 			Group[] pages =
 					{new StatsTab(), new TalentsTab(), new ItemsTab(), new BadgesTab(), null};
 
@@ -253,6 +253,7 @@ public class WndRanking extends WndTabbed {
 				else
 					pos = statSlot(this, Messages.get(this, "str"), Integer.toString(Dungeon.hero.STR), pos);
 				pos = statSlot(this, Messages.get(this, "duration"), num.format((int) Statistics.duration), pos);
+
 				if (Statistics.highestAscent == 0) {
 					pos = statSlot(this, Messages.get(this, "depth"), num.format(Statistics.deepestFloor), pos);
 				} else {
@@ -281,6 +282,8 @@ public class WndRanking extends WndTabbed {
 				pos = statSlot(this, Messages.get(HeroStat.class, "seed_type"), seedType(), pos);
 				pos = statSlot(this, Messages.get(this, "food"), num.format(Statistics.foodEaten), pos);
 				pos = statSlot(this, Messages.get(this, "alchemy"), num.format(Statistics.itemsCrafted), pos);
+				pos = statSlot( this, Messages.get(this, "mode"), Messages.get(this,mode()), pos );
+
 			}
 
 			int buttontop = HEIGHT - 16;
@@ -333,6 +336,18 @@ public class WndRanking extends WndTabbed {
 
 			return pos + GAP + txt.height();
 		}
+	}
+
+	private String mode() {
+		String mode;
+		if(Statistics.bossRushMode){
+			mode = "BossRush";
+		} else if(Statistics.RandMode){
+			mode = "RandMode";
+		} else {
+			mode = "Normal";
+		}
+		return mode;
 	}
 
 	private class TalentsTab extends Group{

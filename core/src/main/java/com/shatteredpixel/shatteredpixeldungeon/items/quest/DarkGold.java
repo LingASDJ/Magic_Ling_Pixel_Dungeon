@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -36,6 +37,11 @@ public class DarkGold extends Item {
 	@Override
 	public boolean isUpgradable() {
 		return false;
+	}
+
+	@Override
+	public int value() {
+		return Statistics.bossRushMode ? quantity : 0;
 	}
 	
 	@Override

@@ -184,7 +184,7 @@ public abstract class SpecialRoom extends Room {
 
 			Room r = Reflection.newInstance(floorSpecials.get( index ));
 
-			if (r instanceof WeakFloorRoom && Dungeon.branch == 0){
+			if (r instanceof WeakFloorRoom && Dungeon.branch == 0 && Dungeon.depth <26){
 				pitNeededDepth = Dungeon.depth + 1;
 			}
 			

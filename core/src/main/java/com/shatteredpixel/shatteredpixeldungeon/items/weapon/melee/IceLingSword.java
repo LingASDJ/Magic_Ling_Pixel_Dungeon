@@ -84,10 +84,9 @@ public class IceLingSword extends MeleeWeapon {
 			@Override
 			public void call() {
 				beforeAbilityUsed(hero, finalClosest);
-				//+(2+0.5*lvl) damage, roughly +20% base damage, +25% scaling
-				int dmgBoost = augment.damageFactor(2 + Math.round(0.5f*buffedLvl()));
 				for (Char ch : targets) {
-					hero.attack(ch, 1, dmgBoost, Char.INFINITE_ACCURACY);
+					//ability does no extra damage
+					hero.attack(ch, 1, 0, Char.INFINITE_ACCURACY);
 					if (!ch.isAlive()){
 						hero.sprite.parent.add(new Chains(hero.sprite.center(), ch.sprite.destinationCenter(),
 						Effects.Type.ICECHAIN,
@@ -107,11 +106,14 @@ public class IceLingSword extends MeleeWeapon {
 
 	@Override
 	public String abilityInfo() {
-		int dmgBoost = levelKnown ? 2 + Math.round(0.5f*buffedLvl()) : 2;
 		if (levelKnown){
-			return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+			return Messages.get(this, "ability_desc", augment.damageFactor(min()), augment.damageFactor(max()));
 		} else {
-			return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
+			return Messages.get(this, "typical_ability_desc", min(0), max(0));
 		}
+	}
+
+	public String upgradeAbilityStat(int level){
+		return augment.damageFactor(min(level)) + "-" + augment.damageFactor(max(level));
 	}
 }

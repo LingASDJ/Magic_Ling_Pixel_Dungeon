@@ -2,34 +2,38 @@ buildscript {
     repositories {
         mavenCentral()
         google()
+        maven {
+            url = uri("https://storage.googleapis.com/r8-releases/raw")
+        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.4'
-        //noinspection GradleDependency
-        classpath 'com.google.gms:google-services:4.3.15'
-
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
+        classpath 'com.android.tools:r8:8.7.18'
+        //noinspection AndroidGradlePluginVersion
+        classpath 'com.android.tools.build:gradle:8.7.2'
+        classpath 'com.google.gms:google-services:4.4.2'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
     }
 }
 
 allprojects {
 
+    //安卓端分支 使用模拟器进行测试
     ext {
         appName = 'Magic Ling Pixel Dungeon'
         appPackageName = 'com.ansdomagiclingpixeldungeon.ling'
 
-        appVersionCode = 2024072303
-        appVersionName = '0.7.7.0'
+        appVersionCode = 2025042400
+        appVersionName = '0.8.4.2'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
-        appAndroidCompileSDK = 33
+        appAndroidCompileSDK = 34
         appAndroidMinSDK = 19
         appAndroidTargetSDK = 33
 
-        gdxControllersVersion = '2.2.1'
+        gdxControllersVersion = '2.2.3'
 
-        gdxVersion = '1.10.0'
+        gdxVersion = '1.12.1'
     }
 
     version = appVersionName

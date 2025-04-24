@@ -79,6 +79,8 @@ public class FloatingText extends RenderedTextBlock {
 
 	public static int ICECOIN = 31;
 
+	public static int PINKHEAL = 33;
+
 	private Image icon;
 	private boolean iconLeft;
 

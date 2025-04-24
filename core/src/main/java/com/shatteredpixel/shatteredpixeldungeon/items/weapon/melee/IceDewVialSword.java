@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -10,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
 public class IceDewVialSword extends MeleeWeapon {
@@ -39,8 +41,13 @@ public class IceDewVialSword extends MeleeWeapon {
         }
     }
 
-    protected void fx(Ballistica bolt, Callback callback) {
-        MagicMissile.boltFromChar( curUser.sprite.parent, MagicMissile.WARD_CONE, curUser.sprite, bolt.collisionPos, callback);
+    public void fx( Ballistica beam, Callback callback ) {
+        MagicMissile.boltFromChar( curUser.sprite.parent,
+                MagicMissile.WARD_CONE,
+                curUser.sprite,
+                beam.collisionPos,
+                callback);
+        Sample.INSTANCE.play( Assets.Sounds.ZAP );
     }
 
     protected void onHit(Ballistica bolt, Mob mob) {

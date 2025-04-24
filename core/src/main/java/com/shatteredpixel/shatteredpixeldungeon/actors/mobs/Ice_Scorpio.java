@@ -18,6 +18,7 @@ public class Ice_Scorpio extends Scorpio{
 
         EXP = 14;
         maxLvl = 27;
+        isAnimal = true;
 
         loot = Generator.Category.ARMOR;
         lootChance = 0.5f;

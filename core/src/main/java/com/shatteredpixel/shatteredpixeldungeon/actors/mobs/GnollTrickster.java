@@ -35,6 +35,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWea
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollTricksterSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.watabou.noosa.Camera;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -57,6 +59,15 @@ public class GnollTrickster extends Gnoll {
 		lootChance = 1f;
 
 		properties.add(Property.MINIBOSS);
+	}
+
+	@Override
+	public void notice() {
+
+		if (!BossHealthBar.isAssigned()) {
+			BossHealthBar.assignBoss(this);
+			Camera.main.shake(1f,3f);
+		}
 	}
 
 	private int combo = 0;
@@ -154,6 +165,7 @@ public class GnollTrickster extends Gnoll {
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		combo = bundle.getInt( COMBO );
+		if (state != SLEEPING) BossHealthBar.assignBoss(this);
 	}
 
 }

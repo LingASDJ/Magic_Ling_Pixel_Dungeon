@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.nosync;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CRYSTAL_DOOR;
@@ -20,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ClearElemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -50,6 +50,9 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ForestHardBossLevel extends Level {
     private static final int WIDTH = 33;
     private static final int HEIGHT = 32;
@@ -59,6 +62,17 @@ public class ForestHardBossLevel extends Level {
 
     public String waterTex() {
         return Assets.Environment.WATER_SEWERS;
+    }
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.JUNGLE_FOREST,true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+                () -> Music.playModeBGM(Assets.Music.BGM_BOSSA,true)));
     }
 
     {
@@ -90,56 +104,77 @@ public class ForestHardBossLevel extends Level {
         //GLog.p(String.valueOf(hero.pos));
         boolean isTrue = ch.pos == LDBossDoor && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
 
-        for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
-            if (boss instanceof CrivusStarFruits) {
-                if (!Statistics.crivusfruitslevel2 && boss.HP<=160) {
-                    crivusfruitslevel2 = true;
-                    GLog.n(Messages.get(CrivusStarFruits.class, "anargy"));
-                    GameScene.flash(0x808c8c8c);
-                    //doYogLasers()
+        // 获取当前Dungeon.level上的Mob数组
+        Mob[] mobs = Dungeon.level.mobs.toArray(new Mob[0]);
+        Mob[] mobsx = Dungeon.level.mobs.toArray(new Mob[0]);
+        // 检查Mob数量是否为1
+        // 检查Mob数量是否为1
+        if (mobs.length == 1) {
+            // 检查唯一的Mob是否是Boss
+            if (mobs[0] instanceof CrivusStarFruits && !crivusfruitslevel2 && mobs[0].HP == 280) {
+                Statistics.crivusfruitslevel2 = true;
+                mobs[0].HP = 200;
+                for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (boss instanceof CrivusStarFruits) {
+                        crivusfruitslevel2 = true;
+                        boss.alignment = Char.Alignment.ENEMY;
+                        GLog.n(Messages.get(CrivusStarFruits.class, "anargy"));
+                        GameScene.flash(0x808c8c8c);
+                        //doYogLasers()
 
-                    changeMap(boss_CHASM_Map);
+                        changeMap(boss_CHASM_Map);
 
-                    for (Heap heap : level.heaps.valueList()) {
-                        for (Item item : heap.items) {
-                            if (!(item instanceof PotionOfPurity.PotionOfPurityLing)) {
-                                item.doPickUp(hero, hero.pos);
-                                heap.destroy();
-                            } else {
-                                heap.destroy();
+                        for (Heap heap : Dungeon.level.heaps.valueList()) {
+                            List<Item> toRemove = new ArrayList<>();
+                            for (Item item : heap.items) {
+                                if (!(item instanceof PotionOfPurity.PotionOfPurityLing)) {
+                                    item.doPickUp(hero, hero.pos);
+                                    toRemove.add(item);  // 收集待删除的元素
+                                } else {
+                                    toRemove.add(item);  // 同样收集待删除的元素
+                                }
                             }
+                            // 删除所有收集到的元素
+                            heap.items.removeAll(toRemove);
+                            heap.destroy();  // 销毁 heap
+                        }
+
+
+                        for (int i : TPos) {
+                            Heap s = drop(new Bomb(), i);
+                            s.type = Heap.Type.SKELETON;
+                            s.sprite.view(s);
+                        }
+
+                        Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
+                        boss.sprite.showStatus(CharSprite.NEGATIVE, "!!!");
+                        ScrollOfTeleportation.teleportToLocation(hero, 248);
+                        for (Buff b : boss.buffs()){
+                            b.detach();
+                        }
+                        for (int i : ForestHardBossLasherTWOPos) {
+                            ClearElemental csp = new ClearElemental();
+                            csp.HT = csp.HP = 30;
+                            csp.pos = i;
+                            GameScene.add(csp);
+                            csp.state = csp.WANDERING;
+                            Buff.affect(csp, CrivusFruits.CFBarrior.class).setShield(30);
+                        }
+                        for (int i : MobPos) {
+                            CrivusStarFruitsLasher csp = new CrivusStarFruitsLasher();
+                            csp.pos = i;
+                            csp.state = csp.WANDERING;
+                            GameScene.add(csp);
                         }
                     }
-
-
-                    for (int i : TPos) {
-                        Heap s = drop(new Bomb(), i);
-                        s.type = Heap.Type.SKELETON;
-                        s.sprite.view(s);
-                    }
-
-                    Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
-                    boss.sprite.showStatus(CharSprite.NEGATIVE, "!!!");
-                    ScrollOfTeleportation.teleportToLocation(hero, 248);
-                    boss.HP = boss.HT = 160;
-                    for (Buff b : boss.buffs()){
-                        b.detach();
-                    }
-                    for (int i : ForestHardBossLasherTWOPos) {
-                        ClearElemental csp = new ClearElemental();
-                        csp.HT = csp.HP = 30;
-                        csp.pos = i;
-                        GameScene.add(csp);
-                        csp.state = csp.WANDERING;
-                        Buff.affect(csp, CrivusFruits.CFBarrior.class).setShield(30);
-                    }
-                    for (int i : MobPos) {
-                        CrivusStarFruitsLasher csp = new CrivusStarFruitsLasher();
-                        csp.pos = i;
-                        csp.state = csp.WANDERING;
-                        GameScene.add(csp);
-                    }
-                    //crivusfruitslevel2 = true;
+                }
+            }
+        } else {
+            if (mobsx.length == 1) {
+                // 检查唯一的Mob是否是Boss
+                if (mobsx[0] instanceof CrivusStarFruits && !Statistics.crivusfruitslevel3 && Statistics.crivusfruitslevel2 &&  mobs[0].HP == 160) {
+                    Statistics.crivusfruitslevel3 = true;
+                    mobs[0].HP = 60;
                 }
             }
         }
@@ -208,6 +243,7 @@ public class ForestHardBossLevel extends Level {
         for (int i : ForestBossLasherPos) {
             CrivusStarFruitsLasher csp = new CrivusStarFruitsLasher();
             csp.pos = i;
+            Buff.affect(csp, Blindness.class, 10f);
             GameScene.add(csp);
         }
 
@@ -225,8 +261,10 @@ public class ForestHardBossLevel extends Level {
         Dungeon.observe();
 
         CrivusStarFruits boss = new CrivusStarFruits();
+        boss.HP = boss.HT = 280;
         boss.state = boss.WANDERING;
         boss.pos = 577;
+        boss.notice();
         GameScene.add(boss);
     }
 
@@ -266,43 +304,11 @@ public class ForestHardBossLevel extends Level {
                 Music.INSTANCE.fadeOut(5f, new Callback() {
                     @Override
                     public void call() {
-                        Music.INSTANCE.play(Assets.BGM_1, true);
+                        // TODO Music.INSTANCE.play(Assets.BGM_1, true);
                     }
                 });
             }
         });
-
-//        for (int i : UpdateRead) {
-//            set( i, Terrain.EMPTY_SP );
-//            GameScene.updateMap( i );
-//        }
-//
-//        switch(Random.NormalIntRange(1,6)){
-//            case 1:case 2:case 3:
-
-
-//
-//                drop( new CrystalKey(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? 2 : 5 ), WIDTH*7+29 );
-//
-//                Heap droppedA = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.ARMOR),
-//                        WIDTH*7+28 );
-//                droppedA.type = Heap.Type.CRYSTAL_CHEST;
-//                droppedA.sprite.view( droppedA );
-//                break;
-//            case 4: case 5: case 6:
-//                for (int i : RatKingRoomBSpawn) {
-//                    Heap droppedGold = Dungeon.level.drop( new Gold( Random.IntRange( 10, 25 )),i);
-//                    droppedGold.type = Heap.Type.CHEST;
-//                    droppedGold.sprite.view( droppedGold );
-//                }
-//                RatKing king2 = new RatKing();
-//                king2.pos = WIDTH*7+28;
-//                GameScene.add(king2);
-//
-//                drop( new CrystalKey(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? 2 : 5 ), WIDTH*7+4 );
-//
-
-//        }
 
         Dungeon.observe();
 

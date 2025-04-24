@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane.asset;
@@ -13,8 +13,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedAnalysisScene;
-import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinderScene;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
@@ -33,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.update.MLChangesButton;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
@@ -104,8 +103,9 @@ public class TitleScene extends PixelScene {
 		super.create();
 		Calendar calendar = Calendar.getInstance();
 		int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-		Badges.loadGlobal();
 		Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
+
+		Music.playModeBGM(Assets.Music.THEME, true);
 
 		Badges.loadGlobal();
 		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
@@ -174,16 +174,6 @@ public class TitleScene extends PixelScene {
 			executor.shutdown();
 		}
 
-
-		if(holiday == XMAS){
-			playBGM(Assets.Music.CHRAMSS, true);
-		} else {
-			Music.INSTANCE.playTracks(
-					new String[]{Assets.Music.THEME, Assets.Music.THEME_2,Assets.Music.CAVES_TENSE, Assets.Music.PRISON_BOSS},
-					new float[]{1, 1, 1, 1},
-					true);
-		}
-
 		uiCamera.visible = false;
 
 		int w = Camera.main.width;
@@ -218,7 +208,7 @@ public class TitleScene extends PixelScene {
 				} else {
 					asset =  Assets.Interfaces.STATUS_DARK;
 				}
-				float preTime = 0.9f;
+				float preTime = 0.6f;
 				if (preCurTime < preTime) {
 					preCurTime += Game.elapsed;
 					return;
@@ -245,7 +235,7 @@ public class TitleScene extends PixelScene {
 				this.angle = 90 + curTime/ time * 225;
 				am = curTime*curTime*curTime/(time * time * time);
 
-				float preTime = 0.9f;
+				float preTime = 0.6f;
 				if (preCurTime < preTime) {
 					preCurTime += Game.elapsed;
 					return;
@@ -268,7 +258,7 @@ public class TitleScene extends PixelScene {
 				am = Math.max(0f, (float)Math.sin(time1 += Game.elapsed));
 				if (time1 >= 1.5f * Math.PI) time1 = 0;
 				rm = Math.max(0f, (float)Math.sin(time2 += Game.elapsed));
-				if (time2 >= 1.0f * Math.E) time2 = 5;
+				if (time2 >= 1.0f * Math.E) time2 = 3;
 				ra = Math.max(0f, (float)Math.sin(time3 += Game.elapsed));
 				if (time3 >= 1.0f * Math.PI) time3 = 1;
 			}
@@ -397,10 +387,6 @@ public class TitleScene extends PixelScene {
 					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CBLACK,
 							0.1f + (float)Math.sin(Game.timeTotal*5)/2f));
 					text(Messages.get(TitleScene.class, "dark"));
-					Music.INSTANCE.playTracks(
-							new String[]{Assets.Music.SAND, Assets.Music.NBPL,Assets.Music.HALLS_BOSS_FINALE, Assets.Music.CITY_BOSS_FINALE},
-							new float[]{1, 1, 1, 1},
-							false);
 					icon(BadgeBanner.image(Badges.Badge.STORM.image));
 				} else if (TitleScene.Reusable){
 					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CYELLOW,
@@ -448,7 +434,7 @@ public class TitleScene extends PixelScene {
 		StyledButton btnBadges = new StyledButton(GREY_TR, Messages.get(this, "badges")) {
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.switchNoFade(BadgesScene.class);
+				ShatteredPixelDungeon.switchNoFade(JournalScene.class);
 			}
 			@Override
 			protected boolean onLongClick() {
@@ -479,6 +465,10 @@ public class TitleScene extends PixelScene {
 		btnAbout.icon(new Image(Icons.get(Icons.SHPX)));
 		add(btnAbout);
 
+		StyledButton seed = new SeedButton(landscape() ? Chrome.Type.GREY_BUTTON_TR : Chrome.Type.BLANK, Messages.get(this, "seed"));
+		seed.icon(NetIcons.get(NetIcons.CHAT));
+		add(seed);
+
 		StyledButton btnNews = new NewsButton(GREY_TR, Messages.get(this, "news"));
 		btnNews.icon(new Image(Icons.get(Icons.NEWS)));
 		add(btnNews);
@@ -506,9 +496,12 @@ public class TitleScene extends PixelScene {
 			btnSettings.setRect(btnSupport.right() + 2, btnSupport.top(), btnRankings.width(), BTN_HEIGHT);
 			btnAbout.setRect(btnSettings.left(), btnSettings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
 			btnNews.setRect(btnPlay.left(), btnAbout.bottom() + GAP, btnAbout.width() + 157 - 1, BTN_HEIGHT);
+			seed.setRect(0, 0,40,20);
+
 			align(btnNews);
 		}
 		else {
+			seed.setRect(0, version.y-10,40,20);
 			btnPlay.setRect(title.x, topRegion + GAP, title.width(), BTN_HEIGHT);
 			align(btnPlay);
 			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, (btnPlay.width() / 2) - 1, BTN_HEIGHT);
@@ -526,6 +519,12 @@ public class TitleScene extends PixelScene {
 			EndButton btnExit = new EndButton();
 			btnExit.setPos( w - btnExit.width(), 0 );
 			add( btnExit );
+		}
+
+		Badges.loadGlobal();
+		if (Badges.isUnlocked(Badges.Badge.VICTORY) && !SPDSettings.victoryNagged()) {
+			SPDSettings.victoryNagged(true);
+			add(new WndVictoryCongrats());
 		}
 
 		fadeIn();
@@ -604,7 +603,7 @@ public class TitleScene extends PixelScene {
 
 		@Override
 		protected boolean onLongClick() {
-			ShatteredPixelDungeon.switchNoFade(SeedAnalysisScene.class);
+			ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
 			return true;
 		}
 

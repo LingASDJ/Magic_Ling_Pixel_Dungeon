@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -32,8 +33,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
@@ -44,8 +45,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -63,10 +66,11 @@ import java.util.ArrayList;
 
 public class MagesStaff extends MeleeWeapon {
 
-	private Wand wand;
+	public Wand wand;
 
 	public static final String AC_IMBUE = "IMBUE";
 	public static final String AC_ZAP	= "ZAP";
+	public static final String AC_DISMISS = "DISMISS";
 
 	private static final float STAFF_SCALE_FACTOR = 0.75f;
 
@@ -86,6 +90,10 @@ public class MagesStaff extends MeleeWeapon {
 
 	public MagesStaff() {
 		wand = null;
+	}
+
+	public Wand getWand() {
+		return wand;
 	}
 
 	@Override
@@ -110,6 +118,11 @@ public class MagesStaff extends MeleeWeapon {
 		if (wand!= null && wand.curCharges > 0) {
 			actions.add( AC_ZAP );
 		}
+
+		if(wand != null && wand instanceof WandOfSun){
+			actions.add( AC_DISMISS );
+		}
+
 		return actions;
 	}
 
@@ -154,7 +167,36 @@ public class MagesStaff extends MeleeWeapon {
 			else                             wand.cursed = false;
 			wand.execute(hero, AC_ZAP);
 		}
+
+		if (action.equals(AC_DISMISS)) {
+			GameScene.selectCell(cellSelector);
+		}
+
 	}
+
+	protected CellSelector.Listener cellSelector = new CellSelector.Listener(){
+
+		@Override
+		public void onSelect(Integer cell) {
+			if (cell != null){
+				for(Actor a :Actor.all()){
+					if(a instanceof WandOfSun.MiniSun){
+						WandOfSun.MiniSun s = (WandOfSun.MiniSun) a;
+						if(s.pos == cell){
+							s.die();
+							return;
+						}
+					}
+				}
+				GLog.i(Messages.get(WandOfSun.class,"dissun"));
+			}
+		}
+
+		@Override
+		public String prompt() {
+			return Messages.get(SandalsOfNature.class, "prompt_target");
+		}
+	};
 
 	@Override
 	public int buffedVisiblyUpgraded() {
@@ -227,7 +269,7 @@ public class MagesStaff extends MeleeWeapon {
 
 		if (owner == Dungeon.hero && Dungeon.hero.hasTalent(Talent.WAND_PRESERVATION)){
 			Talent.WandPreservationCounter counter = Buff.affect(Dungeon.hero, Talent.WandPreservationCounter.class);
-			if (counter.count() < 5 && Random.Float() < 0.34f + 0.33f*Dungeon.hero.pointsInTalent(Talent.WAND_PRESERVATION)){
+			if (counter.count() == 0){
 				counter.countUp(1);
 				this.wand.level(0);
 				if (!this.wand.collect()) {
@@ -235,13 +277,6 @@ public class MagesStaff extends MeleeWeapon {
 				}
 				GLog.newLine();
 				GLog.p(Messages.get(this, "preserved"));
-			} else {
-				ArcaneResin resin = new ArcaneResin();
-				if (!resin.collect()) {
-					Dungeon.level.drop(resin, owner.pos);
-				}
-				GLog.newLine();
-				GLog.p(Messages.get(this, "preserved_resin"));
 			}
 		}
 
@@ -450,13 +485,9 @@ public class MagesStaff extends MeleeWeapon {
 					}
 
 					String bodyText = Messages.get(MagesStaff.class, "imbue_desc", newLevel);
-					int preservesLeft = Dungeon.hero.hasTalent(Talent.WAND_PRESERVATION) ? 5 : 0;
-					if (Dungeon.hero.buff(Talent.WandPreservationCounter.class) != null){
-						preservesLeft -= Dungeon.hero.buff(Talent.WandPreservationCounter.class).count();
-					}
-					if (Dungeon.hero.hasTalent(Talent.WAND_PRESERVATION)){
-						int preserveChance = Dungeon.hero.pointsInTalent(Talent.WAND_PRESERVATION) == 1 ? 67 : 100;
-						bodyText += "\n\n" + Messages.get(MagesStaff.class, "imbue_talent", preserveChance, preservesLeft);
+					if (Dungeon.hero.hasTalent(Talent.WAND_PRESERVATION)
+						&& Dungeon.hero.buff(Talent.WandPreservationCounter.class) == null){
+						bodyText += "\n\n" + Messages.get(MagesStaff.class, "imbue_talent");
 					} else {
 						bodyText += "\n\n" + Messages.get(MagesStaff.class, "imbue_lost");
 					}

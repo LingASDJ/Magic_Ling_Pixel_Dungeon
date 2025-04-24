@@ -26,7 +26,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
-public class AncityArmor extends CustomArmor{
+public class AncityArmor extends CustomArmor {
 
     {
         image = ItemSpriteSheet.ARMOR_ANCITY;
@@ -154,7 +154,7 @@ public class AncityArmor extends CustomArmor{
     @Override
     public float evasionFactor(Char owner, float evasion ){
 
-        if (hasGlyph(Stone.class, owner) && !((Stone)glyph).testingEvasion()){
+        if (hasGlyph(Stone.class, owner)){
             return 0;
         }
 

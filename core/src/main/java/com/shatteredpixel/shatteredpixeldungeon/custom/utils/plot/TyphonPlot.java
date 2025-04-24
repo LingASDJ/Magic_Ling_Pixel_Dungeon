@@ -10,7 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.Morphs;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Typhon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.Typhon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -54,7 +54,7 @@ public class TyphonPlot extends Plot {
             switch (process) {
                 default:
                 case 1:
-                    process_to_1();//Mostly process to 1 is made directly when creating,it might not be used,just in case
+                    process_to_1();
                     break;
                 case 2:
                     process_to_2();

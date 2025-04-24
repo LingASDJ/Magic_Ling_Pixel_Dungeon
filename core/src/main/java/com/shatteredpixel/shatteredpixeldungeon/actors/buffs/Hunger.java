@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -28,8 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
-import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -126,7 +128,6 @@ public class Hunger extends Buff implements Hero.Doom {
 					GLog.w( Messages.get(this, "onhungry") );
 
 					if (!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_FOOD)){
-						GLog.p(Messages.get(Guidebook.class, "hint"));
 						GameScene.flashForDocument(Document.ADVENTURERS_GUIDE, Document.GUIDE_FOOD);
 					}
 
@@ -135,8 +136,14 @@ public class Hunger extends Buff implements Hero.Doom {
 				level = newLevel;
 
 			}
+
+			float hungerDelay = STEP;
+			if (target.buff(Shadows.class) != null){
+				hungerDelay *= 1.5f;
+			}
+			hungerDelay /= SaltCube.hungerGainMultiplier();
 			
-			spend( target.buff( Shadows.class ) == null ? STEP : STEP * 1.5f );
+			spend( hungerDelay );
 
 		} else {
 
@@ -196,13 +203,26 @@ public class Hunger extends Buff implements Hero.Doom {
 	}
 
 	public int hungerDamage() {
-		int hunger = (int) Math.max(0, STARVING - hunger());
-		return (int) (hunger/50);
+		int hunger;
+		Hunger hungerBuff = hero.buff(Hunger.class);
+		if(hungerBuff != null){
+			hunger = (int) Math.max(0, STARVING - hunger());
+		} else {
+			hunger = 100;
+		}
+
+		return hunger/50;
 	}
 
 	public int hungerNoWEDamage(){
-		int hunger = (int) Math.max(0, STARVING - hunger());
-		return (int) (hunger/75);
+		int hunger;
+		Hunger hungerBuff = hero.buff(Hunger.class);
+		if(hungerBuff != null){
+			hunger = (int) Math.max(0, STARVING - hunger());
+		} else {
+			hunger = 75;
+		}
+		return hunger/75;
 	}
 
 	@Override

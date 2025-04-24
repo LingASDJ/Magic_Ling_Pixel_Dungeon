@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassPage;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassUI;
@@ -127,7 +128,6 @@ public class StatusPane extends Component {
 	public PageIndicatorB pageb;
 
 	public BossSelectIndicator bossselect;
-	public JoinIndicator joinxxx;
 	public LanterFireCator lanter;
 
 	public static String asset = Assets.Interfaces.STATUS_DARK;
@@ -171,7 +171,7 @@ public class StatusPane extends Component {
 		};
 		add(heroInfo);
 
-		avatar = HeroSprite.avatar( hero.heroClass, lastTier );
+		avatar = HeroSprite.avatar( Dungeon.hero );
 		add( avatar );
 
 		talentBlink = 0;
@@ -271,9 +271,9 @@ public class StatusPane extends Component {
 			add(bossselect);
 		}
 
-
-		joinxxx=new JoinIndicator();
-		add(joinxxx);
+		if(Dungeon.isDLC(Conducts.Conduct.HARD)){
+			//add(table);
+		}
 
 		lanter=new LanterFireCator();
 		add(lanter);
@@ -486,23 +486,18 @@ public class StatusPane extends Component {
 
 		int maxHunger = (int) Hunger.STARVING;
 		float maxPureSole = hero.lanterfire;
-		int mtPureSole = 100;
+		int mtPureSole = Dungeon.isChallenged(DHXD) ? 72 : 100;
 
 		//冰血聪明 x
 		int maxLFSHp = hero.lanterfire;
-		int mjsLFSHp = 100;
+		int mjsLFSHp = Dungeon.isChallenged(DHXD) ? 72 : 100;
 
 		int health = hero.HP;
 		int shield = hero.shielding();
 		int max = hero.HT;
 
 		if (ClassUI()) {
-			if(Dungeon.depth>25){
-				bg.texture = TextureCache.get(Assets.Interfaces.STATUS_HOLLOW);
-			} else {
-				bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
-			}
-
+			bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
 		} else {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
 		}
@@ -532,7 +527,7 @@ public class StatusPane extends Component {
 			float b =  0.93f+0.57f*Math.max(0f, (float)Math.sin( time));
 
 			float lanter = hero.lanterfire;
-			lanterText.text(lanter+"/"+100);
+			lanterText.text(lanter+"/"+ (Dungeon.isChallenged(DHXD) ? 64 : 100));
 			lanterText.scale.set(PixelScene.align(0.5f));
 			lanterText.x = 3;
 			lanterText.y = 25;
@@ -568,13 +563,10 @@ public class StatusPane extends Component {
 		if (ClassPage()) {
 			page.setPos(0, 40);
 			pageb.setPos(0, 1000);
-			joinxxx.setPos(0, 52);
-			bossselect.setPos(0, 78);
+			bossselect.setPos(0, 52);
 		} else {
 			page.setPos(0, 1000);
 			pageb.setPos(0, 40);
-
-			joinxxx.setPos(0, 1000);
 			bossselect.setPos(0, 1000);
 		}
 
@@ -738,5 +730,9 @@ public class StatusPane extends Component {
 		compass.alpha(value);
 		busy.alpha(value);
 		counter.alpha(value);
+	}
+
+	public void updateAvatar(){
+		avatar.copy( HeroSprite.avatar( Dungeon.hero ) );
 	}
 }

@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -89,7 +90,6 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         properties.add(Property.ACIDIC);
     }
 
-
     public String info(){
         StringBuilder desc = new StringBuilder(super.info());
 
@@ -106,6 +106,8 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
     public int phase;
     private int healInc = 1;
+
+
 
     @Override
     public int damageRoll() {
@@ -214,6 +216,12 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         combo++;
         int effect = Random.Int(5)+combo;
 
+        if(Statistics.KillMazeMimic>5 && Dungeon.isChallenged(STRONGER_BOSSES)){
+            int oppositeAdjacent = enemy.pos + (enemy.pos - pos);
+            Ballistica trajectory = new Ballistica(enemy.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
+            WandOfBlastWave.throwChar(enemy, trajectory, Random.Int(1,3), false, false, this);
+        }
+
         if (effect > 2) {
 
             if (effect >=6 && enemy.buff(Burning.class) == null){
@@ -228,24 +236,13 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         return damage;
     }
 
-
-//    @Override
-//    protected boolean getCloser(int target) {
-//        combo = 0;
-//        if (state == HUNTING) {
-//            if(Dungeon.level.distance(pos,target)>1)
-//                return super.getCloser( target );
-//            return enemySeen && getFurther( target );
-//        } else {
-//            return super.getCloser(target);
-//        }
-//        //return false;
-//    }
-
     /**
      * @param dmg 伤害
      * @param src 伤害来源
      */
+
+    boolean onlyDiglog = false;
+
     @Override
     public void damage(int dmg, Object src) {
         if (!BossHealthBar.isAssigned()){
@@ -273,27 +270,19 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
                 @Override
                 protected boolean act() {
+
                     Actor.remove(this);
                     ((ColdChestBossLevel)Dungeon.level).progress();
                     phase++;
-
-                    if(Dungeon.isChallenged(STRONGER_BOSSES)){
-                        yell(Messages.get(DiamondKnight.class,"now_go_2"));
-                    } else {
+                    if(!onlyDiglog){
+                        onlyDiglog = true;
                         yell(Messages.get(DiamondKnight.class,"now_go"));
                     }
-
-
                     GameScene.flash(0x808080);
                     return true;
                 }
             });
-        } else if (level == ColdChestBossLevel.State.VSBOSS_START && this.HP <= 240 && phase == 1) {
-            HP = 240;
-            ((ColdChestBossLevel)Dungeon.level).progress();
-            phase++;
-            //血量低于200后变成玩家的样子，伤害和防御数值与玩家一致
-        } else if (level == ColdChestBossLevel.State.VSLINK_START && this.HP <= 200 && phase == 2) {
+        } else if (level == ColdChestBossLevel.State.VSBOSS_START && this.HP <= 200 && phase == 2) {
             HP = 200;
             Actor.add(new Actor() {
 
@@ -321,7 +310,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
                 }
             });
             //最终决斗
-        } else if (level == ColdChestBossLevel.State.VSYOU_START && this.HP <= 100 && phase == 3) {
+        } else if (level == ColdChestBossLevel.State.VSLINK_START && this.HP <= 100 && phase == 3) {
             HP = 100;
             Actor.add(new Actor() {
 
@@ -375,7 +364,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         }
 
         if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && !SprintableModeBoolean){
-            Dungeon.level.drop(new IceCyanBlueSquareCoin(20),hero.pos);
+            Dungeon.level.drop(new IceCyanBlueSquareCoin(40),hero.pos);
         }
 
         Dungeon.level.drop(new ScrollOfRecharging().quantity(2),  dropPos).sprite.drop(pos);
@@ -385,24 +374,22 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
         Dungeon.level.drop(new Ankh(), dropPos).sprite.drop(pos);
 
-        Dungeon.level.drop(new Gold().quantity(Random.Int(400,900)), pos).sprite.drop();
+        Dungeon.level.drop(new Gold().quantity(Random.Int(300,700)), pos).sprite.drop();
 
         Badges.KILL_SMK();
 
         if(Statistics.dimandchestmazeCollected>=3){
             PaswordBadges.validateOMP();
             Statistics.bossScores[1] += 1000;
+            if(Statistics.RandMode){
+                Statistics.goldRefogreCount++;
+            }
         }
+
         Badges.validateBossSlain();
         phase++;
 
-//        if (!Badges.isUnlocked(Badges.Badge.KILL_SM)){
-//            //Dungeon.level.drop( new SDBSword(), pos ).sprite.drop();
-//        } else if (Random.Float()<0.43f) {
-//            //Dungeon.level.drop( new SDBSword(), pos ).sprite.drop();
-//        } else {
-            Dungeon.level.drop( new PotionOfExperience(), pos ).sprite.drop();
-//        }
+        Dungeon.level.drop( new PotionOfExperience(), pos ).sprite.drop();
 
         GameScene.bossSlain();
 
@@ -431,6 +418,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
             BossHealthBar.assignBoss(this);
             Dungeon.level.seal();
             GameScene.bossReady();
+
             if(Dungeon.isChallenged(STRONGER_BOSSES)){
                 yell(Messages.get(this, "notice_2"));
             } else {
@@ -458,13 +446,6 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         bundle.put( PUMPEDUP , pumpedUp );
         bundle.put( HEALINC, healInc );
         bundle.put(COMBO, combo);
-
-//        if(phase == 5) {
-//            spriteClass=DimandKingSprite.PrismaticSprite.class;
-//        } else {
-//            spriteClass=DimandKingSprite.class;
-//        }
-
     }
 
     @Override
@@ -474,6 +455,11 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         pumpedUp = bundle.getInt( PUMPEDUP );
         if (state != SLEEPING) BossHealthBar.assignBoss(this);
         if ((HP*2 <= HT)) BossHealthBar.bleed(true);
+
+        if(HP == 0) {
+            phase=6;
+            HP=50;
+        }
 
         //if check is for pre-0.9.3 saves
         healInc = bundle.getInt(HEALINC);
@@ -508,6 +494,18 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         } else {
             enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
         }
+
+
+        if (enemy == Dungeon.hero && !enemy.isAlive()) {
+            Dungeon.fail( getClass() );
+            GLog.n( Messages.capitalize(Messages.get(Char.class, "kill", name())) );
+        }
+
+    }
+
+    @Override
+    public boolean isAlive() {
+        return phase < 3|| HP > 0;
     }
 
     public void onZapComplete() {

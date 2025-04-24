@@ -22,8 +22,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.HKD;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BzmdrDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Gudazi;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.HallsPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -52,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
@@ -102,6 +107,12 @@ public class HallsLevel extends RegularLevel {
 		addItemToSpawn( new Torch() );
 		addItemToSpawn( new Torch() );
 		super.create();
+	}
+
+
+	@Override
+	public void playLevelMusic(){
+		Music.playModeBGM(Assets.Music.BGM_5,true);
 	}
 	
 	@Override
@@ -177,6 +188,17 @@ public class HallsLevel extends RegularLevel {
 			HKD npc20 = new HKD();
 			npc20.pos = entrance()-1;
 			mobs.add(npc20);
+		}
+		if(Dungeon.depth == 21 && Dungeon.branch == 0 && Statistics.gdzHelpDungeon == 4){
+			Gudazi npc20 = new Gudazi();
+			npc20.pos = entrance()+1;
+			mobs.add(npc20);
+		}
+
+		if(Dungeon.depth == 24 && Dungeon.branch == 0 && Dungeon.isChallenged(Challenges.CS)){
+			BzmdrDungeon npc21 = new BzmdrDungeon();
+			npc21.pos = exit()+1;
+			mobs.add(npc21);
 		}
 	}
 	

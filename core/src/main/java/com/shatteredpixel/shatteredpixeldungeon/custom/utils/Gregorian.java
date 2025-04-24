@@ -49,7 +49,14 @@ public class Gregorian {
 
         boolean isDWJ_2024TWO = lunar.getMonth() == 5 && (lunar.getDay() >= 5 && lunar.getDay() <= 5 + 16);
 
-        boolean isSF = lunar.getMonth() == 1 && (lunar.getDay() >= 1 && lunar.getDay() <= 1 + 19);
+        boolean isSF = lunar.getMonth() == 1 && (lunar.getDay() >= 1 && lunar.getDay() <= 1 + 13);
+
+        boolean isYXJ= lunar.getMonth() == 1 && (lunar.getDay() >= 15 && lunar.getDay() <= 15 + 7);
+
+
+        if(isYXJ){
+            holiday = RegularLevel.Holiday.YX;
+        }
 
         if(isSF){
             holiday = RegularLevel.Holiday.CJ;

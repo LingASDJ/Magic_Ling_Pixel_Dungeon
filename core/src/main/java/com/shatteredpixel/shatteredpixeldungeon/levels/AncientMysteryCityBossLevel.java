@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -35,6 +36,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -44,6 +47,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AncientMysteryCityBossLevel extends Level{
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.ANCITY,true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Music.playModeBGM(Assets.Music.SKBJY,true);
+    }
 
     public State pro;
 
@@ -88,6 +101,10 @@ public class AncientMysteryCityBossLevel extends Level{
                             roomStone.pos = 468;
                             GameScene.add(roomStone);
                             DictFish dictFish = new DictFish();
+                            AlarmTrap var4 = new AlarmTrap();
+                            var4.pos = hero.pos;
+                            Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
+                            var4.activate();
                             GameScene.add(dictFish);
                             dictFish.pos = 476;
                             ScrollOfTeleportation.appear(dictFish, 476);
@@ -202,6 +219,39 @@ public class AncientMysteryCityBossLevel extends Level{
             L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,
     };
 
+    private int mapToTerrain(int code) {
+        switch (code){
+            default:
+                return Terrain.EMPTY;
+            case 4:
+                return Terrain.WALL;
+            case 12:
+                return Terrain.WALL_DECO;
+            case 14:
+                return Terrain.EMPTY_SP;
+            case 29:
+                return Terrain.WATER;
+            case 25:
+                return Terrain.STATUE;
+            case 7:
+                return Terrain.ENTRANCE;
+            case 15:
+                return Terrain.GRASS;
+            case 31:
+                return Terrain.CRYSTAL_DOOR;
+            case 5:
+                return Terrain.DOOR;
+            case 24:
+                return Terrain.WELL;
+            case 27:
+                return Terrain.BOOKSHELF;
+        }
+    }
+
+    private static final int[] HardWorldRoomShort = {
+            14,14,14,14,14,14,14,14,14,14,14,14,4,4,4,14,14,14,14,14,14,14,14,14,14,14,14,14,29,29,29,29,29,29,14,29,29,29,12,25,29,25,4,29,29,29,14,29,29,29,29,29,29,14,14,29,14,14,14,29,29,14,29,29,4,4,29,8,29,4,12,29,29,14,29,29,14,14,14,29,14,14,29,14,14,29,29,14,14,29,4,4,29,29,15,29,29,4,4,29,14,14,29,29,14,14,29,14,14,29,14,29,29,14,14,29,12,4,25,29,15,14,15,29,25,4,12,29,14,14,29,29,14,29,14,14,29,29,29,14,14,29,4,4,29,29,15,14,29,14,15,29,29,4,4,29,14,14,29,29,29,14,14,29,29,14,14,29,29,4,29,29,15,14,29,29,29,14,15,29,29,4,29,29,14,14,29,29,14,14,14,14,14,29,29,4,25,29,29,29,15,14,29,14,15,29,29,29,25,4,29,29,14,14,14,14,14,29,29,29,29,12,4,29,29,29,29,29,15,14,15,29,29,29,29,29,4,4,29,29,29,29,14,14,29,29,29,29,4,4,4,12,4,12,4,4,31,4,12,4,12,4,4,4,4,29,29,29,29,14,14,29,29,29,4,12,25,9,29,29,29,29,29,1,29,29,29,29,29,29,25,12,4,29,29,29,14,14,29,29,4,4,4,24,29,29,29,29,29,1,1,1,29,29,29,29,29,29,4,4,4,29,29,14,14,29,4,4,4,29,29,29,29,29,29,1,29,1,29,1,29,29,29,29,29,29,4,4,4,29,14,14,12,4,12,25,29,2,2,2,1,1,29,29,1,29,29,1,29,2,2,2,29,25,4,12,4,14,14,4,4,25,29,29,2,4,2,1,29,29,29,1,29,29,29,1,2,4,9,29,29,25,4,4,14,14,4,12,15,29,29,2,2,2,1,29,29,29,1,29,29,29,1,2,9,2,29,29,15,4,4,14,14,4,4,29,29,29,29,29,29,1,29,29,29,1,29,29,29,1,1,29,29,29,29,29,12,4,14,14,4,12,9,29,29,29,29,29,1,1,1,1,4,1,1,1,1,1,29,29,29,29,2,4,4,14,14,4,4,25,29,29,29,29,29,1,29,29,29,1,29,29,29,1,1,29,29,29,29,12,4,4,14,14,29,4,12,25,29,2,2,2,1,29,29,29,1,29,29,29,1,2,2,2,29,12,12,4,29,14,14,29,29,4,4,29,2,4,2,29,1,29,29,1,29,29,1,29,2,4,2,29,4,4,29,29,14,14,29,29,29,4,29,2,2,2,29,29,1,29,1,29,1,29,29,2,2,2,29,4,29,29,29,14,14,14,14,14,4,4,29,29,29,29,29,29,1,1,1,29,29,29,29,29,24,12,4,14,14,14,14,14,29,29,14,14,4,25,9,29,29,29,29,4,1,4,29,29,29,29,9,25,4,14,14,29,29,14,14,29,29,29,14,4,4,12,29,29,29,29,4,1,4,29,29,29,29,12,4,4,14,29,29,29,14,14,29,14,29,14,4,4,4,4,4,4,4,4,5,4,4,4,4,4,4,4,4,14,29,14,29,14,14,29,29,29,14,29,29,4,14,29,29,29,25,14,25,29,29,29,29,4,29,29,14,29,29,29,14,14,14,29,14,14,29,4,4,4,14,29,27,27,14,27,27,29,14,4,4,4,29,14,14,29,14,14,14,14,14,14,29,29,4,14,14,4,29,4,25,7,25,4,29,4,14,14,4,29,29,14,14,14,14,14,29,29,29,29,4,4,12,4,4,12,4,4,14,4,4,4,4,4,12,4,4,29,29,29,29,14,14,29,29,29,4,12,4,4,12,4,4,4,4,4,4,4,12,4,4,4,4,12,4,29,29,29,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14
+    };
+
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
         if(Statistics.RandMode && transition.type == LevelTransition.Type.BRANCH_EXIT) {
@@ -251,7 +301,7 @@ public class AncientMysteryCityBossLevel extends Level{
             if (timeFreeze != null) timeFreeze.disarmPresses();
             Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
             if (timeBubble != null) timeBubble.disarmPresses();
-            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
             InterlevelScene.curTransition = new LevelTransition();
             InterlevelScene.curTransition.destDepth = depth-1;
             InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_EXIT;
@@ -314,7 +364,16 @@ public class AncientMysteryCityBossLevel extends Level{
     @Override
     protected boolean build() {
         setSize(WIDTH, HEIGHT);
-        map = WorldRoomShort.clone();
+
+
+        if(Dungeon.isChallenged(STRONGER_BOSSES)){
+            for (int cell = 0; cell < this.map.length; cell++) {
+                this.map[cell] = mapToTerrain(HardWorldRoomShort[cell]);
+            }
+        } else {
+            map = WorldRoomShort.clone();
+        }
+
         int entrance = WIDTH*28+13;
         int exitce = WIDTH*2+13;
 

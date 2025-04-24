@@ -24,10 +24,19 @@
 
 package  com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.GoldMob;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.OGPDZSLSTT;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
-public class OGPDZSLS extends Rat {
+public class OGPDZSLS extends GoldMob {
 
 	{
 		spriteClass = OGPDZSLSTT.class;
@@ -38,6 +47,50 @@ public class OGPDZSLS extends Rat {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 2, 3 );
+		return Random.NormalIntRange( 2, 9 );
+	}
+
+	@Override
+	protected boolean act() {
+		if (Dungeon.level.heroFOV[pos] && hero.armorAbility instanceof Ratmogrify){
+			alignment = Alignment.ALLY;
+			if (state == SLEEPING) state = WANDERING;
+		}
+		return super.act();
+	}
+
+	@Override
+	public int attackProc( Char enemy, int damage ) {
+		damage = super.attackProc( enemy, damage );
+		if (damage > 0 && Random.Int( 2 ) == 0) {
+			Buff.affect( enemy, Bleeding.class ).set( damage );
+		}
+
+		return damage;
+	}
+
+	@Override
+	public int attackSkill( Char target ) {
+		return 18;
+	}
+
+	@Override
+	public int drRoll() {
+		return super.drRoll() + Random.NormalIntRange(0, 1);
+	}
+
+	private static final String RAT_ALLY = "rat_ally";
+
+	@Override
+	public void storeInBundle(Bundle bundle) {
+		super.storeInBundle(bundle);
+		if (alignment == Alignment.ALLY) bundle.put(RAT_ALLY, true);
+	}
+
+
+	@Override
+	public void restoreFromBundle(Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		if (bundle.contains(RAT_ALLY)) alignment = Alignment.ALLY;
 	}
 }

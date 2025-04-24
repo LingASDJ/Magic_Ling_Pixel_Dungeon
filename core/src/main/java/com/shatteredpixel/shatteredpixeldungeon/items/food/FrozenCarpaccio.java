@@ -23,15 +23,12 @@ package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -47,11 +44,6 @@ public class FrozenCarpaccio extends Food {
 	
 	@Override
 	protected void satisfy(Hero hero) {
-		if (Dungeon.isChallenged(Challenges.EXSG)) {
-				//~75% of a potion of healing
-				Buff.affect(hero, Barrier.class).setShield((int) (0.3f * hero.HT + 5));
-				Talent.onPotionUsed(curUser, curUser.pos, energy/15f );
-		}
 		super.satisfy(hero);
 
 		effect(hero);

@@ -39,8 +39,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PylonCS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
@@ -114,6 +115,21 @@ public class CaveTwoBossLevel extends Level {
             478,511,544,610,643,676,
             1006,1039,1072,1138,1171,1204
     };
+
+    @Override
+    public void playBossMusic(){
+        if(BossHealthBar.isBleeding()){
+            Music.playModeBGM(Assets.Music.CITY_BOSS_FINALE,true);
+        } else {
+            Music.playModeBGM(Assets.Music.BGM_BOSSC,true);
+        }
+
+    }
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.BGM_3,true);
+    }
 
     private ArenaVisuals customArenaVisuals;
 
@@ -366,7 +382,7 @@ public class CaveTwoBossLevel extends Level {
                                 }
                                 for (int i = 0; i < 85; i++) {
                                     Mob m;
-                                    m =  Reflection.newInstance(Bestiary.getMobRotation(Random.IntRange(1,25)).get(0));
+                                    m =  Reflection.newInstance(MobSpawner.getMobRotation(Random.IntRange(1,25)).get(0));
                                     do {
                                         m.pos = pointToCell(Random.element(mainArena.getPoints()));
                                     } while (!openSpace[m.pos] || map[m.pos] == Terrain.EMPTY_SP || Actor.findChar(m.pos) != null);
@@ -392,13 +408,6 @@ public class CaveTwoBossLevel extends Level {
             } while (!openSpace[boss.pos] || map[boss.pos] == Terrain.EMPTY_SP || Actor.findChar(boss.pos) != null);
             GameScene.add( boss );
         }
-
-        Game.runOnRenderThread(new Callback() {
-            @Override
-            public void call() {
-                Music.INSTANCE.play(Assets.Music.CAVES_BOSS, true);
-            }
-        });
     }
 
     @Override
@@ -420,19 +429,6 @@ public class CaveTwoBossLevel extends Level {
         if (customArenaVisuals != null) customArenaVisuals.updateState();
 
         Dungeon.observe();
-
-        Game.runOnRenderThread(new Callback() {
-            @Override
-            public void call() {
-                Music.INSTANCE.fadeOut(5f, new Callback() {
-                    @Override
-                    public void call() {
-                        Music.INSTANCE.end();
-                    }
-                });
-            }
-        });
-
     }
 
     public void activatePylon(){

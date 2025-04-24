@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.BoatPlot;
@@ -99,8 +100,18 @@ public class DeathRong extends NTNPC {
                         @Override
                         protected void onSelect(int index) {
                             if (index == 0) {
-
-                                if(Dungeon.gold >= 450 && secnod){
+                                if(Statistics.bossRushMode && Dungeon.rushgold >= 10 ){
+                                    if(secnod) {
+                                        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                                            if (mob instanceof ZeroBoat) {
+                                                ((ZeroBoat) mob).rd = true;
+                                                secnod = false;
+                                            }
+                                            Dungeon.rushgold -= 10;
+                                        }
+                                        tell(Messages.get(DeathRong.class, "good_gold_yes"));
+                                    }
+                                } else if(Dungeon.gold >= 450 && secnod){
                                     for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                         if ( mob instanceof ZeroBoat) {
                                             ((ZeroBoat) mob).rd = true;

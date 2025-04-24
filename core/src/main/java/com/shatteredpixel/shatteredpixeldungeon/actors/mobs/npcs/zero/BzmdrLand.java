@@ -2,21 +2,32 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.BzmdrLandPlot;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BzmdrSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
+
 public class BzmdrLand extends NTNPC {
     private int died;
+
+    protected ArrayList<String> X_chat;
+
     private static final String DIED = "died";
     private String def_verb(){
 
@@ -45,6 +56,21 @@ public class BzmdrLand extends NTNPC {
 
     {
         spriteClass = BzmdrSprite.class;
+
+        chat = new ArrayList<String>() {
+            {
+                add((Messages.get(BzmdrLand.class, "a_message1")));
+                add((Messages.get(BzmdrLand.class, "a_message2")));
+                add((Messages.get(BzmdrLand.class, "a_message3")));
+            }
+        };
+
+        X_chat = new ArrayList<String>() {
+            {
+                add((Messages.get(BzmdrLand.class, "c_message1")));
+                add((Messages.get(BzmdrLand.class, "c_message2")));
+            }
+        };
     }
 
     private boolean first=true;
@@ -78,16 +104,33 @@ public class BzmdrLand extends NTNPC {
 
         sprite.turnTo(pos, hero.pos);
         BzmdrLandPlot plot = new BzmdrLandPlot();
-        if (first) {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndDialog(plot,false));
-                }
-            });
-            first=false;
+
+        if(Dungeon.isChallenged(Challenges.CS)){
+            if(Statistics.amuletObtained && secnod){
+                WndQuest.chating(this,X_chat);
+                secnod = false;
+            } else if(first) {
+                WndQuest.chating(this,chat);
+                Item item = ( Generator.randomUsingDefaults( Generator.Category.STONE ));
+                Dungeon.level.drop( item , hero.pos );
+                Item item2 = ( Generator.randomUsingDefaults( Generator.Category.STONE ));
+                Dungeon.level.drop( item2 , hero.pos );
+                first = false;
+            } else {
+                yell("……");
+            }
         } else {
-            yell("……");
+            if (first) {
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndDialog(plot,false));
+                    }
+                });
+                first=false;
+            } else {
+                yell("……");
+            }
         }
         return true;
     }

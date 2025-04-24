@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.nosync;
 
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BARRICADE;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BOOKSHELF;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CRYSTAL_DOOR;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.DOOR;
@@ -14,6 +15,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.PEDESTAL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.SkyGoo;
@@ -22,6 +24,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 
 public class SkyGooBossLevel extends Level {
     private static final int SIZE = 5;
@@ -40,12 +44,14 @@ public class SkyGooBossLevel extends Level {
     private static final int M = LOCKED_DOOR;
     private static final int L = BARRICADE;
 
+    private static final int A = BOOKSHELF;
+
 
     private static final int[] pre_map = {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
-            W,G,G,G,G,G,G,G,Q,Q,E,Q,Q,G,G,G,G,G,G,G,W,
-            W,V,V,L,V,V,V,L,V,V,Q,V,V,L,V,V,V,L,V,V,W,
-            W,G,L,L,L,G,G,L,G,G,Q,G,G,L,G,G,L,L,L,G,W,
+            W,G,G,G,G,G,G,G,Q,A,E,A,Q,G,G,G,G,G,G,G,W,
+            W,V,V,L,V,V,V,L,V,V,A,V,V,L,V,V,V,L,V,V,W,
+            W,G,L,L,L,G,G,L,G,A,Q,A,G,L,G,G,L,L,L,G,W,
             W,V,V,L,V,V,V,L,Q,Q,Q,Q,Q,L,V,V,V,L,V,V,W,
             W,G,G,G,G,G,G,G,Q,Q,G,Q,Q,G,G,G,G,G,G,G,W,
             W,W,W,D,W,W,W,W,Q,G,G,G,Q,W,W,W,W,W,D,W,W,
@@ -107,6 +113,17 @@ public class SkyGooBossLevel extends Level {
         this.color1 = 5459774;
         this.color2 = 12179041;
         this.viewDistance = 6;
+    }
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.JUNGLE_FOREST,true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+                () -> Music.playModeBGM(Assets.Music.BGM_BOSSA,true)));
     }
 
     protected boolean build() {

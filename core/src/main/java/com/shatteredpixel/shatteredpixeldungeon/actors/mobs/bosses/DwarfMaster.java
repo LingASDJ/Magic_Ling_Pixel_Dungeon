@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HaloFireImBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
@@ -33,10 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FungalSpinner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGuard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
@@ -48,6 +46,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.Artillerist;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.Gorgon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaReal;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.timing.VirtualActor;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
@@ -702,6 +702,11 @@ public class DwarfMaster extends Boss {
         } else if (phase == 3 && preHP > 50 && HP <= 50){
             yell( Messages.get(this, "losing") );
         }
+    }
+
+    @Override
+    public boolean isAlive() {
+        return super.isAlive() || phase < 3;
     }
 
 
@@ -1388,7 +1393,7 @@ public class DwarfMaster extends Boss {
             summonSubject(3, Skeleton.class);
             summonSubject(3, Necromancer.class);
             //summonSubject(3, RedNecromancer.class);
-            Buff.affect(this, RoseShiled.class, 20f);
+            Buff.affect(this, Invulnerability.class, 20f);
             Buff.affect(this, Haste.class, 5f);
             Buff.affect(this, ArcaneArmor.class).set(Dungeon.hero.lvl + 10, 10);
             Buff.affect(this, Healing.class).setHeal(40, 0f, 6);
@@ -1401,15 +1406,13 @@ public class DwarfMaster extends Boss {
         }
     }
 
-    public static class DKGhoul extends GnollGuard {
+    public static class DKGhoul extends Monk {
         {
             state = HUNTING;
             immunities.add(Corruption.class);
             resistances.add(Amok.class);
             lootChance=0f;
             maxLvl = -8848;
-
-            HP=HT=10;
         }
 
         @Override
@@ -1424,7 +1427,7 @@ public class DwarfMaster extends Boss {
         }
     }
 
-    public static class DKMonk extends Eye {
+    public static class DKMonk extends Gorgon {
         {
             state = HUNTING;
             immunities.add(Corruption.class);
@@ -1462,7 +1465,7 @@ public class DwarfMaster extends Boss {
         }
     }
 
-    public static class DKWarlock extends FungalSpinner {
+    public static class DKWarlock extends Artillerist {
         {
             state = HUNTING;
             immunities.add(Corruption.class);
@@ -1476,10 +1479,6 @@ public class DwarfMaster extends Boss {
                 Buff.affect(enemy, Degrade.class, 2f);
             }
             return super.attackProc(enemy, damage);
-        }
-        @Override
-        public int damageRoll() {
-            return Random.NormalIntRange( 10, 15 );
         }
     }
 

@@ -273,7 +273,7 @@ public class AscensionChallenge extends Buff {
 			if (Dungeon.bossLevel()){
 				Dungeon.hero.buff(Hunger.class).satisfy(Hunger.STARVING);
 				Buff.affect(Dungeon.hero, Healing.class).setHeal(Dungeon.hero.HT, 0, 20);
-			} else {
+			} else if(Dungeon.depth !=0) {
 				stacks += 2f;
 
 				//clears any existing mobs from the level and adds one initial one

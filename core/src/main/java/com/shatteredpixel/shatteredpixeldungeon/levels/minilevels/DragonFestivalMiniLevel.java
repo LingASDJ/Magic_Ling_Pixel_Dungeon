@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -24,6 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.MineEntrance;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.MineGiantRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.MineLargeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.NukeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -33,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
@@ -41,6 +45,9 @@ import java.util.ArrayList;
 public class DragonFestivalMiniLevel extends CavesLevel {
     @Override
     protected void createItems() {
+        if(Statistics.bossRushMode){
+            super.createItems();
+        }
         Random.pushGenerator(Random.Long());
         ArrayList<Item> bonesItems = Bones.get();
         if (bonesItems != null) {
@@ -83,7 +90,14 @@ public class DragonFestivalMiniLevel extends CavesLevel {
     @Override
     protected ArrayList<Room> initRooms() {
         ArrayList<Room> initRooms = new ArrayList<>();
-        initRooms.add ( roomEntrance = new MineEntrance());
+
+
+        if(Statistics.bossRushMode){
+            initRooms.add ( roomEntrance = new EntranceRoom());
+            initRooms.add ( roomExit = new ExitRoom());
+        } else {
+            initRooms.add ( roomEntrance = new MineEntrance());
+        }
 
         //spawns 1 giant, 3 large, 6-8 small, and 1-2 secret cave rooms
         StandardRoom s;
@@ -157,6 +171,18 @@ public class DragonFestivalMiniLevel extends CavesLevel {
                 .setWater(0.4f, 0)
                 .setGrass(0.6f, 1);
     }
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.TOWN,true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+                () -> Music.playModeBGM(Assets.Music.DRAGON_LING,true)));
+    }
+
     @Override
     public String tilesTex() {
         return Assets.Environment.TILES_COLD_MINE;

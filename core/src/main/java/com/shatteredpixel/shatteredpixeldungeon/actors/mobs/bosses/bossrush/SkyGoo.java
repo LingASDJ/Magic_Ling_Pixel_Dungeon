@@ -21,10 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -39,8 +37,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -62,7 +60,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
@@ -76,10 +73,10 @@ import java.util.Iterator;
 public class SkyGoo extends Boss implements Callback {
 
 	{
-		HT = 280 * Dungeon.depth/5;
-		HP = 280 * Dungeon.depth/5;
+		HT = 140 * Dungeon.depth/5;
+		HP = 140 * Dungeon.depth/5;
 		EXP = 30;
-		defenseSkill = 5;
+		defenseSkill = 15;
 		spriteClass = GooSprite.class;
 		properties.add(Char.Property.BOSS);
 		properties.add(Char.Property.DEMONIC);
@@ -174,7 +171,7 @@ public class SkyGoo extends Boss implements Callback {
 			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
 				int p = pos + PathFinder.NEIGHBOURS8[i];
 				if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {
-					Mob testActor = Reflection.newInstance(Bestiary.getMobRotation(Random.NormalIntRange(3,9)).get(0));
+					Mob testActor = Reflection.newInstance(MobSpawner.getMobRotation(Random.NormalIntRange(3,9)).get(0));
 					Buff.affect(testActor, ChampionEnemy.Bomber.class);
 					testActor.state = testActor.HUNTING;
 					GameScene.add( testActor );
@@ -333,7 +330,12 @@ public class SkyGoo extends Boss implements Callback {
 		}
 
 		if(HP<=120){
-			dmg = (int) Math.ceil( dmg * Math.max( Math.pow( 0.7, 120/HP ), 0.5 ) );
+			if (HP == 0) {
+				// 如果 HP 为零，可以选择一个默认值，例如设为 1 或者做其他处理
+				dmg = (int) Math.ceil(dmg * Math.max(Math.pow(0.7, 120 / 30), 0.5));  // 使用 30 作为默认值
+			} else {
+				dmg = (int) Math.ceil(dmg * Math.max(Math.pow(0.7, 120 / HP), 0.5));
+			}
 		}
 		boolean bleeding = (this.HP*2 <= this.HT);
 		super.damage(dmg, src);
@@ -362,7 +364,7 @@ public class SkyGoo extends Boss implements Callback {
 			} while (!Dungeon.level.passable[pos + ofs]);
 			Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
 		}
-		playBGM(Assets.BGM_1, true);
+
 		GameScene.bossSlain();
 		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
 		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
@@ -372,11 +374,13 @@ public class SkyGoo extends Boss implements Callback {
 	@Override
 	public void notice() {
 		super.notice();
+		//BGMPlayer.playBoss();
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
 			yell(Messages.get(this, "notice"));
 			Dungeon.level.seal();
-			Music.INSTANCE.play(Assets.BGM_BOSSA, true);
+			GameScene.bossReady();
+
 			Iterator<Char> it = Actor.chars().iterator();
 			while (it.hasNext()) {
 				Char ch = it.next();

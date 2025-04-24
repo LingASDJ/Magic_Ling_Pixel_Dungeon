@@ -1,10 +1,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ConfusionGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -22,15 +25,37 @@ public class ClearElemental extends Mob {
         next();
     }
 
+    public boolean add(Buff buff) {
+        if (super.add(buff)) {
+            if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE) {
+                state = HUNTING;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void damage( int dmg, Object src ) {
+
+        if (state == PASSIVE) {
+            state = HUNTING;
+        }
+
+        super.damage( dmg, src );
+    }
+
     private int combo = 0;
     {
         spriteClass = ClearElementalSprites.class;
         EXP = 8;
         HP = HT = 16;
         defenseSkill = 2;
-
+        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+            immunities.add( CrivusFruits.DiedBlobs.class );
+        }
         maxLvl = 7;
-
+        state = Badges.isUnlocked(Badges.Badge.KILL_FIRE_DRAGON) ? PASSIVE : HUNTING;
         flying =true;
     }
 

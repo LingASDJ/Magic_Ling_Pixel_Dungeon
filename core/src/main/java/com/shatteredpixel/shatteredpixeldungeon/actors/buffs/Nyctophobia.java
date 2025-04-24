@@ -1,12 +1,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.badLanterFire;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.goodLanterFire;
 import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.cure;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.ClearLanterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
@@ -15,13 +18,79 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.Mag
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
+
 public class Nyctophobia extends Buff implements Hero.Doom {
+
+    public static class NoRoadMobs extends Buff {
+
+        int spawnPower = 0;
+
+        {
+            revivePersists = true;
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.VERTIGO;
+        }
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(Window.GDX_COLOR);
+        }
+
+        @Override
+        public boolean act() {
+            if(!Dungeon.bossLevel() || !Dungeon.sbbossLevel()){
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                    if(!(mob instanceof NPC)) {
+                        ArrayList<Integer> candidates = new ArrayList<>();
+                        int minDist = Math.round(Dungeon.hero.viewDistance / 3f);
+                        for (int i = 0; i < Dungeon.level.length(); i++) {
+                            if (Dungeon.level.heroFOV[i]
+                                    && !Dungeon.level.solid[i]
+                                    && Actor.findChar(i) == null
+                                    && Dungeon.level.distance(i, Dungeon.hero.pos) > minDist) {
+                                candidates.add(i);
+                            }
+                        }
+                        if (!candidates.isEmpty()) {
+                            ScrollOfTeleportation.teleportToLocation(mob, Random.element(candidates));
+                            Sample.INSTANCE.play(Assets.Sounds.CURSED);
+                        }
+                    }
+                }
+            }
+            spend(30f);
+            return true;
+        }
+
+        private static String SPAWNPOWER = "spawnpower";
+
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put( SPAWNPOWER, spawnPower );
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+            spawnPower = bundle.getInt( SPAWNPOWER );
+        }
+    }
 
     @Override
     public String heroMessage() {
@@ -38,9 +107,15 @@ public class Nyctophobia extends Buff implements Hero.Doom {
 
     @Override
     public boolean act() {
+        NoRoadMobs bs = Dungeon.hero.buff(NoRoadMobs.class);
+        if(Dungeon.isChallenged(DHXD) && hero.lanterfire<10){
+            Buff.affect(hero, NoRoadMobs.class);
+        } else if(bs != null) {
+            Buff.detach(hero, NoRoadMobs.class);
+        }
+        spend(1f);
 
         if(hero.lanterfire >= 90){
-            //灯火大于90给予一个buff 然后不叠加
             for (Buff b : hero.buffs(ClearLanterBuff.class)){
                if(b == null){
                    goodLanterFire();
@@ -70,8 +145,9 @@ public class Nyctophobia extends Buff implements Hero.Doom {
                     break;
             }
             spend(90f);
-        } else if(hero.lanterfire == 0) {
-            hero.damage((int)1+Challenges.activeChallenges()/3*Dungeon.depth/5, trueDamge.class);
+        } else if(hero.lanterfire<=0) {
+            hero.damage(1 +Challenges.activeChallenges()/3*Dungeon.depth/5, trueDamge.class);
+            GLog.n(Messages.get(this,"dead"));
             cure( Dungeon.hero );
             switch (Random.Int(4)){
                 case 0: case 1:
@@ -87,28 +163,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
             }
             spend(40f);
         }
-
-
-        if (Dungeon.depth <= 5) {
-            spend(STEP);
-            return true;
-        } else if (Dungeon.level.locked || this.target.buff(LighS.class) != null) {
-            spend(STEP);
-            return true;
-        } else {
-            Hero hero = (Hero) this.target;
-            if (!this.target.isAlive()) {
-                diactivate();
-                return true;
-            }
-            if (hero.lanterfire > 0 ) {
-                hero.damageLantern(1+Challenges.activeChallenges()/3);
-                spend(20f-(float) Dungeon.depth/5+Challenges.activeChallenges());
-            } else {
-                spend(STEP);
-            }
-            return true;
-        }
+        return true;
     }
 
     private static class trueDamge{};
@@ -135,19 +190,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
 
     @Override
     public int icon() {
-        if (hero.lanterfire >= 90 && hero.lanterfire <= 100) {
-            return BuffIndicator.LANTERFIRE_ONE;
-        } else if (hero.lanterfire >= 80 && hero.lanterfire <= 89) {
-            return BuffIndicator.LANTERFIRE_TWO;
-        } else if (hero.lanterfire >= 60 && hero.lanterfire <= 79) {
-            return BuffIndicator.LANTERFIRE_THREE;
-        } else if (hero.lanterfire >= 35 && hero.lanterfire <= 59) {
-            return BuffIndicator.LANTERFIRE_FOUR;
-        } else if (hero.lanterfire >= 1 && hero.lanterfire <= 34) {
-            return BuffIndicator.LANTERFIRE_FIVE;
-        } else {
-            return BuffIndicator.LANTERFIRE_SIX;
-        }
+        return BuffIndicator.NONE;
     }
 
     @Override

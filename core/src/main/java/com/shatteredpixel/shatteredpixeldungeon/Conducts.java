@@ -12,7 +12,8 @@ public class Conducts {
         EASY,
         NORMAL,
         HARD,
-        DEV;
+        DEV,
+        SEED;
 
 
         @Override

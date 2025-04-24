@@ -59,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -98,7 +99,7 @@ public enum Talent {
 	//Berserker T3
 	ENDLESS_RAGE(11, 3), PAIN_SCAR(12, 3), FANATICISM_MAGIC(13, 3),
 	//Gladiator T3
-	KEEP_VIGILANCE(14, 3), LETHAL_DEFENSE(15, 3), VENT_NOPLACE(16, 3),
+	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), VENT_NOPLACE(16, 3),
 	//Heroic Leap T4
 	BODY_SLAM(17, 4), IMPACT_WAVE(18, 4), DOUBLE_JUMP(19, 4),
 	//Shockwave T4
@@ -282,7 +283,27 @@ public enum Talent {
 		public void tintIcon(Image icon) { icon.hardlight(0.35f, 0f, 0.7f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 50); }
 	};
-	public static class RestoredAgilityTracker extends FlavourBuff{};
+	public static class LiquidAgilEVATracker extends FlavourBuff{};
+	public static class LiquidAgilACCTracker extends FlavourBuff{
+		public int uses;
+
+		{ type = buffType.POSITIVE; }
+		public int icon() { return BuffIndicator.INVERT_MARK; }
+		public void tintIcon(Image icon) { icon.hardlight(0.5f, 0f, 1f); }
+		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 5)); }
+
+		private static final String USES = "uses";
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(USES, uses);
+		}
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			uses = bundle.getInt(USES);
+		}
+	};
 	public static class LethalHasteCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.35f, 0f, 0.7f); }
@@ -291,7 +312,7 @@ public enum Talent {
 	public static class SwiftEquipCooldown extends FlavourBuff{
 		public boolean secondUse;
 		public boolean hasSecondUse(){
-			return secondUse && cooldown() > 14f;
+			return secondUse;
 		}
 
 		public int icon() { return BuffIndicator.TIME; }
@@ -340,15 +361,24 @@ public enum Talent {
 	public static class CombinedLethalityAbilityTracker extends FlavourBuff{
 		public MeleeWeapon weapon;
 	};
-	public static class CombinedLethalityTriggerTracker extends FlavourBuff{
-		{ type = buffType.POSITIVE; }
-		public int icon() { return BuffIndicator.CORRUPT; }
-		public void tintIcon(Image icon) { icon.hardlight(0.6f, 0.15f, 0.6f); }
-		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 5)); }
-	};
 	public static class CombinedEnergyAbilityTracker extends FlavourBuff{
-		public int energySpent = -1;
+		public boolean monkAbilused = false;
 		public boolean wepAbilUsed = false;
+
+		private static final String MONK_ABIL_USED  = "monk_abil_used";
+		private static final String WEP_ABIL_USED   = "wep_abil_used";
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(MONK_ABIL_USED, monkAbilused);
+			bundle.put(WEP_ABIL_USED, wepAbilUsed);
+		}
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			monkAbilused = bundle.getBoolean(MONK_ABIL_USED);
+			wepAbilUsed = bundle.getBoolean(WEP_ABIL_USED);
+		}
 	}
 	public static class CounterAbilityTacker extends FlavourBuff{};
 
@@ -406,12 +436,12 @@ public enum Talent {
 	}
 
 	public String desc(boolean metamorphed){
-//		if (metamorphed){
-//			String metaDesc = Messages.get(this, name() + ".meta_desc");
-//			if (!metaDesc.equals("Ms:"+Messages.baseNameX)){
-//				return Messages.get(this, name() + ".desc") + "\n\n" + metaDesc;
-//			}
-//		}
+		if (metamorphed){
+			String metaDesc = Messages.get(this, name() + ".meta_desc");
+			if (!metaDesc.contains("Ms:")) {
+				return Messages.get(this, name() + ".desc") + "\n\n" + metaDesc;
+			}
+		}
 		return Messages.get(this, name() + ".desc");
 	}
 
@@ -422,11 +452,17 @@ public enum Talent {
 		}
 
 		if (talent == VETERANS_INTUITION && hero.pointsInTalent(VETERANS_INTUITION) == 2){
-			if (hero.belongings.armor() != null)  hero.belongings.armor.identify();
+			if (hero.belongings.armor() != null && !ShardOfOblivion.passiveIDDisabled())  {
+				hero.belongings.armor.identify();
+			}
 		}
 		if (talent == THIEFS_INTUITION && hero.pointsInTalent(THIEFS_INTUITION) == 2){
-			if (hero.belongings.ring instanceof Ring) hero.belongings.ring.identify();
-			if (hero.belongings.misc instanceof Ring) hero.belongings.misc.identify();
+			if (hero.belongings.ring instanceof Ring && !ShardOfOblivion.passiveIDDisabled()) {
+				hero.belongings.ring.identify();
+			}
+			if (hero.belongings.misc instanceof Ring && !ShardOfOblivion.passiveIDDisabled()) {
+				hero.belongings.misc.identify();
+			}
 			for (Item item : Dungeon.hero.belongings){
 				if (item instanceof Ring){
 					((Ring) item).setKnown();
@@ -438,7 +474,9 @@ public enum Talent {
 			if (hero.belongings.misc instanceof Ring) ((Ring) hero.belongings.misc).setKnown();
 		}
 		if (talent == ADVENTURERS_INTUITION && hero.pointsInTalent(ADVENTURERS_INTUITION) == 2){
-			if (hero.belongings.weapon() != null) hero.belongings.weapon().identify();
+			if (hero.belongings.weapon() != null && !ShardOfOblivion.passiveIDDisabled()){
+				hero.belongings.weapon().identify();
+			}
 		}
 
 		if (talent == PROTECTIVE_SHADOWS && hero.invisible > 0){
@@ -634,7 +672,10 @@ public enum Talent {
 			Dungeon.observe();
 		}
 		if (hero.hasTalent(LIQUID_AGILITY)){
-			Buff.prolong(hero, RestoredAgilityTracker.class, hero.cooldown() + Math.max(0, factor-1));
+			Buff.prolong(hero, LiquidAgilEVATracker.class, hero.cooldown() + Math.max(0, factor-1));
+			if (factor >= 0.5f){
+				Buff.prolong(hero, LiquidAgilACCTracker.class, 5f).uses = Math.round(factor);
+			}
 		}
 	}
 
@@ -674,17 +715,21 @@ public enum Talent {
 	}
 
 	public static void onItemEquipped( Hero hero, Item item ){
+		boolean identify = false;
 		if (hero.pointsInTalent(VETERANS_INTUITION) == 2 && item instanceof Armor){
-			item.identify();
+			identify = true;
 		}
 		if (hero.hasTalent(THIEFS_INTUITION) && item instanceof Ring){
 			if (hero.pointsInTalent(THIEFS_INTUITION) == 2){
-				item.identify();
-			} else {
-				((Ring) item).setKnown();
+				identify = true;
 			}
+			((Ring) item).setKnown();
 		}
 		if (hero.pointsInTalent(ADVENTURERS_INTUITION) == 2 && item instanceof Weapon){
+			identify = true;
+		}
+
+		if (identify && !ShardOfOblivion.passiveIDDisabled()){
 			item.identify();
 		}
 	}
@@ -757,7 +802,7 @@ public enum Talent {
 				}
 			} else if (hero.buff(DeadlyFollowupTracker.class) != null
 					&& hero.buff(DeadlyFollowupTracker.class).object == enemy.id()){
-				dmg = Math.round(dmg * (1.0f + .08f*hero.pointsInTalent(DEADLY_FOLLOWUP)));
+				dmg = Math.round(dmg * (1.0f + .1f*hero.pointsInTalent(DEADLY_FOLLOWUP)));
 			}
 		}
 
@@ -770,7 +815,7 @@ public enum Talent {
 		public void tintIcon(Image icon) { icon.hardlight(1.43f, 1.43f, 1.43f); }
 		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 5)); }
 	}
-
+	public static class RestoredAgilityTracker extends FlavourBuff{};
 	public static class SuckerPunchTracker extends Buff{};
 	public static class FollowupStrikeTracker extends FlavourBuff{
 		public int object;
@@ -909,7 +954,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, ENDLESS_RAGE, PAIN_SCAR, FANATICISM_MAGIC);
 				break;
 			case GLADIATOR:
-				Collections.addAll(tierTalents, KEEP_VIGILANCE, LETHAL_DEFENSE, VENT_NOPLACE);
+				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, VENT_NOPLACE);
 				break;
 			case BATTLEMAGE:
 				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE);

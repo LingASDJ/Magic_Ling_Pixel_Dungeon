@@ -28,13 +28,17 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrossDiedSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.GameLog;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -44,8 +48,10 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ToobarV;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
@@ -71,6 +77,7 @@ public class WndSettings extends WndTabbed {
 	private LangsTab    langs;
 	private ExtendTab    extabs;
 	private HelpTab    helps;
+	private SeedfinderTab    seeds;
 
 	public static int last_index = 0;
 
@@ -169,7 +176,7 @@ public class WndSettings extends WndTabbed {
 
 		extabs = new ExtendTab();
 		extabs.setSize(width, 0);
-		height = Math.max(height, audio.height());
+		height = Math.max(height, extabs.height());
 		add( extabs );
 
 		add( new IconTab(Icons.get(Icons.CHANGES)){
@@ -183,7 +190,7 @@ public class WndSettings extends WndTabbed {
 
 		helps = new HelpTab();
 		helps.setSize(width, 0);
-		height = Math.max(height, audio.height());
+		height = Math.max(height, helps.height());
 		add( helps );
 
 		add( new IconTab(new CrossDiedSprites()){
@@ -192,6 +199,20 @@ public class WndSettings extends WndTabbed {
 				super.select(value);
 				helps.visible = helps.active = value;
 				if (value) last_index = 6;
+			}
+		});
+
+		seeds = new SeedfinderTab();
+		seeds.setSize(width, 0);
+		height = Math.max(height, seeds.height());
+		add( seeds );
+
+		add( new IconTab(NetIcons.get(NetIcons.GLOBE)){
+			@Override
+			protected void select(boolean value) {
+				super.select(value);
+				seeds.visible = seeds.active = value;
+				if (value) last_index = 7;
 			}
 		});
 
@@ -418,6 +439,8 @@ public class WndSettings extends WndTabbed {
 		CheckBox chkFlipTags;
 		ColorBlock sep2;
 		CheckBox chkFont;
+
+		OptionSlider quickslots;
 
 		@Override
 		protected void createChildren() {
@@ -647,6 +670,22 @@ public class WndSettings extends WndTabbed {
 			chkFont.checked(SPDSettings.systemFont());
 			add(chkFont);
 
+			quickslots = new OptionSlider(Messages.get(this, "quickslots"), "" + Constants.MIN_QUICKSLOTS,
+					"" + Constants.MAX_QUICKSLOTS, Constants.MIN_QUICKSLOTS, Constants.MAX_QUICKSLOTS) {
+				@Override
+				protected void onChange() {
+					SPDSettings.quickslots(getSelectedValue());
+					if(SPDSettings.quickSwapper()){
+						Toolbar.updateLayout();
+					} else {
+						ToobarV.updateLayout();
+					}
+
+				}
+			};
+			quickslots.setSelectedValue(SPDSettings.quickslots());
+			add(quickslots);
+
 			btnKeyBindings = new RedButton(Messages.get(this, "key_bindings")){
 				@Override
 				protected void onClick() {
@@ -664,6 +703,8 @@ public class WndSettings extends WndTabbed {
 			title.setPos((width - title.width())/2, y + GAP);
 			sep1.size(width, 1);
 			sep1.y = title.bottom() + 3*GAP;
+
+
 
 			height = sep1.y + 1;
 
@@ -696,7 +737,23 @@ public class WndSettings extends WndTabbed {
 			sep2.size(width, 1);
 			sep2.y = height + GAP;
 
-			chkFont.setRect(0, sep2.y + 1 + GAP, width, BTN_HEIGHT);
+
+			if(!SPDSettings.quickSwapper()){
+				quickslots.active = false;
+				quickslots.visible = false;
+			}
+
+			if ((Game.scene() == null || Game.scene().getClass() != GameScene.class) && SPDSettings.quickSwapper()) {
+				chkFont.setRect(0, sep2.y + 1 + GAP, width, BTN_HEIGHT);
+				quickslots.visible = false;
+				quickslots.active = false;
+			} else {
+				chkFont.setRect(0, sep2.y + 1 + GAP, width/2, BTN_HEIGHT);
+				quickslots.setRect(width/2, sep2.y + 1 + GAP, width/2, BTN_HEIGHT);
+			}
+
+
+
 			height = chkFont.bottom();
 
 			if (!isDesktop()) {
@@ -713,15 +770,16 @@ public class WndSettings extends WndTabbed {
 	private static class ExtendTab extends Component {
 
 		RenderedTextBlock title;
-		RenderedTextBlock wxts;
+
 		ColorBlock sep1;
 		CheckBox ClassUI;
 		OptionSlider optSplashScreen;
-		OptionSlider quickslots;
 
 		CheckBox optFPSLimit;
-
 		CheckBox optIcon;
+
+		CheckBox customBanner;
+		RedButton CustomBannerSettings;
 
 		@Override
 		protected void createChildren() {
@@ -770,31 +828,58 @@ public class WndSettings extends WndTabbed {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					SPDSettings.ClassSkin(checked());
+					SPDSettings.V2IconDamage(checked());
 				}
 			};
-			optIcon.checked(SPDSettings.ClassSkin());
+			optIcon.checked(SPDSettings.V2IconDamage());
 			add(optIcon);
 
-			quickslots = new OptionSlider(Messages.get(this, "quickslots"), "" + Constants.MIN_QUICKSLOTS,
-					"" + Constants.MAX_QUICKSLOTS, Constants.MIN_QUICKSLOTS, Constants.MAX_QUICKSLOTS) {
+			customBanner = new CheckBox( Messages.get(this, "custom_banner") ) {
 				@Override
-				protected void onChange() {
-					SPDSettings.quickslots(getSelectedValue());
-					if(SPDSettings.quickSwapper()){
-						Toolbar.updateLayout();
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.isCustomBanner(checked());
+					if(SPDSettings.isCustomBanner()){
+						CustomBannerSettings.active = true;
+						CustomBannerSettings.alpha(1f);
 					} else {
-						ToobarV.updateLayout();
+						CustomBannerSettings.active = false;
+						CustomBannerSettings.alpha(0.5f);
 					}
-
 				}
 			};
-			quickslots.setSelectedValue(SPDSettings.quickslots());
-			add(quickslots);
+			customBanner.checked(SPDSettings.isCustomBanner());
+			add(customBanner);
 
-			wxts = PixelScene.renderTextBlock(Messages.get(this, "wxts"), 6);
-			wxts.hardlight(GREEN_COLOR);
-			add(wxts);
+			CustomBannerSettings = new RedButton(Messages.get(this, "custom_banner_settings")){
+				@Override
+				protected void onClick() {
+					String existingtext = SPDSettings.CustomBanner_Text();
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(this, "custom_banner_title"),
+							Messages.get(HeroSelectScene.class, "custom_banner_desc"),
+							existingtext,
+							20,
+							false,
+							Messages.get(HeroSelectScene.class, "custom_banner_set"),
+							Messages.get(HeroSelectScene.class, "custom_banner_clear")){
+						@Override
+						public void onSelect(boolean positive, String text) {
+							text = DungeonSeed.formatText(text);
+							long seed = DungeonSeed.convertFromText(text);
+							if (positive && seed != -1){
+								SPDSettings.CustomBanner_Text(text);
+							} else {
+								SPDSettings.CustomBanner_Text("");
+							}
+						}
+					});
+				}
+			};
+			if(!SPDSettings.isCustomBanner()){
+				CustomBannerSettings.active = false;
+				CustomBannerSettings.alpha(0.5f);
+			}
+			add(CustomBannerSettings);
 		}
 
 		@Override
@@ -808,40 +893,158 @@ public class WndSettings extends WndTabbed {
 
 			bottom = sep1.y + 1;
 
-			if(!SPDSettings.quickSwapper()){
-				quickslots.active = false;
-				quickslots.visible = false;
-			}
-
 			if (width > 200){
 				ClassUI.setRect(0, bottom, width, SLIDER_HEIGHT);
 				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
 				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				optIcon.setRect(optFPSLimit.right(), optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
-				if ((Game.scene() == null || Game.scene().getClass() != GameScene.class) && SPDSettings.quickSwapper()) {
-					quickslots.visible = false;
-					wxts.visible = false;
-				} else {
-					optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width/2, SLIDER_HEIGHT);
-					quickslots.setRect(optSplashScreen.right(), ClassUI.bottom()+GAP, width/2, SLIDER_HEIGHT);
-					wxts.visible = false;
-				}
+				customBanner.setRect(0, optIcon.bottom() + GAP, width/2, 16);
+				CustomBannerSettings.setRect(customBanner.right(), customBanner.top(), width/2, 16);
 			} else {
-					ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
-					optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
-					optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
-					optIcon.setRect(0, optFPSLimit.bottom() + GAP, width, SLIDER_HEIGHT);
-				if ((Game.scene() == null || Game.scene().getClass() != GameScene.class) && SPDSettings.quickSwapper()) {
-					quickslots.visible = false;
-				} else {
-					quickslots.setRect(0, optIcon.bottom() + GAP, width, SLIDER_HEIGHT);
-
-				}
-				wxts.visible = false;
-				//GameScene
+				ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
+				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
+				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+				optIcon.setRect(0, optFPSLimit.bottom() + GAP, width, SLIDER_HEIGHT);
+				customBanner.setRect(0, optIcon.bottom() + GAP, width, 16);
+				CustomBannerSettings.setRect(0, customBanner.bottom() + GAP, customBanner.width(), 16);
 			}
 
-			height = quickslots.bottom();
+			height = CustomBannerSettings.bottom();
+		}
+
+	}
+
+	private static class SeedfinderTab extends Component {
+		RenderedTextBlock title;
+		ColorBlock sep1;
+		OptionSlider numFloors;
+		RedButton btnChallenges;
+		RedButton btnMode;
+		CheckBox PlusSearch;
+
+		@Override
+		protected void createChildren() {
+			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
+			title.hardlight(TITLE_COLOR);
+			add(title);
+
+			boolean isDesktop = DeviceCompat.isDesktop();
+
+			numFloors = new OptionSlider(Messages.get(this, "floors_slider") + " (" + SPDSettings.seedfinderFloors() + ")",
+					"1", "30", 1,  30) {
+				@Override
+				protected void onChange() {
+					SPDSettings.seedfinderFloors(getSelectedValue());
+
+					// reload scene for floor number desc
+					ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
+						@Override
+						public void beforeCreate() {
+						}
+
+						@Override
+						public void afterCreate() {
+							//do nothing
+						}
+					});
+				}
+			};
+			numFloors.setSelectedValue(SPDSettings.seedfinderFloors());
+			add(numFloors);
+
+			sep1 = new ColorBlock(1, 1, 0xFF000000);
+			add(sep1);
+
+			btnChallenges = new RedButton(Messages.get(WndSettings.SeedfinderTab.this, "challenges")){
+				@Override
+				protected void onClick() {
+					ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true,null) {
+						public void onBackPressed() {
+							super.onBackPressed();
+
+							// reload scene for new button color
+							ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
+								@Override
+								public void beforeCreate() {
+								}
+
+								@Override
+								public void afterCreate() {
+									//do nothing
+								}
+							});
+						}
+					});
+				}
+			};
+			btnChallenges.textColor(SPDSettings.challenges() == 0 ? WHITE : TITLE_COLOR);
+			add(btnChallenges);
+
+			String modeBtnDescKey = SPDSettings.seedfinderConditionANY() ? "mode_any" : "mode_all";
+			btnMode = new RedButton(Messages.get(WndSettings.SeedfinderTab.this, modeBtnDescKey)){
+				@Override
+				protected void onClick() {
+					SPDSettings.seedfinderConditionANY(!SPDSettings.seedfinderConditionANY());
+
+					// reload scene for new button text
+					ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
+						@Override
+						public void beforeCreate() {
+						}
+
+						@Override
+						public void afterCreate() {
+							//do nothing
+						}
+					});
+				}
+			};
+			add(btnMode);
+
+			PlusSearch = new CheckBox( Messages.get(this, "plus_search") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					if (checked()) {
+						checked(!checked());
+						ShatteredPixelDungeon.scene().add(new WndOptions(new Image(new ItemSprite(ItemSpriteSheet.SEED_AIKELAIER)),
+								Messages.get(SeedfinderTab.class, "plus"),
+								Messages.get(SeedfinderTab.class, "plus_desc"),
+								Messages.get(DisplayTab.class, "okay"),
+								Messages.get(DisplayTab.class, "cancel")) {
+							@Override
+							protected void onSelect(int index) {
+								if (index == 0) {
+									checked(!checked());
+									SPDSettings.PlusSearch(checked());
+								}
+							}
+						});
+					} else {
+						SPDSettings.PlusSearch(checked());
+					}
+				}
+			};
+			PlusSearch.checked(SPDSettings.PlusSearch());
+			add(PlusSearch);
+		}
+
+		@Override
+		protected void layout() {
+
+			float bottom = y;
+
+			title.setPos((width - title.width())/2, bottom + GAP);
+			sep1.size(width, 1);
+			sep1.y = title.bottom() + 3*GAP;
+
+			bottom = sep1.y + 1;
+
+			numFloors.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
+
+			btnChallenges.setRect(0, numFloors.bottom() + GAP, width / 2 - 1, BTN_HEIGHT);
+			btnMode.setRect(width/2 + 1, numFloors.bottom() + GAP, width / 2, BTN_HEIGHT);
+			PlusSearch.setRect(0, btnChallenges.bottom() + GAP, width, BTN_HEIGHT);
 		}
 
 	}
@@ -853,6 +1056,10 @@ public class WndSettings extends WndTabbed {
 		CheckBox LockFing;
 
 		CheckBox ATBSwitch;
+
+		CheckBox VSBwitch;
+
+		CheckBox RTC_itch;
 
 		//OptionSlider timeOut;
 
@@ -887,20 +1094,25 @@ public class WndSettings extends WndTabbed {
 			ATBSwitch.checked(SPDSettings.ATBSettings());
 			add(ATBSwitch);
 
-//			timeOut = new OptionSlider(Messages.get(this, "time_out"),
-//					"4s",
-//					"30s",
-//					4, 30) {
-//				@Override
-//				protected void onChange() {
-//					if (getSelectedValue() != SPDSettings.timeOutSeed()) {
-//						SPDSettings.timeOutSeed(getSelectedValue());
-//					}
-//				}
-//			};
-//			timeOut.setSelectedValue(SPDSettings.timeOutSeed());
-//			add(timeOut);
+			VSBwitch = new CheckBox( Messages.get(this, "vsbsettings") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.visualBuddle(checked());
+				}
+			};
+			VSBwitch.checked(SPDSettings.visualBuddle());
+			add(VSBwitch);
 
+			RTC_itch = new CheckBox( Messages.get(this, "rtb_settings") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.UPos(checked());
+				}
+			};
+			RTC_itch.checked(SPDSettings.UPos());
+			add(RTC_itch);
 		}
 
 		@Override
@@ -916,15 +1128,18 @@ public class WndSettings extends WndTabbed {
 
 			if (width > 200){
 				LockFing.setRect(0, bottom, width, SLIDER_HEIGHT);
-				ATBSwitch.setRect(0, LockFing.bottom() + GAP, width, SLIDER_HEIGHT);
-				//timeOut.setRect(0, ATBSwitch.bottom() + GAP, width, SLIDER_HEIGHT);
-			} else {
+				ATBSwitch.setRect(0, LockFing.bottom() + GAP, width/2, SLIDER_HEIGHT);
+				VSBwitch.setRect(width/2, LockFing.bottom() + GAP, width/2, SLIDER_HEIGHT);
+				RTC_itch.setRect(0, VSBwitch.bottom() + GAP, width, SLIDER_HEIGHT);
+            } else {
 				LockFing.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				ATBSwitch.setRect(0, LockFing.bottom() + GAP, width, SLIDER_HEIGHT);
-				//timeOut.setRect(0, ATBSwitch.bottom() + GAP, width, SLIDER_HEIGHT);
-			}
+				VSBwitch.setRect(0, ATBSwitch.bottom() + GAP, width, SLIDER_HEIGHT);
+				RTC_itch.setRect(0, VSBwitch.bottom() + GAP, width, SLIDER_HEIGHT);
+            }
 
-			height = ATBSwitch.bottom();
+
+            height = RTC_itch.bottom();
 		}
 
 	}

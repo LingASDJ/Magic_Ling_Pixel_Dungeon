@@ -198,6 +198,7 @@ public abstract class PlatformSupport {
 	public boolean openURI( String URI ) {
 		return Gdx.net.openURI(URI);
 	}
+
 	// 更新游戏
 	public abstract void updateGame(String url, UpdateCallback listener);
 

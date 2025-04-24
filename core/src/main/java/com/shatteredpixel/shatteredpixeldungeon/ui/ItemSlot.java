@@ -82,6 +82,14 @@ public class ItemSlot extends Button {
 		public int image() { return ItemSpriteSheet.TOMB; }
 		public String name() { return Messages.get(Heap.class, "tomb"); }
 	};
+	public static final Item WHITETOMB = new Item() {
+		public int image() { return ItemSpriteSheet.GRAVE; }
+		public String name() { return Messages.get(Heap.class, "wtomb"); }
+	};
+	public static final Item BLACK = new Item() {
+		public int image() { return ItemSpriteSheet.EBONY_CHEST; }
+		public String name() { return Messages.get(Heap.class, "black_chest"); }
+	};
 	public static final Item SKELETON = new Item() {
 		public int image() { return ItemSpriteSheet.BONES; }
 		public String name() { return Messages.get(Heap.class, "skeleton"); }
@@ -153,8 +161,14 @@ public class ItemSlot extends Button {
 		}
 
 		if (itemIcon != null){
-			itemIcon.x = x + width - (ItemSpriteSheet.Icons.SIZE + itemIcon.width())/2f - margin.right;
-			itemIcon.y = y + (ItemSpriteSheet.Icons.SIZE - itemIcon.height)/2f + margin.top;
+			//center the icon slightly if there is enough room
+			if (width >= 24 || height >= 24) {
+				itemIcon.x = x + width - (ItemSpriteSheet.Icons.SIZE + itemIcon.width()) / 2f - margin.right;
+				itemIcon.y = y + (ItemSpriteSheet.Icons.SIZE - itemIcon.height) / 2f + margin.top;
+			} else {
+				itemIcon.x = x + width - itemIcon.width() - margin.right;
+				itemIcon.y = y + margin.top;
+			}
 			PixelScene.align(itemIcon);
 		}
 		
@@ -248,7 +262,7 @@ public class ItemSlot extends Button {
 			if (item.levelKnown){
 				int str = item instanceof Weapon ? ((Weapon)item).STRReq() : ((Armor)item).STRReq();
 				extra.text( Messages.format( TXT_STRENGTH, str ) );
-				if (str > Dungeon.hero.STR()) {
+				if (Dungeon.hero != null && str > Dungeon.hero.STR()) {
 					extra.hardlight( DEGRADED );
 				} else if (item instanceof Weapon && ((Weapon) item).masteryPotionBonus){
 					extra.hardlight( MASTERED );

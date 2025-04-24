@@ -99,7 +99,6 @@ public class SpiritBow extends Weapon {
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
-
 		if (attacker.buff(NaturesPower.naturesPowerTracker.class) != null && !sniperSpecial){
 
 			Actor.add(new Actor() {
@@ -135,7 +134,7 @@ public class SpiritBow extends Weapon {
 
 	@Override
 	public String info() {
-		String info = desc();
+		String info = super.info();
 		
 		info += "\n\n" + Messages.get( SpiritBow.class, "stats",
 				Math.round(augment.damageFactor(min())),
@@ -214,7 +213,7 @@ public class SpiritBow extends Weapon {
 		if (owner instanceof Hero) {
 			int exStr = ((Hero)owner).STR() - STRReq();
 			if (exStr > 0) {
-				damage += Char.combatRoll( 0, exStr );
+				damage += Hero.heroDamageIntRange( 0, exStr );
 			}
 		}
 

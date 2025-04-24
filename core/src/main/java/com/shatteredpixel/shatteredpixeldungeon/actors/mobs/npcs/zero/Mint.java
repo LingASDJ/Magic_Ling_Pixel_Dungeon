@@ -36,9 +36,6 @@ public class Mint extends NTNPC {
 
     @Override
     public String info(){
-
-
-
         if (first){
             return Messages.get(Mint.class, "d");
         } else {

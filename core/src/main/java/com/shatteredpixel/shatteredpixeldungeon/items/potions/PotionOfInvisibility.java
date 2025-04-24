@@ -36,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Random;
 
 public class PotionOfInvisibility extends Potion {
 
@@ -47,18 +46,17 @@ public class PotionOfInvisibility extends Potion {
 	@Override
 	public void apply( Hero hero ) {
 		identify();
-		if(Dungeon.isChallenged(EXSG)&& Random.Float()>0.4f){
+		if(!Dungeon.isChallenged(EXSG)){
+			Buff.affect( hero, Invisibility.class, Invisibility.DURATION );
+			GLog.i( Messages.get(this, "invisible") );
+			Sample.INSTANCE.play( Assets.Sounds.MELD );
+		} else {
 			for (Mob mob : Dungeon.level.mobs) {
 				mob.beckon( Dungeon.hero.pos );
 			}
 			GLog.i( Messages.get(this, "notinvisible") );
 			Sample.INSTANCE.play( Assets.Sounds.ALERT );
 			CellEmitter.center( Dungeon.hero.pos ).start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
-		}
-		else{
-			Buff.affect( hero, Invisibility.class, Invisibility.DURATION );
-			GLog.i( Messages.get(this, "invisible") );
-			Sample.INSTANCE.play( Assets.Sounds.MELD );
 		}
 
 
@@ -68,10 +66,15 @@ public class PotionOfInvisibility extends Potion {
 	public int value() {
 		return isKnown() ? 40 * quantity : super.value();
 	}
+
+	@Override
+	public String name() {
+		return Dungeon.isChallenged(Challenges.EXSG) && isIdentified() ? Messages.get(this, "namex") : isIdentified() ?  Messages.get(this, "name") : super.name();
+	}
+
 	@Override
 	public String desc() {
-		//三元一次逻辑运算
-		return Dungeon.isChallenged(Challenges.EXSG) ? Messages.get(this, "descx") : Messages.get(this, "desc");
+		return Dungeon.isChallenged(Challenges.EXSG) && isIdentified() ? Messages.get(this, "descx") : isIdentified() ?  Messages.get(this, "desc") : super.desc();
 	}
 
 }

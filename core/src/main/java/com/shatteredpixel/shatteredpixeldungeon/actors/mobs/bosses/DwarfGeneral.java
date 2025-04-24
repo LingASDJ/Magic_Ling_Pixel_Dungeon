@@ -3,11 +3,11 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
@@ -64,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
@@ -92,6 +93,9 @@ public class DwarfGeneral extends Boss {
     private int armyCooldown;
 
     private int enderCooldown;
+
+    private boolean noAlive = false;
+
     @Override
     public int damageRoll() {
         return Random.NormalIntRange( 20, 42 );
@@ -165,6 +169,9 @@ public class DwarfGeneral extends Boss {
         if(phase == 0){
             rangedCooldown--;
         }
+
+
+
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if (mob instanceof DwarfSolider) {
@@ -373,7 +380,7 @@ public class DwarfGeneral extends Boss {
         super.storeInBundle(bundle);
         bundle.put(TARGETING_POS, targetingPos);
         bundle.put( COOLDOWN, rangedCooldown );
-
+        bundle.put("nolive",noAlive);
         //技能1.2
         bundle.put(ARMORCOOLDOWN,armorCooldown);
         bundle.put(LIMITDAMAGE,limitDamage);
@@ -419,7 +426,7 @@ public class DwarfGeneral extends Boss {
         armyCooldown = bundle.getInt(COLDDOWN);
 
         magicAttackCooldown = bundle.getInt(MAGICCOOLDOWN);
-
+        noAlive = bundle.getBoolean("nolive");
         enderCooldown = bundle.getInt(EDCOLDDOWN);
     }
 
@@ -474,6 +481,40 @@ public class DwarfGeneral extends Boss {
         GameScene.flash(Window.WHITE);
     }
 
+    private void armyPhase_three(){
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof ArmyFlag) {
+                mob.die(null);
+            }
+        }
+
+        ArmyFlag flag = new ArmyFlag();
+        flag.pos = 365;
+        GameScene.add(flag);
+
+        ArmyFlag flag2 = new ArmyFlag();
+        flag2.pos = 369;
+        GameScene.add(flag2);
+
+        ArmyFlag flag3 = new ArmyFlag();
+        flag3.pos = 325;
+        GameScene.add(flag3);
+
+        ArmyFlag flag4 = new ArmyFlag();
+        flag4.pos = 409;
+        GameScene.add(flag4);
+
+        ScrollOfTeleportation.appear(this, 367);
+
+        Buff.affect(flag, CrivusFruits.CFBarrior.class). setShield(50);
+        Buff.affect(flag2, CrivusFruits.CFBarrior.class).setShield(50);
+        Buff.affect(flag3, CrivusFruits.CFBarrior.class).setShield(50);
+        Buff.affect(flag4, CrivusFruits.CFBarrior.class).setShield(50);
+
+        GameScene.flash(Window.WHITE);
+    }
+
     @Override
     public boolean isInvulnerable(Class effect) {
         boolean isAlive = false;
@@ -483,7 +524,7 @@ public class DwarfGeneral extends Boss {
                 break;
             }
         }
-        return isAlive;
+        return super.isInvulnerable(effect) || isAlive;
     }
 
     private void summonGetSolider(){
@@ -612,13 +653,19 @@ public class DwarfGeneral extends Boss {
             yell(Messages.get(this,"army_one"));
             phase++;
             HP = 800;
-        } else if(phase == 1 && HP<600){
+        } else if(phase == 1 && HP<600) {
             armyPhase_two();
             summonGetNormal();
             summonGetSolider();
-            yell(Messages.get(this,"army_two"));
+            yell(Messages.get(this, "army_two"));
             phase++;
             HP = 600;
+        } else if(phase == 2 && HP<400){
+            if(Statistics.bossRushMode){
+                armyPhase_three();
+            }
+            phase++;
+            HP = 400;
         } else if(phase == 3 && HP<200){
             armyPhase_two();
             summonGetNormal();
@@ -626,20 +673,15 @@ public class DwarfGeneral extends Boss {
             yell(Messages.get(this,"army_three"));
             phase++;
             HP = 200;
+            noAlive = true;
         }
-
-        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-            if (mob instanceof ArmyFlag) {
-                if (((ArmyFlag) mob).ThreePhase >= 4 && phase == 2) {
-                    phase++;
-                    HP = 400;
-                }
-            }
-        }
-
-
 
         super.damage(dmg, src);
+    }
+
+    @Override
+    public boolean isAlive() {
+        return super.isAlive() || !noAlive;
     }
 
     @Override
@@ -648,7 +690,7 @@ public class DwarfGeneral extends Boss {
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "notice"));
-            BGMPlayer.playBoss();
+            //BGMPlayer.playBoss();
             Camera.main.shake(1f,3f);
             GameScene.bossReady();
             for (Char ch : Actor.chars()){
@@ -978,7 +1020,7 @@ public class DwarfGeneral extends Boss {
 
         PaswordBadges.UNLOCK_KING();
 
-        if(!SPDSettings.KillDwarf()) {
+        if(!SPDSettings.KillDwarf() && !Statistics.bossRushMode) {
             DwarfGeneralNTNPC boss = new DwarfGeneralNTNPC();
             boss.pos = 367;
             GameScene.add(boss);
@@ -990,10 +1032,25 @@ public class DwarfGeneral extends Boss {
         } else {
             Statistics.dwarfKill = true;
             yell( Messages.get(this, "died",hero.name()) );
+            GameScene.scene.add(new Delayer(3f){
+                @Override
+                protected void onComplete() {
+                    GameScene.scene.add(new Delayer(1f){
+                        @Override
+                        protected void onComplete() {
+                            ShatteredPixelDungeon.seamlessResetScene();
+                        }
+                    });
+                    ShatteredPixelDungeon.resetScene();
+                    SPDSettings.KillDwarf(true);
+                    PaswordBadges.KILLDWG();
+                }
+            });
         }
 
-        Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
-
+        if(!Statistics.bossRushMode){
+            Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
+        }
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if (mob instanceof Warlock || mob instanceof Monk ||

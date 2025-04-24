@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -71,12 +70,6 @@ public class TimeReset extends Weapon.Enchantment {
             }
             mobs.clear();
             mobpos.clear();
-        }
-
-        if(attacker instanceof Hero){
-            if(((Hero) attacker).belongings.armor.glyph != null){
-                comboProc(this, ((Hero) attacker).belongings.armor.glyph, attacker, defender, damage);
-            }
         }
 
         return damage;

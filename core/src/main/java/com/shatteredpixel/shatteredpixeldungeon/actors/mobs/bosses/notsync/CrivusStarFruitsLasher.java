@@ -48,16 +48,14 @@ public class CrivusStarFruitsLasher extends Mob {
             if(boss instanceof CrivusStarFruits && Dungeon.level.distance(pos, boss.pos) <= 50 && Statistics.crivusfruitslevel3) {
 
                 //最高加到半血
-                if (boss.HP < boss.HT/2){
+                if (boss.HP < 121){
 
                     if (sprite.visible || boss.sprite.visible) {
                         sprite.parent.add(new Beam.GlassRayS(sprite.center(), boss.sprite.center()));
                     }
 
-                    boss.HP = Math.min(boss.HP + 2, boss.HT/2);
+                    boss.HP = Math.min(boss.HP + 2, 120);
                     if (boss.sprite.visible) boss.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
-
-                    //不符合的情况下给予3回合激素涌动
                 }
                 next();
             }

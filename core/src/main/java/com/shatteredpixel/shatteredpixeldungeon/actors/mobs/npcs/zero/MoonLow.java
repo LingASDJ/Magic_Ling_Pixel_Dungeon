@@ -72,6 +72,8 @@ public class MoonLow extends NTNPC {
                     GameScene.show(new WndDialog(plot2,false));
                 }
             });
+        } else {
+            yell(Messages.get(this,"not"));
         }
         return true;
     }

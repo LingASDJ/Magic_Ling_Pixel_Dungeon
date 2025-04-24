@@ -21,12 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -34,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisintegrationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlashingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlockTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GatewayTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrippingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PoisonDartTrap;
@@ -47,19 +47,25 @@ import com.watabou.utils.Reflection;
 
 public class TrapsRoom extends SpecialRoom {
 
+	//size is a bit limited to prevent too many or too few traps
+	@Override
+	public int minWidth() { return 6; }
+	public int maxWidth() { return 8; }
+
+	@Override
+	public int minHeight() { return 6; }
+	public int maxHeight() { return 8; }
+
 	public void paint( Level level ) {
 		 
 		Painter.fill( level, this, Terrain.WALL );
 
 		Class<? extends Trap> trapClass;
-		switch (Random.Int(4)){
-			case 0:
-				trapClass = null;
-				break;
-			default:
-				trapClass = Random.oneOf(levelTraps[Dungeon.depth/5]);
-				break;
-		}
+        if (Random.Int(4) == 0 || Dungeon.depth > 26) {
+            trapClass = null;
+        } else {
+            trapClass = Random.oneOf(levelTraps[Dungeon.depth / 5]);
+        }
 
 		if (trapClass == null){
 			Painter.fill(level, this, 1, Terrain.CHASM);
@@ -125,13 +131,18 @@ public class TrapsRoom extends SpecialRoom {
 		}
 		
 		//1 floor set higher in probability, never cursed
-		do {
-			if (Random.Int(2) == 0) {
-				prize = Generator.randomWeapon((Dungeon.depth / 5) + 1);
-			} else {
-				prize = Generator.randomArmor((Dungeon.depth / 5) + 1);
+		if (Random.Int(2) == 0) {
+			prize = Generator.randomWeapon((Dungeon.depth / 5) + 1);
+			if (((Weapon)prize).hasCurseEnchant()){
+				((Weapon) prize).enchant(null);
 			}
-		} while (prize.cursed || Challenges.isItemBlocked(prize));
+		} else {
+			prize = Generator.randomArmor((Dungeon.depth / 5) + 1);
+			if (((Armor)prize).hasCurseGlyph()){
+				((Armor) prize).inscribe(null);
+			}
+		}
+		prize.cursed = false;
 		prize.cursedKnown = true;
 
 		//33% chance for an extra update.
@@ -153,9 +164,6 @@ public class TrapsRoom extends SpecialRoom {
 			//city
 			{WarpingTrap.class, FlashingTrap.class, DisintegrationTrap.class},
 			//halls, muahahahaha
-			{GrimTrap.class},
-			//Holiday
-			{GrimTrap.class, DisintegrationTrap.class, GatewayTrap.class},
-			{FlashingTrap.class, DisintegrationTrap.class, GrimTrap.class},
+			{GrimTrap.class}
 	};
 }

@@ -48,8 +48,8 @@ public class Nyz extends NTNPC {
         chat = new ArrayList<String>() {
             {
                 if(RegularLevel.holiday == RegularLevel.Holiday.CJ) {
-                    add(Messages.get(Nyz.class, "dhat_1",hero.name()));
-                    add(Messages.get(Nyz.class, "dhat_2",hero.name()));
+                    add(Messages.get(Nyz.class, "dhat_1",Dungeon.hero != null ?hero.name():"?"));
+                    add(Messages.get(Nyz.class, "dhat_2",Dungeon.hero != null ?hero.name():"?"));
                     add(Messages.get(Nyz.class, "dhat_3"));
                 } else {
                     add(Messages.get(Nyz.class, "chat_1"));

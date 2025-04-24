@@ -22,7 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -62,7 +64,6 @@ public class WndInfoCell extends Window {
 		if (customImage != null){
 			return customImage;
 		} else {
-
 			if (tile == Terrain.WATER) {
 				Image water = new Image(Dungeon.level.waterTex());
 				water.frame(0, 0, DungeonTilemap.SIZE, DungeonTilemap.SIZE);
@@ -148,6 +149,15 @@ public class WndInfoCell extends Window {
 						desc += "\n\n";
 					}
 					desc += blob.tileDesc();
+				}
+			}
+
+			for(Actor actor : Actor.all()){
+				if(actor instanceof WandOfSun.MiniSun){
+					WandOfSun.MiniSun s = (WandOfSun.MiniSun) actor;
+					if(s.pos == cell){
+						desc += Messages.get(WandOfSun.MiniSun.class,"desc",s.duration);
+					}
 				}
 			}
 		}

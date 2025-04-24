@@ -23,11 +23,13 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Gudazi;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
@@ -57,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
@@ -82,7 +85,27 @@ public class CavesLevel extends RegularLevel {
 	protected ArrayList<Room> initRooms() {
 		return Blacksmith.Quest.spawn(super.initRooms());
 	}
-	
+
+
+	@Override
+	public void playLevelMusic() {
+		if(RedDragon.Quest.active()){
+			Music.playModeBGM(Assets.Music.CAVES_TENSE, true);
+		} else {
+			Music.playModeBGM(Assets.Music.BGM_3, true);
+		}
+	}
+
+	@Override
+	protected void createMobs() {
+		if(Dungeon.depth == 14 && Dungeon.branch == 0 && Statistics.gdzHelpDungeon == 3){
+			Gudazi npc20 = new Gudazi();
+			npc20.pos = entrance()-1;
+			mobs.add(npc20);
+		}
+		super.createMobs();
+	}
+
 	@Override
 	protected int standardRooms(boolean forceMax) {
 		if (forceMax) return 7;

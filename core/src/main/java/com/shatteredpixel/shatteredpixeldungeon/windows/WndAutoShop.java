@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.AutoShopReBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -150,7 +151,11 @@ public class WndAutoShop extends Window {
                             }
                         }
                     } else if(Dungeon.gold >= 200 * (Dungeon.depth/5)) {
-                        Dungeon.gold-=200 * (Dungeon.depth/5);
+                        if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9) {
+                            GLog.n(Messages.get(LuckyGlove.class,"lucky"));
+                        }else{
+                            Dungeon.gold -= 200 * (Dungeon.depth / 5);
+                        }
                         WndAutoShop.this.selectReward( item );
                         if(Dungeon.hero.buff(AutoRandomBuff.class) != null) {
                             AutoRandomBuff.level -= Random.Int(4);

@@ -21,21 +21,31 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation.appear;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.custom.Gift;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
+import com.watabou.utils.Callback;
 
 import java.io.IOException;
 
@@ -60,6 +70,98 @@ public class WndGame extends Window {
 			}
 		});
 		curBtn.icon(Icons.get(Icons.PREFS));
+
+		addButton(curBtn = new RedButton(Messages.get(this, "code")) {
+			@Override
+			protected void onClick() {
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+
+
+						if((Dungeon.isDLC(Conducts.Conduct.DEV))) {
+							ShatteredPixelDungeon.scene().addToFront(new WndError(Messages.get(WndLuoWhite.class, "key_not_rmode")) {
+								public void onBackPressed() {
+									super.onBackPressed();
+								}
+							});
+						} else if (Statistics.RandMode){
+							ShatteredPixelDungeon.scene().addToFront(new WndError(Messages.get(WndLuoWhite.class, "key_not_rmode")) {
+								public void onBackPressed() {
+									super.onBackPressed();
+								}
+							});
+						} else if (Statistics.bossRushMode){
+							ShatteredPixelDungeon.scene().addToFront(new WndError(Messages.get(WndLuoWhite.class, "key_not_rmode")) {
+								public void onBackPressed() {
+									super.onBackPressed();
+								}
+							});
+						} else {
+							GameScene.show( new WndTextInput( Messages.get( WndLuoWhite.class, "key_title" ),
+									Messages.get( WndLuoWhite.class, "key_desc" ),
+									"",
+									99,
+									false,
+									Messages.get( WndLuoWhite.class, "key_confirm" ),
+									Messages.get( WndLuoWhite.class, "key_cancel" ) ){
+								@Override
+								public void onSelect(boolean positive, String text) {
+									if ( positive){
+										int result = Gift.ActivateGift( text );
+										switch ( result ){
+											case 0:
+												ShatteredPixelDungeon.scene().addToFront( new WndError( Messages.get( WndLuoWhite.class, "no_internet" ) ) {
+													public void onBackPressed() {
+														super.onBackPressed();
+													}
+												} );
+												break;
+											case 1:
+												ShatteredPixelDungeon.scene().addToFront( new WndTitledMessage( Icons.INFO.get(), Messages.get( WndLuoWhite.class,"success" ), Messages.get( WndLuoWhite.class, "key_activation" ) ) {
+													public void onBackPressed() {
+														super.onBackPressed();
+													}
+												} );
+												break;
+											case 2:
+												ShatteredPixelDungeon.scene().addToFront( new WndError( Messages.get( WndLuoWhite.class, "key_expired" ) ) {
+													public void onBackPressed() {
+														super.onBackPressed();
+													}
+												} );
+												break;
+											case 3:
+												ShatteredPixelDungeon.scene().addToFront( new WndError( Messages.get( WndLuoWhite.class, "key_used" ) ) {
+													public void onBackPressed() {
+														super.onBackPressed();
+													}
+												} );
+												break;
+											case 4:
+												ShatteredPixelDungeon.scene().addToFront( new WndError( Messages.get( WndLuoWhite.class, "key_not_null" ) ) {
+													public void onBackPressed() {
+														super.onBackPressed();
+													}
+												} );
+												break;
+											default:
+												ShatteredPixelDungeon.scene().addToFront( new WndError( Messages.get( WndLuoWhite.class, "key_not_found" ) ) {
+													public void onBackPressed() {
+														super.onBackPressed();
+													}
+												} );
+										}
+									}
+								}
+							});
+						}
+
+					}
+				});
+			}
+		});
+		curBtn.icon(new ItemSprite(ItemSpriteSheet.CHEST));
 
 		// Challenges window
 		if (Dungeon.challenges > 0) {
@@ -126,6 +228,23 @@ public class WndGame extends Window {
 			});
 			curBtn.icon(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16));
 		}
+
+
+		if(Dungeon.depth == 0 && Dungeon.branch == 0 && !Dungeon.isChallenged(CS) ) {
+			// Debug
+			addButton(curBtn = new RedButton(Messages.get(this, "restar")) {
+				@Override
+				protected void onClick() {
+					appear( hero, 317 );
+					Dungeon.level.occupyCell(hero );
+					Dungeon.observe();
+					GameScene.updateFog();
+				}
+			});
+			curBtn.icon(Icons.get(Icons.TALENT));
+		}
+
+
 
 		resize( WIDTH, pos );
 	}

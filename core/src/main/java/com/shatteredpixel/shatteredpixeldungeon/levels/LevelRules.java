@@ -28,94 +28,106 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.TheatreLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonCaveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniChestMazeLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.DeepShadowLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.SkyGooBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.spical.GalaxyKeyBossLevel;
 import com.watabou.utils.Random;
 
-import java.util.ArrayList;
-import java.util.List;
-
-//Level Rules
+//Level Rules Test Android
 public class LevelRules {
-
-    private List<Level> availableLevels;
-
-    public void LevelGenerator() {
-        availableLevels = new ArrayList<>();
-        availableLevels.add(new SLMKingLevel());
-        availableLevels.add(new ForestHardBossLevel());
-    }
-
-    public Level generateRandomLevel() {
-        int index = Random.Int(availableLevels.size());
-        Level selectedLevel = availableLevels.get(index);
-        availableLevels.remove(index);
-        return selectedLevel;
-    }
 
     public static Level createStandardLevel() {
 
             if(Statistics.bossRushMode){
                 switch (depth) {
+                    //T1-Boss区
                     case 1: return new AncityLevel();
 
-                    case 2: return new ForestBossLevel();
+                    case 3: return new SewerBossLevel();
 
-                    case 4:
-                        return new ForestHardBossLevel();
-
-                    case 6: return new SLMKingLevel();
-
-                    case 7:
-                        if(Statistics.difficultyDLCEXLevel >=2){
-                            return new SkyGooBossLevel();
-                        } else {
-                            return new ItemLevel();
-                        }
+                    case 5: return new ForestPoisonBossLevel();
+                    case 7: return new ForestHardBossLevel();
 
                     case 9: return new PrisonBossLevel();
 
-                    case 11: return new ColdChestBossLevel();
+                    //T2-Boss区
+                    case 11: return new LaveCavesBossLevel();
 
-                    case 13: return new DimandKingLevel();
+                    case 13:
+                        return new ColdChestBossLevel();
 
-                    case 14:
-                        if(Statistics.difficultyDLCEXLevel >=2){
-                            return new DeepShadowLevel();
-                        } else {
-                            return new ItemLevel();
+                    case 15:
+                        if(Statistics.difficultyDLCEXLevel >=2)
+                            return new SkyGooBossLevel();
+                        else {
+                            return new BossRushItemLevel();
                         }
 
-                        //御三家 最难时刻
-                    case 16: return new CavesBossLevel();
-                    case 17: return new CaveTwoBossLevel();
-                    case 18: return new CavesGirlDeadLevel();
+                    case 17:
+                        if(Statistics.difficultyDLCEXLevel >=2)
+                            return new DeepShadowLevel();
+                        else {
+                            return new BossRushItemLevel();
+                        }
 
-                    case 21: return new ShopBossLevel();
+                    case 19:
+                        return new GreenStlingBossLevel();
 
-                    case 23: return new AncientMysteryCityBossLevel();
-                    case 24: return new NewCityBossLevel();
+                    //T3-Boss区
+                    case 21:
+                        return new DragonFestivalMiniLevel();
 
-                    case 26: return new CerDogBossLevel();
+                    case 23:
+                        return new CavesBossLevel();
 
-                    case 27: return new DwarfMasterBossLevel();
+                    case 25:
+                        return new ShopBossLevel();
 
-                    case 29: return new HallsBossLevel();
+                    case 27:
+                        return new CavesGirlDeadLevel();
 
-                    case 31: return new YogGodHardBossLevel();
+                    case 29:
+                        return new CaveTwoBossLevel();
 
-                    //补给层 T1
-                    case 3:  case 5: case 8:  case 10:
-                        //补给层 T2
-                    case 12: case 15:  case 19: case 20:
-                        //补给层 T3
-                    case 22: case 25: case 28: case 30:
-                        return new ItemLevel();
+                    //T4-Boss区
+                    case 31:
+                        return new AncientMysteryCityBossLevel();
+
+                    case 33:
+                        return new DwarfGeneralBossLevel();
+
+                    case 35:
+                        return new DwarfMasterBossLevel();
+
+
+
+                    case 39:
+                        return new HallsBossLevel();
+
+                    case 42:
+                        return new YogGodHardBossLevel();
+
+
+
+                    case 2:  case 4: case 6:  case 8: case 10:
+                    //补给层 T2
+                    case 12: case 14:case 16: case 18: case 20:
+                    //补给层 T3
+                    case 22: case 24:case 26: case 28: case 30:
+                    //补给层 T4
+                    case 32: case 34: case 36: case 37:case 38:
+                    //普通结局
+                    case 40: case 41:
+                      return new BossRushItemLevel();
 
                     default:
                         Statistics.deepestFloor--;
@@ -135,9 +147,14 @@ public class LevelRules {
                     case 4:
                         return new SewerLevel();
                     case 5:
-                        if(Statistics.ExFruit){
+                        if(SPDSettings.level1boss() == 1){
+                            return new ForestPoisonBossLevel();
+                        } else if(SPDSettings.level1boss() == 3){
+                            Statistics.ExFruit = true;
                             return new ForestHardBossLevel();
-                        } else if(Challenges.activeChallenges()>8){
+                        } else if(Statistics.ExFruit){
+                            return new ForestHardBossLevel();
+                        } else if(Challenges.activeChallenges()>8 && SPDSettings.level1boss()==1){
                             if (!Badges.isUnlocked(Badges.Badge.KILL_CLSISTER)){
                                 Statistics.ExFruit = true;
                                 return new ForestHardBossLevel();
@@ -145,13 +162,13 @@ public class LevelRules {
                                 Statistics.ExFruit = true;
                                 return new ForestHardBossLevel();
                             } else {
-                                return new ForestBossLevel();
+                                return new ForestPoisonBossLevel();
                             }
                         } else if(Badges.isUnlocked(Badges.Badge.KILL_CLSISTER) && Random.Float()<=0.2f) {
                             Statistics.ExFruit = true;
                             return new ForestHardBossLevel();
                         } else {
-                            return new ForestBossLevel();
+                            return new ForestPoisonBossLevel();
                         }
                     case 6:
                     case 7:
@@ -165,7 +182,7 @@ public class LevelRules {
                                default:
                                case 3: return new DeepShadowLevel();
                                case 4: return new ColdChestBossLevel();
-                               case 5: return new DimandKingLevel();
+                               case 5: return new GreenStlingBossLevel();
                                case 6: return new CavesBossLevel();
                                case 7: return new CaveTwoBossLevel();
                                case 8: return new PrisonBossLevel();
@@ -207,12 +224,10 @@ public class LevelRules {
                         return new CityLevel();
                     case 20:
                         if(Statistics.RandMode){
-                            switch (Random.Int(4)){
-                                case 1: return new AncientMysteryCityBossLevel();
-                                case 2: return new DwarfMasterBossLevel();
+                            switch (Random.Int(3)){
+                                case 1: return new DwarfMasterBossLevel();
                                 default:
-                                case 3: return new CerDogBossLevel();
-                                case 4: return new ShopBossLevel();
+                                case 3: return new ShopBossLevel();
                             }
                         } else {
                             return new NewCityBossLevel();
@@ -229,7 +244,17 @@ public class LevelRules {
                             return new HallsBossLevel();
                         }
                     case 26:
-                        return new LastLevel();
+                        return !Statistics.Hollow_Holiday ? new LastLevel() : new OpenLastLevel();
+
+                    case 27: case 28: case 29: case 30:
+                        return Statistics.Hollow_Holiday ? new HollowLevel() : new DeadEndLevel();
+
+                    case 31:
+                        return new CerDogBossLevel();
+
+                    case 32:
+                        return new MorpheusBossLevel();
+
                     default:
                         Statistics.deepestFloor--;
                         return new DeadEndLevel();
@@ -238,7 +263,7 @@ public class LevelRules {
     }
 
     public static Level createBranchLevel() {
-        switch (branch){
+        switch (branch) {
             default:
             case 1:
                 switch (depth) {
@@ -251,31 +276,37 @@ public class LevelRules {
                     case 13:
                     case 14:
                         return new MiningLevel();
-                    case 17: case 18:
+                    case 17:
+                    case 18:
                         return new AncientMysteryCityLevel();
                     case 20:
                         return new DwarfGeneralBossLevel();
+                    case 28:
+                        return new TheatreLevel();
                     default:
                         return new DeadEndLevel();
                 }
 
             case 2:
                 switch (depth) {
-                    case 4: case 14:
-                       return new MiniBossLevel();
+                    case 4:
+                    case 14:
+                        return new MiniBossLevel();
                     case 5:
                         return new DragonCaveLevel();
-                   case 17: case 18:
+                    case 17:
+                    case 18:
                         return new AncientMysteryCityLevel();
                     default:
                         return new DeadEndLevel();
                 }
 
             case 3:
-                switch (depth){
+                switch (depth) {
                     case 5:
                         return new LaveCavesBossLevel();
-                    case 17: case 18:
+                    case 17:
+                    case 18:
                         return new AncientMysteryCityBossLevel();
                     case 11:
                     case 12:
@@ -287,17 +318,20 @@ public class LevelRules {
                 }
 
             case 4:
-                switch (depth){
+                switch (depth) {
                     case 25:
                         return new OpenLastLevel();
-                    case 17: case 18:
+                    case 17:
+                    case 18:
                         return new GardenLevel();
+                    case 10: case 11: case 13:
+                        return new MiniChestMazeLevel();
                     default:
                         return new DeadEndLevel();
                 }
 
             case 5:
-                switch (depth){
+                switch (depth) {
                     case 17:
                         return new GardenLevel();
                     default:
@@ -312,64 +346,95 @@ public class LevelRules {
 
             case 8:
                 switch (depth) {
-                    case 1: return new AncityLevel();
+                    case 1:
+                        return new AncityLevel();
 
-                    case 2: return new ForestBossLevel();
+                    case 2:
+                        return new ForestPoisonBossLevel();
 
                     case 4:
                         return new ForestHardBossLevel();
 
-                    case 6: return new SLMKingLevel();
+                    case 6:
+                        return new SLMKingLevel();
 
                     case 7:
-                        if(Statistics.difficultyDLCEXLevel >=2){
+                        if (Statistics.difficultyDLCEXLevel >= 2) {
                             return new SkyGooBossLevel();
                         } else {
-                            return new ItemLevel();
+                            return new BossRushItemLevel();
                         }
 
-                    case 9: return new PrisonBossLevel();
+                    case 9:
+                        return new PrisonBossLevel();
 
-                    case 11: return new ColdChestBossLevel();
+                    case 11:
+                        return new ColdChestBossLevel();
 
-                    case 13: return new DimandKingLevel();
+                    case 13:
+                        return new GreenStlingBossLevel();
 
                     case 14:
-                        if(Statistics.difficultyDLCEXLevel >=2){
+                        if (Statistics.difficultyDLCEXLevel >= 2) {
                             return new DeepShadowLevel();
                         } else {
-                            return new ItemLevel();
+                            return new BossRushItemLevel();
                         }
 
                         //御三家 最难时刻
-                    case 16: return new CavesBossLevel();
-                    case 17: return new CaveTwoBossLevel();
-                    case 18: return new CavesGirlDeadLevel();
+                    case 16:
+                        return new CavesBossLevel();
+                    case 17:
+                        return new CaveTwoBossLevel();
+                    case 18:
+                        return new CavesGirlDeadLevel();
 
-                    case 21: return new ShopBossLevel();
+                    case 21:
+                        return new ShopBossLevel();
 
-                    case 23: return new AncientMysteryCityBossLevel();
-                    case 24: return new NewCityBossLevel();
+                    case 23:
+                        return new AncientMysteryCityBossLevel();
+                    case 24:
+                        return new NewCityBossLevel();
 
-                    case 26: return new CerDogBossLevel();
+                    case 27:
+                        return new DwarfMasterBossLevel();
 
-                    case 27: return new DwarfMasterBossLevel();
+                    case 29:
+                        return new HallsBossLevel();
 
-                    case 29: return new HallsBossLevel();
-
-                    case 31: return new YogGodHardBossLevel();
+                    case 31:
+                        return new YogGodHardBossLevel();
 
                     //补给层 T1
-                    case 3:  case 5: case 8:  case 10:
+                    case 3:
+                    case 5:
+                    case 8:
+                    case 10:
                         //补给层 T2
-                    case 12: case 15:  case 19: case 20:
+                    case 12:
+                    case 15:
+                    case 19:
+                    case 20:
                         //补给层 T3
-                    case 22: case 25: case 28: case 30:
-                        return new ItemLevel();
+                    case 22:
+                    case 25:case 26:
+                    case 28:
+                    case 30:
+                        return new BossRushItemLevel();
 
                     default:
                         Statistics.deepestFloor--;
                         return new DeadEndLevel();
+                }
+
+            case 10:
+                switch (depth) {
+                    default:
+                        Statistics.deepestFloor--;
+                        return new DeadEndLevel();
+                    case 26:
+                        return new GalaxyKeyBossLevel();
                 }
         }
     }

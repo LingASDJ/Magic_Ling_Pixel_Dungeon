@@ -150,7 +150,57 @@ public enum Icons {
 
 	COPY,
 
-	SKIP;
+	SKIP,
+
+	//slightly larger title screen icons, spacing for 17x16
+	JOURNAL,
+
+	//grey icons, mainly used for buttons, spacing for 16x16
+	KEYBOARD,
+
+	CHALLENGE_GREY,
+	SCROLL_GREY,
+
+	CHEVRON,
+
+	//misc larger icons, mainly used for buttons, tabs, and journal, spacing for 16x16
+
+	CHALLENGE_COLOR,
+	SCROLL_COLOR,
+
+	//2.5.0
+	SNAKE,
+
+	CATALOG,
+	ALCHEMY,
+	GRASS,
+
+	STAIRS_CHASM,
+	STAIRS_WATER,
+	STAIRS_GRASS,
+	STAIRS_DARK,
+	STAIRS_LARGE,
+	STAIRS_TRAPS,
+	STAIRS_SECRETS,
+
+	STAIRS_BIGTRAP,
+	STAIRS_THREEWELL,
+	STAIRS_LINKROOM,
+	STAIRS_EXBOSS,
+	STAIRS_BIGROOM,
+	STAIRS_BLOOD,
+	STAIRS_CLOUD,
+
+	WELL_HEALTH,
+	WELL_AWARENESS,
+	SACRIFICE_ALTAR,
+	DISTANT_WELL,
+
+	PAGE,
+
+	TRA_WELL,
+	OIL_WELL,
+	MAGIC_DREAM;
 
 	public Image get() {
 		return get( this );
@@ -159,7 +209,20 @@ public enum Icons {
 	public static Image get( Icons type ) {
 		Image icon = new Image(SPDSettings.ClassUI() ? Assets.Interfaces.ICONS : Assets.Interfaces.ICONS_NORMAL );
 		switch (type) {
-
+			//2.5.0
+			case JOURNAL:
+				icon.frame( icon.texture.uvRectBySize( 96, 176, 17, 15 ) );
+				break;
+			case CATALOG:
+				icon.frame( icon.texture.uvRectBySize( 32, 176, 13, 16 ) );
+				break;
+			case ALCHEMY:
+				icon.frame( icon.texture.uvRectBySize( 48, 176, 16, 16 ) );
+				break;
+			case GRASS:
+				icon.frame( icon.texture.uvRectBySize( 65, 176, 16, 16 ) );
+				break;
+			//2.4.0
 			case ENTER:
 				icon.frame( icon.texture.uvRectBySize( 0, 0, 16, 16 ) );
 				break;
@@ -240,6 +303,11 @@ public enum Icons {
 			case DATA:
 				icon.frame( icon.texture.uvRectBySize( 48, 32, 16, 15 ) );
 				break;
+
+			case PAGE:
+				icon.frame( icon.texture.uvRectBySize( 240, 32, 13, 10 ) );
+				break;
+
 			case AUDIO:
 				icon.frame( icon.texture.uvRectBySize( 64, 32, 14, 14 ) );
 				break;
@@ -454,6 +522,76 @@ public enum Icons {
 				icon.scale.set(PixelScene.align(0.49f));
 				break;
 
+
+			//250-LARGE TILED
+			case STAIRS_CHASM:
+				icon.frame( icon.texture.uvRectBySize( 16, 144, 15, 16 ) );
+				break;
+			case STAIRS_WATER:
+				icon.frame( icon.texture.uvRectBySize( 32, 144, 15, 16 ) );
+				break;
+			case STAIRS_GRASS:
+				icon.frame( icon.texture.uvRectBySize( 48, 144, 15, 16 ) );
+				break;
+			case STAIRS_DARK:
+				icon.frame( icon.texture.uvRectBySize( 64, 144, 15, 16 ) );
+				break;
+			case STAIRS_LARGE:
+				icon.frame( icon.texture.uvRectBySize( 80, 144, 15, 16 ) );
+				break;
+			case STAIRS_TRAPS:
+				icon.frame( icon.texture.uvRectBySize( 96, 144, 15, 16 ) );
+				break;
+			case STAIRS_SECRETS:
+				icon.frame( icon.texture.uvRectBySize( 112, 144, 15, 16 ) );
+				break;
+			case WELL_HEALTH:
+				icon.frame( icon.texture.uvRectBySize( 128, 144, 16, 16 ) );
+				break;
+			case WELL_AWARENESS:
+				icon.frame( icon.texture.uvRectBySize( 144, 144, 16, 16 ) );
+				break;
+			case SACRIFICE_ALTAR:
+				icon.frame( icon.texture.uvRectBySize( 160, 144, 16, 16 ) );
+				break;
+			case DISTANT_WELL:
+				icon.frame( icon.texture.uvRectBySize( 176, 144, 16, 16 ) );
+				break;
+
+
+
+			case STAIRS_BIGTRAP:
+				icon.frame( icon.texture.uvRectBySize( 0, 160, 15, 16 ) );
+				break;
+			case STAIRS_THREEWELL:
+				icon.frame( icon.texture.uvRectBySize( 16, 160, 15, 16 ) );
+				break;
+			case STAIRS_LINKROOM:
+				icon.frame( icon.texture.uvRectBySize( 32, 160, 15, 16 ) );
+				break;
+			case STAIRS_EXBOSS:
+				icon.frame( icon.texture.uvRectBySize( 48, 160, 15, 16 ) );
+				break;
+			case STAIRS_BIGROOM:
+				icon.frame( icon.texture.uvRectBySize( 64, 160, 15, 16 ) );
+				break;
+			case STAIRS_BLOOD:
+				icon.frame( icon.texture.uvRectBySize( 80, 160, 15, 16 ) );
+				break;
+			case STAIRS_CLOUD:
+				icon.frame( icon.texture.uvRectBySize( 96, 160, 15, 16 ) );
+				break;
+
+			case OIL_WELL:
+				icon.frame( icon.texture.uvRectBySize( 112, 160, 16, 16 ) );
+				break;
+			case TRA_WELL:
+				icon.frame( icon.texture.uvRectBySize( 128, 160, 16, 16 ) );
+				break;
+			case MAGIC_DREAM:
+				icon.frame( icon.texture.uvRectBySize( 144, 160, 16, 16 ) );
+				break;
+
 		}
 		return icon;
 	}
@@ -509,4 +647,26 @@ public enum Icons {
 				return get(DEPTH_BLOOD);
 		}
 	}
+
+	public static Image getLarge(Level.Feeling feeling){
+		switch (feeling){
+			case NONE: default:
+				return get(STAIRS);
+			case CHASM:
+				return get(STAIRS_CHASM);
+			case WATER:
+				return get(STAIRS_WATER);
+			case GRASS:
+				return get(STAIRS_GRASS);
+			case DARK:
+				return get(STAIRS_DARK);
+			case LARGE:
+				return get(STAIRS_LARGE);
+			case TRAPS:
+				return get(STAIRS_TRAPS);
+			case SECRETS:
+				return get(STAIRS_SECRETS);
+		}
+	}
+
 }

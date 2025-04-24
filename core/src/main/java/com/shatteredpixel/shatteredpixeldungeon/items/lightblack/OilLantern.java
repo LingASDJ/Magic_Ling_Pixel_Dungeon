@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MagicFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElectricalSmoke;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -32,6 +33,9 @@ public class OilLantern extends Artifact {
     public static final String AC_SNUFF = "SNUFF";
     private static final String CHARGE = "charge";
     private static final String FLASKS = "flasks";
+//    public static final String AC_AUTO = "AUTO";
+
+    public static final String AC_NUTO = "NUTO";
 
     private static final String PLASKS = "plasks";
 
@@ -134,11 +138,31 @@ public class OilLantern extends Artifact {
             actions.remove(AC_THROW);
         }
 
+//        if(Statistics.AutoOilPotion){
+//            actions.remove(AC_AUTO);
+//            actions.add(AC_NUTO);
+//        } else {
+//            actions.add(AC_AUTO);
+//            actions.remove(AC_NUTO);
+//        }
+
         return actions;
     }
 
     public void execute(Hero hero, String action) {
         switch (action) {
+//            case AC_AUTO:
+//                if(!Statistics.AutoOilPotion){
+//                    GLog.p(Messages.get(this,"auto"));
+//                    Statistics.AutoOilPotion = true;
+//                }
+//                break;
+//            case AC_NUTO:
+//                if(Statistics.AutoOilPotion){
+//                    GLog.w(Messages.get(this,"no_auto"));
+//                    Statistics.AutoOilPotion = false;
+//                }
+//                break;
             case AC_LIGHT:
                 if (hero.buff(LostInventory.class) == null) {
                     if (this.charge > 0) {
@@ -216,6 +240,7 @@ public class OilLantern extends Artifact {
                 hero.spend(TIME_TO_USE);
                 hero.busy();
                 GLog.i(Messages.get(OilLantern.class, "lanteron"));
+                if(hero.buff(ElectricalSmoke.SmokingAlloy.class)!=null) GLog.i(Messages.get(ElectricalSmoke.class,"conversation_light"));
                 hero.sprite.operate(hero.pos);
                 this.active = true;
                 updateSprite();

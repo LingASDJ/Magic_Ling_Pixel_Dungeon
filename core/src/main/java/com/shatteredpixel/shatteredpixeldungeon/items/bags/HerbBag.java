@@ -44,7 +44,8 @@ public class HerbBag extends Bag {
         return 40;
     }
 
-    public int price() {
+    @Override
+    public int value() {
         return 30;
     }
 

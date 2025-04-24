@@ -9,7 +9,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -27,13 +26,13 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class CommRelay extends Artifact implements Item.AnimationItem {
+public class CommRelay extends Artifact {
 
     {
         image = ItemSpriteSheet.DM100RELEY;
         level = 0;
-        levelCap = 5;
-//        animation = true;
+        levelCap = 10;
+        animation = true;
         defaultAction=AC_MERC;
     }
 
@@ -41,13 +40,13 @@ public class CommRelay extends Artifact implements Item.AnimationItem {
     public void frames(ItemSprite itemSprite){
         itemSprite.texture(Assets.Sprites.ANIMATIONS_TERMIAL);
         TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
-        MovieClip.Animation idle = new MovieClip.Animation(21, true);
-
-        if(animationToidle){
-            idle.frames( frames,0,1,1,2,2,2,3,3,4,4,5,5);
-        } else {
-            idle.frames( frames,3);
-        }
+        MovieClip.Animation idle = new MovieClip.Animation(15, true);
+        idle.frames( frames,0,1,1,2,2,2,3,3,4,4,5,5);
+//        if(animationToidle){
+//
+//        } else {
+//            idle.frames( frames,3);
+//        }
 
         itemSprite.play(idle);
     }

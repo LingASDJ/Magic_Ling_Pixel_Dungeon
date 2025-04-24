@@ -63,7 +63,7 @@ public class Bones {
 	private static int branch = -1;
 
 	private static Item item;
-	private static HeroClass heroClass;
+	public static HeroClass heroClass;
 
 	public static void leave() {
 

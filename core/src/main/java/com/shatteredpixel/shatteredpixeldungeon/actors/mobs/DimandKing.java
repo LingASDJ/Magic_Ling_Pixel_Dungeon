@@ -34,7 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.levels.DimandKingLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.GreenStlingBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -234,7 +234,7 @@ public class DimandKing extends Boss {
 
     private boolean summonSubject( int delay, Class<?extends Mob> type ){
         Summoning s = new Summoning();
-        s.pos = ((DimandKingLevel)Dungeon.level).getSummoningPos();
+        s.pos = ((GreenStlingBossLevel)Dungeon.level).getSummoningPos();
         if (s.pos == -1) return false;
         s.summon = type;
         s.delay = delay;
@@ -434,7 +434,7 @@ public class DimandKing extends Boss {
             if (HP <= 120) {
                 HP = 120;
                 sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
-                ScrollOfTeleportation.appear(this, DimandKingLevel.throne);
+                ScrollOfTeleportation.appear(this, GreenStlingBossLevel.throne);
                 properties.add(Property.IMMOVABLE);
                 phase = 2;
                 summonsMade = 0;

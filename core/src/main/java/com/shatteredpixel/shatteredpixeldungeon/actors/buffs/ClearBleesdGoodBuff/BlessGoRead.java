@@ -2,6 +2,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuf
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -27,7 +29,7 @@ public class BlessGoRead extends ClearLanterBuff {
 
             Hunger hungerBuff = hero.buff(Hunger.class);
 
-            if(hero.lanterfire > 90 && !hungerBuff.isStarving()) {
+            if(hero.lanterfire > (Dungeon.isChallenged(Challenges.DHXD)? 59 :90) && !hungerBuff.isStarving()) {
                 //effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
                 target.HP = Math.min( target.HT, target.HP + 1);
                 spend(7f);
@@ -70,7 +72,7 @@ public class BlessGoRead extends ClearLanterBuff {
 
     @Override
     public String desc() {
-        if(hero.lanterfire<90 && !Statistics.noGoReadHungry){
+        if(hero.lanterfire<(Dungeon.isChallenged(Challenges.DHXD)? 59 :90)  && !Statistics.noGoReadHungry){
             return Messages.get(this, "desc_lanter");
         } else if (Statistics.noGoReadHungry) {
             return Messages.get(this, "desc_rest");
@@ -99,7 +101,7 @@ public class BlessGoRead extends ClearLanterBuff {
     @Override
     public void tintIcon(Image icon) {
 
-        if(hero.lanterfire<90 && !Statistics.noGoReadHungry){
+        if(hero.lanterfire< (Dungeon.isChallenged(Challenges.DHXD)? 59 :90) && !Statistics.noGoReadHungry){
             icon.hardlight(Window.CYELLOW);
         } else if (Statistics.noGoReadHungry) {
             icon.hardlight(0x993333);
@@ -110,7 +112,7 @@ public class BlessGoRead extends ClearLanterBuff {
     @Override
     public int icon() {
 
-        if(hero.lanterfire<90 && !Statistics.noGoReadHungry){
+        if(hero.lanterfire<(Dungeon.isChallenged(Challenges.DHXD)? 59 :90)  && !Statistics.noGoReadHungry){
             return BuffIndicator.DEBUFF_DOWN;
         } else if (Statistics.noGoReadHungry) {
             return BuffIndicator.DEBUFF_DOWN;

@@ -65,10 +65,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfTo
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
@@ -98,6 +100,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVeno
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.thanks.GrilledHerring;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
@@ -150,12 +153,15 @@ public class QuickRecipe extends Component {
 					ShatteredPixelDungeon.scene().addToFront(new WndInfoItem(in));
 				}
 			};
-			
-			ArrayList<Item> similar = Dungeon.hero.belongings.getAllSimilar(in);
+
 			int quantity = 0;
-			for (Item sim : similar) {
-				//if we are looking for a specific item, it must be IDed
-				if (sim.getClass() != in.getClass() || sim.isIdentified()) quantity += sim.quantity();
+			if (Dungeon.hero != null) {
+				ArrayList<Item> similar = Dungeon.hero.belongings.getAllSimilar(in);
+				for (Item sim : similar) {
+					//if we are looking for a specific item, it must be IDed
+					if (sim.getClass() != in.getClass() || sim.isIdentified())
+						quantity += sim.quantity();
+				}
 			}
 			
 			if (quantity < in.quantity()) {
@@ -396,6 +402,12 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe( new ArcaneResin.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new Wand.PlaceHolder())),
 						new ArcaneResin()));
+				result.add(null);
+				result.add(null);
+//				result.add(new QuickRecipe( new FlareBullet.Recipe(),
+//						new ArrayList<Item>(Arrays.asList(new PotionOfLiquidFlame(), new UnstableBrew(),
+//								new PotionOfLevitation())),
+//						new FlareBullet()));
 				return result;
 			case 7:
 				result.add(new QuickRecipe(new UnstableBrew.Recipe(), new ArrayList<>(Arrays.asList(new Potion.PlaceHolder(), new  Plant.Seed.PlaceHolder())), new UnstableBrew()));
@@ -412,8 +424,8 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new ElixirOfIcyTouch.Recipe()));
 				result.add(new QuickRecipe(new ElixirOfToxicEssence.Recipe()));
 				result.add(new QuickRecipe(new ElixirOfDragonsBlood.Recipe()));
-				result.add(new QuickRecipe(new ElixirOfMight.Recipe()));
 				result.add(new QuickRecipe(new ElixirOfFeatherFall.Recipe()));
+				result.add(new QuickRecipe(new ElixirOfMight.Recipe()));
 				return result;
 			case 8:
 				result.add(new QuickRecipe(new UnstableSpell.Recipe(), new ArrayList<>(Arrays.asList(new Scroll.PlaceHolder(), new  Runestone.PlaceHolder())), new UnstableSpell()));
@@ -431,7 +443,7 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new ReclaimTrap.Recipe()));
 				result.add(new QuickRecipe(new SummonElemental.Recipe()));
 				result.add(new QuickRecipe(new BeaconOfReturning.Recipe()));
-				//result.add(new QuickRecipe(new SmallLightHeader.Recipe()));
+				result.add(new QuickRecipe(new SmallLightHeader.Recipe()));
 				return result;
 			case 9:
 				result.add(new QuickRecipe( new WandOfBlueFuck.Recipe(),
@@ -462,7 +474,7 @@ public class QuickRecipe extends Component {
 								new LifeTreeSword.PlaceHolder())),
 						new BloodthirstyThorn()));
 				result.add(new QuickRecipe( new IceFishSword.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new FrozenCarpaccio(), new MagicalInfusion())),
+						new ArrayList<Item>(Arrays.asList(new PotionOfSnapFreeze(), new GrilledHerring(), new MagicalInfusion())),
 						new IceFishSword()));
 				result.add(null);
 				result.add(null);

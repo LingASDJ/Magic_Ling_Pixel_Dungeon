@@ -83,15 +83,14 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFire
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NyzBombAndBooksRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.OilWellRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PeachGodBlessRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PumpkinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BloodCrystalRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CoinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.DreamcatcherRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
@@ -102,6 +101,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.LinkRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.LoveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.MagicDimandRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.GoldBurretyRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
@@ -130,6 +130,8 @@ public abstract class RegularLevel extends Level {
 
     public static DevBirthday birthday;
 
+	public static ArrayList<Room> roomList;
+
     static {
 
         holiday = Holiday.NONE;
@@ -139,6 +141,9 @@ public abstract class RegularLevel extends Level {
 			case Calendar.JANUARY:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
 					holiday = Holiday.XMAS;
+				break;
+			case Calendar.MARCH:
+                holiday = Holiday.PQJ;
 				break;
 			case Calendar.APRIL:
 				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
@@ -178,6 +183,7 @@ public abstract class RegularLevel extends Level {
 		builder = builder();
 
 		ArrayList<Room> initRooms = initRooms();
+		roomList = initRooms;
 		Random.shuffle(initRooms);
 
 		do {
@@ -222,14 +228,18 @@ public abstract class RegularLevel extends Level {
         HWEEN,//2nd week of october though first day of november
         XMAS,
 		CJ,
-		QMJ
+		YX,
+		QMJ,
+		PQJ
     }
 	
 	protected ArrayList<Room> initRooms() {
 		ArrayList<Room> initRooms = new ArrayList<>();
 
 		initRooms.add ( roomEntrance = EntranceRoom.createEntrance());
+
 		initRooms.add( roomExit = ExitRoom.createExit());
+
 
 		//initRooms.add( roomExit = new SkeletonFishRoom());
 
@@ -245,7 +255,7 @@ public abstract class RegularLevel extends Level {
 
 
 
-		if(feeling == Feeling.DIEDROOM){
+		if(feeling == Feeling.DIEDROOM && !Statistics.bossRushMode){
 			switch (branch){
 				case 0:
 					switch (depth) {
@@ -281,6 +291,10 @@ public abstract class RegularLevel extends Level {
 		//20%
 		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 40 || depth == 28 && !Statistics.bossRushMode) {
 			initRooms.add(new NxhyShopRoom());
+		}
+
+		if(depth == 9 && holiday == Holiday.PQJ && Challenges.activeChallenges()<=12 && Random.Float()>0.55f) {
+			initRooms.add(new PeachGodBlessRoom());
 		}
 
 		if(depth>27 && depth <30){
@@ -322,20 +336,23 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if (Dungeon.depth >= 26 && Random.Int(10) <= 4) {
-			initRooms.add(new BigEyeRoom());
-			initRooms.add(new CoinRoom());
-		} else if(Dungeon.depth<26 && Random.Int(10) == 1) {
+
+//		if (Dungeon.depth >= 26 && Random.Int(10) <= 4) {
+//			initRooms.add(new BigEyeRoom());
+//			initRooms.add(new CoinRoom());
+//		} else
+
+		if(Dungeon.depth<26 && Random.Int(10) == 1) {
 			initRooms.add(new EyeRoom());
 		}
 
-		if(Dungeon.exgoldLevel()&&Dungeon.isChallenged(CS)) initRooms.add(new GoldRoom());
-
-		if(Dungeon.depth<26 && Random.Int(30) == 1 && (Dungeon.isChallenged(DHXD) || Statistics.lanterfireactive )){
-			initRooms.add(new OilWellRoom());
+		if(Dungeon.exgoldLevel()&&Dungeon.isChallenged(CS)) {
+			initRooms.add(new GoldRoom());
 		}
 
-
+		if( Dungeon.depth<26 && Random.Int(30) == 1 && (Dungeon.isChallenged(DHXD) || Statistics.lanterfireactive )){
+			initRooms.add(new OilWellRoom());
+		}
 
 		if(feeling == Feeling.BLOOD){
 			initRooms.add(new BloodCrystalRoom());
@@ -347,6 +364,10 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new HealWellRoom());
 		}
 
+		if(feeling == Feeling.LINKROOM ){
+			initRooms.add(new LinkRoom());
+		}
+
 		if(Statistics.RandMode){
 			initRooms.add(new RandomRoom());
 			if(depth == 1 && branch == 0){
@@ -354,9 +375,7 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if(feeling == Feeling.LINKROOM){
-			initRooms.add(new LinkRoom());
-		}
+
 
 		for (int i = 0; i < standards; i++) {
 			StandardRoom s;
@@ -367,17 +386,27 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(s);
 		}
 
-//		if (!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)) {
-			if (depth == 18 && !anCityQuestProgress && !Statistics.RandMode) {
-				initRooms.add(new DreamcatcherRoom());
-				DragonGirlBlue.Quest.spawned = true;
-				anCityQuestProgress = true;
-			}
-//		}
 
-		if (Dungeon.shopOnLevel() && branch == 0) {
+
+		if (depth == 18 && !anCityQuestProgress && !(Statistics.RandMode || Statistics.bossRushMode)) {
+			initRooms.add(new DreamcatcherRoom());
+			DragonGirlBlue.Quest.spawned = true;
+			anCityQuestProgress = true;
+		}
+
+		//Normal Shop
+		if (Dungeon.shopOnLevel() && branch == 0 && !Statistics.bossRushMode) {
 			initRooms.add(new ShopRoom());
-		} else if(Statistics.bossRushMode && branch == 8 && Dungeon.shopRushLevel()){
+		}
+
+		if(Statistics.RandMode){
+			if(depth>1){
+				initRooms.add(new GoldBurretyRoom());
+			}
+		}
+
+		//Rush Shop
+		if(Statistics.bossRushMode && branch == 0 && Dungeon.shopRushLevel()){
 			initRooms.add(new ShopRoom());
 		}
 
@@ -465,12 +494,14 @@ public abstract class RegularLevel extends Level {
 		}
 
 		// 在特定挑战中怪物生成翻倍
-		if (Dungeon.isChallenged(MOREROOM)|| !Dungeon.isChallenged(CS)) {
+		if (Dungeon.isChallenged(MOREROOM) || !Dungeon.isChallenged(CS)) {
 			mobs += Random.NormalIntRange(1,3);
 		}
 
-		if(Dungeon.isChallenged(CS)){
+		if(Dungeon.isChallenged(CS) && Statistics.bossRushMode && depth != 21){
 			mobs -= 1;
+		} else if(Statistics.bossRushMode && depth == 21){
+			mobs += 3;
 		}
 
 		return mobs;
@@ -489,6 +520,10 @@ public abstract class RegularLevel extends Level {
 				}
 			}
 		}
+
+
+
+
 		Random.shuffle(stdRooms);
 		Iterator<Room> stdRoomIter = stdRooms.iterator();
 
@@ -632,7 +667,12 @@ public abstract class RegularLevel extends Level {
 
 		//谜城资源量减半
 		if(Dungeon.isChallenged(CS)){
-			nItems = nItems/2;
+			nItems /= 2;
+		}
+
+		//DLC EX()SP
+		if(depth>25 && Statistics.Hollow_Holiday){
+			nItems /= 100;
 		}
 
 		for (int i=0; i < nItems; i++) {

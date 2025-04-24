@@ -2,10 +2,6 @@
 include ':SPD-classes'
 include ':core'
 
-//platform modules
-include ':android'
-include ':desktop'
-
 //service modules
 include ':services'
 

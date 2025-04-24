@@ -49,8 +49,8 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PylonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Tilemap;
@@ -58,7 +58,6 @@ import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
@@ -73,6 +72,22 @@ public class CavesBossLevel extends Level {
 	{
 		color1 = 0x534f3e;
 		color2 = 0xb9d661;
+	}
+
+	@Override
+	public void playBossMusic(){
+		if(BossHealthBar.isBleeding()){
+			Music.playModeBGM(Assets.Music.CITY_BOSS_FINALE,true);
+		} else {
+			Music.playModeBGM(Assets.Music.BGM_BOSSC,true);
+		}
+
+	}
+
+
+	@Override
+	public void playLevelMusic(){
+		Music.playModeBGM(Assets.Music.BGM_3,true);
 	}
 
 	@Override
@@ -241,6 +256,20 @@ public class CavesBossLevel extends Level {
 	}
 
 	@Override
+	public boolean invalidHeroPos(int tile) {
+		//hero cannot be above gate, or above arena, when gate is closed
+		if (map[gate.left + gate.top*width()] == Terrain.CUSTOM_DECO){
+			Point p = cellToPoint(tile);
+			if (p.y < diggableArea.top){
+				return true;
+			} else if (p.y < gate.bottom && p.x >= gate.left && p.x < gate.right){
+				return true;
+			}
+		}
+		return super.invalidHeroPos(tile);
+	}
+
+	@Override
 	public void occupyCell(Char ch) {
 		//seal the level when the hero moves near to a pylon, the level isn't already sealed, and the gate hasn't been destroyed
 		int gatePos = pointToCell(new Point(gate.left, gate.top));
@@ -297,14 +326,6 @@ public class CavesBossLevel extends Level {
 			boss.pos = pointToCell(Random.element(mainArena.getPoints()));
 		} while (!openSpace[boss.pos] || map[boss.pos] == Terrain.EMPTY_SP || Actor.findChar(boss.pos) != null);
 		GameScene.add( boss );
-
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				Music.INSTANCE.play(Assets.Music.CAVES_BOSS, true);
-			}
-		});
-
 	}
 
 	@Override
@@ -314,8 +335,8 @@ public class CavesBossLevel extends Level {
 		if(blobs != null) blobs.get(PylonEnergy.class).fullyClear();
 
 		set( entrance(), Terrain.ENTRANCE );
-		int i = 14 + 13*width();
-		for (int j = 0; j < 5; j++){
+		int i = gate.top*width();
+		for (int j = gate.left; j < gate.right; j++){
 			set( i+j, Terrain.EMPTY );
 			if (Dungeon.level.heroFOV[i+j]){
 				CellEmitter.get(i+j).burst(BlastParticle.FACTORY, 10);
@@ -326,19 +347,6 @@ public class CavesBossLevel extends Level {
 		if (customArenaVisuals != null) customArenaVisuals.updateState();
 
 		Dungeon.observe();
-
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				Music.INSTANCE.fadeOut(5f, new Callback() {
-					@Override
-					public void call() {
-						Music.INSTANCE.end();
-					}
-				});
-			}
-		});
-
 	}
 
 	public void activatePylon(){
@@ -814,7 +822,7 @@ public class CavesBossLevel extends Level {
 						Char ch = Actor.findChar(cell);
 						if (ch != null && !(ch instanceof DM300) && !ch.flying) {
 							Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
-							ch.damage( Char.combatRoll(6, 12), new Electricity());
+							ch.damage( Random.NormalIntRange(6, 12), new Electricity());
 							ch.sprite.flash();
 
 							if (ch == Dungeon.hero){

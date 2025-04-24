@@ -21,6 +21,7 @@
 
 		package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -32,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -55,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
@@ -141,6 +144,12 @@ public class ShopRoom extends SpecialRoom {
 		Mob shopkeeper = new Shopkeeper();
 		shopkeeper.pos = pos;
 		level.mobs.add( shopkeeper );
+
+		if(Dungeon.RDXLCLevel() && Statistics.bossRushMode){
+			NullDiedTO npc1 = new NullDiedTO();
+			npc1.pos = pos+1;
+			level.mobs.add(npc1);
+		}
 
 	}
 
@@ -242,6 +251,11 @@ public class ShopRoom extends SpecialRoom {
 
 		MeleeWeapon w;
 
+		//TODO
+		// 如果是商品 你也可以直接新建这个对象，
+		// 然后传入里面你想要的参数，
+		// 实现这个物品在商人这里的一些特殊属性
+		// 现在，你可能能知道为什么游戏的商人的物品有一些时候总是比野生的好一些。
 		LockSword w2 = new LockSword();
 
 		switch (Dungeon.depth) {
@@ -278,7 +292,7 @@ public class ShopRoom extends SpecialRoom {
 				}else if(Random.Int(200)<15) {
 					//7.5%
 					w2 = new LockSword();
-					((LockSword) w2).lvl = Random.Int(100, 301);
+					w2.lvl = Random.Int(100, 301);
 					itemsToSpawn.add(w2.identify(false));
 				}
 
@@ -294,18 +308,12 @@ public class ShopRoom extends SpecialRoom {
 					itemsToSpawn.add( new ScaleArmor().identify(false) );
 				}
 
-				if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
-					if(Random.Int(1)<1){
-						//50%
-						//合计期望为87.5%
-						w2.lvl = Random.Int(200, 501);
-						itemsToSpawn.add(w2.identify(false));
-					}
-				}else if(Random.Int(20)<1) {
-					//5%
-					//合计期望大概为21%
+				if(Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
+					w2.lvl = Random.Int(300, 501);
+					itemsToSpawn.add(w2.identify(false));
+				}else {
 					w2 = new LockSword();
-					((LockSword) w2).lvl = Random.Int(200, 501);
+					w2.lvl = Random.Int(200, 501);
 					itemsToSpawn.add( w2.identify(false) );
 				}
 				break;
@@ -334,7 +342,15 @@ public class ShopRoom extends SpecialRoom {
 
 		itemsToSpawn.add( TippedDart.randomTipped(2) );
 
-		itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
+		if(!Statistics.bossRushMode){
+			itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
+		}
+
+		if(Dungeon.isChallenged(Challenges.AQUAPHOBIA)){
+			itemsToSpawn.add(new PotionOfNoWater());
+			itemsToSpawn.add(new PotionOfNoWater());
+		}
+
 
 		Bag bag = ChooseBag(Dungeon.hero.belongings);
 		if (bag != null) {
@@ -345,7 +361,9 @@ public class ShopRoom extends SpecialRoom {
 		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
 		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
 
-		if(lanterfireactive) {
+		if(Dungeon.isChallenged(DHXD)){
+				itemsToSpawn.add(new OilPotion());
+		} else if(lanterfireactive) {
 			if(Challenges.activeChallenges() > 6){
 				itemsToSpawn.add(new OilPotion());
 				itemsToSpawn.add(new OilPotion());

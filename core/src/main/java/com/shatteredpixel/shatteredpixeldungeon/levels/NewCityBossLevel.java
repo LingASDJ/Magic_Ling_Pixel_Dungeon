@@ -61,6 +61,17 @@ public class NewCityBossLevel extends Level {
 		color2 = 0xf2f2f2;
 	}
 
+	@Override
+	public void playBossMusic(){
+		Music.playModeBGM(Assets.Music.BGM_BOSSD,true);
+	}
+
+	@Override
+	public void playLevelMusic(){
+		Music.playModeBGM(Assets.Music.BGM_4,true);
+	}
+
+
 	private static int WIDTH = 15;
 	private static int HEIGHT = 48;
 
@@ -273,6 +284,15 @@ public class NewCityBossLevel extends Level {
 		} else {
 			return Random.element(candidates);
 		}
+	}
+
+	@Override
+	public boolean invalidHeroPos(int tile) {
+		//hero cannot be above top door if it is locked
+		if (map[topDoor] == Terrain.LOCKED_DOOR && tile <= topDoor){
+			return true;
+		}
+		return super.invalidHeroPos(tile);
 	}
 
 	@Override

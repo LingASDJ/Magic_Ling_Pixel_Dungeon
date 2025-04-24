@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CircleBasinRoom;
+import com.watabou.utils.Point;
 
 public class CircleBasinEntranceRoom extends CircleBasinRoom {
 
@@ -39,13 +40,20 @@ public class CircleBasinEntranceRoom extends CircleBasinRoom {
 	public boolean isEntrance() {
 		return true;
 	}
-
+	@Override
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
+		return false;
+	}
 	@Override
 	public void paint(Level level) {
 		super.paint(level);
 
 		int entrance = level.pointToCell(center());
 		Painter.set( level, entrance, Terrain.ENTRANCE );
+
+		for (Room.Door door : connected.values()) {
+			if(door != null ) level.BottleWraith(door, level, left, right, top, bottom);
+		}
 
 		level.transitions.add(new LevelTransition(level, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
 	}

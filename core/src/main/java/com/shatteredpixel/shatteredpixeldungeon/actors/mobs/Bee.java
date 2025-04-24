@@ -27,8 +27,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SmokeAlly;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BeeSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -41,6 +44,7 @@ public class Bee extends Mob {
 		spriteClass = BeeSprite.class;
 		
 		viewDistance = 4;
+		isAnimal = true;
 
 		EXP = 0;
 		
@@ -57,6 +61,8 @@ public class Bee extends Mob {
 	private int potPos;
 	//-1 for no owner
 	private int potHolder;
+
+	public int angryTime = 0;
 	
 	private static final String LEVEL	    = "level";
 	private static final String POTPOS	    = "potpos";
@@ -79,6 +85,12 @@ public class Bee extends Mob {
 		potPos = bundle.getInt( POTPOS );
 		potHolder = bundle.getInt( POTHOLDER );
 		if (bundle.contains(ALIGMNENT)) alignment = bundle.getEnum( ALIGMNENT, Alignment.class);
+	}
+
+	@Override
+	public boolean act(){
+		if(angryTime>0) angryTime--;
+		return super.act();
 	}
 	
 	public void spawn( int level ) {
@@ -111,7 +123,7 @@ public class Bee extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Char.combatRoll( HT / 10, HT / 4 );
+		return Random.NormalIntRange( HT / 10, HT / 4 );
 	}
 	
 	@Override
@@ -138,6 +150,12 @@ public class Bee extends Mob {
 
 	@Override
 	protected Char chooseEnemy() {
+
+		if(enemy == Dungeon.hero && buff(SmokeAlly.class) != null){
+			angryTime += 5;
+			GLog.n(Messages.get(Bee.class,"angry"));
+		}
+
 		//if the pot is no longer present, default to regular AI behaviour
 		if (alignment == Alignment.ALLY || (potHolder == -1 && potPos == -1)){
 			return super.chooseEnemy();
@@ -162,6 +180,7 @@ public class Bee extends Mob {
 							&& Dungeon.level.distance(mob.pos, potPos) <= 3
 							&& mob.alignment != Alignment.NEUTRAL
 							&& !mob.isInvulnerable(getClass())
+							&& !(mob instanceof MiniSaka)
 							&& !(alignment == Alignment.ALLY && mob.alignment == Alignment.ALLY)) {
 						enemies.add(mob);
 					}
@@ -187,12 +206,17 @@ public class Bee extends Mob {
 
 	@Override
 	protected boolean getCloser(int target) {
-		if (alignment == Alignment.ALLY && enemy == null && buffs(AllyBuff.class).isEmpty()){
+		if (alignment == Alignment.ALLY && enemy == null && buffs(AllyBuff.class).isEmpty()) {
 			target = Dungeon.hero.pos;
 		} else if (enemy != null && Actor.findById(potHolder) == enemy) {
 			target = enemy.pos;
-		} else if (potPos != -1 && (state == WANDERING || Dungeon.level.distance(target, potPos) > 3))
-			this.target = target = potPos;
+		} else if (potPos != -1 && (state == WANDERING || Dungeon.level.distance(target, potPos) > 3)) {
+			if (!Dungeon.level.insideMap(potPos)){
+				potPos = -1;
+			} else {
+				this.target = target = potPos;
+			}
+		}
 		return super.getCloser( target );
 	}
 	

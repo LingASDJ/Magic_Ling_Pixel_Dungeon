@@ -2,21 +2,33 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardDead;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.ArtilleristSprite;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.GnollBlindSprite;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.HermitCrabSprite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.RivalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ApprenticeWitchSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ButcherSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusStarFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeepSeaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DreamSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DwarfGeneralSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireDragonSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FrankensteinSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostHalloweenSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GudaziSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HollowKnightSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -26,19 +38,26 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MintSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonLowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PeachGodStateSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PianoLeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PiraLandSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PumkingGhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.QinWolfSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.QliphothSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.QuestionSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SmallLeafSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YetYogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ZakoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeInfo;
@@ -48,8 +67,20 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0840_Changes(changeInfos);
+        add_V0831_Changes(changeInfos);
+        add_V0830_Changes(changeInfos);
+        add_V0822_Changes(changeInfos);
+        add_V0820_Changes(changeInfos);
+        add_V0810_Changes(changeInfos);
+        add_V0808_Changes(changeInfos);
+        add_V0805_Changes(changeInfos);
+        add_V0801_Changes(changeInfos);
+        add_V0800M1_Changes(changeInfos);
+        add_V07993_Changes(changeInfos);
+        add_V07990_Changes(changeInfos);
+        add_V078_90_Changes(changeInfos);
         add_V0770_Changes(changeInfos);
-
         add_V0765_Changes(changeInfos);
         add_V0760_Changes(changeInfos);
         add_V0755_Changes(changeInfos);
@@ -77,6 +108,1160 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0840_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.4.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("限时挑战：血族契约"),
+                ("限时挑战，将在后续版本收纳为特殊模式")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：Tomb-Sweeping-FestivaDay"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励，祝各位清明安康！")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_8), ("挑战重做：污泥浊水"),
+                ("地牢的水也被污染了，你需要小心谨慎\n\n因为地牢上方的生活污染，水已经被污染了，你需要小心谨慎\n\n_-_ 你踩踏过的水会变为仅对你有效的污泥地块，进入污泥地块会为你附加腐蚀淤泥，并且身上大部分的负面效果的剩余回合时间不会低于5回合。\n_-_踩踏水的祝福不再生效，但水灵药剂的效果不变。\n_-_ 全水地形感觉在获得后还会再有概率80%变成普通地形\n_-_ 每大层会额外产生食人鱼房间\n_-_ 常规商店额外追加“生石灰固体理想合剂")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("新全局系统：自定义横幅"),
+                ("在额外设置中，可以定义游戏内带的横幅主题")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "Bug修复-1\n\n" +
+                        ( "_-_ 修复拟态之王0血不死亡的严重异常，优化污泥浊水判定\n" +
+                        "_-_ 修复金蝶嬗变戒指较易出现崩溃的异常\n" +
+                        "_-_ 修复烈阳法杖在元素风暴的异常，并且效果为可视怪物产生磷火+火焰\n" +
+                        "_-_ 优化在26层后，陷阱房将完全替换为深渊浮空房\n" +
+                        "_-_ 修复先前的子层掉落规则导致的异常闪退，现在调整为在子层掉落深渊的物品，将在本体楼层出现\n" +
+                        "_-_ 修复拟态怪类型的掉落规则异常，同时也同步新子层深渊物品掉落规则\n" +
+                        "_-_ 修复重型弩炮伤害异常\n" +
+                        "_-_ 修复部分UI界面优先级异常\n" +
+                        "_-_ 修复金蝶可以刷物品的异常\n" +
+                        "_-_ 狗子的免伤&听声辨位修正 烈阳法杖+术士灵魂标记"),
+                "Bug修复-2:\n\n" +
+                        ("_-_ 修复拟态之王因多段伤害导致跨阶段异常\n" +
+                                "_-_ 在宝藏迷宫添加更多宝箱怪以避免无法超过5个击杀数导致游戏卡死\n" +
+                                "_-_ 生石灰固态理想试剂范围加强，在污泥挑战中商店中可被购买\n" +
+                                "_-_ 现在水爆魔药，暴风迷雾可以将污泥地块直接蒸发，变成普通地块\n" +
+                                "_-_ 修复召唤守卫描述异常\n" +
+                                "_-_ 修复火龙地形跨存档的严重异常\n" +
+                                "_-_ 修复26层下楼古堡后未在初始房间\n" +
+                                "_-_ 修复不动如山的削弱后描述未更新的小异常\n" +
+                                "_-_ 修复抢劫层选择逃跑获取的回溯之书无法正常回到楼层(使用后会传送至X-？层)\n" +
+                                "_-_ 优化商店抢劫：抢劫前往峡谷前，十字架会被留在原地，莲娜的烈焰结晶不会再被自带索敌，优化部分攻击特效\n" +
+                                "_-_ 开发者模式杂项生成器追加水爆，羽落，紊乱魔药和无序结晶的生成\n" +
+                                "_-_ 修复药水鉴定徽章和卷轴鉴定徽章在迁移之后的版本后无法正常解锁\n" +
+                                "_-_ 部分缺失文案修正，部分文案优化\n" +
+                                "_-_ 修复子层的一些罕见崩溃问题")
+
+        ));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIEDCROSSBOW), ("重型弩炮"),
+                ("修复弩炮的子弹伤害错误的为武器自身的伤害。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG18), ("生石灰固体理想合剂"),
+                ("现在的蒸发范围为8向2x2的范围")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ELIXIR_AQUA), ("水爆魔药"),
+                ("如果目标为污泥地块，则会将其直接蒸发，变成普通地块。\n\n同时附近3x3范围内的污泥地块也会被蒸发。")));
+
+        changes = new ChangeInfo("v0.8.4.0中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+
+
+        changes = new ChangeInfo("2025-4-04", true, null);
+        changes.hardlight(Window.CPINK);
+        changeInfos.add(changes);
+    }
+
+    public static void add_V0831_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.3.1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RECLAIM_TRAP), ("开发者模式工具：陷阱放置器"),
+                ("新增陷阱放置器，可方便地在地图上放置陷阱。更多功能，前往游戏内探索。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CANDLE), ("开发者模式工具：怪物放置器"),
+                ("完全进行重做，可在地图上放置80%的怪物。更多功能，前往游戏内探索。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("开发者模式：评分系统实时评估"),
+                ("计分版进行优化，开发者模式中可进行实时评估，之前的排行榜也可以看见评分细则")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.8.3.1版本:\n\n" +
+                        "1.修复了0挑钴币掉落异常\n" +
+                        "2.修复了抢劫商店后全部类型商人跑路的问题\n" +
+                        "3.部分文案修正\n" +
+                        "4.修复了部分初始背包生成异常问题"
+
+        ));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEGOLD), ("钴币掉落调整"),
+                (
+                        "_-_ 常规获取方法掉落调整：\n" +
+                                "_-_ 【英雄等级 + 地牢深度】 / 5 x 【最大挑战数, 5】\n" +
+                                "_-_ 如果最大挑战数不足5，则默认保底最小值为5\n\n" +
+                                "_-_ 限时双倍掉落：\n" +
+                                "_-_ 2025.3.7-2025.3.31 钴币全局双倍掉落")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG12), ("开发者模式工具：升降器"),
+                ("现在升降器支持任意楼层传送，且可以传送到0层。")));
+
+        Image issxsaxs =new ShopGuardDead.ShopGuardianRedSprite();
+        issxsaxs.scale.set(PixelScene.align(1f));
+        changes.addButton(new ChangeButton(issxsaxs, ("商店抢劫调整"),
+                "现在商店抢劫后，只能选择一个层的商店进行全部领取。\n\n" +
+                        "其他层的商店将会不再生成，且即便是_已经生成的商店也自动移除所有东西_。\n\n且仅普通商人会被移除"));
+
+        changes = new ChangeInfo("v0.8.3.1中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("2025-3-14", true, null);
+        changes.hardlight(Window.CPINK);
+        changeInfos.add(changes);
+    }
+
+
+    public static void add_V0830_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.3.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "thanks"), false, null);
+        changes.hardlight(Window.Pink_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RUIKE), ("锐刻五代"),
+                ("全新神器，锐克五代!\n\n" +
+                        "惊鸿杯神器赛道第一名，你也想抽一根电子烟吗？\n\n" +
+                        "物品介绍：被动效果：地牢里的动物朋友变为中立生物\n" +
+                        "\n" +
+                        "主动效果：神器开启后每回合消耗100%÷（10+神器等级）充能，自身每回合获得1回合体力充沛，每回合在自身位置释放100单位浓浓白烟，白烟初始能遮挡敌人视野，可加入气体类药剂使白烟带有该药剂的效果（白烟仅对敌人生效，每瓶药剂持续100%充能，可叠加）\n" +
+                        "\n" +
+                        "升级方式：每添加1个雷鸣魔药升2级，每添加1个充能卷轴升1级，上限10级\n" +
+                        "\n"),
+                        ("充能方式：自动充能，每回合回复0.1%+（0.01%×神器等级）充能，上限100%充能\n" +
+                        "\n" +
+                        "神器充能效果：每回合回复2%的充能\n" +
+                        "\n" +
+                        "神器诅咒效果：每回合都有10%概率使自身获得2回合失明并在自身位置释放30回合毒气；地牢里的动物朋友不再睡觉，自动追踪你的位置，所有卷轴名字变为未知，图标和底色变成相同\n" +
+                        "\n" +
+                        "其它细节：开启神器消耗1回合，关闭神器不耗回合" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SMTITEM), ("微光向导"),
+                ("全新炼金物品，微光向导!\n\n" +
+                        "惊鸿杯炼金赛道第二名，指引方向，指引前路\n\n" +
+                        "生命值1，无法被攻击，移动时不会惊醒睡着的怪物，移速1.5，视野5\n" +
+                        "微光向导和玩家共享视野，生成后会自动寻找并前往离出口最近的路径，\n" +
+                        "遇到怪物挡路会将怪物牵拉至身后并使它陷入沉睡，到达出口后死亡并点亮出口房间的视野。" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_7), ("烈阳法杖"),
+                ("全新法杖，烈阳法杖!\n\n" +
+                        "惊鸿杯法杖赛道第一名，以阳光照亮黑暗，以智慧引导光明。\n\n" +
+                        "第一个尝试把太阳带入地下的人没有想到，死灵与恶魔其实也没有那么害怕虚假的太阳。\n" +
+                        "\n" +
+                        "在指定地点释放一个烈阳光球，你会同步光球周围7*7的圆形视野\n" +
+                        "光球每回合会对周围3*3范围内的所有敌人造成2-8（+2/+4）点伤害，每额外扩散一格则伤害减少25%，光球的伤害范围最高为7*7的圆\n" +
+                        "光球本身没有碰撞体积，进入光球内的敌人受到其他所有光球的伤害增加25%\n" +
+                        "光球会持续3+法杖等级*0.3回合（向下取整），若未主动驱散光球其持续回合即将耗尽而法杖仍有充能时，会自动消耗1充能为该光球追加3回合的持续时间\n" +
+                        "\n" +
+                        "战法效果为刷新所有光球的持续时间" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GRILLED_FISH), ("烤鲱鱼"),
+                ("全新武器，烤鲱鱼!\n\n" +
+                        "惊鸿杯武器赛道第一名，烤的是鲱鱼，吃的是武器。\n\n" +
+                        "4阶16力，4-25，成长1-5\n" +
+                        "焦香四溢，滋滋冒油，热气腾腾。你很确定这把武器不能当成普通的烤鲱鱼看待，但它看起来很香。\n" +
+                        "你可以食用这条烤鲱鱼3次，每次恢复50饱食度，食用次数耗尽后变为鱼骨。\n" +
+                        "你只能食用鉴定过的、无诅咒的烤鲱鱼。烤鲱鱼的每一级升级都会为其增加1次食用次数。\n" +
+                        "附属武器：鱼骨\n" +
+                        "3阶14力，3-15，成长1-3\n" +
+                        "攻击对敌人造成伤害值50%的流血。\n" +
+                        "你最终没能经受住饥饿的考验。好在它真的很香。" )));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        Image xs =new PeachGodStateSprite();
+        xs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(xs, ("桃源祈愿"),
+                ("【限时活动--桃源祈愿·十连必得】-活动时间：3.1-3.31\n\n" +
+                        "地牢深处将随机生成 「桃源祈愿间」55%概率 \n" +
+                        "（13挑战以下触发【不包含13挑】）\n" +
+                        "祈愿规则：\n" +
+                        "单次投掷 50钴币\n" +
+                        "保底机制 ：\n\n" +
+                        "【小保底】\n" +
+                        "每10次祈愿雕像必出 1 次罕见奖励 \n" +
+                        "\n【大保底】--【可跨存档】" +
+                        "累计40抽且未出现传说及以上，\n下次必出传说以上奖励\n"),
+                        ("奖励类型概率公示【以单抽标准】：\n\n"+
+                        "常规【40%】 稀有【35%】 \n\n" +
+                        "罕见【20%】 传说【4%】 神话【1%】\n\n" +
+                        "10连概率规则：\n" +
+                        "小保底必出概率：\n" +
+                        "罕见70% 传说28% 神话2%\n" +
+                        "则9+1【必出罕见以上】\n" +
+                        "累计40抽还未出现传说的10抽：\n" +
+                        "大保底10连必出概率：\n\n" +
+                        "罕见70% 传说28% 神话2%\n" +
+                        "传说95% 神话5%")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES),("加密徽章新增两个"),
+                ("新增更多加密徽章，欢迎前去探索")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEGOLD), ("钴币掉落调整"),
+                (
+                        "_-_ 常规获取方法掉落调整：\n" +
+                        "_-_ （（玩家等级+当前楼层）/5）x（1+挑战数量/3））\n\n" +
+                        "_-_ 限时双倍掉落：\n" +
+                        "_-_ 2025.3.7-2025.3.31 钴币全局双倍掉落")));
+
+        changes.addButton(new ChangeButton(new GhostSprite(),("悲伤幽灵调整"),
+                //50%:+0, 20%:+1, 15%:+2, 12%:+3 3% +4
+                ("悲伤幽灵武器品质概率调整：\n\n"+
+                        "_-_ +0 武器：50%-原50%\n" +
+                        "_-_ +1 武器：20%-原30%\n" +
+                        "_-_ +2 武器：15%-原12%\n" +
+                        "_-_ +3 武器：12%-原06%\n" +
+                        "_-_ +4 武器：03%-原02%")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("UI改动"),
+                (       "_-_ 挑战界面优化，挑战数量动态显示为一个进度条\n" +
+                        "_-_ 复制种子界面优化，可显示具体挑战\n" +
+                        "_-_ 超过9999钴币的显示为科学计数法")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.8.3.0-Bug修复列表1:\n\n" +
+                        ("_-_ 修复卡戎可能会出售已获得的容器\n" +
+                                "_-_ 修复法师法杖回收天赋异常\n" +
+                                "_-_ 修复普果，异果转阶段判断方式错误导致无敌\n" +
+                                "_-_ 修复法师天赋失效问题\n" +
+                                "_-_ 修复决斗家天赋失效\n" +
+                                "_-_ 修复改动界面问题\n" +
+                                "_-_ 修复拟态王boss层地图错误\n" +
+                                "_-_ 修复肃杀文本错误\n" +
+                                "_-_ 修复普果异常无敌"),
+                ("0.8.3.0-Bug修复列表2:\n\n" +
+                        "_-_ 修复0层法伊娜对话异常\n" +
+                        "_-_ 修复金蝶任务文本异常\n" +
+                        "_-_ 修复甲鱼越阶段斩杀\n" +
+                        "_-_ 修复染血金币终端文本错误\n" +
+                        "_-_ 修复法师灌注数值显示错误\n" +
+                        "_-_ 修复微光导向卡死bug\n" +
+                        "_-_ 修复普果，血量显示不匹配\n" +
+                        "_-_ 修复问题描述：异果，血量不匹配\n" +
+                        "_-_ 修复BossRush,普果，无法转阶段"),
+                ("0.8.3.0-Bug修复列表3:\n\n" +
+                        "_-_ 修复火龙无限二阶段，修复火龙层跨存档地形异常\n" +
+                        "_-_ 修复甲鱼宠物导致的蜜蜂索敌异常\n" +
+                        "_-_ 修复烈阳法杖的越界异常\n" +
+                        "_-_ 修复神器充能对锐刻五代无效的效果\n" +
+                        "_-_ 修复英雄极端情况下透视问题\n" +
+                        "_-_ 修复孤城挑战下生成的怪物初始未全部苏醒的异常\n" +
+                        "_-_ 修复金蝶20层boss随机到小刻时上下楼梯无法使用"),
+                ("0.8.3.0-Bug修复列表4:\n\n" +
+                        "_-_ 修复部分金蝶文案异常\n" +
+                        "_-_ 部分缺失文本修复\n" +
+                        "_-_ 修复灯火异常清理逻辑\n" +
+                        "_-_ 修复饰品投影的计时器问题\n" +
+                        "_-_ 修复迷你太阳的视野越界问题\n" +
+                        "_-_ 修复果子卡死问题\n" +
+                        "_-_ 修复泡泡残留新年奖励逻辑\n"+
+                        "_-_ 修复部分武器无法直接参与炼金\n" +
+                        "_-_ 调整0层武器固定生成为T2\n" +
+                        "_-_ 优化部分金蝶文本\n" +
+                        "_-_ 修复金蝶重复饰品的问题\n" +
+                        "_-_ 指南书页异常位置修复")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), "归溯钥剑",
+                "现在获得钥匙的经验相比之前翻倍，并且成长调整为1-5。\n\n" +
+                        "并且在16层必定出现钥匙剑在商店,如果完成了_远古开拓者_成就，\n\n" +
+                        "则钥匙剑在16层必定出现保底+3,并单独打5折左右。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG12), ("开发者模式工具：升降器"),
+                ("现在升降器支持任意楼层传送，且可以传送到0层。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.STAIRS), ("全局房间优化"),
+                ("现在入口房间不会再被其他房间合并，独立成一个单独的房间。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIEDCROSSBOW), ("重型弩炮"),
+                ("修复弩炮的子弹伤害错误的为武器自身的伤害。")));
+
+        Image issxsaxs =new ShopGuardDead.ShopGuardianRedSprite();
+        issxsaxs.scale.set(PixelScene.align(1f));
+        changes.addButton(new ChangeButton(issxsaxs, ("商店抢劫调整"),
+                "现在商店抢劫后，只能选择一个层的商店进行全部领取。\n\n" +
+                        "其他层的商店将会不再生成，且即便是_已经生成的商店也自动移除所有东西_。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("轻装上阵挑战下线"),
+                ("下线此挑战。")));
+
+        changes = new ChangeInfo("v0.8.3.0中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("2025 2-28-->3-07", true, null);
+        changes.hardlight(Window.CPINK);
+        changeInfos.add(changes);
+    }
+
+    public static void add_V0822_Changes(ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.8.2.1-2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new GhostSprite(), ("悲伤幽灵任务优化"),
+                ("现在悲伤幽灵的任务怪物会显示血条以方便玩家查看目标怪物，并且在任务完成后自动消失。")));
+
+        Image s =new CrivusStarFruitsSprite();
+        s.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(s, ("Boss优化:克里璃斯之果"),
+                "异果调整说明：\n" +
+                        "1.第二阶段血量调整为200血\n" +
+                        "2.第三阶段的盾不再消失，回复到93血以上后周期性对敌人造成伤害\n" +
+                        "异果奖励追加：\n" +
+                        "极速药水x1 圣愈秘药x1 强能晶柱x1"));
+
+        Image xs =new RivalSprite();
+        xs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(xs, ("Boss优化:暗影"),
+                "1. 半血以下优先使用投掷武器，弹药耗尽后逼近玩家。  \n" +
+                        "2. 半血以上优先用法杖攻击，充能耗尽后强制近战。  \n" +
+                        "3. 有远程手段时，距离过近会主动远离保持射程。  \n" +
+                        "4. 无弹药时不再卡死，直接切换近战攻击。  \n" +
+                        "5. 修复了Boss在无弹药时游戏死循环的问题。"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.8.2.1-2:\n\n" +
+                        "1.果子系列boss遇到完全体会卡关【严重游戏阻断问题】\n" +
+                        "2.悲伤幽灵的任务BGM缺失【一般问题】\n" +
+                        "3.BossRush的一些文案修正【一般问题】\n" +
+                        "4.BossRush的Hell难度下4层血红史莱姆数值异常【一般问题】\n" +
+                        "5.修复暗影的隐藏楼层异常\n" +
+                        "6.部分武器应该可参与炼金，但在之前无法直接放入"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WRALIPS), ("暗金宝石护符"),
+                        ("_-_ 经验获取调整：40/20 → 25/20（低于5级/高于5级）\n" +
+                        "_-_ 冷却优化：40-等级 → 40-1.65*等级\n" +
+                        "_-_ 充能公式调整：\n90基础 → 120基础，3倍 → 4倍等级系数\n" +
+                        "_-_ 诅咒伤害降低：4-6倍 → 2-4倍等级\n" +
+                        "_-_ 升级条件：修正双倍升级的异常\n" +
+                        "_-_ 暗杀消耗保持6充能不变" )));
+
+        changes.addButton(new ChangeButton(new QuestionSprite(), ("问号君暂时下线"),
+                (
+                        "问号君重制了自己的NPC代码，但有着许多Bug, 其中还有严重导致游戏崩溃的BUG，" +
+                                "\n\n为此暂时下线，暂时不再0层生成，请等待后续版本更新。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_1), ("毒液侵染法杖"),
+                ("为BOSS添加不在毒气内则累积毒素清零\n" +
+                        "气体量由150 +50*lvl削弱至 50+10*lvl\n" +
+                        "修复带有气体免疫的生物仍然会受到毒杖效果的bug")));
+
+        changes = new ChangeInfo("v0.8.2.2中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("2025-2-14", true, null);
+        changes.hardlight(Window.CPINK);
+        changeInfos.add(changes);
+    }
+
+    public static void add_V0820_Changes(ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.8.2.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("预载", false, null);
+        changes.hardlight(Window.CBLACK);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.EMOTIONALAGGREGATION), ("藏品系统V0.1"),
+                ("为后续困难模式打下良好的基础，已可在开发者模式的杂项生成器进行试玩")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：MLPD-YX4YearsBirthday"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励，祝各位元宵快乐！")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.素材系统初始化，本次元宵和魔绫时间冲突，开启魔绫主题是魔绫4周年效果，关闭则是元宵Logo效果。\n" +
+                        "2.部分细节优化更新\n" +
+                        "3.部分界面优化")));
+
+        changes.addButton(new ChangeButton(new QuestionSprite(), ("问号君2.0"),
+                (
+                        "问号君重制了自己的NPC代码，有着许多有趣的新功能\n\n" +
+                                "如果想去玩玩，去看看旅馆附近的湖边看看他吧。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOSSRUSH_GOLD), ("BossRush3.0正式版"),
+                (
+                        "完全重做BossRush\n\n" +
+                                "1.至多与20个Boss进行作战，每一次BR都是一次新的冒险\n" +
+                                "2.幽妹固定4层生成，完成任务即可让幽妹一同行动\n" +
+                                "3.商人领主与商人一同在12，18，22，24，32，40层出现，可在这里购买补给品\n" +
+                                "4.大部分Boss已经获得加强，请查看右侧的星级图标获取详情\n" +
+                                "5.卡戎现在可以使用金券，补给层大调整，调整请查看右侧的楼层图标获取详情\n" +
+                                "6.BossRush酸液体的生成概率调整为5%，爆炸体替换为完全体\n" +
+                                "7.BossRush精英现在只有：鬼磷，索敌，天佑，烈焰")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.TALENT), ("BossRush3.0-Boss调整一览表"),
+                ("随机音乐【已实装】\n" +
+                        "BossRush的Boss音乐完全随机，除暗影，Yog-Zot，拟态王，矮人将军\n" +
+                        "\n" +
+                        "水中祝福 & 污泥浊水 & 支离破碎【已实装】\n" +
+                        "不再有效\n" +
+                        "饮用水灵药剂，转换为英雄当前血量的一半奥术护盾。【已实装】\n" +
+                        "\n"),
+                        ("金券商店【已实装】\n" +
+                        "12，18，22，24，32，40加入商人领主\n" +
+                        "\n" +
+                        "液金刷金券【已实装】\n" +
+                        "不再有效，必须打包购买。且至多10个，后续购买液金将不再给予金券。\n" +
+                        "\n" +
+                        "暗影调整【已实装】\n" +
+                        "暗影在每次切换地图后，都会召唤2/3/4/5区的敌人前来助阵\n" +
+                        "数量：2-6个 随机\n" +
+                        "平衡：5区的敌人闪避减半，血量为以前的75%\n" +
+                        "暗影抗性追加：酸蚀，寒冷，霜火\n" +
+                        "暗影召唤的敌人追加抗性：酸蚀，寒冷\n" +
+                        "暗影最终法杖替换为：毒杖【包括金蝶】\n" +
+                        "暗影最终掉落法杖替换为随机法杖，等级0-2级【包括金蝶】\n" +
+                        "\n" +
+                        "绿野调整【已实装】\n" +
+                        "调整到19层" +
+                        "\n怪组：随机史莱姆，冰魔像，吸血蝙蝠\n" +
+                        "血量：450\n" +
+                        "\n"),
+                        ("始祖食人鱼【已实装】\n" +
+                        "在21层，\n" +
+                        "怪组为：幻影食人鱼，食人鱼使徒，糯米老鼠\n" +
+                        "此层为奖励关，可以挖掘暗金在下层兑换更多金券，\n" +
+                        "小心，这里陷阱比较多，而且食人鱼不会让你走的潇洒的！\n" +
+                        "奖励关说明：未开启Boss战时，可以相当于常规楼层\n" +
+                        "\n" +
+                        "浊焰魔女【已实装】\n" +
+                        "调整到25层，由于莲娜自身就是成长Boss,\n" +
+                        "这里不再加强，但对于吃塔激光的，\n" +
+                        "会有更加严重的惩罚\n" +
+                        "其赋予的效果与矮人污泥浊水的效果完全一致\n" +
+                        "抗性追加：酸蚀，寒冷，眩晕，普通火焰（莲娜能免疫火不是很正常吗（）\n" +
+                        "\n" +
+                        "DM300调整【已实装】\n" +
+                        "血量：850\n" +
+                        "防御区间：7-10\n" +
+                        "需要摧毁全部塔\n" +
+                        "伤害区间调整：25-50\n" +
+                        "所有技能全部是绝命头目挑战（无论有没有开）\n" +
+                        "额外奖励：龙之泪x1\n" +
+                        "\n"),
+                        ("冰雪魔女【已实装】\n" +
+                        "调整到27层，数值有所调整\n" +
+                        "伤害区间：25-46【加强】\n" +
+                        "期命中值：50【加强】\n" +
+                        "闪避值：20【加强】\n" +
+                        "血量：1000【加强】\n" +
+                        "物理防御：4-8【不变】\n" +
+                        "\n"),
+                        ("冰雪魔女晶塔调整\n" +
+                        "1.塔的血量提升到90，原先为45\n" +
+                        "2.增加新塔：\n" +
+                        "幻想结界水晶-暴食\n" +
+                        "攻击模式：向目标地点发射一条射线，下回合更新目标地点，从上次命中地点发射一条射线。给目标造成磷火效果\n" +
+                        "\n" +
+                        "幻想结界水晶-贪欲\n" +
+                        "攻击模式：向目标地点发射一条射线，下回合更新目标地点，从上次命中地点发射一条射线。给目标造成降级效果\n" +
+                        "\n" +
+                        "幻想结界水晶-咒灵\n" +
+                        "攻击模式：向目标地点发射一条射线，下回合更新目标地点，从上次命中地点发射一条射线。给目标造成定命效果【在冰雪魔女本体死亡后解除】\n" +
+                        "\n" +
+                        "3.抗性追加：冻结，霜火\n" +
+                        "\n"),
+                        ("DM720\n" +
+                        "调整到27层，数值有所调整\n" +
+                        "血量：720\n" +
+                        "伤害区间：24-36\n" +
+                        "命中值：35\n" +
+                        "所有技能和强化全部是绝命头目挑战（无论有没有开）\n" +
+                        "\n"),
+                        ("血月长老\n" +
+                        "1.获得天佑精英\n" +
+                        "2.血量：120（原：180）\n" +
+                        "3.伤害区间：15-50\n" +
+                        "所有技能全部是绝命头目挑战（无论有没有开）\n" +
+                        "\n" +
+                        "萨卡班甲鱼【已实装】\n" +
+                        "调整到31层，数值有所调整\n" +
+                        "1.血量：648（原480)\n" +
+                        "2.闪避：20（原10)\n" +
+                        "\n" +
+                        "死亡激光\n" +
+                        "伤害提升至：50-70\n" +
+                        "抗性追加：失明，眩晕，幻惑\n" +
+                        "\n" +
+                        "修复Bug:\n" +
+                        "1.两个随从召唤后醒着，在所有模式生效\n" +
+                        "2.两个随从命中率少加一个0，现为5，应为50，在所有模式生效\n" +
+                        "\n"),
+                        ("矮人将军【已实装】\n" +
+                        "1.额外召唤一次军旗\n" +
+                        "2.添加了阶段控制，现在不可能被秒杀（全模式生效）\n" +
+                        "\n" +
+                        "矮人武将【已实装】\n" +
+                        "1.怪组调整为：矮人炮手，美杜莎，矮人武僧\n" +
+                        "2.添加了阶段控制，现在不可能被秒杀（全模式生效）\n" +
+                        "\n" +
+                        "Yog\n" +
+                        "1.全部为绝命头目的加成\n" +
+                        "\n" +
+                        "磷焰拳头\n" +
+                        "1.激光伤害提升至2倍\n" +
+                        "\n" +
+                        "Yog-Zot【已实装】\n" +
+                        "1.最终阶段追加额外敌人\n" +
+                        "2.如果有孤城，则全部敌人获得孤城印记")));
+
+        Image dragonSprite = new FireDragonSprite();
+        dragonSprite.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(dragonSprite, ("熔岩火龙-BR模式"),
+                ("掉落调整：\n" +
+                        "BR中火龙自身不再掉落十字架，神器，戒指以及药水和龙之泪\n" +
+                        "\n" +
+                        "普通攻击物理伤害调整为：12-16【加强】\n" +
+                        "命中值调整为：30【加强】\n" +
+                        "闪避值调整为：12【加强】\n" +
+                        "最大血量调整为：260【加强】\n" +
+                        "物理防御调整为：4-5【加强】\n" +
+                        "\n" +
+                        "抗性增加：\n" +
+                        "恐惧，冰冻【已完成】\n" +
+                        "\n" +
+                        "新增技能\n" +
+                        "龙族威严（主动）：【已完成】\n" +
+                        "在首次进入0血后立刻召唤5个元素并立刻吸收，回复160血。\n" +
+                        "\n" +
+                        "神秘仪式（被动）：【已完成】\n" +
+                        "在失去敌人的状态下，立刻返回到祭坛上，并立刻至多吸收2个元素，此效果有20回合冷却\n" +
+                        "\n" +
+                        "龙族咒锁（主动）：【已完成】\n" +
+                        "在发现敌人时，立刻将敌人拉出来，此效果有35回合冷却（无视任何地形）\n" +
+                        "\n" +
+                        "险峻地势（地形）：【已完成】\n" +
+                        "治疗区域被上锁了，击败火龙后自行解除")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.STAIRS), ("BossRush3.0-补给层调整一览表"),
+                ("T1 补给层（楼层：3, 5, 7, 8, 10）\n" +
+                        "1 力量药水，2 治疗药水，1 随机宝箱，1 升级卷轴，1 经验药水，2 随机食物\n" +
+                        "\n" +
+                        "T2 补给层（楼层：12, 14, 15）\n" +
+                        "1 经验药水，1 治疗药水，1 随机食物，\n" +
+                        "1 随机武器，1 随机护甲，40% 概率生成 1 随机宝箱\n" +
+                        "新增（BossRush 3.0）\n：1 升级卷轴，1 随机 2 阶投掷物品，1 嬗变卷轴\n" +
+                        "\n" +
+                        "T2+ 补给层（楼层：19, 20）\n" +
+                        "1 经验药水，1 治疗药水，1 随机食物，1 随机武器，\n" +
+                        "1 随机护甲，1 升级卷轴，40% 概率生成 1 随机宝箱\n" +
+                        "新增（BossRush 3.0）\n：1 随机 3 阶投掷物品，1 嬗变卷轴，1 随机药水\n" +
+                        "\n" +
+                        "T3 补给层（楼层：22, 25）\n" +
+                        "1 升级卷轴，1 力量药水，\n" +
+                        "1 治疗药水，1 随机食物，1 随机武器\n" +
+                        "\n" +
+                        "T3+ 补给层（楼层：28, 30）\n" +
+                        "1 力量药水，1 治疗药水，1 随机食物，\n" +
+                        "1 随机武器，20% 概率生成 1 随机宝箱，1 随机护甲\n" +
+                        "新增（BossRush 3.0）\n：1 随机魔药（水爆/淤泥/冰爆/炼狱/雷鸣），" +
+                        "1 升级卷轴，2 嬗变卷轴，1 随机药水\n" +
+                        "\n" +
+                        "T4 补给层（楼层：32, 34, 36, 38, 40, 41）\n" +
+                        "1 奥术护盾合剂，" +
+                        "1-2 随机秘卷（决斗/虹卫/蜕变/灵爆/塞壬之歌）" +
+                        "\n2 随机宝箱，1 随机药水，1 随机 4 阶投掷物品，1 嬗变卷轴")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.8.2.0修正以下问题:\n\n" +
+                        "1. 修复金蝶克隆严重异常 - 报告员：Archetto - 处理人：JDSALing\n" +
+                        "2. 修复部分怪物数值异常，支离破碎在金蝶模式中不再生效 - 报告员：sks123456 - 处理人：JDSALing\n" +
+                        "3. 优化嬗变，神器现在嬗变不再获得升级 - 报告员：xiaomeng - 处理人：JDSALing\n" +
+                        "4. 修复哥布林祭司异常 - 报告员：Archetto - 处理人：JDSALing\n" +
+                        "5. 修复老法杖充能异常 - 报告员：Archetto - 处理人：JDSALing\n" +
+                        "6. 修复吸血鬼刀数值显示问题 - 报告员：Archetto - 处理人：JDSALing\n" +
+                        "7. 修复愚人号层幻影食人鱼带有精英效果 - 报告员：xiaomeng - 处理人：JDSALing\n" +
+                        "8. 修复无敌buff效果异常 - 报告员：sks123456 - 处理人：JDSALing\n" +
+                        "9. 修复甲鱼地图生成问题 - 报告员：sks123456 - 处理人：JDSALing\n" +
+                        "10. 修复异果boss战音乐错误 - 报告员：sks123456 - 处理人：JDSALing\n" +
+                        "11. 修复br拟态王进入传送门会进入13-d子层 - 报告员：xiaomeng - 处理人：JDSALing\n" +
+                        "12. 修复br模式npc生成异常 - 报告员：sks123456 - 处理人：JDSALing\n" +
+                        "13. 修复br污水异常 - 报告员：sks123456 - 处理人：JDSALing\n" +
+                        "14. 修复br冰女异常 - 报告员：Archetto - 处理人：JDSALing\n" +
+                        "15. 修复br异果异常 - 报告员：Archetto - 处理人：JDSALing\n" +
+                        "16. 修复变幻莫测部分楼层文本缺失 - 报告员：JDSALing - 处理人：JDSALing\n" +
+                        "17. 修复肌肉合剂对部分武器没有效果 - 报告员：QinYue - 处理人：JDSALing"));
+
+                changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+                changes.hardlight(Window.R_COLOR);
+                changeInfos.add(changes);
+
+                changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIEDCROSSBOW), ("重型弩炮"),
+                ("弩炮技能更改：造成5*5范围的115%近战伤害，可以给飞镖伤害与附魔加成")));
+
+                changes.addButton( new ChangeButton(new TalentIcon(Talent.STRONGMAN), "天赋调整",
+                "角斗士天赋保持警惕退回为破碎的“连战热忱”\n\n" +
+                        " 排山倒海数值调整：\n" +
+                        " 获得0.137%/0.33%/0.5%伤害加成，上限50%\n" +
+                        " 获得0.33%/0.66%/1%的精准加成，上限75%"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_1), ("毒液侵染法杖"),
+                ("进入猩红毒雾的任何单位都会持续受到起始为_X点_的持续伤害并持续积累毒素，当同一单位累计受到的伤害达到_X*8_时将会在毒雾内持续失明，达到_X*20_时将会在毒雾内持续麻痹 \n\n" +
+                        "服用_治疗药水_或_全面净化合剂_可清除毒素积累量。")));
+
+        changes = new ChangeInfo("v0.8.2中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("2025-2-12", true, null);
+        changes.hardlight(Window.CPINK);
+        changeInfos.add(changes);
+
+
+    }
+
+    public static void add_V0810_Changes(ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.8.1.0-1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.Dragon_Lei), ("新物品：龙之泪"),
+                ("固定20露珠效果")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD), ("金蝶模式V2.1-2.2"),
+                (
+                        "金蝶模式-V2.2\n\n" +
+                        "1.修复金蝶克隆严重异常\n" +
+                        "2.修复部分怪物数值异常，支离破碎在金蝶模式中不再生效\n" +
+                        "3.优化嬗变回合，补偿无敌回合，且神器现在嬗变不再获得升级（嬗变次数有时，可无限嬗变）"),
+                        "金蝶模式-V2.1\n\n" +
+                        "1.追加更多怪物，详见日志金蝶特殊敌人列表"));
+
+        changes.addButton(new ChangeButton(new HermitCrabSprite(), ("寄居蟹"),
+                ("寄居蟹数值优化，现在破壳前0.95移速，破壳后2.0移速。\n\n" +
+                        "破壳时，同时获得6回合极速+恐惧效果。伤害削弱")));
+
+        changes.addButton(new ChangeButton(new ArtilleristSprite(), ("矮人炮手"),
+                ("修正攻击力为1000%的严重异常")));
+
+        changes.addButton(new ChangeButton(new GnollBlindSprite(), ("老年豺狼"),
+                ("老年豺狼在第一层防御降为0，其他情况下为0-2。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("其他改动"),
+                ("1.兑换码追加自动清理和NTP验证\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分素材细节优化更新")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.8.1.0-1:\n\n" +
+                        "-修复老魔杖的嬗变一些异常\n" +
+                        "-优化饰品嬗变，超过6级的饰品现在也可嬗变\n" +
+                        "-优化嬗变底层，文案优化\n" +
+                        "-优化破碎神器升级底层，现在至多+10，老存档无法同步，遇到旧版本超过+10卡死异常请自行处理。"));
+
+    }
+
+    public static void add_V0808_Changes(ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.8.0.8", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD), ("金蝶模式V2.0"),
+                ("完全重做，详见金蝶游戏内部说明")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：MLPD-SnakeYearsOld"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励，祝各位新年快乐！")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：MLPD-4YearsOld"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励，祝各位新年快乐！")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES),("新徽章加入"),
+                ("一个隐藏徽章")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("挑战改进:孤城迷境"),
+                ("挑战优化:\n" +
+                        "1.0层翻新，奈亚子进入常规入口会有温馨提示\n" +
+                        "2.孤城Bzmdr\n" +
+                        "3.孤城可游玩特殊模式")));
+
+        changes.addButton(new ChangeButton(new DreamSprite(), ("新NPC:晓梦加入"),
+                ("风里雨里，0层等你")));
+
+        changes.addButton(new ChangeButton(new RedNecromancerSprite(), ("BossRush2.4"),
+                ("Boss现在不会获得成长精英效果。")));
+
+        Image issxsaxs =new QliphothSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("果子系列Boss优化"),
+                ("现在果子在不能攻击前不再被自动瞄准，且异果藤曼开局追加10回合失明")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.8.0.8:\n\n" +
+                        "1.修复决斗家转职副完全不充能的问题\n" +
+                        "2.修复金蝶测试版的各种问题\n" +
+                        "3.0层魔像现在不会传送\n" +
+                        "4.其他小型崩溃Bug修正,这里不做过多描述"));
+    }
+
+    public static void add_V0805_Changes(ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.8.0.5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        Image dragonSprite = new FireDragonSprite();
+        dragonSprite.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(dragonSprite, ("熔岩火龙-绝命模式"),
+                ("调整熔岩火龙地图地形，使之更加刺激")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD), ("金蝶模式V1.5"),
+                ("1.背包中的武器不再参与嬗变\n" +
+                        "2.修复了一些潜在问题，优化了底层模块")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：MLPD_XiaonianYei"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励，祝各位小年夜快乐！")));
+
+        changes.addButton(new ChangeButton(new RedNecromancerSprite(), ("BossRush2.2"),
+                ("第一大层Boss顺序发生了变化，现在是粘咕->普果->异果->天痕（困难模式），并且现在最大层不再是100。")));
+
+        Image issxsaxs =new DimandKingSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("拟态之王2.0"),
+                ("现在拟态之王因为实装音乐所以重新优化了一些阶段，并且迷宫不再是隐藏门" +
+                        "尤其是第二阶段，同时绝命有所调整，请自行游戏内查看")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.8.0.5:\n\n" +
+                        "1.修复部分武器肌肉合剂不生效的异常\n" +
+                        "2.修复苦痛刻痕使用祝福的十字架死亡的异常，以及可反复退出的问题\n" +
+                        "3.修复英雄精英效果不生效的问题\n" +
+                        "4.其他小型崩溃Bug修正,这里不做过多描述"));
+    }
+
+    public static void add_V0801_Changes(ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.8.0.1-2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        Image dragonSprite = new FireDragonSprite();
+        dragonSprite.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(dragonSprite, ("熔岩火龙-绝命模式"),
+                ("新增熔岩火龙绝命模式，以及修复一些buff不生效的异常")));
+
+        changes.addButton(new ChangeButton(new RedNecromancerSprite(), ("BossRush2.1"),
+                ("第一大层Boss顺序发生了变化，现在是普果->史莱姆王->异果，并且现在最大层不再是100。")));
+
+        Image issxsaxs =new DimandKingSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("拟态之王2.0"),
+                ("现在拟态之王因为实装音乐所以重新优化了一些阶段，" +
+                        "尤其是第二阶段，同时绝命有所调整，请自行游戏内查看")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("新原创音乐：拟态之王-宝藏迷宫"),
+                ("由作曲家'Tatsro'制作的原创Boss战BGM")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("新三方音乐：Titanic（泰坦之魂）"),
+                ("泰坦之魂游戏原声，应用于熔岩火龙Boss战")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_1), ("法杖调整：毒液侵染法杖"),
+                ("回退代码到稳定版本，但伤害数值下降至原有70%")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("寂灭灯火V1.6"),
+                ("1.灯油降价，从原来的四倍变成两倍！" +
+                        "2.灯火自然扣减变慢4回合")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("UI改动"),
+                ("1.加密徽章现在可以看见自己的获得量/总量\n" +
+                        "2.13挑徽章可以看见自己的最高记录挑战数量,但需要在新版本进行一次通过才能记录。\n" +
+                        "3.现在特殊模式可显示对应图标和东西")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.8.0.1:\n\n" +
+                        "1.修复子层物品掉落的闪退异常\n" +
+                        "2.宝藏迷宫可适配在BossRush\n" +
+                        "3.其他小型Bug修正,太多了这里不做过多描述"));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.8.0.0:\n\n" +
+                        "1.修复子层丢东西导致的小异常\n" +
+                        "2.修复BossRush裂缝层地形异常问题\n" +
+                        "3.修复BossRush模式部分楼层的异常问题\n" +
+                        "4.修复玩家到达白墓碑和黑宝箱上方时会显示其中的物品的小异常\n" +
+                        "5.修复部分音乐冲突导致的部分机型的严重卡顿\n" +
+                        "6.修复火龙buff不生效以及无敌失效异常\n" +
+                        "7.修复法伊娜拦路的问题\n" +
+                        "8.修复玫瑰卷轴失效的问题\n" +
+                        "9.修复子层的跳楼异常\n" +
+                        "10.修复部分特效异常"));
+
+    }
+
+    public static void add_V0800M1_Changes(ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.8.0.0-M1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "middle"), false, null);
+        changes.hardlight(Window.Pink_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new VampireSprite(), ("万圣古堡①测-中测"),
+                ("万圣节古堡①测，中测群正在测试，敬请期待古堡正式版本！")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HOLY_WATER), ("新物品：圣水瓶"),
+                ("可以重创部分敌人，可以让部分敌人失效，每层生成1-3个圣水瓶")));
+
+        changes.addButton(new ChangeButton(new GhostHalloweenSprite(), ("新怪物：鬼魂"),
+                ("游荡在万圣大殿的鬼魂，虽然无法对敌人造成伤害，但可以造成精神摧残。")));
+
+        changes.addButton(new ChangeButton(new PumkingGhostSprite(), ("新怪物：南瓜头鬼魂"),
+                ("游荡在万圣大殿的鬼魂，虽然无法对敌人造成伤害，但可以造成精神摧残。")));
+
+        changes.addButton(new ChangeButton(new ApprenticeWitchSprite(), ("新怪物：见习魔女"),
+                ("她曾是某魔法学院的学生，因为太过顽皮，没能通过魔法考试，所以无法成为一名合格的法师。")));
+
+        changes.addButton(new ChangeButton(new ButcherSprite(), ("新怪物：电锯狂人"),
+                ("电锯狂人曾经也是一个冒险者，可现在由于各种原因，他已失去了神智。它徘徊这古堡周围，寻找一切可以被撕碎的东西。")));
+
+        changes.addButton(new ChangeButton(new FrankensteinSprite(), ("新怪物：残梦魔偶"),
+                ("游荡在万圣大殿的未完成人偶，据说制作它们的主人因为它们失败的外型和缓慢的速度最终抛弃了它们。它们已经陷入了癫狂之中，会寻找一切活着的生命，并撕碎他们的灵魂。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new LuoWhiteSprite(), ("兑换码系统V2.0"),
+                ("兑换码系统现在可在游戏界面中进入！")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("寂灭灯火V1.5"),
+                ("1.没入黑暗灯火扣减从原灯火扣减 + 2*挑战数量/5，改为固定+2，且仅在自动扣减中\n\n" +
+                                "2.灯火最大值提升至72")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.9.9-SP4版本:\n\n" +
+                        "1.修复部分文本缺失\n" +
+                        "2.修复哨位法杖异常\n" +
+                        "3.优化纯晶元素4层AI\n" +
+                        "4.火龙，莲娜，矮人武将阶段调整追加无敌"));
+
+    }
+
+    public static void add_V07993_Changes( ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.7.9.9-SP3", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("音乐优化"),
+                ("音乐进行了一些压缩，保证音乐质量情况下减负安装包大小")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("其他改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分素材细节优化更新")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.WARNING), ("错误报告V2登场"),
+                ("错误报告v2界面全新来袭，感谢薄荷的界面制作")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GOLDLANGGUN), ("新传奇武器：黄金长枪"),
+                ("堤喀眷顾之人才能找到的武器，给予使用者无与伦比的祝福")));
+
+        changes.addButton(new ChangeButton(new LuoWhiteSprite(), ("兑换码系统V1.0"),
+                ("兑换码系统来袭，替代更新补偿")));
+
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("寂灭灯火V1.2"),
+                (
+                        "1.没入黑暗灯火扣减从全局双倍调为原灯火扣减 + 2*挑战数量/5，且仅在自动扣减中\n\n" +
+                                "2.优化魔女的低语：束缚，现在会在效果结束后给予装备的净化，作为代价，装备会降一级")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.9.9-SP3版本:\n\n" +
+                        "1.修复部分文本缺失\n" +
+                        "2.修复毒杖，火把的崩溃和无限回合异常"));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI,
+                new ItemSprite.Glowing( Window.GDX_COLOR )), "附魔：审判",
+                "暂时下架这个附魔"));
+
+    }
+
+    public static void add_V07990_Changes( ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.7.9.9-SP1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_AIKELAIER), ("查种器V3登场"),
+                ("查种器V3登场，更强大的查种，更快的搜索！\n\n" +
+                        "1.基于JDK21引擎，查种速度大幅度提升\n" +
+                        "2.强力搜查模式 现在登场\n" +
+                        "3.修复查种部分界面异常Bug\n" +
+                        "4.修复以字符串查种子的显示异常\n" +
+                        "5.追加格式复原，不清楚格式可以点击这个")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("寂灭灯火V1.1"),
+                (
+                        "1.新增自动装填模式\n" +
+                        "2.修复寂灭循环的一些传送异常\n" +
+                                "3.稀有怪生成率调成35%")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("药水癔症"),
+                ("药水癔症已经进行了一定的改进，详见挑战说明。")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.9.9版本:\n\n" +
+                        "1.修复中部群反馈的一些bug\n" +
+                        "2.其他闪退bug修正"));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI,
+                new ItemSprite.Glowing( Window.GDX_COLOR )), "附魔：审判",
+                "修复审判带来的一些异常问题"));
+
+        changes = new ChangeInfo("v0.7.9.9", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new GudaziSprite(),("新NPC:古达子"),
+                ("来自远方的旅客，来到雪景小镇篝火这里。")));
+
+        changes.addButton(new ChangeButton(new ZakoSprite(),("新NPC:喵音·椛"),
+                ("团宠，别惹她生气")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WHITE_BAST), ("新武器：白浪刺剑"),
+                ("我的灯将净化邪恶！ 我的剑将劈开海潮！ 我的眼将找出真相！ 我的心会作出判决。")));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI,
+                new ItemSprite.Glowing( Window.GDX_COLOR )), "新附魔：审判",
+                "这个附魔会使审判之力从武器中释放而出，能够至多标记一个敌人，并在这个敌人死亡时将其最大生命值的若干转为一次对所有可见敌人进行一次同等的物理伤害。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_15), ("新挑战:寂灭灯火"),
+                ("灯火现在正式成为挑战，具体查阅挑战说明。")));
+
+        Image s = new QliphothSprite();
+        s.scale.set(PixelScene.align(0.74f));
+        changes.addButton(new ChangeButton(s, ("新Boss：克里弗斯之果2代"),
+                ("它们编织成一张大网，将所有不慎跌落谷底的生命体供给给中间那粒鲜红的果实。果子重做，祝各位玩的愉快")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("其他改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.现在饰品可以在开发者模式中升级")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.9.8版本:\n\n" +
+                        "1.修复部分炼金合成异常\n" +
+                        "2.修复中部群反馈的一些bug\n" +
+                        "3.其他bug修正"));
+    }
+
+    public static void add_V078_90_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.8-v0.7.9", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("底层迭代"),
+                ("魔绫像素地牢现在迭代至2.5.0破碎底层")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CATALOG), ("平衡案3.1 上半部分"),
+                ("实现了平衡案3.1上半部分，具体如下：\n\n" +
+                        "【武器调整】：\n\n" +
+                        "1.月刃：攻击延迟改为0.45回合，变为4阶武器\n\n" +
+                        "2.吸血鬼刀：面板提升至3-15，成长改为2-2\n\n" +
+                        "3.碧灰：改为5阶武器，攻击延迟改为0.40\n\n" +
+                        "4.荆棘：去除所谓的低等级负面，去除加距离，附加恐惧回合变为等同等级的回合数，诅咒棱晶不可对其使用，触发惩罚的等级改为11级，生命树出现概率改为35%\n\n" +
+                        "5.冰鱼：配方改为:冰合剂+烤鲱鱼+注魔棱晶。双鱼成长改为3-7，攻击延迟改为1\n\n" +
+                        "6.涤罪：延迟改为1.76，成长改为1-6，基础面板改2-25，每杀一个敌人减0.0067的延迟，计数上限为100，每杀2个怪成长一点上下限，计数上限为26\n\n" +
+                        "7.糯米大剑:基础属性改为大剑属性\n\n"),
+                        ("【挑战调整】：\n\n" +
+                        "1.灯火：在开启黑暗挑战的情况下，灯火消耗速度翻倍(已处理，目前为x2)\n\n" +
+                        "2.药水癔症：负面效果的触发概率变为95%，除大饼外无正面效果。"),
+                        "【怪物调整】：\n\n" +
+                        "1.甲鱼:减少第一阶段10护盾，攻击上升7\n\n" +
+                        "2.火魔女的属性决定于最大深度而不是抢劫深度\n\n" +
+                        "3.棕色蝙蝠：闪避变为与正常二区怪物一致\n\n" +
+                        "4.黄昏史莱姆：25%概率上燃烧\n\n" +
+                        "5.冰老鼠：护甲改为1-3\n\n" +
+                        "6.火苍蝇：护甲改为1-4\n\n" +
+                        "7.重甲豺狼：血量改为80，亡语护盾改为75%血上线"));
+
+        changes = new ChangeInfo("预载", false, null);
+        changes.hardlight(Window.CBLACK);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ApprenticeWitchSprite(), ("新怪物:见习魔女"),
+                ("魔法学院的劣等生，见习中的魔女。\n\n该数据已预载，将在万圣后启用。")));
+
+        changes.addButton(new ChangeButton(new FrankensteinSprite(), ("新怪物:残梦魔偶"),
+                ("它在寻找它的创造者，以及，撕碎所有拥有生命的气息。\n\n该数据已预载，将在万圣后启用。")));
+
+        changes.addButton(new ChangeButton(new GhostHalloweenSprite(), ("新怪物:鬼魂"),
+                ("令人捉摸不透的亡魂……。\n\n该数据已预载，将在万圣后启用。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("其他改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分细节优化更新")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.9.0版本:\n\n" +
+                        "1.修复部分炼金合成异常\n" +
+                        "2.修复中部群反馈的一些bug\n" +
+                        "3.其他bug修正\n"));
+
+//        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+//        changes.hardlight(Window.R_COLOR);
+//        changeInfos.add(changes);
+//
+//        changes.addButton(new ChangeButton(new ShopkKingSprite(), ("商店Boss优化"),
+//                ("不再出现敌法精英效果加成，并且激素涌动有效时长减少")));
+//
+//        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("其他改动"),
+//                ("查找器移除，日后作为网页版上线。若仍要查询种子，请到开发者模式使用物品查询器观看")));
+
+
     }
 
     public static void add_V0770_Changes( ArrayList<ChangeInfo> changeInfos ) {

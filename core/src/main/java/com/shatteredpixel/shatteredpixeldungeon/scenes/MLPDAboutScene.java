@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -11,7 +12,6 @@ import com.watabou.input.PointerEvent;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.ui.Component;
 
@@ -38,13 +38,26 @@ public class MLPDAboutScene extends PixelScene {
         final float colTop = (Camera.main.height / 2) - (landscape() ? 30 : 90);
         final float colOffset = landscape() ? colWidth : 0;
 
-        Image ling = new Image("Ling.png", 0, 0, 16, 16);
+        WhiteGirlSprites ling = new WhiteGirlSprites();
         ling.x = (colWidth - ling.width()) / 2;
         ling.y = colTop;
         align( ling );
         add( ling );
 
-        new Flare( 12, 64 ).color( Window.SKYBULE_COLOR, true ).show( ling, 0 ).angularSpeed = +20;
+        Flare flare = new Flare( 6, 62 ) {
+            private float time;
+            @Override
+            public void update() {
+                super.update();
+                am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed));
+                time += Game.elapsed / 3.5f;
+                float r = 0.33f+0.57f*Math.max(0f, (float)Math.sin( time));
+                float g = 0.53f+0.57f*Math.max(0f, (float)Math.sin( time + 2*Math.PI/3 ));
+                float b = 0.63f+0.57f*Math.max(0f, (float)Math.sin( time + 4*Math.PI/3 ));
+                hardlight(r,g,b);
+            }
+        };
+        flare.color( 0, true ).show( ling, 0 ).angularSpeed = +27;
 
         RenderedTextBlock mlpdtitle = renderTextBlock( TTL_MLPD(), 8 );
         mlpdtitle.hardlight( Window.MLPD_COLOR );

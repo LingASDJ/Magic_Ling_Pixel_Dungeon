@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -9,10 +10,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class WndRushTradeItem extends WndInfoItem {
 
@@ -60,6 +63,9 @@ public class WndRushTradeItem extends WndInfoItem {
         } else {
 
             int priceAll= item.quantity/5;
+
+
+
             RedButton btnSellAll = new RedButton( Messages.get(this, "sell_all", priceAll ) ) {
                 @Override
                 protected void onClick() {
@@ -128,12 +134,33 @@ public class WndRushTradeItem extends WndInfoItem {
         if (item.isEquipped( hero ) && !((EquipableItem)item).doUnequip( hero, false )) {
             return;
         }
-        item.detachAll( hero.belongings.backpack );
+
+        if(item instanceof LiquidMetal){
+            if(item.quantity()>=50 && !Statistics.LiquidMatalOnlyTen){
+                item.detachAll( hero.belongings.backpack );
+            }
+        } else {
+            item.detachAll( hero.belongings.backpack );
+        }
+
 
         //selling items in the sell interface doesn't spend time
         hero.spend(-hero.cooldown());
 
-        new KingGold(item.quantity/5 ).doPickUp( hero );
+        //特判液金 至多10个
+        if(item instanceof LiquidMetal){
+            if(item.quantity >= 50 && !Statistics.LiquidMatalOnlyTen){
+                Statistics.LiquidMatalOnlyTen = true;
+                new KingGold(10 ).doPickUp( hero );
+            } else if(!Statistics.LiquidMatalOnlyTen){
+                GLog.n(Messages.get(WndRushTradeItem.class,"max_nomore"));
+            } else {
+                GLog.n(Messages.get(WndRushTradeItem.class,"max_ten"));
+            }
+        } else {
+            new KingGold(item.quantity/5 ).doPickUp( hero );
+        }
+
 
 
         if (shop != null){

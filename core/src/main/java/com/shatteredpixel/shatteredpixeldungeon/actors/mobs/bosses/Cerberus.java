@@ -4,7 +4,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.CerDogBossLevel.FireWallDied;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -34,8 +33,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DeathRong;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Typhon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRong;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.Typhon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
@@ -79,6 +78,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
+/**
+LAST UPDATED: 2025-03-22
+老狗子寿终正寝，长眠于此，不再更新。
+ */
 public class Cerberus extends Boss {
 
     {
@@ -128,7 +131,7 @@ public class Cerberus extends Boss {
 
     @Override
     public int attackSkill( Char target ) {
-        return 26;
+        return 999;
     }
 
     @Override
@@ -325,6 +328,8 @@ public class Cerberus extends Boss {
 
         return super.act();
     }
+
+
 
     public int attackProc(Char enemy, int damage) {
        damage = super.attackProc(enemy, damage);
@@ -668,7 +673,7 @@ public class Cerberus extends Boss {
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "notice"));
             GameScene.flash(0x33ff0000);
-            BGMPlayer.playBoss();
+            //BGMPlayer.playBoss();
             GameScene.bossReady();
             for (Char ch : Actor.chars()){
                 if (ch instanceof DriedRose.GhostHero){

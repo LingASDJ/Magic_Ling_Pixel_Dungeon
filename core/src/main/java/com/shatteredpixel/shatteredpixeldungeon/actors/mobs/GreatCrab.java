@@ -34,8 +34,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GreatCrabSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -57,6 +60,15 @@ public class GreatCrab extends Crab {
 		lootChance = 1f;
 
 		properties.add(Property.MINIBOSS);
+	}
+
+	@Override
+	public void notice() {
+
+		if (!BossHealthBar.isAssigned()) {
+			BossHealthBar.assignBoss(this);
+			Camera.main.shake(1f,3f);
+		}
 	}
 
 	private int moving = 0;
@@ -134,5 +146,11 @@ public class GreatCrab extends Crab {
 				return pos1;
 			}
 		}
+	}
+
+	@Override
+	public void restoreFromBundle( Bundle bundle ) {
+		super.restoreFromBundle( bundle );
+		if (state != SLEEPING) BossHealthBar.assignBoss(this);
 	}
 }

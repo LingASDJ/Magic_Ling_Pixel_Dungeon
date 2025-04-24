@@ -11,8 +11,8 @@ public class MoonLowSprite extends MobSprite {
 
         TextureFilm ren = new TextureFilm(this.texture, 16, 16);
 
-        idle = new MovieClip.Animation(2, true);
-        idle.frames(ren, 0, 0, 1, 1,2,2);
+        idle = new MovieClip.Animation(5, true);
+        idle.frames(ren, 0,0,0,1,2,2,2,3);
 
         run = new MovieClip.Animation(10, true);
         run.frames(ren, 0);

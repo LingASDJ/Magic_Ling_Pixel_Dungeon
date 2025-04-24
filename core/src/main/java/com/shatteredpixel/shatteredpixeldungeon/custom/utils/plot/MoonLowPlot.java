@@ -18,7 +18,7 @@ import com.watabou.noosa.Image;
 public class MoonLowPlot extends Plot {
 
 
-    private final static int maxprocess = 2;
+    private final static int maxprocess = 5;
 
     {
         process = 1;
@@ -43,10 +43,19 @@ public class MoonLowPlot extends Plot {
             switch (process) {
                 default:
                 case 1:
-                    process_to_1();//Mostly process to 1 is made directly when creating,it might not be used,just in case
+                    process_to_1();
                     break;
                 case 2:
-                    process_to_2();//Mostly process to 1 is made directly when creating,it might not be used,just in case
+                    process_to_2();
+                    break;
+                case 3:
+                    process_to_3();
+                    break;
+                case 4:
+                    process_to_4();
+                    break;
+                case 5:
+                    process_to_5();
                     break;
             }
             diagulewindow.update();
@@ -80,6 +89,18 @@ public class MoonLowPlot extends Plot {
 
     private void process_to_2() {
         diagulewindow.changeText(Messages.get(MoonLow.class, "b_message1"));
+    }
+
+    private void process_to_3() {
+        diagulewindow.changeText(Messages.get(MoonLow.class, "b_message2"));
+    }
+
+    private void process_to_4() {
+        diagulewindow.changeText(Messages.get(MoonLow.class, "b_message3"));
+    }
+
+    private void process_to_5() {
+        diagulewindow.changeText(Messages.get(MoonLow.class, "b_message4"));
         if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
             Dungeon.level.drop(new Gold(1), hero.pos);
         } else {

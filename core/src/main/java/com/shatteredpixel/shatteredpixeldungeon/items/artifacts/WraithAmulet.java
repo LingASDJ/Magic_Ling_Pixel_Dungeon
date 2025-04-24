@@ -41,7 +41,6 @@ public class WraithAmulet extends Artifact {
         levelCap = 10;
         charge = Math.min(level()+1, 10);
         partialCharge = 0;
-        charge = Math.min(level()+1, 10);
         level = 0;
         defaultAction = AC_GHOST;
     }
@@ -82,10 +81,11 @@ public class WraithAmulet extends Artifact {
             } else if(useableBasic()) {
                 if(this.isEquipped(Dungeon.hero)){
                     if(this.charge > 0) {
-                        exp += level()>5 ? 20 : 40;
+                        // 降低经验获取量：从40/20改为20/25
+                        exp += level()>5 ? 20 : 25;
                         Buff.affect(Dungeon.hero, Invisibility.class, Invisibility.DURATION/2);
                         GLog.p(Messages.get(this,"ghost"));
-                        cooldown = 40 - (level);
+                        cooldown = Math.round(40 - level*1.65f);
                         charge--;
                     } else {
                         GLog.i(Messages.get(this,"nochareup"));
@@ -136,7 +136,8 @@ public class WraithAmulet extends Artifact {
 
             if (charge < chargeCap && !cursed && useableBasic() && (lock == null || lock.regenOn())) {
                 partialCharge += 1 / (150f - (chargeCap - charge) * 15f);
-                float chargeGain = 1 / (90f - (chargeCap - charge)*3f);
+                // 调整充能公式：分母加大并改变系数
+                float chargeGain = 1 / (120f - (chargeCap - charge)*4f);
                 chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
                 partialCharge += chargeGain;
                 if (partialCharge >= 1) {
@@ -150,7 +151,7 @@ public class WraithAmulet extends Artifact {
             } else if(cursed){
                 int level = level() == 0 ? 1 : level();
                 hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this,"cursed"));
-                hero.damage(Random.Int(4*level, 6*level), this);
+                hero.damage(Random.Int(2*level, 4*level), this);
                 if (!hero.isAlive()) {
                     Dungeon.fail(getClass());
                     GLog.n(Messages.get(this, "ondeath"));
@@ -158,13 +159,11 @@ public class WraithAmulet extends Artifact {
                 spend(90f);
             }
 
+            // 调整升级条件为(level+1)*75
             if(exp > level * 50){
                 exp = 0;
                 if(level < levelCap){
-                    //I must add Complete WraithAmulet
-                    //Ok,Ling will Complete WraithAmulet
                     upgrade();
-                    exp += level * 38;
                     GLog.p(Messages.get(this,"ghoststong"));
                 }
             }
@@ -216,7 +215,7 @@ public class WraithAmulet extends Artifact {
                     if (hero.rooted || Dungeon.level.distance(hero.pos, target) < 3) {
                         if(enemy != null && !(enemy instanceof NPC || enemy instanceof ClearElemtGuard) ){
                             final WraithAmulet amulet = (WraithAmulet) curItem;
-                            amulet.exp += 40;
+                            amulet.exp += 20;
                             hero.pos = target;
                             if (enemy.properties().contains(Char.Property.BOSS)) {
                                 enemy.damage(enemy.HT / 4, WraithAmulet.class);

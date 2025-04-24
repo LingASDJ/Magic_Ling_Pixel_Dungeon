@@ -59,7 +59,11 @@ public class Component extends Group {
 	public Component setRect( float x, float y, float width, float height ) {
 		this.x = x;
 		this.y = y;
-		return setSize(width, height);
+		this.width = width;
+		this.height = height;
+		layout();
+
+		return this;
 	}
 
 	public boolean inside( float x, float y ) {

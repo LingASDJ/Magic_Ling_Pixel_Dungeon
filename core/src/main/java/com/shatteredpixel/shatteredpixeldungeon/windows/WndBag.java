@@ -57,6 +57,8 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.utils.PointF;
 
+import java.util.Locale;
+
 public class WndBag extends WndTabbed {
 	
 	//only one bag window can appear at a time
@@ -297,12 +299,18 @@ public class WndBag extends WndTabbed {
 			PixelScene.align(iceCoinSprite);
 			add(iceCoinSprite);
 		} else {
-			BitmapText iceCoinAmount = new BitmapText(Integer.toString(SPDSettings.iceCoin()), PixelScene.pixelFont);
-			if(SPDSettings.iceCoin()>9999){
-				iceCoinAmount.text("9999+");
+			BitmapText iceCoinAmount = new BitmapText();
+
+			int iceCoinValue = SPDSettings.iceCoin();
+			if (iceCoinValue > 9999) {
+				iceCoinAmount.text(String.format(Locale.CHINA, "%.1fW", iceCoinValue / 10000.0f));
+			} else {
+				iceCoinAmount.text(Integer.toString(iceCoinValue));
 			}
+			iceCoinAmount.font(PixelScene.pixelFont);
 			iceCoinAmount.hardlight(TITLE_COLOR);
 			iceCoinAmount.measure();
+			iceCoinAmount.scale.set(SPDSettings.iceCoin() > 9999 ? 0.9f : 1f);
 			// 数值文本紧随图标之后
 			iceCoinAmount.x = x - iceCoinAmount.width()/5f+4;
 			iceCoinAmount.y = y + (slotHeight - iceCoinAmount.baseLine()) / 2f;
@@ -341,7 +349,9 @@ public class WndBag extends WndTabbed {
 
 				} else if (selector != null) {
 
-					hide();
+					if (selector.hideAfterSelecting()){
+						hide();
+					}
 					selector.onSelect( item );
 
 				} else {
@@ -359,7 +369,9 @@ public class WndBag extends WndTabbed {
 
 				} else if (selector != null) {
 
-					hide();
+					if (selector.hideAfterSelecting()){
+						hide();
+					}
 					selector.onSelect( item );
 
 				} else {
@@ -531,6 +543,9 @@ public class WndBag extends WndTabbed {
 		public abstract String textPrompt();
 		public Class<?extends Bag> preferredBag(){
 			return null; //defaults to last bag opened
+		}
+		public boolean hideAfterSelecting(){
+			return true; //defaults to hiding the window when an item is picked
 		}
 		public abstract boolean itemSelectable( Item item );
 		public abstract void onSelect( Item item );

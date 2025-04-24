@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.CryStalPosition;
@@ -9,6 +9,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.FALS
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.TRUEPosition;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -19,20 +20,24 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BeamTowerAdbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShopLimitLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
@@ -92,8 +97,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private static final float TIME_TO_ZAP = 6f;
 
     {
-        //TODO 喜欢返程抢劫 2024血量完全体浊焰魔女莲娜小姐来教你做人了
-        HP = HT = (Statistics.amuletObtained || Statistics.RandMode) ? 2024 : 270 * (Dungeon.depth/5);
+        HP = HT = Statistics.bossRushMode && !Statistics.amuletObtained ? 270 * (Dungeon.depth/5) : (Statistics.amuletObtained || Statistics.RandMode) ? 2024 : 270 * (Statistics.deepestFloor/5);
         EXP = 80;
         defenseSkill = 4 + (5*Dungeon.depth/5);
         spriteClass = FireMagicGirlSprite.class;
@@ -104,6 +108,13 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         immunities.add(FrostBurning.class);
         immunities.add(HalomethaneBurning.class);
         immunities.add(Terror.class);
+
+        if(Statistics.bossRushMode){
+            immunities.add(Burning.class);
+            immunities.add(Vertigo.class);
+            immunities.add(Corrosion.class);
+            immunities.add(Chill.class);
+        }
     }
 
 
@@ -680,6 +691,13 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         boolean bleeding = (HP*2 <= HT);
 
         super.damage(dmg, src);
+
+        LockedFloor lock = hero.buff(LockedFloor.class);
+        if (lock != null){
+            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
+            else                                                    lock.addTime(dmg*1f);
+        }
+
         int hpBracket = HT / 8;
 
         int curbracket = hpBracket == 0 ? 1 : HP / hpBracket;
@@ -701,8 +719,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             BossHealthBar.bleed(true);
             ((FireMagicGirlSprite)sprite).spray(true);
         }
-        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-        if (lock != null) lock.addTime(dmg*2);
 
         if (phase == 1) {
             int dmgTaken = preHP - HP;
@@ -784,7 +800,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             sprite.showStatus(0xff0000, Messages.get(this, "dead"));
             Buff.affect(this, ChampionEnemy.Halo.class);
             Buff.affect(this, Adrenaline.class, 50f);
-            Buff.affect(this, RoseShiled.class, 20f);
+            Buff.affect(this,  Invulnerability.class, 20f);
         } else if (phase == 3 && preHP > 10 && HP <= 20){
             yell( Messages.get(this, "losing") );
             die(Dungeon.hero);
@@ -871,18 +887,13 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     public void notice() {
-
+        Dungeon.level.playBossMusic();
         BossHealthBar.assignBoss(this);
-
-       playBGM(Assets.BGM_SHOP, true);
         yell( Messages.get(this, "notice") );
-        //summon();
     }
 
     @Override
     public void onDeath() {
-        Dungeon.fail( getClass() );
-        GLog.n( Messages.get(this, "ondeath") );
         Statistics.bossScores[3] -= 1500;
     }
 
@@ -951,7 +962,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             target.sprite.parent.add(new BeamCustom(
                     new PointF(startX, startY).offset(0.5f, 0.5f).scale(DungeonTilemap.SIZE),
                     new PointF(endX, endY).offset(0.5f, 0.5f).scale(DungeonTilemap.SIZE),
-                    Effects.Type.RED_CHAIN)
+                    Effects.Type.LIGHT_RAY)
                     .setLifespan(0.7f).setColor(0xff0000)
             );
         }
@@ -979,7 +990,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             }
 
             ScanningBeam.setCollide(this);
-            target.sprite.parent.add(new ScanningBeam(Effects.Type.RED_CHAIN, BallisticaReal.STOP_TARGET,
+            target.sprite.parent.add(new ScanningBeam(Effects.Type.LIGHT_RAY, BallisticaReal.STOP_TARGET,
                             new ScanningBeam.BeamData()
                                     .setPosition(startX+0.8f, startY + 0.8f, ang, r)
                                     .setSpeed(xsp, ysp, 0f)

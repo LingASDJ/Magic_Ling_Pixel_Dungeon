@@ -21,20 +21,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
@@ -42,14 +39,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElectricalSmoke;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
-import com.shatteredpixel.shatteredpixeldungeon.levels.ItemLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.BossRushItemLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
@@ -57,11 +54,11 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSadGhost;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 public class Ghost extends NPC {
 
@@ -70,16 +67,37 @@ public class Ghost extends NPC {
 
 		flying = true;
 
+		WANDERING = new Wandering();
 		state = WANDERING;
+
+		//not actually large of course, but this makes the ghost stick to the exit room
+		properties.add(Property.LARGE);
+	}
+
+	protected class Wandering extends Mob.Wandering{
+		@Override
+		protected int randomDestination() {
+			int pos = super.randomDestination();
+			//cannot wander onto heaps or the level exit
+			if (Dungeon.level.heaps.get(pos) != null || pos == Dungeon.level.exit()){
+				return -1;
+			}
+			return pos;
+		}
 	}
 
 	@Override
+	public Notes.Landmark landmark() {
+		return Notes.Landmark.GHOST;
+	}
+
+
+	@Override
 	protected boolean act() {
-		if (Quest.processed()) {
-			target = hero.pos;
-		}
-		if (Dungeon.level.heroFOV[pos] && !Quest.completed()){
-			Notes.add( Notes.Landmark.GHOST );
+		if (Dungeon.hero.buff(AscensionChallenge.class) != null){
+			die(null);
+			Notes.remove( landmark() );
+			return true;
 		}
 		return super.act();
 	}
@@ -119,52 +137,30 @@ public class Ghost extends NPC {
 
 		Sample.INSTANCE.play( Assets.Sounds.GHOST );
 
-		if (c != hero){
+		if (c != Dungeon.hero){
 			return super.interact(c);
 		}
 
 		if (Quest.given) {
 			if (Quest.weapon != null) {
 				if (Quest.processed) {
-					Game.runOnRenderThread(new Callback() {
-						@Override
-						public void call() {
-							GameScene.show(new WndSadGhost(Ghost.this, Quest.type));
-						}
-					});
+					Game.runOnRenderThread(() -> GameScene.show(new WndSadGhost(Ghost.this, Quest.type)));
 				} else {
-					Game.runOnRenderThread(new Callback() {
-						@Override
-						public void call() {
-							switch (Quest.type) {
-								case 1:
-								default:
-									GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "rat_2")));
-									break;
-								case 2:
-									GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "gnoll_2")));
-									break;
-								case 3:
-									GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "crab_2")));
-									break;
-							}
-						}
-					});
+					Game.runOnRenderThread(() -> {
+                        switch (Quest.type) {
+                            case 1:
+                            default:
+                                GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "rat_2")));
+                                break;
+                            case 2:
+                                GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "gnoll_2")));
+                                break;
+                            case 3:
+                                GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "crab_2")));
+                                break;
+                        }
+                    });
 
-					int newPos = -1;
-					for (int i = 0; i < 10; i++) {
-						newPos = Dungeon.level.randomRespawnCell( this );
-						if (newPos != -1) {
-							break;
-						}
-					}
-					if (newPos != -1) {
-
-						CellEmitter.get(pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
-						pos = newPos;
-						sprite.place(pos);
-						sprite.visible = Dungeon.level.heroFOV[pos];
-					}
 				}
 			}
 		} else {
@@ -174,25 +170,40 @@ public class Ghost extends NPC {
 			switch (Quest.type){
 				case 1: default:
 					questBoss = new FetidRat();
-					txt_quest = Messages.get(this, "rat_1", hero.name()); break;
+					txt_quest = Messages.get(this, "rat_1", Messages.titleCase(Dungeon.hero.name())); break;
 				case 2:
 					questBoss = new GnollTrickster();
-					txt_quest = Messages.get(this, "gnoll_1", hero.name()); break;
+					txt_quest = Messages.get(this, "gnoll_1", Messages.titleCase(Dungeon.hero.name())); break;
 				case 3:
 					questBoss = new GreatCrab();
-					txt_quest = Messages.get(this, "crab_1", hero.name()); break;
+					txt_quest = Messages.get(this, "crab_1", Messages.titleCase(Dungeon.hero.name())); break;
 			}
 
+			if(Dungeon.hero.buff(ElectricalSmoke.SmokingAlloy.class)!=null) GLog.i(Messages.get(ElectricalSmoke.class,"conversation_ghost"));
+
+			questBoss.notice();
 			questBoss.pos = Dungeon.level.randomRespawnCell( this );
 
 			if (questBoss.pos != -1) {
 				GameScene.add(questBoss);
 				Quest.given = true;
-				Notes.add( Notes.Landmark.GHOST );
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
-						GameScene.show( new WndQuest( Ghost.this, txt_quest ) );
+						GameScene.show( new WndQuest( Ghost.this, txt_quest ){
+							@Override
+							public void hide() {
+								super.hide();
+								Music.INSTANCE.fadeOut(1f, new Callback() {
+									@Override
+									public void call() {
+										if (Dungeon.level != null) {
+											Dungeon.level.playLevelMusic();
+										}
+									}
+								});
+							}
+						} );
 					}
 				});
 			}
@@ -218,6 +229,10 @@ public class Ghost extends NPC {
 		public static Armor armor;
 		public static Weapon.Enchantment enchant;
 		public static Armor.Glyph glyph;
+
+		public static boolean active(){
+			return spawned && given && !processed && depth == Dungeon.depth;
+		}
 
 		public static void reset() {
 			spawned = false;
@@ -294,51 +309,13 @@ public class Ghost extends NPC {
 			}
 		}
 
-		private static void ghostQuest(){
-			float itemLevelRoll = Random.Float();
-			int itemLevel;
-			if (itemLevelRoll < 0.74f){
-				itemLevel = 0;
-			} else if (itemLevelRoll < 0.75f){
-				itemLevel = 1;
-			} else if (itemLevelRoll < 0.85f){
-				itemLevel = 2;
-			} else if (itemLevelRoll < 0.90f) {
-				itemLevel = 3;
-				if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
-					Statistics.dageCollected = 1;
-				}
-			} else if (itemLevelRoll < 0.95f && Badges.isUnlocked(Badges.Badge.GHOSTDAGE)) {
-				if ((!Badges.isUnlocked(Badges.Badge.DAGETO))) {
-					Statistics.dageCollected = 2;
-				}
-				itemLevel = 4;
-			} else {
-				if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
-					Statistics.dageCollected = 1;
-				}
-				itemLevel = 3;
-			}
-
-			// 20% base chance to be enchanted, stored separately so status isn't revealed early
-			float enchantRoll = Random.Float();
-			if (enchantRoll < 0.2f * ParchmentScrap.enchantChanceMultiplier()){
-				enchant = Weapon.Enchantment.random();
-				glyph = Armor.Glyph.random();
-			}
-
-
-			weapon.upgrade(itemLevel);
-			armor.upgrade(itemLevel);
-		}
-
-		public static void spawn( SewerLevel level ) {
+		public static void spawn( SewerLevel level, Room room ) {
 			if (!spawned && Dungeon.depth > 1 && Random.Int( 5 - Dungeon.depth ) == 0) {
 
 				Ghost ghost = new Ghost();
 				do {
-					ghost.pos = level.randomRespawnCell( ghost );
-				} while (ghost.pos == -1);
+					ghost.pos = level.pointToCell(room.random());
+				} while (ghost.pos == -1 || level.solid[ghost.pos] || ghost.pos == level.exit());
 				level.mobs.add( ghost );
 
 				spawned = true;
@@ -350,8 +327,8 @@ public class Ghost extends NPC {
 				processed = false;
 				depth = Dungeon.depth;
 
-				//50%:tier2, 30%:tier3, 15%:tier4, 5%:tier5
-				switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1,8})){
+				//48%:tier2, 29%:tier3, 14%:tier4, 4%:tier5 2%:tier6
+				switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1, 0.5f})){
 					default:
 					case 2: armor = new LeatherArmor(); break;
 					case 3: armor = new MailArmor();    break;
@@ -361,28 +338,65 @@ public class Ghost extends NPC {
 				}
 				//50%:tier2, 30%:tier3, 15%:tier4, 5%:tier5
 				int wepTier = Random.chances(new float[]{0, 0, 10, 6, 3, 1});
-				Generator.Category c = Generator.wepTiers[wepTier - 1];
-				weapon = (MeleeWeapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
-				food = new SmallRation.BlackMoon();
-				//26%:+0, 25%:+1, 15%:+2, 10%:+3, 5%:+4
-				ghostQuest();
+				weapon = (Weapon) Generator.random(Generator.wepTiers[wepTier - 1]);
 
-				//10% to be enchanted. We store it separately so enchant status isn't revealed early
-				if (Random.Int(10) == 0){
-					enchant = Weapon.Enchantment.random();
-					glyph = Armor.Glyph.random();
+				//clear weapon's starting properties
+				weapon.level(0);
+				weapon.enchant(null);
+				weapon.cursed = false;
+
+				/**
+				 * < 0.50f：50% 概率，物品等级为 0。
+				 * < 0.70f：20% 概率，物品等级为 1（50% + 20% = 70%）。
+				 * < 0.85f：15% 概率，物品等级为 2（70% + 15% = 85%）。
+				 * < 0.97f：12% 概率，物品等级为 3（85% + 12% = 97%）。
+				 * >= 0.97f：3% 概率，物品等级为 4。
+				 * */
+				float itemLevelRoll = Random.Float(); // 生成一个 0 到 1 之间的随机数
+				int itemLevel;
+				if (itemLevelRoll < 0.50f) { // 50% 概率
+					itemLevel = 0; // 物品等级为 0
+				} else if (itemLevelRoll < 0.70f) { // 20% 概率
+					itemLevel = 1; // 物品等级为 1
+				} else if (itemLevelRoll < 0.85f) { // 15% 概率
+					itemLevel = 2; // 物品等级为 2
+				} else if (itemLevelRoll < 0.97f) { // 12% 概率
+					itemLevel = 3; // 物品等级为 3
+					// 如果没有解锁特定徽章，则更新统计数据
+					if (!Badges.isUnlocked(Badges.Badge.GHOSTDAGE)) {
+						Statistics.dageCollected = 1;
+					}
+				} else { // 3% 概率
+					itemLevel = 4; // 物品等级为 4
+					// 如果没有解锁另一个特定徽章，则更新统计数据
+					if (!Badges.isUnlocked(Badges.Badge.DAGETO)) {
+						Statistics.dageCollected = 2;
+					}
+				}
+				weapon.upgrade(itemLevel);
+				armor.upgrade(itemLevel);
+
+				// 20% base chance to be enchanted, stored separately so status isn't revealed early
+				//we generate first so that the outcome doesn't affect the number of RNG rolls
+				enchant = Weapon.Enchantment.random();
+				glyph = Armor.Glyph.random();
+
+				float enchantRoll = Random.Float();
+				if (enchantRoll > 0.2f * ParchmentScrap.enchantChanceMultiplier()){
+					enchant = null;
+					glyph = null;
 				}
 
 			}
 		}
 
-		public static void spawnBossRush( ItemLevel level ) {
-			if (!spawned && Dungeon.depth == 3) {
+		public static void spawnBossRush(BossRushItemLevel level, Room room ) {
+			if (!spawned && Dungeon.depth == 4) {
 
 				Ghost ghost = new Ghost();
 				do {
-					ghost.pos = level.randomRespawnCell( ghost );
-				} while (ghost.pos == -1);
+					ghost.pos = level.pointToCell(room.random());
+				} while (ghost.pos == -1 || level.solid[ghost.pos] || ghost.pos == level.exit());
 				level.mobs.add( ghost );
 
 				spawned = true;
@@ -394,8 +408,8 @@ public class Ghost extends NPC {
 				processed = false;
 				depth = Dungeon.depth;
 
-				//50%:tier2, 30%:tier3, 15%:tier4, 5%:tier5
-				switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1,8})){
+				//48%:tier2, 29%:tier3, 14%:tier4, 4%:tier5 2%:tier6
+				switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1, 0.5f})){
 					default:
 					case 2: armor = new LeatherArmor(); break;
 					case 3: armor = new MailArmor();    break;
@@ -405,15 +419,47 @@ public class Ghost extends NPC {
 				}
 				//50%:tier2, 30%:tier3, 15%:tier4, 5%:tier5
 				int wepTier = Random.chances(new float[]{0, 0, 10, 6, 3, 1});
-				Generator.Category c = Generator.wepTiers[wepTier - 1];
-				weapon = (MeleeWeapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
+				weapon = (Weapon) Generator.random(Generator.wepTiers[wepTier - 1]);
 
-				ghostQuest();
+				//clear weapon's starting properties
+				weapon.level(0);
+				weapon.enchant(null);
+				weapon.cursed = false;
 
-				//10% to be enchanted. We store it separately so enchant status isn't revealed early
-				if (Random.Int(10) == 0){
-					enchant = Weapon.Enchantment.random();
-					glyph = Armor.Glyph.random();
+				float itemLevelRoll = Random.Float(); // 生成一个 0 到 1 之间的随机数
+				int itemLevel;
+				if (itemLevelRoll < 0.50f) { // 50% 概率
+					itemLevel = 0; // 物品等级为 0
+				} else if (itemLevelRoll < 0.70f) { // 20% 概率
+					itemLevel = 1; // 物品等级为 1
+				} else if (itemLevelRoll < 0.85f) { // 15% 概率
+					itemLevel = 2; // 物品等级为 2
+				} else if (itemLevelRoll < 0.97f) { // 12% 概率
+					itemLevel = 3; // 物品等级为 3
+					// 如果没有解锁特定徽章，则更新统计数据
+					if (!Badges.isUnlocked(Badges.Badge.GHOSTDAGE)) {
+						Statistics.dageCollected = 1;
+					}
+				} else { // 3% 概率
+					itemLevel = 4; // 物品等级为 4
+					// 如果没有解锁另一个特定徽章，则更新统计数据
+					if (!Badges.isUnlocked(Badges.Badge.DAGETO)) {
+						Statistics.dageCollected = 2;
+					}
+				}
+
+				weapon.upgrade(itemLevel);
+				armor.upgrade(itemLevel);
+
+				// 20% base chance to be enchanted, stored separately so status isn't revealed early
+				//we generate first so that the outcome doesn't affect the number of RNG rolls
+				enchant = Weapon.Enchantment.random();
+				glyph = Armor.Glyph.random();
+
+				float enchantRoll = Random.Float();
+				if (enchantRoll > 0.2f * ParchmentScrap.enchantChanceMultiplier()){
+					enchant = null;
+					glyph = null;
 				}
 
 			}
@@ -422,6 +468,7 @@ public class Ghost extends NPC {
 		public static void process() {
 			if (spawned && given && !processed && (depth == Dungeon.depth)) {
 				GLog.n( Messages.get(Ghost.class, "find_me") );
+				GameScene.bossSlain();
 				Sample.INSTANCE.play( Assets.Sounds.GHOST );
 				processed = true;
 				Statistics.questScores[0] = 1000;

@@ -251,6 +251,8 @@ public class WndRushShop extends Window {
         reward.identify();
         if (reward.doPickUp( hero )) {
             GLog.i( Messages.get(hero, "you_now_have", reward.name()) );
+        } else {
+            Dungeon.level.drop( reward, hero.pos ).sprite.drop();
         }
 
         //Ghost.Quest.complete();

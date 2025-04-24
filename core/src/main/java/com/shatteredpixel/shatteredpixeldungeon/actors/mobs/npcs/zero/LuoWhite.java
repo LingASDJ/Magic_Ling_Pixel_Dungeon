@@ -4,12 +4,10 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.LuoWhitePlot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteSprite;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndLuoWhite;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
@@ -27,6 +25,7 @@ public class LuoWhite extends NTNPC {
     {
         spriteClass = LuoWhiteSprite.class;
     }
+
     private boolean first=true;
     private boolean secnod=true;
     private boolean rd=true;
@@ -55,24 +54,12 @@ public class LuoWhite extends NTNPC {
     public boolean interact(Char c) {
 
         sprite.turnTo(pos, hero.pos);
-        LuoWhitePlot plot = new LuoWhitePlot();
-
-        if(first){
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndDialog(plot,false));
-                }
-            });
-            first = false;
-        } else {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndLuoWhite());
-                }
-            });
-        }
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                GameScene.show(new WndLuoWhite());
+            }
+        });
 
 
         return true;

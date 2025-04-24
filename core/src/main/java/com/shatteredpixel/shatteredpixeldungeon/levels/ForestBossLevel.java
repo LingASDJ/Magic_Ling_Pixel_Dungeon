@@ -1,11 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -30,12 +27,6 @@ import java.util.ArrayList;
 //克里弗斯之果 5层
 public class ForestBossLevel extends Level {
 
-    @Override
-    protected void createMobs() {
-
-    }
-
-
     //修复跳楼错误
     @Override
     public int randomRespawnCell( Char ch ) {
@@ -47,6 +38,14 @@ public class ForestBossLevel extends Level {
                 || (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
                 || Actor.findChar(cell) != null);
         return cell;
+    }
+
+    /**
+     * 全新音乐模块
+     * 替代BGMPlayer的最佳策略
+     */
+    @Override
+    public void playLevelMusic() {
     }
 
     //二选一
@@ -178,7 +177,7 @@ public class ForestBossLevel extends Level {
 
         super.occupyCell( ch );
 
-        boolean isTrue = ch.pos == LDBossDoor && ch == hero && level.distance(ch.pos, entrance) >= 2;
+        boolean isTrue = ch.pos == LDBossDoor && ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
 
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
         if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
@@ -213,7 +212,7 @@ public class ForestBossLevel extends Level {
         Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
 
 
-        if (!Dungeon.isChallenged(STRONGER_BOSSES)) {
+        if (!Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
             Heap s = drop(new PotionOfPurity.PotionOfPurityLing().identify(), WIDTH * 23 + 15);
             s.type = Heap.Type.SKELETON;
             s.sprite.view(s);
@@ -229,9 +228,7 @@ public class ForestBossLevel extends Level {
         super.unseal();
 
         drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 28 + 10 );
-
         drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 28 + 22 );
-
 
         set( getBossDoor, Terrain.EMPTY );
         GameScene.updateMap( getBossDoor );
@@ -250,7 +247,7 @@ public class ForestBossLevel extends Level {
                     //被注释的策略只能在下楼时才会更新，所以需要使用下面的策略 2023-9-10
                     //drop(new Gold( Random.IntRange( 10, 25 )),i).type = Heap.Type.CHEST;
 
-                    Heap droppedGold = level.drop( new Gold( Random.IntRange( 10, 25 )),i);
+                    Heap droppedGold = Dungeon.level.drop( new Gold( Random.IntRange( 10, 25 )),i);
                     droppedGold.type = Heap.Type.CHEST;
                     //必须追加一个view处理才能让金币的类型申请给地牢view处理后变成箱子样子
                     droppedGold.sprite.view( droppedGold );
@@ -261,14 +258,14 @@ public class ForestBossLevel extends Level {
 
                 drop( new CrystalKey(Statistics.bossRushMode ? 2 : 5 ), WIDTH*7+29 );
 
-                Heap droppedA = level.drop( Generator.randomUsingDefaults( Generator.Category.ARMOR),
+                Heap droppedA = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.ARMOR),
                         WIDTH*7+28 );
                 droppedA.type = Heap.Type.CRYSTAL_CHEST;
                 droppedA.sprite.view( droppedA );
             break;
             case 4: case 5: case 6:
                 for (int i : RatKingRoomBSpawn) {
-                    Heap droppedGold = level.drop( new Gold( Random.IntRange( 10, 25 )),i);
+                    Heap droppedGold = Dungeon.level.drop( new Gold( Random.IntRange( 10, 25 )),i);
                     droppedGold.type = Heap.Type.CHEST;
                     droppedGold.sprite.view( droppedGold );
                 }
@@ -278,7 +275,7 @@ public class ForestBossLevel extends Level {
 
                 drop( new CrystalKey(Statistics.bossRushMode ? 2 : 5 ), WIDTH*7+4 );
 
-                Heap droppedB = level.drop( Generator.randomUsingDefaults( Generator.Category.WEAPON),
+                Heap droppedB = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.WEAPON),
                         WIDTH*7+3 );
                 droppedB.type = Heap.Type.CRYSTAL_CHEST;
                 droppedB.sprite.view( droppedB );
@@ -286,8 +283,6 @@ public class ForestBossLevel extends Level {
         }
 
         Dungeon.observe();
-
-
     }
 
     //地图结构
@@ -367,12 +362,11 @@ public class ForestBossLevel extends Level {
     protected boolean build() {
         setSize(WIDTH, HEIGHT);
 
-        if(Dungeon.isChallenged(STRONGER_BOSSES)){
+        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
             map = WorldHard.clone();
         } else {
             map = WorldRoomShort.clone();
         }
-
 
         int entranceCell = WIDTH + 16 ;
         int exitCell = WIDTH*30 + 16;
@@ -386,6 +380,10 @@ public class ForestBossLevel extends Level {
         return true;
     }
 
+    @Override
+    protected void createMobs() {
+
+    }
 
     public String tilesTex() {
         return Assets.Environment.TILES_SEWERS;

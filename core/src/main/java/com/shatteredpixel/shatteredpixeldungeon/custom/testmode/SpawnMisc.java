@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlB
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.BzmdrBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.DeYiZiBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.MoneyMoreBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.PinkRandomBooks;
@@ -65,13 +66,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
@@ -79,12 +83,40 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfNu
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RustedGoldCoin;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TheGriefOfSpeechless;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.MagicBook;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DragonWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
@@ -108,9 +140,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Spell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFear;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt;
@@ -119,10 +154,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MossyClump;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrapMechanism;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -169,6 +207,8 @@ public class SpawnMisc extends TestItem {
 
     private static ArrayList<Class<? extends Trinket>> trList = new ArrayList<>();
 
+    private static ArrayList<Class<? extends Prop>> propList = new ArrayList<>();
+
     private static ArrayList<Class<? extends Item>> miscList = new ArrayList<>();
 
     public SpawnMisc(){
@@ -201,7 +241,9 @@ public class SpawnMisc extends TestItem {
 
         if (dartList.isEmpty()) {
             for (int i = 0; i < Generator.Category.SEED.classes.length; i++) {
-                dartList.add(TippedDart.types.get(seedList.get(i)));
+                Class<? extends TippedDart> check = TippedDart.types.get(seedList.get(i));
+                if( check != null )
+                    dartList.add(check);
             }
         }
 
@@ -259,10 +301,15 @@ public class SpawnMisc extends TestItem {
 
             brewList.add(WaterSoul.class);
             brewList.add(ElixirOfNukeCole.class);
+
+            brewList.add(AquaBrew.class);
+            brewList.add(ElixirOfFeatherFall.class);
+            brewList.add(UnstableBrew.class);
         }
 
         //Spell
         if(spellList.isEmpty()) {
+            spellList.add(UnstableSpell.class);
             spellList.add(Alchemize.class);
             //spellList.add(AquaBlast.class);
             spellList.add(BeaconOfReturning.class);
@@ -314,9 +361,10 @@ public class SpawnMisc extends TestItem {
             bookList.add(PinkRandomBooks.class);
             bookList.add(HellFireBooks.class);
             bookList.add(YellowSunBooks.class);
+            bookList.add(BzmdrBooks.class);
         }
 
-        //Book
+        //Trinket
         if(trList.isEmpty()) {
             trList.add(DimensionalSundial.class);
             trList.add(ExoticCrystals.class);
@@ -329,10 +377,46 @@ public class SpawnMisc extends TestItem {
             trList.add(ThirteenLeafClover.class);
             trList.add(TrapMechanism.class);
             trList.add(WondrousResin.class);
+
+            trList.add(SaltCube.class);
+            trList.add(VialOfBlood.class);
+            trList.add(ShardOfOblivion.class);
+            trList.add(ChaoticCenser.class);
+        }
+
+        //Prop
+        if(propList.isEmpty()){
+            propList.add(ArmorScalesOfBzmdr.class);
+            propList.add(BlockingDrug.class);
+            propList.add(BrokenBone.class);
+            propList.add(CloakFragmentsOfBzmdr.class);
+            propList.add(ConfusedMieMieTalisman.class);
+            propList.add(DeliciousRecipe.class);
+            propList.add(EmotionalAggregation.class);
+            propList.add(EmotionalAggregationB.class);
+            propList.add(HeartOfCrystalFractal.class);
+            propList.add(KnightStabbingSword.class);
+            propList.add(LuckyGlove.class);
+            propList.add(Monocular.class);
+            propList.add(NewStem.class);
+            propList.add(NoteOfBzmdr.class);
+            propList.add(PortableWhetstone.class);
+            propList.add(RapidEarthRoot.class);
+            propList.add(RustedGoldCoin.class);
+            propList.add(StarSachet.class);
+            propList.add(TerrorDoll.class);
+            propList.add(TerrorDollB.class);
+            propList.add(TheGriefOfSpeechless.class);
+            propList.add(WenStudyingPaperOne.class);
+            propList.add(WenStudyingPaperTwo.class);
+            propList.add(YanStudyingPaperOne.class);
+            propList.add(YanStudyingPaperTwo.class);
+            propList.add(BottleWraith.class);
         }
 
         //Misc
         if(miscList.isEmpty()) {
+            miscList.add(DistressSignalNesting.class);
             miscList.add(TrinketCatalyst.class);
             miscList.add(Torch.class);
             miscList.add(GooBlob.class);
@@ -367,6 +451,7 @@ public class SpawnMisc extends TestItem {
             miscList.add(CeremonialCandle.class);
             miscList.add(MagicBook.class);
             miscList.add(LingJing.class);
+            miscList.add(DragonWater.class);
         }
     }
 
@@ -435,7 +520,8 @@ public class SpawnMisc extends TestItem {
             case 10: return foodList.get(id);
             case 11: return bookList.get(id);
             case 12: return trList.get(id);
-            case 13: default: return miscList.get(id);
+            case 13: return propList.get(id);
+            case 14: default: return miscList.get(id);
         }
     }
 
@@ -454,7 +540,8 @@ public class SpawnMisc extends TestItem {
             case 10: return ItemSpriteSheet.RATION;
             case 11: return ItemSpriteSheet.MASTERY;
             case 12: return ItemSpriteSheet.EYE_OF_NEWT;
-            case 13: default: return ItemSpriteSheet.CHEST;
+            case 13: return ItemSpriteSheet.LUCKYGLOVE;
+            case 14: default: return ItemSpriteSheet.CHEST;
         }
     }
 
@@ -487,6 +574,8 @@ public class SpawnMisc extends TestItem {
             case 12:
                 return trList.size() - 1;
             case 13:
+                return propList.size() - 1;
+            case 14:
                 return miscList.size() - 1;
             default:
                 return 11;
@@ -494,7 +583,7 @@ public class SpawnMisc extends TestItem {
     }
 
     private int maxCategory(){
-        return 13;
+        return 15;
     }
 
     private class SettingsWindow extends Window {
@@ -562,7 +651,7 @@ public class SpawnMisc extends TestItem {
         private void createCategoryImage(){
             float left;
             float top = GAP + TITLE_BTM;
-            int length = 14;
+            int length = 15;
             int maxImageCount = 6;
             for (int i = 0; i < length; ++i) {
                 final int j = i;
@@ -695,7 +784,14 @@ public class SpawnMisc extends TestItem {
                         im.scale.set(1.0f);
                         btn.icon(im);
                     }break;
-                    case 13: default:{
+                    case 13: {
+                        Image im = new Image(Assets.Sprites.ITEMS);
+                        im.frame(ItemSpriteSheet.film.get(Objects.requireNonNull(Reflection.newInstance(propList.get(i))).image));
+                        im.scale.set(1.0f);
+                        btn.icon(im);
+                    }
+                    break;
+                    case 14: default:{
                         Image im = new Image(Assets.Sprites.ITEMS);
                         im.frame(ItemSpriteSheet.film.get(Objects.requireNonNull(Reflection.newInstance(miscList.get(i))).image));
                         im.scale.set(1.0f);

@@ -45,14 +45,15 @@ public class Slime_Orange extends Slime {
     private int combo = 0;
     @Override
     public int attackProc(Char enemy, int damage) {
-        if (Random.Int(0, 10) > 7) {
-        }
         int damage2 = Slime_Orange.super.attackProc(enemy, this.combo + damage);
-        if (Dungeon.level.flamable[enemy.pos]) {
-            GameScene.add(Blob.seed(enemy.pos, 1, Fire.class));
-        }
-        if (enemy.buff(Burning.class) == null) {
-            Buff.affect(enemy, Burning.class).reignite(enemy);
+        if (Random.Int(0, 10) > 7) {
+
+            if (Dungeon.level.flamable[enemy.pos]) {
+                GameScene.add(Blob.seed(enemy.pos, 1, Fire.class));
+            }
+            if (enemy.buff(Burning.class) == null) {
+                Buff.affect(enemy, Burning.class).reignite(enemy);
+            }
         }
         return damage2;
     }

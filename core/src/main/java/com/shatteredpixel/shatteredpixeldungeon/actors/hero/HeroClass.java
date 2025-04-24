@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Smok
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.AttributeViewer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
@@ -59,17 +60,20 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnMissile;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnRingOrWand;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.TerrainPlacer;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.TrapPlacer;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElectricalSmoke;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
@@ -80,11 +84,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.SelectableRing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
@@ -92,7 +98,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.SelectableWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
@@ -102,6 +110,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortswor
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -162,41 +171,32 @@ public enum HeroClass {
 	}
 
 	public void initHero( Hero hero ) {
+		if (!Dungeon.isDLC(Conducts.Conduct.SEED)) {
 
-		if (Challenges.activeChallenges() >= 10) {
-			hero.lanterfire = 100 - Challenges.activeChallenges() * 4;
-		}
+			//Statistics.Hollow_Holiday = true;
 
-//		if(SPDSettings.Cheating()){
-//			hero.HT = hero.HP = 114514;
-//			hero.exp = -1919810;
-//			hero.lvl = 100;
-//		}
-		//Buff.affect(hero, BlessImmune.class, ChampionHero.DURATION*123456f);
+			if (RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY) {
+				new CrystalLing().quantity(1).identify().collect();
+				Buff.affect(hero, BlessLing.class).set((100), 1);
+			}
 
-		//GLog.n(String.valueOf(Statistics.commonrelaycall));
+			if (Dungeon.isChallenged(Challenges.AQUAPHOBIA)) {
+				new WaterSoul().quantity(4).identify().collect();
+			}
 
-		if(RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY){
-			new CrystalLing().quantity(1).identify().collect();
-			Buff.affect(hero, BlessLing.class).set( (100), 1 );
-		}
+			if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)) {
+				Dungeon.gold += 320;
+				Buff.affect(hero, RandomBuff.class).set((5), 1);
+			}
 
-		if (Dungeon.isChallenged(Challenges.AQUAPHOBIA)) {
-			new WaterSoul().quantity(4).identify().collect();
-		}
-
-		if ( Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
-			Dungeon.gold += 320;
-			Buff.affect(hero, RandomBuff.class).set( (5), 1 );
-		}
-
-		//Buff.affect(hero, ScaryDamageBuff.class).set((50),1);
-		PaswordBadges.loadGlobal();
-		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
-		if(passwordbadges.contains(PaswordBadges.Badge.EXSG)){
-			Dungeon.gold += 400;
-			if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
-				new IceCyanBlueSquareCoin().quantity(3).identify().collect();
+			//Buff.affect(hero, ScaryDamageBuff.class).set((50),1);
+			PaswordBadges.loadGlobal();
+			List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+			if (passwordbadges.contains(PaswordBadges.Badge.EXSG)) {
+				Dungeon.gold += 400;
+				if (!Dungeon.isDLC(Conducts.Conduct.DEV)) {
+					new IceCyanBlueSquareCoin().quantity(3).identify().collect();
+				}
 			}
 		}
 
@@ -212,16 +212,20 @@ public enum HeroClass {
 		new VelvetPouch().collect();
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
 
-		new HerbBag().quantity(1).identify().collect();
-		Dungeon.LimitedDrops.HERB_BAG.drop();
-		new KingBag().quantity(1).identify().collect();
-		Dungeon.LimitedDrops.KING_BAG.drop();
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
-		//new Amulet().quantity(1).identify().collect();
+		new HerbBag().quantity(1).identify().collect();
+		new KingBag().quantity(1).identify().collect();
 		new ScrollOfIdentify().identify();
-		//new KingGold().quantity(1).identify().collect();
+
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
+			new PropBag().quantity(1).identify().collect();
+			new WandOfSun().collect();
+			new ElectricalSmoke().collect();
+
+			new SelectableRing().collect();
+			new SelectableWand().collect();
+
 			new PotionBandolier().collect();
 			Dungeon.LimitedDrops.POTION_BANDOLIER.dropped();
 			new ScrollHolder().collect();
@@ -236,13 +240,15 @@ public enum HeroClass {
 			new SpawnMisc().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();
 			new SakaFishSketon().quantity(1).identify().collect();
-			new SmallLightHeader().quantity(1).identify().collect();
+			new SmallLightHeader().quantity(100).identify().collect();
 			new SpawnWeapon().quantity(1).identify().collect();
 			new SpawnArmor().quantity(1).identify().collect();
 			new SpawnArtifact().quantity(1).identify().collect();
 			new SpawnRingOrWand().quantity(1).identify().collect();
 			new SpawnMissile().quantity(1).identify().collect();
 			new CustomPlayer().quantity(1).identify().collect();
+			new AttributeViewer().quantity(1).identify().collect();
+			new TrapPlacer().quantity(1).identify().collect();
 
 			CustomWeapon customWeapon = new CustomWeapon();
 			customWeapon.adjustStatus();
@@ -270,6 +276,12 @@ public enum HeroClass {
 			hero.exp=-1;
 		}
 
+		if(Dungeon.isDLC(Conducts.Conduct.HARD) && DeviceCompat.isMidTest()){
+			new PropBag().quantity(1).identify().collect();
+			Prop.randomPropA().collect();
+			Prop.randomPropB().collect();
+		}
+
 		switch (this) {
 			case WARRIOR:
 				initWarrior( hero );
@@ -291,16 +303,6 @@ public enum HeroClass {
 				initDuelist( hero );
 				break;
 		}
-
-//		if (SPDSettings.quickslotWaterskin()) {
-//			for (int s = 0; s < QuickSlot.SIZE; s++) {
-//				if (Dungeon.quickslot.getItem(s) == null) {
-//					Dungeon.quickslot.setSlot(s, waterskin);
-//					break;
-//				}
-//			}
-//		}
-
 	}
 
 	public Badges.Badge masteryBadge() {
@@ -313,8 +315,6 @@ public enum HeroClass {
 				return Badges.Badge.MASTERY_ROGUE;
 			case HUNTRESS:
 				return Badges.Badge.MASTERY_HUNTRESS;
-//			case DUELIST:
-//				return Badges.Badge.MASTERY_DUELIST;
 		}
 		return null;
 	}
@@ -327,6 +327,7 @@ public enum HeroClass {
 		new PotionOfHealing().quantity(1).identify().collect();
 		if (hero.belongings.armor != null){
 			hero.belongings.armor.affixSeal(new BrokenSeal());
+			Catalog.setSeen(BrokenSeal.class); //as it's not added to the inventory
 		}
 
 		new PotionOfHealing().identify();
@@ -439,21 +440,6 @@ public enum HeroClass {
 		}
 	}
 
-	public String splashArt(){
-		switch (this) {
-			case WARRIOR: default:
-				return Assets.Splashes.WARRIOR;
-			case MAGE:
-				return Assets.Splashes.MAGE;
-			case ROGUE:
-				return Assets.Splashes.ROGUE;
-			case HUNTRESS:
-				return Assets.Splashes.HUNTRESS;
-			case DUELIST:
-				return Assets.Splashes.DUELIST;
-		}
-	}
-	
 	public boolean isUnlocked(){
 		//always unlock on debug builds
 		if (DeviceCompat.isDebug()) return true;

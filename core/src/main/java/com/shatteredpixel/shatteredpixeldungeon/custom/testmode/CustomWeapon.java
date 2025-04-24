@@ -18,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Bloomi
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Corrupting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crushing;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.DeadBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.HaloBlazing;
@@ -92,6 +93,7 @@ public class CustomWeapon extends MeleeWeapon {
         enchPrio.put(HaloBlazing.class,1);
         enchPrio.put(Crushing.class,1);
         enchPrio.put(TimeReset.class,1);
+        enchPrio.put(DeadBomb.class,1);
 
         enchPrio.put(Annoying.class, 0);
         enchPrio.put(Displacing.class, 1);

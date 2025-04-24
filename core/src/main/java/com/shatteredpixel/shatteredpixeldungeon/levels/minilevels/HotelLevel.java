@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Bzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonCat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.QinYueWolf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Zako;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -192,6 +193,9 @@ public class HotelLevel extends Level {
             MoonCat n1 = new MoonCat();
             n1.pos = 143;
             mobs.add(n1);
+            Zako n1f = new Zako();
+            n1f.pos = 142;
+            mobs.add(n1f);
 
             ATRI n3 = new ATRI();
             n3.pos = 87;

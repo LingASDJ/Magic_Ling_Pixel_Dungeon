@@ -36,7 +36,7 @@ import java.util.LinkedHashMap;
 public class WndInfoSubclass extends WndTitledMessage {
 
 	public WndInfoSubclass(HeroClass cls, HeroSubClass subCls){
-		super( new HeroIcon(subCls), Messages.titleCase(subCls.title()), subCls.desc(), WIDTH_MIN);
+		super( new HeroIcon(subCls), Messages.titleCase(subCls.title()), subCls.desc(),WIDTH_MIN);
 
 		ArrayList<LinkedHashMap<Talent, Integer>> talentList = new ArrayList<>();
 		Talent.initClassTalents(cls, talentList);

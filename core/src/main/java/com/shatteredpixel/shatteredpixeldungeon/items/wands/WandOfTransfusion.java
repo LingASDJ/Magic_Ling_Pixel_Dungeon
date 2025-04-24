@@ -81,20 +81,20 @@ public class WandOfTransfusion extends DamageWand {
 		Char ch = Actor.findChar(cell);
 
 		if (ch instanceof Mob){
-			
+
 			wandProc(ch, chargesPerCast());
-			
+
 			//this wand does different things depending on the target.
-			
+
 			//heals/shields an ally or a charmed enemy while damaging self
 			if (ch.alignment == Char.Alignment.ALLY || ch.buff(Charm.class) != null ){
-				
+
 				// 5% of max hp
 				int selfDmg = Math.round(curUser.HT*0.05f);
-				
+
 				int healing = selfDmg + 3*buffedLvl();
 				int shielding = (ch.HP + healing) - ch.HT;
-				if (shielding > 0){
+				if (shielding > 0 && Dungeon.depth != 5){
 					healing -= shielding;
 					Buff.affect(ch, Barrier.class).setShield(shielding);
 				} else {
@@ -112,30 +112,35 @@ public class WandOfTransfusion extends DamageWand {
 					ch.sprite.showStatus(CharSprite.POSITIVE, "+%dHP", healing + shielding);
 				}
 
-				
-				
+
+
 				if (!freeCharge) {
 					damageHero(selfDmg);
 				} else {
 					freeCharge = false;
 				}
 
-			//for enemies...
-			//(or for mimics which are hiding, special case)
+				//for enemies...
+				//(or for mimics which are hiding, special case)
 			} else if (ch.alignment == Char.Alignment.ENEMY || ch instanceof Mimic) {
-
-				//grant a self-shield, and...
-				Buff.affect(curUser, Barrier.class).setShield((5 + buffedLvl()));
-				curUser.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(5+buffedLvl()), FloatingText.SHIELDING);
-				
+				if(ch.properties().contains(Char.Property.BOSS) && Dungeon.depth == 5) {
+					ch.HP += 0;
+					ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2 + buffedLvl() / 2);
+					ch.sprite.showStatus(CharSprite.WARNING, "+0SP");
+					GLog.n(Messages.get(this, "error"));
+				} else if(Dungeon.depth != 5){
+					//grant a self-shield, and...
+					Buff.affect(curUser, Barrier.class).setShield((5 + buffedLvl()));
+					curUser.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(5+buffedLvl()), FloatingText.SHIELDING);
+				}
 				//charms living enemies
 				if (!ch.properties().contains(Char.Property.UNDEAD)) {
 					Charm charm = Buff.affect(ch, Charm.class, Charm.DURATION/2f);
 					charm.object = curUser.id();
 					charm.ignoreHeroAllies = true;
 					ch.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 3 );
-				
-				//harms the undead
+
+					//harms the undead
 				} else {
 					ch.damage(damageRoll(), this);
 					ch.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10 + buffedLvl());
@@ -143,9 +148,9 @@ public class WandOfTransfusion extends DamageWand {
 				}
 
 			}
-			
+
 		}
-		
+
 	}
 
 	//this wand costs health too
@@ -162,7 +167,7 @@ public class WandOfTransfusion extends DamageWand {
 
 	@Override
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
-		if (defender.buff(Charm.class) != null && defender.buff(Charm.class).object == attacker.id()){
+		if (defender.buff(Charm.class) != null && defender.buff(Charm.class).object == attacker.id() && Dungeon.depth != 5){
 			//grants a free use of the staff and shields self
 			freeCharge = true;
 			int shieldToGive = Math.round((2*(5 + buffedLvl()))*procChanceMultiplier(attacker));
@@ -192,11 +197,27 @@ public class WandOfTransfusion extends DamageWand {
 
 	@Override
 	public String statsDesc() {
-		int selfDMG = Math.round(Dungeon.hero.HT*0.05f);
+		int selfDMG = Dungeon.hero != null ? Math.round(Dungeon.hero.HT*0.05f): 1;
 		if (levelKnown)
 			return Messages.get(this, "stats_desc", selfDMG, selfDMG + 3*buffedLvl(), 5+buffedLvl(), min(), max());
 		else
 			return Messages.get(this, "stats_desc", selfDMG, selfDMG, 5, min(0), max(0));
+	}
+
+	@Override
+	public String upgradeStat1(int level) {
+		int selfDMG = Dungeon.hero != null ? Math.round(Dungeon.hero.HT*0.05f): 1;
+		return Integer.toString(selfDMG + 3*level);
+	}
+
+	@Override
+	public String upgradeStat2(int level) {
+		return Integer.toString(5 + level);
+	}
+
+	@Override
+	public String upgradeStat3(int level) {
+		return super.upgradeStat1(level); //damage
 	}
 
 	private static final String FREECHARGE = "freecharge";

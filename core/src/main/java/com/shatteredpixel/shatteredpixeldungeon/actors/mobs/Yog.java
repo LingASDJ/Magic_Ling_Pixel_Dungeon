@@ -285,6 +285,7 @@ public class Yog extends Mob {
 		
 		{
 			spriteClass = FistSprite.Burning.class;
+
 			
 			HP = HT = 200;
 			defenseSkill = 25;

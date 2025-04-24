@@ -1,27 +1,41 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.isDLC;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.VenomGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Arrays;
 
 abstract public class Boss extends Mob {
         {
@@ -47,19 +61,32 @@ abstract public class Boss extends Mob {
             immunities.add(Corruption.class);
         }
 
+    /**
+     *
+     * @param min 最小伤害
+     * @param max 最大伤害
+     * @param acc 命中率
+     * @param eva 闪避率
+     * @param ht 生命值
+     * @param mid 最小防御
+     * @param mad 最大防御
+     */
         protected void initBaseStatus(float min, float max, float acc, float eva, float ht, float mid, float mad) {
-            baseMin = min; //最小伤害
-            baseMax = max; //最大伤害
-            baseAcc = acc; //命中率
-            baseEva = eva; //闪避率
-            baseHT = ht; //生命值
-            baseMinDef = mid; //最小防御
-            baseMaxDef = mad; //最大防御
+            baseMin = min;
+            baseMax = max;
+            baseAcc = acc;
+            baseEva = eva;
+            baseHT = ht;
+            baseMinDef = mid;
+            baseMaxDef = mad;
         }
 
     public void die( Object cause ) {
         super.die(cause);
 
+        if(Statistics.NightDreamLoop){
+            Statistics.NightDreamLoop = false;
+        }
 
             ArrayList<IceCyanBlueSquareCoin> ice = hero.belongings.getAllItems(IceCyanBlueSquareCoin.class);
             if(ice != null){
@@ -75,38 +102,59 @@ abstract public class Boss extends Mob {
                 }
             }
 
+            if((isDLC(Conducts.Conduct.HARD) || isDLC(Conducts.Conduct.DEV)) && DeviceCompat.isMidTest() && (new ArrayList<>(Arrays.asList(5,10,15,20)).contains(Dungeon.depth) && Dungeon.branch ==0 )){
+                SmallLeafHardDungeon smallLeafHardDungeon = new SmallLeafHardDungeon();
+                smallLeafHardDungeon.pos = pos;
+                Dungeon.level.mobs.add(smallLeafHardDungeon);
+                GameScene.add( smallLeafHardDungeon );
+                Dungeon.level.occupyCell( smallLeafHardDungeon );
+
+                if(Dungeon.depth == 10){
+                    Prop p1 = Prop.randomPropA();
+                    Prop p2 = Prop.randomPropB();
+                    p1.collect();
+                    p2.collect();
+                    GLog.i(Messages.get(hero, "you_now_have", p1.name()));
+                    GLog.i(Messages.get(hero, "you_now_have", p2.name()));
+                }
+
+                if(Dungeon.depth == 20){
+                    Prop p1 = Prop.randomPropA(1);
+                    Prop p2 = Prop.randomPropB(1);
+                    p1.collect();
+                    p2.collect();
+                    GLog.i(Messages.get(hero, "you_now_have", p1.name()));
+                    GLog.i(Messages.get(hero, "you_now_have", p2.name()));
+                }
+            }
+
+            if(Statistics.RandMode && Dungeon.depth == 10){
+                Dungeon.level.drop(new TengusMask(),pos);
+            }
+
+            if(Statistics.RandMode && Dungeon.depth == 20){
+                Dungeon.level.drop(new KingsCrown(),pos);
+            }
+
             if(Statistics.bossRushMode){
                 Dungeon.level.drop(new KingGold(Random.NormalIntRange(3+Dungeon.depth/5,5+Dungeon.depth/5)),pos);
             }
 
-            final Calendar calendar = Calendar.getInstance();
-            boolean holiday = false;
+            boolean holiday = RegularLevel.holiday == RegularLevel.Holiday.PQJ;
 
-            if (calendar.get(Calendar.MONTH) == Calendar.MAY) {
-                int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                if (dayOfMonth >= 2 && dayOfMonth <= 20)
-                    holiday = true;
+            if(!Statistics.bossRushMode && depth != 5){
+                int normal = ((hero.lvl + Dungeon.depth)/5) * (Math.max(Challenges.activeChallenges(), 5));
+                int count = holiday ? 2 : 1;
+                Dungeon.level.drop(new IceCyanBlueSquareCoin(normal * count),pos);
             }
+    }
 
-            if(!Statistics.bossRushMode){
-                if(Challenges.activeChallenges()>9){
-
-                    if(holiday){
-                        Dungeon.level.drop(new IceCyanBlueSquareCoin(((5*(Dungeon.depth/5)) * (Challenges.activeChallenges() / 5)) * 2),pos);
-                    } else {
-                        Dungeon.level.drop(new IceCyanBlueSquareCoin(((5*(Dungeon.depth/5)) * (Challenges.activeChallenges() / 5))),pos);
-                    }
-
-                } else {
-
-                    if(holiday){
-                        Dungeon.level.drop(new IceCyanBlueSquareCoin(5*(Dungeon.depth/5) * 2),pos);
-                    } else {
-                        Dungeon.level.drop(new IceCyanBlueSquareCoin(5*(Dungeon.depth/5)),pos);
-                    }
-                }
-            }
-
+    @Override
+    protected boolean act(){
+        if(Blob.volumeAt(pos, VenomGas.class) == 0 && venodamage!=0) {
+            venodamage = 0;
+        }
+        return super.act();
     }
 
     @Override
@@ -160,33 +208,37 @@ abstract public class Boss extends Mob {
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         first = bundle.getBoolean(FIRST);
+        if (state != SLEEPING) BossHealthBar.assignBoss(this);
+        if ((HP*2 <= HT)) BossHealthBar.bleed(true);
     }
 
-    private void RollCS(){
+    public void RollCS(){
         Class<?extends ChampionEnemy> buffCls;
-        switch (Random.Int(9)){
+        switch (Random.Int(4)){
             case 0: default:    buffCls = ChampionEnemy.Blazing.class;      break;
             case 1:             buffCls = ChampionEnemy.Projecting.class;   break;
-            case 2:             buffCls = ChampionEnemy.AntiMagic.class;    break;
-            case 3:             buffCls = ChampionEnemy.Giant.class;        break;
-            case 4:             buffCls = ChampionEnemy.Blessed.class;      break;
-            case 5:             buffCls = ChampionEnemy.Growing.class;      break;
-            case 6:             buffCls = ChampionEnemy.Halo.class;      	break;
-            case 7:             buffCls = ChampionEnemy.DelayMob.class;     break;
+            case 2:             buffCls = ChampionEnemy.Blessed.class;      break;
+            case 3:             buffCls = ChampionEnemy.Halo.class;      	break;
         }
         Buff.affect(this, buffCls);
         this.state = this.WANDERING;
     }
 
-    private void RollEX(){
+    public void RollEX(){
         Class<?extends ChampionEnemy> buffCls2;
-        switch (Random.Int(5)){
-            case 0: default:    buffCls2 = ChampionEnemy.Middle.class;      break;
-            case 1:             buffCls2 = ChampionEnemy.Bomber.class;      break;
-            case 2:             buffCls2 = ChampionEnemy.Sider.class;       break;
-            case 3:             buffCls2 = ChampionEnemy.LongSider.class;   break;
-            case 4:             buffCls2 = ChampionEnemy.Big.class;         break;
+        float roll = Random.Float(); // 生成 0.0~1.0 的随机数
+
+        if (roll < 0.05f) { // 5% 概率生成酸液体
+            buffCls2 = ChampionEnemy.Sider.class;
+        } else {
+            // 剩余95%概率由其他三种类型均分（各约31.67%）
+            switch (Random.Int(3)){
+                case 0: default: buffCls2 = ChampionEnemy.Middle.class;   break;
+                case 1:         buffCls2 = ChampionEnemy.LongSider.class;break;
+                case 2:         buffCls2 = ChampionEnemy.Big.class;      break;
+            }
         }
+
         Buff.affect(this, buffCls2);
         this.state = this.WANDERING;
     }
@@ -206,11 +258,6 @@ abstract public class Boss extends Mob {
                 }
                 first = true;
             }
-        } else if (Statistics.bossRushMode && Statistics.difficultyDLCEXLevel == 3) {
-            Buff.affect(this, ChampionEnemy.Halo.class);
-            Buff.affect(this, ChampionEnemy.Sider.class);
-        } else if (Statistics.bossRushMode && Statistics.difficultyDLCEXLevel == 2) {
-            Buff.affect(this, ChampionEnemy.Halo.class);
         }
     }
 

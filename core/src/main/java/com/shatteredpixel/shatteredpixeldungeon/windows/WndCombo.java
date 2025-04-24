@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -76,7 +75,7 @@ public class WndCombo extends Window {
 				protected void onClick() {
 					super.onClick();
 					hide();
-					combo.useMove(move);
+					combo.useMove(move , Dungeon.hero.enemy());
 				}
 			};
 			moveBtn.leftJustify = true;

@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.dragon;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
@@ -13,7 +14,8 @@ public class PiraLand extends Mob {
     {
         spriteClass = PiraLandSprite.class;
 
-        HP = HT = 35;
+        HP = HT = 35 * Dungeon.depth/5;
+
         defenseSkill = 15;
 
         EXP = 8;
@@ -54,7 +56,7 @@ public class PiraLand extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 12, 18 );
+        return Statistics.bossRushMode ?Random.NormalIntRange( 24, 30 ) : Random.NormalIntRange( 12, 18 );
     }
 
     @Override

@@ -30,6 +30,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FetidRatSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.watabou.noosa.Camera;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -37,7 +40,7 @@ public class FetidRat extends Rat {
 
 	{
 		spriteClass = FetidRatSprite.class;
-		discovered = Dungeon.discovered[1];
+
 		HP = HT = 20;
 		defenseSkill = 5;
 
@@ -57,7 +60,7 @@ public class FetidRat extends Rat {
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Char.combatRoll(0, 2);
+		return super.drRoll() + Random.NormalIntRange(0, 2);
 	}
 
 	//todo Ghost Quest Mob-1
@@ -80,9 +83,17 @@ public class FetidRat extends Rat {
 	}
 
 	@Override
+	public void notice() {
+
+		if (!BossHealthBar.isAssigned()) {
+			BossHealthBar.assignBoss(this);
+			Camera.main.shake(1f,3f);
+		}
+	}
+
+	@Override
 	public void die( Object cause ) {
 		super.die( cause );
-		Dungeon.discovered[1] = true;
 		discovered = true;
 		Ghost.Quest.process();
 	}
@@ -100,6 +111,12 @@ public class FetidRat extends Rat {
 				return pos1;
 			}
 		}
+	}
+
+	@Override
+	public void restoreFromBundle( Bundle bundle ) {
+		super.restoreFromBundle( bundle );
+		if (state != SLEEPING) BossHealthBar.assignBoss(this);
 	}
 	
 	{

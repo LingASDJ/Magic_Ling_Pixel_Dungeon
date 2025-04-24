@@ -27,6 +27,7 @@ public class Salamander extends Mob {
 
         loot = Generator.Category.SEED;
         lootChance = 0.5f;
+        isAnimal = true;
 
         maxLvl = 12;
     }

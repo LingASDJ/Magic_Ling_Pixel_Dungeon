@@ -29,6 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
@@ -57,6 +59,11 @@ public class RingOfElements extends Ring {
 			return Messages.get(this, "typical_stats", Messages.decimalFormat("#.##", 17.5f));
 		}
 	}
+
+	public String upgradeStat1(int level){
+		if (cursed && cursedKnown) level = Math.min(-1, level-3);
+		return Messages.decimalFormat("#.##", 100f * (1f - Math.pow(0.825f, level+1))) + "%";
+	}
 	
 	@Override
 	protected RingBuff buff( ) {
@@ -75,6 +82,9 @@ public class RingOfElements extends Ring {
 
 		RESISTS.add( ToxicGas.class );
 		RESISTS.add( Electricity.class );
+
+		RESISTS.add( HalomethaneBurning.class );
+		RESISTS.add( FrostBurning.class );
 
 		RESISTS.addAll( AntiMagic.RESISTS );
 	}

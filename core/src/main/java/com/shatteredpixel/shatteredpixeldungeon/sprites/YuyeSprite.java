@@ -10,7 +10,7 @@ public class YuyeSprite extends MobSprite {
 
         texture( Assets.Sprites.YUYE );
 
-        TextureFilm frames = new TextureFilm( texture, 12, 15 );
+        TextureFilm frames = new TextureFilm( texture, 13, 16 );
 
         idle = new Animation( 1, true );
         idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );

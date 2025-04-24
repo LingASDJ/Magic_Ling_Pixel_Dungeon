@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.FayiNaPlot;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.ClearHStal;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DragonHeart;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElemtGuardGirlSprites;
@@ -17,8 +18,10 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -88,7 +91,19 @@ public class FayiNa extends NTNPC {
         PaswordBadges.loadGlobal();
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-        if (passwordbadges.contains(PaswordBadges.Badge.SWORDDREAM)) {
+        if (passwordbadges.contains(PaswordBadges.Badge.SWORDDREAM) && Dungeon.depth ==0 ) {
+            //we do a little raw position shuffling here so that the characters are never
+            // on the same cell when logic such as occupyCell() is triggered
+            int oldPos = pos;
+            int newPos = c.pos;
+            PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+            if (PathFinder.distance[pos] == Integer.MAX_VALUE){
+                return true;
+            }
+            if(progress == 10){
+                yell(Messages.get(ClearElemtGuard.class, "no_road",hero.name()));
+                progress++;
+            }
             yell(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
         } else {
             if (first) {
@@ -179,6 +194,25 @@ public class FayiNa extends NTNPC {
                 });
                 //Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), hero.pos );
                 kd=false;
+            } else {
+                //we do a little raw position shuffling here so that the characters are never
+                // on the same cell when logic such as occupyCell() is triggered
+                int oldPos = pos;
+                int newPos = c.pos;
+                PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+                if (PathFinder.distance[pos] == Integer.MAX_VALUE){
+                    return true;
+                }
+                if(progress == 10){
+                    yell(Messages.get(ClearElemtGuard.class, "no_road",hero.name()));
+                    progress++;
+                }
+                pos = newPos;
+                c.pos = oldPos;
+                ScrollOfTeleportation.appear(this, newPos);
+                ScrollOfTeleportation.appear(c, oldPos);
+                Dungeon.observe();
+                GameScene.updateFog();
             }
         }
 

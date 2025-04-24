@@ -27,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RustedGoldCoin;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -59,6 +61,11 @@ public class Gold extends Item {
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
 
+		if(hero.belongings.getItem(RustedGoldCoin.class)!=null){
+			 quantity *= 0.75f;
+		}
+
+		Catalog.setSeen(getClass());
 
 		if(quantity > 49 && Statistics.bossRushMode ){
 			Dungeon.rushgold += quantity/50;
@@ -66,9 +73,7 @@ public class Gold extends Item {
 			GameScene.pickUp( this, pos );
 			hero.spendAndNext( TIME_TO_PICK_UP );
 			hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "ling",quantity/50));
-			Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
-			updateQuickslot();
-		} else {
+        } else {
 			Dungeon.gold += quantity;
 			Statistics.goldCollected += quantity;
 			Badges.validateGoldCollected();
@@ -77,11 +82,11 @@ public class Gold extends Item {
 			hero.sprite.showStatusWithIcon( CharSprite.NEUTRAL, Integer.toString(quantity), FloatingText.GOLD );
 			hero.spendAndNext( TIME_TO_PICK_UP );
 
-			Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
-			updateQuickslot();
-		}
+        }
+        Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
+        updateQuickslot();
 
-		return true;
+        return true;
 	}
 	
 	@Override

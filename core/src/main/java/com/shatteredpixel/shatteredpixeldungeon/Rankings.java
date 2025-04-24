@@ -137,6 +137,9 @@ public enum Rankings {
         rec.customSeed = Dungeon.customSeedText;
         rec.daily = Dungeon.daily;
 
+        rec.SRandMode = Statistics.RandMode;
+        rec.SRushMode = Statistics.bossRushMode;
+
         Badges.validateHighScore(rec.score);
 
         INSTANCE.saveGameData(rec);
@@ -203,15 +206,15 @@ public enum Rankings {
             }
             Statistics.progressScore = Math.min(Statistics.progressScore, 50_000);
 
-            if (Statistics.heldItemValue == 0) {
-                for (Item i : Dungeon.hero.belongings) {
-                    Statistics.heldItemValue += i.value();
-                    if (i instanceof CorpseDust && Statistics.deepestFloor >= 10) {
-                        // in case player kept the corpse dust, for a necromancer run
-                        Statistics.questScores[1] = 2000;
-                    }
+            Statistics.heldItemValue = 0;
+            for (Item i : Dungeon.hero.belongings) {
+                Statistics.heldItemValue += i.value();
+                if (i instanceof CorpseDust && Statistics.deepestFloor >= 10) {
+                    // in case player kept the corpse dust, for a necromancer run
+                    Statistics.questScores[1] = 2000;
                 }
             }
+
             Statistics.treasureScore = Statistics.goldCollected + Statistics.heldItemValue;
             Statistics.treasureScore = Math.min(Statistics.treasureScore, 20_000);
 
@@ -503,6 +506,9 @@ public enum Rankings {
 
         //Note this is for summary purposes, visible score should be re-calculated from game data
         public int score;
+
+        public boolean SRushMode;
+        public boolean SRandMode;
 
         public String customSeed;
         public boolean daily;

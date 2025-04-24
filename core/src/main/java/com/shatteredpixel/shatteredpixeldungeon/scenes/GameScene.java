@@ -29,12 +29,10 @@ import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMag
 
 import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.GameRules;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
@@ -88,8 +86,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -203,13 +203,18 @@ public class GameScene extends PixelScene {
 			}
 		}
 	}
-	private void tell(String text) {
+
+	public static void updateAvatar(){
+		if (scene != null && scene.status != null) scene.status.updateAvatar();
+	}
+
+    private void tell(String text) {
 		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				GameScene.show(new WndQuest(new Slyl(), text));
-				}
-			}
+								   @Override
+								   public void call() {
+									   GameScene.show(new WndQuest(new Slyl(), text));
+								   }
+							   }
 		);
 	}
 
@@ -295,9 +300,9 @@ public class GameScene extends PixelScene {
 	private BossHealthBar boss;
 
 	private GameLog log;
-	
+
 	private static CellSelector cellSelector;
-	
+
 	private Group terrain;
 	private Group customTiles;
 	private Group levelVisuals;
@@ -332,7 +337,7 @@ public class GameScene extends PixelScene {
 	{
 		inGameScene = true;
 	}
-	
+
 	public static void gameOver() {
 		Banner gameOver = new Banner( BannerSprites.get( BannerSprites.Type.GAME_OVER ) );
 		gameOver.show( 0x000000, 2f );
@@ -341,7 +346,6 @@ public class GameScene extends PixelScene {
 		StyledButton restart = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(StartScene.class, "new"), 9){
 			@Override
 			protected void onClick() {
-                //InterlevelScene.noStory = true;
 				GameScene.show(new WndRestart());
 			}
 
@@ -414,9 +418,9 @@ public class GameScene extends PixelScene {
 		);
 		scene.add(info);
 	}
-	
+
 	public void destroy() {
-		
+
 		//tell the actor thread to finish, then wait for it to complete any actions it may be doing.
 		if (!waitForActorThread( 4500, true )){
 			Throwable t = new Throwable();
@@ -425,14 +429,14 @@ public class GameScene extends PixelScene {
 		}
 
 		Emitter.freezeEmitters = false;
-		
+
 		scene = null;
 		Badges.saveGlobal();
 		Journal.saveGlobal();
 		PaswordBadges.saveGlobal();
 		super.destroy();
 	}
-	
+
 	public static void endActorThread(){
 		if (actorThread != null && actorThread.isAlive()){
 			Actor.keepActorThreadAlive = false;
@@ -454,7 +458,7 @@ public class GameScene extends PixelScene {
 			return !Actor.processing();
 		}
 	}
-	
+
 	@Override
 	public synchronized void onPause() {
 		try {
@@ -468,7 +472,7 @@ public class GameScene extends PixelScene {
 	}
 
 	private static Thread actorThread;
-	
+
 	//sometimes UI changes can be prompted by the actor thread.
 	// We queue any removed element destruction, rather than destroying them in the actor thread.
 	private ArrayList<Gizmo> toDestroy = new ArrayList<>();
@@ -478,7 +482,7 @@ public class GameScene extends PixelScene {
 	private float notifyDelay = 1/60f;
 
 	public static boolean updateItemDisplays = false;
-	
+
 	@Override
 	public synchronized void update() {
 		lastOffset = null;
@@ -527,7 +531,7 @@ public class GameScene extends PixelScene {
 				String msg = "Actor therad dump was requested.\n\n" +
 						"Seed:" + Dungeon.seed +
 						"\n\ndepth:" + Dungeon.depth +
-						"\n\nchallenges:" +
+						"\n\nchallenges:" + Dungeon.challenges +
 						"\n\ncurrent actor:" + cl +
 						"\n\ntrace:" + s;
 				Gdx.app.getClipboard().setContents(msg);
@@ -561,7 +565,7 @@ public class GameScene extends PixelScene {
 						Actor.process();
 					}
 				};
-				
+
 				//if cpu cores are limited, game should prefer drawing the current frame
 				if (Runtime.getRuntime().availableProcessors() == 1) {
 					actorThread.setPriority(Thread.NORM_PRIORITY - 1);
@@ -590,9 +594,9 @@ public class GameScene extends PixelScene {
 
 			//we only want to change the layout when new tags pop in, not when existing ones leave.
 			boolean tagAppearing = (attack.active && !tagAttack) ||
-									(loot.visible && !tagLoot) ||
-									(action.visible && !tagAction) ||
-									(resume.visible && !tagResume);
+					(loot.visible && !tagLoot) ||
+					(action.visible && !tagAction) ||
+					(resume.visible && !tagResume);
 
 			tagAttack = attack.active;
 			tagLoot = loot.visible;
@@ -603,7 +607,7 @@ public class GameScene extends PixelScene {
 		}
 
 		cellSelector.enable(Dungeon.hero.ready);
-		
+
 		for (Gizmo g : toDestroy){
 			g.destroy();
 		}
@@ -689,7 +693,7 @@ public class GameScene extends PixelScene {
 			scene.resume.flip(tagsOnLeft);
 		}
 	}
-	
+
 	@Override
 	protected void onBackPressed() {
 		if (!cancel()) {
@@ -704,21 +708,21 @@ public class GameScene extends PixelScene {
 	public void addCustomWall( CustomTilemap visual){
 		customWalls.add( visual.create() );
 	}
-	
+
 	private void addHeapSprite( Heap heap ) {
 		ItemSprite sprite = heap.sprite = (ItemSprite)heaps.recycle( ItemSprite.class );
 		sprite.revive();
 		sprite.link( heap );
 		heaps.add( sprite );
 	}
-	
+
 	private void addDiscardedSprite( Heap heap ) {
 		heap.sprite = (DiscardedItemSprite)heaps.recycle( DiscardedItemSprite.class );
 		heap.sprite.revive();
 		heap.sprite.link( heap );
 		heaps.add( heap.sprite );
 	}
-	
+
 	private void addPlantSprite( Plant plant ) {
 
 	}
@@ -726,28 +730,28 @@ public class GameScene extends PixelScene {
 	private void addTrapSprite( Trap trap ) {
 
 	}
-	
+
 	private void addBlobSprite( final Blob gas ) {
 		if (gas.emitter == null) {
 			gases.add( new BlobEmitter( gas ) );
 		}
 	}
-	
+
 	private void addMobSprite( Mob mob ) {
 		CharSprite sprite = mob.sprite();
 		sprite.visible = Dungeon.level.heroFOV[mob.pos];
 		mobs.add( sprite );
 		sprite.link( mob );
 	}
-	
+
 	private synchronized void prompt( String text ) {
-		
+
 		if (prompt != null) {
 			prompt.killAndErase();
 			toDestroy.add(prompt);
 			prompt = null;
 		}
-		
+
 		if (text != null) {
 			prompt = new Toast( text ) {
 				@Override
@@ -765,7 +769,7 @@ public class GameScene extends PixelScene {
 			add( prompt );
 		}
 	}
-	
+
 	public static void examineObject(Object o){
 		if (o == Dungeon.hero){
 			GameScene.show( new WndHero() );
@@ -773,7 +777,7 @@ public class GameScene extends PixelScene {
 			GameScene.show(new WndInfoMob((Mob) o));
 			if (o instanceof Snake && !Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_SURPRISE_ATKS)){
 				GLog.p(Messages.get(Guidebook.class, "hint"));
-                //GameScene.flashForDocument(Document.GUIDE_SURPRISE_ATKS);
+				//GameScene.flashForDocument(Document.GUIDE_SURPRISE_ATKS);
 			}
 		} else if ( o instanceof Heap ){
 			GameScene.show(new WndInfoItem((Heap)o));
@@ -803,7 +807,7 @@ public class GameScene extends PixelScene {
 
 		addToFront(banner);
 	}
-	
+
 	// -------------------------------------------------------
 
 	public static void add( Plant plant ) {
@@ -817,20 +821,27 @@ public class GameScene extends PixelScene {
 			scene.addTrapSprite( trap );
 		}
 	}
-	
+
 	public static void add( Blob gas ) {
 		Actor.add( gas );
 		if (scene != null) {
 			scene.addBlobSprite( gas );
 		}
 	}
-	
+
+	public void add(WandOfSun.MiniSun actor) {
+		Actor.add(actor);
+		if(scene != null){
+			scene.add(actor.sprite);
+		}
+	}
+
 	public static void add( Heap heap ) {
 		if (scene != null) {
 			scene.addHeapSprite( heap );
 		}
 	}
-	
+
 	public static void discard( Heap heap ) {
 		if (scene != null) {
 			scene.addDiscardedSprite( heap );
@@ -859,21 +870,21 @@ public class GameScene extends PixelScene {
 	public static void addSprite( Mob mob ) {
 		scene.addMobSprite( mob );
 	}
-	
+
 	public static void add( Mob mob, float delay ) {
 		Dungeon.level.mobs.add( mob );
 		scene.addMobSprite( mob );
 		Actor.addDelayed( mob, delay );
 	}
-	
+
 	public static void add( EmoIcon icon ) {
 		scene.emoicons.add( icon );
 	}
-	
+
 	public static void add( CharHealthIndicator indicator ){
 		if (scene != null) scene.healthIndicators.add(indicator);
 	}
-	
+
 	public static void add( CustomTilemap t, boolean wall ){
 		if (scene == null) return;
 		if (wall){
@@ -882,7 +893,7 @@ public class GameScene extends PixelScene {
 			scene.addCustomTile(t);
 		}
 	}
-	
+
 	public static void effect( Visual effect ) {
 		if (scene != null) scene.effects.add( effect );
 	}
@@ -890,7 +901,7 @@ public class GameScene extends PixelScene {
 	public static void effectOverFog( Visual effect ) {
 		scene.overFogEffects.add( effect );
 	}
-	
+
 	public static Ripple ripple( int pos ) {
 		if (scene != null) {
 			Ripple ripple = (Ripple) scene.ripples.recycle(Ripple.class);
@@ -900,11 +911,11 @@ public class GameScene extends PixelScene {
 			return null;
 		}
 	}
-	
+
 	public static SpellSprite spellSprite() {
 		return (SpellSprite)scene.spells.recycle( SpellSprite.class );
 	}
-	
+
 	public static Emitter emitter() {
 		if (scene != null) {
 			Emitter emitter = (Emitter)scene.emitters.recycle( Emitter.class );
@@ -924,7 +935,7 @@ public class GameScene extends PixelScene {
 			return null;
 		}
 	}
-	
+
 	public static FloatingText status() {
 		return scene != null ? (FloatingText)scene.statuses.recycle( FloatingText.class ) : null;
 	}
@@ -932,7 +943,7 @@ public class GameScene extends PixelScene {
 	public static IconFloatingText iconstatus() {
 		return scene != null ? (IconFloatingText)scene.statuses.recycle( IconFloatingText.class ) : null;
 	}
-	
+
 	public static void pickUp( Item item, int pos ) {
 		if (scene != null){
 			if (SPDSettings.quickSwapper()) {
@@ -956,7 +967,7 @@ public class GameScene extends PixelScene {
 //	public static void flashForDocument( String page ){
 //		if (scene != null) scene.menu.flashForPage( page );
 //	}
-	
+
 	public static void updateKeyDisplay(){
 		if (scene != null) scene.menu.updateKeys();
 	}
@@ -987,7 +998,7 @@ public class GameScene extends PixelScene {
 			updateFog();
 		}
 	}
-	
+
 	public static void updateMap( int cell ) {
 		if (scene != null) {
 			scene.tiles.updateMapCell( cell );
@@ -1005,14 +1016,14 @@ public class GameScene extends PixelScene {
 			scene.terrainFeatures.growPlant( cell );
 		}
 	}
-	
+
 	//todo this doesn't account for walls right now
 	public static void discoverTile( int pos, int oldValue ) {
 		if (scene != null) {
 			scene.tiles.discover( pos, oldValue );
 		}
 	}
-	
+
 	public static void show( Window wnd ) {
 		if (scene != null) {
 			cancelCellSelector();
@@ -1101,7 +1112,7 @@ public class GameScene extends PixelScene {
 			scene.wallBlocking.updateArea(x, y, w, h);
 		}
 	}
-	
+
 	public static void updateFog( int cell, int radius ){
 		if (scene != null) {
 			scene.fog.updateFog( cell, radius );
@@ -1143,6 +1154,13 @@ public class GameScene extends PixelScene {
 		}
 	}
 
+	public static void fadeToBlack(float duration,float delay) {
+		Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
+		bossSlain.texture(Assets.Interfaces.BLACK_RECT);
+		bossSlain.show(Window.CBLACK, duration, delay);
+		scene.showBannerX(bossSlain);
+	}
+
 	@Override
 	public void create() {
 
@@ -1151,7 +1169,13 @@ public class GameScene extends PixelScene {
 			return;
 		}
 
-		BGMPlayer.playBGMWithDepth();
+		//全新音乐系统 2025.4.21
+		if(Dungeon.level.locked){
+			Dungeon.level.playBossMusic();
+		} else {
+			Dungeon.level.playLevelMusic();
+		}
+
 
 		SPDSettings.lastClass(Dungeon.hero.heroClass.ordinal());
 
@@ -1171,9 +1195,9 @@ public class GameScene extends PixelScene {
 		add( terrain );
 
 		water = new SkinnedBlock(
-			Dungeon.level.width() * DungeonTilemap.SIZE,
-			Dungeon.level.height() * DungeonTilemap.SIZE,
-			Dungeon.level.waterTex() ){
+				Dungeon.level.width() * DungeonTilemap.SIZE,
+				Dungeon.level.height() * DungeonTilemap.SIZE,
+				Dungeon.level.waterTex() ){
 
 			@Override
 			protected NoosaScript script() {
@@ -1201,6 +1225,67 @@ public class GameScene extends PixelScene {
 
 		customTiles = new Group();
 		terrain.add(customTiles);
+
+		//TODO Record Floor,Should May be Used Method
+		switch (Dungeon.level.feeling) {
+			case CHASM:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.CHASM_FLOOR);
+				break;
+			case WATER:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.WATER_FLOOR);
+				break;
+			case GRASS:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.GRASS_FLOOR);
+				break;
+			case DARK:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.DARK_FLOOR);
+				break;
+			case LARGE:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.LARGE_FLOOR);
+				break;
+			case TRAPS:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.TRAPS_FLOOR);
+				break;
+			case SECRETS:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.SECRETS_FLOOR);
+				break;
+
+			case BIGTRAP:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.BIGTRAP_FLOOR);
+				break;
+			case THREEWELL:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.THREEWELL_FLOOR);
+				break;
+			case LINKROOM:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.LINKROOM_FLOOR);
+				break;
+			case DIEDROOM:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.EXBOSS_FLOOR);
+				break;
+			case BIGROOMS:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.BIGROOM_FLOOR);
+				break;
+			case BLOOD:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.BLOOD_FLOOR);
+				break;
+			case SKYCITY:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.CLOUD_FLOOR);
+				break;
+		}
 
 		for( CustomTilemap visual : Dungeon.level.customTiles){
 			addCustomTile(visual);
@@ -1383,7 +1468,8 @@ public class GameScene extends PixelScene {
 			case ANCITYBOSS:
 			case AMULET:
 			case GARDEN:
-				if(!Statistics.bossRushMode || !Statistics.RandMode){
+			case YOG:
+				if(!Statistics.bossRushMode && !Statistics.RandMode){
 					switch (Dungeon.depth) {
 						case 0:
 							if(Dungeon.isChallenged(CS)) {
@@ -1394,7 +1480,6 @@ public class GameScene extends PixelScene {
 							break;
 						case 1:
 							WndStory.showChapter( WndStory.ID_SEWERS );
-							if(Statistics.RandModeCount == 0) GameRules.RandMode_ItemMode();
 							break;
 						case 5:
 							switch(Dungeon.branch) {
@@ -1415,7 +1500,6 @@ public class GameScene extends PixelScene {
 							break;
 						case 6:
 							WndStory.showChapter( WndStory.ID_PRISON );
-							if(Statistics.RandModeCount == 1) GameRules.RandMode_ItemMode();
 							break;
 						case 10:
 							if((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) {
@@ -1425,12 +1509,10 @@ public class GameScene extends PixelScene {
 							}
 							break;
 						case 11:
-							if(Statistics.RandModeCount == 2) GameRules.RandMode_ItemMode();
 							WndStory.showChapter( WndStory.ID_CAVES );
 							break;
 						case 16:
 							WndStory.showChapter( WndStory.ID_CITY );
-							if(Statistics.RandModeCount == 3) GameRules.RandMode_ItemMode();
 							break;
 						case 17:case 18:
 							switch(Dungeon.branch){
@@ -1450,13 +1532,22 @@ public class GameScene extends PixelScene {
 							break;
 						case 21:
 							WndStory.showChapter( WndStory.ID_HALLS );
-							if(Statistics.RandModeCount == 4) GameRules.RandMode_ItemMode();
 							break;
 						case 25:
 							if(Dungeon.branch == 5){
 								WndStory.showChapter( WndStory.ID_CHAPTONEEND );
 							} else if(Dungeon.isChallenged(CS)&& Dungeon.branch == 0){
 								WndStory.showChapter(WndStory.ID_ZTBS);
+							}
+							break;
+						case 26:
+							if(Statistics.Hollow_Holiday){
+								WndStory.showChapter(WndStory.ID_HOLLOW);
+							}
+							break;
+						case 27:
+							if(Statistics.Hollow_Holiday){
+								WndStory.showChapter(WndStory.ID_HOLLOW_POLT);
 							}
 							break;
 					}
@@ -1475,64 +1566,43 @@ public class GameScene extends PixelScene {
 				if (item instanceof Potion) {
 					((Potion)item).shatter( pos );
 				} else if (item instanceof Plant.Seed && !Dungeon.isChallenged(Challenges.NO_HERBALISM)) {
-                    Dungeon.level.plant((Plant.Seed) item, pos);
-                } else if (item instanceof Honeypot) {
-                    Dungeon.level.drop(((Honeypot) item).shatter(null, pos), pos);
-                } else {
-                    Dungeon.level.drop(item, pos);
-                }
-            }
-            Dungeon.droppedItems.remove(Dungeon.depth);
-        }
+					Dungeon.level.plant((Plant.Seed) item, pos);
+				} else if (item instanceof Honeypot) {
+					Dungeon.level.drop(((Honeypot) item).shatter(null, pos), pos);
+				} else {
+					Dungeon.level.drop(item, pos);
+				}
+			}
+			Dungeon.droppedItems.remove(Dungeon.depth);
+		}
 
-//		ArrayList<Item> ported = Dungeon.portedItems.get( Dungeon.depth );
-//		if (ported != null){
-//			//TODO currently items are only ported to boss rooms, so this works well
-//			//might want to have a 'near entrance' function if items can be ported elsewhere
-//			int pos;
-//			//try to find a tile with no heap, otherwise just stick items onto a heap.
-//			int tries = 100;
-//			do {
-//				pos = Dungeon.level.randomRespawnCell( null );
-//				tries--;
-//			} while (tries > 0 && Dungeon.level.heaps.get(pos) != null);
-//			for (Item item : ported) {
-//				Dungeon.level.drop( item, pos ).type = Heap.Type.CHEST;
-//			}
-//			Dungeon.level.heaps.get(pos).type = Heap.Type.CHEST;
-//			Dungeon.level.heaps.get(pos).sprite.link(); //sprite reset to show chest
-//			Dungeon.portedItems.remove( Dungeon.depth );
-//		}
+		Dungeon.hero.next();
 
-        Dungeon.hero.next();
-
-        switch (InterlevelScene.mode) {
-            case FALL:
-            case DESCEND:
-            case CONTINUE:
+		switch (InterlevelScene.mode) {
+			case FALL:
+			case DESCEND:
+			case CONTINUE:
 			case ANCITYBOSS:
 			case AMULET:
 			case GARDEN:
-                Camera.main.snapTo(hero.center().x,
-                        hero.center().y - DungeonTilemap.SIZE * (defaultZoom / Camera.main.zoom));
-                break;
-            case ASCEND:
-                Camera.main.snapTo(hero.center().x,
-                        hero.center().y + DungeonTilemap.SIZE * (defaultZoom / Camera.main.zoom));
-                break;
-//			case EXBOSS:
-//				Camera.main.snapTo(hero.center().x/2,
-//						hero.center().y/4 + DungeonTilemap.SIZE * (defaultZoom/Camera.main.zoom));
-            //break;
-            default:
-                Camera.main.snapTo(hero.center().x, hero.center().y);
-        }
+			case YOG:
+				Camera.main.snapTo(hero.center().x,
+						hero.center().y - DungeonTilemap.SIZE * (defaultZoom / Camera.main.zoom));
+				break;
+			case ASCEND:
+				Camera.main.snapTo(hero.center().x,
+						hero.center().y + DungeonTilemap.SIZE * (defaultZoom / Camera.main.zoom));
+				break;
+			default:
+				Camera.main.snapTo(hero.center().x, hero.center().y);
+		}
 		Camera.main.panTo(hero.center(), 2.5f);
 
 		if (InterlevelScene.mode != InterlevelScene.Mode.NONE) {
-			String abcd = null;
-			if (Dungeon.depth == Statistics.deepestFloor
-					&& (InterlevelScene.mode == InterlevelScene.Mode.DESCEND || InterlevelScene.mode == InterlevelScene.Mode.FALL)) {
+
+			if (Dungeon.depth == Statistics.deepestFloor &&
+					(InterlevelScene.mode == InterlevelScene.Mode.DESCEND ||
+							InterlevelScene.mode == InterlevelScene.Mode.FALL)) {
 				if (Dungeon.depth == -30) {
 					GLog.h(Messages.get(this, "ancity"), Dungeon.depth);
 				} else if (Dungeon.depth == -15) {
@@ -1552,10 +1622,7 @@ public class GameScene extends PixelScene {
 				}
 
 				Sample.INSTANCE.play(Assets.Sounds.DESCEND);
-//				TODO P3
-//				if(Dungeon.sbbossLevel()){
-//					tell(Messages.get(Slyl.class, "tips"));
-//				}
+
 				for (Char ch : Actor.chars()) {
 					if (ch instanceof DriedRose.GhostHero) {
 						((DriedRose.GhostHero) ch).sayAppeared();
@@ -1757,82 +1824,124 @@ public class GameScene extends PixelScene {
 		if (Dungeon.hero.isAlive()) {
 			Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
 
-
-			//Boss开始后的处理Logo,不在Switch中就是默认的Logo。
-			switch (Dungeon.depth){
-				case 2:
-					if(Statistics.bossRushMode){
-						bossSlain.texture( Assets.Interfaces.QliPhoth_Title );
-						bossSlain.show( 0xFFFFFF, 0.3f, 5f );
-						scene.showBanner( bossSlain );
-					}
-					break;
-				case 4:
-					if(Statistics.bossRushMode){
-						bossSlain.texture(Assets.Interfaces.QliPhothEX_Title);
-						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
+			if(Statistics.bossRushMode){
+				switch (Dungeon.depth){
+					case 3:
+						bossSlain.texture(Assets.Interfaces.Goo_Title);
+						bossSlain.show(Window.CBLACK, 0.3f, 5f);
 						scene.showBanner(bossSlain);
 						break;
-					}
-				case 5:
-					if(Dungeon.branch ==3 ){
-						bossSlain.texture(Assets.Interfaces.DIZF_Title);
-						bossSlain.show( Window.R_COLOR, 0.4f, 6f);
+					case 5:
+						bossSlain.texture(Assets.Interfaces.QliPhoth_Title);
+						bossSlain.show(Window.G_COLOR, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					} else {
-						bossSlain.texture(Statistics.ExFruit ? Assets.Interfaces.QliPhothEX_Title : Assets.Interfaces.QliPhoth_Title);
-						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-					}
 					break;
-				case 10:
-					if ( ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {
-						bossSlain.texture(Assets.Interfaces.D_Title);
-						bossSlain.show( Window.TITLE_COLOR, 0.3f, 4f);
+					case 7:
+						bossSlain.texture(Assets.Interfaces.QliPhothEX_Title);
+						bossSlain.show(Window.G_COLOR, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					} else {
+					break;
+					case 9:
 						bossSlain.texture(Assets.Interfaces.Tengu_Title);
-						bossSlain.show( Window.R_COLOR, 0.3f, 4f);
+						bossSlain.show(Window.CBLACK, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					}
-
+						break;
+					case 11:
+						bossSlain.texture(Assets.Interfaces.DIZF_Title);
+						bossSlain.show(Window.RED_COLOR, 0.3f, 5f);
+						scene.showBanner(bossSlain);
 					break;
-				case 14:
-					bossSlain.texture(Assets.Interfaces.DMOR_Title);
-					bossSlain.show( Window.CBLACK, 0.3f, 5f);
-					scene.showBanner(bossSlain);
+					case 15:
+						bossSlain.texture(Assets.Interfaces.SGoo_Title);
+						bossSlain.show(Window.WATA_COLOR, 0.3f, 5f);
+						scene.showBanner(bossSlain);
 					break;
-				case 17:case 18:
-					if(Dungeon.branch == 3) {
-						bossSlain.texture(Assets.Interfaces.SakaBJY_Title);
+					case 33:
+						bossSlain.texture(Assets.Interfaces.General_Title);
+						bossSlain.show(Window.ANSDO_COLOR, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+						break;
+					case 37:
+						bossSlain.texture(Assets.Interfaces.Cerdog_Title);
 						bossSlain.show(Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					}
-					break;
-				case 20:
-					if(Dungeon.branch == 1){
-						bossSlain.texture(Assets.Interfaces.General_Title);
-						bossSlain.show( Window.ANSDO_COLOR, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-					}
-					break;
-				case 25:
-					if(Dungeon.isChallenged(CS)) {
+					case 42:
 						bossSlain.texture(Assets.Interfaces.YogZot_Title);
 						bossSlain.show(Window.R_COLOR, 0.3f, 5f);
 						GameScene.flash(Window.GDX_COLOR);
 						scene.showBanner(bossSlain);
-					}
 					break;
-				case 30: case 26:
-					bossSlain.texture(Assets.Interfaces.Cerdog_Title);
-					bossSlain.show(Window.CYELLOW, 0.3f, 5f);
-					scene.showBanner(bossSlain);
-					break;
+				}
+			} else {
+				//Boss开始后的处理Logo,不在Switch中就是默认的Logo。
+				switch (Dungeon.depth) {
+                    case 5:
+						if (Dungeon.branch == 3) {
+							bossSlain.texture(Assets.Interfaces.DIZF_Title);
+							bossSlain.show(Window.R_COLOR, 0.4f, 6f);
+							scene.showBanner(bossSlain);
+						} else {
+							bossSlain.texture(Statistics.ExFruit ? Assets.Interfaces.QliPhothEX_Title : Assets.Interfaces.QliPhoth_Title);
+							bossSlain.show(Window.CYELLOW, 0.3f, 5f);
+							scene.showBanner(bossSlain);
+						}
+						break;
+					case 10:
+						if (((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {
+							bossSlain.texture(Assets.Interfaces.D_Title);
+							bossSlain.show(Window.TITLE_COLOR, 0.3f, 4f);
+							scene.showBanner(bossSlain);
+						} else {
+							bossSlain.texture(Assets.Interfaces.Tengu_Title);
+							bossSlain.show(Window.R_COLOR, 0.3f, 4f);
+							scene.showBanner(bossSlain);
+						}
+
+						break;
+					case 14:
+						bossSlain.texture(Assets.Interfaces.DMOR_Title);
+						bossSlain.show(Window.CBLACK, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+						break;
+					case 17:
+					case 18:
+						if (Dungeon.branch == 3) {
+							bossSlain.texture(Assets.Interfaces.SakaBJY_Title);
+							bossSlain.show(Window.CYELLOW, 0.3f, 5f);
+							scene.showBanner(bossSlain);
+						}
+						break;
+					case 20:
+						if (Dungeon.branch == 1) {
+							bossSlain.texture(Assets.Interfaces.General_Title);
+							bossSlain.show(Window.ANSDO_COLOR, 0.3f, 5f);
+							scene.showBanner(bossSlain);
+						}
+						break;
+					case 25:
+						if (Dungeon.isChallenged(CS)) {
+							bossSlain.texture(Assets.Interfaces.YogZot_Title);
+							bossSlain.show(Window.R_COLOR, 0.3f, 5f);
+							GameScene.flash(Window.GDX_COLOR);
+							scene.showBanner(bossSlain);
+						}
+						break;
+					case 26:
+						bossSlain.texture(Assets.Interfaces.Tawi_Title);
+						bossSlain.show(0x800080, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+						break;
+					case 31:
+						bossSlain.texture(Assets.Interfaces.Cerdog_Title);
+						bossSlain.show(Window.CYELLOW, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+						break;
+				}
+
 			}
 
 			if (Dungeon.hero.buff(LockedFloor.class) == null) {
-				BGMPlayer.playBGMWithDepth();
+				//BGMPlayer.playBGMWithDepth();
 			}
 
 			Sample.INSTANCE.play( Assets.Sounds.ALERT );
@@ -1846,90 +1955,162 @@ public class GameScene extends PixelScene {
 			bossSlain.show( 0xFFFFFF, 0.3f, 5f );
 			scene.showBanner( bossSlain );
 
-
-			//Boss死亡后的处理Logo,不在Switch中就是默认的Logo。
-			switch (Dungeon.depth){
-				case 2:
-					if(Statistics.bossRushMode){
-						bossSlain.texture( Assets.Interfaces.QliPhoth_Clear );
-						bossSlain.show( 0xFFFFFF, 0.3f, 5f );
-						scene.showBanner( bossSlain );
-					}
-					break;
-				case 5:
-					if(Dungeon.branch == 3) {
+			if(Statistics.bossRushMode){
+				switch (Dungeon.depth) {
+					case 9:
+						bossSlain.texture(Assets.Interfaces.Tengu_Clear);
+						bossSlain.show(Window.CBLACK, 0.4f, 6f);
+						scene.showBanner(bossSlain);
+						Statistics.GetFoodLing = 0;
+						break;
+					case 11:
 						bossSlain.texture(Assets.Interfaces.DIZF_Slain);
 						bossSlain.show(Window.R_COLOR, 0.4f, 6f);
 						scene.showBanner(bossSlain);
-					} else {
-						bossSlain.texture(Assets.Interfaces.QliPhoth_Clear);
-						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-					}
-					Statistics.GetFoodLing=0;
-					break;
-				case 10:
-					if ( ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {
-						bossSlain.texture(Assets.Interfaces.D_Clear);
-						bossSlain.show( Window.TITLE_COLOR, 0.2f, 5f);
-						scene.showBanner(bossSlain);
-					} else {
-						bossSlain.texture(Assets.Interfaces.Tengu_Clear);
-						bossSlain.show( Window.R_COLOR, 0.2f, 5f);
-						scene.showBanner(bossSlain);
-					}
-					Statistics.GetFoodLing=0;
-					break;
-				case 15:
-					Statistics.GetFoodLing=0;
-					break;
-				case 17:case 18:
-					if(Dungeon.branch == 3){
+						Statistics.GetFoodLing = 0;
+						break;
+					case 31:
 						bossSlain.texture(Assets.Interfaces.SakaBJY_Clear);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					}
-					break;
-				case 20:
-					if(Dungeon.branch == 1){
+						break;
+					case 33:
 						bossSlain.texture(Assets.Interfaces.General_Clear);
-						bossSlain.show( Window.ANSDO_COLOR, 0.3f, 5f);
+						bossSlain.show(Window.ANSDO_COLOR, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					}
-					Statistics.GetFoodLing=0;
-					break;
-				case 25:
-					if(Dungeon.isChallenged(CS)) {
+						break;
+					case 37:
+						bossSlain.texture(Assets.Interfaces.Cerdog_Clear);
+						bossSlain.show(Window.CYELLOW, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					case 42:
 						bossSlain.texture(Assets.Interfaces.YogZot_Slain);
-						bossSlain.show(Window.GDX_COLOR, 0.3f, 5f);
-						GameScene.flash(Window.TITLE_COLOR);
+						bossSlain.show(Window.R_COLOR, 0.4f, 6f);
 						scene.showBanner(bossSlain);
-					}
-					Statistics.GetFoodLing=0;
-					break;
-				case 30: case 26:
-					bossSlain.texture(Assets.Interfaces.Cerdog_Clear);
-					bossSlain.show( 0xF7941D, 0.3f, 5f);
-					scene.showBanner(bossSlain);
-					break;
+						Statistics.GetFoodLing = 0;
+						break;
+				}
+			} else {
+				switch (Dungeon.depth){
+					case 5:
+						if(Dungeon.branch == 3) {
+							bossSlain.texture(Assets.Interfaces.DIZF_Slain);
+							bossSlain.show(Window.R_COLOR, 0.4f, 6f);
+							scene.showBanner(bossSlain);
+						} else {
+							bossSlain.texture(Assets.Interfaces.QliPhoth_Clear);
+							bossSlain.show( Window.CYELLOW, 0.3f, 5f);
+							scene.showBanner(bossSlain);
+						}
+						Statistics.GetFoodLing=0;
+						break;
+					case 10:
+						if ( ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {
+							bossSlain.texture(Assets.Interfaces.D_Clear);
+							bossSlain.show( Window.TITLE_COLOR, 0.2f, 5f);
+							scene.showBanner(bossSlain);
+						} else {
+							bossSlain.texture(Assets.Interfaces.Tengu_Clear);
+							bossSlain.show( Window.R_COLOR, 0.2f, 5f);
+							scene.showBanner(bossSlain);
+						}
+						Statistics.GetFoodLing=0;
+						break;
+					case 15:
+						Statistics.GetFoodLing=0;
+						break;
+					case 17:case 18:
+						if(Dungeon.branch == 3){
+							bossSlain.texture(Assets.Interfaces.SakaBJY_Clear);
+							bossSlain.show( Window.CYELLOW, 0.3f, 5f);
+							scene.showBanner(bossSlain);
+						}
+						break;
+					case 20:
+						if(Dungeon.branch == 1){
+							bossSlain.texture(Assets.Interfaces.General_Clear);
+							bossSlain.show( Window.ANSDO_COLOR, 0.3f, 5f);
+							scene.showBanner(bossSlain);
+						}
+						Statistics.GetFoodLing=0;
+						break;
+					case 25:
+						if(Dungeon.isChallenged(CS)) {
+							bossSlain.texture(Assets.Interfaces.YogZot_Slain);
+							bossSlain.show(Window.GDX_COLOR, 0.3f, 5f);
+							GameScene.flash(Window.TITLE_COLOR);
+							scene.showBanner(bossSlain);
+						}
+						Statistics.GetFoodLing=0;
+						break;
+					case 30:
+					case 26:
+						if(Dungeon.branch == 10){
+							bossSlain.texture(Assets.Interfaces.Tawi_Clear);
+							bossSlain.show( 0x800080, 0.3f, 5f);
+							scene.showBanner(bossSlain);
+						} else {
+							bossSlain.texture(Assets.Interfaces.Cerdog_Clear);
+							bossSlain.show( 0xF7941D, 0.3f, 5f);
+							scene.showBanner(bossSlain);
+						}
+						break;
+				}
 			}
+			//Boss死亡后的处理Logo,不在Switch中就是默认的Logo。
 
-			if(lanterfireactive && Dungeon.branch == 0 || Dungeon.branch == 6 || Statistics.bossRushMode){
+			if(lanterfireactive && Dungeon.branch == 0 && Dungeon.bossLevel() || Dungeon.branch == 6 || Statistics.bossRushMode && Dungeon.sbbossLevel()){
 				cure( Dungeon.hero );
 			}
 
-			if (Dungeon.hero.buff(LockedFloor.class) == null) {
-				BGMPlayer.playBGMWithDepth();
-			}
-
 			Sample.INSTANCE.play( Assets.Sounds.BOSS );
+
+			//金蝶重置
+			if(Statistics.RandMode){
+				Statistics.goldRefogreCount++;
+				Statistics.magestaffUpgrade = 0;
+
+				ArrayList<Item> food = Dungeon.hero.belongings.getAllItems(Item.class);
+				for (Item w : food.toArray(new Item[0])){
+					if(w.noUpgrade){
+						w.noUpgrade = false;
+					}
+				}
+
+				Statistics.upgradeGold = Random.NormalIntRange(8,24);
+
+				if(Statistics.RandomQuest == 3){
+					switch (Dungeon.depth){
+						case 5:
+							if(Statistics.enemiesSlain <= 20){
+								Statistics.goldRefogreCount++;
+							}
+							break;
+						case 10:
+							if(Statistics.enemiesSlain <= 35){
+								Statistics.goldRefogreCount++;
+							}
+							break;
+						case 15:
+							if(Statistics.enemiesSlain <= 50){
+								Statistics.goldRefogreCount++;
+							}
+							break;
+						case 20:
+							if(Statistics.enemiesSlain <= 70){
+								Statistics.goldRefogreCount++;
+							}
+							break;
+					}
+				}
+			}
 		}
 	}
-	
+
 	public static void handleCell( int cell ) {
 		cellSelector.select( cell, PointerEvent.LEFT );
 	}
-	
+
 	public static void selectCell( CellSelector.Listener listener ) {
 		if (cellSelector.listener != null && cellSelector.listener != defaultCellListener){
 			cellSelector.listener.onSelect(null);
@@ -1940,7 +2121,7 @@ public class GameScene extends PixelScene {
 			scene.prompt(listener.prompt());
 		}
 	}
-	
+
 	static boolean cancelCellSelector() {
 		cellSelector.resetKeyHold();
 		if (cellSelector.listener != null && cellSelector.listener != defaultCellListener) {
@@ -1950,7 +2131,7 @@ public class GameScene extends PixelScene {
 			return false;
 		}
 	}
-	
+
 	public static WndBag selectItem( WndBag.ItemSelector listener ) {
 		cancelCellSelector();
 
@@ -1965,21 +2146,21 @@ public class GameScene extends PixelScene {
 				return wnd;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	public static boolean cancel() {
 		if (Dungeon.hero != null && (Dungeon.hero.curAction != null || Dungeon.hero.resting)) {
-			
+
 			Dungeon.hero.curAction = null;
 			Dungeon.hero.resting = false;
 			return true;
-			
+
 		} else {
-			
+
 			return cancelCellSelector();
-			
+
 		}
 	}
 
@@ -2002,11 +2183,11 @@ public class GameScene extends PixelScene {
 			}
 		}
 	}
-	
+
 	public static void checkKeyHold(){
 		cellSelector.processKeyHold();
 	}
-	
+
 	public static void resetKeyHold(){
 		cellSelector.resetKeyHold();
 	}
@@ -2076,17 +2257,24 @@ public class GameScene extends PixelScene {
 		return names;
 	}
 
+	private void showBannerX( Banner banner ) {
+		banner.camera = uiCamera;
+		banner.x = 0;
+		banner.y = 0;
+		addToFront( banner );
+	}
+
 	private void showBanner( Banner banner ) {
 		banner.camera = uiCamera;
 
 		float offset = Camera.main.centerOffset.y;
-        banner.x = align(uiCamera, (uiCamera.width - banner.width) / 2);
-        banner.y = align(uiCamera, (uiCamera.height - banner.height) / 2 - banner.height / 2 - 16 - offset);
+		banner.x = align(uiCamera, (uiCamera.width - banner.width) / 2);
+		banner.y = align(uiCamera, (uiCamera.height - banner.height) / 2 - banner.height / 2 - 16 - offset);
 
 		addToFront( banner );
 	}
 
-	
+
 	private static final CellSelector.Listener defaultCellListener = new CellSelector.Listener() {
 		@Override
 		public void onSelect( Integer cell ) {
@@ -2211,4 +2399,7 @@ public class GameScene extends PixelScene {
 	public static float StatusHeight(){
 		return SPDSettings.quickSwapper() ? scene.toolbarv1.height() : scene.status.height();
 	}
+
+
+
 }

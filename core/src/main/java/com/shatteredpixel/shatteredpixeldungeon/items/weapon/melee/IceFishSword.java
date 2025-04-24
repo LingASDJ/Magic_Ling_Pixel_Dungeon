@@ -12,9 +12,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.thanks.GrilledHerring;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -31,10 +32,10 @@ public class IceFishSword extends MeleeWeapon {
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
         tier = 6;
-        ACC = 2.90f; //20% boost to accuracy
-        DLY = 1.5f; //2x speed
+        ACC = 1f; //20% boost to accuracy
+        DLY = 1f; //2x speed
         cursed = true;
-        enchant(Enchantment.randomCurse());
+        enchant(Enchantment.random());
     }
 
     public static Weapon cook(FireFishSword ingredient ) {
@@ -60,8 +61,8 @@ public class IceFishSword extends MeleeWeapon {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{FrozenCarpaccio.class, MagicalInfusion.class};
-            inQuantity = new int[]{1, 1};
+            inputs =  new Class[]{PotionOfSnapFreeze.class, GrilledHerring.class, MagicalInfusion.class};
+            inQuantity = new int[]{1, 1, 1};
 
             cost = 16+Dungeon.depth/2;
 
@@ -105,7 +106,7 @@ public class IceFishSword extends MeleeWeapon {
 
         String info = desc();
 
-        if (levelKnown) {
+        if (levelKnown && Dungeon.hero != null) {
             info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
             if (STRReq() > Dungeon.hero.STR()) {
                 info += " " + Messages.get(Weapon.class, "too_heavy");
@@ -114,8 +115,11 @@ public class IceFishSword extends MeleeWeapon {
             }
         } else {
             info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
-            if (STRReq(0) > Dungeon.hero.STR()) {
-                info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
+
+            if(Dungeon.hero !=null){
+                if (STRReq(0) > Dungeon.hero.STR()) {
+                    info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
+                }
             }
         }
 
@@ -134,12 +138,14 @@ public class IceFishSword extends MeleeWeapon {
             info += " " + Messages.get(enchantment, "desc");
         }
 
-        if (cursed && isEquipped( Dungeon.hero )) {
-            info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
-        } else if (cursedKnown && cursed) {
-            info += "\n\n" + Messages.get(Weapon.class, "cursed");
-        } else if (!isIdentified() && cursedKnown){
-            info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
+        if(Dungeon.hero != null){
+            if (cursed && isEquipped( Dungeon.hero ) ) {
+                info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
+            } else if (cursedKnown && cursed) {
+                info += "\n\n" + Messages.get(Weapon.class, "cursed");
+            } else if (!isIdentified() && cursedKnown){
+                info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
+            }
         }
 
         return info;
@@ -147,14 +153,12 @@ public class IceFishSword extends MeleeWeapon {
 
     @Override
     public int min(int lvl) {
-        return  (tier + 2)+ +     //10 base, down from 20
-                lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
+        return 2 + lvl * 3;
     }
 
     @Override
     public int max(int lvl) {
-        return  2*(tier+3) +     //10 base, down from 20
-                lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
+        return 6 + lvl * 7;
     }
 
 
@@ -171,7 +175,11 @@ public class IceFishSword extends MeleeWeapon {
 
     @Override
     public int STRReq(int lvl) {
-        return Dungeon.depth/10+16;
+        int req = Dungeon.depth/10+16;
+        if (masteryPotionBonus){
+            req -= 2;
+        }
+        return req;
     }
 
     @Override

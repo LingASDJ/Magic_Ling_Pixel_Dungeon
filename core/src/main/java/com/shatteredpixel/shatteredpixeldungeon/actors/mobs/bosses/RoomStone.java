@@ -13,8 +13,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
@@ -72,7 +72,7 @@ public class RoomStone extends Mob {
 
     @Override
     public int attackSkill( Char target ) {
-        return 5;
+        return 50;
     }
 
     @Override
@@ -139,7 +139,7 @@ public class RoomStone extends Mob {
         for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (boss instanceof DictFish) {
                 Buff.affect(boss, Adrenaline.class, 35f);
-                Buff.affect(boss, RoseShiled.class, 10f);
+                Buff.affect(boss, Invulnerability.class, 10f);
             }
         }
         super.die( cause );

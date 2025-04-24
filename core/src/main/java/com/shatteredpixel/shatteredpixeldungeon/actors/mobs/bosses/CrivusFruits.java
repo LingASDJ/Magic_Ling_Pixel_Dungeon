@@ -347,7 +347,7 @@ public class CrivusFruits extends Boss {
                         if (!ch.isImmune(this.getClass())) {
                             if( hero.buff(LockedFloor.class) != null ) {
                                 ch.damage(hero.buff(LockedFloor.class) != null ? damage : 0, this);
-                                Statistics.bossScores[0] -= 200;
+                                Statistics.bossScores[0] -= 60;
                             }
                         }
                     }
@@ -364,7 +364,7 @@ public class CrivusFruits extends Boss {
 
         @Override
         public void onDeath() {
-            //
+            Dungeon.fail( getClass() );
         }
     }
 
@@ -407,7 +407,7 @@ public class CrivusFruits extends Boss {
 
         if (!Badges.isUnlocked(Badges.Badge.KILL_APPLE)){
             Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
-        } else if (Random.Float()<0.4f || SPDSettings.BossWeaponCount1() >= 3) {
+        } else if (Random.Float()<0.65f || SPDSettings.BossWeaponCount1() >= 3) {
             SPDSettings.BossWeaponCount1(SPDSettings.BossWeaponCount1() + 1);
             Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
             if(SPDSettings.BossWeaponCount1() >= 3){

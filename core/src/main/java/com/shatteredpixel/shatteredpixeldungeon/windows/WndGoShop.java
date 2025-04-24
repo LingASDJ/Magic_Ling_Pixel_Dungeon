@@ -54,13 +54,13 @@ public class WndGoShop extends Window {
                 if(Statistics.deadshoppingdied) {
                     GLog.n(Messages.get(WndGoShop.class, "bad", Dungeon.hero.name()));
                 }else if(Statistics.fireGirlnoshopping){
-                    //GLog.n(Messages.get(WndGoShop.class, "bad", Dungeon.hero.name()));
                     for (Mob mob : Dungeon.level.mobs) {
                         if (mob instanceof Shopkeeper) {
                             ((Shopkeeper) mob).flee();
+                            Statistics.endingbald = true;
                             break;
                         }
-                }
+                    }
                 } else {
                     TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
                     if (timeFreeze != null) timeFreeze.disarmPresses();
@@ -76,10 +76,11 @@ public class WndGoShop extends Window {
                     Game.switchScene(InterlevelScene.class);
                     Buff.affect(hero, Cost.class).set((6), 1);
                     Game.switchScene(InterlevelScene.class);
-                    //商店抢劫
                     Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
+
                     ArrayList<Ankh> ankh = hero.belongings.getAllItems(Ankh.class);
                     for (Ankh w : ankh.toArray(new Ankh[0])){
+                        Dungeon.level.drop(w, hero.pos).sprite.drop();
                         w.detachAll(hero.belongings.backpack);
                     }
 

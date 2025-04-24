@@ -25,8 +25,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CavesFissureRoom;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Point;
 
 public class CavesFissureEntranceRoom extends CavesFissureRoom {
 
@@ -39,10 +41,17 @@ public class CavesFissureEntranceRoom extends CavesFissureRoom {
 	public boolean isEntrance() {
 		return true;
 	}
-
+	@Override
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
+		return false;
+	}
 	@Override
 	public void paint(Level level) {
 		super.paint(level);
+
+		for (Room.Door door : connected.values()) {
+			if(door != null ) level.BottleWraith(door, level, left, right, top, bottom);
+		}
 
 		int entrance;
 		do {

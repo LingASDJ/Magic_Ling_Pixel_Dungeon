@@ -18,8 +18,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.WalkwayR
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.AncientMysteryEnteanceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.AncientMysteryExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretWellRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.TrapsRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.PlantsRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.SewerPipeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
@@ -47,12 +45,18 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
 public class AncientMysteryCityLevel extends RegularLevel {
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.ANCITY,true);
+    }
 
     @Override
     protected ArrayList<Room> initRooms() {
@@ -71,13 +75,6 @@ public class AncientMysteryCityLevel extends RegularLevel {
             s = new SewerPipeRoom();
             s.setSizeCat();
             initRooms.add(s);
-        }
-
-        SpecialRoom x;
-        rooms = Random.NormalIntRange(1, 2);
-        for (int i = 0; i < rooms; i++){
-            x = new TrapsRoom();
-            initRooms.add(x);
         }
 
         int rooms2 = 2;

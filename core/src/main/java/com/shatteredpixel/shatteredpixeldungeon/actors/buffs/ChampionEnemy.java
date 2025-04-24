@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.seed;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -39,8 +40,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
@@ -125,8 +126,8 @@ public abstract class ChampionEnemy extends Buff {
 		return 1f;
 	}
 
-	public float speedFactor(){
-		return target.baseSpeed;
+	public float speedFactor(float speed){
+		return seed;
 	}
 
 	{
@@ -363,6 +364,11 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
+		public float speedFactor(float s) {
+			return  0.3f;
+		}
+
+		@Override
 		public float meleeDamageFactor() {
 			return 0.65f;
 		}
@@ -412,7 +418,7 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
-		public float speedFactor() {
+		public float speedFactor(float s) {
 			return 0.5f;
 		}
 
@@ -439,8 +445,9 @@ public abstract class ChampionEnemy extends Buff {
 			} else target.sprite.remove(CharSprite.State.MUTATION_4);
 		}
 		@Override
-		public float speedFactor() {
-			return super.speedFactor()*1.25f;
+		public float speedFactor(float s) {
+			s = (int) target.baseSpeed;
+			return 0.5f;
 		}
 
 		@Override
@@ -498,29 +505,15 @@ public abstract class ChampionEnemy extends Buff {
 		//mobsToChampion does not affect levelgen RNG (number of calls to Random.Int() is constant)
 		Class<?extends ChampionEnemy> buffCls;
 
-		if(Challenges.activeChallenges()>11){
-			switch (Random.Int(9)){
-				case 0: default:    buffCls = Blazing.class;      break;
-				case 1:             buffCls = Projecting.class;   break;
-				case 2:             buffCls = AntiMagic.class;    break;
-				case 3:             buffCls = Giant.class;        break;
-				case 4:             buffCls = Blessed.class;      break;
-				case 5:             buffCls = Growing.class;      break;
-				case 6:             buffCls = Halo.class;      	  break;
-				case 7:             buffCls = DelayMob.class;     break;
-				case 8:				buffCls = King.class;		  break;
-			}
-		} else {
-			switch (Random.Int(8)){
-				case 0: default:    buffCls = Blazing.class;      break;
-				case 1:             buffCls = Projecting.class;   break;
-				case 2:             buffCls = AntiMagic.class;    break;
-				case 3:             buffCls = Giant.class;        break;
-				case 4:             buffCls = Blessed.class;      break;
-				case 5:             buffCls = Growing.class;      break;
-				case 6:             buffCls = Halo.class;      	  break;
-				case 7:             buffCls = DelayMob.class;     break;
-			}
+		switch (Random.Int(8)){
+			case 0: default:    buffCls = Blazing.class;      break;
+			case 1:             buffCls = Projecting.class;   break;
+			case 2:             buffCls = AntiMagic.class;    break;
+			case 3:             buffCls = Giant.class;        break;
+			case 4:             buffCls = Blessed.class;      break;
+			case 5:             buffCls = Growing.class;      break;
+			case 6:             buffCls = Halo.class;      	  break;
+			case 7:             buffCls = DelayMob.class;     break;
 		}
 
 		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) && depth>5 && Random.Float()<=0.45f || Statistics.bossRushMode && m.properties.contains(Char.Property.BOSS)) {
@@ -605,7 +598,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float meleeDamageFactor() {
-			return 1.45f;
+			return 1.25f;
 		}
 
 
@@ -825,7 +818,7 @@ public abstract class ChampionEnemy extends Buff {
 					}
 					if (spawnPoints.size() > 0) {
 						Actor.fixTime();
-						m =  Reflection.newInstance(Bestiary.getMobRotation(depth).get(0));
+						m =  Reflection.newInstance(MobSpawner.getMobRotation(depth).get(0));
 						for (Buff s : target.buffs(WandOfAnmy.AllyToRestartOK.class)){
 						if(s!=null) Buff.affect(m,WandOfAnmy.AllyToRestartOK.class);
 					}

@@ -26,9 +26,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.DiedBlackGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WorstBlizzardFx;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -70,10 +72,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -114,9 +118,10 @@ public class ElementalBlast extends ArmorAbility {
 		effectTypes.put(WandOfBlueFuck.class,       MagicMissile.HALOFIRE);
 		effectTypes.put(WandOfScale.class,       MagicMissile.SHAMAN_BLUE);
 
-
-		effectTypes.put(WandOfGodIce.class,        Speck.BLIZZARD);
+		effectTypes.put(WandOfVenom.class,       			  MagicMissile.SHAMAN_RED);
+		effectTypes.put(WandOfGodIce.class,        					   Speck.BLIZZARD);
 		effectTypes.put(WandOfHightHunderStorm.class,       MagicMissile.FOLIAGE_CONE);
+		effectTypes.put(WandOfSun.class,       						MagicMissile.WARD);
 	}
 
 	private static final HashMap<Class<?extends Wand>, Float> damageFactors = new HashMap<>();
@@ -139,6 +144,9 @@ public class ElementalBlast extends ArmorAbility {
 		damageFactors.put(WandOfGodIce.class,         1f);
 		damageFactors.put(WandOfBlueFuck.class,         1f);
 		damageFactors.put(WandOfHightHunderStorm.class,         1f);
+		damageFactors.put(WandOfVenom.class,         1.3f);
+
+		damageFactors.put(WandOfSun.class,         1.2f);
 	}
 
 	{
@@ -269,10 +277,10 @@ public class ElementalBlast extends ArmorAbility {
 								}
 
 								//*** Wand of Regrowth ***
-							} else if (finalWandCls == WandOfRegrowth.class){
+							} else if (finalWandCls == WandOfRegrowth.class) {
 								//TODO: spend 3 charges worth of regrowth energy from staff?
 								int t = Dungeon.level.map[cell];
-								if (Random.Float() < 0.33f*effectMulti) {
+								if (Random.Float() < 0.33f * effectMulti) {
 									if ((t == Terrain.EMPTY || t == Terrain.EMPTY_DECO || t == Terrain.EMBERS
 											|| t == Terrain.GRASS || t == Terrain.FURROWED_GRASS)
 											&& Dungeon.level.plants.get(cell) == null) {
@@ -284,7 +292,7 @@ public class ElementalBlast extends ArmorAbility {
 
 							//### Deal damage ###
 							Char mob = Actor.findChar(cell);
-							int damage = Math.round(Char.combatRoll(15, 25)
+							int damage = Math.round(Hero.heroDamageIntRange(15, 25)
 									* effectMulti
 									* damageFactors.get(finalWandCls));
 
@@ -294,11 +302,11 @@ public class ElementalBlast extends ArmorAbility {
 							}
 
 							//### Other Char Effects ###
-							if (mob != null && mob != hero){
+							if (mob != null && mob != hero) {
 								//*** Wand of Lightning ***
-								if (finalWandCls == WandOfLightning.class){
+								if (finalWandCls == WandOfLightning.class) {
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect( mob, Paralysis.class, effectMulti*Paralysis.DURATION/2 );
+										Buff.affect(mob, Paralysis.class, effectMulti * Paralysis.DURATION / 2);
 									}
 
 									//*** Wand of Fireblast ***
@@ -308,23 +316,23 @@ public class ElementalBlast extends ArmorAbility {
 									}
 
 									//*** Wand of GodIce ***
-								}else if(finalWandCls == WandOfGodIce.class){
+								} else if (finalWandCls == WandOfGodIce.class) {
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
 										Buff.affect(mob, WorstBlizzard.class);
 									}
 
 									//*** Wand of Corrosion ***
-								} else if (finalWandCls == WandOfCorrosion.class){
+								} else if (finalWandCls == WandOfCorrosion.class) {
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect( mob, Corrosion.class ).set(4, Math.round(6*effectMulti));
+										Buff.affect(mob, Corrosion.class).set(4, Math.round(6 * effectMulti));
 										charsHit++;
 									}
 
 									//*** Wand of Blast Wave ***
-								} else if (finalWandCls == WandOfBlastWave.class){
+								} else if (finalWandCls == WandOfBlastWave.class) {
 									if (mob.alignment != Char.Alignment.ALLY) {
 										Ballistica aim = new Ballistica(hero.pos, mob.pos, Ballistica.WONT_STOP);
-										int knockback = aoeSize + 1 - (int)Dungeon.level.trueDistance(hero.pos, mob.pos);
+										int knockback = aoeSize + 1 - (int) Dungeon.level.trueDistance(hero.pos, mob.pos);
 										knockback *= effectMulti;
 										WandOfBlastWave.throwChar(mob,
 												new Ballistica(mob.pos, aim.collisionPos, Ballistica.MAGIC_BOLT),
@@ -335,31 +343,31 @@ public class ElementalBlast extends ArmorAbility {
 									}
 
 									//*** Wand of Frost ***
-								} else if (finalWandCls == WandOfFrost.class){
+								} else if (finalWandCls == WandOfFrost.class) {
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect( mob, Frost.class, effectMulti*Frost.DURATION );
+										Buff.affect(mob, Frost.class, effectMulti * Frost.DURATION);
 									}
 
 									//*** Wand of Prismatic Light ***
-								} else if (finalWandCls == WandOfPrismaticLight.class){
+								} else if (finalWandCls == WandOfPrismaticLight.class) {
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.prolong(mob, Blindness.class, effectMulti*Blindness.DURATION/2);
+										Buff.prolong(mob, Blindness.class, effectMulti * Blindness.DURATION / 2);
 										charsHit++;
 									}
 
 									//*** Wand of Warding ***
-								} else if (finalWandCls == WandOfWarding.class){
-									if (mob instanceof WandOfWarding.Ward){
+								} else if (finalWandCls == WandOfWarding.class) {
+									if (mob instanceof WandOfWarding.Ward) {
 										((WandOfWarding.Ward) mob).wandHeal(0, effectMulti);
 										charsHit++;
 									}
 
 									//*** Wand of Transfusion ***
-								} else if (finalWandCls == WandOfTransfusion.class){
-									if(mob.alignment == Char.Alignment.ALLY || mob.buff(Charm.class) != null){
-										int healing = Math.round(10*effectMulti);
+								} else if (finalWandCls == WandOfTransfusion.class) {
+									if (mob.alignment == Char.Alignment.ALLY || mob.buff(Charm.class) != null) {
+										int healing = Math.round(10 * effectMulti);
 										int shielding = (mob.HP + healing) - mob.HT;
-										if (shielding > 0){
+										if (shielding > 0) {
 											healing -= shielding;
 											Buff.affect(mob, Barrier.class).setShield(shielding);
 										} else {
@@ -372,17 +380,17 @@ public class ElementalBlast extends ArmorAbility {
 										if (healing > 0) {
 											mob.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healing), FloatingText.HEALING);
 										}
-										if (shielding > 0){
+										if (shielding > 0) {
 											mob.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shielding), FloatingText.SHIELDING);
 										}
 									} else {
 										if (!mob.properties().contains(Char.Property.UNDEAD)) {
-											Charm charm = Buff.affect(mob, Charm.class, effectMulti*Charm.DURATION/2f);
+											Charm charm = Buff.affect(mob, Charm.class, effectMulti * Charm.DURATION / 2f);
 											charm.object = hero.id();
 											charm.ignoreHeroAllies = true;
 											mob.sprite.centerEmitter().start(Speck.factory(Speck.HEART), 0.2f, 3);
 										} else {
-											damage = Math.round(Char.combatRoll(15, 25) * effectMulti);
+											damage = Math.round(Hero.heroDamageIntRange(15, 25) * effectMulti);
 											mob.damage(damage, Reflection.newInstance(finalWandCls));
 											mob.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
 										}
@@ -390,24 +398,31 @@ public class ElementalBlast extends ArmorAbility {
 									charsHit++;
 
 									//*** Wand of Corruption ***
-								} else if (finalWandCls == WandOfCorruption.class){
+								} else if (finalWandCls == WandOfCorruption.class) {
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.prolong(mob, Amok.class, effectMulti*5f);
+										Buff.prolong(mob, Amok.class, effectMulti * 5f);
 										charsHit++;
 									}
 
 									//*** Wand of Regrowth ***
-								} else if (finalWandCls == WandOfRegrowth.class){
+								} else if (finalWandCls == WandOfRegrowth.class) {
 									if (mob.alignment != Char.Alignment.ALLY) {
-										Buff.prolong( mob, Roots.class, effectMulti*Roots.DURATION );
+										Buff.prolong(mob, Roots.class, effectMulti * Roots.DURATION);
 										charsHit++;
 									}
-								} else if (finalWandCls == WandOfBlueFuck.class){
-								if (mob.alignment != Char.Alignment.ALLY) {
-									Buff.affect( mob, HalomethaneBurning.class ).reignite( mob, 7f );
-									charsHit++;
+								} else if (finalWandCls == WandOfBlueFuck.class) {
+									if (mob.alignment != Char.Alignment.ALLY) {
+										Buff.affect(mob, HalomethaneBurning.class).reignite(mob, 7f);
+										charsHit++;
+									}
+									//*** Wand of Sun ***
+								} else if (finalWandCls == WandOfSun.class) {
+									if (mob.alignment != Char.Alignment.ALLY) {
+										GameScene.add(Blob.seed(mob.pos, 4, HalomethaneFire.class));
+										GameScene.add(Blob.seed(mob.pos, 4, Fire.class));
+										GameScene.add(Blob.seed(mob.pos, 4, DiedBlackGas.class));
+									}
 								}
-							}
 							}
 
 						}

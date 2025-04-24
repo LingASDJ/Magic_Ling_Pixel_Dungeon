@@ -52,9 +52,11 @@ public class FireMagicGirlSprite extends MobSprite {
         play(idle);
 
         spray = centerEmitter();
-        spray.autoKill = false;
-        spray.pour(Speck.factory(Speck.STAR),8);
-        spray.on = false;
+        if (spray != null) {
+            spray.autoKill = false;
+            spray.pour(Speck.factory(Speck.STAR),8);
+            spray.on = false;
+        }
     }
 
     @Override
@@ -120,8 +122,10 @@ public class FireMagicGirlSprite extends MobSprite {
     @Override
     public void update() {
         super.update();
-        spray.pos(center());
-        spray.visible = visible;
+        if(spray != null){
+            spray.pos(center());
+            spray.visible = visible;
+        }
     }
 
     @Override

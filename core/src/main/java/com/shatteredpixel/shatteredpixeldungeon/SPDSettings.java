@@ -21,8 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFindLogScene;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.noosa.Game;
@@ -42,6 +44,18 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_VERSION      = "version";
 
+	public static void addPrayCount(){
+		put(KEY_PRAYCOUNT,prayCount()+1);
+	}
+
+	public static int prayCount(){
+		return getInt(KEY_PRAYCOUNT,0);
+	}
+
+	public static void resetPrayCount(){
+		put(KEY_PRAYCOUNT,0);
+	}
+
 	public static void quickslots( int value ){
 		put( KEY_QUICKSLOTS, value );
 	}
@@ -50,12 +64,12 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_QUICKSLOTS, 4, Constants.MIN_QUICKSLOTS, Constants.MAX_QUICKSLOTS);
 	}
 
-	public static void level3boss( int value ){
+	public static void level1boss(int value ){
 		put( KEY_L3BOSS, value );
 	}
 
-	public static int level3boss(){
-		return getInt( KEY_L3BOSS, 1, 1, 3);
+	public static int level1boss(){
+		return getInt( KEY_L3BOSS, 2, 1, 3);
 	}
 
 	public static void TimeLimit(boolean value) {
@@ -121,6 +135,7 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_BRIGHTNESS	= "brightness";
 	public static final String KEY_GRID 	    = "visual_grid";
 	public static final String KEY_SPLASH_SCREEN= "splash_screen";
+	public static final String KEY_PRAYCOUNT = "pray_count";
 
 	public static final String KEY_TIMEOUT= "timeout";
 
@@ -155,9 +170,15 @@ public class SPDSettings extends GameSettings {
 
 	private static final String KEY_ICE = "hice";
 
-	private static final String KEY_UP_ICE = "iceupdate_15";
+	private static final String KEY_UP_ICE = "iceupdate_60";
 
 	private static final String KEY_DARK	= "dark_ui";
+
+	private static final String KEY_CUSTOM_BANNER	= "custom_banner";
+
+	private static final String KEY_BSC_TEXT	= "custom_bsc_text";
+
+	private static final String KEY_HDPS	= "hd_ps";
 
 	private static final String KEY_SKIN	= "skin_ui";
 
@@ -175,6 +196,9 @@ public class SPDSettings extends GameSettings {
 	private static final String KEY_DRAGON = "DRAGON";
 
 	private static final String KEY_KILLADF = "DWAXF";
+
+
+	private static final String KEY_VSB = "VSB";
 
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
@@ -257,24 +281,24 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_VIBRATION    = "vibration";
 
-    public static final String KEY_ONE_CONDUCT = "one_conduct";
-    public static final String KEY_TWO_CONDUCT = "two_conduct";
+	public static final String KEY_ONE_CONDUCT = "one_conduct";
+	public static final String KEY_TWO_CONDUCT = "two_conduct";
 
-    public static final String KEY_UI_SIZE = "full_ui";
-    public static final String KEY_QUICKSLOTS = "quickslots";
-    public static final String KEY_L3BOSS = "bossl3";
-    public static final String KEY_FLIPTOOLBAR = "flipped_ui";
-    public static final String KEY_FLIPTAGS = "flip_tags";
-    public static final String KEY_BARMODE = "toolbar_mode";
+	public static final String KEY_UI_SIZE = "full_ui";
+	public static final String KEY_QUICKSLOTS = "quickslots";
+	public static final String KEY_L3BOSS = "bossl3";
+	public static final String KEY_FLIPTOOLBAR = "flipped_ui";
+	public static final String KEY_FLIPTAGS = "flip_tags";
+	public static final String KEY_BARMODE = "toolbar_mode";
 
-    public static final String KEY_CAMERA_FOLLOW = "camera_follow";
-    public static final String KEY_SCREEN_SHAKE = "screen_shake";
+	public static final String KEY_CAMERA_FOLLOW = "camera_follow";
+	public static final String KEY_SCREEN_SHAKE = "screen_shake";
 
-    //0 = mobile, 1 = mixed (large without inventory in main UI), 2 = large
-    public static final String KEY_LAST_DAILY = "last_daily";
-    public static final String KEY_SUPPORT_NAGGED = "support_nagged";
-    public static final String KEY_CONTROLLER_SENS = "controller_sens";
-    public static final String KEY_MOVE_SENS = "move_sens";
+	//0 = mobile, 1 = mixed (large without inventory in main UI), 2 = large
+	public static final String KEY_LAST_DAILY = "last_daily";
+	public static final String KEY_SUPPORT_NAGGED = "support_nagged";
+	public static final String KEY_CONTROLLER_SENS = "controller_sens";
+	public static final String KEY_MOVE_SENS = "move_sens";
 
 	public static final String KEY_ICECOIN = "iceGoldMagic2";
 
@@ -293,13 +317,13 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_VIBRATION, true);
 	}
 
-    public static void cameraFollow(int value) {
-        put(KEY_CAMERA_FOLLOW, value);
-    }
+	public static void cameraFollow(int value) {
+		put(KEY_CAMERA_FOLLOW, value);
+	}
 
-    public static int cameraFollow() {
-        return getInt(KEY_CAMERA_FOLLOW, 4, 1, 4);
-    }
+	public static int cameraFollow() {
+		return getInt(KEY_CAMERA_FOLLOW, 4, 1, 4);
+	}
 
 	public static void flipToolbar( boolean value) {
 		put(KEY_FLIPTOOLBAR, value );
@@ -333,23 +357,23 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_INTRO		= "intro";
 
-    public static void screenShake(int value) {
-        put(KEY_SCREEN_SHAKE, value);
-    }
+	public static void screenShake(int value) {
+		put(KEY_SCREEN_SHAKE, value);
+	}
 
-    public static int screenShake() {
-        return getInt(KEY_SCREEN_SHAKE, 2, 0, 4);
-    }
+	public static int screenShake() {
+		return getInt(KEY_SCREEN_SHAKE, 2, 0, 4);
+	}
 
-    public static void interfaceSize(int value) {
-        put(KEY_UI_SIZE, value);
-    }
+	public static void interfaceSize(int value) {
+		put(KEY_UI_SIZE, value);
+	}
 
-    public static int interfaceSize() {
-        int size = getInt(KEY_UI_SIZE, DeviceCompat.isDesktop() ? 1 : 0);
-        if (size > 0) {
-            //force mobile UI if there is not enough space for full UI
-            float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
+	public static int interfaceSize() {
+		int size = getInt(KEY_UI_SIZE, DeviceCompat.isDesktop() ? 1 : 0);
+		if (size > 0) {
+			//force mobile UI if there is not enough space for full UI
+			float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
 			float hMin = Game.height / PixelScene.MIN_HEIGHT_FULL;
 			if (Math.min(wMin, hMin) < 2*Game.density){
 				size = 0;
@@ -364,40 +388,40 @@ public class SPDSettings extends GameSettings {
 
 	public static void intro( boolean value ) {
 		put( KEY_INTRO, value );
-    }
+	}
 
-    public static boolean intro() {
-        return getBoolean(KEY_INTRO, true);
-    }
+	public static boolean intro() {
+		return getBoolean(KEY_INTRO, true);
+	}
 
-    public static void lastClass(int value) {
-        put(KEY_LAST_CLASS, value);
-    }
+	public static void lastClass(int value) {
+		put(KEY_LAST_CLASS, value);
+	}
 
-    public static int lastClass() {
-        return getInt(KEY_LAST_CLASS, 0, 0, 3);
-    }
+	public static int lastClass() {
+		return getInt(KEY_LAST_CLASS, 0, 0, 3);
+	}
 
-    public static void challenges(int value) {
-        put(KEY_CHALLENGES, value);
-    }
+	public static void challenges(int value) {
+		put(KEY_CHALLENGES, value);
+	}
 
-    public static int challenges() {
-        return getInt(KEY_CHALLENGES, 0, 0, Challenges.MAX_VALUE);
-    }
+	public static int challenges() {
+		return getInt(KEY_CHALLENGES, 0, 0, Challenges.MAX_VALUE);
+	}
 
-    public static void lastDaily(long value) {
-        put(KEY_LAST_DAILY, value);
-    }
+	public static void lastDaily(long value) {
+		put(KEY_LAST_DAILY, value);
+	}
 
-    public static long lastDaily() {
-        return getLong(KEY_LAST_DAILY, 0);
-    }
+	public static long lastDaily() {
+		return getLong(KEY_LAST_DAILY, 0);
+	}
 
-    //DLC SYSTEM
-    public static void dlc(Conducts.ConductStorage value) {
-        put(KEY_DLC, value);
-    }
+	//DLC SYSTEM
+	public static void dlc(Conducts.ConductStorage value) {
+		put(KEY_DLC, value);
+	}
 
 	public static void difficulty(Difficulty.HardStorage value ) {
 		cut( KEY_DIFFICULTY, value);
@@ -630,6 +654,30 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_DARK, false);
 	}
 
+	public static void isCustomBanner(boolean value) {
+		put( KEY_CUSTOM_BANNER, value );
+	}
+
+	public static boolean isCustomBanner() {
+		return getBoolean(KEY_CUSTOM_BANNER, false);
+	}
+
+	public static void CustomBanner_Text(String value) {
+		put(KEY_BSC_TEXT, value);
+	}
+
+	public static String CustomBanner_Text() {
+		return getString(KEY_BSC_TEXT, Messages.get(GameRules.class,"initial_value"));
+	}
+
+	public static void UPos(boolean value) {
+		put( KEY_HDPS, value );
+	}
+
+	public static boolean UPos() {
+		return getBoolean(KEY_HDPS, false);
+	}
+
 	public static void HelpSettings(boolean value) {
 		put( HelpSettings, value );
 	}
@@ -646,11 +694,11 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(ATBSettings, false);
 	}
 
-	public static boolean ClassSkin() {
-		return getBoolean(KEY_SKIN, false);
+	public static boolean V2IconDamage() {
+		return getBoolean(KEY_SKIN, true);
 	}
 
-	public static void ClassSkin(boolean value) {
+	public static void V2IconDamage(boolean value) {
 		put( KEY_SKIN, value );
 	}
 
@@ -658,45 +706,45 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_PAGE, false);
 	}
 
-    public static Conducts.ConductStorage dlc() {
-        return getBundlable(KEY_DLC, new Conducts.ConductStorage());
-    }
+	public static Conducts.ConductStorage dlc() {
+		return getBundlable(KEY_DLC, new Conducts.ConductStorage());
+	}
 
-    //HARD SYSTEM
+	//HARD SYSTEM
 	public static Difficulty.HardStorage difficulty() {
 		return getCundlable(KEY_DIFFICULTY, new Difficulty.HardStorage());
 	}
 
-    public static void ClassPage(boolean value) {
-        put(KEY_PAGE, value);
-    }
+	public static void ClassPage(boolean value) {
+		put(KEY_PAGE, value);
+	}
 
 
-    //Input
+	//Input
 
-    public static boolean quickSwapper() {
-        return getBoolean(V1TOOL, false);
-    }
+	public static boolean quickSwapper() {
+		return getBoolean(V1TOOL, false);
+	}
 
-    public static void quickSwapper(boolean value) {
-        put(V1TOOL, value);
-    }
+	public static void quickSwapper(boolean value) {
+		put(V1TOOL, value);
+	}
 
-    public static void controllerPointerSensitivity(int value) {
-        put(KEY_CONTROLLER_SENS, value);
-    }
+	public static void controllerPointerSensitivity(int value) {
+		put(KEY_CONTROLLER_SENS, value);
+	}
 
-    public static int controllerPointerSensitivity() {
-        return getInt(KEY_CONTROLLER_SENS, 5, 1, 10);
-    }
+	public static int controllerPointerSensitivity() {
+		return getInt(KEY_CONTROLLER_SENS, 5, 1, 10);
+	}
 
-    public static void movementHoldSensitivity(int value) {
-        put(KEY_MOVE_SENS, value);
-    }
+	public static void movementHoldSensitivity(int value) {
+		put(KEY_MOVE_SENS, value);
+	}
 
-    public static int movementHoldSensitivity() {
-        return getInt(KEY_MOVE_SENS, 3, 0, 4);
-    }
+	public static int movementHoldSensitivity() {
+		return getInt(KEY_MOVE_SENS, 3, 0, 4);
+	}
 
 	public static void Cheating(boolean value) {
 		put("cheatingfuck", value);
@@ -734,6 +782,7 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_ICECOIN, 0);
 	}
 
+	//TODO: 使用新接口替换皮肤解锁的旧方法
 	public static void setHeroSkin(int hero,int skinIndex) {
 		StringBuilder items = new StringBuilder( getSkin() );
 		int index= hero * 2;
@@ -751,6 +800,7 @@ public class SPDSettings extends GameSettings {
 	}
 
 
+	//TODO: 使用新接口替换物品解锁的旧方法
 	/*
 	 * @Breif 永久解锁物品，允许批量解锁，以","作为元素分隔符,";"作为物品分隔符
 	 * 输入格式为String itemName1,boolean allowMulti1,int itemLimit1;String itemName2,boolean allowMulti2,int itemLimit2;...
@@ -892,7 +942,7 @@ public class SPDSettings extends GameSettings {
 		int index;
 		for( String target : itemArray ) {
 			if ( ( index = items.indexOf( target ) ) != -1 ) {
-					items.delete( index, index + items.indexOf( ";", index ) + 1 );
+				items.delete( index, index + items.indexOf( ";", index ) + 1 );
 			}
 		}
 
@@ -944,6 +994,220 @@ public class SPDSettings extends GameSettings {
 
 	public static int BossWeaponCount1(){
 		return getInt( KEY_BOSS_WEAPON_COUNT1, 0);
+	}
+
+	public static void visualBuddle(boolean value) {
+		put(KEY_KILLADF, value );
+	}
+
+	public static boolean visualBuddle() {
+		return getBoolean(KEY_KILLADF, true);
+	}
+
+	//Seedfinder
+
+	public static final String KEY_FLOORS	= "number_of_floors";
+	public static final String KEY_PLUSSEACH = "use_rooms";
+	public static final String KEY_IGNOREBLACKLIST	= "ignore_blacklist";
+
+	public static final String KEY_LOGTRINKETS	= "logging_option_trinkets";
+	public static final String KEY_LOGEQUIPMENT	= "logging_option_equipment";
+	public static final String KEY_LOGSCROLLS	= "logging_option_scrolls";
+	public static final String KEY_LOGPOTIONS= "logging_option_potions";
+	public static final String KEY_LOGRINGS	= "logging_option_rings";
+	public static final String KEY_LOGWANDS= "logging_option_wands";
+	public static final String KEY_LOGARTIFACTS	= "logging_option_artifacts";
+	public static final String KEY_LOGMISC= "logging_option_other";
+
+	public static final String KEY_SEEDITEMS_TEXT= "remember_seeditems_text";
+	public static final String KEY_SEEDINPUT_TEXT= "remember_seedinput_text";
+	public static final String KEY_CONDITION= "seedfinder_condition";
+
+	public static void seedfinderFloors( int value ) {
+		put( KEY_FLOORS, value );
+	}
+
+	public static int seedfinderFloors() {
+		return getInt( KEY_FLOORS, 8, 1, 30 );
+	}
+
+	public static void seeditemsText(String value) {
+		put(KEY_SEEDITEMS_TEXT, value);
+	}
+
+	public static String seeditemsText() {
+		return getString(KEY_SEEDITEMS_TEXT, Messages.get(SeedFindLogScene.class,"initial_value",seedfinderFloors()));
+	}
+
+	public static void seedinputText(String value) {
+		put(KEY_SEEDINPUT_TEXT, value);
+	}
+
+	public static String seedinputText() {
+		return getString(KEY_SEEDINPUT_TEXT, "");
+	}
+
+	public static void seedfinderConditionANY(boolean value) {
+		put(KEY_CONDITION, value);
+	}
+
+	public static boolean seedfinderConditionANY() {
+		return getBoolean(KEY_CONDITION, false);
+	}
+
+	public static void PlusSearch( boolean value ) {
+		put(KEY_PLUSSEACH, value );
+	}
+
+	public static boolean PlusSearch() {
+		return getBoolean(KEY_PLUSSEACH, false );
+	}
+
+	public static void ignoreBlacklist( boolean value ) {
+		put( KEY_IGNOREBLACKLIST, value );
+	}
+
+	public static boolean ignoreBlacklist() {
+		return getBoolean( KEY_IGNOREBLACKLIST, false );
+	}
+
+	public static void logTrinkets( boolean value ) {
+		put( KEY_LOGTRINKETS, value );
+	}
+
+	public static boolean logTrinkets() {
+		return getBoolean( KEY_LOGTRINKETS, true );
+	}
+
+	public static void logEquipment( boolean value ) {
+		put( KEY_LOGEQUIPMENT, value );
+	}
+
+	public static boolean logEquipment() {
+		return getBoolean( KEY_LOGEQUIPMENT, true );
+	}
+
+	public static void logScrolls( boolean value ) {
+		put( KEY_LOGSCROLLS, value );
+	}
+
+	public static boolean logScrolls() {
+		return getBoolean( KEY_LOGSCROLLS, true );
+	}
+	public static void logPotions( boolean value ) {
+		put( KEY_LOGPOTIONS, value );
+	}
+
+	public static boolean logPotions() {
+		return getBoolean( KEY_LOGPOTIONS, true );
+	}
+	public static void logRings( boolean value ) {
+		put( KEY_LOGRINGS, value );
+	}
+
+	public static boolean logRings() {
+		return getBoolean( KEY_LOGRINGS, true );
+	}
+	public static void logWands( boolean value ) {
+		put( KEY_LOGWANDS, value );
+	}
+
+	public static boolean logWands() {
+		return getBoolean( KEY_LOGWANDS, true );
+	}
+	public static void logArtifacts( boolean value ) {
+		put( KEY_LOGARTIFACTS, value );
+	}
+
+	public static boolean logArtifacts() {
+		return getBoolean( KEY_LOGARTIFACTS, true );
+	}
+	public static void logMisc( boolean value ) {
+		put( KEY_LOGMISC, value );
+	}
+
+	public static boolean logMisc() {
+		return getBoolean( KEY_LOGMISC, false );
+	}
+
+	public static final String KEY_VICTORY_NAGGED= "victory_nagged";
+
+	public static void victoryNagged( boolean value ) {
+		put( KEY_VICTORY_NAGGED, value );
+	}
+
+	public static boolean victoryNagged() {
+		return getBoolean(KEY_VICTORY_NAGGED, false);
+	}
+
+	public static final String KEY_FULLSCREEN_MONITOR = "fullscreen_monitor";
+
+	public static void fulLScreenMonitor( int value ){
+		put( KEY_FULLSCREEN_MONITOR, value);
+	}
+
+	public static int fulLScreenMonitor(){
+		return getInt( KEY_FULLSCREEN_MONITOR, 0 );
+	}
+
+	public static final String KEY_GIFT_DATA = "gift_data";
+
+	//保存礼物数据
+	public static void saveGift( String[] target ){
+		put( KEY_GIFT_DATA, target );
+	}
+
+	//查询礼物是否存在
+	public static boolean queryGiftExist( String target ){
+		String[] keyArrays = getAllStringArray( KEY_GIFT_DATA );
+		for( String keyArray : keyArrays ){
+			if( keyArray.split(",")[0].equals( target ) )
+				return true;
+		}
+
+		return false;
+	}
+
+	//查询礼物数组元素
+	public static String queryGiftPart( String target, int index ){
+		return getArrayElement( KEY_GIFT_DATA, target, index );
+	}
+
+	//修改礼物数组元素
+	public static void modifyGiftPart( String target, int index ,String value){
+		modifyArrayElement( KEY_GIFT_DATA, target, index, value ) ;
+	}
+
+	//清理过期礼物数组
+	public static void deleteOutdatedGift(){
+		String[] keyArrays = getAllStringArray( KEY_GIFT_DATA );
+		StringBuilder outdatedKeys = new StringBuilder();
+
+		long currentTime = System.currentTimeMillis() / 1000;
+		long expirationDate = 0;
+
+		for( String keyArray : keyArrays ){
+			expirationDate = Long.parseLong( keyArray.split(",")[1] );
+			if( currentTime > expirationDate )
+				outdatedKeys.append( keyArray.split(",")[0] ).append( ";" );
+		}
+
+		if( !outdatedKeys.toString().isEmpty() ){
+			delete( KEY_GIFT_DATA, outdatedKeys.toString() );
+		}
+	}
+
+
+	//Challanges
+
+	public static final String KEY_RECORD	= "record";
+
+	public static void RecordChallengs(int value) {
+		put(KEY_RECORD, value);
+	}
+
+	public static int RecordChallengs() {
+		return getInt(KEY_RECORD, 0);
 	}
 
 }

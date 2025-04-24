@@ -32,8 +32,11 @@ public class SaiPlus extends MeleeWeapon {
 
     @Override
     public int STRReq(int lvl) {
-        return (7 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
-        //17 base strength req, up from 18
+        int req = (7 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
+        if (masteryPotionBonus){
+            req -= 2;
+        }
+        return req;
     }
 
     @Override
@@ -42,14 +45,14 @@ public class SaiPlus extends MeleeWeapon {
             Hero hero = (Hero)owner;
             Char enemy = hero.enemy();
             if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
-                //deals 50% toward max to max on surprise, instead of min to max.
+                //deals 25% toward max to max on surprise, instead of min to max.
                 int diff = max() - min();
                 int damage = augment.damageFactor(Random.NormalIntRange(
                         min() + Math.round(diff*0.25f),
                         max()));
                 int exStr = hero.STR() - STRReq();
                 if (exStr > 0) {
-                    damage += Random.IntRange(0, exStr);
+                    damage += Hero.heroDamageIntRange(0, exStr);
                 }
                 return damage;
             }

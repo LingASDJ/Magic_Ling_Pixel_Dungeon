@@ -59,15 +59,18 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.HolyDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisintegrationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.watabou.utils.Random;
 
 import java.util.HashSet;
 
@@ -106,6 +109,7 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( WandOfPrismaticLight.class );
 		RESISTS.add( WandOfTransfusion.class );
 		RESISTS.add( WandOfWarding.Ward.class );
+		RESISTS.add( WandOfSun.MiniSun.class );
 
 		RESISTS.add( ElementalStrike.class );
 		RESISTS.add( Blazing.class );
@@ -137,6 +141,9 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add(IceGolem.DarkBolt.class);
 		RESISTS.add(YogFist.HaloFist.DarkBolt.class);
 		RESISTS.add(YogFist.FreezingFist.LightBeam.class);
+
+
+		RESISTS.add(DiedCrossBow.BombArrow.class);
 	}
 	
 	@Override
@@ -151,7 +158,7 @@ public class AntiMagic extends Armor.Glyph {
 	}
 	
 	public static int drRoll( Char ch, int level ){
-		return Char.combatRoll(
+		return Random.NormalIntRange(
 				Math.round(level * genericProcChanceMultiplier(ch)),
 				Math.round((3 + (level*1.5f)) * genericProcChanceMultiplier(ch)));
 	}

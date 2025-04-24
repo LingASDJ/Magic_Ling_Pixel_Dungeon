@@ -4,25 +4,32 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.LuoWhite;
+import com.shatteredpixel.shatteredpixeldungeon.custom.Gift;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.GoldLongGun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
@@ -40,7 +47,6 @@ public class WndLuoWhite extends Window {
     private static final int BTN_GAP	= 6;
     private static final int GAP		= 6;
 
-
     public WndLuoWhite() {
         LuoWhite.shop3 = new MoonDao();
         LuoWhite.shop2 = new DiedCrossBow();
@@ -48,6 +54,103 @@ public class WndLuoWhite extends Window {
 
         LuoWhite.shop4 = new RiceSword();
         LuoWhite.shop5 = new RedBloodMoon();
+        LuoWhite.shop6 = new GoldLongGun();
+
+        StyledButton btnSite = new StyledButton(Chrome.Type.TOAST_TR, Messages.get(this,"talk_red")){
+            @Override
+            protected void onClick() {
+                super.onClick();
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+
+
+                        if((Dungeon.isDLC(Conducts.Conduct.DEV))) {
+                            ShatteredPixelDungeon.scene().addToFront(new WndError(Messages.get(WndLuoWhite.class, "key_not_rmode")) {
+                                public void onBackPressed() {
+                                    super.onBackPressed();
+                                }
+                            });
+                        } else if (Statistics.RandMode){
+                            ShatteredPixelDungeon.scene().addToFront(new WndError(Messages.get(WndLuoWhite.class, "key_not_rmode")) {
+                                public void onBackPressed() {
+                                    super.onBackPressed();
+                                }
+                            });
+                        } else if (Statistics.bossRushMode){
+                            ShatteredPixelDungeon.scene().addToFront(new WndError(Messages.get(WndLuoWhite.class, "key_not_rmode")) {
+                                public void onBackPressed() {
+                                    super.onBackPressed();
+                                }
+                            });
+                        } else {
+                            GameScene.show( new WndTextInput( Messages.get( WndLuoWhite.class, "key_title" ),
+                                    Messages.get( WndLuoWhite.class, "key_desc" ),
+                                    "",
+                                    99,
+                                    false,
+                                    Messages.get( WndLuoWhite.class, "key_confirm" ),
+                                    Messages.get( WndLuoWhite.class, "key_cancel" ) ){
+                                @Override
+                                public void onSelect(boolean positive, String text) {
+                                    if ( positive){
+                                        int result = Gift.ActivateGift( text );
+                                        switch ( result ){
+                                            case 0:
+                                                ShatteredPixelDungeon.scene().addToFront( new WndError( Messages.get( WndLuoWhite.class, "no_internet" ) ) {
+                                                    public void onBackPressed() {
+                                                        super.onBackPressed();
+                                                    }
+                                                } );
+                                                break;
+                                            case 1:
+                                                ShatteredPixelDungeon.scene().addToFront( new WndTitledMessage( Icons.INFO.get(), Messages.get( WndLuoWhite.class,"success" ), Messages.get( WndLuoWhite.class, "key_activation" ) ) {
+                                                    public void onBackPressed() {
+                                                        super.onBackPressed();
+                                                    }
+                                                } );
+                                                break;
+                                            case 2:
+                                                ShatteredPixelDungeon.scene().addToFront( new WndError( Messages.get( WndLuoWhite.class, "key_expired" ) ) {
+                                                    public void onBackPressed() {
+                                                        super.onBackPressed();
+                                                    }
+                                                } );
+                                                break;
+                                            case 3:
+                                                ShatteredPixelDungeon.scene().addToFront( new WndError( Messages.get( WndLuoWhite.class, "key_used" ) ) {
+                                                    public void onBackPressed() {
+                                                        super.onBackPressed();
+                                                    }
+                                                } );
+                                                break;
+                                            case 4:
+                                                ShatteredPixelDungeon.scene().addToFront( new WndError( Messages.get( WndLuoWhite.class, "key_not_null" ) ) {
+                                                    public void onBackPressed() {
+                                                        super.onBackPressed();
+                                                    }
+                                                } );
+                                                break;
+                                            default:
+                                                ShatteredPixelDungeon.scene().addToFront( new WndError( Messages.get( WndLuoWhite.class, "key_not_found" ) ) {
+                                                    public void onBackPressed() {
+                                                        super.onBackPressed();
+                                                    }
+                                                } );
+                                        }
+                                    }
+                                }
+                            });
+                        }
+
+                    }
+                });
+            }
+        };
+        btnSite.icon(new ItemSprite(ItemSpriteSheet.ICEGOLD));
+        btnSite.textColor(Window.TITLE_COLOR);
+        btnSite.setRect(56,-2, 65, 20 );
+        add(btnSite);
 
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
@@ -146,11 +249,13 @@ public class WndLuoWhite extends Window {
     public void itemUnlock(Item item){
         if( (item instanceof DiedCrossBow|| item instanceof MoonDao
                 || item instanceof SaiPlus || item instanceof RiceSword
-                || item instanceof RedBloodMoon) && !SPDSettings.isItemUnlock( item.name() ) ){
+                || item instanceof RedBloodMoon || item instanceof GoldLongGun) && !SPDSettings.isItemUnlock( item.name() ) ){
             if( item instanceof DiedCrossBow )
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1.5f );
             if( item instanceof MoonDao )
                 Generator.setProbs( item,Generator.Category.WEP_T3, 1.5f );
+            if( item instanceof GoldLongGun)
+                Generator.setProbs( item,Generator.Category.WEP_T4, 1.3f );
             if( item instanceof SaiPlus )
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1 );
             if( item instanceof RiceSword )

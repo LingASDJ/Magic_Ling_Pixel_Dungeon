@@ -28,6 +28,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.RED_COLOR;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
@@ -35,16 +36,19 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndGame;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndJournal;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.glwrap.Blending;
 import com.watabou.input.GameAction;
 import com.watabou.noosa.BitmapText;
@@ -78,7 +82,6 @@ public class MenuPane extends Component {
 
 	public static final int WIDTH = 32;
 
-
 	protected String displayText(){
 		InterlevelScene.curTransition = new LevelTransition();
 		String depth = Integer.toString(Dungeon.depth);
@@ -95,7 +98,7 @@ public class MenuPane extends Component {
 				break;
 				case 5: abcd = "E";
 				break;
-				case 6: case 7:
+				case 6: case 7: case 10:
 				abcd = "?";
 				break;
 		}
@@ -135,24 +138,24 @@ public class MenuPane extends Component {
 		depthButton = new Button(){
 			@Override
 			protected String hoverText() {
-				switch (Dungeon.level.feeling) {
-					case CHASM:     return Messages.get(GameScene.class, "chasm");
-					case WATER:     return Messages.get(GameScene.class, "water");
-					case GRASS:     return Messages.get(GameScene.class, "grass");
-					case DARK:      return Messages.get(GameScene.class, "dark");
-					case LARGE:     return Messages.get(GameScene.class, "large");
-					case TRAPS:     return Messages.get(GameScene.class, "traps");
-					case BIGTRAP:     return Messages.get(GameScene.class, "moretraps");
-					case SECRETS:   return Messages.get(GameScene.class, "secrets");
+				if (Dungeon.level.feeling != Level.Feeling.NONE){
+					return Dungeon.level.feeling.desc();
+				} else {
+					return null;
 				}
-				return null;
 			}
 
 			@Override
 			protected void onClick() {
 				super.onClick();
-				//just open journal for now, maybe have it open landmarks after expanding that page?
-				GameScene.show( new WndJournal() );
+
+				if (Dungeon.level.feeling == Level.Feeling.NONE){
+					GameScene.show(new WndJournal());
+				} else {
+					GameScene.show(new WndTitledMessage(Icons.getLarge(Dungeon.level.feeling),
+							Messages.titleCase(Dungeon.level.feeling.title()),
+							Dungeon.level.feeling.desc()));
+				}
 			}
 		};
 		add(depthButton);
@@ -226,6 +229,18 @@ public class MenuPane extends Component {
 		add( danger );
 
 		add( pickedUp = new Toolbar.PickedUpItem());
+
+		if(Dungeon.isDLC(Conducts.Conduct.DEV) && SPDSettings.UPos()){
+			StyledButton pos = new StyledButton(Chrome.Type.TOAST_TR, Messages.get(WndGame.class,"pos"),5){
+				@Override
+				protected void onClick() {
+					GLog.b("Hero_pos:"+Dungeon.hero.pos);
+				}
+			};
+			pos.icon(new Image(Icons.get(Icons.WARNING)));
+			pos.setRect(0,160,50,16);
+			add(pos);
+		}
 	}
 
 	@Override
@@ -327,7 +342,7 @@ public class MenuPane extends Component {
 			bg = new Image( Assets.Interfaces.MENU_BTN, 2, 2, 13, 11 );
 			add( bg );
 
-			journalIcon = new Image( Assets.Interfaces.MENU_BTN, 31, 0, 11, 7);
+			journalIcon = new Image( Assets.Interfaces.MENU_BTN, 31, 0, 11, 6);
 			add( journalIcon );
 
 			keyIcon = new KeyDisplay();
@@ -401,9 +416,15 @@ public class MenuPane extends Component {
 			keyIcon.am = journalIcon.am = 1;
 			if (flashingPage != null){
 				if (flashingDoc == Document.ALCHEMY_GUIDE){
-					WndJournal.last_index = 1;
+					WndJournal.last_index = 2;
 					GameScene.show( new WndJournal() );
 				} else if (flashingDoc.pageNames().contains(flashingPage)){
+					if (flashingDoc == Document.ADVENTURERS_GUIDE){
+						WndJournal.last_index = 1;
+					} else if (flashingDoc.isLoreDoc()){
+						WndJournal.last_index = 3;
+						WndJournal.CatalogTab.currentItemIdx = 3;
+					}
 					GameScene.show( new WndStory( flashingDoc.pageSprite(flashingPage),
 							flashingDoc.pageTitle(flashingPage),
 							flashingDoc.pageBody(flashingPage) ){

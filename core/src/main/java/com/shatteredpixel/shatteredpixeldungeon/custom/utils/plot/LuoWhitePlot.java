@@ -41,7 +41,7 @@ public class LuoWhitePlot extends Plot {
             switch (process) {
                 default:
                 case 1:
-                    process_to_1();//Mostly process to 1 is made directly when creating,it might not be used,just in case
+                    process_to_1();
                     break;
             }
             diagulewindow.update();
@@ -72,7 +72,7 @@ public class LuoWhitePlot extends Plot {
         diagulewindow.setLeftName(Messages.get(LuoWhite.class, "name"));
 
         if(SPDSettings.UPICE() && !Dungeon.isDLC(Conducts.Conduct.DEV)) {
-            int x = 150;
+            int x = 180;
             diagulewindow.changeText(Messages.get(LuoWhite.class, "message_ice2",x));
             Dungeon.level.drop_hard(new IceCyanBlueSquareCoin(x),hero.pos);
             SPDSettings.UPICE(false);

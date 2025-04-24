@@ -80,11 +80,11 @@ public class Venom extends Buff implements Hero.Doom {
             }
 
             if(damage>10){
-                Buff.affect(target, Blindness.class, 5f);
+                Buff.affect(target, Blindness.class, 3f);
             }
 
             if(damage>27){
-                Buff.affect(target, Bleeding.class).set(4f);
+                Buff.affect(target, Bleeding.class).set(2f);
             }
 
             spend( TICK );

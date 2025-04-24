@@ -107,10 +107,7 @@ public class CrivusFruitsLasher extends Mob {
         //毒雾 都得死 啊哈哈哈哈
         GameScene.add(Blob.seed(pos, Statistics.crivusfruitslevel2 ? 60 : 10, ToxicGas.class));
 
-        //无敌也要扣减本体 NND
-        if(hero.buff(CrivusFruits.DiedDamager.class) == null){
-            Buff.affect(this,CrivusFruits.DiedDamager.class);
-        }
+        Buff.affect(this,CrivusFruits.DiedDamager.class);
 
         //二阶段开始瞬移，地狱绘图
         if(Statistics.crivusfruitslevel2){

@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -34,9 +35,14 @@ public class WaterSoul extends Elixir {
 
     @Override
     public void apply(Hero hero) {
-        Buff.affect(hero, WaterSoulX.class).set( (250), 1 );
+        if(!Statistics.bossRushMode){
+            Buff.affect(hero, WaterSoulX.class).set( (250), 1 );
+        }
+
         cure( hero );
-        if (Dungeon.isChallenged(Challenges.NO_HEALING) && Statistics.HealingIsDied<=2) {
+        if(Statistics.bossRushMode && !(Dungeon.isChallenged(Challenges.NO_HEALING))){
+            Buff.affect(hero, Barrier.class).setShield( hero.HT/2 );
+        } else if (Dungeon.isChallenged(Challenges.NO_HEALING) && Statistics.HealingIsDied<=2) {
             heal(hero);
             Statistics.HealingIsDied++;
         } else if(!(Dungeon.isChallenged(Challenges.NO_HEALING))) {

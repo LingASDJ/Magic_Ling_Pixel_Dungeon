@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -36,16 +38,40 @@ public class Slime_Red extends Slime {
         lootChance = 0.15f;
         loot = PotionOfHealing.class;
         properties.add(Property.ACIDIC);
+        if(Statistics.bossRushMode&& Dungeon.depth ==19){
+            HT = HP = 40;
+        } else {
+            HT = HP = 20;
+        }
     }
 
-    private int combo = 0;
+    @Override
+    public int attackSkill( Char target ) {
+        if(Statistics.bossRushMode && Dungeon.depth ==19){
+            return 60;
+        }
+        return 12;
+    }
+
+    @Override
+    public int damageRoll() {
+        if(Statistics.bossRushMode&& Dungeon.depth ==19){
+            return Random.NormalIntRange(20, 25);
+        }
+        return super.damageRoll();
+    }
+
+    @Override
+    public int drRoll() {
+        return super.drRoll() + (Statistics.bossRushMode && Dungeon.depth ==19 ?Random.NormalIntRange(0, 5) : 0);
+    }
 
     @Override
     public int attackProc(Char enemy, int damage) {
-        if (Random.Int(0, 6) > 4) {
-            Buff.affect( enemy, Bleeding.class ).set( 3 );
+        if (Random.Int(0, 6) < 4) {
+            Buff.affect( enemy, Bleeding.class ).set( damage/3f );
         }
-        return Slime_Red.super.attackProc(enemy, this.combo + damage);
+        return Slime_Red.super.attackProc(enemy, damage);
     }
 
 }

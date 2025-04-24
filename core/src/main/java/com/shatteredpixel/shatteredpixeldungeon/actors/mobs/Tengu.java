@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -92,9 +93,7 @@ public class Tengu extends Boss {
 		defenseSkill = 15;
 
 		HUNTING = new Hunting();
-
-		flying = true; //doesn't literally fly, but he is fleet-of-foot enough to avoid hazards
-
+		
 		properties.add(Property.BOSS);
 
 		viewDistance = 12;
@@ -116,7 +115,7 @@ public class Tengu extends Boss {
 
 	@Override
 	public int drRoll() {
-		return 0;
+		return super.drRoll() + Random.NormalIntRange(0, 5);
 	}
 
 	boolean loading = false;
@@ -337,6 +336,7 @@ public class Tengu extends Boss {
 	public void notice() {
 		super.notice();
 		if (!BossHealthBar.isAssigned()) {
+			GameScene.bossReady();
 			BossHealthBar.assignBoss(this);
 			if (HP <= HT/2) BossHealthBar.bleed(true);
 			if (HP == HT) {
@@ -353,6 +353,7 @@ public class Tengu extends Boss {
 	}
 
 	{
+		immunities.add( Roots.class );
 		immunities.add( Blindness.class );
 		immunities.add( Dread.class );
 		immunities.add( Terror.class );

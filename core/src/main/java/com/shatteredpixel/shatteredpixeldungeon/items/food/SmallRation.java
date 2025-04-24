@@ -26,7 +26,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -43,10 +42,6 @@ public class SmallRation extends Food {
 
 	@Override
 	protected void satisfy( Hero hero ){
-		if (Dungeon.isChallenged(Challenges.EXSG)){
-			Buff.prolong( hero, Haste.class, 4f);
-		}
-
 		if (Dungeon.isChallenged(Challenges.NO_FOOD)){
 			Buff.affect(hero, Hunger.class).satisfy(energy/3f);
 		} else {

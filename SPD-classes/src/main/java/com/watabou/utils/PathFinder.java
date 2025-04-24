@@ -46,6 +46,8 @@ public class PathFinder {
 	public static int[] NEIGHBOURS8;
 	public static int[] NEIGHBOURS9;
 
+	public static int[] NEIGHBOURS13;
+	public static int[] NEIGHBOURS13_4;
 	public static int[] NEIGHBOURS5;
 
 	public static int[] CROSS;
@@ -79,6 +81,20 @@ public class PathFinder {
 		NEIGHBOURS4 = new int[]{-width, -1, +1, +width};
 		NEIGHBOURS8 = new int[]{-width-1, -width, -width+1, -1, +1, +width-1, +width, +width+1};
 		NEIGHBOURS9 = new int[]{-width-1, -width, -width+1, -1, 0, +1, +width-1, +width, +width+1};
+		NEIGHBOURS13 = new int[]{
+				         -width*2,
+				-width-1, -width, -width+1,
+			-2,	-1, 		 			+1, +2,
+				+width-1, +width, +width+1,
+						+width*2
+		};
+		NEIGHBOURS13_4 = new int[]{
+				-width*2,
+				-width-1, -width, -width+1,
+				-2,	-1, 		0, 			+1, +2,
+				+width-1, +width, +width+1,
+				+width*2
+		};
 
 		NEIGHBOURS5 = new int[]{-2*width-2, -2*width-1, -2*width, -2*width+1, -2*width+2,
 				-width-2,   -width-1,   -width,   -width+1,   -width,

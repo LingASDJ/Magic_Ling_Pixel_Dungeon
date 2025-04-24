@@ -26,14 +26,11 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.utils.Random;
 
 public class PotionOfStrength extends Potion {
 
@@ -48,11 +45,11 @@ public class PotionOfStrength extends Potion {
 	@Override
 	public void apply( Hero hero ) {
 		identify();
-		if(Dungeon.isChallenged(EXSG) && Random.Float()>0.4f) {
+		if(Dungeon.isChallenged(EXSG)) {
 			hero.STR--;
 			hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "esg_1"));
 			GLog.n(Messages.get(this, "esg_2"));
-			Buff.affect(hero, Frost.class, 10f);
+			hero.attackSkill += 3;
 		} else {
 			hero.STR++;
 			hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "msg_1"));
@@ -72,9 +69,14 @@ public class PotionOfStrength extends Potion {
 	public int energyVal() {
 		return isKnown() ? 10 * quantity : super.energyVal();
 	}
+
+	@Override
+	public String name() {
+		return Dungeon.isChallenged(Challenges.EXSG) && isIdentified() ? Messages.get(this, "namex") : isIdentified() ?  Messages.get(this, "name") : super.name();
+	}
+
 	@Override
 	public String desc() {
-		//三元一次逻辑运算
-		return Dungeon.isChallenged(Challenges.EXSG) ? Messages.get(this, "descx") : Messages.get(this, "desc");
+		return Dungeon.isChallenged(Challenges.EXSG) && isIdentified() ? Messages.get(this, "descx") : isIdentified() ?  Messages.get(this, "desc") : super.desc();
 	}
 }

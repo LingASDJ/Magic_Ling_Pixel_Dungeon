@@ -7,6 +7,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -25,12 +27,15 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrstalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -42,7 +47,12 @@ public abstract class SpellCaster extends Mob {
     {
         spriteClass = CrstalSprite.class;
 
-        HP = HT = 45;
+        if(Statistics.bossRushMode){
+            HP = HT = 90;
+        } else {
+            HP = HT = 45;
+        }
+
 
         maxLvl = -99;
 
@@ -660,7 +670,7 @@ public abstract class SpellCaster extends Mob {
             sprite.parent.add(new BeamCustom(
                     sprite.center(),
                     DungeonTilemap.tileCenterToWorld(ba.collisionPos),
-                    Effects.Type.DEATH_RAY).setLifespan(0.65f).setColor(0x30FF30));
+                    Effects.Type.DEATH_RAY).setLifespan(0.65f).setColor(Window.Pink_COLOR));
 
             if(ba.collisionPos != lastTargeting) {
                 findTarget();
@@ -672,7 +682,7 @@ public abstract class SpellCaster extends Mob {
         @Override
         protected void warn(int num) {
             //if(num==2) sprite.showStatus( 0x30FF30, "!" );
-            if(num==1) {sprite.showStatus(0xff0000, Messages.get(this,"status"));
+            if(num==1) {sprite.showStatus(Window.Pink_COLOR, Messages.get(this,"status"));
                 new Flare( 6, 32 ).color( 0x30FF30, true ).show(sprite, 3f );}
         }
 
@@ -741,6 +751,198 @@ public abstract class SpellCaster extends Mob {
                         if (ch.alignment != Alignment.ENEMY) {
                             Buff.affect( ch, HalomethaneBurning.class ).reignite( ch, 4f );
                             zapDamage(ch, 3, 6, 0.9f, HaloFireCaster.class);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static class DegradeCaster extends SpellCaster{
+
+        @Override
+        protected void zapProc() {
+            Ballistica ba = new Ballistica(pos, lastTargeting, Ballistica.MAGIC_BOLT);
+            sprite.parent.add(new BeamCustom(
+                    sprite.center(),
+                    DungeonTilemap.tileCenterToWorld(ba.collisionPos),
+                    Effects.Type.DEATH_RAY).setLifespan(0.65f).setColor(Window.DeepPK_COLOR));
+
+            if(ba.collisionPos != lastTargeting) {
+                findTarget();
+                Buff.affect(this, BouncePostShoot.class).setTrace(ba.collisionPos, lastTargeting);
+            }
+            hitProc(ba);
+        }
+
+        @Override
+        protected void warn(int num) {
+            //if(num==2) sprite.showStatus( 0x30FF30, "!" );
+            if(num==1) {sprite.showStatus(Window.DeepPK_COLOR, Messages.get(this,"status"));
+                new Flare( 6, 32 ).color( 0x30FF30, true ).show(sprite, 3f );}
+        }
+
+        @Override
+        public void spriteHardlight() {
+            sprite.hardlight(0xff0000);
+        }
+
+        protected void hitProc(Ballistica ba){
+            Char ch = findChar(ba.collisionPos);
+            if (ch != null) {
+                CellEmitter.center(ch.pos).burst( BloodParticle.BURST, 2 );
+                if (ch.alignment != Alignment.ENEMY) {
+                    Buff.affect(ch, Degrade.class, 10f);
+                    zapDamage(ch, 6, 9, 0.45f, this);
+                }
+            }
+        }
+
+        public static class BouncePostShoot extends Buff{
+            private int source=-1;
+            private int to = -1;
+            public void setTrace(int pos, int nextPos){
+                source = pos;
+                to = nextPos;
+            }
+            @Override
+            public void storeInBundle(Bundle b){
+                b.put("sourcePosBounce", source);
+                b.put("toPosBounce", to);
+                super.storeInBundle(b);
+            }
+            @Override
+            public void restoreFromBundle(Bundle b){
+                super.restoreFromBundle(b);
+                source = b.getInt("sourcePosBounce");
+                to = b.getInt("toPosBounce");
+            }
+            @Override
+            public boolean attachTo(Char target){
+                spend(TICK);
+                return super.attachTo(target);
+            }
+            @Override
+            public boolean act(){
+                if(source != -1){
+                    final float[] angles = {-23f, 0f, 23f};
+                    final float sourceAngle = GME.angle(target.pos, source);
+                    for(float a: angles){
+                        BallisticaFloat bf = new BallisticaFloat(target.pos, sourceAngle + a, 25, BallisticaFloat.STOP_SOLID);
+                        Ballistica ballistica = new Ballistica(target.pos, bf.collisionPosI, Ballistica.STOP_SOLID);
+                        hitProc(ballistica);
+                        target.sprite.parent.add(new BeamCustom(DungeonTilemap.tileCenterToWorld(target.pos),
+                                DungeonTilemap.tileCenterToWorld(ballistica.collisionPos),
+                                Effects.Type.CHAIN).setLifespan(0.6f).setColor(0x00FFFFFF));
+                    }
+                }
+                detach();
+                return true;
+            }
+            protected void hitProc(Ballistica ballistica){
+                for(int i: ballistica.subPath(1, ballistica.dist)) {
+                    Char ch = findChar(i);
+                    if (ch != null) {
+                        ch.sprite.emitter().start( ShaftParticle.FACTORY, 0.3f, 4 );
+                        if (ch.alignment != Alignment.ENEMY) {
+                            Buff.affect(ch, Degrade.class, 10f);
+                            zapDamage(ch, 3, 6, 0.9f, DegradeCaster.class);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static class DeadLingCaster extends SpellCaster{
+
+        @Override
+        protected void zapProc() {
+            Ballistica ba = new Ballistica(pos, lastTargeting, Ballistica.MAGIC_BOLT);
+            sprite.parent.add(new BeamCustom(
+                    sprite.center(),
+                    DungeonTilemap.tileCenterToWorld(ba.collisionPos),
+                    Effects.Type.DEATH_RAY).setLifespan(0.65f).setColor(Window.CBLACK));
+
+            if(ba.collisionPos != lastTargeting) {
+                findTarget();
+                Buff.affect(this, BouncePostShoot.class).setTrace(ba.collisionPos, lastTargeting);
+            }
+            hitProc(ba);
+        }
+
+        @Override
+        protected void warn(int num) {
+            //if(num==2) sprite.showStatus( 0x30FF30, "!" );
+            if(num==1) {sprite.showStatus(Window.CBLACK, Messages.get(this,"status"));
+                new Flare( 6, 32 ).color( 0x30FF30, true ).show(sprite, 3f );}
+        }
+
+        @Override
+        public void spriteHardlight() {
+            sprite.hardlight(0xff0000);
+        }
+
+        protected void hitProc(Ballistica ba){
+            Char ch = findChar(ba.collisionPos);
+            if (ch != null) {
+                CellEmitter.center(ch.pos).burst( BloodParticle.BURST, 2 );
+                if (ch.alignment != Alignment.ENEMY) {
+                    Buff.affect(ch, Doom.class);
+                    zapDamage(ch, 6, 9, 0.45f, this);
+                }
+            }
+        }
+
+        public static class BouncePostShoot extends Buff{
+            private int source=-1;
+            private int to = -1;
+            public void setTrace(int pos, int nextPos){
+                source = pos;
+                to = nextPos;
+            }
+            @Override
+            public void storeInBundle(Bundle b){
+                b.put("sourcePosBounce", source);
+                b.put("toPosBounce", to);
+                super.storeInBundle(b);
+            }
+            @Override
+            public void restoreFromBundle(Bundle b){
+                super.restoreFromBundle(b);
+                source = b.getInt("sourcePosBounce");
+                to = b.getInt("toPosBounce");
+            }
+            @Override
+            public boolean attachTo(Char target){
+                spend(TICK);
+                return super.attachTo(target);
+            }
+            @Override
+            public boolean act(){
+                if(source != -1){
+                    final float[] angles = {-23f, 0f, 23f};
+                    final float sourceAngle = GME.angle(target.pos, source);
+                    for(float a: angles){
+                        BallisticaFloat bf = new BallisticaFloat(target.pos, sourceAngle + a, 25, BallisticaFloat.STOP_SOLID);
+                        Ballistica ballistica = new Ballistica(target.pos, bf.collisionPosI, Ballistica.STOP_SOLID);
+                        hitProc(ballistica);
+                        target.sprite.parent.add(new BeamCustom(DungeonTilemap.tileCenterToWorld(target.pos),
+                                DungeonTilemap.tileCenterToWorld(ballistica.collisionPos),
+                                Effects.Type.CHAIN).setLifespan(0.6f).setColor(0x00FFFFFF));
+                    }
+                }
+                detach();
+                return true;
+            }
+            protected void hitProc(Ballistica ballistica){
+                for(int i: ballistica.subPath(1, ballistica.dist)) {
+                    Char ch = findChar(i);
+                    if (ch != null) {
+                        ch.sprite.emitter().start(RainbowParticle.BURST, 0.3f, 4 );
+                        if (ch.alignment != Alignment.ENEMY) {
+                            Buff.affect(ch, Doom.class);
+                            zapDamage(ch, 3, 6, 0.9f, DeadLingCaster.class);
                         }
                     }
                 }

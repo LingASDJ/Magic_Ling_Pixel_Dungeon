@@ -1,0 +1,92 @@
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow;
+
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.BoatPlot;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DeathRongSprite;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
+import com.watabou.noosa.Game;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+
+public class DeathRong extends NTNPC {
+
+    {
+        spriteClass = DeathRongSprite.class;
+        properties.add(Property.IMMOVABLE);
+        flying = true;
+    }
+
+    private boolean first=true;
+    public boolean secnod=true;
+    public boolean rd = true;
+
+    private static final String FIRST = "first";
+    private static final String SECNOD = "secnod";
+    private static final String RD = "rd";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(FIRST, first);
+        bundle.put(SECNOD, secnod);
+        bundle.put(RD, rd);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        first = bundle.getBoolean(FIRST);
+        secnod = bundle.getBoolean(SECNOD);
+        rd = bundle.getBoolean(RD);
+    }
+
+    @Override
+    protected boolean act() {
+
+        throwItem();
+
+        sprite.turnTo( pos, Dungeon.hero.pos );
+        spend( TICK );
+        return true;
+    }
+
+    @Override
+    public int defenseSkill( Char enemy ) {
+        return INFINITE_EVASION;
+    }
+
+    @Override
+    public boolean interact(Char c) {
+
+        sprite.turnTo(pos, Dungeon.hero.pos);
+        BoatPlot plot = new BoatPlot();
+
+        if(first){
+            Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot,false)));
+            first=false;
+        } else if(secnod) {
+        } else {
+            tell(Messages.get(DeathRong.class, "can_boat"));
+        }
+
+        return true;
+    }
+
+    public static void tell(String text) {
+        Game.runOnRenderThread(new Callback() {
+                  @Override
+                  public void call() {
+                      GameScene.show(new WndQuest(new DeathRong(), text));
+                  }
+            }
+        );
+    }
+
+
+}
+

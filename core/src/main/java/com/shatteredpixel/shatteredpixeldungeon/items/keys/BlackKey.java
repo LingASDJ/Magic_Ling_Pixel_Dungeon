@@ -27,7 +27,7 @@ public class BlackKey extends Key {
         super.doPickUp(hero, pos);
         LockSword lockSword = Dungeon.hero.belongings.getItem(LockSword.class);
         if(lockSword != null) {
-            int index = 35;
+            int index = 70;
             lockSword.lvl += index;
             int lvl = lockSword.lvl;
             if (lvl >= 100 && lvl <= 1000 && lvl % 100 == 0) {

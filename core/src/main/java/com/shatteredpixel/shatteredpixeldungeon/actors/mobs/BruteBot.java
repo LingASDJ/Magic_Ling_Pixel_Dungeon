@@ -37,7 +37,7 @@ public class BruteBot extends Mob implements Callback,Hero.Doom {
     {
         spriteClass = BruteBotSprite.class;
 
-        HP = HT = 120;
+        HP = HT = 80;
         defenseSkill = 12;
 
         baseSpeed=0.75f;
@@ -78,7 +78,7 @@ public class BruteBot extends Mob implements Callback,Hero.Doom {
         if (super.isAlive()){
             return true;
         } else {
-            if (!hasRaged){
+            if (!hasRaged && HP <= (HT*0.75f)){
                 triggerEnrage();
             }
             return !buffs(BruteBotRage.class).isEmpty();

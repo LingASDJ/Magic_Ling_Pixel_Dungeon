@@ -439,19 +439,20 @@ public class EndingBlade extends MeleeWeapon {
 
         String info = desc();
 
-        if (levelKnown) {
-            info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", 4+fireenergy/100,
-                    augment.damageFactor(min()),
-                    augment.damageFactor(max()), STRReq());
+        if (levelKnown && Dungeon.hero != null) {
+            info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
             if (STRReq() > Dungeon.hero.STR()) {
                 info += " " + Messages.get(Weapon.class, "too_heavy");
             } else if (Dungeon.hero.STR() > STRReq()){
                 info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
             }
         } else {
-            info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown",  4+fireenergy/100, min(0), max(0), STRReq(0));
-            if (STRReq(0) > Dungeon.hero.STR()) {
-                info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
+            info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
+
+            if(Dungeon.hero !=null){
+                if (STRReq(0) > Dungeon.hero.STR()) {
+                    info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
+                }
             }
         }
 
@@ -470,12 +471,14 @@ public class EndingBlade extends MeleeWeapon {
             info += " " + Messages.get(enchantment, "desc");
         }
 
-        if (cursed && isEquipped( Dungeon.hero )) {
-            info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
-        } else if (cursedKnown && cursed) {
-            info += "\n\n" + Messages.get(Weapon.class, "cursed");
-        } else if (!isIdentified() && cursedKnown){
-            info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
+        if(Dungeon.hero != null){
+            if (cursed && isEquipped( Dungeon.hero ) ) {
+                info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
+            } else if (cursedKnown && cursed) {
+                info += "\n\n" + Messages.get(Weapon.class, "cursed");
+            } else if (!isIdentified() && cursedKnown){
+                info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
+            }
         }
 
         return info;
@@ -483,13 +486,13 @@ public class EndingBlade extends MeleeWeapon {
 
     @Override
     public int min(int lvl) {
-        return 10+(lvl*2)*(Dungeon.hero.lvl/10);
+        return Dungeon.hero != null ? 10+(lvl*2)*(Dungeon.hero.lvl/10) : 10;
         //10+20x3=70
     }
 
     @Override
     public int max(int lvl) {
-        return 15+(lvl*3)*(Dungeon.hero.lvl/10);
+        return Dungeon.hero != null ? 15+(lvl*3)*(Dungeon.hero.lvl/10) : 15;
         //15+30x3=15+90=105
     }
 

@@ -33,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
@@ -85,7 +84,8 @@ public class Heap implements Bundlable {
 		MIMIC,
 		GOLDEN_MIMIC,
 		CRYSTAL_MIMIC,
-		STATUE
+		STATUE,
+		TrinketCatalyst
 	}
 
 	//好好好
@@ -306,8 +306,8 @@ public class Heap implements Bundlable {
 
 			for (Item item : items.toArray( new Item[0] )) {
 
-				//unique items aren't affect by explosions
-				if (item.unique || (item instanceof Armor && ((Armor) item).checkSeal() != null)){
+				//unique items and equipment aren't affect by explosions
+				if (item.unique || item.isUpgradable() || item instanceof EquipableItem){
 					continue;
 				}
 
@@ -327,8 +327,7 @@ public class Heap implements Bundlable {
 						return;
 					}
 
-				//upgraded items can endure the blast
-				} else if (item.level() <= 0) {
+				} else {
 					items.remove( item );
 				}
 
@@ -439,6 +438,8 @@ public class Heap implements Bundlable {
 				return Messages.get(this, "skeleton");
 			case BLACK:
 				return Messages.get(this, "black_chest");
+			case TrinketCatalyst:
+				return Messages.get(this, "catalyst");
 			default:
 				return peek().toString();
 		}

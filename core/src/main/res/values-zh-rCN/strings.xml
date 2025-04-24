@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="restart">重启程序</string>
+    <string name="no_configuration_found">没有找到配置信息，请手动重启程序吧。</string>
+    <string name="copy_error_report">复制错误报告</string>
+    <string name="copy_complete">复制完成</string>
+</resources>

@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.journal;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
@@ -68,6 +69,7 @@ public enum Document {
 		if (pagesStates.containsKey(page) && pagesStates.get(page) == NOT_FOUND){
 			pagesStates.put(page, FOUND);
 			Journal.saveNeeded = true;
+			//Badges.validateCatalogBadges();
 			return true;
 		}
 		return false;
@@ -87,6 +89,19 @@ public enum Document {
 	}
 
 	public boolean deletePage( int pageIdx ) {
+		return deletePage( pagesStates.keySet().toArray(new String[0])[pageIdx] );
+	}
+
+	public boolean unreadPage( String page ){
+		if (pagesStates.containsKey(page) && pagesStates.get(page) == READ){
+			pagesStates.put(page, FOUND);
+			Journal.saveNeeded = true;
+			return true;
+		}
+		return false;
+	}
+
+	public boolean unreadPage( int pageIdx ) {
 		return deletePage( pagesStates.keySet().toArray(new String[0])[pageIdx] );
 	}
 
@@ -120,6 +135,7 @@ public enum Document {
 		if (pagesStates.containsKey(page)){
 			pagesStates.put(page, READ);
 			Journal.saveNeeded = true;
+			//Badges.validateCatalogBadges();
 			return true;
 		}
 		return false;
@@ -172,10 +188,15 @@ public enum Document {
                 default:
                     return new ItemSprite(ItemSpriteSheet.MASTERY);
                 case "Examining":
+                case "Searching":
                     return Icons.get(Icons.MAGNIFY);
+				case "Surprise_Attacks":
+					return new ItemSprite(ItemSpriteSheet.ASSASSINS_BLADE);
                 case "Identifying":
                     return new ItemSprite(new ScrollOfIdentify());
-				case "Killboss":
+				case "Alchemy":
+					return new ItemSprite(new TrinketCatalyst());
+                case "Killboss":
 					Image boss = new Image(new DM720Sprite());
 					boss.scale.set(PixelScene.align(0.75f));
 					return boss;
@@ -239,6 +260,8 @@ public enum Document {
 	public static final String GUIDE_DIEING         = "Dieing";
 
 	public static final String GUIDE_SEARCHING      = "Searching";
+
+	public static final String KING_ATTRITION       = "attrition";
 
 	//pages and default states
 	static {
@@ -321,7 +344,7 @@ public enum Document {
 		HALLS_KING.pagesStates.put("ritual",                    debug ? READ : NOT_FOUND);
 		HALLS_KING.pagesStates.put("new_king",                  debug ? READ : NOT_FOUND);
 		HALLS_KING.pagesStates.put("thing",                     debug ? READ : NOT_FOUND);
-		HALLS_KING.pagesStates.put("attrition",                 debug ? READ : NOT_FOUND);
+		HALLS_KING.pagesStates.put(KING_ATTRITION,              debug ? NOT_FOUND : NOT_FOUND);
 
 	}
 	

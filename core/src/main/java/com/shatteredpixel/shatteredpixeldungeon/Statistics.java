@@ -21,11 +21,45 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RustedGoldCoin;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TheGriefOfSpeechless;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.watabou.utils.SparseArray;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Statistics {
+
+	//BossRush LIQUMTEAL
+	public static boolean LiquidMatalOnlyTen = false;
+	public static int LimitLiquidMatal;
 
 	//统计分数
 	public static int progressScore;
@@ -35,11 +69,27 @@ public class Statistics {
 	//神器限制
 	public static boolean ARLing = false;
 	public static boolean CatFirst = false;
+
+	public static boolean PinkFox = false;
+
+	public static int PinkFoxCount;
+
+	public static int magestaffUpgrade;
+
+	public static int RandomQuest;
+	public static int GoldMobDead;
+
+	public static int upgradeGold;
+
 	public static boolean snow = false;
+
+	public static int gdzHelpDungeon;
 
 	//小叶12挑首次对话
 	public static boolean SmallLeafGet = false;
 	public static boolean noClearKill = false;
+
+	public static boolean AutoOilPotion= false;
 
 	public static int zeroItemLevel;
 
@@ -51,6 +101,9 @@ public class Statistics {
 	public static boolean GameKillFireDargon = false;
 
 	public static int wcDialogLevel;
+
+
+	public static int gdzDialogLevel;
 
 
 	public static boolean youNoItem = false;
@@ -119,6 +172,7 @@ public class Statistics {
 	public static float duration;
 	
 	public static boolean qualifiedForNoKilling = false;
+
 	public static boolean completedWithNoKilling = false;
 	
 	public static boolean amuletObtained = false;
@@ -147,6 +201,8 @@ public class Statistics {
 	//拟态之王
 	public static boolean TPDoorDieds = false;
 
+	public static int KillMazeMimic;
+
 	//前路优化
 	public static boolean noGoReadHungry = false;
 
@@ -166,6 +222,9 @@ public class Statistics {
 	public static boolean Alone;
 
 	//首次对决
+
+	public static boolean RandomMimicItem;
+
 	public static boolean mimicking = false;
 
 	public static boolean mustTengu = false;
@@ -183,14 +242,33 @@ public class Statistics {
 	public static int gameDay;
 	public static boolean gameNight;
 
-	public static int dwarfchange;
+	public static int goldRefogreCount;
 
 	//随机嬗变
 	public static int RandModeCount;
 
 	//特殊模式
 	public static boolean bossRushMode = false;
+
 	public static boolean RandMode = false;
+	//噩梦循环模式
+	public static boolean NightDreamLoop = false;
+
+	public static boolean TryUsedAnmy = false;
+	public static boolean winGame = false;
+	public static boolean DwarfMasterKing = false;
+	//220---SPD
+	public static boolean qualifiedForBossChallengeBadge = false;
+	public static boolean dwarfKill = false;
+	public static boolean TrueYogNoDied = false;
+
+	public static int killYogMobsAnargy;
+
+
+	public static int gudaZiRandomSkin;
+
+	//Holiday Boolean
+	public static boolean Hollow_Holiday = false;
 
 	private static final String ICECLAN ="iceCyanBlueSquareCoin";
 
@@ -208,6 +286,9 @@ public class Statistics {
     private static final String WINGAME = "wingame";
     private static final String HIDEEN = "hideen";
 	private static final String DWSX = "dwsxxx";
+
+	private static final String STS = "sts";
+
     private static final String BOSS_CHALLENGE_QUALIFIED = "qualifiedForBossChallengeBadge";
 	//Directly add float time will cause accuracy lose and stop timing if time is long enough
 	//so use long to record seconds, float to count sub-seconds.
@@ -219,6 +300,7 @@ public class Statistics {
 	private static final String GOLD		= "score";
 	private static final String HAPPY		= "happy";
 	private static final String RAND		= "randmode";
+	private static final String NIGHTDR		= "nightdr";
 
 	private static final String DEEPEST		= "maxDepth";
 	private static final String SLAIN		= "enemiesSlain";
@@ -274,6 +356,10 @@ public class Statistics {
 
 	private static final String MMC		= "mmcsx";
 
+	private static final String MMCITEM		= "mmcsx_item";
+
+	private static final String MIMIC_MAZEKILL		= "mimic_mazekill";
+
 	private static final String DDK		= "dada";
 
 	private static final String BDK		= "bossLingCR";
@@ -327,21 +413,111 @@ public class Statistics {
 
 	private static final String HKLEVEL      = "hklevel";
 	private static final String WKLEVEL      = "wklevel";
+	private static final String GZLEVEL      = "gzlevel";
 
 
 	private static final String EXBOSS1		= "EXBOSS1";
 
 	private static final String XOL		= "xol";
 
-    public static boolean TryUsedAnmy = false;
-    public static boolean winGame = false;
-    public static boolean DwarfMasterKing = false;
-    //220---SPD
-    public static boolean qualifiedForBossChallengeBadge = false;
-    public static boolean dwarfKill = false;
+	public static ArrayList<Prop> propPositive0;
+	public static ArrayList<Prop> propPositive1;
+	public static ArrayList<Prop> propPositive2;
+	public static ArrayList<Prop> propNegative0;
+	public static ArrayList<Prop> propNegative1;
+	public static ArrayList<Prop> propNegative2;
 
+	static {
+		propPositive0 = new ArrayList<>(Arrays.asList(
+				new ArmorScalesOfBzmdr(),
+				new StarSachet(),
+				new PortableWhetstone()
+		));
+
+		propNegative0 = new ArrayList<>(Arrays.asList(
+				new BlockingDrug(),
+				new ConfusedMieMieTalisman(),
+				new RustedGoldCoin()
+		));
+
+		propPositive1 = new ArrayList<>(Arrays.asList(
+				new DeliciousRecipe(),
+				new NewStem(),
+				new RapidEarthRoot(),
+				new WenStudyingPaperOne(),
+				new YanStudyingPaperTwo()
+		));
+
+		propNegative1 = new ArrayList<>(Arrays.asList(
+				new BottleWraith(),
+				new EmotionalAggregationB(),
+				new HeartOfCrystalFractal(),
+				new NoteOfBzmdr(),
+				new TheGriefOfSpeechless(),
+				new WenStudyingPaperTwo()
+		));
+
+		propPositive2 = new ArrayList<>(Arrays.asList(
+				new LuckyGlove(),
+				new EmotionalAggregation(),
+				new Monocular(),
+				new KnightStabbingSword()
+		));
+
+		propNegative2 = new ArrayList<>(Arrays.asList(
+				new CloakFragmentsOfBzmdr(),
+				new BrokenBone(),
+				new TerrorDoll(),
+				new YanStudyingPaperOne()
+		));
+	}
 
     public static void reset() {
+
+		propPositive0 = new ArrayList<>(Arrays.asList(
+				new ArmorScalesOfBzmdr(),
+				new StarSachet(),
+				new PortableWhetstone()
+		));
+
+		propNegative0 = new ArrayList<>(Arrays.asList(
+				new BlockingDrug(),
+				new ConfusedMieMieTalisman(),
+				new RustedGoldCoin()
+		));
+
+		propPositive1 = new ArrayList<>(Arrays.asList(
+				new DeliciousRecipe(),
+				new NewStem(),
+				new RapidEarthRoot(),
+				new WenStudyingPaperOne(),
+				new YanStudyingPaperTwo()
+		));
+
+		propNegative1 = new ArrayList<>(Arrays.asList(
+				new BottleWraith(),
+				new EmotionalAggregationB(),
+				new HeartOfCrystalFractal(),
+				new NoteOfBzmdr(),
+				new TheGriefOfSpeechless(),
+				new WenStudyingPaperTwo()
+		));
+
+		propPositive2 = new ArrayList<>(Arrays.asList(
+				new LuckyGlove(),
+				new EmotionalAggregation(),
+				new Monocular(),
+				new KnightStabbingSword()
+		));
+
+		propNegative2 = new ArrayList<>(Arrays.asList(
+				new CloakFragmentsOfBzmdr(),
+				new BrokenBone(),
+				new TerrorDoll(),
+				new YanStudyingPaperOne()
+		));
+
+
         boss_enhance = 0;
         ChaicBlood = 0;
         readBooks = 0;
@@ -356,12 +532,22 @@ public class Statistics {
 
 		CatFirst = false;
 
+		PinkFox = false;
+
 		SmallLeafGet = false;
 		noClearKill = false;
+		Statistics.AutoOilPotion = false;
 
         HealingIsDied = 0;
 
-		dwarfchange = Random.Int(1,101);
+		PinkFoxCount = 0;
+
+		magestaffUpgrade = 0;
+
+		upgradeGold = 18;
+		RandomQuest = Random.NormalIntRange(1,3);
+		GoldMobDead = 0;
+		goldRefogreCount = 0;
 
 		NoTime = false;
 		dm720Fight = false;
@@ -374,8 +560,11 @@ public class Statistics {
 
 		zeroItemLevel = 0;
 		hcDialogLevel = 0;
+		gdzHelpDungeon = 0;
 		youNoItem = false;
 		unLockedFireDargon = false;
+
+		TrueYogNoDied = false;
 
 		GameKillFireDargon = false;
 
@@ -388,9 +577,17 @@ public class Statistics {
 
 		difficultyDLCEXLevel = 0;
 		wcDialogLevel = 0;
+		gdzDialogLevel = 0;
         bossRushMode = false;
 		RandMode = false;
+
+		NightDreamLoop = false;
+
 		RandModeCount = 0;
+
+		killYogMobsAnargy = 0;
+
+		gudaZiRandomSkin = Random.NormalIntRange(1,2);
 
         findMoon = false;
 		deadGo = false;
@@ -420,6 +617,9 @@ public class Statistics {
         qualifiedForNoKilling = false;
         qualifiedForBossChallengeBadge = false;
         mimicking = false;
+
+		RandomMimicItem = Random.NormalIntRange(0,100)>=45;
+		KillMazeMimic = 0;
 
 		//生成商店限制
 		Alone = false;
@@ -467,16 +667,88 @@ public class Statistics {
 		seedCustom = false;
 		GetFoodLing = 0;
 		CrivusbossTeleporter = 0;
+
+		//节日布尔-临时版本
+		Hollow_Holiday = false;
+
+		//BossRush2.5
+		LimitLiquidMatal = 0;
+		LiquidMatalOnlyTen = false;
+	}
+
+	public static boolean hasAllRarenessProp(int rare,int kind){
+		if(kind == 0){
+			switch (rare){
+				case 0:
+					return propPositive0.isEmpty();
+				case 1:
+					return propPositive1.isEmpty();
+				case 2:
+					return propPositive2.isEmpty();
+			}
+		}else{
+			switch (rare){
+				case 0:
+					return propNegative0.isEmpty();
+				case 1:
+					return propNegative1.isEmpty();
+				case 2:
+					return propNegative2.isEmpty();
+			}
+		}
+		return  false;
+	}
+
+	public static void add(Prop prop){
+		if( prop.kind == 0){
+			switch (prop.rareness){
+				case 0:
+					propPositive0.add(prop);
+					break;
+				case 1:
+					propPositive1.add(prop);
+					break;
+				case 2:
+					propPositive2.add(prop);
+					break;
+			}
+		}else{
+			switch (prop.rareness){
+				case 0:
+					propNegative0.add(prop);
+					break;
+				case 1:
+					propNegative1.add(prop);
+					break;
+				case 2:
+					propNegative2.add(prop);
+					if(prop instanceof TerrorDoll) propNegative2.add(new TerrorDollB());
+					if(prop instanceof TerrorDollB) propNegative2.add(new TerrorDoll());
+					break;
+			}
+		}
 	}
 
     public static void storeInBundle(Bundle bundle) {
+
+		/**/
+
+		bundle.put("HOLLOW_DAY",Hollow_Holiday);
+
+		/**/
 
 		bundle.put(ICECLAN, RandModeCount);
 
 
         bundle.put(HIDEEN, DwarfMasterKing);
 
+		bundle.put("KILL_YOG",killYogMobsAnargy);
+
+		bundle.put("GDZRSKIN",gudaZiRandomSkin);
+
 		bundle.put(DWSX, dwarfKill);
+
+		bundle.put(STS, TrueYogNoDied);
 
         bundle.put(WINGAME, winGame);
 
@@ -488,7 +760,18 @@ public class Statistics {
 
 		bundle.put(HKLEVEL,hcDialogLevel);
 
+		bundle.put("PinkFoxCT",PinkFoxCount);
+
+		bundle.put("RDXD",RandomQuest);
+		bundle.put("GDXD",GoldMobDead);
+
+		bundle.put("XXXXXXX",upgradeGold);
+
+		bundle.put("BDSH", magestaffUpgrade);
+
 		bundle.put(WKLEVEL,wcDialogLevel);
+
+		bundle.put(GZLEVEL,gdzDialogLevel);
 
 		bundle.put(LOVX,deadGo);
 
@@ -504,9 +787,15 @@ public class Statistics {
 
 		bundle.put("CAT",CatFirst);
 
+		bundle.put("FOXSD",PinkFox);
+
+		bundle.put("GDZ",gdzHelpDungeon);
+
 		bundle.put("SMALLEAFTGET",SmallLeafGet);
 
 		bundle.put("NOCLEAR",noClearKill);
+
+		bundle.put("OILAUTO",AutoOilPotion);
 
 		bundle.put("SNOW",snow);
 
@@ -537,6 +826,7 @@ public class Statistics {
 
 		bundle.put( HAPPY, bossRushMode);
 		bundle.put( RAND, RandMode);
+		bundle.put( NIGHTDR, NightDreamLoop);
 
 		bundle.put( BOSS_SCORES, bossScores );
 		bundle.put( TOT_BOSS,    totalBossScore );
@@ -568,6 +858,12 @@ public class Statistics {
 		bundle.put( TPDoorDied, TPDoorDieds );
 
 		bundle.put(MMC,mimicking);
+
+		bundle.put(MMC,mimicking);
+
+		bundle.put(MMCITEM,RandomMimicItem);
+
+		bundle.put(MIMIC_MAZEKILL,KillMazeMimic);
 
 		bundle.put( AnmyMobs, TryUsedAnmy );
 
@@ -611,7 +907,7 @@ public class Statistics {
 
 		bundle.put(MSTG,mustTengu);
 
-		bundle.put("DWCHSAG",dwarfchange);
+		bundle.put("DWCHSAG", goldRefogreCount);
 
 		//SPD
 		bundle.put("real_time_passed", second_elapsed);
@@ -628,23 +924,59 @@ public class Statistics {
 		bundle.put("DRAM",GameKillFireDargon);
 
 		bundle.put("ALXONE",Alone);
+
+		//BossRush2.5
+		bundle.put("LIMTAL",LimitLiquidMatal);
+		bundle.put("LIMTAL_DROP",LiquidMatalOnlyTen);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
 
+		//BossRush2.5
+		LiquidMatalOnlyTen = bundle.getBoolean("LIMTAL_DROP");
+		LimitLiquidMatal = bundle.getInt("LIMTAL");
+
+		/**/
+		Hollow_Holiday = bundle.getBoolean("HOLLOW_DAY");
+		/**/
+
+		RandomMimicItem = bundle.getBoolean(MMCITEM);
+
+		PinkFoxCount = bundle.getInt("PinkFoxCT");
+
+		magestaffUpgrade = bundle.getInt("BDSH");
+
+		RandomQuest = bundle.getInt("RDXD");
+		GoldMobDead = bundle.getInt("GDXD");
+
+		upgradeGold = bundle.getInt("XXXXXXX");
+
+		KillMazeMimic = bundle.getInt(MIMIC_MAZEKILL);
+
 		GameKillFireDargon = bundle.getBoolean("DRAM");
+
+		TrueYogNoDied = bundle.getBoolean(STS);
+
 		unLockedFireDargon = bundle.getBoolean("DCXFG");
 		RandModeCount = bundle.getInt(ICECLAN);
+
+		NightDreamLoop = bundle.getBoolean(NIGHTDR);
+
+		killYogMobsAnargy = bundle.getInt("KILL_YOG");
+
+		gudaZiRandomSkin = bundle.getInt("GDZRSKIN");
 
 		hcDialogLevel = bundle.getInt(HKLEVEL);
 
 		snow = bundle.getBoolean("SNOW");
 
+		PinkFox = bundle.getBoolean("FOXSD");
+
 		CrivusbossTeleporter = bundle.getInt(BDK);
 
 		GetFoodLing = bundle.getInt( SIDERLING);
 
-		dwarfchange = bundle.getInt("DWCHSAG");
+		goldRefogreCount = bundle.getInt("DWCHSAG");
 
 		gameDay = bundle.getInt("gameday");
 
@@ -656,11 +988,17 @@ public class Statistics {
 
 		wcDialogLevel = bundle.getInt(WKLEVEL);
 
+		gdzDialogLevel = bundle.getInt(GZLEVEL);
+
 		CatFirst = bundle.getBoolean("CAT");
+
+		gdzHelpDungeon = bundle.getInt("GDZ");
 
 		SmallLeafGet = bundle.getBoolean("SMALLEAFTGET");
 
 		noClearKill = bundle.getBoolean("NOCLEAR");
+
+		AutoOilPotion = bundle.getBoolean("OILAUTO");
 
 		doNotLookLing = bundle.getBoolean(LOCD);
 

@@ -41,13 +41,14 @@ public class BrownBat extends Mob {
         spriteClass = BatSprite.BatEDSprite.class;
 
         HP = HT = 15;
-        defenseSkill = 24;
+        defenseSkill = 9;
         baseSpeed = 1.3f;
 
         EXP = 7;
         maxLvl = 15;
 
         flying = true;
+        isAnimal = true;
 
         loot = new PotionOfHealing();
         lootChance = 0.1667f; //by default, see rollToDropLoot()

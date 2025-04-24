@@ -218,35 +218,6 @@ public class MLChangesButton extends StyledButton {
 			add(btn);
 			pos += BUTTON_HEIGHT + MARGIN*3;
 
-			RedButton btn2 = new RedButton(Messages.get(MLChangesButton.class,"download2")) {
-				@Override
-				public void update() {
-					if (downloadSuccess) {
-						text(updateProgress);
-					}
-				}
-				@Override
-				protected void onClick() {
-					if(Objects.equals(update.URL2, "null") && !downloadSuccess){
-						ShatteredPixelDungeon.scene().add( new WndError( Messages.get(MLChangesButton.class, "null") ) );
-					} else if(DeviceCompat.isDesktop()){
-						ShatteredPixelDungeon.platform.openURI( update.URL2 );
-					} else if (!downloadSuccess) {
-						if(downloadFailure) downloadFailure = false;
-						Game.platform.updateGame(update.URL2, listener);
-					} else {
-						Game.platform.install(file);
-					}
-				}
-			};
-			btn2.setRect(0, pos, width, BUTTON_HEIGHT);
-
-			if(!DeviceCompat.isDesktop()){
-				add(btn2);
-				pos += BUTTON_HEIGHT + MARGIN;
-			}
-
-
 			RedButton btn3 = new RedButton(Messages.get(MLChangesButton.class,"download3")) {
 				@Override
 				protected void onClick() {
@@ -262,7 +233,7 @@ public class MLChangesButton extends StyledButton {
 				@Override
 				protected void onClick() {
 					if(Objects.equals(update.URL4, "null")){
-						ShatteredPixelDungeon.platform.openURI( "https://www.pd.qinyueqwq.top" );
+						ShatteredPixelDungeon.platform.openURI( "https://mlpd.spldream.com/" );
 					} else {
 						ShatteredPixelDungeon.platform.openURI( update.URL4 );
 					}
@@ -270,7 +241,6 @@ public class MLChangesButton extends StyledButton {
 			};
 			btn4.setRect(0, pos, width, BUTTON_HEIGHT);
 			add(btn4);
-
 
 			pos += BUTTON_HEIGHT + MARGIN;
 

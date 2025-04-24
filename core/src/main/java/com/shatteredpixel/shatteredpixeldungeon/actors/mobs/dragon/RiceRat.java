@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.dragon;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -20,7 +21,12 @@ public class RiceRat extends Mob implements Callback {
     {
         spriteClass = RiceRatSprite.class;
 
-        HP = HT = 30;
+        if(Statistics.bossRushMode){
+            HP = HT = 80;
+        } else {
+            HP = HT = 30;
+        }
+
         defenseSkill = 4;
 
         EXP = 5;
@@ -32,7 +38,7 @@ public class RiceRat extends Mob implements Callback {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 12, 19 );
+        return Statistics.bossRushMode ? Random.NormalIntRange( 22, 26 ) : Random.NormalIntRange( 12, 19 );
     }
 
     @Override

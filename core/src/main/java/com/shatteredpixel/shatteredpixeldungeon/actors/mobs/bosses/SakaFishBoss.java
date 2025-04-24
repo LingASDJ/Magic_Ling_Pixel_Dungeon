@@ -15,12 +15,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.FrostFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
@@ -72,20 +76,28 @@ public class SakaFishBoss extends Boss {
     /***/
     {
         spriteClass = SakaFishBossSprites.class;
-        initBaseStatus(19, 25, 6, 10, 480, 5, 12);
+        if(Statistics.bossRushMode){
+            initBaseStatus(19, 25, 6, 20, 648, 5, 12);
+        } else {
+            initBaseStatus(19, 25, 6, 10, 480, 5, 12);
+        }
         state = SLEEPING;
         initProperty();
         HUNTING = new Hunting();
         baseSpeed = 1.75f;
         initStatus(76);
-        HP=480;
-        HT=480;
         immunities.add(FrostBurning.class);
         immunities.add(HalomethaneBurning.class);
         immunities.add(Terror.class);
         properties.add(Property.ICY);
         properties.add(Property.ELECTRIC);
         properties.add(Property.FIERY);
+
+        if(Statistics.bossRushMode){
+            immunities.add(Hex.class);
+            immunities.add(Vertigo.class);
+            immunities.add(Blindness.class);
+        }
 
         viewDistance = 30;
     }
@@ -98,11 +110,12 @@ public class SakaFishBoss extends Boss {
             return;
         }
 
-        if(Random.Float()<0.4f){
+        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
+
+        if(Random.Float()<0.4f && level != AncientMysteryCityBossLevel.State.END_BOSS){
             ScrollOfTeleportation.appear(this,337);
         }
 
-        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
         if (level==AncientMysteryCityBossLevel.State.FALL_BOSS){
             dmg = 10 + (int)(Math.sqrt(2*(dmg - 4) + 1) - 1)/2;
         } else if (dmg >= 20){
@@ -177,7 +190,7 @@ public class SakaFishBoss extends Boss {
         if(level==AncientMysteryCityBossLevel.State.FALL_BOSS)
             return Random.NormalIntRange(30, 55);
         else
-            return Random.NormalIntRange(20, 30);
+            return Random.NormalIntRange(27, 37);
     }
 
     @Override
@@ -196,7 +209,7 @@ public class SakaFishBoss extends Boss {
     @Override
     public int drRoll() {
         AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
-        return level == AncientMysteryCityBossLevel.State.FALL_BOSS ? 10 : 35;
+        return level == AncientMysteryCityBossLevel.State.FALL_BOSS ? 10 : 25;
     }
 
 
@@ -611,10 +624,20 @@ public class SakaFishBoss extends Boss {
             }
 
             if (hit( this, ch, true )) {
-                if(Dungeon.isChallenged(STRONGER_BOSSES)){
+                if(Dungeon.isChallenged(STRONGER_BOSSES)) {
+                    ch.damage( Random.NormalIntRange( 50, 70), new DeathGaze());
+                } else if(Dungeon.isChallenged(STRONGER_BOSSES)){
                     ch.damage( Random.NormalIntRange( 40, 60 ), new DeathGaze() );
                 } else {
                     ch.damage( Random.NormalIntRange( 30, 60 ), new DeathGaze() );
+                }
+
+                //8-18 ADD
+
+                for (int offset : PathFinder.NEIGHBOURS4){
+                    if (!Dungeon.level.solid[ch.pos+offset]) {
+                        GameScene.add(Blob.seed(ch.pos+offset, 2, HalomethaneFire.class));
+                    }
                 }
 
                 if(DragonGirlBlue.Quest.four_used_points<2){

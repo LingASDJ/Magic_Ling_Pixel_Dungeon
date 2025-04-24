@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -69,20 +68,18 @@ public class HallsBossLevel extends Level {
 		viewDistance = Math.min(4, viewDistance);
 	}
 
+	@Override
+	public void playBossMusic(){
+		if (BossHealthBar.isBleeding()){
+			Music.playModeBGM(Assets.Music.HALLS_BOSS_FINALE, true);
+		} else {
+			Music.playModeBGM(Assets.Music.HALLS_TENSE, true);
+		}
+	}
 
 	@Override
 	public void playLevelMusic() {
-		if (locked && BossHealthBar.isAssigned()){
-			if (BossHealthBar.isBleeding()){
-				Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
-			} else {
-				Music.INSTANCE.play(Assets.Music.HALLS_TENSE, true);
-			}
-		} else if (map[exit()] != Terrain.EXIT){
-			Music.INSTANCE.end();
-		} else {
-			BGMPlayer.playBGMWithDepth();
-		}
+		Music.playModeBGM(Assets.Music.BGM_5, true);
 	}
 
 	private static final int WIDTH = 32;
@@ -232,12 +229,29 @@ public class HallsBossLevel extends Level {
 		}
 	}
 
+	private boolean SothothEye = false;
+
+	private static int[] FirstPos = new int[]{462,336,466,366,370};
+	private static int[] EndPos   = new int[]{336,466,366,370,462};
+
 	@Override
 	public void occupyCell( Char ch ) {
 		if (map[entrance()] == Terrain.ENTRANCE && map[exit()] != Terrain.EXIT
 				&& ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance()) >= 2) {
 			seal();
 		}
+
+//		if(Statistics.amuletObtained && Badges.isUnlocked(Badges.Badge.CHAMPION_1X) && !SothothEye
+//				|| Dungeon.isDLC(Conducts.Conduct.DEV) && !SothothEye) {
+//
+//			TrueYog npc = new TrueYog();
+//			npc.pos = exit() + width*3;
+//			mobs.add(npc);
+//			GameScene.add( npc );
+//
+//			SothothEye = true;
+//		}
+
 
 		super.occupyCell( ch );
 	}
@@ -315,8 +329,15 @@ public class HallsBossLevel extends Level {
 	}
 
 	@Override
+	public void storeInBundle( Bundle bundle ) {
+		super.storeInBundle(bundle);
+		bundle.put("sothotheye",SothothEye);
+	}
+
+	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
+		SothothEye = bundle.getBoolean("sothotheye");
 		for (Mob m : mobs){
 			if (m instanceof YogDzewa){
 				((YogDzewa) m).updateVisibility(this);

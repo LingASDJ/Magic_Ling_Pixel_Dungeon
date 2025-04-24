@@ -50,6 +50,10 @@ public class SewerBossEntranceRoom extends EntranceRoom {
 		Painter.fill( level, left+1, top+1, width()-2, 1, Terrain.WALL_DECO);
 		Painter.fill( level, left+1, top+2, width()-2, 1, Terrain.WATER);
 
+		for (Room.Door door : connected.values()) {
+			if(door != null)  level.BottleWraith(door, level, left, right, top, bottom);
+		}
+
 		int entrance;
 		do {
 			entrance = level.pointToCell(random(3));

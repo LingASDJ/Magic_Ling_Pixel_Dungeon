@@ -2,58 +2,26 @@ package com.shatteredpixel.shatteredpixeldungeon;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeArtifact;
-import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeRing;
-import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeSeed;
-import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeStaff;
-import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeStone;
-import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeTippedDart;
-import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeTrinket;
-import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeWand;
-import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeWeapon;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessBossRushLow;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.QuestGold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
-import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.TestItem;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
-import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
-import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
 
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class GameRules {
@@ -89,7 +57,6 @@ public class GameRules {
                             Game.switchScene(InterlevelScene.class);
                             Buff.affect(hero, BlessBossRushLow.class, ChampionHero.DURATION*123456f);
                             Statistics.difficultyDLCEXLevel = 1;
-                            Statistics.deepestFloor = 100;
                             Statistics.bossRushMode = true;
                             Dungeon.gold = 0;
                             Dungeon.rushgold = 16;
@@ -107,7 +74,6 @@ public class GameRules {
                             InterlevelScene.curTransition.centerCell = -1;
                             Game.switchScene(InterlevelScene.class);
                             Statistics.difficultyDLCEXLevel = 2;
-                            Statistics.deepestFloor = 100;
                             Statistics.bossRushMode = true;
                             Dungeon.gold = 0;
                             Dungeon.rushgold = 16;
@@ -125,7 +91,6 @@ public class GameRules {
                             InterlevelScene.curTransition.centerCell = -1;
                             Game.switchScene(InterlevelScene.class);
                             Statistics.difficultyDLCEXLevel = 3;
-                            Statistics.deepestFloor = 100;
                             Statistics.bossRushMode = true;
                             Dungeon.gold = 0;
                             Dungeon.rushgold = 16;
@@ -146,7 +111,6 @@ public class GameRules {
                                 InterlevelScene.curTransition.centerCell = -1;
                                 Game.switchScene(InterlevelScene.class);
                                 Statistics.difficultyDLCEXLevel = 4;
-                                Statistics.deepestFloor = 100;
                                 Statistics.bossRushMode = true;
                                 Dungeon.gold = 0;
                                 Dungeon.rushgold = 16;
@@ -188,6 +152,7 @@ public class GameRules {
                             InterlevelScene.curTransition.centerCell = -1;
                             Game.switchScene(InterlevelScene.class);
                             Statistics.RandMode = true;
+                            Buff.affect(hero, QuestGold.class).set((100), 1);
                         }
                     }
                 });
@@ -196,87 +161,76 @@ public class GameRules {
         });
     }
 
-    /**
-     * 百变模式的嬗变方法
-     */
-    public static void RandMode_ItemMode() {
-        Statistics.RandModeCount++;
-        if(Statistics.RandMode) {
-            ArrayList<Item> is = Dungeon.hero.belongings.getAllItems(Item.class);
-            Item result = is.get(0);
-            if (Dungeon.hero.belongings.weapon instanceof Weapon) {
-                hero.belongings.weapon = changeWeapon((Weapon) hero.belongings.weapon);
-                hero.belongings.weapon.identify();
-                hero.belongings.weapon.upgrade();
+    public static String BannersRules() {
+        final Calendar calendar = Calendar.getInstance();
+        String banners;
+        int month = calendar.get(Calendar.MONTH);
+
+        if(SPDSettings.isCustomBanner()){
+            switch (SPDSettings.CustomBanner_Text()) {
+                case "复活":
+                    banners = Assets.Interfaces.BANNERS_EA;
+                    break;
+                case "圣诞":
+                    banners = Assets.Interfaces.BANNERS_SD;
+                    break;
+                case "元宵":
+                    banners = Assets.Interfaces.BANNERS_YX;
+                    break;
+                case "生日":
+                    banners = Assets.Interfaces.BANNERS_BD;
+                    break;
+                case "清明":
+                    banners = Assets.Interfaces.BANNERS_QM;
+                    break;
+                case "万圣":
+                    banners = Assets.Interfaces.BANNERS_HL;
+                    break;
+                case "春节":
+                    banners = Assets.Interfaces.BANNERS_CJ;
+                    break;
+                case "夏季":
+                    banners = Assets.Interfaces.BANNERS_SM;
+                    break;
+                case "冬季":
+                    banners = Assets.Interfaces.BANNERS_WT;
+                    break;
+                case "秋季":
+                    banners = Assets.Interfaces.BANNERS_AT;
+                    break;
+                case "春季":
+                    banners = Assets.Interfaces.BANNERS_SR;
+                    break;
+                default:
+                    banners = Assets.Interfaces.BANNERS;
+                    break;
             }
-//            if (Dungeon.hero.belongings.misc != null) {
-//                if (hero.belongings.misc instanceof Ring) {
-//                    hero.belongings.misc = changeRing(Dungeon.hero.belongings.ring);
-//                    hero.belongings.misc.upgrade();
-//                } else if(hero.belongings.misc instanceof Artifact) {
-//                    hero.belongings.misc = changeArtifact(Dungeon.hero.belongings.artifact);
-//                }
-//            }
-            if (hero.belongings.ring != null) {
-                hero.belongings.ring = changeRing(Dungeon.hero.belongings.ring);
-                hero.belongings.ring.upgrade();
+        } else {
+            if (RegularLevel.holiday == RegularLevel.Holiday.YX) {
+                if (!SPDSettings.ClassUI()) {
+                    banners = Assets.Interfaces.BANNERS_YX;
+                } else {
+                    banners = Assets.Interfaces.BANNERS_BD;
+                }
+            } else if (RegularLevel.holiday == RegularLevel.Holiday.CJ) {
+                banners = Assets.Interfaces.BANNERS_CJ;
+            } else if (RegularLevel.holiday == RegularLevel.Holiday.QMJ) {
+                banners = Assets.Interfaces.BANNERS_QM;
+            } else if (month == 2 || month == 3 || month == 4) { // 春季：3, 4, 5月
+                banners = Assets.Interfaces.BANNERS_SR;
+            } else if (month == 5 || month == 6 || month == 7) { // 夏季：6, 7, 8月
+                banners = Assets.Interfaces.BANNERS_SM;
+            } else if (month == 8 || month == 9 || month == 10) { // 秋季：9, 10, 11月
+                banners = Assets.Interfaces.BANNERS_AT;
+            } else { // 冬季：12, 1, 2月
+                banners = Assets.Interfaces.BANNERS_WT;
             }
-//            if (hero.belongings.artifact != null) {
-//                hero.belongings.artifact = changeArtifact(hero.belongings.artifact);
-//            }
-            for (Item item : is.toArray(new Item[0])) {
-                if (item instanceof MagesStaff) {
-                    result = changeStaff((MagesStaff) item);
-                    item.upgrade();
-                    Dungeon.quickslot.setSlot(0, result);
-                } else if (item instanceof TippedDart) {
-                    result = changeTippedDart((TippedDart) item);
-                    item.upgrade();
-                } else if (item instanceof MeleeWeapon || item instanceof MissileWeapon) {
-                    item.upgrade();
-                    result = changeWeapon((Weapon) item);
-                } else if (item instanceof Wand) {
-                    item.upgrade();
-                    result = changeWand((Wand) item);
-                } else if (item instanceof Plant.Seed) {
-                    result = changeSeed((Plant.Seed) item);
-                } else if (item instanceof Trinket) {
-                    if (item.level() < 6){
-                        item.detach(Dungeon.hero.belongings.backpack);
-                        result = changeTrinket((Trinket) item);
-                        result.upgrade();
-                    }
-                } else if (item instanceof Runestone) {
-                    result = changeStone((Runestone) item);
-                } else if (item instanceof Artifact) {
-                    Artifact a = changeArtifact((Artifact) item);
-                    if (item instanceof OilLantern) {
-                        result = item;
-                        result.level(0);
-                    } else if (a == null) {
-                        //if no artifacts are left, generate a random +0 ring with shared ID/curse state
-                        result = Generator.randomUsingDefaults(Generator.Category.RING);
-                        result.levelKnown = item.levelKnown;
-                        result.cursed = item.cursed;
-                        result.cursedKnown = item.cursedKnown;
-                        result.level(0);
-                    }
-
-                }
-
-                if(!(item instanceof Bag || item instanceof DLCItem|| item instanceof TestItem || item instanceof Trinket || item instanceof TestBooks|| item instanceof SpiritBow
-                || item instanceof Potion || item instanceof Scroll || item instanceof Waterskin || item.unique) && result !=null){
-                    item.detach(Dungeon.hero.belongings.backpack);
-                }
-
-                if (!result.collect()) {
-                    Dungeon.level.drop(result, Dungeon.hero.pos).sprite.drop();
-                }
-
-            }
-            Transmuting.show(Dungeon.hero, new RushMobScrollOfRandom(), new RushMobScrollOfRandom());
-            Dungeon.hero.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
-            GLog.p(Messages.get(RushMobScrollOfRandom.class, "recycled"));
         }
+
+
+        return banners;
     }
+
+
+
 }

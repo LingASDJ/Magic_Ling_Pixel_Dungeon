@@ -65,7 +65,7 @@ public class WndImp extends Window {
 		btnReward.setRect( 0, message.top() + message.height() + GAP, WIDTH, BTN_HEIGHT );
 		add( btnReward );
 
-		if(SPDSettings.KillDwarf() && !(Statistics.deepestFloor >=20) ){
+		if(SPDSettings.KillDwarf() && !(Statistics.deepestFloor >=20) && !Statistics.RandMode ){
 			RedButton btnChallenges = new RedButton( Messages.get(this, "challenges") ) {
 				@Override
 				protected void onClick() {
@@ -101,5 +101,9 @@ public class WndImp extends Window {
 		imp.flee();
 		
 		Imp.Quest.complete();
+
+		if(Statistics.RandMode){
+			Statistics.goldRefogreCount++;
+		}
 	}
 }

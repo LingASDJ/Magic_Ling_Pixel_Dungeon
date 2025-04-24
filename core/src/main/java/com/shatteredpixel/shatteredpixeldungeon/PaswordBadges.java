@@ -57,6 +57,14 @@ public class PaswordBadges {
         displayBadge( Badge.UNLOCK_RICESWORD );
     }
 
+    public static void KILL_YOGSTS() {
+        displayBadge( Badge.KILL_YOGSTS );
+    }
+
+    public static void ONE_POUCH() {
+        displayBadge( Badge.ONE_POUCH );
+    }
+
     public static void SWORDDRAGON() {
         displayBadge( Badge.SWORDDREAM );
     }
@@ -101,6 +109,19 @@ public class PaswordBadges {
         displayBadge( Badge.PINK_LING);
     }
 
+    public static void LEGEND() {
+        displayBadge(Badge.PRAY_LEGEND);
+    }
+
+    public static void MYTHOLOGY() {
+        displayBadge(Badge.PRAY_MYTHOLOGY);
+    }
+
+    public static void BLOOD_KING() {
+        displayBadge(Badge.BLOOD_KING);
+    }
+
+
 
     public enum Badge {
 
@@ -112,8 +133,9 @@ public class PaswordBadges {
         SAKA_DIED(5),
         RESET_DAY(6),
         BRCLER(7),
-        ALLCHSX(8),
+        ALLCHSX(8,false,true),
 
+        BLOOD_KING(11),
         GODD_MAKE(12),
 
         BIG_X(13),
@@ -135,19 +157,30 @@ public class PaswordBadges {
 
         KILL_FISHBOSS(26),
 
-        UNLOCK_RICESWORD(27);
+        UNLOCK_RICESWORD(27),
+
+        KILL_YOGSTS(28),
+
+        ONE_POUCH(29),
+
+        //祈愿
+        PRAY_LEGEND (30),
+        PRAY_MYTHOLOGY (31);
 
         public boolean meta;
+
+        public boolean challenges;
 
         public int image;
 
         Badge( int image ) {
-            this( image, false );
+            this( image, false,false );
         }
 
-        Badge( int image, boolean meta ) {
+        Badge( int image, boolean meta,boolean challenges ) {
             this.image = image;
             this.meta = meta;
+            this.challenges = challenges;
         }
 
         public String title(){
@@ -155,7 +188,12 @@ public class PaswordBadges {
         }
 
         public String desc(){
-            return Messages.get(this, name()+".desc");
+            if(challenges) {
+                return Messages.get(this, name() + ".desc", SPDSettings.RecordChallengs());
+            } else {
+                return Messages.get(this, name()+".desc");
+            }
+
         }
 
         Badge() {
@@ -164,7 +202,7 @@ public class PaswordBadges {
     }
 
     public static HashSet<Badge> global;
-    private static HashSet<Badge> local = new HashSet<>();
+    public static HashSet<Badge> local = new HashSet<>();
 
 
 

@@ -1,35 +1,26 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.FoundChest;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TPDoorSprites;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
-public class TPDoor extends Mob {
+public class TPDoor extends NTNPC {
 
     @Override
     public int drRoll() {
@@ -38,189 +29,71 @@ public class TPDoor extends Mob {
 
     {
         spriteClass = TPDoorSprites.class;
-
         HP = HT = 100;
         properties.add(Property.MINIBOSS);
-        properties.add(Property.INORGANIC);
-        properties.add(Property.ABYSS);
-
-
-
-        if(!Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-            properties.add(Property.IMMOVABLE);
-            baseSpeed = 0.85f;
-            state = PASSIVE;
-        }
-
+        state = PASSIVE;
     }
 
     @Override
     protected boolean canAttack( Char enemy ) {
-        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-           return false;
-        } else {
-            return super.canAttack(enemy);
-        }
+        return false;
     }
 
     @Override
-    protected boolean getCloser(int target) {
-        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-            if (state == HUNTING) {
-                if (Dungeon.level.distance(pos, target) > 12)
-                    return super.getCloser(target);
-                return enemySeen && getFurther(target);
-            } else {
-                return super.getCloser(target);
-            }
-        } else {
-            return super.getCloser(target);
-        }
-        //return false;
-    }
+    public boolean interact(Char c) {
+        sprite.turnTo(pos, hero.pos);
 
-    private int kill = 0;
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                GameScene.show(new WndOptions(new TPDoorSprites(),
+                        Messages.titleCase(Messages.get(this, Statistics.TPDoorDieds ? "leave" : "name")),
+                        Messages.get(this, Statistics.TPDoorDieds ?"quest_start_ender" : "quest_start_prompt"),
+                        Messages.get(this, "enter_yes"),
+                        Messages.get(this, "enter_no")) {
+                    @Override
+                    protected void onSelect(int index) {
+                        if (index == 0) {
+                            if(Statistics.TPDoorDieds){
+                                TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                                if (timeFreeze != null) timeFreeze.disarmPresses();
+                                Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                                if (timeBubble != null) timeBubble.disarmPresses();
+                                InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+                                InterlevelScene.curTransition = new LevelTransition();
+                                InterlevelScene.curTransition.destDepth = depth;
+                                InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_ENTRANCE;
+                                InterlevelScene.curTransition.destBranch = 0;
+                                InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_ENTRANCE;
+                                InterlevelScene.curTransition.centerCell = -1;
+                                Game.switchScene(InterlevelScene.class);
+                                Buff.detach(hero, FoundChest.class);
+                            } else {
+                                TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                                if (timeFreeze != null) timeFreeze.disarmPresses();
+                                Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                                if (timeBubble != null) timeBubble.disarmPresses();
+                                InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+                                InterlevelScene.curTransition = new LevelTransition();
+                                InterlevelScene.curTransition.destDepth = depth;
+                                InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+                                InterlevelScene.curTransition.destBranch = 4;
+                                InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+                                InterlevelScene.curTransition.centerCell = -1;
+                                Game.switchScene(InterlevelScene.class);
+                                Buff.affect(hero, FoundChest.class).set(100, 1);
+                            }
 
-    private static final String KILL = "kill";
-
-    @Override
-    public void storeInBundle(Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(KILL, kill);
-    }
-
-
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        kill = bundle.getInt(KILL);
-    }
-
-    @Override
-    public void damage(int dmg, Object src) {
-
-        if (AntiMagic.RESISTS.contains(src.getClass())) {
-            dmg = 0;
-        } else {
-            if(!(src instanceof Hero)){
-                return;
-            }
-            if (dmg >= 20){
-                //20
-                dmg = 20;
-                if (hero.buff(DiamondKnight.DiedDamager.class) == null) {
-                    Buff.affect(this, DiamondKnight.DiedDamager.class);
-                    switch (Random.NormalIntRange(0,8)){
-                        case 0:
-                            pos = 613;
-                            break;
-                        case 1:
-                            pos = 888;
-                            break;
-                        case 2:
-                            pos = 1088;
-                            break;
-                        case 3:
-                            pos = 732;
-                            break;
-                        case 4:
-                            pos = 297;
-                            break;
-                        case 5:
-                            pos = 206;
-                            break;
-                        case 6:
-                            pos = 255;
-                            break;
-                        case 7:
-                            pos = 1186;
-                            break;
-                        case 8:
-                            pos = 820;
-                            break;
-                    }
-                    ScrollOfTeleportation.appear(this, pos);
-                    Buff.affect( hero, MindVision.class, 2f );
-                    kill = 0;
-                }
-            } else {
-                dmg = 0;
-
-                if(kill >= 5){
-
-                    Game.runOnRenderThread(new Callback() {
-                        @Override
-                        public void call() {
-                            GameScene.show(new WndOptions(new DimandKingSprite(),
-                                    Messages.titleCase(Messages.get(DiamondKnight.class, "name")),
-                                    Messages.get(TPDoor.class, "quest_tengu_prompt"),
-                                    Messages.get(TPDoor.class, "enter_yes"),
-                                    Messages.get(TPDoor.class, "enter_no")) {
-                                @Override
-                                protected void onSelect(int index) {
-                                    if (index == 0) {
-
-                                        GameScene.show(new WndOptions(new DimandKingSprite(),
-                                                Messages.titleCase(Messages.get(DiamondKnight.class, "name")),
-                                                Messages.get(TPDoor.class, "quest_tengu_really"),
-                                                Messages.get(TPDoor.class, "enter_no"),
-                                                Messages.get(TPDoor.class, "enter_no"),
-                                                Messages.get(TPDoor.class, "enter_no"),
-                                                Messages.get(TPDoor.class, "enter_yes")) {
-                                            @Override
-                                            protected void onSelect(int index) {
-                                                if (index == 3) {
-                                                    Statistics.mustTengu = true;
-                                                    if(Dungeon.level.locked) Dungeon.level.unseal();
-                                                    InterlevelScene.mode = InterlevelScene.Mode.RESET;
-                                                    Game.switchScene(InterlevelScene.class);
-                                                    for (Heap heap : level.heaps.valueList()) {
-                                                        for (Item item : heap.items) {
-                                                            if(!(item instanceof MIME)){
-                                                                item.doPickUp(hero, hero.pos);
-                                                                heap.destroy();
-                                                            } else {
-                                                                heap.destroy();
-                                                            }
-                                                        }
-                                                    }
-                                                } else {
-                                                    kill = 0;
-                                                    yell( Messages.get(DiamondKnight.class, "ten"));
-                                                }
-                                            }
-                                        });
-                                    } else if(index == 1){
-                                        kill = 0;
-                                        yell( Messages.get(DiamondKnight.class, "ten"));
-                                    }
-                                }
-                            });
                         }
-                    });
-
-
-                }
-
-                if(kill < 6 && enemy == hero){
-                    GLog.n(Messages.get(this,"lowdamage"));
-                    kill++;
-                } else {
-                    kill--;
-                }
+                    }
+                });
             }
-        }
-        super.damage(dmg, src);
+
+        });
+
+        return true;
     }
 
-    @Override
-    public void die( Object cause ) {
-
-        super.die(cause);
-        GameScene.flash(0x808080);
-        Statistics.TPDoorDieds = true;
-        ((ColdChestBossLevel) Dungeon.level).progress();
-    }
 
 }
 

@@ -77,7 +77,11 @@ public class CoinRoom extends SpecialRoom {
 
         Point e = new Point(centerX, centerY);
         int LXDPos = (left + right) - e.x + e.y * level.width();
-        level.drop( new IronKey( Dungeon.depth ),LXDPos).type = Heap.Type.CHEST;
+
+        if(Dungeon.branch != 4 && Dungeon.depth != 10){
+            level.drop( new IronKey( Dungeon.depth ),LXDPos).type = Heap.Type.CHEST;
+        }
+
 
     }
 }

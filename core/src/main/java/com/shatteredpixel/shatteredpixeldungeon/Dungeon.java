@@ -57,11 +57,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -76,7 +77,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
@@ -90,9 +90,13 @@ import com.watabou.utils.Random;
 import com.watabou.utils.SparseArray;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class Dungeon {
 	public static boolean whiteDaymode;
@@ -105,6 +109,11 @@ public class Dungeon {
 		ARCANE_STYLI,
 		BBAT,
 		TRINKET_CATA,
+		ENCH_STONE,
+		INT_STONE,
+		LAB_ROOM, //actually a room, but logic is the same
+
+
 		//Health potion sources
 		//enemies
 		SWARM_HP,
@@ -122,6 +131,9 @@ public class Dungeon {
 		THEIF_MISC,
 		GUARD_ARM,
 		SHAMAN_WAND,
+
+		GOLIN_RING,
+
 		DM200_EQUIP,
 		GOLEM_EQUIP,
 
@@ -140,7 +152,7 @@ public class Dungeon {
 		LORE_PRISON,
 		LORE_CAVES,
 		LORE_CITY,
-		LORE_HALLS;
+		LORE_HALLS, PROP_BAG;
 
 		public int count = 0;
 
@@ -185,11 +197,102 @@ public class Dungeon {
 
 	}
 
+	public static enum Attribute {
+
+		MultiHP(Type.Negative,Aspect.Body),
+		FasterRunner(Type.Negative,Aspect.Body),
+		CrispyBody(Type.Negative,Aspect.Special),
+		MagicPowerLess(Type.Negative,Aspect.Magic),
+		AnotherChance(Type.Negative,Aspect.Special),
+		ExtendArmor(Type.Negative,Aspect.Body);
+
+		public boolean enabled = false;
+		public int severity = 1;
+
+		Type type;
+		Aspect aspect;
+
+		static enum Type{
+			Positive,
+			Negative;
+		}
+
+		static enum Aspect{
+			//怪物属性
+			Body,
+			//炼金以及魔法相关
+			Magic,
+			//其他
+			Special;
+		}
+
+		Attribute(Type t,Aspect a){
+			type =  t;
+			aspect = a;
+		}
+
+		public static void randomAttribute(){
+
+			//随机检索出三种负面词条并启用
+
+			ArrayList<Attribute> att_BodyA = new ArrayList<>();
+			ArrayList<Attribute> att_Magic = new ArrayList<>();
+			ArrayList<Attribute> att_Special = new ArrayList<>();
+
+			for (Attribute att : values()){
+				if(att.aspect == Aspect.Body) {
+					att_BodyA.add(att);
+				} else if (att.aspect == Aspect.Magic) {
+					att_Magic.add(att);
+				} else if (att.aspect == Aspect.Special) {
+					att_Special.add(att);
+				}
+			}
+
+			att_BodyA.get(Random.Int(0,att_BodyA.size()+1)).enabled = true;
+			att_Magic.get(Random.Int(0,att_Magic.size()+1)).enabled = true;
+			att_Special.get(Random.Int(0,att_Special.size()+1)).enabled = true;
+
+		}
+
+		public static void upgrade(Attribute att, int lvl){
+			att.severity += lvl;
+		}
+
+		public static void reset(){
+			for (Attribute att : values()){
+				att.enabled = false;
+				att.severity = 1;
+			}
+		}
+
+		public static void store( Bundle bundle ){
+			for (Attribute att : values()){
+				bundle.put(att.name(), att.enabled);
+				bundle.put(att.name(),att.severity);
+			}
+		}
+
+		public static void restore( Bundle bundle ){
+			for (Attribute att : values()){
+				if (bundle.contains(att.name())){
+					att.enabled = bundle.getBoolean(att.name());
+					att.severity = bundle.getInt(att.name());
+				} else {
+					att.enabled = false;
+					att.severity = 1;
+				}
+
+			}
+
+		}
+	}
+
 	public static int challenges;
 	public static int mobsToChampion;
 	private static final String GENERATED_LEVELS = "generated_levels";
 	private static final String GOLD = "gold";
-
+	private static final String ENERGY		= "energy";
 	private static final String RUSHGOLD = "rushgold";
 
 	public static Level level;
@@ -230,9 +333,23 @@ public class Dungeon {
 	public static boolean dailyReplay;
 	public static String customSeedText = "";
 	public static long seed;
-	private static final String ENERGY = "energy";
 
-	public static boolean[] discovered = new boolean[30];
+	//we initialize the seed separately so that things like interlevelscene can access it early
+	public static void initSeed(){
+		if (daily) {
+			//Ensures that daily seeds are not in the range of user-enterable seeds
+			seed = SPDSettings.lastDaily() + DungeonSeed.TOTAL_SEEDS;
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+			format.setTimeZone(TimeZone.getTimeZone("UTC"));
+			customSeedText = format.format(new Date(SPDSettings.lastDaily()));
+		} else if (!SPDSettings.customSeed().isEmpty()){
+			customSeedText = SPDSettings.customSeed();
+			seed = DungeonSeed.convertFromText(customSeedText);
+		} else {
+			customSeedText = "";
+			seed = DungeonSeed.randomSeed();
+		}
+	}
 
 	public static boolean isChallenged( int mask ) {
 		return (challenges & mask) != 0;
@@ -284,14 +401,6 @@ public class Dungeon {
 	public static boolean trinketCataNeeded(){
 		//one trinket catalyst on floors 1-3
 		return depth < 5 && depth != 0 && !LimitedDrops.TRINKET_CATA.dropped() && Random.Int(4-depth) == 0;
-	}
-
-	public static void resetLevel() {
-
-		Actor.clear();
-
-		level.reset();
-		switchLevel( level, level.entrance() );
 	}
 
 	public static long seedCurDepth(){
@@ -352,12 +461,18 @@ public class Dungeon {
 		return depth == 6 || depth == 11 || depth == 16;
 	}
 
-	public static boolean DragonBoss() {
-		return depth == 5;
+	public static boolean RDXLCLevel() {
+		//12，18，22，24，32，40
+		return depth == 12 || depth == 18|| depth == 22 ||  depth == 24 || depth == 32|| depth == 40;
+	}
+
+	public static boolean noLEvelsLeft() {
+		//13 17 33 42
+		return depth == 13 || depth == 17 || depth == 33 || depth == 42;
 	}
 
 	public static boolean shopRushLevel() {
-		return depth == 5 || depth == 12 || depth == 19 || depth == 25;
+		return depth == 12 || depth == 18|| depth == 22 ||  depth == 24 || depth == 32|| depth == 40;
 	}
 
 	public static boolean exgoldLevel() {
@@ -369,6 +484,10 @@ public class Dungeon {
 		return depth == 6 || depth == 11 || depth == 16|| depth == 21;
 	}
 
+	public static boolean RDLCLevel() {
+		return depth == 27 || depth == 28 || depth == 29 || depth == 30;
+	}
+
 	public static boolean iceLevel() {
 		return depth > 5 && depth < 16;
 	}
@@ -376,17 +495,30 @@ public class Dungeon {
 	public static boolean aqiLevel() {
 		return depth == 4 || depth == 8 || depth == 13 || depth == 18;
 	}
-	public static boolean sbbossLevel() {
-		return depth == 4 || depth == 9 || depth == 14 || depth == 19 || depth == 24;
-	}
 
+	public static boolean sbbossLevel() {
+		return depth == 7 || depth == 17 || depth == 21 || depth == 29 || depth == 33 || depth == 37;
+	}
 
 	public static boolean bossLevel() {
 		return bossLevel( depth );
 	}
 
+	// 判断是否是Boss层
+	public static boolean RushBossLevel(int depth) {
+		int[] bossLevels = {1, 3, 5, 7, 9, 11, 13,15, 17,19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 42};
+		for (int level : bossLevels) {
+			if (depth == level) {
+				return true;
+				// 是Boss层，返回true表示不生成卷轴
+			}
+		}
+		return false; // 不是Boss层，返回false可以生成卷轴
+	}
+
+
 	public static boolean bossLevel( int depth ) {
-		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25|| depth == 30 || depth == -15| depth == -31;
+		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25|| depth == 31 || depth == -15| depth == -31;
 	}
 
 	public static int escalatingDepth() {
@@ -432,10 +564,9 @@ public class Dungeon {
 			if (t != null) pos = t.cell();
 		}
 
-		//Place hero at the entrance if they are out of the map (often used for pox = -1)
-		// or if they are in solid terrain (except in the mining level, where that happens normally)
-		if (pos < 0 || pos >= level.length()
-				|| (!(level instanceof MiningLevel) && !level.passable[pos] && !level.avoid[pos])){
+		//Place hero at the entrance if they are out of the map (often used for pos = -1)
+		// or if they are in invalid terrain terrain (except in the mining level, where that happens normally)
+		if (pos < 0 || pos >= level.length() || level.invalidHeroPos(pos)){
 			pos = level.getTransition(null).cell();
 		}
 
@@ -519,7 +650,12 @@ public class Dungeon {
 	}
 
 	public static void dropToChasm( Item item ) {
-		int depth = Dungeon.depth + 1;
+		int depth;
+		if(Dungeon.branch != 0){
+			 depth = Dungeon.depth;
+		} else {
+			 depth = Dungeon.depth + 1;
+		}
 		ArrayList<Item> dropped = Dungeon.droppedItems.get( depth );
 		if (dropped == null) {
 			Dungeon.droppedItems.put( depth, dropped = new ArrayList<>() );
@@ -544,17 +680,44 @@ public class Dungeon {
 	}
 
 	public static boolean souNeeded() {
-		int souLeftThisSet;
-		//3 SOU each floor set, 1.5 (rounded) on forbidden runes challenge
-		if (isChallenged(Challenges.NO_SCROLLS)){
-			souLeftThisSet = Math.round(1.5f - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5f) * 1.5f));
-		} else {
-			souLeftThisSet = 3 - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5) * 3);
-		}
-		if (souLeftThisSet <= 0 || Dungeon.branch != 0) return false;
 
+		// 排除非BR模式、Boss层、第0层、分支层等
+		if ((depth < 2 && Statistics.bossRushMode) || Dungeon.RushBossLevel(depth) && Statistics.bossRushMode) {
+			return false;
+		}
+		if (Dungeon.RDLCLevel()) return false;
+		if (depth == 0) return false;
+		if (Dungeon.branch != 0) return false;
+
+		// 仅在BR模式下启用新逻辑
+		if (Statistics.bossRushMode) {
+			// 总随机卷轴配额为14
+			final int totalRandomSOU = 14;
+			int generated = LimitedDrops.UPGRADE_SCROLLS.count;
+
+			// 如果已生成足够，直接返回false
+			if (generated >= totalRandomSOU) return false;
+
+			// 计算剩余有效层数（从当前层到41层，排除Boss层）
+			int remainingValidFloors = 0;
+			for (int d = depth; d <= 41; d++) {
+				if (!Dungeon.RushBossLevel(d)) {
+					remainingValidFloors++;
+				}
+			}
+
+			// 剩余需要生成的卷轴数量
+			int remainingQuota = totalRandomSOU - generated;
+
+			// 概率 = 剩余配额 / 剩余有效层数
+			// 保证在剩余层数中均匀分配剩余卷轴
+			return Random.Int(remainingValidFloors) < remainingQuota;
+		}
+
+		// 原逻辑（非BR模式）
+		int souLeftThisSet = 3 - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5) * 3);
+		if (souLeftThisSet <= 0) return false;
 		int floorThisSet = (depth % 5);
-		//chance is floors left / scrolls left
 		return Random.Int(5 - floorThisSet) < souLeftThisSet;
 	}
 
@@ -568,8 +731,38 @@ public class Dungeon {
 		return Random.Int(5 - floorThisSet) < asLeftThisSet;
 	}
 
+	public static boolean enchStoneNeeded(){
+		//1 enchantment stone, spawns on chapter 2 or 3
+		if (!LimitedDrops.ENCH_STONE.dropped()){
+			int region = 1+depth/5;
+			if (region > 1){
+				int floorsVisited = depth - 5;
+				if (floorsVisited > 4) floorsVisited--; //skip floor 10
+				return Random.Int(9-floorsVisited) == 0; //1/8 chance each floor
+			}
+		}
+		return false;
+	}
+
+	public static boolean intStoneNeeded(){
+		//one stone on floors 1-3
+		return depth < 5 && !LimitedDrops.INT_STONE.dropped() && Random.Int(4-depth) == 0;
+	}
+
+	public static boolean labRoomNeeded(){
+		//one laboratory each floor set, in floor 3 or 4, 1/2 chance each floor
+		int region = 1+depth/5;
+		if (region > LimitedDrops.LAB_ROOM.count){
+			int floorThisRegion = depth%5;
+			if (floorThisRegion >= 4 || (floorThisRegion == 3 && Random.Int(2) == 0)){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private static final String INIT_VER	= "init_ver";
-	private static final String VERSION		= "version";
+	public  static final String VERSION		= "version";
 	private static final String SEED		= "seed";
 	private static final String CUSTOM_SEED	= "custom_seed";
 	private static final String DAILY	    = "daily";
@@ -638,13 +831,11 @@ public class Dungeon {
 		//难度模式
 		difficultys = new Difficulty.HardStorage(SPDSettings.difficulty());
 
-		TitleScene.Reusable = false;
+		//TitleScene.Reusable = false;
 
 		BloodBat.level = 1;
 
-		TitleScene.NightDay = false;
-
-		Arrays.fill(discovered, false);
+		//TitleScene.NightDay = false;
 
 		mobsToChampion = -1;
 		mobsToStateLing = -1;
@@ -791,6 +982,9 @@ public class Dungeon {
 	public static void observe(){
 		int dist = Math.max(Dungeon.hero.viewDistance, 8);
 		dist *= 1f + 0.25f*Dungeon.hero.pointsInTalent(Talent.FARSIGHT);
+		if(Dungeon.hero.belongings.getItem(NoteOfBzmdr.class)!=null){
+			dist *= 0.75;
+		}
 
 		if (Dungeon.hero.buff(MagicalSight.class) != null){
 			dist = Math.max( dist, MagicalSight.DISTANCE );
@@ -828,10 +1022,9 @@ public class Dungeon {
 
 		GameScene.updateFog(l, t, width, height);
 
-		boolean stealthyMimics = MimicTooth.stealthyMimics();
 		if (hero.buff(MindVision.class) != null){
 			for (Mob m : level.mobs.toArray(new Mob[0])){
-				if (stealthyMimics && m instanceof Mimic && m.alignment == Char.Alignment.NEUTRAL){
+				if (m instanceof Mimic && m.alignment == Char.Alignment.NEUTRAL && ((Mimic) m).stealthy()){
 					continue;
 				}
 
@@ -923,6 +1116,31 @@ public class Dungeon {
 					pos+=level.width();
 				}
 				GameScene.updateFog(ch.pos, dist);
+			}
+		}
+
+		for(Actor actor : Actor.all()){
+			if(actor instanceof WandOfSun.MiniSun){
+				WandOfSun.MiniSun sun = (WandOfSun.MiniSun) actor;
+				x = sun.pos % level.width();
+				y = sun.pos / level.width();
+
+				//left, right, top, bottom
+				dist = sun.viewDistance+1;
+				l = Math.max( 0, x - dist );
+				r = Math.min( x + dist, level.width() - 1 );
+				t = Math.max( 0, y - dist );
+				b = Math.min( y + dist, level.height() - 1 );
+
+				width = r - l + 1;
+
+				pos = l + t * level.width();
+
+				for (int i = t; i <= b; i++) {
+					BArray.or( level.visited, level.heroFOV, pos, width, level.visited );
+					pos+=level.width();
+				}
+				GameScene.updateFog(sun.pos, dist);
 			}
 		}
 
@@ -1079,6 +1297,7 @@ public class Dungeon {
 			bundle.put( ZBADGES, passwordbadges );
 
 			BloodBat.saveLevel(bundle);
+
 			FileUtils.bundleToFile( GamesInProgress.gameFile(save), bundle);
 
 		} catch (IOException e) {
@@ -1091,6 +1310,7 @@ public class Dungeon {
 
 		Bundle bundle = FileUtils.bundleFromFile( GamesInProgress.gameFile( save ) );
 		BloodBat.loadLevel(bundle);
+
 		//pre-1.3.0 saves
 		if (bundle.contains(INIT_VER)){
 			initialVersion = bundle.getInt( INIT_VER );

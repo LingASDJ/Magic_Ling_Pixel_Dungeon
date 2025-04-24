@@ -16,23 +16,27 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.Cerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DeathRong;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.ZeroBoat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRong;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.ZeroBoat;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SentryRoom;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadDogCerberusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -121,6 +125,11 @@ public class CerDogBossLevel extends Level{
         LevelTransition exit = new LevelTransition(this,46, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(exit);
 
+        if(Statistics.bossRushMode){
+            LevelTransition exits = new LevelTransition(this,46, LevelTransition.Type.REGULAR_ENTRANCE);
+            transitions.add(exits);
+        }
+
         set(getBossDoor, Terrain.EMPTY);
         GameScene.updateMap(getBossDoor);
 
@@ -190,62 +199,14 @@ public class CerDogBossLevel extends Level{
                                 mob.destroy();
                                 mob.sprite.killAndErase();
                                 Camera.main.shake(2f, 10f);
-                                Cerberus ncx = new Cerberus();
+                                DeadDogCerberus ncx = new DeadDogCerberus();
                                 ncx.pos = 356;
+
                                 ncx.notice();
-
                                 Buff.detach( hero, MindVision.class );
-
-                                for (Mob mob : level.mobs.toArray(new Mob[0])){
-                                    if ( mob instanceof DeathRong) {
-                                        if(!((DeathRong) mob).rd){
-                                            Buff.affect( ncx, DiedCrused.class);
-                                            DeathRong.tell(Messages.get(DeathRong.class, "fuck",hero.name()));
-                                            if (Statistics.bossRushMode && !(Dungeon.depth == 2 || Dungeon.depth == 4 || Dungeon.depth == 24 || Dungeon.depth == 27)){
-                                                    if(Statistics.difficultyDLCEXLevel >= 3){
-                                                        Class<?extends ChampionEnemy> buffCls2;
-                                                        switch (Random.Int(5)){
-                                                            case 0: default:    buffCls2 = ChampionEnemy.Middle.class;      break;
-                                                            case 1:             buffCls2 = ChampionEnemy.Bomber.class;      break;
-                                                            case 2:             buffCls2 = ChampionEnemy.Sider.class;       break;
-                                                            case 3:             buffCls2 = ChampionEnemy.LongSider.class;   break;
-                                                            case 4:             buffCls2 = ChampionEnemy.Big.class;         break;
-                                                        }
-                                                        Buff.affect(ncx, buffCls2);
-                                                        ncx.state = ncx.WANDERING;
-                                                        Class<?extends ChampionEnemy> buffCls;
-                                                        switch (Random.Int(9)){
-                                                            case 0: default:    buffCls = ChampionEnemy.Blazing.class;      break;
-                                                            case 1:             buffCls = ChampionEnemy.Projecting.class;   break;
-                                                            case 2:             buffCls = ChampionEnemy.AntiMagic.class;    break;
-                                                            case 3:             buffCls = ChampionEnemy.Giant.class;        break;
-                                                            case 4:             buffCls = ChampionEnemy.Blessed.class;      break;
-                                                            case 5:             buffCls = ChampionEnemy.Growing.class;      break;
-                                                            case 6:             buffCls = ChampionEnemy.Halo.class;      	break;
-                                                            case 7:             buffCls = ChampionEnemy.DelayMob.class;     break;
-                                                        }
-                                                        Buff.affect(ncx, buffCls);
-                                                    } else if (Statistics.difficultyDLCEXLevel == 2){
-                                                        Class<?extends ChampionEnemy> buffCls;
-                                                        switch (Random.Int(9)){
-                                                            case 0: default:    buffCls = ChampionEnemy.Blazing.class;      break;
-                                                            case 1:             buffCls = ChampionEnemy.Projecting.class;   break;
-                                                            case 2:             buffCls = ChampionEnemy.AntiMagic.class;    break;
-                                                            case 3:             buffCls = ChampionEnemy.Giant.class;        break;
-                                                            case 4:             buffCls = ChampionEnemy.Blessed.class;      break;
-                                                            case 5:             buffCls = ChampionEnemy.Growing.class;      break;
-                                                            case 6:             buffCls = ChampionEnemy.Halo.class;      	break;
-                                                            case 7:             buffCls = ChampionEnemy.DelayMob.class;     break;
-                                                        }
-                                                        Buff.affect(ncx, buffCls);
-                                                    }
-                                            }
-                                        }
-                                    }
-                                }
-
                                 ncx.state = ncx.WANDERING;
                                 GameScene.add(ncx);
+                                ((DeadDogCerberusSprite)ncx.sprite).Altidle(356);
                             }
                         }));
 
@@ -288,8 +249,9 @@ public class CerDogBossLevel extends Level{
         }
 
         @Override
-        public float speedFactor() {
-            return super.speedFactor()*2.3f;
+        public float speedFactor(float s) {
+            s = (int) target.baseSpeed;
+            return s * 2.5f;
         }
 
 
@@ -457,8 +419,6 @@ public class CerDogBossLevel extends Level{
         LevelTransition ent = new LevelTransition(this, enter, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(ent);
 
-
-
         CustomTilemap vis = new townBehind();
         vis.pos(0, 0);
         customTiles.add(vis);
@@ -576,20 +536,11 @@ public class CerDogBossLevel extends Level{
                                     mob.destroy();
                                     mob.sprite.killAndErase();
                                     Camera.main.shake(2f, 10f);
-                                    Cerberus ncx = new Cerberus();
+                                    DeadDogCerberus ncx = new DeadDogCerberus();
                                     ncx.pos = 356;
                                     ncx.notice();
 
                                     Buff.detach( hero, MindVision.class );
-
-                                    for (Mob mob : level.mobs.toArray(new Mob[0])){
-                                        if ( mob instanceof DeathRong) {
-                                            if(!((DeathRong) mob).rd){
-                                                Buff.affect( ncx, DiedCrused.class);
-                                                DeathRong.tell(Messages.get(DeathRong.class, "fuck",hero.name()));
-                                            }
-                                        }
-                                    }
 
                                     if(Statistics.difficultyDLCEXLevel >= 3){
                                         Class<?extends ChampionEnemy> buffCls2;
@@ -757,6 +708,31 @@ public class CerDogBossLevel extends Level{
             }
         }
 
+    }
+
+
+
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+    if(Statistics.bossRushMode && transition.type == LevelTransition.Type.REGULAR_ENTRANCE){
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            InterlevelScene.curTransition = new LevelTransition();
+            InterlevelScene.curTransition.destDepth = 38;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
+            InterlevelScene.curTransition.destBranch = 0;
+            InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_ENTRANCE;
+            InterlevelScene.curTransition.centerCell = -1;
+            Game.switchScene(InterlevelScene.class);
+            return false;
+        } else if(Statistics.bossRushMode || Statistics.RandMode) {
+            return super.activateTransition(hero, transition);
+        } else {
+            return false;
+        }
     }
 
 }

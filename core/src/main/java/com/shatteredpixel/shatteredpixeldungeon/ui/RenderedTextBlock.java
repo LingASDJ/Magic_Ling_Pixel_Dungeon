@@ -27,6 +27,7 @@ import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class RenderedTextBlock extends Component {
 
@@ -48,7 +49,7 @@ public class RenderedTextBlock extends Component {
 	private int hightlightColor = Window.TITLE_COLOR;
 	private int RedColor = Window.R_COLOR;
 	private int GreenColor = Window.G_COLOR;
-	private int BlueColor = Window.B_COLOR;
+	private int BlueColor = Window.ORAGNECOLOR;
 	private int PinkColor = Window.Pink_COLOR;
 	private int DeepColor = Window.DeepPK_COLOR;
 	private int BLACKColor = Window.CBLACK;
@@ -65,6 +66,21 @@ public class RenderedTextBlock extends Component {
 	public static final int CENTER_ALIGN = 2;
 	public static final int RIGHT_ALIGN = 3;
 	private int alignment = LEFT_ALIGN;
+
+	private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("^<#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})>$");
+	private static final String COLOR_END_TAG = "<RGB>";
+
+	//for manual text block splitting, a space between each word is assumed
+	public void tokens(String... words){
+		StringBuilder fullText = new StringBuilder();
+		for (String word : words) {
+			fullText.append(word);
+		}
+		text = fullText.toString();
+
+		tokens = words;
+		build();
+	}
 
 	public RenderedTextBlock(int size){
 		this.size = size;
@@ -112,6 +128,8 @@ public class RenderedTextBlock extends Component {
 		if (tokens == null) return;
 
 		clear();
+
+		tokens = processColorText( tokens );
 		words = new ArrayList<>();
 		boolean highlighting = false;
 		boolean Redhighlighting = false;
@@ -120,7 +138,32 @@ public class RenderedTextBlock extends Component {
 		boolean Pinkhighlighting = false;
 		boolean Deeppinkhighlighting = false;
 		boolean Blackhighlighting = false;
+
+		int currentCustomColor = -1;
 		for (String str : tokens){
+			if ( HEX_COLOR_PATTERN.matcher( str ).matches() ) {
+				String hexColor = str.substring( 2, str.length() - 1 );
+				//如果是RGB格式则进行转换
+				if ( hexColor.length() == 3 ) {
+					// 将 #RGB 转换为 #RRGGBB
+					String r = hexColor.substring( 0, 1 );
+					String g = hexColor.substring( 1, 2 );
+					String b = hexColor.substring( 2, 3 );
+					hexColor = r + r + g + g + b + b;
+				}
+				try {
+					currentCustomColor = Integer.parseInt( hexColor, 16 );
+				} catch (NumberFormatException e) {
+					// 如果解析失败，忽略这个标记
+				}
+				continue;
+			}
+
+			// 检查颜色结束标记
+			if ( str.equals( COLOR_END_TAG ) ) {
+				currentCustomColor = -1;
+				continue;
+			}
 
 
 			/*
@@ -154,7 +197,8 @@ public class RenderedTextBlock extends Component {
 			} else {
 				RenderedText word = new RenderedText(str, size);
 
-				if (highlighting) word.hardlight(hightlightColor);
+				if ( currentCustomColor != -1 ) word.hardlight(currentCustomColor);
+				else if (highlighting) word.hardlight(hightlightColor);
 				else if (color != -1) word.hardlight(color);
 				else if (Redhighlighting) word.hardlight(RedColor);
 				else if (Greenhighlighting) word.hardlight(GreenColor);
@@ -171,6 +215,55 @@ public class RenderedTextBlock extends Component {
 			}
 		}
 		layout();
+	}
+
+	// 处理颜色开始和结束标记
+	private synchronized String[] processColorText(String[] text){
+        ArrayList<String> newList = new ArrayList<>();
+		for ( String current : text ) {
+			// 处理颜色开始标记 <#XXXXXX> / <#XXX>
+			if ( current.contains( "<#" ) ) {
+				int start = current.indexOf( "<#" );
+				int end = current.indexOf( ">" );
+
+				// 如果找不到结束符号，直接添加整个字符串
+				if ( end == -1 || end < start ) {
+					newList.add( current );
+					continue;
+				}
+
+				if ( start > 0 ) {
+					newList.add( current.substring( 0, start ) );
+				}
+
+				newList.add( current.substring( start, end + 1 ) );
+
+				if ( end < current.length() - 1 ) {
+					newList.add( current.substring(end + 1 ) );
+				}
+
+				continue;
+			}
+
+			// 处理颜色结束标记 <RGB>
+			if (current.contains("<RGB>")) {
+				int start = current.indexOf("<RGB>");
+				int end = current.indexOf("B>");
+
+				if (start > 0) {
+					newList.add(current.substring(0, start));
+				}
+
+				newList.add(current.substring(start, end + 2));
+
+				if (end + 2 < current.length()) {
+					newList.add(current.substring(end + 2));
+				}
+				continue;
+			}
+			newList.add( current );
+		}
+		return newList.toArray( new String[ 0 ] );
 	}
 
 	public synchronized void zoom(float zoom){
@@ -214,7 +307,7 @@ public class RenderedTextBlock extends Component {
 	}
 
 	public synchronized void RHightlighting(boolean enabled){
-		setHightlighting(enabled, Window.B_COLOR);
+		setHightlighting(enabled, Window.ORAGNECOLOR);
 	}
 
 	public synchronized void RHightlighting(boolean enabled, int color){

@@ -88,8 +88,6 @@ public class Red extends Item {
         }
     }
 
-
-
     @Override
     public ItemSprite.Glowing glowing() {
         return new ItemSprite.Glowing(Window.WHITE, 3f);

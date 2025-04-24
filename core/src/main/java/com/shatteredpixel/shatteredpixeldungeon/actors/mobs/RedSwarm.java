@@ -72,7 +72,7 @@ public class RedSwarm extends Mob implements Callback {
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 5);
+        return Random.NormalIntRange(1, 4);
     }
 
     @Override

@@ -224,6 +224,11 @@ public class Random {
 	public synchronized static<T> void shuffle( List<?extends T> list){
 		Collections.shuffle(list, generators.peek());
 	}
+
+	public synchronized static <T> T getRandomElement(List<? extends T> list) {
+		Collections.shuffle(list);
+		return list.isEmpty() ? null : list.get(0);
+	}
 	
 	public static<T> void shuffle( T[] array ) {
 		for (int i=0; i < array.length - 1; i++) {

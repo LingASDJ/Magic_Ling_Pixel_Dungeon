@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -16,16 +15,19 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.DragonWall;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -38,13 +40,14 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
-import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.ClearCryStal;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.ClearHStal;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DragonHeart;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DragonWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -68,22 +71,36 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FireDragon extends Boss implements Callback {
 
     private int lastEnemyPos = -1;
     private int fireAttackCooldown;
+
+    private int MysteryRitualsCooldown;
+
+    private int DragonCurseLockCooldown;
+
     private int eatCooldown;
     private boolean captured = false;
     public int summonedElementals = 0;
     private int targetingPos = -1;
 
+    private int attackCount = 0;
+
     private boolean noAlive = false;
 
     {
         initProperty();
-        initBaseStatus(9, 12, 14, 10, 240, 3, 5);
+        if(Statistics.bossRushMode){
+            immunities.add(Terror.class);
+            initBaseStatus(12, 16, 30, 12, 260, 4, 5);
+            immunities.add(Frost.class);
+        } else {
+            initBaseStatus(9, 12, 14, 10, 240, 3, 5);
+        }
         initStatus(40);
         properties.add(Property.LARGE);
         spriteClass = FireDragonSprite.class;
@@ -93,6 +110,8 @@ public class FireDragon extends Boss implements Callback {
         immunities.add(Chill.class);
         immunities.add(Vertigo.class);
         immunities.add(ToxicGas.class);
+
+
 
         HUNTING = new Hunting();
     }
@@ -116,7 +135,7 @@ public class FireDragon extends Boss implements Callback {
 
     @Override
     public boolean isInvulnerable(Class effect) {
-        return !Dungeon.level.locked;
+        return !Dungeon.level.locked || super.isInvulnerable(effect);
     }
 
     @Override
@@ -133,7 +152,7 @@ public class FireDragon extends Boss implements Callback {
     public int damageRoll() {
         int damage = super.damageRoll();
         if (buff(DamageUpEffect.class) != null){
-            damage = (int) (damage*1.4f);
+            damage = (int) (damage * 1.4f);
         }
         return damage;
     }
@@ -150,7 +169,6 @@ public class FireDragon extends Boss implements Callback {
     private void pullEnemy( Char enemy, int pullPos ){
         enemy.pos = pullPos;
         enemy.sprite.place(pullPos);
-        Dungeon.level.occupyCell(enemy);
         if(enemy instanceof DiedClearElemet.ClearElemetalGreen){
             Buff.prolong(this, ToxicGasEffect.class, ToxicGasEffect.DURATION);
         } else if(enemy instanceof DiedClearElemet.ClearElemetalGold){
@@ -162,8 +180,86 @@ public class FireDragon extends Boss implements Callback {
         } else {
             Buff.prolong(this,BleedingEffect.class, BleedingEffect.DURATION);
         }
-        enemy.die(null);
+        if(enemy != hero){
+            enemy.die(null);
+        }
         Buff.detach( hero, DragonWall.class);
+    }
+
+
+    /**
+     * 龙族威严<br>
+     * 在首次进入0血后立刻召唤5个元素并立刻吸收
+     */
+    public void DragonMajesty() {
+        if(Statistics.bossRushMode){
+            if (!noAlive) {
+                // 定义5种不同的元素
+                List<Class<? extends Mob>> elementTypes = new ArrayList<>();
+                elementTypes.add(DiedClearElemet.ClearElemetalBlood.class);
+                elementTypes.add(DiedClearElemet.ClearElemetalDark.class);
+                elementTypes.add(DiedClearElemet.ClearElemetalGreen.class);
+                elementTypes.add(DiedClearElemet.ClearElemetalPure.class);
+                elementTypes.add(DiedClearElemet.ClearElemetalGold.class);
+
+                // 打乱元素类型列表以确保召唤的元素是不同的
+                Collections.shuffle(elementTypes);
+
+                // 召唤并吸收元素
+                for (Class<? extends Mob> elementType : elementTypes) {
+                    try {
+                        Mob element = elementType.getDeclaredConstructor().newInstance();
+                        element.state = element.HUNTING;
+                        GameScene.add(element);
+                        ScrollOfTeleportation.appear(element, Dungeon.level.randomRespawnCell(element));
+
+                        //立刻捕获
+                        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                            if (mob instanceof DiedClearElemet) {
+                                sprite.parent.add(new Chains(sprite.center(),
+                                        mob.sprite.destinationCenter(),
+                                        Effects.Type.RED_CHAIN,
+                                        new Callback() {
+                                            public void call() {
+                                                Actor.add(new Pushing(mob, mob.pos, pos, new Callback() {
+                                                    public void call() {
+                                                        pullEnemy(mob, pos);
+                                                        captured = false;
+                                                    }
+                                                }));
+                                                next();
+                                                eatCooldown = 0;
+                                            }
+                                        }));
+                            }
+                        }
+                    } catch (Exception ignored) {}
+                }
+                yell(Messages.get(FireDragon.class, "dragon_majesty"));
+            }
+        }
+    }
+
+    /**
+     * 捕获目标
+     * @param mob 目标
+     */
+    private void createCaptureChain(Mob mob) {
+        sprite.parent.add(new Chains(sprite.center(),
+                mob.sprite.destinationCenter(),
+                Effects.Type.RED_CHAIN,
+                new Callback() {
+                    public void call() {
+                        Actor.add(new Pushing(mob, mob.pos, pos, new Callback() {
+                            public void call() {
+                                pullEnemy(mob, pos);
+                                captured = false;
+                            }
+                        }));
+                        next();
+                        eatCooldown = 0;
+                    }
+                }));
     }
 
     @Override
@@ -173,9 +269,10 @@ public class FireDragon extends Boss implements Callback {
         }
 
         if(HP<=0 && !noAlive){
+            DragonMajesty();
             noAlive = true;
-            HP = HT/2;
-            Buff.prolong(this, RoseShiled.class, 8f);
+            HP = Statistics.bossRushMode ? 160 : Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 80 : HT/2;
+            Buff.prolong(this,  RoseShiled.class, Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 20f : 12f);
         }
 
         if (state == WANDERING){
@@ -223,6 +320,14 @@ public class FireDragon extends Boss implements Callback {
 
         if(summonedElementals>=3 && eatCooldown<30){
             eatCooldown++;
+        }
+
+        if(MysteryRitualsCooldown >= 0){
+            MysteryRitualsCooldown--;
+        }
+
+        if(DragonCurseLockCooldown >= 0){
+            DragonCurseLockCooldown--;
         }
 
         if (eatCooldown > 29 && summonedElementals >= 3 && HP<151) {
@@ -278,6 +383,28 @@ public class FireDragon extends Boss implements Callback {
                             }
                         }));
             }
+
+
+
+
+        }
+
+        if(attackCount>=4){
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                if (mob instanceof DiedClearElemet) {
+                    sprite.parent.add(new Chains(sprite.center(),
+                            mob.sprite.destinationCenter(),
+                            Effects.Type.RED_CHAIN,
+                            () -> {
+                                Actor.add(new Pushing(mob, mob.pos, pos, () -> {
+                                    pullEnemy(mob, pos);
+                                }));
+                                next();
+                                eatCooldown = 0;
+                            }));
+                }
+            }
+            attackCount = 0;
         }
 
         if (state != SLEEPING){
@@ -323,14 +450,14 @@ public class FireDragon extends Boss implements Callback {
             ScrollOfTeleportation.appear(this,334);
         }
 
-        if(Random.Int(3,10)>=7 && HP>HT/2){
+        if(Random.Int(3,10)>=7 && HP<HT/2){
             int oppositeAdjacent = enemy.pos + (enemy.pos - pos);
             Ballistica trajectory = new Ballistica(enemy.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
-            WandOfBlastWave.throwChar(enemy, trajectory, 2, false, false, this);
+            WandOfBlastWave.throwChar(enemy, trajectory, Random.Int(2,7), false, false, this);
         }
 
         if (buff(BleedingEffect.class) != null){
-            Buff.affect( enemy, HalomethaneBurning.class ).reignite(enemy,damage/3f );
+            Buff.affect(enemy, Bleeding.class).set(Random.Int(2,5));
         }
         return damage;
     }
@@ -365,6 +492,16 @@ public class FireDragon extends Boss implements Callback {
             }
 
         }
+    }
+
+    @Override
+    public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
+        boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti );
+        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+            attackCount++;
+        }
+
+        return result;
     }
 
     protected void zap() {
@@ -410,11 +547,16 @@ public class FireDragon extends Boss implements Callback {
         bundle.put(TARGETING_POS, targetingPos);
         bundle.put("count",fireAttackCooldown);
         bundle.put("se",summonedElementals);
+        bundle.put("sex",attackCount);
         bundle.put("eat",eatCooldown);
         bundle.put("attack",captured);
+        bundle.put("nolive",noAlive);
         bundle.put(LAST_ENEMY_POS, lastEnemyPos);
         bundle.put(LEAP_POS, leapPos);
         bundle.put(LEAP_CD, leapCooldown);
+
+        bundle.put("MysteryRituals",MysteryRitualsCooldown);
+        bundle.put("DragonCurseLockCooldown",DragonCurseLockCooldown);
     }
 
     @Override
@@ -424,11 +566,16 @@ public class FireDragon extends Boss implements Callback {
         fireAttackCooldown = bundle.getInt("count");
         summonedElementals = bundle.getInt("se");
         eatCooldown = bundle.getInt("eat");
+        attackCount = bundle.getInt("sex");
         captured = bundle.getBoolean("attack");
         if (state != SLEEPING) BossHealthBar.assignBoss(this);
         lastEnemyPos = bundle.getInt(LAST_ENEMY_POS);
         leapPos = bundle.getInt(LEAP_POS);
         leapCooldown = bundle.getFloat(LEAP_CD);
+        noAlive = bundle.getBoolean("nolive");
+
+        MysteryRitualsCooldown = bundle.getInt("MysteryRituals");
+        DragonCurseLockCooldown = bundle.getInt("DragonCurseLockCooldown");
     }
 
 
@@ -446,23 +593,19 @@ public class FireDragon extends Boss implements Callback {
         if(noAlive){
             Dungeon.level.unseal();
             GameScene.bossSlain();
-            Buff.detach( enemy, DragonWall.class);
+            Buff.detach( hero, DragonWall.class);
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (mob instanceof DiedClearElemet) {
                     sprite.parent.add(new Chains(sprite.center(),
                             mob.sprite.destinationCenter(),
                             Effects.Type.RED_CHAIN,
-                            new Callback() {
-                                public void call() {
-                                    Actor.add(new Pushing(mob, mob.pos, pos, new Callback() {
-                                        public void call() {
-                                            pullEnemy(mob, pos);
-                                            captured = false;
-                                        }
-                                    }));
-                                    next();
-                                    eatCooldown = 0;
-                                }
+                            () -> {
+                                Actor.add(new Pushing(mob, mob.pos, pos, () -> {
+                                    pullEnemy(mob, pos);
+                                    captured = false;
+                                }));
+                                next();
+                                eatCooldown = 0;
                             }));
                 }
             }
@@ -475,17 +618,19 @@ public class FireDragon extends Boss implements Callback {
 
             GetBossLoot();
 
-            Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.ARTIFACT),pos);
-            Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.WAND),pos);
-            Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.POTION),pos);
+            if(!Statistics.bossRushMode){
+                Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.ARTIFACT),pos);
+                Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.WAND),pos);
+                Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.POTION),pos);
 
-            Ankh item = new Ankh();
-            item.blessed = true;
-            Dungeon.level.drop(item,pos);
+                Ankh item = new Ankh();
+                item.blessed = true;
+                Dungeon.level.drop(item,pos);
 
-            Dewdrop dewdrop = new Dewdrop();
-            dewdrop.quantity = 20;
-            Dungeon.level.drop(dewdrop,pos);
+                DragonWater dewdrop = new DragonWater();
+                Dungeon.level.drop(dewdrop,334);
+            }
+
 
             ArrayList<ClearCryStal> clearCryStals = hero.belongings.getAllItems(ClearCryStal.class);
             for (ClearCryStal w : clearCryStals.toArray(new ClearCryStal[0])){
@@ -505,16 +650,21 @@ public class FireDragon extends Boss implements Callback {
             Statistics.bossScores[0] += 2400;
             yell( Messages.get(this, "defeated") );
             GLog.w(Messages.get(this, "clear"));
+
+            if(Statistics.bossRushMode || Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+                Dungeon.level.drop(new CrystalKey(Dungeon.depth), pos).sprite.drop();
+            }
         }
     }
 
     @Override
     public void notice() {
         super.notice();
+        Dungeon.level.seal();
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             GameScene.bossReady();
-            BGMPlayer.playBoss();
+            ////BGMPlayer.playBoss();
 
             Mob testActor = Clearly();
             testActor.state = testActor.HUNTING;
@@ -531,7 +681,7 @@ public class FireDragon extends Boss implements Callback {
             GameScene.flash(Window.ANSDO_COLOR);
             Camera.main.shake(1f,3f);
             this.sprite.showStatus(CharSprite.NEGATIVE, "!!!");
-            Dungeon.level.seal();
+
             GLog.n(Messages.get(this, "notice"));
             for (Char ch : Actor.chars()){
                 if (ch instanceof DriedRose.GhostHero){
@@ -737,6 +887,17 @@ public class FireDragon extends Boss implements Callback {
             }
 
             enemySeen = enemyInFOV;
+
+            if (Statistics.bossRushMode &&
+                    DragonCurseLockCooldown <= 0
+                    && enemyInFOV
+                    && !isCharmedBy( enemy )
+                    && !canAttack( enemy )
+                    && Dungeon.level.distance( pos, enemy.pos ) < 5
+                    && DragonCurseLock(enemy.pos)){
+                return !(sprite.visible || enemy.sprite.visible);
+            }
+
             if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
 
                 return doAttack( enemy );
@@ -746,6 +907,7 @@ public class FireDragon extends Boss implements Callback {
                 if (enemyInFOV) {
                     target = enemy.pos;
                 } else if (enemy == null) {
+
                     state = WANDERING;
                     target = Dungeon.level.randomDestination( FireDragon.this );
                     return true;
@@ -796,6 +958,7 @@ public class FireDragon extends Boss implements Callback {
                 } else {
                     spend( TICK );
                     if (!enemyInFOV) {
+                        MysteryRituals();
                         sprite.showLost();
                         state = WANDERING;
                         target = Dungeon.level.randomDestination( FireDragon.this );
@@ -805,6 +968,85 @@ public class FireDragon extends Boss implements Callback {
             }
         }
 
+    }
+
+    /**
+     * 神秘仪式
+     * 随机选择两个元素并捕获
+     */
+    public void MysteryRituals(){
+        if(Statistics.bossRushMode){
+            if(MysteryRitualsCooldown <= 0){
+                ScrollOfTeleportation.appear(FireDragon.this, 334);
+
+                // 获取所有符合条件的 DiedClearElemet 元素
+                List<Mob> diedClearElements = new ArrayList<>();
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                    if (mob instanceof DiedClearElemet) {
+                        diedClearElements.add(mob);
+                    }
+                }
+
+                // 判断元素数量并选择捕获对象
+                if (diedClearElements.size() <= 2) {
+                    // 如果元素数量小于等于2，则捕获所有元素
+                    for (Mob mob : diedClearElements) {
+                        createCaptureChain(mob);
+                    }
+                } else {
+                    // 如果元素数量大于2，随机选择两个元素捕获
+                    Collections.shuffle(diedClearElements);
+                    for (int i = 0; i < 2; i++) {
+                        createCaptureChain(diedClearElements.get(i));
+                    }
+                }
+
+                MysteryRitualsCooldown = 20;
+            }
+            yell(Messages.get(this, "dragon_rituals"));
+        }
+    }
+
+
+    private boolean DragonCurseLock(int target){
+        if(DragonCurseLockCooldown <= 0){
+            DragonCurseLockCooldown = 35;
+            Ballistica chain = new Ballistica(pos, target, Ballistica.PROJECTILE);
+
+            int newPos = -1;
+            for (int i : chain.subPath(1, chain.dist)){
+                if (Actor.findChar(i) == null){
+                    newPos = i;
+                    break;
+                }
+            }
+
+            final int newPosFinal = newPos;
+            this.target = newPos;
+
+            if (sprite.visible || enemy.sprite.visible) {
+                yell(Messages.get(this, "scorpion_enemy"));
+                new Item().throwSound();
+                Sample.INSTANCE.play(Assets.Sounds.CHAINS);
+                sprite.parent.add(new Chains(sprite.center(),
+                        enemy.sprite.destinationCenter(),
+                        Effects.Type.RED_CHAIN,
+                        new Callback() {
+                            public void call() {
+                                Actor.add(new Pushing(enemy, enemy.pos, newPosFinal, new Callback() {
+                                    public void call() {
+                                        pullEnemy(enemy, newPosFinal);
+                                    }
+                                }));
+                                next();
+                            }
+                        }));
+            } else {
+                pullEnemy(enemy, newPos);
+            }
+
+        }
+        return true;
     }
 
 }

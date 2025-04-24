@@ -21,6 +21,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
@@ -54,6 +56,17 @@ public class ShopBossLevel extends Level {
         csp.pos = WIDTH * 17 + 17;
         mobs.add(csp);
 
+    }
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.BGM_4,true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+                () -> Music.playModeBGM(Assets.Music.SHOP,true)));
     }
 
     @Override
@@ -96,7 +109,7 @@ public class ShopBossLevel extends Level {
     public void unseal() {
         super.unseal();
 
-        if(Dungeon.depth == 21 || Dungeon.bossLevel() && Statistics.RandMode){
+        if(Dungeon.depth == 25 || Dungeon.bossLevel() && Statistics.RandMode){
 
             int entrance =  WIDTH*17 + 17;
             set(  entrance, Terrain.EXIT );
@@ -295,7 +308,7 @@ public class ShopBossLevel extends Level {
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if(Statistics.bossRushMode){
+        if(Statistics.bossRushMode || Statistics.RandMode){
             return super.activateTransition(hero, transition);
         }
         return false;

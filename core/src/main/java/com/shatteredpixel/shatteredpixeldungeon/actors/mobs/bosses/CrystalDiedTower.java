@@ -15,7 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
-public class CrystalDiedTower extends Mob {
+public class CrystalDiedTower extends Mob implements Mob.NoMobSpawn {
 
     {
         spriteClass = FireCrystalSprites.class;
@@ -24,6 +24,8 @@ public class CrystalDiedTower extends Mob {
 
         invisible = 1;
         state = PASSIVE;
+
+        alignment = Alignment.NEUTRAL;
 
         properties.add(Property.MINIBOSS);
         properties.add(Property.INORGANIC);
@@ -141,7 +143,7 @@ public class CrystalDiedTower extends Mob {
     protected int lastTargeting=-1;
     @Override
     protected boolean act(){
-        if(alignment == Alignment.NEUTRAL) return true;
+
         State s = countDown();
         if(s == State.SHOOTING) {
             zapProc();

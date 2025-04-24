@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 
 public class CaveEnteanceRoom extends EntranceRoom {
@@ -33,6 +34,10 @@ public class CaveEnteanceRoom extends EntranceRoom {
     public void paint(Level level) {
         Painter.fill( level, this, Terrain.WALL_DECO );
         Painter.fill( level, this, 1, Terrain.WATER );
+
+        for (Room.Door door : connected.values()) {
+            if(door != null ) level.BottleWraith(door, level, left, right, top, bottom);
+        }
 
         int topPos = (top + 5) * level.width() + left + 4;
         Painter.set( level, topPos, Terrain.ENTRANCE );

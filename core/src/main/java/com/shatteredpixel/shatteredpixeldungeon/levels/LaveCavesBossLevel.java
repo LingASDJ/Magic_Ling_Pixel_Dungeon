@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfHealth;
@@ -22,6 +23,7 @@ import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
@@ -43,6 +45,11 @@ public class LaveCavesBossLevel extends Level{
     private static final short D = Terrain.SECRET_DOOR;
     private static final short M = Terrain.WELL;
     private static final short L= Terrain.PEDESTAL;
+
+    private static final short B= Terrain.BARRICADE;
+
+    private static final short S= Terrain.CRYSTAL_DOOR;
+
     private static final int[] codedMap = {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,Y,W,W,W,W,W,W,W,
@@ -79,21 +86,97 @@ public class LaveCavesBossLevel extends Level{
 
     };
 
-    private static final int HOME = 845;
+    private static final int[] Rush_codedMap = {
+            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,Y,W,W,W,W,W,W,W,
+            W,W,W,W,W,W,W,W,V,V,R,R,R,R,R,R,R,R,R,R,R,R,R,W,W,W,W,W,W,W,W,W,
+            W,W,W,W,W,W,R,R,V,V,R,R,R,R,R,R,R,R,R,R,Y,R,R,R,R,W,W,W,W,W,W,W,
+            W,W,W,W,R,R,R,R,V,V,R,R,R,R,Y,Y,R,R,Y,R,R,R,R,R,Y,W,W,W,W,W,W,W,
+            W,W,W,R,R,R,R,R,V,V,R,R,R,Y,G,Y,Y,Y,Y,R,R,R,R,Y,R,W,W,W,W,W,W,W,
+            W,W,W,R,R,R,R,R,V,V,R,R,Y,Y,Y,Y,Y,Y,Y,Y,R,R,R,R,R,W,W,W,W,W,W,W,
+            W,W,R,R,R,R,R,R,V,V,R,R,Y,Y,Y,Y,Y,R,V,Y,Y,R,R,R,Y,R,W,W,W,W,W,W,
+            W,W,R,R,R,R,R,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,R,V,R,Y,Y,Y,Y,Y,Y,R,R,W,W,W,W,
+            W,W,R,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,R,V,R,Y,Y,Y,Y,Y,R,R,R,W,W,W,W,
+            W,R,Y,Y,Y,Y,R,R,Y,Y,Y,Y,Y,Y,L,Y,Y,Y,V,R,Y,Y,Y,Y,Y,R,R,R,W,W,W,W,
+            W,R,Y,R,R,R,R,R,R,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,R,R,R,W,W,
+            W,Y,Y,R,R,R,R,R,R,R,Y,Y,Y,Y,Y,V,Y,Y,Y,Y,Y,R,R,Y,V,V,Y,Y,R,R,W,W,
+            W,Y,Y,R,R,R,R,R,R,R,Y,Y,Y,Y,V,V,Y,Y,Y,Y,R,R,R,V,V,V,Y,Y,R,R,W,W,
+            W,Y,R,R,R,R,Y,Y,R,R,V,V,Y,Y,Y,Y,Y,Y,Y,Y,R,R,R,V,V,V,R,Y,Y,R,W,W,
+            W,Y,R,R,R,R,R,Y,R,R,V,V,Y,Y,Y,Y,Y,Y,R,R,Y,Y,Y,V,V,V,R,Y,Y,R,W,W,
+            W,Y,R,R,R,R,R,Y,Y,R,V,V,Y,Y,Y,Y,Y,R,R,R,R,Y,R,V,V,V,R,Y,Y,R,W,W,
+            W,Y,R,R,R,R,R,R,Y,Y,V,V,Y,Y,Y,Y,R,R,R,R,R,R,R,V,V,V,Y,Y,Y,R,W,W,
+            W,Y,Y,R,R,R,R,R,R,R,R,Y,Y,Y,Y,Y,R,R,R,R,R,R,R,V,V,V,Y,Y,Y,Y,W,W,
+            W,R,Y,R,R,R,R,Y,R,R,R,R,R,Y,Y,Y,R,R,Y,R,R,R,R,V,V,Y,Y,Y,R,W,W,W,
+            W,R,Y,Y,R,R,Y,Y,Y,R,R,R,R,Y,Y,Y,Y,Y,Y,R,R,R,R,V,Y,Y,Y,R,R,W,W,W,
+            W,R,R,Y,Y,Y,Y,Y,Y,R,R,V,R,Y,Y,R,R,R,R,Y,R,R,R,Y,Y,Y,R,R,R,W,W,W,
+            W,R,R,Y,Y,Y,Y,Y,Y,Y,Y,V,V,Y,Y,R,R,R,R,R,R,Y,Y,Y,R,R,R,W,W,W,W,W,
+            W,R,R,Y,Y,Y,Y,Y,Y,Y,Y,V,V,V,Y,Y,R,R,R,R,R,Y,Y,R,R,R,R,W,W,W,W,W,
+            W,W,R,R,Y,Y,Y,Y,Y,Y,Y,V,V,V,Y,Y,Y,R,R,R,R,Y,Y,Y,Y,Y,Y,W,W,W,W,W,
+            W,W,W,R,R,Y,Y,Y,Y,Y,Y,V,V,V,Y,Y,Y,Y,Y,Y,Y,Y,Y,W,W,W,W,W,W,W,W,W,
+            W,W,W,R,R,R,Y,Y,R,R,R,R,R,X,Y,Y,Y,Y,W,W,W,W,S,W,W,W,W,W,W,W,W,W,
+            W,W,W,W,R,R,Y,Y,R,R,R,R,R,R,Y,Y,Y,Y,W,W,W,W,Y,Y,G,G,Y,R,R,G,W,W,
+            W,W,W,W,W,R,R,Y,R,R,R,R,R,R,Y,Y,Y,W,W,W,W,W,Y,G,Y,G,Y,Y,Y,Y,W,W,
+            W,W,W,W,W,W,R,R,Y,R,R,R,R,R,Y,Y,Y,W,W,W,W,W,Y,Y,V,V,V,Y,M,Y,W,W,
+            W,W,W,W,W,W,W,W,W,R,Y,R,R,R,Y,Y,Y,W,W,W,W,W,Y,Y,Y,Y,Y,Y,Y,Y,W,W,
+            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+
+    };
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.BGM_1A,true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+                () -> Music.playModeBGM(Assets.Music.DRAGON_LING,true)));
+    }
+
     @Override
     public void seal() {
         super.seal();
-        set( HOME, Terrain.EMPTY );
-        GameScene.updateMap( HOME );
+        set( 845, Terrain.EMPTY );
+        GameScene.updateMap( 845 );
+
+        set(334, Terrain.PEDESTAL );
+        GameScene.updateMap( 334);
+
+        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+            set( 854, Terrain.CRYSTAL_DOOR );
+            GameScene.updateMap( 854 );
+        }
+
         Dungeon.observe();
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                Music.INSTANCE.play(Assets.Music.DRAGON_LING, true);
+            }
+        });
     }
 
     @Override
     public void unseal() {
         super.unseal();
-        set( HOME, Terrain.ENTRANCE );
-        GameScene.updateMap( HOME );
+        set( 845, Terrain.ENTRANCE );
+        GameScene.updateMap( 845 );
+
+        set(334, Terrain.EXIT );
+        GameScene.updateMap( 334);
+
         Dungeon.observe();
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                Music.INSTANCE.fadeOut(5f, new Callback() {
+                    @Override
+                    public void call() {
+                        Music.INSTANCE.end();
+                    }
+                });
+            }
+        });
     }
 
     public boolean activateTransition(Hero hero, LevelTransition transition) {
@@ -137,30 +220,36 @@ public class LaveCavesBossLevel extends Level{
 
         setSize(32, 32);
 
-        map = codedMap.clone();
+        map = Statistics.bossRushMode ? Rush_codedMap.clone() : codedMap.clone();
 
         CustomTilemap vis = new townBehind();
         vis.pos(0, 0);
         customTiles.add(vis);
-
-        buildFlagMaps();
-        cleanWalls();
 
         @SuppressWarnings("unchecked")
         Class<? extends WellWater> waterClass =
                 overrideWater != null ?
                         overrideWater :
                         (Class<? extends WellWater>) Random.element( WATERS );
-
-
         WellWater.seed(956, 1, waterClass, this);
 
         int enter = 845;
-        LevelTransition ent = new LevelTransition(this, enter, LevelTransition.Type.BRANCH_ENTRANCE);
+        LevelTransition ent;
+        if(Statistics.bossRushMode){
+            ent = new LevelTransition(this, enter, LevelTransition.Type.REGULAR_ENTRANCE);
+        } else {
+            ent = new LevelTransition(this, enter, LevelTransition.Type.BRANCH_ENTRANCE);
+        }
         transitions.add(ent);
 
-        LevelTransition exit = new LevelTransition(this,0, LevelTransition.Type.BRANCH_EXIT);
+        LevelTransition exit;
+        if(Statistics.bossRushMode){
+            exit = new LevelTransition(this, 334, LevelTransition.Type.REGULAR_EXIT);
+        } else {
+            exit = new LevelTransition(this, 0, LevelTransition.Type.BRANCH_EXIT);
+        }
         transitions.add(exit);
+
 
         return true;
     }
@@ -188,7 +277,7 @@ public class LaveCavesBossLevel extends Level{
     public static class townBehind extends CustomTilemap {
 
         {
-            texture = Assets.Environment.LAVACAVE_OP;
+            texture = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && !Statistics.bossRushMode ?  Assets.Environment.LAVACAVE_OP_HRAD : Assets.Environment.LAVACAVE_OP;
 
             tileW = 32;
             tileH = 32;
@@ -253,7 +342,7 @@ public class LaveCavesBossLevel extends Level{
         }
     }
 
-    private static class Stream extends Group {
+    static class Stream extends Group {
 
         private int pos;
 
@@ -275,7 +364,7 @@ public class LaveCavesBossLevel extends Level{
                 return;
             }
 
-            if (visible = (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos])) {
+            if (visible == (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos])) {
 
                 super.update();
 
@@ -296,6 +385,33 @@ public class LaveCavesBossLevel extends Level{
             Blending.setLightMode();
             super.draw();
             Blending.setNormalMode();
+        }
+    }
+
+    public static final class SmokeParticle extends PixelParticle {
+
+        public SmokeParticle() {
+            super();
+
+            color( 0x000000 );
+            speed.set( Random.Float( -2, 4 ), -Random.Float( 3, 6 ) );
+        }
+
+        public void reset( float x, float y ) {
+            revive();
+
+            this.x = x;
+            this.y = y;
+
+            left = lifespan = 2f;
+        }
+
+        @Override
+        public void update() {
+            super.update();
+            float p = left / lifespan;
+            am = p > 0.8f ? 1 - p : p * 0.25f;
+            size( 6 - p * 3 );
         }
     }
 

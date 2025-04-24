@@ -23,9 +23,9 @@ import com.watabou.utils.Callback;
 public class MoonDao extends MeleeWeapon {
     public MoonDao() {
         image = ItemSpriteSheet.MOONDAILY;
-        tier = 3;
-        ACC = 1.54F;
-        DLY = 0.3F;
+        tier = 4;
+        ACC = 1f;
+        DLY = 0.45F;
     }
 
     public String statsInfo(){

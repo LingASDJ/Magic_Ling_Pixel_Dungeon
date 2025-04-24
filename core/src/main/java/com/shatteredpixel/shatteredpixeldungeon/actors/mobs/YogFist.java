@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -79,6 +81,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public abstract class YogFist extends Mob {
 
@@ -86,13 +89,21 @@ public abstract class YogFist extends Mob {
 		HP = HT = 300;
 		defenseSkill = 20;
 
+
+
 		viewDistance = Light.DISTANCE;
 
 		//for doomed resistance
 		EXP = 25;
 		maxLvl = -2;
 
-		state = HUNTING;
+		if(Dungeon.depth == 0 && !Statistics.amuletObtained){
+			state = PASSIVE;
+		} else {
+			state = HUNTING;
+		}
+
+
 
 		properties.add(Property.BOSS);
 		properties.add(Property.DEMONIC);
@@ -176,6 +187,24 @@ public abstract class YogFist extends Mob {
 		}
 	}
 
+	@Override
+	public void die(Object cause) {
+		super.die(cause);
+		for ( Char c : Actor.chars() ){
+			if (c instanceof YogDzewa){
+				((YogDzewa) c).processFistDeath();
+			}
+		}
+
+		PaswordBadges.loadGlobal();
+		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+		if(Dungeon.depth == 0 && Statistics.amuletObtained ){
+			if (!passwordbadges.contains(PaswordBadges.Badge.ONE_POUCH)) {
+				PaswordBadges.ONE_POUCH();
+			}
+		}
+	}
+
 	protected abstract void zap();
 
 	public void onZapComplete(){
@@ -190,12 +219,12 @@ public abstract class YogFist extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Char.combatRoll( 18, 36 );
+		return Random.NormalIntRange( 18, 36 );
 	}
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Char.combatRoll(0, 15);
+		return super.drRoll() + Random.NormalIntRange(0, 15);
 	}
 
 	{
@@ -467,7 +496,7 @@ public abstract class YogFist extends Mob {
 
 		@Override
 		public int damageRoll() {
-			return Char.combatRoll( 22, 44 );
+			return Random.NormalIntRange( 22, 44 );
 		}
 
 		@Override
@@ -517,7 +546,7 @@ public abstract class YogFist extends Mob {
 			Char enemy = this.enemy;
 			if (hit( this, enemy, true )) {
 
-				enemy.damage( Char.combatRoll(10, 20), new LightBeam() );
+				enemy.damage( Random.NormalIntRange(10, 20), new LightBeam() );
 				Buff.prolong( enemy, Blindness.class, Blindness.DURATION/2f );
 
 				if (!enemy.isAlive() && enemy == Dungeon.hero) {
@@ -583,7 +612,7 @@ public abstract class YogFist extends Mob {
 			Char enemy = this.enemy;
 			if (hit( this, enemy, true )) {
 
-				enemy.damage( Char.combatRoll(10, 20), new DarkBolt() );
+				enemy.damage( Random.NormalIntRange(10, 20), new DarkBolt() );
 
 				Light l = enemy.buff(Light.class);
 				if (l != null){
@@ -781,12 +810,15 @@ public abstract class YogFist extends Mob {
 				}
 			}
 
-			for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-				if (mob.alignment == Alignment.ENEMY && mob != this && !(mob instanceof YogReal || mob instanceof YogDzewa || mob instanceof YogFist.FreezingFist||mob instanceof SuccubusQueen||mob instanceof GreenSlting||
-						mob instanceof DM275||mob instanceof GnollHero) ) {
-					mob.die( cause );
+			if(!Statistics.bossRushMode){
+				for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+					if (mob.alignment == Alignment.ENEMY && mob != this && !(mob instanceof YogReal || mob instanceof YogDzewa || mob instanceof YogFist.FreezingFist||mob instanceof SuccubusQueen||mob instanceof GreenSlting||
+							mob instanceof DM275||mob instanceof GnollHero) ) {
+						mob.die( cause );
+					}
 				}
 			}
+
 
 			super.die( cause );
 		}
@@ -818,7 +850,11 @@ public abstract class YogFist extends Mob {
 						Dungeon.observe();
 					}
 					for (Char ch : affected) {
-						ch.damage(Random.NormalIntRange(28, 42),new DarkBolt());
+						int dmg = Random.NormalIntRange(28, 42);
+						if(Statistics.bossRushMode){
+							dmg *= 2;
+						}
+						ch.damage(dmg,new DarkBolt());
 
 						if (Dungeon.level.heroFOV[pos]) {
 							ch.sprite.flash();

@@ -104,9 +104,15 @@ public class GamesInProgress {
 			try {
 				
 				Bundle bundle = FileUtils.bundleFromFile(gameFile(slot));
-				info = new Info();
-				info.slot = slot;
-				Dungeon.preview(info, bundle);
+
+				if (bundle.getInt( "version" ) < ShatteredPixelDungeon.v1_4_3) {
+					info = null;
+				} else {
+
+					info = new Info();
+					info.slot = slot;
+					Dungeon.preview(info, bundle);
+				}
 
 			} catch (IOException e) {
 				info = null;

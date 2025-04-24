@@ -9,14 +9,19 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.Rival;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -40,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.BArray;
@@ -55,6 +61,17 @@ public class DeepShadowLevel extends Level {
     {
         color1 = 0x801500;
         color2 = 0xa68521;
+    }
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.BGM_YOU,true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+                () -> Music.playModeBGM(Assets.Music.BGM_BOSSC,true)));
     }
 
     public enum State {
@@ -79,8 +96,8 @@ public class DeepShadowLevel extends Level {
     //keep track of items to dump back after fight
     private ArrayList<Item> storedItems = new ArrayList<>();
 
-    private int heroJumpPoint;
-    private int rivalJumpPoint;
+    public int heroJumpPoint;
+    public int rivalJumpPoint;
 
     private int pedestal;
 
@@ -89,7 +106,7 @@ public class DeepShadowLevel extends Level {
         if(rival == null && !Statistics.doNotLookLing){
             GLog.n(Messages.get(Rival.class,"mustone",hero.name()+"?"));
             Buff.prolong( hero, Paralysis.class, Paralysis.DURATION*50 );
-            Buff.affect(hero, RoseShiled.class, 200000f);
+            Buff.affect(hero,  Invisibility.class, 200000f);
             GameScene.scene.add(new Delayer(3f){
                 @Override
                 protected void onComplete() {
@@ -257,7 +274,6 @@ public class DeepShadowLevel extends Level {
         if (ch == hero && rival != null){
             //hero reaches amulet
             if (state == State.BRIDGE){
-                progress();
                 rival.notice();
             }
         }
@@ -269,6 +285,7 @@ public class DeepShadowLevel extends Level {
                 changeMap(LastLevelArenas.randomPhase1Map());
                 heroJumpPoint = 16 + 15 * width();
                 rivalJumpPoint = 28 + 15 * width();
+                rival.summon(28 + 15 * width());
 
                 doProgress(true);
 
@@ -278,6 +295,7 @@ public class DeepShadowLevel extends Level {
                 changeMap(LastLevelArenas.randomPhase2Map());
                 heroJumpPoint = 14 + 16 * width();
                 rivalJumpPoint = 2 + 28 * width();
+                rival.summon(2 + 28 * width());
 
                 doProgress(true);
 
@@ -287,6 +305,7 @@ public class DeepShadowLevel extends Level {
                 changeMap(LastLevelArenas.randomPhase3Map());
                 heroJumpPoint = 15 + 14 * width();
                 rivalJumpPoint = 15 + 2 * width();
+                rival.summon(15 + 2 * width());
 
                 doProgress(true);
 
@@ -296,6 +315,7 @@ public class DeepShadowLevel extends Level {
                 changeMap(LastLevelArenas.randomPhase4Map());
                 heroJumpPoint = 16 + 16 * width();
                 rivalJumpPoint = 28 + 28 * width();
+                rival.summon(28 + 28 * width());
 
                 doProgress(true);
 
@@ -307,6 +327,7 @@ public class DeepShadowLevel extends Level {
                 changeMap(LastLevelArenas.randomPhase5Map());
                 heroJumpPoint = 14 + 15 * width();
                 rivalJumpPoint = 2 + 15 * width();
+                rival.summon(2 + 15 * width());
 
                 doProgress(true);
 
@@ -338,11 +359,17 @@ public class DeepShadowLevel extends Level {
                 rival.misc2.level = rival.misc2.level()/2;
                 drop(rival.misc2, rivalJumpPoint );
 
-                rival.wand.level = 0;
-                drop(rival.wand, rivalJumpPoint );
+                Item wand = Generator.randomUsingDefaults(Generator.Category.WAND);
+                wand.level = Random.IntRange(0, 2);
+                wand.upgrade();
+                drop(wand, rivalJumpPoint );
 
                 for (Item item : storedItems)
                     drop( item, randomWonCell() );
+
+                if (Dungeon.hero.subClass == HeroSubClass.NONE && Statistics.RandMode) {
+                    Dungeon.level.drop( new TengusMask(), rivalJumpPoint ).sprite.drop();
+                }
 
                 state = State.WON;
                 break;
@@ -524,6 +551,14 @@ public class DeepShadowLevel extends Level {
                 || map[pos] == Terrain.CHASM
                 || map[pos] == Terrain.ENTRANCE);
         return pos;
+    }
+
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        if(locked){
+            return false;
+        }
+        return super.activateTransition(hero, transition);
     }
 
 }

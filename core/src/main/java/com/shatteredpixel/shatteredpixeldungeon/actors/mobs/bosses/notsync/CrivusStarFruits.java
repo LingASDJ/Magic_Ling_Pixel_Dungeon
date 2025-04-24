@@ -28,8 +28,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ClearElemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
@@ -38,15 +40,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.CrivusFruitsFood;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusStarFruitsSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -55,10 +59,14 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class CrivusStarFruits extends Boss implements Hero.Doom {
+
+    private int heroCooldown = 0;
+    private int mobCooldown = 0;
 
     {
         spriteClass = CrivusStarFruitsSprite.class;
@@ -71,6 +79,13 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
 
         properties.add(Property.IMMOVABLE);
         properties.add(Property.BOSS);
+        alignment = Alignment.NEUTRAL;
+    }
+
+
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 7, 12 );
     }
 
     @Override
@@ -93,10 +108,6 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
 
     @Override
     public void damage(int dmg, Object src) {
-        if(!crivusfruitslevel2 && HP<160){
-            HP = 160;
-            return;
-        }
 
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null){
@@ -118,7 +129,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
 
     @Override
     public boolean isInvulnerable(Class effect) {
-        return this.HP > 161 && effect != CrivusStarFruits.DiedDamager.class;
+        return !Statistics.crivusfruitslevel2;
     }
 
     @Override
@@ -164,8 +175,8 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
         Statistics.bossScores[0] += 2000;
         Badges.KILL_ST();
 
-        //30%
-        if(Random.Float()>=0.7f) Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
+        //35%
+        if(Random.Float()>=0.65f) Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
 
         if(!Statistics.bossRushMode) {
             Dungeon.level.drop(new IceCyanBlueSquareCoin(15),pos);
@@ -173,6 +184,10 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
         }
         Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.FOOD),pos);
         Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.FOOD),pos);
+
+        Dungeon.level.drop(new PotionOfHaste(),pos);
+        Dungeon.level.drop(new ElixirOfHoneyedHealing(),pos);
+        Dungeon.level.drop(new WildEnergy(),pos);
 
         int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
         for (int i = 0; i < blobs; i++){
@@ -236,29 +251,72 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
     @Override
     protected boolean act() {
 
-        if (HP > 60 && Statistics.crivusfruitslevel3){
-            if(enemy!=null && enemy == hero){
-                yell(Messages.get(this,"goodbye"));
-                enemy.damage(enemy.HT/3,this);
-                spend(16f);
-            } else {
-                this.damage(2,this);
-            }
+        String[] TXT_RANDOM = {
+                Messages.get(CrivusStarFruits.class, "goodbye_1"),
+                Messages.get(CrivusStarFruits.class, "goodbye_2"),
+                Messages.get(CrivusStarFruits.class, "goodbye_3"),
+                Messages.get(CrivusStarFruits.class, "goodbye_4"),
+                Messages.get(CrivusStarFruits.class, "goodbye_5"),
+                Messages.get(CrivusStarFruits.class, "goodbye_6"),
+                Messages.get(CrivusStarFruits.class, "goodbye_7")
+        };
 
+        String[] DFR_RANDOM = {
+                Messages.get(CrivusStarFruits.class, "dead_1"),
+                Messages.get(CrivusStarFruits.class, "dead_2"),
+                Messages.get(CrivusStarFruits.class, "dead_3")
+        };
+
+        if (HP >= 93 && Statistics.crivusfruitslevel3) {
+            if(mobCooldown <= 0){
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if(mob.alignment != Alignment.ENEMY){
+                        MagicMissile.boltFromChar(sprite.parent,
+                                MagicMissile.FIRE,
+                                new RatSprite(),
+                                mob.pos,
+                                new Callback() {
+                                    @Override
+                                    public void call() {
+                                        mob.damage(damageRoll()*2, this);
+                                        yell(DFR_RANDOM[Random.Int(DFR_RANDOM.length)]);
+                                    }
+                                });
+                    }
+                }
+                mobCooldown = 8;
+            } else {
+                mobCooldown--;
+            }
+            // 针对英雄的单独逻辑
+            if (enemy != null && enemy == hero && heroCooldown <= 0) {
+                MagicMissile.boltFromChar(sprite.parent,
+                        MagicMissile.HALOFIRE,
+                        sprite,
+                        enemy.pos,
+                        new Callback() {
+                            @Override
+                            public void call() {
+                                enemy.damage(damageRoll(), new DM100.LightningBolt());
+                            }
+                        });
+                heroCooldown = 16;
+                yell(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
+            } else {
+                heroCooldown--;
+            }
         }
+
 
         alerted = false;
         super.act();
         state = PASSIVE;
-        if (alignment == Alignment.NEUTRAL) {
-            return true;
-        }
-        if( hero.buff(LockedFloor.class) != null){
-            notice();
-        }
 
         GameScene.add(Blob.seed(pos, Statistics.crivusfruitslevel2 ? 0 : 20,  ConfusionGas.class));
 
+        if (alignment == Alignment.NEUTRAL) {
+            return true;
+        }
         return super.act();
     }
     @Override
@@ -272,22 +330,39 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
     private static final String HAS_RAGED = "has_raged";
 
     private static String FOCUS_COOLDOWN = "focus_cooldown";
+
+    private static String Cooldown = "cooldown";
+    private static String CooldownX = "cooldown_x";
+
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(NUM_CONTS, count);
         bundle.put(HAS_RAGED, hasRaged);
         bundle.put( FOCUS_COOLDOWN, focusCooldown );
+
+        bundle.put(Cooldown, heroCooldown);
+        bundle.put(CooldownX, mobCooldown);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         count = bundle.getInt(NUM_CONTS);
+
+        heroCooldown = bundle.getInt(Cooldown);
+        mobCooldown = bundle.getInt(CooldownX);
+
         hasRaged = bundle.getBoolean(HAS_RAGED);
         focusCooldown = bundle.getInt( FOCUS_COOLDOWN );
         if (state != SLEEPING) BossHealthBar.assignBoss(this);
         if ((HP*2 <= HT)) BossHealthBar.bleed(true);
+
+        if (Statistics.crivusfruitslevel2 || Statistics.crivusfruitslevel3){
+            alignment = Alignment.ENEMY;
+        } else {
+            alignment = Alignment.NEUTRAL;
+        }
 
     }
     @Override
@@ -303,33 +378,28 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
         }
     }
 
-    protected void triggerEnrage(){
-        Buff.affect(this, Rage.class).setShield(HT/2 + 40);
-        if (Dungeon.level.heroFOV[pos]) {
-            sprite.showStatus( CharSprite.NEGATIVE, "!!!" );
-            AlarmTrap trap = new AlarmTrap();
-            trap.pos = super.pos;
-            trap.activate();
-            ScrollOfTeleportation.teleportToLocation(this, 577);
-            GLog.n(Messages.get(this, "died"));
+    protected void triggerEnrage() {
+        if (!hasRaged) {
+            Buff.affect(this, Rage.class).setShield(80);
+            if (Dungeon.level.heroFOV[pos]) {
+                ScrollOfTeleportation.teleportToLocation(this, 577);
+                GLog.n(Messages.get(this, "died"));
+            }
+            spend(TICK);
+            hasRaged = true;
         }
-        spend( TICK );
-        hasRaged = true;
     }
+
 
     public static class Rage extends ShieldBuff {
 
         {
-            type = buffType.POSITIVE;
+            type = buffType.NEUTRAL;
+            announced = true;
         }
 
         @Override
         public boolean act() {
-
-            if (target.HP > 60){
-                detach();
-                return true;
-            }
 
             absorbDamage( 0);
 
@@ -344,7 +414,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
 
         @Override
         public int icon () {
-            return BuffIndicator.HEX;
+            return target.HP >= 93 ? BuffIndicator.CORRUPT : BuffIndicator.HEX;
         }
 
         @Override
@@ -359,7 +429,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
 
         @Override
         public String desc () {
-            return Messages.get(this, "desc", shielding());
+            return Messages.get(this, "desc");
         }
 
         {
@@ -374,18 +444,23 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
     }
 
     public void notice() {
-        super.notice();
-        if (!BossHealthBar.isAssigned()) {
-            BossHealthBar.assignBoss(this);
-            GLog.n(Messages.get(this, "notice"));
-            GameScene.flash(0x8000cc00);
-            Camera.main.shake(1f,3f);
-            this.sprite.showStatus(CharSprite.NEGATIVE, "!!!");
-            GameScene.bossReady();
-            for (Char ch : Actor.chars()){
-                if (ch instanceof DriedRose.GhostHero){
-                    ((DriedRose.GhostHero) ch).sayBoss();
-                }
+
+        if(Statistics.difficultyDLCEXLevel >= 3){
+            RollEX();
+            RollCS();
+        } else if (Statistics.difficultyDLCEXLevel == 2){
+            RollCS();
+        }
+
+        BossHealthBar.assignBoss(this);
+        GLog.n(Messages.get(this, "notice"));
+        GameScene.flash(0x8000cc00);
+        Camera.main.shake(1f,3f);
+        GameScene.bossReady();
+        //BGMPlayer.playBoss();
+        for (Char ch : Actor.chars()){
+            if (ch instanceof DriedRose.GhostHero){
+                ((DriedRose.GhostHero) ch).sayBoss();
             }
         }
     }

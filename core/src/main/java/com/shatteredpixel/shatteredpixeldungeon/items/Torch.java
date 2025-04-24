@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElectricalSmoke;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -65,6 +66,25 @@ public class Torch extends Item {
 		torch.plingks++;
 		detach(Dungeon.hero.belongings.backpack);
 	}
+
+//	@Override
+//	public boolean doPickUp(Hero hero, int pos) {
+//		if (super.doPickUp(hero, pos)  && Dungeon.hero.belongings.backpack.items.size() < Dungeon.hero.belongings.backpack.capacity()) {
+//			if(Statistics.AutoOilPotion){
+//				OilLantern lantern = Dungeon.hero.belongings.getItem(OilLantern.class);
+//				if(lantern!=null){
+//					Refill(lantern);
+//					GLog.p(Messages.get(Torch.class,"lanterfireactive",Math.min(Math.max(55 - (10 * Statistics.deepestFloor / 5) - Challenges.activeChallenges() / 4, 10), 100)));
+//				} else {
+//					GLog.p(Messages.get(Torch.class,"youmustload"));
+//				}
+//				return true;
+//			}
+//
+//        } else {
+//			return false;
+//		}
+//    }
 	
 	@Override
 	public void execute( Hero hero, String action ) {
@@ -87,6 +107,8 @@ public class Torch extends Item {
 			} else {
 				hero.spend( TIME_TO_LIGHT );
 				hero.busy();
+
+				if(hero.buff(ElectricalSmoke.SmokingAlloy.class)!=null) GLog.i(Messages.get(ElectricalSmoke.class,"conversation_light"));
 
 				hero.sprite.operate( hero.pos );
 

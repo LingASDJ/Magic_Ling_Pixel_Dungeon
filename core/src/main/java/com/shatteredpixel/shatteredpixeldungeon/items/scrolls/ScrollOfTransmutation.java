@@ -37,12 +37,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.Elixir;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -68,6 +70,10 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	@Override
 	protected boolean usableOnItem(Item item) {
 		if(item instanceof MeleeWeapon) {
+
+			if(item instanceof LockSword)
+				return false;
+
 			Generator.Category c = Generator.wepTiers[((MeleeWeapon) item).tier - 1];
 			int canChangeWeapon = 0;
 			int lastWeaponIndex = 0;
@@ -77,11 +83,12 @@ public class ScrollOfTransmutation extends InventoryScroll {
 					lastWeaponIndex = i;
 				}
 			}
+
 			if( canChangeWeapon > 1 )
 				return true;
 			else if( canChangeWeapon == 1 ){//针对只有一把武器能生成的情况，避免后续代码死循环导致的卡死
 				return item.getClass().getSimpleName() != c.classes[lastWeaponIndex].getSimpleName();
-			}else {//针对无法正常生成的武器
+			} else {//针对无法正常生成的武器
 				return false;
 			}
 		}
@@ -93,7 +100,8 @@ public class ScrollOfTransmutation extends InventoryScroll {
 				|| item instanceof Wand ||
 				item instanceof Plant.Seed ||
 				item instanceof Runestone ||
-				item instanceof Artifact && !(item instanceof OilLantern);
+				item instanceof Artifact && !(item instanceof OilLantern) &&
+				!(item instanceof Prop);
 	}
 	
 	@Override
@@ -172,15 +180,20 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			return changeStone((Runestone) item);
 		} else if (item instanceof Artifact) {
 			Artifact a = changeArtifact( (Artifact)item );
-			if(item instanceof OilLantern){
-				return item;
-			} else if (a == null){
-				//if no artifacts are left, generate a random +0 ring with shared ID/curse state
+			if (a == null){
+				//if no artifacts are left, generate a random ring with shared ID/curse state
+				//artifact and ring levels are not exactly equivalent, give the ring up to +2
 				Item result = Generator.randomUsingDefaults(Generator.Category.RING);
 				result.levelKnown = item.levelKnown;
 				result.cursed = item.cursed;
 				result.cursedKnown = item.cursedKnown;
-				result.level(0);
+				if (item.visiblyUpgraded() == 10){
+					result.level(2);
+				} else if (item.visiblyUpgraded() >= 5){
+					result.level(1);
+				} else {
+					result.level(0);
+				}
 				return result;
 			} else {
 				return a;
@@ -305,6 +318,20 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 		return null;
 	}
+
+	public static Trinket changeTrinket(Trinket t){
+		Trinket n;
+		do {
+			n = (Trinket)Generator.random(Generator.Category.TRINKET);
+		} while ( Challenges.isItemBlocked(n) || n.getClass() == t.getClass());
+
+		n.level(t.trueLevel());
+		n.levelKnown = t.levelKnown;
+		n.cursedKnown = t.cursedKnown;
+		n.cursed = t.cursed;
+
+		return n;
+	}
 	
 	public static Wand changeWand( Wand w ) {
 		Wand n;
@@ -339,18 +366,18 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 
-	public static Trinket changeTrinket( Trinket t ){
-		Trinket n;
-		do {
-			n = (Trinket)Generator.random(Generator.Category.TRINKET);
-		} while ( Challenges.isItemBlocked(n) || n.getClass() == t.getClass());
-
-		n.level(t.trueLevel());
-		n.levelKnown = t.levelKnown;
-		n.cursed = t.cursed;
-
-		return n;
-	}
+//	public static Trinket changeTrinket( Trinket t ){
+//		Trinket n;
+//		do {
+//			n = (Trinket)Generator.random(Generator.Category.TRINKET);
+//		} while ( Challenges.isItemBlocked(n) || n.getClass() == t.getClass());
+//
+//		n.level(t.trueLevel());
+//		n.levelKnown = t.levelKnown;
+//		n.cursed = t.cursed;
+//
+//		return n;
+//	}
 	
 	public static Runestone changeStone( Runestone r ) {
 		Runestone n;

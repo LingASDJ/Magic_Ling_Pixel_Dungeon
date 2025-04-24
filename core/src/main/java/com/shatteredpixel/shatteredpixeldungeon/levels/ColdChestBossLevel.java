@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.GO_START;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.MAZE_START;
@@ -16,8 +15,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
@@ -28,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -41,6 +42,16 @@ public class ColdChestBossLevel extends Level {
 
     public State pro(){
         return pro;
+    }
+
+    @Override
+    public void playLevelMusic() {
+        Music.playModeBGM(Assets.Music.BGM_2, true);
+    }
+
+    @Override
+    public void playBossMusic() {
+        Game.runOnRenderThread(() -> Music.playModeBGM(Assets.Music.DIAMAND_KING_INTRO, true));
     }
 
     private static final String PRO	= "pro";
@@ -85,7 +96,7 @@ public class ColdChestBossLevel extends Level {
     @Override
     protected boolean build() {
         setSize(WIDTH,HEIGHT);
-        int entrance = WIDTH*2+17;
+        int entrance = 87;
 
         LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(enter);
@@ -151,86 +162,10 @@ public class ColdChestBossLevel extends Level {
             W,E,E,W,K,W,E,E,W,W,W,W,E,W,K,K,K,P,K,K,K,W,E,W,W,W,W,E,W,K,W,E,E,E,W,
             W,E,E,W,K,W,E,E,E,E,E,E,E,W,K,K,K,K,K,K,K,W,E,E,E,E,E,E,W,K,W,E,E,E,W,
             W,E,E,W,K,W,E,E,E,E,E,E,E,W,K,K,K,P,K,K,K,W,E,E,E,E,E,E,W,K,W,E,E,E,W,
-            W,E,E,W,K,W,W,W,W,W,W,W,W,W,K,K,P,P,P,K,K,W,W,W,W,W,W,W,W,K,W,E,E,E,W,
-            W,E,E,W,K,K,K,K,K,K,K,K,K,D,K,P,P,P,P,P,K,D,K,K,K,K,K,K,K,K,W,E,E,E,W,
-            W,E,E,W,W,W,W,W,W,W,W,W,W,W,K,K,P,P,P,K,K,W,W,W,W,W,W,W,W,W,W,E,E,E,W,
+            W,E,E,W,K,W,W,W,W,W,W,W,W,W,K,K,W,W,W,K,K,W,W,W,W,W,W,W,W,K,W,E,E,E,W,
+            W,E,E,W,K,K,K,K,K,K,K,K,K,D,K,P,W,E,W,P,K,D,K,K,K,K,K,K,K,K,W,E,E,E,W,
+            W,E,E,W,W,W,W,W,W,W,W,W,W,W,K,K,W,W,W,K,K,W,W,W,W,W,W,W,W,W,W,E,E,E,W,
             W,E,E,E,E,E,E,E,E,E,E,E,E,W,K,K,K,P,K,K,K,W,E,E,E,E,E,E,E,E,E,E,E,E,W,
-            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
-    };
-
-    private static final int[] MazeRoom = {
-            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
-            W,L,L,L,L,L,W,L,W,L,W,W,W,W,W,L,L,L,W,W,W,W,W,W,L,L,L,L,W,L,W,W,W,L,W,
-            W,W,W,W,W,L,W,L,W,L,W,W,W,W,W,L,W,W,W,W,W,W,W,W,L,W,L,L,W,L,W,W,W,L,W,
-            W,W,W,B,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,L,L,L,W,L,L,W,L,W,W,W,L,W,
-            W,W,W,L,W,W,W,L,W,W,W,L,W,L,L,L,L,L,W,L,L,L,L,W,W,W,L,L,L,L,L,L,W,L,W,
-            W,L,L,L,W,L,L,L,L,L,L,L,W,L,W,L,W,L,W,W,W,L,L,W,L,L,L,L,L,L,W,L,W,L,W,
-            W,T,W,L,W,L,W,W,W,W,W,W,W,W,W,L,W,L,W,L,L,L,L,W,L,L,W,W,W,W,W,T,W,L,W,
-            W,W,W,L,L,L,L,L,L,W,L,W,L,L,W,L,W,W,W,L,L,W,W,W,L,L,L,L,L,L,W,W,W,L,W,
-            W,W,W,L,W,W,W,W,W,W,L,W,L,L,W,L,W,L,L,L,L,W,L,W,L,L,W,W,W,L,W,L,L,L,W,
-            W,W,W,L,L,W,L,W,L,L,L,L,L,L,W,L,W,W,W,W,W,W,L,W,L,L,L,L,W,L,W,L,L,L,W,
-            W,W,W,L,L,W,L,W,L,W,W,W,W,W,W,L,W,L,W,L,L,W,L,W,L,L,W,L,W,L,L,L,W,L,W,
-            W,W,W,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,W,L,L,W,L,W,L,L,W,L,W,L,W,W,W,L,W,
-            W,W,W,W,W,W,L,L,L,L,W,L,L,L,W,L,W,W,W,L,L,L,L,L,L,L,W,L,L,L,L,L,W,L,W,
-            W,W,W,L,L,L,L,L,L,L,W,L,L,L,L,L,W,L,D,B,L,W,L,W,L,L,W,W,W,W,L,W,W,L,W,
-            W,W,W,W,W,L,L,W,L,L,L,L,L,L,L,L,W,W,W,L,L,W,L,W,L,L,L,L,L,L,L,L,W,L,W,
-            W,W,W,L,L,L,W,W,B,W,W,W,L,W,L,L,L,L,W,L,W,W,W,W,W,L,L,L,L,L,L,L,W,L,W,
-            W,W,W,L,L,L,L,W,L,D,L,W,L,W,L,L,L,L,W,L,L,W,L,L,L,L,L,W,W,W,W,W,W,L,W,
-            W,W,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,L,L,L,W,L,W,L,L,L,L,L,L,L,L,L,B,W,
-            W,W,W,L,W,W,W,W,L,L,L,L,L,L,L,L,W,L,L,L,L,W,L,W,W,W,L,L,W,L,L,L,L,W,W,
-            W,W,W,L,L,L,L,W,L,L,L,L,L,L,L,L,W,W,W,W,L,L,L,W,L,W,W,L,W,W,W,W,W,W,W,
-            W,W,W,L,L,L,L,W,L,L,L,L,W,W,W,L,W,L,L,L,L,L,L,W,L,L,L,L,L,L,L,L,L,W,W,
-            W,L,L,L,L,L,L,L,L,L,L,L,W,L,L,L,W,L,W,W,W,W,L,W,L,W,W,W,W,W,W,W,L,W,W,
-            W,L,W,L,L,W,W,W,W,L,W,W,W,W,W,W,W,L,L,L,L,W,L,L,L,L,L,L,L,L,L,W,L,L,W,
-            W,L,W,L,L,L,L,L,W,L,L,L,L,L,W,L,W,W,W,W,L,W,L,L,L,L,L,L,W,L,L,W,L,L,W,
-            W,T,W,W,W,W,L,L,W,L,L,W,W,W,W,L,L,W,L,W,L,W,L,L,W,W,W,L,W,L,L,L,L,L,W,
-            W,W,W,L,L,L,L,L,W,L,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,L,W,L,W,W,W,W,W,W,W,
-            W,W,W,L,W,L,W,W,W,L,L,L,W,L,W,L,L,W,W,W,L,W,W,W,W,W,W,L,W,L,L,L,L,L,W,
-            W,W,W,L,W,L,L,L,W,L,L,L,W,L,W,L,L,W,L,L,L,L,L,L,L,L,W,L,L,L,X,X,X,L,W,
-            W,W,W,L,W,L,L,W,W,L,W,L,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,W,L,X,L,X,L,W,
-            W,W,W,W,W,L,L,W,W,L,W,L,W,L,W,W,W,W,L,L,W,L,L,W,L,L,L,L,W,L,X,X,X,L,W,
-            W,W,W,L,L,L,W,W,W,L,W,L,W,L,L,W,L,L,L,L,L,L,L,W,L,L,L,L,W,L,L,L,L,L,W,
-            W,W,W,L,W,L,L,L,W,L,W,L,W,L,L,W,L,W,W,W,W,W,L,W,W,W,W,W,W,W,W,W,W,W,W,
-            W,W,W,L,W,L,W,L,W,W,W,W,W,L,W,W,T,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,W,
-            W,B,L,L,W,L,W,L,L,L,L,L,L,L,L,W,W,W,W,W,W,L,W,L,L,L,W,L,L,L,W,L,T,L,W,
-            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
-    };
-
-    private static final int[] MazeRoom_C = {
-            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
-            W,L,L,L,L,L,W,L,W,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,W,L,W,W,W,L,W,L,W,
-            W,W,W,W,W,L,W,L,W,L,L,L,L,W,W,L,L,L,L,L,L,L,W,L,L,W,L,W,W,L,L,L,L,L,W,
-            W,W,W,B,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,L,L,L,W,L,L,W,L,W,W,L,L,W,
-            W,W,W,L,W,W,W,L,W,W,W,L,W,L,L,L,L,L,W,L,L,L,L,W,W,W,L,L,L,L,L,L,L,L,W,
-            W,L,L,L,W,L,L,L,L,L,L,L,W,L,L,L,W,L,W,W,W,L,L,W,L,L,L,L,L,L,W,L,L,L,W,
-            W,T,W,L,W,L,W,W,W,L,L,L,W,W,L,L,W,L,W,L,L,L,L,L,L,L,W,W,W,W,W,T,W,L,W,
-            W,W,W,L,L,L,L,L,L,L,L,L,L,L,L,L,W,W,W,L,L,W,W,L,L,L,L,L,L,L,W,W,W,L,W,
-            W,W,W,L,W,W,W,W,W,L,L,L,L,L,W,L,W,L,L,L,L,W,L,L,L,L,W,W,W,L,W,L,L,L,W,
-            W,W,W,L,L,W,L,W,L,L,L,L,L,L,W,L,W,W,W,W,W,W,L,W,L,L,L,L,W,L,W,L,L,L,W,
-            W,W,W,L,L,W,L,W,L,W,W,W,W,W,W,L,W,L,W,L,L,W,L,W,L,L,W,L,W,L,L,L,W,L,W,
-            W,W,W,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,W,L,L,W,L,W,L,L,W,L,W,L,W,W,W,L,W,
-            W,W,W,W,W,W,L,L,L,L,W,L,L,L,W,L,L,W,W,L,L,L,L,L,L,L,W,L,L,L,L,L,W,L,W,
-            W,W,W,L,L,L,L,L,L,L,W,L,L,L,L,L,L,L,D,B,L,W,L,W,L,L,W,W,W,W,L,W,W,L,W,
-            W,W,W,W,W,L,L,W,L,L,L,L,L,L,L,L,W,W,W,L,L,W,L,W,L,L,L,L,L,L,L,L,W,L,W,
-            W,W,W,L,L,L,W,W,B,W,W,L,L,W,L,L,L,L,W,L,W,W,W,W,W,L,L,L,L,L,L,L,W,L,W,
-            W,W,W,L,L,L,L,W,L,D,L,L,L,W,L,L,L,L,W,L,L,W,L,L,L,L,L,W,W,W,W,W,W,L,W,
-            W,W,W,L,L,L,L,W,L,W,W,L,L,W,L,L,W,L,L,L,L,W,L,W,L,L,L,L,L,L,L,L,L,B,W,
-            W,W,W,L,W,W,W,W,L,L,L,L,L,L,L,L,W,L,L,L,L,W,L,W,W,W,L,L,W,L,L,L,L,W,W,
-            W,W,W,L,L,L,L,W,L,L,L,L,L,L,L,L,W,W,W,W,L,L,L,W,L,W,W,L,W,W,L,W,L,W,W,
-            W,W,W,L,L,L,L,W,L,L,L,L,W,W,W,L,W,L,L,L,L,L,L,W,L,L,L,L,L,L,L,L,L,W,W,
-            W,L,L,L,L,L,L,L,L,L,L,L,W,L,L,L,W,L,W,W,W,W,L,W,L,W,W,W,W,W,W,W,L,W,W,
-            W,L,W,L,L,W,W,W,W,L,W,W,W,W,W,W,W,L,L,L,L,W,L,L,L,L,L,L,L,L,L,W,L,L,W,
-            W,L,W,L,L,L,L,L,W,L,L,L,L,L,W,L,W,W,W,W,L,W,L,L,L,L,L,L,W,L,L,W,L,L,W,
-            W,T,W,W,W,W,L,L,W,L,L,W,W,W,W,L,L,W,L,W,L,W,L,L,W,W,W,L,W,L,L,L,L,L,W,
-            W,W,W,L,L,L,L,L,W,L,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,L,W,L,W,W,W,W,W,W,W,
-            W,W,W,L,W,L,W,W,W,L,L,L,W,L,W,L,L,W,W,W,L,W,W,W,W,W,W,L,W,L,L,L,L,L,W,
-            W,W,W,L,W,L,L,L,W,L,L,L,W,L,W,L,L,W,L,L,L,L,L,L,L,L,W,L,L,L,O,O,O,L,W,
-            W,W,W,L,W,L,L,W,W,L,W,L,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,W,L,O,P,O,L,W,
-            W,W,W,W,W,L,L,W,W,L,L,L,W,L,W,W,W,W,L,L,W,L,L,W,L,L,L,L,W,L,O,O,O,L,W,
-            W,W,W,L,L,L,W,W,W,L,L,L,W,L,L,W,L,L,L,L,L,L,L,W,L,L,L,L,W,L,L,L,L,L,W,
-            W,W,W,L,W,L,L,L,W,L,L,L,W,L,L,L,L,W,W,W,W,W,L,W,W,W,W,W,W,W,W,W,W,W,W,
-            W,W,W,L,W,L,W,L,W,L,W,L,W,L,W,L,T,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,W,
-            W,B,L,L,W,L,W,L,L,L,L,L,L,L,L,W,W,W,W,W,W,L,W,L,L,L,W,L,L,L,W,L,T,L,W,
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
     };
 
@@ -274,7 +209,7 @@ public class ColdChestBossLevel extends Level {
 
 
     private void setMapStart() {
-        int entrance = WIDTH*2+17;
+        int entrance = 87;
 
         LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(enter);
@@ -287,7 +222,7 @@ public class ColdChestBossLevel extends Level {
 
 
     public void setMapEnd(){
-        int entrance = 52;
+        int entrance =52;
         int exit = 647;
         LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(enter);
@@ -342,6 +277,25 @@ public class ColdChestBossLevel extends Level {
         boolean isTrue = ch.pos == LDBossDoor && ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
         if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
            progress();
+        }
+
+        ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
+        for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (boss instanceof DiamondKnight) {
+                if (level == ColdChestBossLevel.State.MAZE_START && Statistics.KillMazeMimic >= 5) {
+                    boss.HP = 240;
+                    ScrollOfTeleportation.teleportToLocation(boss,647);
+                    ((ColdChestBossLevel) Dungeon.level).progress();
+                    ((DiamondKnight) boss).phase++;
+                    ScrollOfTeleportation.teleportToLocation(hero, 962);
+                    GameScene.flash(0x808080);
+                    for (Mob bo : Dungeon.level.mobs.toArray(new Mob[0])) {
+                        if (bo instanceof TPDoor) {
+                            bo.die(null);
+                        }
+                    }
+                }
+            }
         }
 
         if(ch == hero){
@@ -420,138 +374,29 @@ public class ColdChestBossLevel extends Level {
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于360 1阶段
-                        if (pro == START && boss.HP <= 360) {
-                            //动态修改整个房间形态
-                            if(Dungeon.isChallenged(STRONGER_BOSSES)){
-                                changeMap(MazeRoom_C);
-                            } else {
-                                changeMap(MazeRoom);
-                            }
-
-                            for (Heap heap : heaps.valueList()) {
-                                for (Item item : heap.items) {
-                                    if(!(item instanceof MIME)){
-                                        item.doPickUp(hero, STARTPOS);
-                                        heap.destroy();
-                                    } else {
-                                        heap.destroy();
-                                    }
-                                }
-                            }
-
-
+                        if (pro == START && boss.HP <= 360 && !Statistics.TPDoorDieds) {
+                            Buff.affect(boss, RoseShiled.class, 10f);
                             Buff.detach(hero, Levitation.class);
                             //宝箱王移动到看戏位
                             ScrollOfTeleportation.appear(boss, MDX);
                             //玩家移动到初始位
                             ScrollOfTeleportation.appear(hero, STARTPOS);
                             boss.HP = 360;
-
-                            //进行Roll判定 获得一定的随机坐标
-                            if(Statistics.fuckGeneratorAlone==1) {
-                                if (Random.Float() < 0.5f) {
-                                    switch (Random.NormalIntRange(0, 4)) {
-                                        case 0:
-                                            drop(new MIME.GOLD_TWO(), 570);
-                                            break;
-                                        case 1:
-                                            drop(new MIME.GOLD_TWO(), 472);
-                                            break;
-                                        case 2:
-                                            drop(new MIME.GOLD_TWO(), 1041);
-                                            break;
-                                        case 3:
-                                            drop(new MIME.GOLD_TWO(), 52);
-                                            break;
-                                        case 4:
-                                            drop(new MIME.GOLD_TWO(), 1096);
-                                            break;
-                                    }
-                                } else {
-                                    switch (Random.NormalIntRange(0, 4)) {
-                                        case 0:
-                                            drop(new MIME.GOLD_THREE(), 570);
-                                            break;
-                                        case 1:
-                                            drop(new MIME.GOLD_THREE(), 472);
-                                            break;
-                                        case 2:
-                                            drop(new MIME.GOLD_THREE(), 1041);
-                                            break;
-                                        case 3:
-                                            drop(new MIME.GOLD_THREE(), 52);
-                                            break;
-                                        case 4:
-                                            drop(new MIME.GOLD_THREE(), 1096);
-                                            break;
-                                    }
-                                }
-                            }
-                            Statistics.fuckGeneratorAlone++;
-
-                            switch (Random.NormalIntRange(0,8)){
-                                case 0:
-                                    TPDoor ds0 = new TPDoor();
-                                    ds0.pos = 613;
-                                    GameScene.add(ds0);
-                                break;
-                                case 1:
-                                    TPDoor ds1 = new TPDoor();
-                                    ds1.pos = 888;
-                                    GameScene.add(ds1);
-                                    break;
-                                case 2:
-                                    TPDoor ds2 = new TPDoor();
-                                    ds2.pos = 1088;
-                                    GameScene.add(ds2);
-                                    break;
-                                case 3:
-                                    TPDoor ds3 = new TPDoor();
-                                    ds3.pos = 732;
-                                    GameScene.add(ds3);
-                                    break;
-                                case 4:
-                                    TPDoor ds4 = new TPDoor();
-                                    ds4.pos = 297;
-                                    GameScene.add(ds4);
-                                    break;
-                                case 5:
-                                    TPDoor ds5 = new TPDoor();
-                                    ds5.pos = 206;
-                                    GameScene.add(ds5);
-                                    break;
-                                case 6:
-                                    TPDoor ds6 = new TPDoor();
-                                    ds6.pos = 255;
-                                    GameScene.add(ds6);
-                                    break;
-                                case 7:
-                                    TPDoor ds7 = new TPDoor();
-                                    ds7.pos = 1186;
-                                    GameScene.add(ds7);
-                                    break;
-                                case 8:
-                                    TPDoor ds8 = new TPDoor();
-                                    ds8.pos = 820;
-                                    GameScene.add(ds8);
-                                    break;
-                            }
-
-
                             pro = MAZE_START;
+
+                            TPDoor ds0 = new TPDoor();
+                            ds0.pos = 682;
+                            GameScene.add(ds0);
                         }
                     }
                 }
-                //修复召唤物错误
-                Mob.holdAllies(this,STARTPOS);
-                Mob.restoreAllies(this, Dungeon.hero.pos, STARTPOS);
                 break;
             case MAZE_START:
                 //血量低于300后且在MAZE_START枚举中
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于300 2阶段
-                        if (pro == MAZE_START && boss.HP <= 300 || Statistics.TPDoorDieds) {
+                        if (pro == MAZE_START && boss.HP <= 360 && Statistics.TPDoorDieds) {
                             //动态修改整个房间 宝藏迷宫
                             changeMap(EndMap);
                             //在切换房间的时候立刻切换全新坐标
@@ -567,9 +412,10 @@ public class ColdChestBossLevel extends Level {
                                 }
                             }
 
-                            ScrollOfTeleportation.appear(hero, 962);
-                            Buff.affect(boss, ChampionEnemy.Halo.class);
-                            ScrollOfTeleportation.appear(boss,647);
+
+
+                            Mob.holdAllies(this, 961);
+                            Mob.restoreAllies(this, Dungeon.hero.pos, 963);
 
                             setMapEnd();
 
@@ -614,7 +460,7 @@ public class ColdChestBossLevel extends Level {
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于240 3阶段
-                        if (pro == VSBOSS_START && boss.HP <= 240) {
+                        if (pro == VSBOSS_START && boss.HP <= 240 && ((DiamondKnight) boss).phase == 2) {
                             boss.HP = 240;
                             pro = VSLINK_START;
                         }
@@ -625,7 +471,7 @@ public class ColdChestBossLevel extends Level {
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于200 4阶段
-                        if (pro == VSLINK_START && boss.HP <= 200) {
+                        if (pro == VSLINK_START && boss.HP <= 200 && ((DiamondKnight) boss).phase == 3) {
                             //Buff.detach(boss, ChampionEnemy.Halo.class);
                             boss.baseSpeed *= 2;
                             pro = VSYOU_START;
@@ -638,9 +484,8 @@ public class ColdChestBossLevel extends Level {
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于100 判定WIN
-                        if (pro == VSYOU_START && boss.HP <= 100) {
+                        if (pro == VSYOU_START && boss.HP <= 100 && ((DiamondKnight) boss).phase == 4) {
                             pro = WIN;
-                            Buff.detach(boss, ChampionEnemy.Halo.class);
                         }
                     }
                 }
@@ -667,9 +512,9 @@ public class ColdChestBossLevel extends Level {
     private static final int getBossDoor = WIDTH*11+17;
     private static final int LDBossDoor = WIDTH*12+17;
 
-    public static final int MDX = WIDTH*28+31;
-    public static final int STARTPOS = WIDTH+4;
-    private static final int HOME = WIDTH*2+17;
+    public static final int MDX = 1102;
+    public static final int STARTPOS = 787;
+    private static final int HOME = 87;
 
     @Override
     protected void createItems() {

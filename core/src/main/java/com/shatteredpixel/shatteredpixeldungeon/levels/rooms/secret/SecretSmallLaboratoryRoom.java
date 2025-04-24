@@ -1,9 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret;
 
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.STATUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.STATUE_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter.fill;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -64,7 +66,7 @@ public class SecretSmallLaboratoryRoom extends SecretRoom {
 
         fill(level, this, Terrain.WALL);
         fill(level, this,1, Terrain.WATER);
-        Painter.drawRectangle(level, new Point(centerX, centerY), width()-2, height()-2, EMPTY_SP,true,STATUE_SP);
+        Painter.drawRectangle(level, new Point(centerX, centerY), width()-2, height()-2, EMPTY_SP,true, Dungeon.branch == 4 ? STATUE : STATUE_SP);
 
         Painter.set(level,centerX,centerY,Terrain.ALCHEMY);
 

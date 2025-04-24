@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 
@@ -9,7 +10,7 @@ public class GreenSltingSprite extends MobSprite {
     public GreenSltingSprite() {
         super();
 
-        texture( Assets.Sprites.GREEN );
+        texture(Statistics.bossRushMode ? Assets.Sprites.GREEN_KING : Assets.Sprites.GREEN );
 
         TextureFilm frames = new TextureFilm( texture, 16, 20 );
 
