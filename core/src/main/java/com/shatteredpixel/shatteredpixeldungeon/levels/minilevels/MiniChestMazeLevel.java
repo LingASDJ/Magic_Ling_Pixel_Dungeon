@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
@@ -59,6 +60,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MiniChestMazeLevel extends RegularLevel {
+
+    @Override
+    public void playLevelMusic() {
+        Game.runOnRenderThread(() -> Music.playModeBGM(Assets.Music.DIAMAND_KING_INTRO, true));
+    }
+
+    @Override
+    public void playBossMusic() {
+        Game.runOnRenderThread(() -> Music.playModeBGM(Assets.Music.DIAMAND_KING_INTRO, true));
+    }
+
     @Override
     protected ArrayList<Room> initRooms() {
         ArrayList<Room> initRooms =    new ArrayList<>();

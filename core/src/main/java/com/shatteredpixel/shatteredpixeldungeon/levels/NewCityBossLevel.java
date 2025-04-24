@@ -61,6 +61,17 @@ public class NewCityBossLevel extends Level {
 		color2 = 0xf2f2f2;
 	}
 
+	@Override
+	public void playBossMusic(){
+		Music.playModeBGM(Assets.Music.BGM_BOSSD,true);
+	}
+
+	@Override
+	public void playLevelMusic(){
+		Music.playModeBGM(Assets.Music.BGM_4,true);
+	}
+
+
 	private static int WIDTH = 15;
 	private static int HEIGHT = 48;
 

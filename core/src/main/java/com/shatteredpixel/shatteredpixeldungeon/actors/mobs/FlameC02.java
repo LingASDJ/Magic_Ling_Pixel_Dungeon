@@ -25,6 +25,8 @@
 package  com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class FlameC02 extends FlameC01 {
@@ -35,6 +37,12 @@ public class FlameC02 extends FlameC01 {
         EXP = 10;
         maxLvl = 27;
         gasTankPressure = Random.Int(100, 250);
+    }
+
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle( bundle );
+        if (state != SLEEPING) BossHealthBar.assignBoss(this);
     }
 
     public void die(Object cause) {

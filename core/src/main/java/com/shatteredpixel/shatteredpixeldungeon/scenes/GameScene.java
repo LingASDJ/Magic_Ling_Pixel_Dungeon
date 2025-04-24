@@ -1169,8 +1169,13 @@ public class GameScene extends PixelScene {
 			return;
 		}
 
-		//全新音乐系统
-		Dungeon.level.playLevelMusic();
+		//全新音乐系统 2025.4.21
+		if(Dungeon.level.locked){
+			Dungeon.level.playBossMusic();
+		} else {
+			Dungeon.level.playLevelMusic();
+		}
+
 
 		SPDSettings.lastClass(Dungeon.hero.heroClass.ordinal());
 

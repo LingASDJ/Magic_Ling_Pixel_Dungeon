@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
@@ -128,6 +129,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundlable;
@@ -521,7 +523,11 @@ public abstract class Level implements Bundlable {
 		createMobs();
 	}
 
+	//常规音乐播放
 	public void playLevelMusic(){}
+
+	//Boss音乐播放
+	public void playBossMusic(){}
 	
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
@@ -905,10 +911,12 @@ public abstract class Level implements Bundlable {
 	}
 
 	public void unseal(){
-		if (locked) {
+		if (locked && branch == 0) {
 			locked = false;
 			if (hero.buff(LockedFloor.class) != null){
 				hero.buff(LockedFloor.class).detach();
+				Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+						() -> Dungeon.level.playLevelMusic()));
 			}
 		}
 	}

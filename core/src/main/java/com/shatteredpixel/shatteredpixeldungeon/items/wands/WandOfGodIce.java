@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -51,6 +52,17 @@ public class WandOfGodIce extends DamageWand {
             processSoulMark(ch, chargesPerCast());
             ch.damage(affectTarget(ch),this);
         }
+
+        MagicalFireRoom.EternalFire eternalFire = (MagicalFireRoom.EternalFire)Dungeon.level.blobs.get(MagicalFireRoom.EternalFire.class);
+        if (eternalFire != null && eternalFire.volume > 0) {
+            eternalFire.clear( beam.collisionPos );
+            //bolt ends 1 tile short of fire, so check next tile too
+            if (beam.path.size() > beam.dist+1){
+                eternalFire.clear( beam.path.get(beam.dist+1) );
+            }
+
+        }
+
         WorstBlizzardFx.wandLevel = level();
         WorstBlizzardFx.damageTarget = affectTarget(null);
         WorstBlizzardFx.zapPos = beam.collisionPos;

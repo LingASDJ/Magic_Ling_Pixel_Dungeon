@@ -472,17 +472,6 @@ public class InterlevelScene extends PixelScene {
 		Dungeon.switchLevel( level, returnPos );
 	}
 
-	private static String[] MUISC_RANDOM = {
-			Assets.BGM_BOSSA, Assets.BGM_BOSSC,
-			Assets.BGM_BOSSD,
-
-			Assets.Music.CITY_BOSS_FINALE,
-			Assets.Music.CAVES_BOSS_FINALE, Assets.BGM_YOU,
-
-			Assets.Music.DRAGON_LING,
-			Assets.BOSSDOG,
-	};
-
 	private void restore() throws IOException {
 
 		Mob.clearHeldAllies();

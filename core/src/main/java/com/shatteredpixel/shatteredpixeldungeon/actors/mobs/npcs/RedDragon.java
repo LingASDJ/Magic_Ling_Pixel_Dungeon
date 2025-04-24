@@ -238,7 +238,9 @@ public class RedDragon extends NPC {
 
         public static Weapon.Enchantment enchant;
         public static Armor.Glyph glyph;
-
+        public static boolean active(){
+            return spawned && given && !processed && depth == Dungeon.depth;
+        }
         public static void reset() {
             spawned = false;
             weapon = null;
@@ -408,6 +410,7 @@ public class RedDragon extends NPC {
                 GLog.b( Messages.get(RedDragon.class, "find_me") );
                 //Sample.INSTANCE.play( Assets.Sounds.GHOST );
                 processed = true;
+                GameScene.bossSlain();
                 Statistics.questScores[2] += 8000;
             }
         }

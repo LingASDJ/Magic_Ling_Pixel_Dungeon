@@ -91,6 +91,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PathFinder;
@@ -639,11 +640,13 @@ public class ZeroCityLevel extends Level {
             drop( new Food(), 853  );
         }
 
-
-
-
         drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 3193);
         drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 2937);
+    }
+
+    @Override
+    public void playLevelMusic() {
+        Music.playModeBGM(Assets.Music.TOWN, true);
     }
 
 }

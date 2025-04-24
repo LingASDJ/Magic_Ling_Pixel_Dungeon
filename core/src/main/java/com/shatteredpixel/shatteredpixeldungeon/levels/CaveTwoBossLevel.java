@@ -62,12 +62,14 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -113,6 +115,21 @@ public class CaveTwoBossLevel extends Level {
             478,511,544,610,643,676,
             1006,1039,1072,1138,1171,1204
     };
+
+    @Override
+    public void playBossMusic(){
+        if(BossHealthBar.isBleeding()){
+            Music.playModeBGM(Assets.Music.CITY_BOSS_FINALE,true);
+        } else {
+            Music.playModeBGM(Assets.Music.BGM_BOSSC,true);
+        }
+
+    }
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.BGM_3,true);
+    }
 
     private ArenaVisuals customArenaVisuals;
 

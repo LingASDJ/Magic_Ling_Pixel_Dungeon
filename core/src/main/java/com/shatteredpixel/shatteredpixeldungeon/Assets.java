@@ -342,8 +342,7 @@ public class Assets {
 		public static final String ANCITY = "music/Level_Ancity.ogg";
         public static final String HALLS_BOSS_FINALE = "music/halls_boss_finale.ogg";
 
-		public static final String DIAMAND_KING_INTRO = "music/boss/DiamndKing_Boss_Intro.ogg";
-		public static final String DIAMAND_KING_LOOP  = "music/boss/DiamndKing_Boss_Loop.ogg";
+		public static final String DIAMAND_KING_INTRO = "music/boss/Diamd_Boss.ogg";
 		public static final String DRAGON_LING  = "music/boss/Dragon.ogg";
 
 
@@ -357,7 +356,7 @@ public class Assets {
 
 		public static final String SKBJY		= "music/Boss-Saka.ogg";
 
-		public static final String TOWN 		= "music/town.ogg";
+		public static final String TOWN 		= "music/Town.ogg";
 		public static final String BGM_BOSSA 	= "music/Boss1.ogg";
 		public static final String BGM_BOSSA3 	= "music/Boss1.ogg";
 		public static final String BGM_YOU 		= "music/boss/you.ogg";

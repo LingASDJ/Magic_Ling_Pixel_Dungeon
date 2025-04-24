@@ -68,20 +68,18 @@ public class HallsBossLevel extends Level {
 		viewDistance = Math.min(4, viewDistance);
 	}
 
+	@Override
+	public void playBossMusic(){
+		if (BossHealthBar.isBleeding()){
+			Music.playModeBGM(Assets.Music.HALLS_BOSS_FINALE, true);
+		} else {
+			Music.playModeBGM(Assets.Music.HALLS_TENSE, true);
+		}
+	}
 
 	@Override
 	public void playLevelMusic() {
-		if (locked && BossHealthBar.isAssigned()){
-			if (BossHealthBar.isBleeding()){
-				Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
-			} else {
-				Music.INSTANCE.play(Assets.Music.HALLS_TENSE, true);
-			}
-		} else if (map[exit()] != Terrain.EXIT){
-			Music.INSTANCE.end();
-		} else {
-			Music.INSTANCE.play(Assets.YOGALXY, true);
-		}
+		Music.playModeBGM(Assets.Music.BGM_5, true);
 	}
 
 	private static final int WIDTH = 32;

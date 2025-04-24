@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -10,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.GameMath;
 
 import net.iharder.Base64;
@@ -60,6 +60,8 @@ public class GoScene extends PixelScene {
             ShatteredPixelDungeon.switchScene(WelcomeScene.class);
             return;
         }
+
+        Music.playModeBGM( Assets.Sounds.ANSDOSHIP,false);
 
         PixelScene.uiCamera.visible = false;
 

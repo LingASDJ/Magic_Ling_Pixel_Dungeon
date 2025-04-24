@@ -57,6 +57,17 @@ public class SewerBossLevel extends SewerLevel {
 	}
 
 	@Override
+	public void playLevelMusic(){
+		Music.playModeBGM(Assets.Music.JUNGLE_FOREST,true);
+	}
+
+	@Override
+	public void playBossMusic(){
+		Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+				() -> Music.playModeBGM(Assets.Music.BGM_BOSSA,true)));
+	}
+
+	@Override
 	protected ArrayList<Room> initRooms() {
 		ArrayList<Room> initRooms = new ArrayList<>();
 		

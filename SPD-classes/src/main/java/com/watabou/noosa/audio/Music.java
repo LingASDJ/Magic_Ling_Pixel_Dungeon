@@ -50,6 +50,15 @@ public enum Music {
 	float[] trackChances;
 	private final ArrayList<String> trackQueue = new ArrayList<>();
 	boolean shuffle = false;
+
+	//解决电脑端高质量ogg的线程安全闪退问题
+	public static void playModeBGM(String name, boolean loop) {
+		if(DeviceCompat.isDesktop()){
+			Game.runOnRenderThread(() -> Music.INSTANCE.play(name, loop));
+		} else {
+			Music.INSTANCE.play(name, loop);
+		}
+	}
 	
 	public synchronized void play( String assetName, boolean looping ) {
 

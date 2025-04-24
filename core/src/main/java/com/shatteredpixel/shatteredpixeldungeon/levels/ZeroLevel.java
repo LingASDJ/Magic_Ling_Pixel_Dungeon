@@ -70,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
 
 public class ZeroLevel extends Level {
@@ -365,9 +366,8 @@ public class ZeroLevel extends Level {
         }
     }
 
-//    public void occupyCell(Char ch) {
-//        super.occupyCell(ch);
-//        GLog.p(String.valueOf(hero.pos));
-//        GLog.b(String.valueOf(Statistics.zeroItemLevel));
-//    }
+    @Override
+    public void playLevelMusic() {
+        Music.playModeBGM(Assets.Music.TOWN, true);
+    }
 }

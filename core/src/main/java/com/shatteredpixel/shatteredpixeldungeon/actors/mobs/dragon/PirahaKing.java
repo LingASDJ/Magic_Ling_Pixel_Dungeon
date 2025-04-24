@@ -414,6 +414,7 @@ public class PirahaKing extends Boss {
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             Dungeon.level.seal();
+            Dungeon.level.playBossMusic();
             yell(Messages.get(this, "notice"));
             //BGMPlayer.playBGM(Assets.Music.CAVES_BOSS_FINALE,true);
             Camera.main.shake(1f,3f);

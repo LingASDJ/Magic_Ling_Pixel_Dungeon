@@ -505,7 +505,7 @@ public class YogReal extends Boss {
                     Music.INSTANCE.fadeOut(5f, new Callback() {
                         @Override
                         public void call() {
-                            Music.INSTANCE.play(Assets.BGM_BOSSE4, true);
+                            //TODO Music.INSTANCE.play(Assets.BGM_BOSSE4, true);
                         }
                     });
                 }

@@ -887,6 +887,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     public void notice() {
+        Dungeon.level.playBossMusic();
         BossHealthBar.assignBoss(this);
         yell( Messages.get(this, "notice") );
     }

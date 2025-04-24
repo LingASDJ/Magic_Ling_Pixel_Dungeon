@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Random;
 
 public class JAmuletScene extends PixelScene {
@@ -30,7 +31,7 @@ public class JAmuletScene extends PixelScene {
     @Override
     public void create() {
         super.create();
-
+        Music.playModeBGM(Assets.Music.NBPL, true);
         RenderedTextBlock text = null;
         if (!noText) {
             text = renderTextBlock( Dungeon.isDLC(Conducts.Conduct.DEV) ? Messages.get(this, "text") : Messages.get(this, "text_le"), 8 );

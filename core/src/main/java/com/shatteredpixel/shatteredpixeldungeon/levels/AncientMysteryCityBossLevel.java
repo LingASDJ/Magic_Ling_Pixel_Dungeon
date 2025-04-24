@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
@@ -46,6 +47,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AncientMysteryCityBossLevel extends Level{
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.ANCITY,true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Music.playModeBGM(Assets.Music.SKBJY,true);
+    }
 
     public State pro;
 
