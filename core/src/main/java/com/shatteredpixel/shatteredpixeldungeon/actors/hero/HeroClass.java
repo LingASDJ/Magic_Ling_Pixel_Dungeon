@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.En
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.AttributeViewer;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.BuffGenerator;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
@@ -249,6 +250,7 @@ public enum HeroClass {
 			new CustomPlayer().quantity(1).identify().collect();
 			new AttributeViewer().quantity(1).identify().collect();
 			new TrapPlacer().quantity(1).identify().collect();
+			new BuffGenerator().quantity(1).identify().collect();
 
 			CustomWeapon customWeapon = new CustomWeapon();
 			customWeapon.adjustStatus();
