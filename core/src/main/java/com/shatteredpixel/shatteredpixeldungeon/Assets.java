@@ -882,6 +882,8 @@ public class Assets {
 
 		public static final String YOW_SENTRY= "sprites/boss/yellow_star.png";
 
+		public static final String BUE_SENTRY= "sprites/npc/blue_star.png";
+
 		public static final String SWORDLING= "Boss/swordling.png";
 		public static final String CRYSTAL_WISP= "sprites/crystal_wisp.png";
 		public static final String CRYSTAL_GUARDIAN = "sprites/crystal_guardian.png";

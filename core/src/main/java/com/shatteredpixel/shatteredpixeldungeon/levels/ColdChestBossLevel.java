@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -51,7 +50,7 @@ public class ColdChestBossLevel extends Level {
 
     @Override
     public void playBossMusic() {
-        Game.runOnRenderThread(() -> Music.playModeBGM(Assets.Music.DIAMAND_KING_INTRO, true));
+        Music.playModeBGM(Assets.Music.DIAMAND_KING_INTRO, true);
     }
 
     private static final String PRO	= "pro";
