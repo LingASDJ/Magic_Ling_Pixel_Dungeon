@@ -1116,9 +1116,7 @@ public class Hero extends Char {
 
 		//水中祝福 但在BR不生效
 		if((Dungeon.branch == 0 || Dungeon.branch == 10) && !bossRushMode){
-			if(Dungeon.level.map[pos] == Terrain.WATER){
-				MoveWater();
-			}
+			MoveWater();
 		}
 
 		if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.depth>0 && !Dungeon.bossLevel()){
@@ -2890,7 +2888,6 @@ public class Hero extends Char {
 					buff.detach();
 				}
 			}
-
 		if(Dungeon.ColdWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
 			for (Buff buff : hero.buffs()) {
 				if (buff instanceof Chill) {

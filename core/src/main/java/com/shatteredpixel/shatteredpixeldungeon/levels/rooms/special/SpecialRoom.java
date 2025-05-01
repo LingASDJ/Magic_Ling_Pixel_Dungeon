@@ -92,7 +92,7 @@ public abstract class SpecialRoom extends Room {
 	private static final ArrayList<Class<? extends SpecialRoom>> CONSUMABLE_SPECIALS = new ArrayList<>(Arrays.asList(
 			RunestoneRoom.class, GardenRoom.class, LibraryRoom.class, StorageRoom.class,
 			TreasuryRoom.class, MagicWellRoom.class, ToxicGasRoom.class, MagicalFireRoom.class,
-			TrapsRoom.class, CrystalPathRoom.class, DoubleBeeRoom.class, MissileFishRoom.class));
+			TrapsRoom.class, CrystalPathRoom.class, DoubleBeeRoom.class, MissileFishRoom.class, GoldTrapChestRoom.class));
 
 	//only one special that uses crystal keys per floor
 	private static final ArrayList<Class<? extends SpecialRoom>> CRYSTAL_KEY_SPECIALS = new ArrayList<>( Arrays.asList(

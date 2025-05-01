@@ -1,7 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -435,13 +433,13 @@ public class YogGodHardBossLevel extends Level {
 
     @Override
     public void playLevelMusic(){
-        Music.playModeBGM(Assets.Music.BGM_5,true);
+        Music.playModeBGM(Assets.Music .BGM_5,true);
     }
 
     @Override
     public void playBossMusic(){
-        if(Dungeon.isChallenged(CS) && Statistics.NoTime) {
-            Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+        if(Statistics.NoTime) {
+            Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(2f,
                     () -> Music.playModeBGM(Assets.Music.BGM_BOSSE4,true)));
         } else {
             Music.playModeBGM(Assets.Music.BGM_BOSSE3,true);

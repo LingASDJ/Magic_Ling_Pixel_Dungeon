@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
@@ -911,7 +910,7 @@ public abstract class Level implements Bundlable {
 	}
 
 	public void unseal(){
-		if (locked && branch == 0) {
+		if (locked) {
 			locked = false;
 			if (hero.buff(LockedFloor.class) != null){
 				hero.buff(LockedFloor.class).detach();
