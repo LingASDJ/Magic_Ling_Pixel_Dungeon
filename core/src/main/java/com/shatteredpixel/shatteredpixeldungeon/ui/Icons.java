@@ -392,7 +392,7 @@ public enum Icons {
 				icon.frame( icon.texture.uvRectBySize( 201, 48, 10, 10 ) );
 				break;
 			case B_BACKPACK:
-				icon.frame( icon.texture.uvRectBySize( 211, 59, 10, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 201, 59, 10, 10 ) );
 				break;
 			case BOOKBAG:
 				icon.frame( icon.texture.uvRectBySize( 221, 59, 10, 10 ) );
