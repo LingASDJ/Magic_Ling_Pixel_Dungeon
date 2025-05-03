@@ -19,6 +19,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -129,17 +131,20 @@ public class SkeletonFishRoom extends SpecialRoom {
         level.map[RPos] = Terrain.TRAP;
         level.setTrap(new AlarmTrap(), RPos);
 
+        level.drop( new PotionOfLiquidFlame(), RPos-1 );
+        level.drop( new GoldenKey(depth), RPos-2 );
+
         Point apos = new Point(centerX+5, centerY+1);
         int aPos = left + right - apos.x + apos.y * level.width();
-        level.drop(Generator.random(), aPos).type = Heap.Type.CHEST;
+        level.drop(Generator.random(), aPos).type = Heap.Type.REMAINS;
 
         Point bpos = new Point(centerX+2, centerY+4);
         int bPos = left + right - bpos.x + bpos.y * level.width();
-        level.drop(Generator.random(), bPos).type = Heap.Type.SKELETON;
+        level.drop(Generator.random(), bPos).type = Heap.Type.TOMB;
 
         Point cpos = new Point(centerX-4, centerY-2);
         int cPos = left + right - cpos.x + cpos.y * level.width();
-        level.drop(Generator.random(), cPos).type = Heap.Type.CHEST;
+        level.drop(Generator.random(), cPos).type = Heap.Type.LOCKED_CHEST;
 
         Point dpos = new Point(centerX-1, centerY-5);
         int dPos = left + right - dpos.x + dpos.y * level.width();

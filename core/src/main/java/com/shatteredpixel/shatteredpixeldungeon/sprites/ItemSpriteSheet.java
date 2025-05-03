@@ -859,7 +859,7 @@ public class ItemSpriteSheet {
     public static final int  DRAGONHEART= 	LENGYWEAPONS+14;
 
     static {
-        assignItemRect(DIEDCROSSBOW, 16, 15);
+        assignItemRect(DIEDCROSSBOW, 16, 16);
         assignItemRect(FIVEREN, 16, 13);
         assignItemRect(SHADOWMEAT,15,11);
     }

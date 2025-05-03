@@ -37,7 +37,11 @@ public class Gift implements Bundlable {
             "TWlkVGVzdC1Db2luR2V0WCw0MDcwOTUxNzc1LGZhbHNl",
             "VG9tYi1Td2VlcGluZy1GZXN0aXZhRGF5LDE3NDQ0NzM2MDAsZmFsc2U=",
 
-            "TUxQRC1QZWFjaEdvZCwxNzQzNjk2MDAwLGZhbHNl"
+            "TUxQRC1QZWFjaEdvZCwxNzQzNjk2MDAwLGZhbHNl",
+
+            "V29sdmVzR29vZEZpc2gsMTc0NzgwMDAwMCxmYWxzZQ==",
+            "R29vZEdvbGRGaXNoLDE3NDc4MDAwMDAsZmFsc2U=",
+            "VGhhbmtzS1BMUmVhZFBWUCwxNzQ3ODAwMDAwLGZhbHNl"
     };
 
     private static final HashMap<String, LinkedHashMap<String, Integer>> GIFT_ITEM ;
@@ -58,10 +62,31 @@ public class Gift implements Bundlable {
         code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 500 );
         code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.Ankh", 1 );
 
+        LinkedHashMap<String, Integer> code5 = new LinkedHashMap<>();
+        code5.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 400 );
+        code5.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie", 1 );
+
+        LinkedHashMap<String, Integer> code6 = new LinkedHashMap<>();
+        code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 400 );
+        code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag", 1 );
+        code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman", 1 );
+
+        LinkedHashMap<String, Integer> code7 = new LinkedHashMap<>();
+        code7.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 300 );
+        code7.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings$RiceDumplingsLink", 1 );
+        code7.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings$RiceDumplingsBottle", 1 );
+        code7.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings$RiceDumplingsRed", 1 );
+        code7.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings$RiceDumplingsOrange", 1 );
+
+
         tempMap.put( "QmFkTGFudGVyRmlyZS1Hbw==",             code1 );
         tempMap.put( "TWlkVGVzdC1Db2luR2V0WA==",             code2 );
         tempMap.put( "TUxQRC1QZWFjaEdvZA==",                 code3 );
         tempMap.put( "VG9tYi1Td2VlcGluZy1GZXN0aXZhRGF5",     code4 );
+
+        tempMap.put( "V29sdmVzR29vZEZpc2g=",                    code5 );
+        tempMap.put( "R29vZEdvbGRGaXNo",                        code6 );
+        tempMap.put( "VGhhbmtzS1BMUmVhZFBWUA==",                code7 );
 
 
         GIFT_ITEM = new HashMap<>( Collections.unmodifiableMap( tempMap ) );

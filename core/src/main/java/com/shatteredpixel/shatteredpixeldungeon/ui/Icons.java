@@ -90,6 +90,8 @@ public enum Icons {
 	ENERGY_SML,
 	BACKPACK,
 	B_BACKPACK,
+	BOOKBAG,
+	PROPBAG,
 	SEED_POUCH,
 	SCROLL_HOLDER,
 	WAND_HOLSTER,
@@ -390,7 +392,13 @@ public enum Icons {
 				icon.frame( icon.texture.uvRectBySize( 201, 48, 10, 10 ) );
 				break;
 			case B_BACKPACK:
-				icon.frame( icon.texture.uvRectBySize( 201, 59, 10, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 211, 59, 10, 10 ) );
+				break;
+			case BOOKBAG:
+				icon.frame( icon.texture.uvRectBySize( 221, 59, 10, 10 ) );
+				break;
+			case PROPBAG:
+				icon.frame( icon.texture.uvRectBySize( 232, 59, 10, 10 ) );
 				break;
 			case SCROLL_HOLDER:
 				icon.frame( icon.texture.uvRectBySize( 211, 48, 10, 10 ) );
