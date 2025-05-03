@@ -156,6 +156,10 @@ public class vM0_7_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("其他改动"),
+                ("1.部分文案优化\n" +
+                        "3.部分素材细节优化更新")));
+
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 "Bug修复\n\n" +
                         ( "_-_ 修复拟态之王0血不死亡的严重异常，优化污泥浊水判定\n" +
@@ -174,7 +178,7 @@ public class vM0_7_X_Changes {
 
 
 
-        changes = new ChangeInfo("2025-4-04", true, null);
+        changes = new ChangeInfo("2025-5-03", true, null);
         changes.hardlight(Window.CPINK);
         changeInfos.add(changes);
     }
