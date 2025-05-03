@@ -233,6 +233,8 @@ public abstract class RegularLevel extends Level {
 		QMJ,
 		PQJ
     }
+
+	private boolean anCityQuestProgress = Random.NormalIntRange(1, 100)<=15;
 	
 	protected ArrayList<Room> initRooms() {
 		ArrayList<Room> initRooms = new ArrayList<>();
@@ -341,8 +343,8 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new EyeRoom());
 		}
 
-		boolean anCityQuestProgress = Random.NormalIntRange(1, 100)<=15;
-		if(Dungeon.depth<26 && anCityQuestProgress){
+
+		if(Dungeon.depth<26 && Random.NormalIntRange(1, 100)<=21){
 			initRooms.add(new SkeletonFishRoom());
 			initRooms.add(new BlueAltStoneRoom());
 		}
@@ -393,7 +395,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new DreamcatcherRoom());
 			DragonGirlBlue.Quest.spawned = true;
 			anCityQuestProgress = true;
-		}
+        }
 
 		//Normal Shop
 		if (Dungeon.shopOnLevel() && branch == 0 && !Statistics.bossRushMode) {

@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.altHoliday;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -34,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.BlacksmithRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -424,7 +427,7 @@ public class Blacksmith extends NPC {
 				rooms.add(new BlacksmithRoom());
 				spawned = true;
 				//Currently cannot roll the fungi quest, as it is not fully implemented
-				type = Random.IntRange(1, 2);
+				type =  altHoliday == RegularLevel.AltHoliday.DWJ_2024 ? 4 : Random.IntRange(1, 2);
 				alternative = false;
 				
 				given = false;

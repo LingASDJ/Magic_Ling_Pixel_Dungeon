@@ -67,6 +67,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0845_Changes(changeInfos);
         add_V0840_Changes(changeInfos);
         add_V0831_Changes(changeInfos);
         add_V0830_Changes(changeInfos);
@@ -110,6 +111,74 @@ public class vM0_7_X_Changes {
         add_GYD_Changes(changeInfos);
     }
 
+    public static void add_V0845_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.4.5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：WolvesGoodFish"),
+                ("兑换内容：400钴币 全肉大饼")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：GoodGoldFish"),
+                ("兑换内容：400钴币 咩咩护符")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：ThanksKPLReadPVP"),
+                ("兑换内容：300钴币 4个不同类型的粽子")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_8), ("挑战优化：污泥浊水"),
+                ("1.修复离开水地块不立刻处理对应效果的异常" +
+                        "\n2.优化处理逻辑，优先级更高")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("新全局系统：自定义横幅"),
+                ("在额外设置中，可以定义游戏内带的横幅主题，新增劳动节主题")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.ALERT), ("限时复刻"),
+                ("5.3-5.21 限时复刻\n\n" +
+                        "中秋节一期 & 端午节鱼人号复刻")));
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16
+                , 16), "房间改动",
+                "全新房间：十字墓穴房/骸骨迷宫房加入"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("全新音乐系统登场"),
+                ("4年屎山音乐系统重置，带来更多可能")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("新音乐：幕前"),
+                ("作者：Prohonor\n\n0层全新音乐,在小镇的传送门前，危机似乎已经风雨欲来……")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "Bug修复\n\n" +
+                        ( "_-_ 修复拟态之王0血不死亡的严重异常，优化污泥浊水判定\n" +
+                                "_-_ 修复污泥浊水的一些严重异常\n" +
+                                "_-_ 修复烈阳法杖在元素风暴的异常，并且效果为可视怪物产生磷火+火焰\n" +
+                                "_-_ 优化在26层后，陷阱房将完全替换为深渊浮空房\n" +
+                                "_-_ 修复先前的子层掉落规则导致的异常闪退，现在调整为在子层掉落深渊的物品，将在本体楼层出现\n" +
+                                "_-_ 修复拟态怪类型的掉落规则异常，同时也同步新子层深渊物品掉落规则\n" +
+                                "_-_ 修复宝藏迷宫的宝箱怪数量不足导致的游戏卡死")
+
+        ));
+
+        changes = new ChangeInfo("v0.8.4.5中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+
+
+        changes = new ChangeInfo("2025-4-04", true, null);
+        changes.hardlight(Window.CPINK);
+        changeInfos.add(changes);
+    }
+
     public static void add_V0840_Changes(ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.8.4.0", true, "");
         changes.hardlight(Window.TITLE_COLOR);
@@ -138,18 +207,7 @@ public class vM0_7_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
-                "Bug修复-1\n\n" +
-                        ( "_-_ 修复拟态之王0血不死亡的严重异常，优化污泥浊水判定\n" +
-                        "_-_ 修复金蝶嬗变戒指较易出现崩溃的异常\n" +
-                        "_-_ 修复烈阳法杖在元素风暴的异常，并且效果为可视怪物产生磷火+火焰\n" +
-                        "_-_ 优化在26层后，陷阱房将完全替换为深渊浮空房\n" +
-                        "_-_ 修复先前的子层掉落规则导致的异常闪退，现在调整为在子层掉落深渊的物品，将在本体楼层出现\n" +
-                        "_-_ 修复拟态怪类型的掉落规则异常，同时也同步新子层深渊物品掉落规则\n" +
-                        "_-_ 修复重型弩炮伤害异常\n" +
-                        "_-_ 修复部分UI界面优先级异常\n" +
-                        "_-_ 修复金蝶可以刷物品的异常\n" +
-                        "_-_ 狗子的免伤&听声辨位修正 烈阳法杖+术士灵魂标记"),
-                "Bug修复-2:\n\n" +
+                "Bug修复:\n\n" +
                         ("_-_ 修复拟态之王因多段伤害导致跨阶段异常\n" +
                                 "_-_ 在宝藏迷宫添加更多宝箱怪以避免无法超过5个击杀数导致游戏卡死\n" +
                                 "_-_ 生石灰固态理想试剂范围加强，在污泥挑战中商店中可被购买\n" +
@@ -164,7 +222,6 @@ public class vM0_7_X_Changes {
                                 "_-_ 修复药水鉴定徽章和卷轴鉴定徽章在迁移之后的版本后无法正常解锁\n" +
                                 "_-_ 部分缺失文案修正，部分文案优化\n" +
                                 "_-_ 修复子层的一些罕见崩溃问题")
-
         ));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
