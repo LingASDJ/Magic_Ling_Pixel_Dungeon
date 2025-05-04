@@ -140,7 +140,7 @@ public class MobSpawner extends Actor {
 					}
 				case 5:
 					if(Dungeon.depth == 17){
-						return new ArrayList<>(Arrays.asList(BlueWraith.class));
+						return new ArrayList<>(Arrays.asList(BlueWraith.class,TormentedSpirit.class));
 					}
 
 			}
@@ -532,7 +532,7 @@ public class MobSpawner extends Actor {
 					}
 				case 5:
 					if(Dungeon.depth == 17){
-						return new ArrayList<>(Arrays.asList(BlueWraith.class));
+							return new ArrayList<>(Arrays.asList(BlueWraith.class,TormentedSpirit.class));
 					}
 
 			}

@@ -112,7 +112,7 @@ public class vM0_7_X_Changes {
     }
 
     public static void add_V0845_Changes(ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.8.4.5", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.8.4.5-6", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -123,6 +123,9 @@ public class vM0_7_X_Changes {
 
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：WolvesGoodFish"),
                 ("兑换内容：400钴币 全肉大饼")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：GoldFish-All-KPL"),
+                ("兑换内容：390钴币 神秘奖励")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：GoodGoldFish"),
                 ("兑换内容：400钴币 咩咩护符")));
@@ -148,9 +151,6 @@ public class vM0_7_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("全新音乐系统登场"),
                 ("4年屎山音乐系统重置，带来更多可能")));
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("新音乐：幕前"),
-                ("作者：Prohonor\n\n0层全新音乐,在小镇的传送门前，危机似乎已经风雨欲来……")));
-
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
@@ -158,7 +158,15 @@ public class vM0_7_X_Changes {
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("其他改动"),
                 ("1.部分文案优化\n" +
-                        "3.部分素材细节优化更新")));
+                        "2.部分素材细节优化更新")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "Bug修复\n\n" +
+                        (       "_-_ 修复污泥浊水的一些严重异常\n" +
+                                "_-_ 优化中秋节任务的一些细节\n" +
+                                "_-_ 优化白玫瑰的一些东西")
+
+        ));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 "Bug修复\n\n" +

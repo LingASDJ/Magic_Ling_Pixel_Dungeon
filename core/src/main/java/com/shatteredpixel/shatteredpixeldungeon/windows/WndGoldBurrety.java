@@ -303,13 +303,14 @@ public class WndGoldBurrety extends Window {
                     result.noUpgrade = true;
                 }
 
-                result.collect();
+
                 //武器
                 if(Statistics.upgradeGold<=18){
                     result.upgrade();
                 }
 
                 Statistics.upgradeGold--;
+                result.collect();
                 item.detach(Dungeon.hero.belongings.backpack);
             } else if (item instanceof TippedDart) {
                 result = changeTippedDart((TippedDart) item);
@@ -397,7 +398,7 @@ public class WndGoldBurrety extends Window {
             results[i] = result;
         }
 
-        return results;  // 返回处理后的物品数组
+        return results;
     }
 
     public static Ring changeRing( Ring r ) {
@@ -473,10 +474,8 @@ public class WndGoldBurrety extends Window {
             n = (Trinket)Generator.random(Generator.Category.TRINKET);
         } while ((Challenges.isItemBlocked(n) || n.getClass() == t.getClass()) && generatedTrinkets.contains(n.getClass()));
 
-        // 生成新的饰品后，将其类型加入 Set 中
         generatedTrinkets.add(n.getClass());
 
-        // 继承属性
         n.level(t.trueLevel());
         n.levelKnown = t.levelKnown;
         n.cursedKnown = t.cursedKnown;
@@ -527,7 +526,7 @@ public class WndGoldBurrety extends Window {
 
     private Artifact Normal() {
         Artifact artifact;
-        /** 你要恶心我，我直接手写生成 TNND*/
+
         switch (Random.NormalIntRange(0,10)){
             case 0: artifact = new UnstableSpellbook(); break;
             case 2: artifact = new HornOfPlenty(); break;

@@ -41,7 +41,8 @@ public class Gift implements Bundlable {
 
             "V29sdmVzR29vZEZpc2gsMTc0NzgwMDAwMCxmYWxzZQ==",
             "R29vZEdvbGRGaXNoLDE3NDc4MDAwMDAsZmFsc2U=",
-            "VGhhbmtzS1BMUmVhZFBWUCwxNzQ3ODAwMDAwLGZhbHNl"
+            "VGhhbmtzS1BMUmVhZFBWUCwxNzQ3ODAwMDAwLGZhbHNl",
+            "R29sZEZpc2gtQWxsLUtQTCwxNzQ3ODAwMDAwLGZhbHNl"
     };
 
     private static final HashMap<String, LinkedHashMap<String, Integer>> GIFT_ITEM ;
@@ -78,6 +79,12 @@ public class Gift implements Bundlable {
         code7.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings$RiceDumplingsRed", 1 );
         code7.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings$RiceDumplingsOrange", 1 );
 
+        LinkedHashMap<String, Integer> code8 = new LinkedHashMap<>();
+        code8.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 390 );
+        code8.put( "com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag", 1 );
+        code8.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe", 1 );
+        code8.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove", 1 );
+
 
         tempMap.put( "QmFkTGFudGVyRmlyZS1Hbw==",             code1 );
         tempMap.put( "TWlkVGVzdC1Db2luR2V0WA==",             code2 );
@@ -87,6 +94,7 @@ public class Gift implements Bundlable {
         tempMap.put( "V29sdmVzR29vZEZpc2g=",                    code5 );
         tempMap.put( "R29vZEdvbGRGaXNo",                        code6 );
         tempMap.put( "VGhhbmtzS1BMUmVhZFBWUA==",                code7 );
+        tempMap.put( "R29sZEZpc2gtQWxsLUtQTA==",                code8 );
 
 
         GIFT_ITEM = new HashMap<>( Collections.unmodifiableMap( tempMap ) );
@@ -176,7 +184,7 @@ public class Gift implements Bundlable {
         }
 
         if( !SPDSettings.queryGiftExist( key ) )
-            return 0;
+            return 5;
 
         long currentTime = System.currentTimeMillis() / 1000;
         long expirationDate = Long.parseLong( SPDSettings.queryGiftPart( key, GIFT_Expiration_Date ) );

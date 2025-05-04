@@ -89,6 +89,7 @@ public enum Icons {
 	COIN_SML,
 	ENERGY_SML,
 	BACKPACK,
+	F_BACKPACK,
 	B_BACKPACK,
 	BOOKBAG,
 	PROPBAG,
@@ -393,6 +394,9 @@ public enum Icons {
 				break;
 			case B_BACKPACK:
 				icon.frame( icon.texture.uvRectBySize( 201, 59, 10, 10 ) );
+				break;
+			case F_BACKPACK:
+				icon.frame( icon.texture.uvRectBySize( 211, 59, 10, 10 ) );
 				break;
 			case BOOKBAG:
 				icon.frame( icon.texture.uvRectBySize( 221, 59, 10, 10 ) );

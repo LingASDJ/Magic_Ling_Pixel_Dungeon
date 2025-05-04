@@ -44,6 +44,7 @@ public class Red extends Item {
 
         unique = true;
     }
+
     private static final String AC_BACK = "interlevel_tp";
     @Override
     public boolean isUpgradable() {
@@ -83,6 +84,7 @@ public class Red extends Item {
             if (buff != null) buff.detach();
             InterlevelScene.mode = InterlevelScene.Mode.RETURN;
             InterlevelScene.returnDepth = 17;
+            InterlevelScene.returnBranch = 0;
             InterlevelScene.returnPos = -1;
             Game.switchScene( InterlevelScene.class );
         }
