@@ -1110,9 +1110,6 @@ public class Hero extends Char {
 
 	@Override
 	public boolean act() {
-//		if (Dungeon.isChallenged(Challenges.BLOOD_DIED) && Dungeon.depth>2){
-//			Buff.affect(this, BloodLoss.class);
-//		}
 
 		//水中祝福 但在BR不生效
 		if((Dungeon.branch == 0 || Dungeon.branch == 10) && !bossRushMode){
@@ -1122,7 +1119,7 @@ public class Hero extends Char {
 		if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.depth>0 && !Dungeon.bossLevel()){
 			if(Dungeon.level.map[pos] == Terrain.SALT_WATER && !flying && Dungeon.hero.buff(WaterSoulX.class) == null){
 				for (Buff buff : hero.buffs()) {
-					if(buff.type == Buff.buffType.NEGATIVE && buff instanceof FlavourBuff) {
+					if(buff.type == Buff.buffType.NEGATIVE && buff instanceof FlavourBuff && paralysed == 0) {
 						Buff.prolong(this, (Class<? extends FlavourBuff>) buff.getClass(), 5f);
 					}
 					Buff.affect(this, OozeStatueDead.class);

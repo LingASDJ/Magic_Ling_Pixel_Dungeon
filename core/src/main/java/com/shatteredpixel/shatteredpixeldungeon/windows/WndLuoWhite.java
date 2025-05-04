@@ -131,12 +131,13 @@ public class WndLuoWhite extends Window {
                                                     }
                                                 } );
                                                 break;
-                                            default:
+                                            case 5:
                                                 ShatteredPixelDungeon.scene().addToFront( new WndError( Messages.get( WndLuoWhite.class, "key_not_found" ) ) {
                                                     public void onBackPressed() {
                                                         super.onBackPressed();
                                                     }
                                                 } );
+                                                break;
                                         }
                                     }
                                 }

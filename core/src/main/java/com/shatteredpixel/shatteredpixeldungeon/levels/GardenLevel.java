@@ -7,6 +7,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.JunglePainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.LibraryRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CellBlockRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EmptyRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.FissureRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.GrassyGraveRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.MinefieldRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.WaterBridgeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
@@ -21,6 +32,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
+
 public class GardenLevel extends RegularLevel {
 
     {
@@ -28,19 +41,44 @@ public class GardenLevel extends RegularLevel {
         color2 = 0x59994a;
     }
 
-
     @Override
-    protected int standardRooms(boolean forceMax) {
-        if (forceMax) return 6;
-        //4 to 6, average 5
-        return 4+Random.chances(new float[]{1, 3, 1});
-    }
+    protected ArrayList<Room> initRooms() {
+        ArrayList<Room> initRooms =    new ArrayList<>();
+        initRooms.add ( roomEntrance = new EntranceRoom());
+        initRooms.add ( roomExit =     new EmptyRoom());
 
-    @Override
-    protected int specialRooms(boolean forceMax) {
-        if (forceMax) return 2;
-        //1 to 2, average 1.8
-        return 1+Random.chances(new float[]{1, 4});
+        StandardRoom s;
+        s = new FissureRoom();
+        s.setSizeCat();
+        initRooms.add(s);
+
+        int rooms = Random.Int(2);
+        for (int i = 0; i < rooms; i++){
+            WaterBridgeRoom sd = new WaterBridgeRoom();
+            initRooms.add(sd);
+        }
+
+        SpecialRoom sx;
+        sx = new LibraryRoom();
+        initRooms.add(sx);
+
+        StandardRoom x;
+        x = new GrassyGraveRoom();
+        initRooms.add(x);
+
+        int rooms2 = 2;
+        for (int i = 1; i < rooms2; i++){
+            s = new CellBlockRoom();
+            initRooms.add(s);
+        }
+
+        int rooms3 = 4;
+        for (int i = 1; i < rooms3; i++){
+            s = new MinefieldRoom();
+            initRooms.add(s);
+        }
+
+        return initRooms;
     }
 
     @Override

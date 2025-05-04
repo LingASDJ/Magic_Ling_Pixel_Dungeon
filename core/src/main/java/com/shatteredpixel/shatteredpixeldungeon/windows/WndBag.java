@@ -474,7 +474,7 @@ public class WndBag extends WndTabbed {
 		} else if (bag instanceof PotionBandolier) {
 			return Icons.get( Icons.POTION_BANDOLIER );
 		} else if (bag instanceof HerbBag) {
-			return new ItemSprite(ItemSpriteSheet.PASTY);
+			return Icons.get( Icons.F_BACKPACK );
 		} else if (bag instanceof LingBag) {
 			return new Image("Ling.png", 0, 0, 16, 16);
 		} else if (bag instanceof PropBag) {
