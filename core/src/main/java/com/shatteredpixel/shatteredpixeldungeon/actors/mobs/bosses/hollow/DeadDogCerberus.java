@@ -1121,7 +1121,7 @@ public class DeadDogCerberus extends Boss {
         super.die( cause );
         Dungeon.level.unseal();
         if(Statistics.bossRushMode){
-            GetBossLoot();
+            GetBossLoot(pos);
         }
         Badges.KILL_DOG();
         GameScene.bossSlain();

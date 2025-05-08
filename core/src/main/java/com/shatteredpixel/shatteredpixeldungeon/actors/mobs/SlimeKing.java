@@ -252,7 +252,7 @@ public class SlimeKing extends Boss {
         }
       if(Statistics.bossRushMode){
 
-            GetBossLoot();
+            GetBossLoot(pos);
         }
         Badges.validateBossSlain();
 

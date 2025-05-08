@@ -838,7 +838,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     @Override
     public void die( Object cause ) {
         if(Statistics.bossRushMode){
-            GetBossLoot();
+            GetBossLoot(pos);
         }
 
         if(Statistics.amuletObtained|| Statistics.RandMode){
