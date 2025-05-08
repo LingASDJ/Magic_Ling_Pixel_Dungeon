@@ -1613,7 +1613,7 @@ public class DwarfMaster extends Boss {
             }
         }
       if(Statistics.bossRushMode){
-            GetBossLoot();
+            GetBossLoot(pos);
         }
         for (Buff buff : hero.buffs()) {
             if (buff instanceof TestDwarfMasterLock) {

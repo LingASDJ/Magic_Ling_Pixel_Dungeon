@@ -616,7 +616,7 @@ public class FireDragon extends Boss implements Callback {
 
             Dungeon.level.drop( new DragonShiled(), pos ).sprite.drop();
 
-            GetBossLoot();
+            GetBossLoot(pos);
 
             if(!Statistics.bossRushMode){
                 Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.ARTIFACT),pos);

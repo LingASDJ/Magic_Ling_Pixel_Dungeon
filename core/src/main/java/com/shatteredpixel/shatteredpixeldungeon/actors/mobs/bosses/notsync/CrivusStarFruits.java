@@ -217,7 +217,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
             }
         }
       if(Statistics.bossRushMode){
-            GetBossLoot();
+            GetBossLoot(pos);
         }
     }
 
@@ -294,12 +294,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
                         MagicMissile.HALOFIRE,
                         sprite,
                         enemy.pos,
-                        new Callback() {
-                            @Override
-                            public void call() {
-                                enemy.damage(damageRoll(), new DM100.LightningBolt());
-                            }
-                        });
+                        () -> enemy.damage(damageRoll(), new DM100.LightningBolt()));
                 heroCooldown = 16;
                 yell(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
             } else {

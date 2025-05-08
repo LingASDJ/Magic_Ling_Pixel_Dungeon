@@ -1582,7 +1582,7 @@ public abstract class Mob extends Char {
 
 	//MLPD
 	//Boss Rush 掉落规则
-	public void GetBossLoot(){
+	public void GetBossLoot(int pos){
 		int flakes = Random.chances(new float[]{0, 0, 6, 3, 1});
 		for (int i = 0; i < flakes; i++){
 			int ofs;

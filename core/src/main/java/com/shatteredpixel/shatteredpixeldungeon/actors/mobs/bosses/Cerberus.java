@@ -122,7 +122,7 @@ public class Cerberus extends Boss {
             }
         }
 
-        GetBossLoot();
+        GetBossLoot(pos);
 
         Badges.KILL_DOG();
         GameScene.bossSlain();

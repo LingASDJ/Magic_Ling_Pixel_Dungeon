@@ -555,7 +555,7 @@ public class NewDM720 extends MolotovHuntsman implements Mob.NoMobSpawn {
     @Override
     public void die( Object cause ) {
 //      if(Statistics.happyMode){
-//            GetBossLoot();
+//            GetBossLoot(pos);
 //        }
 
         super.die(cause);

@@ -475,7 +475,7 @@ public class DimandKing extends Boss {
     public void die(Object cause) {
 //      if(Statistics.happyMode){
 //
-//            GetBossLoot();
+//            GetBossLoot(pos);
 //        }
         GameScene.bossSlain();
         Statistics.bossScores[1] += 1000;
