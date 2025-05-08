@@ -1119,7 +1119,7 @@ public class Hero extends Char {
 		if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.depth>0 && !Dungeon.bossLevel()){
 			if(Dungeon.level.map[pos] == Terrain.SALT_WATER && !flying && Dungeon.hero.buff(WaterSoulX.class) == null){
 				for (Buff buff : hero.buffs()) {
-					if(buff.type == Buff.buffType.NEGATIVE && buff instanceof FlavourBuff && paralysed == 0) {
+					if(buff.type == Buff.buffType.NEGATIVE && buff instanceof FlavourBuff && paralysed == 0 && !hero.rooted && !(buff instanceof Vertigo)) {
 						Buff.prolong(this, (Class<? extends FlavourBuff>) buff.getClass(), 5f);
 					}
 					Buff.affect(this, OozeStatueDead.class);

@@ -99,8 +99,14 @@ public class SeedFinder {
 				} else
 					builder.append("- ").append(i.title().toLowerCase());
 
-				if (h.type != Type.HEAP)
-					builder.append(" (").append(h.toString().toLowerCase()).append(")");
+
+					if(h != null){
+						if (h.type != Type.HEAP) {
+							builder.append(" (").append(h.toString().toLowerCase()).append(")");
+						}
+					}
+
+
 
 				builder.append("\n");
 			}
