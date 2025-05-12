@@ -276,27 +276,41 @@ public class BuffGenerator extends TestItem{
             modifyDuration.setRect((WIDTH/3f)/6f-8, 90, (WIDTH/3f - GAP), 16);
             add(modifyDuration);
 
-
+            RedButton clearButton = new RedButton(Messages.get(WndSetBuff.class, "clear_all",duration)) {
+                @Override
+                protected void onClick() {
+                    super.onClick();
+                    buffsStatus.clear();
+                    updateBuffButtons();
+                }
+            };
+            clearButton.setRect(modifyDuration.right() + GAP, 90, clearButton.reqWidth() + GAP * 2, 16);
+            add(clearButton);
 
             int column = 0;
             for (int i = 0; i < columPerPage && column < 3; ++i) {
-                int finalI = i + ( currentPage - 1 ) * columPerPage;
-                CheckBox cb = new CheckBox(M.L(allData.get(finalI), "name")){
+                int temp = i;
+                CheckBox cb = new CheckBox(M.L(allData.get(temp + ( currentPage - 1 ) * columPerPage), "name")){
                     @Override
                     protected void onClick() {
                         super.onClick();
+                        int finalI = temp + ( currentPage - 1 ) * columPerPage;
                         descText.text(M.L(allData.get(finalI), "desc"));
-                        buffsStatus.set(finalI);
+                        if (checked) {
+                            buffsStatus.set(finalI);
+                        } else {
+                            buffsStatus.clear(finalI);
+                        }
                     }
 
                     @Override
                     protected boolean onLongClick() {
+                        int finalI = temp + ( currentPage - 1 ) * columPerPage;
                         GameScene.show( new WndMessage( M.L(allData.get(finalI), "desc") ) ) ;
                         return super.onLongClick();
                     }
                 };
                 cb.active = true;
-                cb.checked(buffsStatus.get(finalI));
                 add(cb);
                 buffButtons.add(cb);
 
