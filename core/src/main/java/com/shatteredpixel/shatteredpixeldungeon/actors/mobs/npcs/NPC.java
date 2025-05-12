@@ -37,6 +37,7 @@ public abstract class NPC extends Mob {
 		alignment = Alignment.NEUTRAL;
 		state = PASSIVE;
 	}
+
 	protected void throwItem() {
 		Heap heap = Dungeon.level.heaps.get( pos );
 		if (heap != null && heap.type == Heap.Type.HEAP) {
@@ -62,8 +63,11 @@ public abstract class NPC extends Mob {
 
 	@Override
 	public boolean add(Buff buff ) {
-		//lee();
-		return false;
+		if(alignment ==Alignment.NEUTRAL){
+			return false;
+		} else {
+			return super.add(buff);
+		}
 	}
 
 }

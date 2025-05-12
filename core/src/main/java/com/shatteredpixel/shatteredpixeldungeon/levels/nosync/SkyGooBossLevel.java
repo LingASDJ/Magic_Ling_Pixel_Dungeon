@@ -17,6 +17,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.SkyGoo;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -26,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 public class SkyGooBossLevel extends Level {
     private static final int SIZE = 5;
@@ -155,12 +158,17 @@ public class SkyGooBossLevel extends Level {
         this.mobs.add(a);
     }
 
-    public int randomRespawnCell() {
-        return this.entrance - width();
-    }
+    @Override
+    public int randomRespawnCell( Char ch ) {
+        int pos = 31; //random cell adjacent to the entrance.
+        int cell;
+        do {
+            cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+        } while (!passable[cell]
+                || (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
+                || Actor.findChar(cell) != null);
+        return cell;
 
-    public Actor respawner() {
-        return null;
     }
 
     public String tilesTex() {

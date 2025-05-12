@@ -123,10 +123,10 @@ public class AncityLevel extends Level {
 
     @Override
     protected void createItems() {
-        drop( new PotionOfExperience(), 143 );
-        drop( new PotionOfExperience(), 145 );
-        drop( new PotionOfExperience(), 161 );
-        drop( new PotionOfExperience(), 127 );
+        drop( new PotionOfExperience().identify(), 143 );
+        drop( new PotionOfExperience().identify(), 145 );
+        drop( new PotionOfExperience().identify(), 161 );
+        drop( new PotionOfExperience().identify(), 127 );
         drop( new KingGold(Random.NormalIntRange(1,5)), 144 );
         drop( new PotionOfMastery(), 59 );
     }

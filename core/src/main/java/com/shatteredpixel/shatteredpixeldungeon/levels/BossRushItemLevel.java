@@ -75,7 +75,24 @@ public class BossRushItemLevel extends RegularLevel {
 
     @Override
     public void playLevelMusic() {
-        Music.playModeBGM(Assets.Music.BGM_5, true);
+        switch (depth){
+            case 1:case 2:case 3:case 4:case 5:case 6:case 7:case 8:
+                Music.playModeBGM(Assets.Music.JUNGLE_FOREST, true);
+            break;
+            case 9:case 10:case 11:case 12:case 13:case 14:case 15:case 16:
+                Music.playModeBGM(Assets.Music.BGM_2, true);
+            break;
+            case 17:case 18:case 19:case 20:case 21:case 22:case 23:case 24:
+                Music.playModeBGM(Assets.Music.BGM_3, true);
+            break;
+            case 25:case 26:case 27:case 28:case 29:case 30:case 31:case 32:
+                Music.playModeBGM(Assets.Music.BGM_4, true);
+            break;
+            case 33:case 34:case 35:case 36:case 37:case 38:case 39:case 40:case 41:case 42:
+                Music.playModeBGM(Assets.Music.BGM_5, true);
+            break;
+        }
+
     }
 
     @Override

@@ -7,6 +7,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
@@ -29,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -49,13 +49,9 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class NxhyShopRoom extends SpecialRoom {
     private ArrayList<Item> itemsToSpawn;
-
-//    public NxhyShopRoom() {
-//    }
 
     public int minWidth() {
         return Math.max(8, (int) (Math.sqrt((double) itemCount()) + 3.0d));
@@ -112,9 +108,13 @@ public class NxhyShopRoom extends SpecialRoom {
         } else {
             itemPlacement.x--;
         }
-        Iterator<Item> it = this.itemsToSpawn.iterator();
-        while (it.hasNext()) {
-            Item item = it.next();
+        for (Item item : this.itemsToSpawn) {
+            if(Dungeon.depth > 26){
+                item.upgrade();
+                if(Random.Int(10) == 1){
+                    item.level += (Random.Int(3));
+                }
+            }
             if (itemPlacement.x == this.left + 1 && itemPlacement.y != this.top + 1) {
                 itemPlacement.y--;
             } else if (itemPlacement.y == this.top + 1 && itemPlacement.x != this.right - 1) {
@@ -126,179 +126,216 @@ public class NxhyShopRoom extends SpecialRoom {
             }
             int cell = level.pointToCell(itemPlacement);
             if (level.heaps.get(cell) != null) {
-                while (true) {
+                do {
                     cell = level.pointToCell(random());
-                    if (level.heaps.get(cell) == null && level.findMob(cell) == null) {
-                        break;
-                    }
-                }
+                } while (level.heaps.get(cell) != null || level.findMob(cell) != null);
             }
-            level.drop( item, cell ).type = Heap.Type.FOR_SALE;
+            level.drop(item, cell).type = Heap.Type.FOR_SALE;
         }
     }
 
     protected static ArrayList<Item> generateItems() {
-        Item rare;
-        Item item;
-        ArrayList<Item> itemsToSpawn2 = new ArrayList<>();
-        int i = Dungeon.depth;
-        Item w = Generator.random(Generator.wepTiers[4]);
-        //itemsToSpawn2.add(Generator.random(Generator.misTiers[4]).quantity(2).identify());
-        itemsToSpawn2.add(new LeatherArmor().identify());
-        w.cursed = true;
-        w.level(0);
-        w.identify();
-        itemsToSpawn2.add(w);
-        itemsToSpawn2.add(TippedDart.randomTipped(2));
-        //itemsToSpawn2.add(new MerchantsBeacon());
-        Bag bag = ChooseBag(Dungeon.hero.belongings);
-        if (bag != null) {
-            itemsToSpawn2.add(bag);
-        }
-        itemsToSpawn2.add(new ScrollOfTransmutation());
-        //itemsToSpawn2.add(new DriedRose());
-        itemsToSpawn2.add(Generator.randomUsingDefaults(Generator.Category.POTION));
-        itemsToSpawn2.add(Generator.randomUsingDefaults(Generator.Category.WAND));
-        itemsToSpawn2.add(Generator.randomUsingDefaults(Generator.Category.WAND));
+        ArrayList<Item> itemsToSpawn = new ArrayList<>();
 
-        if(Statistics.RandMode){
-            itemsToSpawn2.add(new ElixirOfMight());
-            itemsToSpawn2.add(new PotionOfMastery());
-        }
+        try {
+            // 根据深度生成特定装备
+            Item w = Generator.random(Generator.wepTiers[4]);
+            w.cursed = true;
+            w.level(0);
+            w.identify();
+            itemsToSpawn.add(w);
 
-        if(Dungeon.isChallenged(DHXD)){
-            itemsToSpawn2.add(new OilPotion());
-        } else if(lanterfireactive) {
-            if(Challenges.activeChallenges() > 6){
-                itemsToSpawn2.add(new OilPotion());
-                itemsToSpawn2.add(new OilPotion());
-            } else {
-                itemsToSpawn2.add(new OilPotion());
+            // 添加其他物品
+            itemsToSpawn.add(new LeatherArmor().identify());
+            itemsToSpawn.add(TippedDart.randomTipped(2));
+            itemsToSpawn.add(new ScrollOfTransmutation());
+            itemsToSpawn.add(Generator.randomUsingDefaults(Generator.Category.POTION));
+            itemsToSpawn.add(Generator.randomUsingDefaults(Generator.Category.WAND));
+            itemsToSpawn.add(Generator.randomUsingDefaults(Generator.Category.WAND));
+
+            // 随机模式下添加特定物品
+            if (Statistics.RandMode) {
+                itemsToSpawn.add(new ElixirOfMight());
+                itemsToSpawn.add(new PotionOfMastery());
             }
-        }
 
-        itemsToSpawn2.add(new ScrollOfIdentify());
-        itemsToSpawn2.add(new ScrollOfRemoveCurse());
-            switch (Random.Int(5)) {
+            // 挑战模式下添加特定物品
+            if (Dungeon.isChallenged(DHXD) || lanterfireactive) {
+                int oilPotionCount = Challenges.activeChallenges() > 6 && lanterfireactive ? 2 : 1;
+                for (int i = 0; i < oilPotionCount; i++) {
+                    itemsToSpawn.add(new OilPotion());
+                }
+            }
+
+            // 添加通用物品
+            itemsToSpawn.add(new ScrollOfIdentify());
+            itemsToSpawn.add(new ScrollOfRemoveCurse());
+            itemsToSpawn.add(new ScrollOfMagicMapping());
+
+            // 根据随机值添加特定食物或书籍
+            int type = Random.Int(5);
+            switch (type) {
                 case 0:
                 case 1:
                 case 2:
                 default:
-                    itemsToSpawn2.add(new Food());
+                    itemsToSpawn.add(new Food());
                     break;
                 case 3:
                 case 4:
-                    itemsToSpawn2.add(new YellowSunBooks().quantity(1));
-                    itemsToSpawn2.add(new GrassKingBooks().quantity(1));
-                    break;
-                case 5:
-                    itemsToSpawn2.add(new MeatPie());
+                    itemsToSpawn.add(new YellowSunBooks().quantity(1));
+                    itemsToSpawn.add(new GrassKingBooks().quantity(1));
                     break;
             }
-        itemsToSpawn2.add(new ScrollOfMagicMapping());
-        for (int i2 = 0; i2 < 2; i2++) {
-            if (Random.Int(2) == 0) {
-                item = Generator.randomUsingDefaults(Generator.Category.POTION);
-            } else {
-                item = Generator.randomUsingDefaults(Generator.Category.SCROLL);
+
+            // 添加其他通用物品
+            itemsToSpawn.add(new PotionOfHealing());
+            itemsToSpawn.add(new SmallRation());
+
+            // 根据随机值添加炸弹或蜜罐
+            int bombType = Random.Int(4);
+            switch (bombType) {
+                case 0:
+                    itemsToSpawn.add(new Bomb());
+                    break;
+                case 1:
+                case 2:
+                    itemsToSpawn.add(new Bomb.DoubleBomb());
+                    break;
+                case 3:
+                    itemsToSpawn.add(new Honeypot());
+                    break;
             }
-            itemsToSpawn2.add(item);
-        }
-        itemsToSpawn2.add(new PotionOfHealing());
-        itemsToSpawn2.add(new SmallRation());
-        int Int = Random.Int(4);
-        if (Int == 0) {
-            itemsToSpawn2.add(new Bomb());
-        } else if (Int == 1 || Int == 2) {
-            itemsToSpawn2.add(new Bomb.DoubleBomb());
-        } else if (Int == 3) {
-            itemsToSpawn2.add(new Honeypot());
-        }
-        itemsToSpawn2.add(new StoneOfAugmentation());
-        TimekeepersHourglass hourglass = Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
-        if (hourglass != null) {
-            int bags = 0;
-            int i3 = Dungeon.depth;
-            if (i3 == 6) {
-                bags = (int) Math.ceil(((float) (5 - hourglass.sandBags)) * 0.2f);
-            } else if (i3 == 11) {
-                bags = (int) Math.ceil(((float) (3 - hourglass.sandBags)) * 0.25f);
-            } else if (i3 == 16) {
-                bags = (int) Math.ceil(((float) (5 - hourglass.sandBags)) * 0.5f);
-            } else if (i3 == 20 || i3 == 21) {
-                bags = (int) Math.ceil(((float) (5 - hourglass.sandBags)) * 0.8f);
+
+            // 添加强化石
+            itemsToSpawn.add(new StoneOfAugmentation());
+
+            // 沙漏模式添加特定物品
+            TimekeepersHourglass hourglass = Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
+            if (hourglass != null) {
+                int bagsToAdd = 0;
+                switch (Dungeon.depth) {
+                    case 6:
+                        bagsToAdd = (int) Math.ceil((5 - hourglass.sandBags) * 0.2f);
+                        break;
+                    case 11:
+                        bagsToAdd = (int) Math.ceil((3 - hourglass.sandBags) * 0.25f);
+                        break;
+                    case 16:
+                        bagsToAdd = (int) Math.ceil((5 - hourglass.sandBags) * 0.5f);
+                        break;
+                    case 20:
+                    case 21:
+                        bagsToAdd = (int) Math.ceil((5 - hourglass.sandBags) * 0.8f);
+                        break;
+                }
+                for (int i = 0; i < bagsToAdd; i++) {
+                    itemsToSpawn.add(new TimekeepersHourglass.sandBag());
+                    hourglass.sandBags++;
+                }
             }
-            for (int i4 = 1; i4 <= bags; i4++) {
-                itemsToSpawn2.add(new TimekeepersHourglass.sandBag());
-                hourglass.sandBags++;
+
+            // 根据随机值添加罕见物品
+            Item rare;
+            int rareType = Random.Int(10);
+            switch (rareType) {
+                case 0:
+                    rare = Generator.random(Generator.Category.WAND);
+                    break;
+                case 1:
+                    rare = Generator.random(Generator.Category.RING);
+                    break;
+                default:
+                    rare = Random.Int(3) == 0 ? new Stylus() : Generator.random(Generator.Category.ARTIFACT);
+                    break;
             }
-        }
-        int Int2 = Random.Int(10);
-        if (Int2 == 0) {
-            rare = Generator.random(Generator.Category.WAND);
             rare.level(0);
-        } else if (Int2 == 1) {
-            rare = Generator.random(Generator.Category.RING);
-            rare.level(0);
-        } else if (Int2 != 2) {
-            rare = new Stylus();
-        } else {
-            rare = Generator.random(Generator.Category.ARTIFACT);
+            rare.cursed = false;
+            rare.cursedKnown = true;
+            itemsToSpawn.add(rare);
+
+            // 选择一个合适的包
+            Bag bag = ChooseBag(Dungeon.hero.belongings);
+            if (bag != null) {
+                itemsToSpawn.add(bag);
+            }
+
+            // 随机添加两个药剂或卷轴
+            for (int i = 0; i < 2; i++) {
+                itemsToSpawn.add(Random.Int(2) == 0 ?
+                        Generator.randomUsingDefaults(Generator.Category.POTION) :
+                        Generator.randomUsingDefaults(Generator.Category.SCROLL));
+            }
+
+            // 升级物品和随机增加等级
+            if (Dungeon.depth > 26) {
+                for (Item item : itemsToSpawn) {
+                    item.upgrade();
+                    if (Random.Int(10) == 1) {
+                        item.level += Random.Int(1,4);
+                    }
+                }
+            }
+
+            // 打乱物品顺序
+            Random.shuffle(itemsToSpawn);
+
+        } catch (Exception e) {
+            // 添加错误处理机制
+            throw new RuntimeException("Failed to generate shop items: " + e.getMessage(), e);
         }
-        rare.cursed = false;
-        rare.cursedKnown = true;
-        itemsToSpawn2.add(rare);
-        if (itemsToSpawn2.size() <= 63) {
-            Random.shuffle(itemsToSpawn2);
-            return itemsToSpawn2;
+
+        // 检查物品数量是否超出限制
+        if (itemsToSpawn.size() > 63) {
+            throw new RuntimeException("Shop attempted to carry more than 63 items!");
         }
-        throw new RuntimeException("Shop attempted to carry more than 63 items!");
+
+        return itemsToSpawn;
     }
 
 
-    protected static Bag ChooseBag(Belongings pack) {
+
+    protected static Bag ChooseBag(Belongings pack){
+        if(Dungeon.isDLC(Conducts.Conduct.DEV)) return null;
+        //generate a hashmap of all valid bags.
         HashMap<Bag, Integer> bags = new HashMap<>();
-        if (!Dungeon.LimitedDrops.VELVET_POUCH.dropped()) {
-            bags.put(new VelvetPouch(), 1);
-        }
-        if (!Dungeon.LimitedDrops.SCROLL_HOLDER.dropped()) {
-            bags.put(new ScrollHolder(), 0);
-        }
-        if (!Dungeon.LimitedDrops.POTION_BANDOLIER.dropped()) {
-            bags.put(new PotionBandolier(), 0);
-        }
-        if (!Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped()) {
-            bags.put(new MagicalHolster(), 0);
-        }
-        if (bags.isEmpty()) {
-            return null;
-        }
-        Iterator it = pack.backpack.items.iterator();
-        while (it.hasNext()) {
-            Item item = (Item) it.next();
-            for (Bag bag : bags.keySet()) {
-                if (bag.canHold(item)) {
-                    bags.put(bag, Integer.valueOf(bags.get(bag).intValue() + 1));
+        if (!Dungeon.LimitedDrops.VELVET_POUCH.dropped()) bags.put(new VelvetPouch(), 1);
+        if (!Dungeon.LimitedDrops.SCROLL_HOLDER.dropped()) bags.put(new ScrollHolder(), 0);
+        if (!Dungeon.LimitedDrops.POTION_BANDOLIER.dropped()) bags.put(new PotionBandolier(), 0);
+        if (!Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped()) bags.put(new MagicalHolster(), 0);
+
+        if (bags.isEmpty()) return null;
+
+        //count up items in the main bag
+        for (Item item : pack.backpack.items) {
+            for (Bag bag : bags.keySet()){
+                if (bag.canHold(item)){
+                    bags.put(bag, bags.get(bag)+1);
                 }
             }
         }
+
+        //find which bag will result in most inventory savings, drop that.
         Bag bestBag = null;
-        for (Bag bag2 : bags.keySet()) {
-            if (bestBag == null) {
-                bestBag = bag2;
-            } else if (bags.get(bag2).intValue() > bags.get(bestBag).intValue()) {
-                bestBag = bag2;
+        for (Bag bag : bags.keySet()){
+            if (bestBag == null){
+                bestBag = bag;
+            } else if (bags.get(bag) > bags.get(bestBag)){
+                bestBag = bag;
             }
         }
-        if (bestBag instanceof VelvetPouch) {
+
+        if (bestBag instanceof VelvetPouch){
             Dungeon.LimitedDrops.VELVET_POUCH.drop();
-        } else if (bestBag instanceof ScrollHolder) {
+        } else if (bestBag instanceof ScrollHolder){
             Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
-        } else if (bestBag instanceof PotionBandolier) {
+        } else if (bestBag instanceof PotionBandolier){
             Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
-        } else if (bestBag instanceof MagicalHolster) {
+        } else if (bestBag instanceof MagicalHolster){
             Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
         }
+
         return bestBag;
+
     }
 }

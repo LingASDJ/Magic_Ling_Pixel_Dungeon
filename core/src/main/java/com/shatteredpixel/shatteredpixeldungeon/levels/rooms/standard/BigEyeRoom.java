@@ -27,10 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BigEyeRoom extends SpecialRoom {
-	@Override
-	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
-		return false;
-	}
     @Override
     public int minWidth() {
         return 13;
