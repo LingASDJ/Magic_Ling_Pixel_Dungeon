@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.BoatPlot;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeathRongSprite;
@@ -11,7 +12,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 
 public class DeathRong extends NTNPC {
 
@@ -74,19 +74,14 @@ public class DeathRong extends NTNPC {
             tell(Messages.get(DeathRong.class, "can_boat"));
         }
 
+        Bestiary.setSeen(DeathRong.class);
+
         return true;
     }
 
     public static void tell(String text) {
-        Game.runOnRenderThread(new Callback() {
-                  @Override
-                  public void call() {
-                      GameScene.show(new WndQuest(new DeathRong(), text));
-                  }
-            }
-        );
+        Game.runOnRenderThread(() -> GameScene.show(new WndQuest(new DeathRong(), text)));
     }
-
 
 }
 

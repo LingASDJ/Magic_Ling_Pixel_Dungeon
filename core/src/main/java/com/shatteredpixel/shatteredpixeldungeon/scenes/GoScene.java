@@ -1,152 +1,53 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 
+import static com.watabou.noosa.Game.switchScene;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.TPDoor;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
-import com.watabou.utils.GameMath;
-
-import net.iharder.Base64;
-
-import java.io.IOException;
 
 public class GoScene extends PixelScene {
 
-    private static float alpha = 0f;
-    private static float sec = 0f;
-    private static boolean played = false;
-    private static boolean done = false;
-
-    private Image gdx;
-    private Image ansdoShip;
-    private float originalGdxWidth;
-    private float originalAnsdoShipWidth;
-    private static float gdxScaleFactor = 1.0f;
-    private static float ansdoShipScaleFactor = 1.0f;
-
-    private static final float RIPPLE_AMPLITUDE = 0.9f; // 水波振幅
-    private static final float RIPPLE_FREQUENCY = 1f; // 水波频率
-    private static final float RIPPLE_SPEED = 2f; // 水波速度
-
-    public static void isClassExistInSourceCode() {
-        String base64ClassName = Messages.get(TPDoor.class,"ymfzzty");
-        byte[] decodedBytes = new byte[0];
-        try {
-            decodedBytes = Base64.decode(base64ClassName);
-        } catch (IOException ignored) {}
-        String className = new String(decodedBytes);
-
-        try {
-            //大哥里面请
-            Class.forName(className);
-            SPDSettings.Cheating(true);
-        } catch (ClassNotFoundException e) {
-            SPDSettings.Cheating(false);
-        }
-    }
-
     @Override
     public void create() {
-        super.create();
-        isClassExistInSourceCode();
 
-        if (SPDSettings.splashScreen() < 1 || done) {
+        if (SPDSettings.splashScreen() < 1) {
             ShatteredPixelDungeon.switchScene(WelcomeScene.class);
             return;
         }
 
+        super.create();
         Music.playModeBGM( Assets.Sounds.ANSDOSHIP,false);
-
-        PixelScene.uiCamera.visible = false;
+        uiCamera.visible = false;
 
         int w = Camera.main.width;
         int h = Camera.main.height;
 
-        gdx = new Image(Assets.Splashes.GDX) {
-            float time = 0f;
-
+        Image title = new Image(Assets.Splashes.GDX ) {
+            private float time = 0;
             @Override
             public void update() {
-                if (SPDSettings.splashScreen() > 0 && sec < 1f) {
-                    alpha(GameMath.gate(0, alpha += Game.elapsed, 1));
-                    sec += Game.elapsed;
-                } else if (SPDSettings.splashScreen() > 1 && sec < 2f) {
-                    alpha(alpha = 1f);
-                    sec += Game.elapsed;
-                } else if (sec < (SPDSettings.splashScreen() > 1 ? 3f : 2f)) {
-                    alpha(GameMath.gate(0, alpha -= Game.elapsed, 1));
-                    sec += Game.elapsed;
-                    gdxScaleFactor += Game.elapsed / 10.f;
-                    gdx.scale.set(w / originalGdxWidth / (landscape() ? 4f : 3f) * gdxScaleFactor);
-                    gdx.x = (w - gdx.width()) / 2f;
-                    gdx.y = (float) ((h - gdx.height()) / 2f + RIPPLE_AMPLITUDE * Math.sin(time * RIPPLE_FREQUENCY));
-                    PixelScene.align(gdx);
-                    time += Game.elapsed * RIPPLE_SPEED;
-                } else if (SPDSettings.splashScreen() > 1 && sec < 4f) {
-                    if (gdx.visible) gdx.visible = false;
-                    sec += Game.elapsed;
-                } else if (!ansdoShip.visible) {
-                    if (gdx.visible) gdx.visible = false;
-                    ansdoShip.visible = true;
+                super.update();
+                am = Math.max(0f, (float)Math.sin( time += Game.elapsed ));
+                if (time >= 1.5f*Math.PI) {
+                    time = 0;
+                    switchScene(GoScene2.class);
                 }
             }
         };
-        originalGdxWidth = gdx.width();
-        gdx.scale.set(w / gdx.width() / (landscape() ? 4f : 3f) * gdxScaleFactor);
+        title.scale.set(Math.min(w,h) / title.width/1.5f);
+        add( title );
+        title.x = (w - title.width()) / 2f;
+        title.y = (h - title.height()) / 2f;
 
-        gdx.x = (w - gdx.width()) / 2f;
-        gdx.y = (h - gdx.height()) / 2f;
-        PixelScene.align(gdx);
-        if (sec >= 3f) gdx.visible = false;
-        add(gdx);
+        align(title);
 
-        ansdoShip = new Image(Assets.Splashes.ANSDOSHIP) {
-            float time = 0f;
 
-            @Override
-            public void update() {
-                if (!visible) return;
-                if (sec >= (SPDSettings.splashScreen() > 1 ? 4f : 2f) && sec < (SPDSettings.splashScreen() > 1 ? 5f :
-                        3f)) {
-                    if (!played && SPDSettings.splashScreen() > 1) {
-                        played = true;
-                    }
-                    alpha(GameMath.gate(0, alpha += Game.elapsed, 1));
-                    sec += Game.elapsed;
-                } else if (SPDSettings.splashScreen() > 1 && sec < 7f) {
-                    alpha(alpha = 1f);
-                    sec += Game.elapsed;
-                } else if (sec < (SPDSettings.splashScreen() > 1 ? 8f : 4f)) {
-                    alpha(GameMath.gate(0, alpha -= Game.elapsed, 1));
-                    sec += Game.elapsed / 2.9f;
-                    ansdoShipScaleFactor += Game.elapsed / 10.f;
-                    ansdoShip.scale.set(w / originalAnsdoShipWidth / (landscape() ? 3f : 2f) * ansdoShipScaleFactor);
-                    ansdoShip.x = (w - ansdoShip.width()) / 2f;
-                    ansdoShip.y = (float) ((h - ansdoShip.height()) / 2f + RIPPLE_AMPLITUDE * Math.PI * Math.sin(time *
-                            RIPPLE_FREQUENCY));
-                    PixelScene.align(ansdoShip);
-                    time += Game.elapsed * RIPPLE_SPEED;
-                } else if (!done) {
-                    done = true;
-                    if (ansdoShip.visible) ansdoShip.visible = false;
-                    ShatteredPixelDungeon.switchScene(WelcomeScene.class);
-                }
-            }
-        };
-        originalAnsdoShipWidth = ansdoShip.width();
-        ansdoShip.scale.set(w / ansdoShip.width() / (landscape() ? 3f : 2f) * ansdoShipScaleFactor);
-
-        ansdoShip.x = (w - ansdoShip.width()) / 2f;
-        ansdoShip.y = (h - ansdoShip.height()) / 2f;
-        PixelScene.align(ansdoShip);
-        ansdoShip.visible = false;
-        add(ansdoShip);
-
+        fadeIn();
     }
 }

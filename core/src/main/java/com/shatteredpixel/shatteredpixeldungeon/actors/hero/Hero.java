@@ -242,6 +242,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
@@ -3040,9 +3041,10 @@ public class Hero extends Char {
 
 		if( buff(ElectricalSmoke.SmokingAlloy.class) != null) GLog.n(Messages.get(ElectricalSmoke.class,"die"));
 
+		boolean OnlySummonAlive = false;
 		//灯火值低于40 死亡生成自己的邪恶面，并清空金币，背包也一并带走。（灵感：空洞骑士）
 		for (Ankh i : belongings.getAllItems(Ankh.class)) {
-			if (ankh != null || i.isBlessed()) {
+			if (ankh != null && !(i.isBlessed()) && !OnlySummonAlive) {
 				if (lanterfireactive && hero.lanterfire <= 40 && !i.isBlessed() || hero.buff(LostInventory.class) != null) {
 					BlackSoul s = new BlackSoul();
 					if(Statistics.ankhToExit){
@@ -3056,6 +3058,7 @@ public class Hero extends Char {
 					GameScene.add(s);
 					Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
 					Buff.affect(s, DeadSoul.class);
+					OnlySummonAlive = true;
 					GameScene.flash(0x80FF0000);
 				}
 			}
@@ -3297,10 +3300,10 @@ public class Hero extends Char {
 
 				if(hasKey && heap.type == Type.WHITETOMB && Dungeon.depth>25){
 					GameScene.show(new WndOptions(new ItemSprite(heap),
-							Messages.titleCase(Messages.get(heap.type == Type.WHITETOMB, "name")),
-							Messages.get(heap.type == Type.WHITETOMB, "start_prompt"),
-							Messages.get(heap.type == Type.WHITETOMB, "enter_yes"),
-							Messages.get(heap.type == Type.WHITETOMB, "enter_no")) {
+							Messages.titleCase(Messages.get(BigEyeRoom.class, "name")),
+							Messages.get(BigEyeRoom.class, "start_prompt"),
+							Messages.get(BigEyeRoom.class, "enter_yes"),
+							Messages.get(BigEyeRoom.class, "enter_no")) {
 						@Override
 						protected void onSelect(int index) {
 							if (index == 0) {

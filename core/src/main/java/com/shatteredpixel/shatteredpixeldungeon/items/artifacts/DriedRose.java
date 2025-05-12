@@ -39,7 +39,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -150,76 +152,85 @@ public class DriedRose extends Artifact {
 
 		super.execute(hero, action);
 
-		if (action.equals(AC_SUMMON)) {
+        switch (action) {
+            case AC_SUMMON:
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (mob instanceof CrivusStarFruits) {
+                        GLog.n(Messages.get(this, "no_spawned"));
+                        return;
+                    }
+                }
+                if (hero.buff(MagicImmune.class) != null) return;
 
-			if (hero.buff(MagicImmune.class) != null) return;
+                if (!Ghost.Quest.completed()) GameScene.show(new WndUseItem(null, this));
+                else if (ghost != null) GLog.i(Messages.get(this, "spawned"));
+                else if (!isEquipped(hero)) GLog.i(Messages.get(Artifact.class, "need_to_equip"));
+                else if (charge != chargeCap) GLog.i(Messages.get(this, "no_charge"));
+                else if (cursed) GLog.i(Messages.get(this, "cursed"));
+                else {
+                    ArrayList<Integer> spawnPoints = new ArrayList<>();
+                    for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+                        int p = hero.pos + PathFinder.NEIGHBOURS8[i];
+                        if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
+                            spawnPoints.add(p);
+                        }
+                    }
 
-			if (!Ghost.Quest.completed())   GameScene.show(new WndUseItem(null, this));
-			else if (ghost != null)         GLog.i( Messages.get(this, "spawned") );
-			else if (!isEquipped( hero ))   GLog.i( Messages.get(Artifact.class, "need_to_equip") );
-			else if (charge != chargeCap)   GLog.i( Messages.get(this, "no_charge") );
-			else if (cursed)                GLog.i( Messages.get(this, "cursed") );
-			else {
-				ArrayList<Integer> spawnPoints = new ArrayList<>();
-				for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-					int p = hero.pos + PathFinder.NEIGHBOURS8[i];
-					if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
-						spawnPoints.add(p);
-					}
-				}
+                    if (spawnPoints.size() > 0) {
+                        ghost = new GhostHero(this);
+                        ghostID = ghost.id();
+                        ghost.pos = Random.element(spawnPoints);
 
-				if (spawnPoints.size() > 0) {
-					ghost = new GhostHero( this );
-					ghostID = ghost.id();
-					ghost.pos = Random.element(spawnPoints);
+                        GameScene.add(ghost, 1f);
+                        Dungeon.level.occupyCell(ghost);
 
-					GameScene.add(ghost, 1f);
-					Dungeon.level.occupyCell(ghost);
-					
-					CellEmitter.get(ghost.pos).start( ShaftParticle.FACTORY, 0.3f, 4 );
-					CellEmitter.get(ghost.pos).start( Speck.factory(Speck.LIGHT), 0.2f, 3 );
+                        CellEmitter.get(ghost.pos).start(ShaftParticle.FACTORY, 0.3f, 4);
+                        CellEmitter.get(ghost.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
 
-					hero.spend(1f);
-					hero.busy();
-					hero.sprite.operate(hero.pos);
+                        hero.spend(1f);
+                        hero.busy();
+                        hero.sprite.operate(hero.pos);
 
-					if (!firstSummon) {
-						ghost.yell( Messages.get(GhostHero.class, "hello", Messages.titleCase(Dungeon.hero.name())) );
-						Sample.INSTANCE.play( Assets.Sounds.GHOST );
-						firstSummon = true;
-						
-					} else {
-						if (BossHealthBar.isAssigned()) {
-							ghost.sayBoss();
-						} else {
-							ghost.sayAppeared();
-						}
-					}
+                        if (!firstSummon) {
+                            ghost.yell(Messages.get(GhostHero.class, "hello", Messages.titleCase(Dungeon.hero.name())));
+                            Sample.INSTANCE.play(Assets.Sounds.GHOST);
+                            firstSummon = true;
 
-					Invisibility.dispel(hero);
-					Talent.onArtifactUsed(hero);
-					charge = 0;
-					partialCharge = 0;
-					updateQuickslot();
+                        } else {
+                            if (BossHealthBar.isAssigned()) {
+                                ghost.sayBoss();
+                            } else {
+                                ghost.sayAppeared();
+                            }
+                        }
 
-				} else
-					GLog.i( Messages.get(this, "no_space") );
-			}
+                        Invisibility.dispel(hero);
+                        Talent.onArtifactUsed(hero);
+                        charge = 0;
+                        partialCharge = 0;
+                        updateQuickslot();
 
-		} else if (action.equals(AC_DIRECT)){
-			if (ghost == null && ghostID != 0){
-				Actor a = Actor.findById(ghostID);
-				if (a != null){
-					ghost = (GhostHero)a;
-				} else {
-					ghostID = 0;
-				}
-			}
-			if (ghost != null) GameScene.selectCell(ghostDirector);
-			
-		} else if (action.equals(AC_OUTFIT)){
-			GameScene.show( new WndGhostHero(this) );
-		}
+                    } else
+                        GLog.i(Messages.get(this, "no_space"));
+                }
+
+                break;
+            case AC_DIRECT:
+                if (ghost == null && ghostID != 0) {
+                    Actor a = Actor.findById(ghostID);
+                    if (a != null) {
+                        ghost = (GhostHero) a;
+                    } else {
+                        ghostID = 0;
+                    }
+                }
+                if (ghost != null) GameScene.selectCell(ghostDirector);
+
+                break;
+            case AC_OUTFIT:
+                GameScene.show(new WndGhostHero(this));
+                break;
+        }
 	}
 	
 	public int ghostStrength(){

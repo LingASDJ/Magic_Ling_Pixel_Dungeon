@@ -13,15 +13,15 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.BridgeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.ConnectionRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.MazeConnectionRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.PerimeterRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.WalkwayRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.AncientMysteryEnteanceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.AncientMysteryExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.PlantsRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.SewerPipeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StudyRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.WaterBridgeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CorrosionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
@@ -72,7 +72,7 @@ public class AncientMysteryCityLevel extends RegularLevel {
 
         int rooms = 2;
         for (int i = 0; i < rooms; i++){
-            s = new SewerPipeRoom();
+            s = new WaterBridgeRoom();
             s.setSizeCat();
             initRooms.add(s);
         }
@@ -94,7 +94,7 @@ public class AncientMysteryCityLevel extends RegularLevel {
             initRooms.add(xs);
         }
         for (int i = 2; i < rooms; i++){
-            xs = new WalkwayRoom();
+            xs = new MazeConnectionRoom();
             initRooms.add(xs);
         }
 

@@ -453,10 +453,6 @@ public class Dungeon {
 		return depth == 11 ||depth == 12||depth == 13||depth == 14;
 	}
 
-	public static boolean DiedWaterLevel() {
-		return depth == 16 ||depth == 17||depth == 18||depth == 19;
-	}
-
 	public static boolean shopOnLevel() {
 		return depth == 6 || depth == 11 || depth == 16;
 	}

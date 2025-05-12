@@ -214,7 +214,7 @@ public abstract class TippedDart extends Dart {
 	@Override
 	public int value() {
 		//value of regular dart plus half of the seed
-		return 8 * quantity;
+		return 8 * quantity * level();
 	}
 	
 	public static final LinkedHashMap<Class<?extends Plant.Seed>, Class<?extends TippedDart>> types = new LinkedHashMap<>();

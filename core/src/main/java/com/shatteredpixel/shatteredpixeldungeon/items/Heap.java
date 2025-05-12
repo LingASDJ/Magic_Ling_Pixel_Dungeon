@@ -406,8 +406,10 @@ public class Heap implements Bundlable {
 					return i.toString();
 				}
 			case REMAINS:
-				if (level.diedname != null) {
-					return Messages.get(this, "grave");
+				if(level != null){
+					if (level.diedname != null) {
+						return Messages.get(this, "grave");
+					}
 				}
 				return Messages.get(this, "remains");
 			case FOR_ICE:

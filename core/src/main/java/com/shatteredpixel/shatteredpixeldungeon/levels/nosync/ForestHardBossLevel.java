@@ -223,7 +223,7 @@ public class ForestHardBossLevel extends Level {
         }
 
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
-        if ((map[getBossDoor] == WATER || map[getBossDoor] == SALT_WATER) && isTrue) {
+        if ((map[getBossDoor] == EMPTY_SP ||map[getBossDoor] == WATER || map[getBossDoor] == SALT_WATER) && isTrue) {
             seal();
         }
     }
