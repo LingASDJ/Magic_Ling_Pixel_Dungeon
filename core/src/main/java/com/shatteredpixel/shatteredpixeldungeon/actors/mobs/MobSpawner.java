@@ -467,13 +467,12 @@ public class MobSpawner extends Actor {
 					case 30:
 						return new ArrayList<>(Arrays.asList(
 								ApprenticeWitch.class,
-								ApprenticeWitch.class,
 								Butcher.class,Butcher.class,
 								Pumking_Ghost.class
 								, PumkingBomber.class
 						));
 
-					case 32: case 34: case 36: case 38:
+					case 32: case 34: case 36: case 37:case 38:
 						//普通结局
 					case 40: case 41:
 						if(Statistics.bossRushMode){

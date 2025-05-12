@@ -64,7 +64,7 @@ public class Frankenstein extends Mob {
     public boolean isAlive() {
 
         if(MustDied || deathCount >=2){
-            return true;
+            return super.isAlive();
         } else if (super.isAlive()) {
             return true;
         } else if (deathCount == 0 && RestCooldown == 0) {

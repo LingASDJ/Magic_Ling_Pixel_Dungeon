@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.journal;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.SmokeBomb;
@@ -45,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalWisp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
@@ -71,6 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenStingCV;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IceGolem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ice_Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Katydid;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MagicGirlDead;
@@ -87,6 +90,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PhantomPiranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedMurderer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedNecromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotHeart;
@@ -185,6 +189,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SuccubusQueen;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
@@ -351,10 +356,10 @@ public enum Bestiary {
 
 		ICECAVE.addEntities(Bat.class, ColdMagicRat.class,
 				FireGhost.class, RedSwarm.class,
-				Spinner.class, Brute.class,
+				Spinner.class, Brute.class, DM200.class,
 
 				FlameB01.class, FlameC02.class,
-				GnollShiled.class, SkullShaman.class);
+				GnollShiled.class, SkullShaman.class, RedNecromancer.class);
 
 		ICECAVE_BOSS.addEntities(
 				DM275.class,
@@ -366,7 +371,7 @@ public enum Bestiary {
 				Shaman.RedShaman.class, Shaman.BlueShaman.class, Shaman.PurpleShaman.class,
 				Monk.class, Elemental.FrostElemental.class, Elemental.ShockElemental.class,
 				Elemental.FireElemental.class,
-				BruteBot.class, Warlock.class, Golem.class, ShieldHuntsman.class);
+				BruteBot.class, Warlock.class, Golem.class, ShieldHuntsman.class, IceGolem.class);
 
 		CITY_BOSS.addEntities(
 				//Boss T1
@@ -383,7 +388,7 @@ public enum Bestiary {
 				Scorpio.class, Ice_Scorpio.class,
 				Fire_Scorpio.class,
 				Eye.class, DemonSpawner.class,
-				RipperDemon.class, Succubus.class
+				RipperDemon.class, Succubus.class, SuccubusQueen.class
 		);
 
 		HELL_BOSS.addEntities(
@@ -538,7 +543,7 @@ public enum Bestiary {
 				Journal.saveNeeded = true;
 			}
 		}
-		//Badges.validateCatalogBadges();
+		Badges.validateCatalogBadges();
 	}
 
 	public static int encounterCount(Class<?> cls) {

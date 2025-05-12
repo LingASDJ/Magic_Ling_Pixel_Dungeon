@@ -21,7 +21,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public class DimandMimic extends Mimic {
@@ -138,27 +137,18 @@ public class DimandMimic extends Mimic {
                 }
             }
 
-            if (newPos == -8){
-                return false;
-            } else {
-                final int newPosFinal = newPos;
-                this.target = newPos;
-                new Item().throwSound();
-                Sample.INSTANCE.play( Assets.Sounds.CHAINS );
-                sprite.parent.add(new Chains(sprite.center(),
-                        enemy.sprite.destinationCenter(),
-                        Effects.Type.CHAIN,
-                        new Callback() {
-                            public void call() {
-                                Actor.add(new Pushing(enemy, enemy.pos, newPosFinal, new Callback() {
-                                    public void call() {
-                                        pullEnemy(enemy, newPosFinal);
-                                    }
-                                }));
-                                next();
-                            }
-                }));
-            }
+            final int newPosFinal = newPos;
+            this.target = newPos;
+            new Item().throwSound();
+            Sample.INSTANCE.play( Assets.Sounds.CHAINS );
+            sprite.parent.add(new Chains(sprite.center(),
+                    enemy.sprite.destinationCenter(),
+                    Effects.Type.CHAIN,
+                    () -> {
+                        Actor.add(new Pushing(enemy, enemy.pos, newPosFinal, ()
+                                -> pullEnemy(enemy, newPosFinal)));
+                        next();
+                    }));
         }
         chainsUsed = true;
         return true;

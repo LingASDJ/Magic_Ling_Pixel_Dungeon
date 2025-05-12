@@ -7,6 +7,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -68,6 +70,8 @@ public class PotionOfHolyWater extends Item {
             if (ch instanceof Frankenstein){
                 ((Frankenstein) ch).MustDied = true;
                 GLog.n(Messages.get(this,"zombie_noreset"));
+                ch.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10 );
+                SpellSprite.showRGB(ch, SpellSprite.ANKH,0.1f,1f,0.1f);
             } else if (ch.properties.contains(Char.Property.HOLLOW)) {
                 ch.damage(curUser.damageRoll(),new DM100.LightningBolt());
                 GLog.p(Messages.get(this,"hollow"));
