@@ -8,10 +8,9 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools:r8:8.7.18'
-        //noinspection AndroidGradlePluginVersion
         classpath 'com.android.tools.build:gradle:8.7.2'
         classpath 'com.google.gms:google-services:4.4.2'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.3'
     }
 }
 
@@ -22,8 +21,8 @@ allprojects {
         appName = 'Magic Ling Pixel Dungeon'
         appPackageName = 'com.ansdomagiclingpixeldungeon.ling'
 
-        appVersionCode = 2025051200
-        appVersionName = '0.8.4.7-MDTEST'
+        appVersionCode = 2025051400
+        appVersionName = '0.8.4.7-B2-MDTEST'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
@@ -31,9 +30,8 @@ allprojects {
         appAndroidMinSDK = 19
         appAndroidTargetSDK = 33
 
-        gdxControllersVersion = '2.2.3'
-
         gdxVersion = '1.12.1'
+        gdxControllersVersion = '2.2.4-SNAPSHOT'
     }
 
     version = appVersionName
