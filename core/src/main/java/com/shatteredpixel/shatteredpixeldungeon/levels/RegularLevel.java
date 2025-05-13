@@ -76,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BlueAltStoneRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BoilerRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.GoldRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.HealWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.IdenityRoom;
@@ -290,6 +291,10 @@ public abstract class RegularLevel extends Level {
 			if(Statistics.findMoon && Dungeon.depth == 18){
 				initRooms.add(new LoveRoom());
 			}
+		}
+
+		if(Dungeon.depth == 24 && branch == 0) {
+			initRooms.add(new BoilerRoom());
 		}
 
 		//20%
