@@ -1,7 +1,7 @@
 buildscript {
     repositories {
-        mavenCentral()
         google()
+        mavenCentral()
         maven {
             url = uri("https://storage.googleapis.com/r8-releases/raw")
         }
@@ -31,14 +31,14 @@ allprojects {
         appAndroidTargetSDK = 33
 
         gdxVersion = '1.12.1'
-        gdxControllersVersion = '2.2.4-SNAPSHOT'
+        gdxControllersVersion = '2.2.3'
     }
 
     version = appVersionName
 
     repositories {
-        mavenCentral()
         google()
+        mavenCentral()
     }
 
 }
