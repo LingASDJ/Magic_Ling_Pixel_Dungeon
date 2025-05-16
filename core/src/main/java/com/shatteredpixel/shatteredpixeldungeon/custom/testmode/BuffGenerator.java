@@ -20,18 +20,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.ClearLanterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalBaseBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalFABuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.Immunities.ScaryImmunitiesBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlDebuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BloodLoss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.DragonWall;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.FoundChest;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
@@ -39,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.OozeStatueDe
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.QuestGold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -65,6 +61,10 @@ public class BuffGenerator extends TestItem{
         image = ItemSpriteSheet.WAND_MAGIC_MISSILE;
         defaultAction = AC_BUFF_TARGET;
     }
+
+    //TODO 第二次创建 出现空指针 需要修正
+    private RenderedTextBlock buffText = PixelScene.renderTextBlock(8);
+    private RenderedTextBlock descText = PixelScene.renderTextBlock(6);
 
     private static final String AC_BUFF_SET = "buff_set";
     private static final String AC_BUFF_TARGET = "buff_target";
@@ -198,18 +198,40 @@ public class BuffGenerator extends TestItem{
     private class WndSetBuff extends Window {
 
         private static final int WIDTH = 180;
-        private static final int HEIGHT = 180;
+        private static final int HEIGHT = 280;
         private static final int BTN_SIZE = 18;
         private static final int GAP = 2;
 
-        private int columPerPage = 15;
+        private int columPerPage = 9;
         private int maxPage = allData.size() / columPerPage;
         private ArrayList<CheckBox> buffButtons = new ArrayList<>(columPerPage + 1 );
         private RenderedTextBlock selectedPage;
         private RedButton modifyDuration;
 
+        // 新增过滤后的数据缓存
+        private ArrayList<Class<?>> filteredData = new ArrayList<>();
+
+
+
+        private ArrayList<Class<?>> filteredBuffs = new ArrayList<>();
+        // 核心过滤方法
+        private void filterBuffs() {
+            filteredBuffs.clear();
+            for (Class<?> buffClass : allData) {
+                String buffName = M.L(buffClass, "name");
+                if (!buffName.startsWith("Ms:")) {
+                    filteredBuffs.add(buffClass);
+                }
+            }
+        }
+
         public WndSetBuff(){
             super();
+
+            //过略Ms:开头的buff
+            filterBuffs();
+            //计算过略的分页参数
+            maxPage = (int) Math.ceil((double) filteredBuffs.size() / columPerPage);
 
             resize(WIDTH, HEIGHT);
 
@@ -218,6 +240,7 @@ public class BuffGenerator extends TestItem{
             RedButton lhs = new RedButton(Messages.get(WndSetBuff.class,"last_page"), 6){
                 @Override
                 public void onClick(){
+                    updateFilteredData();
                     currentPage--;
                     if(currentPage < 1 || currentPage>maxPage){
                         currentPage = maxPage;
@@ -233,6 +256,7 @@ public class BuffGenerator extends TestItem{
                 @Override
                 public void onClick(){
                     currentPage++;
+                    updateFilteredData();
                     if(currentPage < 1 || currentPage >maxPage){
                         currentPage = 1;
                     }
@@ -243,8 +267,15 @@ public class BuffGenerator extends TestItem{
             rhs.setRect(WIDTH - 24 - GAP,  GAP, 24, 18);
             add(rhs);
 
-            RenderedTextBlock descText = PixelScene.renderTextBlock(6);
-            descText.setPos(lhs.left(), lhs.bottom() + 2 * GAP);
+            buffText.setPos(lhs.left(), lhs.bottom() + 2 * GAP);
+            buffText.maxWidth(WIDTH - 2 * GAP);  // 添加自动换行
+            buffText.hardlight(Window.TITLE_COLOR);
+            add(buffText);
+
+            // 修改后的代码段
+            descText.setPos(0, 0);
+            descText.maxWidth(WIDTH - 2 * GAP - 4); // 为滚动条保留空间
+            descText.setPos(lhs.left(), buffText.bottom() + 6 * GAP);
             add(descText);
 
             selectedPage = PixelScene.renderTextBlock("", 9);
@@ -284,7 +315,7 @@ public class BuffGenerator extends TestItem{
                     updateBuffButtons();
                 }
             };
-            clearButton.setRect(modifyDuration.right() + GAP, 90, clearButton.reqWidth() + GAP * 2, 16);
+            clearButton.setRect(modifyDuration.right() + GAP+5, 90, 109, 16);
             add(clearButton);
 
             int column = 0;
@@ -296,6 +327,7 @@ public class BuffGenerator extends TestItem{
                         super.onClick();
                         int finalI = temp + ( currentPage - 1 ) * columPerPage;
                         descText.text(M.L(allData.get(finalI), "desc"));
+                        buffText.text(M.L(allData.get(finalI), "name"));
                         if (checked) {
                             buffsStatus.set(finalI);
                         } else {
@@ -317,7 +349,7 @@ public class BuffGenerator extends TestItem{
                 float Radius = 2.8f;
 
                 if (column == 0) {
-                    cb.setRect(column * 58 + GAP, pos, 58, 16);
+                    cb.setRect(GAP, pos, 58, 16);
                 } else if (column == 1) {
                     cb.setRect(column * 58 + GAP, pos, 58, 16);
                 }else{
@@ -336,19 +368,83 @@ public class BuffGenerator extends TestItem{
 
             updateBuffButtons();
             updateSelectedPage();
+            updateFilteredData();
         }
 
         private void updateBuffButtons(){
-            int i = 0;
-            for (CheckBox checkBox : buffButtons) {
-                int finalI = i + ( currentPage - 1 ) * columPerPage;
-                checkBox.text( M.L(allData.get(finalI), "name") );
-                checkBox.checked(buffsStatus.get(finalI));
-                i++;
+            // 清空现有UI元素
+            for (CheckBox cb : buffButtons) {
+                remove(cb);
+            }
+            buffButtons.clear();
+
+            // 计算分页参数
+
+            // 基于过滤后列表创建按钮
+            int startIdx = (currentPage - 1) * columPerPage;
+            int endIdx = Math.min(startIdx + columPerPage, filteredBuffs.size());
+
+            int pos = 110;
+            int column = 0;
+
+            // 动态生成CheckBox
+            for (int i = startIdx; i < endIdx; i++) {
+                Class<?> buffClass = filteredBuffs.get(i);
+                CheckBox cb = createCheckBox(buffClass, i);
+
+                descText.text(M.L(buffClass, "desc"));
+                buffText.text(M.L(buffClass, "name"));
+
+
+                // 布局逻辑
+                int Base = 58;
+                if (column == 0) {
+                    cb.setRect(GAP, pos, Base, 16);
+                } else if (column == 1) {
+                    cb.setRect(Base + GAP, pos, Base, 16);
+                } else {
+                    cb.setRect(Base*2 + GAP, pos, Base, 16);
+                    column = -1;
+                    pos += 16 + GAP;
+                }
+                column++;
+
+                add(cb);
+                buffButtons.add(cb);
+            }
+
+            // 调整窗口高度
+            if (!buffButtons.isEmpty()) {
+                resize(WIDTH, (int) (buffButtons.get(buffButtons.size()-1).bottom() + GAP));
+            } else {
+                resize(WIDTH, HEIGHT);
+            }
+        }
+        private void updateFilteredData() {
+            filteredData.clear();
+            for (Class<?> buffClass : allData) {
+                String name = M.L(buffClass, "name");
+                if (!name.startsWith("Ms:")) {
+                    filteredData.add(buffClass);
+                }
             }
         }
 
+        private CheckBox createCheckBox(Class<?> buffClass, int filteredIndex) {
+            CheckBox cb = new CheckBox(M.L(buffClass, "name"),6) {
+                @Override
+                protected void onClick() {
+                    super.onClick();
+                    int originalIndex = allData.indexOf(buffClass);
+                    buffsStatus.set(originalIndex, checked);
+                }
+            };
+            cb.checked(buffsStatus.get(allData.indexOf(buffClass)));
+            return cb;
+        }
+
         private void updateSelectedPage(){
+            maxPage = (int) Math.ceil(filteredBuffs.size() / (double) columPerPage);
             selectedPage.text(Messages.get(WndSetBuff.class, "selected_page",currentPage,maxPage));
             selectedPage.maxWidth(WIDTH / 2);
             selectedPage.setPos((WIDTH - selectedPage.width())/2, 5);
@@ -359,37 +455,33 @@ public class BuffGenerator extends TestItem{
     static {
         allData.add(Adrenaline.class);
         allData.add(AdrenalineSurge.class);
-        allData.add(AllyBuff.class);
         allData.add(Amok.class);
         allData.add(AntiLightShiled.class);
         allData.add(ArcaneArmor.class);
         allData.add(ArtifactRecharge.class);
         allData.add(AscensionChallenge.class);
         allData.add(AutoRandomBuff.class);
-        allData.add(Awareness.class);
-        allData.add(BackgroundBeamCounter.class);
+
         allData.add(Barkskin.class);
         allData.add(Barrier.class);
         allData.add(BeamTowerAdbility.class);
-        allData.add(Berserk.class);
+
         allData.add(Bleeding.class);
         allData.add(Bless.class);
         allData.add(Blindness.class);
         allData.add(BlobImmunity.class);
         allData.add(BrokenArmor.class);
         allData.add(Burning.class);
-        allData.add(Butter.class);
-        allData.add(ChampionEnemy.class);
-        allData.add(ChampionHero.class);
+
         allData.add(Charm.class);
         allData.add(Chill.class);
         allData.add(Combo.class);
         allData.add(Corrosion.class);
         allData.add(Corruption.class);
-        allData.add(Cost.class);
-        allData.add(CounterBuff.class);
+
+
         allData.add(Cripple.class);
-        allData.add(CrossTownProc.class);
+
         allData.add(Daze.class);
         allData.add(DeadSoul.class);
         allData.add(Degrade.class);
@@ -417,20 +509,17 @@ public class BuffGenerator extends TestItem{
         allData.add(Hex.class);
         allData.add(HoldFast.class);
         allData.add(Hunger.class);
-        allData.add(IceHealHP.class);
-        allData.add(IceHpBuff.class);
-        allData.add(IceSwordDown.class);
         allData.add(Invisibility.class);
         allData.add(InvisibilityRing.class);
         allData.add(Invulnerability.class);
         allData.add(Killer.class);
-        allData.add(LanFireStats.class);
+
         allData.add(LethalDefense.class);
         allData.add(Levitation.class);
         allData.add(LifeLink.class);
         allData.add(LighS.class);
         allData.add(Light.class);
-        allData.add(LightSan.class);
+
         allData.add(LockedFloor.class);
         allData.add(LostInventory.class);
         allData.add(MagicalSight.class);
@@ -438,7 +527,7 @@ public class BuffGenerator extends TestItem{
         allData.add(MagicImmune.class);
         //allData.add(Marked.class);
         allData.add(MindVision.class);
-        allData.add(Momentum.class);
+
         allData.add(MonkEnergy.class);
         allData.add(Nyctophobia.class);
         allData.add(Ooze.class);
@@ -449,39 +538,32 @@ public class BuffGenerator extends TestItem{
         allData.add(Preparation.class);
         allData.add(PrismaticGuard.class);
         allData.add(PropBuff.class);
-        allData.add(PureSoul.class);
-        allData.add(RandomBuff.class);
+
         allData.add(Recharging.class);
-        allData.add(Regeneration.class);
+
         allData.add(ReloadShop.class);
         allData.add(ReloadShopTwo.class);
         allData.add(RevealedArea.class);
         allData.add(Roots.class);
         allData.add(RoseShiled.class);
-        //allData.add(Sanity.class);
-        allData.add(SanityColdDown.class);
+
         allData.add(ScrollEmpower.class);
-        allData.add(SelectFoor.class);
-        allData.add(SendMessage.class);
+
         allData.add(Shadows.class);
-        allData.add(ShieldBuff.class);
-        allData.add(ShopLimitLock.class);
-        allData.add(Sleep.class);
+
+
         allData.add(Slow.class);
         allData.add(SmokeAlly.class);
         allData.add(Smoking.class);
         allData.add(SnipersMark.class);
         allData.add(SoulMark.class);
-        allData.add(Speed.class);
+
         allData.add(Stamina.class);
         allData.add(StormCloudDied.class);
         allData.add(SunFire.class);
-        allData.add(SuperNovaTracker.class);
+
         allData.add(Terror.class);
-        allData.add(TestBatLock.class);
-        allData.add(TestDwarfMasterLock.class);
-        allData.add(Timer.class);
-        allData.add(TimeStasis.class);
+
         allData.add(ToxicImbue.class);
         allData.add(TrueInvisibiity.class);
         allData.add(Venom.class);
@@ -511,16 +593,12 @@ public class BuffGenerator extends TestItem{
         allData.add(ClearLanterBuff.class);
 
         //ElementalBuff
-        allData.add(ElementalBaseBuff.class);
-        allData.add(ElementalBuff.class);
-        allData.add(ElementalFABuff.class);
         allData.add(ScaryBuff.class);
         allData.add(ScaryDamageBuff.class);
         allData.add(ScaryImmunitiesBuff.class);
 
         //MagicGirlDebuff
         //allData.add((NO)MagicGirlSaySoftDied.class);
-        allData.add(MagicGirlDebuff.class);
         allData.add(MagicGirlSayCursed.class);
         allData.add(MagicGirlSayKill.class);
         allData.add(MagicGirlSayMoneyMore.class);
@@ -528,11 +606,13 @@ public class BuffGenerator extends TestItem{
         allData.add(MagicGirlSaySlowy.class);
         allData.add(MagicGirlSayTimeLast.class);
 
-        allData.add(BloodLoss.class);
         allData.add(DragonWall.class);
         allData.add(FoundChest.class);
         allData.add(NightorDay.class);
         allData.add(OozeStatueDead.class);
         allData.add(QuestGold.class);
+
+        //SP
+        allData.add(ScrollOfSirensSong.Enthralled.class);
     }
 }
