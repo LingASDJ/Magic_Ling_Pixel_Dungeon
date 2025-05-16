@@ -67,14 +67,12 @@ public class BoilerRoom extends SpecialRoom {
         switch (code){
             case 64:
                 return Terrain.ALCHEMY;
-            case 4:
-                return Terrain.EMPTY_SP;
             case 129:
                 return STATUE_SP;
             case 49:
                 return Terrain.SIGN;
             default:
-                return Terrain.EMPTY;
+                return Terrain.EMPTY_DECO;
         }
     }
 
@@ -92,7 +90,7 @@ public class BoilerRoom extends SpecialRoom {
                 if(index >= 0 && index < pre_map.length){
                     set(level, i, j, codeToTerrain(pre_map[index]));
                 } else {
-                    set(level, i, j, Terrain.EMPTY);
+                    set(level, i, j, Terrain.EMPTY_DECO);
                 }
             }
         }
