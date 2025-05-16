@@ -103,7 +103,12 @@ public class Random {
 		return max > 0 ? generators.peek().nextInt(max) : 0;
 	}
 
-	//returns a uniformly distributed int in the range [min, max)
+	/**
+	 * Examples: A distributed int in the range [min, max)
+	 * @param min int
+	 * @param max int
+	 * @return  [min, max)
+	 */
 	public static int Int( int min, int max ) {
 		return min + Int(max - min);
 	}
