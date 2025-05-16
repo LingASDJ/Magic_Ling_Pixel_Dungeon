@@ -412,7 +412,7 @@ public class Hero extends Char {
 		ScaryBuff scaryBuff = Dungeon.hero.buff(ScaryBuff.class);
 		if(scaryBuff != null){
 			if(scaryBuff.Scary>80){
-				strBonus -= 3;
+				strBonus -= 2;
 			}
 		}
 

@@ -311,10 +311,8 @@ public class SpawnMisc extends TestItem {
         if(spellList.isEmpty()) {
             spellList.add(UnstableSpell.class);
             spellList.add(Alchemize.class);
-            //spellList.add(AquaBlast.class);
             spellList.add(BeaconOfReturning.class);
             spellList.add(CurseInfusion.class);
-            //spellList.add(FeatherFall.class);
             spellList.add(MagicalInfusion.class);
             spellList.add(TelekineticGrab.class);
             spellList.add(PhaseShift.class);
@@ -322,7 +320,6 @@ public class SpawnMisc extends TestItem {
             spellList.add(Recycle.class);
             spellList.add(WildEnergy.class);
             spellList.add(SummonElemental.class);
-            //spellList.add(ArcaneCatalyst.class);
         }
 
         if(foodList.isEmpty()) {

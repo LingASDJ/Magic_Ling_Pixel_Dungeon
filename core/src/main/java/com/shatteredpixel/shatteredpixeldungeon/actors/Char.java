@@ -766,6 +766,13 @@ public abstract class Char extends Actor {
 		//创世神
 		if ( buff( Invulnerability.GodDied.class ) != null ) speed *= 2f;
 
+		ScaryBuff scaryBuff = Dungeon.hero.buff(ScaryBuff.class);
+		if(scaryBuff != null){
+			if(scaryBuff.Scary>70){
+				speed /= 1.2f;
+			}
+		}
+
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
 			if(buff instanceof ChampionEnemy.Small){
 				speed = baseSpeed * 1.3f;

@@ -7,7 +7,6 @@ dependencies {
     api project(':SPD-classes')
     implementation project(':services')
 
-    // 添加 Lunar-Java 依赖 接入农历计算
     implementation 'cn.6tail:lunar:1.7.4'
     // https://mvnrepository.com/artifact/net.iharder/base64
     implementation 'net.iharder:base64:2.3.9'
