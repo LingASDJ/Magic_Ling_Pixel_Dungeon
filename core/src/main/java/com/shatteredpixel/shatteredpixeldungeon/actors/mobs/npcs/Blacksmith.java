@@ -527,14 +527,16 @@ public class Blacksmith extends NPC {
 			}
 
 			Pickaxe pick = Dungeon.hero.belongings.getItem(Pickaxe.class);
-			if (pick.isEquipped(Dungeon.hero)) {
-				boolean wasCursed = pick.cursed;
-				pick.cursed = false; //so that it can always be removed
-				pick.doUnequip(Dungeon.hero, false);
-				pick.cursed = wasCursed;
+			if(Dungeon.hero != null){
+				if (pick.isEquipped(Dungeon.hero)) {
+					boolean wasCursed = pick.cursed;
+					pick.cursed = false; //so that it can always be removed
+					pick.doUnequip(Dungeon.hero, false);
+					pick.cursed = wasCursed;
+				}
+				pick.detach(Dungeon.hero.belongings.backpack);
+				Quest.pickaxe = pick;
 			}
-			pick.detach(Dungeon.hero.belongings.backpack);
-			Quest.pickaxe = pick;
 
 			if (bossBeaten) favor += 1000;
 
