@@ -280,7 +280,7 @@ public class MobSpawner extends Actor {
 					//Hollow Mobs
 					case 27:
 						return new ArrayList<>(Arrays.asList(
-								Frankenstein.class, Frankenstein.class,
+								Frankenstein.class,
 								Crumb.class, Crumb.class,
 								Frankenstein.class,
 								Crumb.class, Crumb.class,
@@ -290,7 +290,7 @@ public class MobSpawner extends Actor {
 						return new ArrayList<>(Arrays.asList(
 								Crumb.class, Crumb.class,
 								Ghost_Halloween.class,Ghost_Halloween.class,
-								Pumking_Ghost.class
+								Pumking_Ghost.class, Frankenstein.class
 						));
 					case 29:
 						return new ArrayList<>(Arrays.asList(

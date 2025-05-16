@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ButcherSprite;
@@ -47,11 +48,17 @@ public class Butcher extends Mob {
         HP = HT = 120;
         defenseSkill = Random.NormalIntRange(25,35);
 
-        maxLvl = 35;
+        maxLvl = 37;
 
-        EXP = 16;
+        EXP = 26;
 
         properties.add(Property.HOLLOW);
+    }
+
+    @Override
+    public void die( Object cause ) {
+        super.die( cause );
+        Dungeon.level.drop( new Gold(Random.NormalIntRange(120, 320)), pos );
     }
 
     private boolean blink( int target ) {
