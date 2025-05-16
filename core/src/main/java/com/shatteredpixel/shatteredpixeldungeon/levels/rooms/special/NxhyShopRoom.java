@@ -19,7 +19,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
@@ -33,13 +38,29 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMastery;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -134,6 +155,32 @@ public class NxhyShopRoom extends SpecialRoom {
         }
     }
 
+    public static Item HighPotion() {
+        Item w;
+        switch (Random.Int(6)){
+            default:
+            case 1: w = new WaterSoul();   break;
+            case 2: w = new BlizzardBrew(); break;
+            case 3: w = new CausticBrew();    break;
+            case 4: w = new InfernalBrew();   break;
+            case 5: w = new ShockingBrew();   break;
+        }
+        return w;
+    }
+
+    public static Item HighScroll() {
+        Item w;
+        switch (Random.Int(5)){
+            default:
+            case 0: w = new ScrollOfSirensSong(); break;
+            case 1: w = new ScrollOfChallenge(); break;
+            case 2: w = new ScrollOfMetamorphosis(); break;
+            case 3: w = new ScrollOfAntiMagic();    break;
+            case 4: w = new ScrollOfPsionicBlast();   break;
+        }
+        return w;
+    }
+
     protected static ArrayList<Item> generateItems() {
         ArrayList<Item> itemsToSpawn = new ArrayList<>();
 
@@ -146,8 +193,29 @@ public class NxhyShopRoom extends SpecialRoom {
             itemsToSpawn.add(w);
 
             // 添加其他物品
-            itemsToSpawn.add(new LeatherArmor().identify());
+
+            if(Dungeon.depth > 26){
+                Armor armor = new LamellarArmor();
+                armor.identify();
+                armor.level = Random.NormalIntRange(2,4);
+                itemsToSpawn.add(armor);
+            } else if(Dungeon.depth > 20){
+                itemsToSpawn.add(new PlateArmor().identify());
+            } else if(Dungeon.depth > 16) {
+                itemsToSpawn.add(new ScaleArmor().identify());
+            } else if(Dungeon.depth > 10) {
+                itemsToSpawn.add(new LeatherArmor().identify());
+            } else {
+                itemsToSpawn.add(new ClothArmor().identify());
+            }
+
+            TippedDart dart = TippedDart.randomTipped(Random.NormalIntRange(2,4));
+            dart.enchantment = Weapon.Enchantment.random();
+            itemsToSpawn.add(dart);
+
             itemsToSpawn.add(TippedDart.randomTipped(2));
+
+
             itemsToSpawn.add(new ScrollOfTransmutation());
             itemsToSpawn.add(Generator.randomUsingDefaults(Generator.Category.POTION));
             itemsToSpawn.add(Generator.randomUsingDefaults(Generator.Category.WAND));
@@ -271,10 +339,17 @@ public class NxhyShopRoom extends SpecialRoom {
             if (Dungeon.depth > 26) {
                 for (Item item : itemsToSpawn) {
                     item.upgrade();
-                    if (Random.Int(10) == 1) {
-                        item.level += Random.Int(1,4);
+                    if (Random.Int(100) <= 21) {
+                        item.level += Random.Int(2,4);
                     }
                 }
+                itemsToSpawn.add(HighScroll());
+                itemsToSpawn.add(HighPotion());
+                itemsToSpawn.add(new UnstableBrew());
+                itemsToSpawn.add(new CurseInfusion());
+                itemsToSpawn.add(new MagicalInfusion());
+                itemsToSpawn.add(new WildEnergy());
+                itemsToSpawn.add(new PhaseShift());
             }
 
             // 打乱物品顺序
