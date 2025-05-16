@@ -8,28 +8,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Vampire;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHolyWater;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.HollowPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -153,82 +141,38 @@ public class HollowLevel extends RegularLevel {
 
     public static Item convert(){
         Item w = new Food();
-        switch (Random.Int(0,17)){
-            default:
-            case 0:
-                w = Generator.randomUsingDefaults( Generator.Category.WEP_T3 );
-                break;
+        switch (Random.Int(0,8)){
             case 1:
-                w = Generator.randomUsingDefaults( Generator.Category.MIS_T3 );
-                break;
-            case 2:
-                w = new LeatherArmor().identify(false);
-                break;
-            case 3:
-                Item ws;
-                ws = TippedDart.randomTipped(2);
-                w = ws;
-                break;
-            case 4:
                 w = Generator.randomUsingDefaults( Generator.Category.WAND );
                 break;
-            case 5:
+            case 2:
                 w = new PotionOfHealing().quantity(1);
                 break;
-            case 6:
+            case 3:
                 w = Generator.randomUsingDefaults( Generator.Category.POTION );
                 break;
-            case 7:
-                w = new StoneOfAugmentation();
+            case 4:
+                PotionOfHolyWater potionOfHolyWater = new PotionOfHolyWater();
+                potionOfHolyWater.quantity(1);
+                w = potionOfHolyWater;
                 break;
-            case 8:
-                switch (Random.Int(4)){
-                    case 0:
-                        w = ( new Bomb() );
-                        break;
-                    case 1:
-                    case 2:
-                        w = ( new Bomb.DoubleBomb() );
-                        break;
-                    case 3:
-                        w = ( new Honeypot() );
-                        break;
-                }
-                break;
-            case 9:
+            case 5:
                 w = Generator.randomUsingDefaults( Generator.Category.SCROLL );
                 break;
-            case 10:
-                w = ( new ScrollOfIdentify() );
+            case 6:
+                w = Generator.randomUsingDefaults( Generator.Category.WEP_T5 );
                 break;
-            case 11:
-                w = ( new ScrollOfRemoveCurse() );
-                break;
-            case 12:
-                w = ( new ScrollOfMagicMapping() );
-                break;
-            case 13:
-                w = new Stylus();
-                break;
-            case 14:
-                w = Generator.randomUsingDefaults( Generator.Category.STONE );
-                break;
-            case 15:
+            case 7:
                 switch (Random.Int(4)){
-                    default:
-                    case 0: w = new ScrollOfSirensSong(); break;
                     case 1: w = new ScrollOfChallenge(); break;
                     case 2: w = new ScrollOfMetamorphosis(); break;
                     case 3: w = new ScrollOfAntiMagic();    break;
+                    default:
+                        w = new ScrollOfSirensSong(); break;
                 }
                 break;
-            case 16:
-                switch (Random.Int(3)){
-                    default:
-                    case 0: w = new WaterSoul();   break;
-                    case 1: w = new BlizzardBrew(); break;
-                    case 2: w = new CausticBrew();    break;
-                }
+            default:
+                w = Generator.randomUsingDefaults( Generator.Category.WEP_T3 );
                 break;
         }
         return w;

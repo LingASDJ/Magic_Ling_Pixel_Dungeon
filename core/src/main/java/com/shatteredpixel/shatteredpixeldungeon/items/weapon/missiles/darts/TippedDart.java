@@ -61,7 +61,7 @@ public abstract class TippedDart extends Dart {
 	
 	{
 		tier = 2;
-
+		stackable = true;
 		baseUses = 1f;
 	}
 	
@@ -214,7 +214,14 @@ public abstract class TippedDart extends Dart {
 	@Override
 	public int value() {
 		//value of regular dart plus half of the seed
-		return 8 * quantity * level();
+		if(level == 0){
+			return 10 * quantity();
+		} else if(enchantment != null) {
+			return 12 * quantity() * (level() == 0 ? 1 : level);
+		}  else {
+			return 8 * quantity() * level;
+		}
+
 	}
 	
 	public static final LinkedHashMap<Class<?extends Plant.Seed>, Class<?extends TippedDart>> types = new LinkedHashMap<>();
