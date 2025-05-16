@@ -26,7 +26,6 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.DeviceCompat;
 
 import java.text.DecimalFormat;
@@ -148,7 +147,7 @@ public class Messages {
 			} else {
 				//本地调试+桌面
 				if (DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
-					GLog.debug(baseName);
+					System.out.println("[MissString]: "+baseName);
 				}
 
 				return "Ms:"+baseName;
