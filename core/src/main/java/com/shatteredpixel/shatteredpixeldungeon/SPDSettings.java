@@ -197,6 +197,9 @@ public class SPDSettings extends GameSettings {
 
 	private static final String KEY_KILLADF = "DWAXF";
 
+
+	private static final String KEY_VSB = "VSB";
+
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
 
