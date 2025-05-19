@@ -44,6 +44,7 @@ public class Assets {
 		public static final String GALAXY_TILED  =  "environment/yog/tiles_bubble.png";
 		public static final String GALAXY_WATER  = "environment/yog/starry.png";
 
+		public static final String GALAXY_BACKGROUND  = "environment/custom_tiles/galaxy_background.png";
 
 		public static final String TERRAIN_FEATURES = "environment/terrain_features.png";
 
