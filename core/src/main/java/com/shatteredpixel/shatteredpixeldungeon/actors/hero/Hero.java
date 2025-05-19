@@ -316,7 +316,7 @@ public class Hero extends Char {
 		alignment = Alignment.ALLY;
 	}
 
-	public static final int MAX_LEVEL = Statistics.Hollow_Holiday ? 40 :30;
+	public static final int MAX_LEVEL = Statistics.Hollow_Holiday ? 35 : 30;
 
 	public static final int STARTING_STR = 10;
 
