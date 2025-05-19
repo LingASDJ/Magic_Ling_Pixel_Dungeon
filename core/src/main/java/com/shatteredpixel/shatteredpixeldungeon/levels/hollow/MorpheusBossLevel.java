@@ -1,16 +1,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.hollow;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_DECO;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.PEDESTAL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNPC;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
 
 public class MorpheusBossLevel extends Level {
 
@@ -20,48 +20,49 @@ public class MorpheusBossLevel extends Level {
         viewDistance = 16;
     }
 
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.HOLLOW_CITY_HARD, true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Music.playModeBGM(Assets.Music.MORP_BOSS,true);
+    }
+
     private static final int WIDTH = 25;
     private static final int HEIGHT = 25;
 
-    private static final int S = SIGN;
-    private static final int W = WALL;
-    private static final int X = WATER;
-    private static final int Q = EMPTY_SP;
-    private static final int U = PEDESTAL;
-    private static final int T = EMPTY_SP;
-
-    private static final int M = WATER;
-    private static final int J = EMPTY_DECO;
-    private static final int B = PEDESTAL;
-    private static final int H = WATER;
-    private static final int Y = PEDESTAL;
+    private static final int S = CHASM;
+    private static final int G = SIGN;
+    private static final int E = EMPTY_SP;
 
     private static final int[] code_map = {
-            S,S,S,S,S,S,S,S,W,W,W,W,W,W,W,W,S,S,S,S,S,S,S,S,S,
-            S,S,S,S,S,W,W,W,W,X,T,X,X,X,X,W,W,W,W,S,S,S,S,S,S,
-            S,S,S,S,W,W,X,X,J,X,X,X,X,X,J,X,X,X,X,W,S,S,S,S,S,
-            S,S,S,S,W,X,X,X,T,X,X,X,X,J,T,X,X,X,J,W,W,S,S,S,S,
-            S,S,W,W,W,X,B,X,X,J,T,X,X,X,J,X,T,M,M,X,W,W,W,S,S,
-            S,S,W,X,J,X,X,J,X,X,X,X,X,X,X,X,J,X,Y,X,X,M,W,W,S,
-            S,S,W,X,X,B,J,T,X,M,X,X,T,X,T,X,X,X,X,U,M,Y,X,W,S,
-            S,W,W,X,X,M,X,X,X,X,X,X,J,X,X,X,M,J,X,X,X,X,X,W,S,
-            S,W,X,X,X,X,X,X,B,X,X,X,X,J,T,X,Y,X,X,J,M,X,X,W,W,
-            W,W,H,X,J,H,X,J,X,X,X,X,X,X,M,M,X,U,X,X,M,X,X,X,W,
-            W,X,M,X,X,M,X,T,J,X,X,X,X,X,X,Y,X,X,Y,X,X,X,M,X,W,
-            W,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,M,X,X,X,Y,X,W,
-            W,M,X,X,X,X,X,H,M,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,W,
-            W,H,X,X,X,X,M,X,X,X,X,X,X,X,X,Y,X,Y,X,X,X,X,X,X,W,
-            W,X,M,H,M,X,H,M,M,X,X,X,X,X,Q,M,X,X,M,X,X,Y,X,X,W,
-            W,W,X,X,X,X,X,X,M,X,X,Q,X,X,X,X,X,X,Q,X,X,M,X,X,W,
-            S,W,X,M,X,X,X,X,Q,X,Q,U,X,X,X,M,X,X,M,X,X,X,X,W,W,
-            S,W,X,X,M,M,H,X,X,X,X,X,X,X,X,X,Q,X,X,X,Y,M,X,W,S,
-            S,W,X,X,M,X,X,X,X,X,X,X,X,X,U,X,X,X,Q,X,M,Y,X,W,S,
-            S,W,W,X,X,X,U,Q,X,Q,U,X,X,X,Q,X,X,Q,X,M,X,X,W,W,S,
-            S,S,W,W,X,X,Q,X,X,X,Q,X,X,X,X,X,X,U,X,X,X,W,W,S,S,
-            S,S,S,W,W,W,X,X,X,Q,X,X,X,Q,U,X,Q,X,X,X,X,W,S,S,S,
-            S,S,S,S,S,W,W,W,X,X,X,X,U,X,Q,X,X,X,W,W,W,W,S,S,S,
-            S,S,S,S,S,S,S,W,W,W,X,X,Q,X,X,W,W,W,W,S,S,S,S,S,S,
-            S,S,S,S,S,S,S,S,S,W,W,W,W,W,W,W,S,S,S,S,S,S,S,S,S,
+            S,S,S,S,S,S,S,S,G,G,G,G,G,G,G,G,S,S,S,S,S,S,S,S,S,
+            S,S,S,S,S,G,G,G,G,E,E,E,E,E,E,G,G,G,G,S,S,S,S,S,S,
+            S,S,S,S,G,G,E,E,E,E,E,E,E,E,E,E,E,E,G,G,S,S,S,S,S,
+            S,S,S,S,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,G,S,S,S,S,
+            S,S,G,G,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,G,G,S,S,
+            S,S,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,G,S,
+            S,S,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,S,
+            S,G,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,S,
+            S,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,G,
+            G,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,
+            G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,
+            G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,
+            G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,
+            G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,
+            G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,
+            G,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,
+            S,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,G,
+            S,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,S,
+            S,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,S,
+            S,G,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,G,S,
+            S,S,G,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,G,S,S,
+            S,S,S,G,G,G,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,G,S,S,S,
+            S,S,S,S,S,G,G,G,E,E,E,E,E,E,E,E,E,E,G,G,G,G,S,S,S,
+            S,S,S,S,S,S,S,G,G,G,E,E,E,E,E,G,G,G,G,S,S,S,S,S,S,
+            S,S,S,S,S,S,S,S,S,G,G,G,G,G,G,G,S,S,S,S,S,S,S,S,S,
     };
 
     @Override
@@ -78,6 +79,10 @@ public class MorpheusBossLevel extends Level {
         LevelTransition exits = new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(exits);
 
+        CustomTilemap vis = new GalaxyBackGround();
+        vis.pos(0, 0);
+        customTiles.add(vis);
+
         return true;
     }
 
@@ -86,6 +91,30 @@ public class MorpheusBossLevel extends Level {
         MorphsNPC morphs = new MorphsNPC();
         morphs.pos = 312;
         mobs.add(morphs);
+    }
+
+    public static class GalaxyBackGround extends CustomTilemap {
+
+        {
+            texture = Assets.Environment.GALAXY_BACKGROUND;
+
+            tileW = 25;
+            tileH = 25;
+        }
+
+        final int TEX_WIDTH = 25*16;
+
+        @Override
+        public Tilemap create() {
+
+            Tilemap v = super.create();
+
+            int[] data = mapSimpleImage(0, 0, TEX_WIDTH);
+
+            v.map(data, tileW);
+            return v;
+        }
+
     }
 
     @Override

@@ -64,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Switch;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHolyWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
@@ -448,6 +449,7 @@ public class SpawnMisc extends TestItem {
             miscList.add(CeremonialCandle.class);
             miscList.add(MagicBook.class);
             miscList.add(LingJing.class);
+            miscList.add(PotionOfHolyWater.class);
             miscList.add(DragonWater.class);
         }
     }

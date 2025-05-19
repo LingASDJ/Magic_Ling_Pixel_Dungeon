@@ -9,10 +9,10 @@ public class DeathRongSprite extends MobSprite {
 
         texture( Assets.Sprites.ZEROBOAT );
 
-        TextureFilm ren = new TextureFilm(this.texture, 20, 20);
+        TextureFilm ren = new TextureFilm(this.texture, 20, 23);
 
-        idle = new MovieClip.Animation(8, true);
-        idle.frames(ren, 0, 1, 2, 3);
+        idle = new MovieClip.Animation(7, true);
+        idle.frames(ren, 0, 1, 2, 3, 4, 5);
 
         run = new MovieClip.Animation(10, true);
         run.frames(ren, 0);

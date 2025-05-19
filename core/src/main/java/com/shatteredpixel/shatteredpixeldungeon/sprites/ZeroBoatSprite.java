@@ -11,10 +11,10 @@ public class ZeroBoatSprite extends MobSprite {
 
         TextureFilm ren = new TextureFilm(this.texture, 32, 32);
 
-        idle = new MovieClip.Animation(8, true);
+        idle = new MovieClip.Animation(5, true);
         idle.frames(ren, 0, 1, 2, 3,4);
 
-        run = new MovieClip.Animation(10, true);
+        run = new MovieClip.Animation(5, true);
         run.frames(ren, 0, 1, 2, 3, 4);
 
         die = new MovieClip.Animation(10, false);

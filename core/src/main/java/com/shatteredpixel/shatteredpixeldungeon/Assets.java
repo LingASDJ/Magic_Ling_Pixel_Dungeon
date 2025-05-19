@@ -23,10 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon;
 
 public class Assets {
 
-
-
-
-
 	public static class Effects {
 		public static final String EFFECTS      = "effects/effects.png";
 		public static final String FIREBALL     = "effects/fireball.png";
@@ -44,6 +40,7 @@ public class Assets {
 		public static final String GALAXY_TILED  =  "environment/yog/tiles_bubble.png";
 		public static final String GALAXY_WATER  = "environment/yog/starry.png";
 
+		public static final String GALAXY_BACKGROUND  = "environment/custom_tiles/galaxy_background.png";
 
 		public static final String TERRAIN_FEATURES = "environment/terrain_features.png";
 
@@ -180,6 +177,8 @@ public class Assets {
 		public static final String Cerdog_Title  = "interfaces/bosslogo/cerberus-title.png";
 		public static final String Cerdog_Clear  = "interfaces/bosslogo/cerberus-clear.png";
 
+		public static final String Morpheus_Title  = "interfaces/bosslogo/Morpheus-title.png";
+		public static final String Morpheus_Clear  = "interfaces/bosslogo/Morpheus-clear.png";
 
 		public static final String General_Title  = "interfaces/bosslogo/general-title.png";
 		public static final String General_Clear  = "interfaces/bosslogo/general-clear.png";
@@ -378,6 +377,7 @@ public class Assets {
 
 		public static final String FL_CITY 		= "music/forestflower.ogg";
 		public static final String BOSSDOG 		= "music/boss/dogboss.ogg";
+		public static final String MORP_BOSS 	= "music/hollow/morpheus.ogg";
 
 	}
 
