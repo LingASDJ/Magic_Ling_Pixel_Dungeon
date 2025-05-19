@@ -1938,12 +1938,17 @@ public class GameScene extends PixelScene {
 						bossSlain.show(Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
 						break;
+					case 32:
+						bossSlain.texture(Assets.Interfaces.Morpheus_Title);
+						bossSlain.show(Window.DeepPK_COLOR, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+						break;
 				}
 
 			}
 
 			if (Dungeon.hero.buff(LockedFloor.class) == null) {
-				//BGMPlayer.playBGMWithDepth();
+				level.playLevelMusic();
 			}
 
 			Sample.INSTANCE.play( Assets.Sounds.ALERT );

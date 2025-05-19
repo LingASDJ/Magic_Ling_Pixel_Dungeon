@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
 
 public class MorpheusBossLevel extends Level {
 
@@ -17,6 +18,16 @@ public class MorpheusBossLevel extends Level {
         color1 = 0x801500;
         color2 = 0xa68521;
         viewDistance = 16;
+    }
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.HOLLOW_CITY_HARD, true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Music.playModeBGM(Assets.Music.MORP_BOSS,true);
     }
 
     private static final int WIDTH = 25;

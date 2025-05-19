@@ -19,6 +19,7 @@ import com.watabou.utils.Random;
 public class Vampire extends Mob {
 
     public boolean hereEnenmy;
+    public boolean holy;
 
     {
         spriteClass = VampireSprite.class;
@@ -52,13 +53,36 @@ public class Vampire extends Mob {
             activate();
         }
 
+        if(holy){
+            godDied();
+            die(true);
+        }
+
         return super.act();
+    }
+
+    @Override
+    public CharSprite sprite() {
+        VampireSprite sprite = (VampireSprite) super.sprite();
+        if (hereEnenmy){
+            sprite.hideVampire(this);
+        }
+        return sprite;
     }
 
 
     public void activate(){
         ((VampireSprite) sprite).activateIdle();
     }
+
+    public void godDied(){
+        ((VampireSprite) sprite).GodDied();
+        ((VampireSprite) sprite).hideLost();
+        ((VampireSprite) sprite).hideEmo();
+        ((VampireSprite) sprite).hideAlert();
+        ((VampireSprite) sprite).hideEmo();
+    }
+
 
     @Override
     public String name() {
@@ -125,17 +149,20 @@ public class Vampire extends Mob {
     }
 
     private static final String HERE_ENEMY   = "hereEnemy";
+    private static final String HOLY         = "holy";
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(HERE_ENEMY, hereEnenmy);
+        bundle.put(HOLY, holy);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         hereEnenmy = bundle.getBoolean(HERE_ENEMY);
+        holy = bundle.getBoolean(HOLY);
     }
 
 }

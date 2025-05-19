@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNP
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Script;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
 
@@ -100,6 +101,8 @@ public class MorphsNPCPlot extends Plot {
     private void process_to_5() {
         diagulewindow.setSecondAvatar(new Image(Assets.Splashes.Silence_1));
         diagulewindow.changeText(Messages.get(MorphsNPC.class, "message5"));
+        Dungeon.level.seal();
+        GameScene.bossReady();
     }
 
 }
