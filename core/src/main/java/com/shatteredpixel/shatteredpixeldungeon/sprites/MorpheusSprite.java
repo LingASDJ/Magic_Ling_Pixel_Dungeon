@@ -40,6 +40,12 @@ public class MorpheusSprite extends MobSprite {
 
         play( idle );
     }
+
+    public void HatActivate(){
+        idle = HandHat.clone();
+        idle();
+    }
+
 }
 
 

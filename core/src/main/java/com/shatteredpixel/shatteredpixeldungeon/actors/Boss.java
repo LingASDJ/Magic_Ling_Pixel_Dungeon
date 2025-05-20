@@ -194,7 +194,7 @@ abstract public class Boss extends Mob {
 
             return Math.round(Random.NormalFloat(baseMinDef, baseMaxDef)); //随机防御
         }
-    private boolean first=false;
+    public boolean first = false;
 
     private static final String FIRST = "first";
 
@@ -208,7 +208,7 @@ abstract public class Boss extends Mob {
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         first = bundle.getBoolean(FIRST);
-        if (state != SLEEPING) BossHealthBar.assignBoss(this);
+        if (state != SLEEPING && !first)  BossHealthBar.assignBoss(this);
         if ((HP*2 <= HT)) BossHealthBar.bleed(true);
     }
 

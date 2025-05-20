@@ -2,12 +2,17 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.hollow;
 
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Morphs;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerGods;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerMachine;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerMind;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerTime;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
@@ -34,7 +39,7 @@ public class MorpheusBossLevel extends Level {
     private static final int HEIGHT = 25;
 
     private static final int S = CHASM;
-    private static final int G = SIGN;
+    private static final int G = WALL;
     private static final int E = EMPTY_SP;
 
     private static final int[] code_map = {
@@ -70,7 +75,7 @@ public class MorpheusBossLevel extends Level {
         setSize(WIDTH, HEIGHT);
         map = code_map.clone();
 
-        int entrance = 563;
+        int entrance = 412;
         int exit = 0;
 
         LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
@@ -88,9 +93,30 @@ public class MorpheusBossLevel extends Level {
 
     @Override
     protected void createMobs() {
-        MorphsNPC morphs = new MorphsNPC();
+        Morphs morphs = new Morphs();
         morphs.pos = 312;
         mobs.add(morphs);
+    }
+
+
+    @Override
+    public void seal() {
+        super.seal();
+        TowerGods towerGods = new TowerGods();
+        towerGods.pos = 304;
+        GameScene.add(towerGods);
+
+        TowerTime towerTime = new TowerTime();
+        towerTime.pos = 512;
+        GameScene.add(towerTime);
+
+        TowerMachine towerMachine = new TowerMachine();
+        towerMachine.pos = 112;
+        GameScene.add(towerMachine);
+
+        TowerMind towerMind = new TowerMind();
+        towerMind.pos = 320;
+        GameScene.add(towerMind);
     }
 
     public static class GalaxyBackGround extends CustomTilemap {
