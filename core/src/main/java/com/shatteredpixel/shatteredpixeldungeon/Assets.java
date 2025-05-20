@@ -646,6 +646,11 @@ public class Assets {
 		public static final String TYPHON = "sprites/hollow/typhon.png";
 		public static final String MPHON = "sprites/hollow/morpheus.png";
 
+		public static final String TowerGods = "sprites/hollow/tower_gods.png";
+		public static final String TowerTime = "sprites/hollow/tower_time.png";
+		public static final String TowerMind = "sprites/hollow/tower_mind.png";
+		public static final String TowerMachine = "sprites/hollow/tower_machine.png";
+
 		public static final String BLEED_SENTRY= "sprites/hollow/bleed_star.png";
 
 

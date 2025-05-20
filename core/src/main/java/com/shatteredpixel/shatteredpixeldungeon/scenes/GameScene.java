@@ -1951,7 +1951,7 @@ public class GameScene extends PixelScene {
 				level.playLevelMusic();
 			}
 
-			Sample.INSTANCE.play( Assets.Sounds.ALERT );
+			//Sample.INSTANCE.play( Assets.Sounds.ALERT );
 		}
 	}
 
