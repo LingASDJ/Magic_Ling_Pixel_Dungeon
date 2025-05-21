@@ -5,6 +5,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Morphs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerGods;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerMachine;
@@ -102,20 +104,25 @@ public class MorpheusBossLevel extends Level {
     @Override
     public void seal() {
         super.seal();
+
         TowerGods towerGods = new TowerGods();
         towerGods.pos = 304;
+        Buff.affect(towerGods, Barrier.class).setShield(100);
         GameScene.add(towerGods);
 
         TowerTime towerTime = new TowerTime();
         towerTime.pos = 512;
+        Buff.affect(towerTime, Barrier.class).setShield(100);
         GameScene.add(towerTime);
 
         TowerMachine towerMachine = new TowerMachine();
         towerMachine.pos = 112;
+        Buff.affect(towerMachine, Barrier.class).setShield(100);
         GameScene.add(towerMachine);
 
         TowerMind towerMind = new TowerMind();
         towerMind.pos = 320;
+        Buff.affect(towerMind, Barrier.class).setShield(100);
         GameScene.add(towerMind);
     }
 

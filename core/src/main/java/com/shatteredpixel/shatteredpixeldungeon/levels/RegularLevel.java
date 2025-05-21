@@ -347,10 +347,9 @@ public abstract class RegularLevel extends Level {
 
 		if(Dungeon.depth<26 && Random.Int(10) == 1) {
 			initRooms.add(new EyeRoom());
-		} else if(Random.Int(10) == 1) {
+		} else if(Random.Int(10) == 1 && depth>26) {
 			initRooms.add(new BigEyeRoom());
 		}
-
 
 		if(Dungeon.depth<26 && Random.NormalIntRange(1, 100)<=21){
 			initRooms.add(new SkeletonFishRoom());

@@ -29,11 +29,10 @@ public class FireGhost extends Mob {
         this.lootChance = 0.1f;
         this.properties.add(Char.Property.FIERY);
     }
-    private int combo = 4;
+
     public int attackProc(Char enemy, int damage) {
-        if (Random.Int(0, 10) > 7) {
-        }
-        int damage2 = FireGhost.super.attackProc(enemy, this.combo + 2);
+        int combo = 4;
+        int damage2 = FireGhost.super.attackProc(enemy, combo + 2);
         if (Dungeon.level.flamable[enemy.pos]) {
             GameScene.add(Blob.seed(enemy.pos, 1, Fire.class));
         }
