@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerMachine;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -451,6 +452,7 @@ public class SpawnMisc extends TestItem {
             miscList.add(LingJing.class);
             miscList.add(PotionOfHolyWater.class);
             miscList.add(DragonWater.class);
+            miscList.add(TowerMachine.StarCanon.class);
         }
     }
 

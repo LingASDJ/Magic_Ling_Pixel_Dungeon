@@ -1194,6 +1194,12 @@ public class ItemSpriteSheet {
         assignItemRect(FLARE,       14, 15);
     }
 
+    private static final int PROJECTILES        =                               xy(1, 58);  //24 slots
+    public static final int PROJECTILES_STAR        = PROJECTILES;
+
+    static{
+        assignItemRect(PROJECTILES_STAR,       9, 9);
+    }
 
     private static final int PROP1  = xy(9,46);
     private static final int PROP2  = xy(9,47);

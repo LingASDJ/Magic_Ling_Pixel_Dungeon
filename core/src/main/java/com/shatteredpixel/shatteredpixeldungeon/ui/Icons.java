@@ -177,7 +177,7 @@ public enum Icons {
 	CATALOG,
 	ALCHEMY,
 	GRASS,
-
+	COLOR_TARGET,
 	STAIRS_CHASM,
 	STAIRS_WATER,
 	STAIRS_GRASS,
@@ -225,6 +225,11 @@ public enum Icons {
 			case GRASS:
 				icon.frame( icon.texture.uvRectBySize( 65, 176, 16, 16 ) );
 				break;
+
+			case COLOR_TARGET:
+				icon.frame( icon.texture.uvRectBySize( 129, 176, 16, 16 ) );
+				break;
+
 			//2.4.0
 			case ENTER:
 				icon.frame( icon.texture.uvRectBySize( 0, 0, 16, 16 ) );

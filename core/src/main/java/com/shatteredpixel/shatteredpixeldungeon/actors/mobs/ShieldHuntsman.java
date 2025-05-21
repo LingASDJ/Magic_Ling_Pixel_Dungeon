@@ -35,11 +35,11 @@ public class ShieldHuntsman extends Mob {
     }
 
     public int attackSkill(Char target) {
-        return 16;
+        return 36;
     }
 
     public int damageRoll() {
-        return Random.NormalIntRange(11, 15);
+        return Random.NormalIntRange(23,45);
     }
 
     public int attackProc(Char enemy, int damage) {
