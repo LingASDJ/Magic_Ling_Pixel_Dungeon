@@ -2,29 +2,28 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.ColorTargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
@@ -33,12 +32,10 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueWraithSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TowerTimeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
@@ -53,19 +50,20 @@ public class TowerTime extends Boss {
     private ArrayList<Integer> targetedCells = new ArrayList<>();
 
     private float abilityCooldown;
-    private static final int MIN_ABILITY_CD = 10;
-    private static final int MAX_ABILITY_CD = 20;
-
-    private static final int PLUS_MIN_ABILITY_CD = 7;
-    private static final int PLUS_MAX_ABILITY_CD = 12;
 
     private int turnCount = 0;
-    private boolean paralysis = false;
+
     private int summonedMobs = 1;
+
+    private boolean LastHP = HP*2 <= HT;
+
+    private boolean paralysedAttackChane = false;
+
+    private int beams = 0;
 
     {
         initProperty();
-        initBaseStatus(10, 20, 33, 0, 300, 0, 0);
+        initBaseStatus(10, 20, 33, 0, 400, 0, 0);
         initStatus(120);
         first = true;
         spriteClass = TowerTimeSprite.class;
@@ -74,21 +72,17 @@ public class TowerTime extends Boss {
 
         properties.add(Property.IMMOVABLE);
         properties.add(Property.BOSS);
+        immunities.add(Terror.class);
     }
 
     @Override
     public int damageRoll() {
-        boolean LastHP = HP <= 150;
-        return LastHP ? Random.NormalIntRange( 20, 60 ) : Random.NormalIntRange( 15, 40 );
+        return LastHP ? 85 : 40;
     }
 
-    @Override
-    public boolean act() {
-        alerted = false;
-        state = PASSIVE;
-        laserattack();
+    public void TryGetSummonedMobs() {
         ArrayList<Integer> positions = new ArrayList<>();
-        if (buff(SummonColdDown.class) == null && state != SLEEPING && summonedMobs <= 5) {
+        if (buff(TimeSummonColdDown.class) == null && summonedMobs <= 4) {
             Mob testActor = getSummonTimeMobs();
             testActor.state = testActor.HUNTING;
             GameScene.add(testActor);
@@ -100,14 +94,39 @@ public class TowerTime extends Boss {
             /****************/
             Random.shuffle(positions);
             ScrollOfTeleportation.appear(testActor,positions.get(0));
-            Buff.affect(this, SummonColdDown.class, HP < 151 ? 10f : 20f);
-            summonedMobs++;
-        }
 
+            Mob testActor2 = getSummonTimeMobs();
+            testActor2.state = testActor2.HUNTING;
+            GameScene.add(testActor2);
+            /****************/
+            positions.add(437);
+            positions.add(484);
+            positions.add(562);
+            positions.add(515);
+            /****************/
+            Random.shuffle(positions);
+            ScrollOfTeleportation.appear(testActor2,positions.get(0));
+            Buff.affect(this, Barrier.class).setShield(100);
+            Buff.affect(this, TimeSummonColdDown.class, 50f);
+            summonedMobs+=2;
+        }
+    }
+
+    @Override
+    public boolean act() {
+        laserattack();
+
+        TryGetSummonedMobs();
+
+        if (!LastHP) {
+            beams = 11;
+        } else  {
+            beams = 8;
+        }
         return super.act();
     }
 
-   public static class DreamGolem extends Golem {
+   public static class DreamShaman extends Shaman {
 
        {
            maxLvl = -31;
@@ -115,7 +134,7 @@ public class TowerTime extends Boss {
 
         @Override
         public int damageRoll() {
-            return Random.NormalIntRange( 30, 40 );
+            return Random.NormalIntRange( 10, 40 );
         }
         @Override
         public int attackSkill( Char target ) {
@@ -136,7 +155,14 @@ public class TowerTime extends Boss {
         public int drRoll() {
             return super.drRoll() + Random.NormalIntRange(2, 5);
         }
-    }
+
+       @Override
+       protected void debuff(Char enemy) {
+
+       }
+
+
+   }
 
    public static class DreamSenior extends Senior {
 
@@ -171,7 +197,7 @@ public class TowerTime extends Boss {
        }
     }
 
-   public static class DreamWarlock extends Warlock {
+   public static class DreamsElemental extends Elemental.ChaosElemental {
 
        {
            maxLvl = -31;
@@ -189,33 +215,6 @@ public class TowerTime extends Boss {
                }
            }
        }
-
-        @Override
-        protected void zap() {
-            spend( TIME_TO_ZAP );
-
-            Invisibility.dispel(this);
-            Char enemy = this.enemy;
-            if (hit( this, enemy, true )) {
-                //TODO would be nice for this to work on ghost/statues too
-                if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
-                    Buff.prolong( enemy, Degrade.class, Degrade.DURATION );
-                    Sample.INSTANCE.play( Assets.Sounds.DEGRADE );
-                }
-
-                int dmg = Random.NormalIntRange( 22, 38 );
-                dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
-                enemy.damage( dmg, new Warlock.DarkBolt() );
-
-                if (enemy == Dungeon.hero && !enemy.isAlive()) {
-                    Badges.validateDeathFromEnemyMagic();
-                    Dungeon.fail( this );
-                    GLog.n( Messages.get(this, "bolt_kill") );
-                }
-            } else {
-                enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
-            }
-        }
     }
 
     public static class DreamFireGhost extends Mob {
@@ -270,8 +269,8 @@ public class TowerTime extends Boss {
 
     private Mob getSummonTimeMobs() {
         List<Class<? extends Mob>> mobTypes = new ArrayList<>();
-        mobTypes.add(DreamGolem.class);
-        mobTypes.add(DreamWarlock.class);
+        mobTypes.add(DreamShaman.random());
+        mobTypes.add(DreamsElemental.class);
         mobTypes.add(DreamFireGhost.class);
         mobTypes.add(DreamSenior.class);
         Random.shuffle(mobTypes);
@@ -286,12 +285,10 @@ public class TowerTime extends Boss {
     private void laserattack(){
         boolean terrainAffected = false;
         HashSet<Char> affected = new HashSet<>();
-        boolean LastHP = HP <= HT/2;
 
         //TODO 瘫痪状态下无法使用任何技能
         TowerParalysis towerParalysis = buff(TowerParalysis.class);
         if(towerParalysis != null) return;
-
 
         if (!hero.rooted) {
             for (int i : targetedCells) {
@@ -333,22 +330,13 @@ public class TowerTime extends Boss {
         }
 
         if (abilityCooldown <= 0  && alignment == Alignment.ENEMY) {
-
-
-            int beams = 0;
-            if (LastHP) {
-                beams = 12;
-            } else  {
-                beams = 4;
-            }
-
             HashSet<Integer> affectedCells = new HashSet<>();
             for (int i = 0; i < beams; i++) {
 
                 int targetPos = hero.pos;
                 if (i != 0) {
                     do {
-                        targetPos = hero.pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+                        targetPos = hero.pos + PathFinder.NEIGHBOURS8[Random.Int(beams)];
                     } while (Dungeon.level.trueDistance(pos, hero.pos)
                             > Dungeon.level.trueDistance(pos, targetPos));
                 }
@@ -369,33 +357,32 @@ public class TowerTime extends Boss {
                 targetedCells.remove(targetedCells.size() - 1);
             }
             for (int i : targetedCells) {
-                if(Random.Int(4) == 0 && LastHP){
-                    //TODO 半血后有每次攻击有25%的概率造成地方的麻痹效果
-                    paralysis = true;
-                }
                 Ballistica b = new Ballistica(pos, i, Ballistica.WONT_STOP);
                 for (int p : b.path) {
-                    sprite.parent.add(new TargetedCell(p, paralysis ? Window.CYELLOW : 0xFF0000));
+                    if(paralysedAttackChane){
+                        sprite.parent.add(new ColorTargetedCell(p, Window.CYELLOW));
+                    } else {
+                        sprite.parent.add(new TargetedCell(p,  0xFF0000));
+                    }
+
                     affectedCells.add(p);
                 }
             }
 
-            //TODO 半血前，在19回合时发出警告 ： 半血后 在 11回合后发出警告
-            if (turnCount == (LastHP ? 19 : 11)) {
+            if (turnCount == 10) {
                 for (int i : affectedCells) {
-                    sprite.parent.add(new TargetedCell(i,  paralysis ? Window.CYELLOW : 0xFF0000));
+                    if(paralysedAttackChane){
+                        sprite.parent.add(new ColorTargetedCell(i, Window.CYELLOW));
+                    } else {
+                        sprite.parent.add(new TargetedCell(i,  0xFF0000));
+                    }
                 }
             } else {
                 spend(GameMath.gate(TICK, hero.cooldown(), 3 * TICK));
                 hero.interrupt();
             }
 
-            if(LastHP){
-                abilityCooldown += Random.NormalFloat(PLUS_MIN_ABILITY_CD, PLUS_MAX_ABILITY_CD);
-            } else {
-                abilityCooldown += Random.NormalFloat(MIN_ABILITY_CD, MAX_ABILITY_CD);
-            }
-
+            abilityCooldown += 9;
 
         }  {
             spend(TICK);
@@ -407,6 +394,10 @@ public class TowerTime extends Boss {
 
     @Override
     public void damage(int dmg, Object src) {
+        if(src == TowerMachine.class){
+            return;
+        }
+
         dmg -= dmg * (summonedMobs*5) / 100;
         super.damage(dmg, src);
     }
@@ -416,16 +407,22 @@ public class TowerTime extends Boss {
     }
 
     /**
-     * 半血是否造成麻痹效果 以及 激光伤害提升
+     * 半血前造成残废效果<br>
+     * 半血50%概率造成麻痹效果 <br>
+     * 半血后激光伤害提升
      * @param LastHP 半血血量检测
      * @param ch Char对象
      */
     private void getLaserTargetDamage(boolean LastHP, Char ch) {
-        if(LastHP){
-            if(paralysis){
-                Buff.affect(ch, Paralysis.class, Random.IntRange(2,4));
-                paralysis = false;
-            }
+
+        if(LastHP && paralysedAttackChane){
+            Buff.affect(ch, Paralysis.class, Random.IntRange(2,4));
+            paralysedAttackChane = false;
+        } else {
+            Buff.affect(ch, Cripple.class, Random.IntRange(2,4));
+        }
+        if(!paralysedAttackChane && LastHP && Random.Int(2) == 0){
+            paralysedAttackChane = true;
         }
         ch.damage(damageRoll(), new Eye.DeathGaze());
     }
@@ -435,12 +432,13 @@ public class TowerTime extends Boss {
     private static final String TURN_COUNT = "turn_count";
     private static final String TARGETED_CELLS = "targeted_cells";
     private static final String SUMMONED_MOBS = "summoned_mobs";
+    private static final String LAST_HP = "last_hp";
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(ABILITY_CD, abilityCooldown);
-        bundle.put(PARALYSIS, paralysis);
+        bundle.put(PARALYSIS, paralysedAttackChane);
         bundle.put(TURN_COUNT, turnCount);
         int[] bundleArr = new int[targetedCells.size()];
         for (int i = 0; i < targetedCells.size(); i++) {
@@ -448,22 +446,24 @@ public class TowerTime extends Boss {
         }
         bundle.put(TARGETED_CELLS, bundleArr);
         bundle.put(SUMMONED_MOBS, summonedMobs);
+        bundle.put(LAST_HP, LastHP);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         abilityCooldown = bundle.getFloat(ABILITY_CD);
-        paralysis = bundle.getBoolean(PARALYSIS);
+        paralysedAttackChane = bundle.getBoolean(PARALYSIS);
         turnCount = bundle.getInt(TURN_COUNT);
         int[] bundleArr = bundle.getIntArray(TARGETED_CELLS);
         for (int i : bundle.getIntArray(TARGETED_CELLS)){
             targetedCells.add(i);
         }
         summonedMobs = bundle.getInt(SUMMONED_MOBS);
+        LastHP = bundle.getBoolean(LAST_HP);
     }
 
-    public static class SummonColdDown extends FlavourBuff {
+    public static class TimeSummonColdDown extends FlavourBuff {
 
         {
             type = buffType.POSITIVE;
@@ -476,6 +476,21 @@ public class TowerTime extends Boss {
             return Math.max(0, (DURATION - visualcooldown()) / DURATION);
         }
 
+    }
+
+    @Override
+    public boolean reset() {
+        return true;
+    }
+
+    @Override
+    protected boolean getCloser(int target) {
+        return false;
+    }
+
+    @Override
+    protected boolean getFurther(int target) {
+        return false;
     }
 
 }

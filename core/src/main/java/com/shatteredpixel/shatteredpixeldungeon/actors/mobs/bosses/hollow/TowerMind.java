@@ -20,6 +20,14 @@ public class TowerMind extends Boss {
     }
 
     @Override
+    public void damage(int dmg, Object src) {
+        if(src == TowerMachine.class){
+            return;
+        }
+        super.damage(dmg, src);
+    }
+
+    @Override
     public int damageRoll() {
         return Random.NormalIntRange( 10, 45 );
     }

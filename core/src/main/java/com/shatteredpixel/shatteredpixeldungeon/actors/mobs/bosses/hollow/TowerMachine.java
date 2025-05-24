@@ -3,17 +3,20 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShieldHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.ColorTargetedCell;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MagicFireParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
@@ -22,8 +25,10 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TowerMachineSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -38,7 +43,7 @@ public class TowerMachine extends Boss {
 
     {
         initProperty();
-        initBaseStatus(50, 75, 33, 0, 400, 0, 0);
+        initBaseStatus(50, 75, 100, 0, 600, 0, 0);
         initStatus(120);
         first = true;
         spriteClass = TowerMachineSprite.class;
@@ -48,12 +53,14 @@ public class TowerMachine extends Boss {
 
         properties.add(Property.IMMOVABLE);
         properties.add(Property.BOSS);
+        immunities.add(Terror.class);
+        immunities.add(TowerMachine.class);
     }
 
     @Override
     public boolean act() {
         ArrayList<Integer> positions = new ArrayList<>();
-        if (buff(SummonColdDown.class) == null && state != SLEEPING && summonedMobs <= 5) {
+        if (buff(MachineSummonColdDown.class) == null && summonedMobs <= 4) {
             Mob testActor = getSummonTimeMobs();
             testActor.state = testActor.HUNTING;
             GameScene.add(testActor);
@@ -65,8 +72,21 @@ public class TowerMachine extends Boss {
             /****************/
             Random.shuffle(positions);
             ScrollOfTeleportation.appear(testActor,positions.get(0));
-            Buff.affect(this, TowerTime.SummonColdDown.class, HP <= HT / 2 ? 15f : 25f);
-            summonedMobs++;
+
+            Mob testActor2 = getSummonTimeMobs();
+            testActor2.state = testActor2.HUNTING;
+            GameScene.add(testActor2);
+            /****************/
+            positions.add(162);
+            positions.add(110);
+            positions.add(37);
+            positions.add(114);
+            /****************/
+            Random.shuffle(positions);
+            ScrollOfTeleportation.appear(testActor2,positions.get(0));
+            Buff.affect(this, Barrier.class).setShield(100);
+            Buff.affect(this,MachineSummonColdDown.class, 50f);
+            summonedMobs+=2;
         }
 
         return super.act();
@@ -74,6 +94,9 @@ public class TowerMachine extends Boss {
 
     @Override
     public void damage(int dmg, Object src) {
+        if(src == this){
+            return;
+        }
         dmg -= dmg * (summonedMobs*5) / 100;
         super.damage(dmg, src);
     }
@@ -94,7 +117,7 @@ public class TowerMachine extends Boss {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(30, 65);
+        return  HP*2 <= HT ? 130 : 90;
     }
 
     private boolean targeting = false;
@@ -129,6 +152,9 @@ public class TowerMachine extends Boss {
 
     @Override
     protected boolean canAttack( Char enemy ) {
+        if( buff(MachineAttackCooledDown.class) != null){
+            return false;
+        }
         return Dungeon.level.distance(pos, target) > 1 || HP < HT / 2;
     }
 
@@ -147,8 +173,12 @@ public class TowerMachine extends Boss {
         next();
     }
 
-    private void zap(int cell) {
+    private boolean isZapping = false;
 
+    public static class DeadBoat{};
+
+    private void zap(int cell) {
+        if (isZapping) return;
         boolean LastHP = HP <= HT/2;
         
         spend(1f);
@@ -158,40 +188,55 @@ public class TowerMachine extends Boss {
         CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 4);
 
         if(LastHP){
-            if(Dungeon.hero != null){
-                if(Dungeon.hero.pos == cell){
-                    Dungeon.hero.damage(dmg*2,new Eye.DeathGaze());
-                }
-            }
-            for(int c: PathFinder.NEIGHBOURS49){
-                CellEmitter.get(cell+c).burst(PurpleParticle.MISSILE, 15);
-                if(Dungeon.hero != null){
-                    if(Dungeon.hero.pos == cell + c){
-                        Dungeon.hero.damage(dmg*2,new Eye.DeathGaze());
+            new Thread(() -> {
+                for(int c: PathFinder.NEIGHBOURS49){
+                    if (c == 0) continue;
+                    int targetCell = cell + c;
+                    CellEmitter.get(cell+c).burst(RainbowParticle.BURST, 8);
+                    // 复制怪物列表避免同步修改
+                    List<Mob> mobs = new ArrayList<>(Dungeon.level.mobs);
+                    for (Mob mob : mobs) {
+                        if (mob.pos == targetCell && mob != this) {
+                            damage((int) (mob.HT * 0.2f), new DeadBoat());
+                            mob.HP = mob.HT;
+                            Buff.affect(mob, DeadAlive.class).set((5), 1);
+                        }
+                    }
+                    if(Dungeon.hero != null){
+                        if(Dungeon.hero.pos == cell + c){
+                            Dungeon.hero.damage(dmg,new Bomb());
+                        }
                     }
                 }
-            }
+            }).start();
         } else {
-            for(int c: PathFinder.NEIGHBOURS13_4){
-                CellEmitter.get(cell+c).burst(BloodParticle.BURST, 20);
-                Mob mob = Dungeon.level.findMob(cell+c);
-                if(mob != null && mob.getClass() != TowerMachine.class){
-                    mob.damage(dmg,new Bomb());
-                }
-                if(Dungeon.hero != null){
-                    if(Dungeon.hero.pos == cell){
-                        Dungeon.hero.damage(dmg,new Bomb());
+            new Thread(() -> {
+                for(int c: PathFinder.NEIGHBOURS13_4){
+                    int targetCell = cell + c;
+                    CellEmitter.get(cell+c).burst(MagicFireParticle.FACTORY, 8);
+                    // 复制怪物列表避免同步修改
+                    List<Mob> mobs = new ArrayList<>(Dungeon.level.mobs);
+                    for (Mob mob : mobs) {
+                        if (mob.pos == targetCell && mob != this) {
+                            damage((int) (mob.HT * 0.2f), new DeadBoat());
+                            mob.HP = mob.HT;
+                            Buff.affect(mob, DeadAlive.class).set((5), 1);
+                        }
+                    }
+                    if(Dungeon.hero != null){
+                        if(Dungeon.hero.pos == cell){
+                            Dungeon.hero.damage(dmg,new Bomb());
+                        }
                     }
                 }
-            }
+            }).start();
         }
-
-
 
         if (!enemy.isAlive() && enemy == Dungeon.hero) {
             Dungeon.fail(getClass());
             GLog.n(Messages.get(this, "bomb_party_kill"));
         }
+        isZapping = false;
     }
 
     // 修改doAttack方法
@@ -207,7 +252,7 @@ public class TowerMachine extends Boss {
             targeting = true;
             shot = false;
             cellToFire = enemy.pos;
-            attackCooldown = LastHP ? 3 : 8;
+            attackCooldown = 5;
             // 显示瞄准效果
             sprite.parent.add(new ColorTargetedCell(cellToFire,LastHP  ? Window.DeepPK_COLOR : Window.TITLE_COLOR));
             if (LastHP) {
@@ -233,8 +278,9 @@ public class TowerMachine extends Boss {
             if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
                 sprite.zap(cellToFire);
             } else {
-                zap(cellToFire);
+                onZapComplete(cellToFire);
             }
+            Buff.affect(this,MachineAttackCooledDown.class, HP <= HT / 2 ?  12f : 18f);
             targeting = false;
             return true;
         }
@@ -270,7 +316,7 @@ public class TowerMachine extends Boss {
         }
     }
 
-    public static class SummonColdDown extends FlavourBuff {
+    public static class MachineSummonColdDown extends FlavourBuff {
 
         {
             type = buffType.POSITIVE;
@@ -284,6 +330,115 @@ public class TowerMachine extends Boss {
         }
 
     }
+
+    public static class MachineAttackCooledDown extends FlavourBuff {
+
+        {
+            type = buffType.POSITIVE;
+            announced = true;
+        }
+
+        public static final float DURATION	= 30f;
+
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.TIME;
+        }
+
+    }
+
+    public static class DeadAlive extends Buff {
+        public static int level = 0;
+        private int interval = 1;
+
+        {
+            announced = true;
+        }
+
+        @Override
+        public boolean act() {
+            if (target.isAlive()) {
+                spend(interval);
+                if (--level <= 0) {
+                    detach();
+                }
+
+            }
+            return true;
+        }
+
+        public void detach() {
+          super.detach();
+          if (target.isAlive()) target.die(true);
+        }
+
+        public int level() {
+            return level;
+        }
+
+        public void set( int value, int time ) {
+            //decide whether to override, preferring high value + low interval
+            if (Math.sqrt(interval)*level <= Math.sqrt(time)*value) {
+                level = value;
+                interval = time;
+                spend(time - cooldown() - 1);
+            }
+        }
+
+        @Override
+        public float iconFadePercent() {
+            if (target instanceof Hero){
+                float max = ((Hero) target).lvl;
+                return Math.max(0, (max-level)/max);
+            }
+            return 0;
+        }
+
+        @Override
+        public String toString() {
+            return Messages.get(this, "name");
+        }
+
+        @Override
+        public String desc() {
+            return Messages.get(this, "desc", level, dispTurns(visualcooldown()));
+        }
+
+        private static final String LEVEL	    = "level";
+        private static final String INTERVAL    = "interval";
+
+        @Override
+        public void storeInBundle( Bundle bundle ) {
+            super.storeInBundle( bundle );
+            bundle.put( INTERVAL, interval );
+            bundle.put( LEVEL, level );
+        }
+
+        @Override
+        public void restoreFromBundle( Bundle bundle ) {
+            super.restoreFromBundle( bundle );
+            interval = bundle.getInt( INTERVAL );
+            level = bundle.getInt( LEVEL );
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(0xff0000);
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.TERROR;
+        }
+
+
+    }
+
 
 }
 

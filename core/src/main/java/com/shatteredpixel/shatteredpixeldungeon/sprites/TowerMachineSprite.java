@@ -27,6 +27,8 @@ public class TowerMachineSprite extends MobSprite {
         die = new MovieClip.Animation( 9, false );
         die.frames( frames, 1,2,3,4,5,6,7 );
 
+        zap = attack.clone();
+
         play( idle );
     }
 
@@ -34,7 +36,6 @@ public class TowerMachineSprite extends MobSprite {
     public void onComplete( Animation anim ) {
         if (anim == zap) {
             idle();
-
         }
         super.onComplete( anim );
     }
