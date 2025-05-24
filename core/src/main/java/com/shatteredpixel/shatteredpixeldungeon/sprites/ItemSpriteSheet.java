@@ -1182,7 +1182,7 @@ public class ItemSpriteSheet {
 
     static{
         assignItemRect(MISC_ROLLBLOCK,       12, 13);
-        assignItemRect(MISC_WATERBOMB,       9, 11);
+        assignItemRect(MISC_WATERBOMB,       9, 13);
         assignItemRect(MISC_ROLLPOTION,       12, 14);
         assignItemRect(MISC_EXFALLING,       14, 16);
 

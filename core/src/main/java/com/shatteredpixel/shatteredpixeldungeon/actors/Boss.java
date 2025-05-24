@@ -142,7 +142,7 @@ abstract public class Boss extends Mob {
 
             boolean holiday = RegularLevel.holiday == RegularLevel.Holiday.PQJ;
 
-            if(!Statistics.bossRushMode && depth != 5){
+            if(!Statistics.bossRushMode && depth != 5 && !first){
                 int normal = ((hero.lvl + Dungeon.depth)/5) * (Math.max(Challenges.activeChallenges(), 5));
                 int count = holiday ? 2 : 1;
                 Dungeon.level.drop(new IceCyanBlueSquareCoin(normal * count),pos);
