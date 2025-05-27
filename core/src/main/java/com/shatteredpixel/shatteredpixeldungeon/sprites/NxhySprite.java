@@ -12,7 +12,7 @@ public class NxhySprite extends MobSprite {
     private PixelParticle coin;
 
     public NxhySprite() {
-        this.texture("Npcs/Nxhy.png");
+        this.texture("sprites/npc/Nxhy.png");
         TextureFilm var1 = new TextureFilm(this.texture, 14, 14);
         Integer var2 = 1;
         this.idle = new Animation(5, true);

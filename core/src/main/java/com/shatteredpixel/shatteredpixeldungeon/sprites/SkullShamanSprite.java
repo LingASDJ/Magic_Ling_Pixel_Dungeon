@@ -6,7 +6,7 @@ import com.watabou.noosa.TextureFilm;
 
 public class SkullShamanSprite extends MobSprite {
     public SkullShamanSprite() {
-        this.texture("SRPD/SkullShaman.png");
+        this.texture("sprites/SRPD/SkullShaman.png");
         TextureFilm var1 = new TextureFilm(this.texture, 12, 15);
         this.idle = new Animation(2, true);
         this.idle.frames(var1, 0, 0, 0, 1, 0, 0, 1, 1);

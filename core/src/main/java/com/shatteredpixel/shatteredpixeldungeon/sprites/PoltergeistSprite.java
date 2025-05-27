@@ -14,7 +14,7 @@ import com.watabou.utils.Callback;
 
 public class PoltergeistSprite extends MobSprite {
     public PoltergeistSprite() {
-        this.texture("SRPD/BlackGhost.png");
+        this.texture("sprites/SRPD/BlackGhost.png");
         TextureFilm var1 = new TextureFilm(this.texture, 14, 15);
         this.idle = new Animation(5, true);
         this.idle.frames(var1, 0, 1);

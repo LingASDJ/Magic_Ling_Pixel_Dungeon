@@ -125,7 +125,11 @@ public class WndInfoMob extends WndTitledMessage {
 
 		private String HPLevel(Mob mob) {
 			String level;
-			if(mob.HP>600){
+			if(mob.HP>2000) {
+				level = "SSS";
+			} else if(mob.HP>1000){
+				level = "SS";
+			} else if (mob.HP>600){
 				level = "S+";
 			} else if (mob.HP>500){
 				level = "S";
@@ -144,9 +148,9 @@ public class WndInfoMob extends WndTitledMessage {
 			} else if (mob.HP>2) {
 				level = "E";
 			} else if (mob.HP==1) {
-				level = "G";
+				level = "F";
 			} else if(mob.HP<=0) {
-				level = "?";
+				level = "X";
 			} else {
 				level = "Z";
 			}

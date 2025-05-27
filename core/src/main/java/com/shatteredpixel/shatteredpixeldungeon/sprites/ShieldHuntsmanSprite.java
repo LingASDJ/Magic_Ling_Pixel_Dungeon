@@ -8,7 +8,7 @@ import com.watabou.noosa.TextureFilm;
 
 public class ShieldHuntsmanSprite extends MobSprite {
     public ShieldHuntsmanSprite() {
-        texture("SRPD/ShieldHuntsman.png");
+        texture("sprites/SRPD/ShieldHuntsman.png");
         TextureFilm frames = new TextureFilm(this.texture, 20, 16);
         this.idle = new MovieClip.Animation(2, true);
         this.idle.frames(frames, new Object[]{0, 0, 1, 0, 0, 0, 1, 1});

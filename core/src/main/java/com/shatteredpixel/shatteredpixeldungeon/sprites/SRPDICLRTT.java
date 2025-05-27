@@ -11,7 +11,7 @@ import com.watabou.utils.GameMath;
 
 public class SRPDICLRTT extends MobSprite {
     public SRPDICLRTT() {
-        this.texture("SRPD/icefire.png");
+        this.texture("sprites/SRPD/icefire.png");
         TextureFilm var1 = new TextureFilm(this.texture, 20, 16);
         Integer var2 = 2;
         Integer var3 = 1;

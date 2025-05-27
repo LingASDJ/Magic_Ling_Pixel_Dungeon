@@ -378,7 +378,6 @@ public class Assets {
 		public static final String FL_CITY 		= "music/forestflower.ogg";
 		public static final String BOSSDOG 		= "music/boss/dogboss.ogg";
 		public static final String MORP_BOSS 	= "music/hollow/morpheus.ogg";
-
 	}
 
 	public static class Sounds {
@@ -646,6 +645,8 @@ public class Assets {
 		public static final String TYPHON = "sprites/hollow/typhon.png";
 		public static final String MPHON = "sprites/hollow/morpheus.png";
 
+		public static final String MINDCODE 	= "sprites/hollow/messy_code.png";
+
 		public static final String TowerGods = "sprites/hollow/tower_gods.png";
 		public static final String TowerTime = "sprites/hollow/tower_time.png";
 		public static final String TowerMind = "sprites/hollow/tower_mind.png";
@@ -741,9 +742,9 @@ public class Assets {
 		public static final String HEALRIGH	= "sprites/healfire.png";
 
 		public static final String REDSWARM				= "sprites/RedSearm.png";
-		public static final String REN					= "Npcs/ren.png";
-		public static final String DragonBlueGirl		= "Npcs/smallblue.png";
-		public static final String DKGirl				= "Npcs/DKGirl.png";
+		public static final String REN					= "sprites/npc/ren.png";
+		public static final String DragonBlueGirl		= "sprites/npc/smallblue.png";
+		public static final String DKGirl				= "sprites/npc/DKGirl.png";
 
 		public static final String LanFire				= "sprites/npc/lanfire.png";
 		public static final String LanFire_CJ			= "sprites/npc/lanfire_cj.png";
@@ -853,7 +854,7 @@ public class Assets {
 		public static final String GHOST	= "sprites/ghost.png";
 		public static final String PINKGHOST	= "sprites/pinkghost.png";
 		public static final String MAKER	= "sprites/wandmaker.png";
-		public static final String NYZD	= "Npcs/nyz.png";
+		public static final String NYZD	= "sprites/npc/nyz.png";
 		public static final String TROLL	= "sprites/blacksmith.png";
 		public static final String IMP		= "sprites/demon.png";
 		public static final String RATKING	= "sprites/ratking.png";
