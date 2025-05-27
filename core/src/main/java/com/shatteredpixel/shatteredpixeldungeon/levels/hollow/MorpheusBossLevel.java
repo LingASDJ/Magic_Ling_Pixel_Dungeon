@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerM
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerTime;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Tilemap;
@@ -124,6 +125,22 @@ public class MorpheusBossLevel extends Level {
         towerMind.pos = 320;
         Buff.affect(towerMind, Barrier.class).setShield(100);
         GameScene.add(towerMind);
+
+        TowerMind.MindCore mindCore = new TowerMind.MindCore();
+        mindCore.pos = 272;
+        GameScene.add(mindCore);
+
+        TowerMind.MindCore mindCore2 = new TowerMind.MindCore();
+        mindCore2.pos = 396;
+        GameScene.add(mindCore2);
+
+        TowerMind.MindCore mindCore3 = new TowerMind.MindCore();
+        mindCore3.pos = 293;
+        GameScene.add(mindCore3);
+
+        AlarmTrap alarmTrap = new AlarmTrap();
+        alarmTrap.pos = 312;
+        alarmTrap.activate();
     }
 
     public static class GalaxyBackGround extends CustomTilemap {

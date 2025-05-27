@@ -11,7 +11,7 @@ import com.watabou.utils.GameMath;
 
 public class SRPDHBLRTT extends MobSprite {
     public SRPDHBLRTT() {
-        this.texture("SRPD/TorchHuntsman.png");
+        this.texture("sprites/SRPD/TorchHuntsman.png");
         TextureFilm var1 = new TextureFilm(this.texture, 20, 16);
         Integer var2 = 2;
         Integer var3 = 1;

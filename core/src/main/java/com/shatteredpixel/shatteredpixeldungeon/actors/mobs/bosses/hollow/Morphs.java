@@ -4,6 +4,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -28,7 +30,7 @@ public class Morphs extends Boss {
 
     {
         initProperty();
-        initBaseStatus(0, 0, 0, 0, 1, 0, 0);
+        initBaseStatus(0, 0, 0, 0, 50000, 0, 0);
         initStatus(0);
 
         spriteClass = MorpheusSprite.class;
@@ -37,6 +39,9 @@ public class Morphs extends Boss {
 
         properties.add(Property.IMMOVABLE);
         properties.add(Property.BOSS);
+
+        immunities.add(Blob.class);
+        immunities.add(Buff.class);
     }
 
     @Override

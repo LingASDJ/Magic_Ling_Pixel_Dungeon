@@ -39,6 +39,13 @@ public class Random {
 		resetGenerators();
 	}
 
+	public static float[] normalize(float[] probs) {
+		float sum = 0;
+		for (float prob : probs) sum += prob;
+		for (int i=0; i < probs.length; i++) probs[i] /= sum;
+		return probs;
+	}
+
 	public static synchronized void resetGenerators(){
 		generators = new ArrayDeque<>();
 		generators.push(new java.util.Random());

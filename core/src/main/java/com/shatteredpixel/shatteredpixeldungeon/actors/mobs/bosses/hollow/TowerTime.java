@@ -9,12 +9,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
@@ -72,7 +78,18 @@ public class TowerTime extends Boss {
 
         properties.add(Property.IMMOVABLE);
         properties.add(Property.BOSS);
+
+        immunities.add(FrostBurning.class);
+        immunities.add(HalomethaneBurning.class);
+        immunities.add(Burning.class);
+        immunities.add(Ooze.class);
         immunities.add(Terror.class);
+        immunities.add(Hex.class);
+        immunities.add(Vertigo.class);
+        immunities.add(Blindness.class);
+
+        immunities.add(Blob.class);
+        immunities.add(TowerMachine.DeadAlive.class);
     }
 
     @Override
@@ -415,13 +432,13 @@ public class TowerTime extends Boss {
      */
     private void getLaserTargetDamage(boolean LastHP, Char ch) {
 
-        if(LastHP && paralysedAttackChane){
+        if(!LastHP && paralysedAttackChane){
             Buff.affect(ch, Paralysis.class, Random.IntRange(2,4));
             paralysedAttackChane = false;
         } else {
             Buff.affect(ch, Cripple.class, Random.IntRange(2,4));
         }
-        if(!paralysedAttackChane && LastHP && Random.Int(2) == 0){
+        if(!paralysedAttackChane && !LastHP && Random.Int(2) == 0){
             paralysedAttackChane = true;
         }
         ch.damage(damageRoll(), new Eye.DeathGaze());

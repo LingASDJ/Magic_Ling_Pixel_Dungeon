@@ -3,16 +3,20 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShieldHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.ColorTargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MagicFireParticle;
@@ -20,9 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticl
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TowerMachineSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -39,7 +41,6 @@ import java.util.List;
 public class TowerMachine extends Boss {
 
     private int attackCooldown = 0;
-    private int summonedMobs = 1;
 
     {
         initProperty();
@@ -53,66 +54,25 @@ public class TowerMachine extends Boss {
 
         properties.add(Property.IMMOVABLE);
         properties.add(Property.BOSS);
+
+        immunities.add(FrostBurning.class);
+        immunities.add(HalomethaneBurning.class);
+        immunities.add(Burning.class);
+        immunities.add(Ooze.class);
         immunities.add(Terror.class);
-        immunities.add(TowerMachine.class);
-    }
-
-    @Override
-    public boolean act() {
-        ArrayList<Integer> positions = new ArrayList<>();
-        if (buff(MachineSummonColdDown.class) == null && summonedMobs <= 4) {
-            Mob testActor = getSummonTimeMobs();
-            testActor.state = testActor.HUNTING;
-            GameScene.add(testActor);
-            /****************/
-            positions.add(162);
-            positions.add(110);
-            positions.add(37);
-            positions.add(114);
-            /****************/
-            Random.shuffle(positions);
-            ScrollOfTeleportation.appear(testActor,positions.get(0));
-
-            Mob testActor2 = getSummonTimeMobs();
-            testActor2.state = testActor2.HUNTING;
-            GameScene.add(testActor2);
-            /****************/
-            positions.add(162);
-            positions.add(110);
-            positions.add(37);
-            positions.add(114);
-            /****************/
-            Random.shuffle(positions);
-            ScrollOfTeleportation.appear(testActor2,positions.get(0));
-            Buff.affect(this, Barrier.class).setShield(100);
-            Buff.affect(this,MachineSummonColdDown.class, 50f);
-            summonedMobs+=2;
-        }
-
-        return super.act();
+        immunities.add(Hex.class);
+        immunities.add(Vertigo.class);
+        immunities.add(Blindness.class);
+        immunities.add(TowerMachine.DeadAlive.class);
+        immunities.add(Blob.class);
     }
 
     @Override
     public void damage(int dmg, Object src) {
-        if(src == this){
+        if (src == this) {
             return;
         }
-        dmg -= dmg * (summonedMobs*5) / 100;
         super.damage(dmg, src);
-    }
-
-    private Mob getSummonTimeMobs() {
-        List<Class<? extends Mob>> mobTypes = new ArrayList<>();
-        mobTypes.add(Eye.class);
-        mobTypes.add(ShieldHuntsman.class);
-        mobTypes.add(Scorpio.class);
-        Random.shuffle(mobTypes);
-        Class<? extends Mob> selectedMobType = mobTypes.get(0);
-        Mob mob = null;
-        try {
-            mob = selectedMobType.getDeclaredConstructor().newInstance();
-        } catch (Exception ignored) {}
-        return mob;
     }
 
     @Override
@@ -137,7 +97,6 @@ public class TowerMachine extends Boss {
         bundle.put(TARGETING, targeting);
         bundle.put(SHOT, shot);
         bundle.put(CELL_TO_FIRE, cellToFire);
-        bundle.put(SUMMONED_MOBS, summonedMobs);
     }
 
     @Override
@@ -147,7 +106,6 @@ public class TowerMachine extends Boss {
         targeting = bundle.getBoolean(TARGETING);
         shot = bundle.getBoolean(SHOT);
         cellToFire = bundle.getInt(CELL_TO_FIRE);
-        summonedMobs = bundle.getInt(SUMMONED_MOBS);
     }
 
     @Override
@@ -196,7 +154,7 @@ public class TowerMachine extends Boss {
                     // 复制怪物列表避免同步修改
                     List<Mob> mobs = new ArrayList<>(Dungeon.level.mobs);
                     for (Mob mob : mobs) {
-                        if (mob.pos == targetCell && mob != this) {
+                        if (mob.pos == targetCell && (mob instanceof TowerMachine || mob instanceof Morphs)) {
                             damage((int) (mob.HT * 0.2f), new DeadBoat());
                             mob.HP = mob.HT;
                             Buff.affect(mob, DeadAlive.class).set((5), 1);
@@ -217,7 +175,7 @@ public class TowerMachine extends Boss {
                     // 复制怪物列表避免同步修改
                     List<Mob> mobs = new ArrayList<>(Dungeon.level.mobs);
                     for (Mob mob : mobs) {
-                        if (mob.pos == targetCell && mob != this) {
+                        if (mob.pos == targetCell && (mob instanceof TowerMachine || mob instanceof Morphs)) {
                             damage((int) (mob.HT * 0.2f), new DeadBoat());
                             mob.HP = mob.HT;
                             Buff.affect(mob, DeadAlive.class).set((5), 1);
