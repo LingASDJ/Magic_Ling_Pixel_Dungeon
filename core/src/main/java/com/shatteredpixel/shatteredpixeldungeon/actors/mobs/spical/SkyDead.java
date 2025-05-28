@@ -125,7 +125,7 @@ public class SkyDead extends Mob {
 
     private void zap() {
         spend( 1f );
-        int dmg = Random.NormalIntRange(2, 4);
+        int dmg = damageRoll();
         if(enemy == null){
             return;
         }
