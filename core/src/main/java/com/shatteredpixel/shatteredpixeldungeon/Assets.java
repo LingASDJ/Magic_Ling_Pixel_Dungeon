@@ -793,6 +793,8 @@ public class Assets {
 
 		public static final String GREEN		= "sprites/greenslting.png";
 
+		public static final String SKY_DEAD		= "sprites/skydead.png";
+
 		public static final String GREEN_KING		= "sprites/greenslting_king.png";
 
 		public static final String CLEAR		= "sprites/clearelemt.png";

@@ -90,6 +90,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PumpkinRoom
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SkeletonFishRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SkyDeadWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
@@ -267,6 +268,8 @@ public abstract class RegularLevel extends Level {
 						case 4:
 							initRooms.add(new GooRoom());
 						break;
+						case 8:
+							initRooms.add(new SkyDeadWellRoom());
 					}
 //				case 2:
 //				switch (depth) {

@@ -235,6 +235,8 @@ public class Statistics {
 
 	public static boolean gooFight = false;
 
+	public static boolean skydeadFight = false;
+
 	public static boolean onlyBzmdr = false;
 
 	//昼夜更替
@@ -572,6 +574,7 @@ public class Statistics {
 		gameNight = false;
 
 		gooFight = false;
+		skydeadFight = false;
 		mustTengu = false;
 
 
@@ -805,6 +808,8 @@ public class Statistics {
 
 		bundle.put(GOOFIGHT,gooFight);
 
+		bundle.put("SkyDeadFight",skydeadFight);
+
 		bundle.put("onlyB",onlyBzmdr);
 
 		bundle.put("NOTIME",NoTime);
@@ -952,6 +957,8 @@ public class Statistics {
 		upgradeGold = bundle.getInt("XXXXXXX");
 
 		KillMazeMimic = bundle.getInt(MIMIC_MAZEKILL);
+
+		skydeadFight = bundle.getBoolean("SkyDeadFight");
 
 		GameKillFireDargon = bundle.getBoolean("DRAM");
 

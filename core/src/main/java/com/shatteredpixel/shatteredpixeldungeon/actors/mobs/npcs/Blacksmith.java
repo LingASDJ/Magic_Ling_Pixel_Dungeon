@@ -21,9 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.altHoliday;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -52,6 +53,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class Blacksmith extends NPC {
 	
@@ -423,11 +425,12 @@ public class Blacksmith extends NPC {
 		
 		public static ArrayList<Room> spawn( ArrayList<Room> rooms ) {
 			if (!spawned && Dungeon.depth > 11 && Random.Int( 15 - Dungeon.depth ) == 0) {
-				
+				PaswordBadges.loadGlobal();
+				List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 				rooms.add(new BlacksmithRoom());
 				spawned = true;
 				//Currently cannot roll the fungi quest, as it is not fully implemented
-				type =  altHoliday == RegularLevel.AltHoliday.DWJ_2024 ? 4 : Random.IntRange(1, 2);
+				type = (holiday == RegularLevel.Holiday.DWJ && !(passwordbadges.contains(PaswordBadges.Badge.KILL_FISHBOSS))) ? 4 : Random.IntRange(1, 2);
 				alternative = false;
 				
 				given = false;

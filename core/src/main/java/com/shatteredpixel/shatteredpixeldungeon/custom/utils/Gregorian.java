@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.altHoliday;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.birthday;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
@@ -9,9 +8,10 @@ import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 public class Gregorian {
-
+    private static long eventEndTime = 0;
     /**
      * 这个代码是基于6Tail的农历Java库<br>
      * 皆在计算中国的传统节日，<br>
@@ -75,12 +75,58 @@ public class Gregorian {
         // 判断是否是端午节前4天到端午节后7天
         if (isDWJ) {
             holiday = RegularLevel.Holiday.DWJ;
+            eventEndTime = calculateEventEndTime(lunar, 5, 21);
         }
 
-        if (isDWJ_2024TWO || isDWJ2025) {
-            altHoliday = RegularLevel.AltHoliday.DWJ_2024;
-        }
+    }
 
+    // 新增计算方法
+    private static long calculateEventEndTime(Lunar currentLunar, int month, int endDay) {
+        try {
+            // 构造结束当天的农历对象（23:59:59）
+            Lunar endLunar = new Lunar(
+                    currentLunar.getYear(),
+                    month,
+                    endDay,
+                    23, 59, 59
+            );
+
+            // 转换为公历
+            Solar endSolar = endLunar.getSolar();
+
+            // 生成时间戳
+            Calendar endCal = Calendar.getInstance();
+            endCal.set(endSolar.getYear(),
+                    endSolar.getMonth() - 1, // Calendar月份从0开始
+                    endSolar.getDay(),
+                    23, 59, 59);
+            endCal.set(Calendar.MILLISECOND, 0);
+            return endCal.getTimeInMillis();
+        } catch (Exception e) {
+            // 处理无效日期情况
+            return 0;
+        }
+    }
+
+    // 新增获取剩余时间方法
+    public static String getRemainingTime() {
+        if (eventEndTime == 0) return "无活动";
+
+        long current = System.currentTimeMillis();
+        if (current >= eventEndTime) return "活动已结束";
+
+        long diff = eventEndTime - current;
+
+        // 精确计算时间差
+        long seconds = diff / 1000;
+        long days = seconds / 86400;
+        seconds %= 86400;
+        long hours = seconds / 3600;
+        seconds %= 3600;
+        long minutes = seconds / 60;
+        seconds %= 60;
+
+        return String.format(Locale.CHINA, "%d天 %02d:%02d:%02d", days, hours, minutes, seconds);
     }
 
 }
