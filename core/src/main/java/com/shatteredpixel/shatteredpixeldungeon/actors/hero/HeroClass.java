@@ -114,6 +114,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSt
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Image;
 import com.watabou.utils.DeviceCompat;
@@ -223,6 +224,8 @@ public enum HeroClass {
 			new PropBag().quantity(1).identify().collect();
 			new WandOfSun().collect();
 			new ElectricalSmoke().collect();
+
+			GLog.n(String.valueOf(RegularLevel.holiday));
 
 			new SelectableRing().collect();
 			new SelectableWand().collect();

@@ -35,7 +35,9 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.TheatreLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonCaveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniChestMazeLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniSkyShadowBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.DeepShadowLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.SkyGooBossLevel;
@@ -290,6 +292,9 @@ public class LevelRules {
             case 2:
                 switch (depth) {
                     case 4:
+                        return new MiniBossLevel();
+                    case 8:
+                        return new MiniSkyShadowBossLevel();
                     case 14:
                         return new MiniBossLevel();
                     case 5:

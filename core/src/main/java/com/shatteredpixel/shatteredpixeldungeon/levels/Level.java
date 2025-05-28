@@ -364,7 +364,7 @@ public abstract class Level implements Bundlable {
 			boolean moreRoomActivated = Dungeon.isChallenged(MOREROOM);
 
 			if (depth > 1) {
-					if (depth == 4 && moreRoomActivated) {
+					if (depth == 4 && moreRoomActivated || depth == 8 && moreRoomActivated) {
 						feeling = Feeling.DIEDROOM;
 					} else {
 						switch (Random.Int(14)) {

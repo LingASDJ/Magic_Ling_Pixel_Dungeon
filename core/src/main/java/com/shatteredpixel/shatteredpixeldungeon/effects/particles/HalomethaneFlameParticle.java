@@ -24,6 +24,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.effects.particles;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
 
@@ -43,7 +44,12 @@ public class HalomethaneFlameParticle extends PixelParticle.Shrinking {
     public HalomethaneFlameParticle() {
         super();
 
-        color(0x00DFFF);
+        if(Dungeon.branch == 2 && Dungeon.depth == 8){
+            color(0xE43C2F);
+        } else{
+            color(0x00DFFF);
+        }
+
         lifespan = 0.6f;
 
         acc.set( 0, -80 );

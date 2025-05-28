@@ -21,7 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.altHoliday;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -677,7 +677,7 @@ public class Generator {
 			};
 			MIS_T5.probs = new float[]{6, 5, 4};
 
-			int isDWJ = altHoliday == RegularLevel.AltHoliday.DWJ_2024 ? 3 : 0;
+			int isDWJ = holiday == RegularLevel.Holiday.DWJ ? 3 : 0;
 
 			FOOD.classes = new Class<?>[]{
 					Food.class,

@@ -46,14 +46,14 @@ public abstract class GooBossRoom extends StandardRoom {
 
 	public static GooBossRoom randomGooRoom(){
 		switch (Random.Int(4)){
-			case 0: default:
-				return new DiamondGooRoom();
 			case 1:
 				return new WalledGooRoom();
 			case 2:
 				return new ThinPillarsGooRoom();
 			case 3:
 				return new ThickPillarsGooRoom();
+			default:
+				return new DiamondGooRoom();
 		}
 	}
 	
