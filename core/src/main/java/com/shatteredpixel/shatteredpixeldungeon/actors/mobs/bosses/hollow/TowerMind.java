@@ -271,10 +271,10 @@ public class TowerMind extends Boss {
                     }
 
 
-                    if (item.isEquipped(Dungeon.hero)) {
-                        ((EquipableItem) item).doUnequip(Dungeon.hero, false);
+                    if (item.isEquipped(hero)) {
+                        ((EquipableItem) item).doUnequip(hero, false);
                     }
-                    item.detachAll(Dungeon.hero.belongings.backpack);
+                    item.detachAll(hero.belongings.backpack);
                     yell(Messages.get(this, "yell_steal_item", item.name()));
                     stealCounter++;
                     if (aliveCores.isEmpty()) break ITEM_LOOP;
@@ -330,6 +330,7 @@ public class TowerMind extends Boss {
                     if (HP > HT * 0.1f) {
                         HP -= (int) (HT * 0.1f);
                         mob.HP = mob.HT;
+                        ((MindCore) mob).dropped = false;
                     }
                 }
             }
@@ -345,7 +346,7 @@ public class TowerMind extends Boss {
     public static class MindCore extends Mob {
 
         public ArrayList<Item> items = new ArrayList<>();
-        public float maxCapacity = 1;
+        public boolean dropped = false;
 
         {
             spriteClass = MindCoreSprite.class;
@@ -377,12 +378,13 @@ public class TowerMind extends Boss {
 
         @Override
         public boolean isAlive() {
+            boolean isAlive = false;
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                 if(mob instanceof TowerMind){
-                    return true;
+                    isAlive = true;
                 }
             }
-          return super.isAlive();
+          return isAlive;
         }
 
         private static final String ITEMS	= "items";
@@ -392,6 +394,7 @@ public class TowerMind extends Boss {
         public void storeInBundle( Bundle bundle ) {
             super.storeInBundle( bundle );
             if (items != null) bundle.put( ITEMS, items );
+            bundle.put(ITEMS_DROPPED, dropped);
         }
 
         @SuppressWarnings("unchecked")
@@ -400,6 +403,7 @@ public class TowerMind extends Boss {
             if (bundle.contains( ITEMS )) {
                 items = new ArrayList<>((Collection<Item>) ((Collection<?>) bundle.getCollection(ITEMS)));
             }
+            dropped = bundle.getBoolean(ITEMS_DROPPED);
             super.restoreFromBundle(bundle);
         }
 
@@ -425,23 +429,27 @@ public class TowerMind extends Boss {
         @Override
         public void die(Object cause) {
             super.die(cause);
-            MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
-            msc.reset(
-                    sprite,
-                    hero.pos,
-                    items.get(0),
-                    0.6f,
-                    1.25f + Random.Float(0,1)*0.1f, // 添加序列延迟
-                    new Callback() {
-                        @Override
-                        public void call() {
-                            Dungeon.level.drop(items.get(0), pos);
+            if(!dropped){
+                MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
+                msc.reset(
+                        sprite,
+                        hero.pos,
+                        items.get(0),
+                        0.6f,
+                        1.25f + Random.Float(0,1)*0.1f, // 添加序列延迟
+                        new Callback() {
+                            @Override
+                            public void call() {
+                                Dungeon.level.drop(items.get(0), pos);
+                            }
                         }
-                    }
-            );
-            for(Buff buff : buffs()){
-                buff.detach();
+                );
+                for(Buff buff : buffs()){
+                    buff.detach();
+                }
+                dropped = true;
             }
+
         }
     }
 

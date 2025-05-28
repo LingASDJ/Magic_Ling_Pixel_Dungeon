@@ -154,7 +154,7 @@ public class TowerMachine extends Boss {
                     // 复制怪物列表避免同步修改
                     List<Mob> mobs = new ArrayList<>(Dungeon.level.mobs);
                     for (Mob mob : mobs) {
-                        if (mob.pos == targetCell && (mob instanceof TowerMachine || mob instanceof Morphs)) {
+                        if (mob.pos == targetCell && !(mob instanceof TowerMachine || mob instanceof Morphs)) {
                             damage((int) (mob.HT * 0.2f), new DeadBoat());
                             mob.HP = mob.HT;
                             Buff.affect(mob, DeadAlive.class).set((5), 1);
@@ -175,7 +175,7 @@ public class TowerMachine extends Boss {
                     // 复制怪物列表避免同步修改
                     List<Mob> mobs = new ArrayList<>(Dungeon.level.mobs);
                     for (Mob mob : mobs) {
-                        if (mob.pos == targetCell && (mob instanceof TowerMachine || mob instanceof Morphs)) {
+                        if (mob.pos == targetCell && !(mob instanceof TowerMachine || mob instanceof Morphs)) {
                             damage((int) (mob.HT * 0.2f), new DeadBoat());
                             mob.HP = mob.HT;
                             Buff.affect(mob, DeadAlive.class).set((5), 1);

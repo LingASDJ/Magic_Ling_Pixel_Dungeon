@@ -3,8 +3,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -20,7 +20,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -234,17 +233,8 @@ public class SkyDead extends Mob {
             }
         }
 
-        if(Statistics.bossRushMode){
-            if(level.map[pos] == Terrain.CHASM){
-                Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), level.entrance() ).sprite.drop();
-            } else {
-                Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), pos ).sprite.drop();
-            }
-        }
-
-
-        Badges.GOO();
-        Statistics.bossScores[0] += 1000;
+        PaswordBadges.SKY_DEAD();
+        Statistics.bossScores[1] += 1000;
 
         yell( Messages.get(this, "defeated") );
     }
