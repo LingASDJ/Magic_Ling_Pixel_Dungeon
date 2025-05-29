@@ -1,22 +1,28 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.ClearLanterBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class TowerParalysis extends ClearLanterBuff {
+public class TowerParalysis extends Buff {
     public static int level = 0;
     private int interval = 1;
+
+    {
+        announced = true;
+        type = buffType.NEGATIVE;
+    }
 
     @Override
     public boolean act() {
         if (target.isAlive()) {
 
             spend(interval);
-            if (level <= 0) {
+            if (--level <= 0) {
                 detach();
             }
 
@@ -75,12 +81,12 @@ public class TowerParalysis extends ClearLanterBuff {
 
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(0x00ff00);
+        icon.hardlight(Window.ANSDO_COLOR);
     }
 
     @Override
     public int icon() {
-        return BuffIndicator.NONE;
+        return BuffIndicator.PARALYSIS;
     }
 
 }

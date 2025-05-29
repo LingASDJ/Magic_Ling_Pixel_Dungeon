@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -12,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
@@ -27,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TowerMachineSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -36,6 +40,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TowerMachine extends Boss {
@@ -72,6 +77,12 @@ public class TowerMachine extends Boss {
         if (src == this) {
             return;
         }
+        LockedFloor lock = hero.buff(LockedFloor.class);
+        if (lock != null) {
+            int multiple = 2;
+            lock.addTime(dmg*multiple);
+        }
+        BossHealthBar.assignBoss(this);
         super.damage(dmg, src);
     }
 
@@ -152,9 +163,9 @@ public class TowerMachine extends Boss {
                     int targetCell = cell + c;
                     CellEmitter.get(cell+c).burst(RainbowParticle.BURST, 8);
                     // 复制怪物列表避免同步修改
-                    List<Mob> mobs = new ArrayList<>(Dungeon.level.mobs);
+                    List<Mob> mobs = Collections.synchronizedList(new ArrayList<>(Dungeon.level.mobs));
                     for (Mob mob : mobs) {
-                        if (mob.pos == targetCell && !(mob instanceof TowerMachine || mob instanceof Morphs)) {
+                        if (mob.pos == targetCell && !(mob instanceof TowerMachine || mob instanceof Morphs || mob instanceof TowerMind.MindCore)) {
                             damage((int) (mob.HT * 0.2f), new DeadBoat());
                             mob.HP = mob.HT;
                             Buff.affect(mob, DeadAlive.class).set((5), 1);
@@ -172,10 +183,9 @@ public class TowerMachine extends Boss {
                 for(int c: PathFinder.NEIGHBOURS13_4){
                     int targetCell = cell + c;
                     CellEmitter.get(cell+c).burst(MagicFireParticle.FACTORY, 8);
-                    // 复制怪物列表避免同步修改
-                    List<Mob> mobs = new ArrayList<>(Dungeon.level.mobs);
+                    List<Mob> mobs = Collections.synchronizedList(new ArrayList<>(Dungeon.level.mobs));
                     for (Mob mob : mobs) {
-                        if (mob.pos == targetCell && !(mob instanceof TowerMachine || mob instanceof Morphs)) {
+                        if (mob.pos == targetCell && !(mob instanceof TowerMachine || mob instanceof Morphs || mob instanceof TowerMind.MindCore)) {
                             damage((int) (mob.HT * 0.2f), new DeadBoat());
                             mob.HP = mob.HT;
                             Buff.affect(mob, DeadAlive.class).set((5), 1);
@@ -197,15 +207,26 @@ public class TowerMachine extends Boss {
         isZapping = false;
     }
 
+    @Override
+    public void die(Object cause) {
+        super.die(cause);
+         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof TowerMind || mob instanceof TowerTime||mob instanceof TowerGods||mob instanceof TowerMachine) {
+                Buff.affect(mob, TowerParalysis.class).set((21), 1);
+            }
+        };
+    }
+
+    public TowerParalysis towerParalysis = buff(TowerParalysis.class);
     // 修改doAttack方法
     protected boolean doAttack(Char enemy) {
         boolean LastHP = HP <= HT/2;
-        if (Dungeon.level.adjacent(pos, enemy.pos)) {
+        if (Dungeon.level.adjacent(pos, enemy.pos) && towerParalysis == null ) {
             attackCooldown = 0;
             shot = true;
             targeting = false;
             return super.doAttack(enemy);
-        } else if (shot) {
+        } else if (shot && towerParalysis == null) {
             // 进入瞄准阶段
             targeting = true;
             shot = false;
@@ -225,7 +246,8 @@ public class TowerMachine extends Boss {
             ((TowerMachineSprite)sprite).targeting(cellToFire);
             spend(TICK);
             return true;
-        } else if (attackCooldown > 0) {
+
+        } else if (attackCooldown > 0 && towerParalysis == null) {
             // 冷却倒计时
             spend(TICK);
             attackCooldown--;
@@ -272,21 +294,6 @@ public class TowerMachine extends Boss {
             spend(TICK);
             return super.noticeEnemy();
         }
-    }
-
-    public static class MachineSummonColdDown extends FlavourBuff {
-
-        {
-            type = buffType.POSITIVE;
-        }
-
-        public static final float DURATION	= 10f;
-
-        @Override
-        public float iconFadePercent() {
-            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
-        }
-
     }
 
     public static class MachineAttackCooledDown extends FlavourBuff {

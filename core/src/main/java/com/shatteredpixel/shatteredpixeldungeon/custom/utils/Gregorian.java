@@ -75,7 +75,7 @@ public class Gregorian {
         // 判断是否是端午节前4天到端午节后7天
         if (isDWJ) {
             holiday = RegularLevel.Holiday.DWJ;
-            eventEndTime = calculateEventEndTime(lunar, 5, 21);
+            eventEndTime = calculateEventEndTime(lunar, 5, 12);
         }
 
     }
@@ -126,7 +126,7 @@ public class Gregorian {
         long minutes = seconds / 60;
         seconds %= 60;
 
-        return String.format(Locale.CHINA, "%d天 %02d:%02d:%02d", days, hours, minutes, seconds);
+        return String.format(Locale.CHINA, "剩余："+"%d天 %02d:%02d:%02d", days, hours, minutes, seconds);
     }
 
 }

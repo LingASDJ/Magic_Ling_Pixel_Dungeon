@@ -17,13 +17,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -41,6 +39,8 @@ public class SkyDead extends Mob {
     public int scytheCooldown;
     public boolean adrenalineSurge = false;
 
+    public int initPos;
+
     {
         spriteClass = SkyDeadSprite.class;
 
@@ -50,8 +50,6 @@ public class SkyDead extends Mob {
         scytheCooldown = Random.IntRange(7,9);
 
         EXP  = 20;
-
-        viewDistance = 8;
 
         flying = true;
 
@@ -68,6 +66,7 @@ public class SkyDead extends Mob {
     private static final String SCYTHE_CD = "scythe_cd";
     private static final String ADRENALINE = "adrenaline";
     private static final String FIRST_BURNING = "first_burning";
+    private static final String INIT_POS = "init_pos";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -75,19 +74,35 @@ public class SkyDead extends Mob {
         bundle.put(SCYTHE_CD, scytheCooldown);
         bundle.put(ADRENALINE, adrenalineSurge);
         bundle.put(FIRST_BURNING, firstBurning);
+        bundle.put(INIT_POS, initPos);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        scytheCooldown = bundle.getInt(SCYTHE_CD);
+        adrenalineSurge = bundle.getBoolean(ADRENALINE);
+        firstBurning = bundle.getBoolean(FIRST_BURNING);
+        initPos = bundle.getInt(INIT_POS);
+
+        if (state != SLEEPING) BossHealthBar.assignBoss(this);
+        if ((HP*2 <= HT)) BossHealthBar.bleed(true);
     }
 
     @Override
     public boolean act() {
 
-        if(level.distance(pos,hero.pos)>=11 && level.locked){
-            ScrollOfTeleportation.appear(hero, pos);
+        if(level.distance(pos,hero.pos)>=11 && level.locked && initPos!=0){
+            ScrollOfTeleportation.appear(hero, initPos);
             yell(Messages.get(this, "tp"));
         }
 
         if(enemy != null && !level.locked){
             if(Dungeon.level.distance(pos,enemy.pos)<=4){
                 notice();
+            } else if(Dungeon.level.distance(pos,enemy.pos)>4) {
+                initPos = pos;
+                ScrollOfTeleportation.appear(hero, initPos-3);
             }
         } else if(Dungeon.level.distance(pos,hero.pos)<=4){
            for (Buff buff : hero.buffs()){
@@ -101,17 +116,6 @@ public class SkyDead extends Mob {
     }
 
     @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        scytheCooldown = bundle.getInt(SCYTHE_CD);
-        adrenalineSurge = bundle.getBoolean(ADRENALINE);
-        firstBurning = bundle.getBoolean(FIRST_BURNING);
-
-        if (state != SLEEPING) BossHealthBar.assignBoss(this);
-        if ((HP*2 <= HT)) BossHealthBar.bleed(true);
-    }
-
-    @Override
     public void notice() {
         super.notice();
         if (!BossHealthBar.isAssigned()) {
@@ -120,12 +124,15 @@ public class SkyDead extends Mob {
             Camera.main.shake(1f,3f);
             GameScene.bossReady();
             yell(Messages.get(this, "notice"));
+            if(initPos==0){
+                initPos = pos;
+            }
         }
     }
 
     private void zap() {
         spend( 1f );
-        int dmg = damageRoll();
+        int dmg = Random.NormalIntRange(2, 4);
         if(enemy == null){
             return;
         }
@@ -180,15 +187,6 @@ public class SkyDead extends Mob {
     }
 
     @Override
-    public int attackSkill( Char target ) {
-        if (Dungeon.level.adjacent(pos, target.pos)){
-            return 10;
-        } else {
-            return 20;
-        }
-    }
-
-    @Override
     protected boolean canAttack(Char enemy) {
         // 第一次触发火焰
         if (scytheCooldown <= 0 && Dungeon.level.distance(pos, enemy.pos) == 2){
@@ -219,20 +217,6 @@ public class SkyDead extends Mob {
             }
         }
 
-        //60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
-        int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
-        for (int i = 0; i < blobs; i++){
-            int ofs;
-            do {
-                ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
-            } while (!Dungeon.level.passable[level.map[pos] == Terrain.CHASM ? level.entrance() : pos + ofs]);
-            if(level.map[pos] == Terrain.CHASM){
-                Dungeon.level.drop( Generator.random( Generator.Category.STONE), level.entrance() + ofs ).sprite.drop();
-            } else {
-                Dungeon.level.drop( Generator.random( Generator.Category.STONE), pos + ofs ).sprite.drop( pos );
-            }
-        }
-
         PaswordBadges.SKY_DEAD();
         Statistics.bossScores[1] += 1000;
 
@@ -251,6 +235,10 @@ public class SkyDead extends Mob {
         //return false;
     }
 
+    @Override
+    public int attackSkill( Char target ) {
+        return 18;
+    }
 
     @Override
     public int drRoll() {

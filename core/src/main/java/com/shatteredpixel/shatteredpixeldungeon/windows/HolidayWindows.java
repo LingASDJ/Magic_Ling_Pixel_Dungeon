@@ -39,7 +39,7 @@ public class HolidayWindows extends Window {
         button2.setRect(GAP, rtb.bottom() + 5, WIDTH - GAP * 2, BOX_HEIGHT);
         add(button2);
 
-        rtx = PixelScene.renderTextBlock(Messages.get(Gregorian.class, holiday + "_desc"), 7);
+        rtx = PixelScene.renderTextBlock(Messages.get(Gregorian.class, holiday + "_desc"), 6);
         rtx.setPos(WIDTH/2f - rtx.width()/2, GAP);
         PixelScene.align(rtx);
         rtx.maxWidth(WIDTH - GAP * 2);

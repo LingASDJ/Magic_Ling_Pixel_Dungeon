@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.ArtilleristSprite;
@@ -47,8 +48,10 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.QliphothSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.QuestionSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShieldHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SkyDeadSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SmallLeafSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
@@ -67,6 +70,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0848_Changes(changeInfos);
         add_V0845_Changes(changeInfos);
         add_V0840_Changes(changeInfos);
         add_V0831_Changes(changeInfos);
@@ -111,11 +115,103 @@ public class vM0_7_X_Changes {
         add_GYD_Changes(changeInfos);
     }
 
+    public static void add_V0848_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.4.8", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：端午安康"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励，祝各位端午安康！")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：吉祥锦鲤"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励，祝各位端午安康！")));
+
+        Image xs =new SkyDeadSprite();
+        xs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(xs, ("新迷你Boss：天罚"),
+                ("变幻莫测全新Boss，带来全新的挑战！\n\n所在区域：8层")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("新全局系统：自定义横幅"),
+                ("在额外设置中，可以定义游戏内带的横幅主题，新增端午节主题")));
+
+        Image xsx =new Image(SPDSettings.ClassUI() ? Assets.Interfaces.TOOLBAR : Assets.Interfaces.TOOLBARDRAK, 0, 26, 24, 26);
+        xsx.scale.set(PixelScene.align(0.8f));
+        changes.addButton( new ChangeButton(xsx, "新全局系统：魔绫活动板块",
+                "通过活动板块，可以查看各类活动信息，并参加活动，获得奖励。\n\n" +
+                        "魔绫像素地牢，基于单机的一款“次世代网游”（Bushi）"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES),("加密徽章新增一个"),
+                ("新增更多加密徽章，欢迎前去探索")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("其他改动"),
+                ("1.部分文案优化\n" +
+                        "2.部分素材细节优化更新")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "Bug修复-来自开发者汇总\n\n" +
+                        (       "_-_ 修复暗影Boss的一些问题，现在不会再次读档\n" +
+                                "_-_ 修复火龙Boss的一些问题\n" +
+                                "_-_ 修复端午节活动的一些问题\n" +
+                                "_-_ 修复治疗类型效果对盟友不生效的问题")
+        ));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "Bug修复-来自Order系统汇总\n\n" +
+                        ( "_-_ 修复了拟态王转阶段3的问题\n" +
+                                "_-_ 修复了旧存档怪物生成器导致崩溃的问题\n" +
+                                "_-_ 修复了金蝶模式地图错误问题（多个条目合并）\n" +
+                                "_-_ 修复了迷你太阳贴图错误问题\n" +
+                                "_-_ 修复了微光导向卡死问题\n" +
+                                "_-_ 修复了痛苦刻痕不死bug残留问题\n" +
+                                "_-_ 修复了BR冰雪魔女异常卡死问题\n" +
+                                "_-_ 修复了古堡残梦魔偶异常问题\n" +
+                                "_-_ 修复了悲伤幽灵等级生成异常问题\n" +
+                                "_-_ 修复了甲鱼boss触发流程bug问题\n" +
+                                "_-_ 修复了机械之柱友伤缺失问题\n" +
+                                "_-_ 修复了火龙地图设计缺陷问题")
+        ));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.SACRIFICE, true), ("霜火极寒"),
+                ("最低伤害4点不变，但最大伤害不能超过16伤。")));
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16
+                , 16), "房间改动",
+                "变幻莫测迷你Boss奖励房现在均为六选一房"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(new ShieldHuntsmanSprite(), "血月魔盾猎人",
+                "修复之前命中率为一区的异常问题，并且加强击飞 武器/护甲/杂项栏/ 的效果\n\n添加精神集中，血量调整为固定72，初始移速0.8。\n\n有六分之一概率可以掉落奥术护盾合剂，至多掉落2瓶。"));
+
+        changes = new ChangeInfo("v0.8.4.8中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+
+        changes = new ChangeInfo("2025-5-29", true, null);
+        changes.hardlight(Window.CPINK);
+        changeInfos.add(changes);
+    }
+
     public static void add_V0845_Changes(ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.8.4.5-6", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
-
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
         changes.hardlight(Window.GREEN_COLOR);

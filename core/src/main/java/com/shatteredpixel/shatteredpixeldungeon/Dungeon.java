@@ -119,6 +119,7 @@ public class Dungeon {
 		SWARM_HP,
 		NECRO_HP,
 		BAT_HP,
+		HUNR_HP,
 		WARLOCK_HP,
 		//Demon spawners are already limited in their spawnrate, no need to limit their health drops
 		//alchemy

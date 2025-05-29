@@ -423,12 +423,12 @@ public class MobSpawner extends Actor {
 									RiceRat.class, RiceRat.class, PhantomPiranha.class));
 						} else {
 							return new ArrayList<>(Arrays.asList(
-									Eye.class, ShieldHuntsman.class, Fire_Scorpio.class));
+									Eye.class, Scorpio.class, Fire_Scorpio.class));
 						}
 					case 22:
 						//3x succubus, 3x evil eye
 						return new ArrayList<>(Arrays.asList(
-								Eye.class,ShieldHuntsman.class));
+								Eye.class, Ice_Scorpio.class,Fire_Scorpio.class));
 					case 23:
 						//1x: succubus, 2x evil eye, 3x scorpio
 						return new ArrayList<>(Arrays.asList(

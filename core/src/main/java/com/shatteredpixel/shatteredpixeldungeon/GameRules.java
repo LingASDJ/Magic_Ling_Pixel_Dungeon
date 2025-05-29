@@ -174,6 +174,9 @@ public class GameRules {
                 case "圣诞":
                     banners = Assets.Interfaces.BANNERS_SD;
                     break;
+                case "端午":
+                    banners = Assets.Interfaces.BANNERS_DW;
+                    break;
                 case "元宵":
                     banners = Assets.Interfaces.BANNERS_YX;
                     break;
@@ -209,9 +212,7 @@ public class GameRules {
                     break;
             }
         } else {
-            if (4 == month) {
-                banners = Assets.Interfaces.BANNERS_LD;
-            } else if (RegularLevel.holiday == RegularLevel.Holiday.YX) {
+           if (RegularLevel.holiday == RegularLevel.Holiday.YX) {
                 if (!SPDSettings.ClassUI()) {
                     banners = Assets.Interfaces.BANNERS_YX;
                 } else {
@@ -221,6 +222,10 @@ public class GameRules {
                 banners = Assets.Interfaces.BANNERS_CJ;
             } else if (RegularLevel.holiday == RegularLevel.Holiday.QMJ) {
                 banners = Assets.Interfaces.BANNERS_QM;
+            } else if (RegularLevel.holiday == RegularLevel.Holiday.DWJ) {
+               banners = Assets.Interfaces.BANNERS_DW;
+            } else  if (4 == month) {
+               banners = Assets.Interfaces.BANNERS_LD;
             } else if (month == 2 || month == 3 ) { // 春季：3, 4, 5月
                 banners = Assets.Interfaces.BANNERS_SR;
             } else if (month == 5 || month == 6 || month == 7) { // 夏季：6, 7, 8月

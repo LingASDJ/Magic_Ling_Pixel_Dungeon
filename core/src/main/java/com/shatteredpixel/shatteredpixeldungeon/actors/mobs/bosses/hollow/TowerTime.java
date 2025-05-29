@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
@@ -40,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueWraithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TowerTimeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -130,10 +132,23 @@ public class TowerTime extends Boss {
     }
 
     @Override
+    public void die(Object cause) {
+        super.die(cause);
+         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof TowerMind || mob instanceof TowerTime||mob instanceof TowerGods||mob instanceof TowerMachine) {
+                Buff.affect(mob, TowerParalysis.class).set((21), 1);
+            }
+        };
+    }
+
+    @Override
     public boolean act() {
         laserattack();
+        TowerParalysis towerParalysis = buff(TowerParalysis.class);
+        if(towerParalysis == null){
+            TryGetSummonedMobs();
+        }
 
-        TryGetSummonedMobs();
 
         if (!LastHP) {
             beams = 11;
@@ -413,6 +428,12 @@ public class TowerTime extends Boss {
     public void damage(int dmg, Object src) {
         if(src == TowerMachine.class){
             return;
+        }
+        BossHealthBar.assignBoss(this);
+        LockedFloor lock = hero.buff(LockedFloor.class);
+        if (lock != null) {
+            int multiple = 2;
+            lock.addTime(dmg*multiple);
         }
 
         dmg -= dmg * (summonedMobs*5) / 100;
