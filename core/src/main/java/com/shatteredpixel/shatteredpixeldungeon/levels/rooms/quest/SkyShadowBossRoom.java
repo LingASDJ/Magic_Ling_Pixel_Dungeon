@@ -2,6 +2,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest;
 
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.HIGH_GRASS;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SkyDead;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -38,14 +40,14 @@ public class SkyShadowBossRoom extends StandardRoom {
     }
     @Override
     public void paint(Level level) {
-        Painter.fill( level, this, Terrain.WALL );
+        Painter.fill( level, this, WALL );
 
-        Painter.fillEllipse( level, this, 1 , EMPTY );
+        Painter.fillEllipse( level, this, 1 , EMPTY);
 
         for (Door door : connected.values()) {
             door.set( Door.Type.REGULAR );
             if (door.x == left || door.x == right){
-                Painter.drawInside(level, this, door, width()/2, HIGH_GRASS);
+                Painter.drawInside(level, this, door, width()/2, WATER);
             } else {
                 Painter.drawInside(level, this, door, height()/2,  HIGH_GRASS);
             }
@@ -56,6 +58,9 @@ public class SkyShadowBossRoom extends StandardRoom {
 
         Point e = new Point(centerX, centerY);
 
+        Painter.drawCircle(level, e, 1, Terrain.EMBERS);
+        Painter.drawCircle(level, e, 2, Terrain.CHASM);
+        Painter.drawCircle(level, e, 3, Terrain.EMBERS);
         Painter.set(level, e, Terrain.WATER);
 
         int LXDPos = (left + right) - e.x + e.y * level.width();

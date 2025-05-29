@@ -5,11 +5,11 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -41,13 +41,11 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -65,13 +63,13 @@ public class DeepShadowLevel extends Level {
 
     @Override
     public void playLevelMusic(){
-        Music.playModeBGM(Assets.Music.BGM_YOU,true);
+        Music.playModeBGM(Assets.Music.BGM_BOSSC,true);
     }
 
     @Override
     public void playBossMusic(){
         Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
-                () -> Music.playModeBGM(Assets.Music.BGM_BOSSC,true)));
+                () -> Music.playModeBGM(Assets.Music.BGM_YOU,true)));
     }
 
     public enum State {
@@ -86,8 +84,8 @@ public class DeepShadowLevel extends Level {
 
     private static final int JUMP_TIME = 1;
 
-    private State state;
-    private Rival rival;
+    public State state;
+    public Rival rival;
 
     public State state(){
         return state;
@@ -105,18 +103,15 @@ public class DeepShadowLevel extends Level {
     public String tilesTex() {
         if(rival == null && !Statistics.doNotLookLing){
             GLog.n(Messages.get(Rival.class,"mustone",hero.name()+"?"));
-            Buff.prolong( hero, Paralysis.class, Paralysis.DURATION*50 );
-            Buff.affect(hero,  Invisibility.class, 200000f);
-            GameScene.scene.add(new Delayer(3f){
-                @Override
-                protected void onComplete() {
-
-                    InterlevelScene.mode = InterlevelScene.Mode.RESET;
-                    Game.switchScene(InterlevelScene.class);
-                    Buff.detach(hero, Paralysis.class);
-                    Buff.detach(hero, RoseShiled.class);
+            Buff.prolong( hero, Paralysis.class, Paralysis.DURATION );
+            Buff.affect(hero,  Invisibility.class, 10f);
+            Buff.affect(hero,  Invulnerability.class, 10f);
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                if (mob instanceof Rival) {
+                    rival = (Rival) mob;
+                    break;
                 }
-            });
+            }
 
         }
         return Assets.Environment.TILES_COLD;
@@ -202,10 +197,6 @@ public class DeepShadowLevel extends Level {
         mobs.add( rival );
     }
 
-    public Actor respawner() {
-        return null;
-    }
-
     @Override
     protected void createItems() {}
 
@@ -252,12 +243,6 @@ public class DeepShadowLevel extends Level {
         bundle.put( STORED_ITEMS, storedItems);
     }
 
-    //    public void occupyCell(Char ch) {
-//        super.occupyCell(ch);
-//        GLog.p(String.valueOf(hero.pos));
-//        GLog.b(String.valueOf(Statistics.zeroItemLevel));
-//    }
-
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
@@ -265,11 +250,17 @@ public class DeepShadowLevel extends Level {
         for (Bundlable item : bundle.getCollection(STORED_ITEMS)){
             storedItems.add( (Item)item );
         }
-        //Statistics.doNotLookLing = false;
     }
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
         //GLog.p(String.valueOf(hero.pos));
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof Rival) {
+                rival = (Rival) mob;
+                break;
+            }
+        }
 
         if (ch == hero && rival != null){
             //hero reaches amulet

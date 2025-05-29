@@ -295,8 +295,6 @@ public class LevelRules {
                         return new MiniBossLevel();
                     case 8:
                         return new MiniSkyShadowBossLevel();
-                    case 14:
-                        return new MiniBossLevel();
                     case 5:
                         return new DragonCaveLevel();
                     case 17:

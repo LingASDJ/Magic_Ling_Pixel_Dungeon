@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerParalysis;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -411,6 +412,9 @@ public class Combo extends Buff implements ActionIndicator.Action {
 									&& PathFinder.distance[ch.pos] < Integer.MAX_VALUE) {
 								int aoeHit = Math.round(target.damageRoll() * 0.15f * count);
 								if (ch.buff(Vulnerable.class) != null) aoeHit *= 1.33f;
+
+								if (ch.buff(TowerParalysis.class) != null) aoeHit *= 1.25f;
+
 								if (ch instanceof DwarfKing){
 									//change damage type for DK so that crush AOE doesn't count for DK's challenge badge
 									ch.damage(aoeHit, this);

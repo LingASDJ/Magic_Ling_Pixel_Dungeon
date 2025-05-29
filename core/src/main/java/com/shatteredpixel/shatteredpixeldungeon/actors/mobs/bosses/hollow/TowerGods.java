@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -13,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
@@ -26,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TowerGodSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Image;
@@ -229,20 +233,33 @@ public class TowerGods extends Boss {
         }
     }
 
+    @Override
+    public void die(Object cause) {
+        super.die(cause);
+         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof TowerMind || mob instanceof TowerTime||mob instanceof TowerGods||mob instanceof TowerMachine) {
+                Buff.affect(mob, TowerParalysis.class).set((21), 1);
+            }
+        };
+    }
+
     protected boolean act() {
         alerted = false;
+        TowerParalysis towerParalysis = buff(TowerParalysis.class);
+        if(towerParalysis == null) {
+            if(!LastHP && buff(GetAllyBuffs.class) == null){
+                getAllyBuffs();
+                Buff.affect(this, GetAllyBuffs.class, 20f);
+            } else if(LastHP && buff(GetAllyBuffs.class) == null) {
+                getAllyBuffs();
+                Buff.affect(this, GetAllyBuffs.class, 25f);
+            }
 
-        if(!LastHP && buff(GetAllyBuffs.class) == null){
-            getAllyBuffs();
-            Buff.affect(this, GetAllyBuffs.class, 20f);
-        } else if(LastHP && buff(GetAllyBuffs.class) == null) {
-            getAllyBuffs();
-            Buff.affect(this, GetAllyBuffs.class, 25f);
+            TryGetSummonedMobs();
+
+            state = PASSIVE;
         }
 
-        TryGetSummonedMobs();
-
-        state = PASSIVE;
         return super.act();
     }
 
@@ -324,7 +341,14 @@ public class TowerGods extends Boss {
         if(src == TowerMachine.class){
             return;
         }
+        BossHealthBar.assignBoss(this);
 
+        LockedFloor lock = hero.buff(LockedFloor.class);
+        if (lock != null) {
+            int multiple = 2;
+            lock.addTime(dmg*multiple);
+        }
+        BossHealthBar.assignBoss(this);
         // 神选之人：计算有效增益Buff数量
         int buffCount = 0;
         for (Buff b : Dungeon.hero.buffs()) {

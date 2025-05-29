@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
@@ -27,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaFloat;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GME;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MissileSpriteCustom;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -34,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MindCoreSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TowerMindSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
@@ -50,7 +53,7 @@ public class TowerMind extends Boss {
 
     {
         initProperty();
-        initBaseStatus(10, 45, 33, 45, 200, 0, 0);
+        initBaseStatus(10, 45, 33, 45, 400, 0, 0);
         initStatus(120);
         first = true;
         spriteClass = TowerMindSprite.class;
@@ -77,6 +80,12 @@ public class TowerMind extends Boss {
         if(src == TowerMachine.class){
             return;
         }
+        LockedFloor lock = hero.buff(LockedFloor.class);
+        if (lock != null) {
+            int multiple = 2;
+            lock.addTime(dmg*multiple);
+        }
+        BossHealthBar.assignBoss(this);
         super.damage(dmg, src);
     }
 
@@ -181,167 +190,171 @@ public class TowerMind extends Boss {
     public boolean act() {
         alerted = false;
         state = PASSIVE;
+        TowerParalysis towerParalysis = buff(TowerParalysis.class);
+        if (towerParalysis == null) {
+            TryGetSummonedMobs();
 
-       TryGetSummonedMobs();
+            if(buff(MindGetItemsColdDown.class) == null) {
 
-        if(buff(MindGetItemsColdDown.class) == null) {
-            // 先检测存活核心数量
-            ArrayList<MindCore> aliveCores = new ArrayList<>();
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if (mob instanceof MindCore && mob.isAlive()
-                        && ((MindCore) mob).items.isEmpty()) {
-                    aliveCores.add((MindCore) mob);
-                }
-            }
-
-            // 核心满载检测（所有存活核心都达到容量上限）
-            boolean allCoresFull = true;
-            for (MindCore core : aliveCores) {
-                if (core.items.isEmpty()) {
-                    allCoresFull = false;
-                    break;
-                }
-            }
-            if (allCoresFull) {
-                Buff.affect(this, MindGetItemsColdDown.class, 50f);
-                return super.act();
-            }
-
-            // 动态检测条件
-            boolean enraged = HP < HT * 0.5f;
-            // 掠夺物品（包含诅咒物品处理）
-            ArrayList<Item> stolenItems = new ArrayList<>();
-            ArrayList<Item> allItems = hero.belongings.getAllItems(Item.class);
-
-            ITEM_LOOP:
-            for (Item item : allItems) {
-                if (stealCounter >= 3) break; // 最多缴械3件
-
-                if (enraged) {
-                    conditionMet = item.level() >= 6;
-                } else {
-                    conditionMet = item.level() >= 3 && !item.cursed;
-                }
-
-                if (conditionMet) {
-                    // 执行缴械操作
-                    stolenItems.add(item);
-
-                    // 创建基础弹道轨迹
-                    new BallisticaFloat(
-                            hero.pos,
-                            GME.angle(pos, hero.pos),
-                            6,
-                            Ballistica.PROJECTILE
-                    );
-
-                    // 生成散射角度队列
-                    float[] angles = generateScatterAngles(
-                            stolenItems.size()
-                    );
-
-                    // 创建粒子发射器
-                    ParticleEmitter pe = new ParticleEmitter();
-
-                    // 批量投射动画
-                    for(int i=0; i<stolenItems.size(); i++){
-                        Item currentItem = stolenItems.get(i);
-                        BallisticaFloat traj = new BallisticaFloat(
-                                hero.pos,
-                                angles[i],
-                                6,
-                                Ballistica.PROJECTILE
-                        );
-
-                        // 为每个物品创建独立动画
-                        MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
-                        msc.reset(
-                                hero.sprite,
-                                traj.collisionPosI,
-                                currentItem,
-                                0.6f,
-                                1.25f + i*0.1f, // 添加序列延迟
-                                new Callback() {
-                                    @Override
-                                    public void call() {
-
-                                    }
-                                }
-                        );
-                    }
-
-
-                    if (item.isEquipped(hero)) {
-                        ((EquipableItem) item).doUnequip(hero, false);
-                    }
-                    item.detachAll(hero.belongings.backpack);
-                    yell(Messages.get(this, "yell_steal_item", item.name()));
-                    stealCounter++;
-                    if (aliveCores.isEmpty()) break ITEM_LOOP;
-                }
-            }
-
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if (mob instanceof MindCore && mob.isAlive()
-                        && ((MindCore) mob).items.size() < 3) { // 允许未满的核心
-                    aliveCores.add((MindCore) mob);
-                }
-            }
-
-            // 在物品分配循环中添加类型检查和核心更新
-            for (Item item : stolenItems) {
-                // 寻找匹配类型的核心
-                MindCore target = null;
-                for (MindCore core : aliveCores) {
-                    if (!core.items.isEmpty()
-                            && core.items.get(0).getClass() == item.getClass()) {
-                        target = core;
-                        break;
-                    }
-                }
-
-                // 没有匹配核心则找空核心
-                if (target == null) {
-                    for (MindCore core : aliveCores) {
-                        if (core.items.isEmpty()) {
-                            target = core;
-                            break;
+                //检查是否有损坏的核心
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (mob instanceof MindCore && mob.HP == 0) {
+                        if (HP > HT * 0.1f) {
+                            HP -= (int) (HT * 0.1f);
+                            mob.HP = mob.HT;
+                            ((MindCore) mob).dropped = false;
                         }
                     }
                 }
 
-                // 分配物品
-                if (target != null) {
-                    target.items.add(item);
-                    // 移除已满的核心
-                    if (target.items.size() >= 3) {
-                        aliveCores.remove(target);
+                // 先检测存活核心数量
+                ArrayList<MindCore> aliveCores = new ArrayList<>();
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (mob instanceof MindCore && mob.isAlive()
+                            && ((MindCore) mob).items.isEmpty()) {
+                        aliveCores.add((MindCore) mob);
                     }
-                } else {
-                    // 回退到默认处理（可选记录日志）
-                    Dungeon.level.drop(item, pos);
                 }
-            }
+
+                Buff.affect(this, MindGetItemsColdDown.class, 50f);
+
+                // 动态检测条件
+                boolean enraged = HP < HT * 0.5f;
+                // 掠夺物品（包含诅咒物品处理）
+                ArrayList<Item> stolenItems = new ArrayList<>();
+                ArrayList<Item> allItems = hero.belongings.getAllItems(Item.class);
+
+                ITEM_LOOP:
+                for (Item item : allItems) {
+                    if (stealCounter >= 3) break; // 最多缴械3件
+
+                    if (enraged) {
+                        conditionMet = item.level() >= 6;
+                    } else {
+                        conditionMet = item.level() >= 3 && !item.cursed;
+                    }
+
+                    if (conditionMet) {
+                        // 执行缴械操作
+                        stolenItems.add(item);
+
+                        // 创建基础弹道轨迹
+                        new BallisticaFloat(
+                                hero.pos,
+                                GME.angle(pos, hero.pos),
+                                6,
+                                Ballistica.PROJECTILE
+                        );
+
+                        // 生成散射角度队列
+                        float[] angles = generateScatterAngles(
+                                stolenItems.size()
+                        );
+
+                        // 创建粒子发射器
+                        ParticleEmitter pe = new ParticleEmitter();
+
+                        // 批量投射动画
+                        for(int i=0; i<stolenItems.size(); i++){
+                            Item currentItem = stolenItems.get(i);
+                            BallisticaFloat traj = new BallisticaFloat(
+                                    hero.pos,
+                                    angles[i],
+                                    6,
+                                    Ballistica.PROJECTILE
+                            );
+
+                            // 为每个物品创建独立动画
+                            MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
+                            msc.reset(
+                                    hero.sprite,
+                                    traj.collisionPosI,
+                                    currentItem,
+                                    0.6f,
+                                    1.25f + i*0.1f, // 添加序列延迟
+                                    new Callback() {
+                                        @Override
+                                        public void call() {
+
+                                        }
+                                    }
+                            );
+                        }
 
 
-            //检查是否有损坏的核心
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if (mob instanceof MindCore && mob.HP == 0) {
-                    if (HP > HT * 0.1f) {
-                        HP -= (int) (HT * 0.1f);
-                        mob.HP = mob.HT;
-                        ((MindCore) mob).dropped = false;
+                        if (item.isEquipped(hero)) {
+                            ((EquipableItem) item).doUnequip(hero, false);
+                        }
+                        item.detachAll(hero.belongings.backpack);
+                        yell(Messages.get(this, "yell_steal_item", item.name()));
+                        stealCounter++;
+                        if (aliveCores.isEmpty()) break ITEM_LOOP;
+                    }
+                }
+
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (mob instanceof MindCore && mob.isAlive()
+                            && ((MindCore) mob).items.size() < 3) { // 允许未满的核心
+                        aliveCores.add((MindCore) mob);
+                    }
+                }
+
+                // 在物品分配循环中添加类型检查和核心更新
+                for (Item item : stolenItems) {
+                    // 寻找匹配类型的核心
+                    MindCore target = null;
+                    for (MindCore core : aliveCores) {
+                        if (!core.items.isEmpty()
+                                && core.items.get(0).getClass() == item.getClass()) {
+                            target = core;
+                            break;
+                        }
+                    }
+
+                    // 没有匹配核心则找空核心
+                    if (target == null) {
+                        for (MindCore core : aliveCores) {
+                            if (core.items.isEmpty()) {
+                                target = core;
+                                break;
+                            }
+                        }
+                    }
+
+                    // 分配物品
+                    if (target != null) {
+                        target.items.add(item);
+                        // 移除已满的核心
+                        if (target.items.size() >= 3) {
+                            aliveCores.remove(target);
+                        }
+                    } else {
+                        // 回退到默认处理（可选记录日志）
+                        Dungeon.level.drop(item, pos);
                     }
                 }
             }
         }
-
         return super.act();
     }
 
+    @Override
+    public void die(Object cause) {
+        super.die(cause);
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof TowerMind.MindCore) {
+                ((TowerMind.MindCore) mob).die(true);
+            }
+        }
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof TowerMind || mob instanceof TowerTime||mob instanceof TowerGods||mob instanceof TowerMachine) {
+                Buff.affect(mob, TowerParalysis.class).set((21), 1);
+            }
+        }
 
 
-
+    }
 
     public static class MindCore extends Mob {
 
@@ -366,10 +379,38 @@ public class TowerMind extends Boss {
             alerted = false;
             state = PASSIVE;
 
-            if (HP == 0) {
+            if (HP == 0 && !dropped) {
+
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if(mob instanceof TowerMind){
+                        ((TowerMind) mob).stealCounter--;
+                        if (((TowerMind) mob).stealCounter < 0) {
+                            ((TowerMind) mob).stealCounter = 0;
+                        }
+                    }
+                }
+
                 ArrayList<Item> toDrop = new ArrayList<>(items);
                 for (Item item : toDrop) {
-                    Dungeon.level.drop(item, pos);
+                    MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
+                    msc.reset(
+                            sprite,
+                            hero.pos,
+                            items.get(0),
+                            0.6f,
+                            1.25f + Random.Float(0,1)*0.1f,
+                            new Callback() {
+                                @Override
+                                public void call() {
+                                    Dungeon.level.drop(item, hero.pos);
+                                    items= new ArrayList<>();
+                                }
+                            }
+                    );
+                    for(Buff buff : buffs()){
+                        buff.detach();
+                    }
+                    dropped = true;
                 }
             }
 
@@ -380,8 +421,9 @@ public class TowerMind extends Boss {
         public boolean isAlive() {
             boolean isAlive = false;
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-                if(mob instanceof TowerMind){
+                if (mob instanceof TowerMind) {
                     isAlive = true;
+                    break;
                 }
             }
           return isAlive;
@@ -430,6 +472,9 @@ public class TowerMind extends Boss {
         public void die(Object cause) {
             super.die(cause);
             if(!dropped){
+                if(items.isEmpty()){
+                    items.add(new Gold(1));
+                }
                 MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
                 msc.reset(
                         sprite,
