@@ -212,7 +212,15 @@ public class PrisonLevel extends RegularLevel {
 	@Override
 	public boolean activateTransition(Hero hero, LevelTransition transition) {
 		if (transition.type == LevelTransition.Type.BRANCH_EXIT) {
-
+            if (Statistics.amuletObtained){
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndMessage((Messages.get(ClearElemtGuard.class, "cant_enter_c"))));
+                    }
+                });
+                return false;
+            }
 			if (!Statistics.unLockedFireDargon && !SPDSettings.KillDragon()){
 				Game.runOnRenderThread(new Callback() {
 					@Override

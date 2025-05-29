@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SkyDead;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
@@ -95,11 +94,6 @@ public class ScrollOfTeleportation extends Scroll {
 	}
 
 	public static boolean teleportChar( Char ch, Class source ) {
-
-		if(ch instanceof SkyDead){
-			GLog.w( Messages.get(SkyDead.class, "no_tele") );
-			return false;
-		}
 
 		if (!(Dungeon.level instanceof RegularLevel)){
 			return teleportInNonRegularLevel( ch, false );

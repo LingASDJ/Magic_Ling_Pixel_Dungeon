@@ -374,27 +374,28 @@ public class NewDM720 extends MolotovHuntsman implements Mob.NoMobSpawn {
     }
 
     public void ventGas( Char target ){
-        Dungeon.hero.interrupt();
+        if(target != null){
+            Dungeon.hero.interrupt();
 
-        int gasVented = 0;
+            int gasVented = 0;
 
-        Ballistica trajectory = new Ballistica(pos, target.pos, Ballistica.STOP_TARGET);
+            Ballistica trajectory = new Ballistica(pos, target.pos, Ballistica.STOP_TARGET);
 
-        for (int i : trajectory.subPath(0, trajectory.dist)){
-            GameScene.add(Blob.seed(i, 20, ToxicGas.class));
-            gasVented += 20;
-        }
-
-        GameScene.add(Blob.seed(trajectory.collisionPos, 100, ToxicGas.class));
-
-        if (gasVented < 250){
-            int toVentAround = (int)Math.ceil((250 - gasVented)/8f);
-            for (int i : PathFinder.NEIGHBOURS8){
-                GameScene.add(Blob.seed(pos+i, toVentAround, ToxicGas.class));
+            for (int i : trajectory.subPath(0, trajectory.dist)){
+                GameScene.add(Blob.seed(i, 20, ToxicGas.class));
+                gasVented += 20;
             }
 
-        }
+            GameScene.add(Blob.seed(trajectory.collisionPos, 100, ToxicGas.class));
 
+            if (gasVented < 250){
+                int toVentAround = (int)Math.ceil((250 - gasVented)/8f);
+                for (int i : PathFinder.NEIGHBOURS8){
+                    GameScene.add(Blob.seed(pos+i, toVentAround, ToxicGas.class));
+                }
+
+            }
+        }
     }
 
     public void onSlamComplete(){

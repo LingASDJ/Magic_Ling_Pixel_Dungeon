@@ -24,8 +24,6 @@ public class HollowCityBook extends Books {
         image = ItemSpriteSheet.HLPBOOKS;
     }
 
-
-
     @Override
     public void execute( Hero hero, String action ) {
         super.execute(hero, action);

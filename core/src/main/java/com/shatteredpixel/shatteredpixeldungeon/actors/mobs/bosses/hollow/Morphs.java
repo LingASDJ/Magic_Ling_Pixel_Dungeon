@@ -30,12 +30,14 @@ public class Morphs extends Boss {
 
     {
         initProperty();
-        initBaseStatus(0, 0, 0, 0, 50000, 0, 0);
+        initBaseStatus(0, 0, 0, 0, 1, 0, 0);
         initStatus(0);
 
         spriteClass = MorpheusSprite.class;
 
         viewDistance = 100;
+
+        alignment = Alignment.NEUTRAL;
 
         properties.add(Property.IMMOVABLE);
         properties.add(Property.BOSS);

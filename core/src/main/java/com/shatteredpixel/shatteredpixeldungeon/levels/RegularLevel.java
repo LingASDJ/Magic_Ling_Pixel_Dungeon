@@ -76,7 +76,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BlueAltStoneRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BoilerRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.GoldRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.HealWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.IdenityRoom;
@@ -296,9 +295,9 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if(Dungeon.depth == 24 && branch == 0) {
-			initRooms.add(new BoilerRoom());
-		}
+//		if(Dungeon.depth == 24 && branch == 0) {
+//			initRooms.add(new BoilerRoom());
+//		}
 
 		//20%
 		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 40 || depth == 27 && !Statistics.bossRushMode) {

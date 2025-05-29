@@ -15,11 +15,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.sewerboss.GooBossRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.sewerboss.SewerBossEntranceRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalChoiceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalPathRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalVaultRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.YinYangRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NxhySprite;
@@ -28,7 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -51,25 +47,8 @@ public class MiniBossLevel extends RegularLevel {
         initRooms.add( roomEntrance = new SewerBossEntranceRoom() );
 
         SpecialRoom s1;
-        switch (Random.Int(4)) {
-            case 0:
-            default:
-                s1 = new CrystalVaultRoom();
-                initRooms.add(s1);
-            break;
-            case 1:
-                s1 = new CrystalChoiceRoom();
-                initRooms.add(s1);
-                break;
-            case 2:
-                s1 = new CrystalPathRoom();
-                initRooms.add(s1);
-                break;
-            case 3:
-                s1 = new YinYangRoom();
-                initRooms.add(s1);
-                break;
-        }
+        s1 = new CrystalPathRoom();
+        initRooms.add(s1);
 
 
         GooBossRoom gooRoom = GooBossRoom.randomGooRoom();
