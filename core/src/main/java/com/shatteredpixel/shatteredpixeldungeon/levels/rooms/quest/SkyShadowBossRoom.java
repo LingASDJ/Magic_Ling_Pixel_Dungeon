@@ -60,7 +60,6 @@ public class SkyShadowBossRoom extends StandardRoom {
 
         Painter.drawCircle(level, e, 1, Terrain.EMBERS);
         Painter.drawCircle(level, e, 2, Terrain.CHASM);
-        Painter.drawCircle(level, e, 3, Terrain.EMBERS);
         Painter.set(level, e, Terrain.WATER);
 
         int LXDPos = (left + right) - e.x + e.y * level.width();

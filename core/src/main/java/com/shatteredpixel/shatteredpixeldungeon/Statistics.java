@@ -239,6 +239,8 @@ public class Statistics {
 
 	public static boolean onlyBzmdr = false;
 
+	public static boolean onlyLing = false;
+
 	//昼夜更替
 	public static int gameTime;
 	public static int gameDay;
@@ -555,6 +557,7 @@ public class Statistics {
 		dm720Fight = false;
 		dm300Fight = false;
 		onlyBzmdr = false;
+		onlyLing = false;
 
 		gameDay = 1;
 
@@ -812,6 +815,8 @@ public class Statistics {
 
 		bundle.put("onlyB",onlyBzmdr);
 
+		bundle.put("onlyLing",onlyLing);
+
 		bundle.put("NOTIME",NoTime);
 
 		//分数
@@ -940,6 +945,8 @@ public class Statistics {
 		//BossRush2.5
 		LiquidMatalOnlyTen = bundle.getBoolean("LIMTAL_DROP");
 		LimitLiquidMatal = bundle.getInt("LIMTAL");
+
+		onlyLing = bundle.getBoolean("onlyLing");
 
 		/**/
 		Hollow_Holiday = bundle.getBoolean("HOLLOW_DAY");

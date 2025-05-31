@@ -53,6 +53,11 @@ public class Ring extends KindofMisc {
 		return Messages.get(Ring.class, gem);
 	}
 
+	@Override
+	public int iceCoinValue() {
+		return (int) (value() * 5);
+	}
+
 
 	public Buff buff;
 

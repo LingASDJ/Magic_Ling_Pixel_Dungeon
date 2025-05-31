@@ -461,6 +461,11 @@ public class MeleeWeapon extends Weapon {
 		return price;
 	}
 
+	@Override
+	public int iceCoinValue() {
+		return (int) (value() * 3.75);
+	}
+
 	public static class Charger extends Buff implements ActionIndicator.Action {
 
 		public int charges = 3;

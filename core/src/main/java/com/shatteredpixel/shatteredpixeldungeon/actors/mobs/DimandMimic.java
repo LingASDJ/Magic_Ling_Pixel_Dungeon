@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -92,6 +93,7 @@ public class DimandMimic extends Mimic {
            ScrollOfTeleportation.appear(this,  Dungeon.level.randomRespawnCell(this));
            HP = 60;
            chainsUsed = false;
+           Bestiary.setSeen(this.getClass());
        }
 
         return super.act();

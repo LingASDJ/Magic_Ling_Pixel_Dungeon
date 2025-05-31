@@ -15,6 +15,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ATRI;
@@ -33,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Random;
+
+import java.util.List;
 
 public class HotelLevel extends Level {
 
@@ -175,20 +178,29 @@ public class HotelLevel extends Level {
     @Override
     protected void createMobs() {
 
-        if (Badges.isUnlocked(Badges.Badge.VICTORY)) {
-            if (Random.Float() < 0.45f) {
-                WhiteLing n = new WhiteLing();
-                n.pos = (this.width * 9 + 10);
-                mobs.add(n);
-            }
-        } else {
-            if (Random.Float() < 0.1f) {
-                WhiteLing n = new WhiteLing();
-                n.pos = (this.width * 9 + 10);
-                mobs.add(n);
+        PaswordBadges.loadGlobal();
+        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+        if(!Statistics.onlyLing){
+            if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX)) {
+                if (Random.Float() < 0.65f) {
+                    WhiteLing n = new WhiteLing();
+                    n.pos = (this.width * 9 + 10);
+                    mobs.add(n);
+                }
+            } else if (Badges.isUnlocked(Badges.Badge.VICTORY)) {
+                if (Random.Float() < 0.45f) {
+                    WhiteLing n = new WhiteLing();
+                    n.pos = (this.width * 9 + 10);
+                    mobs.add(n);
+                }
+            } else {
+                if (Random.Float() < 0.1f) {
+                    WhiteLing n = new WhiteLing();
+                    n.pos = (this.width * 9 + 10);
+                    mobs.add(n);
+                }
             }
         }
-
 
             MoonCat n1 = new MoonCat();
             n1.pos = 143;
