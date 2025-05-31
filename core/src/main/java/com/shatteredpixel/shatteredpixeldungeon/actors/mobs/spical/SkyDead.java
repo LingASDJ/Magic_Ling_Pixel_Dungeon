@@ -176,7 +176,7 @@ public class SkyDead extends Mob {
         super.move(step);
         scytheCooldown--;
     }
-
+    private static int dodges = 0;
     @Override
     public void damage(int damage, Object src){
         LockedFloor lock = hero.buff(LockedFloor.class);
@@ -184,6 +184,11 @@ public class SkyDead extends Mob {
         int dmg = Math.min(damage, 15);
         if(!firstBurning){
             dmg = 0;
+            dodges++;
+            if ((dodges >= 2)){
+                GLog.w(Messages.get(this, "dodge_warning"));
+                dodges = 0;
+            }
         }
         super.damage(dmg, src);
     }
@@ -233,6 +238,7 @@ public class SkyDead extends Mob {
         }
         return desc;
     }
+
 
     @Override
     public int attackSkill( Char target ) {
