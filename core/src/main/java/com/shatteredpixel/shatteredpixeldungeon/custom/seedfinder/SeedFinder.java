@@ -257,8 +257,6 @@ public class SeedFinder {
 	private boolean testSeedALL(String seed, int floors) {
 		Dungeon.isDLC(Conducts.Conduct.SEED);
 		SPDSettings.customSeed(seed);
-		Dungeon.hero = null;
-		Dungeon.daily = Dungeon.dailyReplay = false;
 		Dungeon.initSeed();
 		GamesInProgress.selectedClass = HeroClass.WARRIOR;
 		Dungeon.init();

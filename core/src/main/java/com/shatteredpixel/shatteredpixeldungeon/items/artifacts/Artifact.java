@@ -92,6 +92,11 @@ public class Artifact extends KindofMisc {
 	}
 
 	@Override
+	public int iceCoinValue() {
+		return (int) (value() * 5);
+	}
+
+	@Override
 	public boolean doUnequip( Hero hero, boolean collect, boolean single ) {
 		if (super.doUnequip( hero, collect, single )) {
 

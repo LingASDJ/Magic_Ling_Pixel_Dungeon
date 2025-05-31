@@ -18,7 +18,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -59,6 +58,7 @@ public class SkyDead extends Mob {
         properties.add(Property.DEMONIC);
         properties.add(Property.IMMOVABLE);
         immunities.add(Burning.class);
+        immunities.add(HalomethaneBurning.class);
 
         immunities.add(ScrollOfTeleportation.class);
     }
@@ -177,12 +177,14 @@ public class SkyDead extends Mob {
         scytheCooldown--;
     }
 
-
     @Override
     public void damage(int damage, Object src){
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(damage*2);
         int dmg = Math.min(damage, 15);
+        if(!firstBurning){
+            dmg = 0;
+        }
         super.damage(dmg, src);
     }
 
@@ -208,7 +210,7 @@ public class SkyDead extends Mob {
         //Dungeon.level.drop( Generator.random( Generator.Category.WAND), pos) .sprite.drop();
 
         if(Dungeon.branch == 2) {
-            Dungeon.level.drop(new IronKey(Dungeon.depth), hero.pos).sprite.drop();
+            Dungeon.level.drop(new CrystalKey(Dungeon.depth), hero.pos).sprite.drop();
             Dungeon.level.drop(new CrystalKey(Dungeon.depth), pos).sprite.drop();
             Dungeon.level.drop(new PotionOfLiquidFlameX(), pos).sprite.drop();
 
@@ -224,15 +226,12 @@ public class SkyDead extends Mob {
     }
 
     @Override
-    protected boolean getCloser(int target) {
-        if (state == HUNTING) {
-            if(scytheCooldown <= 0 && Dungeon.level.distance(pos, enemy.pos) >= 2)
-                return super.getCloser( target );
-            return enemySeen && getFurther( target );
-        } else {
-            return super.getCloser(target);
+    public String description() {
+        String desc = Messages.get(this, "desc");
+        if(!firstBurning) {
+            desc += "\n\n" + Messages.get(this, "desc_fire");
         }
-        //return false;
+        return desc;
     }
 
     @Override

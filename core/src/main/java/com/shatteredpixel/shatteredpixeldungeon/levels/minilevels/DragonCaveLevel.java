@@ -24,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.StormTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WeakeningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.Group;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -34,6 +35,10 @@ public class DragonCaveLevel extends RegularLevel {
         if (forceMax) return 6;
         //4 to 6, average 5
         return 4+ Random.chances(new float[]{1, 3, 1});
+    }
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.BGM_1A,true);
     }
 
     @Override

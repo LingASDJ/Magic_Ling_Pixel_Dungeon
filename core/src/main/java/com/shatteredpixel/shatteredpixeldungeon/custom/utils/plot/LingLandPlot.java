@@ -5,18 +5,15 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLingLand;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Random;
 
-import java.util.List;
-
-public class LingPlot extends Plot {
+public class LingLandPlot extends Plot {
 
 
     private final static int maxprocess = 4;
@@ -81,29 +78,21 @@ public class LingPlot extends Plot {
     private void process_to_1() {
         diagulewindow.hideAll();
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.LINP));
-        diagulewindow.setLeftName(Messages.get(WhiteLing.class, "name"));
-        diagulewindow.changeText(Messages.get(WhiteLing.class, "message1", hero.name()));
+        diagulewindow.setLeftName(Messages.get(WhiteLingLand.class, "name"));
+        diagulewindow.changeText(Messages.get(WhiteLingLand.class, "message1", hero.name()));
     }
 
     private void process_to_2() {
-        diagulewindow.changeText(Messages.get(WhiteLing.class, "message2"));
+        diagulewindow.changeText(Messages.get(WhiteLingLand.class, "message2"));
     }
 
     private void process_to_3() {
-        diagulewindow.changeText(Messages.get(WhiteLing.class, "message3"));
+        diagulewindow.changeText(Messages.get(WhiteLingLand.class, "message3"));
     }
 
     private void process_to_4() {
-        diagulewindow.changeText(Messages.get(WhiteLing.class, "message4"));
-        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
-        if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX)) {
-            Wand wand = (Wand) Generator.randomUsingDefaults( Generator.Category.WAND );
-            wand.cursed = false;
-            Dungeon.level.drop( wand, hero.pos );
-        } else {
-            Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.WAND ) ), hero.pos );
-        }
-
+        diagulewindow.changeText(Messages.get(WhiteLingLand.class, "message4"));
+        Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.WAND ) ), hero.pos );
     }
 
     public static class LingPlotGood extends Plot {
@@ -170,8 +159,8 @@ public class LingPlot extends Plot {
         private void process_to_1A() {
             diagulewindow.hideAll();
             diagulewindow.setMainAvatar(new Image(Assets.Splashes.LINP));
-            diagulewindow.setLeftName(Messages.get(WhiteLing.class, "name"));
-            diagulewindow.changeText(Messages.get(WhiteLing.class, "a_message5"));
+            diagulewindow.setLeftName(Messages.get(WhiteLingLand.class, "name"));
+            diagulewindow.changeText(Messages.get(WhiteLingLand.class, "a_message5"));
             Dungeon.level.drop( new CrystalLing(), hero.pos );
             PaswordBadges.HelloLing();
         }
@@ -179,15 +168,14 @@ public class LingPlot extends Plot {
         private void process_to_1B() {
             diagulewindow.hideAll();
             diagulewindow.setMainAvatar(new Image(Assets.Splashes.LINP));
-            diagulewindow.setLeftName(Messages.get(WhiteLing.class, "name"));
-            diagulewindow.changeText(Messages.get(WhiteLing.class, "b_message5"));
+            diagulewindow.setLeftName(Messages.get(WhiteLingLand.class, "name"));
+            diagulewindow.changeText(Messages.get(WhiteLingLand.class, "b_message5"));
         }
 
         private void process_to_2() {
-            diagulewindow.changeText(Messages.get(WhiteLing.class, "message6",hero.name()));
+            diagulewindow.changeText(Messages.get(WhiteLingLand.class, "message6",hero.name()));
         }
 
     }
-
-
 }
+

@@ -118,7 +118,7 @@ public class PaswordBadges {
     }
 
     public static void SKY_DEAD() {
-        displayBadge(Badge.SKY_XDEAD);
+        displayBadge(Badge.SKY_XEAD);
     }
 
 
@@ -135,7 +135,7 @@ public class PaswordBadges {
         BRCLER(7),
         ALLCHSX(8,false,true),
 
-        SKY_XDEAD(10),
+        SKY_XEAD(10),
         GODD_MAKE(12),
 
         BIG_X(13),

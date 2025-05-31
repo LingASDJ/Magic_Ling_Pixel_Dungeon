@@ -116,7 +116,7 @@ public class vM0_7_X_Changes {
     }
 
     public static void add_V0848_Changes(ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.8.4.8", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.8.4.8-9", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -129,6 +129,9 @@ public class vM0_7_X_Changes {
 
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：吉祥锦鲤"),
                 ("进入游戏通过落白商店 或者 游戏菜单 获取奖励，祝各位端午安康！")));
+
+        changes.addButton(new ChangeButton(new WhiteGirlSprites(), ("0层NPC优化：澪"),
+                ("在完成13挑后，旅馆2层澪生成概率提升20%，并且澪有概率在旅馆外看见（两者为互斥生成）并且法杖不会再携带诅咒")));
 
         Image xs =new SkyDeadSprite();
         xs.scale.set(PixelScene.align(0.8f));
@@ -147,7 +150,6 @@ public class vM0_7_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.BADGES),("加密徽章新增一个"),
                 ("新增更多加密徽章，欢迎前去探索")));
 
-
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
@@ -161,7 +163,11 @@ public class vM0_7_X_Changes {
                         (       "_-_ 修复暗影Boss的一些问题，现在不会再次读档\n" +
                                 "_-_ 修复火龙Boss的一些问题\n" +
                                 "_-_ 修复端午节活动的一些问题\n" +
-                                "_-_ 修复治疗类型效果对盟友不生效的问题")
+                                "_-_ 修复治疗类型效果对盟友不生效的问题\n" +
+                                "_-_ 修复创世神之心治疗不翻倍的问题\n" +
+                                "_-_ 修复锐刻五代的一些潜在小问题\n" +
+                                "_-_ 修复拟态王2阶段卡死异常，优化了钻石宝箱王幼年状态无法记录在图鉴的问题\n" +
+                                "_-_ 修复大仙人跳房间的文本缺失异常，并且只能在古堡中生成")
         ));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
@@ -189,7 +195,7 @@ public class vM0_7_X_Changes {
 
         changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16
                 , 16), "房间改动",
-                "变幻莫测迷你Boss奖励房现在均为六选一房"));
+                "变幻莫测迷你Boss奖励房现在奖励为至多六选二。"));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
         changes.hardlight(Window.GREEN_COLOR);

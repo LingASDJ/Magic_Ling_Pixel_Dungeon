@@ -569,6 +569,11 @@ public abstract class Wand extends Item {
 		}
 		return price;
 	}
+
+	@Override
+	public int iceCoinValue() {
+		return (int) (value() * 2);
+	}
 	
 	private static final String USES_LEFT_TO_ID     = "uses_left_to_id";
 	private static final String AVAILABLE_USES      = "available_uses";
