@@ -70,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenStingCV;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
@@ -189,6 +190,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SkyDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SuccubusQueen;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
@@ -467,7 +469,7 @@ public enum Bestiary {
 
 		QUEST.addEntities(FetidRat.class, AoReadyDragon.class, GnollTrickster.class, GreatCrab.class,
 				Elemental.NewbornFireElemental.class, RotLasher.class, RotHeart.class,
-				CrystalWisp.class, CrystalGuardian.class, CrystalSpire.class, GnollGuard.class, GnollSapper.class, GnollGeomancer.class);
+				CrystalWisp.class, CrystalGuardian.class, CrystalSpire.class, GnollGuard.class, GnollSapper.class, GnollGeomancer.class, Goo.class, SkyDead.class);
 
 		BOSSRUSH.addEntities(
 				SkyGoo.class,
