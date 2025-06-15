@@ -62,10 +62,6 @@ public class BuffGenerator extends TestItem{
         defaultAction = AC_BUFF_TARGET;
     }
 
-    //TODO 第二次创建 出现空指针 需要修正
-    private RenderedTextBlock buffText = PixelScene.renderTextBlock(8);
-    private RenderedTextBlock descText = PixelScene.renderTextBlock(6);
-
     private static final String AC_BUFF_SET = "buff_set";
     private static final String AC_BUFF_TARGET = "buff_target";
     private static final String AC_BUFF_CLEAN = "buff_clean";
@@ -95,7 +91,7 @@ public class BuffGenerator extends TestItem{
             if( ch == null )
                 GLog.w( M.L( WndSetBuff.class, "no_char" ) );
             else
-               AffectBuff(ch);
+                AffectBuff(ch);
         }
 
         @Override
@@ -207,12 +203,11 @@ public class BuffGenerator extends TestItem{
         private ArrayList<CheckBox> buffButtons = new ArrayList<>(columPerPage + 1 );
         private RenderedTextBlock selectedPage;
         private RedButton modifyDuration;
+        private RenderedTextBlock buffText = PixelScene.renderTextBlock(8);
+        private RenderedTextBlock descText = PixelScene.renderTextBlock(6);
 
         // 新增过滤后的数据缓存
         private ArrayList<Class<?>> filteredData = new ArrayList<>();
-
-
-
         private ArrayList<Class<?>> filteredBuffs = new ArrayList<>();
         // 核心过滤方法
         private void filterBuffs() {
@@ -437,7 +432,17 @@ public class BuffGenerator extends TestItem{
                     super.onClick();
                     int originalIndex = allData.indexOf(buffClass);
                     buffsStatus.set(originalIndex, checked);
+                    descText.text(M.L(allData.get(originalIndex), "desc"));
+                    buffText.text(M.L(allData.get(originalIndex), "name"));
                 }
+
+                @Override
+                protected boolean onLongClick() {
+                    int originalIndex = allData.indexOf(buffClass);
+                    GameScene.show( new WndMessage( M.L(allData.get(originalIndex), "desc") ) ) ;
+                    return super.onLongClick();
+                }
+
             };
             cb.checked(buffsStatus.get(allData.indexOf(buffClass)));
             return cb;
