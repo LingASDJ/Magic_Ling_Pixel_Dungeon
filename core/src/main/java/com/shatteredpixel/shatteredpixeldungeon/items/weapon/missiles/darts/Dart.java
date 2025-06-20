@@ -79,26 +79,33 @@ public class Dart extends MissileWeapon {
 	@Override
 	public int min(int lvl) {
 		if (bow != null){
-			if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null){
-				//ability increases base dmg by 37.5%, scaling by 50%
-				return  7 +                     //7 base
-						2*bow.buffedLvl() + lvl;//+2 per bow level, +1 per level
+			if(Dungeon.hero != null){
+				if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null){
+					//ability increases base dmg by 37.5%, scaling by 50%
+					return  7 +                     //7 base
+							2*bow.buffedLvl() + lvl;//+2 per bow level, +1 per level
+				} else {
+					return  4 +                     //4 base
+							bow.buffedLvl() + lvl;  //+1 per level or bow level
+				}
 			} else {
-				return  4 +                     //4 base
-						bow.buffedLvl() + lvl;  //+1 per level or bow level
+				return  4 + lvl;  //+1 per level or bow level
 			}
 		} else if(diedCrossBow != null ){
-			if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null){
-				//ability increases base dmg by 37.5%, scaling by 50%
-				return  7 +                     //7 base
-						2*diedCrossBow.buffedLvl() + lvl;//+2 per bow level, +1 per level
+			if(Dungeon.hero != null) {
+				if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null) {
+					//ability increases base dmg by 37.5%, scaling by 50%
+					return 7 +                     //7 base
+							2 * diedCrossBow.buffedLvl() + lvl;//+2 per bow level, +1 per level
+				} else {
+					return 4 +                     //4 base
+							diedCrossBow.buffedLvl() + lvl;
+				}
 			} else {
-				return  4 +                     //4 base
-						diedCrossBow.buffedLvl() + lvl;  //+1 per level or bow level
+				return 4 + lvl;
 			}
 		}else{
-			return  1 +     //1 base, down from 2
-					lvl;    //scaling unchanged
+			return  1 + lvl;
 		}
 	}
 

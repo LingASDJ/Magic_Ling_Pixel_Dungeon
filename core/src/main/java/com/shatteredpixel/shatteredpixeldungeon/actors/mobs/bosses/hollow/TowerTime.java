@@ -73,7 +73,7 @@ public class TowerTime extends Boss {
         initProperty();
         initBaseStatus(10, 20, 33, 0, 400, 0, 0);
         initStatus(120);
-        first = true;
+        noDropIceCoin = true;
         spriteClass = TowerTimeSprite.class;
 
         viewDistance = 100;
@@ -138,6 +138,9 @@ public class TowerTime extends Boss {
             if (mob instanceof TowerMind || mob instanceof TowerTime||mob instanceof TowerGods||mob instanceof TowerMachine) {
                 Buff.affect(mob, TowerParalysis.class).set((21), 1);
             }
+             if(mob instanceof Morphs){
+                 ((Morphs) mob).phase+=0.25f;
+             }
         };
     }
 
@@ -267,8 +270,14 @@ public class TowerTime extends Boss {
         public void die( Object cause ) {
             super.die( cause );
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-                if (	mob instanceof TowerTime) {
+                if (mob instanceof TowerTime) {
                     ((TowerTime) mob).summonedMobs--;
+                }
+                if(mob instanceof Morphs){
+                    ((Morphs) mob).phase+=0.25f;
+                }
+                if(mob instanceof DreamSenior || mob instanceof DreamShaman || mob instanceof DreamsElemental || mob instanceof DreamFireGhost){
+                    mob.die(true);
                 }
             }
         }

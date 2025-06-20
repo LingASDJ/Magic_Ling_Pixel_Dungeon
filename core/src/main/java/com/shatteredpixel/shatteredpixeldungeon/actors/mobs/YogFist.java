@@ -799,9 +799,16 @@ public abstract class YogFist extends Mob {
 			bundle.put(TARGETED_CELLS, bundleArr);
 		}
 
+		private boolean first = true;
+
 		@Override
 		public void die( Object cause ) {
-			GLog.n(Messages.get(YogFist.class,"HaloFist"));
+
+			if(first){
+				first = false;
+				GLog.n(Messages.get(YogFist.class,"HaloFist"));
+			}
+
 			for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
 				if (boss instanceof FreezingFist) {
 					boss.properties.remove(Property.FIERY);

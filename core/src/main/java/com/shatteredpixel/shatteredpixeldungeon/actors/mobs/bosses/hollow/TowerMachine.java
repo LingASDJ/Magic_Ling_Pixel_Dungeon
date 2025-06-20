@@ -51,7 +51,7 @@ public class TowerMachine extends Boss {
         initProperty();
         initBaseStatus(50, 75, 100, 0, 600, 0, 0);
         initStatus(120);
-        first = true;
+        noDropIceCoin = true;
         spriteClass = TowerMachineSprite.class;
 
         viewDistance = 100;
@@ -214,6 +214,9 @@ public class TowerMachine extends Boss {
             if (mob instanceof TowerMind || mob instanceof TowerTime||mob instanceof TowerGods||mob instanceof TowerMachine) {
                 Buff.affect(mob, TowerParalysis.class).set((21), 1);
             }
+             if(mob instanceof Morphs){
+                 ((Morphs) mob).phase+=0.25f;
+             }
         };
     }
 

@@ -6,6 +6,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -21,13 +22,28 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
+import com.watabou.utils.Bundle;
 
 public class MorpheusBossLevel extends Level {
+
+    public int levelIDStatus = 0;
 
     {
         color1 = 0x801500;
         color2 = 0xa68521;
         viewDistance = 16;
+    }
+
+    @Override
+    public void storeInBundle( Bundle bundle ) {
+        super.storeInBundle(bundle);
+        bundle.put("level_id_status", levelIDStatus);
+    }
+
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle( bundle );
+        levelIDStatus = bundle.getInt("level_id_status");
     }
 
     @Override
@@ -101,6 +117,16 @@ public class MorpheusBossLevel extends Level {
         Morphs morphs = new Morphs();
         morphs.pos = 312;
         mobs.add(morphs);
+    }
+
+    @Override
+    public void occupyCell( Char ch ) {
+        super.occupyCell(ch);
+
+        if (levelIDStatus == 0 && ch == Dungeon.hero) {
+            seal();
+            levelIDStatus++;
+        }
     }
 
 

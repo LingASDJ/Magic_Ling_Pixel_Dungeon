@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnRingOrWand;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.TerrainPlacer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.TrapPlacer;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -204,6 +205,9 @@ public enum HeroClass {
 
 		hero.heroClass = this;
 		Talent.initClassTalents(hero);
+
+		Amulet amulet = new Amulet();
+		amulet.identify().collect();
 
 		Item i = new ClothArmor().identify();
 		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (ClothArmor)i;

@@ -268,7 +268,6 @@ public class Statistics {
 
 	public static int killYogMobsAnargy;
 
-
 	public static int gudaZiRandomSkin;
 
 	//Holiday Boolean

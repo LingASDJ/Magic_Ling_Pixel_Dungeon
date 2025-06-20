@@ -31,6 +31,9 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Rect;
 import com.watabou.utils.Reflection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Blob extends Actor {
 
 	{
@@ -51,7 +54,17 @@ public class Blob extends Actor {
 	private static final String CUR		= "cur";
 	private static final String START	= "start";
 	private static final String LENGTH	= "length";
-	
+
+	public List<Integer> getActiveCells() {
+		List<Integer> cells = new ArrayList<>();
+		for (int i = 0; i < cur.length; i++) {
+			if (cur[i] > 0) {
+				cells.add(i);
+			}
+		}
+		return cells;
+	}
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );

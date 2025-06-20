@@ -51,7 +51,7 @@ public class TowerGods extends Boss {
         initProperty();
         initBaseStatus(15, 20, 33, 10, 500, 0, 0);
         initStatus(120);
-        first = true;
+        noDropIceCoin = true;
         spriteClass = TowerGodSprite.class;
 
         viewDistance = 100;
@@ -240,6 +240,12 @@ public class TowerGods extends Boss {
             if (mob instanceof TowerMind || mob instanceof TowerTime||mob instanceof TowerGods||mob instanceof TowerMachine) {
                 Buff.affect(mob, TowerParalysis.class).set((21), 1);
             }
+            if(mob instanceof Morphs){
+                ((Morphs) mob).phase+=0.25f;
+            }
+            if(mob instanceof DreamEye || mob instanceof DreamScorpio || mob instanceof DreamShieldHuntsman){
+                mob.die(true);
+            }
         };
     }
 
@@ -373,11 +379,13 @@ public class TowerGods extends Boss {
         }
 
         if (flag) {
-            if (Dungeon.level.distance(pos,enemy.pos)>=5) {
-                dmg *= 0.25f;
+            if(enemy != null){
+                if (Dungeon.level.distance(pos,enemy.pos)>=5) {
+                    dmg *= (int) 0.25f;
+                }
             } else {
                 float rate = ((float) magicDefence / 100);
-                dmg *= rate;
+                dmg *= (int) rate;
             }
         } else if (!(src instanceof Buff)) {
             float rate = ((float) physicDefence / 100);
