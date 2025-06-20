@@ -219,17 +219,18 @@ public class WndGame extends Window {
 		curBtn.icon(Icons.get(Icons.DISPLAY));
 		if (SPDSettings.intro()) curBtn.enable(false);
 
-		if(!Dungeon.hero.ready) {
-			// Debug
-			addButton(curBtn = new RedButton(Messages.get(this, "debug")) {
-				@Override
-				protected void onClick() {
-					GameScene.logActorThread = true;
-				}
-			});
-			curBtn.icon(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16));
+		if(hero != null){
+			if(!Dungeon.hero.ready) {
+				// Debug
+				addButton(curBtn = new RedButton(Messages.get(this, "debug")) {
+					@Override
+					protected void onClick() {
+						GameScene.logActorThread = true;
+					}
+				});
+				curBtn.icon(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16));
+			}
 		}
-
 
 		if(Dungeon.depth == 0 && Dungeon.branch == 0 && !Dungeon.isChallenged(CS) ) {
 			// Debug

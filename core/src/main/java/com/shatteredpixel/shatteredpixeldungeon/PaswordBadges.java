@@ -70,11 +70,20 @@ public class PaswordBadges {
     }
 
     public static void ALLCS(int challenges){
+        PaswordBadges.Badge badge = null;
+
         if (challenges == 0) return;
         boolean isNoChampion = Statistics.bossRushMode || Statistics.RandMode;
-        if (challenges >= 13 && !(Dungeon.isDLC(Conducts.Conduct.DEV))|| !isNoChampion && challenges >= 13){
-            displayBadge(PaswordBadges.Badge.ALLCHSX );
+
+        if (challenges >= 15 && !(Dungeon.isDLC(Conducts.Conduct.DEV))|| !isNoChampion && challenges >= 15) {
+            disown( Badge.ALLCHSX );
+            badge = Badge.GODCHSX;
+            local.add( badge );
+        } else if (challenges >= 13 && !(Dungeon.isDLC(Conducts.Conduct.DEV))|| !isNoChampion && challenges >= 13) {
+            badge = Badge.ALLCHSX;
+            local.add( badge );
         }
+        displayBadge( badge );
     }
 
     public static void KILLALLBOSS() {
@@ -133,7 +142,10 @@ public class PaswordBadges {
         SAKA_DIED(5),
         RESET_DAY(6),
         BRCLER(7),
+
+
         ALLCHSX(8,false,true),
+        GODCHSX(9,false,true),
 
         SKY_XEAD(10),
         GODD_MAKE(12),
@@ -203,8 +215,6 @@ public class PaswordBadges {
 
     public static HashSet<Badge> global;
     public static HashSet<Badge> local = new HashSet<>();
-
-
 
     private static boolean saveNeeded = false;
 

@@ -364,7 +364,9 @@ public abstract class Level implements Bundlable {
 			boolean moreRoomActivated = Dungeon.isChallenged(MOREROOM);
 
 			if (depth > 1) {
-					if (depth == 4 && moreRoomActivated || depth == 8 && moreRoomActivated) {
+					if ((depth == 9 || depth == 13 || depth == 17 || depth == 23) && moreRoomActivated){
+						feeling = Feeling.BIGROOMS;
+					} else if ((depth == 4  || depth == 8) && moreRoomActivated) {
 						feeling = Feeling.DIEDROOM;
 					} else {
 						switch (Random.Int(14)) {
@@ -1580,12 +1582,12 @@ public abstract class Level implements Bundlable {
 		case Terrain.FURROWED_GRASS:
 			HighGrass.trample( this, cell);
 			break;
-			
-		case Terrain.WELL:
-			WellWater.affectCell( cell );
+
+			case Terrain.WELL:
+				WellWater.affectCell(cell);
 			break;
-			
-		case Terrain.DOOR:
+
+			case Terrain.DOOR:
 			Door.enter( cell );
 			break;
 		}

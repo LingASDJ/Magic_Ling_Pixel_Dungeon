@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.noosa.Camera;
+import com.watabou.utils.Bundle;
 
 public class Morphs extends Boss {
 
@@ -27,6 +28,8 @@ public class Morphs extends Boss {
     }
 
     public boolean FourToneActive = false;
+
+    public float phase;
 
     {
         initProperty();
@@ -51,23 +54,36 @@ public class Morphs extends Boss {
         activate();
         alerted = false;
         state = PASSIVE;
-        if(!Dungeon.level.locked){
-            Dungeon.level.seal();
-            if (!BossHealthBar.isAssigned()) {
-                BossHealthBar.assignBoss(this);
-                Camera.main.shake(1f,3f);
-                GameScene.bossReady();
 
-                yell(Messages.get(this, "notice",Dungeon.hero.name()));
+        if (!FourToneActive && phase == 1) {
+            FourToneActive = true;
 
-                for (Char ch : Actor.chars()){
-                    if (ch instanceof DriedRose.GhostHero){
-                        ((DriedRose.GhostHero) ch).sayBoss();
-                    }
+            ShubNiggurath sn = new ShubNiggurath();
+            sn.pos = 358;
+            GameScene.add(sn);
+
+            yell(Messages.get(this, "four_tone_active"));
+        }
+
+        return super.act();
+    }
+
+    @Override
+    public void notice() {
+
+        if (!BossHealthBar.isAssigned()) {
+            BossHealthBar.assignBoss(this);
+            Camera.main.shake(1f,3f);
+            GameScene.bossReady();
+
+            yell(Messages.get(this, "notice",Dungeon.hero.name()));
+
+            for (Char ch : Actor.chars()){
+                if (ch instanceof DriedRose.GhostHero){
+                    ((DriedRose.GhostHero) ch).sayBoss();
                 }
             }
         }
-        return super.act();
     }
 
     @Override
@@ -75,6 +91,22 @@ public class Morphs extends Boss {
         MorpheusSprite sprite = (MorpheusSprite) super.sprite();
         sprite.HatActivate();
         return sprite;
+    }
+
+    private static final String FTAV = "FourToneActive";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(FTAV, FourToneActive);
+        bundle.put("phase", phase);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        FourToneActive = bundle.getBoolean(FTAV);
+        phase = bundle.getFloat("phase");
     }
 
     public void activate(){

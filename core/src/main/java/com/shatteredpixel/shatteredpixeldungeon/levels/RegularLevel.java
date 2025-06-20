@@ -77,8 +77,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BlueAltStoneRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.GoldRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.HealWellRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.IdenityRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NyzBombAndBooksRoom;
@@ -91,6 +89,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SkeletonFishRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SkyDeadWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ThreeWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BloodCrystalRoom;
@@ -371,9 +370,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		if(feeling == Feeling.THREEWELL){
-			initRooms.add(new IdenityRoom());
-			initRooms.add(new RandomRoom());
-			initRooms.add(new HealWellRoom());
+			initRooms.add(new ThreeWellRoom());
 		}
 
 		if(feeling == Feeling.LINKROOM ){

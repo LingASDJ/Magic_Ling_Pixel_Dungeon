@@ -105,22 +105,36 @@ public abstract class WellWater extends Blob {
 	protected abstract boolean affectHero( Hero hero );
 	
 	protected abstract Item affectItem( Item item, int pos );
-	
+
 	public static void affectCell( int cell ) {
-		
-		Class<?>[] waters = {WaterOfHealth.class, WaterOfAwareness.class,  WaterOfTransmutation.class, WaterOfOil.class};
-		
+
+		// 外层数组包含所有井水类型
+		Class<?>[] waters = {WaterOfHealth.class, WaterOfAwareness.class, WaterOfTransmutation.class, WaterOfOil.class};
+
 		for (Class<?>waterClass : waters) {
 			WellWater water = (WellWater)Dungeon.level.blobs.get( waterClass );
 			if (water != null &&
-				water.volume > 0 &&
-				water.cur[cell] > 0 &&
-				water.affect( cell )) {
-				
+					water.volume > 0 &&
+					water.cur[cell] > 0 &&
+					water.affect( cell )) {
+
 				Level.set( cell, Terrain.EMPTY_WELL );
 				GameScene.updateMap( cell );
-				
-				return;
+
+				if (Dungeon.level.feeling == Level.Feeling.THREEWELL) {
+					Class<?>[] threeWaters = {WaterOfHealth.class, WaterOfAwareness.class, WaterOfTransmutation.class};
+					for (Class<?> threeWaterClass : threeWaters) {
+						Blob blob = Dungeon.level.blobs.get(threeWaterClass);
+						if (blob != null) {
+
+							for (int blobCell : blob.getActiveCells()) {
+								Level.set(blobCell, Terrain.EMPTY_WELL);
+								GameScene.updateMap(blobCell);
+							}
+							blob.fullyClear();
+						}
+					}
+				}
 			}
 		}
 	}

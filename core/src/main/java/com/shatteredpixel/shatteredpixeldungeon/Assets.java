@@ -653,6 +653,9 @@ public class Assets {
 		public static final String TowerMind = "sprites/hollow/tower_mind.png";
 		public static final String TowerMachine = "sprites/hollow/tower_machine.png";
 
+		public static final String SHUBNIGGURATH = "sprites/hollow/shub_niggurath.png";
+		public static final String NYARLATHOTEP = "sprites/hollow/nyarlathotep.png";
+
 		public static final String BLEED_SENTRY= "sprites/hollow/bleed_star.png";
 
 

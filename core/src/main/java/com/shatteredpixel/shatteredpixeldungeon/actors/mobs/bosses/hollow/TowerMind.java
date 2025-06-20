@@ -55,7 +55,7 @@ public class TowerMind extends Boss {
         initProperty();
         initBaseStatus(10, 45, 33, 45, 400, 0, 0);
         initStatus(120);
-        first = true;
+        noDropIceCoin = true;
         spriteClass = TowerMindSprite.class;
 
         viewDistance = 100;
@@ -350,6 +350,12 @@ public class TowerMind extends Boss {
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob instanceof TowerMind || mob instanceof TowerTime||mob instanceof TowerGods||mob instanceof TowerMachine) {
                 Buff.affect(mob, TowerParalysis.class).set((21), 1);
+            }
+            if(mob instanceof Morphs){
+                ((Morphs) mob).phase+=0.25f;
+            }
+            if(mob instanceof Butcher || mob instanceof ApprenticeWitch || mob instanceof Pumking_Ghost || mob instanceof Crumb ){
+                mob.die(true);
             }
         }
 
