@@ -715,6 +715,11 @@ public class Hero extends Char {
 		KindOfWeapon wep = belongings.attackingWeapon();
 
 		float accuracy = 1;
+
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
+			accuracy = CustomPlayer.baseAccuracy;
+		}
+
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 
 		//precise assault and liquid agility
