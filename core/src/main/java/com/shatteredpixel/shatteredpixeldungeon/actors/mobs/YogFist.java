@@ -708,21 +708,10 @@ public abstract class YogFist extends Mob {
 					Dungeon.fail( getClass() );
 					GLog.n( Messages.get(Char.class, "kill", name()) );
 				}
-
 			} else {
-
 				enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
 			}
 
-		}
-
-		@Override
-		public void damage(int dmg, Object src) {
-			super.damage(dmg, src);
-			LockedFloor buff = Dungeon.hero.buff(LockedFloor.class);
-			if (buff != null) {
-				buff.addTime(dmg * 0.5f);
-			}
 		}
 
 	}

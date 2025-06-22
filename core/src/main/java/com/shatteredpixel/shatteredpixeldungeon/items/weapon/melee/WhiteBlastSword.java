@@ -11,6 +11,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.AnkhCount;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.WhiteBlastSwordStatus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -33,10 +35,9 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class WhiteBlastSword extends MeleeWeapon implements ActionIndicator.Action {
+public class WhiteBlastSword extends MeleeWeapon {
 
-
-    private int attack_Teleology;
+    public int attack_Teleology;
 
     {
         image = ItemSpriteSheet.WHITE_BAST;
@@ -47,7 +48,7 @@ public class WhiteBlastSword extends MeleeWeapon implements ActionIndicator.Acti
     public int proc(Char attacker, Char defender, int damage) {
         attack_Teleology++;
         if(attack_Teleology >= 14 - level()/5){
-            ActionIndicator.setAction(this);
+            Buff.affect(hero, WhiteBlastSwordStatus.class).set(1,100);
         }
         return super.proc(attacker, defender, damage);
     }
@@ -84,54 +85,13 @@ public class WhiteBlastSword extends MeleeWeapon implements ActionIndicator.Acti
         attack_Teleology = bundle.getInt( INTERVAL );
     }
 
-    @Override
-    public String actionName() {
-        return Messages.get(this, "action_name");
-    }
-
-    @Override
-    public int actionIcon() {
-        return HeroIcon.WEAPON_SWAP;
-    }
-
-    @Override
-    public int indicatorColor() {
-        return Window.SKYBULE_COLOR;
-    }
-
-    private static String[] TXT_RANDOM = {
+    public static String[] TXT_RANDOM = {
             Messages.get(WhiteBlastSword.class,"roll1"),
             Messages.get(WhiteBlastSword.class,"roll2"),
             Messages.get(WhiteBlastSword.class,"roll3"),
     };
 
-    @Override
-    public void doAction() {
-        int poisonLevel;
-        if(hero != null){
-            poisonLevel = 2 + level();
-        } else {
-            poisonLevel = 2;
-        }
-        if (attack_Teleology >= 14 - level()/5) {
-            GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.WHITE_BAST),
-                    Messages.titleCase(Messages.get(this, "action_name")),
-                    Messages.get(this, "quest_start_prompt",poisonLevel),
-                    Messages.get(this, "open_attack"),
-                    Messages.get(this, "not")) {
-                @Override
-                protected void onSelect(int index) {
-                    if (index == 0) {
-                        whiteBlast_Sword();
-                        hero.sprite.showStatus(CharSprite.NEGATIVE,TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
-                    }
-                }
-            });
-        }
-    }
-
-    private void whiteBlast_Sword() {
-        ActionIndicator.clearAction(this);
+    public void whiteBlast_Sword() {
         for (int i : PathFinder.NEIGHBOURS13) {
             int targetingPos = hero.pos + i;
             if (!Dungeon.level.solid[targetingPos]) {
@@ -141,6 +101,7 @@ public class WhiteBlastSword extends MeleeWeapon implements ActionIndicator.Acti
         }
         hero.spend( Actor.TICK );
         hero.busy();
+        curUser = hero;
         hero.sprite.operate( curUser.pos );
         Sample.INSTANCE.play( Assets.Sounds.HIT_SLASH );
         BuffIndicator.refreshHero();

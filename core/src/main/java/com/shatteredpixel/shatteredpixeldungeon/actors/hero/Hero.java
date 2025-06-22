@@ -225,6 +225,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
@@ -714,26 +715,58 @@ public class Hero extends Char {
 		KindOfWeapon wep = belongings.attackingWeapon();
 
 		float accuracy = 1;
+
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
 			accuracy = CustomPlayer.baseAccuracy;
 		}
 
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 
-		if (wep instanceof MissileWeapon){
-			if (Dungeon.level.adjacent( pos, target.pos )) {
-				accuracy *= (0.5f + 0.2f*pointsInTalent(Talent.POINT_BLANK));
-			} else {
-				accuracy *= 1.5f;
+		//precise assault and liquid agility
+		if (!(wep instanceof MissileWeapon)) {
+			if ((hasTalent(Talent.PRECISE_ASSAULT) || hasTalent(Talent.LIQUID_AGILITY))
+					//does not trigger on ability attacks
+					&& belongings.abilityWeapon != wep && buff(MonkEnergy.MonkAbility.UnarmedAbilityTracker.class) == null){
+
+				//non-duelist benefit for precise assault, can stack with liquid agility
+				if (heroClass != HeroClass.DUELIST) {
+					//persistent +10%/20%/30% ACC for other heroes
+					accuracy *= 1f + 0.1f * pointsInTalent(Talent.PRECISE_ASSAULT);
+				}
+
+				if (wep instanceof Flail && buff(Flail.SpinAbilityTracker.class) != null){
+					//do nothing, this is not a regular attack so don't consume talent fx
+				} else if (wep instanceof Crossbow && buff(Crossbow.ChargedShot.class) != null){
+					//do nothing, this is not a regular attack so don't consume talent fx
+				} else if (buff(Talent.PreciseAssaultTracker.class) != null) {
+					// 2x/5x/inf. ACC for duelist if she just used a weapon ability
+					switch (pointsInTalent(Talent.PRECISE_ASSAULT)){
+						default: case 1:
+							accuracy *= 2; break;
+						case 2:
+							accuracy *= 5; break;
+						case 3:
+							accuracy *= Float.POSITIVE_INFINITY; break;
+					}
+					buff(Talent.PreciseAssaultTracker.class).detach();
+				} else if (buff(Talent.LiquidAgilACCTracker.class) != null){
+					// 3x/inf. ACC, depending on talent level
+					accuracy *= pointsInTalent(Talent.LIQUID_AGILITY) == 2 ? Float.POSITIVE_INFINITY : 3f;
+					Talent.LiquidAgilACCTracker buff = buff(Talent.LiquidAgilACCTracker.class);
+					buff.uses--;
+					if (buff.uses <= 0) {
+						buff.detach();
+					}
+				}
 			}
 		}
 
 		if (buff(Scimitar.SwordDance.class) != null){
-			accuracy *= 1.25f;
+			accuracy *= 1.50f;
 		}
 
 		if(attackDelay() >1 && hasTalent(Talent.STRONGMAN)){
-			accuracy += accuracy * Math.max (attackDelay()-1f * ( 1f/3f * pointsInTalent(Talent.STRONGMAN)) ,0.75f);
+			accuracy += accuracy * Math.max (attackDelay()- (1f / 3f * pointsInTalent(Talent.STRONGMAN)),0.75f);
 		}
 
 		for(StarSachet star : belongings.getAllItems(StarSachet.class)) {
@@ -744,9 +777,13 @@ public class Hero extends Char {
 
 		if(belongings.getItem(TerrorDoll.class) != null || belongings.getItem(TerrorDollB.class) != null) accuracy *= 0.75f;
 
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ) {
+			return CustomPlayer.baseAccuracy;
+		}
+
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
 			return  CustomPlayer.baseAccuracy;
-		} else if (!RingOfForce.fightingUnarmed(this)) {
+		} else if  (!RingOfForce.fightingUnarmed(this)) {
 			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
 		} else {
 			return (int)(attackSkill * accuracy);
