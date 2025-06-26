@@ -197,10 +197,6 @@ public class SlimeKing extends Boss {
         }
         int damage2 = SlimeKing.super.attackProc(enemy, this.combo + damage);
         this.combo++;
-//        int effect = Random.Int(3);
-////        if (enemy.buff(Poison.class) == null && Random.Float() <= 0.25f) {
-////            Buff.affect( enemy, Poison.class).set((effect-2) );
-////        }
         if (this.combo > 3) {
             this.combo = 1;
         }

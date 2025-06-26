@@ -7,12 +7,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -23,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticl
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -31,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShubNiggurathSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -40,7 +40,6 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -58,6 +57,20 @@ public class ShubNiggurath extends Boss {
         properties.add(Property.ACIDIC);
 
         noDropIceCoin = true;
+    }
+
+    @Override
+    public void damage(int dmg, Object src) {
+        if(src == Trap.class){
+            return;
+        }
+        BossHealthBar.assignBoss(this);
+        LockedFloor lock = hero.buff(LockedFloor.class);
+        if (lock != null) {
+            int multiple = 1;
+            lock.addTime(dmg*multiple);
+        }
+        super.damage(dmg, src);
     }
 
     public static class ShubNiggurathClone extends ShubNiggurath {
@@ -107,7 +120,6 @@ public class ShubNiggurath extends Boss {
                                         next();
                                     }
                                 });
-                yell(Messages.get(this,"galaxy"));
                 summonIndex = 0;
             }
 
@@ -141,8 +153,6 @@ public class ShubNiggurath extends Boss {
         return super.act();
     }
 
-    private static final float SPLIT_DELAY	= 1f;
-
     int generation	= 0;
 
     private static final String GENERATION	= "generation";
@@ -164,61 +174,18 @@ public class ShubNiggurath extends Boss {
     }
 
     @Override
-    public int defenseProc(Char enemy, int damage ) {
-
-        if (HP >= damage + 2) {
-            ArrayList<Integer> candidates = new ArrayList<>();
-
-            int[] neighbours = {pos + 1, pos - 1, pos + Dungeon.level.width(), pos - Dungeon.level.width()};
-            for (int n : neighbours) {
-                if (!Dungeon.level.solid[n]
-                        && Actor.findChar( n ) == null
-                        && (Dungeon.level.passable[n] || Dungeon.level.avoid[n])
-                        && (!properties().contains(Property.LARGE) || Dungeon.level.openSpace[n])) {
-                    candidates.add( n );
-                }
-            }
-
-            if (!candidates.isEmpty()) {
-
-                ShubNiggurath clone = split();
-                clone.pos = Random.element( candidates );
-                clone.state = clone.HUNTING;
-                GameScene.add( clone, SPLIT_DELAY ); //we add before assigning HP due to ascension
-
-                clone.HP = (HP - damage) / 2;
-                Actor.add( new Pushing( clone, pos, clone.pos ) );
-
-                Dungeon.level.occupyCell(clone);
-
-                HP -= clone.HP;
-            }
-        }
-
-        return super.defenseProc(enemy, damage);
-    }
-
-    private ShubNiggurath split() {
-        ShubNiggurath clone = new ShubNiggurath();
-        clone.generation = generation + 1;
-        clone.EXP = 0;
-        if (buff( Poison.class ) != null) {
-            Buff.affect( clone, Poison.class ).set(2);
-        }
-        for (Buff b : buffs(AllyBuff.class)){
-            Buff.affect( clone, b.getClass());
-        }
-        for (Buff b : buffs(ChampionEnemy.class)){
-            Buff.affect( clone, b.getClass());
-        }
-
-        return clone;
-    }
-
-    @Override
     public void die( Object cause ) {
         super.die(cause);
-
+        if(getClass() == ShubNiggurath.class) {
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if (mob instanceof Morphs) {
+                    ((Morphs) mob).phase += 0.30f;
+                }
+                if(mob instanceof ShubNiggurathClone){
+                    mob.die(true);
+                }
+            }
+        }
     }
 
     public static class DiedGalaxy extends Buff {

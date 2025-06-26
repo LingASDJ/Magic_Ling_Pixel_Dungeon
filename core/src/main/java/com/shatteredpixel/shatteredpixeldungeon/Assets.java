@@ -656,10 +656,14 @@ public class Assets {
 		public static final String SHUBNIGGURATH = "sprites/hollow/shub_niggurath.png";
 		public static final String NYARLATHOTEP = "sprites/hollow/nyarlathotep.png";
 
+		public static final String YOG_SOUL = "sprites/hollow/yogsoul.png";
+
+		public static final String MYSTIC_CORE = "sprites/hollow/mystic_core.png";
+
 		public static final String BLEED_SENTRY= "sprites/hollow/bleed_star.png";
 
 
-		public static final String ZOMBIE = "sprites/hollow/Frankenstein.png";
+		public static final String ZOMBIE = "sprites/hollow/frankenstein.png";
 
 		public static final String GHOST_HE = "sprites/hollow/ghost_halloween.png";
 

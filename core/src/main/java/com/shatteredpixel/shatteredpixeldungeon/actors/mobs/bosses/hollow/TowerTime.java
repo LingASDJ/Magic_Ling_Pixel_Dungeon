@@ -273,9 +273,6 @@ public class TowerTime extends Boss {
                 if (mob instanceof TowerTime) {
                     ((TowerTime) mob).summonedMobs--;
                 }
-                if(mob instanceof Morphs){
-                    ((Morphs) mob).phase+=0.25f;
-                }
                 if(mob instanceof DreamSenior || mob instanceof DreamShaman || mob instanceof DreamsElemental || mob instanceof DreamFireGhost){
                     mob.die(true);
                 }

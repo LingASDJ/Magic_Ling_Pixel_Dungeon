@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.MyCoreHeart;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
@@ -133,9 +134,7 @@ public abstract class Mob extends Char {
 	public AiState PASSIVE		= new Passive();
 	public AiState state = SLEEPING;
 
-	public boolean isStupid;
-	public HashSet<Class> beneficialPlants;
-
+	public boolean isOldDay = false;
 
 	public Class<? extends CharSprite> spriteClass;
 
@@ -238,7 +237,7 @@ public abstract class Mob extends Char {
 	private static final String TARGET	= "target";
 	private static final String MAX_LVL	= "max_lvl";
 	private static final String ENEMY_ID= "enemy_id";
-	private static final String STUPID	= "stupid";
+	private static final String  OLDDAY	= "oldday";
 
     protected Object loot = null;
 
@@ -359,7 +358,7 @@ public abstract class Mob extends Char {
 			bundle.put(ENEMY_ID, enemy.id() );
 		}
 
-		bundle.put( STUPID, isStupid );
+		bundle.put( OLDDAY, isOldDay);
 	}
 
 	@Override
@@ -392,7 +391,7 @@ public abstract class Mob extends Char {
 		//no need to actually save this, must be false
 		firstAdded = false;
 
-		isStupid = bundle.getBoolean( STUPID );
+		isOldDay = bundle.getBoolean( OLDDAY );
 	}
 
 	private boolean cellIsPathable( int cell ){
@@ -489,6 +488,18 @@ public abstract class Mob extends Char {
 	}
 
     protected Char chooseEnemy() {
+
+		if(isOldDay){
+			for (Mob mob : Dungeon.level.mobs) {
+				if (!(mob == this)
+						&& mob.alignment != Alignment.NEUTRAL
+						&& !mob.isInvulnerable(getClass())
+						&& mob instanceof MyCoreHeart
+						&& fieldOfView[mob.pos]) {
+					return mob;
+				}
+			}
+		}
 
 		Dread dread = buff( Dread.class );
 		if (dread != null) {
@@ -1200,21 +1211,23 @@ public abstract class Mob extends Char {
 		return sb.toString();
 	}
 
+	public String name(){
+		if(isOldDay){
+			return Messages.get(Mob.class, "name_old");
+		}
+		return Messages.get(this, "name");
+	}
+
 	public String info(){
 		String desc = description();
 
-		if(buff(ChampionEnemy.NoCode.class) != null){
-			try {
-				desc = encodeWithLineBreak(description());
-			} catch (Exception ignored) {
-			}
+		if(isOldDay){
+			return Messages.get(Mob.class, "desc_old");
 		}
 
 		for (Buff b : buffs(ChampionEnemy.class)){
 			desc += "\n\n_" + Messages.titleCase(b.name()) + "_\n" + b.desc();
 		}
-
-		String intelligence = isStupid ? Messages.get(this, "stupid", name()) : Messages.get(this, "smart",name());
 
 		return desc;
 	}
@@ -1432,16 +1445,6 @@ public abstract class Mob extends Char {
 
 		protected boolean continueWandering(){
 			enemySeen = false;
-
-			//愚蠢的怪物会跟随聪明的怪物
-			if (isStupid) {
-				for (Mob mob : Dungeon.level.mobs) {
-					//他们追随的怪物必须是聪明的，也必须是在巡查状态，以免围攻玩家，而且必须是相同的怪物类
-					if (!mob.isStupid) {
-						Dungeon.level.distance(pos, mob.pos);
-					}
-				}
-			}
 
 			int oldPos = pos;
 			if (target != -1 && getCloser( target )) {

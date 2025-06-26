@@ -21,8 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Nyarlathotep;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -98,6 +104,18 @@ public abstract class Trap implements Bundlable {
 			Bestiary.setSeen(getClass());
 			Bestiary.countEncounter(getClass());
 			activate();
+
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+				if (mob instanceof Nyarlathotep) {
+					for (Buff buff : hero.buffs()) {
+						if (buff instanceof ScaryBuff) {
+							((ScaryBuff) buff).damgeScary(20);
+						} else {
+							Buff.affect(hero, ScaryBuff.class).set((100), 1);
+						}
+					}
+				}
+			}
 		}
 	}
 

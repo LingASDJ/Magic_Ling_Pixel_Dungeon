@@ -170,8 +170,6 @@ abstract public class Boss extends Mob {
             defenseSkill = Math.round(baseEva); //闪避率
             EXP = exp; //经验值
             HP = HT = Math.round(baseHT); //生命值
-
-
         }
 
         @Override

@@ -9,6 +9,7 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
 public class TowerParalysis extends Buff {
+
     public static int level = 0;
     private int interval = 1;
 
@@ -20,12 +21,10 @@ public class TowerParalysis extends Buff {
     @Override
     public boolean act() {
         if (target.isAlive()) {
-
             spend(interval);
             if (--level <= 0) {
                 detach();
             }
-
         }
         return true;
     }
@@ -35,7 +34,6 @@ public class TowerParalysis extends Buff {
     }
 
     public void set( int value, int time ) {
-        //decide whether to override, preferring high value + low interval
         if (Math.sqrt(interval)*level <= Math.sqrt(time)*value) {
             level = value;
             interval = time;
@@ -90,6 +88,3 @@ public class TowerParalysis extends Buff {
     }
 
 }
-
-
-
