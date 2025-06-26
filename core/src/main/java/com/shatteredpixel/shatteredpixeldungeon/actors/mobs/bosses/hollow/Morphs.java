@@ -7,11 +7,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.utils.Bundle;
 
@@ -40,6 +43,8 @@ public class Morphs extends Boss {
 
         viewDistance = 100;
 
+        flying = true;
+
         alignment = Alignment.NEUTRAL;
 
         properties.add(Property.IMMOVABLE);
@@ -62,8 +67,35 @@ public class Morphs extends Boss {
             sn.pos = 358;
             GameScene.add(sn);
 
+            Nyarlathotep nyarlathotep = new Nyarlathotep();
+            nyarlathotep.pos = 367;
+            GameScene.add(nyarlathotep);
+
+            YogSoul yogSoul = new YogSoul();
+            yogSoul.pos = 187;
+            GameScene.add(yogSoul);
+
+            AlarmTrap alarmTrap = new AlarmTrap();
+            alarmTrap.pos = pos;
+            alarmTrap.activate();
+
             yell(Messages.get(this, "four_tone_active"));
+            phase++;
+        } else if(phase == 3){
+
+            yell(Messages.get(this, "phase_tone_active"));
+
+            MyCoreHeart myCoreHeart = new MyCoreHeart();
+            myCoreHeart.pos = 312;
+            GameScene.add(myCoreHeart);
+            BossHealthBar.assignBoss(myCoreHeart);
+
+            ScrollOfTeleportation.appear(this,0);
+
+            phase++;
         }
+
+        GLog.n(String.valueOf(phase));
 
         return super.act();
     }

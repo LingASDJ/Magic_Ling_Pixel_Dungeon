@@ -130,8 +130,8 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
     @Override
     public int attackSkill( Char target ) {
-        int attack = 10;
-        if (HP*2 <= HT) attack = 15;
+        int attack = 20;
+        if (HP*2 <= HT) attack = 25;
         if (pumpedUp > 0) attack *= 2;
         return attack;
     }

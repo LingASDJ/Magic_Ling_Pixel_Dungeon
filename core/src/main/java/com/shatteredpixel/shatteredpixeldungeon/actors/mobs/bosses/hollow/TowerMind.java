@@ -343,7 +343,7 @@ public class TowerMind extends Boss {
         super.die(cause);
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob instanceof TowerMind.MindCore) {
-                ((TowerMind.MindCore) mob).die(true);
+                mob.die(true);
             }
         }
 
