@@ -168,43 +168,43 @@ public class GameRules {
 
         if(SPDSettings.isCustomBanner()){
             switch (SPDSettings.CustomBanner_Text()) {
-                case "复活":
+                case "复活": case "RH":
                     banners = Assets.Interfaces.BANNERS_EA;
                     break;
-                case "圣诞":
+                case "圣诞": case "CS":
                     banners = Assets.Interfaces.BANNERS_SD;
                     break;
-                case "端午":
+                case "端午": case "DBF":
                     banners = Assets.Interfaces.BANNERS_DW;
                     break;
-                case "元宵":
+                case "元宵": case "LR":
                     banners = Assets.Interfaces.BANNERS_YX;
                     break;
-                case "生日":
+                case "生日": case "BR":
                     banners = Assets.Interfaces.BANNERS_BD;
                     break;
-                case "清明":
+                case "清明": case "QF":
                     banners = Assets.Interfaces.BANNERS_QM;
                     break;
-                case "万圣":
+                case "万圣": case "HW":
                     banners = Assets.Interfaces.BANNERS_HL;
                     break;
-                case "春节":
+                case "春节": case "SF":
                     banners = Assets.Interfaces.BANNERS_CJ;
                     break;
-                case "夏季":
+                case "夏季": case "SS":
                     banners = Assets.Interfaces.BANNERS_SM;
                     break;
-                case "冬季":
+                case "冬季": case "WR":
                     banners = Assets.Interfaces.BANNERS_WT;
                     break;
-                case "秋季":
+                case "秋季": case "AT":
                     banners = Assets.Interfaces.BANNERS_AT;
                     break;
-                case "春季":
+                case "春季": case "SR":
                     banners = Assets.Interfaces.BANNERS_SR;
                     break;
-                case "劳动":
+                case "劳动": case "LD":
                     banners = Assets.Interfaces.BANNERS_LD;
                     break;
                 default:
