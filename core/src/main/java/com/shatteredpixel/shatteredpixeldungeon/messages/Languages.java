@@ -24,7 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.messages;
 import java.util.Locale;
 
 public enum Languages {
-	ENGLISH("English",          "en", Status.INCOMPLETE, new String[]{"JDSALing","Catand"},
+	ENGLISH("English","en", Status.UNREVIEWED, new String[]{"JDSALing","Catand","Biostarbluexray","1000Mistakes"},
 			new String[]{"Noodlemire","Aeonius"}),
 	CHINESE("中文",      "",   Status.REVIEWED,  null, null),
 	RUSSIAN("Russian", "ru", Status.REVIEWED, new String[]{"JDSALing","FixAkaTheFix"},new String[]{"Dominowood371"}),
