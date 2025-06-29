@@ -317,7 +317,7 @@ public class Hero extends Char {
 		alignment = Alignment.ALLY;
 	}
 
-	public static final int MAX_LEVEL = Statistics.Hollow_Holiday ? 35 : 30;
+	public static final int MAX_LEVEL = 30;
 
 	public static final int STARTING_STR = 10;
 
@@ -2660,7 +2660,7 @@ public class Hero extends Char {
 				buff(Talent.WandPreservationCounter.class).detach();
 			}
 
-			if (lvl < MAX_LEVEL) {
+			if (lvl < (Statistics.Hollow_Holiday ? 35 : MAX_LEVEL)) {
 				lvl++;
 				levelUp = true;
 

@@ -6,6 +6,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holid
 import com.nlf.calendar.Lunar;
 import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -47,6 +48,8 @@ public class Gregorian {
 
         boolean isDWJ = lunar.getMonth() == 5 && (lunar.getDay() >= 0 && lunar.getDay() <= 5 + 7);
 
+        boolean isHBJ = lunar.getMonth() == 6 && (lunar.getDay() >= 0 && lunar.getDay() <= 45);
+
         boolean isDWJ_2024TWO = lunar.getMonth() == 5 && (lunar.getDay() >= 5 && lunar.getDay() <= 5 + 16);
 
         boolean isSF = lunar.getMonth() == 1 && (lunar.getDay() >= 1 && lunar.getDay() <= 1 + 13);
@@ -76,6 +79,11 @@ public class Gregorian {
         if (isDWJ) {
             holiday = RegularLevel.Holiday.DWJ;
             eventEndTime = calculateEventEndTime(lunar, 5, 12);
+        }
+
+        if(isHBJ){
+            holiday = RegularLevel.Holiday.HWEEN;
+            eventEndTime = calculateEventEndTime(lunar, 6, 30);
         }
 
     }
@@ -110,10 +118,12 @@ public class Gregorian {
 
     // 新增获取剩余时间方法
     public static String getRemainingTime() {
-        if (eventEndTime == 0) return "无活动";
+        if (eventEndTime == 0)
+            return Messages.get(Gregorian.class,"no_activity");
 
         long current = System.currentTimeMillis();
-        if (current >= eventEndTime) return "活动已结束";
+        if (current >= eventEndTime)
+            return Messages.get(Gregorian.class,"end_activity");
 
         long diff = eventEndTime - current;
 
@@ -126,7 +136,15 @@ public class Gregorian {
         long minutes = seconds / 60;
         seconds %= 60;
 
-        return String.format(Locale.CHINA, "剩余："+"%d天 %02d:%02d:%02d", days, hours, minutes, seconds);
+        String string;
+
+        if(days > 1){
+            string =  String.format(Locale.CHINA, "行动剩余："+"%d天", days);
+        } else {
+            string =  String.format(Locale.CHINA, "行动剩余："+"%d天 %02d:%02d:%02d", days, hours, minutes, seconds);
+        }
+
+        return string;
     }
 
 }

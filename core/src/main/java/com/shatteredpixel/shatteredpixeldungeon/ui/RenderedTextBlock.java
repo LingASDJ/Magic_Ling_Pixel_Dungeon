@@ -165,16 +165,6 @@ public class RenderedTextBlock extends Component {
 				continue;
 			}
 
-
-			/*
-			{ = 红色
-			} = 绿色
-			* = 蓝色
-			[ = 粉色
-			] = 紫色
-			| = 黑色
-			_ = 青色 */
-
 			if (str.equals("_") && highlightingEnabled){
 				highlighting = !highlighting;
 			} else if(str.equals("{") && RedEnabled){

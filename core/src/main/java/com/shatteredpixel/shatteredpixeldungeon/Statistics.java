@@ -273,6 +273,8 @@ public class Statistics {
 	//Holiday Boolean
 	public static boolean Hollow_Holiday = false;
 
+	public static boolean soulsSpawn = false;
+
 	private static final String ICECLAN ="iceCyanBlueSquareCoin";
 
 	private static final String GAMETIME = "gameTime";
@@ -572,6 +574,8 @@ public class Statistics {
 
 		GameKillFireDargon = false;
 
+		soulsSpawn = false;
+
 		gameTime = 0;
 		gameNight = false;
 
@@ -750,6 +754,8 @@ public class Statistics {
 		bundle.put("KILL_YOG",killYogMobsAnargy);
 
 		bundle.put("GDZRSKIN",gudaZiRandomSkin);
+
+		bundle.put("ReSoulPing",soulsSpawn);
 
 		bundle.put(DWSX, dwarfKill);
 
@@ -949,6 +955,8 @@ public class Statistics {
 
 		/**/
 		Hollow_Holiday = bundle.getBoolean("HOLLOW_DAY");
+
+		soulsSpawn = bundle.getBoolean("ReSoulPing");
 		/**/
 
 		RandomMimicItem = bundle.getBoolean(MMCITEM);

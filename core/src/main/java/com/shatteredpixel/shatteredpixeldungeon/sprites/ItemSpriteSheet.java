@@ -1056,9 +1056,9 @@ public class ItemSpriteSheet {
     public static final int  BZMDR_BOOKS			= SCROLL_GOLD+5;
     public static final int  BOSSRUSH_MINI			= SCROLL_GOLD+6;
 
-
     private static final int HOLLOW_INDEX   	 = xy(1, 44);
 
+    public static final int SOUL_CRACK =			 HOLLOW_INDEX + 10;
     public static final int HOLY_WATER =			 HOLLOW_INDEX + 12;
 
     static {

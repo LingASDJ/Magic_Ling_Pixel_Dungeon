@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.DeadFireFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -1125,6 +1126,9 @@ public class DeadDogCerberus extends Boss {
         }
         Badges.KILL_DOG();
         GameScene.bossSlain();
+
+        Dungeon.level.drop(new Amulet(),pos);
+
         yell( Messages.get(this, "defeated",hero.name()) );
     }
 }

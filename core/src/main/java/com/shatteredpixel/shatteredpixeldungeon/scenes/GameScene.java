@@ -2070,6 +2070,8 @@ public class GameScene extends PixelScene {
 				cure( Dungeon.hero );
 			}
 
+			Statistics.soulsSpawn = false;
+
 			Sample.INSTANCE.play( Assets.Sounds.BOSS );
 
 			//金蝶重置

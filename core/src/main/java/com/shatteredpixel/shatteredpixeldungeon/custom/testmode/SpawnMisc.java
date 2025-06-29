@@ -128,6 +128,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SoulCrack;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
@@ -453,6 +454,12 @@ public class SpawnMisc extends TestItem {
             miscList.add(PotionOfHolyWater.class);
             miscList.add(DragonWater.class);
             miscList.add(TowerMachine.StarCanon.class);
+
+            miscList.add(SoulCrack.RedSoulCrack.class);
+            miscList.add(SoulCrack.YellowSoulCrack.class);
+            miscList.add(SoulCrack.BlueSoulCrack.class);
+            miscList.add(SoulCrack.GreenSoulCrack.class);
+            miscList.add(SoulCrack.PinkSoulCrack.class);
         }
     }
 

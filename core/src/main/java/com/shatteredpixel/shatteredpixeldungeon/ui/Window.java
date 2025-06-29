@@ -59,7 +59,6 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 	public static final int TITLE_COLOR = 0x00FFFF;
 
 	public static final int MLPD_COLOR = 0x00FFFF;
-	public static final int BALCK_COLOR = 0x000000;
 
 	public static final int GDX_COLOR = 0xE44D3C;
 	public static final int SKYBULE_COLOR = 0x00FFFF;
