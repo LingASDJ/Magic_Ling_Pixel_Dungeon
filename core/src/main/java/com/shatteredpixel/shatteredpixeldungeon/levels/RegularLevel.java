@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SoulCrack;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -76,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BlueAltStoneRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BoilerRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.GoldRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
@@ -227,7 +229,7 @@ public abstract class RegularLevel extends Level {
         NONE,
         DWJ,
         ZQJ,
-        HWEEN,//2nd week of october though first day of november
+        HWEEN,
         XMAS,
 		CJ,
 		YX,
@@ -269,18 +271,6 @@ public abstract class RegularLevel extends Level {
 						case 8:
 							initRooms.add(new SkyDeadWellRoom());
 					}
-//				case 2:
-//				switch (depth) {
-//					case 4:
-//						//initRooms.add(new GooRoom());
-//						GooBossRoom gooRoom = GooBossRoom.randomGooRoom();
-//						initRooms.add(gooRoom);
-//						((FigureEightBuilder)builder).setLandmarkRoom(gooRoom);
-//						break;
-//					case 14:
-//						initRooms.add(new OldDM300Room());
-//						break;
-//				}
 				break;
 			}
 		}
@@ -294,12 +284,29 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-//		if(Dungeon.depth == 24 && branch == 0) {
-//			initRooms.add(new BoilerRoom());
-//		}
+		boolean one = false;
+		boolean two = false;
+		boolean three = false;
+		boolean four = false;
+		boolean five = false;
 
-		//20%
-		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 40 || depth == 27 && !Statistics.bossRushMode) {
+		if(RegularLevel.holiday == Holiday.HWEEN){
+			SoulCrack.RedSoulCrack redSoulCrack = hero.belongings.getItem(SoulCrack.RedSoulCrack.class);
+			if(redSoulCrack != null) one = true;
+			SoulCrack.BlueSoulCrack blueSoulCrack = hero.belongings.getItem(SoulCrack.BlueSoulCrack.class);
+			if(blueSoulCrack != null) two = true;
+			SoulCrack.GreenSoulCrack greenSoulCrack = hero.belongings.getItem(SoulCrack.GreenSoulCrack.class);
+			if(greenSoulCrack != null) three = true;
+			SoulCrack.YellowSoulCrack yellowSoulCrack = hero.belongings.getItem(SoulCrack.YellowSoulCrack.class);
+			if(yellowSoulCrack != null) four = true;
+			SoulCrack.PinkSoulCrack purpleSoulCrack = hero.belongings.getItem(SoulCrack.PinkSoulCrack.class);
+			if(purpleSoulCrack != null) five = true;
+			if(one && two && three && four && five && depth == 24){
+				initRooms.add(new BoilerRoom());
+			}
+		}
+
+		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 40) {
 			initRooms.add(new NxhyShopRoom());
 		}
 

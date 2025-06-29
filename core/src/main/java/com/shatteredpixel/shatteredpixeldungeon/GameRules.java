@@ -224,6 +224,8 @@ public class GameRules {
                 banners = Assets.Interfaces.BANNERS_QM;
             } else if (RegularLevel.holiday == RegularLevel.Holiday.DWJ) {
                banners = Assets.Interfaces.BANNERS_DW;
+           } else if (RegularLevel.holiday == RegularLevel.Holiday.HWEEN) {
+               banners = Assets.Interfaces.BANNERS_HL;
             } else  if (4 == month) {
                banners = Assets.Interfaces.BANNERS_LD;
             } else if (month == 2 || month == 3 ) { // 春季：3, 4, 5月
@@ -235,10 +237,7 @@ public class GameRules {
             } else { // 冬季：12, 1, 2月
                 banners = Assets.Interfaces.BANNERS_WT;
             }
-
-
         }
-
 
         return banners;
     }

@@ -77,10 +77,10 @@ public class Vampire extends Mob {
 
     public void godDied(){
         ((VampireSprite) sprite).GodDied();
-        ((VampireSprite) sprite).hideLost();
-        ((VampireSprite) sprite).hideEmo();
-        ((VampireSprite) sprite).hideAlert();
-        ((VampireSprite) sprite).hideEmo();
+        sprite.hideLost();
+        sprite.hideEmo();
+        sprite.hideAlert();
+        sprite.hideEmo();
     }
 
 

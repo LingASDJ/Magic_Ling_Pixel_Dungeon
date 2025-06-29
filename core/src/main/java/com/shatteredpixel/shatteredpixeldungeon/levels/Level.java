@@ -701,6 +701,17 @@ public abstract class Level implements Bundlable {
 			if(Dungeon.isChallenged(CS) && depth>2 && depth<25 && Random.Float()<0.25f){
 				Buff.affect(m, ChampionEnemy.AloneCity.class);
 			}
+
+			//古堡灵魂碎片怪生成机制
+			if(RegularLevel.holiday == RegularLevel.Holiday.HWEEN){
+				if(Dungeon.LimitSoulLevel() && !Statistics.soulsSpawn){
+					Buff.affect(m, ChampionEnemy.DeadSoulCrack.class);
+					Statistics.soulsSpawn = true;
+				} else if(depth>3 && depth<25 && Random.Int(100)<35 && !Statistics.soulsSpawn){
+					Buff.affect(m, ChampionEnemy.DeadSoulCrack.class);
+					Statistics.soulsSpawn = true;
+				}
+			}
 		}
 		return m;
 	}

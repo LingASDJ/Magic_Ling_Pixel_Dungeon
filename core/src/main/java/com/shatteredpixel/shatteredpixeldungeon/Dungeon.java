@@ -497,6 +497,10 @@ public class Dungeon {
 		return depth == 7 || depth == 17 || depth == 21 || depth == 29 || depth == 33 || depth == 37;
 	}
 
+	public static boolean LimitSoulLevel() {
+		return depth == 4 || depth == 9 || depth == 14 || depth == 19 || depth == 23;
+	}
+
 	public static boolean bossLevel() {
 		return bossLevel( depth );
 	}

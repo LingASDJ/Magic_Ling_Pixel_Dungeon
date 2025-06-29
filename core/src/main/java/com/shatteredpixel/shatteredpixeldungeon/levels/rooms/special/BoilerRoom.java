@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.STATUE_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 
@@ -10,15 +11,22 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Alchemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MissileSpriteCustom;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SoulCrack;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.Tilemap;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Point;
+
+import java.util.ArrayList;
 
 public class BoilerRoom extends SpecialRoom {
     @Override
@@ -168,10 +176,116 @@ public class BoilerRoom extends SpecialRoom {
 
         @Override
         public boolean interact(Char c) {
+            boolean one = false;
+            boolean two = false;
+            boolean three = false;
+            boolean four = false;
+            boolean five = false;
             if(!Statistics.Hollow_Holiday){
-                Statistics.Hollow_Holiday = true;
-                yell(Messages.get(this, "yell"));
-                ((CandleActivePointSprite)sprite).activateidle();
+                SoulCrack.RedSoulCrack redSoulCrack = hero.belongings.getItem(SoulCrack.RedSoulCrack.class);
+                if(redSoulCrack != null) one = true;
+                SoulCrack.BlueSoulCrack blueSoulCrack = hero.belongings.getItem(SoulCrack.BlueSoulCrack.class);
+                if(blueSoulCrack != null) two = true;
+                SoulCrack.GreenSoulCrack greenSoulCrack = hero.belongings.getItem(SoulCrack.GreenSoulCrack.class);
+                if(greenSoulCrack != null) three = true;
+                SoulCrack.YellowSoulCrack yellowSoulCrack = hero.belongings.getItem(SoulCrack.YellowSoulCrack.class);
+                if(yellowSoulCrack != null) four = true;
+                SoulCrack.PinkSoulCrack purpleSoulCrack = hero.belongings.getItem(SoulCrack.PinkSoulCrack.class);
+                if(purpleSoulCrack != null) five = true;
+
+                if(one && two && three && four && five) {
+
+                    MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
+                    msc.reset(
+                            hero.sprite,
+                            pos,
+                            redSoulCrack,
+                            0.18f,
+                            0.5f,
+                            new Callback() {
+                                @Override
+                                public void call() {
+                                    GameScene.flash(Window.R_COLOR,true);
+                                    redSoulCrack.detach(hero.belongings.backpack);
+
+                                    MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
+                                    msc.reset(
+                                            hero.sprite,
+                                            pos,
+                                            blueSoulCrack,
+                                            0.18f,
+                                            0.5f,
+                                            new Callback() {
+                                                @Override
+                                                public void call() {
+                                                    GameScene.flash(Window.SKYBULE_COLOR,true);
+                                                    blueSoulCrack.detach(hero.belongings.backpack);
+
+                                                    MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
+                                                    msc.reset(
+                                                            hero.sprite,
+                                                            pos,
+                                                            greenSoulCrack,
+                                                            0.18f,
+                                                            0.5f,
+                                                            new Callback() {
+                                                                @Override
+                                                                public void call() {
+                                                                    GameScene.flash(Window.G_COLOR,true);
+                                                                    greenSoulCrack.detach(hero.belongings.backpack);
+
+                                                                    MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
+                                                                    msc.reset(
+                                                                            hero.sprite,
+                                                                            pos,
+                                                                            yellowSoulCrack,
+                                                                            0.18f,
+                                                                            0.5f,
+                                                                            new Callback() {
+                                                                                @Override
+                                                                                public void call() {
+                                                                                    GameScene.flash(Window.CYELLOW,true);
+                                                                                    yellowSoulCrack.detach(hero.belongings.backpack);
+
+                                                                                    MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
+                                                                                    msc.reset(
+                                                                                            hero.sprite,
+                                                                                            pos,
+                                                                                            purpleSoulCrack,
+                                                                                            0.18f,
+                                                                                            0.5f,
+                                                                                            new Callback() {
+                                                                                                @Override
+                                                                                                public void call() {
+                                                                                                    GameScene.flash(Window.DeepPK_COLOR,true);
+                                                                                                    purpleSoulCrack.detach(hero.belongings.backpack);
+                                                                                                    Statistics.Hollow_Holiday = true;
+                                                                                                    yell(Messages.get(BoilerRoom.class, "yell"));
+                                                                                                    ((CandleActivePointSprite)sprite).activateidle();
+                                                                                                    ArrayList<SoulCrack> s = hero.belongings.getAllItems(SoulCrack.class);
+                                                                                                    for (SoulCrack w : s.toArray(new SoulCrack[0])){
+                                                                                                        w.detach(hero.belongings.backpack);
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                    );
+                                                                                }
+                                                                            }
+                                                                    );
+                                                                }
+                                                            }
+                                                    );
+
+                                                }
+                                            }
+                                    );
+                                }
+                            }
+                    );
+
+                }  else {
+                    yell(Messages.get(BoilerRoom.class, "yell2"));
+                }
             }
             return true;
         }
