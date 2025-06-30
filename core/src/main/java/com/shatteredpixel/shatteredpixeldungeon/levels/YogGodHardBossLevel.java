@@ -310,8 +310,11 @@ public class YogGodHardBossLevel extends Level {
         set( ENTRANCE, Terrain.ENTRANCE );
         GameScene.updateMap( ENTRANCE );
 
-        set( EXIT, Terrain.WALL );
-        GameScene.updateMap( EXIT );
+        if(!Statistics.Hollow_Holiday){
+            set( EXIT, Terrain.WALL );
+            GameScene.updateMap( EXIT );
+
+        }
 
         CellEmitter.get(CENTER-1).burst(ShadowParticle.UP, 25);
         CellEmitter.get(CENTER).burst(ShadowParticle.UP, 100);
