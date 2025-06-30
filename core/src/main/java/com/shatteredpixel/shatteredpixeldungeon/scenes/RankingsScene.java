@@ -303,7 +303,7 @@ public class RankingsScene extends PixelScene {
 
 			if(rec.cause == BoatPlot.DiedBoat.class){
 				Image xs = new ZeroBoatSprite();
-				xs.scale.set(PixelScene.align(0.65f));
+				xs.scale.set(PixelScene.align(0.75f));
 				shield.copy(xs);
 				shield.hardlight(Window.CBLACK);
 			} else if (rec.daily){

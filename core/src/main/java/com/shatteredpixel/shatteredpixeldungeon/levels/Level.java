@@ -695,7 +695,7 @@ public abstract class Level implements Bundlable {
 				m.state = m.WANDERING;
 			}
 
-			if(Dungeon.isChallenged(CS) && depth>2 && depth<25 && Random.Float()<0.25f){
+			if(Dungeon.isChallenged(CS) && depth>2 && depth<35 && Random.Float()<0.25f){
 				Buff.affect(m, ChampionEnemy.AloneCity.class);
 			}
 

@@ -13,7 +13,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 
 public class DeathRong extends NTNPC {
 
@@ -72,20 +71,9 @@ public class DeathRong extends NTNPC {
 
         if(first){
             Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot,false)));
-        } else if(Statistics.defalult_deaddog && secnod) {
+        } else if(Statistics.defalult_deaddog) {
             Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot2,false)));
-            secnod = false;
-        } else {
-            sprite.jump(pos, 356, new Callback() {
-                @Override
-                public void call() {
-                    move(356);
-                    die(null);
-                }
-
-            });
         }
-
         Bestiary.setSeen(DeathRong.class);
 
         return true;

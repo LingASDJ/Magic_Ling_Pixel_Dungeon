@@ -605,6 +605,8 @@ public class YogReal extends Boss {
     public void die( Object cause ) {
         GameScene.flash(0x80FFFFFF);
 
+        Statistics.TrueYogNoDied = true;
+
         if(Statistics.Hollow_Holiday){
             Dungeon.level.drop(new SkeletonKey(depth),pos+1);
         }
