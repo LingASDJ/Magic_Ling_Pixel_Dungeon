@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.Feeling.NONE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CUSTOM_DECO;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ENTRANCE;
@@ -13,6 +12,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL_DECO;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FrostFlameParticle;
@@ -38,6 +38,9 @@ public class HollowExitLevel extends Level {
     {
         color1 = 0x801500;
         color2 = 0xa68521;
+
+        Statistics.NoTime = false;
+
         viewDistance = Math.min(5, viewDistance);
     }
 

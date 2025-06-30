@@ -225,7 +225,7 @@ public class YogGodHardBossLevel extends Level {
         }
 
         if (map[ENTRANCE] == Terrain.ENTRANCE && map[EXIT] != Terrain.EXIT
-                && ch == Dungeon.hero && Dungeon.level.distance(ch.pos, ENTRANCE) >= 2) {
+                && ch == Dungeon.hero && Dungeon.level.distance(ch.pos, ENTRANCE) >= 2 && !Statistics.TrueYogNoDied) {
             seal();
         }
 

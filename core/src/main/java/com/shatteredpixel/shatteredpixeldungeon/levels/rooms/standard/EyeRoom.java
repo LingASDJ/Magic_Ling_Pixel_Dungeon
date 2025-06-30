@@ -16,6 +16,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDHBLR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime_Orange;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Succubus;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWitch;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Butcher;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -106,7 +108,9 @@ public class EyeRoom extends SpecialRoom {
 
         for (int i : MBTPOS) {
             Mob n = Random.Float()<=0.05f ? new Slime_Orange() :new Crab();
-            if(depth >= 20){
+            if(depth >= 25) {
+                n = Random.Float() <= 0.05f ? new Butcher() : new ApprenticeWitch();
+            } else if(depth >= 20){
                 n = Random.Float()<=0.05f ? new Succubus() : new Eye();
             } else if(depth >= 15) {
                 n = Random.Float()<=0.05f ? new Senior() : new BruteBot();

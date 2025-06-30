@@ -139,6 +139,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.Servan
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.Sothoth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SothothEyeDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SothothLasher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
@@ -997,6 +998,7 @@ public class Hero extends Char {
 	@Override
 	public float speed() {
 		float speed = 0;
+
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
 			speed += CustomPlayer.baseSpeed;
 		}
@@ -1044,6 +1046,10 @@ public class Hero extends Char {
 
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
 			speed = CustomPlayer.baseSpeed;
+		}
+
+		if ( buff( DeadDogCerberus.SoulDead.class ) != null){
+			speed = 1f;
 		}
 
 		return speed;
@@ -2602,7 +2608,7 @@ public class Hero extends Char {
 		} else if(holiday == RegularLevel.Holiday.XMAS) {
 			result = Dungeon.depth < 31;
 		} else if(holiday == RegularLevel.Holiday.HWEEN) {
-			result = Dungeon.depth < 36;
+			result = Dungeon.depth < 32;
 		} else {
 			result = Dungeon.depth < 27;
 		}

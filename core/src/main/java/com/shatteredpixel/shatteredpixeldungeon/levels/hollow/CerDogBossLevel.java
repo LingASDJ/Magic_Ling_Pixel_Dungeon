@@ -553,6 +553,7 @@ public class CerDogBossLevel extends Level {
                                     }
 
                                     level.seal();
+                                    level.playBossMusic();
                                     ncx.state = ncx.WANDERING;
                                     GameScene.add(ncx);
                                 }
@@ -691,7 +692,7 @@ public class CerDogBossLevel extends Level {
     UnsignedInvitationLetter unsignedInvitationLetter = Dungeon.hero.belongings.getItem(UnsignedInvitationLetter.class);
 
     if(transition.type == LevelTransition.Type.REGULAR_ENTRANCE && unsignedInvitationLetter!=null){
-        GLog.w(Messages.get(UnsignedInvitationLetter.class,"hollow_city_1"));
+        GLog.w(Messages.get(UnsignedInvitationLetter.class,"hollow_city_1",hero.name()));
         Badges.CITY_END();
         GameScene.scene.add(new Delayer(3f){
             @Override

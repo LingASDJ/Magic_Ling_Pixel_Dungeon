@@ -762,7 +762,7 @@ public abstract class Char extends Actor {
 	public float speed() {
 		float speed = baseSpeed;
 
-		if ( buff( DeadDogCerberus.SoulDead.class ) != null) speed = 1f;
+
 
 		//创世神
 		if ( buff( Invulnerability.GodDied.class ) != null ) speed *= 2f;

@@ -78,7 +78,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BlueAltStoneRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BoilerRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CerbusSleepRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.GoldRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
@@ -96,6 +95,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ThreeWellRo
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BloodCrystalRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CoinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.DreamcatcherRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
@@ -364,6 +364,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new EyeRoom());
 		} else if(Random.Int(10) == 1 && depth>26 && Statistics.Hollow_Holiday) {
 			initRooms.add(new BigEyeRoom());
+			initRooms.add(new CoinRoom());
 		}
 
 		if(Dungeon.depth<26 && Random.NormalIntRange(1, 100)<=21){

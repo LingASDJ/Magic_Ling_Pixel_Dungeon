@@ -59,7 +59,7 @@ public class PassWordBadgesScene extends PixelScene {
 
 
 
-        int blankBadges = 27;
+        int blankBadges = 29;
         blankBadges -= badges.size();
         if (badges.contains(Badges.Badge.ALL_ITEMS_IDENTIFIED))	blankBadges -= 6;
         if (badges.contains(Badges.Badge.YASD)) 				blankBadges -= 5;

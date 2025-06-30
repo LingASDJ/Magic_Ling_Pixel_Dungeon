@@ -1202,7 +1202,14 @@ public class ItemSpriteSheet {
     }
 
     private static final int PROJECTILES        =                               xy(1, 58);  //24 slots
+
     public static final int PROJECTILES_STAR        = PROJECTILES;
+
+    public static final int SOUL_CRACK_A        = PROJECTILES + 1;
+    public static final int SOUL_CRACK_B        = PROJECTILES + 2;
+    public static final int SOUL_CRACK_C        = PROJECTILES + 3;
+    public static final int SOUL_CRACK_D        = PROJECTILES + 4;
+    public static final int SOUL_CRACK_E        = PROJECTILES + 5;
 
     static{
         assignItemRect(PROJECTILES_STAR,       9, 9);

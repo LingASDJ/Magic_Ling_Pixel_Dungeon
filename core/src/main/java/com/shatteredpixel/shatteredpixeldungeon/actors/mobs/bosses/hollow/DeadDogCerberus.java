@@ -134,7 +134,7 @@ public class DeadDogCerberus extends Boss {
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "notice"));
             GameScene.flash(0x33ff0000);
-            //BGMPlayer.playBoss();
+            Dungeon.level.playBossMusic();
             GameScene.bossReady();
             for (Char ch : Actor.chars()){
                 if (ch instanceof DriedRose.GhostHero){
@@ -1054,9 +1054,6 @@ public class DeadDogCerberus extends Boss {
             return Math.max(0, (DURATION - visualcooldown()) / DURATION);
         }
     }
-
-
-
 
     public static class SoulDead extends FlavourBuff {
         public static final float DURATION	= 100f;
