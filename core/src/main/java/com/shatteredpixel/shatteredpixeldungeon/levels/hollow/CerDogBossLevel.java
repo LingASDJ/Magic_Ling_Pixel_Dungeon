@@ -7,18 +7,19 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRong;
@@ -30,18 +31,22 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnsignedInvitationLetter;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SentryRoom;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadDogCerberusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -50,6 +55,7 @@ import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
@@ -226,48 +232,8 @@ public class CerDogBossLevel extends Level {
 
                     }
                 });
-
-
             }
         }
-
-
-
-    }
-
-
-    public static class DiedCrused extends ChampionEnemy {
-
-        {
-            color = 0x8f8f8f;
-        }
-
-        @Override
-        public boolean act() {
-            if (target.isAlive()) {
-
-                Buff.affect(target, CrivusFruits.CFBarrior.class).setShield(((50)));
-
-                Buff.affect(target, ArcaneArmor.class).set(50,1);
-
-                spend(50f);
-            }
-
-            return true;
-        }
-
-        @Override
-        public float meleeDamageFactor() {
-            return 1.20f;
-        }
-
-        @Override
-        public float speedFactor(float s) {
-            s = (int) target.baseSpeed;
-            return s * 2.5f;
-        }
-
-
     }
 
 
@@ -721,7 +687,23 @@ public class CerDogBossLevel extends Level {
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-    if(Statistics.bossRushMode && transition.type == LevelTransition.Type.REGULAR_ENTRANCE){
+
+    UnsignedInvitationLetter unsignedInvitationLetter = Dungeon.hero.belongings.getItem(UnsignedInvitationLetter.class);
+
+    if(transition.type == LevelTransition.Type.REGULAR_ENTRANCE && unsignedInvitationLetter!=null){
+        GLog.w(Messages.get(UnsignedInvitationLetter.class,"hollow_city_1"));
+        Badges.CITY_END();
+        GameScene.scene.add(new Delayer(3f){
+            @Override
+            protected void onComplete() {
+                Dungeon.win( UnsignedInvitationLetter.class);
+                Rankings.INSTANCE.submit(true, UnsignedInvitationLetter.class);
+                Game.switchScene( RankingsScene.class );
+                Dungeon.deleteGame( GamesInProgress.curSlot, true );
+            }
+        });
+        return false;
+    } else if(Statistics.bossRushMode && transition.type == LevelTransition.Type.REGULAR_ENTRANCE){
             TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
             if (timeFreeze != null) timeFreeze.disarmPresses();
             Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
@@ -738,7 +720,7 @@ public class CerDogBossLevel extends Level {
         } else if(Statistics.bossRushMode || Statistics.RandMode) {
             return super.activateTransition(hero, transition);
         } else {
-            return false;
+            return super.activateTransition(hero, transition);
         }
     }
 

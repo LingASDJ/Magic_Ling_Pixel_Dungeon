@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.LightFood;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
@@ -248,6 +249,7 @@ public abstract class Recipe {
 			new MeatPie.Recipe(),
 			new ScrollOfFlameCursed.Recipe(),
 			new WandOfBlueFuck.Recipe(),
+			new Sugar.Recipe(),
 			new LightFood.Recipe(),
 			new WandOfHightHunderStorm.Recipe(),
 			new BloodthirstyThorn.Recipe(),

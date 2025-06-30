@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroAction;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.Typhon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
@@ -40,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.DeadFireFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -157,9 +157,6 @@ public class DeadDogCerberus extends Boss {
     public void move( int step ) {
         if(state == WANDERING){
             HP += Math.min(3, HT - HP);
-            if(HP != HT){
-                sprite.showStatusWithIcon(CharSprite.POSITIVE, "3", FloatingText.HEALING);
-            }
         }
         super.move( step );
     }
@@ -1127,8 +1124,10 @@ public class DeadDogCerberus extends Boss {
         Badges.KILL_DOG();
         GameScene.bossSlain();
 
-        Dungeon.level.drop(new Amulet(),pos);
+        Statistics.defalult_deaddog = true;
 
-        yell( Messages.get(this, "defeated",hero.name()) );
+        Typhon typhonn = new Typhon();
+        typhonn.pos = 354;
+        GameScene.add(typhonn);
     }
 }

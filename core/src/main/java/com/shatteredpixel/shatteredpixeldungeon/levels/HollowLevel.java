@@ -4,13 +4,14 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Vampire;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Gelatin;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar_Block;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.WhiteSugar_B;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHolyWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
@@ -18,7 +19,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAnt
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.HollowPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
@@ -36,17 +36,11 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ToxicTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
@@ -63,40 +57,6 @@ public class HollowLevel extends RegularLevel {
             Music.playModeBGM(Assets.Music.HOLLOW_CITY_HARD, true);
         } else {
             Music.playModeBGM(Assets.Music.HOLLOW_CITY, true);
-        }
-    }
-
-    @Override
-    public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE && depth == 26) {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-                    if (timeFreeze != null) timeFreeze.disarmPresses();
-                    Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-                    if (timeBubble != null) timeBubble.disarmPresses();
-                    InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
-                    InterlevelScene.curTransition = new LevelTransition();
-                    InterlevelScene.curTransition.destDepth = depth - 1;
-                    InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
-                    InterlevelScene.curTransition.destBranch = 4;
-                    InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_ENTRANCE;
-                    InterlevelScene.curTransition.centerCell  = -1;
-                    Game.switchScene( InterlevelScene.class );
-                }
-            });
-            return false;
-        } else if(transition.type == LevelTransition.Type.REGULAR_EXIT && depth == 30) {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show( new WndMessage( Messages.get(hero, "hollow_1") ) );
-                }
-            });
-            return false;
-        } else {
-            return super.activateTransition(hero, transition);
         }
     }
 
@@ -135,6 +95,26 @@ public class HollowLevel extends RegularLevel {
         addItemToSpawn(convert());
         addItemToSpawn(convert());
         addItemToSpawn(convert());
+
+        switch (Random.Int(3)){
+            case 0:
+                addItemToSpawn(new Gelatin());
+            break;
+            case 1:
+                addItemToSpawn(new Sugar_Block());
+            break;
+            case 2:
+                addItemToSpawn(new WhiteSugar_B());
+            break;
+        }
+
+        if(Random.Float()<0.25f){
+            addItemToSpawn(new WhiteSugar_B());
+        }
+
+        if(Random.Float()<0.25f){
+            addItemToSpawn(new Gelatin());
+        }
 
         super.createItems();
     }

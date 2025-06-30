@@ -43,7 +43,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ElectricalSmokeBlob
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Web;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -76,7 +75,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ColdSnowParticles;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WindParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -120,7 +118,6 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -843,32 +840,6 @@ public abstract class Level implements Bundlable {
 						talkToHero();
 					}
 					return false;
-				} else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
-					&& depth == 25
-					//ascension challenge only works on runs started on v1.3+
-					&& Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3
-					&& hero.belongings.getItem(Amulet.class) != null
-					&& hero.buff(AscensionChallenge.class) == null) {
-
-					Game.runOnRenderThread(new Callback() {
-						@Override
-						public void call() {
-							GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.AMULET),
-									Messages.get(Amulet.class, "ascent_title"),
-									Messages.get(Amulet.class, "ascent_desc"),
-									Messages.get(Amulet.class, "ascent_yes"),
-									Messages.get(Amulet.class, "ascent_no")) {
-								@Override
-								protected void onSelect(int index) {
-									if (index == 0) {
-										Buff.affect(hero, AscensionChallenge.class);
-										Statistics.highestAscent = 25;
-									}
-								}
-							});
-						}
-					});
-					ready();
 				}
 			}
 			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;

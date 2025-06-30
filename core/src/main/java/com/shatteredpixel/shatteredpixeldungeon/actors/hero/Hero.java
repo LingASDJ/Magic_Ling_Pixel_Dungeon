@@ -2542,7 +2542,7 @@ public class Hero extends Char {
 
 		} else if (heap != null
 				//moving to an item doesn't auto-pickup when enemies are near...
-				&& (visibleEnemies.size() == 0 || cell == pos ||
+				&& (visibleEnemies.isEmpty() || cell == pos ||
 				//...but only for standard heaps. Chests and similar open as normal.
 				(heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE && heap.type != Type.FOR_RUSH))) {
 
@@ -2574,10 +2574,10 @@ public class Hero extends Char {
 			curAction = new HeroAction.Unlock( cell );
 
 		} else if (Dungeon.level.getTransition(cell) != null
-				//moving to a transition doesn't automatically trigger it when enemies are near
-				&& (visibleEnemies.size() == 0 || cell == pos)
+				&& (visibleEnemies.isEmpty() || cell == pos)
 				&& !Dungeon.level.locked
-				&& ( HolidayEvent() || Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE) ) {
+				&& ( HolidayEvent() ||
+				Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE) ) {
 
 			curAction = new HeroAction.LvlTransition( cell );
 
@@ -2599,10 +2599,12 @@ public class Hero extends Char {
 		boolean result;
 		if(bossRushMode){
 			result = Dungeon.depth < 43;
-		} else if(holiday == RegularLevel.Holiday.XMAS){
+		} else if(holiday == RegularLevel.Holiday.XMAS) {
 			result = Dungeon.depth < 31;
+		} else if(holiday == RegularLevel.Holiday.HWEEN) {
+			result = Dungeon.depth < 36;
 		} else {
-			result = Dungeon.depth < 31;
+			result = Dungeon.depth < 27;
 		}
 		return result;
 	}

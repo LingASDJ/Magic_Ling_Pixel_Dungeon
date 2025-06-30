@@ -205,9 +205,7 @@ public class BoilerRoom extends SpecialRoom {
                             new Callback() {
                                 @Override
                                 public void call() {
-                                    GameScene.flash(Window.R_COLOR,true);
                                     redSoulCrack.detach(hero.belongings.backpack);
-
                                     MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
                                     msc.reset(
                                             hero.sprite,
@@ -218,9 +216,7 @@ public class BoilerRoom extends SpecialRoom {
                                             new Callback() {
                                                 @Override
                                                 public void call() {
-                                                    GameScene.flash(Window.SKYBULE_COLOR,true);
                                                     blueSoulCrack.detach(hero.belongings.backpack);
-
                                                     MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
                                                     msc.reset(
                                                             hero.sprite,
@@ -231,9 +227,7 @@ public class BoilerRoom extends SpecialRoom {
                                                             new Callback() {
                                                                 @Override
                                                                 public void call() {
-                                                                    GameScene.flash(Window.G_COLOR,true);
                                                                     greenSoulCrack.detach(hero.belongings.backpack);
-
                                                                     MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
                                                                     msc.reset(
                                                                             hero.sprite,
@@ -244,9 +238,7 @@ public class BoilerRoom extends SpecialRoom {
                                                                             new Callback() {
                                                                                 @Override
                                                                                 public void call() {
-                                                                                    GameScene.flash(Window.CYELLOW,true);
                                                                                     yellowSoulCrack.detach(hero.belongings.backpack);
-
                                                                                     MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
                                                                                     msc.reset(
                                                                                             hero.sprite,
@@ -257,7 +249,7 @@ public class BoilerRoom extends SpecialRoom {
                                                                                             new Callback() {
                                                                                                 @Override
                                                                                                 public void call() {
-                                                                                                    GameScene.flash(Window.DeepPK_COLOR,true);
+                                                                                                    GameScene.flash(Window.CBLACK, true);
                                                                                                     purpleSoulCrack.detach(hero.belongings.backpack);
                                                                                                     Statistics.Hollow_Holiday = true;
                                                                                                     yell(Messages.get(BoilerRoom.class, "yell"));

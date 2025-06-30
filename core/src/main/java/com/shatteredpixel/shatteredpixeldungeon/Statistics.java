@@ -241,6 +241,10 @@ public class Statistics {
 
 	public static boolean onlyLing = false;
 
+	public static boolean defalult_deaddog = false;
+
+	public static int LoveMagicGirl = 0;
+
 	//昼夜更替
 	public static int gameTime;
 	public static int gameDay;
@@ -560,6 +564,10 @@ public class Statistics {
 		onlyBzmdr = false;
 		onlyLing = false;
 
+		defalult_deaddog = false;
+
+		LoveMagicGirl = 0;
+
 		gameDay = 1;
 
 		ascended = false;
@@ -822,6 +830,10 @@ public class Statistics {
 
 		bundle.put("onlyLing",onlyLing);
 
+		bundle.put("defalult_deaddog",defalult_deaddog);
+
+		bundle.put("lovemagicgirl",LoveMagicGirl);
+
 		bundle.put("NOTIME",NoTime);
 
 		//分数
@@ -950,6 +962,10 @@ public class Statistics {
 		//BossRush2.5
 		LiquidMatalOnlyTen = bundle.getBoolean("LIMTAL_DROP");
 		LimitLiquidMatal = bundle.getInt("LIMTAL");
+
+		LoveMagicGirl = bundle.getInt("lovemagicgirl");
+
+		defalult_deaddog = bundle.getBoolean("defalult_deaddog");
 
 		onlyLing = bundle.getBoolean("onlyLing");
 

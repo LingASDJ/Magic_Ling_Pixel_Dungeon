@@ -40,6 +40,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Gelatin;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar_Block;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.WhiteSugar_B;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -332,6 +336,10 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe( new MeatPie.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new Pasty(), new Food(), new MysteryMeat.PlaceHolder())),
 						new MeatPie()));
+				result.add(null);
+				result.add(new QuickRecipe( new Sugar.Recipe(),
+						new ArrayList<Item>(Arrays.asList(new Gelatin(), new Sugar_Block(), new WhiteSugar_B())),
+						new Sugar().quantity(4)));
 				result.add(new QuickRecipe( new LightFood.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new AikeLaier.Seed(), new Food(),
 								new FrozenCarpaccio())),
