@@ -7,7 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 public abstract class GoldMob extends Mob {
     @Override
     public String info(){
-        String desc = super.description();
+        String desc = super.info();
 
         desc += "\n\n" + Messages.get(GoldMob.class,"infos");
 

@@ -114,7 +114,6 @@ public class TitleScene extends PixelScene {
 			ExecutorService executor = Executors.newSingleThreadExecutor();
 			Future<?> future = executor.submit(() -> {
 				try {
-					// NTP服务器需要合理分配，根据语言环使用不同的地址进行监测
 					String ntpServer;
 					switch (SPDSettings.language()){
 						default:

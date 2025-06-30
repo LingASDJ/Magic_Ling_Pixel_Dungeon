@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -75,6 +76,7 @@ public class PotionOfHolyWater extends Item {
                 GLog.n(Messages.get(this,"vampire_reset"));
                 SpellSprite.showRGB(ch, SpellSprite.ANKH,0.1f,1f,0.1f);
                 CellEmitter.get( cell ).burst( Speck.factory( Speck.STEAM ), 5 );
+                PaswordBadges.VAM_GHOST();
             } else if (ch instanceof Frankenstein){
                 ((Frankenstein) ch).MustDied = true;
                 GLog.n(Messages.get(this,"zombie_noreset"));

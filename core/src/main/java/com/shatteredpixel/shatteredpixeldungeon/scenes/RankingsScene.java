@@ -30,10 +30,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.Typhon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.BoatPlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnsignedInvitationLetter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ZeroBoatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
@@ -214,32 +217,31 @@ public class RankingsScene extends PixelScene {
 			this.rec = rec;
 
 			if (latest) {
-				flare = new Flare( 6, 24 );
+				flare = new Flare(6, 24);
 				flare.angularSpeed = 90;
-				if (rec.cause == Typhon.class){
-					flare.color( 0xCF6E28 );
+				if (rec.cause == Typhon.class) {
+					flare.color(0xCF6E28);
 				} else {
-					flare.color( rec.win ? FLARE_WIN : FLARE_LOSE );
+					flare.color(rec.win ? FLARE_WIN : FLARE_LOSE);
 				}
 
-				addToBack( flare );
+				addToBack(flare);
 			}
 
-			if (pos != Rankings.TABLE_SIZE-1) {
+			if (pos != Rankings.TABLE_SIZE - 1) {
 				position.text(Integer.toString(pos + 1));
 			} else
 				position.text(" ");
 			position.measure();
 
-			desc.text( Messages.titleCase(rec.desc()) );
+			desc.text(Messages.titleCase(rec.desc()));
 
 			int odd = pos % 2;
 
 
-
 			if (rec.win) {
-				if (rec.cause == Typhon.class) {
-					shield.copy(new ItemSprite(ItemSpriteSheet.CITY_HOOD));
+				if (rec.cause == UnsignedInvitationLetter.class) {
+					shield.copy(new ItemSprite(ItemSpriteSheet.HLPBOOKS));
 					position.hardlight(TEXT_WIN2[odd]);
 					desc.hardlight(TEXT_WIN2[odd]);
 					depth.hardlight(TEXT_WIN2[odd]);
@@ -257,27 +259,27 @@ public class RankingsScene extends PixelScene {
 					depth.hardlight(TEXT_WIN4[odd]);
 					level.hardlight(TEXT_WIN4[odd]);
 				} else {
-					shield.copy( new ItemSprite(ItemSpriteSheet.AMULET) );
-					position.hardlight( TEXT_WIN[odd] );
-					desc.hardlight( TEXT_WIN[odd] );
-					depth.hardlight( TEXT_WIN[odd] );
-					level.hardlight( TEXT_WIN[odd] );
+					shield.copy(new ItemSprite(ItemSpriteSheet.AMULET));
+					position.hardlight(TEXT_WIN[odd]);
+					desc.hardlight(TEXT_WIN[odd]);
+					depth.hardlight(TEXT_WIN[odd]);
+					level.hardlight(TEXT_WIN[odd]);
 				}
 			} else {
-				position.hardlight( TEXT_LOSE[odd] );
-				desc.hardlight( TEXT_LOSE[odd] );
-				depth.hardlight( TEXT_LOSE[odd] );
-				level.hardlight( TEXT_LOSE[odd] );
+				position.hardlight(TEXT_LOSE[odd]);
+				desc.hardlight(TEXT_LOSE[odd]);
+				depth.hardlight(TEXT_LOSE[odd]);
+				level.hardlight(TEXT_LOSE[odd]);
 
-				if (rec.depth != 0){
-					if(rec.SRushMode){
+				if (rec.depth != 0) {
+					if (rec.SRushMode) {
 						steps.copy(new ItemSprite(ItemSpriteSheet.BOSSRUSH_GOLD));
-					} else if(rec.SRandMode){
+					} else if (rec.SRandMode) {
 						steps.copy(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD));
 					} else {
 						steps.copy(Icons.STAIRS.get());
 					}
-					depth.text( Integer.toString(rec.depth) );
+					depth.text(Integer.toString(rec.depth));
 					depth.measure();
 
 
@@ -287,19 +289,24 @@ public class RankingsScene extends PixelScene {
 
 			}
 
-			if (rec.herolevel != 0){
-				level.text( Integer.toString(rec.herolevel) );
+			if (rec.herolevel != 0) {
+				level.text(Integer.toString(rec.herolevel));
 				level.measure();
 				add(level);
 			}
 
-			classIcon.copy( Icons.get( rec.heroClass ) );
-			if (rec.heroClass == HeroClass.ROGUE){
+			classIcon.copy(Icons.get(rec.heroClass));
+			if (rec.heroClass == HeroClass.ROGUE) {
 				//cloak of shadows needs to be brightened a bit
 				classIcon.brightness(2f);
 			}
 
-			if (rec.daily){
+			if(rec.cause == BoatPlot.DiedBoat.class){
+				Image xs = new ZeroBoatSprite();
+				xs.scale.set(PixelScene.align(0.65f));
+				shield.copy(xs);
+				shield.hardlight(Window.CBLACK);
+			} else if (rec.daily){
 				shield.copy( Icons.get(Icons.CALENDAR) );
 				shield.hardlight(0.5f, 1f, 2f);
 			} else if (!rec.customSeed.isEmpty() && !rec.win){

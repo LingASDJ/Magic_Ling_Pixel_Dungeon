@@ -94,7 +94,7 @@ public class HollowPlot extends Plot {
     {
         diagulewindow.hideAll();
         diagulewindow.setMainColor(Window.CBLACK);
-        diagulewindow.setMainAvatar(new Image(Assets.Splashes.MOSRDX));
+        diagulewindow.setMainAvatar(new Image(Assets.Splashes.MOSRDX_0));
         diagulewindow.setLeftName(Messages.get(Morphs.class,"unknown"));
         diagulewindow.changeText(Messages.get(Morphs.class,"message1",hero.name()));
     }

@@ -1,7 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
 
 public class TyphonSprite extends MobSprite {
 
@@ -25,6 +27,17 @@ public class TyphonSprite extends MobSprite {
         die.frames( frames, 0, 1 );
 
         play( idle );
+    }
+
+    @Override
+    public void die() {
+        super.die();
+
+        emitter().start( ElmoParticle.FACTORY, 0.03f, 60 );
+
+        if (visible) {
+            Sample.INSTANCE.play( Assets.Sounds.BURNING );
+        }
     }
 
 }

@@ -1058,6 +1058,13 @@ public class ItemSpriteSheet {
 
     private static final int HOLLOW_INDEX   	 = xy(1, 44);
 
+
+    public static final int ROIL_SUGAR =			 HOLLOW_INDEX + 1;
+
+    public static final int GELATIN =			 HOLLOW_INDEX + 4;
+    public static final int SUGAR_BLOCK =		 HOLLOW_INDEX + 5;
+    public static final int WHITE_SUGAR_B =		 HOLLOW_INDEX + 6;
+
     public static final int SOUL_CRACK =			 HOLLOW_INDEX + 10;
     public static final int HOLY_WATER =			 HOLLOW_INDEX + 12;
 

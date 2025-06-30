@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.Feeling.NONE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CUSTOM_DECO;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ENTRANCE;
@@ -27,16 +28,16 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 
-public class OpenLastLevel extends Level {
+public class HollowExitLevel extends Level {
 
     {
         color1 = 0x801500;
         color2 = 0xa68521;
-
         viewDistance = Math.min(5, viewDistance);
     }
 
@@ -84,6 +85,11 @@ public class OpenLastLevel extends Level {
     };
 
     @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.HOLLOW_CITY, true);
+    }
+
+    @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
         if (transition.type == LevelTransition.Type.BRANCH_EXIT && depth == 26) {
             Game.runOnRenderThread(new Callback() {
@@ -111,7 +117,7 @@ public class OpenLastLevel extends Level {
 
     @Override
     protected boolean build() {
-
+        feeling = Feeling.NONE;
         setSize(WIDTH, HEIGHT);
         map = code_map.clone();
 

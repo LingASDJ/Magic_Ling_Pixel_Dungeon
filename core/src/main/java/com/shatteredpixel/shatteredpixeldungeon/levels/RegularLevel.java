@@ -78,6 +78,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BlueAltStoneRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BoilerRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CerbusSleepRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.GoldRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
@@ -304,7 +305,13 @@ public abstract class RegularLevel extends Level {
 			if(one && two && three && four && five && depth == 24){
 				initRooms.add(new BoilerRoom());
 			}
+
+
 		}
+
+//		if(depth == 29 && Statistics.Hollow_Holiday){
+//			initRooms.add(new CerbusSleepRoom());
+//		}
 
 		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 40) {
 			initRooms.add(new NxhyShopRoom());

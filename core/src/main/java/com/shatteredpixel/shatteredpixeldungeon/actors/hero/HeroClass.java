@@ -176,8 +176,6 @@ public enum HeroClass {
 	public void initHero( Hero hero ) {
 		if (!Dungeon.isDLC(Conducts.Conduct.SEED)) {
 
-			//Statistics.Hollow_Holiday = true;
-
 			if (RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY) {
 				new CrystalLing().quantity(1).identify().collect();
 				Buff.affect(hero, BlessLing.class).set((100), 1);
@@ -226,13 +224,8 @@ public enum HeroClass {
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			new PropBag().quantity(1).identify().collect();
-			new WandOfSun().collect();
-			new ElectricalSmoke().collect();
 
-			GLog.n(String.valueOf(RegularLevel.holiday));
-
-			new SelectableRing().collect();
-			new SelectableWand().collect();
+			PaswordBadges.SUGAR_FRIENDLY();
 
 			new PotionBandolier().collect();
 			Dungeon.LimitedDrops.POTION_BANDOLIER.dropped();
