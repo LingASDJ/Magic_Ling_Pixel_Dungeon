@@ -67,40 +67,6 @@ public class HollowLevel extends RegularLevel {
     }
 
     @Override
-    public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE && depth == 26) {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-                    if (timeFreeze != null) timeFreeze.disarmPresses();
-                    Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-                    if (timeBubble != null) timeBubble.disarmPresses();
-                    InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
-                    InterlevelScene.curTransition = new LevelTransition();
-                    InterlevelScene.curTransition.destDepth = depth - 1;
-                    InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
-                    InterlevelScene.curTransition.destBranch = 4;
-                    InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_ENTRANCE;
-                    InterlevelScene.curTransition.centerCell  = -1;
-                    Game.switchScene( InterlevelScene.class );
-                }
-            });
-            return false;
-        } else if(transition.type == LevelTransition.Type.REGULAR_EXIT && depth == 30) {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show( new WndMessage( Messages.get(hero, "hollow_1") ) );
-                }
-            });
-            return false;
-        } else {
-            return super.activateTransition(hero, transition);
-        }
-    }
-
-    @Override
     protected int standardRooms(boolean forceMax) {
         if (forceMax) return 6;
         //8 to 9, average 8.33
