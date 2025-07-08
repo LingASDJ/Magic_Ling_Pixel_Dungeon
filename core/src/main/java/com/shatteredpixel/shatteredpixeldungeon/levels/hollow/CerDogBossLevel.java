@@ -138,11 +138,11 @@ public class CerDogBossLevel extends Level {
     public void unseal() {
         super.unseal();
 
-        set(46, Terrain.EXIT);
-        GameScene.updateMap(46);
+//        set(46, Terrain.EXIT);
+//        GameScene.updateMap(46);
 
-        LevelTransition exit = new LevelTransition(this,46, LevelTransition.Type.REGULAR_EXIT);
-        transitions.add(exit);
+//        LevelTransition exit = new LevelTransition(this,46, LevelTransition.Type.REGULAR_EXIT);
+//        transitions.add(exit);
 
         if(Statistics.bossRushMode){
             LevelTransition exits = new LevelTransition(this,46, LevelTransition.Type.REGULAR_ENTRANCE);

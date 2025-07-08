@@ -255,7 +255,7 @@ public class LevelRules {
                     case 31:
                         return new CerDogBossLevel();
 
-                    case 32:
+                    case 33:
                         return new MorpheusBossLevel();
 
                     default:
