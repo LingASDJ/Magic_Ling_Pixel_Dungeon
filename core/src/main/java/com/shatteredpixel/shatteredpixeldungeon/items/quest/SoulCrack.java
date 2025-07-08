@@ -11,6 +11,7 @@ public class SoulCrack extends Item {
         image = ItemSpriteSheet.SOUL_CRACK_A;
         cursed = false;
         unique = true;
+        stackable = true;
     }
 
     @Override

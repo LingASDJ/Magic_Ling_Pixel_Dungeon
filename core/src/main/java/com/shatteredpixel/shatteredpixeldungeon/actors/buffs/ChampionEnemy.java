@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.seed;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -688,26 +689,35 @@ public abstract class ChampionEnemy extends Buff {
 	public static class DeadSoulCrack extends ChampionEnemy {
 
 		{
-			color = Window.DeepPK_COLOR;
+			color = 0xAD54C5;
+		}
+
+		@Override
+		public boolean act() {
+			if(!target.flying)
+				target.flying = true;
+			spend(1f);
+			return true;
 		}
 
 		@Override
 		public void detach() {
+			int target = hero.pos;
 			switch (depth){
 				case 1: case 2: case 3: case 4: case 5:
-					Dungeon.level.drop(new SoulCrack.RedSoulCrack(), target.pos).sprite.drop();
+					Dungeon.level.drop(new SoulCrack.RedSoulCrack(), target).sprite.drop();
 					break;
 				case 6: case 7: case 8: case 9: case 10:
-					Dungeon.level.drop(new SoulCrack.BlueSoulCrack(), target.pos).sprite.drop();
+					Dungeon.level.drop(new SoulCrack.BlueSoulCrack(), target).sprite.drop();
 					break;
 				case 11: case 12: case 13: case 14: case 15:
-					Dungeon.level.drop(new SoulCrack.GreenSoulCrack(), target.pos).sprite.drop();
+					Dungeon.level.drop(new SoulCrack.GreenSoulCrack(), target).sprite.drop();
 					break;
 				case 16: case 17: case 18: case 19: case 20:
-					Dungeon.level.drop(new SoulCrack.YellowSoulCrack(), target.pos).sprite.drop();
+					Dungeon.level.drop(new SoulCrack.YellowSoulCrack(), target).sprite.drop();
 					break;
 				case 21: case 22: case 23:
-					Dungeon.level.drop(new SoulCrack.PinkSoulCrack(), target.pos).sprite.drop();
+					Dungeon.level.drop(new SoulCrack.PinkSoulCrack(), target).sprite.drop();
 					break;
 			}
 			super.detach();

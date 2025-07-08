@@ -115,6 +115,9 @@ public class DeadDogCerberus extends Boss {
 
         spriteClass = DeadDogCerberusSprite.class;
 
+        ComboAttackThis = false;
+        ComboAttackCooldown = 28;
+
         viewDistance = 31;
 
         HUNTING = new Hunting();
@@ -308,15 +311,18 @@ public class DeadDogCerberus extends Boss {
         return delay;
     }
 
+    private boolean isAttack = false;
     @Override
     public void onAttackComplete() {
         super.onAttackComplete();
+
         if(ComboAttackThis){
             GameScene.scene.add(new Delayer(2f){
                 @Override
                 protected void onComplete() {
-                    ComboAttack();
-                    next();
+                    if(!isAttack){
+                        ComboAttack();
+                    }
                 }
             });
 
@@ -324,12 +330,12 @@ public class DeadDogCerberus extends Boss {
     }
 
     public void ComboAttack(){
-        if(enemy != null){
+        if(enemy != null && !isAttack){
             int initialDmg = damageRoll();
             initialDmg = Math.round(initialDmg * AscensionChallenge.statModifier(DeadDogCerberus.this));
             initialDmg = defenseProc(enemy, initialDmg);
-
-            int[] damagePercentages = {75, 60, 45, 30};
+            isAttack = true;
+            int[] damagePercentages = {55, 40, 35, 20};
 
             for (int i = 0; i < (phase == 2 ? 5 : 4); i++) {
                 int percentage = (i < damagePercentages.length) ? damagePercentages[i] : (int) (damageRoll() * 0.05f);
@@ -341,6 +347,7 @@ public class DeadDogCerberus extends Boss {
 
             ComboAttackThis = false;
             ComboAttackCooldown = 15;
+            isAttack = true;
         }
     }
 
@@ -380,9 +387,10 @@ public class DeadDogCerberus extends Boss {
             }
 
             //连环撕咬 四连寄
-            if (ComboAttackCooldown <= 0) {
+            if (ComboAttackCooldown <= 0 && isAttack) {
                 damage = 0;
                 yell(Messages.get(this, "combo_attack_hit"));
+                isAttack = false;
             }
 
             //凝血结晶只在无冷却Buff + 敌人是英雄状态下触发 此为固定技能
@@ -1120,6 +1128,8 @@ public class DeadDogCerberus extends Boss {
         }
         Badges.KILL_DOG();
         GameScene.bossSlain();
+
+        Buff.detach(hero, SoulDead.class);
 
         Statistics.defalult_deaddog = true;
 

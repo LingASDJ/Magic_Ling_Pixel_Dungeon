@@ -5,6 +5,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.STATUE_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Alchemy;
@@ -12,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MissileSpriteCustom;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SoulCrack;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -109,6 +112,30 @@ public class BoilerRoom extends SpecialRoom {
         int centerY = top + height() / 2;
         Point xpos = new Point(centerX+3, centerY+3);
         int RPos = left + right - xpos.x + xpos.y * level.width();
+
+        //击败狗子送碎片
+        if(Badges.isUnlocked(Badges.Badge.KILL_DOG)){
+            Point Redpos = new Point(centerX+3, centerY);
+            int RedXPos = left + right - Redpos.x + Redpos.y * level.width();
+            level.drop(new SoulCrack.RedSoulCrack(), RedXPos);
+
+            Point Bluepos = new Point(centerX-3, centerY);
+            int BlueXPos = left + right - Bluepos.x + Bluepos.y * level.width();
+            level.drop(new SoulCrack.BlueSoulCrack(), BlueXPos);
+
+            Point Yellowpos = new Point(centerX, centerY+3);
+            int YellowXPos = left + right - Yellowpos.x + Yellowpos.y * level.width();
+            level.drop(new SoulCrack.YellowSoulCrack(), YellowXPos);
+
+            Point Pinkpos = new Point(centerX, centerY-3);
+            int PinkXPos = left + right - Pinkpos.x + Pinkpos.y * level.width();
+            level.drop(new SoulCrack.PinkSoulCrack(), PinkXPos);
+
+            Point Gpos = new Point(centerX, centerY-2);
+            int GXPos = left + right - Gpos.x + Gpos.y * level.width();
+            level.drop(new SoulCrack.GreenSoulCrack(), GXPos);
+        }
+
         Blob.seed( RPos, 1, Alchemy.class, level );
 
         Point vpos = new Point(centerX+3, centerY-3);
