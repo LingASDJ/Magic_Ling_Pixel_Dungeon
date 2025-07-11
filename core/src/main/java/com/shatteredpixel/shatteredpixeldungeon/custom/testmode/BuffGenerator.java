@@ -432,8 +432,6 @@ public class BuffGenerator extends TestItem{
                     super.onClick();
                     int originalIndex = allData.indexOf(buffClass);
                     buffsStatus.set(originalIndex, checked);
-                    descText.text(M.L(allData.get(originalIndex), "desc"));
-                    buffText.text(M.L(allData.get(originalIndex), "name"));
                 }
 
                 @Override
