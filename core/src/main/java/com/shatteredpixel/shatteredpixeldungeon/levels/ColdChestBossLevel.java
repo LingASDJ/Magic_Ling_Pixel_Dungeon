@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.GO_START;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.MAZE_START;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.START;
@@ -16,12 +17,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalMimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.TPDoor;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
@@ -275,12 +281,12 @@ public class ColdChestBossLevel extends Level {
     @Override
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
-        boolean isTrue = ch.pos == LDBossDoor && ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
+        boolean isTrue = ch.pos == LDBossDoor && ch == Dungeon.hero && level.distance(ch.pos, entrance) >= 2;
         if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
            progress();
         }
 
-        ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
+        ColdChestBossLevel.State level = ((ColdChestBossLevel) Dungeon.level).pro();
         for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (boss instanceof DiamondKnight) {
                 if (level == ColdChestBossLevel.State.MAZE_START && Statistics.KillMazeMimic >= 5) {
@@ -333,16 +339,17 @@ public class ColdChestBossLevel extends Level {
             case GO_START:
                 seal();
 
-                ArrayList<Ankh> ankh = hero.belongings.getAllItems(Ankh.class);
-                for (Ankh w : ankh.toArray(new Ankh[0])){
-                    Dungeon.level.drop(w, 87).sprite.drop();
-                    w.detachAll(hero.belongings.backpack);
-                }
-
                 DiamondKnight bossx = new DiamondKnight();
                 bossx.state = bossx.WANDERING;
                 bossx.pos = WIDTH*19+17;
                 GameScene.add( bossx );
+
+                ArrayList<Ankh> ankh = hero.belongings.getAllItems(Ankh.class);
+                for (Ankh w : ankh.toArray(new Ankh[0])){
+                    GameScene.add(Mimic.spawnAt(1102, CrystalMimic.class,w));
+                    w.detachAll(hero.belongings.backpack);
+                }
+
                 set( getBossDoor, Terrain.LOCKED_DOOR );
                 GameScene.updateMap( getBossDoor );
                 set( HOME, Terrain.EMPTY );
@@ -379,7 +386,7 @@ public class ColdChestBossLevel extends Level {
                 break;
             case START:
                 //血量低于360后且在START枚举中
-                for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                for (Mob boss : level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于360 1阶段
                         if (pro == START && boss.HP <= 360 && !Statistics.TPDoorDieds) {
@@ -401,7 +408,7 @@ public class ColdChestBossLevel extends Level {
                 break;
             case MAZE_START:
                 //血量低于300后且在MAZE_START枚举中
-                for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                for (Mob boss : level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于300 2阶段
                         if (pro == MAZE_START && boss.HP <= 360 && Statistics.TPDoorDieds) {
@@ -409,13 +416,17 @@ public class ColdChestBossLevel extends Level {
                             changeMap(EndMap);
                             //在切换房间的时候立刻切换全新坐标
 
-                            for (Heap heap : Dungeon.level.heaps.valueList()) {
-                                    for (Item item : heap.items) {
-                                        if(!(item instanceof MIME || item instanceof Ankh)){
-                                            item.doPickUp(hero, Dungeon.hero.pos);
+                            for (Heap heap : level.heaps.valueList()) {
+                                for (Item item : heap.items) {
+                                    if(heap.type != Heap.Type.CRYSTAL_CHEST){
+                                        if(!(item instanceof MIME)){
+                                            item.doPickUp(hero, 962);
+                                            heap.destroy();
+                                        } else {
                                             heap.destroy();
                                         }
                                     }
+                                }
                             }
 
 
@@ -463,7 +474,7 @@ public class ColdChestBossLevel extends Level {
                 }
                 break;
             case VSBOSS_START:
-                for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                for (Mob boss : level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于240 3阶段
                         if (pro == VSBOSS_START && boss.HP <= 240 && ((DiamondKnight) boss).phase == 2) {
@@ -474,7 +485,7 @@ public class ColdChestBossLevel extends Level {
                 }
                 break;
             case VSLINK_START:
-                for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                for (Mob boss : level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于200 4阶段
                         if (pro == VSLINK_START && boss.HP <= 200 && ((DiamondKnight) boss).phase == 3) {
@@ -487,7 +498,7 @@ public class ColdChestBossLevel extends Level {
                 break;
             case VSYOU_START:
                 //血量低于300后且在MAZE_START枚举中
-                for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                for (Mob boss : level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于100 判定WIN
                         if (pro == VSYOU_START && boss.HP <= 100 && ((DiamondKnight) boss).phase == 4) {
@@ -498,7 +509,7 @@ public class ColdChestBossLevel extends Level {
                 //水晶自爆
                 break;
             case WIN:
-                for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                for (Mob boss : level.mobs.toArray(new Mob[0])) {
                     if (boss instanceof DCrystal) {
                         boss.die(true);
                     }

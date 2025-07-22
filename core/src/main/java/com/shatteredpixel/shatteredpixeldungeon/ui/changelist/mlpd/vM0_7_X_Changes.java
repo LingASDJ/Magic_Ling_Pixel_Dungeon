@@ -127,6 +127,12 @@ public class vM0_7_X_Changes {
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
 
+
+        Image xs =new DeadDogCerberusSprite();
+        xs.scale.set(PixelScene.align(0.6f));
+        changes.addButton(new ChangeButton(xs, ("Boss加强：刻耳柏洛斯"),
+                ("绝对领域：如有敌方和自身一个位置且非英雄单位，立刻秒杀。如为英雄，立刻弹开数米远，造成冲击距离伤害。")));
+
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：NFYIG"),
                 ("进入游戏通过落白商店 或者 游戏菜单 获取奖励，祝各位古堡调查愉快！\n\n有效期：20205-8-8 00:00前")));
 
@@ -153,7 +159,7 @@ public class vM0_7_X_Changes {
         Image issxsaxs =new DimandKingSprite();
         issxsaxs.scale.set(PixelScene.align(0.8f));
         changes.addButton(new ChangeButton(issxsaxs, ("拟态之王优化"),
-                ("现在拟态之王攻击前会将玩家的十字架物品扣留在入口处。")));
+                ("现在拟态之王攻击前会将玩家的十字架物品寄存在水晶宝箱怪处，战斗结束后返还。")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changes.hardlight(Window.R_COLOR);
