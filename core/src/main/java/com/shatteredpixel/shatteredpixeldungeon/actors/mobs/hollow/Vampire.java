@@ -55,6 +55,7 @@ public class Vampire extends Mob {
         }
 
         if(holy){
+            state = PASSIVE;
             godDied();
             HP = 1;
             Buff.affect(this, Bleeding.class).set(2f);
