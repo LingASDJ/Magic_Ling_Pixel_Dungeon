@@ -422,7 +422,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
             if(Dungeon.isChallenged(STRONGER_BOSSES)){
                 yell(Messages.get(this, "notice_2"));
             } else {
-                yell(Messages.get(this, "notice"));
+                yell(Messages.get(this, "notice",hero.name()));
             }
 
             for (Char ch : Actor.chars()){

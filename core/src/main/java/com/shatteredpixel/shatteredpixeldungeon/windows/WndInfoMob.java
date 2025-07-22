@@ -221,7 +221,7 @@ public class WndInfoMob extends WndTitledMessage {
 			add(mobSixInfo);
 
 			mobSixInfo.info1 = PixelScene.renderTextBlock((ATBSettings() ? String.valueOf(mob.HP) : HPLevel(mob)),6);
-			//String.valueOf((double)Math.round(mob.attackDelay() * 10) /10)
+
 			mobSixInfo.info2 = PixelScene.renderTextBlock(ATBSettings() ?
 					String.valueOf((double)Math.round(mob.attackDelay() * 10) /10) : AttackDelayLevel(mob),6);
 
@@ -233,12 +233,12 @@ public class WndInfoMob extends WndTitledMessage {
 					String.valueOf((double)Math.round(mob.speed()*100)/100): SPLevel(mob),6);
 
 			mobSixInfo.info7 = PixelScene.renderTextBlock(ProName(mob),6);
+
 			int dmg = 0;
 			int tries = 1000;
 			for (int i = 0; i < tries; i++) {
 				dmg += mob.damageRoll();
 			}
-
 			mobSixInfo.info8 = PixelScene.renderTextBlock(String.valueOf(dmg/tries),6);
 
 			add(mobSixInfo.info1);
