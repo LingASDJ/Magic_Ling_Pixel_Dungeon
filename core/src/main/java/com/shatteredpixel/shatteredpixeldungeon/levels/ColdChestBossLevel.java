@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.TPDoor;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
@@ -32,6 +33,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 //宝藏迷宫 10层
@@ -221,7 +223,7 @@ public class ColdChestBossLevel extends Level {
 
 
     public void setMapEnd(){
-        int entrance =52;
+        int entrance =87;
         int exit = 647;
         LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(enter);
@@ -330,6 +332,13 @@ public class ColdChestBossLevel extends Level {
         switch (pro) {
             case GO_START:
                 seal();
+
+                ArrayList<Ankh> ankh = hero.belongings.getAllItems(Ankh.class);
+                for (Ankh w : ankh.toArray(new Ankh[0])){
+                    Dungeon.level.drop(w, 87).sprite.drop();
+                    w.detachAll(hero.belongings.backpack);
+                }
+
                 DiamondKnight bossx = new DiamondKnight();
                 bossx.state = bossx.WANDERING;
                 bossx.pos = WIDTH*19+17;
@@ -402,13 +411,11 @@ public class ColdChestBossLevel extends Level {
 
                             for (Heap heap : Dungeon.level.heaps.valueList()) {
                                     for (Item item : heap.items) {
-                                        if(!(item instanceof MIME)){
-                                            item.doPickUp(hero, 962);
+                                        if(!(item instanceof MIME || item instanceof Ankh)){
+                                            item.doPickUp(hero, Dungeon.hero.pos);
                                             heap.destroy();
-                                        } else {
-                                            heap.destroy();
+                                        }
                                     }
-                                }
                             }
 
 
