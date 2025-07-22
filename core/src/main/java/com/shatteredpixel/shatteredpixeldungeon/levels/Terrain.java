@@ -55,6 +55,7 @@ public class Terrain {
 	public static final int SIGN			= 123;
 	public static final int SIGN_SP			= 33;
 	public static final int WELL			= 24;
+
 	public static final int BOOKSHELF		= 27;
 	public static final int ALCHEMY			= 28;
 
@@ -70,6 +71,9 @@ public class Terrain {
 
 	public static final int WATER		    = 29;
 	public static final int SALT_WATER		= 39;
+
+
+	public static final int ALTWELL 		= 40;
 
 	public static final int GALAXY		    = 820;
 	
@@ -117,6 +121,7 @@ public class Terrain {
 		flags[LOCKED_EXIT]	= SOLID;
 		flags[UNLOCKED_EXIT]= PASSABLE;
 		flags[WELL]			= AVOID;
+		flags[ALTWELL]			= AVOID;
 		flags[BOOKSHELF]	= flags[BARRICADE];
 		flags[ALCHEMY]		= SOLID;
 

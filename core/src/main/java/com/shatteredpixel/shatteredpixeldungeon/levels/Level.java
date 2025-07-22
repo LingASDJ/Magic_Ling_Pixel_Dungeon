@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ElectricalSmokeBlob
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Web;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.alter.AltWellWater;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -1569,6 +1570,10 @@ public abstract class Level implements Bundlable {
 				WellWater.affectCell(cell);
 			break;
 
+			case Terrain.ALTWELL:
+				AltWellWater.affectCell(cell);
+				break;
+
 			case Terrain.DOOR:
 			Door.enter( cell );
 			break;
@@ -1966,7 +1971,7 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "locked_exit_name");
 			case Terrain.UNLOCKED_EXIT:
 				return Messages.get(Level.class, "unlocked_exit_name");
-			case Terrain.WELL:
+			case Terrain.WELL:case Terrain.ALTWELL:
 				return Messages.get(Level.class, "well_name");
 			case Terrain.EMPTY_WELL:
 				return Messages.get(Level.class, "empty_well_name");
