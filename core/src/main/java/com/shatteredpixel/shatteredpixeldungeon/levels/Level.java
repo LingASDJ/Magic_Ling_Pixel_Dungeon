@@ -367,7 +367,7 @@ public abstract class Level implements Bundlable {
 					} else if ((depth == 4  || depth == 8) && moreRoomActivated) {
 						feeling = Feeling.DIEDROOM;
 					} else {
-						switch (Random.Int(14)) {
+						switch ( moreRoomActivated ? Random.Int(28) : Random.Int(14)) {
 							case 0:
 								feeling = Feeling.CHASM;
 								break;
