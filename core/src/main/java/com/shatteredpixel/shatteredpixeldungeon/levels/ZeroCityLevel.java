@@ -462,7 +462,7 @@ public class ZeroCityLevel extends Level {
             }
 
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
-        if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX)) {
+        if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX) || passwordbadges.contains(PaswordBadges.Badge.GODCHSX)) {
             if(Random.Int(4) == 0) {
                 WhiteLingLand god = new WhiteLingLand();
                 god.pos = 326;
