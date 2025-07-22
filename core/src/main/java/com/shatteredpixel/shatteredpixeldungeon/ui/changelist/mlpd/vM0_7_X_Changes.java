@@ -71,6 +71,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0852_Changes(changeInfos);
         add_V0850_Changes(changeInfos);
         add_V0848_Changes(changeInfos);
         add_V0845_Changes(changeInfos);
@@ -115,6 +116,56 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0852_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.5.1-2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：NFYIG"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励，祝各位古堡调查愉快！\n\n有效期：20205-8-8 00:00前")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：ARMYDAY"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励祝各位古堡调查愉快！\n\n有效期：20205-8-8 00:00前")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "魔绫像素地牢-修复内容：\n\n" +
+                        (       "_-_ 修复古堡解锁房间生成异常\n" +
+                                "_-_ 三井层房间优化和架构增强\n" +
+                                "_-_ 修复15挑徽章不生成的部分特殊NPC的异常\n" +
+                                "_-_ 修复姜饼人不能击退的异常\n" +
+                                "_-_ 修复圣水瓶对人形态的吸血鬼使用后导致游戏进入循环\n" +
+                                "_-_ 钥匙剑不再参与嬗变，从列表中移除\n" +
+                                "_-_ 创世神之心现在在背包中时，玩家不会进入游戏结束状态\n" +
+                                "_-_ 优化28层后跳楼，默认返回入口处\n" +
+                                "_-_ 修复苔藓丛簇和陷阱元件饰品未生效")));
+
+
+        Image issxsaxs =new DimandKingSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("拟态之王优化"),
+                ("现在拟态之王攻击前会将玩家的十字架物品扣留在入口处。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16
+                , 16), "房间改动",
+                "变幻莫测三井房间现在只能选一个，且有二次警告选择。"));
+
+        changes = new ChangeInfo("v0.8.5.1-2中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
     }
 
     public static void add_V0850_Changes(ArrayList<ChangeInfo> changeInfos ) {
