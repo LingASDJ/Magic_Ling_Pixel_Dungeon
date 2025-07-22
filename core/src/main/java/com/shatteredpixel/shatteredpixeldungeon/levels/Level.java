@@ -368,7 +368,6 @@ public abstract class Level implements Bundlable {
 						feeling = Feeling.DIEDROOM;
 					} else {
 						switch (Random.Int(14)) {
-							default:
 							case 0:
 								feeling = Feeling.CHASM;
 								break;
@@ -419,7 +418,7 @@ public abstract class Level implements Bundlable {
 							case 12:
 								feeling =  moreRoomActivated ? Feeling.SKYCITY : Feeling.NONE;
 								break;
-							case 13:
+							default:
 								//if-else statements are fine here as only one chance can be above 0 at a time
 								if (Random.Float() < MossyClump.overrideNormalLevelChance()) {
 									feeling = MossyClump.getNextFeeling();
