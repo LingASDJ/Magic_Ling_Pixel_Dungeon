@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrossDiedTower;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -55,7 +56,7 @@ abstract public class AltWellWater extends Blob {
 
             if (newItem != null) {
 
-                if (newItem == oldItem) {
+                if (newItem == oldItem || oldItem instanceof LockSword) {
 
                 } else if (oldItem.quantity() > 1) {
 
