@@ -48,7 +48,7 @@ public class Gregorian {
 
         boolean isDWJ = lunar.getMonth() == 5 && (lunar.getDay() >= 0 && lunar.getDay() <= 5 + 7);
 
-        boolean isHBJ = lunar.getMonth() == 6 && (lunar.getDay() >= 0 && lunar.getDay() <= 45);
+        boolean isHBJ = lunar.getMonth() == 6 && (lunar.getDay() >= 0 && lunar.getDay() <= 65);
 
         boolean isDWJ_2024TWO = lunar.getMonth() == 5 && (lunar.getDay() >= 5 && lunar.getDay() <= 5 + 16);
 
@@ -83,10 +83,18 @@ public class Gregorian {
 
         if(isHBJ){
             holiday = RegularLevel.Holiday.HWEEN;
-            eventEndTime = calculateEventEndTime(lunar, 6, 30);
+            eventEndTime = calculateSolarEventEnd(2025,8,8);
         }
 
     }
+
+    public static long calculateSolarEventEnd(int year, int month, int day) {
+        Calendar end = Calendar.getInstance();
+        end.set(year, month-1, day, 23, 59, 59); // 月份参数适配真实月份
+        end.set(Calendar.MILLISECOND, 0);
+        return end.getTimeInMillis();
+    }
+
 
     // 新增计算方法
     private static long calculateEventEndTime(Lunar currentLunar, int month, int endDay) {

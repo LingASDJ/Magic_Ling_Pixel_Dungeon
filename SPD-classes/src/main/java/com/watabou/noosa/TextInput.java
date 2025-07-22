@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.watabou.glscripts.Script;
 import com.watabou.glwrap.Blending;
@@ -54,32 +53,6 @@ public class TextInput extends Component {
 	private Skin skin;
 
 	private NinePatch bg;
-
-	public void copyToClipboard(){
-		if (textField.getSelection().isEmpty()) {
-			textField.selectAll();
-		}
-
-		textField.copy();
-	}
-
-	public void pasteFromClipboard(){
-		String contents = Gdx.app.getClipboard().getContents();
-		if (contents == null) return;
-
-		if (!textField.getSelection().isEmpty()){
-			//just use cut, but override clipboard
-			textField.cut();
-			Gdx.app.getClipboard().setContents(contents);
-		}
-
-		String existing = textField.getText();
-		int cursorIdx = textField.getCursorPosition();
-
-		textField.setText(existing.substring(0, cursorIdx) + contents + existing.substring(cursorIdx));
-		textField.setCursorPosition(cursorIdx + contents.length());
-	}
-
 
 	public TextInput( NinePatch bg, boolean multiline, int size ){
 		super();
@@ -197,6 +170,31 @@ public class TextInput extends Component {
 		return textField.getText();
 	}
 
+	public void copyToClipboard(){
+		if (textField.getSelection().isEmpty()) {
+			textField.selectAll();
+		}
+
+		textField.copy();
+	}
+
+	public void pasteFromClipboard(){
+		String contents = Gdx.app.getClipboard().getContents();
+		if (contents == null) return;
+
+		if (!textField.getSelection().isEmpty()){
+			//just use cut, but override clipboard
+			textField.cut();
+			Gdx.app.getClipboard().setContents(contents);
+		}
+
+		String existing = textField.getText();
+		int cursorIdx = textField.getCursorPosition();
+
+		textField.setText(existing.substring(0, cursorIdx) + contents + existing.substring(cursorIdx));
+		textField.setCursorPosition(cursorIdx + contents.length());
+	}
+
 	@Override
 	protected void layout() {
 		super.layout();
@@ -258,17 +256,5 @@ public class TextInput extends Component {
 			Game.platform.setOnscreenKeyboardVisible(false);
 			if (!DeviceCompat.isDesktop()) Game.platform.updateSystemUI();
 		}
-	}
-
-	public int getCursorPosition(){
-		return textField.getCursorPosition();
-	}
-
-	public void setCursorPosition (int cursorPosition){
-		textField.setCursorPosition(cursorPosition);
-	}
-
-	public void setTextFieldListener(@Null TextField.TextFieldListener listener){
-		textField.setTextFieldListener(listener);
 	}
 }
