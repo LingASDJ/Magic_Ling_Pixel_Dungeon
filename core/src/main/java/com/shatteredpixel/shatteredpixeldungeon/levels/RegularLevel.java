@@ -302,7 +302,7 @@ public abstract class RegularLevel extends Level {
 			if(yellowSoulCrack != null) four = true;
 			SoulCrack.PinkSoulCrack purpleSoulCrack = hero.belongings.getItem(SoulCrack.PinkSoulCrack.class);
 			if(purpleSoulCrack != null) five = true;
-			if(one && two && three && four && five && depth == 24 ||  (Badges.isUnlocked(Badges.Badge.KILL_DOG)) ){
+			if(one && two && three && four && five && depth == 24 ||  (Badges.isUnlocked(Badges.Badge.KILL_DOG) && depth == 24) ){
 				initRooms.add(new BoilerRoom());
 			}
 		}
