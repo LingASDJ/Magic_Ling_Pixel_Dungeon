@@ -23,6 +23,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.VSYOU_START;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.WIN;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -44,6 +47,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalMimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -347,7 +352,12 @@ public class DiamondKnight extends Boss implements Hero.Doom {
     public void die( Object cause ) {
 
         super.die( cause );
-        
+
+        for (Mob boss : level.mobs.toArray(new Mob[0])) {
+            if(boss instanceof CrystalMimic) {
+               boss.die(true);
+            }
+        }
         
         Dungeon.level.unseal();
         Statistics.bossScores[1] += 2500;

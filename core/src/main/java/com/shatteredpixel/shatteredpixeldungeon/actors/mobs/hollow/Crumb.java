@@ -37,7 +37,7 @@ public class Crumb extends Mob {
 
         EXP = 20;
 
-        maxLvl = -36;
+        maxLvl = 36;
         properties.add(Char.Property.HOLLOW);
 
         WANDERING = new Wandering();
