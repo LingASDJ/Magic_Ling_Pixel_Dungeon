@@ -2052,16 +2052,6 @@ public class Hero extends Char {
 			wep = belongings.attackingWeapon();
 		}
 
-		int dmg;
-//		if (Dungeon.isChallenged(Challenges.BLOOD_DIED)) {
-//			dmg = (new AltVampiric()).proc(null, this, enemy, damage);
-//
-//			if(Random.Float() < 0.1f){
-//				dmg *= 2;
-//			}
-//			damage = dmg;
-//		}
-
 		if (wep != null) damage = wep.proc( this, enemy, damage );
 
 		damage = Talent.onAttackProc( this, enemy, damage );
