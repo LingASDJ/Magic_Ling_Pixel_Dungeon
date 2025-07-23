@@ -86,6 +86,8 @@ public class DeadDogCerberus extends Boss {
     public int HunterReady = 0;
     public boolean Hunter;
 
+    public boolean deadAlive = false;
+
     /**
      * 连环撕咬技能参数
      */
@@ -442,7 +444,7 @@ public class DeadDogCerberus extends Boss {
             leapPos = -1;
         }
 
-        if(enemy != null){
+        if(enemy != null && !deadAlive){
             if(level.distance(pos,enemy.pos)<1 && enemy != hero){
                 enemy.die(null);
             } else {
@@ -450,6 +452,7 @@ public class DeadDogCerberus extends Boss {
                 Ballistica trajectory = new Ballistica(hero.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
                 WandOfBlastWave.throwChar(hero, trajectory, 100, true, true, getClass());
             }
+            deadAlive = true;
         }
 
         if(enemy == hero){
@@ -591,12 +594,16 @@ public class DeadDogCerberus extends Boss {
     private static final String MAGICDEFENSE = "magicdefense";
     private static final String PHYSICDEFENSE = "physicdefense";
 
+    private static final String DEADALIVE = "deadalive";
+
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(LAST_ENEMY_POS, lastEnemyPos);
         bundle.put(LEAP_POS, leapPos);
         bundle.put(LEAP_CD, leapCooldown);
+
+        bundle.put(DEADALIVE, deadAlive);
 
         bundle.put(HUNTER_COOLDOWN,HunterReady);
         bundle.put(HUNTER_BOOLEAN, Hunter);
@@ -616,6 +623,8 @@ public class DeadDogCerberus extends Boss {
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
+
+        deadAlive = bundle.getBoolean(DEADALIVE);
 
         skillTime = bundle.getInt(SKILLTIME);
         attackHero = bundle.getBoolean(ATTACKHERO);

@@ -139,7 +139,7 @@ public class MiniChestMazeLevel extends RegularLevel {
             Statistics.TPDoorDieds = true;
             GLog.n(Messages.get(TPDoor.class,"display"));
             TPDoor ds0 = new TPDoor();
-            ds0.pos = randomRespawnCell(ds0);
+            ds0.pos = randomDestination(ds0);
             GameScene.add(ds0);
             Buff.affect(hero, MindVision.class, 4f);
             Statistics.fuckGeneratorAlone++;
