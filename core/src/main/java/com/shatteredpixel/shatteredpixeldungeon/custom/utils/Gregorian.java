@@ -83,7 +83,7 @@ public class Gregorian {
 
         if(isHBJ){
             holiday = RegularLevel.Holiday.HWEEN;
-            eventEndTime = calculateSolarEventEnd(2025,8,8);
+            eventEndTime = calculateSolarEventEnd(2025,8,15);
         }
 
     }

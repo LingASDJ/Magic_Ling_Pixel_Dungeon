@@ -64,6 +64,7 @@ public class CrystalMimic extends Mimic {
 	public boolean isInvulnerable(Class effect) {
 		for (Mob boss : level.mobs.toArray(new Mob[0])) {
 			if (boss instanceof DiamondKnight) {
+				flying = true;
 				return true;
 			}
 		}
@@ -101,10 +102,17 @@ public class CrystalMimic extends Mimic {
 			if (!MimicTooth.stealthyMimics()){
 				desc += "\n\n" + Messages.get(this, "hidden_hint");
 			}
+
+			for (Mob boss : level.mobs.toArray(new Mob[0])) {
+				if (boss instanceof DiamondKnight) {
+					desc += "\n\n" + Messages.get(this, "hidden_ankh");
+				}
+			}
 			return desc;
 		} else {
 			return super.description();
 		}
+
 	}
 
 	@Override
