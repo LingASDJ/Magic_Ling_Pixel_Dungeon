@@ -444,15 +444,17 @@ public class DeadDogCerberus extends Boss {
             leapPos = -1;
         }
 
-        if(enemy != null && !deadAlive){
+        if(enemy != null){
             if(level.distance(pos,enemy.pos)<1 && enemy != hero){
                 enemy.die(null);
             } else {
-                int oppositeAdjacent = hero.pos + (hero.pos - pos);
-                Ballistica trajectory = new Ballistica(hero.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
-                WandOfBlastWave.throwChar(hero, trajectory, 100, true, true, getClass());
+                if(!deadAlive){
+                    int oppositeAdjacent = hero.pos + (hero.pos - pos);
+                    Ballistica trajectory = new Ballistica(hero.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
+                    WandOfBlastWave.throwChar(hero, trajectory, 100, true, true, getClass());
+                    deadAlive = true;
+                }
             }
-            deadAlive = true;
         }
 
         if(enemy == hero){

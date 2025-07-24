@@ -167,7 +167,7 @@ public class vM0_7_X_Changes {
 
         changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16
                 , 16), "房间改动",
-                "变幻莫测三井房间现在只能选一个，且有二次警告选择。"));
+                "变幻莫测三井房间现在只能选一个，且有二次警告选择。\n\n变幻莫测房子生成权重池子扩大两倍，以确保有大概率是常规楼层（此时饰品生效）"));
 
         changes = new ChangeInfo("v0.8.5.1-2中测验收通过，予以更新", true, null);
         changes.hardlight(Window.CYELLOW);
