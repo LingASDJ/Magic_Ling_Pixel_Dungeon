@@ -42,20 +42,26 @@ public class Gregorian {
         Solar date = Solar.fromDate(calendar.getTime());
         Lunar lunar = date.getLunar();
 
+        int gregorianMonth = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH 的范围是 0-11，所以需要加 1
+        int gregorianDay = calendar.get(Calendar.DAY_OF_MONTH);
+
         boolean isZQJ = lunar.getMonth() == 8 && (lunar.getDay() >= 15 - 10 && lunar.getDay() <= 15 + 12);
 
         boolean isDevBirthday = lunar.getMonth() == 8 && lunar.getDay() >= 22 && lunar.getDay() <= 25;
 
         boolean isDWJ = lunar.getMonth() == 5 && (lunar.getDay() >= 0 && lunar.getDay() <= 5 + 7);
 
-        boolean isHBJ = lunar.getMonth() == 6 && (lunar.getDay() >= 0 && lunar.getDay() <= 65);
-
-        boolean isDWJ_2024TWO = lunar.getMonth() == 5 && (lunar.getDay() >= 5 && lunar.getDay() <= 5 + 16);
+        boolean isHBJ = false;
+        if (gregorianMonth == 7) {
+            isHBJ = true;
+        } else if (gregorianMonth == 8) {
+            isHBJ = gregorianDay <= 15;
+        }
 
         boolean isSF = lunar.getMonth() == 1 && (lunar.getDay() >= 1 && lunar.getDay() <= 1 + 13);
 
         boolean isYXJ= lunar.getMonth() == 1 && (lunar.getDay() >= 15 && lunar.getDay() <= 15 + 7);
-        boolean isDWJ2025 = lunar.getMonth() == 4 && lunar.getDay() >= 6 && lunar.getDay() <= 24;
+
         boolean isZQJ2025 = lunar.getMonth() == 4 && lunar.getDay() >= 6 && lunar.getDay() <= 24;
 
 
