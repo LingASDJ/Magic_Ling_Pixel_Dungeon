@@ -99,6 +99,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.blankj:utilcodex:1.30.6'
 
+    implementation 'com.github.L-JINBIN:MTDataFilesProvider:v1.0.0'
+
     //崩溃报告
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
 

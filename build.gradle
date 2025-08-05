@@ -5,6 +5,9 @@ buildscript {
         maven {
             url = uri("https://storage.googleapis.com/r8-releases/raw")
         }
+       maven {
+            url = uri("https://jitpack.io")
+       }
     }
     dependencies {
         //noinspection GradleDependency
@@ -24,7 +27,7 @@ allprojects {
         appPackageName = 'com.ansdomagiclingpixeldungeon.ling'
 
         appVersionCode = 2025072500
-        appVersionName = '0.8.5.3'
+        appVersionName = '0.8.5.5'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
@@ -41,6 +44,9 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://jitpack.io")
+        }
     }
 
 }
