@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -30,6 +31,9 @@ public class ScrollOfGolems extends ExoticInventoryScroll {
         icon = ItemSpriteSheet.Icons.SCROLL_GOLEM;
         image = ItemSpriteSheet.SCROLL_GOLEM;
         bones = true;
+        if(hero!=null){
+            identify();
+        }
     }
 
     @Override
@@ -107,6 +111,12 @@ public class ScrollOfGolems extends ExoticInventoryScroll {
     @Override
     public boolean isIdentified() {
         return true;
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        identify();
     }
 
     @Override

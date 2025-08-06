@@ -298,7 +298,7 @@ public class WndLuoWhite extends Window {
         if( (item instanceof DiedCrossBow|| item instanceof MoonDao
                 || item instanceof SaiPlus || item instanceof RiceSword
                 || item instanceof RedBloodMoon || item instanceof GoldLongGun ||
-                  item instanceof ClearSword) && !SPDSettings.isItemUnlock( item.name() ) ){
+                  item instanceof ClearSword || item instanceof ForestBow)  && !SPDSettings.isItemUnlock( item.name() ) ){
             if( item instanceof DiedCrossBow )
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1.5f );
             if( item instanceof MoonDao )
@@ -312,7 +312,9 @@ public class WndLuoWhite extends Window {
             if( item instanceof RedBloodMoon)
                 Generator.setProbs( item,Generator.Category.WEP_T4, 1.2f );
             if( item instanceof ClearSword)
-                Generator.setProbs( item,Generator.Category.WEP_T5, 1.8f );
+                Generator.setProbs( item,Generator.Category.WEP_T5, 1.55f );
+            if( item instanceof ForestBow)
+                Generator.setProbs( item,Generator.Category.WEP_T3, 1.65f );
 
             SPDSettings.unlockItem( item.getClass().getSimpleName() );
         }

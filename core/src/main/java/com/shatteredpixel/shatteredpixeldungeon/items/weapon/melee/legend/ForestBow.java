@@ -124,7 +124,7 @@ public class ForestBow extends MeleeWeapon implements Item.LengedsItem {
         if (levelKnown){
             return Messages.get(this, "ability_desc", 3+buffedLvl(), 3+buffedLvl());
         } else {
-            return Messages.get(this, "typical_ability_desc", 3, 3);
+            return Messages.get(this, "ability_desc", 3, 3);
         }
     }
 
