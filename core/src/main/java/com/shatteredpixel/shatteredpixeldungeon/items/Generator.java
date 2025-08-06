@@ -619,8 +619,8 @@ public class Generator {
 			List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
 			WEP_T5.probs = new float[]{6, 3, 3, 3, 3, 3, 3, 4, SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName()) ? 1.5f : 0, 2, SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName()) ? 1f : 0, 0, SPDSettings.KillDwarf() ? 1.2f : 0, 4, passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD) ? 1.4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName()) ? 1.4f : 0,
-					SPDSettings.isItemUnlock(ClearSword.class.getSimpleName()) ? 1.8f : 0,
-					1,
+					SPDSettings.isItemUnlock(ClearSword.class.getSimpleName()) ? 1.55f : 0,
+					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 1.65f : 0,
 					Statistics.RandMode ? 5 : 0, 5};
 
 			WEP_T6.classes = new Class<?>[]{
