@@ -585,7 +585,7 @@ public abstract class Char extends Actor {
 			enemy.sprite.showStatus( CharSprite.NEUTRAL, enemy.defenseVerb() );
 
 			if(enemy instanceof Hero && ((Hero) enemy).belongings.getItem(KnightStabbingSword.class) !=null){
-				if(Math.random()<=0.25){
+				if(Random.Float()<=0.25f){
 					enemy.attack(this,1,0,1);
 					GLog.n(Messages.get(KnightStabbingSword.class,"attack"));
 				}

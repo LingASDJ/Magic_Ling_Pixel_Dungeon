@@ -18,7 +18,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ClearSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.GoldLongGun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
@@ -29,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -44,17 +47,30 @@ import com.watabou.utils.Callback;
 public class WndLuoWhite extends Window {
     private static final int WIDTH		= 120;
     private static final int BTN_SIZE	= 24;
-    private static final int BTN_GAP	= 6;
+    private static final int BTN_GAP	= 4;
     private static final int GAP		= 6;
 
     public WndLuoWhite() {
-        LuoWhite.shop3 = new MoonDao();
-        LuoWhite.shop2 = new DiedCrossBow();
-        LuoWhite.shop1 = new SaiPlus();
+        switch (Statistics.luoWhitePageCollected) {
+            case 0:
+                LuoWhite.shop3 = new MoonDao();
+                LuoWhite.shop2 = new DiedCrossBow();
+                LuoWhite.shop1 = new SaiPlus();
 
-        LuoWhite.shop4 = new RiceSword();
-        LuoWhite.shop5 = new RedBloodMoon();
-        LuoWhite.shop6 = new GoldLongGun();
+                LuoWhite.shop4 = new RiceSword();
+                LuoWhite.shop5 = new RedBloodMoon();
+                LuoWhite.shop6 = new GoldLongGun();
+                break;
+            case 1:
+                LuoWhite.shop1 = new ClearSword();
+                LuoWhite.shop2 = new ForestBow();
+                LuoWhite.shop3 = null;
+                LuoWhite.shop4 = null;
+                LuoWhite.shop5 = null;
+                LuoWhite.shop6 = null;
+                break;
+        }
+
 
         StyledButton btnSite = new StyledButton(Chrome.Type.TOAST_TR, Messages.get(this,"talk_red")){
             @Override
@@ -165,7 +181,7 @@ public class WndLuoWhite extends Window {
         add( message );
 
         RewardButton shop1 = new RewardButton( LuoWhite.shop1 );
-        shop1.setRect( (WIDTH - BTN_GAP) / 3f - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE,
+        shop1.setRect( (WIDTH - BTN_GAP) / 2.7f - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE,
                 BTN_SIZE );
         add( shop1 );
 
@@ -189,6 +205,37 @@ public class WndLuoWhite extends Window {
         bomb3.setRect( bomb2.right()+ BTN_GAP , bomb2.top(), BTN_SIZE, BTN_SIZE );
         add(bomb3);
 
+        IconButton AiconButton = new IconButton(Icons.get(Icons.LEFTBUTTON)){
+            @Override
+            protected void onClick() {
+                super.onClick();
+                Statistics.luoWhitePageCollected--;
+                ShatteredPixelDungeon.seamlessResetScene();
+            }
+        };
+        AiconButton.setRect(shop1.left()-20, 70, 20, 20);
+        if(Statistics.luoWhitePageCollected == 0){
+            AiconButton.active = false;
+            AiconButton.visible = false;
+        }  else {
+            add(AiconButton);
+        }
+
+        IconButton BiconButton = new IconButton(Icons.get(Icons.RIGHTBUTTON)){
+            @Override
+            protected void onClick() {
+                super.onClick();
+                Statistics.luoWhitePageCollected++;
+                ShatteredPixelDungeon.seamlessResetScene();
+            }
+        };
+        BiconButton.setRect(shop3.right()+1, 70, 20, 20);
+        if(Statistics.luoWhitePageCollected == 1){
+            BiconButton.active = false;
+            BiconButton.visible = false;
+        }  else {
+            add(BiconButton);
+        }
         resize(WIDTH, (int) bomb3.bottom());
     }
 
@@ -250,7 +297,8 @@ public class WndLuoWhite extends Window {
     public void itemUnlock(Item item){
         if( (item instanceof DiedCrossBow|| item instanceof MoonDao
                 || item instanceof SaiPlus || item instanceof RiceSword
-                || item instanceof RedBloodMoon || item instanceof GoldLongGun) && !SPDSettings.isItemUnlock( item.name() ) ){
+                || item instanceof RedBloodMoon || item instanceof GoldLongGun ||
+                  item instanceof ClearSword) && !SPDSettings.isItemUnlock( item.name() ) ){
             if( item instanceof DiedCrossBow )
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1.5f );
             if( item instanceof MoonDao )
@@ -263,6 +311,9 @@ public class WndLuoWhite extends Window {
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1.4f );
             if( item instanceof RedBloodMoon)
                 Generator.setProbs( item,Generator.Category.WEP_T4, 1.2f );
+            if( item instanceof ClearSword)
+                Generator.setProbs( item,Generator.Category.WEP_T5, 1.8f );
+
             SPDSettings.unlockItem( item.getClass().getSimpleName() );
         }
     }
@@ -290,10 +341,10 @@ public class WndLuoWhite extends Window {
                     }
                 }
             };
-            btnConfirm.setRect(0, height+2, WIDTH, 16);
+            btnConfirm.setRect(0, height+2, width, 16);
             if(SPDSettings.isItemUnlock(item.getClass().getSimpleName())){
                 btnConfirm.active = false;
-                btnConfirm.setRect(0, height+2, WIDTH, 31);
+                btnConfirm.setRect(0, height+2, width, 31);
             }
             add(btnConfirm);
 

@@ -71,6 +71,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0860_Changes(changeInfos);
         add_V0852_Changes(changeInfos);
         add_V0850_Changes(changeInfos);
         add_V0848_Changes(changeInfos);
@@ -116,6 +117,64 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0860_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.6.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CLEARPRO), ("新传说武器：清道夫"),
+                ("商店上新，欢迎各位前来购买。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FORESTCROSSBOW), ("新传说武器：森林弓"),
+                ("商店上新，欢迎各位前来购买。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：SHPD-BIRTHDAY"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：20205-8-26 00:00前")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SHPD_CHEST), ("限时绿宝石宝箱生成"),
+                ("2025.8.6-2025.8.25，限时生成绿宝石宝箱，获得丰厚道具奖励。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_GOLEM), ("塔防联动：巨像卷轴"),
+                ("在绿宝石宝箱中有概率获得，欢迎尝鲜。\n\n授权者：Fixed")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BONESOUP), ("饭桶联动：大骨浓汤"),
+                ("在绿宝石宝箱中有概率获得，欢迎尝鲜。\n\n授权者：彦木")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RATTAIL), ("饭桶联动：耗子尾脂"),
+                ("在绿宝石宝箱中有概率获得，欢迎尝鲜。\n\n授权者：彦木")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ZAKOSOUP), ("饭桶联动：杂鱼汤"),
+                ("在绿宝石宝箱中有概率获得，欢迎尝鲜。\n\n授权者：彦木")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGHTSTABBINGSWORD), ("困难模式-Alpha测试"),
+                ("在绿宝石宝箱中有概率获得藏品，目前开放了4类，欢迎尝鲜。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "魔绫像素地牢-修复内容：\n\n" +
+                        (       "_-_ 修复水爆魔药的一些异常\n" +
+                                "_-_ 修复一些闪退问题\n" +
+                                "_-_ 修复古神充能回合异常\n" +
+                                "_-_ 修复寒冰之拳与鬼磷之拳无敌范围异常\n" +
+                                "_-_ 修复特殊模式可以进入古堡")));
+
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("UI迭代"),
+                ("_-_ 落白商店现在可以翻页\n" +
+                        "_-_ 快捷栏部分插槽更加立体化")));
+
+        changes = new ChangeInfo("v0.8.6.0中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
     }
 
     public static void add_V0852_Changes(ArrayList<ChangeInfo> changeInfos ) {

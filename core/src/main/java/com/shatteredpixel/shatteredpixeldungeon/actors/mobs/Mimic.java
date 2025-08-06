@@ -357,6 +357,8 @@ public class Mimic extends Mob implements Mob.NoMobSpawn {
 			m = new CrystalMimic();
 		} else if (mimicType == EbonyMimic.class) {
 			m = new EbonyMimic();
+		} else if (mimicType == GreenDiamndMimic.class) {
+			m = new GreenDiamndMimic();
 		} else {
 			m = new Mimic();
 		}

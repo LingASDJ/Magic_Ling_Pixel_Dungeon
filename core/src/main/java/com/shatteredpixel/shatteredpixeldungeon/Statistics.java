@@ -215,6 +215,8 @@ public class Statistics {
 	//珍宝
 	public static int dimandchestmazeCollected;
 
+	public static int luoWhitePageCollected;
+
 	//宝物生成限制，避免有byd的十字架重复刷取
 	public static int fuckGeneratorAlone;
 
@@ -547,6 +549,8 @@ public class Statistics {
 		noClearKill = false;
 		Statistics.AutoOilPotion = false;
 
+		luoWhitePageCollected = 0;
+
         HealingIsDied = 0;
 
 		PinkFoxCount = 0;
@@ -874,6 +878,8 @@ public class Statistics {
 		bundle.put( LANTERACTIVE, lanterfireactive );
 		bundle.put(GOLDCHEST,	  goldchestmazeCollected);
 
+		bundle.put("LWP",luoWhitePageCollected);
+
 		bundle.put(DDK,dimandchestmazeCollected);
 
 		bundle.put(BDK,CrivusbossTeleporter);
@@ -964,6 +970,8 @@ public class Statistics {
 		LimitLiquidMatal = bundle.getInt("LIMTAL");
 
 		LoveMagicGirl = bundle.getInt("lovemagicgirl");
+
+		luoWhitePageCollected = bundle.getInt("LWP");
 
 		defalult_deaddog = bundle.getBoolean("defalult_deaddog");
 

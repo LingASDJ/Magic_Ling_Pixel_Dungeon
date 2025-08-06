@@ -29,6 +29,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomProp;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -47,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.EbonyMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenDiamndMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
@@ -58,11 +60,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.BoneSoup;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.RatTail;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.ZakoSoup;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.GreenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SoulCrack;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -302,14 +310,10 @@ public abstract class RegularLevel extends Level {
 			if(yellowSoulCrack != null) four = true;
 			SoulCrack.PinkSoulCrack purpleSoulCrack = hero.belongings.getItem(SoulCrack.PinkSoulCrack.class);
 			if(purpleSoulCrack != null) five = true;
-			if(one && two && three && four && five && depth == 24 ||  (Badges.isUnlocked(Badges.Badge.KILL_DOG) && depth == 24) ){
+			if(one && two && three && four && five && depth == 24 ||  (Badges.isUnlocked(Badges.Badge.KILL_DOG) && depth == 24 && !Statistics.bossRushMode && Statistics.RandMode) ){
 				initRooms.add(new BoilerRoom());
 			}
 		}
-
-//		if(depth == 29 && Statistics.Hollow_Holiday){
-//			initRooms.add(new CerbusSleepRoom());
-//		}
 
 		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 40) {
 			initRooms.add(new NxhyShopRoom());
@@ -734,7 +738,38 @@ public abstract class RegularLevel extends Level {
 				break;
 			}
 
-			if ((toDrop instanceof Artifact && Random.Int(2) == 0) ||
+			if(com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.getCurrentHoliday() == com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.SHATTEREDPD_BIRTHDAY && Random.Int(6 - toDrop.level()) == 0){
+				switch (Random.Int(4)){
+					default:
+						toDrop = randomProp();
+						if(Generator.randomProp() == null){
+							toDrop = new Food();
+						}
+					break;
+					//Thanks TowerPD
+					case 1:
+						toDrop = new ScrollOfGolems();
+					break;
+					//Thanks SHPD
+					case 2:
+						toDrop = new RatTail();
+					break;
+					//Thanks Fantong
+					case 3:
+						toDrop = Random.Int(3) == 0 ? new BoneSoup() : new ZakoSoup();
+					break;
+				}
+				float mimicChance = 1/10f * MimicTooth.mimicChanceMultiplier();
+				if (Dungeon.depth > 1 && Random.Float() < mimicChance && findMob(cell) == null){
+					mobs.add(Mimic.spawnAt(cell, GreenDiamndMimic.class, toDrop));
+				} else {
+					Heap dropped = drop(toDrop, cell);
+					if (heaps.get(cell) == dropped) {
+						dropped.type = Heap.Type.GREEN_CHSET;
+						addItemToSpawn(new GreenKey(Dungeon.depth));
+					}
+				}
+			} else if ((toDrop instanceof Artifact && Random.Int(2) == 0) ||
 					(toDrop.isUpgradable() && Random.Int(4 - toDrop.level()) == 0)){
 
 				float mimicChance = 1/10f * MimicTooth.mimicChanceMultiplier();

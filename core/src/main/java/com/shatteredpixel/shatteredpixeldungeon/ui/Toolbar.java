@@ -232,7 +232,7 @@ public class Toolbar extends Component {
 		 */
 		float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
 		float hMin = Game.height / PixelScene.MIN_HEIGHT_FULL;
-		final int maxHorizontalQuickslots = PixelScene.landscape() ? 9 : 3;
+		int maxHorizontalQuickslots = PixelScene.landscape() ? 9 : 3;
 		float right = width;
 		if (SPDSettings.interfaceSize() > 0){
 			btnInventory.setPos(right - btnInventory.width(), y);
@@ -298,11 +298,11 @@ public class Toolbar extends Component {
 
 					//修复反向工具栏的错误
 					if (!SPDSettings.flipToolbar()) {
-						tool.setPos(startX, y + 2);
+						tool.setPos(startX + 1, y + 2);
 					} else if (i >= 1) {
-						tool.setPos(startX, y + 2);
+						tool.setPos(startX + 1, y + 2);
 					} else {
-						tool.setPos(startX-16, y + 2);
+						tool.setPos(startX - 16, y + 2);
 					}
 
 					if (i + 1 < btnQuick.length) {

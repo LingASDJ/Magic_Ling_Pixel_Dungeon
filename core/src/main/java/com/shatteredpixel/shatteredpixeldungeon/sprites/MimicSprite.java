@@ -181,4 +181,18 @@ public class MimicSprite extends MobSprite {
 		}
 	}
 
+	public static class Green extends MimicSprite{
+		@Override
+		protected int texOffset() {
+			return 96;
+		}
+		@Override
+		public void play(Animation anim) {
+			if (curAnim == advancedHiding && anim != advancedHiding){
+				alpha(1f);
+			}
+			super.play(anim);
+		}
+	}
+
 }

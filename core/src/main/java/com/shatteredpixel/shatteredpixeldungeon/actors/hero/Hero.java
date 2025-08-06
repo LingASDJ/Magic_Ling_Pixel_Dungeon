@@ -176,6 +176,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.BlackKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.GreenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
@@ -234,6 +235,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -737,7 +739,7 @@ public class Hero extends Char {
 
 				if (wep instanceof Flail && buff(Flail.SpinAbilityTracker.class) != null){
 					//do nothing, this is not a regular attack so don't consume talent fx
-				} else if (wep instanceof Crossbow && buff(Crossbow.ChargedShot.class) != null){
+				} else if (wep instanceof Crossbow && buff(Crossbow.ChargedShot.class) != null || wep instanceof ForestBow && buff(ForestBow.ChargedShot.class) != null){
 					//do nothing, this is not a regular attack so don't consume talent fx
 				} else if (buff(Talent.PreciseAssaultTracker.class) != null) {
 					// 2x/5x/inf. ACC for duelist if she just used a weapon ability
@@ -3334,6 +3336,8 @@ public class Hero extends Char {
 					hasKey = Notes.remove(new CrystalKey(Dungeon.depth));
 				} else if (heap.type == Type.BLACK){
 					hasKey = Notes.remove(new BlackKey(Dungeon.depth));
+				} else if(heap.type == Type.GREEN_CHSET){
+					hasKey = Notes.remove(new GreenKey(Dungeon.depth));
 				}
 
 				if(hasKey && heap.type == Type.WHITETOMB && Dungeon.depth>25){
