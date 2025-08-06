@@ -29,7 +29,6 @@ public class ScrollOfGolems extends ExoticInventoryScroll {
     {
         icon = ItemSpriteSheet.Icons.SCROLL_GOLEM;
         image = ItemSpriteSheet.SCROLL_GOLEM;
-        if(hero != null) identify();
         bones = true;
     }
 
@@ -105,7 +104,10 @@ public class ScrollOfGolems extends ExoticInventoryScroll {
 
         }
     }
-
+    @Override
+    public boolean isIdentified() {
+        return true;
+    }
 
     @Override
     public int value() {
