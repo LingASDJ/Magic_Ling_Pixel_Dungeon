@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.Holiday;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
@@ -212,7 +213,9 @@ public class GameRules {
                     break;
             }
         } else {
-           if (RegularLevel.holiday == RegularLevel.Holiday.YX) {
+            if(Holiday.getCurrentHoliday()  == Holiday.SHATTEREDPD_BIRTHDAY){
+                banners = Assets.Interfaces.BANNERS_SP;
+            } else if (RegularLevel.holiday == RegularLevel.Holiday.YX) {
                 if (!SPDSettings.ClassUI()) {
                     banners = Assets.Interfaces.BANNERS_YX;
                 } else {

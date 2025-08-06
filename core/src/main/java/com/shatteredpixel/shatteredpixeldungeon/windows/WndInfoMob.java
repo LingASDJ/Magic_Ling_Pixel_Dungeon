@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenDiamndMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -250,7 +251,7 @@ public class WndInfoMob extends WndTitledMessage {
 			add(mobSixInfo.info7);
 			add(mobSixInfo.info8);
 
-			reload = (mob.alignment == Char.Alignment.NEUTRAL) && mob.properties.contains(Char.Property.HOLLOW);
+			reload = (mob.alignment == Char.Alignment.NEUTRAL) && (mob instanceof GreenDiamndMimic || mob.properties.contains(Char.Property.HOLLOW));
 		}
 
 		@Override

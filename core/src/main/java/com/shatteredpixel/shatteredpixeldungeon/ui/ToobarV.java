@@ -239,49 +239,19 @@ public class ToobarV extends Component {
 
 
         if (SPDSettings.interfaceSize() == 0) {
-            switch (Mode.valueOf(SPDSettings.toolbarMode())) {
-                case SPLIT:
-                    btnWait.setPos(x, y);
-                    btnExamine.setPos(btnWait.right(), y);
+            btnWait.setPos(x, y);
+            btnExamine.setPos(btnWait.right(), y);
 
-                    btnInventory.setPos(right - btnInventory.width(), y);
+            btnInventory.setPos(right - btnInventory.width(), y);
 
-                    btnQuick[slotIndex].setPos(btnInventory.left() - btnQuick[slotIndex].width(), y + 2);
-                    for (int i = 1; i < numVisibleSlots; i++) {
-                        slotIndex = boundIndex(quickSlots + i);
-                        visible[slotIndex] = true;
-                        btnQuick[slotIndex].setPos(btnQuick[boundIndex(quickSlots + i - 1)].left() - btnQuick[slotIndex].width(), y + 2);
-                    }
-                    if (numVisibleSlots < QuickSlot.VSIZE)
-                        btnSwitchSlot.setPos(btnQuick[slotIndex].left() - btnSwitchSlot.width(), y + 10);
-
-                    break;
-
-                //center = group but.. well.. centered, so all we need to do is pre-emptively set the right side further in.
-                case CENTER:
-                    float toolbarWidth = btnWait.width() + btnExamine.width() + btnInventory.width();
-                    for (int i = 0; i < numVisibleSlots; i++) {
-                        toolbarWidth += btnQuick[boundIndex(quickSlots + i)].width();
-                    }
-                    if (numVisibleSlots < QuickSlot.VSIZE) toolbarWidth += btnSwitchSlot.width();
-                    right = (width + toolbarWidth) / 2;
-
-                case GROUP:
-                    btnWait.setPos(right - btnWait.width(), y);
-                    btnExamine.setPos(btnWait.left() - btnExamine.width(), y);
-                    btnInventory.setPos(btnExamine.left() - btnInventory.width(), y);
-
-                    btnQuick[slotIndex].setPos(btnInventory.left() - btnQuick[slotIndex].width(), y + 2);
-                    for (int i = 1; i < numVisibleSlots; i++) {
-                        slotIndex = boundIndex(quickSlots + i);
-                        visible[slotIndex] = true;
-                        btnQuick[slotIndex].setPos(btnQuick[boundIndex(quickSlots + i - 1)].left() - btnQuick[slotIndex].width(), y + 2);
-                    }
-                    if (numVisibleSlots < QuickSlot.VSIZE)
-                        btnSwitchSlot.setPos(btnQuick[slotIndex].left() - btnSwitchSlot.width(), y + 10);
-
-                    break;
+            btnQuick[slotIndex].setPos(btnInventory.left() - btnQuick[slotIndex].width(), y + 2);
+            for (int i = 1; i < numVisibleSlots; i++) {
+                slotIndex = boundIndex(quickSlots + i);
+                visible[slotIndex] = true;
+                btnQuick[slotIndex].setPos(btnQuick[boundIndex(quickSlots + i - 1)].left() - btnQuick[slotIndex].width(), y + 2);
             }
+            if (numVisibleSlots < QuickSlot.VSIZE)
+                btnSwitchSlot.setPos(btnQuick[slotIndex].left() - btnSwitchSlot.width(), y + 10);
         } else {
             btnWait.setPos(x, y);
             btnExamine.setPos(btnWait.right(), y);
@@ -392,12 +362,6 @@ public class ToobarV extends Component {
             super(x, y, width, height);
         }
 
-
-        @Override
-        protected void onClick() {
-            //
-        }
-        private Toolbar.Tool slot;
         @Override
         protected void createChildren() {
 

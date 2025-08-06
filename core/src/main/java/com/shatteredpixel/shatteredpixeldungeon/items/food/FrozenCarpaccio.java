@@ -45,7 +45,6 @@ public class FrozenCarpaccio extends Food {
 	@Override
 	protected void satisfy(Hero hero) {
 		super.satisfy(hero);
-
 		effect(hero);
 	}
 	
@@ -53,7 +52,7 @@ public class FrozenCarpaccio extends Food {
 		return 10 * quantity;
 	}
 
-	public static void effect(Hero hero){
+	public void effect(Hero hero){
 		switch (Random.Int( 5 )) {
 			case 0:
 				GLog.i( Messages.get(FrozenCarpaccio.class, "invis") );

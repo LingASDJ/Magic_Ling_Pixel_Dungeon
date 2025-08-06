@@ -74,6 +74,12 @@ public class ItemSlot extends Button {
 		public int image() { return ItemSpriteSheet.LOCKED_CHEST; }
 		public String name() { return Messages.get(Heap.class, "locked_chest"); }
 	};
+
+	public static final Item GREEN_CHEST = new Item() {
+		public int image() { return ItemSpriteSheet.SHPD_CHEST; }
+		public String name() { return Messages.get(Heap.class, "shpd_chest"); }
+	};
+
 	public static final Item CRYSTAL_CHEST = new Item() {
 		public int image() { return ItemSpriteSheet.CRYSTAL_CHEST; }
 		public String name() { return Messages.get(Heap.class, "crystal_chest"); }

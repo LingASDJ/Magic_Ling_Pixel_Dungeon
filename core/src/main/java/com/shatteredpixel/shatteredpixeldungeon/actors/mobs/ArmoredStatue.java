@@ -45,6 +45,28 @@ public class ArmoredStatue extends Statue {
 
 	public Armor armor;
 
+	public ArmoredStatue(Armor armorc){
+		super();
+
+		do {
+			armor = armorc;
+		} while (armor.cursed);
+
+		//double HP
+		HP = HT = 150;
+	}
+	public ArmoredStatue(Armor armorc, Armor.Glyph glyph){
+		super();
+
+		do {
+			armor = armorc;
+		} while (armor.cursed);
+		armor.inscribe(glyph);
+
+		//double HP
+		HP = HT = 150;
+	}
+
 	@SuppressWarnings("unchecked")
 	public ArmoredStatue(){
 		super();
