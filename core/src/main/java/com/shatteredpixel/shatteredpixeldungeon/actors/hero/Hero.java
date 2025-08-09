@@ -2106,6 +2106,11 @@ public class Hero extends Char {
 
 	@Override
 	public void damage( int dmg, Object src ) {
+		damage(dmg, src ,DamageTyPe.MAGIC);
+	}
+
+	@Override
+	public void damage( int dmg, Object src, DamageTyPe type ) {
 
 		if(hero.belongings.getItem(EmotionalAggregation.class)!=null && Math.random()>0.9){
 			GLog.n(Messages.get(EmotionalAggregation.class,"block"));
@@ -2245,7 +2250,7 @@ public class Hero extends Char {
 		int preTrueHP = HP;
 
 		if (src instanceof Hunger) preHP -= shielding();
-		super.damage( dmg, src );
+		super.damage( dmg, src , type);
 		int postHP = HP + shielding();
 		if (src instanceof Hunger) postHP -= shielding();
 		int effectiveDamage = preHP - postHP;
@@ -2258,6 +2263,8 @@ public class Hero extends Char {
 
 		if (trueDamage>0){
 			if (this.hasTalent(Talent.LIQUID_WILLPOWER )){
+
+				/*
 				Class<?> srcClass = src.getClass();
 				HashSet<Class> resists = new HashSet<>(RingOfElements.RESISTS);
 				boolean flag = true;
@@ -2267,6 +2274,8 @@ public class Hero extends Char {
 						break;
 					}
 				}
+				*/
+				boolean flag = (type == DamageTyPe.PHYSICAL);
 				if (flag) {
 					Buff.affect(this,Barrier.class).setShield(2*pointsInTalent(Talent.LIQUID_WILLPOWER));
 				}
