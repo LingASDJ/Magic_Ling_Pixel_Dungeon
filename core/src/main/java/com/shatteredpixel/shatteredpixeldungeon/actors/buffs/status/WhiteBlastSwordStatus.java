@@ -44,7 +44,7 @@ public class WhiteBlastSwordStatus extends Buff {
     @Override
     public void detach() {
         super.detach();
-        if(hero != null){
+        if(hero != null && hero.belongings.weapon instanceof WhiteBlastSword){
             ((WhiteBlastSword) hero.belongings.weapon).whiteBlast_Sword();
             hero.sprite.showStatus(CharSprite.NEGATIVE, WhiteBlastSword.TXT_RANDOM[Random.Int(WhiteBlastSword.TXT_RANDOM.length)]);
         }

@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.YogGodHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -141,9 +142,14 @@ public abstract class YogFist extends Mob {
 	private boolean invulnWarned = false;
 
 	protected boolean isNearYog(){
-		int yogPos = Dungeon.level.exit() + 3*Dungeon.level.width();
-		return Dungeon.level.distance(pos, yogPos) <= 4;
-	}
+        int yogPos;
+        if(Dungeon.isChallenged(Challenges.CS)){
+            yogPos = YogGodHardBossLevel.CENTER;
+        } else {
+            yogPos = Dungeon.level.exit() + 3 * Dungeon.level.width();
+        }
+        return Dungeon.level.distance(pos, yogPos) <= 4;
+    }
 
 	@Override
 	public boolean isInvulnerable(Class effect) {

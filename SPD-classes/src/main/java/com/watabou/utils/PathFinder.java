@@ -61,6 +61,8 @@ public class PathFinder {
 	public static int[] CIRCLE4;
 	public static int[] CIRCLE8;
 
+	public static int[] CIRCLE7;
+
 	public static int[] NEIGHBOURS49;
 	
 	public static void setMapSize( int width, int height ) {
@@ -133,6 +135,16 @@ public class PathFinder {
 
 		CIRCLE4 = new int[]{-width, +1, +width, -1};
 		CIRCLE8 = new int[]{-width-1, -width, -width+1, +1, +width+1, +width, +width-1, -1};
+
+		CIRCLE7 = new int[]{
+				-3*width-3, -3*width-2, -3*width-1, -3*width, -3*width+1, -3*width+2, -3*width+3,
+				-2*width-3, -2*width-2, -2*width-1, -2*width, -2*width+1, -2*width+2, -2*width+3,
+				-width-3, -width-2, -width-1, -width, -width+1, -width+2, -width+3,
+				-3, -2, -1, 0, +1, +2, +3,
+				+width-3, +width-2, +width-1, +width, +width+1, +width+2, +width+3,
+				+2*width-3, +2*width-2, +2*width-1, +2*width, +2*width+1, +2*width+2, +2*width+3,
+				+3*width-3, +3*width-2, +3*width-1, +3*width, +3*width+1, +3*width+2, +3*width+3
+		};
 	}
 
 	public static Path find( int from, int to, boolean[] passable ) {

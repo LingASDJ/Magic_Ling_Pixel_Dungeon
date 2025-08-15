@@ -139,6 +139,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.Servan
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.Sothoth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SothothEyeDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SothothLasher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
@@ -175,6 +176,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.BlackKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.GreenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
@@ -233,6 +235,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -317,7 +320,7 @@ public class Hero extends Char {
 		alignment = Alignment.ALLY;
 	}
 
-	public static final int MAX_LEVEL = Statistics.Hollow_Holiday ? 35 : 30;
+	public static final int MAX_LEVEL = 30;
 
 	public static final int STARTING_STR = 10;
 
@@ -736,7 +739,7 @@ public class Hero extends Char {
 
 				if (wep instanceof Flail && buff(Flail.SpinAbilityTracker.class) != null){
 					//do nothing, this is not a regular attack so don't consume talent fx
-				} else if (wep instanceof Crossbow && buff(Crossbow.ChargedShot.class) != null){
+				} else if (wep instanceof Crossbow && buff(Crossbow.ChargedShot.class) != null || wep instanceof ForestBow && buff(ForestBow.ChargedShot.class) != null){
 					//do nothing, this is not a regular attack so don't consume talent fx
 				} else if (buff(Talent.PreciseAssaultTracker.class) != null) {
 					// 2x/5x/inf. ACC for duelist if she just used a weapon ability
@@ -997,6 +1000,7 @@ public class Hero extends Char {
 	@Override
 	public float speed() {
 		float speed = 0;
+
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
 			speed += CustomPlayer.baseSpeed;
 		}
@@ -1044,6 +1048,10 @@ public class Hero extends Char {
 
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
 			speed = CustomPlayer.baseSpeed;
+		}
+
+		if ( buff( DeadDogCerberus.SoulDead.class ) != null){
+			speed = 1f;
 		}
 
 		return speed;
@@ -1660,7 +1668,7 @@ public class Hero extends Char {
 			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE && heap.type != Type.FOR_RUSH)) {
 
 				if ((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
-						|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)|| (heap.type == Type.BLACK && Notes.keyCount(new BlackKey(Dungeon.depth)) < 1)){
+						|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)|| (heap.type == Type.BLACK && Notes.keyCount(new BlackKey(Dungeon.depth)) < 1) || (heap.type == Type.GREEN_CHSET && Notes.keyCount(new GreenKey(Dungeon.depth)) < 1)){
 
 					GLog.w( Messages.get(this, "locked_chest") );
 					ready();
@@ -2045,16 +2053,6 @@ public class Hero extends Char {
 		} else {
 			wep = belongings.attackingWeapon();
 		}
-
-		int dmg;
-//		if (Dungeon.isChallenged(Challenges.BLOOD_DIED)) {
-//			dmg = (new AltVampiric()).proc(null, this, enemy, damage);
-//
-//			if(Random.Float() < 0.1f){
-//				dmg *= 2;
-//			}
-//			damage = dmg;
-//		}
 
 		if (wep != null) damage = wep.proc( this, enemy, damage );
 
@@ -2551,7 +2549,7 @@ public class Hero extends Char {
 
 		} else if (heap != null
 				//moving to an item doesn't auto-pickup when enemies are near...
-				&& (visibleEnemies.size() == 0 || cell == pos ||
+				&& (visibleEnemies.isEmpty() || cell == pos ||
 				//...but only for standard heaps. Chests and similar open as normal.
 				(heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE && heap.type != Type.FOR_RUSH))) {
 
@@ -2583,10 +2581,10 @@ public class Hero extends Char {
 			curAction = new HeroAction.Unlock( cell );
 
 		} else if (Dungeon.level.getTransition(cell) != null
-				//moving to a transition doesn't automatically trigger it when enemies are near
-				&& (visibleEnemies.size() == 0 || cell == pos)
+				&& (visibleEnemies.isEmpty() || cell == pos)
 				&& !Dungeon.level.locked
-				&& ( HolidayEvent() || Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE) ) {
+				&& ( HolidayEvent() ||
+				Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE) ) {
 
 			curAction = new HeroAction.LvlTransition( cell );
 
@@ -2608,10 +2606,12 @@ public class Hero extends Char {
 		boolean result;
 		if(bossRushMode){
 			result = Dungeon.depth < 43;
-		} else if(holiday == RegularLevel.Holiday.XMAS){
+		} else if(holiday == RegularLevel.Holiday.XMAS) {
 			result = Dungeon.depth < 31;
+		} else if(holiday == RegularLevel.Holiday.HWEEN) {
+			result = Dungeon.depth < 32;
 		} else {
-			result = Dungeon.depth < 31;
+			result = Dungeon.depth < 27;
 		}
 		return result;
 	}
@@ -2669,7 +2669,7 @@ public class Hero extends Char {
 				buff(Talent.WandPreservationCounter.class).detach();
 			}
 
-			if (lvl < MAX_LEVEL) {
+			if (lvl < (Statistics.Hollow_Holiday ? 35 : MAX_LEVEL)) {
 				lvl++;
 				levelUp = true;
 
@@ -3206,8 +3206,11 @@ public class Hero extends Char {
 
 	@Override
 	public boolean isAlive() {
+		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
 
-		if (HP <= 0) {
+		if(getHeal != null) {
+			return true;
+		} else if (HP <= 0) {
 			if (berserk == null) berserk = buff(Berserk.class);
 			return berserk != null && berserk.berserking();
 		} else {
@@ -3342,6 +3345,8 @@ public class Hero extends Char {
 					hasKey = Notes.remove(new CrystalKey(Dungeon.depth));
 				} else if (heap.type == Type.BLACK){
 					hasKey = Notes.remove(new BlackKey(Dungeon.depth));
+				} else if(heap.type == Type.GREEN_CHSET){
+					hasKey = Notes.remove(new GreenKey(Dungeon.depth));
 				}
 
 				if(hasKey && heap.type == Type.WHITETOMB && Dungeon.depth>25){

@@ -88,7 +88,7 @@ public enum Holiday {
 
 		//Shattered's Birthday
 		if (cal.get(Calendar.MONTH) == Calendar.AUGUST
-				&& cal.get(Calendar.DAY_OF_MONTH) <= 7){
+				&& cal.get(Calendar.DAY_OF_MONTH) <= 25){
 			return SHATTEREDPD_BIRTHDAY;
 		}
 

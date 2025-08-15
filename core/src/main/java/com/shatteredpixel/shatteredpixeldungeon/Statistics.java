@@ -215,6 +215,8 @@ public class Statistics {
 	//珍宝
 	public static int dimandchestmazeCollected;
 
+	public static int luoWhitePageCollected;
+
 	//宝物生成限制，避免有byd的十字架重复刷取
 	public static int fuckGeneratorAlone;
 
@@ -240,6 +242,10 @@ public class Statistics {
 	public static boolean onlyBzmdr = false;
 
 	public static boolean onlyLing = false;
+
+	public static boolean defalult_deaddog = false;
+
+	public static int LoveMagicGirl = 0;
 
 	//昼夜更替
 	public static int gameTime;
@@ -272,6 +278,8 @@ public class Statistics {
 
 	//Holiday Boolean
 	public static boolean Hollow_Holiday = false;
+
+	public static boolean soulsSpawn = false;
 
 	private static final String ICECLAN ="iceCyanBlueSquareCoin";
 
@@ -541,6 +549,8 @@ public class Statistics {
 		noClearKill = false;
 		Statistics.AutoOilPotion = false;
 
+		luoWhitePageCollected = 0;
+
         HealingIsDied = 0;
 
 		PinkFoxCount = 0;
@@ -558,6 +568,10 @@ public class Statistics {
 		onlyBzmdr = false;
 		onlyLing = false;
 
+		defalult_deaddog = false;
+
+		LoveMagicGirl = 0;
+
 		gameDay = 1;
 
 		ascended = false;
@@ -571,6 +585,8 @@ public class Statistics {
 		TrueYogNoDied = false;
 
 		GameKillFireDargon = false;
+
+		soulsSpawn = false;
 
 		gameTime = 0;
 		gameNight = false;
@@ -751,6 +767,8 @@ public class Statistics {
 
 		bundle.put("GDZRSKIN",gudaZiRandomSkin);
 
+		bundle.put("ReSoulPing",soulsSpawn);
+
 		bundle.put(DWSX, dwarfKill);
 
 		bundle.put(STS, TrueYogNoDied);
@@ -816,6 +834,10 @@ public class Statistics {
 
 		bundle.put("onlyLing",onlyLing);
 
+		bundle.put("defalult_deaddog",defalult_deaddog);
+
+		bundle.put("lovemagicgirl",LoveMagicGirl);
+
 		bundle.put("NOTIME",NoTime);
 
 		//分数
@@ -855,6 +877,8 @@ public class Statistics {
 
 		bundle.put( LANTERACTIVE, lanterfireactive );
 		bundle.put(GOLDCHEST,	  goldchestmazeCollected);
+
+		bundle.put("LWP",luoWhitePageCollected);
 
 		bundle.put(DDK,dimandchestmazeCollected);
 
@@ -945,10 +969,18 @@ public class Statistics {
 		LiquidMatalOnlyTen = bundle.getBoolean("LIMTAL_DROP");
 		LimitLiquidMatal = bundle.getInt("LIMTAL");
 
+		LoveMagicGirl = bundle.getInt("lovemagicgirl");
+
+		luoWhitePageCollected = bundle.getInt("LWP");
+
+		defalult_deaddog = bundle.getBoolean("defalult_deaddog");
+
 		onlyLing = bundle.getBoolean("onlyLing");
 
 		/**/
 		Hollow_Holiday = bundle.getBoolean("HOLLOW_DAY");
+
+		soulsSpawn = bundle.getBoolean("ReSoulPing");
 		/**/
 
 		RandomMimicItem = bundle.getBoolean(MMCITEM);

@@ -32,9 +32,13 @@ public class Gift implements Bundlable {
     private static final String[] Gift_DATA	= {
             //【永久兑换码】
             "QmFkTGFudGVyRmlyZS1Hbyw0MDcwOTUxNzc1LGZhbHNl",
+            "TUhKSCw0MDcwOTUxNzc1LGZhbHNl",
+            "WUxHQiw0MDcwOTUxNzc1LGZhbHNl",
 
-            "56uv5Y2I5a6J5bq3LDE3NDkzOTg0MDAsZmFsc2U=",
-            "5ZCJ56Wl6ZSm6bKkLDE3NDkzOTg0MDAsZmFsc2U=",
+            "U0hQRC1CSVJUSERBWSwxNzU2MTM3NjIwLGZhbHNl",
+
+            "TkZZSUcsMTc1NDU4MjQwMCxmYWxzZQ==",
+            "QVJNWURBWSwxNzU0NTgyNDAwLGZhbHNl",
     };
 
     private static final HashMap<String, LinkedHashMap<String, Integer>> GIFT_ITEM ;
@@ -44,18 +48,31 @@ public class Gift implements Bundlable {
         LinkedHashMap<String, Integer> code1 = new LinkedHashMap<>();
         code1.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 300 );
         code1.put( "com.shatteredpixel.shatteredpixeldungeon.items.quest.LanFireGo", 1 );
-
         LinkedHashMap<String, Integer> code2 = new LinkedHashMap<>();
         code2.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 1200 );
-
         LinkedHashMap<String, Integer> code3 = new LinkedHashMap<>();
         code3.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 400 );
         code3.put( "com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag", 1 );
         code3.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove", 1 );
-
+        LinkedHashMap<String, Integer> code4 = new LinkedHashMap<>();
+        code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 1000 );
+        code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag", 1 );
+        code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr", 1 );
+        LinkedHashMap<String, Integer> code5 = new LinkedHashMap<>();
+        code5.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 600 );
+        code5.put( "com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag", 1 );
+        code5.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem", 1 );
         tempMap.put( "QmFkTGFudGVyRmlyZS1Hbw==",         code1 );
         tempMap.put( "56uv5Y2I5a6J5bq3",                 code2 );
         tempMap.put( "5ZCJ56Wl6ZSm6bKk",                 code3 );
+        tempMap.put( "TUhKSA==",                 code4 );
+        tempMap.put( "WUxHQg==",                 code5 );
+
+        LinkedHashMap<String, Integer> code6 = new LinkedHashMap<>();
+        code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems", 1 );
+        code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 1000 );
+        code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.ZakoSoup", 1 );
+        tempMap.put( "U0hQRC1CSVJUSERBWQ==",         code6 );
 
 
         GIFT_ITEM = new HashMap<>( Collections.unmodifiableMap( tempMap ) );

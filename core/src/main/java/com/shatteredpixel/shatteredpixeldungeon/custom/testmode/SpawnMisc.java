@@ -62,6 +62,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.SakaMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Switch;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Gelatin;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar_Block;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.WhiteSugar_B;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
@@ -128,6 +132,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SoulCrack;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnsignedInvitationLetter;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
@@ -343,6 +349,11 @@ public class SpawnMisc extends TestItem {
             foodList.add(PhantomMeat.class);
             foodList.add(CrivusFruitsFood.class);
             foodList.add(SakaMeat.class);
+            foodList.add(Sugar.class);
+
+            foodList.add(Gelatin.class);
+            foodList.add(Sugar_Block.class);
+            foodList.add(WhiteSugar_B.class);
         }
 
         //Book
@@ -453,6 +464,14 @@ public class SpawnMisc extends TestItem {
             miscList.add(PotionOfHolyWater.class);
             miscList.add(DragonWater.class);
             miscList.add(TowerMachine.StarCanon.class);
+
+            miscList.add(SoulCrack.RedSoulCrack.class);
+            miscList.add(SoulCrack.YellowSoulCrack.class);
+            miscList.add(SoulCrack.BlueSoulCrack.class);
+            miscList.add(SoulCrack.GreenSoulCrack.class);
+            miscList.add(SoulCrack.PinkSoulCrack.class);
+
+            miscList.add(UnsignedInvitationLetter.class);
         }
     }
 

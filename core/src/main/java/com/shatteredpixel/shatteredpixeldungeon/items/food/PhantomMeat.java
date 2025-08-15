@@ -48,7 +48,7 @@ public class PhantomMeat extends Food {
 		return 30 * quantity;
 	}
 
-	public static void effect(Hero hero){
+	public void effect(Hero hero){
 
 		Barkskin.conditionallyAppend( hero, hero.HT / 4, 1 );
 		Buff.affect( hero, Invisibility.class, Invisibility.DURATION );

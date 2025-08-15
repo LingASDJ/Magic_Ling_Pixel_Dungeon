@@ -225,7 +225,7 @@ public class YogGodHardBossLevel extends Level {
         }
 
         if (map[ENTRANCE] == Terrain.ENTRANCE && map[EXIT] != Terrain.EXIT
-                && ch == Dungeon.hero && Dungeon.level.distance(ch.pos, ENTRANCE) >= 2) {
+                && ch == Dungeon.hero && Dungeon.level.distance(ch.pos, ENTRANCE) >= 2 && !Statistics.TrueYogNoDied) {
             seal();
         }
 
@@ -310,8 +310,11 @@ public class YogGodHardBossLevel extends Level {
         set( ENTRANCE, Terrain.ENTRANCE );
         GameScene.updateMap( ENTRANCE );
 
-        set( EXIT, Terrain.WALL );
-        GameScene.updateMap( EXIT );
+        if(!Statistics.Hollow_Holiday){
+            set( EXIT, Terrain.WALL );
+            GameScene.updateMap( EXIT );
+
+        }
 
         CellEmitter.get(CENTER-1).burst(ShadowParticle.UP, 25);
         CellEmitter.get(CENTER).burst(ShadowParticle.UP, 100);

@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions.brews;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -52,9 +51,6 @@ public class AquaBrew extends Brew {
 	@Override
 	public String desc() {
 		String desc = Messages.get(this, "desc");
-		if(Dungeon.isChallenged(Challenges.AQUAPHOBIA)){
-			desc += "\n\n" + Messages.get(this, "salt");
-		}
 		return desc;
 	}
 
@@ -87,7 +83,7 @@ public class AquaBrew extends Brew {
 			GeyserTrap geyser = new GeyserTrap();
 			geyser.pos = cell;
 			geyser.source = this;
-			int userPos = curUser.pos;
+			int userPos = curUser == null ? cell : curUser.pos;
 			if (userPos != cell){
 				Ballistica aim = new Ballistica(userPos, cell, Ballistica.STOP_TARGET);
 				if (aim.path.size() > aim.dist+1) {

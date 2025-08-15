@@ -77,8 +77,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.Elixir;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TheGriefOfSpeechless;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
@@ -208,7 +212,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WhiteBlastSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WitheWoodSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ClearSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.GoldLongGun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.KingAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
@@ -601,7 +607,8 @@ public class Generator {
 					KingAxe.class,
 					RiceSword.class,
 					Gauntlet.class,
-
+					ClearSword.class,
+					ForestBow.class,
 					//超模武器
 					IceSan.class,
 
@@ -611,7 +618,10 @@ public class Generator {
 			PaswordBadges.loadGlobal();
 			List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-			WEP_T5.probs = new float[]{6, 3, 3, 3, 3, 3, 3, 4, SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName()) ? 1.5f : 0, 2, SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName()) ? 1f : 0, 0, SPDSettings.KillDwarf() ? 1.2f : 0, 4, passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD) ? 1.4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName()) ? 1.4f : 0, Statistics.RandMode ? 5 : 0, 5};
+			WEP_T5.probs = new float[]{6, 3, 3, 3, 3, 3, 3, 4, SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName()) ? 1.5f : 0, 2, SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName()) ? 1f : 0, 0, SPDSettings.KillDwarf() ? 1.2f : 0, 4, passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD) ? 1.4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName()) ? 1.4f : 0,
+					SPDSettings.isItemUnlock(ClearSword.class.getSimpleName()) ? 1.55f : 0,
+					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 1.65f : 0,
+					Statistics.RandMode ? 5 : 0, 5};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
@@ -753,9 +763,12 @@ public class Generator {
 			TRINKET.probs = TRINKET.defaultProbs.clone();
 
 			PROP.classes = new Class<?>[]{
-					StarSachet.class
+					KnightStabbingSword.class,
+					TerrorDoll.class,
+					Monocular.class,
+					TheGriefOfSpeechless.class
 			};
-			PROP.defaultProbs = new float[]{1};
+			PROP.defaultProbs = new float[]{1,1,1,1};
 			PROP.probs = PROP.defaultProbs.clone();
 
 			for (Category cat : Category.values()){
@@ -1023,6 +1036,32 @@ public class Generator {
 
 		cat.probs[i]--;
 		return (Artifact) Reflection.newInstance((Class<? extends Artifact>) cat.classes[i]).random();
+
+	}
+
+	public static Prop randomProp() {
+
+		Category cat = Category.PROP;
+
+		if (cat.defaultProbs != null && cat.seed != null){
+			Random.pushGenerator(cat.seed);
+			for (int i = 0; i < cat.dropped; i++) Random.Long();
+		}
+
+		int i = Random.chances( cat.probs );
+
+		if (cat.defaultProbs != null && cat.seed != null){
+			Random.popGenerator();
+			cat.dropped++;
+		}
+
+		//if no artifacts are left, return null
+		if (i == -1){
+			return null;
+		}
+
+		cat.probs[i]--;
+		return (Prop) Reflection.newInstance((Class<? extends Prop>) cat.classes[i]).random();
 
 	}
 

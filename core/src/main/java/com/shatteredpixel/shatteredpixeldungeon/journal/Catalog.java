@@ -79,12 +79,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.RatTail;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.RedCrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SakaMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Switch;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.BoneSoup;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.ZakoSoup;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
@@ -260,6 +263,9 @@ public enum Catalog {
 				Blandfruit.class, PhantomMeat.class, MeatPie.class,
 				Switch.class, Cake.class, LightFood.class, RedCrab.class,
 				SakaMeat.class, CrivusFruitsFood.class,  SmallRation.BlackMoon.class,
+
+				//FTJ
+				BoneSoup.class, RatTail.class, ZakoSoup.class,
 
 				//DWJ
 				RiceDumplings.RiceDumplingsBottle.class,

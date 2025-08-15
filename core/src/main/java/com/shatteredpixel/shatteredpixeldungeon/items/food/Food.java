@@ -58,6 +58,8 @@ public class Food extends Item {
 
 		bones = true;
 	}
+
+	public void effect(Hero hero) {}
 	
 	@Override
 	public ArrayList<String> actions( Hero hero ) {

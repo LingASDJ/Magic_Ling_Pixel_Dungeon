@@ -6,6 +6,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holid
 import com.nlf.calendar.Lunar;
 import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -41,18 +42,26 @@ public class Gregorian {
         Solar date = Solar.fromDate(calendar.getTime());
         Lunar lunar = date.getLunar();
 
+        int gregorianMonth = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH 的范围是 0-11，所以需要加 1
+        int gregorianDay = calendar.get(Calendar.DAY_OF_MONTH);
+
         boolean isZQJ = lunar.getMonth() == 8 && (lunar.getDay() >= 15 - 10 && lunar.getDay() <= 15 + 12);
 
         boolean isDevBirthday = lunar.getMonth() == 8 && lunar.getDay() >= 22 && lunar.getDay() <= 25;
 
         boolean isDWJ = lunar.getMonth() == 5 && (lunar.getDay() >= 0 && lunar.getDay() <= 5 + 7);
 
-        boolean isDWJ_2024TWO = lunar.getMonth() == 5 && (lunar.getDay() >= 5 && lunar.getDay() <= 5 + 16);
+        boolean isHBJ = false;
+        if (gregorianMonth == 7) {
+            isHBJ = true;
+        } else if (gregorianMonth == 8) {
+            isHBJ = gregorianDay <= 15;
+        }
 
         boolean isSF = lunar.getMonth() == 1 && (lunar.getDay() >= 1 && lunar.getDay() <= 1 + 13);
 
         boolean isYXJ= lunar.getMonth() == 1 && (lunar.getDay() >= 15 && lunar.getDay() <= 15 + 7);
-        boolean isDWJ2025 = lunar.getMonth() == 4 && lunar.getDay() >= 6 && lunar.getDay() <= 24;
+
         boolean isZQJ2025 = lunar.getMonth() == 4 && lunar.getDay() >= 6 && lunar.getDay() <= 24;
 
 
@@ -78,7 +87,20 @@ public class Gregorian {
             eventEndTime = calculateEventEndTime(lunar, 5, 12);
         }
 
+        if(isHBJ){
+            holiday = RegularLevel.Holiday.HWEEN;
+            eventEndTime = calculateSolarEventEnd(2025,8,15);
+        }
+
     }
+
+    public static long calculateSolarEventEnd(int year, int month, int day) {
+        Calendar end = Calendar.getInstance();
+        end.set(year, month-1, day, 23, 59, 59); // 月份参数适配真实月份
+        end.set(Calendar.MILLISECOND, 0);
+        return end.getTimeInMillis();
+    }
+
 
     // 新增计算方法
     private static long calculateEventEndTime(Lunar currentLunar, int month, int endDay) {
@@ -110,10 +132,12 @@ public class Gregorian {
 
     // 新增获取剩余时间方法
     public static String getRemainingTime() {
-        if (eventEndTime == 0) return "无活动";
+        if (eventEndTime == 0)
+            return Messages.get(Gregorian.class,"no_activity");
 
         long current = System.currentTimeMillis();
-        if (current >= eventEndTime) return "活动已结束";
+        if (current >= eventEndTime)
+            return Messages.get(Gregorian.class,"end_activity");
 
         long diff = eventEndTime - current;
 
@@ -126,7 +150,15 @@ public class Gregorian {
         long minutes = seconds / 60;
         seconds %= 60;
 
-        return String.format(Locale.CHINA, "剩余："+"%d天 %02d:%02d:%02d", days, hours, minutes, seconds);
+        String string;
+
+        if(days > 1){
+            string =  String.format(Locale.CHINA, "行动剩余："+"%d天", days);
+        } else {
+            string =  String.format(Locale.CHINA, "行动剩余："+"%d天 %02d:%02d:%02d", days, hours, minutes, seconds);
+        }
+
+        return string;
     }
 
 }

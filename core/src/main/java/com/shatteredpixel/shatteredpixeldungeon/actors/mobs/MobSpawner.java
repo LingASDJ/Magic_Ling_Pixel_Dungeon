@@ -658,6 +658,14 @@ public class MobSpawner extends Actor {
 				return new ArrayList<>(Arrays.asList(
 						Ghost_Halloween.class, PumkingBomber.class, ApprenticeWitch.class));
 
+			case 30:
+				return new ArrayList<>(Arrays.asList(
+						ApprenticeWitch.class,
+						Butcher.class,Butcher.class,
+						Pumking_Ghost.class
+						, PumkingBomber.class
+				));
+
 			default:
 				return new ArrayList<>(Arrays.asList(FlowerSlime.class, FlowerSlime.class,
 						FlowerSlime.class,

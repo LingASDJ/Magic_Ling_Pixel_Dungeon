@@ -51,7 +51,7 @@ public class MysteryMeat extends Food {
 		return 5 * quantity;
 	}
 
-	public static void effect(Hero hero){
+	public void effect(Hero hero){
 		switch (Random.Int( 5 )) {
 			case 0:
 				GLog.w( Messages.get(MysteryMeat.class, "hot") );

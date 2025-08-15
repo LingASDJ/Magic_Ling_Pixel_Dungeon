@@ -1,8 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
 
 public class MorpheusSprite extends MobSprite {
 
@@ -44,6 +46,17 @@ public class MorpheusSprite extends MobSprite {
     public void HatActivate(){
         idle = HandHat.clone();
         idle();
+    }
+
+    @Override
+    public void die() {
+        super.die();
+
+        emitter().start( ElmoParticle.FACTORY, 0.03f, 60 );
+
+        if (visible) {
+            Sample.INSTANCE.play( Assets.Sounds.BURNING );
+        }
     }
 
 }

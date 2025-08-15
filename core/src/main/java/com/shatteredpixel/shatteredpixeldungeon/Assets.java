@@ -215,7 +215,7 @@ public class Assets {
 		public static final String BANNERS_WT  = "interfaces/Banners/banners_win.png";
 
 		public static final String BANNERS_YX  = "interfaces/Banners/banners_yx.png";
-
+		public static final String BANNERS_SP  = "interfaces/Banners/banners_shattered.png";
 		public static final String BANNERS_LD  = "interfaces/Banners/banners_labor.png";
 		public static final String MENUTITLE  = "interfaces/menutitle.png";
 
@@ -480,7 +480,15 @@ public class Assets {
 		public static final String LINPX = "splashes/sx.png";
 		public static final String DUELIST  = "splashes/duelist.jpg";
 
-		public static final String MOSRDX = "splashes/morpheus_portraits.png";
+		public static final String MOSRDX_0 = "splashes/hollow/Morphs/morpheus_portraits(0).png";
+		public static final String MOSRDX_1 = "splashes/hollow/Morphs/morpheus_portraits(1).png";
+		public static final String MOSRDX_2 = "splashes/hollow/Morphs/morpheus_portraits(2).png";
+		public static final String MOSRDX_3 = "splashes/hollow/Morphs/morpheus_portraits(3).png";
+		public static final String MOSRDX_4 = "splashes/hollow/Morphs/morpheus_portraits(4).png";
+		public static final String MOSRDX_5 = "splashes/hollow/Morphs/morpheus_portraits(5).png";
+		public static final String MOSRDX_6 = "splashes/hollow/Morphs/morpheus_portraits(6).png";
+		public static final String MOSRDX_7 = "splashes/hollow/Morphs/morpheus_portraits(7).png";
+		public static final String MOSRDX_8 = "splashes/hollow/Morphs/morpheus_portraits(8).png";
 
 
 
@@ -635,6 +643,8 @@ public class Assets {
 		public static final String SWTICH = "sprites/hollow/Silence_Witch.png";
 		public static final String CSBR = "sprites/hollow/Cerberus.png";
 		public static final String NCSBR = "sprites/hollow/New_Cerberus.png";
+
+		public static final String SCSR = "sprites/hollow/Cerberus_sleep.png";
 
 		public static final String DGS = "sprites/boss/dwarf_general.png";
 

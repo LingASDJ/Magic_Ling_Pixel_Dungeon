@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.custom.Gift;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HollowExitLevel;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GoScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -84,6 +85,7 @@ public class ShatteredPixelDungeon extends Game {
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom" );
+
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom" );

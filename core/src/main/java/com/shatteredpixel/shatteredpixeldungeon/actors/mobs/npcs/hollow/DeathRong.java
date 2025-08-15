@@ -1,11 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.BoatPlot;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.BoatPlot_End;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeathRongSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
@@ -21,7 +22,7 @@ public class DeathRong extends NTNPC {
         flying = true;
     }
 
-    private boolean first=true;
+    public boolean first=true;
     public boolean secnod=true;
     public boolean rd = true;
 
@@ -66,14 +67,13 @@ public class DeathRong extends NTNPC {
         sprite.turnTo(pos, Dungeon.hero.pos);
         BoatPlot plot = new BoatPlot();
 
+        BoatPlot_End plot2 = new BoatPlot_End();
+
         if(first){
             Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot,false)));
-            first=false;
-        } else if(secnod) {
-        } else {
-            tell(Messages.get(DeathRong.class, "can_boat"));
+        } else if(Statistics.defalult_deaddog) {
+            Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot2,false)));
         }
-
         Bestiary.setSeen(DeathRong.class);
 
         return true;
