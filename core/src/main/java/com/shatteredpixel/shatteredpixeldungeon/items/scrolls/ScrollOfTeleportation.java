@@ -276,26 +276,28 @@ public class ScrollOfTeleportation extends Scroll {
 
 	public static void appear( Char ch, int pos ) {
 
-		ch.sprite.interruptMotion();
-
-		Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-
-		CellEmitter.get(ch.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
-
-		ch.move( pos, false );
-		if (ch.pos == pos) {
+		if(ch != null){
 			ch.sprite.interruptMotion();
-			ch.sprite.place(pos);
+			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+
+			CellEmitter.get(ch.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+
+			ch.move( pos, false );
+			if (ch.pos == pos) {
+				ch.sprite.interruptMotion();
+				ch.sprite.place(pos);
+			}
+
+			if (ch.invisible == 0) {
+				ch.sprite.alpha( 0 );
+				ch.sprite.parent.add( new AlphaTweener( ch.sprite, 1, 0.4f ) );
+			}
+
+			if (Dungeon.level.heroFOV[pos] || ch == Dungeon.hero ) {
+				ch.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+			}
 		}
 
-		if (ch.invisible == 0) {
-			ch.sprite.alpha( 0 );
-			ch.sprite.parent.add( new AlphaTweener( ch.sprite, 1, 0.4f ) );
-		}
-
-		if (Dungeon.level.heroFOV[pos] || ch == Dungeon.hero ) {
-			ch.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.2f, 3);
-		}
 	}
 
 	//just plays the VFX for teleporting, without any position changes

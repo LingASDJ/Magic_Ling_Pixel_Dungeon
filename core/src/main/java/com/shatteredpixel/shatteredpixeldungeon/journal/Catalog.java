@@ -167,6 +167,7 @@ public enum Catalog {
 	EXOTIC_POTIONS,
 	EXOTIC_SCROLLS,
 	BOMBS,
+	PROPS,
 	TIPPED_DARTS,
 	BREWS_ELIXIRS,
 	SPELLS,
@@ -239,6 +240,8 @@ public enum Catalog {
 		ARTIFACTS.addItems(Generator.Category.ARTIFACT.classes);
 
 		TRINKETS.addItems(Generator.Category.TRINKET.classes);
+
+		PROPS.addItems(Generator.Category.PROP.classes);
 
 		BOOKS.addItems(MagicGirlBooks.class, BrokenBooks.class, GrassKingBooks.class, IceCityBooks.class,
 				NoKingMobBooks.class, HollowCityBook.class, DeepBloodBooks.class, DimandBook.class,
@@ -325,6 +328,7 @@ public enum Catalog {
 		equipmentCatalogs.add(WANDS);
 		equipmentCatalogs.add(RINGS);
 		equipmentCatalogs.add(ARTIFACTS);
+		equipmentCatalogs.add(PROPS);
 		equipmentCatalogs.add(TRINKETS);
 		equipmentCatalogs.add(BOOKS);
 		equipmentCatalogs.add(MISC_EQUIPMENT);
