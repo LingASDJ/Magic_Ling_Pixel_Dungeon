@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
@@ -105,7 +106,7 @@ public class Hunger extends Buff implements Hero.Doom {
 				partialDamage += STEP * target.HT/1000f;
 
 				if (partialDamage > 1){
-					target.damage( (int)partialDamage, this);
+					target.damage( (int)partialDamage, this, Char.DamageTyPe.REAL);
 					partialDamage -= (int)partialDamage;
 				}
 				
@@ -119,7 +120,7 @@ public class Hunger extends Buff implements Hero.Doom {
 
 					if(!Statistics.noGoReadHungry) Statistics.noGoReadHungry = true;
 
-					hero.damage( 1, this );
+					hero.damage( 1, this , Char.DamageTyPe.REAL);
 
 					hero.interrupt();
 
