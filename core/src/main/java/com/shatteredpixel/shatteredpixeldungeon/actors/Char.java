@@ -190,6 +190,13 @@ public abstract class Char extends Actor {
 		NEUTRAL,
 		ALLY
 	}
+	public enum DamageTyPe{
+		PHYSICAL,
+		MAGIC,
+		REAL,
+		Element
+	}
+
 	public Alignment alignment;
 	public int venodamage = 0;
 
@@ -386,10 +393,14 @@ public abstract class Char extends Actor {
 	}
 
 	public boolean attack( Char enemy ){
-		return attack(enemy, 1f, 0f, 1f);
+		return attack(enemy, 1f, 0f, 1f , DamageTyPe.PHYSICAL);
 	}
 
-	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
+	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti){
+		return attack(enemy, dmgMulti, dmgBonus, accMulti , DamageTyPe.PHYSICAL);
+	}
+
+	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti , DamageTyPe type) {
 
 		boolean kill = false;
 
@@ -481,7 +492,9 @@ public abstract class Char extends Actor {
 				dmg *= 0.67f;
 			}
 
-			int effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
+			int effectiveDamage = Math.round(dmg);
+
+			if(type == DamageTyPe.PHYSICAL )effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
 			//do not trigger on-hit logic if defenseProc returned a negative value
 			if (effectiveDamage >= 0) {
 				effectiveDamage = Math.max(effectiveDamage - dr, 0);
@@ -510,7 +523,8 @@ public abstract class Char extends Actor {
 				return true;
 			}
 
-			enemy.damage( effectiveDamage, this );
+			enemy.damage( effectiveDamage, this ,type);
+			//enemy.damage(effectiveDamage,this);
 
 			if(kill){
 				enemy.HP = 0;
@@ -526,7 +540,7 @@ public abstract class Char extends Actor {
 					enemy.die(this);
 				} else {
 					//helps with triggering any on-damage effects that need to activate
-					enemy.damage(-1, this);
+					enemy.damage(-1, this,type);
 					DeathMark.processFearTheReaper(enemy);
 				}
 				if (enemy.sprite != null) {
@@ -544,7 +558,7 @@ public abstract class Char extends Actor {
 						enemy.die(this);
 					} else {
 						//helps with triggering any on-damage effects that need to activate
-						enemy.damage(-1, this);
+						enemy.damage(-1, this,type);
 						DeathMark.processFearTheReaper(enemy);
 					}
 					if (enemy.sprite != null) {
@@ -586,7 +600,7 @@ public abstract class Char extends Actor {
 
 			if(enemy instanceof Hero && ((Hero) enemy).belongings.getItem(KnightStabbingSword.class) !=null){
 				if(Random.Float()<=0.25f){
-					enemy.attack(this,1,0,1);
+					enemy.attack(this,1,0,1 ,DamageTyPe.PHYSICAL);
 					GLog.n(Messages.get(KnightStabbingSword.class,"attack"));
 				}
 			}
@@ -814,7 +828,11 @@ public abstract class Char extends Actor {
 		return cachedShield;
 	}
 
-	public void damage( int dmg, Object src ) {
+	public void damage( int dmg, Object src){
+		damage(dmg,src,DamageTyPe.MAGIC);
+	}
+
+	public void damage( int dmg, Object src, DamageTyPe type ) {
 
 		if (!isAlive() || dmg < 0) {
 			return;

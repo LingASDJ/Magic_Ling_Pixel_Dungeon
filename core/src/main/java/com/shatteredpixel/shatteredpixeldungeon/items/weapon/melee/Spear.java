@@ -108,7 +108,7 @@ public class Spear extends MeleeWeapon {
 				AttackIndicator.target(enemy);
 				int oldPos = enemy.pos;
 				//do not push if enemy has moved, or another push is active (e.g. elastic)
-				if (hero.attack(enemy, dmgMulti, dmgBoost, Char.INFINITE_ACCURACY)) {
+				if (hero.attack(enemy, dmgMulti, dmgBoost, Char.INFINITE_ACCURACY, Char.DamageTyPe.PHYSICAL)) {
 					if (enemy.isAlive() && enemy.pos == oldPos && !Pushing.pushingExistsForChar(enemy)){
 						//trace a ballistica to our target (which will also extend past them
 						Ballistica trajectory = new Ballistica(hero.pos, enemy.pos, Ballistica.STOP_TARGET);
