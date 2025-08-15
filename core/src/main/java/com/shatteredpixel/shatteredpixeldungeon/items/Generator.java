@@ -77,12 +77,33 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.Elixir;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RustedGoldCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TheGriefOfSpeechless;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
@@ -763,12 +784,37 @@ public class Generator {
 			TRINKET.probs = TRINKET.defaultProbs.clone();
 
 			PROP.classes = new Class<?>[]{
-					KnightStabbingSword.class,
+					ArmorScalesOfBzmdr.class,
+					BlockingDrug.class,
+					BrokenBone.class,
+					CloakFragmentsOfBzmdr.class,
+					ConfusedMieMieTalisman.class,
+					DeliciousRecipe.class,
+					EmotionalAggregation.class,
+					EmotionalAggregationB.class,
+					HeartOfCrystalFractal.class,
+					LuckyGlove.class,
+					NewStem.class,
+					NoteOfBzmdr.class,
+					PortableWhetstone.class,
+					RapidEarthRoot.class,
+					RustedGoldCoin.class,
+					StarSachet.class,
+					WenStudyingPaperOne.class,
+					WenStudyingPaperTwo.class,
+					YanStudyingPaperOne.class,
+					YanStudyingPaperTwo.class,
+					BottleWraith.class,
+					//Active
 					TerrorDoll.class,
+					TerrorDollB.class,
+					KnightStabbingSword.class,
 					Monocular.class,
 					TheGriefOfSpeechless.class
 			};
-			PROP.defaultProbs = new float[]{1,1,1,1};
+			PROP.defaultProbs = new float[]{
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1
+			};
 			PROP.probs = PROP.defaultProbs.clone();
 
 			for (Category cat : Category.values()){
