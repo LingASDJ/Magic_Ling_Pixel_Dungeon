@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Conducts.Conduct.*;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
@@ -29,6 +30,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireacti
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Clipboard;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
+import com.shatteredpixel.shatteredpixeldungeon.Difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
@@ -319,11 +321,31 @@ public class WndHero extends WndTabbed {
 			statSlot(Messages.get(HeroStat.class, "seed_type"), seedType());
 
 
+			Conducts.ConductStorage conductStorage = Dungeon.dlcs;
+			Conducts.Conduct currentConduct = conductStorage.getCurrentConduct();
+			switch (currentConduct) {
+				case DEV:
+					statSlot(Messages.get(HeroStat.class, "difficulty"), Messages.get(this,"DEV"));
+					break;
+				case NORMAL:
+					statSlot(Messages.get(HeroStat.class, "difficulty"), Messages.get(this,"NORMAL"));
+					break;
+				case EASY:
+					statSlot(Messages.get(HeroStat.class, "difficulty"), Messages.get(this,"EASY"));
+					break;
+				case HARD:
+					statSlot(Messages.get(HeroStat.class, "difficulty"), Messages.get(this,"HARD"));
+					break;
+				case NULL:
+                case SEED:
+                    break;
+            }
+
+
+
 			if(lanterfireactive){
 				RestatSlot( Messages.get(this, "lanterfire"), (double)(hero.lanterfire) + "/" + 100 );
 			}
-
-//			IcestatSlot( Messages.get(this, "icehp"), (hero.icehp) + "/" + 100 );
 
 			pos += GAP;
 

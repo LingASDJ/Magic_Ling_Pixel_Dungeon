@@ -22,7 +22,7 @@ import java.util.Arrays;
 public class WndDLC extends Window {
 
     private final int WIDTH = Math.min(138, (int) (PixelScene.uiCamera.width * 0.9));
-    private final int HEIGHT = 115;
+    private final int HEIGHT = 94;
     private static final int TTL_HEIGHT    = 18;
     private static final int BTN_HEIGHT    = 18;
     private static final int GAP        = 1;
@@ -50,6 +50,10 @@ public class WndDLC extends Window {
                 new ArrayList<>(Arrays.asList(Conducts.Conduct.values())) :
                 conducts.conducts;
 
+        // 排除 NULL 选项
+        allConducts.remove(Conducts.Conduct.NULL);
+        allConducts.remove(Conducts.Conduct.SEED);
+
         ScrollPane pane = new ScrollPane(new Component()) {
             @Override
             public void onClick(float x, float y) {
@@ -60,20 +64,18 @@ public class WndDLC extends Window {
                     }
                 }
                 size = infos.size();
-                for (int i = 1; i < size+1; i++) {
-                    if (infos.get(i-1).inside(x, y)) {
-                        int index = allConducts.contains(Conducts.Conduct.NULL) ? i : i-1;
-
-                        String message = allConducts.get(index).desc();
-                        String title = Messages.titleCase(Messages.get(Conducts.class, allConducts.get(index).name()));
+                for (int i = 0; i < size; i++) { // 修改这里，从 0 开始循环
+                    if (infos.get(i).inside(x, y)) {
+                        Conducts.Conduct conduct = allConducts.get(i);
+                        String message = conduct.desc();
+                        String title = Messages.titleCase(Messages.get(Conducts.class, conduct.name()));
                         ShatteredPixelDungeon.scene().add(
                                 new WndTitledMessage(
                                         new Image(Assets.Interfaces.HAICONS,
-                                                (allConducts.get(index).ordinal() - 1) * 16,
+                                                (conduct.ordinal() - 1) * 16,
                                                 0, 16, 16),
                                         title, message)
                         );
-
                         break;
                     }
                 }
@@ -88,36 +90,31 @@ public class WndDLC extends Window {
 
             final String challenge = i.toString();
 
-            ConduitBox cb = new ConduitBox( i == Conducts.Conduct.NULL ? challenge : "       " + challenge);
+            ConduitBox cb = new ConduitBox( "       " + challenge); // 移除对 NULL 的特殊处理
             cb.checked(conducts.isConducted(i));
-            if (i == Conducts.Conduct.NULL && !conducts.isConductedAtAll()) cb.checked(true);
             cb.active = editable;
             cb.conduct = i;
 
             pos += GAP;
             cb.setRect(0, pos, WIDTH - 16, BTN_HEIGHT);
-            if (i == Conducts.Conduct.NULL){
-                cb.setSize(WIDTH, BTN_HEIGHT);
-            }
 
             content.add(cb);
             boxes.add(cb);
-            if (i != Conducts.Conduct.NULL) {
-                IconButton info = new IconButton(Icons.get(Icons.INFO)) {
-                    @Override
-                    protected void layout() {
-                        super.layout();
-                        hotArea.y = -5000;
-                    }
-                };
-                info.setRect(cb.right(), pos, 16, BTN_HEIGHT);
-                content.add(info);
-                infos.add(info);
-                Image icon = new Image(Assets.Interfaces.HAICONS, (i.ordinal() - 1) * 16, 0, 16, 16);
-                icon.x = cb.left()+1;
-                icon.y = cb.top()+1;
-                content.add(icon);
-            }
+
+            IconButton info = new IconButton(Icons.get(Icons.INFO)) {
+                @Override
+                protected void layout() {
+                    super.layout();
+                    hotArea.y = -5000;
+                }
+            };
+            info.setRect(cb.right(), pos, 16, BTN_HEIGHT);
+            content.add(info);
+            infos.add(info);
+            Image icon = new Image(Assets.Interfaces.HAICONS, (i.ordinal() - 1) * 16, 0, 16, 16);
+            icon.x = cb.left()+1;
+            icon.y = cb.top()+1;
+            content.add(icon);
 
             pos = cb.bottom();
         }

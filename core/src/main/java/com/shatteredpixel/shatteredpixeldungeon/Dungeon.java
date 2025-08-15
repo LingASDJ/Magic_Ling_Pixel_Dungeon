@@ -1473,8 +1473,5 @@ public class Dungeon {
 		return dlcs.isConducted(mask);
 	}
 
-	public static boolean isDIFFICULTY(Difficulty.DifficultyConduct mask) {
-		return difficultys.isConducted(mask);
-	}
 
 }
