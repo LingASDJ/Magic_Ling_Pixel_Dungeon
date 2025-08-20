@@ -250,6 +250,7 @@ public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
 
     @Override
     public boolean doUnequip(Hero hero,boolean collect, boolean single) {
+        if(hero.buff(Smoking.class)!=null) hero.buff(Smoking.class).detach();
         if(!cursed && super.doUnequip(hero,collect,single)) hero.withElectricalSmoke = false;
         return super.doUnequip(hero,collect,single);
     }
