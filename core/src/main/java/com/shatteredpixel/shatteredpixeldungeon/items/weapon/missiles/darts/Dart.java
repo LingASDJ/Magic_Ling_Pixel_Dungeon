@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.audio.Sample;
@@ -126,15 +127,14 @@ public class Dart extends MissileWeapon {
 				return 4 + lvl;
 			}
 		}
+
 		if(forestBow != null ){
+			int orgrinDamage = 3 + forestBow.level();
 			if(Dungeon.hero != null) {
 				if (!(this instanceof TippedDart) && Dungeon.hero.buff(ForestBow.ChargedShot.class) != null) {
-					return (int) ((3 + forestBow.buffedLvl() + lvl) * 0.9f);
-				} else if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null) {
-					//ability increases base dmg by 37.5%, scaling by 50%
-					return 3 + forestBow.buffedLvl() + lvl;
+					return (int) (orgrinDamage * 0.9f);
 				} else {
-					return 2 + forestBow.buffedLvl() + lvl;
+					return  orgrinDamage;
 				}
 			} else {
 				return 4 + lvl;
@@ -171,21 +171,19 @@ public class Dart extends MissileWeapon {
 		}
 
 		if(forestBow != null ){
+			int orgrinDamage = (int) (6 + forestBow.level() * 2.5f);
 			if(Dungeon.hero != null) {
 				if (!(this instanceof TippedDart) && Dungeon.hero.buff(ForestBow.ChargedShot.class) != null) {
-					return (int) ( (6 + 2.5 * forestBow.buffedLvl() + lvl) * 0.9f);
-				} else if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null) {
-					return (int) (6 + 2.5 * forestBow.buffedLvl() + lvl);
+					return (int) (orgrinDamage * 0.9f);
 				} else {
-					return 3 + forestBow.buffedLvl() + lvl;
+					return  orgrinDamage;
 				}
 			} else {
 				return 4 + lvl;
 			}
 		}
 
-		return  2 +     //2 base, down from 5
-					2*lvl;  //scaling unchanged
+		return  2 + 2*lvl;
 
 	}
 
@@ -345,28 +343,26 @@ public class Dart extends MissileWeapon {
 					}
 				}
 			}
-			} else if ( forestBow != null && (Dungeon.hero.buff(ForestBow.ChargedShot.class) != null ))
+			} else if ( forestBow != null && (Dungeon.hero.buff(ForestBow.ChargedShot.class) != null )) {
 			PathFinder.buildDistanceMap(chargedShotPos, Dungeon.level.passable, 2);
-		//necessary to clone as some on-hit effects use Pathfinder
-		int[] distance = PathFinder.distance.clone();
-		for (Char ch : Actor.chars()) {
-			if (ch == target) {
-				Actor.add(new Actor() {
-					{
-						actPriority = VFX_PRIO;
-					}
-
-					@Override
-					protected boolean act() {
-						if (!ch.isAlive()) {
-							bow.onAbilityKill(Dungeon.hero, ch);
+			//necessary to clone as some on-hit effects use Pathfinder
+			int[] distance = PathFinder.distance.clone();
+			for (Char ch : Actor.chars()){
+				if (ch == target){
+					Actor.add(new Actor() {
+						{ actPriority = VFX_PRIO; }
+						@Override
+						protected boolean act() {
+							if (!ch.isAlive()){
+								forestBow.onAbilityKill(Dungeon.hero, ch);
+							}
+							Actor.remove(this);
+							return true;
 						}
-						Actor.remove(this);
-						return true;
-					}
-				});
-			} else if (distance[ch.pos] != Integer.MAX_VALUE) {
-				proc(Dungeon.hero, ch, dmg);
+					});
+				} else if (distance[ch.pos] != Integer.MAX_VALUE){
+					proc(Dungeon.hero, ch, dmg);
+				}
 			}
 		}
 		chargedShotPos = -1;
