@@ -69,6 +69,8 @@ public class Assets {
 		public static final String ICE_PO  = "environment/custom_tiles/ice.png";
 		public static final String ICE_POX  = "environment/custom_tiles/ice_above.png";
 
+		public static final String GHOST_HOUSE  = "environment/custom_tiles/ghost_house.png";
+
 		public static final String PEACH_PO  =  "environment/custom_tiles/peach_forest_above.png";
 
 		public static final String PEACH_BOSS  = "environment/peach/peach_boss.png";
@@ -88,6 +90,8 @@ public class Assets {
 		public static final String FireQuest  = "environment/custom_tiles/fire_quest.png";
 		public static final String OilWell  = "environment/custom_tiles/oil_well.png";
 		public static final String TILES_HOLLOW  = "environment/tiles_halloween.png";
+
+		public static final String TILES_GHOST  = "environment/tiles_ghost.png";
 
 		public static final String TILES_THEATRE  = "environment/custom_tiles/theatre.png";
 
@@ -116,6 +120,8 @@ public class Assets {
 		public static final String WATER_ANCIENT  = "environment/water5.png";
 
 		public static final String WATER_HOLLOW  = "environment/water7.png";
+
+		public static final String WATER_GHOST  = "environment/water8.png";
 
 		public static final String WEAK_FLOOR       = "environment/custom_tiles/weak_floor.png";
 		public static final String SEWER_BOSS       = "environment/custom_tiles/sewer_boss.png";
@@ -633,6 +639,9 @@ public class Assets {
 		public static final String THREEBUG = "sprites/ancity/threeleafbug.png";
 
 		//HOLLOW
+
+		public static final String GHOST_MINI	= "sprites/hollow/minigame/ghosts.png";
+
 		public static final String APWHEEL = "sprites/hollow/apprentice_witch.png";
 
 		public static final String BTSLIMH = "sprites/hollow/butcher.png";

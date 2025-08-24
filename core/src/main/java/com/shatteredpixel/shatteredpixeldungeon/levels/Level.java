@@ -148,6 +148,9 @@ import java.util.HashSet;
 public abstract class Level implements Bundlable {
 	public String diedname;
 	public Item sacrificialFireItem = null;
+
+	public boolean extraGlass = true;
+
     //静态地图改变的轮子调用
 	public void changeMap(int[] map){
 		//构建全新地图，通过MAPCSV构建，并清理当前地块
