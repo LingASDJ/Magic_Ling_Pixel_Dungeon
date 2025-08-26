@@ -1,1 +1,2 @@
-*.lua linguist-detectable
+*.lua linguist-detectable=true
+*.java linguist-detectable=false
