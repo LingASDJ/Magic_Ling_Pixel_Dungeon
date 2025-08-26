@@ -4,7 +4,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_DECO
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 
 import com.badlogic.gdx.Gdx;
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -21,8 +20,8 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
 
     public int width = 0;
     public int height = 0;
-
-    public static String map_lua_file = Assets.Map_Luas.LockedOneRoom_MapLua;
+    public String map_lua_file;
+    public int[] pre_map;
 
     @Override
     public int minWidth() {
@@ -30,11 +29,11 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
     }
     @Override
     public int minHeight() {
-        return width;
+        return height;
     }
     @Override
     public int maxWidth() {
-        return height;
+        return width;
     }
     @Override
     public int maxHeight() {
@@ -42,7 +41,7 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
     }
 
     // 从Lua文件加载地图数据
-    private static int[] loadMapFromLua(String t) {
+    public int[] loadMapFromLua(String t) {
         try {
             Globals globals = JsePlatform.standardGlobals();
 
@@ -88,12 +87,12 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
         }
     }
 
-    private static final int[] pre_map = loadMapFromLua(map_lua_file);
-
     private int codeToTerrain(int code){
         switch (code){
             case 50:
                 return Terrain.WALL_DECO;
+            case 67:
+                return Terrain.HIGH_GRASS;
             case 74:
                 return Terrain.STATUE_SP;
             case 5:
@@ -122,6 +121,9 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
 
     @Override
     public void paint(Level level) {
+        if (pre_map == null) {
+            pre_map = loadMapFromLua(map_lua_file);
+        }
         Painter.fill(level, this, 0, WALL);
 
         for (int i = left + 1; i <= right-1; i++) {
