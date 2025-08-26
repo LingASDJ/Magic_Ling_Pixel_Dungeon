@@ -76,6 +76,25 @@ public class Statue extends Mob {
 		defenseSkill = 4 + Dungeon.depth;
 	}
 
+	public Statue(Weapon weapon1) {
+		super();
+
+		weapon = weapon1;
+
+		HP = HT = 100;
+		defenseSkill = 5;
+	}
+	public Statue(Weapon weapon1, Enchantment enchantment) {
+		super();
+
+		weapon = weapon1;
+
+		weapon.enchant( enchantment);
+
+		HP = HT = 100;
+		defenseSkill = 5;
+	}
+
 	private static final String WEAPON	= "weapon";
 
 	@Override

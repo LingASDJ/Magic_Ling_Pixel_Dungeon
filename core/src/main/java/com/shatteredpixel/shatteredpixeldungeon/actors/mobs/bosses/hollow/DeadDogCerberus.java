@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -30,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroAction;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.Typhon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
@@ -45,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
@@ -83,6 +86,8 @@ public class DeadDogCerberus extends Boss {
     public int HunterReady = 0;
     public boolean Hunter;
 
+    public boolean deadAlive = false;
+
     /**
      * 连环撕咬技能参数
      */
@@ -114,6 +119,9 @@ public class DeadDogCerberus extends Boss {
 
         spriteClass = DeadDogCerberusSprite.class;
 
+        ComboAttackThis = false;
+        ComboAttackCooldown = 28;
+
         viewDistance = 31;
 
         HUNTING = new Hunting();
@@ -133,7 +141,7 @@ public class DeadDogCerberus extends Boss {
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "notice"));
             GameScene.flash(0x33ff0000);
-            //BGMPlayer.playBoss();
+            Dungeon.level.playBossMusic();
             GameScene.bossReady();
             for (Char ch : Actor.chars()){
                 if (ch instanceof DriedRose.GhostHero){
@@ -156,9 +164,6 @@ public class DeadDogCerberus extends Boss {
     public void move( int step ) {
         if(state == WANDERING){
             HP += Math.min(3, HT - HP);
-            if(HP != HT){
-                sprite.showStatusWithIcon(CharSprite.POSITIVE, "3", FloatingText.HEALING);
-            }
         }
         super.move( step );
     }
@@ -310,15 +315,18 @@ public class DeadDogCerberus extends Boss {
         return delay;
     }
 
+    private boolean isAttack = false;
     @Override
     public void onAttackComplete() {
         super.onAttackComplete();
+
         if(ComboAttackThis){
             GameScene.scene.add(new Delayer(2f){
                 @Override
                 protected void onComplete() {
-                    ComboAttack();
-                    next();
+                    if(!isAttack){
+                        ComboAttack();
+                    }
                 }
             });
 
@@ -326,12 +334,12 @@ public class DeadDogCerberus extends Boss {
     }
 
     public void ComboAttack(){
-        if(enemy != null){
+        if(enemy != null && !isAttack){
             int initialDmg = damageRoll();
             initialDmg = Math.round(initialDmg * AscensionChallenge.statModifier(DeadDogCerberus.this));
             initialDmg = defenseProc(enemy, initialDmg);
-
-            int[] damagePercentages = {75, 60, 45, 30};
+            isAttack = true;
+            int[] damagePercentages = {55, 40, 35, 20};
 
             for (int i = 0; i < (phase == 2 ? 5 : 4); i++) {
                 int percentage = (i < damagePercentages.length) ? damagePercentages[i] : (int) (damageRoll() * 0.05f);
@@ -343,6 +351,7 @@ public class DeadDogCerberus extends Boss {
 
             ComboAttackThis = false;
             ComboAttackCooldown = 15;
+            isAttack = true;
         }
     }
 
@@ -382,9 +391,10 @@ public class DeadDogCerberus extends Boss {
             }
 
             //连环撕咬 四连寄
-            if (ComboAttackCooldown <= 0) {
+            if (ComboAttackCooldown <= 0 && isAttack) {
                 damage = 0;
                 yell(Messages.get(this, "combo_attack_hit"));
+                isAttack = false;
             }
 
             //凝血结晶只在无冷却Buff + 敌人是英雄状态下触发 此为固定技能
@@ -432,6 +442,19 @@ public class DeadDogCerberus extends Boss {
     protected boolean act() {
         if (state == WANDERING){
             leapPos = -1;
+        }
+
+        if(enemy != null){
+            if(level.distance(pos,enemy.pos)<1 && enemy != hero){
+                enemy.die(null);
+            } else {
+                if(!deadAlive){
+                    int oppositeAdjacent = hero.pos + (hero.pos - pos);
+                    Ballistica trajectory = new Ballistica(hero.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
+                    WandOfBlastWave.throwChar(hero, trajectory, 100, true, true, getClass());
+                    deadAlive = true;
+                }
+            }
         }
 
         if(enemy == hero){
@@ -573,12 +596,16 @@ public class DeadDogCerberus extends Boss {
     private static final String MAGICDEFENSE = "magicdefense";
     private static final String PHYSICDEFENSE = "physicdefense";
 
+    private static final String DEADALIVE = "deadalive";
+
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(LAST_ENEMY_POS, lastEnemyPos);
         bundle.put(LEAP_POS, leapPos);
         bundle.put(LEAP_CD, leapCooldown);
+
+        bundle.put(DEADALIVE, deadAlive);
 
         bundle.put(HUNTER_COOLDOWN,HunterReady);
         bundle.put(HUNTER_BOOLEAN, Hunter);
@@ -598,6 +625,8 @@ public class DeadDogCerberus extends Boss {
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
+
+        deadAlive = bundle.getBoolean(DEADALIVE);
 
         skillTime = bundle.getInt(SKILLTIME);
         attackHero = bundle.getBoolean(ATTACKHERO);
@@ -1057,9 +1086,6 @@ public class DeadDogCerberus extends Boss {
         }
     }
 
-
-
-
     public static class SoulDead extends FlavourBuff {
         public static final float DURATION	= 100f;
         {
@@ -1121,10 +1147,17 @@ public class DeadDogCerberus extends Boss {
         super.die( cause );
         Dungeon.level.unseal();
         if(Statistics.bossRushMode){
-            GetBossLoot();
+            GetBossLoot(pos);
         }
         Badges.KILL_DOG();
         GameScene.bossSlain();
-        yell( Messages.get(this, "defeated",hero.name()) );
+
+        Buff.detach(hero, SoulDead.class);
+
+        Statistics.defalult_deaddog = true;
+
+        Typhon typhonn = new Typhon();
+        typhonn.pos = 354;
+        GameScene.add(typhonn);
     }
 }

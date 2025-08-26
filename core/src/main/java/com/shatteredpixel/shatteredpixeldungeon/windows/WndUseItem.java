@@ -81,9 +81,16 @@ public class WndUseItem extends WndInfoItem {
 
 				Image Thanksbutton = Icons.get(Icons.SHPX);
 
+				Image Lengdsbutton = Icons.get(Icons.BADGES);
+
 				if(item instanceof Item.ThanksItem){
 					IconButton Thanks = getThanks(Thanksbutton,item);
 					this.add(Thanks);
+				}
+
+				if(item instanceof Item.LengedsItem){
+					IconButton Lengds = getLengds(Lengdsbutton,item);
+					this.add(Lengds);
 				}
 
 				if (Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)) {
@@ -164,6 +171,24 @@ public class WndUseItem extends WndInfoItem {
 		};
 		Thanks.setRect((float)(super.width - 32), 0.0F, 16.0F, 16.0F);
 		return Thanks;
+	}
+
+	private IconButton getLengds(Image Lengdsbutton,Item item) {
+		IconButton Lengds = new IconButton(Lengdsbutton) {
+			public String hoverText() {
+				return Messages.titleCase(Messages.get(WndGame.class, "lengds"));
+			}
+
+			public void onClick() {
+				ShatteredPixelDungeon.scene().addToFront(
+						new WndTitledMessage(new ItemSprite(item.image()),
+								Messages.titleCase(Messages.get(item,"name")),
+								Messages.get(item,"xdesc"))
+				);
+			}
+		};
+		Lengds.setRect((float)(super.width - 32), 0.0F, 16.0F, 16.0F);
+		return Lengds;
 	}
 
 	private static float layoutButtons(ArrayList<RedButton> buttons, float width, float y){

@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.Holiday;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
@@ -168,45 +169,53 @@ public class GameRules {
 
         if(SPDSettings.isCustomBanner()){
             switch (SPDSettings.CustomBanner_Text()) {
-                case "复活":
+                case "复活": case "RH":
                     banners = Assets.Interfaces.BANNERS_EA;
                     break;
-                case "圣诞":
+                case "圣诞": case "CS":
                     banners = Assets.Interfaces.BANNERS_SD;
                     break;
-                case "元宵":
+                case "端午": case "DBF":
+                    banners = Assets.Interfaces.BANNERS_DW;
+                    break;
+                case "元宵": case "LR":
                     banners = Assets.Interfaces.BANNERS_YX;
                     break;
-                case "生日":
+                case "生日": case "BR":
                     banners = Assets.Interfaces.BANNERS_BD;
                     break;
-                case "清明":
+                case "清明": case "QF":
                     banners = Assets.Interfaces.BANNERS_QM;
                     break;
-                case "万圣":
+                case "万圣": case "HW":
                     banners = Assets.Interfaces.BANNERS_HL;
                     break;
-                case "春节":
+                case "春节": case "SF":
                     banners = Assets.Interfaces.BANNERS_CJ;
                     break;
-                case "夏季":
+                case "夏季": case "SS":
                     banners = Assets.Interfaces.BANNERS_SM;
                     break;
-                case "冬季":
+                case "冬季": case "WR":
                     banners = Assets.Interfaces.BANNERS_WT;
                     break;
-                case "秋季":
+                case "秋季": case "AT":
                     banners = Assets.Interfaces.BANNERS_AT;
                     break;
-                case "春季":
+                case "春季": case "SR":
                     banners = Assets.Interfaces.BANNERS_SR;
+                    break;
+                case "劳动": case "LD":
+                    banners = Assets.Interfaces.BANNERS_LD;
                     break;
                 default:
                     banners = Assets.Interfaces.BANNERS;
                     break;
             }
         } else {
-            if (RegularLevel.holiday == RegularLevel.Holiday.YX) {
+            if(Holiday.getCurrentHoliday()  == Holiday.SHATTEREDPD_BIRTHDAY){
+                banners = Assets.Interfaces.BANNERS_SP;
+            } else if (RegularLevel.holiday == RegularLevel.Holiday.YX) {
                 if (!SPDSettings.ClassUI()) {
                     banners = Assets.Interfaces.BANNERS_YX;
                 } else {
@@ -216,7 +225,13 @@ public class GameRules {
                 banners = Assets.Interfaces.BANNERS_CJ;
             } else if (RegularLevel.holiday == RegularLevel.Holiday.QMJ) {
                 banners = Assets.Interfaces.BANNERS_QM;
-            } else if (month == 2 || month == 3 || month == 4) { // 春季：3, 4, 5月
+            } else if (RegularLevel.holiday == RegularLevel.Holiday.DWJ) {
+               banners = Assets.Interfaces.BANNERS_DW;
+           } else if (RegularLevel.holiday == RegularLevel.Holiday.HWEEN) {
+               banners = Assets.Interfaces.BANNERS_HL;
+            } else  if (4 == month) {
+               banners = Assets.Interfaces.BANNERS_LD;
+            } else if (month == 2 || month == 3 ) { // 春季：3, 4, 5月
                 banners = Assets.Interfaces.BANNERS_SR;
             } else if (month == 5 || month == 6 || month == 7) { // 夏季：6, 7, 8月
                 banners = Assets.Interfaces.BANNERS_SM;
@@ -226,7 +241,6 @@ public class GameRules {
                 banners = Assets.Interfaces.BANNERS_WT;
             }
         }
-
 
         return banners;
     }

@@ -155,6 +155,9 @@ public class Chasm implements Hero.Doom {
 			Dungeon.observe();
 		} else if(Dungeon.depth > 28) {
 			GLog.n(Messages.get(Imp.class,"must_go"));
+			ScrollOfTeleportation.appear(hero, level.entrance());
+			Dungeon.hero.interrupt();
+			Dungeon.observe();
 		} else if(Statistics.DwarfMasterKing && Dungeon.depth == 19 && !Statistics.dwarfKill) {
 			GLog.n(Messages.get(Imp.class,"mustdown"));
 		} else if (Dungeon.hero.isAlive() && Dungeon.branch == 0 && Dungeon.depth!=30|| Statistics.bossRushMode) {

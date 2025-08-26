@@ -396,16 +396,18 @@ public class MagicGirlDead extends Boss {
     public void die(Object src){
         Statistics.bossScores[2] += 5000;
         super.die(src);
-        if(Statistics.bossRushMode){
-            GetBossLoot();
-            Buff.detach( hero, Doom.class );
-        }
+
         Badges.validateBossSlain();
         if (Statistics.qualifiedForBossChallengeBadge){
             Badges.validateBossChallengeCompleted();
         }
         
-        
+        int pos = 175;
+
+        if(Statistics.bossRushMode){
+            GetBossLoot(pos);
+            Buff.detach( hero, Doom.class );
+        }
 
         int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
         for (int i = 0; i < shards; i++){

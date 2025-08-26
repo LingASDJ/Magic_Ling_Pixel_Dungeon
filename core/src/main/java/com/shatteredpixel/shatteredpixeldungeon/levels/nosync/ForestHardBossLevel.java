@@ -11,6 +11,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ENTRANCE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EXIT;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.LOCKED_DOOR;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.PEDESTAL;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SALT_WATER;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
@@ -71,8 +72,7 @@ public class ForestHardBossLevel extends Level {
 
     @Override
     public void playBossMusic(){
-        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
-                () -> Music.playModeBGM(Assets.Music.BGM_BOSSA,true)));
+        Music.playModeBGM(Assets.Music.BGM_BOSSA,true);
     }
 
     {
@@ -110,7 +110,6 @@ public class ForestHardBossLevel extends Level {
         // 检查Mob数量是否为1
         // 检查Mob数量是否为1
         if (mobs.length == 1) {
-            // 检查唯一的Mob是否是Boss
             if (mobs[0] instanceof CrivusStarFruits && !crivusfruitslevel2 && mobs[0].HP == 280) {
                 Statistics.crivusfruitslevel2 = true;
                 mobs[0].HP = 200;
@@ -120,7 +119,6 @@ public class ForestHardBossLevel extends Level {
                         boss.alignment = Char.Alignment.ENEMY;
                         GLog.n(Messages.get(CrivusStarFruits.class, "anargy"));
                         GameScene.flash(0x808c8c8c);
-                        //doYogLasers()
 
                         changeMap(boss_CHASM_Map);
 
@@ -129,14 +127,14 @@ public class ForestHardBossLevel extends Level {
                             for (Item item : heap.items) {
                                 if (!(item instanceof PotionOfPurity.PotionOfPurityLing)) {
                                     item.doPickUp(hero, hero.pos);
-                                    toRemove.add(item);  // 收集待删除的元素
+                                    toRemove.add(item);
                                 } else {
-                                    toRemove.add(item);  // 同样收集待删除的元素
+                                    toRemove.add(item);
                                 }
                             }
-                            // 删除所有收集到的元素
+
                             heap.items.removeAll(toRemove);
-                            heap.destroy();  // 销毁 heap
+                            heap.destroy();
                         }
 
 
@@ -169,12 +167,14 @@ public class ForestHardBossLevel extends Level {
                     }
                 }
             }
+            if (mobsx[0] instanceof CrivusStarFruits && !Statistics.crivusfruitslevel3 && Statistics.crivusfruitslevel2 &&  mobs[0].HP == 160) {
+                Statistics.crivusfruitslevel3 = true;
+                mobs[0].HP = 60;
+            }
         } else {
-            if (mobsx.length == 1) {
-                // 检查唯一的Mob是否是Boss
-                if (mobsx[0] instanceof CrivusStarFruits && !Statistics.crivusfruitslevel3 && Statistics.crivusfruitslevel2 &&  mobs[0].HP == 160) {
-                    Statistics.crivusfruitslevel3 = true;
-                    mobs[0].HP = 60;
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if (mob.alignment == Char.Alignment.ALLY) {
+                    mob.die(null);
                 }
             }
         }
@@ -223,7 +223,7 @@ public class ForestHardBossLevel extends Level {
         }
 
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
-        if (map[getBossDoor] == WATER && isTrue ) {
+        if ((map[getBossDoor] == EMPTY_SP ||map[getBossDoor] == WATER || map[getBossDoor] == SALT_WATER) && isTrue) {
             seal();
         }
     }

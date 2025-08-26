@@ -23,10 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon;
 
 public class Assets {
 
-
-
-
-
 	public static class Effects {
 		public static final String EFFECTS      = "effects/effects.png";
 		public static final String FIREBALL     = "effects/fireball.png";
@@ -34,6 +30,10 @@ public class Assets {
 		public static final String SPELL_ICONS  = "effects/spell_icons.png";
 		public static final String SHAKCO       = "effects/shockwave.png";
 		public static final String TEXT_ICONS 	= "effects/text_icons.png";
+	}
+
+	public static class Map_Luas {
+		public static final String LockedOneRoom_MapLua      = "lua/iron_key1.lua";
 	}
 
 	public static class Environment {
@@ -44,6 +44,7 @@ public class Assets {
 		public static final String GALAXY_TILED  =  "environment/yog/tiles_bubble.png";
 		public static final String GALAXY_WATER  = "environment/yog/starry.png";
 
+		public static final String GALAXY_BACKGROUND  = "environment/custom_tiles/galaxy_background.png";
 
 		public static final String TERRAIN_FEATURES = "environment/terrain_features.png";
 
@@ -72,6 +73,8 @@ public class Assets {
 		public static final String ICE_PO  = "environment/custom_tiles/ice.png";
 		public static final String ICE_POX  = "environment/custom_tiles/ice_above.png";
 
+		public static final String GHOST_HOUSE  = "environment/custom_tiles/ghost_house.png";
+
 		public static final String PEACH_PO  =  "environment/custom_tiles/peach_forest_above.png";
 
 		public static final String PEACH_BOSS  = "environment/peach/peach_boss.png";
@@ -85,9 +88,16 @@ public class Assets {
 		public static final String TILES_COLDCHEST  = "environment/tiles_coldchest.png";
 		public static final String TILES_FIRE  = "environment/tiles_fire.png";
 		public static final String Dreamcatcher  = "environment/custom_tiles/blue_quest.png";
+
+		public static final String BoilerQuest  = "environment/custom_tiles/candlestick_room.png";
+
+		public static final String Magic_Marker  = "environment/custom_tiles/teleportation_circle.png";
+
 		public static final String FireQuest  = "environment/custom_tiles/fire_quest.png";
 		public static final String OilWell  = "environment/custom_tiles/oil_well.png";
 		public static final String TILES_HOLLOW  = "environment/tiles_halloween.png";
+
+		public static final String TILES_GHOST  = "environment/tiles_ghost.png";
 
 		public static final String TILES_THEATRE  = "environment/custom_tiles/theatre.png";
 
@@ -116,6 +126,8 @@ public class Assets {
 		public static final String WATER_ANCIENT  = "environment/water5.png";
 
 		public static final String WATER_HOLLOW  = "environment/water7.png";
+
+		public static final String WATER_GHOST  = "environment/water8.png";
 
 		public static final String WEAK_FLOOR       = "environment/custom_tiles/weak_floor.png";
 		public static final String SEWER_BOSS       = "environment/custom_tiles/sewer_boss.png";
@@ -177,6 +189,8 @@ public class Assets {
 		public static final String Cerdog_Title  = "interfaces/bosslogo/cerberus-title.png";
 		public static final String Cerdog_Clear  = "interfaces/bosslogo/cerberus-clear.png";
 
+		public static final String Morpheus_Title  = "interfaces/bosslogo/Morpheus-title.png";
+		public static final String Morpheus_Clear  = "interfaces/bosslogo/Morpheus-clear.png";
 
 		public static final String General_Title  = "interfaces/bosslogo/general-title.png";
 		public static final String General_Clear  = "interfaces/bosslogo/general-clear.png";
@@ -207,13 +221,14 @@ public class Assets {
 		public static final String BANNERS_BD  = "interfaces/Banners/banners_MLBD.png";
 		public static final String BANNERS_SD  = "interfaces/Banners/banners_sd.png";
 		public static final String BANNERS_QM  = "interfaces/Banners/banners_qm.png";
+		public static final String BANNERS_DW  = "interfaces/Banners/banners_dw.png";
 		public static final String BANNERS_SR  = "interfaces/Banners/banners_spr.png";
 		public static final String BANNERS_SM  = "interfaces/Banners/banners_sum.png";
 		public static final String BANNERS_WT  = "interfaces/Banners/banners_win.png";
 
 		public static final String BANNERS_YX  = "interfaces/Banners/banners_yx.png";
-
-
+		public static final String BANNERS_SP  = "interfaces/Banners/banners_shattered.png";
+		public static final String BANNERS_LD  = "interfaces/Banners/banners_labor.png";
 		public static final String MENUTITLE  = "interfaces/menutitle.png";
 
 
@@ -356,7 +371,7 @@ public class Assets {
 
 		public static final String SKBJY		= "music/Boss-Saka.ogg";
 
-		public static final String TOWN 		= "music/Town.ogg";
+		public static final String TOWN 		= "music/town.ogg";
 		public static final String BGM_BOSSA 	= "music/Boss1.ogg";
 		public static final String BGM_BOSSA3 	= "music/Boss1.ogg";
 		public static final String BGM_YOU 		= "music/boss/you.ogg";
@@ -375,7 +390,7 @@ public class Assets {
 
 		public static final String FL_CITY 		= "music/forestflower.ogg";
 		public static final String BOSSDOG 		= "music/boss/dogboss.ogg";
-
+		public static final String MORP_BOSS 	= "music/hollow/morpheus.ogg";
 	}
 
 	public static class Sounds {
@@ -468,7 +483,7 @@ public class Assets {
 
 	public static class Splashes {
 		public static final String WARRIOR  = "splashes/warrior.jpg";
-		public static final String MAGE     = "splashes/mage.jpg";
+		public static final String MLPDBR     = "splashes/mlpd.png";
 		public static final String ROGUE    = "splashes/rogue.jpg";
 		public static final String HUNTRESS = "splashes/huntress.jpg";
 		public static final String GDX = "splashes/gdx.png";
@@ -477,7 +492,15 @@ public class Assets {
 		public static final String LINPX = "splashes/sx.png";
 		public static final String DUELIST  = "splashes/duelist.jpg";
 
-		public static final String MOSRDX = "splashes/morpheus_portraits.png";
+		public static final String MOSRDX_0 = "splashes/hollow/Morphs/morpheus_portraits(0).png";
+		public static final String MOSRDX_1 = "splashes/hollow/Morphs/morpheus_portraits(1).png";
+		public static final String MOSRDX_2 = "splashes/hollow/Morphs/morpheus_portraits(2).png";
+		public static final String MOSRDX_3 = "splashes/hollow/Morphs/morpheus_portraits(3).png";
+		public static final String MOSRDX_4 = "splashes/hollow/Morphs/morpheus_portraits(4).png";
+		public static final String MOSRDX_5 = "splashes/hollow/Morphs/morpheus_portraits(5).png";
+		public static final String MOSRDX_6 = "splashes/hollow/Morphs/morpheus_portraits(6).png";
+		public static final String MOSRDX_7 = "splashes/hollow/Morphs/morpheus_portraits(7).png";
+		public static final String MOSRDX_8 = "splashes/hollow/Morphs/morpheus_portraits(8).png";
 
 
 
@@ -622,6 +645,9 @@ public class Assets {
 		public static final String THREEBUG = "sprites/ancity/threeleafbug.png";
 
 		//HOLLOW
+
+		public static final String GHOST_MINI	= "sprites/hollow/minigame/ghosts.png";
+
 		public static final String APWHEEL = "sprites/hollow/apprentice_witch.png";
 
 		public static final String BTSLIMH = "sprites/hollow/butcher.png";
@@ -633,6 +659,8 @@ public class Assets {
 		public static final String CSBR = "sprites/hollow/Cerberus.png";
 		public static final String NCSBR = "sprites/hollow/New_Cerberus.png";
 
+		public static final String SCSR = "sprites/hollow/Cerberus_sleep.png";
+
 		public static final String DGS = "sprites/boss/dwarf_general.png";
 
 		public static final String DFL = "sprites/boss/army_flag.png";
@@ -642,6 +670,20 @@ public class Assets {
 		public static final String DER = "sprites/boss/DiedElement.png";
 		public static final String TYPHON = "sprites/hollow/typhon.png";
 		public static final String MPHON = "sprites/hollow/morpheus.png";
+
+		public static final String MINDCODE 	= "sprites/hollow/messy_code.png";
+
+		public static final String TowerGods = "sprites/hollow/tower_gods.png";
+		public static final String TowerTime = "sprites/hollow/tower_time.png";
+		public static final String TowerMind = "sprites/hollow/tower_mind.png";
+		public static final String TowerMachine = "sprites/hollow/tower_machine.png";
+
+		public static final String SHUBNIGGURATH = "sprites/hollow/shub_niggurath.png";
+		public static final String NYARLATHOTEP = "sprites/hollow/nyarlathotep.png";
+
+		public static final String YOG_SOUL = "sprites/hollow/yogsoul.png";
+
+		public static final String MYSTIC_CORE = "sprites/hollow/mystic_core.png";
 
 		public static final String BLEED_SENTRY= "sprites/hollow/bleed_star.png";
 
@@ -733,9 +775,9 @@ public class Assets {
 		public static final String HEALRIGH	= "sprites/healfire.png";
 
 		public static final String REDSWARM				= "sprites/RedSearm.png";
-		public static final String REN					= "Npcs/ren.png";
-		public static final String DragonBlueGirl		= "Npcs/smallblue.png";
-		public static final String DKGirl				= "Npcs/DKGirl.png";
+		public static final String REN					= "sprites/npc/ren.png";
+		public static final String DragonBlueGirl		= "sprites/npc/smallblue.png";
+		public static final String DKGirl				= "sprites/npc/DKGirl.png";
 
 		public static final String LanFire				= "sprites/npc/lanfire.png";
 		public static final String LanFire_CJ			= "sprites/npc/lanfire_cj.png";
@@ -783,6 +825,8 @@ public class Assets {
 		public static final String FLOWER_SLIME		= "sprites/flowers_slime.png";
 
 		public static final String GREEN		= "sprites/greenslting.png";
+
+		public static final String SKY_DEAD		= "sprites/skydead.png";
 
 		public static final String GREEN_KING		= "sprites/greenslting_king.png";
 
@@ -845,7 +889,7 @@ public class Assets {
 		public static final String GHOST	= "sprites/ghost.png";
 		public static final String PINKGHOST	= "sprites/pinkghost.png";
 		public static final String MAKER	= "sprites/wandmaker.png";
-		public static final String NYZD	= "Npcs/nyz.png";
+		public static final String NYZD	= "sprites/npc/nyz.png";
 		public static final String TROLL	= "sprites/blacksmith.png";
 		public static final String IMP		= "sprites/demon.png";
 		public static final String RATKING	= "sprites/ratking.png";
@@ -881,6 +925,10 @@ public class Assets {
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
 
 		public static final String YOW_SENTRY= "sprites/boss/yellow_star.png";
+
+		public static final String BUE_SENTRY= "sprites/npc/blue_star.png";
+
+		public static final String CANDLESTICK = "sprites/npc/candlestick.png";
 
 		public static final String SWORDLING= "Boss/swordling.png";
 		public static final String CRYSTAL_WISP= "sprites/crystal_wisp.png";

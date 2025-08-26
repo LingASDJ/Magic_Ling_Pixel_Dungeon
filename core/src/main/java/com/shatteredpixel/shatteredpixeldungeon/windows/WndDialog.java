@@ -2,8 +2,15 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRong;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Choice;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.ChoiceButton;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Script;
@@ -68,6 +75,7 @@ public class WndDialog extends Window {
 
     private float timeLeft = 0.2f;
     private int times = 0;
+
 
     public WndDialog(Plot plot,Boolean regained) {
 

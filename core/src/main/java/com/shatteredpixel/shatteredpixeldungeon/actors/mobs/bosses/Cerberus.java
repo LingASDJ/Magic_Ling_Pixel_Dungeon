@@ -1,7 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.CerDogBossLevel.FireWallDied;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.hollow.CerDogBossLevel.FireWallDied;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -122,7 +122,7 @@ public class Cerberus extends Boss {
             }
         }
 
-        GetBossLoot();
+        GetBossLoot(pos);
 
         Badges.KILL_DOG();
         GameScene.bossSlain();

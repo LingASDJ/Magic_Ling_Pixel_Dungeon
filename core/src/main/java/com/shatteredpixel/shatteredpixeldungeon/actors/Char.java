@@ -105,6 +105,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerGods;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -189,6 +190,13 @@ public abstract class Char extends Actor {
 		NEUTRAL,
 		ALLY
 	}
+	public enum DamageTyPe{
+		PHYSICAL,
+		MAGIC,
+		REAL,
+		Element
+	}
+
 	public Alignment alignment;
 	public int venodamage = 0;
 
@@ -385,10 +393,14 @@ public abstract class Char extends Actor {
 	}
 
 	public boolean attack( Char enemy ){
-		return attack(enemy, 1f, 0f, 1f);
+		return attack(enemy, 1f, 0f, 1f , DamageTyPe.PHYSICAL);
 	}
 
-	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
+	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti){
+		return attack(enemy, dmgMulti, dmgBonus, accMulti , DamageTyPe.PHYSICAL);
+	}
+
+	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti , DamageTyPe type) {
 
 		boolean kill = false;
 
@@ -480,7 +492,9 @@ public abstract class Char extends Actor {
 				dmg *= 0.67f;
 			}
 
-			int effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
+			int effectiveDamage = Math.round(dmg);
+
+			if(type == DamageTyPe.PHYSICAL )effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
 			//do not trigger on-hit logic if defenseProc returned a negative value
 			if (effectiveDamage >= 0) {
 				effectiveDamage = Math.max(effectiveDamage - dr, 0);
@@ -509,7 +523,8 @@ public abstract class Char extends Actor {
 				return true;
 			}
 
-			enemy.damage( effectiveDamage, this );
+			enemy.damage( effectiveDamage, this ,type);
+			//enemy.damage(effectiveDamage,this);
 
 			if(kill){
 				enemy.HP = 0;
@@ -525,7 +540,7 @@ public abstract class Char extends Actor {
 					enemy.die(this);
 				} else {
 					//helps with triggering any on-damage effects that need to activate
-					enemy.damage(-1, this);
+					enemy.damage(-1, this,type);
 					DeathMark.processFearTheReaper(enemy);
 				}
 				if (enemy.sprite != null) {
@@ -543,7 +558,7 @@ public abstract class Char extends Actor {
 						enemy.die(this);
 					} else {
 						//helps with triggering any on-damage effects that need to activate
-						enemy.damage(-1, this);
+						enemy.damage(-1, this,type);
 						DeathMark.processFearTheReaper(enemy);
 					}
 					if (enemy.sprite != null) {
@@ -584,8 +599,8 @@ public abstract class Char extends Actor {
 			enemy.sprite.showStatus( CharSprite.NEUTRAL, enemy.defenseVerb() );
 
 			if(enemy instanceof Hero && ((Hero) enemy).belongings.getItem(KnightStabbingSword.class) !=null){
-				if(Math.random()<=0.25){
-					enemy.attack(this,1,0,1);
+				if(Random.Float()<=0.25f){
+					enemy.attack(this,1,0,1 ,DamageTyPe.PHYSICAL);
 					GLog.n(Messages.get(KnightStabbingSword.class,"attack"));
 				}
 			}
@@ -761,10 +776,17 @@ public abstract class Char extends Actor {
 	public float speed() {
 		float speed = baseSpeed;
 
-		if ( buff( DeadDogCerberus.SoulDead.class ) != null) speed = 1f;
+
 
 		//创世神
 		if ( buff( Invulnerability.GodDied.class ) != null ) speed *= 2f;
+
+		ScaryBuff scaryBuff = Dungeon.hero.buff(ScaryBuff.class);
+		if(scaryBuff != null){
+			if(scaryBuff.Scary>70){
+				speed /= 1.2f;
+			}
+		}
 
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
 			if(buff instanceof ChampionEnemy.Small){
@@ -806,7 +828,11 @@ public abstract class Char extends Actor {
 		return cachedShield;
 	}
 
-	public void damage( int dmg, Object src ) {
+	public void damage( int dmg, Object src){
+		damage(dmg,src,DamageTyPe.MAGIC);
+	}
+
+	public void damage( int dmg, Object src, DamageTyPe type ) {
 
 		if (!isAlive() || dmg < 0) {
 			return;
@@ -861,6 +887,12 @@ public abstract class Char extends Actor {
 
 		if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null){
 			dmg *= 1.25f;
+		}
+
+		if(buff(TowerGods.Double_AttackUP_Palf.class) != null){
+			dmg *= 2;
+		} else if(buff(TowerGods.AttackUP_Palf.class) != null){
+			dmg *= 1.5f;
 		}
 
 		for (ChampionHero buff : buffs(ChampionHero.class)){

@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.DWJ;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -78,8 +77,33 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.Elixir;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RustedGoldCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TheGriefOfSpeechless;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
@@ -209,7 +233,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WhiteBlastSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WitheWoodSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ClearSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.GoldLongGun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.KingAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
@@ -235,6 +261,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSt
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Trident;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
@@ -601,7 +628,8 @@ public class Generator {
 					KingAxe.class,
 					RiceSword.class,
 					Gauntlet.class,
-
+					ClearSword.class,
+					ForestBow.class,
 					//超模武器
 					IceSan.class,
 
@@ -611,7 +639,10 @@ public class Generator {
 			PaswordBadges.loadGlobal();
 			List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-			WEP_T5.probs = new float[]{6, 3, 3, 3, 3, 3, 3, 4, SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName()) ? 1.5f : 0, 2, SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName()) ? 1f : 0, 0, SPDSettings.KillDwarf() ? 1.2f : 0, 4, passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD) ? 1.4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName()) ? 1.4f : 0, Statistics.RandMode ? 5 : 0, 5};
+			WEP_T5.probs = new float[]{6, 3, 3, 3, 3, 3, 3, 4, SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName()) ? 1.5f : 0, 2, SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName()) ? 1f : 0, 0, SPDSettings.KillDwarf() ? 1.2f : 0, 4, passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD) ? 1.4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName()) ? 1.4f : 0,
+					SPDSettings.isItemUnlock(ClearSword.class.getSimpleName()) ? 1.55f : 0,
+					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 1.65f : 0,
+					Statistics.RandMode ? 5 : 0, 5};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
@@ -677,7 +708,7 @@ public class Generator {
 			};
 			MIS_T5.probs = new float[]{6, 5, 4};
 
-			int isDWJ = holiday == DWJ ? 3 : 0;
+			int isDWJ = holiday == RegularLevel.Holiday.DWJ ? 3 : 0;
 
 			FOOD.classes = new Class<?>[]{
 					Food.class,
@@ -753,9 +784,37 @@ public class Generator {
 			TRINKET.probs = TRINKET.defaultProbs.clone();
 
 			PROP.classes = new Class<?>[]{
-					StarSachet.class
+					ArmorScalesOfBzmdr.class,
+					BlockingDrug.class,
+					BrokenBone.class,
+					CloakFragmentsOfBzmdr.class,
+					ConfusedMieMieTalisman.class,
+					DeliciousRecipe.class,
+					EmotionalAggregation.class,
+					EmotionalAggregationB.class,
+					HeartOfCrystalFractal.class,
+					LuckyGlove.class,
+					NewStem.class,
+					NoteOfBzmdr.class,
+					PortableWhetstone.class,
+					RapidEarthRoot.class,
+					RustedGoldCoin.class,
+					StarSachet.class,
+					WenStudyingPaperOne.class,
+					WenStudyingPaperTwo.class,
+					YanStudyingPaperOne.class,
+					YanStudyingPaperTwo.class,
+					BottleWraith.class,
+					//Active
+					TerrorDoll.class,
+					TerrorDollB.class,
+					KnightStabbingSword.class,
+					Monocular.class,
+					TheGriefOfSpeechless.class
 			};
-			PROP.defaultProbs = new float[]{1};
+			PROP.defaultProbs = new float[]{
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1
+			};
 			PROP.probs = PROP.defaultProbs.clone();
 
 			for (Category cat : Category.values()){
@@ -1023,6 +1082,32 @@ public class Generator {
 
 		cat.probs[i]--;
 		return (Artifact) Reflection.newInstance((Class<? extends Artifact>) cat.classes[i]).random();
+
+	}
+
+	public static Prop randomProp() {
+
+		Category cat = Category.PROP;
+
+		if (cat.defaultProbs != null && cat.seed != null){
+			Random.pushGenerator(cat.seed);
+			for (int i = 0; i < cat.dropped; i++) Random.Long();
+		}
+
+		int i = Random.chances( cat.probs );
+
+		if (cat.defaultProbs != null && cat.seed != null){
+			Random.popGenerator();
+			cat.dropped++;
+		}
+
+		//if no artifacts are left, return null
+		if (i == -1){
+			return null;
+		}
+
+		cat.probs[i]--;
+		return (Prop) Reflection.newInstance((Class<? extends Prop>) cat.classes[i]).random();
 
 	}
 

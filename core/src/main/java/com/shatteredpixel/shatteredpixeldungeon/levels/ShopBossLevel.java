@@ -21,13 +21,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class ShopBossLevel extends Level {
 
@@ -60,13 +57,15 @@ public class ShopBossLevel extends Level {
 
     @Override
     public void playLevelMusic(){
+        if(Statistics.bossRushMode){
+            Music.playModeBGM(Assets.Music.BGM_5, true);
+        }
         Music.playModeBGM(Assets.Music.BGM_4,true);
     }
 
     @Override
     public void playBossMusic(){
-        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
-                () -> Music.playModeBGM(Assets.Music.SHOP,true)));
+        Music.playModeBGM(Assets.Music.SHOP,true);
     }
 
     @Override
@@ -165,38 +164,8 @@ public class ShopBossLevel extends Level {
         }
     }
 
-    private Mob getKing(){
-        for (Mob m : mobs){
-            if (m instanceof FireMagicDied) return m;
-        }
-        return null;
-    }
     //四个基座
     private static final int[] pedestals = new int[4];
-    public int getSummoningPos(){
-        Mob king = getKing();
-        //fixed
-        HashSet<FireMagicDied.Summoning> summons = king.buffs(FireMagicDied.Summoning.class);
-
-        if (summons.size() >= 20) {
-            return -1;
-        }
-
-        ArrayList<Integer> positions = new ArrayList<>();
-        for (int pedestal : pedestals) {
-            boolean clear = true;
-            for (FireMagicDied.Summoning s : summons) {
-                if (s.getPos() == pedestal) {
-                    clear = false;
-                    break;
-                }
-            }
-            if (clear) {
-                positions.add(pedestal);
-            }
-        }
-        return -1;
-    }
 
     public static final int thronex;
 

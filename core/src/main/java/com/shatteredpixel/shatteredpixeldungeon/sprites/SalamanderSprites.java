@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 
 public class SalamanderSprites extends MobSprite {
 
@@ -45,12 +44,7 @@ public class SalamanderSprites extends MobSprite {
                     MagicMissile.SHAMAN_BLUE,
                     this,
                     cell,
-                    new Callback() {
-                        @Override
-                        public void call() {
-                            ((Salamander)ch).onZapComplete();
-                        }
-                    } );
+                    () -> ((Salamander)ch).onZapComplete());
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
             turnTo( ch.pos , cell );
             play( cast );

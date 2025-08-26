@@ -79,12 +79,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.RatTail;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.RedCrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SakaMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Switch;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.BoneSoup;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.ZakoSoup;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
@@ -164,6 +167,7 @@ public enum Catalog {
 	EXOTIC_POTIONS,
 	EXOTIC_SCROLLS,
 	BOMBS,
+	PROPS,
 	TIPPED_DARTS,
 	BREWS_ELIXIRS,
 	SPELLS,
@@ -237,6 +241,8 @@ public enum Catalog {
 
 		TRINKETS.addItems(Generator.Category.TRINKET.classes);
 
+		PROPS.addItems(Generator.Category.PROP.classes);
+
 		BOOKS.addItems(MagicGirlBooks.class, BrokenBooks.class, GrassKingBooks.class, IceCityBooks.class,
 				NoKingMobBooks.class, HollowCityBook.class, DeepBloodBooks.class, DimandBook.class,
 				BzmdrBooks.class, DeYiZiBooks.class, MoneyMoreBooks.class, PinkRandomBooks.class,
@@ -260,6 +266,9 @@ public enum Catalog {
 				Blandfruit.class, PhantomMeat.class, MeatPie.class,
 				Switch.class, Cake.class, LightFood.class, RedCrab.class,
 				SakaMeat.class, CrivusFruitsFood.class,  SmallRation.BlackMoon.class,
+
+				//FTJ
+				BoneSoup.class, RatTail.class, ZakoSoup.class,
 
 				//DWJ
 				RiceDumplings.RiceDumplingsBottle.class,
@@ -319,6 +328,7 @@ public enum Catalog {
 		equipmentCatalogs.add(WANDS);
 		equipmentCatalogs.add(RINGS);
 		equipmentCatalogs.add(ARTIFACTS);
+		equipmentCatalogs.add(PROPS);
 		equipmentCatalogs.add(TRINKETS);
 		equipmentCatalogs.add(BOOKS);
 		equipmentCatalogs.add(MISC_EQUIPMENT);

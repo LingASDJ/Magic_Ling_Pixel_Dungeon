@@ -57,7 +57,7 @@ public class MineSmallRoom extends CaveRoom {
 	public void paint(Level level) {
 		super.paint(level);
 
-		if(RegularLevel.altHoliday == RegularLevel.AltHoliday.DWJ_2024){
+		if(RegularLevel.holiday == RegularLevel.Holiday.DWJ){
 			for (int i = 0; i < width()*height()/3; i ++){
 				Point r = random(1);
 				if (level.map[level.pointToCell(r)] != Terrain.BARRICADE) {

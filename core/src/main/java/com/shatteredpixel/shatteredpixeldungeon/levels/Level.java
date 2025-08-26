@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
@@ -44,7 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ElectricalSmokeBlob
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Web;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.alter.AltWellWater;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -77,7 +76,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ColdSnowParticles;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WindParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -121,7 +119,6 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -151,6 +148,9 @@ import java.util.HashSet;
 public abstract class Level implements Bundlable {
 	public String diedname;
 	public Item sacrificialFireItem = null;
+
+	public boolean extraGlass = true;
+
     //静态地图改变的轮子调用
 	public void changeMap(int[] map){
 		//构建全新地图，通过MAPCSV构建，并清理当前地块
@@ -365,11 +365,12 @@ public abstract class Level implements Bundlable {
 			boolean moreRoomActivated = Dungeon.isChallenged(MOREROOM);
 
 			if (depth > 1) {
-					if (depth == 4 && moreRoomActivated) {
+					if ((depth == 9 || depth == 13 || depth == 17 || depth == 23) && moreRoomActivated){
+						feeling = Feeling.BIGROOMS;
+					} else if ((depth == 4  || depth == 8) && moreRoomActivated) {
 						feeling = Feeling.DIEDROOM;
 					} else {
-						switch (Random.Int(14)) {
-							default:
+						switch ( moreRoomActivated ? Random.Int(28) : Random.Int(14)) {
 							case 0:
 								feeling = Feeling.CHASM;
 								break;
@@ -420,7 +421,7 @@ public abstract class Level implements Bundlable {
 							case 12:
 								feeling =  moreRoomActivated ? Feeling.SKYCITY : Feeling.NONE;
 								break;
-							case 13:
+							default:
 								//if-else statements are fine here as only one chance can be above 0 at a time
 								if (Random.Float() < MossyClump.overrideNormalLevelChance()) {
 									feeling = MossyClump.getNextFeeling();
@@ -692,12 +693,25 @@ public abstract class Level implements Bundlable {
 		ChampionEnemy.rollForChampion(m);
 		ChampionEnemy.rollForStateLing(m);
 
-		if(Dungeon.isChallenged(CS)){
-			m.state = m.WANDERING;
-		}
+		if(m != null){
+			if(Dungeon.isChallenged(CS)){
+				m.state = m.WANDERING;
+			}
 
-		if(Dungeon.isChallenged(CS) && depth>2 && depth<25 && Random.Float()<0.25f){
-			Buff.affect(m, ChampionEnemy.AloneCity.class);
+			if(Dungeon.isChallenged(CS) && depth>2 && depth<35 && Random.Float()<0.25f){
+				Buff.affect(m, ChampionEnemy.AloneCity.class);
+			}
+
+			//古堡灵魂碎片怪生成机制
+			if(RegularLevel.holiday == RegularLevel.Holiday.HWEEN){
+				if(Dungeon.LimitSoulLevel() && !Statistics.soulsSpawn){
+					Buff.affect(m, ChampionEnemy.DeadSoulCrack.class);
+					Statistics.soulsSpawn = true;
+				} else if(depth>3 && depth<25 && Random.Int(100)<35 && !Statistics.soulsSpawn){
+					Buff.affect(m, ChampionEnemy.DeadSoulCrack.class);
+					Statistics.soulsSpawn = true;
+				}
+			}
 		}
 		return m;
 	}
@@ -829,32 +843,6 @@ public abstract class Level implements Bundlable {
 						talkToHero();
 					}
 					return false;
-				} else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
-					&& depth == 25
-					//ascension challenge only works on runs started on v1.3+
-					&& Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3
-					&& hero.belongings.getItem(Amulet.class) != null
-					&& hero.buff(AscensionChallenge.class) == null) {
-
-					Game.runOnRenderThread(new Callback() {
-						@Override
-						public void call() {
-							GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.AMULET),
-									Messages.get(Amulet.class, "ascent_title"),
-									Messages.get(Amulet.class, "ascent_desc"),
-									Messages.get(Amulet.class, "ascent_yes"),
-									Messages.get(Amulet.class, "ascent_no")) {
-								@Override
-								protected void onSelect(int index) {
-									if (index == 0) {
-										Buff.affect(hero, AscensionChallenge.class);
-										Statistics.highestAscent = 25;
-									}
-								}
-							});
-						}
-					});
-					ready();
 				}
 			}
 			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
@@ -911,7 +899,7 @@ public abstract class Level implements Bundlable {
 	}
 
 	public void unseal(){
-		if (locked && branch == 0) {
+		if (locked) {
 			locked = false;
 			if (hero.buff(LockedFloor.class) != null){
 				hero.buff(LockedFloor.class).detach();
@@ -1579,12 +1567,16 @@ public abstract class Level implements Bundlable {
 		case Terrain.FURROWED_GRASS:
 			HighGrass.trample( this, cell);
 			break;
-			
-		case Terrain.WELL:
-			WellWater.affectCell( cell );
+
+			case Terrain.WELL:
+				WellWater.affectCell(cell);
 			break;
-			
-		case Terrain.DOOR:
+
+			case Terrain.ALTWELL:
+				AltWellWater.affectCell(cell);
+				break;
+
+			case Terrain.DOOR:
 			Door.enter( cell );
 			break;
 		}
@@ -1981,7 +1973,7 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "locked_exit_name");
 			case Terrain.UNLOCKED_EXIT:
 				return Messages.get(Level.class, "unlocked_exit_name");
-			case Terrain.WELL:
+			case Terrain.WELL:case Terrain.ALTWELL:
 				return Messages.get(Level.class, "well_name");
 			case Terrain.EMPTY_WELL:
 				return Messages.get(Level.class, "empty_well_name");

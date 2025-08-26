@@ -30,11 +30,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.JAmulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.HollowCityBook;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
@@ -268,6 +271,12 @@ public class LastLevel extends Level {
 				visited[i] = true;
 			}
 		}
+
+		GLog.n(String.valueOf(bundle.getInt("version")));
+		if (Game.versionCode > bundle.getInt("version")){
+			drop( new HollowCityBook(), 248 );
+		}
+
 	}
 
 	public static class CustomFloor extends CustomTilemap {

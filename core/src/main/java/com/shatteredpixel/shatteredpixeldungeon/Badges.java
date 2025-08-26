@@ -1150,10 +1150,10 @@ public class Badges {
 		KILL_FIRE_DRAGON(139),
 
 		KILL_DOG					( 152),
-		KILL_MORES					( 153),
-		MASTER						( 154),
-		RED_DRAMATICUL				( 155),
-		GOD_PLEASE					( 156),
+		KILL_MORES					( ),
+		MASTER						( ),
+		RED_DRAMATICUL				( ),
+		GOD_PLEASE					( ),
 		HOLLOWCITY					( 157),
 		WOC_MONEY_GIRL				( 158),
 

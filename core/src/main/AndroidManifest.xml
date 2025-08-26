@@ -31,6 +31,8 @@
         android:xlargeScreens="true" />
 
     <application
+        android:appCategory="game"
+        android:isGame="true"
         android:allowBackup="true"
         android:backupAgent=".AndroidBackupHandler"
         android:fullBackupOnly="true"
@@ -41,7 +43,7 @@
         <activity
             android:name=".AndroidLauncher"
             android:exported="true"
-            android:label="${appName}">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -58,7 +60,6 @@
             android:name=".AndroidMissingNativesHandler"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
             android:exported="true"
-            android:label="${appName}"
             android:screenOrientation="nosensor"
             tools:ignore="DiscouragedApi">
             <intent-filter>

@@ -80,18 +80,21 @@ public class RiceRat extends Mob implements Callback {
     private void zap() {
         spend( TIME_TO_ZAP );
 
-        if (hit( this, enemy, true )) {
+        if(enemy != null && enemy.isAlive()){
+            if (hit( this, enemy, true )) {
 
-            int dmg = Random.NormalIntRange( 10, 12 );
-            enemy.damage( dmg, new ColdMagicRat.DarkBolt() );
+                int dmg = Random.NormalIntRange( 10, 12 );
+                enemy.damage( dmg, new ColdMagicRat.DarkBolt() );
 
-            if (enemy == Dungeon.hero && !enemy.isAlive()) {
-                Dungeon.fail( getClass() );
-                GLog.n( Messages.get(this, "frost_kill") );
+                if (enemy == Dungeon.hero && !enemy.isAlive()) {
+                    Dungeon.fail( getClass() );
+                    GLog.n( Messages.get(this, "frost_kill") );
+                }
+            } else {
+                enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
             }
-        } else {
-            enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
         }
+
     }
 
     public void onZapComplete() {

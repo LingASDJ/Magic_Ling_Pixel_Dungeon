@@ -113,7 +113,7 @@ public class MoloHR extends Boss {
         }
 
         if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-            GetBossLoot();
+            GetBossLoot(pos);
         }
 
         Statistics.bossScores[2] += 4000;

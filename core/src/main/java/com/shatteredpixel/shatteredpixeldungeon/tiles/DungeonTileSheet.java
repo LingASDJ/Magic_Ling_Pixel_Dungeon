@@ -70,6 +70,8 @@ public class DungeonTileSheet {
 	public static final int EMPTY_WELL      = GROUND +19;
 	public static final int PEDESTAL        = GROUND +20;
 
+	public static final int ALTWELL        = GROUND + 18;
+
 	public static final int ENTRANCE_SP     = GROUND +22;
 
 	public static final int CHASM           =                               xy(9, 2);   //8 slots
@@ -93,6 +95,7 @@ public class DungeonTileSheet {
 		chasmStitcheable.put( Terrain.CUSTOM_DECO,  CHASM_FLOOR );
 		chasmStitcheable.put( Terrain.EMPTY_WELL,   CHASM_FLOOR );
 		chasmStitcheable.put( Terrain.WELL,         CHASM_FLOOR );
+		chasmStitcheable.put( Terrain.ALTWELL,      CHASM_FLOOR );
 		chasmStitcheable.put( Terrain.STATUE,       CHASM_FLOOR );
 		chasmStitcheable.put( Terrain.SECRET_TRAP,  CHASM_FLOOR );
 		chasmStitcheable.put( Terrain.INACTIVE_TRAP,CHASM_FLOOR );
@@ -139,7 +142,7 @@ public class DungeonTileSheet {
 			Terrain.ENTRANCE, Terrain.EXIT, Terrain.EMBERS,
 			Terrain.BARRICADE, Terrain.HIGH_GRASS, Terrain.FURROWED_GRASS, Terrain.SECRET_TRAP,
 			Terrain.TRAP, Terrain.INACTIVE_TRAP, Terrain.EMPTY_DECO,
-			Terrain.CUSTOM_DECO, Terrain.WELL, Terrain.STATUE, Terrain.ALCHEMY,
+			Terrain.CUSTOM_DECO, Terrain.WELL, Terrain.STATUE, Terrain.ALCHEMY,Terrain.ALTWELL,
 			Terrain.CUSTOM_DECO_EMPTY, Terrain.MINE_CRYSTAL, Terrain.MINE_BOULDER,
 			Terrain.DOOR, Terrain.OPEN_DOOR, Terrain.LOCKED_DOOR, Terrain.CRYSTAL_DOOR,Terrain.SALT_WATER
 	));
@@ -412,6 +415,7 @@ public class DungeonTileSheet {
 		directVisuals.put(Terrain.LOCKED_EXIT,      LOCKED_EXIT);
 		directVisuals.put(Terrain.UNLOCKED_EXIT,    UNLOCKED_EXIT);
 		directVisuals.put(Terrain.WELL,             WELL);
+		directVisuals.put(Terrain.ALTWELL,             ALTWELL);
 
 	}
 

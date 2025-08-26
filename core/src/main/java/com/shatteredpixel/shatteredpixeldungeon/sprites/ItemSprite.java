@@ -232,6 +232,8 @@ public class ItemSprite extends MovieClip {
 				return view( ItemSpriteSheet.CHEST, null );
 			case LOCKED_CHEST:
 				return view( ItemSpriteSheet.LOCKED_CHEST, null );
+			case GREEN_CHSET:
+				return view( ItemSpriteSheet.SHPD_CHEST, null );
 			case CRYSTAL_CHEST:case TELECRYSTL:
 				return view( ItemSpriteSheet.CRYSTAL_CHEST, null );
 			case TOMB:

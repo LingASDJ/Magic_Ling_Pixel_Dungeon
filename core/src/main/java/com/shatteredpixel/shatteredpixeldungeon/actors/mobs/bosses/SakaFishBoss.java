@@ -305,7 +305,7 @@ public class SakaFishBoss extends Boss {
             }
 
             survey_research_points += 2000;
-            //Statistics.questScores[2] += survey_research_points/2;
+
             Badges.validateAncityProgress();
             GameScene.bossSlain();
             Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
@@ -489,7 +489,7 @@ public class SakaFishBoss extends Boss {
                     endPos = leapPos;
                 }
 
-                    //do leap 泥头车
+                //do leap 泥头车
                 sprite.jump(pos, leapPos, new Callback() {
                     @Override
                     public void call() {
@@ -672,8 +672,6 @@ public class SakaFishBoss extends Boss {
         beam = null;
         beamTarget = -1;
     }
-
-
 
     //萨卡班甲鱼魔法风暴
     public void FishStorm(Char ch){

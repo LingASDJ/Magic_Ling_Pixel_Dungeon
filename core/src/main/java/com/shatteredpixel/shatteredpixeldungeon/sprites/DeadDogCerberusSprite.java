@@ -46,7 +46,7 @@ public class DeadDogCerberusSprite extends MobSprite {
         SuperAttack = new MovieClip.Animation( 9, false );
         SuperAttack.frames( frames, 33,34,35,36,37 );
 
-        tooteh = new MovieClip.Animation( 9, false );
+        tooteh = new MovieClip.Animation( 9, true );
         tooteh.frames( frames, 27,28,29,30,31,32 );
 
         FlyAttack = new Animation(9 , true);

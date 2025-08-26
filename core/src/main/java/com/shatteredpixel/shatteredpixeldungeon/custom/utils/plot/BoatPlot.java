@@ -53,8 +53,17 @@ public class BoatPlot extends Plot {
 
     boolean branch_logic = false;
 
+    public DeathRong rong;
+
     @Override
     public void process() {
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof DeathRong) {
+                rong = (DeathRong) mob;
+            }
+        }
+
         if(diagulewindow!=null && process < 5) {
             switch (process) {
                 case 1:
@@ -370,6 +379,7 @@ public class BoatPlot extends Plot {
                 Dungeon.deleteGame( GamesInProgress.curSlot, true );
             }
         });
+        rong.first = false;
     }
 
 
@@ -395,6 +405,7 @@ public class BoatPlot extends Plot {
                 ((ZeroBoat) mob).rd = true;
             }
         }
+        rong.first = false;
     }
 
 }

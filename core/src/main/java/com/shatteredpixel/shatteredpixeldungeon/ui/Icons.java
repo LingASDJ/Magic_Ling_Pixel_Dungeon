@@ -89,7 +89,10 @@ public enum Icons {
 	COIN_SML,
 	ENERGY_SML,
 	BACKPACK,
+	F_BACKPACK,
 	B_BACKPACK,
+	BOOKBAG,
+	PROPBAG,
 	SEED_POUCH,
 	SCROLL_HOLDER,
 	WAND_HOLSTER,
@@ -174,7 +177,7 @@ public enum Icons {
 	CATALOG,
 	ALCHEMY,
 	GRASS,
-
+	COLOR_TARGET,
 	STAIRS_CHASM,
 	STAIRS_WATER,
 	STAIRS_GRASS,
@@ -222,6 +225,11 @@ public enum Icons {
 			case GRASS:
 				icon.frame( icon.texture.uvRectBySize( 65, 176, 16, 16 ) );
 				break;
+
+			case COLOR_TARGET:
+				icon.frame( icon.texture.uvRectBySize( 129, 176, 16, 16 ) );
+				break;
+
 			//2.4.0
 			case ENTER:
 				icon.frame( icon.texture.uvRectBySize( 0, 0, 16, 16 ) );
@@ -391,6 +399,15 @@ public enum Icons {
 				break;
 			case B_BACKPACK:
 				icon.frame( icon.texture.uvRectBySize( 201, 59, 10, 10 ) );
+				break;
+			case F_BACKPACK:
+				icon.frame( icon.texture.uvRectBySize( 211, 59, 10, 10 ) );
+				break;
+			case BOOKBAG:
+				icon.frame( icon.texture.uvRectBySize( 221, 59, 10, 10 ) );
+				break;
+			case PROPBAG:
+				icon.frame( icon.texture.uvRectBySize( 232, 59, 10, 10 ) );
 				break;
 			case SCROLL_HOLDER:
 				icon.frame( icon.texture.uvRectBySize( 211, 48, 10, 10 ) );

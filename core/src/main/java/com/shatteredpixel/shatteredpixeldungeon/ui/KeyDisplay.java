@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.BlackKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.GreenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
@@ -63,6 +64,7 @@ public class KeyDisplay extends Visual {
 		keyMap.put(GoldenKey.class, 3);
 		keyMap.put(IronKey.class, 4);
 		keyMap.put(BlackKey.class, 5);
+		keyMap.put(GreenKey.class, 6);
 	}
 
 	private int totalKeys = 0;

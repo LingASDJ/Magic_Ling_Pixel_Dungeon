@@ -133,6 +133,10 @@ public class SpellSprite extends Image {
 	public static void show( Char ch, int index ) {
 		show(ch, index, 1, 1, 1);
 	}
+
+	public static void showRGB( Char ch, int index, float r, float g, float b ) {
+		show(ch, index, 1, 1, 1);
+	}
 	
 	public static void show( Char ch, int index, float r, float g, float b ) {
 		

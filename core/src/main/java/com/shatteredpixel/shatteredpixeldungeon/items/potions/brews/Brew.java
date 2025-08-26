@@ -37,6 +37,11 @@ public abstract class Brew extends Potion {
 	}
 
 	@Override
+	public int iceCoinValue() {
+		return (int) (value() * 2.75f);
+	}
+
+	@Override
 	public String defaultAction() {
 		return AC_THROW;
 	}

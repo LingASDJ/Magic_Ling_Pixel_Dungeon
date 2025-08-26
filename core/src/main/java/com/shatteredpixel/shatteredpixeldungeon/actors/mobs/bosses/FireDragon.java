@@ -616,7 +616,7 @@ public class FireDragon extends Boss implements Callback {
 
             Dungeon.level.drop( new DragonShiled(), pos ).sprite.drop();
 
-            GetBossLoot();
+            GetBossLoot(pos);
 
             if(!Statistics.bossRushMode){
                 Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.ARTIFACT),pos);
@@ -665,7 +665,7 @@ public class FireDragon extends Boss implements Callback {
             BossHealthBar.assignBoss(this);
             GameScene.bossReady();
             ////BGMPlayer.playBoss();
-
+            ScrollOfTeleportation.appear(hero, 845);
             Mob testActor = Clearly();
             testActor.state = testActor.HUNTING;
             GameScene.add(testActor);

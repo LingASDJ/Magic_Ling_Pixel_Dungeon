@@ -69,7 +69,7 @@ public class GameTracker extends Buff {
             StringBuilder info = new StringBuilder("");
             info.append("dungeon_depth: ").append(maxDepth).append("\n");
             for(Heap heap: Dungeon.level.heaps.valueList()){
-                if((!heap.autoExplored) || heap.type == Heap.Type.CHEST || heap.type == Heap.Type.LOCKED_CHEST || heap.type == Heap.Type.CRYSTAL_CHEST){
+                if((!heap.autoExplored) || heap.type == Heap.Type.CHEST || heap.type == Heap.Type.LOCKED_CHEST || heap.type == Heap.Type.CRYSTAL_CHEST || heap.type == Heap.Type.GREEN_CHSET){
                     for(Item item : heap.items){
                         appendDesc(item, info, "");
                     }

@@ -437,7 +437,7 @@ public class S_Changes {
                 "似曾相识的面孔，你一定哪里见过他的。\n\n"));
         changeInfo2.addButton( new ChangeButton(new SlylSprite(), "霜落雨凉", "_寒冰圣都_的女帝，没有人知道她的真正力量！\n" +
                 "\n"));
-        changeInfo2.addButton(new ChangeButton(new Image("Npcs/rt.png", 0, 0, 16, 16), "Observe_Sir", "来自另一个世界的旅行者。中型礼帽是他的护身武器。\n\n"));
+        changeInfo2.addButton(new ChangeButton(new Image("sprites/npc/rt.png", 0, 0, 16, 16), "Observe_Sir", "来自另一个世界的旅行者。中型礼帽是他的护身武器。\n\n"));
         ChangeInfo changeInfo3 = new ChangeInfo("V0.3.0.4 HotFixed 热修复", true, "");
         changeInfo3.hardlight(16711680);
         arrayList.add(changeInfo3);
@@ -482,12 +482,12 @@ public class S_Changes {
         ChangeInfo changeInfo12 = new ChangeInfo("V0.2.9.0", true, "");
         changeInfo12.hardlight(65280);
         arrayList.add(changeInfo12);
-        changeInfo12.addButton(new ChangeButton(new Image("Npcs/Nxhy.png", 0, 0, 16, 16), "新NPC", "那些回忆商人现在可以在_一层发现他_\n\n并且可以和他交易\n\n注:在即将到来的_0.3_版本里面会直接_加入到0层_"));
+        changeInfo12.addButton(new ChangeButton(new Image("sprites/npc/Nxhy.png", 0, 0, 16, 16), "新NPC", "那些回忆商人现在可以在_一层发现他_\n\n并且可以和他交易\n\n注:在即将到来的_0.3_版本里面会直接_加入到0层_"));
         ChangeInfo changeInfo13 = new ChangeInfo("V0.2.8.0-5", true, "");
         changeInfo13.hardlight(16711680);
         arrayList.add(changeInfo13);
         changeInfo13.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), "BUG修复", "修复生成器代码错误崩溃的问题\n\n-0.2.8.3"));
-        changeInfo13.addButton(new ChangeButton(new Image("SRPD/BlackGhost.png", 0, 0, 16, 16), "新怪物", "_黑色怨灵_\n\n_监狱开始刷新_\n\n-0.2.8.5"));
+        changeInfo13.addButton(new ChangeButton(new Image("sprites/SRPD/BlackGhost.png", 0, 0, 16, 16), "新怪物", "_黑色怨灵_\n\n_监狱开始刷新_\n\n-0.2.8.5"));
         ChangeInfo changeInfo14 = new ChangeInfo("V0.2.7.0", true, "");
         changeInfo14.hardlight(16736000);
         arrayList.add(changeInfo14);
@@ -498,7 +498,7 @@ public class S_Changes {
         changeInfo15.hardlight(65535);
         arrayList.add(changeInfo15);
         changeInfo15.addButton(new ChangeButton(new Image("Ling.png", 0, 0, 16, 16), "开发日志", "本来今天不属于_更新的日子，_但是我把手机取下来了 所以简单更新一波。\n\n特别感谢_Ren_加的_新武器_和_新怪物_\n\n更新时间:_2021-2-23_"));
-        changeInfo15.addButton(new ChangeButton(new Image("SRPD/MolotovHuntsman.png", 0, 0, 16, 16), "新怪物", "_血月火把赏金猎人_\n\n_矿洞层_刷新"));
+        changeInfo15.addButton(new ChangeButton(new Image("sprites/SRPD/MolotovHuntsman.png", 0, 0, 16, 16), "新怪物", "_血月火把赏金猎人_\n\n_矿洞层_刷新"));
         changeInfo15.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MagicBlueSword), "武器改动", "猩红血月神剑现在是_7阶_武器，并且攻击缓慢\n\n幻蓝审判神剑_削弱伤害_。"));
         ChangeInfo changeInfo16 = new ChangeInfo("V0.0.2.c-Ren-Create", true, "");
         changeInfo16.hardlight(65535);
@@ -528,7 +528,7 @@ public class S_Changes {
         ChangeInfo changes = new ChangeInfo("新增怪物&BUG修复", false, "");
         changes.hardlight(0x00ff00);
         changeInfos.add(changes);
-        changes.addButton( new ChangeButton(new Image("SRPD/TorchHuntsman.png", 0, 0, 16, 16), "怪物新改动",
+        changes.addButton( new ChangeButton(new Image("sprites/SRPD/TorchHuntsman.png", 0, 0, 16, 16), "怪物新改动",
                 "新怪物！！！\n" +
                         "-密林层：\n-_棕色老鼠_，\n-_灰黑老鼠_，\n-_老年老鼠_，\n（来自OGPD)" +
                         "\n-监狱层：_赏金猎人_\n（来自SRPD)"+

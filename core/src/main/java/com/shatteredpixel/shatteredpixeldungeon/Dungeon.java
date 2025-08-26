@@ -119,6 +119,7 @@ public class Dungeon {
 		SWARM_HP,
 		NECRO_HP,
 		BAT_HP,
+		HUNR_HP,
 		WARLOCK_HP,
 		//Demon spawners are already limited in their spawnrate, no need to limit their health drops
 		//alchemy
@@ -453,10 +454,6 @@ public class Dungeon {
 		return depth == 11 ||depth == 12||depth == 13||depth == 14;
 	}
 
-	public static boolean DiedWaterLevel() {
-		return depth == 16 ||depth == 17||depth == 18||depth == 19;
-	}
-
 	public static boolean shopOnLevel() {
 		return depth == 6 || depth == 11 || depth == 16;
 	}
@@ -498,6 +495,10 @@ public class Dungeon {
 
 	public static boolean sbbossLevel() {
 		return depth == 7 || depth == 17 || depth == 21 || depth == 29 || depth == 33 || depth == 37;
+	}
+
+	public static boolean LimitSoulLevel() {
+		return depth == 4 || depth == 9 || depth == 14 || depth == 19 || depth == 23;
 	}
 
 	public static boolean bossLevel() {
@@ -1472,8 +1473,5 @@ public class Dungeon {
 		return dlcs.isConducted(mask);
 	}
 
-	public static boolean isDIFFICULTY(Difficulty.DifficultyConduct mask) {
-		return difficultys.isConducted(mask);
-	}
 
 }

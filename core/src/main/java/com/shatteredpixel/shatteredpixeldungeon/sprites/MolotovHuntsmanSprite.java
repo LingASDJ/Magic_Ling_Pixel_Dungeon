@@ -29,7 +29,7 @@ public class MolotovHuntsmanSprite extends MobSprite {
     }
 
     public MolotovHuntsmanSprite() {
-        this.texture("SRPD/MolotovHuntsman.png");
+        this.texture("sprites/SRPD/MolotovHuntsman.png");
         TextureFilm var1 = new TextureFilm(this.texture, 16, 16);
         this.idle = new Animation(2, true);
         this.idle.frames(var1, 0, 0, 0, 1, 0, 0, 1, 1);

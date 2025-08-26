@@ -138,7 +138,7 @@ public class Bomb extends Item {
                 dmg -= ch.drRoll();
 
                 if (dmg > 0) {
-                    ch.damage(dmg, this);
+                    ch.damage(dmg, this, Char.DamageTyPe.PHYSICAL);
                 }
 
                 if (ch == hero && !ch.isAlive()) {
@@ -286,7 +286,7 @@ public class Bomb extends Item {
 					if(ch == hero){
 						return;
 					}
-					ch.damage(dmg, this);
+					ch.damage(dmg, this , Char.DamageTyPe.PHYSICAL);
 				}
 			}
 
@@ -354,7 +354,7 @@ public class Bomb extends Item {
 				dmg -= ch.drRoll();
 
 				if (dmg > 0){
-					ch.damage(dmg, this);
+					ch.damage(dmg, this, Char.DamageTyPe.PHYSICAL);
 				}
 				
 				if (ch == Dungeon.hero && !ch.isAlive()) {

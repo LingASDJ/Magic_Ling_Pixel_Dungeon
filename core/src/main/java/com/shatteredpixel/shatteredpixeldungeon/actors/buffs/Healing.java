@@ -21,8 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -84,10 +87,24 @@ public class Healing extends Buff {
 	}
 
 	public void setHeal(int amount, float percentPerTick, int flatPerTick){
-		//multiple sources of healing do not overlap, but do combine the best of their properties
-		healingLeft = Math.max(healingLeft, amount);
-		percentHealPerTick = Math.max(percentHealPerTick, percentPerTick);
-		flatHealPerTick = Math.max(flatHealPerTick, flatPerTick);
+		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
+
+		healingLeft = amount;
+		percentHealPerTick = percentPerTick;
+		flatHealPerTick = flatPerTick;
+
+
+		if(getHeal!=null){
+			healingLeft = amount*2;
+			percentHealPerTick = percentPerTick*2;
+			flatHealPerTick = flatPerTick*2;
+		}
+		CrystalLing crystalLing = Dungeon.hero.belongings.getItem(CrystalLing.class);
+		if(crystalLing != null) {
+			healingLeft = amount+(amount/3);
+			percentHealPerTick = percentPerTick*1.2f;
+			flatHealPerTick = flatPerTick+(flatPerTick/5);
+		}
 	}
 
 	public void applyVialEffect(){

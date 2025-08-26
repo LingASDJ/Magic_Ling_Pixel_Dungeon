@@ -41,10 +41,6 @@ import com.watabou.utils.Random;
 
 public class GooRoom extends SpecialRoom {
 
-    {
-        //noMobs = true;
-    }
-
     @Override
     public int minWidth() { return 21; }
     @Override
@@ -134,11 +130,6 @@ public class GooRoom extends SpecialRoom {
         }
 
         int entrancePos = cx + cy * level.width();
-
-//        GooMob statue = new GooMob();
-//        statue.pos = cx + cy * level.width();
-//        statue.state = statue.PASSIVE;
-//        level.mobs.add( statue );
 
         level.transitions.add(new LevelTransition(level,
                 entrancePos,

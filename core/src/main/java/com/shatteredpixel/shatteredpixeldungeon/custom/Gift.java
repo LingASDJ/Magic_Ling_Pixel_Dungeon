@@ -32,12 +32,13 @@ public class Gift implements Bundlable {
     private static final String[] Gift_DATA	= {
             //【永久兑换码】
             "QmFkTGFudGVyRmlyZS1Hbyw0MDcwOTUxNzc1LGZhbHNl",
+            "TUhKSCw0MDcwOTUxNzc1LGZhbHNl",
+            "WUxHQiw0MDcwOTUxNzc1LGZhbHNl",
 
-            //
-            "TWlkVGVzdC1Db2luR2V0WCw0MDcwOTUxNzc1LGZhbHNl",
-            "VG9tYi1Td2VlcGluZy1GZXN0aXZhRGF5LDE3NDQ0NzM2MDAsZmFsc2U=",
+            "U0hQRC1CSVJUSERBWSwxNzU2MTM3NjIwLGZhbHNl",
 
-            "TUxQRC1QZWFjaEdvZCwxNzQzNjk2MDAwLGZhbHNl"
+            "TkZZSUcsMTc1NDU4MjQwMCxmYWxzZQ==",
+            "QVJNWURBWSwxNzU0NTgyNDAwLGZhbHNl",
     };
 
     private static final HashMap<String, LinkedHashMap<String, Integer>> GIFT_ITEM ;
@@ -47,21 +48,31 @@ public class Gift implements Bundlable {
         LinkedHashMap<String, Integer> code1 = new LinkedHashMap<>();
         code1.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 300 );
         code1.put( "com.shatteredpixel.shatteredpixeldungeon.items.quest.LanFireGo", 1 );
-
         LinkedHashMap<String, Integer> code2 = new LinkedHashMap<>();
-        code2.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 2100 );
-
+        code2.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 1200 );
         LinkedHashMap<String, Integer> code3 = new LinkedHashMap<>();
-        code3.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 2100 );
-
+        code3.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 400 );
+        code3.put( "com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag", 1 );
+        code3.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove", 1 );
         LinkedHashMap<String, Integer> code4 = new LinkedHashMap<>();
-        code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 500 );
-        code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.Ankh", 1 );
+        code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 1000 );
+        code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag", 1 );
+        code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr", 1 );
+        LinkedHashMap<String, Integer> code5 = new LinkedHashMap<>();
+        code5.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 600 );
+        code5.put( "com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag", 1 );
+        code5.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem", 1 );
+        tempMap.put( "QmFkTGFudGVyRmlyZS1Hbw==",         code1 );
+        tempMap.put( "56uv5Y2I5a6J5bq3",                 code2 );
+        tempMap.put( "5ZCJ56Wl6ZSm6bKk",                 code3 );
+        tempMap.put( "TUhKSA==",                 code4 );
+        tempMap.put( "WUxHQg==",                 code5 );
 
-        tempMap.put( "QmFkTGFudGVyRmlyZS1Hbw==",             code1 );
-        tempMap.put( "TWlkVGVzdC1Db2luR2V0WA==",             code2 );
-        tempMap.put( "TUxQRC1QZWFjaEdvZA==",                 code3 );
-        tempMap.put( "VG9tYi1Td2VlcGluZy1GZXN0aXZhRGF5",     code4 );
+        LinkedHashMap<String, Integer> code6 = new LinkedHashMap<>();
+        code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems", 1 );
+        code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 1000 );
+        code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.ZakoSoup", 1 );
+        tempMap.put( "U0hQRC1CSVJUSERBWQ==",         code6 );
 
 
         GIFT_ITEM = new HashMap<>( Collections.unmodifiableMap( tempMap ) );
@@ -151,7 +162,7 @@ public class Gift implements Bundlable {
         }
 
         if( !SPDSettings.queryGiftExist( key ) )
-            return 0;
+            return 5;
 
         long currentTime = System.currentTimeMillis() / 1000;
         long expirationDate = Long.parseLong( SPDSettings.queryGiftPart( key, GIFT_Expiration_Date ) );

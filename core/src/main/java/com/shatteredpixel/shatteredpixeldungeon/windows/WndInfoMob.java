@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenDiamndMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -125,7 +126,11 @@ public class WndInfoMob extends WndTitledMessage {
 
 		private String HPLevel(Mob mob) {
 			String level;
-			if(mob.HP>600){
+			if(mob.HP>2000) {
+				level = "SSS";
+			} else if(mob.HP>1000){
+				level = "SS";
+			} else if (mob.HP>600){
 				level = "S+";
 			} else if (mob.HP>500){
 				level = "S";
@@ -144,9 +149,9 @@ public class WndInfoMob extends WndTitledMessage {
 			} else if (mob.HP>2) {
 				level = "E";
 			} else if (mob.HP==1) {
-				level = "G";
+				level = "F";
 			} else if(mob.HP<=0) {
-				level = "?";
+				level = "X";
 			} else {
 				level = "Z";
 			}
@@ -217,7 +222,7 @@ public class WndInfoMob extends WndTitledMessage {
 			add(mobSixInfo);
 
 			mobSixInfo.info1 = PixelScene.renderTextBlock((ATBSettings() ? String.valueOf(mob.HP) : HPLevel(mob)),6);
-			//String.valueOf((double)Math.round(mob.attackDelay() * 10) /10)
+
 			mobSixInfo.info2 = PixelScene.renderTextBlock(ATBSettings() ?
 					String.valueOf((double)Math.round(mob.attackDelay() * 10) /10) : AttackDelayLevel(mob),6);
 
@@ -229,12 +234,12 @@ public class WndInfoMob extends WndTitledMessage {
 					String.valueOf((double)Math.round(mob.speed()*100)/100): SPLevel(mob),6);
 
 			mobSixInfo.info7 = PixelScene.renderTextBlock(ProName(mob),6);
+
 			int dmg = 0;
 			int tries = 1000;
 			for (int i = 0; i < tries; i++) {
 				dmg += mob.damageRoll();
 			}
-
 			mobSixInfo.info8 = PixelScene.renderTextBlock(String.valueOf(dmg/tries),6);
 
 			add(mobSixInfo.info1);
@@ -246,7 +251,7 @@ public class WndInfoMob extends WndTitledMessage {
 			add(mobSixInfo.info7);
 			add(mobSixInfo.info8);
 
-			reload = (mob.alignment == Char.Alignment.NEUTRAL) && mob.properties.contains(Char.Property.HOLLOW);
+			reload = (mob.alignment == Char.Alignment.NEUTRAL) && (mob instanceof GreenDiamndMimic || mob.properties.contains(Char.Property.HOLLOW));
 		}
 
 		@Override

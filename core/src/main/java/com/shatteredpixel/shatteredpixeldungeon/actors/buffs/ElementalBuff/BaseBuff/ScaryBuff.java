@@ -86,9 +86,6 @@ public class ScaryBuff extends ElementalBuff {
         } else {
             detach();
         }
-
-        spend(1f);
-
         return true;
     }
 

@@ -84,23 +84,31 @@ public class SeedFinder {
 						(i instanceof Weapon && ((Weapon) i).hasGoodEnchant()) ||
 						(i instanceof Ring) || (i instanceof Wand)) && i.cursed && i.level<=0)
 					builder.append("- " + Messages.get(this, "cursed")).append(i.title().toLowerCase());
+				else if (i.cursed && i.level<=0)
+					builder.append("- ").append(Messages.get(this, "cursed")).append(i.title().toLowerCase()).append("\n");
 				else if ((i.level>0) && i.cursed) {
-					builder.append("{ ").append(Messages.get(this, "cursed")).append(i.title().toLowerCase()).append(" { \n");
+					builder.append("<#808080>").append(Messages.get(this, "cursed")).append(i.title().toLowerCase()).append("<RGB>\n");
 				} else if ((i.level>4)) {
-					builder.append(" *").append(i.title().toLowerCase()).append(" * \n");
+					builder.append("<#FFA500>").append(i.title().toLowerCase()).append("<RGB>\n");
 				} else if ((i.level==4)) {
-					builder.append(" {").append(i.title().toLowerCase()).append(" { \n");
+					builder.append("<#F00>").append(i.title().toLowerCase()).append("<RGB>\n");
 				} else if ((i.level==3)) {
-					builder.append(" [").append(i.title().toLowerCase()).append(" [ \n");
+					builder.append("<#FF1493>").append(i.title().toLowerCase()).append("<RGB>\n");
 				} else if ((i.level==2)) {
-					builder.append(" }").append(i.title().toLowerCase()).append(" } \n");
+					builder.append("<#0F0>").append(i.title().toLowerCase()).append("<RGB>\n");
 				} else if ((i.level==1)) {
 					builder.append("_").append(i.title().toLowerCase()).append("_ \n");
 				} else
 					builder.append("- ").append(i.title().toLowerCase());
 
-				if (h.type != Type.HEAP)
-					builder.append(" (").append(h.toString().toLowerCase()).append(")");
+
+					if(h != null){
+						if (h.type != Type.HEAP) {
+							builder.append(" (").append(h.toString().toLowerCase()).append(")");
+						}
+					}
+
+
 
 				builder.append("\n");
 			}
@@ -112,20 +120,19 @@ public class SeedFinder {
 	private void addTextQuest(String caption, ArrayList<Item> items, StringBuilder builder) {
 		if (!items.isEmpty()) {
 			builder.append(caption).append(":\n");
-
 			for (Item i : items) {
 				if (i.cursed && i.level<=0)
 					builder.append("- ").append(Messages.get(this, "cursed")).append(i.title().toLowerCase()).append("\n");
 				else if ((i.level>0) && i.cursed) {
-					builder.append("{ ").append(Messages.get(this, "cursed")).append(i.title().toLowerCase()).append(" { \n");
+					builder.append("<#808080>").append(Messages.get(this, "cursed")).append(i.title().toLowerCase()).append("<RGB>\n");
 				} else if ((i.level>4)) {
-					builder.append(" *").append(i.title().toLowerCase()).append(" * \n");
+					builder.append("<#FFA500>").append(i.title().toLowerCase()).append("<RGB>\n");
 				} else if ((i.level==4)) {
-					builder.append(" {").append(i.title().toLowerCase()).append(" { \n");
+					builder.append("<#F00>").append(i.title().toLowerCase()).append("<RGB>\n");
 				} else if ((i.level==3)) {
-					builder.append(" [").append(i.title().toLowerCase()).append(" [ \n");
+					builder.append("<#FF1493>").append(i.title().toLowerCase()).append("<RGB>\n");
 				} else if ((i.level==2)) {
-					builder.append(" }").append(i.title().toLowerCase()).append(" } \n");
+					builder.append("<#0F0>").append(i.title().toLowerCase()).append("<RGB>\n");
 				} else if ((i.level==1)) {
 					builder.append("_").append(i.title().toLowerCase()).append("_ \n");
 				}
@@ -134,14 +141,6 @@ public class SeedFinder {
 			}
 
 			builder.append("\n");
-		}
-	}
-
-
-
-	public void findSeed(boolean stop){
-		if(!stop){
-			findingStatus = FINDING.STOP;
 		}
 	}
 
@@ -163,7 +162,7 @@ public class SeedFinder {
 		long minutes = (elapsedMillis / (1000 * 60)) % 60;
 		long hours = (elapsedMillis / (1000 * 60 * 60)) % 24;
 		if (!running) {
-			return "计时器未启动";
+			return "ElaseTime NoLauncher";
 		}
 
 		// 判断是否超过 30 秒
@@ -196,7 +195,13 @@ public class SeedFinder {
 					startTimer();
 				}
 				if (!SeedFindLogScene.thread.isInterrupted()) {
-					SeedFindLogScene.r.text("正在查询种子中……\n\n查找模式："+Options.condition + "\n\n挑战代码：" + SPDSettings.challenges() + "\n\n查找耗时：" + getElapsedTime() + "\n\n种子代码："+ i1);
+					SeedFindLogScene.r.text(
+							Messages.get(this,"seedfinder")+"\n\n"+
+							Messages.get(this,"seedfinder_mode")+
+							Options.condition + "\n\n"+Messages.get(this,"challenges_code") + SPDSettings.challenges() +
+							"\n\n"+Messages.get(this,"finder_time") + getElapsedTime() +
+							"\n\n"+Messages.get(this,"seed_code")+
+							i1);
 					SeedFindLogScene.r.setPos(SeedFindLogScene.uiCamera.width/3f, SeedFindLogScene.uiCamera.height/3f);
 				}
 			});
@@ -251,8 +256,6 @@ public class SeedFinder {
 	private boolean testSeedALL(String seed, int floors) {
 		Dungeon.isDLC(Conducts.Conduct.SEED);
 		SPDSettings.customSeed(seed);
-		Dungeon.hero = null;
-		Dungeon.daily = Dungeon.dailyReplay = false;
 		Dungeon.initSeed();
 		GamesInProgress.selectedClass = HeroClass.WARRIOR;
 		Dungeon.init();
