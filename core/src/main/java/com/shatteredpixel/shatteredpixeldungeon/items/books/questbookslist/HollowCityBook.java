@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
@@ -23,8 +24,6 @@ public class HollowCityBook extends Books {
     {
         image = ItemSpriteSheet.HLPBOOKS;
     }
-
-
 
     @Override
     public void execute( Hero hero, String action ) {
@@ -40,13 +39,12 @@ public class HollowCityBook extends Books {
                             Messages.get(HollowCityBook.class, "enter_no")) {
                         @Override
                         protected void onSelect(int index) {
-                            if (index == 0 && !Statistics.endingbald) {
+                            if (index == 0 && Dungeon.depth == 26) {
                                 Statistics.Hollow_Holiday = true;
-                                InterlevelScene.mode = InterlevelScene.Mode.AMULET;
+                                InterlevelScene.mode = InterlevelScene.Mode.RESET;
                                 TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
                                 if (timeFreeze != null) timeFreeze.disarmPresses();
                                 Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-                                Statistics.endingbald = true;
                                 if (timeBubble != null) timeBubble.disarmPresses();
                                 InterlevelScene.curTransition = new LevelTransition();
                                 InterlevelScene.curTransition.destDepth = 26;
@@ -56,6 +54,8 @@ public class HollowCityBook extends Books {
                                 InterlevelScene.curTransition.centerCell  = -1;
                                 Game.switchScene(InterlevelScene.class);
                                 detach( hero.belongings.backpack );
+                            } else {
+                                GLog.n(Messages.get(HollowCityBook.class, "quest_start_no"));
                             }
                         }
                     });

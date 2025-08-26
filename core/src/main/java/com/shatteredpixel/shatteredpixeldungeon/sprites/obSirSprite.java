@@ -13,7 +13,7 @@ public class obSirSprite extends MobSprite {
     private PixelParticle coin;
 
     public obSirSprite() {
-        this.texture("Npcs/rt.png");
+        this.texture("sprites/npc/rt.png");
         TextureFilm var1 = new TextureFilm(this.texture, 16, 16);
         this.idle = new MovieClip.Animation(1, true);
         this.idle.frames(var1, 0, 1,2,3);

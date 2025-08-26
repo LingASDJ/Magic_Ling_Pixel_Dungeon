@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Image;
@@ -51,8 +52,23 @@ public class WndInfoBuff extends Window {
 		txtInfo.maxWidth(WIDTH);
 		txtInfo.setPos(titlebar.left(), titlebar.bottom() + 2*GAP);
 		add( txtInfo );
-		resize( WIDTH, (int)txtInfo.bottom() + 2 );
 
+
+		if(buff.skills){
+			RedButton redButton = new RedButton(Messages.get(this,"active_skills")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					buff.detach();
+					hide();
+				}
+			};
+			redButton.setRect(txtInfo.x,txtInfo.bottom()+3,WIDTH,20);
+			add(redButton);
+			resize( WIDTH, (int)redButton.bottom() + 2 );
+		} else {
+			resize( WIDTH, (int)txtInfo.bottom() + 2 );
+		}
 	}
 
 

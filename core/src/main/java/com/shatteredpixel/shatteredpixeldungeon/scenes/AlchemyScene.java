@@ -37,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -57,7 +56,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndEnergizeItem;
@@ -109,6 +107,7 @@ public class AlchemyScene extends PixelScene {
 	private boolean energyAddBlinking = false;
 
 	private static boolean splitAlchGuide = false;
+	private WndJournal.AlchemyTab alchGuide = null;
 	private static int centerW;
 
 	private static final int BTN_SIZE	= 28;
@@ -162,7 +161,7 @@ public class AlchemyScene extends PixelScene {
 
 		lowerBubbles = new Emitter();
 		add(lowerBubbles);
-		
+
 		IconTitle title = new IconTitle(Icons.ALCHEMY.get(), Messages.get(this, "title") );
 		title.setSize(200, 0);
 		title.setPos(
@@ -171,7 +170,7 @@ public class AlchemyScene extends PixelScene {
 		);
 		align(title);
 		add(title);
-		
+
 		int w = Math.min(50 + Camera.main.width/2, 150);
 		int left = (Camera.main.width - w)/2;
 
@@ -192,7 +191,7 @@ public class AlchemyScene extends PixelScene {
 			guideBG.x = Camera.main.width - left - guideBG.width();
 			add(guideBG);
 
-			WndJournal.AlchemyTab alchGuide = new WndJournal.AlchemyTab();
+			alchGuide = new WndJournal.AlchemyTab();
 			add(alchGuide);
 			alchGuide.setRect(guideBG.x + guideBG.marginLeft(),
 					guideBG.y + guideBG.marginTop(),
@@ -202,7 +201,7 @@ public class AlchemyScene extends PixelScene {
 		} else {
 			splitAlchGuide = false;
 		}
-		
+
 		RenderedTextBlock desc = PixelScene.renderTextBlock(6);
 		desc.maxWidth(w);
 		desc.text( Messages.get(AlchemyScene.class, "text") );
@@ -221,7 +220,16 @@ public class AlchemyScene extends PixelScene {
 
 		synchronized (inputs) {
 			for (int i = 0; i < inputs.length; i++) {
-				inputs[i] = new InputButton();
+				if (inputs[i] == null) {
+					inputs[i] = new InputButton();
+				} else {
+					//in case the scene was reset without calling destroy() for some reason
+					Item item = inputs[i].item();
+					inputs[i] = new InputButton();
+					if (item != null){
+						inputs[i].item(item);
+					}
+				}
 				inputs[i].setRect(left + 10, pos, BTN_SIZE, BTN_SIZE);
 				add(inputs[i]);
 				pos += BTN_SIZE + 2;
@@ -469,7 +477,7 @@ public class AlchemyScene extends PixelScene {
 		sparkEmitter.autoKill = false;
 		add(sparkEmitter);
 
-		StyledButton btnGuide = new StyledButton( Chrome.Type.TOAST_TR, Messages.get(WndJournal.class,"guide")){
+		StyledButton btnGuide = new StyledButton( Chrome.Type.TOAST_TR, Messages.get(WndJournal.class, "guide")){
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -523,6 +531,7 @@ public class AlchemyScene extends PixelScene {
 
 		fadeIn();
 
+		saveNeeded = false;
 		try {
 			Dungeon.saveAll();
 			Badges.saveGlobal();
@@ -650,6 +659,10 @@ public class AlchemyScene extends PixelScene {
 
 		energyAddBlinking = promptToAddEnergy;
 
+		if (alchGuide != null){
+			alchGuide.updateList();
+		}
+
 	}
 
 	private void combine( int slot ){
@@ -676,10 +689,6 @@ public class AlchemyScene extends PixelScene {
 			}
 			Catalog.countUses(EnergyCrystal.class, cost);
 			Dungeon.energy -= cost;
-			if(cost!=0 && Dungeon.hero.belongings.getItem(DeliciousRecipe.class)!=null){
-				Dungeon.energy += 2;
-				GLog.n(Messages.get(DeliciousRecipe.class,"reduce"));
-			}
 
 			String energyText = Messages.get(AlchemyScene.class, "energy") + " " + Dungeon.energy;
 			if (toolkit != null){
@@ -727,6 +736,10 @@ public class AlchemyScene extends PixelScene {
 				}
 			}
 		}
+
+		if (alchGuide != null){
+			alchGuide.updateList();
+		}
 	}
 
 	public void craftItem( ArrayList<Item> ingredients, Item result ){
@@ -742,8 +755,11 @@ public class AlchemyScene extends PixelScene {
 		Statistics.itemsCrafted++;
 		Badges.validateItemsCrafted();
 
+		saveNeeded = false;
 		try {
 			Dungeon.saveAll();
+			Badges.saveGlobal();
+			Journal.saveGlobal();
 		} catch (IOException e) {
 			ShatteredPixelDungeon.reportException(e);
 		}
@@ -792,6 +808,23 @@ public class AlchemyScene extends PixelScene {
 		updateState();
 	}
 
+	private boolean saveNeeded = false;
+
+	@Override
+	public void onPause() {
+		if (saveNeeded) {
+			saveNeeded = false;
+			clearSlots();
+			try {
+				Dungeon.saveAll();
+				Badges.saveGlobal();
+				Journal.saveGlobal();
+			} catch (IOException e) {
+				ShatteredPixelDungeon.reportException(e);
+			}
+		}
+	}
+
 	@Override
 	public void destroy() {
 		synchronized ( inputs ) {
@@ -801,6 +834,7 @@ public class AlchemyScene extends PixelScene {
 			}
 		}
 
+		saveNeeded = false;
 		try {
 			Dungeon.saveAll();
 			Badges.saveGlobal();
@@ -825,6 +859,9 @@ public class AlchemyScene extends PixelScene {
 		}
 		cancel.enable(false);
 		repeat.enable(lastRecipe != null);
+		if (alchGuide != null){
+			alchGuide.updateList();
+		}
 	}
 
 	public void createEnergy(){
@@ -848,6 +885,9 @@ public class AlchemyScene extends PixelScene {
 		sparkEmitter.burst(SparkParticle.FACTORY, 20);
 		Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
 
+		//queue a save here, as items may be in the input windows and we don't want to clear them
+		// but if the game becomes paused we do this to prevent exploits
+		saveNeeded = true;
 		updateState();
 	}
 
@@ -919,7 +959,7 @@ public class AlchemyScene extends PixelScene {
 		add(newName);
 
 	}
-	
+
 	private class InputButton extends Component {
 
 		protected NinePatch bg;

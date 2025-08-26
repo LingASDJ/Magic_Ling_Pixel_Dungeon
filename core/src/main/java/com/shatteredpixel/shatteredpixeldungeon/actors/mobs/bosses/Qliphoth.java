@@ -53,7 +53,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -127,10 +126,7 @@ public class Qliphoth extends Boss {
             onlyFish = mob instanceof PhantomPiranha && mob.alignment == Alignment.ENEMY;
         }
 
-        boolean ST1 = false;
-        if(amount == 4){
-            ST1 = true;
-        }
+        boolean ST1 = amount == 4;
 
         if(state_boss >=2){
             GameScene.add(Blob.seed(pos,100, CrivusFruits.DiedBlobs.class));
@@ -152,14 +148,11 @@ public class Qliphoth extends Boss {
                         MagicMissile.SHAMAN_PURPLE,
                         new MissileSprite(),
                         i,
-                        new Callback() {
-                            @Override
-                            public void call() {
-                                if(!(Dungeon.isChallenged(Challenges.STRONGER_BOSSES))) {
-                                    Dungeon.level.drop(new FishingSpear(), i);
-                                }
-                                Dungeon.level.drop(new FishingSpear(),i);
+                        () -> {
+                            if(!(Dungeon.isChallenged(Challenges.STRONGER_BOSSES))) {
+                                Dungeon.level.drop(new FishingSpear(), i);
                             }
+                            Dungeon.level.drop(new FishingSpear(),i);
                         });
             }
         } else if(state_boss == 1 && amount>7){
@@ -177,22 +170,19 @@ public class Qliphoth extends Boss {
                         MagicMissile.SHAMAN_BLUE,
                         new MissileSprite(),
                         i,
-                        new Callback() {
-                            @Override
-                            public void call() {
-                                if(!(Dungeon.isChallenged(Challenges.STRONGER_BOSSES))) {
-                                    Dungeon.level.drop(new PotionOfPurity.PotionOfPurityLing(),i);
+                        () -> {
+                            if(!(Dungeon.isChallenged(Challenges.STRONGER_BOSSES))) {
+                                Dungeon.level.drop(new PotionOfPurity.PotionOfPurityLing(),i);
+                            } else {
+                                int randomPos;
+                                if(Random.Float()>0.5f){
+                                    randomPos = 650;
                                 } else {
-                                    int randomPos;
-                                    if(Random.Float()>0.5f){
-                                        randomPos = 650;
-                                    } else {
-                                        randomPos = 438;
-                                    }
-                                    Dungeon.level.drop(new PotionOfPurity.PotionOfPurityLing(),randomPos);
+                                    randomPos = 438;
                                 }
+                                Dungeon.level.drop(new PotionOfPurity.PotionOfPurityLing(),randomPos);
                             }
-                });
+                        });
             }
 
             if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
@@ -204,15 +194,12 @@ public class Qliphoth extends Boss {
                                     MagicMissile.HALOFIRE,
                                     new MissileSprite(),
                                     iz,
-                                    new Callback() {
-                                        @Override
-                                        public void call() {
-                                            PhantomPiranha csp = new PhantomPiranha();
-                                            csp.HT = csp.HP = 30;
-                                            csp.state = csp.WANDERING;
-                                            csp.pos = iz;
-                                            GameScene.add(csp);
-                                        }
+                                    () -> {
+                                        PhantomPiranha csp = new PhantomPiranha();
+                                        csp.HT = csp.HP = 30;
+                                        csp.state = csp.WANDERING;
+                                        csp.pos = iz;
+                                        GameScene.add(csp);
                                     });
                         }
                     }
@@ -220,11 +207,6 @@ public class Qliphoth extends Boss {
                 }
             }
         }
-
-
-
-
-
         return super.act();
     }
 
@@ -247,13 +229,10 @@ public class Qliphoth extends Boss {
                             MagicMissile.HALOFIRE,
                             new MissileSprite(),
                             i,
-                            new Callback() {
-                                @Override
-                                public void call() {
-                                    qliphothLasher.pos = i;
-                                    GameScene.add(qliphothLasher);
-                                    qliphothLasher.state_lasher_boss = 1;
-                                }
+                            () -> {
+                                qliphothLasher.pos = i;
+                                GameScene.add(qliphothLasher);
+                                qliphothLasher.state_lasher_boss = 1;
                             });
                 }
             }
@@ -268,16 +247,13 @@ public class Qliphoth extends Boss {
                                 MagicMissile.HALOFIRE,
                                 new MissileSprite(),
                                 iz,
-                                new Callback() {
-                                    @Override
-                                    public void call() {
-                                        ClearElemental csp = new ClearElemental();
-                                        csp.HT = csp.HP = 30;
-                                        Buff.affect(csp, CrivusFruits.CFBarrior.class).setShield(30);
-                                        csp.state = csp.WANDERING;
-                                        csp.pos = iz;
-                                        GameScene.add(csp);
-                                    }
+                                () -> {
+                                    ClearElemental csp = new ClearElemental();
+                                    csp.HT = csp.HP = 30;
+                                    Buff.affect(csp, CrivusFruits.CFBarrior.class).setShield(30);
+                                    csp.state = csp.WANDERING;
+                                    csp.pos = iz;
+                                    GameScene.add(csp);
                                 });
                     }
                 }
@@ -523,7 +499,7 @@ public class Qliphoth extends Boss {
         }
 
         if(Statistics.bossRushMode){
-            GetBossLoot();
+            GetBossLoot(pos);
         }
     }
 

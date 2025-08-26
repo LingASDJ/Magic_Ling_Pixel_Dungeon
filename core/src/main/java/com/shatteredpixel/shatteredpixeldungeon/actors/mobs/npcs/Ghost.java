@@ -41,10 +41,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElectricalSmoke;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.BossRushItemLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -345,6 +347,10 @@ public class Ghost extends NPC {
 				weapon.enchant(null);
 				weapon.cursed = false;
 
+				if(RegularLevel.holiday == RegularLevel.Holiday.ZQJ){
+					food = new SmallRation.BlackMoon();
+				}
+
 				/**
 				 * < 0.50f：50% 概率，物品等级为 0。
 				 * < 0.70f：20% 概率，物品等级为 1（50% + 20% = 70%）。
@@ -392,7 +398,9 @@ public class Ghost extends NPC {
 
 		public static void spawnBossRush(BossRushItemLevel level, Room room ) {
 			if (!spawned && Dungeon.depth == 4) {
-
+				if(RegularLevel.holiday == RegularLevel.Holiday.ZQJ){
+					food = new SmallRation.BlackMoon();
+				}
 				Ghost ghost = new Ghost();
 				do {
 					ghost.pos = level.pointToCell(room.random());

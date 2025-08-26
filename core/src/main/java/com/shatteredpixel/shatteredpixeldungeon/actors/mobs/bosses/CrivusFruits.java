@@ -439,7 +439,7 @@ public class CrivusFruits extends Boss {
         }
 
       if(Statistics.bossRushMode){
-            GetBossLoot();
+            GetBossLoot(pos);
         }
     }
 

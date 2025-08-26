@@ -1,17 +1,35 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.PEDESTAL;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SECRET_DOOR;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.STATUE;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL_DECO;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Salamander;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Point;
 
 public class SkeletonFishRoom extends SpecialRoom {
@@ -31,97 +49,300 @@ public class SkeletonFishRoom extends SpecialRoom {
     public int maxHeight() {
         return 13;
     }
-	@Override
-	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
-		return false;
-	}
+
     @Override
     public boolean canConnect(Point p) {
         if (!super.canConnect(p)){
             return false;
         }
-        //only place doors in the center
         if (Math.abs(p.x - (right - (width()-1)/4f)) < 1f){
             return true;
         }
         return Math.abs(p.y - (bottom - (height() - 1) / 4f)) < 1f;
     }
 
-
     @Override
     public boolean canPlaceTrap(Point p) {
         return false;
     }
 
+    private static final int[] pre_map = {
+            0,5,5,0,0,144,20,80,0,0,144,
+            5,144,144,144,144,144,0,48,144,144,144,
+            5,144,5,5,5,48,48,92,48,48,48,
+            0,144,5,0,0,0,0,0,0,20,48,
+            0,144,5,0,48,92,92,92,80,144,48,
+            144,144,80,0,92,48,48,92,92,92,48,
+            20,0,80,0,92,48,48,48,48,115,48,
+            80,80,0,0,92,92,48,48,92,0,48,
+            0,144,80,0,80,92,48,92,0,0,48,
+            0,144,48,20,144,92,115,0,0,76,48,
+            144,144,48,48,48,48,48,48,48,48,48,
+    };
+
+    private int codeToTerrain(int code){
+        switch (code){
+            case 5:
+                return Terrain.WATER;
+            case 20: case 76:
+                return Terrain.PEDESTAL;
+            case 48: case 80:
+                return WALL;
+            case 92:
+                return Terrain.BOOKSHELF;
+            case 115:
+                return Terrain.SECRET_DOOR;
+            case 144:
+                return Terrain.CHASM;
+            default:
+                return Terrain.EMPTY;
+        }
+    }
+
     @Override
     public void paint(Level level) {
-        Point center = new Point((left + right) / 2, (top + bottom) / 2);
 
-        for (Door door : connected.values()) {
-            door.set( Door.Type.REGULAR );
-            if (door.x == left || door.x == right){
-                Painter.drawInside(level, this, door, width()/2, EMPTY);
-            } else {
-                Painter.drawInside(level, this, door, height()/2, EMPTY);
+        Painter.fill(level,this, 0, WALL);
+
+        for (int i = left + 1; i <= right-1; i++) {
+            for (int j = top + 1; j <= bottom-1; j++) {
+                int dx = i - (left + 1);
+                int dy = j - (top + 1);
+                int index = dy * (minWidth()-2) + dx;
+
+                if(index >= 0 && index < pre_map.length){
+                    set(level, i, j, codeToTerrain(pre_map[index]));
+                } else {
+                    set(level, i, j, Terrain.EMPTY);
+                }
             }
         }
 
+        entrance().set(Door.Type.WALL);
+
         int centerX = left + width() / 2;
-        int centerY = top + height() / 2;
+        int centerY = top + height() /2;
+        Point xpos = new Point(centerX-4, centerY+4);
+        int RPos = left + right - xpos.x + xpos.y * level.width();
 
-        Painter.fill(level, this, WALL);
-        Painter.fill(level, this, 1, EMPTY);
+        BlueStoneDoor ncx = new BlueStoneDoor();
+        ncx.pos = RPos;
+        level.mobs.add(ncx);
+        level.map[RPos] = Terrain.TRAP;
+        level.setTrap(new AlarmTrap(), RPos);
 
-        Painter.set(level, centerX - 5, centerY - 5, CHASM);
-        Painter.set(level, centerX - 5, centerY - 4, CHASM);
-        Painter.set(level, centerX - 4, centerY - 5, CHASM);
+        level.drop( new PotionOfLiquidFlame(), RPos-1 );
+        level.drop( new GoldenKey(depth), RPos-2 );
 
-        Painter.set(level, centerX - 5, centerY, CHASM);
+        Point apos = new Point(centerX+5, centerY+1);
+        int aPos = left + right - apos.x + apos.y * level.width();
+        level.drop(Generator.random(), aPos).type = Heap.Type.REMAINS;
 
-        Painter.drawVerticalLine(level, new Point(centerX - 4, centerY - 3), 3, CHASM);
-        Painter.drawHorizontalLine(level, new Point(centerX - 3, centerY - 4), 3, CHASM);
+        Point bpos = new Point(centerX+2, centerY+4);
+        int bPos = left + right - bpos.x + bpos.y * level.width();
+        level.drop(Generator.random(), bPos).type = Heap.Type.TOMB;
 
-        Painter.set(level, centerX, centerY - 5, CHASM);
-        Painter.set(level, centerX + 1, centerY - 5, PEDESTAL);
-        Painter.set(level, centerX + 2, centerY - 5, SECRET_DOOR);
-        Painter.set(level, centerX + 2, centerY - 4, WALL);
-        Painter.drawHorizontalLine(level, new Point(centerX + 3, centerY - 3), 3, WALL);
-        Painter.set(level, centerX + 5, centerY - 2, PEDESTAL);
-        Painter.set(level, centerX + 5, centerY - 1, CHASM);
-        Painter.set(level, centerX + 4, centerY - 1, WALL);
+        Point cpos = new Point(centerX-4, centerY-2);
+        int cPos = left + right - cpos.x + cpos.y * level.width();
+        level.drop(Generator.random(), cPos).type = Heap.Type.LOCKED_CHEST;
 
-        Painter.drawHorizontalLine(level, new Point(centerX + 1, centerY), 1, WALL);
-        Painter.drawHorizontalLine(level, new Point(centerX + 1, centerY + 1), 3, WALL);
-        Painter.drawHorizontalLine(level, new Point(centerX + 2, centerY + 2), 1, WALL);
-        Painter.drawHorizontalLine(level, new Point(centerX + 2, centerY + 3), 0, WALL);
+        Point dpos = new Point(centerX-1, centerY-5);
+        int dPos = left + right - dpos.x + dpos.y * level.width();
+        level.drop(Generator.random(), dPos).type = Heap.Type.SKELETON;
 
-        Painter.set(level, centerX, centerY - 1, WALL);
-        Painter.set(level, centerX, centerY + 3, WALL);
+        Point zpos = new Point(centerX+5, centerY+3);
+        int zPos = left + right - zpos.x + zpos.y * level.width();
 
-        Painter.set(level, centerX-1, centerY + 4, PEDESTAL);
-        Painter.set(level, centerX-2, centerY + 4, CHASM);
-        Painter.set(level, centerX-2, centerY + 3, WALL);
+        Point gpos = new Point(centerX+3, centerY-5);
+        int gPos = left + right - gpos.x + gpos.y * level.width();
 
-        Painter.set(level, centerX-3, centerY + 2, WALL_DECO);
-        Painter.set(level, centerX-3, centerY + 3, CHASM);
-        Painter.set(level, centerX-3, centerY + 4, CHASM);
-        Painter.set(level, centerX-4, centerY + 2, SECRET_DOOR);
-        Painter.set(level, centerX-4, centerY + 1, PEDESTAL);
-        Painter.set(level, centerX-5, centerY + 2, CHASM);
+        Point ppos = new Point(centerX-4, centerY-5);
+        int pPos = left + right - ppos.x + ppos.y * level.width();
 
-        Painter.set(level, centerX-2, centerY + 1, STATUE);
-        Painter.set(level, centerX-2, centerY, STATUE);
+        int[] MBTPOS = new int[]{
+               zPos,gPos,pPos
+        };
 
-        Painter.set(level, centerX, centerY - 3, STATUE);
-        Painter.set(level, centerX+1, centerY - 3, STATUE);
+        for (int i : MBTPOS) {
+            Mob n = new Salamander();
+            if (depth >= 20) {
+                n = new Scorpio();
+            } else if (depth >= 15) {
+                n = new BruteBot();
+            } else if (depth >= 10) {
+                n = new MolotovHuntsman();
+            } else if (depth >= 6) {
+                n = new DM100();
+            }
+            n.pos = i;
+            level.mobs.add(n);
+        }
+    }
 
-        Painter.set(level, centerX+3, centerY - 4, CHASM);
-        Painter.set(level, centerX+4, centerY - 4, CHASM);
+    private void set(Level level, int x, int y, int value) {
+        level.map[x + y * level.width()] = value;
+    }
 
-        Painter.drawHorizontalLine(level, new Point(centerX - 5, centerY + 5), 10, WATER);
+    public static class BlueAltStoneDoor extends NPC {
 
-        Painter.set(level, centerX, centerY + 5, WALL_DECO);
-        Painter.set(level, centerX-1, centerY + 5, CHASM);
-        Painter.set(level, centerX-2, centerY + 5, WALL_DECO);
+        {
+            spriteClass = BlueStoneDoorSprite.class;
+            properties.add(Property.IMMOVABLE);
+        }
+
+        @Override
+        public boolean interact(Char c) {
+            for (Mob mob : level.mobs.toArray(new Mob[0])){
+                if (mob instanceof BlueStoneDoor){
+                    ScrollOfTeleportation.appear(c, mob.pos);
+                    //传送目标区域
+                    hero.interrupt();
+                    Dungeon.observe();
+                    GameScene.updateFog();
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public int defenseSkill(Char enemy) {
+            return INFINITE_EVASION;
+        }
+
+        @Override
+        public void damage(int dmg, Object src) {
+        }
+
+        @Override
+        public boolean add(Buff buff) {
+            return false;
+        }
+
+        @Override
+        public boolean reset() {
+            return true;
+        }
+
+    }
+
+    public static class BlueStoneDoor extends NPC {
+
+        {
+            spriteClass = BlueStoneDoorSprite.class;
+            properties.add(Property.IMMOVABLE);
+        }
+
+        @Override
+        public int defenseSkill(Char enemy) {
+            return INFINITE_EVASION;
+        }
+
+        @Override
+        public boolean interact(Char c) {
+            for (Mob mob : level.mobs.toArray(new Mob[0])){
+                if (mob instanceof BlueAltStoneDoor){
+                    ScrollOfTeleportation.appear(c, mob.pos);
+                    //传送目标区域
+                    hero.interrupt();
+                    Dungeon.observe();
+                    GameScene.updateFog();
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public void damage(int dmg, Object src) {
+        }
+
+        @Override
+        public boolean reset() {
+            return true;
+        }
+
+    }
+
+    public static class BlueStoneDoorSprite extends MobSprite {
+
+        private Animation charging;
+        private Emitter chargeParticles;
+
+        public BlueStoneDoorSprite(){
+            texture( Assets.Sprites.BUE_SENTRY );
+
+            idle = new Animation(1, true);
+            idle.frames(texture.uvRect(0, 0, 8, 15));
+
+            run = idle.clone();
+            attack = idle.clone();
+            charging = idle.clone();
+            die = idle.clone();
+            zap = idle.clone();
+
+            play( idle );
+        }
+
+        @Override
+        public void link(Char ch) {
+            super.link(ch);
+
+            chargeParticles = centerEmitter();
+            chargeParticles.autoKill = false;
+            chargeParticles.pour(MagicMissile.MagicParticle.ATTRACTING, 0.04f);
+
+            chargeParticles.on = false;
+
+            play(charging);
+        }
+
+        @Override
+        public void die() {
+            super.die();
+            if (chargeParticles != null){
+                chargeParticles.on = false;
+            }
+        }
+
+        @Override
+        public void play(Animation anim) {
+            if (chargeParticles != null) chargeParticles.on = anim == charging;
+            super.play(anim);
+        }
+
+        private float baseY = Float.NaN;
+
+        @Override
+        public void place(int cell) {
+            super.place(cell);
+            baseY = y;
+        }
+
+        @Override
+        public void turnTo(int from, int to) {
+            //do nothing
+        }
+        private float time;
+        @Override
+        public void update() {
+            super.update();
+            if (chargeParticles != null){
+                chargeParticles.pos( center() );
+                chargeParticles.visible = visible;
+            }
+
+            if (flashTime <= 0) {
+                time += Game.elapsed / 3.5f;
+                float r = 0.33f+0.57f*Math.max(0f, (float)Math.sin( time));
+                float g = 0.53f+0.57f*Math.max(0f, (float)Math.sin( time + 2*Math.PI/3 ));
+                float b = 0.63f+0.57f*Math.max(0f, (float)Math.sin( time + 4*Math.PI/3 ));
+                tint( r,g,b, 0.3f);
+            }
+
+            if (!paused){
+                if (Float.isNaN(baseY)) baseY = y;
+                y = baseY + (float) Math.sin(Game.timeTotal);
+                shadowOffset = 0.25f - 0.8f*(float) Math.sin(Game.timeTotal);
+            }
+        }
     }
 }

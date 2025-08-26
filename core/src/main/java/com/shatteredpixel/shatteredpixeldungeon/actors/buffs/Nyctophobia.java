@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.ClearLanterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
@@ -55,7 +56,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
         public boolean act() {
             if(!Dungeon.bossLevel() || !Dungeon.sbbossLevel()){
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-                    if(!(mob instanceof NPC)) {
+                    if (!(mob instanceof NPC) && !mob.properties.contains(Char.Property.BOSS) && !mob.properties.contains(Char.Property.MINIBOSS)) {
                         ArrayList<Integer> candidates = new ArrayList<>();
                         int minDist = Math.round(Dungeon.hero.viewDistance / 3f);
                         for (int i = 0; i < Dungeon.level.length(); i++) {
@@ -99,8 +100,6 @@ public class Nyctophobia extends Buff implements Hero.Doom {
 
     private static final String LEVEL = "level";
     private static final String PARTIALDAMAGE = "partialDamage";
-
-    private static final float STEP = 100.0f;
 
     private float level;
     private float partialDamage;

@@ -75,6 +75,7 @@ public class Heap implements Bundlable {
 		CHEST,
 		LOCKED_CHEST,
 		CRYSTAL_CHEST,
+		GREEN_CHSET,
 		TOMB,
 		TELECRYSTL,
 		WHITETOMB,
@@ -84,6 +85,7 @@ public class Heap implements Bundlable {
 		MIMIC,
 		GOLDEN_MIMIC,
 		CRYSTAL_MIMIC,
+		GRREN_MIMIC,
 		STATUE,
 		TrinketCatalyst
 	}
@@ -406,8 +408,10 @@ public class Heap implements Bundlable {
 					return i.toString();
 				}
 			case REMAINS:
-				if (level.diedname != null) {
-					return Messages.get(this, "grave");
+				if(level != null){
+					if (level.diedname != null) {
+						return Messages.get(this, "grave");
+					}
 				}
 				return Messages.get(this, "remains");
 			case FOR_ICE:
@@ -428,6 +432,8 @@ public class Heap implements Bundlable {
 				return Messages.get(this, "chest");
 			case LOCKED_CHEST:
 				return Messages.get(this, "locked_chest");
+			case GREEN_CHSET:
+				return Messages.get(this, "green_chest");
 			case CRYSTAL_CHEST: case TELECRYSTL:
 				return Messages.get(this, "crystal_chest");
 			case TOMB:
@@ -451,6 +457,8 @@ public class Heap implements Bundlable {
 				return Messages.get(this, "chest_desc");
 			case LOCKED_CHEST:
 				return Messages.get(this, "locked_chest_desc");
+			case GREEN_CHSET:
+				return Messages.get(this, "green_chest_desc");
 			case CRYSTAL_CHEST:
 				if (peek() instanceof Artifact)
 					return Messages.get(this, "crystal_chest_desc", Messages.get(this, "artifact") );

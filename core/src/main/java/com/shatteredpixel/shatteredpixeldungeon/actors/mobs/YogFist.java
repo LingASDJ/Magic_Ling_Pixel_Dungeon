@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.YogGodHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -141,9 +142,14 @@ public abstract class YogFist extends Mob {
 	private boolean invulnWarned = false;
 
 	protected boolean isNearYog(){
-		int yogPos = Dungeon.level.exit() + 3*Dungeon.level.width();
-		return Dungeon.level.distance(pos, yogPos) <= 4;
-	}
+        int yogPos;
+        if(Dungeon.isChallenged(Challenges.CS)){
+            yogPos = YogGodHardBossLevel.CENTER;
+        } else {
+            yogPos = Dungeon.level.exit() + 3 * Dungeon.level.width();
+        }
+        return Dungeon.level.distance(pos, yogPos) <= 4;
+    }
 
 	@Override
 	public boolean isInvulnerable(Class effect) {
@@ -708,21 +714,10 @@ public abstract class YogFist extends Mob {
 					Dungeon.fail( getClass() );
 					GLog.n( Messages.get(Char.class, "kill", name()) );
 				}
-
 			} else {
-
 				enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
 			}
 
-		}
-
-		@Override
-		public void damage(int dmg, Object src) {
-			super.damage(dmg, src);
-			LockedFloor buff = Dungeon.hero.buff(LockedFloor.class);
-			if (buff != null) {
-				buff.addTime(dmg * 0.5f);
-			}
 		}
 
 	}
@@ -799,9 +794,16 @@ public abstract class YogFist extends Mob {
 			bundle.put(TARGETED_CELLS, bundleArr);
 		}
 
+		private boolean first = true;
+
 		@Override
 		public void die( Object cause ) {
-			GLog.n(Messages.get(YogFist.class,"HaloFist"));
+
+			if(first){
+				first = false;
+				GLog.n(Messages.get(YogFist.class,"HaloFist"));
+			}
+
 			for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
 				if (boss instanceof FreezingFist) {
 					boss.properties.remove(Property.FIERY);

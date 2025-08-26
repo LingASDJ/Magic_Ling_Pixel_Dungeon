@@ -93,8 +93,7 @@ public class PrisonBossLevel extends Level {
 
 	@Override
 	public void playBossMusic() {
-		Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
-				() -> Music.playModeBGM(Assets.Music.PRISON_BOSS,true)));
+		Music.playModeBGM(Assets.Music.PRISON_BOSS,true);
 	}
 
 	private State state;

@@ -30,12 +30,16 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.CerDogBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.PacmanHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.TheatreLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonCaveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniChestMazeLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniSkyShadowBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.DeepShadowLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.SkyGooBossLevel;
@@ -244,7 +248,7 @@ public class LevelRules {
                             return new HallsBossLevel();
                         }
                     case 26:
-                        return !Statistics.Hollow_Holiday ? new LastLevel() : new OpenLastLevel();
+                        return !Statistics.Hollow_Holiday ? new LastLevel() : new HollowExitLevel();
 
                     case 27: case 28: case 29: case 30:
                         return Statistics.Hollow_Holiday ? new HollowLevel() : new DeadEndLevel();
@@ -252,7 +256,7 @@ public class LevelRules {
                     case 31:
                         return new CerDogBossLevel();
 
-                    case 32:
+                    case 33:
                         return new MorpheusBossLevel();
 
                     default:
@@ -283,6 +287,8 @@ public class LevelRules {
                         return new DwarfGeneralBossLevel();
                     case 28:
                         return new TheatreLevel();
+                    case 29:
+                        return new PacmanHollowActorLevel();
                     default:
                         return new DeadEndLevel();
                 }
@@ -290,8 +296,9 @@ public class LevelRules {
             case 2:
                 switch (depth) {
                     case 4:
-                    case 14:
                         return new MiniBossLevel();
+                    case 8:
+                        return new MiniSkyShadowBossLevel();
                     case 5:
                         return new DragonCaveLevel();
                     case 17:
@@ -320,7 +327,7 @@ public class LevelRules {
             case 4:
                 switch (depth) {
                     case 25:
-                        return new OpenLastLevel();
+                        return new HollowExitLevel();
                     case 17:
                     case 18:
                         return new GardenLevel();

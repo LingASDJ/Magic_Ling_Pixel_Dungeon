@@ -323,7 +323,6 @@ public class Goo extends Mob {
 			}
 		}
 
-
 		Badges.GOO();
 		Statistics.bossScores[0] += 1000;
 

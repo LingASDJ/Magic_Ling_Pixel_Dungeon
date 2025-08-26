@@ -53,18 +53,12 @@ public class FloatingText extends RenderedTextBlock {
 	public static int PICK_DMG          = 3;
 
 	//debuff/dot damage icons
-	public static int HUNGER    = 5;
 	public static int BURNING   = 6;
-	public static int SHOCKING  = 7;
 	public static int FROST     = 8;
 	public static int WATER     = 9;
-	public static int BLEEDING  = 10;
 	public static int TOXIC     = 11;
 	public static int CORROSION = 12;
 	public static int POISON    = 13;
-	public static int OOZE      = 14;
-	public static int DEFERRED  = 15;
-	public static int CORRUPTION= 16;
 	public static int AMULET    = 17;
 
 	//positive icons

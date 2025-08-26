@@ -31,8 +31,9 @@ public abstract class ElementalBuff extends Buff {
     }
     @Override
     public boolean act() {
-        if (target.isAlive()) {
-
+        if(Scary > 100){
+            detach();
+        } else if (target.isAlive()) {
             spend(interval);
             if (level <= 0) {
                 detach();

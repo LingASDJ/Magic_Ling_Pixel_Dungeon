@@ -57,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.PianoLe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLingLand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteYan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.XiaYuan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
@@ -74,9 +75,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRan
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -450,9 +458,47 @@ public class ZeroCityLevel extends Level {
                 BzmdrLand npc9 = new BzmdrLand();
                 npc9.pos = 3085;
                 mobs.add(npc9);
-                //如果地表版本生成 旅馆禁止生成Bzmdr
                 Statistics.onlyBzmdr = true;
             }
+
+        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+        if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX) || passwordbadges.contains(PaswordBadges.Badge.GODCHSX)) {
+            if(Random.Int(4) == 0) {
+                WhiteLingLand god = new WhiteLingLand();
+                god.pos = 326;
+                mobs.add(god);
+                Statistics.onlyLing = true;
+
+                MeleeWeapon gods1;
+                gods1 = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
+                gods1.cursed = false;
+                gods1.upgrade();
+                drop(gods1,324).type = Heap.Type.FOR_ICE;
+
+                Wand gods2;
+                gods2 = (Wand) Generator.random(Generator.Category.WAND);
+                gods2.cursed = false;
+                gods2.level += Random.Int(1);
+                drop(gods2,454).type = Heap.Type.FOR_ICE;
+
+                Item gods3;
+                switch (Random.Int(6)){
+                    case 2: gods3 = new BlizzardBrew(); break;
+                    case 3: gods3 = new CausticBrew();    break;
+                    case 4: gods3 = new InfernalBrew();   break;
+                    case 5: gods3 = new ShockingBrew();   break;
+                    default:
+                            gods3 = new WaterSoul();   break;
+                }
+                drop(gods3,328).type = Heap.Type.FOR_ICE;
+
+                Item gods4;
+                gods4 = Generator.random(Generator.Category.ARTIFACT);
+                gods4.cursed = false;
+                drop(gods4,198).type = Heap.Type.FOR_ICE;
+            }
+        }
+
 
 
         MoRuoS npc4 = new MoRuoS();
@@ -479,7 +525,6 @@ public class ZeroCityLevel extends Level {
         mobs.add(npc13);
 
         PaswordBadges.loadGlobal();
-        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
         if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) || DeviceCompat.isDebug() && DeviceCompat.isDesktop()) {
             WaloKe npc14 = new WaloKe();

@@ -66,6 +66,8 @@ public class Item implements Bundlable {
 
 	public interface ThanksItem{}
 
+	public interface LengedsItem{}
+
 	public String anonymousName() {
 		return "ITEM_NAME_ANONYMOUS";
 	}

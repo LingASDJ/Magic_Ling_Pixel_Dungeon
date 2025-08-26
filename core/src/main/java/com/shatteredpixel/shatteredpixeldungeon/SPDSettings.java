@@ -134,7 +134,7 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_ZOOM			= "zoom";
 	public static final String KEY_BRIGHTNESS	= "brightness";
 	public static final String KEY_GRID 	    = "visual_grid";
-	public static final String KEY_SPLASH_SCREEN= "splash_screen";
+	public static final String KEY_SPLASH_SCREEN= "splash_screen_2025";
 	public static final String KEY_PRAYCOUNT = "pray_count";
 
 	public static final String KEY_TIMEOUT= "timeout";

@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.En
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.AttributeViewer;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.BuffGenerator;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
@@ -67,7 +68,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElectricalSmoke;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
@@ -90,7 +90,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.SelectableRing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
@@ -98,9 +97,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.SelectableWand;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
@@ -173,8 +171,6 @@ public enum HeroClass {
 	public void initHero( Hero hero ) {
 		if (!Dungeon.isDLC(Conducts.Conduct.SEED)) {
 
-			//Statistics.Hollow_Holiday = true;
-
 			if (RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY) {
 				new CrystalLing().quantity(1).identify().collect();
 				Buff.affect(hero, BlessLing.class).set((100), 1);
@@ -220,11 +216,8 @@ public enum HeroClass {
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			new PropBag().quantity(1).identify().collect();
-			new WandOfSun().collect();
-			new ElectricalSmoke().collect();
 
-			new SelectableRing().collect();
-			new SelectableWand().collect();
+			new ScrollOfGolems().collect();
 
 			new PotionBandolier().collect();
 			Dungeon.LimitedDrops.POTION_BANDOLIER.dropped();
@@ -249,6 +242,7 @@ public enum HeroClass {
 			new CustomPlayer().quantity(1).identify().collect();
 			new AttributeViewer().quantity(1).identify().collect();
 			new TrapPlacer().quantity(1).identify().collect();
+			new BuffGenerator().quantity(1).identify().collect();
 
 			CustomWeapon customWeapon = new CustomWeapon();
 			customWeapon.adjustStatus();

@@ -45,6 +45,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
@@ -74,6 +75,16 @@ public class CerDogBossLevel extends Level{
             477,478,479,480,481,482,483,
             445,414,383,352,321,290,259,
     };
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.HOLLOW_CITY_HARD, true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Music.playModeBGM(Assets.Music.BOSSDOG,true);
+    }
 
     @Override
     public String tilesTex() {
@@ -392,12 +403,6 @@ public class CerDogBossLevel extends Level{
             this.pos = pos;
 
             PointF p = DungeonTilemap.tileCenterToWorld( pos );
-//            for (int i=0; i){
-//
-//            }
-//            pos( p.x - 4, p.y + 2, 2, 0 );
-//
-//            pour( FlameParticle.FACTORY, 0.15f );
 
             add( new Halo( 12, 0xFFa500, 0.3f ).point( p.x, p.y + 1 ) );
         }

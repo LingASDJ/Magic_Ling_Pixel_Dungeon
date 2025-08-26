@@ -28,8 +28,20 @@ public class ApprenticeWitch extends Mob {
 
     private boolean shot = true;
     public boolean isTargetingTeleport = true;
-
+    public int Sugar;
     private int cellToFire = 0;
+
+    @Override
+    public String info(){
+        String desc = super.info();
+
+        if(Sugar > 0){
+            desc += "\n\n" + Messages.get(ApprenticeWitch.class,"love",5-Sugar);
+        }
+
+
+        return desc;
+    }
 
     @Override
     protected boolean canAttack( Char enemy ) {
@@ -166,11 +178,14 @@ public class ApprenticeWitch extends Mob {
 
 
     private static final String ISTR = "ISTR";
+    public static final String SUGAR = "Sugar";
+
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(ISTR, isTargetingTeleport);
+        bundle.put(SUGAR, Sugar);
     }
 
 
@@ -178,6 +193,7 @@ public class ApprenticeWitch extends Mob {
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         isTargetingTeleport = bundle.getBoolean(ISTR);
+        Sugar = bundle.getInt(SUGAR);
     }
 
 }

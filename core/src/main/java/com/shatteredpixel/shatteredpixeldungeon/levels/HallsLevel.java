@@ -191,7 +191,7 @@ public class HallsLevel extends RegularLevel {
 		}
 		if(Dungeon.depth == 21 && Dungeon.branch == 0 && Statistics.gdzHelpDungeon == 4){
 			Gudazi npc20 = new Gudazi();
-			npc20.pos = entrance()+1;
+			npc20.pos = exit()-1;
 			mobs.add(npc20);
 		}
 

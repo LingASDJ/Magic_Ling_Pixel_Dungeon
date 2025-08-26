@@ -142,7 +142,7 @@ abstract public class Boss extends Mob {
 
             boolean holiday = RegularLevel.holiday == RegularLevel.Holiday.PQJ;
 
-            if(!Statistics.bossRushMode && depth != 5){
+            if(!Statistics.bossRushMode && depth != 5 && !noDropIceCoin){
                 int normal = ((hero.lvl + Dungeon.depth)/5) * (Math.max(Challenges.activeChallenges(), 5));
                 int count = holiday ? 2 : 1;
                 Dungeon.level.drop(new IceCyanBlueSquareCoin(normal * count),pos);
@@ -170,8 +170,6 @@ abstract public class Boss extends Mob {
             defenseSkill = Math.round(baseEva); //闪避率
             EXP = exp; //经验值
             HP = HT = Math.round(baseHT); //生命值
-
-
         }
 
         @Override
@@ -194,21 +192,21 @@ abstract public class Boss extends Mob {
 
             return Math.round(Random.NormalFloat(baseMinDef, baseMaxDef)); //随机防御
         }
-    private boolean first=false;
+    public boolean noDropIceCoin = false;
 
-    private static final String FIRST = "first";
+    private static final String NO_DROP_ICE_COIN_KEY = "noDropIceCoin";
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
-        bundle.put(FIRST, first);
+        bundle.put(NO_DROP_ICE_COIN_KEY, noDropIceCoin);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
-        first = bundle.getBoolean(FIRST);
-        if (state != SLEEPING) BossHealthBar.assignBoss(this);
+        noDropIceCoin = bundle.getBoolean(NO_DROP_ICE_COIN_KEY);
+        if (state != SLEEPING && !noDropIceCoin)  BossHealthBar.assignBoss(this);
         if ((HP*2 <= HT)) BossHealthBar.bleed(true);
     }
 
@@ -249,14 +247,14 @@ abstract public class Boss extends Mob {
     public void notice() {
         super.notice();
         if (Statistics.bossRushMode && !(Dungeon.depth == 2 || Dungeon.depth == 4 || Dungeon.depth == 24 || Dungeon.depth == 27)){
-            if(!first){
+            if(!noDropIceCoin){
                 if(Statistics.difficultyDLCEXLevel >= 3){
                     RollEX();
                     RollCS();
                 } else if (Statistics.difficultyDLCEXLevel == 2){
                     RollCS();
                 }
-                first = true;
+                noDropIceCoin = true;
             }
         }
     }

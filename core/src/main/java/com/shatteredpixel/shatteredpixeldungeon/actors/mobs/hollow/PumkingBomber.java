@@ -159,11 +159,8 @@ public class PumkingBomber extends Mob {
                     @Override
                     public void call() {
 
-                        if (leapVictim != null && alignment != leapVictim.alignment){
-                            new Bomb().explodeMobs(endPos);
-                            leapVictim.sprite.flash();
-                            Sample.INSTANCE.play(Assets.Sounds.HIT);
-                        }
+                        new Bomb().explodeMobs(endPos);
+                        Sample.INSTANCE.play(Assets.Sounds.HIT);
 
                         if (endPos != leapPos){
                             Actor.add(new Pushing(PumkingBomber.this, leapPos, endPos));

@@ -393,6 +393,7 @@ public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
                 charge++;
                 if(charge>chargeCap)charge = chargeCap;
             }
+            updateQuickslot();
 
             smoke = artifact;
 

@@ -2,11 +2,17 @@ package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Vampire;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -65,12 +71,22 @@ public class PotionOfHolyWater extends Item {
     protected void DEM(int cell) {
         Char ch = Actor.findChar(cell);
         if(ch != null){
-            if (ch instanceof Frankenstein){
+            if (ch instanceof Vampire) {
+                ((Vampire) ch).holy = true;
+                GLog.n(Messages.get(this,"vampire_reset"));
+                SpellSprite.showRGB(ch, SpellSprite.ANKH,0.1f,1f,0.1f);
+                CellEmitter.get( cell ).burst( Speck.factory( Speck.STEAM ), 5 );
+                PaswordBadges.VAM_GHOST();
+            } else if (ch instanceof Frankenstein){
                 ((Frankenstein) ch).MustDied = true;
                 GLog.n(Messages.get(this,"zombie_noreset"));
+                ch.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10 );
+                CellEmitter.get( cell ).burst( Speck.factory( Speck.DISCOVER ), 5 );
+                SpellSprite.showRGB(ch, SpellSprite.ANKH,0.1f,1f,0.1f);
             } else if (ch.properties.contains(Char.Property.HOLLOW)) {
-                ch.damage(curUser.damageRoll(),new DM100.LightningBolt());
+                ch.damage(ch.HT/2,new DM100.LightningBolt());
                 GLog.p(Messages.get(this,"hollow"));
+                CellEmitter.get( cell ).burst( Speck.factory( Speck.EVOKE ), 5 );
             }
         }
 

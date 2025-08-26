@@ -10,7 +10,7 @@ public class DreamSprite extends MobSprite {
 
         texture( Assets.Sprites.LEZI );
 
-        TextureFilm ren = new TextureFilm(this.texture, 10, 16);
+        TextureFilm ren = new TextureFilm(this.texture, 12, 16);
 
         idle = new MovieClip.Animation(9, true);
         idle.frames(ren, 0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,3,4,5,6,6,6,6,6,6,6,6,6,6,7,8);

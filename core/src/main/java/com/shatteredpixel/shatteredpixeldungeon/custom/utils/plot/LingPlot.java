@@ -8,10 +8,13 @@ import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Random;
+
+import java.util.List;
 
 public class LingPlot extends Plot {
 
@@ -92,7 +95,15 @@ public class LingPlot extends Plot {
 
     private void process_to_4() {
         diagulewindow.changeText(Messages.get(WhiteLing.class, "message4"));
-        Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.WAND ) ), hero.pos );
+        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+        if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX)) {
+            Wand wand = (Wand) Generator.randomUsingDefaults( Generator.Category.WAND );
+            wand.cursed = false;
+            Dungeon.level.drop( wand, hero.pos );
+        } else {
+            Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.WAND ) ), hero.pos );
+        }
+
     }
 
     public static class LingPlotGood extends Plot {

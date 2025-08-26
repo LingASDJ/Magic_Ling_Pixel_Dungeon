@@ -95,64 +95,14 @@ public class Typhon extends NTNPC {
         TyphonPlot typhonPlot = new TyphonPlot();
 
 
-        if(!secnod && first && !Statistics.RandMode){
+        if(first){
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
                     GameScene.show(new WndDialog(typhonPlot,false));
                 }
             });
-            first = false;
             return true;
-        } else if(!secnod && !rd && !Statistics.RandMode) {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndOptions(new TyphonSprite(),
-                            Messages.titleCase(Messages.get(Typhon.class, "name")),
-                            Messages.get(Typhon.class, "quest_start_prompt"),
-                            Messages.get(Typhon.class, "enter_yes"),
-                            Messages.get(Typhon.class, "enter_no")) {
-                        @Override
-                        protected void onSelect(int index) {
-                            if (index == 0) {
-                                Statistics.questScores[4] += 30000;
-                                Dungeon.win( Typhon.class );
-                                Dungeon.deleteGame( GamesInProgress.curSlot, true );
-                                Badges.CITY_END();
-                                GameScene.scene.add(new Delayer(0.1f){
-                                    @Override
-                                    protected void onComplete() {
-                                        GameScene.scene.add(new Delayer(3f){
-                                            @Override
-                                            protected void onComplete() {
-                                                Game.switchScene( RankingsScene.class );
-                                            }
-                                        });
-                                    }
-                                });
-                                Music.INSTANCE.playTracks(
-                                        new String[]{Assets.Music.THEME_2, Assets.Music.THEME_1},
-                                        new float[]{1, 1},
-                                        false);
-                            } else if(index == 1){
-                                yell( Messages.get(Typhon.class, "goodluck", Dungeon.hero.name()) );
-                                Buff buff = hero.buff(TimekeepersHourglass.timeFreeze.class);
-                                if (buff != null) buff.detach();
-                                buff = hero.buff(Swiftthistle.TimeBubble.class);
-                                if (buff != null) buff.detach();
-                                InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-                                InterlevelScene.returnDepth = 25;
-                                InterlevelScene.returnPos = -1;
-                                Game.switchScene( InterlevelScene.class );
-                            }
-                        }
-                    });
-                }
-
-            });
-        } else {
-            tell(Messages.get(Typhon.class,"now_letgo"));
         }
         return true;
     }

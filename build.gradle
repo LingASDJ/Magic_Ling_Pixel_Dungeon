@@ -1,17 +1,21 @@
 buildscript {
     repositories {
-        mavenCentral()
         google()
+        mavenCentral()
         maven {
             url = uri("https://storage.googleapis.com/r8-releases/raw")
         }
+       maven {
+            url = uri("https://jitpack.io")
+       }
     }
     dependencies {
+        //noinspection GradleDependency
         classpath 'com.android.tools:r8:8.7.18'
         //noinspection AndroidGradlePluginVersion
         classpath 'com.android.tools.build:gradle:8.7.2'
         classpath 'com.google.gms:google-services:4.4.2'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.3'
     }
 }
 
@@ -22,25 +26,27 @@ allprojects {
         appName = 'Magic Ling Pixel Dungeon'
         appPackageName = 'com.ansdomagiclingpixeldungeon.ling'
 
-        appVersionCode = 2025042400
-        appVersionName = '0.8.4.2'
+        appVersionCode = 2025080600
+        appVersionName = '0.8.6.0'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
         appAndroidCompileSDK = 34
-        appAndroidMinSDK = 19
+        appAndroidMinSDK = 21
         appAndroidTargetSDK = 33
 
-        gdxControllersVersion = '2.2.3'
-
         gdxVersion = '1.12.1'
+        gdxControllersVersion = '2.2.3'
     }
 
     version = appVersionName
 
     repositories {
-        mavenCentral()
         google()
+        mavenCentral()
+        maven {
+            url = uri("https://jitpack.io")
+        }
     }
 
 }

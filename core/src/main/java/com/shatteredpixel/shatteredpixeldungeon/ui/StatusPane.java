@@ -127,6 +127,7 @@ public class StatusPane extends Component {
 	public PageIndicator page;
 	public PageIndicatorB pageb;
 
+	public HolidaySelectIndicator holidayselect;
 	public BossSelectIndicator bossselect;
 	public LanterFireCator lanter;
 
@@ -265,6 +266,9 @@ public class StatusPane extends Component {
 
 		pageb=new PageIndicatorB();
 		add(pageb);
+
+		holidayselect =new HolidaySelectIndicator();
+		add(holidayselect);
 
 		bossselect=new BossSelectIndicator();
 		if(!(Statistics.RandMode || Statistics.bossRushMode)){
@@ -564,10 +568,12 @@ public class StatusPane extends Component {
 			page.setPos(0, 40);
 			pageb.setPos(0, 1000);
 			bossselect.setPos(0, 52);
+			holidayselect.setPos(0,78);
 		} else {
 			page.setPos(0, 1000);
 			pageb.setPos(0, 40);
 			bossselect.setPos(0, 1000);
+			holidayselect.setPos(0,1000);
 		}
 
 		if (hero != null && hero.isAlive()) {

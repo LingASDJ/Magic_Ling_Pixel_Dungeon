@@ -24,18 +24,19 @@ package com.shatteredpixel.shatteredpixeldungeon.messages;
 import java.util.Locale;
 
 public enum Languages {
-	CHINESE("中文",      "",   Status.REVIEWED,  null, null),
-	RUSSIAN("Russian", "ru", Status.UNREVIEWED, new String[]{"JDSALing","FixAkaTheFix"},new String[]{"Dominowood371"}),
-	ENGLISH("English",          "en", Status.INCOMPLETE, new String[]{"JDSALing","Catand"},
+	ENGLISH("English","en", Status.UNREVIEWED, new String[]{"JDSALing","Catand","Biostarbluexray","1000Mistakes"},
 			new String[]{"Noodlemire","Aeonius"}),
-	HARDCHINESE("繁體中文","chk", Status.UNREVIEWED, new String[]{"Sotis"},
-			new String[]{"那些回忆","冷群","JDSALing"}),
+	CHINESE("中文",      "",   Status.REVIEWED,  null, null),
+	RUSSIAN("Russian", "ru", Status.REVIEWED, new String[]{"JDSALing","FixAkaTheFix"},new String[]{"Dominowood371"}),
+	HARDCHINESE("繁體中文","chk", Status.REVIEWED, new String[]{"Sotis","JDSALing"},
+			new String[]{"那些回忆","冷群"}),
 	JAPANESE("日本語","ja", Status.INCOMPLETE, new String[]{"JDSALing","Gosamaru","FromBeyond"}, new String[]{
 			"Gosamaru",
 			"Otogiri",
 			"Siraore_Rou", "amama",
 			"daingewuvzeevisiddfddd", "kiyofumimanabe", "librada", "mocklike", "tomofumikitano"}),
-	GREEK("ελληνικά",       "el", Status.INCOMPLETE, new String[]{"Aeonius", "JDSALing"}, null);
+	GREEK("ελληνικά",       "el", Status.INCOMPLETE, new String[]{"Aeonius", "JDSALing"}, null),
+	SPANISH("Español", "es", Status.INCOMPLETE, new String[]{"lazaroysr96", "JDSALing","Elon004"},null);
 
 	public enum Status{
 		//below 80% complete languages are not added.

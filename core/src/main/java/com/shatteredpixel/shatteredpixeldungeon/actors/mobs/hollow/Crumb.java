@@ -37,9 +37,8 @@ public class Crumb extends Mob {
 
         EXP = 20;
 
-        maxLvl = -36;
+        maxLvl = 36;
         properties.add(Char.Property.HOLLOW);
-        properties.add(Property.IMMOVABLE);
 
         WANDERING = new Wandering();
         FLEEING = new Fleeing();

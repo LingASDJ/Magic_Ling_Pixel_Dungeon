@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -37,7 +38,6 @@ public abstract class WellWater extends Blob {
 	@Override
 	protected void evolve() {
 		int cell;
-		boolean seen = false;
 		for (int i=area.top-1; i <= area.bottom; i++) {
 			for (int j = area.left-1; j <= area.right; j++) {
 				cell = j + i* Dungeon.level.width();
@@ -66,7 +66,7 @@ public abstract class WellWater extends Blob {
 			
 			if (newItem != null) {
 				
-				if (newItem == oldItem) {
+				if (newItem == oldItem || oldItem instanceof LockSword) {
 
 				} else if (oldItem.quantity() > 1) {
 
@@ -105,22 +105,36 @@ public abstract class WellWater extends Blob {
 	protected abstract boolean affectHero( Hero hero );
 	
 	protected abstract Item affectItem( Item item, int pos );
-	
+
 	public static void affectCell( int cell ) {
-		
-		Class<?>[] waters = {WaterOfHealth.class, WaterOfAwareness.class,  WaterOfTransmutation.class, WaterOfOil.class};
-		
+
+		// 外层数组包含所有井水类型
+		Class<?>[] waters = {WaterOfHealth.class, WaterOfAwareness.class, WaterOfTransmutation.class, WaterOfOil.class};
+
 		for (Class<?>waterClass : waters) {
 			WellWater water = (WellWater)Dungeon.level.blobs.get( waterClass );
 			if (water != null &&
-				water.volume > 0 &&
-				water.cur[cell] > 0 &&
-				water.affect( cell )) {
-				
+					water.volume > 0 &&
+					water.cur[cell] > 0 &&
+					water.affect( cell )) {
+
 				Level.set( cell, Terrain.EMPTY_WELL );
 				GameScene.updateMap( cell );
-				
-				return;
+
+				if (Dungeon.level.feeling == Level.Feeling.THREEWELL) {
+					Class<?>[] threeWaters = {WaterOfHealth.class, WaterOfAwareness.class, WaterOfTransmutation.class};
+					for (Class<?> threeWaterClass : threeWaters) {
+						Blob blob = Dungeon.level.blobs.get(threeWaterClass);
+						if (blob != null) {
+
+							for (int blobCell : blob.getActiveCells()) {
+								Level.set(blobCell, Terrain.EMPTY_WELL);
+								GameScene.updateMap(blobCell);
+							}
+							blob.fullyClear();
+						}
+					}
+				}
 			}
 		}
 	}

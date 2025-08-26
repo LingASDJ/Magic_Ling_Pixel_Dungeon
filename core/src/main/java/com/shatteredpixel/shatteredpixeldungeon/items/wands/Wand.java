@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
@@ -166,16 +165,6 @@ public abstract class Wand extends Item {
 	}
 
 	public boolean tryToZap( Hero owner, int target ){
-
-		ScaryBuff scaryBuff = Dungeon.hero.buff(ScaryBuff.class);
-		if(scaryBuff != null){
-			if(scaryBuff.Scary>70){
-				GLog.w(Messages.get(this, "no_holo"));
-				return false;
-			}
-		}
-
-
 		if (owner.buff(WildMagic.WildMagicTracker.class) == null && owner.buff(MagicImmune.class) != null){
 			GLog.w( Messages.get(this, "no_magic") );
 			return false;
@@ -579,6 +568,11 @@ public abstract class Wand extends Item {
 			price = 1;
 		}
 		return price;
+	}
+
+	@Override
+	public int iceCoinValue() {
+		return (int) (value() * 2);
 	}
 	
 	private static final String USES_LEFT_TO_ID     = "uses_left_to_id";

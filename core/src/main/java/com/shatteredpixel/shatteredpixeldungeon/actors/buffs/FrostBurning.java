@@ -60,7 +60,7 @@ public class FrostBurning extends Buff implements Hero.Doom {
 
         if (target.isAlive() && !target.isImmune(getClass())) {
 
-            int damage = Random.NormalIntRange( 4,6 + Dungeon.depth/5 + hero.lvl/5 );
+            int damage = Math.min(Random.NormalIntRange( 4,6 + Dungeon.depth/5 + hero.lvl/5 ), 16);
             //初始伤害4到6点 随着每深入5层+1伤害 随着玩家等级每升级5级+1伤害
             Buff.detach( target, Chill.class);
 
@@ -68,7 +68,7 @@ public class FrostBurning extends Buff implements Hero.Doom {
 
                 Hero hero = (Hero)target;
 
-                hero.damage( damage, this );
+                hero.damage( damage, this, Char.DamageTyPe.Element );
                 burnIncrement++;
 
                 //at 4+ turns, there is a (turns-3)/3 chance an item burns
@@ -97,7 +97,7 @@ public class FrostBurning extends Buff implements Hero.Doom {
                 }
 
             } else {
-                target.damage( damage, this );
+                target.damage( damage, this, Char.DamageTyPe.Element );
             }
 
             if (target instanceof Thief && ((Thief) target).item != null) {

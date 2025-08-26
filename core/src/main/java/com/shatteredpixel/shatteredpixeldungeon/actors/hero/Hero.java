@@ -139,6 +139,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.Servan
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.Sothoth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SothothEyeDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SothothLasher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
@@ -175,6 +176,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.BlackKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.GreenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
@@ -225,6 +227,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
@@ -232,6 +235,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -242,6 +246,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
@@ -411,7 +416,7 @@ public class Hero extends Char {
 		ScaryBuff scaryBuff = Dungeon.hero.buff(ScaryBuff.class);
 		if(scaryBuff != null){
 			if(scaryBuff.Scary>80){
-				strBonus -= 3;
+				strBonus -= 2;
 			}
 		}
 
@@ -713,26 +718,58 @@ public class Hero extends Char {
 		KindOfWeapon wep = belongings.attackingWeapon();
 
 		float accuracy = 1;
+
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
 			accuracy = CustomPlayer.baseAccuracy;
 		}
 
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 
-		if (wep instanceof MissileWeapon){
-			if (Dungeon.level.adjacent( pos, target.pos )) {
-				accuracy *= (0.5f + 0.2f*pointsInTalent(Talent.POINT_BLANK));
-			} else {
-				accuracy *= 1.5f;
+		//precise assault and liquid agility
+		if (!(wep instanceof MissileWeapon)) {
+			if ((hasTalent(Talent.PRECISE_ASSAULT) || hasTalent(Talent.LIQUID_AGILITY))
+					//does not trigger on ability attacks
+					&& belongings.abilityWeapon != wep && buff(MonkEnergy.MonkAbility.UnarmedAbilityTracker.class) == null){
+
+				//non-duelist benefit for precise assault, can stack with liquid agility
+				if (heroClass != HeroClass.DUELIST) {
+					//persistent +10%/20%/30% ACC for other heroes
+					accuracy *= 1f + 0.1f * pointsInTalent(Talent.PRECISE_ASSAULT);
+				}
+
+				if (wep instanceof Flail && buff(Flail.SpinAbilityTracker.class) != null){
+					//do nothing, this is not a regular attack so don't consume talent fx
+				} else if (wep instanceof Crossbow && buff(Crossbow.ChargedShot.class) != null || wep instanceof ForestBow && buff(ForestBow.ChargedShot.class) != null){
+					//do nothing, this is not a regular attack so don't consume talent fx
+				} else if (buff(Talent.PreciseAssaultTracker.class) != null) {
+					// 2x/5x/inf. ACC for duelist if she just used a weapon ability
+					switch (pointsInTalent(Talent.PRECISE_ASSAULT)){
+						default: case 1:
+							accuracy *= 2; break;
+						case 2:
+							accuracy *= 5; break;
+						case 3:
+							accuracy *= Float.POSITIVE_INFINITY; break;
+					}
+					buff(Talent.PreciseAssaultTracker.class).detach();
+				} else if (buff(Talent.LiquidAgilACCTracker.class) != null){
+					// 3x/inf. ACC, depending on talent level
+					accuracy *= pointsInTalent(Talent.LIQUID_AGILITY) == 2 ? Float.POSITIVE_INFINITY : 3f;
+					Talent.LiquidAgilACCTracker buff = buff(Talent.LiquidAgilACCTracker.class);
+					buff.uses--;
+					if (buff.uses <= 0) {
+						buff.detach();
+					}
+				}
 			}
 		}
 
 		if (buff(Scimitar.SwordDance.class) != null){
-			accuracy *= 1.25f;
+			accuracy *= 1.50f;
 		}
 
 		if(attackDelay() >1 && hasTalent(Talent.STRONGMAN)){
-			accuracy += accuracy * Math.max (attackDelay()-1f * ( 1f/3f * pointsInTalent(Talent.STRONGMAN)) ,0.75f);
+			accuracy += accuracy * Math.max (attackDelay()- (1f / 3f * pointsInTalent(Talent.STRONGMAN)),0.75f);
 		}
 
 		for(StarSachet star : belongings.getAllItems(StarSachet.class)) {
@@ -743,9 +780,13 @@ public class Hero extends Char {
 
 		if(belongings.getItem(TerrorDoll.class) != null || belongings.getItem(TerrorDollB.class) != null) accuracy *= 0.75f;
 
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ) {
+			return CustomPlayer.baseAccuracy;
+		}
+
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
 			return  CustomPlayer.baseAccuracy;
-		} else if (!RingOfForce.fightingUnarmed(this)) {
+		} else if  (!RingOfForce.fightingUnarmed(this)) {
 			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
 		} else {
 			return (int)(attackSkill * accuracy);
@@ -959,6 +1000,7 @@ public class Hero extends Char {
 	@Override
 	public float speed() {
 		float speed = 0;
+
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
 			speed += CustomPlayer.baseSpeed;
 		}
@@ -1006,6 +1048,10 @@ public class Hero extends Char {
 
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
 			speed = CustomPlayer.baseSpeed;
+		}
+
+		if ( buff( DeadDogCerberus.SoulDead.class ) != null){
+			speed = 1f;
 		}
 
 		return speed;
@@ -1110,21 +1156,16 @@ public class Hero extends Char {
 
 	@Override
 	public boolean act() {
-//		if (Dungeon.isChallenged(Challenges.BLOOD_DIED) && Dungeon.depth>2){
-//			Buff.affect(this, BloodLoss.class);
-//		}
 
 		//水中祝福 但在BR不生效
 		if((Dungeon.branch == 0 || Dungeon.branch == 10) && !bossRushMode){
-			if(Dungeon.level.map[pos] == Terrain.WATER){
-				MoveWater();
-			}
+			MoveWater();
 		}
 
 		if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.depth>0 && !Dungeon.bossLevel()){
 			if(Dungeon.level.map[pos] == Terrain.SALT_WATER && !flying && Dungeon.hero.buff(WaterSoulX.class) == null){
 				for (Buff buff : hero.buffs()) {
-					if(buff.type == Buff.buffType.NEGATIVE && buff instanceof FlavourBuff) {
+					if(buff.type == Buff.buffType.NEGATIVE && buff instanceof FlavourBuff && paralysed == 0 && !hero.rooted && !(buff instanceof Vertigo)) {
 						Buff.prolong(this, (Class<? extends FlavourBuff>) buff.getClass(), 5f);
 					}
 					Buff.affect(this, OozeStatueDead.class);
@@ -1627,7 +1668,7 @@ public class Hero extends Char {
 			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE && heap.type != Type.FOR_RUSH)) {
 
 				if ((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
-						|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)|| (heap.type == Type.BLACK && Notes.keyCount(new BlackKey(Dungeon.depth)) < 1)){
+						|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)|| (heap.type == Type.BLACK && Notes.keyCount(new BlackKey(Dungeon.depth)) < 1) || (heap.type == Type.GREEN_CHSET && Notes.keyCount(new GreenKey(Dungeon.depth)) < 1)){
 
 					GLog.w( Messages.get(this, "locked_chest") );
 					ready();
@@ -2013,16 +2054,6 @@ public class Hero extends Char {
 			wep = belongings.attackingWeapon();
 		}
 
-		int dmg;
-//		if (Dungeon.isChallenged(Challenges.BLOOD_DIED)) {
-//			dmg = (new AltVampiric()).proc(null, this, enemy, damage);
-//
-//			if(Random.Float() < 0.1f){
-//				dmg *= 2;
-//			}
-//			damage = dmg;
-//		}
-
 		if (wep != null) damage = wep.proc( this, enemy, damage );
 
 		damage = Talent.onAttackProc( this, enemy, damage );
@@ -2073,6 +2104,11 @@ public class Hero extends Char {
 
 	@Override
 	public void damage( int dmg, Object src ) {
+		damage(dmg, src ,DamageTyPe.MAGIC);
+	}
+
+	@Override
+	public void damage( int dmg, Object src, DamageTyPe type ) {
 
 		if(hero.belongings.getItem(EmotionalAggregation.class)!=null && Math.random()>0.9){
 			GLog.n(Messages.get(EmotionalAggregation.class,"block"));
@@ -2212,7 +2248,7 @@ public class Hero extends Char {
 		int preTrueHP = HP;
 
 		if (src instanceof Hunger) preHP -= shielding();
-		super.damage( dmg, src );
+		super.damage( dmg, src , type);
 		int postHP = HP + shielding();
 		if (src instanceof Hunger) postHP -= shielding();
 		int effectiveDamage = preHP - postHP;
@@ -2225,6 +2261,8 @@ public class Hero extends Char {
 
 		if (trueDamage>0){
 			if (this.hasTalent(Talent.LIQUID_WILLPOWER )){
+
+				/*
 				Class<?> srcClass = src.getClass();
 				HashSet<Class> resists = new HashSet<>(RingOfElements.RESISTS);
 				boolean flag = true;
@@ -2234,6 +2272,8 @@ public class Hero extends Char {
 						break;
 					}
 				}
+				*/
+				boolean flag = (type == DamageTyPe.PHYSICAL);
 				if (flag) {
 					Buff.affect(this,Barrier.class).setShield(2*pointsInTalent(Talent.LIQUID_WILLPOWER));
 				}
@@ -2509,7 +2549,7 @@ public class Hero extends Char {
 
 		} else if (heap != null
 				//moving to an item doesn't auto-pickup when enemies are near...
-				&& (visibleEnemies.size() == 0 || cell == pos ||
+				&& (visibleEnemies.isEmpty() || cell == pos ||
 				//...but only for standard heaps. Chests and similar open as normal.
 				(heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE && heap.type != Type.FOR_RUSH))) {
 
@@ -2541,10 +2581,10 @@ public class Hero extends Char {
 			curAction = new HeroAction.Unlock( cell );
 
 		} else if (Dungeon.level.getTransition(cell) != null
-				//moving to a transition doesn't automatically trigger it when enemies are near
-				&& (visibleEnemies.size() == 0 || cell == pos)
+				&& (visibleEnemies.isEmpty() || cell == pos)
 				&& !Dungeon.level.locked
-				&& ( HolidayEvent() || Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE) ) {
+				&& ( HolidayEvent() ||
+				Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE) ) {
 
 			curAction = new HeroAction.LvlTransition( cell );
 
@@ -2566,10 +2606,12 @@ public class Hero extends Char {
 		boolean result;
 		if(bossRushMode){
 			result = Dungeon.depth < 43;
-		} else if(holiday == RegularLevel.Holiday.XMAS){
+		} else if(holiday == RegularLevel.Holiday.XMAS) {
 			result = Dungeon.depth < 31;
+		} else if(holiday == RegularLevel.Holiday.HWEEN) {
+			result = Dungeon.depth < 32;
 		} else {
-			result = Dungeon.depth < 31;
+			result = Dungeon.depth < 27;
 		}
 		return result;
 	}
@@ -2627,7 +2669,7 @@ public class Hero extends Char {
 				buff(Talent.WandPreservationCounter.class).detach();
 			}
 
-			if (lvl < MAX_LEVEL) {
+			if (lvl < (Statistics.Hollow_Holiday ? 35 : MAX_LEVEL)) {
 				lvl++;
 				levelUp = true;
 
@@ -2890,7 +2932,6 @@ public class Hero extends Char {
 					buff.detach();
 				}
 			}
-
 		if(Dungeon.ColdWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
 			for (Buff buff : hero.buffs()) {
 				if (buff instanceof Chill) {
@@ -3046,9 +3087,10 @@ public class Hero extends Char {
 
 		if( buff(ElectricalSmoke.SmokingAlloy.class) != null) GLog.n(Messages.get(ElectricalSmoke.class,"die"));
 
+		boolean OnlySummonAlive = false;
 		//灯火值低于40 死亡生成自己的邪恶面，并清空金币，背包也一并带走。（灵感：空洞骑士）
 		for (Ankh i : belongings.getAllItems(Ankh.class)) {
-			if (ankh != null || i.isBlessed()) {
+			if (ankh != null && !(i.isBlessed()) && !OnlySummonAlive) {
 				if (lanterfireactive && hero.lanterfire <= 40 && !i.isBlessed() || hero.buff(LostInventory.class) != null) {
 					BlackSoul s = new BlackSoul();
 					if(Statistics.ankhToExit){
@@ -3062,6 +3104,7 @@ public class Hero extends Char {
 					GameScene.add(s);
 					Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
 					Buff.affect(s, DeadSoul.class);
+					OnlySummonAlive = true;
 					GameScene.flash(0x80FF0000);
 				}
 			}
@@ -3163,8 +3206,11 @@ public class Hero extends Char {
 
 	@Override
 	public boolean isAlive() {
+		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
 
-		if (HP <= 0) {
+		if(getHeal != null) {
+			return true;
+		} else if (HP <= 0) {
 			if (berserk == null) berserk = buff(Berserk.class);
 			return berserk != null && berserk.berserking();
 		} else {
@@ -3299,14 +3345,16 @@ public class Hero extends Char {
 					hasKey = Notes.remove(new CrystalKey(Dungeon.depth));
 				} else if (heap.type == Type.BLACK){
 					hasKey = Notes.remove(new BlackKey(Dungeon.depth));
+				} else if(heap.type == Type.GREEN_CHSET){
+					hasKey = Notes.remove(new GreenKey(Dungeon.depth));
 				}
 
 				if(hasKey && heap.type == Type.WHITETOMB && Dungeon.depth>25){
 					GameScene.show(new WndOptions(new ItemSprite(heap),
-							Messages.titleCase(Messages.get(heap.type == Type.WHITETOMB, "name")),
-							Messages.get(heap.type == Type.WHITETOMB, "start_prompt"),
-							Messages.get(heap.type == Type.WHITETOMB, "enter_yes"),
-							Messages.get(heap.type == Type.WHITETOMB, "enter_no")) {
+							Messages.titleCase(Messages.get(BigEyeRoom.class, "name")),
+							Messages.get(BigEyeRoom.class, "start_prompt"),
+							Messages.get(BigEyeRoom.class, "enter_yes"),
+							Messages.get(BigEyeRoom.class, "enter_no")) {
 						@Override
 						protected void onSelect(int index) {
 							if (index == 0) {

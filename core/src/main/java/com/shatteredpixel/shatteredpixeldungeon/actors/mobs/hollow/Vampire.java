@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
@@ -19,6 +20,7 @@ import com.watabou.utils.Random;
 public class Vampire extends Mob {
 
     public boolean hereEnenmy;
+    public boolean holy;
 
     {
         spriteClass = VampireSprite.class;
@@ -52,13 +54,38 @@ public class Vampire extends Mob {
             activate();
         }
 
+        if(holy){
+            state = PASSIVE;
+            godDied();
+            HP = 1;
+            Buff.affect(this, Bleeding.class).set(2f);
+        }
+
         return super.act();
+    }
+
+    @Override
+    public CharSprite sprite() {
+        VampireSprite sprite = (VampireSprite) super.sprite();
+        if (hereEnenmy){
+            sprite.hideVampire(this);
+        }
+        return sprite;
     }
 
 
     public void activate(){
         ((VampireSprite) sprite).activateIdle();
     }
+
+    public void godDied(){
+        ((VampireSprite) sprite).GodDied();
+        sprite.hideLost();
+        sprite.hideEmo();
+        sprite.hideAlert();
+        sprite.hideEmo();
+    }
+
 
     @Override
     public String name() {
@@ -125,17 +152,20 @@ public class Vampire extends Mob {
     }
 
     private static final String HERE_ENEMY   = "hereEnemy";
+    private static final String HOLY         = "holy";
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(HERE_ENEMY, hereEnenmy);
+        bundle.put(HOLY, holy);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         hereEnenmy = bundle.getBoolean(HERE_ENEMY);
+        holy = bundle.getBoolean(HOLY);
     }
 
 }

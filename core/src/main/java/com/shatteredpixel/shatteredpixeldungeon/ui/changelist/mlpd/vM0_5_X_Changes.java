@@ -806,7 +806,7 @@ public class vM0_5_X_Changes {
         changes.addButton(new ChangeButton(new RenSprite(), (Messages.get(vM0_5_X_Changes.class, "newnpc1")),
                 Messages.get(vM0_5_X_Changes.class, "renlogs")));
 
-        changes.addButton(new ChangeButton(new Image("Npcs/rt.png", 0, 0, 16, 16), (Messages.get(vM0_5_X_Changes.class, "newnpc2")),
+        changes.addButton(new ChangeButton(new Image("sprites/npc/rt.png", 0, 0, 16, 16), (Messages.get(vM0_5_X_Changes.class, "newnpc2")),
                 Messages.get(vM0_5_X_Changes.class, "obsirlogs")));
 
         changes.addButton(new ChangeButton(new SlylSprite(), (Messages.get(vM0_5_X_Changes.class, "newnpc3")),

@@ -70,11 +70,20 @@ public class PaswordBadges {
     }
 
     public static void ALLCS(int challenges){
+        PaswordBadges.Badge badge = null;
+
         if (challenges == 0) return;
         boolean isNoChampion = Statistics.bossRushMode || Statistics.RandMode;
-        if (challenges >= 13 && !(Dungeon.isDLC(Conducts.Conduct.DEV))|| !isNoChampion && challenges >= 13){
-            displayBadge(PaswordBadges.Badge.ALLCHSX );
+
+        if (challenges >= 15 && !(Dungeon.isDLC(Conducts.Conduct.DEV))|| !isNoChampion && challenges >= 15) {
+            disown( Badge.ALLCHSX );
+            badge = Badge.GODCHSX;
+            local.add( badge );
+        } else if (challenges >= 13 && !(Dungeon.isDLC(Conducts.Conduct.DEV))|| !isNoChampion && challenges >= 13) {
+            badge = Badge.ALLCHSX;
+            local.add( badge );
         }
+        displayBadge( badge );
     }
 
     public static void KILLALLBOSS() {
@@ -113,12 +122,20 @@ public class PaswordBadges {
         displayBadge(Badge.PRAY_LEGEND);
     }
 
+    public static void VAM_GHOST() {
+        displayBadge(Badge.VAMGHOST_DEAD);
+    }
+
+    public static void SUGAR_FRIENDLY() {
+        displayBadge(Badge.SUGAR_FRIENDLY);
+    }
+
     public static void MYTHOLOGY() {
         displayBadge(Badge.PRAY_MYTHOLOGY);
     }
 
-    public static void BLOOD_KING() {
-        displayBadge(Badge.BLOOD_KING);
+    public static void SKY_DEAD() {
+        displayBadge(Badge.SKY_XEAD);
     }
 
 
@@ -133,9 +150,12 @@ public class PaswordBadges {
         SAKA_DIED(5),
         RESET_DAY(6),
         BRCLER(7),
-        ALLCHSX(8,false,true),
 
-        BLOOD_KING(11),
+
+        ALLCHSX(8,true,true),
+        GODCHSX(9,true,true),
+
+        SKY_XEAD(10),
         GODD_MAKE(12),
 
         BIG_X(13),
@@ -149,7 +169,7 @@ public class PaswordBadges {
 
         HELLORWORLD(21),
 
-        PINK_LING(22),
+        PINK_LING(22,true),
 
         WHATSUP(23),
         KILL_DWG(24),
@@ -161,11 +181,15 @@ public class PaswordBadges {
 
         KILL_YOGSTS(28),
 
-        ONE_POUCH(29),
+        ONE_POUCH(29,true),
 
         //祈愿
         PRAY_LEGEND (30),
-        PRAY_MYTHOLOGY (31);
+        PRAY_MYTHOLOGY (31,true),
+
+        VAMGHOST_DEAD(32),
+
+        SUGAR_FRIENDLY(33,true);
 
         public boolean meta;
 
@@ -174,6 +198,10 @@ public class PaswordBadges {
         public int image;
 
         Badge( int image ) {
+            this( image, false,false );
+        }
+
+        Badge( int image,boolean meta ) {
             this( image, false,false );
         }
 
@@ -203,8 +231,6 @@ public class PaswordBadges {
 
     public static HashSet<Badge> global;
     public static HashSet<Badge> local = new HashSet<>();
-
-
 
     private static boolean saveNeeded = false;
 
@@ -308,7 +334,7 @@ public class PaswordBadges {
         if (global.contains( badge )) {
 
             if (!badge.meta) {
-                GLog.h( Messages.get(Badges.class, "endorsed", badge.title()) );
+                GLog.h( Messages.get(PaswordBadges.class, "endorsed", badge.title()) );
             }
 
         } else {
@@ -317,7 +343,7 @@ public class PaswordBadges {
             saveNeeded = true;
 
             if (badge.meta) {
-                GLog.h( Messages.get(Badges.class, "new_super", badge.title()) );
+                GLog.h( Messages.get(PaswordBadges.class, "new_super", badge.title()) );
             } else {
                 GLog.h( Messages.get(Badges.class, "new", badge.title()) );
             }

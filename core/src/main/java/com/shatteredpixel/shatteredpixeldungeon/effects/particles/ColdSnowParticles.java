@@ -133,7 +133,7 @@ public class ColdSnowParticles extends PixelParticle {
                 }
                 visible = true;
             } else if(Statistics.snow && Dungeon.depth == 0 && Dungeon.branch == 0) {
-                visible = false;
+                ((ColdSnowParticles) recycle(ColdSnowParticles.class)).alpha(-0.1f);
             } else {
                 if (visible == (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos])) {
                     float f = delay - Game.elapsed;

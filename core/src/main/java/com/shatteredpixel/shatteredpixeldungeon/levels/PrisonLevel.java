@@ -31,8 +31,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.ClearElemtGuard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.ClearElemtGuardNPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Gudazi;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SkyDead;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -58,7 +60,9 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearGuardSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.NxhySprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
@@ -208,7 +212,15 @@ public class PrisonLevel extends RegularLevel {
 	@Override
 	public boolean activateTransition(Hero hero, LevelTransition transition) {
 		if (transition.type == LevelTransition.Type.BRANCH_EXIT) {
-
+            if (Statistics.amuletObtained){
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndMessage((Messages.get(ClearElemtGuard.class, "cant_enter_c"))));
+                    }
+                });
+                return false;
+            }
 			if (!Statistics.unLockedFireDargon && !SPDSettings.KillDragon()){
 				Game.runOnRenderThread(new Callback() {
 					@Override
@@ -269,6 +281,37 @@ public class PrisonLevel extends RegularLevel {
 				InterlevelScene.curTransition.centerCell = -1;
 				Game.switchScene(InterlevelScene.class);
 			}
+		} else if (transition.type == LevelTransition.Type.DOUBLE_ENTRANCE) {
+
+
+				if (Statistics.skydeadFight){
+					Game.runOnRenderThread(new Callback() {
+						@Override
+						public void call() {
+							GLog.w(Messages.get(SkyDead.class, "cant_enter_a"));
+						}
+					});
+					return false;
+				}
+
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show( new WndOptions( new NxhySprite(),
+								Messages.titleCase(Messages.get(Nxhy.class, "name")),
+								Messages.get(SkyDead.class, "reason"),
+								Messages.get(SkyDead.class, "enter_yes"),
+								Messages.get(SkyDead.class, "enter_no")){
+							@Override
+							protected void onSelect(int index) {
+								if (index == 0){
+									PrisonLevel.super.activateTransition(hero, transition);
+								}
+							}
+						} );
+					}
+				});
+			return false;
 		} else {
 			return super.activateTransition(hero,transition);
 		}
@@ -326,7 +369,7 @@ public class PrisonLevel extends RegularLevel {
 		
 		@Override
 		public void update() {
-			if (visible = (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos])) {
+			if (visible == (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos])) {
 				super.update();
 			}
 		}

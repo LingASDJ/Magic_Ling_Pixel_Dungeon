@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.seed;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -45,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SoulCrack;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
@@ -146,11 +148,6 @@ public abstract class ChampionEnemy extends Buff {
 		int randomNumber = Random.Int(100);
 
 		if (randomNumber < 5) {
-//			//开始硬性限制酸液体，每大层最多遇到3个，关键Boss战后清0
-//			if(Statistics.SiderLing < 4) {
-//				buffCls = ChampionEnemy.Sider.class;
-//				Statistics.SiderLing++;
-//			} else {
 				switch (randomNumber % 6) {
 					case 0: default:
 						buffCls = ChampionEnemy.Small.class;
@@ -168,7 +165,6 @@ public abstract class ChampionEnemy extends Buff {
 						buffCls = ChampionEnemy.HealRight.class;
 						break;
 				}
-//			}
 		} else if (randomNumber < 10) {
 			buffCls = ChampionEnemy.Bomber.class;
 		} else {
@@ -195,7 +191,11 @@ public abstract class ChampionEnemy extends Buff {
 			}
 		}
 
-		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG) && !m.properties.contains(Char.Property.NOBIG) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.SBSG) && depth>5 && Random.Float()<=0.45f ||  Statistics.bossRushMode && m.properties.contains(Char.Property.BOSS)) {
+		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG)
+				&& !m.properties.contains(Char.Property.NOBIG)
+				|| Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.SBSG)
+				&& depth>5 && Random.Float()<=0.45f ||
+				Statistics.bossRushMode && m.properties.contains(Char.Property.BOSS)) {
 			Buff.affect(m, buffCls);
 			m.state = m.WANDERING;
 		}
@@ -683,6 +683,48 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public float evasionAndAccuracyFactor() {
 			return 3f;
+		}
+	}
+
+	public static class DeadSoulCrack extends ChampionEnemy {
+
+		{
+			color = 0xAD54C5;
+		}
+
+		@Override
+		public boolean act() {
+			if(!target.flying)
+				target.flying = true;
+			spend(1f);
+			return true;
+		}
+
+		@Override
+		public void detach() {
+			int target = hero.pos;
+			switch (depth){
+				case 1: case 2: case 3: case 4: case 5:
+					Dungeon.level.drop(new SoulCrack.RedSoulCrack(), target).sprite.drop();
+					break;
+				case 6: case 7: case 8: case 9: case 10:
+					Dungeon.level.drop(new SoulCrack.BlueSoulCrack(), target).sprite.drop();
+					break;
+				case 11: case 12: case 13: case 14: case 15:
+					Dungeon.level.drop(new SoulCrack.GreenSoulCrack(), target).sprite.drop();
+					break;
+				case 16: case 17: case 18: case 19: case 20:
+					Dungeon.level.drop(new SoulCrack.YellowSoulCrack(), target).sprite.drop();
+					break;
+				case 21: case 22: case 23:
+					Dungeon.level.drop(new SoulCrack.PinkSoulCrack(), target).sprite.drop();
+					break;
+			}
+			super.detach();
+		}
+
+		{
+			immunities.add(Blob.class);
 		}
 	}
 

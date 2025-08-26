@@ -371,7 +371,7 @@ public class DwarfGeneralBossLevel extends Level {
         drop(w45,  132).type = Heap.Type.CRYSTAL_CHEST;
 
         Weapon mw4 = (Weapon) Generator.random(Generator.Category.WEP_T4);
-        mw4.level(Random.NormalIntRange(-1,3));
+        mw4.level(Random.NormalIntRange(1,3));
         mw4.cursed = true;
         mw4.identify();
         drop(mw4, 134).type = Heap.Type.LOCKED_CHEST;

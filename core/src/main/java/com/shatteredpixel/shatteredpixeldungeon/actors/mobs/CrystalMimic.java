@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -29,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -46,7 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
-
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import java.util.ArrayList;
 
 public class CrystalMimic extends Mimic {
@@ -55,6 +58,17 @@ public class CrystalMimic extends Mimic {
 		spriteClass = MimicSprite.Crystal.class;
 
 		FLEEING = new Fleeing();
+	}
+
+	@Override
+	public boolean isInvulnerable(Class effect) {
+		for (Mob boss : level.mobs.toArray(new Mob[0])) {
+			if (boss instanceof DiamondKnight) {
+				flying = true;
+				return true;
+			}
+		}
+		return super.isInvulnerable(effect);
 	}
 
 	@Override
@@ -88,10 +102,31 @@ public class CrystalMimic extends Mimic {
 			if (!MimicTooth.stealthyMimics()){
 				desc += "\n\n" + Messages.get(this, "hidden_hint");
 			}
+
+			for (Mob boss : level.mobs.toArray(new Mob[0])) {
+				if (boss instanceof DiamondKnight) {
+					desc += "\n\n" + Messages.get(this, "hidden_ankh");
+				}
+			}
 			return desc;
 		} else {
 			return super.description();
 		}
+
+	}
+
+	@Override
+	public boolean act() {
+		for (Mob boss : level.mobs.toArray(new Mob[0])) {
+            if (boss instanceof DiamondKnight) {
+                alignment = Alignment.NEUTRAL;
+				state = PASSIVE;
+				immunities.add(Buff.class);
+				immunities.add(Blob.class);
+                break;
+            }
+		}
+		return super.act();
 	}
 
 	//does not deal bonus damage, steals instead. See attackProc

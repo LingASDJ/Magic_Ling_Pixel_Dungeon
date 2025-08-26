@@ -9,12 +9,21 @@ import java.util.ArrayList;
 public class Conducts {
     public enum Conduct {
         NULL,
-        EASY,
-        NORMAL,
-        HARD,
+        EASY(0.5f),
+        NORMAL(1f),
+        HARD(2.5f),
         DEV,
         SEED;
 
+        public float scoreMod;
+
+        Conduct(){
+            scoreMod = 0f;
+        }
+
+        Conduct(float scoreMod){
+            this.scoreMod = scoreMod;
+        }
 
         @Override
         public String toString() {
@@ -67,6 +76,11 @@ public class Conducts {
         public Conduct getFirst(){
             if (isConductedAtAll()) return conducts.get(0);
             return null;
+        }
+
+        // 添加这个方法来获取当前的 Conduct 枚举值
+        public Conduct getCurrentConduct() {
+            return isConductedAtAll() ? conducts.get(0) : Conduct.NULL;
         }
     }
 }

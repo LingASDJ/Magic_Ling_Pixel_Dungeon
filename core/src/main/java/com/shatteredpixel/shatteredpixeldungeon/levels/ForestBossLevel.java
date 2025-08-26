@@ -24,7 +24,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-//克里弗斯之果 5层
+//克里弗斯之果 5层 废案楼层
 public class ForestBossLevel extends Level {
 
     //修复跳楼错误

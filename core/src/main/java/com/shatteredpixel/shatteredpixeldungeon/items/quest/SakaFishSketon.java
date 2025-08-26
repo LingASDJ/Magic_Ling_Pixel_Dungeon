@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -22,7 +23,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -123,25 +123,23 @@ public class SakaFishSketon extends Item {
                     }
                 });
             } else if(waterlevel == 1){
-                hero.sprite.operate(hero.pos, new Callback() {
-                    @Override
-                    public void call() {
-                        ArrayList<Integer> respawnPoints = new ArrayList<>();
-                        for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-                            int p = hero.pos + PathFinder.NEIGHBOURS8[i];
-                            if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
-                                respawnPoints.add(p);
-                            }
-                        }
-                        if (respawnPoints.size() > 0) {
-                            MiniSaka fish = new MiniSaka();
-                            fish.pos = respawnPoints.get(Random.index( respawnPoints ));
-                            GameScene.add(fish);
-                            fish.state = fish.WANDERING;
-                            fish.sprite.emitter().burst(Speck.factory(Speck.STAR), 10);
-                            hero.sprite.idle();
-                        }
-                    }
+                hero.sprite.operate(hero.pos, () ->{
+                   ArrayList<Integer> respawnPoints = new ArrayList<>();
+                   for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+                       int p = hero.pos + PathFinder.NEIGHBOURS8[i];
+                       if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
+                           respawnPoints.add(p);
+                       }
+                   }
+                   if (!respawnPoints.isEmpty()) {
+                       MiniSaka fish = new MiniSaka();
+                       fish.pos = respawnPoints.get(Random.index( respawnPoints ));
+                       GameScene.add(fish);
+                       fish.state = fish.WANDERING;
+                       fish.sprite.emitter().burst(Speck.factory(Speck.STAR), 10);
+                       hero.sprite.idle();
+                       Bestiary.setSeen(fish.getClass());
+                   }
                 });
             } else {
                 GLog.w(Messages.get(SakaFishSketon.class, "you_must_potion"));
@@ -238,12 +236,6 @@ public class SakaFishSketon extends Item {
         public String toString() {
             return Messages.get(this, "name");
         }
-
-        @Override
-        public String desc() {
-            return Messages.get(this, "desc", dispTurns());
-        }
-
     }
 
 }

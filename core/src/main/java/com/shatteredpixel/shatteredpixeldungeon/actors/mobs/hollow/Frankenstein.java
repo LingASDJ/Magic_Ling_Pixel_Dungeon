@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseB
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FrankensteinSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -32,6 +33,12 @@ public class Frankenstein extends Mob {
         defenseSkill = Random.NormalIntRange(25,35);
         maxLvl = 34;
         properties.add(Char.Property.HOLLOW);
+    }
+
+    @Override
+    public void die( Object cause ) {
+        super.die( cause );
+        Dungeon.level.drop( new Gold(Random.NormalIntRange(160, 420)), pos );
     }
 
     @Override
@@ -64,7 +71,7 @@ public class Frankenstein extends Mob {
     public boolean isAlive() {
 
         if(MustDied || deathCount >=2){
-            return true;
+            return super.isAlive();
         } else if (super.isAlive()) {
             return true;
         } else if (deathCount == 0 && RestCooldown == 0) {

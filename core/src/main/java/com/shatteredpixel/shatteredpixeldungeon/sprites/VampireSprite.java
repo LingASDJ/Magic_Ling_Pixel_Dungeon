@@ -33,10 +33,18 @@ public class VampireSprite extends MobSprite {
         die = new MovieClip.Animation( 12, false );
         die.frames( frames, 11,12,13,14,15,16,17 );
 
-        GodDied = new Animation( 13, true );
+        GodDied = new Animation( 13, false );
         GodDied.frames( frames, 18,19,20,21,22,23,24,25);
 
         play( idle );
+    }
+
+    public void hideVampire(Char ch){
+        if (ch instanceof Vampire && ((Vampire) ch).hereEnenmy){
+            play(activeIdle);
+        } else {
+            play(idle);
+        }
     }
 
     public void activateIdle(){
@@ -44,9 +52,18 @@ public class VampireSprite extends MobSprite {
         idle();
     }
 
+    public void GodDied(){
+        die = GodDied.clone();
+        die();
+    }
+
     @Override
     public void link(Char ch) {
         super.link(ch);
+
+        if(((Vampire) ch).holy){
+            GodDied();
+        }
 
         if (((Vampire) ch).hereEnenmy){
             activateIdle();

@@ -7,7 +7,7 @@ public class DrTerrorSprite extends MobSprite {
     public DrTerrorSprite() {
         super();
 
-        texture( "SRPD/AsenathWaite.png" );
+        texture( "sprites/SRPD/AsenathWaite.png" );
 
         TextureFilm frames = new TextureFilm( texture, 13, 16 );
 

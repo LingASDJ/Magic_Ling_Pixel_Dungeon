@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CHAMPION_ENEMIES;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping.discover;
 
@@ -1821,6 +1822,7 @@ public class GameScene extends PixelScene {
 
 	/** Boss 出场的Logo显示 灵感：泰拉瑞亚灾厄炼狱 */
 	public static void bossReady() {
+		level.playBossMusic();
 		if (Dungeon.hero.isAlive()) {
 			Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
 
@@ -1936,15 +1938,20 @@ public class GameScene extends PixelScene {
 						bossSlain.show(Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
 						break;
+					case 32:
+						bossSlain.texture(Assets.Interfaces.Morpheus_Title);
+						bossSlain.show(Window.DeepPK_COLOR, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+						break;
 				}
 
 			}
 
 			if (Dungeon.hero.buff(LockedFloor.class) == null) {
-				//BGMPlayer.playBGMWithDepth();
+				level.playLevelMusic();
 			}
 
-			Sample.INSTANCE.play( Assets.Sounds.ALERT );
+			//Sample.INSTANCE.play( Assets.Sounds.ALERT );
 		}
 	}
 
@@ -2062,6 +2069,8 @@ public class GameScene extends PixelScene {
 			if(lanterfireactive && Dungeon.branch == 0 && Dungeon.bossLevel() || Dungeon.branch == 6 || Statistics.bossRushMode && Dungeon.sbbossLevel()){
 				cure( Dungeon.hero );
 			}
+
+			Statistics.soulsSpawn = false;
 
 			Sample.INSTANCE.play( Assets.Sounds.BOSS );
 

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class PropBag extends Bag{
 
     {
-        image = ItemSpriteSheet.BOOKBAG;
+        image = ItemSpriteSheet.PROB;
     }
 
     @Override

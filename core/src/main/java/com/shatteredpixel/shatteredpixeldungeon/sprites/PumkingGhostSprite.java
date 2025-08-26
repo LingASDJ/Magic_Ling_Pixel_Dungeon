@@ -32,11 +32,11 @@ public class PumkingGhostSprite extends MobSprite {
         run = new MovieClip.Animation( 9, true );
         run.frames( frames, 5,6,7,8,9 );
 
-        attack = new MovieClip.Animation( 11, false );
-        attack.frames( frames, 10,11,12,13 );
+        attack = new MovieClip.Animation( 12, false );
+        attack.frames( frames, 10,11,12,13,14 );
 
         die = new MovieClip.Animation( 9, false );
-        die.frames( frames, 14,15,16,17,18,19 );
+        die.frames( frames, 15,16,17,18,19 );
 
         play( idle );
     }

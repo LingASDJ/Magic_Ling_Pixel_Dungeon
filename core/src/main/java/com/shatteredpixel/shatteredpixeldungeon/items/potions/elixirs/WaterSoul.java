@@ -32,6 +32,10 @@ public class WaterSoul extends Elixir {
         image = ItemSpriteSheet.WATERSOUL;
     }
 
+    @Override
+    public int iceCoinValue() {
+        return (int) (value() * 2);
+    }
 
     @Override
     public void apply(Hero hero) {

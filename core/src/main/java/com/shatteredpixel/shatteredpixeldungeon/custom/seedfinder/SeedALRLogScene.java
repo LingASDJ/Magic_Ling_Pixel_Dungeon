@@ -26,7 +26,7 @@ public class SeedALRLogScene extends PixelScene {
     public static RenderedTextBlock r;
     public boolean stop;
     public static Thread thread;
-
+    public static Component contentx;
     public WndTextInput wndTextInput;
 
     @Override
@@ -61,6 +61,9 @@ public class SeedALRLogScene extends PixelScene {
 
                     text = DungeonSeed.formatText(text);
                     long seed = DungeonSeed.convertFromText(text);
+
+                    contentx = list.content();
+                    contentx.clear();
 
                     r = PixelScene.renderTextBlock("Loading....",9);
                     r.maxWidth(w - 40);
@@ -109,6 +112,7 @@ public class SeedALRLogScene extends PixelScene {
 
         fadeIn();
     }
+
     @Override
     protected void onBackPressed() {
         ShatteredPixelDungeon.switchScene(SeedFinderScene.class);

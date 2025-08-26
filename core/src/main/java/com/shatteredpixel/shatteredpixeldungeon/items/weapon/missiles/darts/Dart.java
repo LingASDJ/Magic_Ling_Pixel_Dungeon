@@ -25,22 +25,30 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -58,6 +66,19 @@ public class Dart extends MissileWeapon {
 		//infinite, even with penalties
 		baseUses = 1000;
 	}
+
+	@Override
+	public Emitter emitter() {
+		if (Dungeon.hero.buff(ForestBow.ChargedShot.class) != null){
+			Emitter e = new Emitter();
+			e.pos(5, 5);
+			e.fillTarget = false;
+			e.pour(LeafParticle.GENERAL, 0.05f);
+			return e;
+		}
+		return super.emitter();
+    }
+
 	
 	protected static final String AC_TIP = "TIP";
 	
@@ -79,27 +100,47 @@ public class Dart extends MissileWeapon {
 	@Override
 	public int min(int lvl) {
 		if (bow != null){
-			if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null){
-				//ability increases base dmg by 37.5%, scaling by 50%
-				return  7 +                     //7 base
-						2*bow.buffedLvl() + lvl;//+2 per bow level, +1 per level
+			if(Dungeon.hero != null){
+				if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null){
+					//ability increases base dmg by 37.5%, scaling by 50%
+					return  7 +                     //7 base
+							2*bow.buffedLvl() + lvl;//+2 per bow level, +1 per level
+				} else {
+					return  4 +                     //4 base
+							bow.buffedLvl() + lvl;  //+1 per level or bow level
+				}
 			} else {
-				return  4 +                     //4 base
-						bow.buffedLvl() + lvl;  //+1 per level or bow level
+				return  4 + lvl;  //+1 per level or bow level
 			}
-		} else if(diedCrossBow != null ){
-			if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null){
-				//ability increases base dmg by 37.5%, scaling by 50%
-				return  7 +                     //7 base
-						2*diedCrossBow.buffedLvl() + lvl;//+2 per bow level, +1 per level
-			} else {
-				return  4 +                     //4 base
-						diedCrossBow.buffedLvl() + lvl;  //+1 per level or bow level
-			}
-		}else{
-			return  1 +     //1 base, down from 2
-					lvl;    //scaling unchanged
 		}
+		if(diedCrossBow != null ){
+			if(Dungeon.hero != null) {
+				if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null) {
+					//ability increases base dmg by 37.5%, scaling by 50%
+					return 7 +                     //7 base
+							2 * diedCrossBow.buffedLvl() + lvl;//+2 per bow level, +1 per level
+				} else {
+					return 4 +                     //4 base
+							diedCrossBow.buffedLvl() + lvl;
+				}
+			} else {
+				return 4 + lvl;
+			}
+		}
+
+		if(forestBow != null ){
+			int orgrinDamage = 3 + forestBow.level();
+			if(Dungeon.hero != null) {
+				if (!(this instanceof TippedDart) && Dungeon.hero.buff(ForestBow.ChargedShot.class) != null) {
+					return (int) (orgrinDamage * 0.9f);
+				} else {
+					return  orgrinDamage;
+				}
+			} else {
+				return 4 + lvl;
+			}
+		}
+		return  1 + lvl;
 	}
 
 	@Override
@@ -115,7 +156,8 @@ public class Dart extends MissileWeapon {
 						3*bow.buffedLvl() +
 						2*lvl; //+3 per bow level, +2 per level
 			}
-		} else if(diedCrossBow != null){
+		}
+		if(diedCrossBow != null){
 			if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null){
 				//ability increases base dmg by 37.5%, scaling by 50%
 				return  15 +                       //15 base
@@ -126,36 +168,57 @@ public class Dart extends MissileWeapon {
 						3*diedCrossBow.buffedLvl() +
 						2*lvl; //+3 per bow level, +2 per level
 			}
-		}else{
-			return  2 +     //2 base, down from 5
-					2*lvl;  //scaling unchanged
 		}
+
+		if(forestBow != null ){
+			int orgrinDamage = (int) (6 + forestBow.level() * 2.5f);
+			if(Dungeon.hero != null) {
+				if (!(this instanceof TippedDart) && Dungeon.hero.buff(ForestBow.ChargedShot.class) != null) {
+					return (int) (orgrinDamage * 0.9f);
+				} else {
+					return  orgrinDamage;
+				}
+			} else {
+				return 4 + lvl;
+			}
+		}
+
+		return  2 + 2*lvl;
+
 	}
 
 	public static Crossbow bow;
+
+	public static ForestBow forestBow;
 
 	public static DiedCrossBow diedCrossBow;
 	
 	private void updateCrossbow(){
 		if (Dungeon.hero == null) {
 			bow = null;
+			diedCrossBow = null;
+			forestBow = null;
 		} else if (Dungeon.hero.belongings.weapon() instanceof Crossbow){
 			bow = (Crossbow) Dungeon.hero.belongings.weapon();
 		} else if (Dungeon.hero.belongings.secondWep() instanceof Crossbow) {
-			//player can instant swap anyway, so this is just QoL
 			bow = (Crossbow) Dungeon.hero.belongings.secondWep();
 		} else if(Dungeon.hero.belongings.weapon() instanceof DiedCrossBow){
 			diedCrossBow = (DiedCrossBow) Dungeon.hero.belongings.weapon();
-		}else if(Dungeon.hero.belongings.secondWep() instanceof DiedCrossBow){
+		} else if(Dungeon.hero.belongings.secondWep() instanceof DiedCrossBow){
 			diedCrossBow = (DiedCrossBow) Dungeon.hero.belongings.weapon();
-		}else {
+		} else if(Dungeon.hero.belongings.weapon() instanceof ForestBow){
+			forestBow = (ForestBow) Dungeon.hero.belongings.weapon();
+		} else if(Dungeon.hero.belongings.secondWep() instanceof ForestBow){
+			forestBow = (ForestBow) Dungeon.hero.belongings.weapon();
+		} else {
 			bow = null;
 			diedCrossBow = null;
+			forestBow = null;
 		}
 	}
 
 	public boolean crossbowHasEnchant( Char owner ){
-		return (bow != null && bow.enchantment != null && owner.buff(MagicImmune.class) == null) || ( diedCrossBow != null && diedCrossBow.enchantment != null && owner.buff(MagicImmune.class) == null);
+		return (bow != null && bow.enchantment != null && owner.buff(MagicImmune.class) == null) || ( diedCrossBow != null && diedCrossBow.enchantment != null && owner.buff(MagicImmune.class) == null) || (forestBow != null && forestBow.enchantment != null && owner.buff(MagicImmune.class) == null);
 	}
 	
 	@Override
@@ -163,6 +226,8 @@ public class Dart extends MissileWeapon {
 		if (bow != null && bow.hasEnchant(type, owner)){
 			return true;
 		} else if(diedCrossBow != null && diedCrossBow.hasEnchant(type, owner)) {
+			return true;
+		} else if(forestBow != null && forestBow.hasEnchant(type, owner)) {
 			return true;
 		} else{
 			return super.hasEnchant(type, owner);
@@ -172,7 +237,9 @@ public class Dart extends MissileWeapon {
 	@Override
 	public float accuracyFactor(Char owner, Char target) {
 		//don't update xbow here, as dart is the active weapon atm
-		if (bow != null && owner.buff(Crossbow.ChargedShot.class) != null){
+		if (forestBow != null && owner.buff(ForestBow.ChargedShot.class) != null) {
+			return Char.INFINITE_ACCURACY;
+		} else if (bow != null && owner.buff(Crossbow.ChargedShot.class) != null){
 			return Char.INFINITE_ACCURACY;
 		} else {
 			return super.accuracyFactor(owner, target);
@@ -187,6 +254,43 @@ public class Dart extends MissileWeapon {
 
 		if (diedCrossBow != null && !processingChargedShot){
 			damage = diedCrossBow.proc(attacker, defender, damage);
+		}
+
+		if(forestBow != null && !processingChargedShot){
+			damage = forestBow.proc(attacker, defender, damage);
+
+			// ForestBow 特殊效果
+			int triggerChance = 15 + 4 * level();
+			if (Random.Int(100) < triggerChance) {
+				// 计算效果持续时间
+				int duration = 3 + (level() / 4);
+				int effectCount = (level() >= 9) ? 2 : 1; // +9以上时施加两种效果
+
+				// 可选效果列表
+				Class<?>[] effects = {
+						Poison.class,
+						Blindness.class,
+						Frost.class
+				};
+
+				// 随机选择效果
+				ArrayList<Class<?>> selectedEffects = new ArrayList<>();
+				for (int i = 0; i < effectCount; i++) {
+					Class<?> effect = Random.element(effects);
+					selectedEffects.add(effect);
+				}
+
+				// 应用选中的效果
+				for (Class<?> effect : selectedEffects) {
+					if (effect == Poison.class) {
+						Buff.affect(defender, Poison.class).set(duration);
+					} else if (effect == Blindness.class) {
+						Buff.prolong(defender, Blindness.class, duration);
+					} else if (effect == Frost.class) {
+						Buff.prolong(defender, Frost.class, duration);
+					}
+				}
+			}
 		}
 
 		int dmg = super.proc(attacker, defender, damage);
@@ -215,7 +319,31 @@ public class Dart extends MissileWeapon {
 	protected void processChargedShot( Char target, int dmg ){
 		//don't update xbow here, as dart may be the active weapon atm
 		processingChargedShot = true;
-		if (chargedShotPos != -1 && bow != null && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null) {
+
+		if (chargedShotPos != -1) {
+			if( bow != null  && (Dungeon.hero.buff(Crossbow.ChargedShot.class) != null )){
+				PathFinder.buildDistanceMap(chargedShotPos, Dungeon.level.passable, 2);
+				//necessary to clone as some on-hit effects use Pathfinder
+				int[] distance = PathFinder.distance.clone();
+				for (Char ch : Actor.chars()){
+					if (ch == target){
+						Actor.add(new Actor() {
+							{ actPriority = VFX_PRIO; }
+							@Override
+							protected boolean act() {
+								if (!ch.isAlive()){
+									bow.onAbilityKill(Dungeon.hero, ch);
+								}
+								Actor.remove(this);
+								return true;
+							}
+						});
+					} else if (distance[ch.pos] != Integer.MAX_VALUE){
+						proc(Dungeon.hero, ch, dmg);
+					}
+				}
+			}
+			} else if ( forestBow != null && (Dungeon.hero.buff(ForestBow.ChargedShot.class) != null )) {
 			PathFinder.buildDistanceMap(chargedShotPos, Dungeon.level.passable, 2);
 			//necessary to clone as some on-hit effects use Pathfinder
 			int[] distance = PathFinder.distance.clone();
@@ -226,7 +354,7 @@ public class Dart extends MissileWeapon {
 						@Override
 						protected boolean act() {
 							if (!ch.isAlive()){
-								bow.onAbilityKill(Dungeon.hero, ch);
+								forestBow.onAbilityKill(Dungeon.hero, ch);
 							}
 							Actor.remove(this);
 							return true;
@@ -247,12 +375,15 @@ public class Dart extends MissileWeapon {
 		if (Dungeon.hero.buff(Crossbow.ChargedShot.class) != null) {
 			Dungeon.hero.buff(Crossbow.ChargedShot.class).detach();
 		}
+		if (Dungeon.hero.buff(ForestBow.ChargedShot.class) != null) {
+			Dungeon.hero.buff(ForestBow.ChargedShot.class).detach();
+		}
 	}
 
 	@Override
 	public void throwSound() {
 		updateCrossbow();
-		if (bow != null) {
+		if (bow != null || forestBow != null) {
 			Sample.INSTANCE.play(Assets.Sounds.ATK_CROSSBOW, 1, Random.Float(0.87f, 1.15f));
 		} else {
 			super.throwSound();
@@ -269,7 +400,14 @@ public class Dart extends MissileWeapon {
 			String info = super.info();
 			bow.level(level);
 			return info;
-		}else if (diedCrossBow != null && !diedCrossBow.isIdentified()){
+		} else if (forestBow != null && !forestBow.isIdentified()){
+			int level = forestBow.level();
+			//temporarily sets the level of the bow to 0 for IDing purposes
+			forestBow.level(0);
+			String info = super.info();
+			forestBow.level(level);
+			return info;
+		} else if (diedCrossBow != null && !diedCrossBow.isIdentified()){
 			int level = diedCrossBow.level();
 			//temporarily sets the level of the bow to 0 for IDing purposes
 			diedCrossBow.level(0);
@@ -369,7 +507,7 @@ public class Dart extends MissileWeapon {
 						curUser.spend( 1f );
 						curUser.busy();
 						curUser.sprite.operate(curUser.pos);
-						
+
 					} else if ((index == 1 && options.length == 3) || (index == 0 && options.length == 2)){
 						item.detach( curUser.belongings.backpack );
 						
