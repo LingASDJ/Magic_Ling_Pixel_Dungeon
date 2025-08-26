@@ -32,6 +32,10 @@ public class Assets {
 		public static final String TEXT_ICONS 	= "effects/text_icons.png";
 	}
 
+	public static class Map_Luas {
+		public static final String LockedOneRoom_MapLua      = "lua/iron_key1.lua";
+	}
+
 	public static class Environment {
 
 		//GALAXY YOG EYE TO HAPPY BIRTHDAY 820-2024
@@ -86,6 +90,8 @@ public class Assets {
 		public static final String Dreamcatcher  = "environment/custom_tiles/blue_quest.png";
 
 		public static final String BoilerQuest  = "environment/custom_tiles/candlestick_room.png";
+
+		public static final String Magic_Marker  = "environment/custom_tiles/teleportation_circle.png";
 
 		public static final String FireQuest  = "environment/custom_tiles/fire_quest.png";
 		public static final String OilWell  = "environment/custom_tiles/oil_well.png";
