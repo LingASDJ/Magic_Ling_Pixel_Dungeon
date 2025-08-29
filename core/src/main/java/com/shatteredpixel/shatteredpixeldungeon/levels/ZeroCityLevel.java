@@ -199,7 +199,7 @@ public class ZeroCityLevel extends Level {
             P,P,D,D,D,P,P,P,R,R,R,R,R,R,P,P,P,P,D,D,D,D,D,D,D,P,P,R,R,R,R,R,R,R,R,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,M,D,P,R,P,
             P,P,P,P,P,P,R,R,R,R,R,R,R,R,R,R,R,P,P,D,D,D,P,P,P,P,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,M,D,P,R,P,
             P,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,P,R,R,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,M,D,P,R,P,
-            P,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,M,M,M,M,S,P,R,P,
+            P,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,M,M,M,M,D,P,R,P,
             P,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,
             P,R,R,R,R,R,R,R,R,R,R,R,R,R,R,M,M,M,M,M,B,M,M,M,M,M,R,R,R,R,R,R,R,R,R,R,R,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,
             P,D,D,D,D,R,R,R,R,R,R,R,R,R,R,M,R,M,R,R,R,R,R,M,R,M,R,R,R,R,R,R,R,R,R,R,R,P,D,D,I,D,D,D,D,D,D,D,D,I,D,D,D,D,D,D,D,D,D,D,D,D,D,P,
