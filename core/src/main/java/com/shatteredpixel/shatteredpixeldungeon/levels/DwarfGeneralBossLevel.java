@@ -21,7 +21,10 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneralNPC;
@@ -158,6 +161,12 @@ public class DwarfGeneralBossLevel extends Level {
         boss.state = boss.HUNTING;
         GameScene.add(boss);
         ScrollOfTeleportation.appear(hero,493);
+
+        DwarfGeneral.NoTeleGolem noTeleGolem = new DwarfGeneral.NoTeleGolem();
+        noTeleGolem.pos = 471;
+        noTeleGolem.state = noTeleGolem.HUNTING;
+        GameScene.add(noTeleGolem);
+        ScrollOfTeleportation.appear(noTeleGolem,194);
 
         Level.set(514, LOCKED_DOOR);
         GameScene.updateMap(514);

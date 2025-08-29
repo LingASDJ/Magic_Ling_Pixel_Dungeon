@@ -229,7 +229,8 @@ public class ColdChestBossLevel extends Level {
 
 
     public void setMapEnd(){
-        int entrance =87;
+        transitions.clear();
+        int entrance = 52;
         int exit = 647;
         LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(enter);

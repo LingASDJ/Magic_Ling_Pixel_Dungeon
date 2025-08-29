@@ -796,52 +796,51 @@ public abstract class Level implements Bundlable {
 
 		if (transition.type == LevelTransition.Type.REGULAR_EXIT
 				|| transition.type == LevelTransition.Type.BRANCH_EXIT || transition.type == LevelTransition.Type.DOUBLE_ENTRANCE) {
-			if (depth == 0 && !tipsgodungeon) {
-
-				if (!Dungeon.isChallenged(CS) && Statistics.deepestFloor == 0) {
-					if(hero.belongings.getItem(BossRushBloodGold.class) != null){
-						Game.runOnRenderThread(new Callback() {
+			if(hero.belongings.getItem(BossRushBloodGold.class) != null){
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show(new WndOptions(Icons.get(Icons.WARNING),
+								Messages.get(Level.class, "sp_mode_title"),
+								Messages.get(Level.class, "sp_mode_body", new BossRushBloodGold().name()),
+								Messages.get(Level.class, "sp_mode_yes",Modename())
+						) {
 							@Override
-							public void call() {
-								GameScene.show(new WndOptions(Icons.get(Icons.WARNING),
-										Messages.get(Level.class, "sp_mode_title"),
-										Messages.get(Level.class, "sp_mode_body", new BossRushBloodGold().name()),
-										Messages.get(Level.class, "sp_mode_yes",Modename())
-								) {
-									@Override
-									protected void onSelect(int index) {
-										if (index == 0) {
-											GameRules.BossRush();
-										} else if (index == 1) {
-											talkToHero();
-										}
-									}
-								});
+							protected void onSelect(int index) {
+								if (index == 0) {
+									GameRules.BossRush();
+								} else if (index == 1) {
+									talkToHero();
+								}
 							}
 						});
-					} else if(hero.belongings.getItem(RushMobScrollOfRandom.class) != null){
-						Game.runOnRenderThread(new Callback() {
-							@Override
-							public void call() {
-								GameScene.show(new WndOptions(Icons.get(Icons.WARNING),
-										Messages.get(Level.class, "sp_mode_title"),
-										Messages.get(Level.class, "sp_mode_body", new RushMobScrollOfRandom().name()),
-										Messages.get(Level.class, "sp_mode_yes", Modename())
-								) {
-									@Override
-									protected void onSelect(int index) {
-										if (index == 0) {
-											GameRules.RandMode();
-										} else if (index == 1) {
-											talkToHero();
-										}
-									}
-								});
-							}
-						});
-					} else {
-						talkToHero();
 					}
+				});
+				return false;
+			} else if(hero.belongings.getItem(RushMobScrollOfRandom.class) != null) {
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show(new WndOptions(Icons.get(Icons.WARNING),
+								Messages.get(Level.class, "sp_mode_title"),
+								Messages.get(Level.class, "sp_mode_body", new RushMobScrollOfRandom().name()),
+								Messages.get(Level.class, "sp_mode_yes", Modename())
+						) {
+							@Override
+							protected void onSelect(int index) {
+								if (index == 0) {
+									GameRules.RandMode();
+								} else if (index == 1) {
+									talkToHero();
+								}
+							}
+						});
+					}
+				});
+				return false;
+			} else if (depth == 0 && !tipsgodungeon) {
+				if (Statistics.deepestFloor == 0) {
+						talkToHero();
 					return false;
 				}
 			}

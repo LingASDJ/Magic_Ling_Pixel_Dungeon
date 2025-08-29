@@ -102,7 +102,7 @@ public class Golem extends Mob {
 
 	private boolean teleporting = false;
 	private int selfTeleCooldown = 0;
-	private int enemyTeleCooldown = 0;
+	public int enemyTeleCooldown = 0;
 
 	private static final String TELEPORTING = "teleporting";
 	private static final String SELF_COOLDOWN = "self_cooldown";
