@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -51,10 +52,10 @@ public class Vampiric extends Weapon.Enchantment {
 			healAmt = Math.min( healAmt, attacker.HT - attacker.HP );
 			
 			if (healAmt > 0 && attacker.isAlive()) {
-				
-				attacker.HP += healAmt;
-				attacker.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString( healAmt ), FloatingText.HEALING );
-				
+				if(!(attacker instanceof Pets)){
+					attacker.HP += healAmt;
+					attacker.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString( healAmt ), FloatingText.HEALING );
+				}
 			}
 		}
 
