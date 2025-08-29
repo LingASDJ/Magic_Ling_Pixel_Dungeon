@@ -56,6 +56,14 @@ public class Alchemize extends Spell {
 	}
 
 	@Override
+	public String defaultAction(){
+		if (Statistics.bossRushMode) {
+			return null;
+		}
+		return super.defaultAction();
+	}
+
+	@Override
 	public ArrayList<String> actions(Hero hero) {
 		if (Statistics.bossRushMode) {
 			return new ArrayList<>(); //no actions in boss rush mode
