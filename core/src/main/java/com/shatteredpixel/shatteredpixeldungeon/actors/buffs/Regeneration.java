@@ -43,8 +43,7 @@ public class Regeneration extends Buff {
 	
 	@Override
 	public boolean act() {
-		boolean result = target.buff(BloodLoss.class) == null;
-		if (target.isAlive() && result) {
+		if (target.isAlive()) {
 
 			//if other trinkets ever get buffs like this should probably make the buff attaching
 			// behaviour more like wands/rings/artifacts
