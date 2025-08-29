@@ -307,11 +307,11 @@ public class CrystalSpire extends Mob {
 	}
 
 	@Override
-	public void damage(int dmg, Object src) {
+	public void damage(int dmg, Object src, DamageType type) {
 		if (!(src instanceof Pickaxe) ){
 			dmg = 0;
 		}
-		super.damage(dmg, src);
+		super.damage(dmg, src, type);
 	}
 
 	@Override

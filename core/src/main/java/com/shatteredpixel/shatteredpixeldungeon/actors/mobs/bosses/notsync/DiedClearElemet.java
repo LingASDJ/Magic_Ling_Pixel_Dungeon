@@ -111,7 +111,7 @@ public abstract class DiedClearElemet extends Mob {
 
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
 
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null){
@@ -119,7 +119,7 @@ public abstract class DiedClearElemet extends Mob {
             else                                                    lock.addTime(dmg*1.5f);
         }
 
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
 

@@ -39,7 +39,7 @@ public class CrystalDiedTower extends Mob implements Mob.NoMobSpawn {
     }
 
     @Override
-    public void damage( int dmg, Object src ) {
+    public void damage(int dmg, Object src, DamageType type) {
     }
 
     @Override

@@ -143,7 +143,7 @@ public class RedBloodMoon extends MeleeWeapon {
 
             wepdamge = hero.belongings.weapon != null ? hero.belongings.weapon.level()/3 : 4;
 
-            damage(Random.NormalIntRange(1+2,wepdamge),new TRUE(),DamageTyPe.PHYSICAL);
+            damage(Random.NormalIntRange(1+2,wepdamge),new TRUE(), DamageType.PHYSICAL);
             return super.attack( enemy, dmgMulti, dmgBonus, accMulti );
         }
 

@@ -466,9 +466,9 @@ public class DM300 extends Boss {
 	private boolean invulnWarned = false;
 
 	@Override
-	public void damage(int dmg, Object src) {
+	public void damage(int dmg, Object src, DamageType type) {
 		int preHP = HP;
-		super.damage(dmg, src);
+		super.damage(dmg, src, type);
 		if (isInvulnerable(src.getClass())){
 			return;
 		}

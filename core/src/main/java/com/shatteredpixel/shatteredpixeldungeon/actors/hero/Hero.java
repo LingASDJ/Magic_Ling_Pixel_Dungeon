@@ -208,7 +208,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
@@ -285,7 +284,6 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 
@@ -2104,11 +2102,11 @@ public class Hero extends Char {
 
 	@Override
 	public void damage( int dmg, Object src ) {
-		damage(dmg, src ,DamageTyPe.MAGIC);
+		damage(dmg, src , DamageType.MAGIC);
 	}
 
 	@Override
-	public void damage( int dmg, Object src, DamageTyPe type ) {
+	public void damage( int dmg, Object src, DamageType type ) {
 
 		if(hero.belongings.getItem(EmotionalAggregation.class)!=null && Math.random()>0.9){
 			GLog.n(Messages.get(EmotionalAggregation.class,"block"));
@@ -2273,7 +2271,7 @@ public class Hero extends Char {
 					}
 				}
 				*/
-				boolean flag = (type == DamageTyPe.PHYSICAL);
+				boolean flag = (type == DamageType.PHYSICAL);
 				if (flag) {
 					Buff.affect(this,Barrier.class).setShield(2*pointsInTalent(Talent.LIQUID_WILLPOWER));
 				}

@@ -190,7 +190,7 @@ public abstract class Char extends Actor {
 		NEUTRAL,
 		ALLY
 	}
-	public enum DamageTyPe{
+	public enum DamageType {
 		PHYSICAL,
 		MAGIC,
 		REAL,
@@ -393,14 +393,14 @@ public abstract class Char extends Actor {
 	}
 
 	public boolean attack( Char enemy ){
-		return attack(enemy, 1f, 0f, 1f , DamageTyPe.PHYSICAL);
+		return attack(enemy, 1f, 0f, 1f , DamageType.PHYSICAL);
 	}
 
 	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti){
-		return attack(enemy, dmgMulti, dmgBonus, accMulti , DamageTyPe.PHYSICAL);
+		return attack(enemy, dmgMulti, dmgBonus, accMulti , DamageType.PHYSICAL);
 	}
 
-	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti , DamageTyPe type) {
+	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti , DamageType type) {
 
 		boolean kill = false;
 
@@ -494,7 +494,7 @@ public abstract class Char extends Actor {
 
 			int effectiveDamage = Math.round(dmg);
 
-			if(type == DamageTyPe.PHYSICAL )effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
+			if(type == DamageType.PHYSICAL )effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
 			//do not trigger on-hit logic if defenseProc returned a negative value
 			if (effectiveDamage >= 0) {
 				effectiveDamage = Math.max(effectiveDamage - dr, 0);
@@ -600,7 +600,7 @@ public abstract class Char extends Actor {
 
 			if(enemy instanceof Hero && ((Hero) enemy).belongings.getItem(KnightStabbingSword.class) !=null){
 				if(Random.Float()<=0.25f){
-					enemy.attack(this,1,0,1 ,DamageTyPe.PHYSICAL);
+					enemy.attack(this,1,0,1 , DamageType.PHYSICAL);
 					GLog.n(Messages.get(KnightStabbingSword.class,"attack"));
 				}
 			}
@@ -829,10 +829,10 @@ public abstract class Char extends Actor {
 	}
 
 	public void damage( int dmg, Object src){
-		damage(dmg,src,DamageTyPe.MAGIC);
+		damage(dmg,src, DamageType.MAGIC);
 	}
 
-	public void damage( int dmg, Object src, DamageTyPe type ) {
+	public void damage( int dmg, Object src, DamageType type ) {
 
 		if (!isAlive() || dmg < 0) {
 			return;

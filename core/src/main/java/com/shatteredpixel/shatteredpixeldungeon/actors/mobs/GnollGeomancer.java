@@ -205,7 +205,7 @@ public class GnollGeomancer extends Mob {
 
 					dmg = Math.min(dmg, buff(RockArmor.class).shielding());
 
-					damage(dmg, p);
+					damage(dmg, p, DamageType.PHYSICAL);
 					sprite.bloodBurstA(Dungeon.hero.sprite.center(), dmg);
 					sprite.flash();
 
@@ -259,7 +259,7 @@ public class GnollGeomancer extends Mob {
 	}
 
 	@Override
-	public void damage(int dmg, Object src) {
+	public void damage(int dmg, Object src, DamageType type) {
 		int hpBracket = HT / 3;
 
 		int curbracket = HP / hpBracket;
@@ -267,7 +267,7 @@ public class GnollGeomancer extends Mob {
 
 		inFinalBracket = curbracket == 0;
 
-		super.damage(dmg, src);
+		super.damage(dmg, src, type);
 
 		abilityCooldown -= dmg/10f;
 

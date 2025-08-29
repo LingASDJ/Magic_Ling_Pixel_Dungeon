@@ -159,7 +159,7 @@ public class EndingBlade extends MeleeWeapon {
                         cursed = false;
                         for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                             if (!(mob instanceof NPC) ) {
-                                mob.damage( Random.NormalIntRange( 30*(level/5), 50*(level/5) ), new Eye.DeathGaze() );
+                                mob.damage( Random.NormalIntRange( 30*(level/5), 50*(level/5) ), new Eye.DeathGaze());
                             }
                         }
                     } else if(Statistics.wangzheguilai) {

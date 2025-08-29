@@ -204,13 +204,13 @@ public class SlimePrincess extends Mob {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         if (!BossHealthBar.isAssigned()){
             BossHealthBar.assignBoss( this );
             Dungeon.level.seal();
         }
         boolean bleeding = (HP*2 <= HT);
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
         if ((HP*2 <= HT) && !bleeding){
             BossHealthBar.bleed(true);
             sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "enraged"));

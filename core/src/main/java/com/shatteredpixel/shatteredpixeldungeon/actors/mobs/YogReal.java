@@ -536,7 +536,7 @@ public class YogReal extends Boss {
     }
 
     @Override
-    public void damage(int damage, Object src){
+    public void damage(int damage, Object src, DamageType type){
         if(phase >= 5){
             if(damage > 25) {
                 damage = 25;
@@ -548,7 +548,7 @@ public class YogReal extends Boss {
         }
 
         int preHP = HP;
-        super.damage(damage, src);
+        super.damage(damage, src, type);
         int postHP = HP;
         int threshold = 1000-300*phase;
         if(preHP > threshold && postHP<=threshold){
@@ -825,11 +825,11 @@ public class YogReal extends Boss {
         }
 
         @Override
-        public void damage(int dmg, Object src){
+        public void damage(int dmg, Object src, DamageType type){
             if(Dungeon.level.distance(pos, YogGodHardBossLevel.CENTER)<=4){
                 dmg = Math.max(dmg/6, 2);
             }
-            super.damage(dmg, src);
+            super.damage(dmg, src, type);
         }
 
     }
@@ -837,11 +837,11 @@ public class YogReal extends Boss {
     //used so death to yog's ripper demons have their own rankings description and are more aggro
     public static class YogRealRipper extends RipperDemon {
         @Override
-        public void damage(int dmg, Object src){
+        public void damage(int dmg, Object src, DamageType type){
             if(Dungeon.level.distance(pos, YogGodHardBossLevel.CENTER)<=4){
                 dmg = Math.max(dmg/6, 2);
             }
-            super.damage(dmg, src);
+            super.damage(dmg, src, type);
         }
     }
 
@@ -851,11 +851,11 @@ public class YogReal extends Boss {
             viewDistance = 8;
         }
         @Override
-        public void damage(int dmg, Object src){
+        public void damage(int dmg, Object src, DamageType type){
             if(Dungeon.level.distance(pos, YogGodHardBossLevel.CENTER)<=4){
                 dmg = Math.max(dmg/6, 2);
             }
-            super.damage(dmg, src);
+            super.damage(dmg, src, type);
         }
     }
 
@@ -865,11 +865,11 @@ public class YogReal extends Boss {
             viewDistance = 10;
         }
         @Override
-        public void damage(int dmg, Object src){
+        public void damage(int dmg, Object src, DamageType type){
             if(Dungeon.level.distance(pos, YogGodHardBossLevel.CENTER)<=4){
                 dmg = Math.max(dmg/6, 2);
             }
-            super.damage(dmg, src);
+            super.damage(dmg, src, type);
         }
     }
 

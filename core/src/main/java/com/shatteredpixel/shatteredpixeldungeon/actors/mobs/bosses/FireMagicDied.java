@@ -596,7 +596,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         return super.isAlive() || Dungeon.level.mobs.contains(this) && HP>0;
     }
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
 
         if (!Dungeon.level.mobs.contains(this)){
             return;
@@ -607,7 +607,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         }
         boolean bleeding = (HP*2 <= HT);
 
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
 
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null){
@@ -1014,7 +1014,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             super.detach();
             for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (m instanceof FireMagicDied ){
-                    m.damage(30, this);
+                    m.damage(30, this, DamageType.REAL);
                 }
             }
         }

@@ -120,11 +120,11 @@ public class ClearElemtGuard extends Statue {
     }
 
     @Override
-    public void damage( int dmg, Object src ) {
+    public void damage(int dmg, Object src, DamageType type) {
 
         if (clearCount>=2 ||Dungeon.isDLC(Conducts.Conduct.DEV) ) {
 
-            super.damage( dmg, src );
+            super.damage( dmg, src, type);
         } else {
             Game.runOnRenderThread(new Callback() {
                 @Override

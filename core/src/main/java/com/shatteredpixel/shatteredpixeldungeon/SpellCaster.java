@@ -163,7 +163,7 @@ public abstract class SpellCaster extends Mob {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         //immune to damage when inactive
         if (alignment == Alignment.NEUTRAL){
             return;
@@ -172,7 +172,7 @@ public abstract class SpellCaster extends Mob {
         if (dmg >= 20){
             dmg = 20 + (int)(Math.sqrt(8*(dmg - 14) + 1) - 1)/2;
         }
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     @Override

@@ -134,7 +134,7 @@ public class Nyarlathotep extends Boss {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         if(src == Trap.class){
             return;
         }
@@ -144,7 +144,7 @@ public class Nyarlathotep extends Boss {
             int multiple = 2;
             lock.addTime(dmg*multiple);
         }
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     private void createRandomTrap(int pos) {

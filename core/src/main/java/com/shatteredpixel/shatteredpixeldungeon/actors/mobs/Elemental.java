@@ -189,7 +189,7 @@ public abstract class Elemental extends Mob {
 	@Override
 	public boolean add( Buff buff ) {
 		if (harmfulBuffs.contains( buff.getClass() )) {
-			damage( Random.NormalIntRange( HT/2, HT * 3/5 ), buff );
+			damage( Random.NormalIntRange( HT/2, HT * 3/5 ), buff, DamageType.Element);
 			return false;
 		} else {
 			return super.add( buff );

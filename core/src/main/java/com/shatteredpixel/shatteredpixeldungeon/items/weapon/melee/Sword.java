@@ -107,7 +107,7 @@ public class Sword extends MeleeWeapon {
 			public void call() {
 				wep.beforeAbilityUsed(hero, enemy);
 				AttackIndicator.target(enemy);
-				if (hero.attack(enemy, dmgMulti, dmgBoost, Char.INFINITE_ACCURACY, Char.DamageTyPe.PHYSICAL)){
+				if (hero.attack(enemy, dmgMulti, dmgBoost, Char.INFINITE_ACCURACY, Char.DamageType.PHYSICAL)){
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 				}
 

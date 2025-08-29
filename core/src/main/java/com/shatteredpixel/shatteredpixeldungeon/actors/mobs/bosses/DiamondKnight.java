@@ -24,8 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.VSYOU_START;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.WIN;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -48,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalMimic;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -165,7 +162,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
             super.detach();
             for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (m instanceof DiamondKnight){
-                    m.damage(12, this);
+                    m.damage(12, this, DamageType.REAL);
                 }
             }
         }
@@ -249,7 +246,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
     boolean onlyDiglog = false;
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         if (!BossHealthBar.isAssigned()){
             BossHealthBar.assignBoss( this );
             Dungeon.level.seal();
@@ -259,7 +256,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
         dmg = Math.min(hpBracket, dmg);
 
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(dmg*2);
 

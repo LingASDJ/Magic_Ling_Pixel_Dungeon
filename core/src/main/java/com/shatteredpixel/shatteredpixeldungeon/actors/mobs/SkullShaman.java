@@ -150,12 +150,12 @@ public class SkullShaman extends Mob implements Callback {
     }
 
     @Override
-    public void damage( int dmg, Object src ) {
+    public void damage(int dmg, Object src, DamageType type) {
 
         if (state == PASSIVE) {
             state = HUNTING;
         }
 
-        super.damage( dmg, src );
+        super.damage( dmg, src, type);
     }
 }

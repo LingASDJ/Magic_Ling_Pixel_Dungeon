@@ -107,7 +107,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
 
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null){
@@ -124,7 +124,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
             dmg = (int)(scaledDmg*AscensionChallenge.statModifier(this));
         }
 
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     @Override
@@ -240,7 +240,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
             if(!Statistics.crivusfruitslevel3){
                 for (Mob m : level.mobs.toArray(new Mob[0])){
                     if (m instanceof CrivusStarFruits){
-                        m.damage(10, this);
+                        m.damage(10, this, DamageType.REAL);
                     }
                 }
             }

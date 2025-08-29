@@ -411,9 +411,9 @@ public class GreenStingCV extends Boss {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         if (isInvulnerable(src.getClass())){
-            super.damage(dmg, src);
+            super.damage(dmg, src, type);
             return;
         } else if (phase == 3 && !(src instanceof Viscosity.DeferedDamage)){
 
@@ -428,7 +428,7 @@ public class GreenStingCV extends Boss {
             return;
         }
         int preHP = HP;
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
 
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
         if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg/3);

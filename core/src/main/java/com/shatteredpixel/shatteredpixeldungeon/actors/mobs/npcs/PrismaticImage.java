@@ -204,7 +204,7 @@ public class PrismaticImage extends NPC {
 	}
 	
 	@Override
-	public void damage(int dmg, Object src) {
+	public void damage(int dmg, Object src, DamageType type) {
 		
 		//TODO improve this when I have proper damage source logic
 		if (hero != null && hero.belongings.armor() != null && hero.belongings.armor().hasGlyph(AntiMagic.class, this)
@@ -213,7 +213,7 @@ public class PrismaticImage extends NPC {
 			dmg = Math.max(dmg, 0);
 		}
 		
-		super.damage(dmg, src);
+		super.damage(dmg, src, type);
 	}
 	
 	@Override
