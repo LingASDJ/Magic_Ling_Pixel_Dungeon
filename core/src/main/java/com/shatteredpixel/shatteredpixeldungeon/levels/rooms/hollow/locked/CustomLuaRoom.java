@@ -89,6 +89,8 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
 
     private int codeToTerrain(int code){
         switch (code){
+            case 0:
+                return Terrain.WATER;
             case 50:
                 return Terrain.WALL_DECO;
             case 67:

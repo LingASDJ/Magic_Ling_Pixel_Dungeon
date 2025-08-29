@@ -92,18 +92,10 @@ public class Healing extends Buff {
 		healingLeft = amount;
 		percentHealPerTick = percentPerTick;
 		flatHealPerTick = flatPerTick;
-
-
 		if(getHeal!=null){
 			healingLeft = amount*2;
 			percentHealPerTick = percentPerTick*2;
 			flatHealPerTick = flatPerTick*2;
-		}
-		CrystalLing crystalLing = Dungeon.hero.belongings.getItem(CrystalLing.class);
-		if(crystalLing != null) {
-			healingLeft = amount+(amount/3);
-			percentHealPerTick = percentPerTick*1.2f;
-			flatHealPerTick = flatPerTick+(flatPerTick/5);
 		}
 	}
 

@@ -2168,6 +2168,11 @@ public class Hero extends Char {
 			dmg = thorns.proc(dmg, (src instanceof Char ? (Char)src : null),  this);
 		}
 
+		//225% 伤害
+		if ( buff( Invulnerability.GodDied.class ) != null ){
+			dmg *= (int) 2.25f;
+		}
+
 		Talent.WarriorFoodImmunity thornsTalent = buff( Talent.WarriorFoodImmunity.class );
 		if (thornsTalent != null) {
 			dmg = thornsTalent.proc(dmg, (src instanceof Char ? (Char)src : null),  this);

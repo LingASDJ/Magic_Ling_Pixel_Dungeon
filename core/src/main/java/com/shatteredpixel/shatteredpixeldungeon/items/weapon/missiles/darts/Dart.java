@@ -69,12 +69,14 @@ public class Dart extends MissileWeapon {
 
 	@Override
 	public Emitter emitter() {
-		if (Dungeon.hero.buff(ForestBow.ChargedShot.class) != null){
-			Emitter e = new Emitter();
-			e.pos(5, 5);
-			e.fillTarget = false;
-			e.pour(LeafParticle.GENERAL, 0.05f);
-			return e;
+		if(Dungeon.hero != null){
+			if (Dungeon.hero.buff(ForestBow.ChargedShot.class) != null){
+				Emitter e = new Emitter();
+				e.pos(5, 5);
+				e.fillTarget = false;
+				e.pour(LeafParticle.GENERAL, 0.05f);
+				return e;
+			}
 		}
 		return super.emitter();
     }
