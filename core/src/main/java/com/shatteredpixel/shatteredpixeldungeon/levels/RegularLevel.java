@@ -80,6 +80,11 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.builders.FigureEightBuild
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.FiveLockedRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.FourLockedRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.OneLockedRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.ThreeLockedRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.TwoLockedRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.DragonCaveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
@@ -279,8 +284,9 @@ public abstract class RegularLevel extends Level {
 						break;
 						case 8:
 							initRooms.add(new SkyDeadWellRoom());
+						break;
 					}
-				break;
+
 			}
 		}
 
@@ -430,6 +436,13 @@ public abstract class RegularLevel extends Level {
 				initRooms.add(new GoldBurretyRoom());
 			}
 		}
+
+		//initRooms.add(new MagicCircleRoom());
+//		initRooms.add(new OneLockedRoom());
+//		initRooms.add(new TwoLockedRoom());
+//		initRooms.add(new ThreeLockedRoom());
+//		initRooms.add(new FourLockedRoom());
+//		initRooms.add(new FiveLockedRoom());
 
 		//Rush Shop
 		if(Statistics.bossRushMode && branch == 0 && Dungeon.shopRushLevel()){
