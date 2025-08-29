@@ -9,11 +9,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.FALS
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.TRUEPosition;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
@@ -29,10 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShopLimitLock;
@@ -50,12 +45,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaReal;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.timing.VirtualActor;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BeamCustom;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ScanningBeam;
@@ -81,16 +73,14 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
-    private static final float TIME_TO_ZAP = 6f;
+    private static final float TIME_TO_ZAP = 4f;
 
     {
         HP = HT = Statistics.bossRushMode && !Statistics.amuletObtained ? 270 * (Dungeon.depth/5) : (Statistics.amuletObtained || Statistics.RandMode) ? 2024 : 270 * (Statistics.deepestFloor/5);
@@ -147,257 +137,97 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         return 7;
     }
     private int phase = 1;
-
-    //读取召唤
-    private HashSet<Mob> getSubjects(){
-        HashSet<Mob> subjects = new HashSet<>();
-        for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
-            if (m.alignment == alignment && (m instanceof ColdGurad || m instanceof SRPDICLRPRO)){
-                subjects.add(m);
-            }
-        }
-        return subjects;
-    }
-
-    private boolean lifeLinkSubject(){
-        Mob furthest = null;
-
-        for (Mob m : getSubjects()){
-            boolean alreadyLinked = false;
-            for (LifeLink l : m.buffs(LifeLink.class)){
-                if (l.object == id()) alreadyLinked = true;
-            }
-            if (!alreadyLinked) {
-                if (furthest == null || Dungeon.level.distance(pos, furthest.pos) < Dungeon.level.distance(pos, m.pos)){
-                    furthest = m;
-                }
-            }
-        }
-
-        if (furthest != null) {
-            Buff.append(furthest, LifeLink.class, 100f).object = id();
-            Buff.append(this, LifeLink.class, 100f).object = furthest.id();
-            yell(Messages.get(this, "lifelink_" + Random.IntRange(1, 2)));
-            Buff.affect(this, Healing.class).setHeal(5, 0f, 6);
-            sprite.parent.add(new Beam.HealthRay(sprite.destinationCenter(), furthest.sprite.destinationCenter()));
-            return true;
-
-        }
-        return false;
-    }
-
     int preHP = HP;
     private float summonCooldown = 0;
     private float abilityCooldown = 6;
-
     private final ArrayList<Integer> targetedCells = new ArrayList<>();
-
-    private static final int MIN_COOLDOWN = 7;
-    private static final int MAX_COOLDOWN = 11;
-
-    private int lastAbility = 0;
-    private static final int NONE = 0;
-    private static final int LINK = 1;
-    private static final int TELE = 2;
-    private static final int ENRAGE = 3;
-    private static final int DEATHRATTLE = 4;
-    private static final int SACRIFICE = 5;
-    private static final int SUMMON = 6;
-
-    private boolean teleportSubject(){
-        if (enemy == null) return false;
-
-        Mob furthest = null;
-
-        for (Mob m : getSubjects()){
-            if (furthest == null || Dungeon.level.distance(pos, furthest.pos) < Dungeon.level.distance(pos, m.pos)){
-                furthest = m;
-            }
-        }
-
-        if (furthest != null){
-
-            float bestDist;
-            int bestPos = pos;
-
-            Ballistica trajectory = new Ballistica(enemy.pos, pos, Ballistica.STOP_TARGET);
-            int targetCell = trajectory.path.get(trajectory.dist);
-            //if the position opposite the direction of the hero is open, go there
-            if (Actor.findChar(targetCell) == null && !Dungeon.level.solid[targetCell]){
-                bestPos = targetCell;
-
-                //Otherwise go to the neighbour cell that's open and is furthest
-            } else {
-                bestDist = Dungeon.level.trueDistance(pos, enemy.pos);
-
-                for (int i : PathFinder.NEIGHBOURS8){
-                    if (Actor.findChar(pos+i) == null
-                            && !Dungeon.level.solid[pos+i]
-                            && Dungeon.level.trueDistance(pos+i, enemy.pos) > bestDist){
-                        bestPos = pos+i;
-                        bestDist = Dungeon.level.trueDistance(pos+i, enemy.pos);
-                    }
-                }
-            }
-
-            Actor.add(new Pushing(this, pos, bestPos));
-            pos = bestPos;
-
-            //find closest cell that's adjacent to enemy, place subject there
-            bestDist = Dungeon.level.trueDistance(enemy.pos, pos);
-            bestPos = enemy.pos;
-            for (int i : PathFinder.NEIGHBOURS8){
-                if (Actor.findChar(enemy.pos+i) == null
-                        && !Dungeon.level.solid[enemy.pos+i]
-                        && Dungeon.level.trueDistance(enemy.pos+i, pos) < bestDist){
-                    bestPos = enemy.pos+i;
-                    bestDist = Dungeon.level.trueDistance(enemy.pos+i, pos);
-                }
-            }
-
-            if (bestPos != enemy.pos) ScrollOfTeleportation.appear(furthest, bestPos);
-            yell(Messages.get(this, "teleport_" + Random.IntRange(1, 2)));
-            return true;
-        }
-        return false;
-    }
-
-    private void sacrificeSubject(){
-        Buff.affect(this,  DwarfMaster.SacrificeSubjectListener.class, 3f);
-        new Flare(6, 32).color(0xFF22FF, false).show(sprite, 1.5f);
-        yell(Messages.get(this, "sacrifice"));
-    }
-
-    private static final float[] chanceMap = {0f, 100f, 100f, 100f, 100f, 100f, 100f};
-    private void rollForAbility(){
-        lastAbility = Random.chances(chanceMap);
-        chanceMap[lastAbility] /= 4f;
-        if(chanceMap[lastAbility] < 0.0001f) resetChanceMap();
-    }
-    private void resetChanceMap(){
-        for(int i=1;i<chanceMap.length;++i){
-            chanceMap[i]=100f;
-        }
-        chanceMap[0]=0f;
-    }
-
 
     @Override
     public boolean act() {
-        int healInc = 1;
-        if (phase == 1 && HP <= HT/3) {
-            Actor.add(new Actor() {
-
-                {
-                    actPriority = VFX_PRIO;
+        if (phase == 1) {
+            int dmgTaken = preHP - HP;
+            abilityCooldown -= dmgTaken/8f;
+            summonCooldown -= dmgTaken/8f;
+            if (HP <= HT/2) {
+                for (int i : CryStalPosition) {
+                    Buff.append(hero, BeamTowerAdbility.class).towerPos = i;
                 }
+                sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
+                Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
+                phase = 2;
+                Char enemy = (this.enemy == null ? Dungeon.hero : this.enemy);
+                int w = Dungeon.level.width();
+                int dx = enemy.pos % w - pos % w;
+                int dy = enemy.pos / w - pos / w;
+                int direction = 2 * (Math.abs(dx) > Math.abs(dy) ? 0 : 1);
+                direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
+                Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
+                sprite.showStatus(0xff0000, Messages.get(this, "dead"));
+                sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
+                Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(HT/2);
+                HP = HT/2;
+            }
+        } else if (phase == 2 && shielding() == 0 && HP <= HT/3) {
+            yell(  Messages.get(this, "enraged" ));
+            ScrollOfTeleportation.teleportToLocation(this, ShopBossLevel.throneling);
+            GLog.pink(  Messages.get(this, "xslx") );
+            for (int i : CryStalPosition2) {
+                Buff.append(hero, BeamTowerAdbility.class).towerPos = i;
+                CrystalDiedTower csp = new CrystalDiedTower();
+                csp.pos = i;
+                GameScene.add(csp);
+            }
 
-                @Override
-                protected boolean act() {
-                    Actor.remove(this);
-                    if (Dungeon.level.water[pos] && HP < HT) {
-                        HP += healInc;
+            HP = HT/2;
+            //T3 阶段
+            CrystalLingTower abc = new CrystalLingTower();
+            abc.pos = TRUEPosition;
+            GameScene.add(abc);
 
-                        if (Dungeon.level.heroFOV[pos]) {
-                            sprite.emitter().burst(Speck.factory(Speck.HEALING), healInc);
-                        }
-                        if (HP * 2 > HT) {
-                            BossHealthBar.bleed(false);
-                            ((FireMagicGirlSprite) sprite).spray(false);
-                            HP = Math.min(HP, HT);
-                        }
-                    }
-                    return true;
+            this.pos = FALSEPosition;
+
+            Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(HT/3);
+
+            if(Statistics.amuletObtained|| Statistics.RandMode){
+                Buff.append(hero, BeamTowerAdbility.class).towerPos = TRUEPosition;
+            }
+            Buff.append(hero, BeamTowerAdbility.class).towerPos = TRUEPosition;
+
+            for (Buff buff : hero.buffs()) {
+                if (buff instanceof FireMagicDied.KingDamager) {
+                    buff.detach();
                 }
-            });
+            }
             //actScanning();
-
-        }else if (phase == 2 && HP < HT/2) {
-            Actor.add(new Actor() {
-
-                {
-                    actPriority = VFX_PRIO;
-                }
-
+            phase = 3;
+            sprite.idle();
+            Char enemy = (this.enemy == null ? Dungeon.hero : this.enemy);
+            int w = Dungeon.level.width();
+            int dx = enemy.pos % w - pos % w;
+            int dy = enemy.pos / w - pos / w;
+            int direction = 2 * (Math.abs(dx) > Math.abs(dy) ? 0 : 1);
+            direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
+            Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
+            sprite.showStatus(0xff0000, Messages.get(this, "dead"));
+            Buff.affect(this, ChampionEnemy.Halo.class);
+            Buff.affect(this, Adrenaline.class, 50f);
+            Buff.affect(this,  Invulnerability.class, 20f);
+        } else if (phase == 3 && preHP > 10 && HP <= 20){
+            yell( Messages.get(this, "losing") );
+            die(Dungeon.hero);
+            Dungeon.hero.interrupt();
+            GameScene.flash(0x80FFFFFF);
+            Game.runOnRenderThread(new Callback() {
                 @Override
-                protected boolean act() {
-                    Actor.remove(this);
-
-                    if (paralysed > 0){
-                        spend(TICK);
-                        return true;
-                    }
-
-                    if (abilityCooldown <= 0){
-                        //NEVER use skills if no mobs alive.
-                        rollForAbility();
-                        if(buff(DwarfMaster.SacrificeSubjectListener.class)!= null){
-                            lastAbility = NONE;
-                            //cd faster while prepare to sacrifice
-                            abilityCooldown --;
+                public void call() {
+                    Music.INSTANCE.fadeOut(5f, new Callback() {
+                        @Override
+                        public void call() {
+                            Music.INSTANCE.end();
                         }
-
-                        if (lastAbility == LINK && lifeLinkSubject()){
-                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                            spend(TICK);
-                            return true;
-                        } else if (lastAbility == TELE && teleportSubject()) {
-                            lastAbility = TELE;
-                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                            spend(TICK);
-                            return true;
-                        }else if(lastAbility == ENRAGE){
-                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                            spend(TICK);
-                            return true;
-                        }else if(lastAbility == DEATHRATTLE){
-                            lastAbility = DEATHRATTLE;
-                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                            spend(TICK);
-                        }else if(lastAbility == SACRIFICE){
-                            sacrificeSubject();
-                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                            spend(TICK);
-                        }else if(lastAbility == SUMMON){
-                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                            spend(TICK);
-                        }
-
-                    } else {
-                        abilityCooldown--;
-                    }
-                    return true;
+                    });
                 }
             });
-
-        } else if (phase == 3){
-            Actor.add(new Actor() {
-
-                {
-                    actPriority = VFX_PRIO;
-                }
-
-                @Override
-                protected boolean act() {
-                    Actor.remove(this);
-                    return true;
-                }
-            });
-
-        } else if (phase == 4){
-            Actor.add(new Actor() {
-
-                {
-                    actPriority = VFX_PRIO;
-                }
-
-                @Override
-                protected boolean act() {
-                    Actor.remove(this);
-                    return true;
-                }
-            });
-            return true;
         }
         return super.act();
     }
@@ -486,7 +316,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
             }
 
-            int dmg = Random.NormalIntRange(2+Dungeon.depth, 5+Dungeon.depth );
+            int dmg = Random.NormalIntRange(2+Dungeon.depth, 4+Dungeon.depth );
 
             enemy.damage( dmg, new ColdGurad.DarkBolt() );
 
@@ -513,30 +343,31 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     @Override
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
-        if(HP > HT/2){
-            if (Random.Int( 3 ) == 0) {
-                Buff.affect( enemy, HalomethaneBurning.class ).reignite( enemy, 7f );
-                enemy.sprite.burst( 0x000000, 5 );
-            }
-        } else if (HP < HT/2) {
-            if (Random.NormalFloat( 0,100 ) <= 10) {
-                GLog.n( Messages.get(FireMagicDied.class, "died_kill",Dungeon.hero.name()) );
-                bolt(damage/2,enemy);
+        if(enemy != null){
+            if(HP > HT/2){
+                if (Random.Int( 3 ) == 0) {
+                    Buff.affect( enemy, HalomethaneBurning.class ).reignite( enemy, 7f );
+                    enemy.sprite.burst( 0x000000, 5 );
+                }
+            } else if (HP < HT/2) {
+                if (Random.NormalFloat( 0,100 ) <= 10) {
+                    GLog.n( Messages.get(FireMagicDied.class, "died_kill",Dungeon.hero.name()) );
+                    bolt(damage/3,enemy);
+                } else {
+                    zap();
+                }
             } else {
-                zap();
+                if (Random.Int( 3 ) == 0) {
+                    Buff.affect( enemy, HalomethaneBurning.class ).reignite( enemy, 24f );
+                    enemy.sprite.burst( 0x000000, 5 );
+                }
             }
-        } else {
-            if (Random.Int( 3 ) == 0) {
-                Buff.affect( enemy, HalomethaneBurning.class ).reignite( enemy, 24f );
-                enemy.sprite.burst( 0x000000, 5 );
+
+
+            if (pumpedUp > 0) {
+                Camera.main.shake( 3, 0.2f );
             }
         }
-
-
-        if (pumpedUp > 0) {
-            Camera.main.shake( 3, 0.2f );
-        }
-
         return damage;
     }
 
@@ -593,153 +424,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     public boolean isAlive() {
-        return super.isAlive() || Dungeon.level.mobs.contains(this) && HP>0;
-    }
-    @Override
-    public void damage(int dmg, Object src) {
-
-        if (!Dungeon.level.mobs.contains(this)){
-            return;
-        }
-
-        if (!BossHealthBar.isAssigned()){
-            BossHealthBar.assignBoss( this );
-        }
-        boolean bleeding = (HP*2 <= HT);
-
-        super.damage(dmg, src);
-
-        LockedFloor lock = hero.buff(LockedFloor.class);
-        if (lock != null){
-            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
-            else                                                    lock.addTime(dmg*1f);
-        }
-
-        int hpBracket = HT / 8;
-
-        int curbracket = hpBracket == 0 ? 1 : HP / hpBracket;
-
-        int beforeHitHP = HP;
-
-
-        //cannot be hit through multiple brackets at a time
-        if (HP <= (curbracket-1)*hpBracket){
-            HP = (curbracket-1)*hpBracket + 1;
-        }
-
-        int newBracket =  HP / hpBracket;
-        dmg = beforeHitHP - HP;
-
-
-
-        if ((HP*2 <= HT) && !bleeding){
-            BossHealthBar.bleed(true);
-            ((FireMagicGirlSprite)sprite).spray(true);
-        }
-
-        if (phase == 1) {
-            int dmgTaken = preHP - HP;
-            abilityCooldown -= dmgTaken/8f;
-            summonCooldown -= dmgTaken/8f;
-            if (HP <= HT/2) {
-                for (int i : CryStalPosition) {
-                    Buff.append(hero, BeamTowerAdbility.class).towerPos = i;
-                }
-                //properties.add(Property.IMMOVABLE);
-
-                ////doYogLasers();
-                sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
-                Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
-                phase = 2;
-                Char enemy = (this.enemy == null ? Dungeon.hero : this.enemy);
-                int w = Dungeon.level.width();
-                int dx = enemy.pos % w - pos % w;
-                int dy = enemy.pos / w - pos / w;
-                int direction = 2 * (Math.abs(dx) > Math.abs(dy) ? 0 : 1);
-                direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
-                Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
-                sprite.showStatus(0xff0000, Messages.get(this, "dead"));
-                sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
-                Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(12*25+HT/3);
-                HP = HT/2;
-            }
-        } else if (phase == 2 && shielding() == 0 && HP <= HT/3) {
-            yell(  Messages.get(this, "enraged" ));
-            ScrollOfTeleportation.teleportToLocation(this, ShopBossLevel.throneling);
-            GLog.pink(  Messages.get(this, "xslx") );
-            for (int i : CryStalPosition2) {
-                Buff.append(hero, BeamTowerAdbility.class).towerPos = i;
-                CrystalDiedTower csp = new CrystalDiedTower();
-                csp.pos = i;
-                GameScene.add(csp);
-            }
-
-            HP = HT/2;
-            //T3 阶段
-            CrystalLingTower abc = new CrystalLingTower();
-            abc.pos = TRUEPosition;
-            GameScene.add(abc);
-
-            this.pos = FALSEPosition;
-
-            Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(HT/4);
-
-            if(Statistics.amuletObtained|| Statistics.RandMode){
-                Buff.append(hero, BeamTowerAdbility.class).towerPos = TRUEPosition;
-            }
-            Buff.append(hero, BeamTowerAdbility.class).towerPos = TRUEPosition;
-
-            for (Buff buff : hero.buffs()) {
-                if (buff instanceof FireMagicDied.KingDamager) {
-                    buff.detach();
-                }
-            }
-            //actScanning();
-            phase = 3;
-            sprite.idle();
-            Char enemy = (this.enemy == null ? Dungeon.hero : this.enemy);
-            int w = Dungeon.level.width();
-            int dx = enemy.pos % w - pos % w;
-            int dy = enemy.pos / w - pos / w;
-            int direction = 2 * (Math.abs(dx) > Math.abs(dy) ? 0 : 1);
-            direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
-            Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
-            sprite.showStatus(0xff0000, Messages.get(this, "dead"));
-            Buff.affect(this, ChampionEnemy.Halo.class);
-            Buff.affect(this, Adrenaline.class, 50f);
-            Buff.affect(this,  Invulnerability.class, 20f);
-        } else if (phase == 3 && preHP > 10 && HP <= 20){
-            yell( Messages.get(this, "losing") );
-            die(Dungeon.hero);
-            Dungeon.hero.interrupt();
-            GameScene.flash(0x80FFFFFF);
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    Music.INSTANCE.fadeOut(5f, new Callback() {
-                        @Override
-                        public void call() {
-                            Music.INSTANCE.end();
-                        }
-                    });
-                }
-            });
-        } else if (newBracket != curbracket) {
-        //let full attack action complete first
-        Actor.add(new Actor() {
-
-            {
-                actPriority = VFX_PRIO;
-            }
-
-            @Override
-            protected boolean act() {
-                Actor.remove(this);
-                return true;
-            }
-        });
-    }
-
+        return super.isAlive() || phase >= 4;
     }
 
     @Override
