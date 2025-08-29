@@ -34,6 +34,14 @@ public class Assets {
 
 	public static class Map_Luas {
 		public static final String LockedOneRoom_MapLua      = "lua/iron_key1.lua";
+		public static final String LockedTwoRoom_MapLua      = "lua/iron_key2.lua";
+		public static final String LockedThreeRoom_MapLua      = "lua/iron_key3.lua";
+		public static final String LockedFourRoom_MapLua      = "lua/iron_key4.lua";
+		public static final String LockedFiveRoom_MapLua      = "lua/iron_key5.lua";
+		public static final String LockedSixRoom_MapLua      = "lua/iron_key6.lua";
+		public static final String LockedSevenRoom_MapLua      = "lua/iron_key7.lua";
+		public static final String LockedEightRoom_MapLua      = "lua/iron_key8.lua";
+		public static final String LockedNineRoom_MapLua      = "lua/iron_key9.lua";
 	}
 
 	public static class Environment {
