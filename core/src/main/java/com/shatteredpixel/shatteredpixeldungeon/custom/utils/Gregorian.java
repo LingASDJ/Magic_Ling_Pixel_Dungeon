@@ -87,11 +87,10 @@ public class Gregorian {
             eventEndTime = calculateEventEndTime(lunar, 5, 12);
         }
 
-        if(isHBJ){
+        if ((gregorianMonth == 8 && gregorianDay >= 30) || (gregorianMonth == 9 && gregorianDay <= 30)) {
             holiday = RegularLevel.Holiday.HWEEN;
-            eventEndTime = calculateSolarEventEnd(2025,8,15);
+            eventEndTime =  calculateSolarEventEnd(2025,9,30);
         }
-
     }
 
     public static long calculateSolarEventEnd(int year, int month, int day) {

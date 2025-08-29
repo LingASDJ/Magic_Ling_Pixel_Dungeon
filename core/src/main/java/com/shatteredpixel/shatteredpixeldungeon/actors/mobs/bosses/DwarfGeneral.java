@@ -113,6 +113,19 @@ public class DwarfGeneral extends Boss {
         }
 
         @Override
+        public int defenseSkill( Char enemy ) {
+            return 1000;
+        }
+
+        @Override
+        public void damage( int dmg, Object src ) {
+        }
+
+        @Override
+        public boolean add(Buff buff ) {
+            return false;
+        }
+        @Override
         protected boolean act() {
             if(hero.pos == 490){
                 boolean pet = false;
