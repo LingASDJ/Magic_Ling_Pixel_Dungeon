@@ -208,12 +208,12 @@ public class LifeTreeSword extends MeleeWeapon {
         }
 
         @Override
-        public void damage(int dmg, Object src) {
+        public void damage(int dmg, Object src, DamageType type) {
             if (dmg >= 0){
                 //限伤1
                 dmg = 1;
             }
-            super.damage(dmg, src);
+            super.damage(dmg, src, type);
         }
 
         @Override

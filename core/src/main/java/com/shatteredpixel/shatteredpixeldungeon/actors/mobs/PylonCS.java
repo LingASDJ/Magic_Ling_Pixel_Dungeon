@@ -139,12 +139,12 @@ public class PylonCS extends Mob {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         //immune to damage when inactive
         if (alignment == Alignment.NEUTRAL){
             return;
         }
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     @Override

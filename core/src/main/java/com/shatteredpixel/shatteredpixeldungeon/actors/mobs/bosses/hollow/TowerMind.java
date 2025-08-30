@@ -76,7 +76,7 @@ public class TowerMind extends Boss {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         if(src == TowerMachine.class){
             return;
         }
@@ -86,7 +86,7 @@ public class TowerMind extends Boss {
             lock.addTime(dmg*multiple);
         }
         BossHealthBar.assignBoss(this);
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
 

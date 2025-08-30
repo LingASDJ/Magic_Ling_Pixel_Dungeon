@@ -352,7 +352,7 @@ public class MagicGirlDead extends Boss {
     }
 
     @Override
-    public void damage(int damage, Object src){
+    public void damage(int damage, Object src, DamageType type){
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "notice"));
@@ -368,7 +368,7 @@ public class MagicGirlDead extends Boss {
         if(buff(RageAndFire.class)!=null) damage = Math.round(damage*0.1f);
 
         int preHP = HP;
-        super.damage(damage, src);
+        super.damage(damage, src, type);
         int postHP = HP;
         if(preHP> (Statistics.bossRushMode? healthThresholdX[phase] : healthThreshold[phase]) && postHP<= (Statistics.bossRushMode? healthThresholdX[phase] : healthThreshold[phase])){
             Actor.add(new Actor() {

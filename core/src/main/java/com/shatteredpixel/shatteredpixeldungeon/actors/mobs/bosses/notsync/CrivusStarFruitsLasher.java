@@ -79,7 +79,7 @@ public class CrivusStarFruitsLasher extends Mob {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(dmg*2+4);
         if (AntiMagic.RESISTS.contains(src.getClass()) && Statistics.crivusfruitslevel2) {
@@ -87,7 +87,7 @@ public class CrivusStarFruitsLasher extends Mob {
         } else if (src instanceof Burning && !Statistics.crivusfruitslevel2) {
             Buff.affect( this, HalomethaneBurning.class ).reignite( this, 2f );
         }
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     public String info(){

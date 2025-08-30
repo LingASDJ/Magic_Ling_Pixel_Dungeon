@@ -326,7 +326,7 @@ public class DwarfMaster extends Boss {
             super.detach();
             for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (m instanceof DwarfMaster){
-                    m.damage(20, this);
+                    m.damage(20, this, DamageType.REAL);
                 }
             }
         }
@@ -601,7 +601,7 @@ public class DwarfMaster extends Boss {
 
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
 
         if(HP > 400 && dmg > 300){
             dmg = 300;
@@ -610,11 +610,11 @@ public class DwarfMaster extends Boss {
         if (HP > 299 && HP <= 500 && dmg >= 9){
             dmg = 15+ (int)(Math.sqrt(8*(dmg - 4) + 1) - 1)/2;
         } else  {
-            super.damage(dmg, src);
+            super.damage(dmg, src, type);
         }
 
         if (isInvulnerable(src.getClass())){
-            super.damage(dmg, src);
+            super.damage(dmg, src, type);
             return;
         } else if (phase == 3 && !(src instanceof Viscosity.DeferedDamage)){
             if(src instanceof DwarfMaster.KingDamager) dmg = 1;
@@ -627,7 +627,7 @@ public class DwarfMaster extends Boss {
             return;
         }
         int preHP = HP;
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
 
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
         if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg/3);

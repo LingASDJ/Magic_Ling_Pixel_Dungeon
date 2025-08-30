@@ -64,7 +64,7 @@ public class ZeroBoat extends NTNPC {
     }
 
     @Override
-    public void damage( int dmg, Object src ) {
+    public void damage(int dmg, Object src, DamageType type) {
     }
 
     @Override

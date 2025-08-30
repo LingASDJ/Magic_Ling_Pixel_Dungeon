@@ -46,10 +46,10 @@ public class DictFish extends Mob {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(dmg*0.4f);
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     @Override

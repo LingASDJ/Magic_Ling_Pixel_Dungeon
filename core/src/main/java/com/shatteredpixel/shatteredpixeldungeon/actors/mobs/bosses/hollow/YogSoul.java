@@ -6,7 +6,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSoulSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
@@ -72,14 +71,14 @@ public class YogSoul extends Boss {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         BossHealthBar.assignBoss(this);
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) {
             int multiple = 1;
             lock.addTime(dmg*multiple);
         }
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     @Override

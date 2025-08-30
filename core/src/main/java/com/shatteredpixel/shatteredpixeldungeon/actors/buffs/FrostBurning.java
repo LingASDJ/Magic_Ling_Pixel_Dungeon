@@ -68,7 +68,7 @@ public class FrostBurning extends Buff implements Hero.Doom {
 
                 Hero hero = (Hero)target;
 
-                hero.damage( damage, this, Char.DamageTyPe.Element );
+                hero.damage( damage, this, Char.DamageType.Element );
                 burnIncrement++;
 
                 //at 4+ turns, there is a (turns-3)/3 chance an item burns
@@ -97,7 +97,7 @@ public class FrostBurning extends Buff implements Hero.Doom {
                 }
 
             } else {
-                target.damage( damage, this, Char.DamageTyPe.Element );
+                target.damage( damage, this, Char.DamageType.Element );
             }
 
             if (target instanceof Thief && ((Thief) target).item != null) {

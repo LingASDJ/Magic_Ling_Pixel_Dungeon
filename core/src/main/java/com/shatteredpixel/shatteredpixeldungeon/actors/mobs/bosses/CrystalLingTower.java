@@ -36,11 +36,11 @@ public class CrystalLingTower extends Mob {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         if (dmg >= 15){
             dmg = 15 + (int)(Math.sqrt(8*(dmg - 4) + 1) - 1)/2;
         }
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     protected int count=0;

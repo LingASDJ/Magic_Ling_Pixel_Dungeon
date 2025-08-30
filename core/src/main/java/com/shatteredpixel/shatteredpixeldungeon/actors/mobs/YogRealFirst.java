@@ -66,9 +66,9 @@ public abstract class YogRealFirst extends Mob {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         int preHP = HP;
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
         int dmgTaken = HP - preHP;
 
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
@@ -288,7 +288,7 @@ public abstract class YogRealFirst extends Mob {
         }
 
         @Override
-        public void damage(int dmg, Object src) {
+        public void damage(int dmg, Object src, DamageType type) {
             int grassCells = 0;
             for (int i : PathFinder.NEIGHBOURS9) {
                 if (Dungeon.level.map[pos+i] == Terrain.FURROWED_GRASS
@@ -298,7 +298,7 @@ public abstract class YogRealFirst extends Mob {
             }
             if (grassCells > 0) dmg = Math.round(dmg * (6-grassCells)/6f);
 
-            super.damage(dmg, src);
+            super.damage(dmg, src, type);
         }
 
         @Override
@@ -367,7 +367,7 @@ public abstract class YogRealFirst extends Mob {
         }
 
         @Override
-        public void damage(int dmg, Object src) {
+        public void damage(int dmg, Object src, DamageType type) {
             if (!isInvulnerable(src.getClass()) && !(src instanceof Bleeding)){
                 if (dmg < 0){
                     return;
@@ -381,7 +381,7 @@ public abstract class YogRealFirst extends Mob {
                 b.attachTo(this);
                 //sprite.showStatus(CharSprite.WARNING, b.name() + " " + (int)b.level());
             } else{
-                super.damage(dmg, src);
+                super.damage(dmg, src, type);
             }
         }
 
@@ -429,14 +429,14 @@ public abstract class YogRealFirst extends Mob {
         }
 
         @Override
-        public void damage(int dmg, Object src) {
+        public void damage(int dmg, Object src, DamageType type) {
             if (!isInvulnerable(src.getClass()) && !(src instanceof Viscosity.DeferedDamage)){
                 if (dmg >= 0) {
                     Buff.affect(this, Viscosity.DeferedDamage.class).prolong(dmg);
                     sprite.showStatus(CharSprite.WARNING, Messages.get(Viscosity.class, "deferred", dmg));
                 }
             } else{
-                super.damage(dmg, src);
+                super.damage(dmg, src, type);
             }
         }
 
@@ -487,9 +487,9 @@ public abstract class YogRealFirst extends Mob {
         }
 
         @Override
-        public void damage(int dmg, Object src) {
+        public void damage(int dmg, Object src, DamageType type) {
             int beforeHP = HP;
-            super.damage(dmg, src);
+            super.damage(dmg, src, type);
             if (isAlive() && beforeHP > HT/2 && HP < HT/2){
                 HP = HT/2;
                 Buff.prolong( Dungeon.hero, Blindness.class, Blindness.DURATION*1.5f );
@@ -555,9 +555,9 @@ public abstract class YogRealFirst extends Mob {
         }
 
         @Override
-        public void damage(int dmg, Object src) {
+        public void damage(int dmg, Object src, DamageType type) {
             int beforeHP = HP;
-            super.damage(dmg, src);
+            super.damage(dmg, src, type);
             if (isAlive() && beforeHP > HT/2 && HP < HT/2){
                 HP = HT/2;
                 Light l = Dungeon.hero.buff(Light.class);

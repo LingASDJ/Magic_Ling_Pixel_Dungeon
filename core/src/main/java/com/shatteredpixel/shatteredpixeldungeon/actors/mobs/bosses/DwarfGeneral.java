@@ -295,7 +295,7 @@ public class DwarfGeneral extends Boss {
                 enderCooldown = 0;
                 summonGetNormal();
                 summonGetSolider();
-                damage(5,this);
+                damage(5,this, DamageType.REAL);
                 alerted = false;
                 state = PASSIVE;
             }
@@ -678,7 +678,7 @@ public class DwarfGeneral extends Boss {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
 
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) {
@@ -728,7 +728,7 @@ public class DwarfGeneral extends Boss {
             noAlive = true;
         }
 
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     @Override

@@ -105,7 +105,7 @@ public class SakaFishBoss extends Boss {
     private int pumpedUp = 0;
     private int healInc = 1;
 
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         if (!Dungeon.level.mobs.contains(this)){
             return;
         }
@@ -125,7 +125,7 @@ public class SakaFishBoss extends Boss {
         int hpBracket = HT / 8;
 
         int beforeHitHP = HP;
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
         dmg = beforeHitHP - HP;
 
         //tengu cannot be hit through multiple brackets at a time

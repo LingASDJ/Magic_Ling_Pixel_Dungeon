@@ -56,7 +56,7 @@ public class StormCloudDied extends Buff {
         for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if (mob != null && Dungeon.level.heroFOV[mob.pos]) {
                 arcs.add( new Lightning.Arc(hero.sprite.center(), mob.sprite.center()));
-                mob.damage( totalDamage, new LightningBolt() );
+                mob.damage( totalDamage, new LightningBolt());
                 arc(mob);
                 left -= TICK;
 

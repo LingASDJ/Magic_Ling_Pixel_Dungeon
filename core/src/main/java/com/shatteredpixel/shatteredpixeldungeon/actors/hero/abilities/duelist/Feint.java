@@ -181,7 +181,7 @@ public class Feint extends ArmorAbility {
 		}
 
 		@Override
-		public void damage( int dmg, Object src ) {
+		public void damage(int dmg, Object src, DamageType type) {
 
 		}
 
