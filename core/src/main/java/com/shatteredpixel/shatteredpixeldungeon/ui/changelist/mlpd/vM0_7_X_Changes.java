@@ -130,7 +130,8 @@ public class vM0_7_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new Image(Assets.Interfaces.HAICONS, 32, 0, 16, 16), "困难模式",
-                "困难模式重磅回归！欢迎前来测试！"));
+                "困难模式重磅回归！欢迎前来测试！\n" +
+                        "【从本版本开始，非困难模式10层后可丢弃藏品】"));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：little surprise of bzmdr"),
                 ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：永久有效")));
@@ -171,7 +172,13 @@ public class vM0_7_X_Changes {
                                 "\n15层：冰雪魔女 DM720 矮人武将 萨卡班甲鱼" +
                                 "\n20层：矮人武将 矮人将军 矮人国王 浊燃魔女")));
 
-        changes = new ChangeInfo("v0.8.6.0中测验收通过，予以更新", true, null);
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CLEARPRO), ("传说武器：清道夫"),
+                ("暂时移除生成，待修复后归来。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FORESTCROSSBOW), ("新传说武器：森林弓"),
+                ("暂时移除生成，待修复后归来。")));
+
+        changes = new ChangeInfo("v0.8.7.0中测验收通过，予以更新", true, null);
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
     }
