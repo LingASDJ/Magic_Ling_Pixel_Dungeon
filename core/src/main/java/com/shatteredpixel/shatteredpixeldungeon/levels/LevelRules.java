@@ -151,7 +151,15 @@ public class LevelRules {
                     case 4:
                         return new SewerLevel();
                     case 5:
-                        if(SPDSettings.level1boss() == 1){
+                        if(Statistics.RandMode){
+                            switch (Random.Int(5)){
+                                case 1: return new SkyGooBossLevel();
+                                case 2: return new ForestPoisonBossLevel();
+                                case 3: return new ForestHardBossLevel();
+                                default:
+                                    return new SLMKingLevel();
+                            }
+                        } else if(SPDSettings.level1boss() == 1){
                             return new ForestPoisonBossLevel();
                         } else if(SPDSettings.level1boss() == 3){
                             Statistics.ExFruit = true;
@@ -182,14 +190,13 @@ public class LevelRules {
                     case 10:
                        if(Statistics.RandMode){
                            switch (Random.Int(9)){
-                               case 1: return new SLMKingLevel();
-                               default:
-                               case 3: return new DeepShadowLevel();
-                               case 4: return new ColdChestBossLevel();
+                               case 1: return new DeepShadowLevel();
+                               case 3: return new ColdChestBossLevel();
                                case 5: return new GreenStlingBossLevel();
-                               case 6: return new CavesBossLevel();
-                               case 7: return new CaveTwoBossLevel();
-                               case 8: return new PrisonBossLevel();
+                               case 7: return new CavesBossLevel();
+                               default:
+                                   return new PrisonBossLevel();
+
                            }
                         } else if(Statistics.mimicking && !Statistics.mustTengu){
                             return new ColdChestBossLevel();
@@ -206,11 +213,11 @@ public class LevelRules {
                     case 15:
                         if(Statistics.RandMode){
                             switch (Random.Int(5)){
-                                default:
-                                case 1: return new AncientMysteryCityBossLevel();
                                 case 2: return new CavesGirlDeadLevel();
                                 case 3: return new CaveTwoBossLevel();
                                 case 4: return new DwarfMasterBossLevel();
+                                default:
+                                    return new AncientMysteryCityBossLevel();
                             }
                         } else if ((Statistics.boss_enhance & 0x4) != 0) {
                             return new CavesGirlDeadLevel();
@@ -228,10 +235,12 @@ public class LevelRules {
                         return new CityLevel();
                     case 20:
                         if(Statistics.RandMode){
-                            switch (Random.Int(3)){
+                            switch (Random.Int(6)){
                                 case 1: return new DwarfMasterBossLevel();
+                                case 3: return new DwarfGeneralBossLevel();
+                                case 5: return new NewCityBossLevel();
                                 default:
-                                case 3: return new ShopBossLevel();
+                                        return new ShopBossLevel();
                             }
                         } else {
                             return new NewCityBossLevel();

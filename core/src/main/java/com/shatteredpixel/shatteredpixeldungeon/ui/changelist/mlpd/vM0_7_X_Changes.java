@@ -71,6 +71,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0870_Changes(changeInfos);
         add_V0860_Changes(changeInfos);
         add_V0852_Changes(changeInfos);
         add_V0850_Changes(changeInfos);
@@ -117,6 +118,56 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0870_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.7.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Interfaces.HAICONS, 32, 0, 16, 16), "困难模式",
+                "困难模式重磅回归！欢迎前来测试！"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：little surprise of bzmdr"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：永久有效")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：RedFish Bomb Gifts"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：永久有效")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_GOLEM), ("巨像卷轴"),
+                ("在BR和金蝶中有概率在商店中生成。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), ("归溯钥剑"),
+                ("现在只能在商店处购买，且移出五阶武器生成池。")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "魔绫像素地牢-修复内容：\n\n" +
+                        (       "_-_ 修复炼金菱晶在BR快捷栏可使用的Bug\n" +
+                                "_-_ 修复飞镖特效导致的崩溃\n" +
+                                "_-_ 修复触发下楼0层前的对话后再选择模式物品时，无法通过非孤城的普通模式下楼口进入特殊模式\n" +
+                                "_-_ 修复森林弩伤害加成异常的问题\n" +
+                                "_-_ 修复有buff取下电子烟时闪退")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD), ("金蝶模式V2.3"),
+                (
+                        "金蝶模式-V2.3\n\n" +
+                                "金蝶Boss怪组调整：\n\n" +
+                                "5层：果子 异果 史莱姆Wang 天痕" +
+                                "\n10层： 暗影 拟态王 绿野精灵完全体 天狗 DM300" +
+                                "\n15层：冰雪魔女 DM720 矮人武将 萨卡班甲鱼" +
+                                "\n20层：矮人武将 矮人将军 矮人国王 浊燃魔女")));
+
+        changes = new ChangeInfo("v0.8.6.0中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
     }
 
     public static void add_V0860_Changes(ArrayList<ChangeInfo> changeInfos ) {

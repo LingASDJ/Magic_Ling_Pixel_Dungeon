@@ -167,7 +167,7 @@ public class SkyGoo extends Boss implements Callback {
 
 		lastPos = pos;
 
-		if(HP <= 200 && !skill3){
+		if(HP <= HT/3 && !skill3){
 			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
 				int p = pos + PathFinder.NEIGHBOURS8[i];
 				if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {

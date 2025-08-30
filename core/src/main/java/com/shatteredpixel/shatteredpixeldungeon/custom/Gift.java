@@ -35,6 +35,10 @@ public class Gift implements Bundlable {
             "TUhKSCw0MDcwOTUxNzc1LGZhbHNl",
             "WUxHQiw0MDcwOTUxNzc1LGZhbHNl",
 
+            //KPL 永久赌注兑换码
+            "bGl0dGxlIHN1cnByaXNlIG9mIGJ6bWRyLDQwNzA5NTE3NzUsZmFsc2U=",
+            "UmVkRmlzaCBCb21iIEdpZnRzLDQwNzA5NTE3NzUsZmFsc2U=",
+
             "U0hQRC1CSVJUSERBWSwxNzU2MTM3NjIwLGZhbHNl",
 
             "TkZZSUcsMTc1NDU4MjQwMCxmYWxzZQ==",
@@ -73,6 +77,22 @@ public class Gift implements Bundlable {
         code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 1000 );
         code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.ZakoSoup", 1 );
         tempMap.put( "U0hQRC1CSVJUSERBWQ==",         code6 );
+
+
+        //KPL
+        LinkedHashMap<String, Integer> kpl1 = new LinkedHashMap<>();
+        kpl1.put( "com.shatteredpixel.shatteredpixeldungeon.items.JAmulet", 1 );
+        kpl1.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman", 1 );
+        kpl1.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem", 1 );
+        kpl1.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr", 1 );
+        tempMap.put( "bGl0dGxlIHN1cnByaXNlIG9mIGJ6bWRy",         kpl1 );
+
+        LinkedHashMap<String, Integer> kpl2 = new LinkedHashMap<>();
+        kpl2.put( "com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace$AnkhAlt", 1 );
+        kpl2.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman", 1 );
+        kpl2.put( "com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade", 1 );
+        kpl2.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.TheGriefOfSpeechless", 1 );
+        tempMap.put( "UmVkRmlzaCBCb21iIEdpZnRz",         kpl2 );
 
 
         GIFT_ITEM = new HashMap<>( Collections.unmodifiableMap( tempMap ) );

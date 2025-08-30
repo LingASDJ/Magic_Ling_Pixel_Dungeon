@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.QuestGold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -22,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -245,6 +247,14 @@ public class GameRules {
         return banners;
     }
 
-
-
+    public static void PropsScore() {
+        ArrayList<Prop> AllProps = hero.belongings.getAllItems(Prop.class);
+        for (Prop w : AllProps.toArray(new Prop[0])){
+            if(w.kind == 0){
+                Statistics.goodMultiplier += 0.2f;
+            } else {
+                Statistics.badMultiplier += 0.4f;
+            }
+        }
+    }
 }

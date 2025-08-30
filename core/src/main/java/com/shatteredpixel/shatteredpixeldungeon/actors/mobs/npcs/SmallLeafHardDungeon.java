@@ -50,7 +50,7 @@ public class SmallLeafHardDungeon extends NPC {
                 public void call() {
                     GameScene.show(new WndOptions(new SmallLeafSprite(),
                             Messages.get(SmallLeafHardDungeon.class, "title"),
-                            Messages.get(SmallLeafHardDungeon.class, "desc"),
+                            Messages.get(SmallLeafHardDungeon.class, "message"),
                             Messages.get(SmallLeafHardDungeon.class, "change"),
                             Messages.get(SmallLeafHardDungeon.class, "gamble"),
                             Messages.get(SmallLeafHardDungeon.class, "cancel")) {
