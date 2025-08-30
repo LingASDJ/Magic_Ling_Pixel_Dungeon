@@ -2056,6 +2056,11 @@ public class Hero extends Char {
 
 		damage = Talent.onAttackProc( this, enemy, damage );
 
+		//225% 伤害
+		if ( buff( Invulnerability.GodDied.class ) != null ){
+			damage *= (int) 2.25f;
+		}
+
 		if (Objects.requireNonNull(subClass) == HeroSubClass.SNIPER) {
 			if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow) && enemy != this) {
 				Actor.add(new Actor() {
@@ -2164,11 +2169,6 @@ public class Hero extends Char {
 		CapeOfThorns.Thorns thorns = buff( CapeOfThorns.Thorns.class );
 		if (thorns != null) {
 			dmg = thorns.proc(dmg, (src instanceof Char ? (Char)src : null),  this);
-		}
-
-		//225% 伤害
-		if ( buff( Invulnerability.GodDied.class ) != null ){
-			dmg *= (int) 2.25f;
 		}
 
 		Talent.WarriorFoodImmunity thornsTalent = buff( Talent.WarriorFoodImmunity.class );

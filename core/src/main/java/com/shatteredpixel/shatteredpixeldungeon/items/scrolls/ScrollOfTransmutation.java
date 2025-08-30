@@ -158,6 +158,9 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	}
 
 	public static Item changeItem( Item item ){
+		if(item instanceof LockSword){
+			return null;
+		}
 		if (item instanceof MagesStaff) {
 			return changeStaff((MagesStaff) item);
 		}else if (item instanceof TippedDart){

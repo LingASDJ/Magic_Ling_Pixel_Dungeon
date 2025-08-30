@@ -62,6 +62,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.SakaMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Switch;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.BoneSoup;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.RatTail;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.ZakoSoup;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Gelatin;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar_Block;
@@ -137,6 +140,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnsignedInvitationLe
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
@@ -261,6 +265,7 @@ public class SpawnMisc extends TestItem {
             }
             scrollList.add(ScrollOfRoseShiled.class);
             scrollList.add(ScrollOfFlameCursed.class);
+            scrollList.add(ScrollOfGolems.class);
         }
 
         if(exoticScrollList.isEmpty()) {
@@ -354,6 +359,10 @@ public class SpawnMisc extends TestItem {
             foodList.add(Gelatin.class);
             foodList.add(Sugar_Block.class);
             foodList.add(WhiteSugar_B.class);
+
+            foodList.add(BoneSoup.class);
+            foodList.add(RatTail.class);
+            foodList.add(ZakoSoup.class);
         }
 
         //Book
