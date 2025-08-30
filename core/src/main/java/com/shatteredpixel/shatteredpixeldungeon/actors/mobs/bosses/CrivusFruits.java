@@ -185,7 +185,7 @@ public class CrivusFruits extends Boss {
             //遍历楼层生物，寻找CrivusFruits执行扣血，在触手死亡时强制扣除本体CrivusFruits
             for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (m instanceof CrivusFruits){
-                    m.damage(7, this);
+                    m.damage(7, this, DamageType.REAL);
                 }
             }
         }
@@ -217,10 +217,10 @@ public class CrivusFruits extends Boss {
 
     //回合
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(dmg * 2);
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
 
@@ -346,7 +346,8 @@ public class CrivusFruits extends Boss {
                     if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
                         if (!ch.isImmune(this.getClass())) {
                             if( hero.buff(LockedFloor.class) != null ) {
-                                ch.damage(hero.buff(LockedFloor.class) != null ? damage : 0, this);
+                                ch.damage(hero.buff(LockedFloor.class) != null ? damage : 0, this, DamageType.Element);
+                                //毒雾先按照元素伤害分类
                                 Statistics.bossScores[0] -= 60;
                             }
                         }

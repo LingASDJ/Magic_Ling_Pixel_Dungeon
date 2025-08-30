@@ -104,7 +104,7 @@ public class ArmyFlag extends Mob {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
 
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) {
@@ -112,7 +112,7 @@ public class ArmyFlag extends Mob {
             lock.addTime(dmg*multiple);
         }
 
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     private static final String FRIENPHASE = "frienphase";

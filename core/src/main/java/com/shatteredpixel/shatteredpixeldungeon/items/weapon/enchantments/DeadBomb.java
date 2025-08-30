@@ -30,7 +30,7 @@ public class DeadBomb extends Weapon.Enchantment {
                     dmg = mob.defenseProc(mob,dmg);
                     dmg -= mob.drRoll();
                     damage = Math.min(damage, maxDamage);
-                    mob.damage(dmg,this);
+                    mob.damage(dmg,this, Char.DamageType.PHYSICAL);
                 }
             }
         } else if(Random.Int(100)<= 36 + weapon.level() && (!defender.properties.contains(Char.Property.BOSS) || !defender.properties.contains(Char.Property.MINIBOSS)) ) {

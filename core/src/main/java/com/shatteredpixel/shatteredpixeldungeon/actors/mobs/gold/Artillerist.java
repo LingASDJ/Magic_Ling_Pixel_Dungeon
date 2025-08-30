@@ -92,7 +92,7 @@ public class Artillerist extends GoldMob {
             CellEmitter.get(cell+c).burst(BlastParticle.FACTORY, 20);
             Mob mob = Dungeon.level.findMob(cell+c);
             if(mob != null){
-                mob.damage(dmg,new Bomb());
+                mob.damage(dmg,new Bomb(), DamageType.PHYSICAL);
             }
             if(Dungeon.hero != null){
                 if(Dungeon.hero.pos == cell + c){

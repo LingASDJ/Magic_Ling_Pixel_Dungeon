@@ -85,7 +85,7 @@ public class Slime_Sn extends GoldMob {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         float scaleFactor = AscensionChallenge.statModifier(this);
         int scaledDmg = Math.round(dmg/scaleFactor);
         if (scaledDmg >= 5){
@@ -93,7 +93,7 @@ public class Slime_Sn extends GoldMob {
             scaledDmg = 4 + (int)(Math.sqrt(8*(scaledDmg - 4) + 1) - 1)/2;
         }
         dmg = (int)(scaledDmg*AscensionChallenge.statModifier(this));
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     @Override

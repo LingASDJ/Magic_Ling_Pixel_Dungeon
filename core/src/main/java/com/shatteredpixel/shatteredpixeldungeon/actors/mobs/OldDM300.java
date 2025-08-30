@@ -201,8 +201,8 @@ public class OldDM300 extends FlameC02 {
 	}
 
 	@Override
-	public void damage(int dmg, Object src) {
-		super.damage(dmg, src);
+	public void damage(int dmg, Object src, DamageType type) {
+		super.damage(dmg, src, type);
 		if (state == PASSIVE) {
 			state = HUNTING;
 			notice();

@@ -406,10 +406,10 @@ public class YogDzewa extends Boss {
 	}
 
 	@Override
-	public void damage( int dmg, Object src ) {
+	public void damage(int dmg, Object src, DamageType type) {
 
 		int preHP = HP;
-		super.damage( dmg, src );
+		super.damage( dmg, src, type);
 
 		if (phase == 0 || findFist() != null) return;
 

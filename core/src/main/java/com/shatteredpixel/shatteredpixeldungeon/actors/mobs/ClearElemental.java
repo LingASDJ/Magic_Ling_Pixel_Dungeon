@@ -36,13 +36,13 @@ public class ClearElemental extends Mob {
     }
 
     @Override
-    public void damage( int dmg, Object src ) {
+    public void damage(int dmg, Object src, DamageType type) {
 
         if (state == PASSIVE) {
             state = HUNTING;
         }
 
-        super.damage( dmg, src );
+        super.damage( dmg, src, type);
     }
 
     private int combo = 0;

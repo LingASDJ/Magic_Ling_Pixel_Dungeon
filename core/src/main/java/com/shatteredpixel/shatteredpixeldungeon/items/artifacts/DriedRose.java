@@ -604,7 +604,7 @@ public class DriedRose extends Artifact {
 			if (rose == null
 					|| !rose.isEquipped(Dungeon.hero)
 					|| Dungeon.hero.buff(MagicImmune.class) != null){
-				damage(1, new NoRoseDamage());
+				damage(1, new NoRoseDamage(), DamageType.REAL);
 			}
 			
 			if (!isAlive()) {
@@ -676,7 +676,7 @@ public class DriedRose extends Artifact {
 		}
 		
 		@Override
-		public void damage(int dmg, Object src) {
+		public void damage(int dmg, Object src, DamageType type) {
 			//TODO improve this when I have proper damage source logic
 			if (rose != null && rose.armor != null && rose.armor.hasGlyph(AntiMagic.class, this)
 					&& AntiMagic.RESISTS.contains(src.getClass())){
@@ -684,7 +684,7 @@ public class DriedRose extends Artifact {
 				dmg = Math.max(dmg, 0);
 			}
 			
-			super.damage( dmg, src );
+			super.damage( dmg, src, type);
 			
 			//for the rose status indicator
 			Item.updateQuickslot();

@@ -207,7 +207,7 @@ public class CrivusFruitsLasher extends Mob {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(dmg*2+4);
         int damage = Random.Int(1,3);
@@ -219,17 +219,17 @@ public class CrivusFruitsLasher extends Mob {
             if(hero.belongings.armor != null){
                 if(hero.belongings.armor.level < 3){
                     damage -= hero.drRoll();
-                    hero.damage(damage, this);
+                    hero.damage(damage, this , DamageType.PHYSICAL);
                 } else {
                     Buff.affect( hero, Poison.class ).set(1);
                 }
             } else {
                 damage -= hero.drRoll();
-                hero.damage(damage, this);
+                hero.damage(damage, this , DamageType.PHYSICAL);
             }
-            super.damage(dmg, src);
+            super.damage(dmg, src, type);
         } else {
-            super.damage(dmg, src);
+            super.damage(dmg, src, type);
         }
     }
 

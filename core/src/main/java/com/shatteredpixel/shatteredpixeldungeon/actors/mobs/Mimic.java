@@ -202,7 +202,7 @@ public class Mimic extends Mob implements Mob.NoMobSpawn {
 	}
 
 	@Override
-	public void damage(int dmg, Object src) {
+	public void damage(int dmg, Object src, DamageType type) {
 		if (state == PASSIVE){
 			alignment = Alignment.ENEMY;
 			stopHiding();
@@ -214,7 +214,7 @@ public class Mimic extends Mob implements Mob.NoMobSpawn {
 			else                                                    lock.addTime(dmg*1.5f);
 		}
 
-		super.damage(dmg, src);
+		super.damage(dmg, src, type);
 	}
 
 	@Override

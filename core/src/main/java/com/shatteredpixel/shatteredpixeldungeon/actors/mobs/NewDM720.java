@@ -469,8 +469,8 @@ public class NewDM720 extends MolotovHuntsman implements Mob.NoMobSpawn {
     private boolean invulnWarned = false;
 
     @Override
-    public void damage(int dmg, Object src) {
-        super.damage(dmg, src);
+    public void damage(int dmg, Object src, DamageType type) {
+        super.damage(dmg, src, type);
         if (isInvulnerable(src.getClass())){
             return;
         }

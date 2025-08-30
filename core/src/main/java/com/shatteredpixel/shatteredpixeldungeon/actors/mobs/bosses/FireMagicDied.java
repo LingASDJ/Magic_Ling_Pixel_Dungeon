@@ -699,7 +699,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             super.detach();
             for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (m instanceof FireMagicDied ){
-                    m.damage(30, this);
+                    m.damage(30, this, DamageType.REAL);
                 }
             }
         }

@@ -345,7 +345,7 @@ public class SothothEyeDied extends Boss {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         int count = 0;
 
         if(HP<=250 && second){
@@ -443,7 +443,7 @@ public class SothothEyeDied extends Boss {
         }
 
         dmg = (int) (scaledDmg * scaleFactor);
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
 

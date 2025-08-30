@@ -169,7 +169,7 @@ public class DeadDogCerberus extends Boss {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
 
         //Boss阶段推进
         if (phase == 0 && HP < 700) {
@@ -232,7 +232,7 @@ public class DeadDogCerberus extends Boss {
             dmg = Math.min(dmg, 150/phase);
         }
 
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
 
         if (flag) {
             magicDefence -= dmg;

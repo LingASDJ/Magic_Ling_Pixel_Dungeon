@@ -343,7 +343,7 @@ public class TowerGods extends Boss {
 
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         if(src == TowerMachine.class){
             return;
         }
@@ -392,7 +392,7 @@ public class TowerGods extends Boss {
             dmg *= rate;
         }
 
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     public static class GodsSummonColdDown extends FlavourBuff {

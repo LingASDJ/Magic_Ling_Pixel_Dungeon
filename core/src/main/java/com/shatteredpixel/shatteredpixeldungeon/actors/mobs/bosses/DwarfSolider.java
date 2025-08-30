@@ -66,8 +66,8 @@ public class DwarfSolider extends Mob {
     protected float focusCooldown = 0;
 
     @Override
-    public void damage(int dmg, Object src) {
-        super.damage(dmg, src);
+    public void damage(int dmg, Object src, DamageType type) {
+        super.damage(dmg, src, type);
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null){
             if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);

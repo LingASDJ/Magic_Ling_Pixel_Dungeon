@@ -64,7 +64,7 @@ public class PirahaKing extends Boss {
         HUNTING = new Hunting();
     }
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         Char dmgSource = null;
         if (src instanceof Char) dmgSource = (Char)src;
         if (src instanceof Wand) dmgSource = Dungeon.hero;
@@ -72,7 +72,7 @@ public class PirahaKing extends Boss {
         if (dmgSource == null || !Dungeon.level.adjacent(pos, dmgSource.pos)){
             dmg = Math.round(dmg/2f); //halve damage taken if we are going to teleport
         }
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
 
         if (isAlive() && !(src instanceof Corruption)) {
             if (dmgSource != null) {

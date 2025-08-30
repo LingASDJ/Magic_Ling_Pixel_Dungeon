@@ -259,8 +259,8 @@ public class BlackSoul extends Mob implements Callback {
     }
 
     @Override
-    public void damage( int dmg, Object src ) {
-        super.damage( dmg, src );
+    public void damage(int dmg, Object src, DamageType type) {
+        super.damage( dmg, src, type);
         if (HP <= 0) {
             spend( TICK );
         }

@@ -272,7 +272,7 @@ public class Sothoth extends Boss {
 
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         int count = 0;
 
         //生命值低于250；随机召唤4根塔维尔之触，所有仆从获得全局激素涌动效果
@@ -334,7 +334,7 @@ public class Sothoth extends Boss {
         int scaledDmg = Math.round(reducedDamage / scaleFactor);
 
         dmg = (int) (scaledDmg * scaleFactor);
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     private void laserattack(){

@@ -28,7 +28,7 @@ public class LanFire extends NPC {
     public static boolean seenBefore = false;
 
     @Override
-    public void damage( int dmg, Object src ) {
+    public void damage(int dmg, Object src, DamageType type) {
     }
 
     @Override

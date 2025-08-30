@@ -130,7 +130,7 @@ public class Tengu extends Boss {
 	}
 
 	@Override
-	public void damage(int dmg, Object src) {
+	public void damage(int dmg, Object src, DamageType type) {
 		if (!Dungeon.level.mobs.contains(this)){
 			return;
 		}
@@ -142,7 +142,7 @@ public class Tengu extends Boss {
 		int curbracket = HP / hpBracket;
 
 		int beforeHitHP = HP;
-		super.damage(dmg, src);
+		super.damage(dmg, src, type);
 
 		//cannot be hit through multiple brackets at a time
 		if (HP <= (curbracket-1)*hpBracket){

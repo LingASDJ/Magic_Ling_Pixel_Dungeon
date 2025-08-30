@@ -1011,7 +1011,7 @@ public abstract class Mob extends Char {
 	protected float lootChance = 0;
 
 	@Override
-	public void damage( int dmg, Object src ) {
+	public void damage(int dmg, Object src, DamageType type) {
 
 		if (state == SLEEPING) {
 			state = WANDERING;
@@ -1028,7 +1028,7 @@ public abstract class Mob extends Char {
 			deferred.prolong( dmg/6 );
 		}
 
-        super.damage( dmg, src );
+        super.damage( dmg, src , type);
 	}
 
 	//how many mobs this one should count as when determining spawning totals

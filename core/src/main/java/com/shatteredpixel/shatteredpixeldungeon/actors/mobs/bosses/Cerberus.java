@@ -649,7 +649,7 @@ public class Cerberus extends Boss {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
 
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) {
@@ -663,7 +663,7 @@ public class Cerberus extends Boss {
             dmg = Math.min(dmg, 40);
         }
 
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     @Override

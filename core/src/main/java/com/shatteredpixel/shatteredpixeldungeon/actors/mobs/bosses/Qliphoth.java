@@ -87,7 +87,7 @@ public class Qliphoth extends Boss {
     }
 
     @Override
-    public void damage(int dmg, Object src) {
+    public void damage(int dmg, Object src, DamageType type) {
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(dmg * 2);
 
@@ -101,7 +101,7 @@ public class Qliphoth extends Boss {
             dmg = (int)(scaledDmg*AscensionChallenge.statModifier(this));
         }
 
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     public static int[] SuperAttack_Pos = new int[]{
@@ -297,7 +297,7 @@ public class Qliphoth extends Boss {
             super.detach();
             for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (m instanceof Qliphoth){
-                    m.damage(10, this);
+                    m.damage(10, this, DamageType.REAL);
                 }
             }
         }

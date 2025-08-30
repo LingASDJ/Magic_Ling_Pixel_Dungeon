@@ -178,7 +178,7 @@ public class SkyDead extends Mob {
     }
     private static int dodges = 0;
     @Override
-    public void damage(int damage, Object src){
+    public void damage(int damage, Object src, DamageType type){
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(damage*2);
         int dmg = Math.min(damage, 15);
@@ -190,7 +190,7 @@ public class SkyDead extends Mob {
                 dodges = 0;
             }
         }
-        super.damage(dmg, src);
+        super.damage(dmg, src, type);
     }
 
     @Override

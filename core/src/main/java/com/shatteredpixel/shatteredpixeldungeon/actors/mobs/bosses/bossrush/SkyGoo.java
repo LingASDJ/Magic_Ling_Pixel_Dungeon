@@ -319,7 +319,7 @@ public class SkyGoo extends Boss implements Callback {
 	}
 
 	@Override
-	public void damage(int dmg, Object src) {
+	public void damage(int dmg, Object src, DamageType type) {
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
 		}
@@ -338,7 +338,7 @@ public class SkyGoo extends Boss implements Callback {
 			}
 		}
 		boolean bleeding = (this.HP*2 <= this.HT);
-		super.damage(dmg, src);
+		super.damage(dmg, src, type);
 		if (this.HP * 2 <= this.HT && !bleeding) {
 			BossHealthBar.bleed(true);
 			this.sprite.showStatus(16711680, Messages.get(this, "enraged"));
