@@ -70,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurs
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
@@ -344,6 +345,12 @@ public class ShopRoom extends SpecialRoom {
 
 		if(!Statistics.bossRushMode){
 			itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
+		}
+
+		if(Statistics.bossRushMode || Statistics.RandMode){
+			if(Random.Int(10)<=3){
+				itemsToSpawn.add( new ScrollOfGolems());
+			}
 		}
 
 		if(Dungeon.isChallenged(Challenges.AQUAPHOBIA)){

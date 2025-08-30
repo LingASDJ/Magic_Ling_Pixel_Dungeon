@@ -140,6 +140,10 @@ public class Statistics {
 	public static int totalQuestScore;
 	public static float winMultiplier;
 	public static float chalMultiplier;
+
+	public static float badMultiplier;
+	public static float goodMultiplier;
+
 	public static int totalScore;
 
 	public static int[] bossScores = new int[6];
@@ -392,6 +396,9 @@ public class Statistics {
 	private static final String TOT_QUEST		= "tot_quest";
 	private static final String WIN_MULT		= "win_mult";
 	private static final String CHAL_MULT		= "chal_mult";
+
+	private static final String BAD_MULT		= "bad_mult";
+	private static final String GOOD_MULT		= "good_mult";
 	private static final String TOTAL_SCORE		= "total_score";
 	private static final String WON		        = "won";
 	private static final String ASCENDED		= "ascended";
@@ -683,6 +690,8 @@ public class Statistics {
 		questScores     = new int[5];
 		totalQuestScore = 0;
 		winMultiplier   = 1;
+		badMultiplier = 0;
+		goodMultiplier = 0;
 		chalMultiplier  = 1;
 		totalScore      = 0;
 		seedCustom = false;
@@ -865,6 +874,8 @@ public class Statistics {
 		bundle.put( TOT_QUEST,   totalQuestScore );
 		bundle.put( WIN_MULT,    winMultiplier );
 		bundle.put( CHAL_MULT,   chalMultiplier );
+		bundle.put( BAD_MULT,    badMultiplier );
+		bundle.put( GOOD_MULT,   goodMultiplier);
 		bundle.put( TOTAL_SCORE, totalScore );
 		bundle.put( WON,        gameWon );
 		bundle.put( ASCENDED,   ascended );
@@ -1119,6 +1130,8 @@ public class Statistics {
 		ascended        = bundle.getBoolean( ASCENDED );
 		bossRushMode = bundle.getBoolean(HAPPY);
 		RandMode = bundle.getBoolean(RAND);
+		goodMultiplier = bundle.getFloat(GOOD_MULT);
+		badMultiplier = bundle.getFloat(BAD_MULT);
 
 		dimandchestmazeCollected = bundle.getInt(DDK);
 

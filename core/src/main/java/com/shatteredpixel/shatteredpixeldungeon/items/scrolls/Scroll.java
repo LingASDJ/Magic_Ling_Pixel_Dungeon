@@ -189,7 +189,7 @@ public abstract class Scroll extends Item {
 					&& hero.buff(UnstableSpellbook.bookRecharge.class).isCursed()
 					&& !(this instanceof ScrollOfRemoveCurse || this instanceof ScrollOfAntiMagic)){
 				GLog.n( Messages.get(this, "cursed") );
-			} else if (hero.belongings.getItem(TheGriefOfSpeechless.class)!=null && Random.Int(1,100)<=25 && this.getClass() != ScrollOfUpgrade.class) {
+			} else if (hero.belongings.getItem(TheGriefOfSpeechless.class)!=null && Random.Int(1,100)<=15 && this.getClass() != ScrollOfUpgrade.class) {
 				GLog.w(Messages.get(TheGriefOfSpeechless.class,"grief"));
 				detach(curUser.belongings.backpack);
 			} else {

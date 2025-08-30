@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
@@ -200,7 +201,7 @@ public class Rival extends Boss implements Callback {
         }
 
 
-        HP = HT = 50 + lvl * 5;
+        HP = HT = 50 + (Statistics.bossRushMode ? lvl * 5 : lvl * 2);
 
 
         EXP = lvl * 17;
@@ -457,7 +458,7 @@ public class Rival extends Boss implements Callback {
 
     @Override
     public void die( Object cause ) {
-        level.unseal();
+
         DeepShadowLevel.State state = ((DeepShadowLevel) level).state();
 
         if (state != DeepShadowLevel.State.WON) {
@@ -550,6 +551,7 @@ public class Rival extends Boss implements Callback {
                     GameScene.bossSlain();
 
                     yell( Messages.get(this, "ellipsis") );
+                    level.unseal();
                     return;
                 case WON:
                 default:

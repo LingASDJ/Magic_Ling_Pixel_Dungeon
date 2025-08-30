@@ -6,6 +6,13 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class BlessingNecklace extends Ankh {
 
+    public static class AnkhAlt extends Ankh{
+        {
+            image = ItemSpriteSheet.ANKH;
+            blessed = true;
+        }
+    }
+
     {
         image = ItemSpriteSheet.CRYSTAL_QUESTION;
         blessed = true;

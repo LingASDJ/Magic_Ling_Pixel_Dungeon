@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -32,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
@@ -123,9 +125,9 @@ public enum Rankings {
 
         rec.cause = cause instanceof Class ? (Class) cause : cause.getClass();
         rec.win = win;
-        rec.heroClass	= Dungeon.hero.heroClass;
-		rec.armorTier	= Dungeon.hero.tier();
-        rec.herolevel = Dungeon.hero.lvl;
+        rec.heroClass	= hero.heroClass;
+		rec.armorTier	= hero.tier();
+        rec.herolevel = hero.lvl;
         if (Statistics.highestAscent == 0) {
             rec.depth = Statistics.deepestFloor;
             rec.ascending = false;
@@ -193,21 +195,21 @@ public enum Rankings {
     }
 
     private int score(boolean win) {
-        return (Statistics.goldCollected + Dungeon.hero.lvl * (win ? 26 : Dungeon.depth) * 100) * (win ? 2 : 1);
+        return (Statistics.goldCollected + hero.lvl * (win ? 26 : Dungeon.depth) * 100) * (win ? 2 : 1);
     }
 
     //assumes a ranking is loaded, or game is ending
     public int calculateScore() {
 
         if (Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3) {
-            Statistics.progressScore = Dungeon.hero.lvl * Statistics.deepestFloor * 65;
+            Statistics.progressScore = hero.lvl * Statistics.deepestFloor * 65;
             if(Statistics.amuletObtained && Dungeon.isChallenged(CS)){
                 Statistics.progressScore = 50000;
             }
             Statistics.progressScore = Math.min(Statistics.progressScore, 50_000);
 
             Statistics.heldItemValue = 0;
-            for (Item i : Dungeon.hero.belongings) {
+            for (Item i : hero.belongings) {
                 Statistics.heldItemValue += i.value();
                 if (i instanceof CorpseDust && Statistics.deepestFloor >= 10) {
                     // in case player kept the corpse dust, for a necromancer run
@@ -238,11 +240,12 @@ public enum Rankings {
             if (Statistics.gameWon) Statistics.winMultiplier += 1f;
             if (Statistics.ascended) Statistics.winMultiplier += 0.5f;
 
+
             //pre v1.3.0 runs have different score calculations
             //only progress and treasure score, and they are each up to 50% bigger
             //win multiplier is a simple 2x if run was a win, challenge multi is the same as 1.3.0
         } else {
-            Statistics.progressScore = Dungeon.hero.lvl * Statistics.deepestFloor * 100;
+            Statistics.progressScore = hero.lvl * Statistics.deepestFloor * 100;
             Statistics.treasureScore = Math.min(Statistics.goldCollected, 30_000);
 
             Statistics.exploreScore = Statistics.totalBossScore = Statistics.totalQuestScore = 0;
@@ -259,21 +262,26 @@ public enum Rankings {
 
         Statistics.totalScore *= Statistics.winMultiplier * Statistics.chalMultiplier;
 
-        Statistics.totalScore *= Statistics.seedCustom ? 0.5 : 1;
+        Statistics.totalScore *= Statistics.seedCustom ? (int) 0.5 : 1;
 
         Statistics.totalScore *= DifficultyScore();
+
+        int totalProps = (int) (Statistics.badMultiplier + Statistics.goodMultiplier);
+        if(totalProps != 0){
+            Statistics.totalScore *= totalProps;
+        }
 
         return Statistics.totalScore;
     }
 
-    private int DifficultyScore() {
-        int DiffcultyScore;
+    private float DifficultyScore() {
+        float DiffcultyScore;
         if(Dungeon.isDLC(Conducts.Conduct.EASY)){
-            DiffcultyScore = 1;
+            DiffcultyScore = 0.5f;
         } else if(Dungeon.isDLC(Conducts.Conduct.NORMAL)){
             DiffcultyScore = 1;
         } else if(Dungeon.isDLC(Conducts.Conduct.HARD)){
-            DiffcultyScore = 1;
+            DiffcultyScore = 2.5f;
         } else {
             DiffcultyScore = 1;
         }
@@ -281,14 +289,14 @@ public enum Rankings {
     }
 
     public void saveGameData(Record rec) {
-        if (Dungeon.hero == null) {
+        if (hero == null) {
             rec.gameData = null;
             return;
         }
 
         rec.gameData = new Bundle();
 
-        Belongings belongings = Dungeon.hero.belongings;
+        Belongings belongings = hero.belongings;
 
         //save the hero and belongings
         ArrayList<Item> allItems = (ArrayList<Item>) belongings.backpack.items.clone();
@@ -308,11 +316,11 @@ public enum Rankings {
 		}
 
 		//remove all buffs (ones tied to equipment will be re-applied)
-		for(Buff b : Dungeon.hero.buffs()){
-			Dungeon.hero.remove(b);
+		for(Buff b : hero.buffs()){
+			hero.remove(b);
 		}
 
-		rec.gameData.put( HERO, Dungeon.hero );
+		rec.gameData.put( HERO, hero );
 
 		//save stats
 		Bundle stats = new Bundle();
@@ -352,7 +360,7 @@ public enum Rankings {
         Bundle data = rec.gameData;
 
         Actor.clear();
-        Dungeon.hero = null;
+        hero = null;
         Dungeon.level = null;
         Generator.fullReset();
         Notes.reset();
@@ -369,8 +377,8 @@ public enum Rankings {
 
         Badges.loadLocal(data.getBundle(BADGES));
 
-        Dungeon.hero = (Hero) data.get(HERO);
-        Dungeon.hero.belongings.identify();
+        hero = (Hero) data.get(HERO);
+        hero.belongings.identify();
 
         Statistics.restoreFromBundle(data.getBundle(STATS));
 

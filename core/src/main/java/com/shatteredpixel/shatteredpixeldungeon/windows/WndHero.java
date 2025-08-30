@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
-import static com.shatteredpixel.shatteredpixeldungeon.Conducts.Conduct.*;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
@@ -30,7 +29,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireacti
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Clipboard;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
-import com.shatteredpixel.shatteredpixeldungeon.Difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;

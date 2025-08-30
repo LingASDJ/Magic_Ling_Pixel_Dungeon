@@ -114,7 +114,7 @@ public class DeepShadowLevel extends Level {
             }
 
         }
-        return Assets.Environment.TILES_COLD;
+        return Dungeon.depth == 10 ? Assets.Environment.TILES_PRISON : Assets.Environment.TILES_COLD;
     }
 
     @Override
@@ -199,38 +199,6 @@ public class DeepShadowLevel extends Level {
 
     @Override
     protected void createItems() {}
-
-    @Override
-    public String tileName( int tile ) {
-        switch (tile) {
-            case Terrain.WATER:
-                return Messages.get(HallsLevel.class, "water_name");
-            case Terrain.GRASS:
-                return Messages.get(HallsLevel.class, "grass_name");
-            case Terrain.HIGH_GRASS:
-                return Messages.get(HallsLevel.class, "high_grass_name");
-            case Terrain.STATUE:
-            case Terrain.STATUE_SP:
-                return Messages.get(HallsLevel.class, "statue_name");
-            default:
-                return super.tileName( tile );
-        }
-    }
-
-    @Override
-    public String tileDesc(int tile) {
-        switch (tile) {
-            case Terrain.WATER:
-                return Messages.get(HallsLevel.class, "water_desc");
-            case Terrain.STATUE:
-            case Terrain.STATUE_SP:
-                return Messages.get(HallsLevel.class, "statue_desc");
-            case Terrain.BOOKSHELF:
-                return Messages.get(HallsLevel.class, "bookshelf_desc");
-            default:
-                return super.tileDesc( tile );
-        }
-    }
 
     private static final String STATE	        = "state";
     private static final String RIVAL	        = "rival";

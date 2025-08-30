@@ -796,7 +796,7 @@ public abstract class Level implements Bundlable {
 
 		if (transition.type == LevelTransition.Type.REGULAR_EXIT
 				|| transition.type == LevelTransition.Type.BRANCH_EXIT || transition.type == LevelTransition.Type.DOUBLE_ENTRANCE) {
-			if(hero.belongings.getItem(BossRushBloodGold.class) != null){
+			if(hero.belongings.getItem(BossRushBloodGold.class) != null && depth == 0){
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
@@ -817,7 +817,7 @@ public abstract class Level implements Bundlable {
 					}
 				});
 				return false;
-			} else if(hero.belongings.getItem(RushMobScrollOfRandom.class) != null) {
+			} else if(hero.belongings.getItem(RushMobScrollOfRandom.class) != null && depth == 0) {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {

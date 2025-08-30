@@ -164,6 +164,8 @@ public class MenuPane extends Component {
 			challengeIcon = Icons.get(Icons.CHAL_COUNT);
 			add(challengeIcon);
 
+
+
 			challengeText = new BitmapText( Integer.toString( Challenges.activeChallenges() ), PixelScene.pixelFont)			{
 				private float time;
 				@Override
@@ -175,6 +177,9 @@ public class MenuPane extends Component {
 					float r = 0.33f+0.57f*Math.max(0f, (float)Math.sin( time));
 					float g = 0.53f+0.57f*Math.max(0f, (float)Math.sin( time + 2*Math.PI/3 ));
 					float b = 0.63f+0.57f*Math.max(0f, (float)Math.sin( time + 4*Math.PI/3 ));
+					if((Dungeon.isDLC(Conducts.Conduct.HARD))){
+						challengeText.text(Challenges.activeChallenges()+"+");
+					}
 					if (Challenges.activeChallenges() >= 13) {
 						challengeText.hardlight(r,g,b);
 						if (time >= 2f * Math.PI) time = 0;

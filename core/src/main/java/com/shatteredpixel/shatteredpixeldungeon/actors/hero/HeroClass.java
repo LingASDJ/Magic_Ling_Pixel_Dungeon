@@ -270,7 +270,7 @@ public enum HeroClass {
 			hero.exp=-1;
 		}
 
-		if(Dungeon.isDLC(Conducts.Conduct.HARD) && DeviceCompat.isMidTest()){
+		if(Dungeon.isDLC(Conducts.Conduct.HARD)){
 			new PropBag().quantity(1).identify().collect();
 			Prop.randomPropA().collect();
 			Prop.randomPropB().collect();
