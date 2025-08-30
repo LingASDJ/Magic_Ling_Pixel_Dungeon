@@ -1503,10 +1503,12 @@ public class GameScene extends PixelScene {
 							WndStory.showChapter( WndStory.ID_PRISON );
 							break;
 						case 10:
-							if((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) {
-								WndStory.showChapter(WndStory.ID_COLDCHESTBOSS);
-							} else {
-								WndStory.showChapter(WndStory.ID_PRISONBOSS);
+							if(Dungeon.branch == 0){
+								if((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) {
+									WndStory.showChapter(WndStory.ID_COLDCHESTBOSS);
+								} else {
+									WndStory.showChapter(WndStory.ID_PRISONBOSS);
+								}
 							}
 							break;
 						case 11:

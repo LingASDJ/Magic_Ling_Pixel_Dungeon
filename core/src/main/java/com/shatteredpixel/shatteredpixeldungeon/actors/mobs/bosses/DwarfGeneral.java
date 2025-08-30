@@ -33,10 +33,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
@@ -99,6 +101,59 @@ public class DwarfGeneral extends Boss {
     @Override
     public int damageRoll() {
         return Random.NormalIntRange( 20, 42 );
+    }
+
+    public static class NoTeleGolem extends Golem {
+
+        {
+            HP = HT = 1;
+            invisible = 1;
+            rooted = true;
+            maxLvl = -1;
+        }
+
+        @Override
+        public int defenseSkill( Char enemy ) {
+            return 1000;
+        }
+
+        @Override
+        public void damage( int dmg, Object src ) {
+        }
+
+        @Override
+        public boolean add(Buff buff ) {
+            return false;
+        }
+        @Override
+        protected boolean act() {
+            if(hero.pos == 490){
+                boolean pet = false;
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                    if (mob instanceof Pets) {
+                        if(mob.pos == 491){
+                            pet = true;
+                        }
+                    }
+                }
+                if(pet){
+                    ScrollOfTeleportation.appear(this, 471);
+                }
+            } else {
+                ScrollOfTeleportation.appear(this, 194);
+            }
+            return super.act();
+        }
+
+        @Override
+        public boolean isInvulnerable(Class effect) {
+            return true;
+        }
+
+        @Override
+        public int damageRoll() {
+            return 0;
+        }
     }
 
 
@@ -169,9 +224,6 @@ public class DwarfGeneral extends Boss {
         if(phase == 0){
             rangedCooldown--;
         }
-
-
-
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if (mob instanceof DwarfSolider) {
@@ -830,6 +882,10 @@ public class DwarfGeneral extends Boss {
 
     }
 
+    protected boolean canTeleport(int cell){
+        return Dungeon.level.trueDistance(cell, 471) < 2f;
+    }
+
     public class Hunting extends Mob.Hunting {
         @Override
         public boolean act( boolean enemyInFOV, boolean justAlerted ) {
@@ -1054,7 +1110,7 @@ public class DwarfGeneral extends Boss {
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if (mob instanceof Warlock || mob instanceof Monk ||
-                    mob instanceof DwarfSolider || mob instanceof DwarfFuze) {
+                    mob instanceof DwarfSolider || mob instanceof DwarfFuze || mob instanceof NoTeleGolem){
                 mob.die( cause );
             }
         }

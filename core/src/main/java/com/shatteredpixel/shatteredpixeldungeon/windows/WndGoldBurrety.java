@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfTeleTation;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
@@ -303,8 +304,6 @@ public class WndGoldBurrety extends Window {
                     result.noUpgrade = true;
                 }
 
-
-                //武器
                 if(Statistics.upgradeGold<=18){
                     result.upgrade();
                 }
@@ -334,7 +333,7 @@ public class WndGoldBurrety extends Window {
                     item.noUpgrade = true;
                     item.upgrade();
                 }
-            } else if (item instanceof Scroll&& !(item instanceof ScrollOfFlameCursed || item instanceof ScrollOfRoseShiled)) {
+            } else if (item instanceof Scroll && !(item instanceof ScrollOfFlameCursed || item instanceof ScrollOfRoseShiled || item instanceof ScrollOfGolems)) {
                 result = changeScroll( (Scroll)item );
                 result.collect();
                 result.quantity(item.quantity);
