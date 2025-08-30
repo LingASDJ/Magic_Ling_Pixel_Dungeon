@@ -145,6 +145,11 @@ public class vM0_7_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("其他改动"),
+                ("1.矮人将军加强，对使用小甲鱼逃课进行反制\n" +
+                        "2.古堡活动时间延长，第一阶段继续开启")));
+
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), ("归溯钥剑"),
                 ("现在只能在商店处购买，且移出五阶武器生成池。")));
 
@@ -154,7 +159,8 @@ public class vM0_7_X_Changes {
                                 "_-_ 修复飞镖特效导致的崩溃\n" +
                                 "_-_ 修复触发下楼0层前的对话后再选择模式物品时，无法通过非孤城的普通模式下楼口进入特殊模式\n" +
                                 "_-_ 修复森林弩伤害加成异常的问题\n" +
-                                "_-_ 修复有buff取下电子烟时闪退")));
+                                "_-_ 修复有buff取下电子烟时闪退\n" +
+                                "_-_ 修复部分藏品概率异常问题")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD), ("金蝶模式V2.3"),
                 (
