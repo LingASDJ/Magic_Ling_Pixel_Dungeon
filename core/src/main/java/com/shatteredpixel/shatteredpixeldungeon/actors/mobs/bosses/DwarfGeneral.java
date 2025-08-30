@@ -107,7 +107,6 @@ public class DwarfGeneral extends Boss {
 
         {
             HP = HT = 1;
-            invisible = 1;
             rooted = true;
             maxLvl = -1;
         }
@@ -139,8 +138,8 @@ public class DwarfGeneral extends Boss {
                 if(pet){
                     ScrollOfTeleportation.appear(this, 471);
                 }
-            } else {
-                ScrollOfTeleportation.appear(this, 194);
+            } else  if(pos != 110) {
+                ScrollOfTeleportation.appear(this, 110);
             }
             return super.act();
         }
