@@ -160,6 +160,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -842,15 +843,20 @@ public abstract class Char extends Actor {
 
 		String str = "";
 
-		if(this instanceof Hero){
-			str = "玩家";
-		}else {
-			str = "非玩家";
+		if(DeviceCompat.isDesktop() &&
+				DeviceCompat.isDebug() ||
+				  DeviceCompat.isMidTest()){
+			if(this instanceof Hero){
+				str = "玩家";
+			}else {
+				str = "非玩家";
+			}
+			if (type == DamageType.Element) GLog.n(str + "受到元素伤害");
+			if (type == DamageType.REAL) GLog.i(str + "受到真实伤害");
+			if (type == DamageType.PHYSICAL) GLog.b(str + "受到物理伤害");
+			if (type == DamageType.MAGIC) GLog.p(str + "受到魔法伤害");
 		}
-		if (type == DamageType.Element) GLog.n(str + "受到元素伤害");
-		if (type == DamageType.REAL) GLog.i(str + "受到真实伤害");
-		if (type == DamageType.PHYSICAL) GLog.b(str + "受到物理伤害");
-		if (type == DamageType.MAGIC) GLog.p(str + "受到魔法伤害");
+
 
 		if(isInvulnerable(src.getClass())){
 			sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
