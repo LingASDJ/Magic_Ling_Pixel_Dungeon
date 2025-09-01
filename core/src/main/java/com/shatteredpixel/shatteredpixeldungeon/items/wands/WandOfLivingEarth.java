@@ -378,6 +378,7 @@ public class WandOfLivingEarth extends DamageWand {
 		public void damage(int dmg, Object src, DamageType type) {
 
 			dmg -= wandLevel;
+			dmg = Math.max(dmg, 0);
 
 			super.damage(dmg, src, type);
 		}
