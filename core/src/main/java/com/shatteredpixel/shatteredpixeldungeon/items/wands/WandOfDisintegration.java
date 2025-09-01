@@ -88,8 +88,8 @@ public class WandOfDisintegration extends DamageWand {
 
 				//we don't want to count passed terrain after the last enemy hit. That would be a lot of bonus levels.
 				//terrainPassed starts at 2, equivalent of rounding up when /3 for integer arithmetic.
-				terrainBonus += terrainPassed/3;
-				terrainPassed = terrainPassed%3;
+				terrainBonus += terrainPassed/2;
+				terrainPassed = terrainPassed%2;
 
 				if (ch instanceof Mob && ((Mob) ch).state == ((Mob) ch).PASSIVE
 						&& !(Dungeon.level.mapped[c] || Dungeon.level.visited[c])){

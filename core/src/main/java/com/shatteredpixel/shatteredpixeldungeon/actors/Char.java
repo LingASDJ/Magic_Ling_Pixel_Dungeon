@@ -111,6 +111,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
@@ -127,6 +128,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
@@ -838,6 +840,18 @@ public abstract class Char extends Actor {
 			return;
 		}
 
+		String str = "";
+
+		if(this instanceof Hero){
+			str = "玩家";
+		}else {
+			str = "非玩家";
+		}
+		if (type == DamageType.Element) GLog.n(str + "受到元素伤害");
+		if (type == DamageType.REAL) GLog.i(str + "受到真实伤害");
+		if (type == DamageType.PHYSICAL) GLog.b(str + "受到物理伤害");
+		if (type == DamageType.MAGIC) GLog.p(str + "受到魔法伤害");
+
 		if(isInvulnerable(src.getClass())){
 			sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
 			return;
@@ -915,8 +929,10 @@ public abstract class Char extends Actor {
 			}
 		}
 
-		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
-			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+		if(! (src instanceof WandOfDisintegration) ){
+			for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
+				dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+			}
 		}
 
 		Class<?> srcClass = src.getClass();

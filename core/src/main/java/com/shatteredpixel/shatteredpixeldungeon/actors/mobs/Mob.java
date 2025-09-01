@@ -89,6 +89,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScrol
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
@@ -1014,7 +1015,7 @@ public abstract class Mob extends Char {
 	@Override
 	public void damage(int dmg, Object src, DamageType type) {
 
-		if(this.buff(ChampionEnemy.AntiMagic.class) != null && type == DamageType.MAGIC){
+		if(this.buff(ChampionEnemy.AntiMagic.class) != null && type == DamageType.MAGIC && !(src instanceof WandOfDisintegration)){
 			dmg *= 0.5f;
 		}
 

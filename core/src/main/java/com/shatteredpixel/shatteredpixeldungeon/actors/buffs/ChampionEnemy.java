@@ -132,12 +132,6 @@ public abstract class ChampionEnemy extends Buff {
 		return seed;
 	}
 
-	{
-		immunities.add(Corruption.class);
-	}
-
-
-
 	public static void rollForStateLing(Mob m){
 		if (Dungeon.mobsToStateLing <= 0) Dungeon.mobsToStateLing = 8;
 

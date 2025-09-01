@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AbundantMagic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
@@ -61,6 +62,13 @@ public class WandOfMagicMissile extends DamageWand {
 
 			wandProc(ch, chargesPerCast());
 			ch.damage(damageRoll(), this);
+
+			if(curUser.buff(AbundantMagic.class)== null){
+				Buff.append(curUser, AbundantMagic.class);
+			}else{
+				curUser.buff(AbundantMagic.class).duration =5f;
+			}
+
 			Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f) );
 
 			ch.sprite.burst(0xFFFFFFFF, buffedLvl() / 2 + 2);

@@ -62,11 +62,11 @@ public class WandOfPrismaticLight extends DamageWand {
 	}
 
 	public int min(int lvl){
-		return 1+lvl;
+		return 1+(lvl % 2 == 0 ? 1 : 2);
 	}
 
 	public int max(int lvl){
-		return 5+3*lvl;
+		return 5+4*lvl;
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class WandOfPrismaticLight extends DamageWand {
 		int dmg = damageRoll();
 
 		//three in (5+lvl) chance of failing
-		if (Random.Int(5+buffedLvl()) >= 3) {
+		if (Random.Int(5+buffedLvl()) >= 3 || buffedLvl() >= 5) {
 			Buff.prolong(ch, Blindness.class, 2f + (buffedLvl() * 0.333f));
 			ch.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 6 );
 		}
@@ -104,7 +104,7 @@ public class WandOfPrismaticLight extends DamageWand {
 			ch.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10+buffedLvl() );
 			Sample.INSTANCE.play(Assets.Sounds.BURNING);
 
-			ch.damage(Math.round(dmg*1.333f), this);
+			ch.damage(Math.round(dmg*1.5f), this);
 		} else {
 			ch.sprite.centerEmitter().burst( RainbowParticle.BURST, 10+buffedLvl() );
 

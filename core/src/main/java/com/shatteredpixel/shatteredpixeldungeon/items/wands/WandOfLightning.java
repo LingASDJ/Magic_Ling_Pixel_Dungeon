@@ -86,7 +86,7 @@ public class WandOfLightning extends DamageWand {
 	}
 
 	public int max(int lvl){
-		return 10+5*lvl;
+		return 10+6*lvl;
 	}
 	
 	@Override
@@ -107,7 +107,7 @@ public class WandOfLightning extends DamageWand {
 			}
 			wandProc(ch, chargesPerCast());
 			if (ch == curUser && ch.isAlive()) {
-				ch.damage(Math.round(damageRoll() * multiplier * 0.5f), this);
+				ch.damage(Math.round(damageRoll() * multiplier * 0.25f), this);
 				if (!curUser.isAlive()) {
 					Badges.validateDeathFromFriendlyMagic();
 					Dungeon.fail( this );
