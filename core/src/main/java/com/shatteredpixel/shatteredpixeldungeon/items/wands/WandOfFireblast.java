@@ -82,18 +82,18 @@ public class WandOfFireblast extends DamageWand {
 
 	//1/2/3 base damage with 1/2/3 scaling based on charges used
 	public int min(int lvl){
-		return (1+lvl) * chargesPerCast();
+		return (1+lvl) * chargesPerCast() *2;
 	}
 
 	//2/8/18 base damage with 2/4/6 scaling based on charges used
 	public int max(int lvl){
 		switch (chargesPerCast()){
 			case 1: default:
-				return 2 + 2*lvl;
+				return 3 + 2*lvl;
 			case 2:
-				return 2*(4 + 2*lvl);
+				return 2*(6 + 2*lvl);
 			case 3:
-				return 3*(6+2*lvl);
+				return 3*(9+2*lvl);
 		}
 	}
 
@@ -161,10 +161,10 @@ public class WandOfFireblast extends DamageWand {
 					case 1:
 						break; //no effects
 					case 2:
-						Buff.affect(ch, Cripple.class, 4f);
+						Buff.affect(ch, Cripple.class, 5f);
 						break;
 					case 3:
-						Buff.affect(ch, Paralysis.class, 4f);
+						Buff.affect(ch, Paralysis.class, 5f);
 						break;
 				}
 			}

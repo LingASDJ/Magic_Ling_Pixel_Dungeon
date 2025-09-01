@@ -94,7 +94,7 @@ public class HalomethaneBurning extends Buff implements Hero.Doom {
 
                 Hero hero = (Hero)target;
 
-                hero.damage( damage, this );
+                hero.damage( damage, this , Char.DamageType.Element);
                 burnIncrement++;
 
                 //at 4+ turns, there is a (turns-3)/3 chance an item burns
@@ -123,7 +123,7 @@ public class HalomethaneBurning extends Buff implements Hero.Doom {
                 }
 
             } else {
-                target.damage( damage, this );
+                target.damage( damage, this , Char.DamageType.Element);
             }
 
             if (target instanceof Thief && ((Thief) target).item != null) {

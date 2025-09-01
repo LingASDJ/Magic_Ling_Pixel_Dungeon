@@ -81,7 +81,7 @@ public class WandOfHightHunderStorm extends DamageWand {
     }
 
     public int max(int lvl){
-        return 4+5*lvl;
+        return 4+6*lvl;
     }
     ConeAOE cone;
     @Override
@@ -126,9 +126,9 @@ public class WandOfHightHunderStorm extends DamageWand {
             }
             wandProc(ch, chargesPerCast());
             if (ch == curUser) {
-                ch.damage(Math.round(damageRoll() * multipler * 0.8f), this);
+                ch.damage(Math.round(damageRoll() * multipler * 0.25f), this , Char.DamageType.Element);
             } else {
-                ch.damage(Math.round(damageRoll() * multipler), this);
+                ch.damage(Math.round(damageRoll() * multipler), this , Char.DamageType.Element);
             }
 
             if(ch.isAlive() && ch != curUser){
