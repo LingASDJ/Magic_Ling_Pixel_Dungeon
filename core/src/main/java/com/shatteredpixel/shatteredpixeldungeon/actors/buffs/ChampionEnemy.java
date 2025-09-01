@@ -649,10 +649,6 @@ public abstract class ChampionEnemy extends Buff {
 			return 0.75f;
 		}
 
-		{
-			immunities.addAll(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic.RESISTS);
-		}
-
 	}
 
 	//Also makes target large, see Char.properties()

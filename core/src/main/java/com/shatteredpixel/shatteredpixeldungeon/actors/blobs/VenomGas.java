@@ -29,7 +29,7 @@ public class VenomGas extends Blob {
                 cell = i + j*Dungeon.level.width();
                 if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
                     if (!ch.isImmune(this.getClass())) {
-                        ch.damage(damage, this);
+                        ch.damage(damage, this, Char.DamageType.Element);
                         if(ch.venodamage >= (damage) *8) {
                             if(ch.buff(Blindness.class) == null) {
                                 Buff.affect(ch, Blindness.class, 1.5f);
