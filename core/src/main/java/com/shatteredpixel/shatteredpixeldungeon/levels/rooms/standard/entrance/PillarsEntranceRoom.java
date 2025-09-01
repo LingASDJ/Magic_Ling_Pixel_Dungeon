@@ -65,9 +65,7 @@ public class PillarsEntranceRoom extends PillarsRoom {
 		} while (level.findMob(entrance) != null || level.map[entrance] == Terrain.WALL || !valid);
 		Painter.set( level, entrance, Terrain.ENTRANCE );
 
-		for (Room.Door door : connected.values()) {
-			if(door != null ) level.BottleWraith(door, level, left, right, top, bottom);
-		}
+
 
 		level.transitions.add(new LevelTransition(level, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
 	}

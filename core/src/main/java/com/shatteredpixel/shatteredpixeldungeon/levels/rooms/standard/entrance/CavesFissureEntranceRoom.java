@@ -49,9 +49,7 @@ public class CavesFissureEntranceRoom extends CavesFissureRoom {
 	public void paint(Level level) {
 		super.paint(level);
 
-		for (Room.Door door : connected.values()) {
-			if(door != null ) level.BottleWraith(door, level, left, right, top, bottom);
-		}
+
 
 		int entrance;
 		do {

@@ -41,10 +41,10 @@ public class Diamand_Boss_EntranceRoom extends EntranceRoom {
         fill(level, this, Terrain.WALL);
         fill(level, this,1, EMPTY_DECO);
 
-        for (Room.Door door : connected.values()) {
-            door.set( Room.Door.Type.REGULAR );
-            level.BottleWraith(door, level, left, right, top, bottom);
-        }
+//        for (Room.Door door : connected.values()) {
+//            door.set( Room.Door.Type.REGULAR );
+//            //level.BottleWraith(door, level, left, right, top, bottom);
+//        }
 
         Point center = new Point((left + right) / 2, (top + bottom) / 2);
         int centerX = left + width() / 2;

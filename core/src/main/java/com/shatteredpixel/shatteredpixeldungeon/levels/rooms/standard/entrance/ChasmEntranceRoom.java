@@ -72,9 +72,7 @@ public class ChasmEntranceRoom extends ChasmRoom {
 
 		level.transitions.add(new LevelTransition(level, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
 
-		for (Room.Door door : connected.values()) {
-			if(door != null ) level.BottleWraith(door, level, left, right, top, bottom);
-		}
+
 	}
 
 }
