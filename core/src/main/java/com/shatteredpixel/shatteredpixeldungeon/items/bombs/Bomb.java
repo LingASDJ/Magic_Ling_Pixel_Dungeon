@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
@@ -326,8 +327,14 @@ public class Bomb extends Item {
 					
 					//destroys items / triggers bombs caught in the blast.
 					Heap heap = Dungeon.level.heaps.get(c);
-					if (heap != null)
+					if (heap != null){
+						for (Item item : heap.items) {
+							if(item instanceof KingBag){
+								return;
+							}
+						}
 						heap.explode();
+					}
 					
 					Char ch = Actor.findChar(c);
 					if (ch != null) {
