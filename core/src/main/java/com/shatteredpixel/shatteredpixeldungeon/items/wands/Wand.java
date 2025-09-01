@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AbundantMagic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -518,7 +519,14 @@ public abstract class Wand extends Item {
 		Invisibility.dispel();
 		updateQuickslot();
 
-		curUser.spendAndNext( TIME_TO_ZAP );
+		if(curUser.buff(AbundantMagic.class)!= null &&!( this instanceof WandOfMagicMissile) ){
+			curUser.spendAndNext(0f);
+			curUser.buff(AbundantMagic.class).detach();
+		} else {
+			curUser.spendAndNext( TIME_TO_ZAP );
+		}
+
+
 	}
 	
 	@Override

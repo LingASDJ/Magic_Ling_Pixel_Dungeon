@@ -132,12 +132,6 @@ public abstract class ChampionEnemy extends Buff {
 		return seed;
 	}
 
-	{
-		immunities.add(Corruption.class);
-	}
-
-
-
 	public static void rollForStateLing(Mob m){
 		if (Dungeon.mobsToStateLing <= 0) Dungeon.mobsToStateLing = 8;
 
@@ -647,10 +641,6 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public float damageTakenFactor() {
 			return 0.75f;
-		}
-
-		{
-			immunities.addAll(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic.RESISTS);
 		}
 
 	}

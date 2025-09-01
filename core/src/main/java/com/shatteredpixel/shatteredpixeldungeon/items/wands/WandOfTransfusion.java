@@ -130,7 +130,7 @@ public class WandOfTransfusion extends DamageWand {
 					GLog.n(Messages.get(this, "error"));
 				} else if(Dungeon.depth != 5){
 					//grant a self-shield, and...
-					Buff.affect(curUser, Barrier.class).setShield((5 + buffedLvl()));
+					Buff.affect(curUser, Barrier.class).setShield((5 + (int)(1.5f*buffedLvl())));
 					curUser.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(5+buffedLvl()), FloatingText.SHIELDING);
 				}
 				//charms living enemies
