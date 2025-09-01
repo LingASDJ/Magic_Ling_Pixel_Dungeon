@@ -191,7 +191,7 @@ public abstract class Level implements Bundlable {
 	 */
 	public void BottleWraith(Room.Door door,Level level,int left,int right,int top,int bottom){
 		if(hero.belongings.getItem(BottleWraith.class)!=null) {
-			for (int i = 0; i < Random.IntRange(1, 2); i++) {
+			for (int i = 0; i < 1 ; i++) {
 				int wraithPos = -1;
 
 				// 根据门的位置决定怨灵的位置

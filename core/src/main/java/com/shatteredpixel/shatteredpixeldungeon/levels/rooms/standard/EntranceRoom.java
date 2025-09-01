@@ -85,7 +85,6 @@ public class EntranceRoom extends StandardRoom {
 
 		for (Room.Door door : connected.values()) {
 			door.set( Room.Door.Type.REGULAR );
-			level.BottleWraith(door, level, left, right, top, bottom);
 		}
 
 		int entrance;
