@@ -16,8 +16,10 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.SkyGoo;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -109,6 +111,13 @@ public class SkyGooBossLevel extends Level {
             this.stairs = 0;
             set(this.exit, 7);
             GameScene.updateMap(this.exit);
+
+            set(484, DOOR);
+            set(598, DOOR);
+            set(502, DOOR);
+            GameScene.updateMap(484);
+            GameScene.updateMap(598);
+            GameScene.updateMap(502);
         }
     }
 
@@ -159,8 +168,27 @@ public class SkyGooBossLevel extends Level {
     }
 
     @Override
+    public void occupyCell( Char ch ) {
+        super.occupyCell(ch);
+        if (ch instanceof Hero) {
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                if (!(mob.alignment == Char.Alignment.ENEMY)){
+                    if(map[484] == CRYSTAL_DOOR && map[598] == LOCKED_DOOR && map[502] == CRYSTAL_DOOR)
+                    //484 598 502
+                    set(484, DOOR);
+                    set(598, DOOR);
+                    set(502, DOOR);
+                    GameScene.updateMap(484);
+                    GameScene.updateMap(598);
+                    GameScene.updateMap(502);
+                }
+            }
+        }
+    }
+
+    @Override
     public int randomRespawnCell( Char ch ) {
-        int pos = 31; //random cell adjacent to the entrance.
+        int pos = 31;
         int cell;
         do {
             cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
@@ -168,7 +196,6 @@ public class SkyGooBossLevel extends Level {
                 || (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
                 || Actor.findChar(cell) != null);
         return cell;
-
     }
 
     public String tilesTex() {

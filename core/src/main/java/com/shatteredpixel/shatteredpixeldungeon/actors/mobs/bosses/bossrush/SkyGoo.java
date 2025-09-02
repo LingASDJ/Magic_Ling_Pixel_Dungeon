@@ -45,8 +45,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.SkyGooBossLevel;
@@ -131,7 +129,7 @@ public class SkyGoo extends Boss implements Callback {
 	@Override
 	public void move( int step ) {
 		super.move( step );
-		if(HP <= 150){
+		if(HP <= HT/2){
 			GameScene.add(Blob.seed(pos, 10, SkyGoo.SkyGooBlob.class));
 		}
 	}
@@ -366,9 +364,6 @@ public class SkyGoo extends Boss implements Callback {
 		}
 
 		GameScene.bossSlain();
-		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
-		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
-		Dungeon.level.drop( new IronKey( Dungeon.depth ), hero.pos ).sprite.drop();
 	}
 
 	@Override
@@ -589,8 +584,7 @@ public class SkyGoo extends Boss implements Callback {
 		}
 		@Override
 		protected void evolve() {
-
-			//super.evolve();
+			super.evolve();
 			Char ch;
 			int cell;
 
