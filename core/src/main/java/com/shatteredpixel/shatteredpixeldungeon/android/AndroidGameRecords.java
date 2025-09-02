@@ -14,7 +14,6 @@ public class AndroidGameRecords {
 
     public static FirebaseAnalytics mFirebaseAnalyticsRecords = AndroidLauncher.mFirebaseAnalyticsRecords;
     public static void GameRecordChallenges() {
-        //setup params
         Bundle params = new Bundle();
         params.putString("挑战数量", String.valueOf(Challenges.activeChallenges()));
         params.putString("作战时间记录", String.valueOf(new Date()));
