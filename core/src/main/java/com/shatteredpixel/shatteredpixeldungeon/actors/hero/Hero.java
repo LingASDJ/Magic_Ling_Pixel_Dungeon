@@ -114,6 +114,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Nyctophobia;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PropBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
@@ -194,6 +195,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation
 import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
@@ -639,9 +641,10 @@ public class Hero extends Char {
 			Buff.affect(this, QuestGold.class).set((100), 1);
 		}
 
-//		if (Dungeon.isChallenged(Challenges.BLOOD_DIED) && Dungeon.depth>2){
-//			Buff.affect(this, BloodLoss.class);
-//		}
+		ArrayList<Prop> AllProps = hero.belongings.getAllItems(Prop.class);
+		if(AllProps!=null){
+			Buff.affect(Dungeon.hero, PropBuff.class);
+		}
 
 		if(HelpSettings()) {
 			Buff.affect(this, GameTracker.class);

@@ -140,14 +140,14 @@ public class vM0_7_X_Changes {
                 ("辉梦魔绫Eula协议已实装，进入即可阅览具体说明。")));
 
         changes.addButton(new ChangeButton(new Image("firebase/FireBase.png",0,0,16,16), ("FireBase游戏数据收集"),
-                ("收集一些基本游戏数据，供开发者日后通过数据分析，仅在安卓端有效。")));
+                ("收集一些基本游戏数据，供开发者日后通过数据分析，仅在安卓端有效。\n\n同时庆祝该一历史性时刻，0层商人领主处赠送时装自选凭证。")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_1), "法杖加强",
-                "冲击：伤害成长由1-3上调至1.5-4\n\n腐化：腐化时长由6+等级*3上调为6+等级*4，使拥有精英buff的敌人可以被腐化而非定命\n\n解离：伤害成长由1-4上调至1-5，穿透固体方块的增伤需求由穿透3个加强为穿透2个，无视减伤\n\n焰浪：伤害成长由1*充能-2*充能上调至2*充能-3*充能\n\n磷火：高充能给予的残废与麻痹效果回合数增加1\n\n冰霜：伤害成长由1-5上调至1-6，至多衰减30%的伤害\n\n雷霆：伤害成长由1-5上调至1-6\n\n大雷：对自身的伤害降低至25%\n\n土块：伤害成长由1-2上调至1-3，守卫的生命值由16+8*等级上升为16+12*等级，守卫具有等同于法杖等级百分比的减伤\n\n魔弹：在释放魔弹法杖后，下一次非魔弹法杖释放不消耗回合，这个效果持续5回合\n\n棱光：伤害成长由1-3上调至1.5-4，对亡灵和恶魔的额外伤害上升为50%，+5及以上必定失明\n\n注魂：护盾量由5+等级上升为5+1.5*等级\n\n哨卫：伤害成长由1-4上调至2-5\n\n毒杖：和酸蚀一样会慢慢叠加伤害"));
+                "冲击：伤害成长由1-3上调至1.5-4\n\n腐化：腐化时长由6+等级*3上调为6+等级*4，使拥有精英buff的敌人可以被腐化而非定命\n\n解离：伤害成长由1-4上调至1-5，穿透固体方块的增伤需求由穿透3个加强为穿透2个，无视减伤\n\n焰浪：伤害成长由1*充能-2*充能上调至2*充能-3*充能\n\n磷火：高充能给予的残废与麻痹效果回合数增加1\n\n冰霜：伤害成长由1-5上调至1-6，至多衰减30%的伤害\n\n雷霆：伤害成长由1-5上调至1-6\n\n大雷：对自身的伤害降低至25%\n\n土块：伤害成长由1-2上调至1-3，守卫的生命值由16+8*等级上升为16+12*等级，守卫具有等同于法杖等级百分比的减伤\n\n魔弹：在释放魔弹法杖后，下一次非魔弹法杖释放不消耗回合，这个效果持续5回合\n\n棱光：伤害成长由1-3上调至1.5-4，对亡灵和恶魔的额外伤害上升为50%，+5及以上必定失明\n\n注魂：护盾量由5+等级上升为5+1.5*等级\n\n哨卫：伤害成长由1-4上调至2-5"));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
@@ -157,6 +157,14 @@ public class vM0_7_X_Changes {
                 "魔绫像素地牢-修复内容：\n\n" +
                         (       "_-_ 修复瓶装怨灵的闪退，以及优化该藏品\n" +
                                 "_-_ 修复武甲背包会被爆炸波及")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.CORRUPT, true), "敌法精英",
+                "敌法精英拥有 25% 的伤害减免，且对于法术伤害拥有额外50%的伤害减免。"));
+
 
         changes = new ChangeInfo("v0.8.7.1中测验收通过，予以更新", true, null);
         changes.hardlight(Window.CYELLOW);

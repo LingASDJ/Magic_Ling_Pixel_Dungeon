@@ -119,7 +119,7 @@ public class PropBuff extends Buff{
 
     @Override
     public int icon() {
-        return BuffIndicator.BARKSKIN;
+        return BuffIndicator.PROP_SHADOW;
     }
 
     private static final String TIMEA = "timeA";
