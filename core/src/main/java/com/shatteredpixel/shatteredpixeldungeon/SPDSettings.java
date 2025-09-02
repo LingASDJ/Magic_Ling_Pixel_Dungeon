@@ -240,7 +240,7 @@ public class SPDSettings extends GameSettings {
 	}
 
 	public static boolean firebase(){
-		return getBoolean( KEY_FIRE_BASE, true );
+		return getBoolean( KEY_FIRE_BASE, false );
 	}
 
 	public static void scale( int value ) {
