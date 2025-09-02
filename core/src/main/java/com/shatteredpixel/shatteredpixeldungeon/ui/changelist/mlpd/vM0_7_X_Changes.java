@@ -71,6 +71,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0871_Changes(changeInfos);
         add_V0870_Changes(changeInfos);
         add_V0860_Changes(changeInfos);
         add_V0852_Changes(changeInfos);
@@ -118,6 +119,48 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0871_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.7.1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("新全局系统：自定义横幅"),
+                ("在额外设置中，可以定义游戏内带的横幅主题，新增七夕节主题")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("伤害系统重构"),
+                ("现在伤害系统进行了重构，有物理/魔法/元素/真实 四类伤害")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("Eula协议实装"),
+                ("辉梦魔绫Eula协议已实装，进入即可阅览具体说明。")));
+
+        changes.addButton(new ChangeButton(new Image("firebase/FireBase.png",0,0,16,16), ("FireBase游戏数据收集"),
+                ("收集一些基本游戏数据，供开发者日后通过数据分析，仅在安卓端有效。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_1), "法杖加强",
+                "冲击：伤害成长由1-3上调至1.5-4\n\n腐化：腐化时长由6+等级*3上调为6+等级*4，使拥有精英buff的敌人可以被腐化而非定命\n\n解离：伤害成长由1-4上调至1-5，穿透固体方块的增伤需求由穿透3个加强为穿透2个，无视减伤\n\n焰浪：伤害成长由1*充能-2*充能上调至2*充能-3*充能\n\n磷火：高充能给予的残废与麻痹效果回合数增加1\n\n冰霜：伤害成长由1-5上调至1-6，至多衰减30%的伤害\n\n雷霆：伤害成长由1-5上调至1-6\n\n大雷：对自身的伤害降低至25%\n\n土块：伤害成长由1-2上调至1-3，守卫的生命值由16+8*等级上升为16+12*等级，守卫具有等同于法杖等级百分比的减伤\n\n魔弹：在释放魔弹法杖后，下一次非魔弹法杖释放不消耗回合，这个效果持续5回合\n\n棱光：伤害成长由1-3上调至1.5-4，对亡灵和恶魔的额外伤害上升为50%，+5及以上必定失明\n\n注魂：护盾量由5+等级上升为5+1.5*等级\n\n哨卫：伤害成长由1-4上调至2-5\n\n毒杖：和酸蚀一样会慢慢叠加伤害"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "魔绫像素地牢-修复内容：\n\n" +
+                        (       "_-_ 修复瓶装怨灵的闪退，以及优化该藏品\n" +
+                                "_-_ 修复武甲背包会被爆炸波及")));
+
+        changes = new ChangeInfo("v0.8.7.1中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
     }
 
     public static void add_V0870_Changes(ArrayList<ChangeInfo> changeInfos ) {
