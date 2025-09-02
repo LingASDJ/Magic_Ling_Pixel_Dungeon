@@ -152,12 +152,18 @@ public class LevelRules {
                         return new SewerLevel();
                     case 5:
                         if(Statistics.RandMode){
-                            switch (Random.Int(5)){
-                                case 1: return new SkyGooBossLevel();
-                                case 2: return new ForestPoisonBossLevel();
-                                case 3: return new ForestHardBossLevel();
-                                default:
-                                    return new SLMKingLevel();
+                            if(Statistics.ExFruit){
+                                return new ForestHardBossLevel();
+                            } else {
+                                switch (Random.Int(5)){
+                                    case 1: return new SkyGooBossLevel();
+                                    case 2: return new ForestPoisonBossLevel();
+                                    case 3:
+                                        Statistics.ExFruit = true;
+                                        return new ForestHardBossLevel();
+                                    default:
+                                        return new SLMKingLevel();
+                                }
                             }
                         } else if(SPDSettings.level1boss() == 1){
                             return new ForestPoisonBossLevel();

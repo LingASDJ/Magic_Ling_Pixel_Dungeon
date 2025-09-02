@@ -643,7 +643,9 @@ public class Hero extends Char {
 
 		ArrayList<Prop> AllProps = hero.belongings.getAllItems(Prop.class);
 		if(AllProps!=null){
-			Buff.affect(Dungeon.hero, PropBuff.class);
+			if(Dungeon.isDLC(Conducts.Conduct.HARD)){
+				Buff.affect(Dungeon.hero, PropBuff.class);
+			}
 		}
 
 		if(HelpSettings()) {
