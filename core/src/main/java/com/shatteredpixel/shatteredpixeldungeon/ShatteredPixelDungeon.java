@@ -55,7 +55,6 @@ public class ShatteredPixelDungeon extends Game {
 	public static final int v2_5_0 = 794;
 	
 	public ShatteredPixelDungeon( PlatformSupport platform ) {
-
 		super( sceneClass == null ? (!SPDSettings.firebase()) ? EulaScene.class : GoScene.class : sceneClass, platform );
 
 		//pre-v2.5.0

@@ -32,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.android.AndroidGameRecords;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.CryStalPlot;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
@@ -132,8 +131,6 @@ public class Amulet extends Item {
 				if(!Statistics.RandMode && !Statistics.bossRushMode) {
 					PaswordBadges.ALLCS(Challenges.activeChallenges());
 				}
-
-				AndroidGameRecords.GameRecordChallenges();
 
 				try {
 					Dungeon.saveAll();
