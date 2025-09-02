@@ -64,9 +64,7 @@ public class WandOfMagicMissile extends DamageWand {
 			ch.damage(damageRoll(), this);
 
 			if(curUser.buff(AbundantMagic.class)== null){
-				Buff.append(curUser, AbundantMagic.class);
-			}else{
-				curUser.buff(AbundantMagic.class).duration =5f;
+				Buff.append(curUser, AbundantMagic.class,5f);
 			}
 
 			Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f) );
