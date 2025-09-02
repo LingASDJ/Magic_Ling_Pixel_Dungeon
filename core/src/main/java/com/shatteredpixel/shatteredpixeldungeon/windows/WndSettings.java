@@ -607,10 +607,10 @@ public class WndSettings extends WndTabbed {
 
 								int btnWidth = (int) (width - 2 * GAP) / 3;
 
-									btnSplit.setRect(0, barDesc.bottom() + GAP, btnWidth, BTN_HEIGHT-2);
-									btnGrouped.setRect(btnSplit.right() + GAP, btnSplit.top(), btnWidth, BTN_HEIGHT-2);
-									btnCentered.setRect(btnGrouped.right() + GAP, btnSplit.top(), btnWidth, BTN_HEIGHT-2);
-									chkQuickSwapper.setRect(0, btnGrouped.bottom() + GAP, width, BTN_HEIGHT);
+								btnSplit.setRect(0, barDesc.bottom() + GAP, btnWidth, BTN_HEIGHT-2);
+								btnGrouped.setRect(btnSplit.right() + GAP, btnSplit.top(), btnWidth, BTN_HEIGHT-2);
+								btnCentered.setRect(btnGrouped.right() + GAP, btnSplit.top(), btnWidth, BTN_HEIGHT-2);
+								chkQuickSwapper.setRect(0, btnGrouped.bottom() + GAP, width, BTN_HEIGHT);
 
 
 								swapperDesc.maxWidth(width);
@@ -1131,15 +1131,15 @@ public class WndSettings extends WndTabbed {
 				ATBSwitch.setRect(0, LockFing.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				VSBwitch.setRect(width/2, LockFing.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				RTC_itch.setRect(0, VSBwitch.bottom() + GAP, width, SLIDER_HEIGHT);
-            } else {
+			} else {
 				LockFing.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				ATBSwitch.setRect(0, LockFing.bottom() + GAP, width, SLIDER_HEIGHT);
 				VSBwitch.setRect(0, ATBSwitch.bottom() + GAP, width, SLIDER_HEIGHT);
 				RTC_itch.setRect(0, VSBwitch.bottom() + GAP, width, SLIDER_HEIGHT);
-            }
+			}
 
 
-            height = RTC_itch.bottom();
+			height = RTC_itch.bottom();
 		}
 
 	}
@@ -1151,6 +1151,8 @@ public class WndSettings extends WndTabbed {
 		CheckBox chkNews;
 		CheckBox chkBetas;
 		CheckBox chkWifi;
+
+		CheckBox chkFireBase;
 
 		@Override
 		protected void createChildren() {
@@ -1183,6 +1185,16 @@ public class WndSettings extends WndTabbed {
 				chkWifi.checked(SPDSettings.WiFi());
 				add(chkWifi);
 			}
+
+			chkFireBase = new CheckBox(Messages.get(this, "firebase")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.firebaseRecords(checked());
+				}
+			};
+			chkFireBase.checked(SPDSettings.firebaseRecords());
+			add(chkFireBase);
 		}
 
 		@Override
@@ -1207,9 +1219,11 @@ public class WndSettings extends WndTabbed {
 
 			if (chkWifi != null){
 				chkWifi.setRect(0, pos + GAP, width, BTN_HEIGHT);
-				pos = chkWifi.bottom();
+
 			}
 
+			chkFireBase.setRect(0, chkWifi.bottom(), width, BTN_HEIGHT);
+			pos = chkFireBase.bottom();
 			height = pos;
 
 		}

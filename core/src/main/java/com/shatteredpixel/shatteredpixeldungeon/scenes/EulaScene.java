@@ -63,6 +63,7 @@ public class EulaScene extends PixelScene {
             @Override
             protected void onClick() {
                 SPDSettings.firebase(true);
+                SPDSettings.firebaseRecords(true);
                 ShatteredPixelDungeon.switchScene(GoScene.class);
             }
         };
