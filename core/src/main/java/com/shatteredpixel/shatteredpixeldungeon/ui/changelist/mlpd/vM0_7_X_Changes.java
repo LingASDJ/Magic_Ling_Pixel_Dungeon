@@ -157,7 +157,8 @@ public class vM0_7_X_Changes {
                 "魔绫像素地牢-修复内容：\n\n" +
                         (       "_-_ 修复瓶装怨灵的闪退，以及优化该藏品\n" +
                                 "_-_ 修复武甲背包会被爆炸波及\n" +
-                                "_-_ 修复铁匠楼层重生十字架相关问题，优化天痕粘咕的地图")));
+                                "_-_ 修复铁匠楼层重生十字架相关问题，优化天痕粘咕的地图\n" +
+                                "_-_ 修复藏品效果重生后异常的问题")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changes.hardlight(Window.R_COLOR);
