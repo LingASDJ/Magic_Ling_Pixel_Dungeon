@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SKINITEM;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -184,7 +185,6 @@ public class WndZeroShop extends Window {
                     }
                 }
             };
-
             if(SPDSettings.isItemUnlock(item.getClass().getSimpleName())){
                 btnConfirm.active = false;
                 btnConfirm.setRect(0, height+2, WIDTH, 31);
@@ -193,7 +193,34 @@ public class WndZeroShop extends Window {
             }
             add(btnConfirm);
 
-            resize(width, (int)btnConfirm.bottom());
+            StyledButton btnFree = new StyledButton(SPDSettings.isItemUnlock(item.getClass().getSimpleName())? Chrome.Type.SCROLL : Chrome.Type.RED_BUTTON,Messages.get(WndIceTradeItem.class, (locked) ? "unlocked":"gift")){
+                @Override
+                protected void onClick() {
+                    AnySkinSelect anySkinSelect = hero.belongings.getItem(AnySkinSelect.class);
+                    if(anySkinSelect != null) {
+                        selectReward( item );
+                        itemUnlock(item);
+                        SPDSettings.unlockItem("anyskin1");
+                        item.cursed = true;
+                        anySkinSelect.detach(hero.belongings.backpack);
+                        Buff.prolong( hero, ReloadShop.class, 1f);
+                        RewardWindow.this.hide();
+                    } else {
+                        GLog.n(Messages.get(ZeroDreamShop.class,"no_skin"));
+                        RewardWindow.this.hide();
+                    }
+                }
+            };
+
+            if(SPDSettings.isItemUnlock(item.getClass().getSimpleName())){
+                btnFree.active = false;
+                btnFree.setRect(0, btnConfirm.bottom(), WIDTH, 31);
+            } else {
+                btnFree.setRect(0, btnConfirm.bottom(), WIDTH, 16);
+            }
+            add(btnFree);
+
+            resize(width, (int)btnFree.bottom());
         }
     }
 
