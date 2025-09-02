@@ -122,6 +122,12 @@ public class AndroidLauncher extends AndroidApplication {
                     ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         }
 
+        if(SPDSettings.firebaseRecords()){
+            mFirebaseAnalyticsRecords.setAnalyticsCollectionEnabled(true);
+        } else {
+            mFirebaseAnalyticsRecords.setAnalyticsCollectionEnabled(false);
+        }
+
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.depth = 0;
 

@@ -130,6 +130,8 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_LANDSCAPE	= "landscape";
 	public static final String KEY_POWER_SAVER 	= "power_saver";
 	public static final String KEY_FIRE_BASE    = "fire_base";
+
+	public static final String KEY_FIRE_BASE_RECORDS    = "fire_base_records";
 	public static final String KEY_SCALE		= "scale";
 	public static final String KEY_ZOOM			= "zoom";
 	public static final String KEY_BRIGHTNESS	= "brightness";
@@ -242,6 +244,16 @@ public class SPDSettings extends GameSettings {
 	public static boolean firebase(){
 		return getBoolean( KEY_FIRE_BASE, false );
 	}
+
+	public static void firebaseRecords( boolean value ){
+		put( KEY_FIRE_BASE_RECORDS, value );
+		((ShatteredPixelDungeon)ShatteredPixelDungeon.instance).updateDisplaySize();
+	}
+
+	public static boolean firebaseRecords(){
+		return getBoolean( KEY_FIRE_BASE_RECORDS, false );
+	}
+
 
 	public static void scale( int value ) {
 		put( KEY_SCALE, value );
