@@ -156,7 +156,8 @@ public class vM0_7_X_Changes {
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 "魔绫像素地牢-修复内容：\n\n" +
                         (       "_-_ 修复瓶装怨灵的闪退，以及优化该藏品\n" +
-                                "_-_ 修复武甲背包会被爆炸波及")));
+                                "_-_ 修复武甲背包会被爆炸波及\n" +
+                                "_-_ 修复铁匠楼层重生十字架相关问题，优化天痕粘咕的地图")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changes.hardlight(Window.R_COLOR);
