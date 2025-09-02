@@ -1194,7 +1194,9 @@ public class WndSettings extends WndTabbed {
 				}
 			};
 			chkFireBase.checked(SPDSettings.firebaseRecords());
-			add(chkFireBase);
+			if (chkWifi != null){
+				add(chkFireBase);
+			}
 		}
 
 		@Override
@@ -1219,11 +1221,14 @@ public class WndSettings extends WndTabbed {
 
 			if (chkWifi != null){
 				chkWifi.setRect(0, pos + GAP, width, BTN_HEIGHT);
-
+				chkFireBase.setRect(0, chkWifi.bottom(), width, BTN_HEIGHT);
+				pos = chkWifi.bottom();
+			} else {
+				pos = chkFireBase.bottom();
 			}
 
-			chkFireBase.setRect(0, chkWifi.bottom(), width, BTN_HEIGHT);
-			pos = chkFireBase.bottom();
+
+
 			height = pos;
 
 		}
