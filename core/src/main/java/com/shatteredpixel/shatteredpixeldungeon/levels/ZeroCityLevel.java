@@ -80,6 +80,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
@@ -620,6 +621,11 @@ public class ZeroCityLevel extends Level {
         if (Dungeon.depth == 0 &&
                 (!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO) || SPDSettings.intro() )){
             drop( new Guidebook(),  132);
+        }
+
+        if(!SPDSettings.isItemUnlock("anyskin1")){
+            AnySkinSelect anySkinSelect = new AnySkinSelect();
+            drop(anySkinSelect,416);
         }
 
         if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){

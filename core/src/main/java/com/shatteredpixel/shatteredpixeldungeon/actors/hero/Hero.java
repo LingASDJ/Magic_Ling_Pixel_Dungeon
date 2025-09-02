@@ -197,6 +197,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.MagicBook;
@@ -1234,6 +1235,13 @@ public class Hero extends Char {
 				if(Dungeon.depth != 0) {
 					if (potionOfPurityLing != null) potionOfPurityLing.detach(belongings.backpack);
 				}
+
+		AnySkinSelect anySkinSelect = hero.belongings.getItem(AnySkinSelect.class);
+		if(anySkinSelect != null){
+			if(SPDSettings.isItemUnlock("anyskin1")){
+				anySkinSelect.detach(hero.belongings.backpack);
+			}
+		}
 
 		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isDLC(Conducts.Conduct.DEV) || Dungeon.isChallenged(DHXD) && !lanterfireactive) {
 			//灯火前行 4.0
