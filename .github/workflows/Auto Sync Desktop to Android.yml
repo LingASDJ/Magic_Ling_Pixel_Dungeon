@@ -12,24 +12,51 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # 获取所有历史记录，以便检查提交信息
+
+      - name: Check for nosync in commit messages
+        id: check_commit
+        run: |
+          # 获取最近一次提交信息
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Latest commit message: $COMMIT_MSG"
+          
+          # 检查是否包含nosync（不区分大小写）
+          if echo "$COMMIT_MSG" | grep -qi "nosync"; then
+            echo "::warning::Skipping sync due to 'nosync' in commit message"
+            echo "skip_sync=true" >> $GITHUB_OUTPUT
+          else
+            echo "No 'nosync' found, proceeding with sync"
+            echo "skip_sync=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Set up Git user info
+        if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
       - name: Checkout target branch (2025-Android)
+        if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
           git fetch origin
           git checkout 2025-Android
           git pull origin 2025-Android
 
       - name: Merge folder from 2025-Desktop to 2025-Android
+        if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
           git checkout 2025-Desktop -- core/src/main
           git add core/src/main
           git commit -m "Sync core/src/main from 2025-Desktop branch"
 
       - name: Push changes to 2025-Android branch
+        if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git 2025-Android
+
+      - name: Skip sync notification
+        if: steps.check_commit.outputs.skip_sync == 'true'
+        run: |
+          echo "Sync skipped due to 'nosync' in commit message"
