@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
+import static com.shatteredpixel.shatteredpixeldungeon.android.AndroidGameRecords.GameRecordChallenges;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBranchLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createStandardLevel;
 
@@ -56,10 +57,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
@@ -961,6 +960,7 @@ public class Dungeon {
 			if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
 				Rankings.INSTANCE.submit(false, cause);
 			}
+			GameRecordChallenges();
 		}
 	}
 
@@ -973,6 +973,7 @@ public class Dungeon {
 		if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
 			Rankings.INSTANCE.submit(true, cause);
 		}
+		GameRecordChallenges();
 	}
 
 	public static void updateLevelExplored(){
