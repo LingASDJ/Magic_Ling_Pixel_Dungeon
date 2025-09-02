@@ -22,7 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.custom.Gift;
-import com.shatteredpixel.shatteredpixeldungeon.levels.HollowExitLevel;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.EulaScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GoScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -55,7 +55,7 @@ public class ShatteredPixelDungeon extends Game {
 	public static final int v2_5_0 = 794;
 	
 	public ShatteredPixelDungeon( PlatformSupport platform ) {
-		super( sceneClass == null ? GoScene.class : sceneClass, platform );
+		super( sceneClass == null ? (!SPDSettings.firebase()) ? EulaScene.class : GoScene.class : sceneClass, platform );
 
 		//pre-v2.5.0
 		com.watabou.utils.Bundle.addAlias(
