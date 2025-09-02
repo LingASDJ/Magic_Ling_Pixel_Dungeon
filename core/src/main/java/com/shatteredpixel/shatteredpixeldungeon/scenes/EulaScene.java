@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.android.AndroidLauncher;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
@@ -64,9 +63,7 @@ public class EulaScene extends PixelScene {
             @Override
             protected void onClick() {
                 SPDSettings.firebase(true);
-                SPDSettings.firebaseRecords(true);
                 ShatteredPixelDungeon.switchScene(GoScene.class);
-                AndroidLauncher.mFirebaseAnalyticsRecords.setAnalyticsCollectionEnabled(true);
             }
         };
 

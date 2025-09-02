@@ -1152,8 +1152,6 @@ public class WndSettings extends WndTabbed {
 		CheckBox chkBetas;
 		CheckBox chkWifi;
 
-		CheckBox chkFireBase;
-
 		@Override
 		protected void createChildren() {
 			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
@@ -1185,16 +1183,6 @@ public class WndSettings extends WndTabbed {
 				chkWifi.checked(SPDSettings.WiFi());
 				add(chkWifi);
 			}
-
-			chkFireBase = new CheckBox(Messages.get(this, "firebase")){
-				@Override
-                protected void onClick() {
-					super.onClick();
-					SPDSettings.firebaseRecords(checked());
-				}
-			};
-			chkFireBase.checked(SPDSettings.firebaseRecords());
-		    add(chkFireBase);
 		}
 
 		@Override
@@ -1219,11 +1207,9 @@ public class WndSettings extends WndTabbed {
 
 			if (chkWifi != null){
 				chkWifi.setRect(0, pos + GAP, width, BTN_HEIGHT);
-
+				pos = chkWifi.bottom();
 			}
 
-			chkFireBase.setRect(0, chkWifi.bottom(), width, BTN_HEIGHT);
-			pos = chkFireBase.bottom();
 			height = pos;
 
 		}
