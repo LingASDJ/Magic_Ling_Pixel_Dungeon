@@ -3,6 +3,8 @@ package com.shatteredpixel.shatteredpixeldungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.nlf.calendar.Lunar;
+import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessBossRushLow;
@@ -168,6 +170,10 @@ public class GameRules {
         final Calendar calendar = Calendar.getInstance();
         String banners;
         int month = calendar.get(Calendar.MONTH);
+        Solar date = Solar.fromDate(calendar.getTime());
+        Lunar lunar = date.getLunar();
+
+        boolean isQXJ = lunar.getMonth() == 7 && (lunar.getDay() >= 7 && lunar.getDay() <= 7 + 20);
 
         if(SPDSettings.isCustomBanner()){
             switch (SPDSettings.CustomBanner_Text()) {
@@ -182,6 +188,9 @@ public class GameRules {
                     break;
                 case "元宵": case "LR":
                     banners = Assets.Interfaces.BANNERS_YX;
+                    break;
+                case "七夕": case "QX":
+                    banners = Assets.Interfaces.BANNERS_QX;
                     break;
                 case "生日": case "BR":
                     banners = Assets.Interfaces.BANNERS_BD;
@@ -228,8 +237,10 @@ public class GameRules {
             } else if (RegularLevel.holiday == RegularLevel.Holiday.QMJ) {
                 banners = Assets.Interfaces.BANNERS_QM;
             } else if (RegularLevel.holiday == RegularLevel.Holiday.DWJ) {
-               banners = Assets.Interfaces.BANNERS_DW;
-           } else if (RegularLevel.holiday == RegularLevel.Holiday.HWEEN) {
+                banners = Assets.Interfaces.BANNERS_DW;
+            } else if(isQXJ){
+                banners = Assets.Interfaces.BANNERS_QX;
+            } else if (RegularLevel.holiday == RegularLevel.Holiday.HWEEN) {
                banners = Assets.Interfaces.BANNERS_HL;
             } else  if (4 == month) {
                banners = Assets.Interfaces.BANNERS_LD;
