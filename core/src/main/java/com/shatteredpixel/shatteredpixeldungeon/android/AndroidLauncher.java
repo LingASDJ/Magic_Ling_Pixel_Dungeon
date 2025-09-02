@@ -38,6 +38,7 @@ import com.badlogic.gdx.backends.android.AsynchronousAndroidAudio;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
@@ -56,6 +57,8 @@ public class AndroidLauncher extends AndroidApplication {
 
     private static AndroidPlatformSupport support;
 
+    public static FirebaseAnalytics mFirebaseAnalyticsRecords;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,7 @@ public class AndroidLauncher extends AndroidApplication {
                 .errorActivity(ErrorActivity.class) //default: null (default error activity)
                 .apply();
         FirebaseApp.initializeApp(this);
+        mFirebaseAnalyticsRecords = FirebaseAnalytics.getInstance(this);
         try {
             GdxNativesLoader.load();
             FreeType.initFreeType();
