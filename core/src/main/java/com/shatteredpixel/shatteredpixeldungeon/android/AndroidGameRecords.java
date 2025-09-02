@@ -26,6 +26,7 @@ public class AndroidGameRecords {
         params.putString("当前楼层", String.valueOf(Dungeon.depth));
         params.putString("最高楼层", String.valueOf(Statistics.deepestFloor));
         params.putString("所选难度", Difficult());
+        params.putString("游戏模式", GameMode());
         params.putString("胜利情况", String.valueOf(Statistics.winGame));
         params.putString("是否返程", String.valueOf(Statistics.ascended));
         params.putString("地图种子", DungeonSeed.convertToCode(Dungeon.seed));
@@ -43,6 +44,18 @@ public class AndroidGameRecords {
             string = "困难";
         } else {
             string = "开发者";
+        }
+        return string;
+    }
+
+    public static String GameMode(){
+        String string;
+        if(Statistics.bossRushMode){
+            string = "BR模式";
+        } else if(Statistics.RandMode){
+            string = "金蝶模式";
+        }  else {
+            string = "传统模式";
         }
         return string;
     }
