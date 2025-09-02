@@ -1,18 +1,19 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.watabou.input.PointerEvent;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Group;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.ui.Component;
@@ -45,195 +46,60 @@ public class EulaScene extends PixelScene {
 
         //*** Shattered Pixel Dungeon Credits ***
 
-        CreditsBlock shpx = new CreditsBlock(true, Window.SHPX_COLOR,
-                "Shattered Pixel Dungeon",
-                Icons.SHPX.get(),
+        CreditsBlock shpx = new CreditsBlock(false, Window.TITLE_COLOR,
+                Messages.get(this,"title"),
+                null,
                 Messages.get(this,"desc"),
                 null,
                 null);
         if (landscape()){
-            shpx.setRect((w - fullWidth)/2f - 6, 10, 120, 0);
+            shpx.setRect((w - fullWidth)/2f - 6, 10, fullWidth, 0);
         } else {
-            shpx.setRect((w - fullWidth)/2f, 6, 120, 0);
+            shpx.setRect((w - fullWidth)/2f, 6, fullWidth, 0);
         }
         content.add(shpx);
 
-        CreditsBlock alex = new CreditsBlock(false, Window.SHPX_COLOR,
-                "Splash Art & Design:",
-                Icons.ALEKS.get(),
-                "Aleksandar Komitov",
-                "akomitov.artstation.com",
-                "https://akomitov.artstation.com/");
-        alex.setSize(colWidth/2f, 0);
-        if (landscape()){
-            alex.setPos(shpx.right(), shpx.top() + (shpx.height() - alex.height()*2)/2f);
-        } else {
-            alex.setPos(w/2f - colWidth/2f, shpx.bottom()+5);
-        }
-        content.add(alex);
+        RedButton acceptButton = new RedButton(Messages.get(this, "accept")) {
+            @Override
+            protected void onClick() {
+                SPDSettings.firebase(true);
+                ShatteredPixelDungeon.switchScene(GoScene.class);
+            }
+        };
 
-        CreditsBlock charlie = new CreditsBlock(false, Window.SHPX_COLOR,
-                "Sound Effects:",
-                Icons.CELESTI.get(),
-                "Celesti",
-                "s9menine.itch.io",
-                "https://s9menine.itch.io");
-        charlie.setRect(alex.right(), alex.top(), colWidth/2f, 0);
-        content.add(charlie);
+        RedButton rejectButton = new RedButton(Messages.get(this, "reject")) {
+            @Override
+            protected void onClick() {
+                Game.instance.finish();
+            }
+        };
 
-        CreditsBlock kristjan = new CreditsBlock(false, Window.SHPX_COLOR,
-                "Music:",
-                Icons.KRISTJAN.get(),
-                "Kristjan Haaristo",
-                "youtube.com/@kristjan...",
-                "https://www.youtube.com/@kristjanthomashaaristo");
-        kristjan.setRect(alex.right() - colWidth/4f, alex.bottom() + 5, colWidth/2f, 0);
-        content.add(kristjan);
+        // 设置按钮位置和大小
+        float buttonWidth = 40;
+        float buttonHeight = 18;
+        float buttonSpacing = 10;
+        float bottomMargin = 10;
 
-        //*** Pixel Dungeon Credits ***
+        float totalWidth = buttonWidth * 2 + buttonSpacing;
+        float startX = (Camera.main.width - totalWidth) / 2;
+        float startY = shpx.bottom()+10;
 
-        final int WATA_COLOR = 0x55AAFF;
-        CreditsBlock wata = new CreditsBlock(true, WATA_COLOR,
-                "Pixel Dungeon",
-                Icons.WATA.get(),
-                "Developed by: _Watabou_\nInspired by Brian Walker's Brogue",
-                "watabou.itch.io",
-                "https://watabou.itch.io/");
-        if (landscape()){
-            wata.setRect(shpx.left(), kristjan.bottom() + 8, colWidth, 0);
-        } else {
-            wata.setRect(shpx.left(), kristjan.bottom() + 8, colWidth, 0);
-        }
-        content.add(wata);
+        acceptButton.setRect(startX, startY, buttonWidth, buttonHeight);
+        rejectButton.setRect(startX + buttonWidth + buttonSpacing, startY, buttonWidth, buttonHeight);
 
-        addLine(wata.top() - 4, content);
+        content.add(acceptButton);
+        content.add(rejectButton);
 
-        CreditsBlock cube = new CreditsBlock(false, WATA_COLOR,
-                "Music:",
-                Icons.CUBE_CODE.get(),
-                "Cube Code",
-                null,
-                null);
-        cube.setSize(colWidth/2f, 0);
-        if (landscape()){
-            cube.setPos(wata.right() + colWidth/4f, wata.top() + (wata.height() - cube.height())/2f);
-        } else {
-            cube.setPos(alex.left() + colWidth/4f, wata.bottom()+5);
-        }
-        content.add(cube);
 
-        //*** libGDX Credits ***
-
-        final int GDX_COLOR = 0xE44D3C;
-        CreditsBlock gdx = new CreditsBlock(true,
-                GDX_COLOR,
-                "libGDX",
-                Icons.LIBGDX.get(),
-                "ShatteredPD is powered by _libGDX_!",
-                "libgdx.com",
-                "https://libgdx.com/");
-        if (landscape()){
-            gdx.setRect(wata.left(), wata.bottom() + 8, colWidth, 0);
-        } else {
-            gdx.setRect(wata.left(), cube.bottom() + 8, colWidth, 0);
-        }
-        content.add(gdx);
-
-        addLine(gdx.top() - 4, content);
-
-        CreditsBlock arcnor = new CreditsBlock(false, GDX_COLOR,
-                "Pixel Dungeon GDX:",
-                Icons.ARCNOR.get(),
-                "Edu García",
-                "gamedev.place/@arcnor",
-                "https://mastodon.gamedev.place/@arcnor");
-        arcnor.setSize(colWidth/2f, 0);
-        if (landscape()){
-            arcnor.setPos(gdx.right(), gdx.top() + (gdx.height() - arcnor.height())/2f);
-        } else {
-            arcnor.setPos(alex.left(), gdx.bottom()+5);
-        }
-        content.add(arcnor);
-
-        CreditsBlock purigro = new CreditsBlock(false, GDX_COLOR,
-                "Shattered GDX Help:",
-                Icons.PURIGRO.get(),
-                "Kevin MacMartin",
-                "github.com/prurigro",
-                "https://github.com/prurigro/");
-        purigro.setRect(arcnor.right()+2, arcnor.top(), colWidth/2f, 0);
-        content.add(purigro);
-
-        //*** Transifex Credits ***
-
-        CreditsBlock transifex = new CreditsBlock(true,
-                Window.TITLE_COLOR,
-                null,
-                null,
-                "ShatteredPD is community-translated via _Transifex_! Thank you so much to all of Shattered's volunteer translators!",
-                "transifex.com/shattered-pixel/...",
-                "https://explore.transifex.com/shattered-pixel/shattered-pixel-dungeon/");
-        transifex.setRect((Camera.main.width - colWidth)/2f, purigro.bottom() + 12, colWidth, 0);
-        content.add(transifex);
-
-        addLine(transifex.top() - 4, content);
-
-        addLine(transifex.bottom() + 4, content);
-
-        //*** Freesound Credits ***
-
-        CreditsBlock freesound = new CreditsBlock(true,
-                Window.TITLE_COLOR,
-                null,
-                null,
-                "Shattered Pixel Dungeon uses the following sound samples from _freesound.org_:\n\n" +
-
-                        "Creative Commons Attribution License:\n" +
-                        "_SFX ATTACK SWORD 001.wav_ by _JoelAudio_\n" +
-                        "_Pack: Slingshots and Longbows_ by _saturdaysoundguy_\n" +
-                        "_Cracking/Crunching, A.wav_ by _InspectorJ_\n" +
-                        "_Extracting a sword.mp3_ by _Taira Komori_\n" +
-                        "_Pack: Uni Sound Library_ by _timmy h123_\n\n" +
-
-                        "Creative Commons Zero License:\n" +
-                        "_Pack: Movie Foley: Swords_ by _Black Snow_\n" +
-                        "_machine gun shot 2.flac_ by _qubodup_\n" +
-                        "_m240h machine gun burst 4.flac_ by _qubodup_\n" +
-                        "_Pack: Onomatopoeia_ by _Adam N_\n" +
-                        "_Pack: Watermelon_ by _lolamadeus_\n" +
-                        "_metal chain_ by _Mediapaja2009_\n" +
-                        "_Pack: Sword Clashes Pack_ by _JohnBuhr_\n" +
-                        "_Pack: Metal Clangs and Pings_ by _wilhellboy_\n" +
-                        "_Pack: Stabbing Stomachs & Crushing Skulls_ by _TheFilmLook_\n" +
-                        "_Sheep bleating_ by _zachrau_\n" +
-                        "_Lemon,Juicy,Squeeze,Fruit.wav_ by _Filipe Chagas_\n" +
-                        "_Lemon,Squeeze,Squishy,Fruit.wav_ by _Filipe Chagas_",
-                "www.freesound.org",
-                "https://www.freesound.org");
-        freesound.setRect(transifex.left()-10, transifex.bottom() + 8, colWidth+20, 0);
-        content.add(freesound);
-
-        content.setSize( fullWidth, freesound.bottom()+10 );
+        content.setSize( fullWidth, shpx.bottom()+30 );
 
         list.setRect( 0, 0, w, h );
         list.scrollTo(0, 0);
-
-        ExitButton btnExit = new ExitButton();
-        btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
-        add( btnExit );
-
-        //fadeIn();
     }
 
     @Override
     protected void onBackPressed() {
-        ShatteredPixelDungeon.switchScene(TitleScene.class);
-    }
-
-    private void addLine( float y, Group content ){
-        ColorBlock line = new ColorBlock(Camera.main.width, 1, 0xFF333333);
-        line.y = y;
-        content.add(line);
+        ShatteredPixelDungeon.scene().add( new WndError( Messages.get(this, "need_read") ) );
     }
 
     private static class CreditsBlock extends Component {
@@ -272,7 +138,7 @@ public class EulaScene extends PixelScene {
 
             this.body = PixelScene.renderTextBlock(body, 6);
             if (highlight != -1) this.body.setHightlighting(true, highlight);
-            if (large) this.body.align(RenderedTextBlock.CENTER_ALIGN);
+            if (large) this.body.align(RenderedTextBlock.LEFT_ALIGN);
             add(this.body);
 
             if (linkText != null && linkUrl != null){
