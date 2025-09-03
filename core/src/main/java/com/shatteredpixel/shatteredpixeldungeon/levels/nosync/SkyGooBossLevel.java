@@ -173,11 +173,15 @@ public class SkyGooBossLevel extends Level {
         if (ch instanceof Hero) {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (!(mob.alignment == Char.Alignment.ENEMY)){
-                    if(map[484] == CRYSTAL_DOOR && map[598] == LOCKED_DOOR && map[502] == CRYSTAL_DOOR)
-                    //484 598 502
-                    set(484, DOOR);
-                    set(598, DOOR);
-                    set(502, DOOR);
+                    if(map[484] == CRYSTAL_DOOR){
+                        set(484, DOOR);
+                    }
+                    if(map[598] == CRYSTAL_DOOR){
+                        set(598, DOOR);
+                    }
+                    if(map[502] == CRYSTAL_DOOR){
+                        set(502, DOOR);
+                    }
                     GameScene.updateMap(484);
                     GameScene.updateMap(598);
                     GameScene.updateMap(502);
