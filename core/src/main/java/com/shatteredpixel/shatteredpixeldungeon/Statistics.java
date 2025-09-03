@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
@@ -467,7 +466,7 @@ public class Statistics {
 		));
 
 		propNegative1 = new ArrayList<>(Arrays.asList(
-				new BottleWraith(),
+				//new BottleWraith(),
 				new EmotionalAggregationB(),
 				new HeartOfCrystalFractal(),
 				new NoteOfBzmdr(),
@@ -513,7 +512,7 @@ public class Statistics {
 		));
 
 		propNegative1 = new ArrayList<>(Arrays.asList(
-				new BottleWraith(),
+				//new BottleWraith(),
 				new EmotionalAggregationB(),
 				new HeartOfCrystalFractal(),
 				new NoteOfBzmdr(),

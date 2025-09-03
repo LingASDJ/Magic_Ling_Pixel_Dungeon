@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.ConnectionRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.watabou.utils.Graph;
@@ -177,16 +176,16 @@ public abstract class RegularPainter extends Painter {
 
 	protected void paintDoors( Level l, ArrayList<Room> rooms ) {
 
-		//瓶装怨灵V2
-		for (Room r : rooms) {
-			if(r.isEntrance()){
-				for (Room.Door door : r.connected.values()) {
-					if(door != null){
-						l.BottleWraith(door, l, r.left, r.right, r.top, r.bottom);
-					}
-				}
-			}
-		}
+//		//瓶装怨灵V2
+//		for (Room r : rooms) {
+//			if(r.isEntrance()){
+//				for (Room.Door door : r.connected.values()) {
+//					if(door != null){
+//						l.BottleWraith(door, l, r.left, r.right, r.top, r.bottom);
+//					}
+//				}
+//			}
+//		}
 
 		float hiddenDoorChance = 0;
 		if (Dungeon.depth > 1){
