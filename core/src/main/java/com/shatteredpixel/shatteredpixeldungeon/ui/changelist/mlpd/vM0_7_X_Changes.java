@@ -71,6 +71,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0872_Changes(changeInfos);
         add_V0871_Changes(changeInfos);
         add_V0870_Changes(changeInfos);
         add_V0860_Changes(changeInfos);
@@ -119,6 +120,36 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0872_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.7.2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("新全局系统：自定义横幅"),
+                ("在额外设置中，可以定义游戏内带的横幅主题，新增中元节主题")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "魔绫像素地牢-修复内容：\n\n" +
+                        (       "1.修复创世神之心在一些极端情况导致的游戏崩溃异常\n" +
+                                "2.修复狗子层重复提交排行榜的Bug\n" +
+                                "3.修复天痕粘咕的毒雾可能导致越界的异常\n" +
+                                "4.修复混乱香炉在一些极端情况导致的游戏崩溃异常\n" +
+                                "5.修复重复藏品Bug")));
+
+
+        changes = new ChangeInfo("v0.8.7.2中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
     }
 
     public static void add_V0871_Changes(ArrayList<ChangeInfo> changeInfos ) {

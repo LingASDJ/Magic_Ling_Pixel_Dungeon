@@ -804,6 +804,9 @@ public class ItemSpriteSheet {
 
     public static final int Dragon_Lei   = QUEST+22;
 
+    public static final int Qie_Cake   = QUEST+24;
+    public static final int Rice_Cake   = QUEST+25;
+
     static{
         assignItemRect(Dragon_Lei,   9, 14);
 
@@ -831,6 +834,8 @@ public class ItemSpriteSheet {
         assignItemRect(QKA,    16, 14);
         assignItemRect(QKB,    16, 14);
 
+        assignItemRect(Qie_Cake,    14, 11);
+        assignItemRect(Rice_Cake,    11, 9);
     }
 
     //传奇武器

@@ -173,7 +173,8 @@ public class GameRules {
         Solar date = Solar.fromDate(calendar.getTime());
         Lunar lunar = date.getLunar();
 
-        boolean isQXJ = lunar.getMonth() == 7 && (lunar.getDay() >= 7 && lunar.getDay() <= 7 + 20);
+        boolean isQXJ = lunar.getMonth() == 7 && (lunar.getDay() >= 7 && lunar.getDay() <= 7 + 7);
+        boolean isZYJ = lunar.getMonth() == 7 && (lunar.getDay() >= 15 && lunar.getDay() <= 15 + 7);
 
         if(SPDSettings.isCustomBanner()){
             switch (SPDSettings.CustomBanner_Text()) {
@@ -238,6 +239,8 @@ public class GameRules {
                 banners = Assets.Interfaces.BANNERS_QM;
             } else if (RegularLevel.holiday == RegularLevel.Holiday.DWJ) {
                 banners = Assets.Interfaces.BANNERS_DW;
+            } else if(isZYJ){
+                banners = Assets.Interfaces.BANNERS_ZY;
             } else if(isQXJ){
                 banners = Assets.Interfaces.BANNERS_QX;
             } else if (RegularLevel.holiday == RegularLevel.Holiday.HWEEN) {

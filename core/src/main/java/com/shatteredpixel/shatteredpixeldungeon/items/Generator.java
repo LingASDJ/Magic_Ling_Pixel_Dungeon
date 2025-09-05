@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
+import com.nlf.calendar.Lunar;
+import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -58,6 +60,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.QieCake;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.RiceCake;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
@@ -284,6 +288,7 @@ import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -708,7 +713,16 @@ public class Generator {
 			};
 			MIS_T5.probs = new float[]{6, 5, 4};
 
+			final Calendar calendar = Calendar.getInstance();
+			String banners;
+			int month = calendar.get(Calendar.MONTH);
+			Solar date = Solar.fromDate(calendar.getTime());
+			Lunar lunar = date.getLunar();
+
+			boolean isZYJ = lunar.getMonth() == 7 && (lunar.getDay() >= 15 && lunar.getDay() <= 15 + 7);
 			int isDWJ = holiday == RegularLevel.Holiday.DWJ ? 3 : 0;
+
+			int ZYJ = isZYJ ? 1 : 0;
 
 			FOOD.classes = new Class<?>[]{
 					Food.class,
@@ -720,8 +734,11 @@ public class Generator {
 					RiceDumplings.RiceDumplingsRed.class,
 					RiceDumplings.RiceDumplingsOrange.class,
 					RiceDumplings.RiceDumplingsPink.class,
+
+					RiceCake.class,
+					QieCake.class
 			};
-			FOOD.probs = new float[]{4, 1, 0, isDWJ, isDWJ, isDWJ, isDWJ, isDWJ};
+			FOOD.probs = new float[]{4, 1, 0, isDWJ, isDWJ, isDWJ, isDWJ, isDWJ, ZYJ, ZYJ};
 
 			RING.classes = new Class<?>[]{
 					RingOfAccuracy.class,

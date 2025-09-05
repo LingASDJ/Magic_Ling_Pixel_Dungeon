@@ -938,7 +938,7 @@ public class Dungeon {
 		FileUtils.overwriteFile(GamesInProgress.gameFile(save), 1);
 
 		GamesInProgress.delete( save );
-		
+
 		GameRecordChallenges();
 	}
 

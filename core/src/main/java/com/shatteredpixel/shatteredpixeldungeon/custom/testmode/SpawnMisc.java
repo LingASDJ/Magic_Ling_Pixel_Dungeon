@@ -57,7 +57,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PotionOfLightningShiled;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.QieCake;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.RedCrab;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.RiceCake;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SakaMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
@@ -363,6 +365,9 @@ public class SpawnMisc extends TestItem {
             foodList.add(BoneSoup.class);
             foodList.add(RatTail.class);
             foodList.add(ZakoSoup.class);
+
+            foodList.add(QieCake.class);
+            foodList.add(RiceCake.class);
         }
 
         //Book
