@@ -101,14 +101,9 @@ public class ForestHardBossLevel extends Level {
     @Override
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
-        //GLog.p(String.valueOf(hero.pos));
         boolean isTrue = ch.pos == LDBossDoor && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
-
-        // 获取当前Dungeon.level上的Mob数组
         Mob[] mobs = Dungeon.level.mobs.toArray(new Mob[0]);
         Mob[] mobsx = Dungeon.level.mobs.toArray(new Mob[0]);
-        // 检查Mob数量是否为1
-        // 检查Mob数量是否为1
         if (mobs.length == 1) {
             if (mobs[0] instanceof CrivusStarFruits && !crivusfruitslevel2 && mobs[0].HP == 280) {
                 Statistics.crivusfruitslevel2 = true;
