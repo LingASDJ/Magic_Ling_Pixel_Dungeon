@@ -579,31 +579,33 @@ public class SkyGoo extends Boss implements Callback {
 	}
 
 	public static class SkyGooBlob extends Blob {
+
 		{
 			alwaysVisible = true;
 		}
+
 		@Override
 		protected void evolve() {
 			super.evolve();
-			Char ch;
-			int cell;
 
-			for (int i = area.left-2; i <= area.right; i++) {
-				for (int j = area.top-2; j <= area.bottom; j++) {
-					cell = i + j*Dungeon.level.width();
-					if (cur[cell] > 0) {
+			for (int i = 0; i < Dungeon.level.length(); i++) {
+				int cell = i;
 
-						if ((ch = Actor.findChar( cell )) != null) {
-							if (!ch.isImmune(this.getClass())) {
-								ch.damage(5, this);
-							}
-						}
+				// 添加边界检查
+				if (cell < 0 || cell >= Dungeon.level.length()) {
+					continue;
+				}
 
-						off[cell] = cur[cell] - 1;
-						volume += off[cell];
-					} else {
-						off[cell] = 0;
+				if (cur[cell] > 0) {
+					off[cell] = cur[cell] - 1;
+					volume += off[cell];
+
+					Char ch = Actor.findChar(cell);
+					if (ch != null && !ch.isImmune(this.getClass())) {
+						ch.damage(5, this);
 					}
+				} else {
+					off[cell] = 0;
 				}
 			}
 		}
