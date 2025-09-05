@@ -3223,9 +3223,10 @@ public class Hero extends Char {
 	@Override
 	public boolean isAlive() {
 		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
-
-		if(getHeal != null) {
-			return true;
+		if(belongings != null){
+			if(getHeal != null) {
+				return true;
+			}
 		} else if (HP <= 0) {
 			if (berserk == null) berserk = buff(Berserk.class);
 			return berserk != null && berserk.berserking();
@@ -3233,7 +3234,8 @@ public class Hero extends Char {
 			berserk = null;
 			return super.isAlive();
 		}
-	}
+        return super.isAlive();
+    }
 
 	@Override
 	public void move(int step, boolean travelling) {
