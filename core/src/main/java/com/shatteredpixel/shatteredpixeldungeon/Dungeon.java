@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
+import static com.shatteredpixel.shatteredpixeldungeon.android.AndroidGameRecords.GameRecordChallenges;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBranchLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createStandardLevel;
 
@@ -960,7 +961,7 @@ public class Dungeon {
 				Rankings.INSTANCE.submit(false, cause);
 			}
 		}
-		//GameRecordChallenges();
+		GameRecordChallenges();
 	}
 
 	public static void win( Object cause ) {
@@ -972,7 +973,7 @@ public class Dungeon {
 		if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
 			Rankings.INSTANCE.submit(true, cause);
 		}
-		//GameRecordChallenges();
+		GameRecordChallenges();
 	}
 
 	public static void updateLevelExplored(){
