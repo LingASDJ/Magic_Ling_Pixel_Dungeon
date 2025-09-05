@@ -938,6 +938,8 @@ public class Dungeon {
 		FileUtils.overwriteFile(GamesInProgress.gameFile(save), 1);
 
 		GamesInProgress.delete( save );
+		
+		GameRecordChallenges();
 	}
 
 	public static void preview( GamesInProgress.Info info, Bundle bundle ) {
