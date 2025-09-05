@@ -37,12 +37,27 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      - name: Checkout target branch (2025-Android)
+      - name: Merge folder from 2025-Desktop to 2025-Android
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
-          git fetch origin
-          git checkout 2025-Android
-          git pull origin 2025-Android
+          # 创建临时目录
+          mkdir -p temp_sync
+          # 检出 Desktop 端代码到临时目录
+          git checkout 2025-Desktop -- core/src/main
+          # 移动到临时目录
+          mv core/src/main/* temp_sync/
+          # 删除 Android 相关的代码
+          rm -rf temp_sync/java/com/shatteredpixel/shatteredpixeldungeon/android
+          # 清理当前目录
+          rm -rf core/src/main
+          mkdir -p core/src/main
+          # 将处理后的代码复制回来
+          mv temp_sync/* core/src/main/
+          # 删除临时目录
+          rm -rf temp_sync
+          git add core/src/main
+          git commit -m "Sync core/src/main from 2025-Desktop branch (excluding Android code)"
+    
 
       - name: Merge folder from 2025-Desktop to 2025-Android
         if: steps.check_commit.outputs.skip_sync == 'false'
