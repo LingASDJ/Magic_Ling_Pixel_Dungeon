@@ -624,8 +624,9 @@ public class YogReal extends Boss {
         } else {
             Statistics.qualifiedForBossChallengeBadge = false;
         }
+
         if(Statistics.RandMode){
-            PaswordBadges.BOSSRUSH();
+            Statistics.winGame = true;
             Statistics.questScores[4] += 30000;
             Dungeon.win( Nxhy.class );
             Dungeon.deleteGame( GamesInProgress.curSlot, true );
@@ -645,6 +646,7 @@ public class YogReal extends Boss {
                     new float[]{1, 1},
                     false);
         } else if(Statistics.bossRushMode){
+            Statistics.winGame = true;
             PaswordBadges.BOSSRUSH();
             Statistics.questScores[4] += 30000;
             Dungeon.win( BossRushBloodGold.class );
