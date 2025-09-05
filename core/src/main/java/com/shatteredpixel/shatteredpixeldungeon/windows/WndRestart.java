@@ -107,7 +107,7 @@ public class WndRestart extends Window {
                     nextDifficulty = ( heroAlive ? info.dlcs : SPDSettings.dlc() );
                 } else {
                     nextDifficulty = new Conducts.ConductStorage();
-                    nextDifficulty.conducts.add(Conducts.Conduct.NULL);
+                    nextDifficulty.conducts.add(Conducts.Conduct.NORMAL);
                 }
 
                 SPDSettings.customSeed( nextSeed );
