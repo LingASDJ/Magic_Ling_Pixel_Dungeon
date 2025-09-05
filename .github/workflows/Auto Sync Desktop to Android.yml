@@ -45,19 +45,25 @@ jobs:
           # 检出 Desktop 端代码到临时目录
           git checkout 2025-Desktop -- core/src/main
           # 移动到临时目录
-          mv core/src/main/* temp_sync/
+          mv core/src/main/* temp_sync/ 2>/dev/null || true
           # 删除 Android 相关的代码
-          rm -rf temp_sync/java/com/shatteredpixel/shatteredpixeldungeon/android
+          rm -rf temp_sync/java/com/shatteredpixel/shatteredpixeldungeon/android 2>/dev/null || true
           # 清理当前目录
           rm -rf core/src/main
           mkdir -p core/src/main
           # 将处理后的代码复制回来
-          mv temp_sync/* core/src/main/
+          mv temp_sync/* core/src/main/ 2>/dev/null || true
           # 删除临时目录
           rm -rf temp_sync
-          git add core/src/main
-          git commit -m "Sync core/src/main from 2025-Desktop branch (excluding Android code)"
-    
+          # 检查是否有更改
+          if ! git diff --quiet; then
+            git add core/src/main
+            git commit -m "Sync core/src/main from 2025-Desktop branch (excluding Android code)"
+          else
+            echo "No changes to sync"
+          fi
+      
+      
 
       - name: Merge folder from 2025-Desktop to 2025-Android
         if: steps.check_commit.outputs.skip_sync == 'false'
