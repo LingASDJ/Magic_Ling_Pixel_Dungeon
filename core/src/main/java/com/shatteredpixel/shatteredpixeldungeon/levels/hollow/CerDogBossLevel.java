@@ -697,7 +697,7 @@ public class CerDogBossLevel extends Level {
         GameScene.scene.add(new Delayer(3f){
             @Override
             protected void onComplete() {
-                Dungeon.win( UnsignedInvitationLetter.class);
+                Statistics.winGame = true;
                 Rankings.INSTANCE.submit(true, UnsignedInvitationLetter.class);
                 Game.switchScene( RankingsScene.class );
                 Dungeon.deleteGame( GamesInProgress.curSlot, true );
