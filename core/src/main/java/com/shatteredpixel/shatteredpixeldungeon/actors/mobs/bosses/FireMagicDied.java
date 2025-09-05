@@ -15,14 +15,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BeamTowerAdbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
@@ -641,44 +639,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         public boolean attachTo(Char target){
             target.sprite.showStatus(0x00FF00, Messages.get(DwarfMaster.class, "str_empower"));
             return super.attachTo(target);
-        }
-    }
-
-    public static class ColdGuradB extends Skeleton {
-        {
-            state = HUNTING;
-            immunities.add(Corruption.class);
-            resistances.add(Amok.class);
-            lootChance=0f;
-            maxLvl = -8848;
-        }
-        @Override
-        public int damageRoll(){
-            boolean str = buff(FireMagicDied.StrengthEmpower.class)!=null;
-            return Math.round(super.damageRoll()*(str? 1.5f:1f));
-        }
-    }
-
-    public static class ColdGuradC extends SRPDICLRPRO {
-        {
-            state = HUNTING;
-            this.HT = 40;
-            this.HP = 40;
-            immunities.add(Corruption.class);
-            resistances.add(Amok.class);
-            lootChance=0f;
-            maxLvl = -8848;
-        }
-        @Override
-        public int attackProc(Char enemy, int damage){
-            if(Random.Int(10)==0) {
-                Buff.affect(enemy, Degrade.class, 2f);
-            }
-            return super.attackProc(enemy, damage);
-        }
-        @Override
-        public int damageRoll() {
-            return Random.NormalIntRange( 10, 15 );
         }
     }
 
