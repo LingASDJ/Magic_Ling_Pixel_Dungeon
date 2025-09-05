@@ -13,16 +13,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # 获取所有历史记录，以便检查提交信息
+          fetch-depth: 0
 
       - name: Check for nosync in commit messages
         id: check_commit
         run: |
-          # 获取最近一次提交信息
           COMMIT_MSG=$(git log -1 --pretty=%B)
           echo "Latest commit message: $COMMIT_MSG"
           
-          # 检查是否包含nosync（不区分大小写）
           if echo "$COMMIT_MSG" | grep -qi "nosync"; then
             echo "::warning::Skipping sync due to 'nosync' in commit message"
             echo "skip_sync=true" >> $GITHUB_OUTPUT
@@ -44,17 +42,45 @@ jobs:
           git checkout 2025-Android
           git pull origin 2025-Android
 
+      - name: Backup Android-specific code
+        if: steps.check_commit.outputs.skip_sync == 'false'
+        run: |
+          # 创建备份目录并备份安卓特定代码
+          mkdir -p /tmp/android_backup
+          cp -r "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android/" /tmp/android_backup/ 2>/dev/null || true
+          echo "Android-specific code backed up"
+
       - name: Merge folder from 2025-Desktop to 2025-Android
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
+          # 从Desktop分支合并代码
           git checkout 2025-Desktop -- core/src/main
-          git add core/src/main
-          git commit -m "Sync core/src/main from 2025-Desktop branch"
+          echo "Desktop code merged"
 
-      - name: Push changes to 2025-Android branch
+      - name: Restore Android-specific code
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git 2025-Android
+          # 恢复安卓特定代码
+          if [ -d "/tmp/android_backup/android" ]; then
+            rm -rf "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android"
+            mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon"
+            cp -r /tmp/android_backup/android/ "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/"
+            echo "Android-specific code restored"
+          else
+            echo "No Android-specific code to restore"
+          fi
+
+      - name: Commit and push changes
+        if: steps.check_commit.outputs.skip_sync == 'false'
+        run: |
+          git add core/src/main
+          # 检查是否有更改需要提交
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Sync core/src/main from 2025-Desktop branch (preserved Android-specific code)"
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git 2025-Android
+          fi
 
       - name: Skip sync notification
         if: steps.check_commit.outputs.skip_sync == 'true'
