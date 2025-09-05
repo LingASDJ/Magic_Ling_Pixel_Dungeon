@@ -53,6 +53,7 @@ import com.watabou.utils.SparseArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Statistics {
 
@@ -445,48 +446,12 @@ public class Statistics {
 	public static ArrayList<Prop> propNegative2;
 
 	static {
-		propPositive0 = new ArrayList<>(Arrays.asList(
-				new ArmorScalesOfBzmdr(),
-				new StarSachet(),
-				new PortableWhetstone()
-		));
-
-		propNegative0 = new ArrayList<>(Arrays.asList(
-				new BlockingDrug(),
-				new ConfusedMieMieTalisman(),
-				new RustedGoldCoin()
-		));
-
-		propPositive1 = new ArrayList<>(Arrays.asList(
-				new DeliciousRecipe(),
-				new NewStem(),
-				new RapidEarthRoot(),
-				new WenStudyingPaperOne(),
-				new YanStudyingPaperTwo()
-		));
-
-		propNegative1 = new ArrayList<>(Arrays.asList(
-				//new BottleWraith(),
-				new EmotionalAggregationB(),
-				new HeartOfCrystalFractal(),
-				new NoteOfBzmdr(),
-				new TheGriefOfSpeechless(),
-				new WenStudyingPaperTwo()
-		));
-
-		propPositive2 = new ArrayList<>(Arrays.asList(
-				new LuckyGlove(),
-				new EmotionalAggregation(),
-				new Monocular(),
-				new KnightStabbingSword()
-		));
-
-		propNegative2 = new ArrayList<>(Arrays.asList(
-				new CloakFragmentsOfBzmdr(),
-				new BrokenBone(),
-				new TerrorDoll(),
-				new YanStudyingPaperOne()
-		));
+		propPositive0 = new ArrayList<>(Collections.emptyList());
+		propPositive0 = new ArrayList<>(Collections.emptyList());
+		propPositive1 = new ArrayList<>(Collections.emptyList());
+		propNegative1 = new ArrayList<>(Collections.emptyList());
+		propPositive2 = new ArrayList<>(Collections.emptyList());
+		propNegative2 = new ArrayList<>(Collections.emptyList());
 	}
 
     public static void reset() {
