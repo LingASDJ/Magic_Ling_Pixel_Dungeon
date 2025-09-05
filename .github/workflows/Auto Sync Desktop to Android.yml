@@ -22,11 +22,9 @@ jobs:
           COMMIT_MSG=$(git log -1 --pretty=%B)
           COMMIT_SHA=$(git rev-parse HEAD)
           COMMIT_AUTHOR=$(git log -1 --pretty=%an)
-          COMMIT_DATE=$(git log -1 --pretty=%ad)
           
           echo "Triggered by commit: $COMMIT_SHA"
           echo "Author: $COMMIT_AUTHOR"
-          echo "Date: $COMMIT_DATE"
           echo "Message: $COMMIT_MSG"
           echo "commit_msg=$COMMIT_MSG" >> $GITHUB_ENV
           echo "commit_sha=$COMMIT_SHA" >> $GITHUB_ENV
@@ -53,33 +51,54 @@ jobs:
           git checkout 2025-Android
           git pull origin 2025-Android
 
-      - name: Merge folder from 2025-Desktop to 2025-Android (excluding Android-specific code)
+      - name: Backup Android-specific code
+        if: steps.check_commit.outputs.skip_sync == 'false'
+        run: |
+          # 备份安卓分支上的安卓特定代码
+          if [ -d "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android" ]; then
+            mkdir -p /tmp/android_backup
+            cp -r "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android" /tmp/android_backup/
+            echo "Android-specific code backed up"
+          else
+            echo "No Android-specific code found to backup"
+          fi
+
+      - name: Merge folder from 2025-Desktop to 2025-Android
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
           # 从Desktop分支合并代码
           git checkout 2025-Desktop -- core/src/main
-          
-          # 删除安卓特定代码
-          rm -rf "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android"
-          
-          # 添加所有更改的文件
+          echo "Desktop code merged"
+
+      - name: Restore Android-specific code
+        if: steps.check_commit.outputs.skip_sync == 'false'
+        run: |
+          # 恢复安卓特定代码
+          if [ -d "/tmp/android_backup/android" ]; then
+            # 删除从Desktop分支带来的安卓代码（如果有的话）
+            rm -rf "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android" 2>/dev/null || true
+            # 恢复备份的安卓代码
+            mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon"
+            cp -r /tmp/android_backup/android "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/"
+            echo "Android-specific code restored"
+          else
+            echo "No Android-specific code to restore"
+          fi
+
+      - name: Commit and push changes
+        if: steps.check_commit.outputs.skip_sync == 'false'
+        run: |
           git add core/src/main
-          
           # 检查是否有更改需要提交
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            # 使用触发同步的提交信息来创建提交
             git commit -m "Sync from 2025-Desktop (triggered by ${{ env.commit_sha }})
           
             Original commit by ${{ env.commit_author }}:
             ${{ env.commit_msg }}"
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git 2025-Android
           fi
-
-      - name: Push changes to 2025-Android branch
-        if: steps.check_commit.outputs.skip_sync == 'false'
-        run: |
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git 2025-Android
 
       - name: Skip sync notification
         if: steps.check_commit.outputs.skip_sync == 'true'
