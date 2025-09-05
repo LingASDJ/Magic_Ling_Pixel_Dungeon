@@ -48,8 +48,10 @@ jobs:
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
           git checkout 2025-Desktop -- core/src/main
+          # 移除 Android 相关的代码
+          rm -rf core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android
           git add core/src/main
-          git commit -m "Sync core/src/main from 2025-Desktop branch"
+          git commit -m "Sync core/src/main from 2025-Desktop branch (excluding Android code)" 
 
       - name: Push changes to 2025-Android branch
         if: steps.check_commit.outputs.skip_sync == 'false'

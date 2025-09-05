@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.GodNPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.HealLanFire;
+import com.shatteredpixel.shatteredpixeldungeon.android.AndroidGameRecords;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.GudaziPlot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -154,6 +155,7 @@ public class Gudazi extends GodNPC {
                             protected void onSelect(int index) {
                                 if (index == 0) {
                                     Dungeon.gold -= 300;
+                                    AndroidGameRecords.GudaziGoldCount(300);
                                     Statistics.gdzHelpDungeon++;
                                     secnod = false;
                                     yell(Messages.get(Gudazi.class, "good"));
