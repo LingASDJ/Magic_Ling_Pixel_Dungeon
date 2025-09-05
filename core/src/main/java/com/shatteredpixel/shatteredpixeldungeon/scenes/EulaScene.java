@@ -18,7 +18,6 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.ui.Component;
 
-//TODO NH: Add a way to dismiss the EULA without accepting it
 public class EulaScene extends PixelScene {
 
     @Override
