@@ -938,8 +938,6 @@ public class Dungeon {
 		FileUtils.overwriteFile(GamesInProgress.gameFile(save), 1);
 
 		GamesInProgress.delete( save );
-
-		GameRecordChallenges();
 	}
 
 	public static void preview( GamesInProgress.Info info, Bundle bundle ) {
@@ -962,8 +960,9 @@ public class Dungeon {
 			if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
 				Rankings.INSTANCE.submit(false, cause);
 			}
+			GameRecordChallenges();
 		}
-		GameRecordChallenges();
+
 	}
 
 	public static void win( Object cause ) {
