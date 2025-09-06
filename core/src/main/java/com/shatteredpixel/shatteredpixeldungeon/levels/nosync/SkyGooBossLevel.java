@@ -176,7 +176,7 @@ public class SkyGooBossLevel extends Level {
                     if(map[484] == CRYSTAL_DOOR){
                         set(484, DOOR);
                     }
-                    if(map[598] == CRYSTAL_DOOR){
+                    if(map[598] == LOCKED_DOOR){
                         set(598, DOOR);
                     }
                     if(map[502] == CRYSTAL_DOOR){
