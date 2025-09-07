@@ -110,23 +110,18 @@ public class ClearSword extends MeleeWeapon implements Item.LengedsItem {
 
         int magicDamage = (int) (Random.NormalIntRange(min(), max()) * Random.Float(0.75f, 1.5f));
 
+        applyMagicEffect(hero, enemy, magicDamage);
+
         for (int n : PathFinder.CIRCLE7) {
             Char xenemy = Actor.findChar(target + n);
-            if (xenemy != null && Dungeon.level.heroFOV[xenemy.pos]) {
-                MagicMissile.boltFromChar(hero.sprite.parent,
-                        MagicMissile.SHADOW,
-                        hero.sprite,
-                        xenemy.pos,
-                        new Callback() {
-                            @Override
-                            public void call() {
-                                beforeAbilityUsed(hero, enemy);
-                                xenemy.damage(magicDamage, ClearSword.class);
-                                Buff.prolong(xenemy, Vulnerable.class, 20f);
-                                Buff.prolong(xenemy, Weakness.class, 20f);
-                                hero.next();
-                            }
-                        });
+
+            if (xenemy != null &&
+                    xenemy != hero &&
+                    Dungeon.level.heroFOV[xenemy.pos] &&
+                    xenemy.alignment == Char.Alignment.ENEMY &&
+                    !hero.isCharmedBy(xenemy)) {
+
+                applyMagicEffect(hero, xenemy, magicDamage);
             }
         }
 
@@ -135,4 +130,23 @@ public class ClearSword extends MeleeWeapon implements Item.LengedsItem {
         Sample.INSTANCE.play(Assets.Sounds.HIT_MAGIC);
         updateQuickslot();
     }
+
+    // 抽取出的公共方法，用于施放魔法效果
+    private void applyMagicEffect(Hero hero, Char enemy, int magicDamage) {
+        MagicMissile.boltFromChar(hero.sprite.parent,
+                MagicMissile.SHADOW,
+                hero.sprite,
+                enemy.pos,
+                new Callback() {
+                    @Override
+                    public void call() {
+                        beforeAbilityUsed(hero, enemy);
+                        enemy.damage(magicDamage, ClearSword.class);
+                        Buff.prolong(enemy, Vulnerable.class, 20f);
+                        Buff.prolong(enemy, Weakness.class, 20f);
+                        hero.next();
+                    }
+                });
+    }
+
 }
