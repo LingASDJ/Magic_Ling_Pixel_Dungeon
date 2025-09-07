@@ -1429,14 +1429,6 @@ public class Hero extends Char {
 
 	public static void goodLanterFire() {
 		switch (Random.Int(5)) {
-			case 0:
-			default:
-				if(Dungeon.depth < 20){
-					Buff.affect(hero, BlessNoMoney.class).set((100), 1);
-				} else {
-					Buff.affect(hero, BlessMixShiled.class).set((100), 1);
-				}
-				break;
 			case 1:
 				Buff.affect(hero, BlessGoodSTR.class).set((100), 1);
 				break;
@@ -1449,6 +1441,13 @@ public class Hero extends Char {
 			case 4:
 				if(Dungeon.depth < 20){
 					Buff.affect(hero, BlessImmune.class).set((100), 1);
+				}
+				break;
+			default:
+				if(Dungeon.depth < 20){
+					Buff.affect(hero, BlessNoMoney.class).set((100), 1);
+				} else {
+					Buff.affect(hero, BlessMixShiled.class).set((100), 1);
 				}
 				break;
 		}
