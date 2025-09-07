@@ -114,7 +114,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
         }
         spend(1f);
 
-        if(hero.lanterfire >= (Dungeon.isChallenged(DHXD) ? 60 : 100)){
+        if(hero.lanterfire >= (Dungeon.isChallenged(DHXD) ? 60 : 90)){
             for (Buff b : hero.buffs(ClearLanterBuff.class)){
                if(b == null){
                    goodLanterFire();
