@@ -191,7 +191,7 @@ public class WndKingShop extends Window {
                 Game.runOnRenderThread(new Callback() {
                     @Override
                     public void call() {
-                        if (Dungeon.gold >= 270) {
+                        if (Dungeon.gold >= 350) {
                             hide();
                             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                                 if (mob instanceof NullDiedTO) {
@@ -203,7 +203,7 @@ public class WndKingShop extends Window {
                             if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9f){
                                 GLog.n(Messages.get(LuckyGlove.class,"lucky"));
                             }else{
-                                Dungeon.gold -= 270;
+                                Dungeon.gold -= 350;
                             }
                         } else {
                             GLog.n(Messages.get(WndKingShop.class, "x_gold"));
@@ -313,7 +313,7 @@ public class WndKingShop extends Window {
 
         public RewardWindow( Item item ) {
             super(item);
-            int sellPrice =Dungeon.depth<10 ? item.value() * 4 : item.value() * 7;
+            int sellPrice = (int) (item.value() * 0.6f);
             RedButton btnConfirm = new RedButton(Messages.get(WndKingShop.class, "buy",sellPrice)){
                 @Override
                 protected void onClick() {

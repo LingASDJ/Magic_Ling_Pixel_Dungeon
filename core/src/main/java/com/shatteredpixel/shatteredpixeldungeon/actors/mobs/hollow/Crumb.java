@@ -26,8 +26,7 @@ public class Crumb extends Mob {
     {
         spriteClass = CrumbSprite.class;
 
-        baseSpeed = 1.5f;
-        HP = HT = 100;
+        HP = HT = 90;
 
         defenseSkill = Random.NormalIntRange(25,35);
 
@@ -144,7 +143,7 @@ public class Crumb extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 35, 45 );
+        return Random.NormalIntRange( 25, 40 );
     }
 
     @Override

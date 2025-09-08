@@ -29,7 +29,7 @@ public class Salamander extends Mob {
         lootChance = 0.5f;
         isAnimal = true;
 
-        maxLvl = 12;
+        maxLvl = 10;
     }
 
     public static class DarkBolt{}

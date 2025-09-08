@@ -46,6 +46,7 @@ public class DrTerror extends Mob {
             this.EXP = 0;
             this.state = this.HUNTING;
             this.properties.add(Char.Property.DEMONIC);
+            maxLvl = 25;
         }
 
         @Override

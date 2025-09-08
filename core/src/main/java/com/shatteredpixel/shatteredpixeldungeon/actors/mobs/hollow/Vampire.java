@@ -25,9 +25,9 @@ public class Vampire extends Mob {
     {
         spriteClass = VampireSprite.class;
 
-        HP = HT = 120;
+        HP = HT = 110;
         baseSpeed = 2f;
-        defenseSkill = Random.NormalIntRange(25,30);
+        defenseSkill = Random.NormalIntRange(25,40);
         EXP = 15;
         maxLvl = 35;
 
@@ -107,7 +107,7 @@ public class Vampire extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(40, 50);
+        return Random.NormalIntRange(30, 35);
     }
 
     @Override

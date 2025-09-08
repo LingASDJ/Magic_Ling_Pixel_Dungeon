@@ -43,6 +43,7 @@ public class ShieldHuntsman extends Mob {
         this.loot = new PotionOfShielding();
         this.lootChance = 0.1667f;
         baseSpeed = 0.8f;
+        maxLvl = 25;
     }
 
     @Override

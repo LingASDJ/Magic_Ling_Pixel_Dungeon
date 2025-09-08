@@ -80,11 +80,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.builders.FigureEightBuild
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.FiveLockedRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.FourLockedRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.OneLockedRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.ThreeLockedRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.TwoLockedRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.DragonCaveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
@@ -321,7 +316,7 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 40) {
+		if (depth == 14 && branch == 0) {
 			initRooms.add(new NxhyShopRoom());
 		}
 
@@ -359,12 +354,12 @@ public abstract class RegularLevel extends Level {
 		if (holiday == XMAS) {
 			if(Dungeon.AutoShopLevel()) {
 				initRooms.add(new AutoShopRoom());
-				Buff.affect(hero, AutoRandomBuff.class).set((10), 1);
+				Buff.affect(hero, AutoRandomBuff.class).set((hero.STR()-(10* depth/5*2)), 1);
 			}
 		} else if(Dungeon.isChallenged(EXSG)){
 			if(Dungeon.AutoShopLevel()) {
 				initRooms.add(new AutoShopRoom());
-				Buff.affect(hero, AutoRandomBuff.class).set((10), 1);
+				Buff.affect(hero, AutoRandomBuff.class).set((hero.STR()-(10* depth/5*2)), 1);
 			}
 		}
 

@@ -1222,4 +1222,11 @@ public class SPDSettings extends GameSettings {
 		return getInt(KEY_RECORD, 0);
 	}
 
+	public static final String KEY_BLOOD = "bloodxsd";
+	public static boolean blood() {
+		return getBoolean(KEY_BLOOD, false);
+	}
+	public static void blood( boolean value ) {
+		put(KEY_BLOOD, value );
+	}
 }

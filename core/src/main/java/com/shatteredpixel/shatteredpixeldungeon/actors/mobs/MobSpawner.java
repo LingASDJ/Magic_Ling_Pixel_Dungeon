@@ -375,7 +375,7 @@ public class MobSpawner extends Actor {
 						return new ArrayList<>(Arrays.asList(
 								Bat.class,
 								Spinner.class,
-								ColdMagicRat.class,RedSwarm.class,Shaman.random()));
+								DM200.class,RedNecromancer.class,Shaman.random()));
 					case 15:
 						//1x bat, 1x brute, 2x shaman, 2x spinner, 2x DM-300
 						return new ArrayList<>(Arrays.asList(
@@ -484,7 +484,7 @@ public class MobSpawner extends Actor {
 									Eye.class,Eye.class, Eye.class,
 									Scorpio.class, Eye.class,Succubus.class,Monk.class,
 									Golem.class,IceGolem.class,Fire_Scorpio.class,Fire_Scorpio.class,
-									Scorpio.class, Succubus.class, DrTerror.class,Ice_Scorpio.class,ShieldHuntsman.class));
+									Scorpio.class, Succubus.class,Ice_Scorpio.class,ShieldHuntsman.class));
 						} else {
 							return new ArrayList<>(Arrays.asList(
 									ApprenticeWitch.class,
@@ -628,18 +628,18 @@ public class MobSpawner extends Actor {
 			case 21: case 22:
 				//3x succubus, 3x evil eye
 				return new ArrayList<>(Arrays.asList(
-						Eye.class,ShieldHuntsman.class, DrTerror.class));
+						Eye.class,ShieldHuntsman.class));
             case 23:
 				//1x: succubus, 2x evil eye, 3x scorpio
 				return new ArrayList<>(Arrays.asList(
-								Eye.class,ShieldHuntsman.class, DrTerror.class));
+								Eye.class,ShieldHuntsman.class));
 			//前半段决战
 			case 24:
 				//1x succubus, 2x evil eye, 3x scorpio
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
 						Eye.class,
-						Scorpio.class, Succubus.class, DrTerror.class,Ice_Scorpio.class,ShieldHuntsman.class));
+						Scorpio.class, Succubus.class,Ice_Scorpio.class,ShieldHuntsman.class));
 
 			case 26:
 				return new ArrayList<>(Arrays.asList(
@@ -746,6 +746,8 @@ public class MobSpawner extends Actor {
 					cl = RandomBlueFireDE.class;
 				} else if (cl == FireGhost.class && Dungeon.isChallenged(RLPT)) {
 					cl = RedMurderer.class;
+				} else if (cl == ShieldHuntsman.class && Dungeon.isChallenged(RLPT)) {
+					cl = DrTerror.class;
 				} else if (cl == FireGhost.class) {
 					cl = MolotovHuntsman.class;
 				}

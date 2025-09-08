@@ -45,8 +45,8 @@ public class Butcher extends Mob {
     {
         spriteClass = ButcherSprite.class;
 
-        HP = HT = 120;
-        defenseSkill = Random.NormalIntRange(25,35);
+        HP = HT = 100;
+        defenseSkill = Random.NormalIntRange(30,40);
 
         maxLvl = 37;
 
@@ -96,7 +96,7 @@ public class Butcher extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 35, 45 );
+        return Random.NormalIntRange( 32, 42 );
     }
 
     @Override

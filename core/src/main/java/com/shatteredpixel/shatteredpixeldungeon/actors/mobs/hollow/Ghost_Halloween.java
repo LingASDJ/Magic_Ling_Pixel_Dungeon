@@ -17,7 +17,7 @@ public class Ghost_Halloween extends Mob {
 
     {
         spriteClass = GhostHalloweenSprite.class;
-        baseSpeed = 1f;
+
         HP = HT = 60;
         EXP = 19;
         flying = true;

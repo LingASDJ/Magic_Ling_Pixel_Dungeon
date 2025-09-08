@@ -18,7 +18,7 @@ public class Pumking_Ghost extends Mob {
 
     {
         spriteClass = PumkingGhostSprite.class;
-        baseSpeed = 1f;
+
         HP = HT = 80;
         EXP = 19;
         defenseSkill = 45;

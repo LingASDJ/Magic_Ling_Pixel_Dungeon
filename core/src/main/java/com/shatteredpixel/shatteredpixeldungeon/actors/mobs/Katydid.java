@@ -21,7 +21,7 @@ public class Katydid extends Mob {
         loot = Generator.Category.SEED;
         lootChance = 0.4f;
 
-        maxLvl = 12;
+        maxLvl = 10;
     }
 
     @Override

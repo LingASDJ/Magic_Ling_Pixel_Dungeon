@@ -52,7 +52,7 @@ public class IceGolem extends Mob implements Callback {
         defenseSkill = 15;
 
         EXP = 3;
-        maxLvl = 35;
+        maxLvl = 22;
 
         loot = PotionOfFrost.class;
         lootChance = 0.3f;

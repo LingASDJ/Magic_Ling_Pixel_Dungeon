@@ -28,9 +28,9 @@ public class Frankenstein extends Mob {
     {
         spriteClass = FrankensteinSprite.class;
         baseSpeed = 1.2f;
-        HP = HT = 130;
+        HP = HT = 100;
         EXP = 15;
-        defenseSkill = Random.NormalIntRange(25,35);
+        defenseSkill = Random.NormalIntRange(20,40);
         maxLvl = 34;
         properties.add(Char.Property.HOLLOW);
     }
@@ -128,7 +128,7 @@ public class Frankenstein extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(35, 45);
+        return Random.NormalIntRange(25, 35);
     }
 
     @Override

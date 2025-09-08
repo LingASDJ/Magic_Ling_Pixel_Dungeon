@@ -38,6 +38,7 @@ public class WndAutoShop extends Window {
     private static final int GAP		= 6;
 
 
+    private int gold = (325 * ((Dungeon.depth / 5 == 1 ? 2 : Dungeon.depth)-1))*50;
     public WndAutoShop() {
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
@@ -45,7 +46,7 @@ public class WndAutoShop extends Window {
         titlebar.label(Messages.get(WndAutoShop.class,"welcome") );
         add( titlebar );
         RenderedTextBlock message =
-                PixelScene.renderTextBlock( (Messages.get(WndAutoShop.class,"xwelcome"))+ 200 * (Dungeon.depth / 5) +(Messages.get(WndAutoShop.class,"gold")), 6 );
+                PixelScene.renderTextBlock( (Messages.get(WndAutoShop.class,"xwelcome"))+ gold +(Messages.get(WndAutoShop.class,"gold")), 6 );
         message.maxWidth(WIDTH);
         message.setPos(0, titlebar.bottom() + GAP);
         add( message );
@@ -86,8 +87,7 @@ public class WndAutoShop extends Window {
         if (item.value() <= 0)                                              return false;
         if (item.unique && !item.stackable)                                 return false;
         if (item instanceof Armor && ((Armor) item).checkSeal() != null)    return false;
-        if (item.isEquipped(Dungeon.hero) && item.cursed)                   return false;
-        return true;
+        return !item.isEquipped(Dungeon.hero) || !item.cursed;
     }
 
     private static WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
@@ -150,11 +150,11 @@ public class WndAutoShop extends Window {
                                 buff.detach();
                             }
                         }
-                    } else if(Dungeon.gold >= 200 * (Dungeon.depth/5)) {
+                    } else if(Dungeon.gold >= gold) {
                         if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9) {
                             GLog.n(Messages.get(LuckyGlove.class,"lucky"));
                         }else{
-                            Dungeon.gold -= 200 * (Dungeon.depth / 5);
+                            Dungeon.gold -= gold;
                         }
                         WndAutoShop.this.selectReward( item );
                         if(Dungeon.hero.buff(AutoRandomBuff.class) != null) {

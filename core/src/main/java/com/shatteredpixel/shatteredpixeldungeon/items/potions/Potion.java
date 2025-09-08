@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
@@ -431,6 +432,11 @@ public class Potion extends Item {
 		Fire fire = (Fire)Dungeon.level.blobs.get( Fire.class );
 		if (fire != null) {
 			fire.clear(cell);
+		}
+
+		HalomethaneFire halomethaneFire = (HalomethaneFire)Dungeon.level.blobs.get( HalomethaneFire.class );
+		if (halomethaneFire != null) {
+			halomethaneFire.clear(cell);
 		}
 
 		Char ch = Actor.findChar(cell);

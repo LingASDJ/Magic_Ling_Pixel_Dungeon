@@ -32,7 +32,7 @@ public class PumkingBomber extends Mob {
         loot = Pasty.class;
         lootChance = 0.15f;
 
-        defenseSkill = Random.NormalIntRange(25,35);
+        defenseSkill = Random.NormalIntRange(25,30);
 
         EXP = 19;
 
@@ -53,7 +53,7 @@ public class PumkingBomber extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 25, 45 );
+        return Random.NormalIntRange( 25,3 );
     }
 
     @Override

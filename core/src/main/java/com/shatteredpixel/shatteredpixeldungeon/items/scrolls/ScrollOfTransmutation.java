@@ -21,8 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
@@ -44,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -53,8 +58,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Tipp
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.utils.Reflection;
 
 public class ScrollOfTransmutation extends InventoryScroll {
@@ -70,6 +77,12 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	@Override
 	protected boolean usableOnItem(Item item) {
 		if(item instanceof MeleeWeapon) {
+
+			if(item instanceof BloodthirstyThorn){
+				if(item.level() >= 10 && Statistics.OnlyBloodUpgrade || item.level<10){
+					return false;
+				}
+			}
 
 			if(item instanceof LockSword)
 				return false;
@@ -116,34 +129,34 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		} else {
 			if (result != item) {
 				int slot = Dungeon.quickslot.getSlot(item);
-				if (item.isEquipped(Dungeon.hero)) {
+				if (item.isEquipped(hero)) {
 					item.cursed = false; //to allow it to be unequipped
 					if (item instanceof Artifact && result instanceof Ring){
 						//if we turned an equipped artifact into a ring, ring goes into inventory
-						((EquipableItem) item).doUnequip(Dungeon.hero, false);
+						((EquipableItem) item).doUnequip(hero, false);
 						if (!result.collect()){
 							Dungeon.level.drop(result, curUser.pos).sprite.drop();
 						}
-					} else if (item instanceof KindOfWeapon && Dungeon.hero.belongings.secondWep() == item){
-						((EquipableItem) item).doUnequip(Dungeon.hero, false);
-						((KindOfWeapon) result).equipSecondary(Dungeon.hero);
+					} else if (item instanceof KindOfWeapon && hero.belongings.secondWep() == item){
+						((EquipableItem) item).doUnequip(hero, false);
+						((KindOfWeapon) result).equipSecondary(hero);
 					} else {
-						((EquipableItem) item).doUnequip(Dungeon.hero, false);
-						((EquipableItem) result).doEquip(Dungeon.hero);
+						((EquipableItem) item).doUnequip(hero, false);
+						((EquipableItem) result).doEquip(hero);
 					}
-					Dungeon.hero.spend(-Dungeon.hero.cooldown()); //cancel equip/unequip time
+					hero.spend(-hero.cooldown()); //cancel equip/unequip time
 				} else {
-					item.detach(Dungeon.hero.belongings.backpack);
+					item.detach(hero.belongings.backpack);
 					if (!result.collect()) {
 						Dungeon.level.drop(result, curUser.pos).sprite.drop();
-					} else if (Dungeon.hero.belongings.getSimilar(result) != null){
-						result = Dungeon.hero.belongings.getSimilar(result);
+					} else if (hero.belongings.getSimilar(result) != null){
+						result = hero.belongings.getSimilar(result);
 					}
 				}
 				if (slot != -1
 						&& result.defaultAction() != null
 						&& !Dungeon.quickslot.isNonePlaceholder(slot)
-						&& Dungeon.hero.belongings.contains(result)){
+						&& hero.belongings.contains(result)){
 					Dungeon.quickslot.setSlot(slot, result);
 				}
 			}
@@ -161,6 +174,34 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		if(item instanceof LockSword){
 			return null;
 		}
+
+		if(item instanceof BloodthirstyThorn && item.level() >= 10 && !Statistics.OnlyBloodUpgrade){
+			ShatteredPixelDungeon.scene().add(new WndOptions(new ItemSprite(item.image()),
+                    item.name(),
+					Messages.get(ScrollOfTransmutation.class, SPDSettings.blood() ? "bloodthirsty_areyts" : "bloodthirsty_areyou"),
+					Messages.get(ScrollOfTransmutation.class, "bloodthirsty_yes"),
+					Messages.get(ScrollOfTransmutation.class, "bloodthirsty_no")) {
+				@Override
+				protected void onSelect(int index) {
+					if (index == 0) {
+						Statistics.OnlyBloodUpgrade = true;
+						GLog.p( Messages.get(ScrollOfTransmutation.class, "bloodthirsty") );
+						Dungeon.level.drop(new ScrollOfUpgrade(),hero.pos);
+						item.detach( hero.belongings.backpack );
+						super.hide();
+						SPDSettings.blood(true);
+					}
+				}
+				@Override
+				public void hide() {
+				}
+			});
+
+			return null;
+		} else if(item instanceof BloodthirstyThorn && item.level() >= 10 && Statistics.OnlyBloodUpgrade){
+			return null;
+		}
+
 		if (item instanceof MagesStaff) {
 			return changeStaff((MagesStaff) item);
 		}else if (item instanceof TippedDart){
@@ -305,10 +346,10 @@ public class ScrollOfTransmutation extends InventoryScroll {
 
 			if (a instanceof DriedRose){
 				if (((DriedRose) a).ghostWeapon() != null){
-					Dungeon.level.drop(((DriedRose) a).ghostWeapon(), Dungeon.hero.pos);
+					Dungeon.level.drop(((DriedRose) a).ghostWeapon(), hero.pos);
 				}
 				if (((DriedRose) a).ghostArmor() != null){
-					Dungeon.level.drop(((DriedRose) a).ghostArmor(), Dungeon.hero.pos);
+					Dungeon.level.drop(((DriedRose) a).ghostArmor(), hero.pos);
 				}
 			}
 

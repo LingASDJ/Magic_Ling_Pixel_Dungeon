@@ -90,6 +90,8 @@ public class Statistics {
 
 	public static boolean AutoOilPotion= false;
 
+	public static boolean OnlyBloodUpgrade= false;
+
 	public static int zeroItemLevel;
 
 	public static int hcDialogLevel;
@@ -551,6 +553,8 @@ public class Statistics {
 
 		PinkFox = false;
 
+		OnlyBloodUpgrade = false;
+
 		SmallLeafGet = false;
 		noClearKill = false;
 		Statistics.AutoOilPotion = false;
@@ -828,6 +832,8 @@ public class Statistics {
 
 		bundle.put("OILAUTO",AutoOilPotion);
 
+		bundle.put("OnlyUpgrade",OnlyBloodUpgrade);
+
 		bundle.put("SNOW",snow);
 
 		bundle.put(DM720FIGHT,dm720Fight);
@@ -1020,6 +1026,8 @@ public class Statistics {
 		killYogMobsAnargy = bundle.getInt("KILL_YOG");
 
 		gudaZiRandomSkin = bundle.getInt("GDZRSKIN");
+
+		OnlyBloodUpgrade = bundle.getBoolean("OnlyUpgrade");
 
 		hcDialogLevel = bundle.getInt(HKLEVEL);
 

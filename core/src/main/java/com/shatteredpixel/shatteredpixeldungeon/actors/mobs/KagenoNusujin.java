@@ -20,7 +20,7 @@ public class KagenoNusujin extends Mob {
 
         EXP = 10;
 
-        maxLvl = 34;
+        maxLvl = 13;
 
         properties.add(Property.UNDEAD);
     }
