@@ -67,7 +67,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems;
@@ -251,12 +250,6 @@ public class ShopRoom extends SpecialRoom {
 		ArrayList<Item> itemsToSpawn = new ArrayList<>();
 
 		MeleeWeapon w;
-
-		//TODO
-		// 如果是商品 你也可以直接新建这个对象，
-		// 然后传入里面你想要的参数，
-		// 实现这个物品在商人这里的一些特殊属性
-		// 现在，你可能能知道为什么游戏的商人的物品有一些时候总是比野生的好一些。
 		LockSword w2 = new LockSword();
 
 		switch (Dungeon.depth) {
@@ -381,7 +374,6 @@ public class ShopRoom extends SpecialRoom {
 
 		//小恶魔奖励
 		if(Statistics.dwarfKill){
-			itemsToSpawn.add( new ScrollOfUpgrade() );
 			itemsToSpawn.add( new CurseInfusion() );
 
 			Item brew;

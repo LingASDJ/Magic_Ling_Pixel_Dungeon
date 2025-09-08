@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -13,10 +14,15 @@ public class Turtle extends Mob {
         HP = HT = Random.NormalIntRange(50,75);
         spriteClass = TurtleSprite.class;
         EXP = 0;
-        maxLvl = 32;
+        maxLvl = 23;
         defenseSkill = 4;
         loot = Generator.Category.SEED;
         lootChance = 0.06f;
+    }
+
+    @Override
+    public int attackSkill( Char target ) {
+        return 26;
     }
 
     @Override

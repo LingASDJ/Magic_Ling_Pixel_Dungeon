@@ -279,7 +279,7 @@ public class WndDragonGirlBlue extends Window {
         @Override
         public void onSelect(Item item) {
             if (item != null) {
-                item.upgrade(Random.Int(1,4));
+                item.upgrade(Random.Int(1,2));
                 int upgradeCost = 500;
                 DragonGirlBlue.Quest.survey_research_points -= upgradeCost;
                 DragonGirlBlue.Quest.three_used_points++;

@@ -93,6 +93,7 @@ public class SPDAction extends GameAction {
 
 	public static final GameAction ZOOM_IN      = new SPDAction("zoom_in");
 	public static final GameAction ZOOM_OUT     = new SPDAction("zoom_out");
+	public static final GameAction QUICKSLOT_SELECTOR   = new SPDAction("quickslot_selector");
 
 	private static final LinkedHashMap<Integer, GameAction> defaultBindings = new LinkedHashMap<>();
 	static {
@@ -116,6 +117,7 @@ public class SPDAction extends GameAction {
 		defaultBindings.put( Input.Keys.NUMPAD_4,       SPDAction.W );
 		defaultBindings.put( Input.Keys.NUMPAD_2,       SPDAction.S );
 		defaultBindings.put( Input.Keys.NUMPAD_6,       SPDAction.E );
+
 		defaultBindings.put( Input.Keys.NUMPAD_7,       SPDAction.NW );
 		defaultBindings.put( Input.Keys.NUMPAD_9,       SPDAction.NE );
 		defaultBindings.put( Input.Keys.NUMPAD_1,       SPDAction.SW );
@@ -173,7 +175,7 @@ public class SPDAction extends GameAction {
 		defaultControllerBindings.put( Input.Keys.BUTTON_R2,        SPDAction.LEFT_CLICK );
 		defaultControllerBindings.put( Input.Keys.BUTTON_THUMBR,    SPDAction.LEFT_CLICK );
 		defaultControllerBindings.put( Input.Keys.BUTTON_L2,        SPDAction.RIGHT_CLICK );
-
+		defaultControllerBindings.put( Input.Keys.BUTTON_X,         SPDAction.QUICKSLOT_SELECTOR );
 		defaultControllerBindings.put( Input.Keys.DPAD_UP+1000,     SPDAction.TAG_ACTION );
 		defaultControllerBindings.put( Input.Keys.DPAD_LEFT+1000,   SPDAction.TAG_LOOT );
 		defaultControllerBindings.put( Input.Keys.DPAD_DOWN+1000,   SPDAction.TAG_RESUME );

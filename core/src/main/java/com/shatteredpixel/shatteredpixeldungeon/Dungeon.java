@@ -122,6 +122,7 @@ public class Dungeon {
 		BAT_HP,
 		HUNR_HP,
 		WARLOCK_HP,
+		ICERAT_HP,
 		//Demon spawners are already limited in their spawnrate, no need to limit their health drops
 		//alchemy
 		COOKING_HP,
@@ -422,10 +423,6 @@ public class Dungeon {
 
 		Random.popGenerator();
 		return result;
-	}
-
-	public static boolean NxhyshopOnLevel() {
-		return depth == 9 || depth == 13 || depth == 18;
 	}
 
 	public static boolean FireLevel() {

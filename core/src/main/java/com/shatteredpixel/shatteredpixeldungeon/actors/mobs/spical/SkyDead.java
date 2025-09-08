@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
@@ -218,7 +219,7 @@ public class SkyDead extends Mob {
             Dungeon.level.drop(new CrystalKey(Dungeon.depth), hero.pos).sprite.drop();
             Dungeon.level.drop(new CrystalKey(Dungeon.depth), pos).sprite.drop();
             Dungeon.level.drop(new PotionOfLiquidFlameX(), pos).sprite.drop();
-
+            Dungeon.level.drop(Generator.random(Generator.Category.STONE), pos).sprite.drop();
             if(Random.Int(4) == 0){
                 Dungeon.level.drop(new PotionOfDragonKingBreath(), pos).sprite.drop();
             }

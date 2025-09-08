@@ -16,7 +16,7 @@ public class AnomaloCaris extends Mob {
         spriteClass = AnomaloCarisSprite.class;
         properties.add(Property.INORGANIC);
         EXP = 0;
-        maxLvl = 32;
+        maxLvl = 23;
         properties.add(Property.LARGE);
     }
 

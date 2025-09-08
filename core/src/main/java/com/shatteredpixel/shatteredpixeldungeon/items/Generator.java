@@ -479,7 +479,7 @@ public class Generator {
 					Starflower.Seed.class,
 					AikeLaier.Seed.class,
 					Mageroyal.Seed.class};
-			SEED.defaultProbs = new float[]{0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3, 4};
+			SEED.defaultProbs = new float[]{0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4};
 			SEED.probs = SEED.defaultProbs.clone();
 
 			SCROLL.classes = new Class<?>[]{
@@ -610,9 +610,9 @@ public class Generator {
 					GoldLongGun.class
 			};
 			WEP_T4.probs = new float[]{6, 5, 5, 4, 4, 4, 2, 3, 7,
-					SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName()) ? 1.2f : 0,
-					SPDSettings.isItemUnlock(MoonDao.class.getSimpleName()) ? 1.5f : 0,
-					SPDSettings.isItemUnlock(GoldLongGun.class.getSimpleName()) ? 1.3f : 0,
+					SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName()) ? 4f : 0,
+					SPDSettings.isItemUnlock(MoonDao.class.getSimpleName()) ? 4f : 0,
+					SPDSettings.isItemUnlock(GoldLongGun.class.getSimpleName()) ? 4f : 0,
 			};
 
 			WEP_T5.classes = new Class<?>[]{
@@ -644,7 +644,7 @@ public class Generator {
 			PaswordBadges.loadGlobal();
 			List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-			WEP_T5.probs = new float[]{0, 3, 3, 3, 3, 3, 3, 4, SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName()) ? 1.5f : 0, 2, SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName()) ? 1f : 0, 0, SPDSettings.KillDwarf() ? 1.2f : 0, 4, passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD) ? 1.4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName()) ? 1.4f : 0,
+			WEP_T5.probs = new float[]{0, 3, 3, 3, 3, 3, 3, 4, SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName()) ? 1.5f : 0, 2, SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName()) ? 3f : 0, 0, SPDSettings.KillDwarf() ? 3f : 0, 4, passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD) ? 4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName()) ? 4f : 0,
 					SPDSettings.isItemUnlock(ClearSword.class.getSimpleName()) ? 0f : 0,
 					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 0f : 0,
 					Statistics.RandMode ? 5 : 0, 5};

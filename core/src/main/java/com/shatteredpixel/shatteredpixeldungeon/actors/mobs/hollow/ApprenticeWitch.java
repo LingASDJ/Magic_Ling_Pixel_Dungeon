@@ -51,10 +51,9 @@ public class ApprenticeWitch extends Mob {
     {
         spriteClass = ApprenticeWitchSprite.class;
 
-        baseSpeed = 1.75f;
-        HP = HT = 150;
+        HP = HT = 125;
 
-        defenseSkill = Random.NormalIntRange(25,35);
+        defenseSkill = Random.NormalIntRange(25,37);
 
         loot = Generator.Category.SCROLL;
         lootChance = 1f;
@@ -72,7 +71,7 @@ public class ApprenticeWitch extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(35, 50);
+        return Random.NormalIntRange(25, 45);
     }
 
     @Override

@@ -57,7 +57,7 @@ public class RedNecromancer extends Mob {
         lootChance = 0.2f; //see lootChance()
 
         EXP = 17;
-        maxLvl = 20;
+        maxLvl = 17;
 
         flying = true;
         properties.add(Property.UNDEAD);

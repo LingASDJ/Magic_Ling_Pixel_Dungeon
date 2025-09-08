@@ -2937,10 +2937,8 @@ public class Hero extends Char {
 		//新 污泥浊水--雪狱效果
 		if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos] && Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.hero.buff(WaterSoulX.class) != null){
 			Buff.affect(this, HasteLing.class, Haste.DURATION/10);
-			Buff.affect(this, InvisibilityRing.class, InvisibilityRing.DURATION/10f);
 		} else if (Dungeon.PrisonWaterLevel() && Dungeon.level.water[pos]&& !Dungeon.isChallenged(AQUAPHOBIA)){
 			Buff.affect(this, HasteLing.class, Haste.DURATION/20);
-			Buff.affect(this, InvisibilityRing.class, InvisibilityRing.DURATION/10f);
 		} else if(Dungeon.PrisonWaterLevel()&& !Dungeon.level.water[pos])
 			for (Buff buff : hero.buffs()) {
 				if (buff instanceof InvisibilityRing||buff instanceof HasteLing) {

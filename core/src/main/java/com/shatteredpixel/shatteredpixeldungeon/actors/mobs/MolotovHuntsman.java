@@ -33,6 +33,7 @@ public class MolotovHuntsman extends Mob {
         this.state = this.SLEEPING;
         this.baseSpeed = 0.5625F;
         this.combo = 0;
+        maxLvl = 25;
     }
 
     public int attackProc(Char var1, int var2) {

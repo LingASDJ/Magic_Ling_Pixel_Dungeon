@@ -31,7 +31,7 @@ public class OozeStatueDead extends Buff {
            if(level == 1 && interval <0){
                detach();
            } else {
-              if(interval>=7- Dungeon.depth/5){
+              if(interval>=10- Dungeon.depth/5){
                   if(Dungeon.depth<3){
                       Buff.affect(target, Ooze.class).set(Dungeon.depth/5f);
                   } else {
@@ -85,7 +85,7 @@ public class OozeStatueDead extends Buff {
 
     @Override
     public String desc() {
-        String result = Messages.get(this, "desc",7- Dungeon.depth/5, 2+Dungeon.depth/5f);
+        String result = Messages.get(this, "desc",10- Dungeon.depth/5, 2+Dungeon.depth/5f);
 
         result += "\n\n" + Messages.get(this, "desc_level", interval);
         result += "\n" + Messages.get(this, "desc_interval", 2+Dungeon.depth/5f);

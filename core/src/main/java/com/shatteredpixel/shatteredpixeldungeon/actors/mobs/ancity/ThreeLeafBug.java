@@ -42,7 +42,7 @@ public class ThreeLeafBug extends Mob {
        spriteClass = ThreeLeafBugSprite.class;
        defenseSkill = 8;
         EXP = 0;
-        maxLvl = 32;
+        maxLvl = 23;
        HUNTING = new Hunting();
     }
 

@@ -50,7 +50,7 @@ public class ColdMagicRat extends Mob implements Callback {
         defenseSkill = 4;
 
         EXP = 9;
-        maxLvl = 21;
+        maxLvl = 15;
 
         loot = Generator.Category.GOLD;
         lootChance = 0.6f;
@@ -134,12 +134,29 @@ public class ColdMagicRat extends Mob implements Callback {
     @Override
     public Item createLoot(){
 
-        // 1/6 chance for healing, scaling to 0 over 8 drops
-        if (Random.Int(2) == 0 && Random.Int(8) > Dungeon.LimitedDrops.WARLOCK_HP.count ){
+        // 治疗药水掉落概率从100%开始，每次掉落后减少2/3
+        float healChance = 1.0f / (float)Math.pow(1.5, Dungeon.LimitedDrops.WARLOCK_HP.count);
+        if (Random.Float() < healChance) {
             Dungeon.LimitedDrops.WARLOCK_HP.drop();
             return new PotionOfHealing();
         } else {
-            Item i = Generator.random(Generator.Category.POTION);
+            Item i;
+            // 增加生成药水种类的多样性
+            int potionType = Random.Int(4);
+            switch (potionType) {
+                case 0:
+                    i = Generator.random(Generator.Category.FOOD);
+                    break;
+                case 1:
+                    i = Generator.random(Generator.Category.SCROLL);
+                    break;
+                case 2:
+                    i = Generator.random(Generator.Category.SEED);
+                    break;
+                default:
+                    i = Generator.random(Generator.Category.POTION);
+            }
+
             int healingTried = 0;
             while (i instanceof PotionOfHealing){
                 healingTried++;
@@ -157,6 +174,5 @@ public class ColdMagicRat extends Mob implements Callback {
 
             return i;
         }
-
     }
 }

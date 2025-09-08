@@ -11,7 +11,7 @@ import java.util.Collection;
 public class QuickSlot {
 	public static int SIZE = 12;
 
-	public static int VSIZE = 9;
+	public static int VSIZE = 10;
 	public int quickslots;
 	/**
 	 * Slots contain objects which are also in a player's inventory. The one exception to this is when quantity is 0,

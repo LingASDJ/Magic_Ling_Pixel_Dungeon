@@ -209,7 +209,7 @@ public class SakaFishBoss extends Boss {
     @Override
     public int drRoll() {
         AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
-        return level == AncientMysteryCityBossLevel.State.FALL_BOSS ? 10 : 25;
+        return level == AncientMysteryCityBossLevel.State.FALL_BOSS ? 0 : 15;
     }
 
 
@@ -262,12 +262,12 @@ public class SakaFishBoss extends Boss {
         } else if (!beamCharged){
             ((SakaFishBossSprites)sprite).charge( enemy.pos );
             GLog.n(Messages.get(SakaFishBoss.class,"laserwarning"));
-            spend( level == AncientMysteryCityBossLevel.State.FALL_BOSS ? attackDelay() : attackDelay()*2f );
+            spend(attackDelay() * 2f);
             beamCharged = true;
             return true;
         } else if(HP*2>=HT) {
 
-            spend( level == AncientMysteryCityBossLevel.State.FALL_BOSS ? attackDelay() : attackDelay()*3f );
+            spend( level == AncientMysteryCityBossLevel.State.FALL_BOSS ? attackDelay()*2f : attackDelay()*3f );
 
             beam = new Ballistica(pos, beamTarget, Ballistica.STOP_SOLID);
             if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[beam.collisionPos] ) {

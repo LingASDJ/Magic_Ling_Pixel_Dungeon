@@ -53,7 +53,7 @@ public class RedMurderer extends Mob {
         defenseSkill = 24;
 
         EXP = 18;
-        maxLvl = 29;
+        maxLvl = 25;
 
         loot = Random.oneOf(Generator.Category.RING, Generator.Category.ARTIFACT, Generator.Category.FOOD);
         lootChance = 0.03f; //initially, see rollToDropLoot
