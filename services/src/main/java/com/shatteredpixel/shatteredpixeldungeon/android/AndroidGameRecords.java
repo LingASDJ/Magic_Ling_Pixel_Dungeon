@@ -2,7 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.android;
 
 //空方法 电脑端不使用
 public class AndroidGameRecords {
-    public static void GameRecordChallenges() {
+    public static void GameRecordChallenges(boolean win) {
         System.out.println("Not Desktop Used");
     }
 
