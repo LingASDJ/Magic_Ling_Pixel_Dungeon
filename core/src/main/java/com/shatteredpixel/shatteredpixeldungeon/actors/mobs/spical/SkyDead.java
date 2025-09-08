@@ -213,12 +213,11 @@ public class SkyDead extends Mob {
 
         GameScene.bossSlain();
 
-        //Dungeon.level.drop( Generator.random( Generator.Category.WAND), pos) .sprite.drop();
-
         if(Dungeon.branch == 2) {
             Dungeon.level.drop(new CrystalKey(Dungeon.depth), hero.pos).sprite.drop();
             Dungeon.level.drop(new CrystalKey(Dungeon.depth), pos).sprite.drop();
             Dungeon.level.drop(new PotionOfLiquidFlameX(), pos).sprite.drop();
+            Dungeon.level.drop(Generator.random(Generator.Category.STONE), pos).sprite.drop();
             Dungeon.level.drop(Generator.random(Generator.Category.STONE), pos).sprite.drop();
             if(Random.Int(4) == 0){
                 Dungeon.level.drop(new PotionOfDragonKingBreath(), pos).sprite.drop();

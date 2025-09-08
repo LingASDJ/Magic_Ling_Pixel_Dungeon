@@ -29,7 +29,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -133,46 +143,37 @@ public class ColdMagicRat extends Mob implements Callback {
 
     @Override
     public Item createLoot(){
-
-        // 治疗药水掉落概率从100%开始，每次掉落后减少2/3
-        float healChance = 1.0f / (float)Math.pow(1.5, Dungeon.LimitedDrops.WARLOCK_HP.count);
-        if (Random.Float() < healChance) {
-            Dungeon.LimitedDrops.WARLOCK_HP.drop();
-            return new PotionOfHealing();
-        } else {
-            Item i;
-            // 增加生成药水种类的多样性
-            int potionType = Random.Int(4);
-            switch (potionType) {
-                case 0:
-                    i = Generator.random(Generator.Category.FOOD);
-                    break;
+        Item w;
+        if (Random.Int(3) == 0 && Random.Int(8) > Dungeon.LimitedDrops.ICERAT_HP.count ){
+            Dungeon.LimitedDrops.ICERAT_HP.count++;
+            switch (Random.Int(11)){
                 case 1:
-                    i = Generator.random(Generator.Category.SCROLL);
-                    break;
+                    w = new PotionOfFrost();   break;
                 case 2:
-                    i = Generator.random(Generator.Category.SEED);
-                    break;
+                    w = new PotionOfLiquidFlame();   break;
+                case 3:
+                    w = new PotionOfToxicGas();   break;
+                case 4:
+                    w = new PotionOfHaste();   break;
+                case 5:
+                    w = new PotionOfInvisibility();   break;
+                case 6:
+                    w = new PotionOfLevitation();   break;
+                case 7:
+                    w = new PotionOfParalyticGas();   break;
+                case 8:
+                    w = new PotionOfPurity();   break;
+                case 9:
+                    w = new PotionOfLiquidFlameX();   break;
+                case 10:
+                    w = new PotionOfLightningShiledX();   break;
                 default:
-                    i = Generator.random(Generator.Category.POTION);
+                    w = new PotionOfMindVision();
+                    break;
             }
-
-            int healingTried = 0;
-            while (i instanceof PotionOfHealing){
-                healingTried++;
-                i = Generator.random(Generator.Category.POTION);
-            }
-
-            //return the attempted healing potion drops to the pool
-            if (healingTried > 0){
-                for (int j = 0; j < Generator.Category.POTION.classes.length; j++){
-                    if (Generator.Category.POTION.classes[j] == PotionOfHealing.class){
-                        Generator.Category.POTION.probs[j] += healingTried;
-                    }
-                }
-            }
-
-            return i;
+            return w;
+        } else {
+            return Generator.randomUsingDefaults(Generator.Category.SEED);
         }
     }
 }
