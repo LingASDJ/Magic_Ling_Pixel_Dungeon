@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.Elixir;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Empty;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
@@ -79,7 +80,9 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		if(item instanceof MeleeWeapon) {
 
 			if(item instanceof BloodthirstyThorn){
-				if(item.level() >= 10 && Statistics.OnlyBloodUpgrade || item.level<10){
+				if(item.level<10){
+					return false;
+				} else if(item.level() >= 10 && Statistics.OnlyBloodUpgrade){
 					return false;
 				}
 			}
@@ -170,7 +173,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 	}
 
-	public static Item changeItem( Item item ){
+	public Item changeItem(Item item){
 		if(item instanceof LockSword){
 			return null;
 		}
@@ -190,13 +193,16 @@ public class ScrollOfTransmutation extends InventoryScroll {
 						item.detach( hero.belongings.backpack );
 						super.hide();
 						SPDSettings.blood(true);
+					} else if(index == 1){
+						super.hide();
 					}
 				}
 				@Override
 				public void hide() {
 				}
 			});
-
+			return new Empty();
+		} else if(item instanceof BloodthirstyThorn && item.level() < 10){
 			return null;
 		} else if(item instanceof BloodthirstyThorn && item.level() >= 10 && Statistics.OnlyBloodUpgrade){
 			return null;

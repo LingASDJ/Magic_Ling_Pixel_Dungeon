@@ -203,6 +203,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.MagicBook;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Empty;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LanFireGo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
@@ -1213,6 +1214,11 @@ public class Hero extends Char {
 				Buff.detach( this, MagicGirlSayTimeLast.class );
 				Buff.detach( this, Nyctophobia.NoRoadMobs.class);
 			}
+		}
+
+		Empty empty = hero.belongings.getItem(Empty.class);
+		if (empty != null) {
+			empty.detachAll(hero.belongings.backpack);
 		}
 
 		if(Statistics.zeroItemLevel == 8 && Dungeon.depth == 0){
