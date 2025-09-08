@@ -15,8 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.Game;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import java.util.Date;
 
 public class AndroidGameRecords {
 
@@ -24,27 +23,25 @@ public class AndroidGameRecords {
     public static void GameRecordChallenges(boolean win) {
         Bundle params = new Bundle();
 
-        params.putString("持有武器", hero.belongings.weapon != null ? hero.belongings.weapon.name()+"-"+hero.belongings.weapon.level() : "空手");
-        params.putString("持有护甲", hero.belongings.armor != null ? hero.belongings.armor.name()+"-"+hero.belongings.armor.level()   : "无甲");
-        params.putString("持有戒指", hero.belongings.ring != null ? hero.belongings.ring.name()+"-"+hero.belongings.ring.level()   : "无戒指");
-        params.putString("持有神器", hero.belongings.artifact != null ? hero.belongings.artifact.name()+"-"+hero.belongings.artifact.level()   : "无神器");
+        params.putString("持有武器", hero.belongings.weapon != null ? hero.belongings.weapon.name()+"+"+hero.belongings.weapon.level() : "空手");
+        params.putString("持有护甲", hero.belongings.armor != null ? hero.belongings.armor.name()+"+"+hero.belongings.armor.level()   : "无甲");
+        params.putString("持有戒指", hero.belongings.ring != null ? hero.belongings.ring.name()+"+"+hero.belongings.ring.level()   : "无戒指");
+        params.putString("持有神器", hero.belongings.artifact != null ? hero.belongings.artifact.name()+"+"+hero.belongings.artifact.level()   : "无神器");
 
         if(hero.belongings.misc != null){
             if(hero.belongings.misc instanceof Ring){
-                params.putString("杂项栏持有戒指", hero.belongings.misc.name()+"-"+hero.belongings.misc.level());
+                params.putString("杂项栏持有戒指", hero.belongings.misc.name()+"+"+hero.belongings.misc.level());
             } else if (hero.belongings.misc instanceof Artifact){
-                params.putString("杂项栏持有神器", hero.belongings.misc.name()+"-"+hero.belongings.misc.level());
+                params.putString("杂项栏持有神器", hero.belongings.misc.name()+"+"+hero.belongings.misc.level());
             }
         } else {
             params.putString("杂项栏持有", "无");
         }
 
         params.putString("挑战数量", String.valueOf(Challenges.activeChallenges()));
-        params.putString("高挑胜利", Challenges.activeChallenges()>=10 ? "胜利" : "失败");
+        params.putString("高挑胜利", Challenges.activeChallenges()>=10 ? "胜利" : "未完成");
 
-        String strDateFormat = "yyyy-MM-dd HH:mm:ss";
-        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.getDefault());
-        params.putString("作战时间记录", String.valueOf(sdf));
+        params.putString("作战时间记录", new Date().toString());
 
         params.putString("总作战回合", String.valueOf(Statistics.duration));
         params.putString("所属职业", hero.className());
