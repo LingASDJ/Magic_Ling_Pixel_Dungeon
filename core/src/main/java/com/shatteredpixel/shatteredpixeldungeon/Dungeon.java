@@ -959,10 +959,9 @@ public class Dungeon {
 			Statistics.gameWon = false;
 			if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
 				Rankings.INSTANCE.submit(false, cause);
+				GameRecordChallenges(false);
 			}
-			GameRecordChallenges();
 		}
-
 	}
 
 	public static void win( Object cause ) {
@@ -973,8 +972,8 @@ public class Dungeon {
 		hero.belongings.identify();
 		if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
 			Rankings.INSTANCE.submit(true, cause);
+			GameRecordChallenges(true);
 		}
-		GameRecordChallenges();
 	}
 
 	public static void updateLevelExplored(){
@@ -986,9 +985,9 @@ public class Dungeon {
 	//default to recomputing based on max hero vision, in case vision just shrank/grew
 	public static void observe(){
 		int dist = Math.max(Dungeon.hero.viewDistance, 8);
-		dist *= 1f + 0.25f*Dungeon.hero.pointsInTalent(Talent.FARSIGHT);
+		dist *= (int) (1f + 0.25f*Dungeon.hero.pointsInTalent(Talent.FARSIGHT));
 		if(Dungeon.hero.belongings.getItem(NoteOfBzmdr.class)!=null){
-			dist *= 0.75;
+			dist *= (int) 0.75;
 		}
 
 		if (Dungeon.hero.buff(MagicalSight.class) != null){
