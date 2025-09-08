@@ -10,17 +10,42 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
+import com.watabou.noosa.Game;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class AndroidGameRecords {
 
     public static FirebaseAnalytics mFirebaseAnalyticsRecords = AndroidLauncher.mFirebaseAnalyticsRecords;
-    public static void GameRecordChallenges() {
+    public static void GameRecordChallenges(boolean win) {
         Bundle params = new Bundle();
+
+        params.putString("持有武器", hero.belongings.weapon != null ? hero.belongings.weapon.name()+"-"+hero.belongings.weapon.level() : "空手");
+        params.putString("持有护甲", hero.belongings.armor != null ? hero.belongings.armor.name()+"-"+hero.belongings.armor.level()   : "无甲");
+        params.putString("持有戒指", hero.belongings.ring != null ? hero.belongings.ring.name()+"-"+hero.belongings.ring.level()   : "无戒指");
+        params.putString("持有神器", hero.belongings.artifact != null ? hero.belongings.artifact.name()+"-"+hero.belongings.artifact.level()   : "无神器");
+
+        if(hero.belongings.misc != null){
+            if(hero.belongings.misc instanceof Ring){
+                params.putString("杂项栏持有戒指", hero.belongings.misc.name()+"-"+hero.belongings.misc.level());
+            } else if (hero.belongings.misc instanceof Artifact){
+                params.putString("杂项栏持有神器", hero.belongings.misc.name()+"-"+hero.belongings.misc.level());
+            }
+        } else {
+            params.putString("杂项栏持有", "无");
+        }
+
         params.putString("挑战数量", String.valueOf(Challenges.activeChallenges()));
-        params.putString("作战时间记录", String.valueOf(new Date()));
+        params.putString("高挑胜利", Challenges.activeChallenges()>=10 ? "胜利" : "失败");
+
+        String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.getDefault());
+        params.putString("作战时间记录", String.valueOf(sdf));
+
         params.putString("总作战回合", String.valueOf(Statistics.duration));
         params.putString("所属职业", hero.className());
         params.putString("自定义名字", hero.name());
@@ -29,18 +54,17 @@ public class AndroidGameRecords {
         params.putString("最高楼层", String.valueOf(Statistics.deepestFloor));
         params.putString("所选难度", Difficult());
         params.putString("游戏模式", GameMode());
-        params.putString("胜利情况", String.valueOf(Statistics.winGame));
+        params.putString("胜利情况", win ? "胜利" : "失败");
         params.putString("是否返程", String.valueOf(Statistics.ascended));
         params.putString("地图种子", DungeonSeed.convertToCode(Dungeon.seed));
-        params.putString("游戏版本", String.valueOf(Dungeon.version));
+        params.putString("游戏版本", String.valueOf(Game.version));
         mFirebaseAnalyticsRecords.logEvent("作战报告", params);
     }
 
     public static void GudaziGoldCount(int gold) {
         Bundle params = new Bundle();
-        params.putString("是否返程", String.valueOf(Statistics.ascended));
         params.putString("地图种子", DungeonSeed.convertToCode(Dungeon.seed));
-        params.putString("游戏版本", String.valueOf(Dungeon.version));
+        params.putString("游戏版本", String.valueOf(Game.version));
         params.putString("金币收取", String.valueOf(gold));
         mFirebaseAnalyticsRecords.logEvent("古达子收取的金币量", params);
     }
