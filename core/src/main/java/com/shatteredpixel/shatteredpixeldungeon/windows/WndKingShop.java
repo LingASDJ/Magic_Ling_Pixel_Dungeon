@@ -313,7 +313,8 @@ public class WndKingShop extends Window {
 
         public RewardWindow( Item item ) {
             super(item);
-            int sellPrice = (int) (item.value() * 0.6f);
+            int price = Shopkeeper.sellPrice( item );
+            int sellPrice = (int) (price * 0.6f);
             RedButton btnConfirm = new RedButton(Messages.get(WndKingShop.class, "buy",sellPrice)){
                 @Override
                 protected void onClick() {

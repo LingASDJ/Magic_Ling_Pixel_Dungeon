@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.blobs.alter;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -35,8 +34,9 @@ public class AWaterOfTransmutation extends AltWellWater {
 	
 	@Override
 	protected Item affectItem( Item item, int pos ) {
-		
-		item = ScrollOfTransmutation.changeItem(item);
+
+		ScrollOfTransmutation scrollOfTransmutation = new ScrollOfTransmutation();
+		item = scrollOfTransmutation.changeItem(item);
 		
 		//incase a never-seen item pops out
 		if (item != null&& item.isIdentified()){

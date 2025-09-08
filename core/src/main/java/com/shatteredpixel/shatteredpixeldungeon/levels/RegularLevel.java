@@ -124,6 +124,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FrostTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PitfallTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
@@ -349,17 +350,20 @@ public abstract class RegularLevel extends Level {
 		if(Statistics.goldchestmazeCollected>=3 && Dungeon.depth == 9){
 			initRooms.add(new MagicDimandRoom());
 		}
-
+		int areas = Dungeon.depth/5 == 1 ? 2 : Dungeon.depth/5;
+		int chance = Math.max(1, areas - (hero.STR() - (10 + 2 * areas)));
 		//圣诞节
 		if (holiday == XMAS) {
 			if(Dungeon.AutoShopLevel()) {
 				initRooms.add(new AutoShopRoom());
-				Buff.affect(hero, AutoRandomBuff.class).set((hero.STR()-(10* depth/5*2)), 1);
+				Buff.affect(hero, AutoRandomBuff.class).set(chance, 1);
 			}
 		} else if(Dungeon.isChallenged(EXSG)){
+			//区域数-[力量数值-（10+2×区域数)]
 			if(Dungeon.AutoShopLevel()) {
 				initRooms.add(new AutoShopRoom());
-				Buff.affect(hero, AutoRandomBuff.class).set((hero.STR()-(10* depth/5*2)), 1);
+				Buff.affect(hero, AutoRandomBuff.class).set((chance), 1);
+				GLog.p(String.valueOf(chance));
 			}
 		}
 

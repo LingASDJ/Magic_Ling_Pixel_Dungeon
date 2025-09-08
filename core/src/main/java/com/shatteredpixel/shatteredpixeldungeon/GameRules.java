@@ -220,6 +220,9 @@ public class GameRules {
                 case "劳动": case "LD":
                     banners = Assets.Interfaces.BANNERS_LD;
                     break;
+                case "中元": case "ZY":
+                    banners = Assets.Interfaces.BANNERS_ZY;
+                    break;
                 default:
                     banners = Assets.Interfaces.BANNERS;
                     break;

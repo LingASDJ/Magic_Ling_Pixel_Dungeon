@@ -29,7 +29,6 @@ import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 public class WndAutoShop extends Window {
     private static final int WIDTH		= 120;
@@ -38,7 +37,9 @@ public class WndAutoShop extends Window {
     private static final int GAP		= 6;
 
 
-    private int gold = (325 * ((Dungeon.depth / 5 == 1 ? 2 : Dungeon.depth)-1))*50;
+    //325+（区域数-1）×50
+    private int areas = Dungeon.depth/5 == 1 ? 2 : Dungeon.depth/5;
+    private int gold = 325 + areas * 50;
     public WndAutoShop() {
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
@@ -158,7 +159,7 @@ public class WndAutoShop extends Window {
                         }
                         WndAutoShop.this.selectReward( item );
                         if(Dungeon.hero.buff(AutoRandomBuff.class) != null) {
-                            AutoRandomBuff.level -= Random.Int(4);
+                            AutoRandomBuff.level--;
                             if(AutoRandomBuff.level <= 0) {
                                 for (Buff buff : hero.buffs()) {
                                     if (buff instanceof AutoRandomBuff) {

@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -443,6 +444,7 @@ public class Potion extends Item {
 		if (ch != null && ch.alignment == Char.Alignment.ALLY) {
 			Buff.detach(ch, Burning.class);
 			Buff.detach(ch, Ooze.class);
+			Buff.detach(ch, HalomethaneBurning.class);
 		}
 
 		if (Dungeon.level.heroFOV[cell]) {

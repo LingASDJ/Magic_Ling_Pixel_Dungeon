@@ -71,6 +71,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0874_Changes(changeInfos);
         add_V0872_Changes(changeInfos);
         add_V0871_Changes(changeInfos);
         add_V0870_Changes(changeInfos);
@@ -120,6 +121,79 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0874_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.7.3-4", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：PropsFixed"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：永久有效")));
+
+        changes.addButton(new ChangeButton(new Image("firebase/FireBase.png",0,0,16,16), ("FireBase游戏数据收集"),
+                ("新增玩家装备收集，开发者模式不再进行收集。(仅安卓)")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("圆盘快捷栏"),
+                ("在V2对话框下，PC使用默认快捷键T，或全设备情况下长按切换区呼出。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "魔绫像素地牢-修复内容：\n\n" +
+                        (       "1.在寂灭灯火情况下 60以上即可不会触发低语\n" +
+                                "2.修复藏品崩溃的严重异常")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CATALOG), ("平衡案3.4 第一部分"),
+                ("实现了平衡案-V3.4第一部分，详情如下：\n\n" +
+                "【怪物与掉落调整】：\n\n" +
+                        "1.冰老鼠的药水掉落概率降低，移除治疗经验掉落。首次掉落概率100%，后续每次掉落概率减少2/3\n" +
+                        "2.神秘博士调整为稀有怪，与血月魔盾猎人出现权重互换\n" +
+                        "3.冰魔女不再掉落升级卷轴\n" +
+                        "4.矮人将军后的小恶魔不再出售升级卷轴\n" +
+                        "5.小蓝的祝福效果由1-4级随机调整为1-2级随机"),
+                ("【荆棘机制变更】：\n\n" +
+                        "荆棘现在一般情况下无法进行嬗变。若荆棘在10级时尝试嬗变，将返回一个升级卷轴（每局仅生效一次）。"),
+                "【怪物经验等级调整】：\n\n" +
+                        "1.一区喷毒花和蝾螈改为10级\n" +
+                        "2.影子盗贼改为13级\n" +
+                        "3.冰老鼠改为15级\n" +
+                        "4.豺狼祭司改为17级（14层生成-新怪物）\n" +
+                        "5.霜冻魔像改为22级\n" +
+                        "6.丛林土鳖、三叶虫、奇虾改为23级\n" +
+                        "7.血月魔盾/火焰赏金猎人、猩红大盗改为25级\n" +
+                        "8.恐怖博士改为25级\n" +
+                        "9.血月魔盾/火焰赏金猎人改为27级（掉落物品等级为获取经验等级+2）\n" +
+                        "10.丛林土鳖的精准属性改为26\n" +
+                        "11.传说武器掉落权重提升至不低于3",
+                ("【道具与商店调整：】：\n\n" +
+                        "1.贩卖机购买次数限制改为：每区域最多购买次数=区域数-[力量-(10+2×区域数)]（次数固定不实时变化），价格调整为325+(区域数-1)×50\n" +
+                        "2.火魔女商店所有物品价格为正常商店的60%，刷新价格改为350，正常商店价格按最深进度计算\n" +
+                        "3.闪电种子掉落概率提升（权重从1改为4）\n" +
+                        "4.回忆商店每局必定14层刷新"),
+                ("【机制与效果调整：】：\n\n" +
+                        "1.水域效果调整：\n" +
+                        "_-_二区踩水移除隐身效果，修复极速buff不生效的问题，极速效果离水后失效\n" +
+                        "_-_磷火现在可被摔碎的药水清除\n" +
+                        "_-_污泥buff触发阈值从7-当前深度/5改为10-当前深度/5\n" +
+                        "_-_污泥水爆移除蒸发机制，恢复正常效果\n" +
+                        "2.快捷栏逻辑改为前3栏与后3栏分页切换（回滚至破碎逻辑）"),
+                ("【Boss与古堡调整：】：\n\n" +
+                        "1.天罚奖励新增2个附魔符石，火龙鳞片自带1级等级\n" +
+                        "2.甲鱼物理防御降低10点，激光技能需多蓄力1回合\n" +
+                        "3.古堡怪物属性调整：\n" +
+                        "_-_见习魔女：HP125、闪避25-37、经验18、最大等级35、伤害25-45、命中35-45\n" +
+                        "_-_电锯狂人：HP100、闪避30-40、经验16、最大等级35、伤害32-42、命中40-50\n" +
+                        "_-_姜饼人：HP90、闪避25-35、经验20、最大等级36、伤害25-40、命中20-35\n" +
+                        "_-_残梦魔偶：HP100、闪避20-40、经验15、最大等级34、伤害25-35、命中35\n" +
+                        "_-_南瓜炸弹人：HP120、闪避25-30、经验19、最大等级35、伤害25-30、命中50\n" +
+                        "_-_吸血鬼：HP110、闪避25-40、移速2.0、经验15、最大等级35、伤害30-35、命中40")));
     }
 
     public static void add_V0872_Changes(ArrayList<ChangeInfo> changeInfos ) {
