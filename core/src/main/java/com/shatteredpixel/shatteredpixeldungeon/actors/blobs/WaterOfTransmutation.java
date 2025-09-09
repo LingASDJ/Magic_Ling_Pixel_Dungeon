@@ -34,8 +34,7 @@ public class WaterOfTransmutation extends WellWater {
 	
 	@Override
 	protected Item affectItem( Item item, int pos ) {
-		ScrollOfTransmutation scrollOfTransmutation = new ScrollOfTransmutation();
-		item = scrollOfTransmutation.changeItem(item);
+		item = ScrollOfTransmutation.changeWaterItem(item);
 		
 		//incase a never-seen item pops out
 		if (item != null&& item.isIdentified()){

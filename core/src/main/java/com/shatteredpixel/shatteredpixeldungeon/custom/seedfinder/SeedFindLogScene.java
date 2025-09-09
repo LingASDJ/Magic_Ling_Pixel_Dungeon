@@ -6,7 +6,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SeedFinderScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -69,7 +68,7 @@ public class SeedFindLogScene extends PixelScene {
             @Override
             protected void onClick() {
                 if (thread!= null && thread.isAlive())thread.interrupt();
-                ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+                ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
                 System.gc();
             }
         };

@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuickBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUseItem;
+import com.watabou.gltextures.TextureCache;
 import com.watabou.input.ControllerHandler;
 import com.watabou.input.GameAction;
 import com.watabou.input.KeyBindings;
@@ -684,6 +685,17 @@ public class ToobarV extends Component {
 
         private Image base;
         private Image icon;
+
+
+        @Override
+        public void update() {
+            super.update();
+            if (SPDSettings.ClassUI()) {
+                base.texture = TextureCache.get(Assets.Interfaces.TOOLBAR);
+            } else {
+                base.texture = TextureCache.get(Assets.Interfaces.TOOLBARDRAK);
+            }
+        }
 
         public Tool( int x, int y, int width, int height ) {
             super();

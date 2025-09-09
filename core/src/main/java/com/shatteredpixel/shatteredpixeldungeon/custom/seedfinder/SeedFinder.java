@@ -37,6 +37,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ClearSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.GoldLongGun;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
@@ -79,8 +87,12 @@ public class SeedFinder {
 			for (HeapItem item : items) {
 				Item i = item.item;
 				Heap h = item.heap;
-
-				if (((i instanceof Armor && ((Armor) i).hasGoodGlyph()) ||
+				if(i instanceof DiedCrossBow || i instanceof MoonDao
+						|| i instanceof SaiPlus || i instanceof RiceSword
+						|| i instanceof RedBloodMoon || i instanceof GoldLongGun ||
+						i instanceof ClearSword || i instanceof ForestBow){
+					builder.append("<#df00ff>"+Messages.get(this,"lengds")+"<RGB> - ").append(i.title().toLowerCase());
+				} else if (((i instanceof Armor && ((Armor) i).hasGoodGlyph()) ||
 						(i instanceof Weapon && ((Weapon) i).hasGoodEnchant()) ||
 						(i instanceof Ring) || (i instanceof Wand)) && i.cursed && i.level<=0)
 					builder.append("- " + Messages.get(this, "cursed")).append(i.title().toLowerCase());
