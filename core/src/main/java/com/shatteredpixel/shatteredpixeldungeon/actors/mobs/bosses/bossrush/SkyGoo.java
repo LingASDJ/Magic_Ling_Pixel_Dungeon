@@ -22,6 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CRYSTAL_DOOR;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.DOOR;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.LOCKED_DOOR;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -362,6 +365,18 @@ public class SkyGoo extends Boss implements Callback {
 			} while (!Dungeon.level.passable[pos + ofs]);
 			Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
 		}
+		if(level.map[484] == CRYSTAL_DOOR){
+			level.set(484, DOOR);
+		}
+		if(level.map[598] == LOCKED_DOOR){
+			level.set(598, DOOR);
+		}
+		if(level.map[502] == CRYSTAL_DOOR){
+			level.set(502, DOOR);
+		}
+		GameScene.updateMap(484);
+		GameScene.updateMap(598);
+		GameScene.updateMap(502);
 
 		GameScene.bossSlain();
 	}
