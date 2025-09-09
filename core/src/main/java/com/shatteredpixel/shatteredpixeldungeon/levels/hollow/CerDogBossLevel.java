@@ -9,8 +9,10 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -698,6 +700,7 @@ public class CerDogBossLevel extends Level {
             @Override
             protected void onComplete() {
                 Statistics.winGame = true;
+                PaswordBadges.ALLCS(Challenges.activeChallenges());
                 Rankings.INSTANCE.submit(true, UnsignedInvitationLetter.class);
                 Game.switchScene( RankingsScene.class );
                 Dungeon.deleteGame( GamesInProgress.curSlot, true );
