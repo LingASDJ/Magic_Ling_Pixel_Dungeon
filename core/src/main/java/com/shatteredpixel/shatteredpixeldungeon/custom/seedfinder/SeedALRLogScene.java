@@ -6,7 +6,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SeedFinderScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -17,6 +16,8 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.ui.Component;
+
+import java.util.Objects;
 
 public class SeedALRLogScene extends PixelScene {
 
@@ -57,7 +58,7 @@ public class SeedALRLogScene extends PixelScene {
         ShatteredPixelDungeon.scene().addToFront( wndTextInput = new WndTextInput(Messages.get(this, "title"), Messages.get(this, "body"), Messages.get(this, "initial_value", SPDSettings.seedfinderFloors()), 1000, true, Messages.get(this, "clear"),null) {
             @Override
             public void onSelect(boolean positive, String text) {
-                if (positive) {
+                if (positive && !Objects.equals(text, "")) {
 
                     text = DungeonSeed.formatText(text);
                     long seed = DungeonSeed.convertFromText(text);
@@ -94,7 +95,7 @@ public class SeedALRLogScene extends PixelScene {
 
                 } else {
                     SPDSettings.customSeed("");
-                    ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+                    ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
                 }
             }
         });

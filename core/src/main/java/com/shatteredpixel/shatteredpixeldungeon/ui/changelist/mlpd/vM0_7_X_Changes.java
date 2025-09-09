@@ -132,6 +132,9 @@ public class vM0_7_X_Changes {
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CLEARPRO), ("传说武器：清道夫"),
+                ("修复归来，欢迎使用！")));
+
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：PropsFixed"),
                 ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：永久有效")));
 
@@ -148,7 +151,8 @@ public class vM0_7_X_Changes {
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 "魔绫像素地牢-修复内容：\n\n" +
                         (       "1.在寂灭灯火情况下 60以上即可不会触发低语\n" +
-                                "2.修复藏品崩溃的严重异常")));
+                                "2.修复藏品崩溃的严重异常\n" +
+                                "3.修复以种子查物品，无任何文本时的崩溃")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CATALOG), ("平衡案3.4 第一部分"),
                 ("实现了平衡案-V3.4第一部分，详情如下：\n\n" +

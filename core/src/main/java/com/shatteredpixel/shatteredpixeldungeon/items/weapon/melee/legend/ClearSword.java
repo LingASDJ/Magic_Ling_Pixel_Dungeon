@@ -23,6 +23,8 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
+
 public class ClearSword extends MeleeWeapon implements Item.LengedsItem {
     {
         image = ItemSpriteSheet.CLEARPRO;
@@ -89,64 +91,66 @@ public class ClearSword extends MeleeWeapon implements Item.LengedsItem {
     }
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        if (target == null) {
-            GLog.w(Messages.get(this, "no_target"));
-            return;
-        }
 
-        Char enemy = Actor.findChar(target);
-        if (enemy == null || enemy == hero || hero.isCharmedBy(enemy) || !Dungeon.level.heroFOV[target]) {
+        if (target == null || !Dungeon.level.heroFOV[target]) {
             GLog.w(Messages.get(this, "ability_no_target"));
             return;
         }
 
         hero.belongings.abilityWeapon = this;
-        if (!hero.canAttack(enemy)){
+        Char xenemy = Actor.findChar(target);
+        if (!hero.canAttack(xenemy)){
             GLog.w(Messages.get(this, "ability_bad_position"));
             hero.belongings.abilityWeapon = null;
             return;
         }
-        hero.belongings.abilityWeapon = null;
 
-        int magicDamage = (int) (Random.NormalIntRange(min(), max()) * Random.Float(0.75f, 1.5f));
-
-        applyMagicEffect(hero, enemy, magicDamage);
-
-        for (int n : PathFinder.CIRCLE7) {
-            Char xenemy = Actor.findChar(target + n);
-
-            if (xenemy != null &&
-                    xenemy != hero &&
-                    Dungeon.level.heroFOV[xenemy.pos] &&
-                    xenemy.alignment == Char.Alignment.ENEMY &&
-                    !hero.isCharmedBy(xenemy)) {
-
-                applyMagicEffect(hero, xenemy, magicDamage);
-            }
-        }
-
-        hero.spendAndNext(1f);
-        hero.sprite.operate(hero.pos);
-        Sample.INSTANCE.play(Assets.Sounds.HIT_MAGIC);
-        updateQuickslot();
-    }
-
-    // 抽取出的公共方法，用于施放魔法效果
-    private void applyMagicEffect(Hero hero, Char enemy, int magicDamage) {
-        MagicMissile.boltFromChar(hero.sprite.parent,
-                MagicMissile.SHADOW,
-                hero.sprite,
-                enemy.pos,
-                new Callback() {
-                    @Override
-                    public void call() {
-                        beforeAbilityUsed(hero, enemy);
-                        enemy.damage(magicDamage, ClearSword.class);
-                        Buff.prolong(enemy, Vulnerable.class, 20f);
-                        Buff.prolong(enemy, Weakness.class, 20f);
-                        hero.next();
+        try {
+            int magicDamage = (int) (1.25f * Random.NormalIntRange(min(), max()));
+            ArrayList<Char> targets = new ArrayList<>();
+            for (int i : PathFinder.CIRCLE7) {
+                int pos = target + i;
+                if (Dungeon.level.heroFOV[pos]) {
+                    Char enemy = Actor.findChar(pos);
+                    if (enemy != null
+                            && enemy != hero
+                            && enemy.alignment == Char.Alignment.ENEMY
+                            && !hero.isCharmedBy(enemy)) {
+                        targets.add(enemy);
                     }
-                });
-    }
+                }
+            }
+            if (targets.isEmpty()) {
+                GLog.w(Messages.get(this, "ability_no_target"));
+                return;
+            }
 
+            hero.sprite.zap(target);
+            MagicMissile.boltFromChar(
+                    hero.sprite.parent,
+                    MagicMissile.BLOOD_CONE,
+                    hero.sprite,
+                    xenemy.pos,
+                    new Callback() {
+                        @Override
+                        public void call() {
+                            // 在此执行原伤害逻辑
+                            Sample.INSTANCE.play(Assets.Sounds.HIT_MAGIC); // 音效移动到回调中
+                            for (Char enemy : targets) {
+                                enemy.damage(magicDamage, Char.DamageType.MAGIC);
+                                Buff.prolong(enemy, Vulnerable.class, 9f);
+                                Buff.prolong(enemy, Weakness.class, 9f);
+                                enemy.sprite.showStatus(CharSprite.NEGATIVE, Integer.toString(magicDamage));
+                            }
+                            updateQuickslot();
+                            beforeAbilityUsed(hero, xenemy);
+                        }
+                    });
+
+// 移除原有的for循环攻击逻辑
+
+        } finally {
+            hero.belongings.abilityWeapon = null;
+        }
+    }
 }

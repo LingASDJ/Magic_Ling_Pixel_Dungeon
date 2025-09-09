@@ -42,7 +42,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.Elixir;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Empty;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
@@ -190,6 +189,10 @@ public class ScrollOfTransmutation extends InventoryScroll {
 						Statistics.OnlyBloodUpgrade = true;
 						GLog.p( Messages.get(ScrollOfTransmutation.class, "bloodthirsty") );
 						Dungeon.level.drop(new ScrollOfUpgrade(),hero.pos);
+						ScrollOfTransmutation s = hero.belongings.getItem(ScrollOfTransmutation.class);
+						if (s != null) {
+							s.detach( hero.belongings.backpack );
+						}
 						item.detach( hero.belongings.backpack );
 						super.hide();
 						SPDSettings.blood(true);
@@ -201,10 +204,60 @@ public class ScrollOfTransmutation extends InventoryScroll {
 				public void hide() {
 				}
 			});
-			return new Empty();
+			return null;
 		} else if(item instanceof BloodthirstyThorn && item.level() < 10){
 			return null;
 		} else if(item instanceof BloodthirstyThorn && item.level() >= 10 && Statistics.OnlyBloodUpgrade){
+			return null;
+		}
+
+		if (item instanceof MagesStaff) {
+			return changeStaff((MagesStaff) item);
+		}else if (item instanceof TippedDart){
+			return changeTippedDart( (TippedDart)item );
+		} else if (item instanceof MeleeWeapon || item instanceof MissileWeapon) {
+			return changeWeapon( (Weapon)item );
+		} else if (item instanceof Scroll) {
+			return changeScroll( (Scroll)item );
+		} else if (item instanceof Potion) {
+			return changePotion( (Potion)item );
+		} else if (item instanceof Ring) {
+			return changeRing( (Ring)item );
+		} else if (item instanceof Wand) {
+			return changeWand( (Wand)item );
+		} else if (item instanceof Plant.Seed) {
+			return changeSeed((Plant.Seed) item);
+		} else if (item instanceof Trinket) {
+			return changeTrinket((Trinket) item);
+		} else if (item instanceof Runestone) {
+			return changeStone((Runestone) item);
+		} else if (item instanceof Artifact) {
+			Artifact a = changeArtifact( (Artifact)item );
+			if (a == null){
+				//if no artifacts are left, generate a random ring with shared ID/curse state
+				//artifact and ring levels are not exactly equivalent, give the ring up to +2
+				Item result = Generator.randomUsingDefaults(Generator.Category.RING);
+				result.levelKnown = item.levelKnown;
+				result.cursed = item.cursed;
+				result.cursedKnown = item.cursedKnown;
+				if (item.visiblyUpgraded() == 10){
+					result.level(2);
+				} else if (item.visiblyUpgraded() >= 5){
+					result.level(1);
+				} else {
+					result.level(0);
+				}
+				return result;
+			} else {
+				return a;
+			}
+		} else {
+			return null;
+		}
+	}
+
+	public static Item changeWaterItem(Item item){
+		if(item instanceof LockSword || item instanceof BloodthirstyThorn){
 			return null;
 		}
 
