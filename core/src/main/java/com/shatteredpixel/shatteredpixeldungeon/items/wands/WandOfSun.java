@@ -46,6 +46,9 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
     public void onZap(Ballistica bolt) {}
 
     @Override
+    public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {}
+
+    @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
 
@@ -64,16 +67,6 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
         }
 
          */
-    }
-
-    @Override
-    public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
-        for(Actor actor : Actor.all()){
-            if(actor instanceof MiniSun){
-                MiniSun s = (MiniSun) actor;
-                s.duration += 1;
-            }
-        }
     }
 
     @Override
@@ -105,18 +98,23 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
         }
 
         if (!cursed) {
-            for (Actor actor : Actor.all()) {
-                if (actor instanceof MiniSun) {
+            int currentSunCount = 0;
+            boolean targetIsMiniSun = false;
+
+            for ( Actor actor : Actor.all() ){
+                if ( actor instanceof MiniSun ) {
                     MiniSun s = (MiniSun) actor;
                     if (s.pos == target) {
-                        s.die();
-                        GLog.i(Messages.get(WandOfSun.class, "hasSun"));
-                        return false;
+                        targetIsMiniSun = true;
+                        s.duration += 2;
                     }
+                    currentSunCount += 1;
                 }
             }
 
-            if (!Dungeon.level.solid[target] && curCharges > 0) {
+            if( targetIsMiniSun ) {
+                return super.tryToZap( owner, target );
+            }else if ( !Dungeon.level.solid[target] && curCharges > 0 && ( currentSunCount < ( 1 + Math.floor( level() / 5 ) ) ) ) {
                 this.owner = owner;
                 MiniSun sun = new MiniSun(target);
                 sun.sprite.place(target);
@@ -128,6 +126,9 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
                 return true;
             } else if (Dungeon.level.solid[target]) {
                 GLog.i(Messages.get(WandOfSun.class, "solid"));
+            }else {
+                GLog.i( Messages.get( WandOfSun.class, "no_more_suns" ) );
+                return false;
             }
         }else{
             return super.tryToZap(owner,target);

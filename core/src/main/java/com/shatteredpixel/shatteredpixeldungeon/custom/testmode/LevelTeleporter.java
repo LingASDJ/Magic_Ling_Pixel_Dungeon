@@ -351,7 +351,7 @@ public class LevelTeleporter extends TestItem {
                         setSelectedLevel(j);
                     }
                 };
-                db.enable(Statistics.bossRushMode || j <= 41);
+                db.enable(Statistics.bossRushMode || ( j <= 41 && !( j > Statistics.deepestFloor ) ) );
                 db.setRect(xpos + column * each, ypos + row * each, BTN_SIZE, BTN_SIZE);
                 PixelScene.align(db);
                 content.add(db);
