@@ -11,9 +11,13 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Bundle;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
 public class VenomGas extends Blob {
 
     public int wandlvl = 0;
+    private LinkedHashMap<Char,Integer> targets = new LinkedHashMap<>();
 
     @Override
     protected void evolve() {
@@ -29,7 +33,13 @@ public class VenomGas extends Blob {
                 cell = i + j*Dungeon.level.width();
                 if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
                     if (!ch.isImmune(this.getClass())) {
-                        ch.damage(damage, this, Char.DamageType.Element);
+                        if( !targets.containsKey( ch ) )
+                            targets.put( ch, 1 );
+                        else
+                            targets.put( ch, targets.get( ch ) + 1 );
+
+                        ch.damage( damage + targets.get( ch ), this, Char.DamageType.Element);
+
                         if(ch.venodamage >= (damage) *8) {
                             if(ch.buff(Blindness.class) == null) {
                                 Buff.affect(ch, Blindness.class, 1.5f);

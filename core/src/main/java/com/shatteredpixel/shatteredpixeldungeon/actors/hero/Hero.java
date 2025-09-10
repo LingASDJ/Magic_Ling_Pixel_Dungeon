@@ -3052,9 +3052,10 @@ public class Hero extends Char {
 		}
 
 		MIME.GOLD_TWO getFalseBody = hero.belongings.getItem(MIME.GOLD_TWO.class);
-		if (getFalseBody != null && HT / 5 > HP) {
+		if ( getFalseBody != null && HT / 5 > HP && hero.buff(MIME.GoldTwoCooldown.class) == null ) {
 			//给予一个看不见的隐形Buff,继承至Invisibility
-			Buff.affect(this, InvisibilityRing.class, InvisibilityRing.DURATION);
+			Buff.affect(this, InvisibilityRing.class, 40f );
+			Buff.affect(this, MIME.GoldTwoCooldown.class, 300f );
 		}
 
 

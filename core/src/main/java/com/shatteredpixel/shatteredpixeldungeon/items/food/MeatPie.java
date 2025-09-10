@@ -52,11 +52,7 @@ public class MeatPie extends Food {
 		if (Dungeon.isChallenged(Challenges.EXSG)){
 			Buff.prolong( hero, Haste.class, 8f);
 
-			if(hero.STR<12){
-				hero.STR++;
-				hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
-				GLog.p(Messages.get(this, "eat_msg_2"));
-			} else if(Random.Float() > (0.25f + (hero.STR/5f)/10f)){
+			if(Random.Float() > (0.25f + (hero.STR/5f)/10f)){
 				if(Statistics.deepestFloor>=20 && Statistics.deepestFloor<=26 && Statistics.GetFoodLing < 1 ){
 					Statistics.GetFoodLing++;
 					hero.STR++;
