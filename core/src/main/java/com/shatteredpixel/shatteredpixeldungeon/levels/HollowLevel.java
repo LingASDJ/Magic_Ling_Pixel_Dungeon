@@ -3,12 +3,13 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Vampire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.SliceGirl;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Gelatin;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar_Block;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.WhiteSugar_B;
@@ -120,7 +121,7 @@ public class HollowLevel extends RegularLevel {
     }
 
     public static Item convert(){
-        Item w = new Food();
+        Item w;
         switch (Random.Int(0,8)){
             case 1:
                 w = Generator.randomUsingDefaults( Generator.Category.WAND );
@@ -187,6 +188,12 @@ public class HollowLevel extends RegularLevel {
                 n1.pos = randomRespawnCell(n1);
                 mobs.add(n1);
             }
+        }
+
+        if((Badges.isUnlocked(Badges.Badge.KILL_DOG))) {
+            SliceGirl sliceGirl = new SliceGirl();
+            sliceGirl.pos = exit();
+            mobs.add(sliceGirl);
         }
 
         super.createMobs();

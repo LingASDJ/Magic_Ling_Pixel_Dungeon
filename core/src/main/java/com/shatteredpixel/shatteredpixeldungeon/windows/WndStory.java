@@ -84,6 +84,7 @@ public class WndStory extends Window {
 	public static final int ID_HOLLOW		= 40;
 
 	public static final int ID_HOLLOW_POLT		= 41;
+	public static final int ID_HOLLOW_ALT_POLT	= 42;
 
 	//DLC BOSSRUSH
 	public static final int ID_GAME = 12;
@@ -131,8 +132,8 @@ public class WndStory extends Window {
 		CHAPTERS.put( ID_COLDCHESTBOSS, "coldchest" );
 
 		CHAPTERS.put( ID_HOLLOW, "hollow" );
-
 		CHAPTERS.put( ID_HOLLOW_POLT, "hollowpolt" );
+		CHAPTERS.put( ID_HOLLOW_ALT_POLT, "hollowpolt_alt" );
 
 		CHAPTERS.put( ID_GAME, "bossrushstart" );
 		CHAPTERS.put( ID_NOMOBS, "nomobs" );

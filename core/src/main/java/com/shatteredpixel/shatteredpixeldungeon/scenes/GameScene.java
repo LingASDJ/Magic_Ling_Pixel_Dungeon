@@ -1550,7 +1550,11 @@ public class GameScene extends PixelScene {
 							break;
 						case 27:
 							if(Statistics.Hollow_Holiday){
-								WndStory.showChapter(WndStory.ID_HOLLOW_POLT);
+								if((Badges.isUnlocked(Badges.Badge.KILL_DOG))){
+									WndStory.showChapter(WndStory.ID_HOLLOW_ALT_POLT);
+								} else {
+									WndStory.showChapter(WndStory.ID_HOLLOW_POLT);
+								}
 							}
 							break;
 					}
