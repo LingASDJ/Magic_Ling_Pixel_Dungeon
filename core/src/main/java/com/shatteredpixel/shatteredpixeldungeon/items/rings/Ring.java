@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.ItemStatusHandler;
@@ -287,8 +288,11 @@ public class Ring extends KindofMisc {
 		if (Random.Float() < 0.3f) {
 			cursed = true;
 		}
+
+		Ring item = this;
+		GameAPI.CodeCallback_OnItemCreation( item );
 		
-		return this;
+		return item;
 	}
 	
 	public static HashSet<Class<? extends Ring>> getKnown() {

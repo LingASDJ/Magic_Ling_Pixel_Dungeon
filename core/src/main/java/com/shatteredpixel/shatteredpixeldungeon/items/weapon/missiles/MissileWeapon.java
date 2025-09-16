@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
@@ -289,7 +290,11 @@ abstract public class MissileWeapon extends Weapon {
 
 	@Override
 	public Item random() {
-		if (!stackable) return this;
+		MissileWeapon item = this;
+		if (!stackable) {
+			GameAPI.CodeCallback_OnItemCreation( item );
+			return item;
+		}
 
 		//2: 66.67% (2/3)
 		//3: 26.67% (4/15)
@@ -301,7 +306,9 @@ abstract public class MissileWeapon extends Weapon {
 				quantity++;
 			}
 		}
-		return this;
+
+		GameAPI.CodeCallback_OnItemCreation( item );
+		return item;
 	}
 
 	public String status() {

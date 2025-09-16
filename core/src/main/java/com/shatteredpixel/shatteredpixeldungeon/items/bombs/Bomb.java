@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
@@ -392,11 +393,14 @@ public class Bomb extends Item {
 	
 	@Override
 	public Item random() {
+		Bomb item = this;
 		switch(Random.Int( 4 )){
 			case 0:
-				return new DoubleBomb();
+				GameAPI.CodeCallback_OnItemCreation( new DoubleBomb() );
+				return item;
 			default:
-				return this;
+				GameAPI.CodeCallback_OnItemCreation( item );
+				return item;
 		}
 	}
 
