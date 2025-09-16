@@ -20,8 +20,10 @@ public class GameAPI {
     }
 
     /*
-        Usage Example:
-        GameAPI.AddCallbackOnWeaponCreation((Object weapon) -> ((Weapon)weapon).cursed = true);
+        简单用例:
+        GameAPI.Function curseWeaponFunction = (Object weapon) -> ((Weapon) weapon).cursed = true;
+        GameAPI.AddCallbackOnWeaponCreation(curseWeaponFunction);
+        GameAPI.RemoveCallbackOnWeaponCreation(curseWeaponFunction);
     */
 
     private static Map<String , ArrayList<Function>> functions = new HashMap<>();
@@ -47,9 +49,17 @@ public class GameAPI {
             functions.get( "Weapon" ).add( function );
     }
 
+    public static void RemoveCallbackOnWeaponCreation( Function function ){
+        functions.get( "Weapon" ).remove( function );
+    }
+
     public static void AddCallbackOnArmorCreation( Function function ){
         if( !functions.get( "Armor" ).contains( function ) )
             functions.get( "Armor" ).add( function );
+    }
+
+    public static void RemoveCallbackOnArmorCreation( Function function ){
+        functions.get( "Armor" ).remove( function );
     }
 
     public static void AddCallbackOnArtifactCreation( Function function ){
@@ -57,9 +67,17 @@ public class GameAPI {
             functions.get( "Artifact" ).add( function );
     }
 
+    public static void RemoveCallbackOnArtifactCreation( Function function ){
+        functions.get( "Artifact" ).remove( function );
+    }
+
     public static void AddCallbackOnBombCreation( Function function ){
         if( !functions.get( "Bomb" ).contains( function ) )
             functions.get( "Bomb" ).add( function );
+    }
+
+    public static void RemoveCallbackOnBombCreation( Function function ){
+        functions.get( "Bomb" ).remove( function );
     }
 
     public static void AddCallbackOnGoldCreation( Function function ){
@@ -67,9 +85,17 @@ public class GameAPI {
             functions.get( "Gold" ).add( function );
     }
 
+    public static void RemoveCallbackOnGoldCreation( Function function ){
+        functions.get( "Gold" ).remove( function );
+    }
+
     public static void AddCallbackOnRingCreation( Function function ){
         if( !functions.get( "Ring" ).contains( function ) )
             functions.get( "Ring" ).add( function );
+    }
+
+    public static void RemoveCallbackOnRingCreation( Function function ){
+        functions.get( "Ring" ).remove( function );
     }
 
     public static void AddCallbackOnWandCreation( Function function ){
@@ -77,9 +103,17 @@ public class GameAPI {
             functions.get( "Wand" ).add( function );
     }
 
+    public static void RemoveCallbackOnWandCreation( Function function ){
+        functions.get( "Wand" ).remove( function );
+    }
+
     public static void AddCallbackOnMissileWeaponCreation( Function function ){
         if( !functions.get( "MissileWeapon" ).contains( function ) )
             functions.get( "MissileWeapon" ).add( function );
+    }
+
+    public static void RemoveCallbackOnMissileWeaponCreation( Function function ){
+        functions.get( "MissileWeapon" ).remove( function );
     }
 
     public static void AddCallbackOnItemCreation( Function function ){
@@ -87,9 +121,17 @@ public class GameAPI {
             functions.get( "Item" ).add( function );
     }
 
+    public static void RemoveCallbackOnItemCreation( Function function ){
+        functions.get( "Item" ).remove( function );
+    }
+
     public static void AddCallbackOnLevelPreCreate( Function function ){
         if( !functions.get( "LevelPreCreate" ).contains( function ) )
             functions.get( "LevelPreCreate" ).add( function );
+    }
+
+    public static void RemoveCallbackOnLevelPreCreate( Function function ){
+        functions.get( "LevelPreCreate" ).remove( function );
     }
 
     public static void AddCallbackOnLevelFeelingFinished( Function function ){
@@ -97,14 +139,26 @@ public class GameAPI {
             functions.get( "LevelFeelingFinished" ).add( function );
     }
 
+    public static void RemoveCallbackOnLevelFeelingFinished( Function function ){
+        functions.get( "LevelFeelingFinished" ).remove( function );
+    }
+
     public static void AddCallbackOnLevelCreation( Function function ){
         if( !functions.get( "LevelCreation" ).contains( function ) )
             functions.get( "LevelCreation" ).add( function );
     }
 
+    public static void RemoveCallbackOnLevelCreation( Function function ){
+        functions.get( "LevelCreation" ).remove( function );
+    }
+
     public static void AddCallbackOnActorCreation( Function function ){
         if( !functions.get( "Actor" ).contains( function ) )
             functions.get( "Actor" ).add( function );
+    }
+
+    public static void RemoveCallbackOnActorCreation( Function function ){
+        functions.get( "Actor" ).remove( function );
     }
 
     public static void CodeCallback_OnItemCreation( Object item ){
