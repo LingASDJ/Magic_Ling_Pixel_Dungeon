@@ -3,11 +3,9 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Vampire;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.SliceGirl;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Gelatin;
@@ -190,11 +188,11 @@ public class HollowLevel extends RegularLevel {
             }
         }
 
-        if((Badges.isUnlocked(Badges.Badge.KILL_DOG))) {
-            SliceGirl sliceGirl = new SliceGirl();
-            sliceGirl.pos = exit();
-            mobs.add(sliceGirl);
-        }
+//        if((Badges.isUnlocked(Badges.Badge.KILL_DOG))) {
+//            SliceGirl sliceGirl = new SliceGirl();
+//            sliceGirl.pos = exit();
+//            mobs.add(sliceGirl);
+//        }
 
         super.createMobs();
     }

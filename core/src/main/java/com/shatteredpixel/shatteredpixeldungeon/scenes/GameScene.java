@@ -1550,7 +1550,8 @@ public class GameScene extends PixelScene {
 							break;
 						case 27:
 							if(Statistics.Hollow_Holiday){
-								if((Badges.isUnlocked(Badges.Badge.KILL_DOG))){
+								//TODO Dialog Progress...
+								if((Badges.isUnlocked(Badges.Badge.KILL_DOG)) && 1 == 0){
 									WndStory.showChapter(WndStory.ID_HOLLOW_ALT_POLT);
 								} else {
 									WndStory.showChapter(WndStory.ID_HOLLOW_POLT);
@@ -2092,7 +2093,10 @@ public class GameScene extends PixelScene {
 					}
 				}
 
-				Statistics.upgradeGold = Random.NormalIntRange(8,24);
+				if(Dungeon.bossLevel()){
+					Statistics.upgradeGold = Random.NormalIntRange(5,16);
+				}
+
 
 				if(Statistics.RandomQuest == 3){
 					switch (Dungeon.depth){

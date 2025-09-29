@@ -299,7 +299,7 @@ public class SakaFishBoss extends Boss {
 
             super.die( cause );
             Dungeon.level.unseal();
-
+            ((AncientMysteryCityBossLevel)Dungeon.level).progress();
             if(Statistics.qualifiedForBossChallengeBadge) {
                 PaswordBadges.GOOD_BLUE();
             }
@@ -391,6 +391,12 @@ public class SakaFishBoss extends Boss {
         lastEnemyPos = bundle.getInt(LAST_ENEMY_POS);
         leapPos = bundle.getInt(LEAP_POS);
         leapCooldown = bundle.getFloat(LEAP_CD);
+    }
+
+    @Override
+    public boolean isAlive() {
+        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
+        return super.isAlive() || !(level == AncientMysteryCityBossLevel.State.FALL_BOSS);
     }
 
     public void dropRocks( Char target ) {

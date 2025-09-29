@@ -342,13 +342,9 @@ public abstract class Level implements Bundlable {
 				addItemToSpawn( new Stylus() );
 			}
 
-			if ( Dungeon.trinketCataNeeded() ){
+			if ( Dungeon.trinketCataNeeded() && !Statistics.RandMode ){
 				Dungeon.LimitedDrops.TRINKET_CATA.drop();
 				addItemToSpawn( new TrinketCatalyst());
-				if(Statistics.RandMode){
-					addItemToSpawn( new TrinketCatalyst());
-					addItemToSpawn( new TrinketCatalyst());
-				}
 			}
 			//one scroll of transmutation is guaranteed to spawn somewhere on chapter 2-4
 			int enchChapter = (int)((Dungeon.seed / 10) % 3) + 1;
