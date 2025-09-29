@@ -202,7 +202,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.MagicBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Empty;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LanFireGo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
@@ -3002,14 +3001,6 @@ public class Hero extends Char {
 		} else {
 			Buff.detach(hero, BlessLingJing.class);
 			Buff.detach(hero, BlessLingJing.LanterBarrier.class);
-		}
-
-
-		MagicBook qb = hero.belongings.getItem(MagicBook.class);
-		if(qb != null && !Dungeon.whiteDaymode && RegularLevel.birthday == RegularLevel.DevBirthday.CHAPTER_BIRTHDAY) {
-			Buff.affect(hero, BlessQinyue.class).set((100), 1);
-		} else {
-			Buff.detach(hero, BlessQinyue.class);
 		}
 
 		DriedRose rose = hero.belongings.getItem(DriedRose.class);

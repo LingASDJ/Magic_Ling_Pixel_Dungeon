@@ -22,7 +22,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ATRI;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BlueCJ;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Bzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonCat;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.QinYueWolf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Zako;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -212,10 +211,6 @@ public class HotelLevel extends Level {
             ATRI n3 = new ATRI();
             n3.pos = 87;
             mobs.add(n3);
-
-            QinYueWolf n5 = new QinYueWolf();
-            n5.pos = 255;
-            mobs.add(n5);
 
             BlueCJ n7 = new BlueCJ();
             n7.pos = 31;
