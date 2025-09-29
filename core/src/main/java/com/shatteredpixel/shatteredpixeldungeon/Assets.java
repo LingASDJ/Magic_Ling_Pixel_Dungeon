@@ -528,7 +528,7 @@ public class Assets {
 		public static final String GDZ= "splashes/gdz_portraits.png";
 		public static final String YSGDZ= "splashes/gdz_yeas.png";
 
-		public static final String HSGDZ= "splashes/gdz_yeas2.png";
+		public static final String GQGDZ= "splashes/gdz_plus.png";
 
 
 		public static final String PIANO = "splashes/piano_portraits.png";
@@ -643,6 +643,8 @@ public class Assets {
 		public static final String XS_GUDAZI	= "sprites/npc/gdz1.png";
 
 		public static final String HF_GUDAZI	= "sprites/npc/gdz2.png";
+
+		public static final String GQ_GUDAZI	= "sprites/npc/gdzgq.png";
 
 		public static final String GUDAZI	= "sprites/npc/gdz.png";
 		public static final String DEEP	= "sprites/npc/deepsea.png";

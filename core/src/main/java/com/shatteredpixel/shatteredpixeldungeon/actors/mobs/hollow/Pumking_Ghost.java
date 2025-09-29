@@ -46,8 +46,8 @@ public class Pumking_Ghost extends Mob {
     }
 
     @Override
-    public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
-        boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti );
+    public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti,DamageType type ) {
+        boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti,type );
         if(enemy !=null && enemy == hero) {
             for (Buff buff : hero.buffs()) {
                 if (buff instanceof ScaryBuff && invisible<6) {

@@ -89,6 +89,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ClearSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.GoldLongGun;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -477,7 +485,16 @@ public class ZeroCityLevel extends Level {
                 gods1 = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
                 gods1.cursed = false;
                 gods1.upgrade();
-                drop(gods1,324).type = Heap.Type.FOR_ICE;
+                Item i  = gods1;
+                if(i instanceof DiedCrossBow || i instanceof MoonDao
+                        || i instanceof SaiPlus || i instanceof RiceSword
+                        || i instanceof RedBloodMoon || i instanceof GoldLongGun ||
+                        i instanceof ClearSword || i instanceof ForestBow){
+                    drop(gods1,324).type = Heap.Type.FOR_SALE;
+                } else {
+                    drop(gods1,324).type = Heap.Type.FOR_ICE;
+                }
+
 
                 Wand gods2;
                 gods2 = (Wand) Generator.random(Generator.Category.WAND);

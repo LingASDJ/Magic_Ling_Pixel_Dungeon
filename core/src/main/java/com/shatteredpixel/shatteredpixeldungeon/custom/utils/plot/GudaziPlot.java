@@ -98,7 +98,9 @@ public class GudaziPlot extends Plot {
         diagulewindow.hideAll();
         Dungeon.hero.interrupt();
 
-        if(chinaHoliday == RegularLevel.ChinaHoliday.CJ){
+        if(chinaHoliday == RegularLevel.ChinaHoliday.GQJ){
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.GQGDZ));
+        } else if(chinaHoliday == RegularLevel.ChinaHoliday.CJ){
             diagulewindow.setMainAvatar(new Image(Assets.Splashes.YSGDZ));
         } else if(holiday == RegularLevel.WestHoliday.XMAS){
             diagulewindow.setMainAvatar(new Image(Assets.Splashes.XMS_GDZ));
@@ -225,7 +227,9 @@ public class GudaziPlot extends Plot {
         private void process_to_1() {
             diagulewindow.hideAll();
             Dungeon.hero.interrupt();
-            if(holiday == RegularLevel.WestHoliday.XMAS){
+            if(chinaHoliday == RegularLevel.ChinaHoliday.GQJ){
+                diagulewindow.setMainAvatar(new Image(Assets.Splashes.GQGDZ));
+            } else if(holiday == RegularLevel.WestHoliday.XMAS){
                 diagulewindow.setMainAvatar(new Image(Assets.Splashes.XMS_GDZ));
             } else {
                 diagulewindow.setMainAvatar(new Image(Assets.Splashes.GDZ));
