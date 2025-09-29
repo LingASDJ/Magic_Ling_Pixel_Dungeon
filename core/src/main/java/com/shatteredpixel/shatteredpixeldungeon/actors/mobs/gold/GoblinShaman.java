@@ -73,7 +73,7 @@ public abstract class GoblinShaman extends GoldMob {
     }
 
     @Override
-    public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti) {
+    public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti, DamageType type) {
         ArrayList<Char> charsToEmpower = new ArrayList<>();
         for (Mob ch: Dungeon.level.mobs) {
             if (distance(ch) < 5 && ch.alignment == alignment && !(this instanceof ShamanRegen && ch.HP>=ch.HT)) {
@@ -100,7 +100,7 @@ public abstract class GoblinShaman extends GoldMob {
                 }
             }
         }
-        return true;
+        return super.attack(enemy, dmgMulti, dmgBonus, accMulti, type);
     }
 
     public static class ShamanStrength extends GoblinShaman {

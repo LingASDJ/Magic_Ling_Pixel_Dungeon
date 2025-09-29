@@ -13,8 +13,9 @@ public class GudaziSprite extends MobSprite {
     private Animation what_up;
     public GudaziSprite() {
         super();
-
-        if(chinaHoliday == RegularLevel.ChinaHoliday.CJ) {
+        if(chinaHoliday == RegularLevel.ChinaHoliday.GQJ) {
+            texture( Assets.Sprites.GQ_GUDAZI );
+        } else if(chinaHoliday == RegularLevel.ChinaHoliday.CJ) {
 
             if(Statistics.gudaZiRandomSkin == 2){
                 texture( Assets.Sprites.XS_GUDAZI );

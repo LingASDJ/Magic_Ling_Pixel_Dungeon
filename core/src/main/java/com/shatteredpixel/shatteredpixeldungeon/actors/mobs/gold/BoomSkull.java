@@ -35,9 +35,9 @@ public class BoomSkull extends GoldMob {
     }
 
     @Override
-    public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti) {
+    public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti,DamageType type) {
         die(Hero.class);
-        return super.attack(enemy, dmgMulti, dmgBonus, accMulti);
+        return super.attack(enemy, dmgMulti, dmgBonus, accMulti, type);
     }
 
     @Override
