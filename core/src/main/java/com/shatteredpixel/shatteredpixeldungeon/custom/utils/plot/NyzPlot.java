@@ -98,7 +98,7 @@ public class NyzPlot extends Plot {
         diagulewindow.setLeftName(Messages.get(Nyz.class, "name"));
         if(Dungeon.isChallenged(CS)) {
             diagulewindow.changeText(Messages.get(Nyz.class, "xhat_1",hero.name()));
-        } else if(RegularLevel.holiday == RegularLevel.Holiday.CJ) {
+        } else if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ) {
             diagulewindow.changeText(Messages.get(Nyz.class, "dhat_1",hero.name()));
         } else {
             diagulewindow.changeText(Messages.get(Nyz.class, "chat_1",hero.name()));
@@ -108,7 +108,7 @@ public class NyzPlot extends Plot {
     private void process_to_2() {
         if(Dungeon.isChallenged(CS)) {
             diagulewindow.changeText(Messages.get(Nyz.class, "xhat_2",hero.name()));
-        } else if(RegularLevel.holiday == RegularLevel.Holiday.CJ) {
+        } else if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ) {
             diagulewindow.changeText(Messages.get(Nyz.class, "dhat_2",hero.name()));
         } else {
             diagulewindow.changeText(Messages.get(Nyz.class, "chat_2",hero.name()));
@@ -118,7 +118,7 @@ public class NyzPlot extends Plot {
     private void process_to_3() {
         if(Dungeon.isChallenged(CS)) {
             diagulewindow.changeText(Messages.get(Nyz.class, "xhat_3",hero.name()));
-        } else if(RegularLevel.holiday == RegularLevel.Holiday.CJ) {
+        } else if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ) {
             diagulewindow.changeText(Messages.get(Nyz.class, "dhat_3",hero.name()));
         } else {
             diagulewindow.changeText(Messages.get(Nyz.class, "chat_3",hero.name()));

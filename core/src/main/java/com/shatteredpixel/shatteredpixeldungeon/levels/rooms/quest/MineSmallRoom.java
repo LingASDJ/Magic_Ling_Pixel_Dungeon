@@ -57,7 +57,7 @@ public class MineSmallRoom extends CaveRoom {
 	public void paint(Level level) {
 		super.paint(level);
 
-		if(RegularLevel.holiday == RegularLevel.Holiday.DWJ){
+		if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.DWJ){
 			for (int i = 0; i < width()*height()/3; i ++){
 				Point r = random(1);
 				if (level.map[level.pointToCell(r)] != Terrain.BARRICADE) {
@@ -72,8 +72,6 @@ public class MineSmallRoom extends CaveRoom {
 				}
 			}
 		} else if (Blacksmith.Quest.Type() == Blacksmith.Quest.GNOLL) {
-
-			//connections to non-secret rooms have a 9/10 chance to become empty, otherwise wall
 			for (Room n : connected.keySet()){
 				if (!(n instanceof SecretRoom) && connected.get(n).type == Door.Type.REGULAR){
 					if (Random.Int(10) == 0){

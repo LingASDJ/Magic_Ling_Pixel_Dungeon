@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
@@ -171,11 +170,6 @@ public enum HeroClass {
 	public void initHero( Hero hero ) {
 		if (!Dungeon.isDLC(Conducts.Conduct.SEED)) {
 
-			if (RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY) {
-				new CrystalLing().quantity(1).identify().collect();
-				Buff.affect(hero, BlessLing.class).set((100), 1);
-			}
-
 			if (Dungeon.isChallenged(Challenges.AQUAPHOBIA)) {
 				new WaterSoul().quantity(4).identify().collect();
 			}
@@ -274,6 +268,10 @@ public enum HeroClass {
 			new PropBag().quantity(1).identify().collect();
 			Prop.randomPropA().collect();
 			Prop.randomPropB().collect();
+		}
+
+		if(RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY){
+			Prop.randomPropA().collect();
 		}
 
 		switch (this) {

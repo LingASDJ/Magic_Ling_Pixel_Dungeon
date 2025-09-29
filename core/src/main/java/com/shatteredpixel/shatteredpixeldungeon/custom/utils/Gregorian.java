@@ -1,7 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.birthday;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.chinaHoliday;
 
 import com.nlf.calendar.Lunar;
 import com.nlf.calendar.Solar;
@@ -9,155 +9,231 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 
 import java.util.Calendar;
-import java.util.Locale;
 
+/**
+ * 农历节日工具类，基于6Tail的农历Java库实现
+ * 功能：计算中国传统节日，使地牢能够自动根据农历日期调整节日状态
+ *
+ * 已实现的节日：
+ * - 端午节
+ * - 中秋节
+ * - 春节
+ * - 元宵节
+ * - 开发者生日
+ * - 万圣节等
+ *
+ * 使用前需在core级gradle中导入依赖：
+ * implementation 'cn.6tail:lunar:1.7.4'
+ *
+ * 示例用法：在RegularLevel.java中调用 Gregorian.checkLunarDates();
+ *
+ * @see <a href="https://mvnrepository.com/artifact/cn.6tail/lunar">Lunar Maven</a>
+ * @see <a href="https://github.com/6tail/lunar-java">Lunar Github</a>
+ * @since 2024.1.9 加入NTP验证系统时间
+ */
 public class Gregorian {
+    // 事件结束时间戳（毫秒）
     private static long eventEndTime = 0;
-    /**
-     * 这个代码是基于6Tail的农历Java库<br>
-     * 皆在计算中国的传统节日，<br>
-     * 使地牢自动计算农历日期成为可能<br>
-     * 目前已经实现端午节 中秋节 作者自身的生日等<br>
-     * <P></P>
-     * 要在地牢中使用该代码，<br>
-     * 你需要在core级gradle导入指定的库<br>
-     * 然后，使用这个库<br>
-     * 最后调用在你需要的位置即可<br>
-     * <P></P>
-     * 实列参见RegularLevel.java：<br>
-     *  Gregorian.LunarCheckDate();<br>
-     *   <br>
-     *  Gradle Config:<br>
-     *  build.gradle (Module:core) <br>
-     *  implementation 'cn.6tail:lunar:1.7.4'<br>
-     *  <P></P>
-     *  <a href="https://mvnrepository.com/artifact/cn.6tail/lunar">Lunar Maven</a><br>
-     *  <a href="https://github.com/6tail/lunar-java/releases">Lunar Release</a><br>
-     *  <a href="https://github.com/6tail/lunar-java">Lunar Github</a>
-     *  2024.1.9 加入NTP验证系统时间
-     * */
+
+    private static final int MID_AUTUMN_PRE_DAYS = 10;    // 中秋节前天数
+    private static final int MID_AUTUMN_POST_DAYS = 7;   // 中秋节后天数
+    private static final int DEV_BIRTHDAY_START = 22;     // 开发者生日开始日
+    private static final int DEV_BIRTHDAY_END = 28;       // 开发者生日结束日
+    private static final int DRAGON_BOAT_POST_DAYS = 7;    // 端午节后天数
+    private static final int SPRING_FESTIVAL_POST_DAYS = 13; // 春节后天数
+    private static final int LANTERN_FESTIVAL_POST_DAYS = 7; // 元宵节后天数
+
     public static void LunarCheckDate() {
-
         Calendar calendar = Calendar.getInstance();
-        Solar date = Solar.fromDate(calendar.getTime());
-        Lunar lunar = date.getLunar();
-
-        int gregorianMonth = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH 的范围是 0-11，所以需要加 1
+        Solar solarDate = Solar.fromDate(calendar.getTime());
+        Lunar lunarDate = solarDate.getLunar();
+        int gregorianMonth = calendar.get(Calendar.MONTH) + 1; // 转换为1-12月
         int gregorianDay = calendar.get(Calendar.DAY_OF_MONTH);
+        eventEndTime = 0;
 
-        boolean isZQJ = lunar.getMonth() == 8 && (lunar.getDay() >= 15 - 10 && lunar.getDay() <= 15 + 12);
+        checkLanternFestival(lunarDate);
+        checkSpringFestival(lunarDate);
+        checkMidAutumnFestival(lunarDate);
+        checkDeveloperBirthday(lunarDate);
+        checkDragonBoatFestival(lunarDate);
 
-        boolean isDevBirthday = lunar.getMonth() == 8 && lunar.getDay() >= 22 && lunar.getDay() <= 25;
+        checkChinaBirthday(gregorianMonth, gregorianDay);
+    }
 
-        boolean isDWJ = lunar.getMonth() == 5 && (lunar.getDay() >= 0 && lunar.getDay() <= 5 + 7);
-
-        boolean isHBJ = false;
-        if (gregorianMonth == 7) {
-            isHBJ = true;
-        } else if (gregorianMonth == 8) {
-            isHBJ = gregorianDay <= 15;
+    /**
+     * 检查是否为元宵节期间（农历1月15日至15+7天）
+     */
+    private static void checkLanternFestival(Lunar lunar) {
+        if (lunar.getMonth() == 1 &&
+                lunar.getDay() >= 15 &&
+                lunar.getDay() <= 15 + LANTERN_FESTIVAL_POST_DAYS) {
+            chinaHoliday = RegularLevel.ChinaHoliday.YX;
         }
+    }
 
-        boolean isSF = lunar.getMonth() == 1 && (lunar.getDay() >= 1 && lunar.getDay() <= 1 + 13);
-
-        boolean isYXJ= lunar.getMonth() == 1 && (lunar.getDay() >= 15 && lunar.getDay() <= 15 + 7);
-
-        boolean isZQJ2025 = lunar.getMonth() == 4 && lunar.getDay() >= 6 && lunar.getDay() <= 24;
-
-
-        if(isYXJ){
-            holiday = RegularLevel.Holiday.YX;
+    /**
+     * 检查是否为春节期间（农历1月1日至1+13天）
+     */
+    private static void checkSpringFestival(Lunar lunar) {
+        if (lunar.getMonth() == 1 &&
+                lunar.getDay() >= 1 &&
+                lunar.getDay() <= 1 + SPRING_FESTIVAL_POST_DAYS) {
+            chinaHoliday = RegularLevel.ChinaHoliday.CJ;
         }
+    }
 
-        if(isSF){
-            holiday = RegularLevel.Holiday.CJ;
-        }
+    /**
+     * 检查是否为中秋节期间
+     */
+    private static void checkMidAutumnFestival(Lunar lunar) {
+        boolean isRegularMidAutumn = lunar.getMonth() == 8 &&
+                (lunar.getDay() >= 15 &&
+                        lunar.getDay() <= 15 + MID_AUTUMN_POST_DAYS);
 
-        // 判断是否是中秋节前10天到中秋节后12天
-        if (isZQJ  || isZQJ2025) {
-            holiday = RegularLevel.Holiday.ZQJ;
+        if (isRegularMidAutumn) {
+            chinaHoliday = RegularLevel.ChinaHoliday.ZQJ;
+            eventEndTime = calculateSolarEventEndTime(2025, 10, 12);
         }
-        // 判断是否是开发组的开发者Ling的当天生日到后续三天-8-22--8.25
-        if (isDevBirthday) {
+    }
+
+    /**
+     * 检查是否为开发者生日期间（农历8月22日至28日）
+     */
+    private static void checkDeveloperBirthday(Lunar lunar) {
+        if (lunar.getMonth() == 8 &&
+                lunar.getDay() >= DEV_BIRTHDAY_START &&
+                lunar.getDay() <= DEV_BIRTHDAY_END) {
             birthday = RegularLevel.DevBirthday.DEV_BIRTHDAY;
-        }
-        // 判断是否是端午节前4天到端午节后7天
-        if (isDWJ) {
-            holiday = RegularLevel.Holiday.DWJ;
-            eventEndTime = calculateEventEndTime(lunar, 5, 12);
-        }
-
-        if ((gregorianMonth == 8 && gregorianDay >= 30) || (gregorianMonth == 9 && gregorianDay <= 30)) {
-            holiday = RegularLevel.Holiday.HWEEN;
-            eventEndTime =  calculateSolarEventEnd(2025,9,30);
+            eventEndTime = calculateSolarEventEndTime(2025, 10, 19);
         }
     }
 
-    public static long calculateSolarEventEnd(int year, int month, int day) {
-        Calendar end = Calendar.getInstance();
-        end.set(year, month-1, day, 23, 59, 59); // 月份参数适配真实月份
-        end.set(Calendar.MILLISECOND, 0);
-        return end.getTimeInMillis();
+    /**
+     * 检查是否为国庆节期间（农历10月1日至10.5）
+     */
+    private static void checkChinaBirthday(int month, int day) {
+        if (month == 10) {
+            if(day >= 1 &&  day < 6){
+                chinaHoliday = RegularLevel.ChinaHoliday.GQJ;
+                eventEndTime = calculateSolarEventEndTime(2025, 10, 6);
+            }
+        }
     }
 
+    /**
+     * 检查是否为端午节期间（农历5月0日至5+7天）
+     */
+    private static void checkDragonBoatFestival(Lunar lunar) {
+        if (lunar.getMonth() == 5 &&
+                (lunar.getDay() >= 0 &&
+                        lunar.getDay() <= 5 + DRAGON_BOAT_POST_DAYS)) {
+            chinaHoliday = RegularLevel.ChinaHoliday.DWJ;
+            eventEndTime = calculateLunarEventEndTime(lunar, 5, 12);
+        }
+    }
 
-    // 新增计算方法
-    private static long calculateEventEndTime(Lunar currentLunar, int month, int endDay) {
+    /**
+     * 计算农历事件结束时间戳
+     * @param currentLunar 当前农历日期
+     * @param endMonth 结束月份（农历）
+     * @param endDay 结束日期（农历）
+     * @return 结束时间戳（毫秒），失败返回0
+     */
+    private static long calculateLunarEventEndTime(Lunar currentLunar, int endMonth, int endDay) {
         try {
             // 构造结束当天的农历对象（23:59:59）
             Lunar endLunar = new Lunar(
                     currentLunar.getYear(),
-                    month,
+                    endMonth,
                     endDay,
                     23, 59, 59
             );
 
-            // 转换为公历
+            // 转换为公历并生成时间戳
             Solar endSolar = endLunar.getSolar();
-
-            // 生成时间戳
-            Calendar endCal = Calendar.getInstance();
-            endCal.set(endSolar.getYear(),
-                    endSolar.getMonth() - 1, // Calendar月份从0开始
-                    endSolar.getDay(),
-                    23, 59, 59);
-            endCal.set(Calendar.MILLISECOND, 0);
-            return endCal.getTimeInMillis();
-        } catch (Exception e) {
-            // 处理无效日期情况
+            return getCalendarTimeInMillis(
+                    endSolar.getYear(),
+                    endSolar.getMonth() - 1, // 转换为Calendar的0-11月
+                    endSolar.getDay()
+            );
+        } catch (IllegalArgumentException e) {
+            // 捕获无效日期异常
             return 0;
         }
     }
 
-    // 新增获取剩余时间方法
-    public static String getRemainingTime() {
-        if (eventEndTime == 0)
-            return Messages.get(Gregorian.class,"no_activity");
-
-        long current = System.currentTimeMillis();
-        if (current >= eventEndTime)
-            return Messages.get(Gregorian.class,"end_activity");
-
-        long diff = eventEndTime - current;
-
-        // 精确计算时间差
-        long seconds = diff / 1000;
-        long days = seconds / 86400;
-        seconds %= 86400;
-        long hours = seconds / 3600;
-        seconds %= 3600;
-        long minutes = seconds / 60;
-        seconds %= 60;
-
-        String string;
-
-        if(days > 1){
-            string =  String.format(Locale.CHINA, "行动剩余："+"%d天", days);
-        } else {
-            string =  String.format(Locale.CHINA, "行动剩余："+"%d天 %02d:%02d:%02d", days, hours, minutes, seconds);
-        }
-
-        return string;
+    /**
+     * 计算公历事件结束时间戳
+     * @param year 年份
+     * @param month 月份（1-12）
+     * @param day 日期
+     * @return 结束时间戳（毫秒）
+     */
+    public static long calculateSolarEventEndTime(int year, int month, int day) {
+        return getCalendarTimeInMillis(year, month - 1, day);
     }
 
+    /**
+     * 生成指定日期时间的时间戳
+     * 该方法用于创建一个指定年月日的时间戳，并将时间设置为当天的最后一刻（23:59:59）
+
+     *
+     * @param year  年份
+     * @param month 月份（0-11），0代表一月，11代表十二月
+     * @param day   日期，例如：1-31之间（根据月份不同会有差异）
+     * @return 时间戳（毫秒）
+     */
+    private static long getCalendarTimeInMillis(int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day, 23, 59, 59);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
+    /**
+     * 获取活动剩余时间的本地化字符串
+     * @return 剩余时间字符串
+     */
+    public static String getRemainingTime() {
+        if (eventEndTime == 0) {
+            return Messages.get(Gregorian.class, "no_activity");
+        }
+
+        long currentTime = System.currentTimeMillis();
+        if (currentTime >= eventEndTime) {
+            return Messages.get(Gregorian.class, "end_activity");
+        }
+
+        long timeDiff = eventEndTime - currentTime;
+        return formatTimeDiff(timeDiff);
+    }
+
+    /**
+     * 格式化时间差为易读的字符串
+     * @param timeDiff 时间差（毫秒）
+     * @return 格式化后的时间字符串
+     */
+    private static String formatTimeDiff(long timeDiff) {
+        long totalSeconds = timeDiff / 1000;
+        long days = totalSeconds / 86400;
+        long remainingSeconds = totalSeconds % 86400;
+
+        long hours = remainingSeconds / 3600;
+        remainingSeconds %= 3600;
+
+        long minutes = remainingSeconds / 60;
+        long seconds = remainingSeconds % 60;
+
+        if (days > 1) {
+            return String.format(
+                    Messages.get(Gregorian.class, "remaining_days"),
+                    days
+            );
+        } else {
+            return String.format(
+                    Messages.get(Gregorian.class, "remaining_full"),
+                    hours, minutes, seconds
+            );
+        }
+    }
 }

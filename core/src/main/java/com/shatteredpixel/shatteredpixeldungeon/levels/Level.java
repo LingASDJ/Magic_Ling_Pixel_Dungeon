@@ -342,13 +342,9 @@ public abstract class Level implements Bundlable {
 				addItemToSpawn( new Stylus() );
 			}
 
-			if ( Dungeon.trinketCataNeeded() ){
+			if ( Dungeon.trinketCataNeeded() && !Statistics.RandMode ){
 				Dungeon.LimitedDrops.TRINKET_CATA.drop();
 				addItemToSpawn( new TrinketCatalyst());
-				if(Statistics.RandMode){
-					addItemToSpawn( new TrinketCatalyst());
-					addItemToSpawn( new TrinketCatalyst());
-				}
 			}
 			//one scroll of transmutation is guaranteed to spawn somewhere on chapter 2-4
 			int enchChapter = (int)((Dungeon.seed / 10) % 3) + 1;
@@ -702,11 +698,10 @@ public abstract class Level implements Bundlable {
 				Buff.affect(m, ChampionEnemy.AloneCity.class);
 			}
 
-			//古堡灵魂碎片怪生成机制
-			if(RegularLevel.holiday == RegularLevel.Holiday.HWEEN){
-				if(Dungeon.LimitSoulLevel() && !Statistics.soulsSpawn){
+			//古堡灵魂碎片怪生成机制 暂时常驻
+			if(1 == 1){
+				if(Dungeon.LimitSoulLevel()){
 					Buff.affect(m, ChampionEnemy.DeadSoulCrack.class);
-					Statistics.soulsSpawn = true;
 				} else if(depth>3 && depth<25 && Random.Int(100)<35 && !Statistics.soulsSpawn){
 					Buff.affect(m, ChampionEnemy.DeadSoulCrack.class);
 					Statistics.soulsSpawn = true;

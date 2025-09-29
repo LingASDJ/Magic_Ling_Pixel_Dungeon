@@ -37,13 +37,15 @@ import java.util.ArrayList;
 public class Ankh extends Item {
 
 	public static final String AC_BLESS = "BLESS";
-
-	{
+	public Ankh(){
 		image = ItemSpriteSheet.ANKH;
-
-		//You tell the ankh no, don't revive me, and then it comes back to revive you again in another run.
-		//I'm not sure if that's enthusiasm or passive-aggression.
 		bones = true;
+	}
+
+	public Ankh(boolean blessed){
+		image = ItemSpriteSheet.ANKH;
+		bones = true;
+		this.blessed = blessed;
 	}
 
 	public boolean blessed = false;

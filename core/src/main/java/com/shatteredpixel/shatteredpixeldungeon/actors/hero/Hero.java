@@ -202,7 +202,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.MagicBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Empty;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LanFireGo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
@@ -2627,9 +2626,9 @@ public class Hero extends Char {
 		boolean result;
 		if(bossRushMode){
 			result = Dungeon.depth < 43;
-		} else if(holiday == RegularLevel.Holiday.XMAS) {
+		} else if(holiday == RegularLevel.WestHoliday.XMAS) {
 			result = Dungeon.depth < 31;
-		} else if(holiday == RegularLevel.Holiday.HWEEN) {
+		} else if(Statistics.Hollow_Holiday) {
 			result = Dungeon.depth < 32;
 		} else {
 			result = Dungeon.depth < 27;
@@ -3004,14 +3003,6 @@ public class Hero extends Char {
 			Buff.detach(hero, BlessLingJing.LanterBarrier.class);
 		}
 
-
-		MagicBook qb = hero.belongings.getItem(MagicBook.class);
-		if(qb != null && !Dungeon.whiteDaymode && RegularLevel.birthday == RegularLevel.DevBirthday.CHAPTER_BIRTHDAY) {
-			Buff.affect(hero, BlessQinyue.class).set((100), 1);
-		} else {
-			Buff.detach(hero, BlessQinyue.class);
-		}
-
 		DriedRose rose = hero.belongings.getItem(DriedRose.class);
 		Red red = hero.belongings.getItem(Red.class);
 		if (red != null && Statistics.deadGo) {
@@ -3227,7 +3218,7 @@ public class Hero extends Char {
 	@Override
 	public boolean isAlive() {
 		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
-		if(belongings != null){
+		if(belongings != null && HP>0){
 			if(getHeal != null) {
 				return true;
 			}

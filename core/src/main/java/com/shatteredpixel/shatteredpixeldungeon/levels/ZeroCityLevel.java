@@ -64,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroTomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -79,6 +80,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfNukeCole;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
@@ -686,7 +689,19 @@ public class ZeroCityLevel extends Level {
 
         }
 
-        if(RegularLevel.holiday == RegularLevel.Holiday.CJ){
+        if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.GQJ){
+            drop( new RandomChest(), 130  );
+            drop( new ElixirOfMight(),68  );
+            drop( new RandomChest(), 132  );
+        }
+
+        if(RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY){
+            drop( new ElixirOfNukeCole(), 130  );
+            drop( new Ankh(true),68  );
+            drop( new ElixirOfNukeCole(), 132  );
+        }
+
+        if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ){
             drop( new Pasty(), 725  );
             drop( new Food(), 853  );
         }

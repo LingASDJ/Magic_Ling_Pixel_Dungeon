@@ -88,20 +88,21 @@ public class WndGoldBurrety extends Window {
     private ItemButton btnItem1;
     private ItemButton btnItem2;
     private ItemButton btnItem3;
-
-
     private ItemButton btnItem5;
     private ItemButton btnItem6;
     private ItemButton btnItem7;
-
     private ItemButton btnItem8;
     private ItemButton btnItem9;
-
     private ItemButton btnItemGold;
 
     private RedButton btnReforge;
 
-    private int btnItemCount = 0;
+    // 统一管理物品槽按钮的数组，避免重复定义
+    private final ItemButton[] itemButtons = {
+            btnItem1, btnItem2, btnItem3,
+            btnItem5, btnItem6, btnItem7,
+            btnItem8, btnItem9
+    };
 
     public WndGoldBurrety(Mob troll, Window wndParent) {
         super();
@@ -117,108 +118,13 @@ public class WndGoldBurrety extends Window {
         message.setPos(0, titlebar.bottom() + GAP);
         add(message);
 
-        btnItem1 = new ItemButton() {
-            @Override
-            protected void onClick() {
-                btnPressed = btnItem1;
-                GameScene.selectItem(itemSelector);
-            }
-        };
-        btnItem1.setRect((WIDTH - BTN_GAP) / 3 - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE);
-        add(btnItem1);
-
-        btnItem2 = new ItemButton() {
-            @Override
-            protected void onClick() {
-                btnPressed = btnItem2;
-                GameScene.selectItem(itemSelector);
-            }
-        };
-        btnItem2.setRect(btnItem1.right() + BTN_GAP, btnItem1.top(), BTN_SIZE, BTN_SIZE);
-        add(btnItem2);
-
-        btnItem3 = new ItemButton() {
-            @Override
-            protected void onClick() {
-                btnPressed = btnItem3;
-                GameScene.selectItem(itemSelector);
-            }
-        };
-        btnItem3.setRect(btnItem2.right() + BTN_GAP, btnItem1.top(), BTN_SIZE, BTN_SIZE);
-        add(btnItem3);
-
-        btnItem5 = new ItemButton() {
-            @Override
-            protected void onClick() {
-                btnPressed = btnItem5;
-                GameScene.selectItem(itemSelector);
-            }
-        };
-        btnItem5.setRect((WIDTH - BTN_GAP) / 3 - BTN_SIZE, btnItem1.bottom(), BTN_SIZE, BTN_SIZE);
-        add(btnItem5);
-
-        btnItem6 = new ItemButton() {
-            @Override
-            protected void onClick() {
-                btnPressed = btnItem6;
-                GameScene.selectItem(itemSelector);
-            }
-        };
-        btnItem6.setRect(btnItem2.right() + BTN_GAP, btnItem1.bottom(), BTN_SIZE, BTN_SIZE);
-        add(btnItem6);
-
-        btnItemGold = new ItemButton() {
-            @Override
-            public Chrome.Type getType() {
-                return Chrome.Type.GREY_BUTTON_TR;
-            }
-            @Override
-            protected void onClick() {
-                btnPressed = btnItemGold;
-                GameScene.selectItem(GolditemSelector);
-            }
-        };
-        btnItemGold.setRect(btnItem1.right() + BTN_GAP, btnItem1.bottom(), BTN_SIZE, BTN_SIZE);
-        add(btnItemGold);
-
-        btnItem8 = new ItemButton() {
-            @Override
-            protected void onClick() {
-                btnPressed = btnItem8;
-                GameScene.selectItem(itemSelector);
-            }
-        };
-        btnItem8.setRect((WIDTH - BTN_GAP) / 3 - BTN_SIZE, btnItem5.bottom(), BTN_SIZE, BTN_SIZE);
-        add(btnItem8);
-
-        btnItem9= new ItemButton() {
-            @Override
-            protected void onClick() {
-                btnPressed = btnItem9;
-                GameScene.selectItem(itemSelector);
-            }
-        };
-        btnItem9.setRect(btnItem5.right() + BTN_GAP, btnItem5.bottom(), BTN_SIZE, BTN_SIZE);
-        add(btnItem9);
-
-        btnItem7 = new ItemButton() {
-            @Override
-            protected void onClick() {
-                btnPressed = btnItem7;
-                GameScene.selectItem(itemSelector);
-            }
-        };
-        btnItem7.setRect(btnItemGold.right() + BTN_GAP, btnItem5.bottom(), BTN_SIZE, BTN_SIZE);
-        add(btnItem7);
+        // 初始化物品槽按钮
+        initItemButtons(message);
 
         btnReforge = new RedButton(Messages.get(this, "reforge")) {
             @Override
             protected void onClick() {
-                // 遍历所有的槽位按钮，进行物品嬗变
-                ItemButton[] itemButtons = new ItemButton[]{
-                        btnItem1, btnItem2, btnItem3, btnItem5, btnItem6, btnItem7, btnItem8, btnItem9
-                };
-                // 使用 HashMap 来存储物品按钮与物品的映射
+                // 使用HashMap存储物品按钮与物品的映射
                 Map<ItemButton, Item> buttonToItemMap = new HashMap<>();
                 for (ItemButton button : itemButtons) {
                     Item item = button.item();
@@ -227,25 +133,24 @@ public class WndGoldBurrety extends Window {
                     }
                 }
 
-                // 获取所有不为 null 的物品
+                // 获取所有不为null的物品
                 List<Item> nonNullItems = new ArrayList<>(buttonToItemMap.values());
 
                 // 进行嬗变处理
                 Item[] newItems = GoldBuretteMode(nonNullItems.toArray(new Item[0]));
 
-                // 计算回合数，例如回合数与嬗变物品的数量相关
-                int turns = newItems.length; // 或者根据需要自定义计算规则，例如 `newItems.length * 2`
+                // 计算回合数，与嬗变物品的数量相关
+                int turns = newItems.length;
 
-                // 施加 Invulnerability Buff，回合数作为参数传入
-                Buff.affect(hero, Invulnerability.class, turns-1);
+                // 施加Invulnerability Buff
+                Buff.affect(hero, Invulnerability.class, turns - 1);
 
                 // 更新物品按钮
                 Iterator<Map.Entry<ItemButton, Item>> iterator = buttonToItemMap.entrySet().iterator();
                 int index = 0;
-                while (iterator.hasNext()) {
+                while (iterator.hasNext() && index < newItems.length) {
                     Map.Entry<ItemButton, Item> entry = iterator.next();
                     ItemButton button = entry.getKey();
-                    // 更新每个按钮的物品
                     button.item(newItems[index]);
                     index++;
                 }
@@ -267,18 +172,64 @@ public class WndGoldBurrety extends Window {
         btnReforge.setRect(0, btnItem9.bottom() + BTN_GAP, WIDTH, 20);
         add(btnReforge);
 
-
         resize(WIDTH, (int) btnReforge.bottom());
     }
 
+    // 初始化物品槽按钮的位置和点击事件
+    private void initItemButtons(RenderedTextBlock message) {
+        btnItem1 = createItemButton((WIDTH - BTN_GAP) / 3 - BTN_SIZE, message.top() + message.height() + BTN_GAP);
+        btnItem2 = createItemButton(btnItem1.right() + BTN_GAP, btnItem1.top());
+        btnItem3 = createItemButton(btnItem2.right() + BTN_GAP, btnItem1.top());
+
+        btnItem5 = createItemButton((WIDTH - BTN_GAP) / 3 - BTN_SIZE, btnItem1.bottom());
+        btnItem6 = createItemButton(btnItem2.right() + BTN_GAP, btnItem1.bottom());
+
+        btnItemGold = new ItemButton() {
+            @Override
+            public Chrome.Type getType() {
+                return Chrome.Type.GREY_BUTTON_TR;
+            }
+            @Override
+            protected void onClick() {
+                btnPressed = btnItemGold;
+                GameScene.selectItem(GolditemSelector);
+            }
+        };
+        btnItemGold.setRect(btnItem1.right() + BTN_GAP, btnItem1.bottom(), BTN_SIZE, BTN_SIZE);
+        add(btnItemGold);
+
+        btnItem8 = createItemButton((WIDTH - BTN_GAP) / 3 - BTN_SIZE, btnItem5.bottom());
+        btnItem9 = createItemButton(btnItem5.right() + BTN_GAP, btnItem5.bottom());
+        btnItem7 = createItemButton(btnItemGold.right() + BTN_GAP, btnItem5.bottom());
+
+        // 更新物品按钮数组的引用
+        itemButtons[0] = btnItem1;
+        itemButtons[1] = btnItem2;
+        itemButtons[2] = btnItem3;
+        itemButtons[3] = btnItem5;
+        itemButtons[4] = btnItem6;
+        itemButtons[5] = btnItem7;
+        itemButtons[6] = btnItem8;
+        itemButtons[7] = btnItem9;
+    }
+
+    // 创建物品按钮的工具方法，减少重复代码
+    private ItemButton createItemButton(float x, float y) {
+        ItemButton button = new ItemButton() {
+            @Override
+            protected void onClick() {
+                btnPressed = this;
+                GameScene.selectItem(itemSelector);
+            }
+        };
+        button.setRect(x, y, BTN_SIZE, BTN_SIZE);
+        add(button);
+        return button;
+    }
 
     /**
-     * 金蝶模式2.0逻辑  <br>
-     * Author:JDSALing   <br>
-     * 完成于：2025.2.1   <br>
-     * @param items 传入的物品   <br>
-     * results 传出的物品   <br>
-     * Evan，我将用我的屎山镇压你的嬗变屎山（
+     * 金蝶模式2.0逻辑
+     * @param items 传入的物品
      * @return 返回传出的物品
      */
     private Item[] GoldBuretteMode(Item[] items) {
@@ -288,27 +239,31 @@ public class WndGoldBurrety extends Window {
             Item item = items[i];
             Item result = item;
 
-            if ((item instanceof MeleeWeapon || item instanceof MissileWeapon) && !(item instanceof MagesStaff || item instanceof TippedDart)) {
+            if ((item instanceof MeleeWeapon || item instanceof MissileWeapon) &&
+                    !(item instanceof MagesStaff || item instanceof TippedDart)) {
 
-                if(item == hero.belongings.weapon()){
+                if (item == hero.belongings.weapon()) {
                     hero.belongings.weapon = changeWeapon((Weapon) hero.belongings.weapon);
                     Dungeon.hero.belongings.weapon.detachAll(Dungeon.hero.belongings.backpack);
                     hero.belongings.weapon.identify();
-                    //武器
-                    if(Statistics.upgradeGold<=18){
+
+                    // 修复升级条件：只要还有升级次数就升级
+                    if (Statistics.upgradeGold > 0) {
                         hero.belongings.weapon.upgrade();
                         hero.belongings.weapon.noUpgrade = true;
+                        Statistics.upgradeGold--; // 移动到这里确保只减一次
                     }
                 } else {
-                    result = changeWeapon( (Weapon)item );
+                    result = changeWeapon((Weapon) item);
                     result.noUpgrade = true;
+
+                    // 修复升级条件
+                    if (Statistics.upgradeGold > 0) {
+                        result.upgrade();
+                        Statistics.upgradeGold--; // 移动到这里确保只减一次
+                    }
                 }
 
-                if(Statistics.upgradeGold<=18){
-                    result.upgrade();
-                }
-
-                Statistics.upgradeGold--;
                 result.collect();
                 item.detach(Dungeon.hero.belongings.backpack);
             } else if (item instanceof TippedDart) {
@@ -326,27 +281,29 @@ public class WndGoldBurrety extends Window {
                     item.detachAll(Dungeon.hero.belongings.backpack);
                 }
                 Dungeon.quickslot.setSlot(0, result);
-            } else if (item instanceof MagesStaff){
+            } else if (item instanceof MagesStaff) {
                 changeStaff((MagesStaff) item);
                 if (Statistics.magestaffUpgrade == 0) {
                     Statistics.magestaffUpgrade++;
                     item.noUpgrade = true;
                     item.upgrade();
                 }
-            } else if (item instanceof Scroll && !(item instanceof ScrollOfFlameCursed || item instanceof ScrollOfRoseShiled || item instanceof ScrollOfGolems)) {
-                result = changeScroll( (Scroll)item );
+            } else if (item instanceof Scroll && !(item instanceof ScrollOfFlameCursed ||
+                    item instanceof ScrollOfRoseShiled || item instanceof ScrollOfGolems)) {
+                result = changeScroll((Scroll) item);
                 result.collect();
                 result.quantity(item.quantity);
                 item.detachAll(Dungeon.hero.belongings.backpack);
             } else if (item instanceof Potion) {
-                result = changePotion( (Potion) item );
+                result = changePotion((Potion) item);
                 result.collect();
                 result.quantity(item.quantity);
                 item.detachAll(Dungeon.hero.belongings.backpack);
             } else if (item instanceof Wand) {
                 result = changeWand((Wand) item);
 
-                if(Statistics.upgradeGold<=18){
+                // 修复升级条件
+                if (Statistics.upgradeGold > 0) {
                     result.upgrade();
                     result.noUpgrade = true;
                     ((Wand) result).updateLevel();
@@ -365,20 +322,22 @@ public class WndGoldBurrety extends Window {
                 result.collect();
                 item.detach(Dungeon.hero.belongings.backpack);
             } else if (item instanceof Artifact) {
-               if(item == hero.belongings.artifact()){
+                if (item == hero.belongings.artifact()) {
                     hero.belongings.artifact = (Artifact) processArtifact(hero.belongings.artifact);
                     hero.belongings.artifact.detachAll(Dungeon.hero.belongings.backpack);
                 } else {
                     result = processArtifact(item);
                 }
             } else if (item instanceof Ring) {
-               if (item == hero.belongings.ring()) {
-                    if(hero.belongings.ring.buff != null){
+                if (item == hero.belongings.ring()) {
+                    if (hero.belongings.ring.buff != null) {
                         hero.belongings.ring.buff.detach();
                     }
                     hero.belongings.ring = changeRing(hero.belongings.ring);
                     hero.belongings.ring.detach(Dungeon.hero.belongings.backpack);
-                    if(Statistics.upgradeGold<=18){
+
+                    // 修复升级条件
+                    if (Statistics.upgradeGold > 0) {
                         hero.belongings.ring.upgrade();
                         Statistics.upgradeGold--;
                         hero.belongings.ring.noUpgrade = true;
@@ -386,11 +345,12 @@ public class WndGoldBurrety extends Window {
                     }
                 } else {
                     result = changeRing((Ring) item);
-                   if(Statistics.upgradeGold<=18){
-                       result.upgrade();
-                       Statistics.upgradeGold--;
-                       result.noUpgrade = true;
-                   }
+                    // 修复升级条件
+                    if (Statistics.upgradeGold > 0) {
+                        result.upgrade();
+                        Statistics.upgradeGold--;
+                        result.noUpgrade = true;
+                    }
                 }
             }
 
@@ -400,19 +360,19 @@ public class WndGoldBurrety extends Window {
         return results;
     }
 
-    public static Ring changeRing( Ring r ) {
+    public static Ring changeRing(Ring r) {
         Ring n;
         do {
-            n = (Ring)Generator.randomUsingDefaults( Generator.Category.RING );
+            n = (Ring) Generator.randomUsingDefaults(Generator.Category.RING);
         } while (Challenges.isItemBlocked(n) || n.getClass() == r.getClass());
 
         n.level(0);
 
         int level = r.level();
         if (level > 0) {
-            n.upgrade( level );
+            n.upgrade(level);
         } else if (level < 0) {
-            n.degrade( -level );
+            n.degrade(-level);
         }
 
         n.levelKnown = r.levelKnown;
@@ -425,25 +385,25 @@ public class WndGoldBurrety extends Window {
         return n;
     }
 
-    public static Runestone changeStone( Runestone r ) {
+    public static Runestone changeStone(Runestone r) {
         Runestone n;
 
         do {
-            n = (Runestone) Generator.randomUsingDefaults( Generator.Category.STONE );
+            n = (Runestone) Generator.randomUsingDefaults(Generator.Category.STONE);
         } while (n.getClass() == r.getClass());
 
         return n;
     }
 
-    private Potion changePotion( Potion p ) {
-        if	(p instanceof ExoticPotion) {
+    private Potion changePotion(Potion p) {
+        if (p instanceof ExoticPotion) {
             return Reflection.newInstance(ExoticPotion.exoToReg.get(p.getClass()));
         } else {
             return Reflection.newInstance(ExoticPotion.regToExo.get(p.getClass()));
         }
     }
 
-    private Scroll changeScroll( Scroll s ) {
+    private Scroll changeScroll(Scroll s) {
         if (s instanceof ExoticScroll) {
             return Reflection.newInstance(ExoticScroll.exoToReg.get(s.getClass()));
         } else {
@@ -451,8 +411,8 @@ public class WndGoldBurrety extends Window {
         }
     }
 
-    public static MagesStaff changeStaff( MagesStaff staff ){
-        Class<?extends Wand> wandClass = staff.wandClass();
+    public static MagesStaff changeStaff(MagesStaff staff) {
+        Class<? extends Wand> wandClass = staff.wandClass();
 
         Wand n;
         do {
@@ -465,15 +425,18 @@ public class WndGoldBurrety extends Window {
         return staff;
     }
 
-    private static final Set<Class<? extends Trinket>> generatedTrinkets = new HashSet<>();
+    // 使用临时集合避免内存泄漏
+    private static final ThreadLocal<Set<Class<? extends Trinket>>> tempGeneratedTrinkets = ThreadLocal.withInitial(HashSet::new);
 
     public static Trinket changeTrinket(Trinket t) {
+        Set<Class<? extends Trinket>> generatedTrinkets = tempGeneratedTrinkets.get();
+        generatedTrinkets.clear(); // 每次使用前清空集合
+
         Trinket n;
         do {
-            n = (Trinket)Generator.random(Generator.Category.TRINKET);
-        } while ((Challenges.isItemBlocked(n) || n.getClass() == t.getClass()) && generatedTrinkets.contains(n.getClass()));
-
-        generatedTrinkets.add(n.getClass());
+            n = (Trinket) Generator.random(Generator.Category.TRINKET);
+            generatedTrinkets.add(n.getClass());
+        } while (Challenges.isItemBlocked(n) || n.getClass() == t.getClass());
 
         n.level(t.trueLevel());
         n.levelKnown = t.levelKnown;
@@ -484,32 +447,27 @@ public class WndGoldBurrety extends Window {
     }
 
     private Item processTrinket(Item item) {
-        if (item.level() < 6) {
-            Item result = changeTrinket((Trinket) item);
-            if(Statistics.upgradeGold<=18){
-                result.upgrade();
-                Statistics.upgradeGold--;
-            }
-            result.collect();
-            item.detach(Dungeon.hero.belongings.backpack);
-            return result;
-        } else {
-            Item result = changeTrinket((Trinket) item);
-            result.collect();
-            item.detach(Dungeon.hero.belongings.backpack);
-            return result;
+        Trinket result = changeTrinket((Trinket) item);
+
+        // 修复升级条件
+        if (Statistics.upgradeGold > 0) {
+            result.upgrade();
+            Statistics.upgradeGold--;
         }
+
+        result.collect();
+        item.detach(Dungeon.hero.belongings.backpack);
+        return result;
     }
 
-    private Artifact changeArtifact( Artifact a ) {
-        Artifact n;
-        n = Normal();
+    private Artifact changeArtifact(Artifact a) {
+        Artifact n = Normal();
 
-        if (a instanceof DriedRose){
-            if (((DriedRose) a).ghostWeapon() != null){
+        if (a instanceof DriedRose) {
+            if (((DriedRose) a).ghostWeapon() != null) {
                 Dungeon.level.drop(((DriedRose) a).ghostWeapon(), Dungeon.hero.pos);
             }
-            if (((DriedRose) a).ghostArmor() != null){
+            if (((DriedRose) a).ghostArmor() != null) {
                 Dungeon.level.drop(((DriedRose) a).ghostArmor(), Dungeon.hero.pos);
             }
         }
@@ -522,11 +480,10 @@ public class WndGoldBurrety extends Window {
         return n;
     }
 
-
     private Artifact Normal() {
         Artifact artifact;
 
-        switch (Random.NormalIntRange(0,10)){
+        switch (Random.NormalIntRange(0, 10)) {
             case 0: artifact = new UnstableSpellbook(); break;
             case 2: artifact = new HornOfPlenty(); break;
             case 3: artifact = new SandalsOfNature(); break;
@@ -537,14 +494,28 @@ public class WndGoldBurrety extends Window {
             case 8: artifact = new EtherealChains(); break;
             case 9: artifact = new WraithAmulet(); break;
             case 10: artifact = new CapeOfThorns(); break;
-            default:
-                artifact = new ChaliceOfBlood(); break;
+            default: artifact = new ChaliceOfBlood(); break;
         }
         return artifact;
     }
 
     private Item processArtifact(Item item) {
         return changeArtifact((Artifact) item);
+    }
+
+    // 统一的物品计数检查方法
+    private boolean areAtLeastTwoItemsSelected() {
+        int selectedItemCount = 0;
+        for (ItemButton button : itemButtons) {
+            if (button != null && button.item() != null) {
+                selectedItemCount++;
+            }
+        }
+        // 包含黄金槽位的物品计数
+        if (btnItemGold.item() != null) {
+            selectedItemCount++;
+        }
+        return selectedItemCount >= 2;
     }
 
     protected WndBag.ItemSelector GolditemSelector = new WndBag.ItemSelector() {
@@ -561,7 +532,6 @@ public class WndGoldBurrety extends Window {
 
         @Override
         public boolean itemSelectable(Item item) {
-            // 确保只有符合条件的物品才可选
             return item instanceof RushMobScrollOfRandom && areAtLeastTwoItemsSelected();
         }
 
@@ -570,24 +540,7 @@ public class WndGoldBurrety extends Window {
             if (item != null && btnPressed.parent != null) {
                 btnPressed.item(item);
             }
-
-            // 检查9个格子中是否有至少两个物品
-            btnReforge.enable(areAtLeastTwoItemsSelected() && itemSelectable(item));
-        }
-
-        // 检查9个格子中是否有至少两个物品
-        private boolean areAtLeastTwoItemsSelected() {
-            int selectedItemCount = 0;
-            ItemButton[] buttons = {btnItem1, btnItem2, btnItem3, btnItem9, btnItem5, btnItem6, btnItem7, btnItem8, btnItem9};
-
-            // 遍历每个按钮，检查是否选中物品
-            for (ItemButton button : buttons) {
-                if (button.item() != null) {
-                    selectedItemCount++;
-                }
-            }
-
-            return selectedItemCount >= 2;
+            btnReforge.enable(areAtLeastTwoItemsSelected() && (item == null || itemSelectable(item)));
         }
     };
 
@@ -605,100 +558,69 @@ public class WndGoldBurrety extends Window {
 
         @Override
         public boolean itemSelectable(Item item) {
-            if(item.noUpgrade || item == hero.belongings.misc() || item instanceof ScrollOfTeleTation){
+            if (item.noUpgrade || item == hero.belongings.misc() || item instanceof ScrollOfTeleTation) {
                 return false;
             }
-            if(item instanceof MeleeWeapon) {
-
-                if(item instanceof LockSword)
+            if (item instanceof MeleeWeapon) {
+                if (item instanceof LockSword)
                     return false;
 
                 Generator.Category c = Generator.wepTiers[((MeleeWeapon) item).tier - 1];
                 int canChangeWeapon = 0;
                 int lastWeaponIndex = 0;
-                for(int i=0;i<c.probs.length;i++) {
-                    if(c.probs[i] > 0){
+                for (int i = 0; i < c.probs.length; i++) {
+                    if (c.probs[i] > 0) {
                         canChangeWeapon++;
                         lastWeaponIndex = i;
                     }
                 }
-                if( canChangeWeapon > 1 )
+                if (canChangeWeapon > 1)
                     return true;
-                else if( canChangeWeapon == 1 ){//针对只有一把武器能生成的情况，避免后续代码死循环导致的卡死
+                else if (canChangeWeapon == 1) {
                     return !item.getClass().getSimpleName().equals(c.classes[lastWeaponIndex].getSimpleName());
-                }else {//针对无法正常生成的武器
+                } else {
                     return false;
                 }
             }
-            //the extra check here prevents a single scroll being used on itself
-            return item instanceof MissileWeapon && (!(item instanceof Dart) || item instanceof TippedDart) || item instanceof Potion && !(item instanceof Elixir || item instanceof Brew) || item instanceof Scroll && (!(item instanceof ScrollOfTransmutation) || item.quantity() > 1) || item instanceof Ring || item instanceof Trinket || item instanceof Wand || item instanceof Plant.Seed || item instanceof Runestone || item instanceof Artifact && !(item instanceof OilLantern);
+            return item instanceof MissileWeapon && (!(item instanceof Dart) || item instanceof TippedDart) ||
+                    item instanceof Potion && !(item instanceof Elixir || item instanceof Brew) ||
+                    item instanceof Scroll && (!(item instanceof ScrollOfTransmutation) || item.quantity() > 1) ||
+                    item instanceof Ring || item instanceof Trinket || item instanceof Wand ||
+                    item instanceof Plant.Seed || item instanceof Runestone ||
+                    item instanceof Artifact && !(item instanceof OilLantern);
         }
 
         @Override
         public void onSelect(Item item) {
             if (item != null && btnPressed.parent != null) {
                 if (!isItemAlreadyInSlots(item)) {
-                    // 如果没有相同物品，则放置物品
                     btnPressed.item(item);
                 } else {
-                    // 如果物品已存在于槽位中，清理已有物品
                     clearItemFromSlots(item);
-                    // 将新物品放入槽位
                     btnPressed.item(item);
                 }
             }
-            // 检查9个格子中是否有至少两个物品
-            btnReforge.enable(areAtLeastTwoItemsSelected() && GolditemSelector.itemSelectable(item));
+            btnReforge.enable(areAtLeastTwoItemsSelected() && (item == null || GolditemSelector.itemSelectable(item)));
         }
 
-        // 检查9个格子中是否有至少两个物品
-        private boolean areAtLeastTwoItemsSelected() {
-            int selectedItemCount = 0;
-            ItemButton[] buttons = {btnItem1, btnItem2, btnItem3, btnItem9, btnItem5, btnItem6, btnItem7, btnItem8, btnItem9};
-
-            // 遍历每个按钮，检查是否选中物品
-            for (ItemButton button : buttons) {
-                if (button.item() != null) {
-                    selectedItemCount++;
-                }
-            }
-
-            return selectedItemCount >= 2;
-        }
-
-        // 检查物品是否已存在于槽位中
         private boolean isItemAlreadyInSlots(Item item) {
-            // 使用一个数组存储所有槽位的按钮
-            ItemButton[] buttons = new ItemButton[]{
-                    btnItem1, btnItem2, btnItem3, btnItem5,
-                    btnItem6, btnItem7, btnItem8, btnItem9,
-            };
-
-            for (ItemButton button : buttons) {
-                // 如果当前按钮的物品与选择的物品相同，返回true
-                if (button.item() != null && button.item().equals(item)) {
+            for (ItemButton button : itemButtons) {
+                if (button != null && button.item() != null && button.item().equals(item)) {
                     return true;
                 }
             }
-            return false;
+            return btnItemGold.item() != null && btnItemGold.item().equals(item);
         }
     };
 
-
-
-    // 清理所有槽位中的相同物品
     private void clearItemFromSlots(Item item) {
-        ItemButton[] buttons = new ItemButton[]{
-                btnItem1, btnItem2, btnItem3, btnItem5, btnItem6, btnItem7, btnItem8, btnItem9
-        };
-
-        for (ItemButton button : buttons) {
-            // 如果当前按钮的物品与选择的物品相同，清除该物品
-            if (button.item() != null && button.item().equals(item)) {
-                button.clear(); // 假设clear()方法清空该按钮的物品
+        for (ItemButton button : itemButtons) {
+            if (button != null && button.item() != null && button.item().equals(item)) {
+                button.clear();
             }
         }
+        if (btnItemGold.item() != null && btnItemGold.item().equals(item)) {
+            btnItemGold.clear();
+        }
     }
-
-
 }

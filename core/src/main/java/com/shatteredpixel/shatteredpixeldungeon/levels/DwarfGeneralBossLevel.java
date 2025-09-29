@@ -21,10 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneralNPC;
@@ -436,7 +433,7 @@ public class DwarfGeneralBossLevel extends Level {
         } else if(Statistics.dwarfKill && !SPDSettings.KillDwarf()) {
             GLog.n(Messages.get(DwarfGeneral.class,"story"));
             return false;
-        } else if(Statistics.bossRushMode) {
+        } else if(Statistics.bossRushMode || Statistics.RandMode) {
             return super.activateTransition(hero, transition);
         } else {
             return false;

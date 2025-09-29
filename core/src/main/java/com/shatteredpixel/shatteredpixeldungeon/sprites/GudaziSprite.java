@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.chinaHoliday;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -13,7 +14,7 @@ public class GudaziSprite extends MobSprite {
     public GudaziSprite() {
         super();
 
-        if(holiday == RegularLevel.Holiday.CJ) {
+        if(chinaHoliday == RegularLevel.ChinaHoliday.CJ) {
 
             if(Statistics.gudaZiRandomSkin == 2){
                 texture( Assets.Sprites.XS_GUDAZI );
@@ -21,7 +22,7 @@ public class GudaziSprite extends MobSprite {
                 texture( Assets.Sprites.HF_GUDAZI );
             }
 
-        } else if(holiday == RegularLevel.Holiday.XMAS){
+        } else if(holiday == RegularLevel.WestHoliday.XMAS){
             texture( Assets.Sprites.XMS_GUDAZI );
         } else {
             texture( Assets.Sprites.GUDAZI );

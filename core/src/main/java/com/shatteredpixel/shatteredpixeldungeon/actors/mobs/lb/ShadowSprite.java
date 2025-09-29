@@ -24,7 +24,7 @@ public class ShadowSprite extends MobSprite {
         }
 
 
-        TextureFilm film = new TextureFilm(HeroSprite.tiers(), RegularLevel.holiday == RegularLevel.Holiday.CJ ?9 : 7, 12, 15);
+        TextureFilm film = new TextureFilm(HeroSprite.tiers(), RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ ?9 : 7, 12, 15);
 
         idle = new Animation(1, true);
         idle.frames(film, 0, 0, 0, 1, 0, 0, 1, 1);

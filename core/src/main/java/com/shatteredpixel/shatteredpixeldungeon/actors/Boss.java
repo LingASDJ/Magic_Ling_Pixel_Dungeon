@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -140,7 +139,7 @@ abstract public class Boss extends Mob {
                 Dungeon.level.drop(new KingGold(Random.NormalIntRange(3+Dungeon.depth/5,5+Dungeon.depth/5)),pos);
             }
 
-            boolean holiday = RegularLevel.holiday == RegularLevel.Holiday.PQJ;
+        boolean holiday = RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.PQJ || RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY;
 
             if(!Statistics.bossRushMode && depth != 5 && !noDropIceCoin){
                 int normal = ((hero.lvl + Dungeon.depth)/5) * (Math.max(Challenges.activeChallenges(), 5));
