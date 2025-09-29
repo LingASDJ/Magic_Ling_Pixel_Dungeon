@@ -123,14 +123,14 @@ public class TitleScene extends PixelScene {
 							Reusable = true;
 						}
 						/**农历计算*/
-
+						Gregorian.LunarCheckDate();
 					} else if (!NTP_ERROR_VEFY) {
 						noInter();
 
 						NTP_ERROR = true;
 						NTP_ERROR_VEFY = true;
 					}
-					Gregorian.LunarCheckDate();
+
 				} catch (IOException e) {
 					if (!NTP_NOINTER_VEFY || SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()) {
 						NTP_NOINTER = true;
