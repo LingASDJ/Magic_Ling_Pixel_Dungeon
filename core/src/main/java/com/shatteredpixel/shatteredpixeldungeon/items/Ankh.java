@@ -35,7 +35,7 @@ import com.watabou.utils.Bundle;
 import java.util.ArrayList;
 
 public class Ankh extends Item {
-
+	public boolean blessed = false;
 	public static final String AC_BLESS = "BLESS";
 	public Ankh(){
 		image = ItemSpriteSheet.ANKH;
@@ -47,8 +47,6 @@ public class Ankh extends Item {
 		bones = true;
 		this.blessed = blessed;
 	}
-
-	public boolean blessed = false;
 	
 	@Override
 	public boolean isUpgradable() {

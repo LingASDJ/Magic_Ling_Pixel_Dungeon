@@ -59,7 +59,7 @@ public class HolidayWindows extends Window {
         } else if (birthday != RegularLevel.DevBirthday.NONE) {
             return String.valueOf(birthday);
         } else {
-            return "no_activity";
+            return "none";
         }
     }
 
@@ -67,7 +67,8 @@ public class HolidayWindows extends Window {
     @Override
     public void update() {
         super.update();
-        button2.text(Gregorian.getRemainingTime());
+        boolean checkList = chinaHoliday != RegularLevel.ChinaHoliday.NONE || holiday != RegularLevel.WestHoliday.NONE  || birthday != RegularLevel.DevBirthday.NONE;
+        button2.text(checkList ? Gregorian.getRemainingTime() : "N / A");
     }
 
 }

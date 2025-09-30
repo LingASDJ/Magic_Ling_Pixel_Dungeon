@@ -89,11 +89,11 @@ public class Gregorian {
     private static void checkMidAutumnFestival(Lunar lunar) {
         boolean isRegularMidAutumn = lunar.getMonth() == 8 &&
                 (lunar.getDay() >= 15 &&
-                        lunar.getDay() <= 15 + MID_AUTUMN_POST_DAYS);
+                        lunar.getDay() < 15 + MID_AUTUMN_POST_DAYS);
 
         if (isRegularMidAutumn) {
             chinaHoliday = RegularLevel.ChinaHoliday.ZQJ;
-            eventEndTime = calculateLunarEventEndTime(lunar, 8, 22);
+            eventEndTime = calculateLunarEventEndTime(lunar, 8, 21);
         }
     }
 
@@ -116,7 +116,7 @@ public class Gregorian {
         if (month == 10) {
             if(day >= 1 &&  day < 6){
                 chinaHoliday = RegularLevel.ChinaHoliday.GQJ;
-                eventEndTime = calculateSolarEventEndTime(2025, 10, 6);
+                eventEndTime = calculateSolarEventEndTime(2025, 10, 5);
             }
         }
     }
@@ -136,9 +136,10 @@ public class Gregorian {
     private static void checkChongYang(Lunar lunar) {
         if (lunar.getMonth() == 9 &&
                 (lunar.getDay() >= 9 &&
-                        lunar.getDay() <= 16))
+                        lunar.getDay() <= 16)){
             chinaHoliday = RegularLevel.ChinaHoliday.CYJ;
-        eventEndTime = calculateLunarEventEndTime(lunar, 9, 16);
+            eventEndTime = calculateLunarEventEndTime(lunar, 9, 16);
+        }
     }
 
     /**
