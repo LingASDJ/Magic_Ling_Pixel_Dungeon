@@ -425,18 +425,15 @@ public class WndGoldBurrety extends Window {
         return staff;
     }
 
-    // 使用临时集合避免内存泄漏
-    private static final ThreadLocal<Set<Class<? extends Trinket>>> tempGeneratedTrinkets = ThreadLocal.withInitial(HashSet::new);
+    private static final Set<Class<? extends Trinket>> generatedTrinkets = new HashSet<>();
 
     public static Trinket changeTrinket(Trinket t) {
-        Set<Class<? extends Trinket>> generatedTrinkets = tempGeneratedTrinkets.get();
-        generatedTrinkets.clear(); // 每次使用前清空集合
-
         Trinket n;
         do {
-            n = (Trinket) Generator.random(Generator.Category.TRINKET);
-            generatedTrinkets.add(n.getClass());
-        } while (Challenges.isItemBlocked(n) || n.getClass() == t.getClass());
+            n = (Trinket)Generator.random(Generator.Category.TRINKET);
+        } while ((Challenges.isItemBlocked(n) || n.getClass() == t.getClass()) && generatedTrinkets.contains(n.getClass()));
+
+        generatedTrinkets.add(n.getClass());
 
         n.level(t.trueLevel());
         n.levelKnown = t.levelKnown;
@@ -447,17 +444,21 @@ public class WndGoldBurrety extends Window {
     }
 
     private Item processTrinket(Item item) {
-        Trinket result = changeTrinket((Trinket) item);
-
-        // 修复升级条件
-        if (Statistics.upgradeGold > 0) {
-            result.upgrade();
-            Statistics.upgradeGold--;
+        if (item.level() < 6) {
+            Item result = changeTrinket((Trinket) item);
+            if(Statistics.upgradeGold>0){
+                result.upgrade();
+                Statistics.upgradeGold--;
+            }
+            result.collect();
+            item.detach(Dungeon.hero.belongings.backpack);
+            return result;
+        } else {
+            Item result = changeTrinket((Trinket) item);
+            result.collect();
+            item.detach(Dungeon.hero.belongings.backpack);
+            return result;
         }
-
-        result.collect();
-        item.detach(Dungeon.hero.belongings.backpack);
-        return result;
     }
 
     private Artifact changeArtifact(Artifact a) {
