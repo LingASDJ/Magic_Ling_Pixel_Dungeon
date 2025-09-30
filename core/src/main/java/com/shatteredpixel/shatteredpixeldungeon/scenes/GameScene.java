@@ -2093,10 +2093,7 @@ public class GameScene extends PixelScene {
 					}
 				}
 
-				if(Dungeon.bossLevel()){
-					Statistics.upgradeGold = Random.NormalIntRange(5,16);
-				}
-
+				Statistics.upgradeGold = Random.NormalIntRange(9,18);
 
 				if(Statistics.RandomQuest == 3){
 					switch (Dungeon.depth){

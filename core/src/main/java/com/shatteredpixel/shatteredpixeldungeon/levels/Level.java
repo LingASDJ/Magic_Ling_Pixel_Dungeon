@@ -73,6 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.SoulCrackEliteSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ColdSnowParticles;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WindParticle;
@@ -698,15 +699,7 @@ public abstract class Level implements Bundlable {
 				Buff.affect(m, ChampionEnemy.AloneCity.class);
 			}
 
-			//古堡灵魂碎片怪生成机制 暂时常驻
-			if(1 == 1){
-				if(Dungeon.LimitSoulLevel()){
-					Buff.affect(m, ChampionEnemy.DeadSoulCrack.class);
-				} else if(depth>3 && depth<25 && Random.Int(100)<35 && !Statistics.soulsSpawn){
-					Buff.affect(m, ChampionEnemy.DeadSoulCrack.class);
-					Statistics.soulsSpawn = true;
-				}
-			}
+			SoulCrackEliteSpawner.handleSoulEliteSpawn(Dungeon.hero, m, Dungeon.depth);
 		}
 		return m;
 	}
