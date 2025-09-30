@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.BlackKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -79,6 +80,8 @@ public class AutoShopRoom extends SpecialRoom {
         if(holiday == HWEENX || holiday == XMASX|| Dungeon.isChallenged(EXSG)) {
             placeShopkeeper(level);
         }
+
+        Notes.add( Notes.Landmark.AUTO_SHOP );
 
         for (Room.Door door : this.connected.values()) {
             door.set(Door.Type.REGULAR);

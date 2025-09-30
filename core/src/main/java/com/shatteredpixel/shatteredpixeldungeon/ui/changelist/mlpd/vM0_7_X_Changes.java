@@ -133,6 +133,9 @@ public class vM0_7_X_Changes {
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.HEART), ("特殊地形图标系统"),
+                ("现在新增了更多特殊地形的图标：心红空间，火龙巢穴，食物售货机")));
+
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：ChinaBirthDay"),
                 ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期至：2025年10月7日1：05前。")));
 

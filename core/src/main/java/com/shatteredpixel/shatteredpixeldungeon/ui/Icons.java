@@ -203,7 +203,11 @@ public enum Icons {
 
 	TRA_WELL,
 	OIL_WELL,
-	MAGIC_DREAM;
+	MAGIC_DREAM,
+
+	HEART,
+	FIRE_DRAGON,
+	AUTO_SHOP;
 
 	public Image get() {
 		return get( this );
@@ -608,7 +612,15 @@ public enum Icons {
 			case MAGIC_DREAM:
 				icon.frame( icon.texture.uvRectBySize( 144, 160, 16, 16 ) );
 				break;
-
+			case HEART:
+				icon.frame( icon.texture.uvRectBySize( 160, 160, 16, 16 ) );
+				break;
+			case FIRE_DRAGON:
+				icon.frame( icon.texture.uvRectBySize( 176, 160, 16, 16 ) );
+				break;
+			case AUTO_SHOP:
+				icon.frame( icon.texture.uvRectBySize( 192, 160, 16, 16 ) );
+				break;
 		}
 		return icon;
 	}

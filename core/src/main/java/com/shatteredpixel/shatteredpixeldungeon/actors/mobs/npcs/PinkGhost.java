@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -15,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FiveRen;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -60,6 +62,22 @@ public class PinkGhost extends NTNPC {
         secnod = bundle.getBoolean(SECNOD);
         rd = bundle.getBoolean(RD);
         sd = bundle.getBoolean(SD);
+    }
+
+    @Override
+    protected boolean act() {
+        if (hero.buff(AscensionChallenge.class) != null){
+            die(null);
+            Notes.remove( Notes.Landmark.HEART);
+            return true;
+        }
+        if (Dungeon.level.visited[pos]){
+            Notes.add( Notes.Landmark.HEART );
+        }
+        throwItem();
+        sprite.turnTo( pos, hero.pos );
+        spend( TICK );
+        return super.act();
     }
 
     {

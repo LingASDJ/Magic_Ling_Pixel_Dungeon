@@ -666,9 +666,6 @@ public abstract class RegularLevel extends Level {
 	
 	@Override
 	protected void createItems() {
-
-
-
 		// drops 3/4/5 items 60%/30%/10% of the time
 		int nItems = 3 + Random.chances(new float[]{6, 3, 1});
 
@@ -976,11 +973,10 @@ public abstract class RegularLevel extends Level {
 					Trap t = traps.get(pos);
 					
 					//items cannot spawn on traps which destroy items
-					if (t == null ||
-							! (t instanceof BurningTrap || t instanceof BlazingTrap
-							|| t instanceof ChillingTrap || t instanceof FrostTrap
-							|| t instanceof ExplosiveTrap || t instanceof DisintegrationTrap
-							|| t instanceof PitfallTrap)) {
+					if (!(t instanceof BurningTrap || t instanceof BlazingTrap
+                            || t instanceof ChillingTrap || t instanceof FrostTrap
+                            || t instanceof ExplosiveTrap || t instanceof DisintegrationTrap
+                            || t instanceof PitfallTrap)) {
 						
 						return pos;
 					}
