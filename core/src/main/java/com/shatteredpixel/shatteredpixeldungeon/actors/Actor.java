@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -106,7 +107,9 @@ public abstract class Actor implements Bundlable {
 		time = Float.MAX_VALUE;
 	}
 	
-	protected void onAdd() {}
+	protected void onAdd() {
+		GameAPI.CodeCallback_OnActorCreation( this );
+	}
 	
 	protected void onRemove() {}
 

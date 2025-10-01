@@ -73,6 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.SoulCrackEliteSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ColdSnowParticles;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
@@ -429,6 +430,7 @@ public abstract class Level implements Bundlable {
 								}
 								break;
 						}
+						GameAPI.CodeCallback_OnLevelFeelingFinished( this );
 					}
 			}
 		}

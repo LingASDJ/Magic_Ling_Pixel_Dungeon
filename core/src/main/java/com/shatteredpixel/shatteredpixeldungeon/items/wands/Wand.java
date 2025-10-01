@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -549,7 +550,10 @@ public abstract class Wand extends Item {
 			cursed = true;
 		}
 
-		return this;
+		Wand item = this;
+		GameAPI.CodeCallback_OnItemCreation( item );
+
+		return item;
 	}
 
 	@Override
