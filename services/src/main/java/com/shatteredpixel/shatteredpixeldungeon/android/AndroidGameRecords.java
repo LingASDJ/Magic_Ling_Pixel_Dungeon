@@ -9,4 +9,8 @@ public class AndroidGameRecords {
     public static void GudaziGoldCount(int i) {
         System.out.println(i);
     }
+
+    public static void ZQJRecord() {
+        System.out.println("1");
+    }
 }

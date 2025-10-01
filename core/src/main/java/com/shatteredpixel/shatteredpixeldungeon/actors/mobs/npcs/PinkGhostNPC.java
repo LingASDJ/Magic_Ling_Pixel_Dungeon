@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.android.AndroidGameRecords;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -238,6 +239,7 @@ public class PinkGhostNPC extends NPC {
             rose.detach(hero.belongings.backpack);
             red.detach(hero.belongings.backpack);
             PaswordBadges.ZQJ_FLOWER();
+            AndroidGameRecords.ZQJRecord();
         }
         return true;
     }
