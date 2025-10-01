@@ -133,6 +133,9 @@ public class vM0_7_X_Changes {
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("Really Slow Motion-Neutral Assault"),
+                ("此音乐暂时作为 地狱三头犬 的作战BGM")));
+
         changes.addButton(new ChangeButton(Icons.get(Icons.HEART), ("特殊地形图标系统"),
                 ("现在新增了更多特殊地形的图标：心红空间，火龙巢穴，食物售货机")));
 
@@ -148,12 +151,12 @@ public class vM0_7_X_Changes {
                                 "_-_ 金蝶模式现在开局对话“夏渔雾溟”自动给予3饰品\n" +
                                 "_-_ 金蝶模式中的哥布林祭司得到显著增强")));
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.CATALOG), ("平衡案3.4 第二部分"),
+        changes.addButton(new ChangeButton(Icons.get(Icons.CATALOG), ("平衡案V3.4 第二部分"),
                 ("实现了平衡案-V3.4第二部分，详情如下：\n\n" +
                         "【综合说明】：\n\n" +
                         "_-_ 全肉大饼去掉低于12力量必定加成的保底\n" +
                         "_-_ 毒素浸染法杖增加递增伤害\n" +
-                        "_-_ 绿宝石加入300回合冷却，且只有40回合隐身\n")));
+                        "_-_ 绿宝石加入300回合冷却，且只有40回合隐身")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
@@ -174,7 +177,8 @@ public class vM0_7_X_Changes {
                                 "二、怪物与 NPC 行为修复\n" +
                                 "修复：亡魂残躯异常，已修正\n" +
                                 "修复：鬼魂及南瓜头鬼魂异常，已修正\n" +
-                                "修复：火魔女充能回合异常，已修正")));
+                                "修复：火魔女充能回合异常，已修正\n" +
+                                "修复：残魔余卷对护甲不生效的问题，已修正")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changes.hardlight(Window.R_COLOR);
