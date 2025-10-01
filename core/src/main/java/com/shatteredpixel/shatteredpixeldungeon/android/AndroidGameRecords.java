@@ -91,4 +91,11 @@ public class AndroidGameRecords {
         }
         return string;
     }
+
+    public static void ZQJRecord() {
+        Bundle params = new Bundle();
+        params.putString("地图种子", DungeonSeed.convertToCode(Dungeon.seed));
+        params.putString("游戏版本", String.valueOf(Game.version));
+        mFirebaseAnalyticsRecords.logEvent("中秋节真结局达成次数", params);
+    }
 }
