@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SunFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
@@ -46,9 +45,6 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
     public void onZap(Ballistica bolt) {}
 
     @Override
-    public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {}
-
-    @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
 
@@ -67,6 +63,16 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
         }
 
          */
+    }
+
+    @Override
+    public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
+        for(Actor actor : Actor.all()){
+            if(actor instanceof MiniSun){
+                MiniSun s = (MiniSun) actor;
+                s.duration += 1;
+            }
+        }
     }
 
     @Override
@@ -98,23 +104,18 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
         }
 
         if (!cursed) {
-            int currentSunCount = 0;
-            boolean targetIsMiniSun = false;
-
-            for ( Actor actor : Actor.all() ){
-                if ( actor instanceof MiniSun ) {
+            for (Actor actor : Actor.all()) {
+                if (actor instanceof MiniSun) {
                     MiniSun s = (MiniSun) actor;
                     if (s.pos == target) {
-                        targetIsMiniSun = true;
-                        s.duration += 2;
+                        s.die();
+                        GLog.i(Messages.get(WandOfSun.class, "hasSun"));
+                        return false;
                     }
-                    currentSunCount += 1;
                 }
             }
 
-            if( targetIsMiniSun ) {
-                return super.tryToZap( owner, target );
-            }else if ( !Dungeon.level.solid[target] && curCharges > 0 && ( currentSunCount < ( 1 + Math.floor( level() / 5 ) ) ) ) {
+            if (!Dungeon.level.solid[target] && curCharges > 0) {
                 this.owner = owner;
                 MiniSun sun = new MiniSun(target);
                 sun.sprite.place(target);
@@ -126,9 +127,6 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
                 return true;
             } else if (Dungeon.level.solid[target]) {
                 GLog.i(Messages.get(WandOfSun.class, "solid"));
-            }else {
-                GLog.i( Messages.get( WandOfSun.class, "no_more_suns" ) );
-                return false;
             }
         }else{
             return super.tryToZap(owner,target);
@@ -247,9 +245,7 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
                     }else if(m.buff(SunFire.class).source != this){
                         m.damage((int) (damage * 1.25f),this);
                     }
-                    if (  Dungeon.hero.subClass == HeroSubClass.WARLOCK ){
-                        SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
-                    }
+                    SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
                     damaged = true;
                 }
 
@@ -264,9 +260,7 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
                         m.damage((int) (damage * 1.25f * 0.75f), this);
                     }
                     damaged = true;
-                    if (  Dungeon.hero.subClass == HeroSubClass.WARLOCK ){
-                        SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
-                    }
+                    SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
                 }
 
             }
@@ -280,9 +274,7 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
                         m.damage((int) (damage * 1.25f * 0.5f),this);
                     }
                     damaged = true;
-                    if (  Dungeon.hero.subClass == HeroSubClass.WARLOCK ){
-                        SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
-                    }
+                    SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
                 }
             }
             GameScene.updateFog(pos, viewDistance);

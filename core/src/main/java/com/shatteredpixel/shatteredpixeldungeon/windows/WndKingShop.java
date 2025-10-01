@@ -345,7 +345,7 @@ public class WndKingShop extends Window {
                         if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9f){
                             GLog.n(Messages.get(LuckyGlove.class,"lucky"));
                         }else{
-                            Dungeon.gold-= RegularLevel.holiday == RegularLevel.Holiday.CJ ? (int) (sellPrice * 0.5f) : sellPrice;
+                            Dungeon.gold-= RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ ? (int) (sellPrice * 0.5f) : sellPrice;
                         }
                         WndKingShop.this.selectReward( item );
                         WndKingShop.RewardWindow.this.hide();

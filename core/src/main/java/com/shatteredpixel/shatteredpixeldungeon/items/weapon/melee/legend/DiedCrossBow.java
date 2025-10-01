@@ -155,8 +155,7 @@ public class DiedCrossBow extends LegendWeapon {
 
 
     public static class BombArrow extends TippedDart {
-        public boolean sniperSpecial = false;
-        public float sniperSpecialBonusDamage = 0f;
+
         @Override
         public Emitter emitter() {
             Emitter emitter = new Emitter();
@@ -171,7 +170,6 @@ public class DiedCrossBow extends LegendWeapon {
         }
 
         int flurryCount = -1;
-        private int targetPos;
 
         @Override
         public int proc(Char attacker, Char defender, int damage) {
@@ -185,7 +183,6 @@ public class DiedCrossBow extends LegendWeapon {
         @Override
         public void cast(final Hero user, final int dst) {
             final int cell = throwPos( user, dst );
-            targetPos = cell;
 
 
             final Char enemy = Actor.findChar( cell );
@@ -294,11 +291,10 @@ public class DiedCrossBow extends LegendWeapon {
                         dmg -= ch.drRoll();
 
                         if (dmg > 0) {
-                            ch.damage(dmg, this);
+                            ch.damage(dmg, this, Char.DamageType.PHYSICAL);
                         }
 
                         if (ch == hero && !ch.isAlive()) {
-                            //Badges.BOMB();
                             Dungeon.fail( getClass() );
                             GLog.n( Messages.get(DiedCrossBow.class, "ondeath") );
                         }
@@ -315,7 +311,7 @@ public class DiedCrossBow extends LegendWeapon {
 
     @Override
     public int min(int lvl) {
-        return 4 + lvl *  1;   //scaling unchanged
+        return 4 + lvl;   //scaling unchanged
     }
 
 

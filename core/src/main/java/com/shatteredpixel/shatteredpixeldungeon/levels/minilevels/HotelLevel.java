@@ -22,11 +22,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ATRI;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BlueCJ;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Bzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonCat;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.QinYueWolf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Zako;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -181,7 +181,7 @@ public class HotelLevel extends Level {
         PaswordBadges.loadGlobal();
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
         if(!Statistics.onlyLing){
-            if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX)) {
+            if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX) ||RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY) {
                 if (Random.Float() < 0.65f) {
                     WhiteLing n = new WhiteLing();
                     n.pos = (this.width * 9 + 10);
@@ -212,10 +212,6 @@ public class HotelLevel extends Level {
             ATRI n3 = new ATRI();
             n3.pos = 87;
             mobs.add(n3);
-
-            QinYueWolf n5 = new QinYueWolf();
-            n5.pos = 255;
-            mobs.add(n5);
 
             BlueCJ n7 = new BlueCJ();
             n7.pos = 31;

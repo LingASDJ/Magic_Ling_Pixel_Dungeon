@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.chinaHoliday;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -97,9 +98,11 @@ public class GudaziPlot extends Plot {
         diagulewindow.hideAll();
         Dungeon.hero.interrupt();
 
-        if(holiday == RegularLevel.Holiday.CJ){
+        if(chinaHoliday == RegularLevel.ChinaHoliday.GQJ){
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.GQGDZ));
+        } else if(chinaHoliday == RegularLevel.ChinaHoliday.CJ){
             diagulewindow.setMainAvatar(new Image(Assets.Splashes.YSGDZ));
-        } else if(holiday == RegularLevel.Holiday.XMAS){
+        } else if(holiday == RegularLevel.WestHoliday.XMAS){
             diagulewindow.setMainAvatar(new Image(Assets.Splashes.XMS_GDZ));
         } else {
             diagulewindow.setMainAvatar(new Image(Assets.Splashes.GDZ));
@@ -224,7 +227,9 @@ public class GudaziPlot extends Plot {
         private void process_to_1() {
             diagulewindow.hideAll();
             Dungeon.hero.interrupt();
-            if(holiday == RegularLevel.Holiday.XMAS){
+            if(chinaHoliday == RegularLevel.ChinaHoliday.GQJ){
+                diagulewindow.setMainAvatar(new Image(Assets.Splashes.GQGDZ));
+            } else if(holiday == RegularLevel.WestHoliday.XMAS){
                 diagulewindow.setMainAvatar(new Image(Assets.Splashes.XMS_GDZ));
             } else {
                 diagulewindow.setMainAvatar(new Image(Assets.Splashes.GDZ));

@@ -131,6 +131,11 @@ public class AncientMysteryCityBossLevel extends Level{
                 }
                 break;
             case FALL_BOSS:
+                set( getBossDoor, Terrain.DOOR );
+                GameScene.updateMap( getBossDoor );
+
+                set( 67, Terrain.ENTRANCE );
+                GameScene.updateMap( 67 );
                 break;
         }
     }
@@ -414,16 +419,6 @@ public class AncientMysteryCityBossLevel extends Level{
         IF_MAIN_PORTAL.put(614,371);
         IF_MAIN_PORTAL.put(303,573);
     }
-
-//    @Override
-//    public void unseal() {
-//        super.unseal();
-//        set( getBossDoor, Terrain.LOCKED_DOOR );
-//        GameScene.updateMap( getBossDoor );
-//        set( 688, Terrain.EMPTY );
-//    }
-
-
 
     private static final int getBossDoor = 688;
     private static final int LDBossDoor = 661;

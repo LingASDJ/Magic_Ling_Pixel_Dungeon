@@ -21,7 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.chinaHoliday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -430,7 +430,7 @@ public class Blacksmith extends NPC {
 				rooms.add(new BlacksmithRoom());
 				spawned = true;
 				//Currently cannot roll the fungi quest, as it is not fully implemented
-				type = (holiday == RegularLevel.Holiday.DWJ && !(passwordbadges.contains(PaswordBadges.Badge.KILL_FISHBOSS))) ? 4 : Random.IntRange(1, 2);
+				type = (chinaHoliday == RegularLevel.ChinaHoliday.DWJ && !(passwordbadges.contains(PaswordBadges.Badge.KILL_FISHBOSS))) ? 4 : Random.IntRange(1, 2);
 				alternative = false;
 				
 				given = false;

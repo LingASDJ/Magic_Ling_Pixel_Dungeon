@@ -42,6 +42,8 @@ public class Assets {
 		public static final String LockedSevenRoom_MapLua      = "lua/iron_key7.lua";
 		public static final String LockedEightRoom_MapLua      = "lua/iron_key8.lua";
 		public static final String LockedNineRoom_MapLua      = "lua/iron_key9.lua";
+
+		public static final String PinkGhostRoom_MapLua      = "lua/pinkghostroom.lua";
 	}
 
 	public static class Environment {
@@ -238,6 +240,12 @@ public class Assets {
 		public static final String BANNERS_YX  = "interfaces/Banners/banners_yx.png";
 		public static final String BANNERS_SP  = "interfaces/Banners/banners_shattered.png";
 		public static final String BANNERS_LD  = "interfaces/Banners/banners_labor.png";
+
+		public static final String BANNERS_GQ  = "interfaces/Banners/banners_gq.png";
+		public static final String BANNERS_ZQ  = "interfaces/Banners/banners_zq.png";
+		public static final String BANNERS_BX  = "interfaces/Banners/banners_bx.png";
+		public static final String BANNERS_CY  = "interfaces/Banners/banners_cy.png";
+
 		public static final String MENUTITLE  = "interfaces/menutitle.png";
 
 
@@ -520,7 +528,7 @@ public class Assets {
 		public static final String GDZ= "splashes/gdz_portraits.png";
 		public static final String YSGDZ= "splashes/gdz_yeas.png";
 
-		public static final String HSGDZ= "splashes/gdz_yeas2.png";
+		public static final String GQGDZ= "splashes/gdz_plus.png";
 
 
 		public static final String PIANO = "splashes/piano_portraits.png";
@@ -635,6 +643,8 @@ public class Assets {
 		public static final String XS_GUDAZI	= "sprites/npc/gdz1.png";
 
 		public static final String HF_GUDAZI	= "sprites/npc/gdz2.png";
+
+		public static final String GQ_GUDAZI	= "sprites/npc/gdzgq.png";
 
 		public static final String GUDAZI	= "sprites/npc/gdz.png";
 		public static final String DEEP	= "sprites/npc/deepsea.png";

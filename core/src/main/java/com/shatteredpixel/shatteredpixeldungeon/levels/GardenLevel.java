@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.JunglePainter;
@@ -30,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ToxicTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -39,6 +41,16 @@ public class GardenLevel extends RegularLevel {
     {
         color1 = 0x48763c;
         color2 = 0x59994a;
+    }
+
+
+    @Override
+    public void playLevelMusic(){
+        if (Ghost.Quest.active()){
+            Music.playModeBGM(Assets.Music.BGM_SHOP, true);
+        } else {
+            Music.playModeBGM(Assets.Music.BGM_1A,true);
+        }
     }
 
     @Override

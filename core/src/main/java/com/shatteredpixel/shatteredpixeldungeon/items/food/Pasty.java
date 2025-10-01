@@ -51,104 +51,133 @@ public class Pasty extends Food {
 	@Override
 	public void reset() {
 		super.reset();
-		switch(RegularLevel.holiday){
-			case NONE: default:
-				image = ItemSpriteSheet.PASTY;
-				break;
-			case HWEEN:
-				image = ItemSpriteSheet.PUMPKIN_PIE;
-				break;
-			case XMAS:
-				image = ItemSpriteSheet.CANDY_CANE;
-				break;
-			case ZQJ:
-				image = ItemSpriteSheet.DG1;
-				break;
-			case CJ:
-				image = ItemSpriteSheet.Fish_A;
-				break;
-			case QMJ:
-				image = ItemSpriteSheet.QKA;
-				break;
+
+		if(RegularLevel.chinaHoliday != RegularLevel.ChinaHoliday.NONE){
+			switch (RegularLevel.chinaHoliday){
+				case ZQJ:
+					image = ItemSpriteSheet.DG1;
+					break;
+				case CJ:
+					image = ItemSpriteSheet.Fish_A;
+					break;
+				case QMJ:
+					image = ItemSpriteSheet.QKA;
+					break;
+				default:
+					image = ItemSpriteSheet.PASTY;
+					break;
+			}
+		} else {
+			switch(RegularLevel.holiday){
+				case HWEEN:
+					image = ItemSpriteSheet.PUMPKIN_PIE;
+					break;
+				case XMAS:
+					image = ItemSpriteSheet.CANDY_CANE;
+					break;
+				default:
+					image = ItemSpriteSheet.PASTY;
+					break;
+			}
 		}
+
 	}
 
 	@Override
 	protected void satisfy(Hero hero) {
 		super.satisfy(hero);
 
-		switch(RegularLevel.holiday){
-			case NONE:
-				break; //do nothing extra
-			case HWEEN:
-				//heals for 10% max hp
-				hero.HP = Math.min(hero.HP + hero.HT/10, hero.HT);
-				hero.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
-				break;
-			case XMAS:
-				Buff.affect( hero, Recharging.class, 2f ); //half of a charge
-				ScrollOfRecharging.charge( hero );
-				break;
-			case ZQJ:
-				Buff.affect(hero, Healing.class).setHeal((int) (0.2f * hero.HT + 14), 0.25f, 0);
-				Buff.affect(hero, Haste.class, 10f);
-				ScrollOfRecharging.charge( hero );
-				GLog.p(Messages.get(this, "moonling"));
-				break;
-			case CJ:
-				//...but it also awards an extra item that restores 150 hunger
-				FishLeftover left = new FishLeftover();
-				Dungeon.level.drop(left, hero.pos).sprite.drop();
-				hero.belongings.charge(0.5f); //2 turns worth
-				ScrollOfRecharging.charge( hero );
-				Buff.affect(hero, Haste.class, 4f);
-				Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(hero.HT/10f);
-				break;
-			case QMJ:
-				//...but it also awards an extra item that restores 150 hunger
-				QingKong lings = new QingKong();
-				Dungeon.level.drop(lings, hero.pos).sprite.drop();
-				hero.belongings.charge(0.5f); //2 turns worth
-				ScrollOfRecharging.charge( hero );
-				Buff.affect(hero, Barrier.class).setShield(8);
-				Buff.affect( hero, MindVision.class, 8f );
-				break;
+		if(RegularLevel.chinaHoliday != RegularLevel.ChinaHoliday.NONE) {
+			switch (RegularLevel.chinaHoliday) {
+				case ZQJ:
+					Buff.affect(hero, Healing.class).setHeal((int) (0.2f * hero.HT + 14), 0.25f, 0);
+					Buff.affect(hero, Haste.class, 10f);
+					ScrollOfRecharging.charge(hero);
+					GLog.p(Messages.get(this, "moonling"));
+					break;
+				case CJ:
+					//...but it also awards an extra item that restores 150 hunger
+					FishLeftover left = new FishLeftover();
+					Dungeon.level.drop(left, hero.pos).sprite.drop();
+					hero.belongings.charge(0.5f); //2 turns worth
+					ScrollOfRecharging.charge(hero);
+					Buff.affect(hero, Haste.class, 4f);
+					Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(hero.HT / 10f);
+					break;
+				case QMJ:
+					//...but it also awards an extra item that restores 150 hunger
+					QingKong lings = new QingKong();
+					Dungeon.level.drop(lings, hero.pos).sprite.drop();
+					hero.belongings.charge(0.5f); //2 turns worth
+					ScrollOfRecharging.charge(hero);
+					Buff.affect(hero, Barrier.class).setShield(8);
+					Buff.affect(hero, MindVision.class, 8f);
+					break;
+			}
+		} else {
+			switch(RegularLevel.holiday){
+				case NONE:
+					break; //do nothing extra
+				case HWEEN:
+					//heals for 10% max hp
+					hero.HP = Math.min(hero.HP + hero.HT/10, hero.HT);
+					hero.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
+					break;
+				case XMAS:
+					Buff.affect( hero, Recharging.class, 2f ); //half of a charge
+					ScrollOfRecharging.charge( hero );
+					break;
+			}
 		}
 	}
 
 	@Override
 	public String name() {
-		switch(RegularLevel.holiday){
-			case NONE: default:
-				return Messages.get(this, "pasty");
-			case HWEEN:
-				return Messages.get(this, "pie");
-			case XMAS:
-				return Messages.get(this, "cane");
-			case ZQJ:
-				return Messages.get(this, "moon");
-			case CJ:
-				return Messages.get(this, "fish_name");
-			case QMJ:
-				return Messages.get(this, "qk_name");
+		if(RegularLevel.chinaHoliday != RegularLevel.ChinaHoliday.NONE) {
+			switch (RegularLevel.chinaHoliday) {
+				case ZQJ:
+					return Messages.get(this, "moon");
+				case CJ:
+					return Messages.get(this, "fish_name");
+				case QMJ:
+					return Messages.get(this, "qk_name");
+				default:
+					return Messages.get(this, "pasty");
+			}
+		} else {
+			switch(RegularLevel.holiday){
+				case HWEEN:
+					return Messages.get(this, "pie");
+				case XMAS:
+					return Messages.get(this, "cane");
+				default:
+					return Messages.get(this, "pasty");
+			}
 		}
 	}
 
 	@Override
 	public String info() {
-		switch(RegularLevel.holiday){
-			case NONE: default:
-				return Messages.get(this, "pasty_desc");
-			case HWEEN:
-				return Messages.get(this, "pie_desc");
-			case XMAS:
-				return Messages.get(this, "cane_desc");
-			case ZQJ:
-				return Messages.get(this, "moon_desc", Dungeon.hero == null ? "" :Dungeon.hero.name());
-			case CJ:
-				return Messages.get(this, "fish_desc");
-			case QMJ:
-				return Messages.get(this, "qk_desc");
+		if(RegularLevel.chinaHoliday != RegularLevel.ChinaHoliday.NONE) {
+			switch (RegularLevel.chinaHoliday) {
+				case ZQJ:
+					return Messages.get(this, "moon_desc", Dungeon.hero == null ? "" :Dungeon.hero.name());
+				case CJ:
+					return Messages.get(this, "fish_desc");
+				case QMJ:
+					return Messages.get(this, "qk_desc");
+				default:
+					return Messages.get(this, "pasty_desc");
+			}
+		} else {
+			switch(RegularLevel.holiday){
+				case HWEEN:
+					return Messages.get(this, "pie_desc");
+				case XMAS:
+					return Messages.get(this, "cane_desc");
+				default:
+					return Messages.get(this, "pasty_desc");
+			}
 		}
 	}
 

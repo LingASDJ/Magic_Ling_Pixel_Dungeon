@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.chinaHoliday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -184,6 +184,6 @@ public class IceFishSword extends MeleeWeapon {
 
     @Override
     public int value() {
-        return holiday == RegularLevel.Holiday.CJ ? quantity * 320 : quantity * 500;
+        return chinaHoliday == RegularLevel.ChinaHoliday.CJ ? quantity * 320 : quantity * 500;
     }
 }

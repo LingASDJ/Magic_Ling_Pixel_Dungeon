@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.WestHoliday.XMAS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane.asset;
 
@@ -19,7 +18,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
-import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
@@ -75,26 +73,8 @@ public class TitleScene extends PixelScene {
 
 	public void noInter(){
 		if(NTP_NOINTER || NTP_ERROR || NTP_NOINTER_VEFY || NTP_ERROR_VEFY){
-			//启用破碎默认活动
 			final Calendar calendar = Calendar.getInstance();
-			switch (calendar.get(Calendar.MONTH)) {
-				case Calendar.JANUARY:
-					if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
-						holiday = RegularLevel.Holiday.XMAS;
-					break;
-				case Calendar.OCTOBER:
-					if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
-						holiday = RegularLevel.Holiday.HWEEN;
-					break;
-				case Calendar.NOVEMBER:
-					if (calendar.get(Calendar.DAY_OF_MONTH) == 1)
-						holiday = RegularLevel.Holiday.HWEEN;
-					break;
-				case Calendar.DECEMBER:
-					if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
-						holiday = RegularLevel.Holiday.XMAS;
-					break;
-			}
+			//chinaHoliday = RegularLevel.ChinaHoliday.NONE;
 		}
 	}
 
@@ -150,6 +130,7 @@ public class TitleScene extends PixelScene {
 						NTP_ERROR = true;
 						NTP_ERROR_VEFY = true;
 					}
+
 				} catch (IOException e) {
 					if (!NTP_NOINTER_VEFY || SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()) {
 						NTP_NOINTER = true;

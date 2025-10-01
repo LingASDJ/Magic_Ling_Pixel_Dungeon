@@ -1,9 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.birthday;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.chinaHoliday;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -23,10 +26,9 @@ public class HolidayWindows extends Window {
     public HolidayWindows(){
         resize(WIDTH, HEIGHT);
 
-        RenderedTextBlock rtb = PixelScene.renderTextBlock(Messages.get(Gregorian.class, String.valueOf(holiday)), TTL_HEIGHT - GAP);
+        RenderedTextBlock rtb = PixelScene.renderTextBlock(Messages.get(Gregorian.class, Rules()), TTL_HEIGHT - GAP);
         rtb.setPos(WIDTH/2f - rtb.width()/2, GAP);
-        PixelScene.align(rtb);
-        rtb.hardlight(0xFFFF00);
+        PixelScene.align(rtb);        rtb.hardlight(0xFFFF00);
         add(rtb);
 
 
@@ -39,7 +41,7 @@ public class HolidayWindows extends Window {
         button2.setRect(GAP, rtb.bottom() + 5, WIDTH - GAP * 2, BOX_HEIGHT);
         add(button2);
 
-        rtx = PixelScene.renderTextBlock(Messages.get(Gregorian.class, holiday + "_desc"), 6);
+        rtx = PixelScene.renderTextBlock(Messages.get(Gregorian.class, Rules() + "_desc"), 6);
         rtx.setPos(WIDTH/2f - rtx.width()/2, GAP);
         PixelScene.align(rtx);
         rtx.maxWidth(WIDTH - GAP * 2);
@@ -49,11 +51,24 @@ public class HolidayWindows extends Window {
         resize(WIDTH, (int) (rtx.bottom()+3));
     }
 
+    private String Rules() {
+        if (chinaHoliday != RegularLevel.ChinaHoliday.NONE) {
+            return String.valueOf(chinaHoliday);
+        } else if (holiday != RegularLevel.WestHoliday.NONE) {
+            return String.valueOf(holiday);
+        } else if (birthday != RegularLevel.DevBirthday.NONE) {
+            return String.valueOf(birthday);
+        } else {
+            return "none";
+        }
+    }
+
 
     @Override
     public void update() {
         super.update();
-        button2.text(Gregorian.getRemainingTime());
+        boolean checkList = chinaHoliday != RegularLevel.ChinaHoliday.NONE || holiday != RegularLevel.WestHoliday.NONE  || birthday != RegularLevel.DevBirthday.NONE;
+        button2.text(checkList ? Gregorian.getRemainingTime() : "N / A");
     }
 
 }

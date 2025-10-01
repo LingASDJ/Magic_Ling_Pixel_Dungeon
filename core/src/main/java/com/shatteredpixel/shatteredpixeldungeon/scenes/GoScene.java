@@ -10,6 +10,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
+import com.watabou.utils.Random;
 
 public class GoScene extends PixelScene {
 
@@ -22,7 +23,8 @@ public class GoScene extends PixelScene {
         }
 
         super.create();
-        Music.playModeBGM( Assets.Sounds.ANSDOSHIP,false);
+        boolean isChance = Random.Int(10) == 1;
+        Music.playModeBGM( isChance ? Assets.Music.GO : Assets.Sounds.ANSDOSHIP,false);
         uiCamera.visible = false;
 
         int w = Camera.main.width;

@@ -71,6 +71,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0880_Changes(changeInfos);
         add_V0874_Changes(changeInfos);
         add_V0872_Changes(changeInfos);
         add_V0871_Changes(changeInfos);
@@ -121,6 +122,70 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0880_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.8.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.HEART), ("特殊地形图标系统"),
+                ("现在新增了更多特殊地形的图标：心红空间，火龙巢穴，食物售货机")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：ChinaBirthDay"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期至：2025年10月7日1：05前。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD), ("金蝶模式V2.4"),
+                (
+                        "金蝶模式-V2.4\n\n" +
+                                "_-_ 修复金蝶模式九宫格嬗变不升级：升级次数大于18时会出现嬗变但不升级的情况\n" +
+                                "_-_ 修复金蝶模式NPC“夏渔雾溟”的次数给予是重置当前次数为2，而非添加2次\n" +
+                                "_-_ 修复金蝶模式20层Roll到矮人将军楼层上下楼失效\n" +
+                                "_-_ 金蝶模式现在开局对话“夏渔雾溟”自动给予3饰品\n" +
+                                "_-_ 金蝶模式中的哥布林祭司得到显著增强")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CATALOG), ("平衡案3.4 第二部分"),
+                ("实现了平衡案-V3.4第二部分，详情如下：\n\n" +
+                        "【综合说明】：\n\n" +
+                        "_-_ 全肉大饼去掉低于12力量必定加成的保底\n" +
+                        "_-_ 毒素浸染法杖增加递增伤害\n" +
+                        "_-_ 绿宝石加入300回合冷却，且只有40回合隐身\n")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("全局系统：自定义横幅"),
+                ("在额外设置中，可以定义游戏内带的横幅主题，新增国庆，中秋，重阳主题")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("节日系统大修"),
+                ("现在节日系统优先级为 游戏特殊节日 > 中国传统节日 > 西方传统节日")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "魔绫像素地牢-修复内容：\n\n" +
+                        (       "一、武器与道具系统修复\n" +
+                                "修复：0 层传说武器购买异常，已修正\n" +
+                                "修复：创世神之心卡死异常，已修正\n" +
+                                "修复：创世神之心在特定情况下导致的严重异常，已修正\n\n" +
+                                "二、怪物与 NPC 行为修复\n" +
+                                "修复：亡魂残躯异常，已修正\n" +
+                                "修复：鬼魂及南瓜头鬼魂异常，已修正\n" +
+                                "修复：火魔女充能回合异常，已修正")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("一些NPC移除"),
+                ("根据NPC作者委托方需要，部分NPC已被移除。")));
+
+        changes = new ChangeInfo("v0.8.8.0中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
     }
 
     public static void add_V0874_Changes(ArrayList<ChangeInfo> changeInfos ) {

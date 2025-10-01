@@ -347,7 +347,7 @@ public class Ghost extends NPC {
 				weapon.enchant(null);
 				weapon.cursed = false;
 
-				if(RegularLevel.holiday == RegularLevel.Holiday.ZQJ){
+				if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZQJ){
 					food = new SmallRation.BlackMoon();
 				}
 
@@ -398,7 +398,7 @@ public class Ghost extends NPC {
 
 		public static void spawnBossRush(BossRushItemLevel level, Room room ) {
 			if (!spawned && Dungeon.depth == 4) {
-				if(RegularLevel.holiday == RegularLevel.Holiday.ZQJ){
+				if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZQJ){
 					food = new SmallRation.BlackMoon();
 				}
 				Ghost ghost = new Ghost();

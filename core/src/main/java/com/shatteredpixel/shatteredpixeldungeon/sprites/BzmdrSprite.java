@@ -20,7 +20,7 @@ public class BzmdrSprite extends MobSprite {
         // 定义一个Integer数组来存储帧序列
         Integer[] frameSequence;
 
-        if (RegularLevel.holiday == RegularLevel.Holiday.CJ) {
+        if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ) {
             frameSequence = new Integer[]{2,2,3,3};
         } else {
             frameSequence = new Integer[]{0,0,1,1};

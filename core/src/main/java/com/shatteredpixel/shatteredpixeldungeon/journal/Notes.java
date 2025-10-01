@@ -31,11 +31,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfOil;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.AutoShopReBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.ImpShopkeeper;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkGhost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
@@ -43,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.DragonCaveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.WeakFloorRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -153,6 +156,9 @@ public class Notes {
 		REDAGRON,
 
 		SMALLB,
+		HEART,
+		FIRE_DRAGON,
+		AUTO_SHOP,
 		DEMON_SPAWNER;
 	}
 
@@ -211,6 +217,13 @@ public class Notes {
 
 				case SMALLB:
 					return Icons.MAGIC_DREAM.get();
+
+				case HEART:
+					return Icons.HEART.get();
+				case FIRE_DRAGON:
+					return Icons.FIRE_DRAGON.get();
+				case AUTO_SHOP:
+					return Icons.AUTO_SHOP.get();
 
 				case SHOP:
 					if (depth == 20)    return new Image(new ImpSprite());
@@ -300,6 +313,12 @@ public class Notes {
 				case WELL_OF_TRANSMUTATION: return Messages.get(WaterOfTransmutation.class, "desc");
 				case WELL_OF_OIL: return Messages.get(WaterOfOil.class, "desc");
 				case SMALLB: return Messages.get(DragonGirlBlue.class, "desc");
+
+				case HEART: return  Messages.get(PinkGhost.class, "desc");
+
+				case FIRE_DRAGON: return Messages.get(DragonCaveRoom.DreamcatcherMaker.class,"desc");
+
+				case AUTO_SHOP: return Messages.get(AutoShopReBot.class,"desc");
 
 				case SACRIFICIAL_FIRE:  return Messages.get(SacrificialFire.class, "desc");
 				case STATUE:            return Messages.get(Statue.class, "desc");

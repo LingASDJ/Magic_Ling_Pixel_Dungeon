@@ -64,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroTomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -79,6 +80,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfNukeCole;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
@@ -86,6 +89,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ClearSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.GoldLongGun;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -474,7 +485,16 @@ public class ZeroCityLevel extends Level {
                 gods1 = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
                 gods1.cursed = false;
                 gods1.upgrade();
-                drop(gods1,324).type = Heap.Type.FOR_ICE;
+                Item i  = gods1;
+                if(i instanceof DiedCrossBow || i instanceof MoonDao
+                        || i instanceof SaiPlus || i instanceof RiceSword
+                        || i instanceof RedBloodMoon || i instanceof GoldLongGun ||
+                        i instanceof ClearSword || i instanceof ForestBow){
+                    drop(gods1,324).type = Heap.Type.FOR_SALE;
+                } else {
+                    drop(gods1,324).type = Heap.Type.FOR_ICE;
+                }
+
 
                 Wand gods2;
                 gods2 = (Wand) Generator.random(Generator.Category.WAND);
@@ -686,7 +706,19 @@ public class ZeroCityLevel extends Level {
 
         }
 
-        if(RegularLevel.holiday == RegularLevel.Holiday.CJ){
+        if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.GQJ){
+            drop( new RandomChest(), 130  );
+            drop( new ElixirOfMight(),68  );
+            drop( new RandomChest(), 132  );
+        }
+
+        if(RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY){
+            drop( new ElixirOfNukeCole(), 130  );
+            drop( new Ankh(true),68  );
+            drop( new ElixirOfNukeCole(), 132  );
+        }
+
+        if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ){
             drop( new Pasty(), 725  );
             drop( new Food(), 853  );
         }

@@ -85,14 +85,6 @@ public class WandOfGodIce extends DamageWand {
                 Buff.prolong(ch, Chill.class, 2f + (buffedLvl() * 0.333f));
                 ch.sprite.emitter().burst(Speck.factory(Speck.STAR), 12);
             }
-
-//            if (ch.properties().contains(Char.Property.BOSS)) {
-//                ch.sprite.emitter().start(ShadowParticle.CURSE, 0.05f, 10 + buffedLvl());
-//                Sample.INSTANCE.play(Assets.Sounds.BURNING);
-//                dmg = Math.round(dmg * 2f);
-//            } else {
-//                ch.sprite.centerEmitter().burst(RainbowParticle.BURST, 10 + buffedLvl());
-//            }
         }
 
         return dmg;

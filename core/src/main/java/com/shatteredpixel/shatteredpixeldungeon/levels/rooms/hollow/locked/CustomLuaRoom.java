@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_DECO;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 
@@ -91,6 +92,8 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
         switch (code){
             case 0:
                 return Terrain.WATER;
+            case 1:
+                return EMPTY;
             case 50:
                 return Terrain.WALL_DECO;
             case 67:
@@ -99,6 +102,8 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
                 return Terrain.STATUE_SP;
             case 5:
                 return Terrain.EMPTY_SP;
+            case 57:
+                return Terrain.DOOR;
             case 59:
                 return Terrain.LOCKED_DOOR;
             case 49:

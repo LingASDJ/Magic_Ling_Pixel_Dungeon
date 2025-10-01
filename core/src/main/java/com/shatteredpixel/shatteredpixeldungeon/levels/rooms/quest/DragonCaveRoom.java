@@ -8,11 +8,11 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
@@ -41,15 +41,12 @@ public class DragonCaveRoom extends SpecialRoom {
         return 13;
     }
 
-	@Override
-	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
-		return false;
-	}
-
     @Override
     public void paint(Level level) {
         Point center = new Point((left + right) / 2, (top + bottom) / 2);
         int DragonPos = (top + 6) * level.width() + left + 6;
+
+        Notes.add( Notes.Landmark.FIRE_DRAGON );
 
         DreamcatcherMaker vis = new DreamcatcherMaker();
         Point c = center();

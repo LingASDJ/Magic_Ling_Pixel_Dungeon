@@ -193,7 +193,11 @@ public class ScrollOfTransmutation extends InventoryScroll {
 						if (s != null) {
 							s.detach( hero.belongings.backpack );
 						}
-						item.detach( hero.belongings.backpack );
+                        if(hero.belongings.weapon instanceof BloodthirstyThorn){
+							hero.belongings.weapon = null;
+						} else {
+							item.detach( hero.belongings.backpack );
+						}
 						super.hide();
 						SPDSettings.blood(true);
 					} else if(index == 1){

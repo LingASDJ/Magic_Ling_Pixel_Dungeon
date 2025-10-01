@@ -1,8 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public abstract class GoblinShamanSprite extends MobSprite {
@@ -36,6 +39,23 @@ public abstract class GoblinShamanSprite extends MobSprite {
     }
 
     public static class ShamanStrength extends GoblinShamanSprite {
+        public void attack( int cell ) {
+
+            turnTo( ch.pos , cell );
+            play( zap );
+
+            MagicMissile.boltFromChar( parent,
+                    MagicMissile.FIRE,
+                    this,
+                    cell,
+                    new Callback() {
+                        @Override
+                        public void call() {
+                            ch.onAttackComplete();
+                        }
+                    } );
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
+        }
         @Override
         protected int texOffset() {
             return 0;
@@ -47,6 +67,24 @@ public abstract class GoblinShamanSprite extends MobSprite {
         protected int texOffset() {
             return 18;
         }
+
+        public void attack( int cell ) {
+
+            turnTo( ch.pos , cell );
+            play( zap );
+
+            MagicMissile.boltFromChar( parent,
+                    MagicMissile.FROST,
+                    this,
+                    cell,
+                    new Callback() {
+                        @Override
+                        public void call() {
+                            ch.onAttackComplete();
+                        }
+                    } );
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
+        }
     }
 
     public static class ShamanRegen extends GoblinShamanSprite {
@@ -54,8 +92,42 @@ public abstract class GoblinShamanSprite extends MobSprite {
         protected int texOffset() {
             return 36;
         }
+        public void attack( int cell ) {
+
+            turnTo( ch.pos , cell );
+            play( zap );
+
+            MagicMissile.boltFromChar( parent,
+                    MagicMissile.SHAMAN_RED,
+                    this,
+                    cell,
+                    new Callback() {
+                        @Override
+                        public void call() {
+                            ch.onAttackComplete();
+                        }
+                    } );
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
+        }
     }
     public static class ShamanFake extends GoblinShamanSprite {
+        public void attack( int cell ) {
+
+            turnTo( ch.pos , cell );
+            play( zap );
+
+            MagicMissile.boltFromChar( parent,
+                    MagicMissile.SHADOW_CONE,
+                    this,
+                    cell,
+                    new Callback() {
+                        @Override
+                        public void call() {
+                            ch.onAttackComplete();
+                        }
+                    } );
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
+        }
         @Override
         protected int texOffset() {
             return 54;

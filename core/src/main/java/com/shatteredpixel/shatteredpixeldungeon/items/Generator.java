@@ -21,7 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.chinaHoliday;
 
 import com.nlf.calendar.Lunar;
 import com.nlf.calendar.Solar;
@@ -720,7 +720,7 @@ public class Generator {
 			Lunar lunar = date.getLunar();
 
 			boolean isZYJ = lunar.getMonth() == 7 && (lunar.getDay() >= 15 && lunar.getDay() <= 15 + 7);
-			int isDWJ = holiday == RegularLevel.Holiday.DWJ ? 3 : 0;
+			int isDWJ = chinaHoliday == RegularLevel.ChinaHoliday.DWJ ? 3 : 0;
 
 			int ZYJ = isZYJ ? 1 : 0;
 

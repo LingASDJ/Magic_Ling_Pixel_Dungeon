@@ -1550,7 +1550,12 @@ public class GameScene extends PixelScene {
 							break;
 						case 27:
 							if(Statistics.Hollow_Holiday){
-								WndStory.showChapter(WndStory.ID_HOLLOW_POLT);
+								//TODO Dialog Progress...
+								if((Badges.isUnlocked(Badges.Badge.KILL_DOG)) && 1 == 0){
+									WndStory.showChapter(WndStory.ID_HOLLOW_ALT_POLT);
+								} else {
+									WndStory.showChapter(WndStory.ID_HOLLOW_POLT);
+								}
 							}
 							break;
 					}
@@ -2088,7 +2093,7 @@ public class GameScene extends PixelScene {
 					}
 				}
 
-				Statistics.upgradeGold = Random.NormalIntRange(8,24);
+				Statistics.upgradeGold = Random.NormalIntRange(9,18);
 
 				if(Statistics.RandomQuest == 3){
 					switch (Dungeon.depth){
