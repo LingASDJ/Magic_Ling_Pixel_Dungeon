@@ -22,7 +22,6 @@ public abstract class GoldMob extends Mob {
                 Statistics.goldRefogreCount++;
                 Statistics.GoldMobDead = 0;
             }
-
         }
     }
 

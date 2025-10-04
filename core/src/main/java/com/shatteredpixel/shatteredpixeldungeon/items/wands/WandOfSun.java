@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SunFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
@@ -245,7 +246,9 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
                     }else if(m.buff(SunFire.class).source != this){
                         m.damage((int) (damage * 1.25f),this);
                     }
-                    SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
+                    if(Dungeon.hero.subClass == HeroSubClass.WARLOCK){
+                        SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
+                    }
                     damaged = true;
                 }
 
@@ -260,7 +263,9 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
                         m.damage((int) (damage * 1.25f * 0.75f), this);
                     }
                     damaged = true;
-                    SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
+                    if(Dungeon.hero.subClass == HeroSubClass.WARLOCK) {
+                        SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
+                    }
                 }
 
             }
@@ -274,7 +279,9 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
                         m.damage((int) (damage * 1.25f * 0.5f),this);
                     }
                     damaged = true;
-                    SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
+                    if(Dungeon.hero.subClass == HeroSubClass.WARLOCK) {
+                        SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
+                    }
                 }
             }
             GameScene.updateFog(pos, viewDistance);

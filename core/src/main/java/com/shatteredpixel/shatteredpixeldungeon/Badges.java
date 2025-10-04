@@ -312,7 +312,7 @@ public class Badges {
 	public static void nyzvalidateGoldCollected() {
 		Badge badge = null;
 
-		if (!local.contains( Badge.NYZ_SHOP ) && Statistics.naiyaziCollected >= 7) {
+		if (!local.contains( Badge.NYZ_SHOP ) && Statistics.naiyaziCollected >= 6) {
 			badge = Badge.NYZ_SHOP;
 			local.add( badge );
 		}
