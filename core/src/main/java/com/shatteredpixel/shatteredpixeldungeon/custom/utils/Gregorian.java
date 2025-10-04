@@ -116,7 +116,7 @@ public class Gregorian {
         if (month == 10) {
             if(day >= 1 &&  day < 6){
                 chinaHoliday = RegularLevel.ChinaHoliday.GQJ;
-                eventEndTime = calculateSolarEventEndTime(2025, 10, 5);
+                eventEndTime = calculateSolarEventEndTime(2025, 10, 6);
             }
         }
     }
