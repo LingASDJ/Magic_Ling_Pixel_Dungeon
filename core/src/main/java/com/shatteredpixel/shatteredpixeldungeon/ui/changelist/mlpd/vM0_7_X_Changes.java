@@ -125,7 +125,7 @@ public class vM0_7_X_Changes {
     }
 
     public static void add_V0880_Changes(ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.8.8.0", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.8.8.0-1", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -165,12 +165,27 @@ public class vM0_7_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("全局系统：自定义横幅"),
                 ("在额外设置中，可以定义游戏内带的横幅主题，新增国庆，中秋，重阳主题")));
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("安卓系统"),
+                ("修复部分变种安卓版本调用安装器闪退失败的问题")));
+
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("节日系统大修"),
                 ("现在节日系统优先级为 游戏特殊节日 > 中国传统节日 > 西方传统节日")));
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("药水癔症v0.3"),
+                ("现在全肉大饼在英雄低于12力量前不再必定追加力量，但在11力量以下饮用力量药剂为必定追加力量。")));
+
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 "魔绫像素地牢-修复内容：\n\n" +
-                        (       "一、武器与道具系统修复\n" +
+                        ("0.8.8.1-修复内容：\n" +
+                                "1.修复火龙死亡前越界的严重异常\n" +
+                                "2.修复金蝶任务2：金蝶见证者 效果异常的问题\n" +
+                                "3.修复烈阳法杖必定造成灵魂标记的异常" +
+                                "4.修复FireBase上反馈的一系列问题\n" +
+                                "5.修复国庆节时间计算错误\n" +
+                                "6.暂时让Bzmdr的笔记效果失效"
+                                ),
+                        (       "0.8.8.0-修复内容：\n" +
+                                "一、武器与道具系统修复\n" +
                                 "修复：0 层传说武器购买异常，已修正\n" +
                                 "修复：创世神之心卡死异常，已修正\n" +
                                 "修复：创世神之心在特定情况下导致的严重异常，已修正\n\n" +
