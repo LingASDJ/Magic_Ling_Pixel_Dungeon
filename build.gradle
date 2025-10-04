@@ -31,12 +31,12 @@ allprojects {
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
-        appAndroidCompileSDK = 34
+        appAndroidCompileSDK = 35
         appAndroidMinSDK = 21
         appAndroidTargetSDK = 33
 
-        gdxVersion = '1.12.1'
-        gdxControllersVersion = '2.2.3'
+        gdxVersion = '1.13.6-SNAPSHOT'
+        gdxControllersVersion = '2.2.4'
     }
 
     version = appVersionName
@@ -44,6 +44,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
         maven {
             url = uri("https://jitpack.io")
         }
