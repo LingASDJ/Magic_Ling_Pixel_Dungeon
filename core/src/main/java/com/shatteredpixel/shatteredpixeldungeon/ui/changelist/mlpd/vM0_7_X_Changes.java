@@ -133,6 +133,9 @@ public class vM0_7_X_Changes {
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.LIBGDX), ("LibGDX 1.13！"),
+                ("魔绫现在使用LibGDX1.13系统，对高版本安卓设备支持性能更好。")));
+
         changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("Really Slow Motion-Neutral Assault"),
                 ("此音乐暂时作为 地狱三头犬 的作战BGM")));
 
