@@ -406,7 +406,6 @@ public class AndroidPlatformSupport extends PlatformSupport {
 
 	@Override
 	public void install(File file) {
-		//兼容安卓7.0以下的安装
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
 			File apk = new File(String.valueOf(file));
 			Uri uri = Uri.fromFile(apk);
@@ -414,7 +413,20 @@ public class AndroidPlatformSupport extends PlatformSupport {
 			intent.setClassName("com.android.packageinstaller", "com.android.packageinstaller.PackageInstallerActivity");
 			intent.setData(uri);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			AndroidLauncher.instance.getContext().startActivity(intent);
+
+			if (intent.resolveActivity(AndroidLauncher.instance.getContext().getPackageManager()) != null) {
+				AndroidLauncher.instance.getContext().startActivity(intent);
+			} else {
+				intent.setClassName("com.google.android.packageinstaller", "com.google.android.packageinstaller.PackageInstallerActivity");
+				if (intent.resolveActivity(AndroidLauncher.instance.getContext().getPackageManager()) != null) {
+					AndroidLauncher.instance.getContext().startActivity(intent);
+				} else {
+					intent = new Intent(Intent.ACTION_VIEW);
+					intent.setDataAndType(uri, "application/vnd.android.package-archive");
+					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					AndroidLauncher.instance.getContext().startActivity(intent);
+				}
+			}
 		} else {
 			Intent intent = new Intent(Intent.ACTION_VIEW);
 			String packageName = AndroidLauncher.instance.getContext().getPackageName();
