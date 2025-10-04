@@ -167,6 +167,9 @@ public class FireDragon extends Boss implements Callback {
     }
 
     private void pullEnemy( Char enemy, int pullPos ){
+        if (enemy == null) {
+            return;
+        }
         enemy.pos = pullPos;
         enemy.sprite.place(pullPos);
         if(enemy instanceof DiedClearElemet.ClearElemetalGreen){
@@ -181,7 +184,7 @@ public class FireDragon extends Boss implements Callback {
             Buff.prolong(this,BleedingEffect.class, BleedingEffect.DURATION);
         }
         if(enemy != hero){
-            enemy.die(null);
+            enemy.die(enemy);
         }
         Buff.detach( hero, DragonWall.class);
     }
