@@ -45,6 +45,10 @@ public class QuestGold extends Buff {
 
         result  += "\n" + Messages.get(this, "gold",Statistics.goldRefogreCount);
 
+        if(Statistics.RandomQuest == 2){
+            result  += "\n" + Statistics.GoldMobDead;
+        }
+
         if (!Ghost.Quest.completed()){
             result  += "\n" + Messages.get(this, "ghost");
         }  else {
