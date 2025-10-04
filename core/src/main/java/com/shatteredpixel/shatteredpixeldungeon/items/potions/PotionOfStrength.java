@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -45,7 +46,7 @@ public class PotionOfStrength extends Potion {
 	@Override
 	public void apply( Hero hero ) {
 		identify();
-		if(Dungeon.isChallenged(EXSG)) {
+		if(Dungeon.isChallenged(EXSG) && hero.STR>10) {
 			hero.STR--;
 			hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "esg_1"));
 			GLog.n(Messages.get(this, "esg_2"));
@@ -57,7 +58,6 @@ public class PotionOfStrength extends Potion {
 		}
 
 		Badges.validateStrengthAttained();
-		//Badges.validateDuelistUnlock();
 	}
 
 	@Override
@@ -72,11 +72,11 @@ public class PotionOfStrength extends Potion {
 
 	@Override
 	public String name() {
-		return Dungeon.isChallenged(Challenges.EXSG) && isIdentified() ? Messages.get(this, "namex") : isIdentified() ?  Messages.get(this, "name") : super.name();
+		return Dungeon.isChallenged(Challenges.EXSG) && isIdentified() && hero.STR>10 ? Messages.get(this, "namex") : isIdentified() ?  Messages.get(this, "name") : super.name();
 	}
 
 	@Override
 	public String desc() {
-		return Dungeon.isChallenged(Challenges.EXSG) && isIdentified() ? Messages.get(this, "descx") : isIdentified() ?  Messages.get(this, "desc") : super.desc();
+		return Dungeon.isChallenged(Challenges.EXSG) && isIdentified() && hero.STR>10 ? Messages.get(this, "descx") : isIdentified() ?  Messages.get(this, "desc") : super.desc();
 	}
 }
