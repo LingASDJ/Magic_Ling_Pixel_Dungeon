@@ -21,8 +21,10 @@ public abstract class GoldMob extends Mob {
             if(Statistics.GoldMobDead>=15){
                 Statistics.goldRefogreCount++;
                 Statistics.GoldMobDead = 0;
+            } else {
+                Statistics.GoldMobDead++;
             }
         }
-    }
 
+    }
 }

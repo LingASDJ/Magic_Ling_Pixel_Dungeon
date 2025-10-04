@@ -23,9 +23,11 @@ public class HermitCrabNoShell extends Crab {
             if(Statistics.GoldMobDead>=15){
                 Statistics.goldRefogreCount++;
                 Statistics.GoldMobDead = 0;
+            } else {
+                Statistics.GoldMobDead++;
             }
-
         }
+        
     }
     {
         spriteClass = HermitCrabNoShellSprite.class;

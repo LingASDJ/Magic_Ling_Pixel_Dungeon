@@ -25,9 +25,11 @@ public class GnollThrower extends Gnoll {
             if(Statistics.GoldMobDead>=15){
                 Statistics.goldRefogreCount++;
                 Statistics.GoldMobDead = 0;
+            } else {
+                Statistics.GoldMobDead++;
             }
-
         }
+        
     }
 
     {
