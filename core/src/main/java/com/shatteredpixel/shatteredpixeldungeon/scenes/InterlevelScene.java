@@ -76,7 +76,9 @@ public class InterlevelScene extends PixelScene {
 
 	public enum Mode {
 		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET,
-		NONE,EXBOSS,GOBACK,FRGIRLBOSS,ANCITYBOSS,DR,GARDEN,AMULET,YOG
+		NONE,EXBOSS,GOBACK,FRGIRLBOSS,ANCITYBOSS,DR,GARDEN,AMULET,YOG,
+
+		REDSTART,
 	}
 	public static Mode mode;
 
@@ -266,6 +268,7 @@ public class InterlevelScene extends PixelScene {
 							case ANCITYBOSS:
 							case AMULET:
 							case GARDEN:
+							case REDSTART:
 							case YOG:
 								descend();
 								break;
