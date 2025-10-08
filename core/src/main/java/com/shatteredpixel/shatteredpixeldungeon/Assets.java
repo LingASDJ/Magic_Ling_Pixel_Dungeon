@@ -44,6 +44,7 @@ public class Assets {
 		public static final String LockedNineRoom_MapLua      = "lua/iron_key9.lua";
 
 		public static final String PinkGhostRoom_MapLua      = "lua/pinkghostroom.lua";
+		public static final String SliceDeadRoom_MapLua 	= "lua/slicetan.lua";
 	}
 
 	public static class Environment {
@@ -675,6 +676,9 @@ public class Assets {
 
 		public static final String BOAT = "sprites/hollow/boat.png";
 		public static final String SWTICH = "sprites/hollow/Silence_Witch.png";
+
+		public static final String SWTICH_ALTER = "sprites/hollow/silence_altar.png";
+
 		public static final String CSBR = "sprites/hollow/Cerberus.png";
 		public static final String NCSBR = "sprites/hollow/New_Cerberus.png";
 

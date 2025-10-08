@@ -681,7 +681,7 @@ public class Hero extends Char {
 			case 2:
 				return 11;
 			case 3:
-				return 12;
+				return 10;
 		}
 
 		if (armor instanceof ClassArmor){
