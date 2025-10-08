@@ -110,6 +110,8 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
                 return Terrain.WALL;
             case 25:
                 return Terrain.CHASM;
+            case 20:
+                return Terrain.EMPTY_WELL;
             case 21:
                 return Terrain.PEDESTAL;
             default:

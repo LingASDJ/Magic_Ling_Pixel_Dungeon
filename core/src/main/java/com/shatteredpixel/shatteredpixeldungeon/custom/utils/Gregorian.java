@@ -110,7 +110,7 @@ public class Gregorian {
     }
 
     /**
-     * 检查是否为国庆节期间（农历10月1日至10.5）
+     * 检查是否为国庆节期间（阳历10月1日至10.5）
      */
     private static void checkChinaBirthday(int month, int day) {
         if (month == 10) {

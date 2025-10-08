@@ -4,6 +4,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRong;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.SliceGirl;
@@ -160,6 +162,7 @@ public class SlicePlot extends Plot {
     private void process_to_6() {
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.Silence_3));
         diagulewindow.changeText(Messages.get(SliceGirl.class, "message6"));
+        Buff.affect(hero, SliceDeadBless.class).set( 100, 1 );
     }
 
 }

@@ -22,8 +22,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Anger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Junko;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Smart;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Pink;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Smart;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -41,7 +41,6 @@ import com.watabou.utils.PointF;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class PacmanHollowActorLevel extends Level {
@@ -215,11 +214,11 @@ public class PacmanHollowActorLevel extends Level {
         Ghost_Smart ghostOrange = new Ghost_Smart();
         ghostOrange.pos = 255;
         mobs.add(ghostOrange);
-//
+
         Ghost_Pink ghostPink = new Ghost_Pink();
         ghostPink.pos = 274;
         mobs.add(ghostPink);
-//
+
         Ghost_Junko ghostRed = new Ghost_Junko();
         ghostRed.pos = 276;
         mobs.add(ghostRed);

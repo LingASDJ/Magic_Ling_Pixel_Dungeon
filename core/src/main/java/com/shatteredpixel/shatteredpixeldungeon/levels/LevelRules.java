@@ -24,12 +24,14 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.CerDogBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.PacmanHollowActorLevel;
@@ -265,8 +267,15 @@ public class LevelRules {
                     case 26:
                         return !Statistics.Hollow_Holiday ? new LastLevel() : new HollowExitLevel();
 
-                    case 27: case 28: case 29: case 30:
+                    case 27: case 28: case 29:
                         return Statistics.Hollow_Holiday ? new HollowLevel() : new DeadEndLevel();
+
+                    case 30:
+                        if(hero.buffs(SliceDeadBless.class) !=null ){
+                            return new TheatreLevel();
+                        } else {
+                            new HollowLevel();
+                        }
 
                     case 31:
                         return new CerDogBossLevel();
@@ -302,7 +311,7 @@ public class LevelRules {
                         return new DwarfGeneralBossLevel();
                     case 28:
                         return new TheatreLevel();
-                    case 29:
+                    case 30:
                         return new PacmanHollowActorLevel();
                     default:
                         return new DeadEndLevel();

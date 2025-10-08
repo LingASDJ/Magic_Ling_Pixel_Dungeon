@@ -11,12 +11,22 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
 
 public class TheatreLevel extends Level {
     {
         color1 = 0x801500;
         color2 = 0xa68521;
         viewDistance = 16;
+    }
+
+    @Override
+    public void playLevelMusic(){
+        if (locked){
+            Music.playModeBGM(Assets.Music.BGM_YOU, true);
+        } else {
+            Music.INSTANCE.end();
+        }
     }
 
     private static final int WIDTH = 21;

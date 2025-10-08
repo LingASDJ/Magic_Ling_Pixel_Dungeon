@@ -1,19 +1,26 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Script;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 
 public class MorphsNPCPlot extends Plot {
 
 
-    private final static int maxprocess = 5;
+    private final static int maxprocess = 7;
 
     {
         process = 1;
@@ -51,6 +58,12 @@ public class MorphsNPCPlot extends Plot {
                     break;
                 case 5:
                     process_to_5();
+                    break;
+                case 6:
+                    process_to_6();
+                    break;
+                case 7:
+                    process_to_7();
                     break;
             }
             diagulewindow.update();
@@ -93,16 +106,39 @@ public class MorphsNPCPlot extends Plot {
 
     private void process_to_4() {
         diagulewindow.darkenMainAvatar();
-        diagulewindow.setRightName(Script.Name(Script.Character.SLICE));
-        diagulewindow.setSecondAvatar(new Image(Assets.Splashes.Silence_1));
+        diagulewindow.setLeftName(Script.Name(Script.Character.SLICE));
+        diagulewindow.setMainAvatar(new Image(Assets.Splashes.Silence_1));
         diagulewindow.changeText(Messages.get(MorphsNPC.class, "message4"));
     }
 
     private void process_to_5() {
-        diagulewindow.setSecondAvatar(new Image(Assets.Splashes.Silence_1));
+        diagulewindow.setMainAvatar(new Image(Assets.Splashes.Silence_1));
         diagulewindow.changeText(Messages.get(MorphsNPC.class, "message5"));
         Dungeon.level.seal();
         GameScene.bossReady();
+    }
+
+
+    private void process_to_6() {
+        diagulewindow.hideAll();
+        diagulewindow.setLeftName(" ");
+        diagulewindow.changeText(Messages.get(MorphsNPC.class, "message6"));
+        Dungeon.level.playLevelMusic();
+    }
+
+    private void process_to_7(){
+        InterlevelScene.mode = InterlevelScene.Mode.REDSTART;
+        TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+        if (timeFreeze != null) timeFreeze.disarmPresses();
+        Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+        if (timeBubble != null) timeBubble.disarmPresses();
+        InterlevelScene.curTransition = new LevelTransition();
+        InterlevelScene.curTransition.destDepth = depth;
+        InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
+        InterlevelScene.curTransition.destBranch = 1;
+        InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+        InterlevelScene.curTransition.centerCell  = -1;
+        Game.switchScene( InterlevelScene.class );
     }
 
 }
