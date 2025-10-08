@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AutoRandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.EbonyMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
@@ -71,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.builders.FigureEightBuild
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.SliceDeadRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.DragonCaveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
@@ -427,6 +429,10 @@ public abstract class RegularLevel extends Level {
 //		initRooms.add(new ThreeLockedRoom());
 //		initRooms.add(new FourLockedRoom());
 //		initRooms.add(new FiveLockedRoom());
+
+		if(hero.buffs(SliceDeadBless.class) !=null && depth == 28){
+			initRooms.add(new SliceDeadRoom());
+		}
 
 		//Rush Shop
 		if(Statistics.bossRushMode && branch == 0 && Dungeon.shopRushLevel()){
