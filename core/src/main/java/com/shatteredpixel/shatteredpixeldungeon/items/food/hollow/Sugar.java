@@ -20,7 +20,7 @@ import com.watabou.utils.Random;
 public class Sugar extends Food {
 
     {
-        image = ItemSpriteSheet.ROIL_SUGAR;
+        image = ItemSpriteSheet.TOFFEE;
         energy = 100f;
         defaultAction = AC_THROW;
         usesTargeting = true;

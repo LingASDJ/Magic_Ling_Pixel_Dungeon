@@ -172,6 +172,8 @@ public class BuffIndicator extends Component {
 	public static final int PROP_SHADOW = 120;
 	public static final int WAND_MAGIC = 121;
 
+	public static final int SLICE_BLESS = 122;
+
 
     public static final int SIZE_SMALL = 7;
     public static final int SIZE_LARGE = 16;

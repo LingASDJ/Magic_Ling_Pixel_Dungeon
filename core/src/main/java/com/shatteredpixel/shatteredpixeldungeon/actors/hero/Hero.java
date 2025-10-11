@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossRushMode;
@@ -210,6 +211,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.PacManQuest;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -1162,7 +1164,7 @@ public class Hero extends Char {
 	public boolean act() {
 
 		//水中祝福 但在BR不生效
-		if((Dungeon.branch == 0 || Dungeon.branch == 10) && !bossRushMode){
+		if((branch == 0 || branch == 10) && !bossRushMode){
 			MoveWater();
 		}
 
@@ -2924,7 +2926,7 @@ public class Hero extends Char {
 
 	private void MoveWater(){
 
-		if(Dungeon.depth == 26 && Dungeon.branch == 10 && Dungeon.level.water[pos] && flying){
+		if(Dungeon.depth == 26 && branch == 10 && Dungeon.level.water[pos] && flying){
 			Buff.prolong( hero, Slow.class, 2f);
 		} else {
 			Buff.detach( hero, Slow.class);
@@ -2975,7 +2977,7 @@ public class Hero extends Char {
 
 	@SuppressWarnings("unchecked")
 	private boolean actMove( HeroAction.Move action ) {
-
+		collectSpecialItems();
 		CapeOfThorns.HeroThorns thornsTalent = buff( CapeOfThorns.HeroThorns.class );
 		if(thornsTalent != null){
 			thornsTalent.detach();
@@ -3049,17 +3051,6 @@ public class Hero extends Char {
 			Buff.affect(this, MIME.GoldTwoCooldown.class, 300f );
 		}
 
-
-
-//        // 深度调查
-//        if ((Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
-//            happyMode = true;
-//            GLog.n(Messages.get(WndStory.class, "letsplay"));
-//        }
-
-
-
-
 		if (getCloser(action.dst)) {
 			canSelfTrample = false;
 			return true;
@@ -3075,6 +3066,34 @@ public class Hero extends Char {
 			return false;
 		}
 	}
+
+	private void collectSpecialItems() {
+		Heap heap = Dungeon.level.heaps.get(pos);
+		if (heap != null) {
+			ArrayList<Item> itemsToCollect = new ArrayList<>();
+
+			for (Item item : heap.items) {
+				if (item instanceof PacManQuest) {
+					if (Dungeon.depth == 31 && branch == 1) {
+						itemsToCollect.add(item);
+					}
+				}
+			}
+
+			for (Item item : itemsToCollect) {
+				if (item instanceof PacManQuest) {
+					((PacManQuest) item).autocollect(item, pos);
+					heap.remove(item);
+				}
+			}
+
+			if (heap.isEmpty()) {
+				Dungeon.level.heaps.remove(pos);
+			}
+		}
+	}
+
+
 
 	@Override
 	public void die( Object cause ) {
@@ -3138,7 +3157,7 @@ public class Hero extends Char {
 				Statistics.ankhsUsed++;
 
 				//TODO Chinese
-				if(Dungeon.branch == 10 && Dungeon.depth == 26){
+				if(branch == 10 && Dungeon.depth == 26){
 					GLog.w("索托斯：谨慎一点，再失误一次可就危险了。");
 				}
 
@@ -3180,7 +3199,7 @@ public class Hero extends Char {
 			}
 			return;
 
-		} else if(Dungeon.branch == 10 && Dungeon.depth == 26){
+		} else if(branch == 10 && Dungeon.depth == 26){
 			this.HP = HT / 4;
 			PotionOfHealing.cure(this);
 			Buff.prolong(this, Invulnerability.class, Invulnerability.DURATION);

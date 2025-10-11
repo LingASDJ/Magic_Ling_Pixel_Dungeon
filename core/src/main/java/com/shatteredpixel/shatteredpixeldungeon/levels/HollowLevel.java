@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Vampire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.SliceGirl;
@@ -190,7 +191,8 @@ public class HollowLevel extends RegularLevel {
             }
         }
 
-        if((Badges.isUnlocked(Badges.Badge.KILL_DOG))) {
+        //古堡第二幕
+        if((Badges.isUnlocked(Badges.Badge.KILL_DOG)) && depth == 27 && Statistics.Hollow_Holiday) {
             SliceGirl sliceGirl = new SliceGirl();
             sliceGirl.pos = exit();
             mobs.add(sliceGirl);

@@ -62,9 +62,7 @@ public class MagicMissile extends Emitter {
 	public static final int MAGIC_MISSILE   = 0;
 	public static final int FROST           = 1;
 	public static final int FIRE            = 2;
-	public static final int HALOFIRE            = 300;
 
-	public static final int FROSTFIRE           = 301;
 	public static final int CORROSION       = 3;
 	public static final int FOLIAGE         = 4;
 	public static final int FORCE           = 5;
@@ -80,6 +78,10 @@ public class MagicMissile extends Emitter {
 	public static final int TOXIC_VENT      = 14;
 	public static final int ELMO            = 15;
 	public static final int POISON          = 16;
+
+	public static final int HALOFIRE            = 300;
+
+	public static final int FROSTFIRE           = 301;
 
 	public static final int MAGIC_MISS_CONE = 100;
 	public static final int FROST_CONE      = 101;

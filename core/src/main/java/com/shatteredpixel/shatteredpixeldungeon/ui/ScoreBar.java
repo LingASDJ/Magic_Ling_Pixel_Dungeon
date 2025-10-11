@@ -1,0 +1,222 @@
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2024 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
+package com.shatteredpixel.shatteredpixeldungeon.ui;
+
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.CYELLOW;
+import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.GREEN_COLOR;
+import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.ORAGNECOLOR;
+import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.Pink_COLOR;
+import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.RED_COLOR;
+import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.SKYBULE_COLOR;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.ui.Component;
+
+import java.lang.reflect.Field;
+
+public class ScoreBar extends Component {
+
+    private Image bar;
+    private Image scoreBar;
+    private BitmapText scoreText;
+
+    private Image gameStatus;
+
+    private static ScoreBar instance;
+    private static int score = 0;
+
+    private static int Rules;
+
+    private static int highScoreThreshold = HighScoreRules();
+
+    private static String asset = Assets.Interfaces.SCORE_BAR;
+
+    public static int HighScoreRules() {
+        if(Dungeon.depth == 31){
+            switch (Dungeon.branch){
+                case 2:
+                    highScoreThreshold = 3600;
+                    break;
+                case 3:
+                    highScoreThreshold = 12000;
+                    break;
+                default:
+                    highScoreThreshold = 6000;
+                    break;
+            }
+        } else {
+            highScoreThreshold = 0;
+        }
+        return highScoreThreshold;
+    }
+
+    public ScoreBar() {
+        super();
+        visible = active = hero.buff(ScoreBuff.class) != null;
+        instance = this;
+    }
+
+    @Override
+    public synchronized void destroy() {
+        super.destroy();
+        if (instance == this && hero.buff(ScoreBuff.class)==null) instance = null;
+    }
+
+    public static void setRules(int rules) {
+        Rules = rules;
+    }
+
+    @Override
+    protected void createChildren() {
+        bar = new Image(asset, 0, 0, 64, 16);
+        add(bar);
+
+        scoreBar = new Image(asset, 0, 28, 24, 4);
+        addToBack(scoreBar);
+
+        gameStatus = new Image(ImageRules(Rules));
+        add(gameStatus);
+
+        width = bar.width;
+        height = bar.height;
+
+        scoreText = new BitmapText(PixelScene.pixelFont);
+        scoreText.alpha(0.6f);
+        add(scoreText);
+    }
+
+    public static Image ImageRules(int rules) {
+        Rules = rules;
+        switch (rules){
+            case 2:
+                return new Image(asset, 16, 16, 10, 10);
+            case 3:
+                return new Image(asset, 32, 16, 10, 10);
+            default:
+                return new Image(asset, 0, 16, 10, 10);
+        }
+    }
+
+    @Override
+    protected void layout() {
+        bar.x = x;
+        bar.y = y;
+
+        scoreText.scale.set(PixelScene.align(0.5f));
+        scoreText.x = bar.x + 25;
+        scoreText.y = bar.y + (bar.height - (scoreText.baseLine() + scoreText.scale.y)) / 7f;
+        scoreText.y -= 0.001f; // prefer to be slightly higher
+        PixelScene.align(scoreText);
+
+        scoreBar.x = bar.x + 15;
+        scoreBar.y = bar.y + 8;
+
+        gameStatus.x = bar.x + 2;
+        gameStatus.y = bar.y + 2;
+
+        PixelScene.align(scoreBar);
+    }
+
+    @Override
+    public void update() {
+        super.update();
+
+        asset = Assets.Interfaces.SCORE_BAR;
+
+        // Update score bar display
+        scoreText.text(score + "/" + highScoreThreshold);
+
+        // Define color based on score
+        if (score >= (highScoreThreshold * 6) / 6) {
+            scoreText.hardlight(Pink_COLOR); // 优秀
+            scoreBar.scale.x = (float) 6 /6;
+        } else if (score >= (highScoreThreshold * 5) / 6) {
+            scoreText.hardlight(Window.WATA_COLOR); // 优秀
+            scoreBar.scale.x = (float) 5 /6;
+        } else if (score >= (highScoreThreshold * 4) / 6) {
+            scoreText.hardlight(GREEN_COLOR); // 良好
+            scoreBar.scale.x = (float) 4 /6;
+        } else if (score >= (highScoreThreshold * 3) / 6) {
+            scoreText.hardlight(CYELLOW); // 合格
+            scoreBar.scale.x = (float) 3 /6;
+        } else if (score >= (highScoreThreshold * 2) / 6) {
+            scoreText.hardlight(ORAGNECOLOR); // 合格偏下
+            scoreBar.scale.x =(float) 2 /6;
+        } else if (score >= (highScoreThreshold) / 6) {
+            scoreText.hardlight(SKYBULE_COLOR); // 不及格偏上
+            scoreBar.scale.x =(float) 1 /6;
+        } else {
+            scoreText.hardlight(RED_COLOR); // 不及格
+            scoreBar.scale.x = 0f;
+        }
+    }
+
+    public static void assignScore(int newScore, int highScoreThreshold) {
+        if (ScoreBar.score == newScore && ScoreBar.highScoreThreshold == highScoreThreshold) {
+            return;
+        }
+        ScoreBar.score = newScore;
+        updateStatisticsScore(newScore);
+        ScoreBar.highScoreThreshold = highScoreThreshold;
+        if (instance != null) {
+            instance.visible = instance.active = true;
+            instance.layout();
+        }
+    }
+
+    public static void updateStatisticsScore(int newScore) {
+        ScoreBuff buff = hero.buff(ScoreBuff.class);
+        if (hero.buff(ScoreBuff.class) != null) {
+          buff.score = newScore;
+        } else {
+            Statistics.PacManScore = newScore;
+        }
+    }
+
+    public static boolean isAssigned() {
+        return score >= 0 && score <= highScoreThreshold;
+    }
+
+    public static void updateScoreFromBuff(Buff buff) {
+        if (buff != null) {
+            try {
+                Field scoreField = buff.getClass().getDeclaredField("score");
+                scoreField.setAccessible(true);
+                Object scoreValue = scoreField.get(buff);
+                if (scoreValue instanceof Integer) {
+                    int newScore = (Integer) scoreValue;
+                    assignScore(newScore, highScoreThreshold);
+                    updateStatisticsScore(newScore);
+                }
+            } catch (NoSuchFieldException | IllegalAccessException ignored) {
+            }
+        }
+    }
+}

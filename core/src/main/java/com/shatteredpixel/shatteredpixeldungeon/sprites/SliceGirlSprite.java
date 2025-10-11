@@ -27,4 +27,9 @@ public class SliceGirlSprite extends MobSprite {
         play( idle );
     }
 
+    public void leapPrep( int cell ){
+        turnTo( ch.pos, cell );
+        play( run );
+    }
+
 }

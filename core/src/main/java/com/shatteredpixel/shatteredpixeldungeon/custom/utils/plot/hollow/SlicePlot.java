@@ -11,9 +11,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRon
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.SliceGirl;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.tweeners.AlphaTweener;
+import com.watabou.utils.Callback;
 
 public class SlicePlot extends Plot {
 
@@ -154,15 +158,37 @@ public class SlicePlot extends Plot {
 
     private void process_to_5()
     {
-        diagulewindow.setLeftName(Messages.get(SliceGirl.class,"name"));
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.Silence_2));
         diagulewindow.changeText(Messages.get(SliceGirl.class,"message5"));
     }
 
     private void process_to_6() {
+        diagulewindow.setLeftName(Messages.get(SliceGirl.class,"name"));
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.Silence_3));
         diagulewindow.changeText(Messages.get(SliceGirl.class, "message6"));
         Buff.affect(hero, SliceDeadBless.class).set( 100, 1 );
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof SliceGirl) {
+                ((SliceGirlSprite)mob.sprite).leapPrep(Dungeon.level.exit()+6);
+                mob.sprite.parent.add( new AlphaTweener( mob.sprite, 0, 3f ) {
+                    @Override
+                    protected void onComplete() {
+                       mob.sprite.killAndErase();
+                    }
+                } );
+                mob.sprite.jump(Dungeon.level.exit(), Dungeon.level.exit()+6,0,3f, new Callback() {
+                    @Override
+                    public void call() {
+                        mob.die(true);
+                        mob.move(Dungeon.level.exit()+6);
+                        Dungeon.level.occupyCell(hero);
+                        Dungeon.observe();
+                        GameScene.updateFog();
+                        hero.spendAndNext(1);
+                    }
+                });
+            }
+        }
     }
 
 }

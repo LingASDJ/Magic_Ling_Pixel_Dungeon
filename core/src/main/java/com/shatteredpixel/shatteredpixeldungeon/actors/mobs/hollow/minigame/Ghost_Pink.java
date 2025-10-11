@@ -3,13 +3,20 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.PacManQuest;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniGhostSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -35,13 +42,61 @@ public class Ghost_Pink extends Mob {
         AI_state = bundle.getInt(RecordOtherGhost_STATE);
     }
 
+    @Override
+    public boolean isAlive() {
+        if (hero.buff(PacManQuest.AntiAttack.class) != null) {
+            Bestiary.setSeen(getClass());
+            Bestiary.countEncounter(getClass());
+            if (sprite != null) ((MiniGhostSprite) sprite).crumple();
+        }
+
+        return true;
+    }
+
+    @Override
+    protected boolean canAttack(Char enemy) {
+        if (enemy != null) {
+            if (enemy.buff(PacManQuest.AntiAttack.class) != null) {
+                return false;
+            }
+        }
+        return Dungeon.level.adjacent(pos, enemy.pos);
+    }
+
+    @Override
+    protected boolean getCloser(int target) {
+        if (state == HUNTING) {
+            if (enemy != null && enemy.buff(PacManQuest.AntiAttack.class) != null) {
+                return getFurther(target);
+            } else if (enemy != null && enemy.buff(PacManQuest.AntiAttack.class) == null) {
+                return super.getCloser(target);
+            }
+        }
+        return super.getCloser(target);
+    }
+
     public static class RecordOtherGhost extends FlavourBuff { }
 
     @Override
     protected boolean act() {
         AiState lastState = state;
-        if(lastState == SLEEPING){
-            ScrollOfTeleportation.appear(this, Dungeon.level.randomDestination(this));
+        if(HP < 1){
+            ScrollOfTeleportation.appear(this, 274);
+            Buff.affect(this, Paralysis.class, Paralysis.DURATION);
+            HP = 10;
+            PacManQuest.AntiAttack buff = hero.buff(PacManQuest.AntiAttack.class);
+            if(buff != null){
+                int powerOfTwo = 1 << buff.Plus;
+                hero.sprite.showStatus(Window.Pink_COLOR, "+"+200 * powerOfTwo);
+                PacManQuest.GetScore(hero, 200 * powerOfTwo);
+                if(200 * powerOfTwo == 1600){
+                    PaswordBadges.GHOST_HUNTER();
+                }
+                buff.Plus++;
+            }
+        }
+        if(lastState == SLEEPING || (buff(Paralysis.class)==null && hero.buff(PacManQuest.AntiAttack.class)==null && pos == 274)){
+            ScrollOfTeleportation.appear(this, 215);
             Buff.affect(hero, MagicalSight.class, MagicalSight.DURATION*200);
             state = HUNTING;
         }
@@ -71,6 +126,27 @@ public class Ghost_Pink extends Mob {
             }
         }
         return super.act();
+    }
+
+    @Override
+    public int attackProc(Char enemy, int damage) {
+        if(hero.buffs(ScoreBuff.class)!=null){
+            ScoreBuff buff = hero.buff(ScoreBuff.class);
+            buff.downScore(200);
+            hero.sprite.showStatus(Window.R_COLOR, "-"+200);
+            ScrollOfTeleportation.appear(this, 274);
+            ScrollOfTeleportation.appear(hero, 389);
+            Buff.affect(hero,  Invisibility.class, 3f);
+        }
+        return super.attackProc(enemy, damage);
+    }
+
+    @Override
+    public boolean isInvulnerable(Class effect) {
+        if (effect == PacManQuest.SugarBomb.class) {
+            return false;
+        }
+        return hero.buff(PacManQuest.AntiAttack.class) == null || super.isInvulnerable(effect);
     }
 
     @Override

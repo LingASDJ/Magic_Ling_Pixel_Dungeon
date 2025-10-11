@@ -7,6 +7,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.DOOR;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_WELL;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.FURROWED_GRASS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.HIGH_GRASS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.PEDESTAL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
@@ -20,24 +21,32 @@ import static com.watabou.utils.Random.getRandomElement;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Anger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Junko;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Pink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Smart;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.PacManQuest;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScoreBar;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.PointF;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +61,7 @@ public class PacmanHollowActorLevel extends Level {
 
     @Override
     public void playLevelMusic(){
-        Music.playModeBGM(Assets.Music.BGM_YOU, true);
+        Music.playModeBGM(Assets.Music.PACMAN, true);
     }
 
     private static final int WIDTH = 19;
@@ -68,6 +77,7 @@ public class PacmanHollowActorLevel extends Level {
     private static final int G = EMPTY_WELL;
     private static final int Y = ALCHEMY;
     private static final int A = HIGH_GRASS;
+    private static final int N = FURROWED_GRASS;
     private static final int D = DOOR;
     private static final int M = WALL_DECO;
     private static final int S = SIGN;
@@ -92,9 +102,9 @@ public class PacmanHollowActorLevel extends Level {
             W,M,W,W,D,W,E,E,E,E,E,E,E,W,D,W,W,M,W,
             W,E,R,E,E,W,E,M,W,W,W,M,E,W,E,E,R,E,W,
             W,R,R,R,E,E,E,E,E,W,E,E,E,E,E,R,R,R,W,
-            W,R,M,W,W,D,K,K,R,E,R,K,K,D,W,W,M,R,W,
-            W,E,E,E,W,E,E,X,R,R,R,X,E,E,W,E,E,E,W,
-            W,E,E,E,W,E,E,F,E,R,E,F,E,E,W,E,E,E,W,
+            W,R,M,W,W,D,K,K,R,N,R,K,K,D,W,W,M,R,W,
+            W,E,E,E,W,E,E,X,N,R,N,X,E,E,W,E,E,E,W,
+            W,E,E,E,W,E,E,F,E,N,E,F,E,E,W,E,E,E,W,
             K,K,K,D,M,F,K,D,K,K,K,D,K,F,M,D,K,K,K,
             K,X,E,F,F,F,K,F,F,K,F,F,K,F,F,F,E,X,K,
             K,E,E,F,F,Y,W,E,E,W,E,E,W,Y,F,F,E,E,K,
@@ -121,10 +131,66 @@ public class PacmanHollowActorLevel extends Level {
         return true;
     }
 
+    private Item HighGoodItem(){
+        Item item;
+        int randomValue = Random.Int(100);
+        int i = 218;
+        if (randomValue < 25) {
+            item = new PacManQuest.Chocolate();
+        } else if (randomValue < 40) {
+            item = new PacManQuest.SugarBomb();
+        } else if (randomValue < 85) {
+            item = new PacManQuest.Lollipop();
+        } else if (randomValue < 95) {
+            item = new PacManQuest.Gumdrop();
+        } else {
+            item = new PacManQuest.Toffee();
+        }
+        return item;
+    }
+
+    private boolean foundQuestItem = false;
 
     @Override
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
+
+        PacManQuest.RandomItemPlus buff = hero.buff(PacManQuest.RandomItemPlus.class);
+        int i = 218;
+        Heap highItems = Dungeon.level.heaps.get(i);
+        if(buff != null && buff.Plus == 1 && highItems == null){
+            if(!buff.onlyItem){
+                MagicMissile.boltFromChar(hero.sprite.parent,
+                        Random.Int(14),
+                        new MissileSprite(),
+                        i,
+                        () -> {
+                            Dungeon.level.drop(HighGoodItem(), i);
+                        });
+               buff.onlyItem = true;
+            }
+        }
+
+        ScoreBuff scoreBuff = hero.buff(ScoreBuff.class);
+        int bigPointCount = 0;
+        int smallPointCount = 0;
+        for (int x = 0; x < map.length; x++) {
+            Heap heap = Dungeon.level.heaps.get(x);
+            if (heap != null && !heap.isEmpty()) {
+                for (Item item : heap.items) {
+                    if (item instanceof PacManQuest.BigPoint) {
+                        bigPointCount++;
+                    } else if (item instanceof PacManQuest.SmallPoint) {
+                        smallPointCount++;
+                    }
+                }
+            }
+        }
+        if(scoreBuff != null){
+           scoreBuff.SmallPoint = smallPointCount;
+           scoreBuff.BiggerPoint = bigPointCount;
+        }
+
 
         if (ch.pos == 248) {
             Heap heap = Dungeon.level.heaps.get(248);
@@ -222,11 +288,49 @@ public class PacmanHollowActorLevel extends Level {
         Ghost_Junko ghostRed = new Ghost_Junko();
         ghostRed.pos = 276;
         mobs.add(ghostRed);
+
+        ScoreBar.assignScore(0,6000);
+        Buff.affect(hero, ScoreBuff.class);
+        ScoreBar.updateScoreFromBuff(hero.buff(ScoreBuff.class));
+        ScoreBar.setRules(1);
+        Buff.affect(hero, PacManQuest.RandomItemPlus.class);
     }
+
+
+
+    private static final int[] Big_Point_Item = {
+            58,74,400,416,524,520
+    };
+
+    private static final int[] noStop_spawnItem = {
+            264, 263, 262, 248, 249, 250,
+            283, 282, 281, 267, 268, 269,
+            215, 216, 217, 218, 219, 220, 221,
+            240, 259, 278, 297,
+            316, 315, 314, 313, 312, 311, 310,
+            291, 272, 253, 234, 215,
+            255, 256, 257,
+            274, 275, 276,
+            58,  74,  400, 416, 524, 520
+    };
 
     @Override
     protected void createItems() {
 
+        for (int i = 0; i < map.length; i++) {
+            int finalI = i;
+            if (passable[i] &&
+                    Arrays.stream(noStop_spawnItem).noneMatch(pos -> pos == finalI)
+                        && (map[i] != DOOR && map[i] != WATER && map[i] != HIGH_GRASS)) {
+                if (i != 0) {
+                    drop(new PacManQuest.SmallPoint(), i);
+                }
+            }
+        }
+
+        for (int i : Big_Point_Item) {
+            drop(new PacManQuest.BigPoint(), i);
+        }
     }
 
     @Override

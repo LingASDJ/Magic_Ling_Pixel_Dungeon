@@ -22,11 +22,7 @@ public class TheatreLevel extends Level {
 
     @Override
     public void playLevelMusic(){
-        if (locked){
-            Music.playModeBGM(Assets.Music.BGM_YOU, true);
-        } else {
-            Music.INSTANCE.end();
-        }
+        Music.INSTANCE.end();
     }
 
     private static final int WIDTH = 21;

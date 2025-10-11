@@ -445,6 +445,7 @@ public class Statistics {
 	public static ArrayList<Prop> propNegative0;
 	public static ArrayList<Prop> propNegative1;
 	public static ArrayList<Prop> propNegative2;
+	public static int PacManScore;
 
 	static {
 		propPositive0 = new ArrayList<>(Arrays.asList(
@@ -707,6 +708,8 @@ public class Statistics {
 		//BossRush2.5
 		LimitLiquidMatal = 0;
 		LiquidMatalOnlyTen = false;
+
+		PacManScore = 0;
 	}
 
 	public static boolean hasAllRarenessProp(int rare,int kind){
@@ -853,6 +856,9 @@ public class Statistics {
 		bundle.put("lovemagicgirl",LoveMagicGirl);
 
 		bundle.put("NOTIME",NoTime);
+
+
+		bundle.put("PACMANSCORE",PacManScore);
 
 		//分数
 		bundle.put( PROG_SCORE,  progressScore );
@@ -1082,6 +1088,8 @@ public class Statistics {
 		zeroItemLevel = bundle.getInt(ZEROLEVEL);
 
 		NoTime = bundle.getBoolean("NOTIME");
+
+		PacManScore = bundle.getInt("PACMANSCORE");
 
 		//嗜血荆棘等级处理
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );
