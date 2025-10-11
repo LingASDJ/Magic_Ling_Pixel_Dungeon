@@ -1222,6 +1222,16 @@ public class SPDSettings extends GameSettings {
 		return getInt(KEY_RECORD, 0);
 	}
 
+	public static final String KEY_PACMANSOCRE	= "pacman";
+
+	public static void PacManScore(int value) {
+		put(KEY_PACMANSOCRE, value);
+	}
+
+	public static int PacManScore() {
+		return getInt(KEY_PACMANSOCRE, 0);
+	}
+
 	public static final String KEY_BLOOD = "bloodxsd";
 	public static boolean blood() {
 		return getBoolean(KEY_BLOOD, false);

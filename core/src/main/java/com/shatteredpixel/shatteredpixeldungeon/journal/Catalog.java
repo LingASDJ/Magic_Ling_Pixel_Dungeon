@@ -306,17 +306,7 @@ public enum Catalog {
 
 	}
 
-	//old badges for pre-2.5
-	public static LinkedHashMap<Catalog, Badges.Badge> catalogBadges = new LinkedHashMap<>();
-	static {
-		catalogBadges.put(MELEE_WEAPONS, Badges.Badge.ALL_WEAPONS_IDENTIFIED);
-		catalogBadges.put(ARMOR, Badges.Badge.ALL_ARMOR_IDENTIFIED);
-		catalogBadges.put(WANDS, Badges.Badge.ALL_WANDS_IDENTIFIED);
-		catalogBadges.put(RINGS, Badges.Badge.ALL_RINGS_IDENTIFIED);
-		catalogBadges.put(ARTIFACTS, Badges.Badge.ALL_ARTIFACTS_IDENTIFIED);
-		catalogBadges.put(POTIONS, Badges.Badge.ALL_POTIONS_IDENTIFIED);
-		catalogBadges.put(SCROLLS, Badges.Badge.ALL_SCROLLS_IDENTIFIED);
-	}
+
 
 	public static ArrayList<Catalog> equipmentCatalogs = new ArrayList<>();
 	static {
@@ -437,13 +427,6 @@ public enum Catalog {
 
 		//old logic for pre-v2.5 catalog-specific badges
 		Badges.loadGlobal();
-		for (Catalog cat : values()){
-			if (Badges.isUnlocked(catalogBadges.get(cat))){
-				for (Class<?> item : cat.items()){
-					cat.seen.put(item, true);
-				}
-			}
-		}
 		if (bundle.contains(CATALOG_ITEMS)) {
 			for (Class<?> cls : Arrays.asList(bundle.getClassArray(CATALOG_ITEMS))){
 				for (Catalog cat : values()) {

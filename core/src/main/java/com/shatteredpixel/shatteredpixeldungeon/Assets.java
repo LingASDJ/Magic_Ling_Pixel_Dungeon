@@ -183,7 +183,7 @@ public class Assets {
 
 		public static final String Goo_Title   = "interfaces/bosslogo/goo-title.png";
 		public static final String SGoo_Title  = "interfaces/bosslogo/skygoo-title.png";
-		public static final String Goo_Slain   = "interfaces/bosslogo/goo-slain.png";
+		public static final String SCORE_BAR   = "interfaces/scoreboard.png";
 
 		public static final String DIZF_Title  = "interfaces/bosslogo/dizzfar-title.png";
 		public static final String DIZF_Slain  = "interfaces/bosslogo/dizzfar-slain.png";
@@ -344,6 +344,8 @@ public class Assets {
 		public static final String BGM_3 = "music/Level3.ogg";
 		public static final String BGM_4 = "music/Level4.ogg";
 		public static final String BGM_5 = "music/Level5.ogg";
+
+		public static final String PACMAN = "music/hollow/pacman_10yearold_mix.ogg";
 
 
 		public static final String CHRAMSS     = "music/chrimas.ogg";

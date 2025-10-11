@@ -60,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.Mag
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
@@ -127,6 +128,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.MenuPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ResumeIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RightClickMenu;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScoreBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Tag;
@@ -209,7 +211,7 @@ public class GameScene extends PixelScene {
 		if (scene != null && scene.status != null) scene.status.updateAvatar();
 	}
 
-    private void tell(String text) {
+	private void tell(String text) {
 		Game.runOnRenderThread(new Callback() {
 								   @Override
 								   public void call() {
@@ -299,6 +301,9 @@ public class GameScene extends PixelScene {
 	private StatusPane status;
 
 	private BossHealthBar boss;
+
+	private ScoreBar scoreBar;
+
 
 	private GameLog log;
 
@@ -1396,6 +1401,11 @@ public class GameScene extends PixelScene {
 		boss.setPos( 6 + (PixelScene.uiCamera.width - boss.width())/2, 28);
 		add(boss);
 
+		scoreBar = new ScoreBar();
+		scoreBar.camera = uiCamera;
+		scoreBar.setPos( 6 + (PixelScene.uiCamera.width - scoreBar.width())/2, 28);
+		add(scoreBar);
+
 		attack = new AttackIndicator();
 		attack.camera = uiCamera;
 		add( attack );
@@ -1846,12 +1856,12 @@ public class GameScene extends PixelScene {
 						bossSlain.texture(Assets.Interfaces.QliPhoth_Title);
 						bossSlain.show(Window.G_COLOR, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					break;
+						break;
 					case 7:
 						bossSlain.texture(Assets.Interfaces.QliPhothEX_Title);
 						bossSlain.show(Window.G_COLOR, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					break;
+						break;
 					case 9:
 						bossSlain.texture(Assets.Interfaces.Tengu_Title);
 						bossSlain.show(Window.CBLACK, 0.3f, 5f);
@@ -1861,12 +1871,12 @@ public class GameScene extends PixelScene {
 						bossSlain.texture(Assets.Interfaces.DIZF_Title);
 						bossSlain.show(Window.RED_COLOR, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					break;
+						break;
 					case 15:
 						bossSlain.texture(Assets.Interfaces.SGoo_Title);
 						bossSlain.show(Window.WATA_COLOR, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					break;
+						break;
 					case 33:
 						bossSlain.texture(Assets.Interfaces.General_Title);
 						bossSlain.show(Window.ANSDO_COLOR, 0.3f, 5f);
@@ -1881,12 +1891,12 @@ public class GameScene extends PixelScene {
 						bossSlain.show(Window.R_COLOR, 0.3f, 5f);
 						GameScene.flash(Window.GDX_COLOR);
 						scene.showBanner(bossSlain);
-					break;
+						break;
 				}
 			} else {
 				//Boss开始后的处理Logo,不在Switch中就是默认的Logo。
 				switch (Dungeon.depth) {
-                    case 5:
+					case 5:
 						if (Dungeon.branch == 3) {
 							bossSlain.texture(Assets.Interfaces.DIZF_Title);
 							bossSlain.show(Window.R_COLOR, 0.4f, 6f);
@@ -1943,14 +1953,15 @@ public class GameScene extends PixelScene {
 						scene.showBanner(bossSlain);
 						break;
 					case 31:
-						bossSlain.texture(Assets.Interfaces.Cerdog_Title);
-						bossSlain.show(Window.CYELLOW, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-						break;
-					case 32:
-						bossSlain.texture(Assets.Interfaces.Morpheus_Title);
-						bossSlain.show(Window.DeepPK_COLOR, 0.3f, 5f);
-						scene.showBanner(bossSlain);
+						if(Dungeon.hero.buffs(SliceDeadBless.class) !=null ){
+							bossSlain.texture(Assets.Interfaces.Morpheus_Title);
+							bossSlain.show(Window.DeepPK_COLOR, 0.3f, 5f);
+							scene.showBanner(bossSlain);
+						} else {
+							bossSlain.texture(Assets.Interfaces.Cerdog_Title);
+							bossSlain.show(Window.CYELLOW, 0.3f, 5f);
+							scene.showBanner(bossSlain);
+						}
 						break;
 				}
 

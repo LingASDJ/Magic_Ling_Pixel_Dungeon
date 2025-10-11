@@ -130,6 +130,10 @@ public class PaswordBadges {
         displayBadge(Badge.SUGAR_FRIENDLY);
     }
 
+    public static void GHOST_HUNTER() {
+        displayBadge(Badge.GHOST_HUNTER);
+    }
+
     public static void MYTHOLOGY() {
         displayBadge(Badge.PRAY_MYTHOLOGY);
     }
@@ -189,7 +193,9 @@ public class PaswordBadges {
 
         VAMGHOST_DEAD(32),
 
-        SUGAR_FRIENDLY(33,true);
+        SUGAR_FRIENDLY(33,true),
+
+        GHOST_HUNTER(35,true);
 
         public boolean meta;
 

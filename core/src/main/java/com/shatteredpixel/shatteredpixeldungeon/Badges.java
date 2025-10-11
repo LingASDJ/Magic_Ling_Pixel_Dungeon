@@ -774,6 +774,10 @@ public class Badges {
 		displayBadge( Badge.KILL_DOG );
 	}
 
+	public static void MINIGAME_MASTER_ONE() {
+		displayBadge( Badge.MASTER );
+	}
+
 	public static void KILL_ST() {
 		displayBadge( Badge.KILL_CLSISTER );
 	}
@@ -1081,11 +1085,6 @@ public class Badges {
 		FOOD_EATEN_4                ( 70 ),
 		ITEMS_CRAFTED_4            ( 71 ),
 		BOSS_SLAIN_4                ( 72 ),
-		ALL_WEAPONS_IDENTIFIED      ( 73 ),
-		ALL_ARMOR_IDENTIFIED        ( 74 ),
-		ALL_WANDS_IDENTIFIED        ( 75 ),
-		ALL_RINGS_IDENTIFIED        ( 76 ),
-		ALL_ARTIFACTS_IDENTIFIED    ( 77 ),
 		VICTORY                     ( 78 ),
 		YASD                        ( 79),
 
@@ -1151,7 +1150,7 @@ public class Badges {
 
 		KILL_DOG					( 152),
 		KILL_MORES					( ),
-		MASTER						( ),
+		MASTER						(154,true,true ),
 		RED_DRAMATICUL				( ),
 		GOD_PLEASE					( ),
 		HOLLOWCITY					( 157),
@@ -1175,13 +1174,18 @@ public class Badges {
 		public boolean meta;
 		public BadgeType type;
 		public int image;
+		public boolean pacman;
 
 		public String title() {
 			return Messages.get(this, name() + ".title");
 		}
 
 		public String desc(){
-			return Messages.get(this, name()+".desc");
+			if(pacman) {
+				return Messages.get(this, name() + ".desc", SPDSettings.PacManScore());
+			} else {
+				return Messages.get(this, name()+".desc");
+			}
 		}
 
 		Badge(){
@@ -1196,6 +1200,13 @@ public class Badges {
 			this.image = image;
 			this.type = type;
 		}
+
+		Badge( int image, boolean meta,boolean pacman ) {
+			this.image = image;
+			this.meta = meta;
+			this.pacman = pacman;
+		}
+
 
 	}
 
@@ -1291,14 +1302,6 @@ public class Badges {
 			{Badge.DEATH_FROM_ENEMY_MAGIC, 		Badge.YASD},
 			{Badge.DEATH_FROM_FRIENDLY_MAGIC, 	Badge.YASD},
 			{Badge.DEATH_FROM_SACRIFICE, 		Badge.YASD},
-
-			{Badge.ALL_WEAPONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
-			{Badge.ALL_ARMOR_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
-			{Badge.ALL_WANDS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
-			{Badge.ALL_RINGS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
-			{Badge.ALL_ARTIFACTS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
-			{Badge.ALL_POTIONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
-			{Badge.ALL_SCROLLS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED}
 	};
 
 	public static List<Badge> filterReplacedBadges( List<Badge> badges ) {

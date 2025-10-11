@@ -1070,17 +1070,26 @@ public class ItemSpriteSheet {
 
     private static final int HOLLOW_INDEX   	 = xy(1, 44);
 
-
-    public static final int ROIL_SUGAR =			 HOLLOW_INDEX + 1;
+    public static final int CHOCOLATE = HOLLOW_INDEX;
+    public static final int BOMB_PACMAN = HOLLOW_INDEX + 1;
+    public static final int LOLLIPOP = HOLLOW_INDEX + 2;
+    public static final int GUMDROP = HOLLOW_INDEX + 3;
 
     public static final int GELATIN =			 HOLLOW_INDEX + 4;
     public static final int SUGAR_BLOCK =		 HOLLOW_INDEX + 5;
     public static final int WHITE_SUGAR_B =		 HOLLOW_INDEX + 6;
 
     public static final int SOUL_CRACK =			 HOLLOW_INDEX + 10;
+    public static final int TOFFEE =			 HOLLOW_INDEX + 15;
     public static final int HOLY_WATER =			 HOLLOW_INDEX + 12;
 
     static {
+        assignItemRect(CHOCOLATE,  14, 14);
+        assignItemRect(BOMB_PACMAN,12, 15);
+        assignItemRect(LOLLIPOP,   13, 14);
+        assignItemRect(GUMDROP,    14, 12);
+        assignItemRect(TOFFEE,      13,15);
+
         assignItemRect(HOLY_WATER, 11, 15);
     }
 
@@ -1089,6 +1098,22 @@ public class ItemSpriteSheet {
         assignItemRect(BOSSRUSH_GOLD, 16, 12);
         assignItemRect(BOSSRUSH_MINI, 7, 7);
     }
+
+
+    private static final int PUMPKM_LANTERN  =                                   xy(1, 45);
+
+    public static final int CASTLE_AIRPORT  = PUMPKM_LANTERN+1;
+    public static final int GOLD_CARDS      = PUMPKM_LANTERN+2;
+
+    public static final int SMALL_POINT     = PUMPKM_LANTERN+13;
+    public static final int BIG_POINT       = PUMPKM_LANTERN+14;
+
+    static {
+        assignItemRect(SMALL_POINT, 6, 6);
+        assignItemRect(BIG_POINT,  10, 10);
+    }
+
+
     private static final int DOCUMENTS  =                                   xy(1, 48);  //16 slots
     public static final int GUIDE_PAGE  = DOCUMENTS+0;
     public static final int ALCH_PAGE   = DOCUMENTS+1;

@@ -1,10 +1,20 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.PacManQuest;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniGhostSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 
 public class Ghost_Smart extends Mob {
     {
@@ -23,6 +33,27 @@ public class Ghost_Smart extends Mob {
     }
 
     @Override
+    public boolean isAlive() {
+        if (hero.buff(PacManQuest.AntiAttack.class) != null) {
+            Bestiary.setSeen(getClass());
+            Bestiary.countEncounter(getClass());
+            if (sprite != null) ((MiniGhostSprite) sprite).crumple();
+        }
+
+        return true;
+    }
+
+    @Override
+    protected boolean canAttack(Char enemy) {
+        if (enemy != null) {
+            if (enemy.buff(PacManQuest.AntiAttack.class) != null) {
+                return false;
+            }
+        }
+        return Dungeon.level.adjacent(pos, enemy.pos);
+    }
+
+    @Override
     public int drRoll() {
         return 0;
     }
@@ -30,8 +61,23 @@ public class Ghost_Smart extends Mob {
     @Override
     protected boolean act() {
         AiState lastState = state;
-        if (lastState == SLEEPING) {
-            ScrollOfTeleportation.appear(this, 218);
+        if(HP < 1){
+            ScrollOfTeleportation.appear(this, 255);
+            Buff.affect(this, Paralysis.class, Paralysis.DURATION);
+            HP = 10;
+            PacManQuest.AntiAttack buff = hero.buff(PacManQuest.AntiAttack.class);
+            if(buff != null){
+                int powerOfTwo = 1 << buff.Plus;
+                hero.sprite.showStatus(Window.Pink_COLOR, "+"+200 * powerOfTwo);
+                PacManQuest.GetScore(hero, 200 * powerOfTwo);
+                if(200 * powerOfTwo == 1600){
+                    PaswordBadges.GHOST_HUNTER();
+                }
+                buff.Plus++;
+            }
+        }
+        if(lastState == SLEEPING || (buff(Paralysis.class)==null && hero.buff(PacManQuest.AntiAttack.class)==null && pos == 255)){
+            ScrollOfTeleportation.appear(this, 316);
             state = HUNTING;
         }
 
@@ -51,7 +97,7 @@ public class Ghost_Smart extends Mob {
                 }
             }
 
-            if (hasOtherMob) {
+            if (hasOtherMob && hero.invisible != 1) {
                 // 如果有其他Mob，则目标设置为玩家位置
                 targetPos = heroPos;
             } else {
@@ -71,32 +117,55 @@ public class Ghost_Smart extends Mob {
 
     @Override
     protected boolean getCloser(int target) {
+
         if (state == HUNTING) {
-            int heroPos = Dungeon.hero.pos;
-            int distance = Dungeon.level.distance(pos, heroPos);
-
-            // 检查4格范围内是否有其他Mob
-            boolean hasOtherMob = false;
-            for (Mob mob : Dungeon.level.mobs) {
-                if (mob != this && Dungeon.level.distance(pos, mob.pos) <= 4) {
-                    hasOtherMob = true;
-                    break;
-                }
-            }
-
-            if (enemy != null && distance <= CHASE_DISTANCE && !hasOtherMob) {
-                // 如果在8格范围内且没有其他Mob，则远离目标
+            if (enemy != null && enemy.buff(PacManQuest.AntiAttack.class) != null) {
                 return getFurther(target);
-            } else if (enemy != null) {
-                // 否则，接近目标
+            } else if (enemy != null && enemy.buff(PacManQuest.AntiAttack.class) == null) {
                 return super.getCloser(target);
+            } else {
+                int heroPos = Dungeon.hero.pos;
+                int distance = Dungeon.level.distance(pos, heroPos);
+                boolean hasOtherMob = false;
+                for (Mob mob : Dungeon.level.mobs) {
+                    if (mob != this && Dungeon.level.distance(pos, mob.pos) <= 4) {
+                        hasOtherMob = true;
+                        break;
+                    }
+                }
+
+                if (enemy != null && distance <= CHASE_DISTANCE && !hasOtherMob) {
+                    return getFurther(target);
+                } else if (enemy != null) {
+                    // 否则，接近目标
+                    return super.getCloser(target);
+                }
             }
             return super.getCloser(target);
         } else {
             return super.getCloser(target);
         }
     }
+
+    @Override
+    public boolean isInvulnerable(Class effect) {
+        if (effect == PacManQuest.SugarBomb.class) {
+            return false;
+        }
+        return hero.buff(PacManQuest.AntiAttack.class) == null || super.isInvulnerable(effect);
+    }
+
+    @Override
+    public int attackProc(Char enemy, int damage) {
+        if(hero.buffs(ScoreBuff.class)!=null){
+            ScoreBuff buff = hero.buff(ScoreBuff.class);
+            buff.downScore(200);
+            hero.sprite.showStatus(Window.R_COLOR, "-"+200);
+            ScrollOfTeleportation.appear(this, 255);
+            ScrollOfTeleportation.appear(hero, 389);
+            Buff.affect(hero,  Invisibility.class, 3f);
+        }
+        return super.attackProc(enemy, damage);
+    }
+
 }
-
-
-
