@@ -5,7 +5,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -145,7 +144,6 @@ public class PacManQuest extends Item {
                 if (ghostToKill != null) {
                     GetScore(hero,200);
                     hero.sprite.showStatus(Window.Pink_COLOR, "+"+200);
-                    Buff.affect(hero, Paralysis.class, Paralysis.DURATION);
                     ghostToKill.damage(100,this, Char.DamageType.REAL);
                 }
             }

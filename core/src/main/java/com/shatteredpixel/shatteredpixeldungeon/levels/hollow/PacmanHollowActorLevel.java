@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScoreBar;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
 import com.watabou.noosa.Tilemap;
@@ -60,8 +61,8 @@ public class PacmanHollowActorLevel extends Level {
     }
 
     @Override
-    public void playLevelMusic(){
-        Music.playModeBGM(Assets.Music.PACMAN, true);
+    public void playBossMusic(){
+        Music.playModeBGM(Assets.Music.PACMAN,true);
     }
 
     private static final int WIDTH = 19;
@@ -123,6 +124,8 @@ public class PacmanHollowActorLevel extends Level {
         int randomElement = getRandomElement(Random_Spawn_Pos);
         LevelTransition ent = new LevelTransition(this, randomElement , LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(ent);
+
+        seal();
 
         CustomTilemap vis = new GhostMapBehind();
         vis.pos(0, 0);
@@ -311,7 +314,9 @@ public class PacmanHollowActorLevel extends Level {
             291, 272, 253, 234, 215,
             255, 256, 257,
             274, 275, 276,
-            58,  74,  400, 416, 524, 520
+            58,  74,  400, 416, 524, 520,
+
+            117, 123, 129, 495, 502, 504, 511
     };
 
     @Override

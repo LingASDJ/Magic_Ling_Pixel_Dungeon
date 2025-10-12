@@ -53,6 +53,7 @@ public class ScoreBuff extends Buff {
     public boolean act() {
         if (target.isAlive()) {
             ScoreBar.updateScoreFromBuff(this);
+            ScoreBar.HighScoreRules();
             spend(1f);
 
             if(SmallPoint == 0 && BiggerPoint == 0 && !PacMan){
