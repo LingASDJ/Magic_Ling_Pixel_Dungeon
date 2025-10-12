@@ -16,6 +16,7 @@ public class SliceGirl extends NTNPC {
 
     {
         spriteClass = SliceGirlSprite.class;
+        flying = true;
     }
 
     public boolean first=true;

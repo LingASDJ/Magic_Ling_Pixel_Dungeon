@@ -54,7 +54,7 @@ public class ScoreBar extends Component {
 
     private static int Rules;
 
-    private static int highScoreThreshold = HighScoreRules();
+    public static int highScoreThreshold = HighScoreRules();
 
     private static String asset = Assets.Interfaces.SCORE_BAR;
 
@@ -86,7 +86,7 @@ public class ScoreBar extends Component {
     @Override
     public synchronized void destroy() {
         super.destroy();
-        if (instance == this && hero.buff(ScoreBuff.class)==null) instance = null;
+        if (instance == this) instance = null;
     }
 
     public static void setRules(int rules) {

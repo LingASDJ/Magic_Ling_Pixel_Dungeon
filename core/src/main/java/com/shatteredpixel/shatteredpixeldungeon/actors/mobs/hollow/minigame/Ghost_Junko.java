@@ -18,6 +18,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniGhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.utils.Bundle;
 
+import java.util.List;
+
 public class Ghost_Junko extends Mob {  // 蓝鬼
     {
         spriteClass = MiniGhostSprite.BlueHappyGhost.class;
@@ -111,15 +113,19 @@ public class Ghost_Junko extends Mob {  // 蓝鬼
             PacManQuest.AntiAttack buff = hero.buff(PacManQuest.AntiAttack.class);
             if(buff != null){
                 int powerOfTwo = 1 << buff.Plus;
-                hero.sprite.showStatus(Window.Pink_COLOR, "+"+200 * powerOfTwo);
-                PacManQuest.GetScore(hero, 200 * powerOfTwo);
-                if(200 * powerOfTwo == 1600){
+                PaswordBadges.loadGlobal();
+                List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+                if(200 * powerOfTwo > 1600 && !(passwordbadges.contains(PaswordBadges.Badge.GHOST_HUNTER))){
                     PaswordBadges.GHOST_HUNTER();
+                } else if(200 * powerOfTwo <= 1600) {
+                    hero.sprite.showStatus(Window.Pink_COLOR, "+"+200 * powerOfTwo);
+                    PacManQuest.GetScore(hero, 200 * powerOfTwo);
+                    buff.Plus++;
                 }
-                buff.Plus++;
             }
         }
-        if(lastState == SLEEPING || (buff(Paralysis.class)==null && hero.buff(PacManQuest.AntiAttack.class)==null && pos == 276)){
+        if(lastState == SLEEPING || (buff(Paralysis.class)==null && hero.buff(PacManQuest.AntiAttack.class)==null &&
+                (pos == 255 || pos == 256 || pos == 257 || pos == 274 || pos == 275 || pos == 276))) {
             ScrollOfTeleportation.appear(this, 221);
             Buff.affect(hero, MagicalSight.class, MagicalSight.DURATION*200);
             state = HUNTING;

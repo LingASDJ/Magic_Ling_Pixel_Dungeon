@@ -167,6 +167,7 @@ public class SlicePlot extends Plot {
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.Silence_3));
         diagulewindow.changeText(Messages.get(SliceGirl.class, "message6"));
         Buff.affect(hero, SliceDeadBless.class).set( 100, 1 );
+        hero.busy();
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if (mob instanceof SliceGirl) {
                 ((SliceGirlSprite)mob.sprite).leapPrep(Dungeon.level.exit()+6);
@@ -174,6 +175,8 @@ public class SlicePlot extends Plot {
                     @Override
                     protected void onComplete() {
                        mob.sprite.killAndErase();
+                        hero.spendAndNext(1);
+                        hero.sprite.operate(hero.pos);
                     }
                 } );
                 mob.sprite.jump(Dungeon.level.exit(), Dungeon.level.exit()+6,0,3f, new Callback() {
@@ -184,7 +187,6 @@ public class SlicePlot extends Plot {
                         Dungeon.level.occupyCell(hero);
                         Dungeon.observe();
                         GameScene.updateFog();
-                        hero.spendAndNext(1);
                     }
                 });
             }

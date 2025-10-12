@@ -7,6 +7,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.StormCloudDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Anger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Junko;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Pink;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Smart;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
@@ -44,11 +48,13 @@ public class SliceDeadBless extends Buff {
                 float minDistance = Float.MAX_VALUE;
 
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if (mob != null && mob.isAlive() && Dungeon.level.heroFOV[mob.pos]) {
-                        float distance = Dungeon.level.distance(hero.pos, mob.pos);
-                        if (distance < minDistance) {
-                            minDistance = distance;
-                            nearestEnemy = mob;
+                    if (mob != null && mob.isAlive() && Dungeon.level.heroFOV[mob.pos] && mob.alignment == Char.Alignment.ENEMY) {
+                        if (!(mob instanceof Ghost_Junko || mob instanceof Ghost_Anger || mob instanceof Ghost_Smart || mob instanceof Ghost_Pink)) {
+                            float distance = Dungeon.level.distance(hero.pos, mob.pos);
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                nearestEnemy = mob;
+                            }
                         }
                     }
                 }
@@ -63,7 +69,6 @@ public class SliceDeadBless extends Buff {
                     cooldown = 10;
                 }
             }
-            spend(TICK);
         }
     }
 
