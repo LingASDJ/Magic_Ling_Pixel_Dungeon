@@ -195,7 +195,7 @@ public class PacManQuest extends Item {
 
         @Override
         public int icon() {
-            return BuffIndicator.CHALLENGE;
+            return BuffIndicator.GHOST_SCARY;
         }
 
         @Override
