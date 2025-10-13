@@ -57,7 +57,7 @@ public class MeatPie extends Food {
 			if (Dungeon.bossLevel()) {
 				GLog.w(Messages.get(this, "eat_msg_4", Statistics.GetFoodLing));
 			} else {
-				int region = Statistics.deepestFloor / 5;
+				int region = Math.min(Statistics.deepestFloor / 5, 4);
 				// Can we get more STR from food?
 				if (Statistics.GetFoodLing < foodLimit[region]) {
 					// Random chance
