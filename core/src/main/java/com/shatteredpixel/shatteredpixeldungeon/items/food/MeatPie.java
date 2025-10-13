@@ -41,69 +41,55 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class MeatPie extends Food {
-	
+	private static final int[] foodLimit = new int[] { 1, 2, 2, 1, 1 };
+
 	{
 		image = ItemSpriteSheet.MEAT_PIE;
-		energy = Hunger.STARVING*2f;
+		energy = Hunger.STARVING * 2f;
 	}
-	
+
 	@Override
 	protected void satisfy(Hero hero) {
-		if (Dungeon.isChallenged(Challenges.EXSG)){
-			Buff.prolong( hero, Haste.class, 8f);
+		if (Dungeon.isChallenged(Challenges.EXSG)) {
+			Buff.prolong(hero, Haste.class, 8f);
 
-			if(Random.Float() > (0.25f + (hero.STR/5f)/10f)){
-				if(Statistics.deepestFloor>=20 && Statistics.deepestFloor<=26 && Statistics.GetFoodLing < 1 ){
-					Statistics.GetFoodLing++;
-					hero.STR++;
-					hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
-					GLog.p(Messages.get(this, "eat_msg_2"));
-				} else if(Statistics.deepestFloor>15 && Statistics.deepestFloor<20 && Statistics.GetFoodLing < 1 ){
-					Statistics.GetFoodLing++;
-					hero.STR++;
-					hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
-					GLog.p(Messages.get(this, "eat_msg_2"));
-				} else if(Statistics.deepestFloor>10 && Statistics.deepestFloor<15 && Statistics.GetFoodLing < 2 ){
-					Statistics.GetFoodLing++;
-					hero.STR++;
-					hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
-					GLog.p(Messages.get(this, "eat_msg_2"));
-				} else if(Statistics.deepestFloor>5 && Statistics.deepestFloor<10 && Statistics.GetFoodLing < 2 ){
-					Statistics.GetFoodLing++;
-					hero.STR++;
-					hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
-					GLog.p(Messages.get(this, "eat_msg_2"));
-				} else if(Statistics.deepestFloor>=0 && Statistics.deepestFloor<5 && Statistics.GetFoodLing < 1 ){
-					Statistics.GetFoodLing++;
-					hero.STR++;
-					hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
-					GLog.p(Messages.get(this, "eat_msg_2"));
-				} else if(Dungeon.bossLevel()) {
-					GLog.w(Messages.get(this, "eat_msg_4",Statistics.GetFoodLing));
-				} else {
-					GLog.w(Messages.get(this, "eat_msg_3",Statistics.GetFoodLing));
+			// Can't receive MeatPie buff on boss floor. TODO: Why?
+			if (Dungeon.bossLevel()) {
+				GLog.w(Messages.get(this, "eat_msg_4", Statistics.GetFoodLing));
+			} else {
+				int region = Statistics.deepestFloor / 5;
+				// Can we get more STR from food?
+				if (Statistics.GetFoodLing < foodLimit[region]) {
+					// Random chance
+					if (Random.Float() > 0.25f + hero.STR / 50f) {
+						Statistics.GetFoodLing++;
+						hero.STR++;
+						hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
+						GLog.p(Messages.get(this, "eat_msg_2"));
+					}
+				} else { // You reached the limit of STR from food.
+					GLog.w(Messages.get(this, "eat_msg_3", Statistics.GetFoodLing));
 				}
-
 			}
 		}
-		super.satisfy( hero );
+		super.satisfy(hero);
 		Buff.affect(hero, WellFed.class).reset();
 	}
-	
+
 	@Override
 	public int value() {
 		return 40 * quantity;
 	}
-	
+
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
-		
+
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
 			boolean pasty = false;
 			boolean ration = false;
 			boolean meat = false;
-			
-			for (Item ingredient : ingredients){
+
+			for (Item ingredient : ingredients) {
 				if (ingredient.quantity() > 0) {
 					if (ingredient instanceof Pasty || ingredient instanceof PhantomMeat) {
 						pasty = true;
@@ -117,34 +103,36 @@ public class MeatPie extends Food {
 					}
 				}
 			}
-			
+
 			return pasty && ration && meat;
 		}
-		
+
 		@Override
 		public int cost(ArrayList<Item> ingredients) {
 			return 6;
 		}
-		
+
 		@Override
 		public Item brew(ArrayList<Item> ingredients) {
-			if (!testIngredients(ingredients)) return null;
-			
-			for (Item ingredient : ingredients){
+			if (!testIngredients(ingredients))
+				return null;
+
+			for (Item ingredient : ingredients) {
 				ingredient.quantity(ingredient.quantity() - 1);
 			}
-			
+
 			return sampleOutput(null);
 		}
-		
+
 		@Override
 		public Item sampleOutput(ArrayList<Item> ingredients) {
 			return new MeatPie();
 		}
 	}
+
 	@Override
 	public String desc() {
-		//三元一次逻辑运算
+		// 三元一次逻辑运算
 		return Dungeon.isChallenged(EXSG) ? Messages.get(this, "descx") : Messages.get(this, "desc");
 	}
 }
