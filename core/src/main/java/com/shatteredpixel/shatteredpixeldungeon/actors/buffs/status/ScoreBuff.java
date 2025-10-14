@@ -35,6 +35,8 @@ import com.watabou.utils.Callback;
 
 public class ScoreBuff extends Buff {
 
+    public int turns;
+
     {
         type = buffType.NEUTRAL;
         announced = false;
@@ -49,11 +51,22 @@ public class ScoreBuff extends Buff {
     public boolean PacMan = false;
     public int PacManLevel = 0;
 
+    public int GameRules;
+
+    public void setGameRules(int rules){
+        GameRules = rules;
+    }
+
     @Override
     public boolean act() {
         if (target.isAlive()) {
             ScoreBar.updateScoreFromBuff(this);
             ScoreBar.HighScoreRules();
+
+            if(ScoreBar.Rules == 2){
+                turns++;
+            }
+
             spend(1f);
 
             if(SmallPoint == 0 && BiggerPoint == 0 && !PacMan){
@@ -149,8 +162,13 @@ public class ScoreBuff extends Buff {
     }
 
         @Override
-        public int icon() {
-        return BuffIndicator.KILLER;
+    public int icon() {
+        switch (ScoreBar.Rules){
+            default:
+                return BuffIndicator.PACMAN_GAME;
+            case 2:
+                return BuffIndicator.BOX_GAME;
+        }
     }
 
     @Override
@@ -160,7 +178,30 @@ public class ScoreBuff extends Buff {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", score, SmallPoint, BiggerPoint);
+
+        String string;
+
+        switch (ScoreBar.Rules){
+            default:
+                string = Messages.get(this, "desc", score, SmallPoint, BiggerPoint);
+                break;
+            case 2:
+                string = Messages.get(this, "desc2", score, turns);
+        }
+
+        return string;
+    }
+
+    public String name() {
+       String string;
+       switch (ScoreBar.Rules){
+           default:
+               string = Messages.get(this, "name");
+               break;
+           case 2:
+               string = Messages.get(this, "name2");
+       }
+       return string;
     }
 
     private static final String SCORE    = "score";
@@ -169,6 +210,10 @@ public class ScoreBuff extends Buff {
     private static final String BIGGER =  "bigger";
     private static final String PACMAN = "pacman";
     private static final String PACMANLEVEL = "pacmanlevel";
+
+    private static final String GAMERULES = "gamerules";
+
+    private static final String GAMETURNS = "gameturns";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
@@ -179,6 +224,8 @@ public class ScoreBuff extends Buff {
         bundle.put(BIGGER, BiggerPoint);
         bundle.put(PACMAN, PacMan);
         bundle.put(PACMANLEVEL, PacManLevel);
+        bundle.put(GAMERULES, GameRules);
+        bundle.put(GAMETURNS, turns);
     }
 
     @Override
@@ -190,6 +237,8 @@ public class ScoreBuff extends Buff {
         BiggerPoint = bundle.getInt(BIGGER);
         PacMan = bundle.getBoolean(PACMAN);
         PacManLevel = bundle.getInt(PACMANLEVEL);
+        GameRules = bundle.getInt(GAMERULES);
+        turns = bundle.getInt(GAMETURNS);
     }
 
 }

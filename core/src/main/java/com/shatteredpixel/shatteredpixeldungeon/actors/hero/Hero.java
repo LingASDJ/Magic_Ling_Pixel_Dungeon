@@ -2432,6 +2432,18 @@ public class Hero extends Char {
 
 		int step = -1;
 
+		if(Dungeon.onlyBoxMovement()){
+			int w = Dungeon.level.width();
+			int dx = (target % w) - (pos % w);
+			int dy = (target / w) - (pos / w);
+			// 允许纯水平或纯垂直移动，不限距离
+			if(dx != 0 && dy != 0){
+				sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "not_move"));
+				spend(0f);
+				return false;
+			}
+		}
+
 		if (Dungeon.level.adjacent( pos, target )) {
 
 			path = null;

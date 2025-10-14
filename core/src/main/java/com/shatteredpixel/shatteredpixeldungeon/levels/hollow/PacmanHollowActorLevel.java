@@ -40,12 +40,12 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScoreBar;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
@@ -124,8 +124,6 @@ public class PacmanHollowActorLevel extends Level {
         int randomElement = getRandomElement(Random_Spawn_Pos);
         LevelTransition ent = new LevelTransition(this, randomElement , LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(ent);
-
-        seal();
 
         CustomTilemap vis = new GhostMapBehind();
         vis.pos(0, 0);
@@ -343,6 +341,12 @@ public class PacmanHollowActorLevel extends Level {
         super.addVisuals();
         addGhostWindowsVisuals(this, visuals);
         return visuals;
+    }
+
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle(bundle);
+        ScoreBar.setRules(1);
     }
 
     public static void addGhostWindowsVisuals(Level level, Group group){

@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.CerDogBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MoveBoxHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.PacmanHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.TheatreLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonCaveLevel;
@@ -326,6 +327,8 @@ public class LevelRules {
                     case 17:
                     case 18:
                         return new AncientMysteryCityLevel();
+                    case 31:
+                        return new MoveBoxHollowActorLevel();
                     default:
                         return new DeadEndLevel();
                 }

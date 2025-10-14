@@ -152,6 +152,8 @@ public abstract class Level implements Bundlable {
 
 	public boolean extraGlass = true;
 
+	public boolean onlyBoxMove = false;
+
     //静态地图改变的轮子调用
 	public void changeMap(int[] map){
 		//构建全新地图，通过MAPCSV构建，并清理当前地块
