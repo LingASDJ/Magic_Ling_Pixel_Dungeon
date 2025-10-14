@@ -46,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUseItem;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.input.GameAction;
 import com.watabou.input.KeyBindings;
@@ -62,8 +61,6 @@ import com.watabou.utils.PointF;
 import com.watabou.utils.Signal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class InventoryPane extends Component {
 	// 常量定义
@@ -257,17 +254,17 @@ public class InventoryPane extends Component {
 			add(btn);
 		}
 	}
-/**
- * 创建页面元素的方法
- * 用于初始化并添加页面切换按钮和页面指示器
- */
+	/**
+	 * 创建页面元素的方法
+	 * 用于初始化并添加页面切换按钮和页面指示器
+	 */
 	private void createPageElements() {
-    // 创建并添加页面循环按钮
+		// 创建并添加页面循环按钮
 		pageCycleBtn = new PageCycleButton();
 		add(pageCycleBtn);
-    // 创建并添加页面指示器文本
+		// 创建并添加页面指示器文本
 		pageIndicator = new BitmapText(PixelScene.pixelFont);
-    // 设置文本颜色为标题颜色
+		// 设置文本颜色为标题颜色
 		pageIndicator.hardlight(Window.TITLE_COLOR);
 		add(pageIndicator);
 	}
@@ -284,24 +281,24 @@ public class InventoryPane extends Component {
 	protected void layout() {
 		width = WIDTH;
 		height = HEIGHT;
-		
+
 		layoutBackgrounds();
 		layoutEquippedSlots();
 		layoutPromptsAndResources();
 		layoutBagButtons();
 		layoutPageElements();
 		layoutBagScrollPane();
-		
+
 		super.layout();
 	}
-	
+
 	private void layoutBackgrounds() {
 		bg.x = bg2.x = x;
 		bg.y = bg2.y = y;
 		bg.size(width, height);
 		bg2.size(width, height);
 	}
-	
+
 	private void layoutEquippedSlots() {
 		float left = x + 4;
 		for (InventorySlot slot : equipped){
@@ -309,7 +306,7 @@ public class InventoryPane extends Component {
 			left = slot.right() + 1;
 		}
 	}
-	
+
 	private void layoutPromptsAndResources() {
 		float equipEnd = x + 4 + (EQUIPPED_SLOTS_COUNT * (SLOT_WIDTH + 1) - 1);
 		promptTxt.maxWidth((int)(width - (equipEnd - x) - bg.marginRight()));
@@ -318,20 +315,20 @@ public class InventoryPane extends Component {
 		} else {
 			promptTxt.setPos(equipEnd, y + 4 + (10 - promptTxt.height()) / 2);
 		}
-		
+
 		goldTxt.x = equipEnd;
 		goldTxt.y = y + 5.5f - 1;
 		PixelScene.align(goldTxt);
 		gold.x = goldTxt.x + goldTxt.width() + 1;
 		gold.y = goldTxt.y - 1;
-		
+
 		energyTxt.x = gold.x + gold.width() + 2;
 		energyTxt.y = y + 5.5f - 1;
 		PixelScene.align(energyTxt);
 		energy.x = energyTxt.x + energyTxt.width() + 1;
 		energy.y = energyTxt.y - 1;
 	}
-	
+
 	private void layoutBagButtons() {
 		float equipEnd = x + 4 + (EQUIPPED_SLOTS_COUNT * (SLOT_WIDTH + 1) - 1);
 		float left = equipEnd + 1;
@@ -340,7 +337,7 @@ public class InventoryPane extends Component {
 			left = bag.right() + 1;
 		}
 	}
-	
+
 	private void layoutPageElements() {
 		float lastBagRight = bags.isEmpty() ? x + 4 + (EQUIPPED_SLOTS_COUNT * (SLOT_WIDTH + 1) - 1) :
 				bags.get(bags.size() - 1).right();
@@ -348,7 +345,7 @@ public class InventoryPane extends Component {
 		pageIndicator.x = lastBagRight + 3.5f;
 		pageIndicator.y = y + 5f;
 	}
-	
+
 	private void layoutBagScrollPane() {
 		// 设置滚动窗格的位置和大小
 		bagScrollPane.setRect(x + 4, y + 4 + SLOT_HEIGHT + 1,
@@ -356,21 +353,21 @@ public class InventoryPane extends Component {
 		// 布局背包容器中的格子
 		layoutBagSlotsInContainer();
 	}
-	
+
 	private void layoutBagSlotsInContainer() {
 		if (bagItems.isEmpty()) return;
-		
+
 		float left = 0;
 		float top = 0;
 		int slotsPerRow = SLOTS_PER_ROW;
-		
+
 		// 计算需要的行数
 		int totalSlots = bagItems.size();
 		int rows = (int) Math.ceil((double) totalSlots / slotsPerRow);
-		
+
 		// 设置容器的大小
 		bagContainer.setSize(WIDTH - 8, rows * (SLOT_HEIGHT + 1));
-		
+
 		for (int i = 0; i < totalSlots; i++) {
 			InventorySlot slot = bagItems.get(i);
 			slot.visible = true;
@@ -428,7 +425,7 @@ public class InventoryPane extends Component {
 			isUpdating = false;
 		}
 	}
-	
+
 	// 添加状态标志
 	private boolean isUpdating = false;
 
@@ -468,18 +465,18 @@ public class InventoryPane extends Component {
 		bagContainer.clear();
 
 		bagScrollPane.scrollTo(0, 0);
-		
+
 		if (lastBag == null) {
 			return;
 		}
-		
+
 		Belongings stuff = Dungeon.hero.belongings;
 		ArrayList<Item> items = (ArrayList<Item>) lastBag.items.clone();
-		
+
 		if (lastBag == stuff.backpack && stuff.secondWep != null) {
 			items.add(0, stuff.secondWep);
 		}
-		
+
 		// 动态创建格子
 		int slotsToCreate = Math.min(lastBag.capacity(), items.size());
 		for (int i = 0; i < slotsToCreate; i++) {
@@ -487,7 +484,7 @@ public class InventoryPane extends Component {
 			bagItems.add(slot);
 			bagContainer.add(slot);
 		}
-		
+
 		// 如果背包容量大于当前物品数量，创建空格子
 		if (lastBag.capacity() > items.size()) {
 			for (int i = items.size(); i < lastBag.capacity(); i++) {
@@ -511,13 +508,13 @@ public class InventoryPane extends Component {
 			energyTxt.visible = energy.visible = false;
 		}
 	}
-	
+
 	private void updateGoldDisplay() {
 		goldTxt.text(Integer.toString(Dungeon.gold));
 		goldTxt.measure();
 		goldTxt.visible = gold.visible = true;
 	}
-	
+
 	private void updateEnergyDisplay() {
 		energyTxt.text(Integer.toString(Dungeon.energy));
 		energyTxt.measure();
@@ -528,17 +525,17 @@ public class InventoryPane extends Component {
 	private void updateBagButtonsAndPagination() {
 		ArrayList<Bag> inventBags = Dungeon.hero.belongings.getBags();
 		int totalPages = getTotalPages();
-		
+
 		validateCurrentPage(totalPages);
 		updateVisibleBags(inventBags);
 		updatePageButton(totalPages);
 	}
-	
+
 	private int getTotalPages() {
 		ArrayList<Bag> inventBags = Dungeon.hero.belongings.getBags();
 		return Math.max(1, (int) Math.ceil((double) inventBags.size() / BAGS_PER_PAGE));
 	}
-	
+
 	private void validateCurrentPage(int totalPages) {
 		if (currentPage >= totalPages && totalPages > 0) {
 			currentPage = totalPages - 1;
@@ -546,11 +543,11 @@ public class InventoryPane extends Component {
 			currentPage = 0;
 		}
 	}
-	
+
 	private void updateVisibleBags(ArrayList<Bag> inventBags) {
 		int startIndex = currentPage * BAGS_PER_PAGE;
 		int endIndex = Math.min(startIndex + BAGS_PER_PAGE, inventBags.size());
-		
+
 		for (int i = 0; i < bags.size(); i++) {
 			BagButton button = bags.get(i);
 			int bagIndex = startIndex + i;
@@ -571,26 +568,26 @@ public class InventoryPane extends Component {
 		updateBagButtonsEnabledState();
 		updateResourceDisplayEnabledState();
 	}
-	
+
 	private void updateEquippedSlotsEnabledState() {
 		for (InventorySlot slot : equipped) {
 			slot.enable(isEquippedSlotEnabled(slot));
 		}
 	}
-	
+
 	private void updateBagSlotsEnabledState() {
 		for (InventorySlot slot : bagItems) {
 			slot.enable(isSlotEnabled(slot));
 		}
 	}
-	
+
 	private void updateBagButtonsEnabledState() {
 		for (BagButton button : bags) {
 			button.enable(lastEnabled);
 		}
 		pageCycleBtn.enable(lastEnabled);
 	}
-	
+
 	private void updateResourceDisplayEnabledState() {
 		float alpha = lastEnabled ? ENABLED_ALPHA : DISABLED_ALPHA;
 		goldTxt.alpha(alpha);
@@ -598,7 +595,7 @@ public class InventoryPane extends Component {
 		energyTxt.alpha(alpha);
 		energy.alpha(alpha);
 	}
-	
+
 	private boolean isSlotEnabled(InventorySlot slot) {
 		if (!lastEnabled) return false;
 		if (slot.item() == null) return false;
@@ -606,7 +603,7 @@ public class InventoryPane extends Component {
 		if (lostInvent && !slot.item().keptThroughLostInventory()) return false;
 		return selector == null || selector.itemSelectable(slot.item());
 	}
-	
+
 	private boolean isEquippedSlotEnabled(InventorySlot slot) {
 		if (!lastEnabled) return false;
 		if (slot.item() instanceof WndBag.Placeholder) return false;
@@ -619,7 +616,7 @@ public class InventoryPane extends Component {
 		boolean showPageButton = totalPages > 1;
 		pageCycleBtn.visible = showPageButton;
 		pageIndicator.visible = showPageButton;
-		
+
 		if (showPageButton) {
 			pageCycleBtn.enable(lastEnabled);
 			pageCycleBtn.alpha(lastEnabled ? ENABLED_ALPHA : DISABLED_ALPHA);
@@ -694,7 +691,7 @@ public class InventoryPane extends Component {
 		super.update();
 		updateEnabledState();
 	}
-	
+
 	private void updateEnabledState() {
 		boolean newEnabledState = Dungeon.hero.ready || !Dungeon.hero.isAlive();
 		if (lastEnabled != newEnabledState) {
@@ -702,7 +699,7 @@ public class InventoryPane extends Component {
 			updateAllElementsEnabledState();
 		}
 	}
-	
+
 	private void updateAllElementsEnabledState() {
 		updateEquippedSlotsEnabledState();
 		updateBagSlotsEnabledState();
@@ -710,7 +707,7 @@ public class InventoryPane extends Component {
 		updateResourceDisplayEnabledState();
 		updatePageButtonEnabledState();
 	}
-	
+
 	private void updatePageButtonEnabledState() {
 		int totalPages = getTotalPages();
 		updatePageButton(totalPages);
