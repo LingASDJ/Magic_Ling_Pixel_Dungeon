@@ -29,8 +29,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.LingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -41,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUseItem;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.input.GameAction;
 import com.watabou.input.KeyBindings;
@@ -56,8 +62,21 @@ import com.watabou.utils.PointF;
 import com.watabou.utils.Signal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class InventoryPane extends Component {
+	// 常量定义
+	private static final int EQUIPPED_SLOTS_COUNT = 5;
+	private static final float DISABLED_ALPHA = 0.3f;
+	private static final float ENABLED_ALPHA = 1f;
+	private static final int ENERGY_COLOR = 0x44CCFF;
+	public static final int WIDTH = 187;
+	public static final int HEIGHT = 102;
+	private static final int SLOT_WIDTH = 17;
+	private static final int SLOT_HEIGHT = 23;
+	private static final int SLOTS_PER_ROW = 10; // 每行显示的格子数量
+	private static final int SCROLL_PANE_HEIGHT = 72; // 滚动区域的高度
 
 	private NinePatch bg;
 	private NinePatch bg2; //2 backgrounds to reduce transparency
@@ -70,6 +89,9 @@ public class InventoryPane extends Component {
 	private static InventoryPane instance;
 
 	private ArrayList<InventorySlot> equipped;
+	// 改为使用滚动窗格
+	private ScrollPane bagScrollPane;
+	private Component bagContainer;
 	private ArrayList<InventorySlot> bagItems;
 
 	private Image gold;
@@ -82,14 +104,9 @@ public class InventoryPane extends Component {
 
 	// 分页相关变量
 	private int currentPage = 0;
-	private int bagsPerPage = 4; // 每页显示的背包数量
+	private static final int BAGS_PER_PAGE = 4; // 每页显示的背包数量
 	private PageCycleButton pageCycleBtn; // 循环翻页按钮
-
-	public static final int WIDTH = 187;
-	public static final int HEIGHT = 102;
-
-	private static final int SLOT_WIDTH = 17;
-	private static final int SLOT_HEIGHT = 23;
+	private BitmapText pageIndicator; // 页码指示器
 
 	private WndBag.ItemSelector selector;
 
@@ -113,23 +130,61 @@ public class InventoryPane extends Component {
 	public synchronized void destroy() {
 		KeyEvent.removeKeyListener(keyBlocker);
 		super.destroy();
-		if (instance == this) instance = null;
+		cleanup();
+	}
+	private void cleanup() {
+		if (instance == this) {
+			instance = null;
+			crossB = null;
+			crossM = null;
+			targetingSlot = null;
+			lastTarget = null;
+		}
+		if (equipped != null) {
+			equipped.clear();
+			equipped = null;
+		}
+		if (bagItems != null) {
+			bagItems.clear();
+			bagItems = null;
+		}
+		if (bags != null) {
+			bags.clear();
+			bags = null;
+		}
 	}
 
 	@Override
 	protected void createChildren() {
-
+		try {
+			createBackgrounds();
+			createBlocker();
+			createEquippedSlots();
+			createResourceDisplays();
+			createBagContainerAndScrollPane();
+			createBagButtons();
+			createPageElements();
+			createTargetingCrosshairs();
+			lastEnabled = true;
+			updateInventory();
+			width = WIDTH;
+			height = HEIGHT;
+		} catch (Exception e) {
+			resetToDefaultState();
+		}
+	}
+	private void createBackgrounds() {
 		bg = Chrome.get(Chrome.Type.TOAST_TR);
 		add(bg);
 
 		bg2 = Chrome.get(Chrome.Type.TOAST_TR);
 		add(bg2);
-
+	}
+	private void createBlocker() {
 		blocker = new PointerArea(0, 0, PixelScene.uiCamera.width, PixelScene.uiCamera.height){
 			@Override
 			protected void onClick(PointerEvent event) {
 				if (selector != null && !bg.overlapsScreenPoint((int)event.current.x, (int)event.current.y)){
-					//any windows opened as a consequence of this should be centered on the inventory
 					GameScene.centerNextWndOnInvPane();
 					selector.onSelect(null);
 					selector = null;
@@ -137,19 +192,14 @@ public class InventoryPane extends Component {
 				}
 			}
 		};
-		blocker.target = bg; //targets bg when there is no selector, otherwise targets itself
-		add (blocker);
+		blocker.target = bg;
+		add(blocker);
 
 		keyBlocker = new Signal.Listener<KeyEvent>(){
 			@Override
 			public boolean onSignal(KeyEvent keyEvent) {
 				if (keyEvent.pressed && isSelecting() && InventoryPane.this.visible
-						&& KeyBindings.getActionForKey(keyEvent) != SPDAction.BAG_1
-						&& KeyBindings.getActionForKey(keyEvent) != SPDAction.BAG_2
-						&& KeyBindings.getActionForKey(keyEvent) != SPDAction.BAG_3
-						&& KeyBindings.getActionForKey(keyEvent) != SPDAction.BAG_4
-						&& KeyBindings.getActionForKey(keyEvent) != SPDAction.BAG_5){
-					//any windows opened as a consequence of this should be centered on the inventory
+						&& !isBagActionKey(keyEvent)){
 					GameScene.centerNextWndOnInvPane();
 					selector.onSelect(null);
 					selector = null;
@@ -159,14 +209,22 @@ public class InventoryPane extends Component {
 				return false;
 			}
 		};
-
-		equipped = new ArrayList<>();
-		for (int i = 0; i < 5; i++){
+	}
+	private boolean isBagActionKey(KeyEvent keyEvent) {
+		GameAction action = KeyBindings.getActionForKey(keyEvent);
+		return action == SPDAction.BAG_1 || action == SPDAction.BAG_2 ||
+				action == SPDAction.BAG_3 || action == SPDAction.BAG_4 ||
+				action == SPDAction.BAG_5;
+	}
+	private void createEquippedSlots() {
+		equipped = new ArrayList<>(EQUIPPED_SLOTS_COUNT);
+		for (int i = 0; i < EQUIPPED_SLOTS_COUNT; i++){
 			InventorySlot btn = new InventoryPaneSlot(null);
 			equipped.add(btn);
 			add(btn);
 		}
-
+	}
+	private void createResourceDisplays() {
 		gold = Icons.get(Icons.COIN_SML);
 		add(gold);
 		goldTxt = new BitmapText(PixelScene.pixelFont);
@@ -176,104 +234,153 @@ public class InventoryPane extends Component {
 		energy = Icons.get(Icons.ENERGY_SML);
 		add(energy);
 		energyTxt = new BitmapText(PixelScene.pixelFont);
-		energyTxt.hardlight(0x44CCFF);
+		energyTxt.hardlight(ENERGY_COLOR);
 		add(energyTxt);
 
 		promptTxt = PixelScene.renderTextBlock(6);
 		promptTxt.hardlight(Window.TITLE_COLOR);
 		add(promptTxt);
-
+	}
+	private void createBagContainerAndScrollPane() {
+		// 创建背包物品容器
+		bagContainer = new Component();
 		bagItems = new ArrayList<>();
-		for (int i = 0; i < 30; i++){
-			InventorySlot btn = new InventoryPaneSlot(null);
-			bagItems.add(btn);
-			add(btn);
-		}
-
-		bags = new ArrayList<>();
-		for (int i = 0; i < 4; i++){
+		// 创建滚动窗格，将背包容器放入其中
+		bagScrollPane = new ScrollPane(bagContainer);
+		add(bagScrollPane);
+	}
+	private void createBagButtons() {
+		bags = new ArrayList<>(BAGS_PER_PAGE);
+		for (int i = 0; i < BAGS_PER_PAGE; i++){
 			BagButton btn = new BagButton(null, i+1);
 			bags.add(btn);
 			add(btn);
 		}
-
-		// 添加循环翻页按钮
+	}
+/**
+ * 创建页面元素的方法
+ * 用于初始化并添加页面切换按钮和页面指示器
+ */
+	private void createPageElements() {
+    // 创建并添加页面循环按钮
 		pageCycleBtn = new PageCycleButton();
 		add(pageCycleBtn);
-
+    // 创建并添加页面指示器文本
+		pageIndicator = new BitmapText(PixelScene.pixelFont);
+    // 设置文本颜色为标题颜色
+		pageIndicator.hardlight(Window.TITLE_COLOR);
+		add(pageIndicator);
+	}
+	private void createTargetingCrosshairs() {
 		crossB = Icons.TARGET.get();
 		crossB.visible = false;
-		add( crossB );
+		add(crossB);
 
 		crossM = new Image();
-		crossM.copy( crossB );
-
-		lastEnabled = true;
-		updateInventory();
-
-		width = WIDTH;
-		height = HEIGHT;
+		crossM.copy(crossB);
 	}
 
 	@Override
 	protected void layout() {
 		width = WIDTH;
 		height = HEIGHT;
-
+		
+		layoutBackgrounds();
+		layoutEquippedSlots();
+		layoutPromptsAndResources();
+		layoutBagButtons();
+		layoutPageElements();
+		layoutBagScrollPane();
+		
+		super.layout();
+	}
+	
+	private void layoutBackgrounds() {
 		bg.x = bg2.x = x;
 		bg.y = bg2.y = y;
 		bg.size(width, height);
 		bg2.size(width, height);
-
-		float left = x+4;
-		for (InventorySlot i : equipped){
-			i.setRect(left, y+4, SLOT_WIDTH, SLOT_HEIGHT);
-			left = i.right()+1;
+	}
+	
+	private void layoutEquippedSlots() {
+		float left = x + 4;
+		for (InventorySlot slot : equipped){
+			slot.setRect(left, y + 4, SLOT_WIDTH, SLOT_HEIGHT);
+			left = slot.right() + 1;
 		}
-
-		promptTxt.maxWidth((int) (width - (left - x) - bg.marginRight()));
+	}
+	
+	private void layoutPromptsAndResources() {
+		float equipEnd = x + 4 + (EQUIPPED_SLOTS_COUNT * (SLOT_WIDTH + 1) - 1);
+		promptTxt.maxWidth((int)(width - (equipEnd - x) - bg.marginRight()));
 		if (promptTxt.height() > 10){
-			promptTxt.setPos(left, y + 2 + (12 - promptTxt.height()) / 2);
+			promptTxt.setPos(equipEnd, y + 2 + (12 - promptTxt.height()) / 2);
 		} else {
-			promptTxt.setPos(left, y + 4 + (10 - promptTxt.height()) / 2);
+			promptTxt.setPos(equipEnd, y + 4 + (10 - promptTxt.height()) / 2);
 		}
-
-		goldTxt.x = left;
-		goldTxt.y = y+5.5f-1;
+		
+		goldTxt.x = equipEnd;
+		goldTxt.y = y + 5.5f - 1;
 		PixelScene.align(goldTxt);
-
 		gold.x = goldTxt.x + goldTxt.width() + 1;
-		gold.y = goldTxt.y-1;
-
+		gold.y = goldTxt.y - 1;
+		
 		energyTxt.x = gold.x + gold.width() + 2;
-		energyTxt.y = y+5.5f-1;
+		energyTxt.y = y + 5.5f - 1;
 		PixelScene.align(energyTxt);
-
 		energy.x = energyTxt.x + energyTxt.width() + 1;
-		energy.y = energyTxt.y-1;
-
-		// 背包按钮布局
-		left = x + 94;
-		for (BagButton b : bags){
-			b.setRect(left, y + 13, SLOT_WIDTH, 14);
-			left = b.right()+1;
+		energy.y = energyTxt.y - 1;
+	}
+	
+	private void layoutBagButtons() {
+		float equipEnd = x + 4 + (EQUIPPED_SLOTS_COUNT * (SLOT_WIDTH + 1) - 1);
+		float left = equipEnd + 1;
+		for (BagButton bag : bags){
+			bag.setRect(left, y + 13, SLOT_WIDTH, 14);
+			left = bag.right() + 1;
 		}
-
-		// 循环翻页按钮布局 - 放在背包按钮右侧
-		pageCycleBtn.setRect(left, y + 13, SLOT_WIDTH, 14);
-
-		left = x+4;
-		float top = y+4+SLOT_HEIGHT+1;
-		for (InventorySlot b : bagItems){
-			b.setRect(left, top, SLOT_WIDTH, SLOT_HEIGHT);
-			left = b.right()+1;
-			if (left - x > width - 17){
-				left = x+4;
-				top += SLOT_HEIGHT+1;
+	}
+	
+	private void layoutPageElements() {
+		float lastBagRight = bags.isEmpty() ? x + 4 + (EQUIPPED_SLOTS_COUNT * (SLOT_WIDTH + 1) - 1) :
+				bags.get(bags.size() - 1).right();
+		pageCycleBtn.setRect(lastBagRight + 1, y + 13, SLOT_WIDTH, 14);
+		pageIndicator.x = lastBagRight + 3.5f;
+		pageIndicator.y = y + 5f;
+	}
+	
+	private void layoutBagScrollPane() {
+		// 设置滚动窗格的位置和大小
+		bagScrollPane.setRect(x + 4, y + 4 + SLOT_HEIGHT + 1,
+				WIDTH - 8, SCROLL_PANE_HEIGHT);
+		// 布局背包容器中的格子
+		layoutBagSlotsInContainer();
+	}
+	
+	private void layoutBagSlotsInContainer() {
+		if (bagItems.isEmpty()) return;
+		
+		float left = 0;
+		float top = 0;
+		int slotsPerRow = SLOTS_PER_ROW;
+		
+		// 计算需要的行数
+		int totalSlots = bagItems.size();
+		int rows = (int) Math.ceil((double) totalSlots / slotsPerRow);
+		
+		// 设置容器的大小
+		bagContainer.setSize(WIDTH - 8, rows * (SLOT_HEIGHT + 1));
+		
+		for (int i = 0; i < totalSlots; i++) {
+			InventorySlot slot = bagItems.get(i);
+			slot.visible = true;
+			slot.setRect(left, top, SLOT_WIDTH, SLOT_HEIGHT);
+			left += SLOT_WIDTH + 1;
+			if ((i + 1) % slotsPerRow == 0) {
+				left = 0;
+				top += SLOT_HEIGHT + 1;
 			}
 		}
-
-		super.layout();
 	}
 
 	public void alpha( float value ){
@@ -295,145 +402,232 @@ public class InventoryPane extends Component {
 		for (BagButton bag : bags){
 			bag.alpha( value );
 		}
-
-		// 翻页按钮透明度
-		pageCycleBtn.alpha(value);
 	}
 
 	public static void refresh(){
 		if (instance != null) instance.updateInventory();
 	}
 
-	public void updateInventory(){
-		if (selector == null){
+	public void updateInventory() {
+		if (isUpdating) return;
+		isUpdating = true;
+		try {
+			setupSelectorState();
+			updateEquippedItems();
+			updateBagItems();
+			updatePrompts();
+			updateBagButtonsAndPagination();
+			updateElementStates();
+			layout();
+		} catch (Exception e) {
+			// 只重置状态，不触发更新
+			lastBag = Dungeon.hero.belongings.backpack;
+			currentPage = 0;
+			selector = null;
+		} finally {
+			isUpdating = false;
+		}
+	}
+	
+	// 添加状态标志
+	private boolean isUpdating = false;
+
+	//设置选择器状态
+	private void setupSelectorState() {
+		if (selector == null) {
 			blocker.target = bg;
 			KeyEvent.removeKeyListener(keyBlocker);
 		} else {
 			blocker.target = blocker;
 			KeyEvent.addKeyListener(keyBlocker);
 		}
+	}
 
+	// 更新装备槽位中的物品
+	private void updateEquippedItems() {
 		Belongings stuff = Dungeon.hero.belongings;
 
-		if (lastBag == null || !stuff.getBags().contains(lastBag)){
+		if (lastBag == null || !stuff.getBags().contains(lastBag)) {
 			lastBag = stuff.backpack;
 		}
 
-		equipped.get(0).item(stuff.weapon == null ? new WndBag.Placeholder( ItemSpriteSheet.WEAPON_HOLDER ) : stuff.weapon);
-		equipped.get(1).item(stuff.armor == null ? new WndBag.Placeholder( ItemSpriteSheet.ARMOR_HOLDER ) : stuff.armor);
-		equipped.get(2).item(stuff.artifact == null ? new WndBag.Placeholder( ItemSpriteSheet.ARTIFACT_HOLDER ) : stuff.artifact);
-		equipped.get(3).item(stuff.misc == null ? new WndBag.Placeholder( ItemSpriteSheet.SOMETHING ) : stuff.misc);
-		equipped.get(4).item(stuff.ring == null ? new WndBag.Placeholder( ItemSpriteSheet.RING_HOLDER ) : stuff.ring);
+		equipped.get(0).item(stuff.weapon == null ? new WndBag.Placeholder(ItemSpriteSheet.WEAPON_HOLDER) : stuff.weapon);
+		equipped.get(1).item(stuff.armor == null ? new WndBag.Placeholder(ItemSpriteSheet.ARMOR_HOLDER) : stuff.armor);
+		equipped.get(2).item(stuff.artifact == null ? new WndBag.Placeholder(ItemSpriteSheet.ARTIFACT_HOLDER) : stuff.artifact);
+		equipped.get(3).item(stuff.misc == null ? new WndBag.Placeholder(ItemSpriteSheet.SOMETHING) : stuff.misc);
+		equipped.get(4).item(stuff.ring == null ? new WndBag.Placeholder(ItemSpriteSheet.RING_HOLDER) : stuff.ring);
+	}
 
+	//更新背包中的物品
+	private void updateBagItems() {
+		// 清空现有格子
+		for (InventorySlot slot : bagItems) {
+			slot.destroy();
+		}
+		bagItems.clear();
+		bagContainer.clear();
+
+		bagScrollPane.scrollTo(0, 0);
+		
+		if (lastBag == null) {
+			return;
+		}
+		
+		Belongings stuff = Dungeon.hero.belongings;
 		ArrayList<Item> items = (ArrayList<Item>) lastBag.items.clone();
-
-		if (lastBag == stuff.backpack && stuff.secondWep != null){
+		
+		if (lastBag == stuff.backpack && stuff.secondWep != null) {
 			items.add(0, stuff.secondWep);
 		}
-
-		int j = 0;
-		for (int i = 0; i < 30; i++){
-			if (i == 0 && lastBag != stuff.backpack){
-				bagItems.get(i).item(lastBag);
-				continue;
-			}
-			if (items.size() > j){
-				if (items.get(j) instanceof Bag){
-					j++;
-					i--;
-					continue;
-				}
-				bagItems.get(i).item(items.get(j));
-				j++;
-			} else {
-				bagItems.get(i).item(null);
+		
+		// 动态创建格子
+		int slotsToCreate = Math.min(lastBag.capacity(), items.size());
+		for (int i = 0; i < slotsToCreate; i++) {
+			InventorySlot slot = new InventoryPaneSlot(items.get(i));
+			bagItems.add(slot);
+			bagContainer.add(slot);
+		}
+		
+		// 如果背包容量大于当前物品数量，创建空格子
+		if (lastBag.capacity() > items.size()) {
+			for (int i = items.size(); i < lastBag.capacity(); i++) {
+				InventorySlot slot = new InventoryPaneSlot(null);
+				bagItems.add(slot);
+				bagContainer.add(slot);
 			}
 		}
+	}
 
+	//更新界面提示
+	private void updatePrompts() {
 		if (selector == null) {
 			promptTxt.visible = false;
-
-			goldTxt.text(Integer.toString(Dungeon.gold));
-			goldTxt.measure();
-			goldTxt.visible = gold.visible = true;
-
-			energyTxt.text(Integer.toString(Dungeon.energy));
-			energyTxt.measure();
-			energyTxt.visible = energy.visible = Dungeon.energy > 0;
+			updateGoldDisplay();
+			updateEnergyDisplay();
 		} else {
 			promptTxt.text(selector.textPrompt());
 			promptTxt.visible = true;
-
 			goldTxt.visible = gold.visible = false;
 			energyTxt.visible = energy.visible = false;
 		}
+	}
+	
+	private void updateGoldDisplay() {
+		goldTxt.text(Integer.toString(Dungeon.gold));
+		goldTxt.measure();
+		goldTxt.visible = gold.visible = true;
+	}
+	
+	private void updateEnergyDisplay() {
+		energyTxt.text(Integer.toString(Dungeon.energy));
+		energyTxt.measure();
+		energyTxt.visible = energy.visible = Dungeon.energy > 0;
+	}
 
-		ArrayList<Bag> inventBags = stuff.getBags();
-		int totalPages = (int) Math.ceil((double) inventBags.size() / bagsPerPage);
-
-		// 确保当前页在有效范围内
+	//更新背包按钮和分页状态
+	private void updateBagButtonsAndPagination() {
+		ArrayList<Bag> inventBags = Dungeon.hero.belongings.getBags();
+		int totalPages = getTotalPages();
+		
+		validateCurrentPage(totalPages);
+		updateVisibleBags(inventBags);
+		updatePageButton(totalPages);
+	}
+	
+	private int getTotalPages() {
+		ArrayList<Bag> inventBags = Dungeon.hero.belongings.getBags();
+		return Math.max(1, (int) Math.ceil((double) inventBags.size() / BAGS_PER_PAGE));
+	}
+	
+	private void validateCurrentPage(int totalPages) {
 		if (currentPage >= totalPages && totalPages > 0) {
 			currentPage = totalPages - 1;
 		} else if (totalPages == 0) {
 			currentPage = 0;
 		}
-
-		// 计算当前页显示的背包范围
-		int startIndex = currentPage * bagsPerPage;
-		int endIndex = Math.min(startIndex + bagsPerPage, inventBags.size());
-
-		// 更新当前页的背包按钮
-		for (int i = 0; i < bags.size(); i++){
+	}
+	
+	private void updateVisibleBags(ArrayList<Bag> inventBags) {
+		int startIndex = currentPage * BAGS_PER_PAGE;
+		int endIndex = Math.min(startIndex + BAGS_PER_PAGE, inventBags.size());
+		
+		for (int i = 0; i < bags.size(); i++) {
+			BagButton button = bags.get(i);
 			int bagIndex = startIndex + i;
 			if (bagIndex < endIndex) {
-				bags.get(i).bag(inventBags.get(bagIndex));
-				bags.get(i).visible = true;
+				button.bag(inventBags.get(bagIndex));
+				button.visible = true;
 			} else {
-				bags.get(i).bag(null);
-				bags.get(i).visible = false;
+				button.bag(null);
+				button.visible = false;
 			}
 		}
+	}
 
-		// 更新翻页按钮状态
-		updatePageButton(totalPages);
-
+	//更新所有元素的启用状态
+	private void updateElementStates() {
+		updateEquippedSlotsEnabledState();
+		updateBagSlotsEnabledState();
+		updateBagButtonsEnabledState();
+		updateResourceDisplayEnabledState();
+	}
+	
+	private void updateEquippedSlotsEnabledState() {
+		for (InventorySlot slot : equipped) {
+			slot.enable(isEquippedSlotEnabled(slot));
+		}
+	}
+	
+	private void updateBagSlotsEnabledState() {
+		for (InventorySlot slot : bagItems) {
+			slot.enable(isSlotEnabled(slot));
+		}
+	}
+	
+	private void updateBagButtonsEnabledState() {
+		for (BagButton button : bags) {
+			button.enable(lastEnabled);
+		}
+		pageCycleBtn.enable(lastEnabled);
+	}
+	
+	private void updateResourceDisplayEnabledState() {
+		float alpha = lastEnabled ? ENABLED_ALPHA : DISABLED_ALPHA;
+		goldTxt.alpha(alpha);
+		gold.alpha(alpha);
+		energyTxt.alpha(alpha);
+		energy.alpha(alpha);
+	}
+	
+	private boolean isSlotEnabled(InventorySlot slot) {
+		if (!lastEnabled) return false;
+		if (slot.item() == null) return false;
 		boolean lostInvent = Dungeon.hero.belongings.lostInventory();
-		for (InventorySlot b : equipped){
-			b.enable(lastEnabled
-					&& !(b.item() instanceof WndBag.Placeholder)
-					&& (selector == null || selector.itemSelectable(b.item()))
-					&& (!lostInvent || b.item().keptThroughLostInventory()));
-		}
-		for (InventorySlot b : bagItems){
-			b.enable(lastEnabled
-					&& b.item() != null
-					&& (selector == null || selector.itemSelectable(b.item()))
-					&& (!lostInvent || b.item().keptThroughLostInventory()));
-		}
-		for (BagButton b : bags){
-			b.enable(lastEnabled);
-		}
-
-		goldTxt.alpha( lastEnabled ? 1f : 0.3f );
-		gold.alpha( lastEnabled ? 1f : 0.3f );
-		energyTxt.alpha( lastEnabled ? 1f : 0.3f );
-		energy.alpha( lastEnabled ? 1f : 0.3f );
-
-		layout();
+		if (lostInvent && !slot.item().keptThroughLostInventory()) return false;
+		return selector == null || selector.itemSelectable(slot.item());
+	}
+	
+	private boolean isEquippedSlotEnabled(InventorySlot slot) {
+		if (!lastEnabled) return false;
+		if (slot.item() instanceof WndBag.Placeholder) return false;
+		boolean lostInvent = Dungeon.hero.belongings.lostInventory();
+		if (lostInvent && !slot.item().keptThroughLostInventory()) return false;
+		return selector == null || selector.itemSelectable(slot.item());
 	}
 
 	private void updatePageButton(int totalPages) {
-		// 只有一页或多页时才显示翻页按钮
 		boolean showPageButton = totalPages > 1;
 		pageCycleBtn.visible = showPageButton;
-
+		pageIndicator.visible = showPageButton;
+		
 		if (showPageButton) {
-			// 更新翻页按钮状态
 			pageCycleBtn.enable(lastEnabled);
-			pageCycleBtn.alpha(lastEnabled ? 1f : 0.3f);
-
-			// 更新按钮提示文本，显示当前页码信息
-			pageCycleBtn.updateTooltip(currentPage, totalPages);
+			pageCycleBtn.alpha(lastEnabled ? ENABLED_ALPHA : DISABLED_ALPHA);
+			pageIndicator.text((currentPage + 1) + "/" + totalPages);
+			pageIndicator.measure();
+			pageIndicator.alpha(lastEnabled ? ENABLED_ALPHA : DISABLED_ALPHA);
+		} else {
+			pageIndicator.text("");
 		}
 	}
 
@@ -498,46 +692,34 @@ public class InventoryPane extends Component {
 	@Override
 	public synchronized void update() {
 		super.update();
-
-		if (lastEnabled != (Dungeon.hero.ready || !Dungeon.hero.isAlive())) {
-			lastEnabled = (Dungeon.hero.ready || !Dungeon.hero.isAlive());
-
-			boolean lostInvent = Dungeon.hero.belongings.lostInventory();
-			for (InventorySlot b : equipped){
-				b.enable(lastEnabled
-						&& !(b.item() instanceof WndBag.Placeholder)
-						&& (selector == null || selector.itemSelectable(b.item()))
-						&& (!lostInvent || b.item().keptThroughLostInventory()));
-			}
-			for (InventorySlot b : bagItems){
-				b.enable(lastEnabled
-						&& b.item() != null
-						&& (selector == null || selector.itemSelectable(b.item()))
-						&& (!lostInvent || b.item().keptThroughLostInventory()));
-			}
-			for (BagButton b : bags){
-				b.enable(lastEnabled);
-			}
-
-			goldTxt.alpha( lastEnabled ? 1f : 0.3f );
-			gold.alpha( lastEnabled ? 1f : 0.3f );
-			energyTxt.alpha( lastEnabled ? 1f : 0.3f );
-			energy.alpha( lastEnabled ? 1f : 0.3f );
-
-			// 更新翻页按钮状态
-			ArrayList<Bag> inventBags = Dungeon.hero.belongings.getBags();
-			int totalPages = (int) Math.ceil((double) inventBags.size() / bagsPerPage);
-			updatePageButton(totalPages);
+		updateEnabledState();
+	}
+	
+	private void updateEnabledState() {
+		boolean newEnabledState = Dungeon.hero.ready || !Dungeon.hero.isAlive();
+		if (lastEnabled != newEnabledState) {
+			lastEnabled = newEnabledState;
+			updateAllElementsEnabledState();
 		}
-
+	}
+	
+	private void updateAllElementsEnabledState() {
+		updateEquippedSlotsEnabledState();
+		updateBagSlotsEnabledState();
+		updateBagButtonsEnabledState();
+		updateResourceDisplayEnabledState();
+		updatePageButtonEnabledState();
+	}
+	
+	private void updatePageButtonEnabledState() {
+		int totalPages = getTotalPages();
+		updatePageButton(totalPages);
 	}
 
-	/**
-	 * 切换到下一页，如果是最后一页则回到第一页
-	 */
+	//切换到下一页，如果是最后一页则回到第一页
 	public void nextPage() {
 		ArrayList<Bag> inventBags = Dungeon.hero.belongings.getBags();
-		int totalPages = (int) Math.ceil((double) inventBags.size() / bagsPerPage);
+		int totalPages = (int) Math.ceil((double) inventBags.size() / BAGS_PER_PAGE);
 
 		if (currentPage < totalPages - 1) {
 			currentPage++;
@@ -547,12 +729,15 @@ public class InventoryPane extends Component {
 		updateInventory();
 	}
 
-	/**
-	 * 重置到第一页（当背包发生变化时调用）
-	 */
 	public void resetToFirstPage() {
 		currentPage = 0;
 		updateInventory();
+	}
+
+	private void resetToDefaultState() {
+		lastBag = Dungeon.hero.belongings.backpack;
+		currentPage = 0;
+		selector = null;
 	}
 
 	private Image bagIcon(Bag bag ) {
@@ -562,8 +747,18 @@ public class InventoryPane extends Component {
 			return Icons.get( Icons.SCROLL_HOLDER );
 		} else if (bag instanceof MagicalHolster) {
 			return Icons.get( Icons.WAND_HOLSTER );
+		} else if (bag instanceof KingBag) {
+			return Icons.get( Icons.B_BACKPACK );
 		} else if (bag instanceof PotionBandolier) {
 			return Icons.get( Icons.POTION_BANDOLIER );
+		} else if (bag instanceof HerbBag) {
+			return Icons.get( Icons.F_BACKPACK );
+		} else if (bag instanceof LingBag) {
+			return new Image("Ling.png", 0, 0, 16, 16);
+		} else if (bag instanceof PropBag) {
+			return Icons.get(Icons.PROPBAG);
+		} else if (bag instanceof BookBag) {
+			return Icons.get(Icons.BOOKBAG);
 		} else {
 			return Icons.get( Icons.BACKPACK );
 		}
@@ -686,14 +881,14 @@ public class InventoryPane extends Component {
 
 	private class BagButton extends IconButton {
 
-		private static final int ACTIVE		= 0x9953564D;
-		private static final int INACTIVE	= 0x9942443D;
+		private static final int ACTIVE       = 0x9953564D;
+		private static final int INACTIVE  = 0x9942443D;
 
 		private ColorBlock bgTop;
 		private ColorBlock bgBottom;
 
 		private Bag bag;
-		private int index;
+		private final int index;
 
 		public BagButton( Bag bag, int index ){
 			super( bagIcon(bag) );
@@ -757,7 +952,7 @@ public class InventoryPane extends Component {
 		@Override
 		public GameAction keyAction() {
 			switch (index){
-				case 1: default:
+				case 1:
 					return SPDAction.BAG_1;
 				case 2:
 					return SPDAction.BAG_2;
@@ -767,6 +962,8 @@ public class InventoryPane extends Component {
 					return SPDAction.BAG_4;
 				case 5:
 					return SPDAction.BAG_5;
+				default:
+					return null;
 			}
 		}
 
@@ -785,9 +982,7 @@ public class InventoryPane extends Component {
 		}
 	}
 
-	/**
-	 * 循环翻页按钮类
-	 */
+	//循环翻页按钮类
 	private class PageCycleButton extends IconButton {
 
 		private static final int ACTIVE = 0x9953564D;
@@ -795,11 +990,11 @@ public class InventoryPane extends Component {
 
 		private ColorBlock bgTop;
 		private ColorBlock bgBottom;
-		private String tooltipText;
+		private final String tooltipText;
 
 		public PageCycleButton() {
-			super(Icons.CHANGES.get()); // 使用右箭头图标
-			this.tooltipText = "下一页";
+			super(Icons.get(Icons.CHANGES)); // 使用循环箭头图标
+			this.tooltipText = "翻页";
 		}
 
 		@Override
@@ -835,19 +1030,6 @@ public class InventoryPane extends Component {
 		@Override
 		protected void onClick() {
 			nextPage();
-		}
-
-		/**
-		 * 更新按钮提示文本，显示页码信息
-		 */
-		public void updateTooltip(int currentPage, int totalPages) {
-			if (totalPages > 1) {
-				if (currentPage < totalPages - 1) {
-					tooltipText = "下一页 (" + (currentPage + 1) + "/" + totalPages + ")";
-				} else {
-					tooltipText = "回到第一页 (" + (currentPage + 1) + "/" + totalPages + ")";
-				}
-			}
 		}
 
 		@Override
