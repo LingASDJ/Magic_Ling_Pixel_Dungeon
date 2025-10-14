@@ -103,6 +103,24 @@ public class Dungeon {
 	public static boolean whiteDaymode;
 	//enum of items which have limited spawns, records how many have spawned
 	//could all be their own separate numbers, but this allows iterating, much nicer for bundling/initializing.
+
+
+	public static boolean onlyBoxMovement(){
+		return level != null && level.onlyBoxMove;
+	}
+
+	public static void setOrhMovemonet(boolean on){
+		if(level != null) level.onlyBoxMove = on;
+	}
+
+	public static boolean isOrthMove(int form,int to,int width){
+		int fx = form % width, fy = form / width;
+		int tx = to % width, ty = to / width;
+		int dx = tx - fx, dy = ty - fy;
+		return (Math.abs(dx) + Math.abs(dy)) == 1;
+	}
+
+
 	public static enum LimitedDrops {
 		//limited world drops
 		STRENGTH_POTIONS,

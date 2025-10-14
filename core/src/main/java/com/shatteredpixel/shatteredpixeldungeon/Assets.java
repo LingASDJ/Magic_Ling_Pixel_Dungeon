@@ -670,6 +670,8 @@ public class Assets {
 
 		public static final String GHOST_MINI	= "sprites/hollow/minigame/ghosts.png";
 
+		public static final String BOX_MINI	= "sprites/hollow/minigame/box.png";
+
 		public static final String APWHEEL = "sprites/hollow/apprentice_witch.png";
 
 		public static final String BTSLIMH = "sprites/hollow/butcher.png";

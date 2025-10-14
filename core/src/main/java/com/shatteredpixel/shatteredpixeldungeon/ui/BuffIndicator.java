@@ -176,6 +176,10 @@ public class BuffIndicator extends Component {
 
 	public static final int GHOST_SCARY = 123;
 
+	public static final int PACMAN_GAME = 124;
+
+	public static final int BOX_GAME = 125;
+
 
     public static final int SIZE_SMALL = 7;
     public static final int SIZE_LARGE = 16;

@@ -52,7 +52,7 @@ public class ScoreBar extends Component {
     private static ScoreBar instance;
     private static int score = 0;
 
-    private static int Rules;
+    public static int Rules;
 
     public static int highScoreThreshold = HighScoreRules();
 
@@ -90,7 +90,13 @@ public class ScoreBar extends Component {
     }
 
     public static void setRules(int rules) {
-        Rules = rules;
+        ScoreBuff buff = hero.buff(ScoreBuff.class);
+        if(buff != null){
+          buff.setGameRules(rules);
+          Rules = buff.GameRules;
+        } else {
+            Rules = rules;
+        }
     }
 
     @Override
@@ -130,7 +136,7 @@ public class ScoreBar extends Component {
         bar.y = y;
 
         scoreText.scale.set(PixelScene.align(0.5f));
-        scoreText.x = bar.x + 25;
+        scoreText.x = bar.x + 15;
         scoreText.y = bar.y + (bar.height - (scoreText.baseLine() + scoreText.scale.y)) / 7f;
         scoreText.y -= 0.001f; // prefer to be slightly higher
         PixelScene.align(scoreText);
@@ -151,10 +157,20 @@ public class ScoreBar extends Component {
         asset = Assets.Interfaces.SCORE_BAR;
 
         // Update score bar display
-        scoreText.text(score + "/" + highScoreThreshold);
+        if(Dungeon.branch == 2){
+            ScoreBuff buff = hero.buff(ScoreBuff.class);
+            if (hero.buff(ScoreBuff.class) != null) {
+                scoreText.text("GameTurns:" + buff.turns );
+            }
+        } else {
+            scoreText.text(score + "/" + highScoreThreshold);
+        }
+
 
         // Define color based on score
-        if (score >= (highScoreThreshold * 6) / 6) {
+        if(Rules == 2){
+            scoreText.hardlight(ORAGNECOLOR);
+        } else if (score >= (highScoreThreshold * 6) / 6) {
             scoreText.hardlight(Pink_COLOR); // 优秀
             scoreBar.scale.x = (float) 6 /6;
         } else if (score >= (highScoreThreshold * 5) / 6) {
