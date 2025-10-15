@@ -173,9 +173,6 @@ public class GameRules {
         Solar date = Solar.fromDate(calendar.getTime());
         Lunar lunar = date.getLunar();
 
-        boolean isQXJ = lunar.getMonth() == 7 && (lunar.getDay() >= 7 && lunar.getDay() <= 7 + 7);
-        boolean isZYJ = lunar.getMonth() == 7 && (lunar.getDay() >= 15 && lunar.getDay() <= 15 + 7);
-
         if(SPDSettings.isCustomBanner()){
             switch (SPDSettings.CustomBanner_Text()) {
                 case "复活": case "RH":
@@ -223,6 +220,18 @@ public class GameRules {
                 case "中元": case "ZY":
                     banners = Assets.Interfaces.BANNERS_ZY;
                     break;
+                case "国庆": case "GQ":
+                    banners = Assets.Interfaces.BANNERS_GQ;
+                    break;
+                case "重阳": case "CY":
+                    banners = Assets.Interfaces.BANNERS_CY;
+                    break;
+                case "中秋": case "ZQ":
+                    banners = Assets.Interfaces.BANNERS_ZQ;
+                    break;
+               case "碎生": case "BX":
+                    banners = Assets.Interfaces.BANNERS_BX;
+                    break;
                 default:
                     banners = Assets.Interfaces.BANNERS;
                     break;
@@ -230,24 +239,30 @@ public class GameRules {
         } else {
             if(Holiday.getCurrentHoliday()  == Holiday.SHATTEREDPD_BIRTHDAY){
                 banners = Assets.Interfaces.BANNERS_SP;
-            } else if (RegularLevel.holiday == RegularLevel.Holiday.YX) {
+            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.YX) {
                 if (!SPDSettings.ClassUI()) {
                     banners = Assets.Interfaces.BANNERS_YX;
                 } else {
                     banners = Assets.Interfaces.BANNERS_BD;
                 }
-            } else if (RegularLevel.holiday == RegularLevel.Holiday.CJ) {
+            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ) {
                 banners = Assets.Interfaces.BANNERS_CJ;
-            } else if (RegularLevel.holiday == RegularLevel.Holiday.QMJ) {
+            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.QMJ) {
                 banners = Assets.Interfaces.BANNERS_QM;
-            } else if (RegularLevel.holiday == RegularLevel.Holiday.DWJ) {
+            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.DWJ) {
                 banners = Assets.Interfaces.BANNERS_DW;
-            } else if(isZYJ){
+            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZYJ) {
                 banners = Assets.Interfaces.BANNERS_ZY;
-            } else if(isQXJ){
+            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.QXJ) {
                 banners = Assets.Interfaces.BANNERS_QX;
-            } else if (RegularLevel.holiday == RegularLevel.Holiday.HWEEN) {
-               banners = Assets.Interfaces.BANNERS_HL;
+            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.GQJ) {
+                banners = Assets.Interfaces.BANNERS_GQ;
+            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZQJ) {
+                banners = Assets.Interfaces.BANNERS_ZQ;
+            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CYJ) {
+                banners = Assets.Interfaces.BANNERS_CY;
+
+            //四季主题
             } else  if (4 == month) {
                banners = Assets.Interfaces.BANNERS_LD;
             } else if (month == 2 || month == 3 ) { // 春季：3, 4, 5月

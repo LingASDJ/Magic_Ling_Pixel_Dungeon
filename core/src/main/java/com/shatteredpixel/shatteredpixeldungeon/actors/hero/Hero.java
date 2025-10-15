@@ -2626,9 +2626,9 @@ public class Hero extends Char {
 		boolean result;
 		if(bossRushMode){
 			result = Dungeon.depth < 43;
-		} else if(holiday == RegularLevel.Holiday.XMAS) {
+		} else if(holiday == RegularLevel.WestHoliday.XMAS) {
 			result = Dungeon.depth < 31;
-		} else if(holiday == RegularLevel.Holiday.HWEEN) {
+		} else if(Statistics.Hollow_Holiday) {
 			result = Dungeon.depth < 32;
 		} else {
 			result = Dungeon.depth < 27;

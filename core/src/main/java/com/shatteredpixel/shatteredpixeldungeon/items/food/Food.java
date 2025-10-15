@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -116,6 +117,8 @@ public class Food extends Item {
 		float foodVal = energy;
 		if (Dungeon.isChallenged(Challenges.NO_FOOD)){
 			foodVal /= 3f;
+		} else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.GQJ) {
+			foodVal += 30f;
 		}
 
 		Artifact.ArtifactBuff buff = hero.buff( HornOfPlenty.hornRecharge.class );

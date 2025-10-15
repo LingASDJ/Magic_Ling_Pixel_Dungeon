@@ -29,8 +29,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomProp;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
@@ -48,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.EbonyMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenDiamndMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
@@ -60,17 +57,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.BoneSoup;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.RatTail;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.ZakoSoup;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.GreenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SoulCrack;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -138,7 +129,9 @@ import java.util.Iterator;
 public abstract class RegularLevel extends Level {
 
 
-    public static Holiday holiday;
+    public static WestHoliday holiday;
+
+	public static ChinaHoliday chinaHoliday;
 
 	public static AltHoliday altHoliday;
 
@@ -148,33 +141,23 @@ public abstract class RegularLevel extends Level {
 
     static {
 
-        holiday = Holiday.NONE;
+        holiday =WestHoliday.NONE;
+		chinaHoliday = ChinaHoliday.NONE;
+		birthday = DevBirthday.NONE;
 
         final Calendar calendar = Calendar.getInstance();
 		switch (calendar.get(Calendar.MONTH)) {
 			case Calendar.JANUARY:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
-					holiday = Holiday.XMAS;
-				break;
-			case Calendar.MARCH:
-                holiday = Holiday.PQJ;
-				break;
-			case Calendar.APRIL:
-				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-				if (dayOfMonth >= 2 && dayOfMonth <= 20)
-					holiday = Holiday.QMJ;
-				break;
-			case Calendar.OCTOBER:
-				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
-					holiday = Holiday.HWEEN;
+					holiday =WestHoliday.XMAS;
 				break;
 			case Calendar.NOVEMBER:
 				if (calendar.get(Calendar.DAY_OF_MONTH) == 1)
-					holiday = Holiday.HWEEN;
+					holiday =WestHoliday.HWEEN;
 				break;
 			case Calendar.DECEMBER:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
-					holiday = Holiday.XMAS;
+					holiday =WestHoliday.XMAS;
 				break;
 		}
     }
@@ -208,6 +191,7 @@ public abstract class RegularLevel extends Level {
     // S直接参与Calendar类计算
     // L参与Lunar-Java类计算
     public enum DevBirthday {
+		NONE,
         DEV_BIRTHDAY,
         //设寄师
         DESIGN_BIRTHDAY,
@@ -226,17 +210,26 @@ public abstract class RegularLevel extends Level {
 		DWJ_2024
 	}
 
-    public enum Holiday {
+    public enum WestHoliday {
         NONE,
-        DWJ,
-        ZQJ,
         HWEEN,
-        XMAS,
-		CJ,
-		YX,
-		QMJ,
-		PQJ
+        XMAS
     }
+
+	public enum ChinaHoliday {
+		NONE,
+		CJ, //春节
+		YX, //元宵节
+		QMJ, //清明节
+		PQJ, //桃子节
+		LDJ, //劳动节
+		DWJ, //端午节
+		QXJ,//七夕节
+		ZYJ,//中元节
+		ZQJ, //中秋节
+		GQJ, //国庆节
+		CYJ, //重阳节
+	}
 
 	private boolean anCityQuestProgress = Random.NormalIntRange(1, 100)<=15;
 	
@@ -277,7 +270,7 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if(RegularLevel.holiday == Holiday.ZQJ ){
+		if(RegularLevel.chinaHoliday == ChinaHoliday.ZQJ){
 			if(Dungeon.depth == 17 && branch == 0){
 				initRooms.add(new HeartRoom());
 			}
@@ -292,7 +285,8 @@ public abstract class RegularLevel extends Level {
 		boolean four = false;
 		boolean five = false;
 
-		if(RegularLevel.holiday == Holiday.HWEEN){
+		//TODO ANCITY
+		if(1 == 1){
 			SoulCrack.RedSoulCrack redSoulCrack = hero.belongings.getItem(SoulCrack.RedSoulCrack.class);
 			if(redSoulCrack != null) one = true;
 			SoulCrack.BlueSoulCrack blueSoulCrack = hero.belongings.getItem(SoulCrack.BlueSoulCrack.class);
@@ -312,7 +306,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new NxhyShopRoom());
 		}
 
-		if(depth == 9 && holiday == Holiday.PQJ && Challenges.activeChallenges()<=12 && Random.Float()>0.55f) {
+		if(depth == 9 && chinaHoliday == ChinaHoliday.PQJ && Challenges.activeChallenges()<=12 && Random.Float()>0.55f) {
 			initRooms.add(new PeachGodBlessRoom());
 		}
 
@@ -344,7 +338,7 @@ public abstract class RegularLevel extends Level {
 		int areas = Dungeon.depth/5 == 1 ? 2 : Dungeon.depth/5;
 		int chance = Math.max(1, areas - (hero.STR() - (10 + 2 * areas)));
 		//圣诞节
-		if (holiday == XMAS) {
+		if (holiday == WestHoliday.XMAS) {
 			if(Dungeon.AutoShopLevel()) {
 				initRooms.add(new AutoShopRoom());
 				Buff.affect(hero, AutoRandomBuff.class).set(chance, 1);
@@ -741,38 +735,7 @@ public abstract class RegularLevel extends Level {
 				break;
 			}
 
-			if(com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.getCurrentHoliday() == com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.SHATTEREDPD_BIRTHDAY && Random.Int(6 - toDrop.level()) == 0){
-				switch (Random.Int(4)){
-					default:
-						toDrop = randomProp();
-						if(Generator.randomProp() == null){
-							toDrop = new Food();
-						}
-					break;
-					//Thanks TowerPD
-					case 1:
-						toDrop = new ScrollOfGolems();
-					break;
-					//Thanks SHPD
-					case 2:
-						toDrop = new RatTail();
-					break;
-					//Thanks Fantong
-					case 3:
-						toDrop = Random.Int(3) == 0 ? new BoneSoup() : new ZakoSoup();
-					break;
-				}
-				float mimicChance = 1/10f * MimicTooth.mimicChanceMultiplier();
-				if (Dungeon.depth > 1 && Random.Float() < mimicChance && findMob(cell) == null){
-					mobs.add(Mimic.spawnAt(cell, GreenDiamndMimic.class, toDrop));
-				} else {
-					Heap dropped = drop(toDrop, cell);
-					if (heaps.get(cell) == dropped) {
-						dropped.type = Heap.Type.GREEN_CHSET;
-						addItemToSpawn(new GreenKey(Dungeon.depth));
-					}
-				}
-			} else if ((toDrop instanceof Artifact && Random.Int(2) == 0) ||
+			if ((toDrop instanceof Artifact && Random.Int(2) == 0) ||
 					(toDrop.isUpgradable() && Random.Int(4 - toDrop.level()) == 0)){
 
 				float mimicChance = 1/10f * MimicTooth.mimicChanceMultiplier();

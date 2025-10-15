@@ -465,7 +465,7 @@ public class Qliphoth extends Boss {
             Dungeon.level.drop( new Food(), pos ).sprite.drop();
         }
 
-        boolean holiday = RegularLevel.holiday == RegularLevel.Holiday.PQJ;
+        boolean holiday = RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.PQJ;
 
         if(!Statistics.bossRushMode) {
             int normal = ((hero.lvl + Dungeon.depth)/5) * (Math.max(Challenges.activeChallenges(), 5));

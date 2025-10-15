@@ -50,7 +50,7 @@ import com.watabou.noosa.ui.Component;
 
 public class WndSadGhost extends Window {
 
-	private static final int WIDTH		= RegularLevel.holiday == RegularLevel.Holiday.ZQJ ? 150 : 120;
+	private static final int WIDTH		= RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZQJ ? 150 : 120;
 	private static final int BTN_SIZE	= 32;
 	private static final int BTN_GAP	= 5;
 	private static final int GAP		= 2;
@@ -69,19 +69,19 @@ public class WndSadGhost extends Window {
 			case 1:default:
 				titlebar.icon( new FetidRatSprite() );
 				titlebar.label( Messages.get(this, "rat_title") );
-				message = PixelScene.renderTextBlock( Messages.get(this, "rat")+"\n\n"+(RegularLevel.holiday == RegularLevel.Holiday.ZQJ ? Messages.get(this, "ask") :Messages.get(this,
+				message = PixelScene.renderTextBlock( Messages.get(this, "rat")+"\n\n"+(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZQJ ? Messages.get(this, "ask") :Messages.get(this,
 						"give_item")),6 );
 				break;
 			case 2:
 				titlebar.icon( new GnollTricksterSprite() );
 				titlebar.label( Messages.get(this, "gnoll_title") );
-				message = PixelScene.renderTextBlock( Messages.get(this, "gnoll")+"\n\n"+(RegularLevel.holiday == RegularLevel.Holiday.ZQJ ? Messages.get(this, "ask") :Messages.get(this,
+				message = PixelScene.renderTextBlock( Messages.get(this, "gnoll")+"\n\n"+(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZQJ ? Messages.get(this, "ask") :Messages.get(this,
 						"give_item")),6 );
 				break;
 			case 3:
 				titlebar.icon( new GreatCrabSprite());
 				titlebar.label( Messages.get(this, "crab_title") );
-				message = PixelScene.renderTextBlock( Messages.get(this, "crab")+"\n\n"+(RegularLevel.holiday == RegularLevel.Holiday.ZQJ ? Messages.get(this, "ask") :Messages.get(this,
+				message = PixelScene.renderTextBlock( Messages.get(this, "crab")+"\n\n"+(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZQJ ? Messages.get(this, "ask") :Messages.get(this,
 						"give_item")),6 );
 				break;
 		}
@@ -95,7 +95,7 @@ public class WndSadGhost extends Window {
 
 		/** 中秋节布局变成三栏*/
 		RewardButton btnWeapon = new RewardButton(Ghost.Quest.weapon);
-		if(RegularLevel.holiday == RegularLevel.Holiday.ZQJ){
+		if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZQJ){
 			btnWeapon.setRect((WIDTH - BTN_GAP) / 3f - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE);
 			add(btnWeapon);
 
@@ -144,7 +144,7 @@ public class WndSadGhost extends Window {
 		}
 
 		//准备作为奖励区域
-		if(RegularLevel.holiday == RegularLevel.Holiday.ZQJ){
+		if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZQJ){
 			Dungeon.level.drop( food, ghost.pos ).sprite.drop();
 		}
 		
