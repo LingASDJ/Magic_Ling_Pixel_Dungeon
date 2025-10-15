@@ -53,9 +53,9 @@ public class MeatPie extends Food {
 		if (Dungeon.isChallenged(Challenges.EXSG)) {
 			Buff.prolong(hero, Haste.class, 8f);
 
-			int region = Statistics.deepestFloor / 5;
+			int region = Math.min(Statistics.deepestFloor / 5, foodLimit.length - 1);
 			// Can we get more STR from food?
-			if (Statistics.GetFoodLing < foodLimit[foodLimit.length - 1]) {
+			if (Statistics.GetFoodLing < foodLimit[region]) {
 				// Random chance
 				if (Random.Float() > 0.25f + hero.STR / 50f) {
 					Statistics.GetFoodLing++;
