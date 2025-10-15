@@ -55,7 +55,7 @@ public class MeatPie extends Food {
 
 			int region = Statistics.deepestFloor / 5;
 			// Can we get more STR from food?
-			if (Statistics.GetFoodLing < foodLimit[region]) {
+			if (Statistics.GetFoodLing < foodLimit[foodLimit.length - 1]) {
 				// Random chance
 				if (Random.Float() > 0.25f + hero.STR / 50f) {
 					Statistics.GetFoodLing++;
