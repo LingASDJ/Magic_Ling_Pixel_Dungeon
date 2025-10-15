@@ -53,23 +53,18 @@ public class MeatPie extends Food {
 		if (Dungeon.isChallenged(Challenges.EXSG)) {
 			Buff.prolong(hero, Haste.class, 8f);
 
-			// Can't receive MeatPie buff on boss floor. TODO: Why?
-			if (Dungeon.bossLevel()) {
-				GLog.w(Messages.get(this, "eat_msg_4", Statistics.GetFoodLing));
-			} else {
-				int region = Math.min(Statistics.deepestFloor / 5, 4);
-				// Can we get more STR from food?
-				if (Statistics.GetFoodLing < foodLimit[region]) {
-					// Random chance
-					if (Random.Float() > 0.25f + hero.STR / 50f) {
-						Statistics.GetFoodLing++;
-						hero.STR++;
-						hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
-						GLog.p(Messages.get(this, "eat_msg_2"));
-					}
-				} else { // You reached the limit of STR from food.
-					GLog.w(Messages.get(this, "eat_msg_3", Statistics.GetFoodLing));
+			int region = Statistics.deepestFloor / 5;
+			// Can we get more STR from food?
+			if (Statistics.GetFoodLing < foodLimit[region]) {
+				// Random chance
+				if (Random.Float() > 0.25f + hero.STR / 50f) {
+					Statistics.GetFoodLing++;
+					hero.STR++;
+					hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
+					GLog.p(Messages.get(this, "eat_msg_2"));
 				}
+			} else { // You reached the limit of STR from food.
+				GLog.w(Messages.get(this, "eat_msg_3", Statistics.GetFoodLing));
 			}
 		}
 		super.satisfy(hero);
