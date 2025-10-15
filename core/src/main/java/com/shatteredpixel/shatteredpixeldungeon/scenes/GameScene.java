@@ -340,6 +340,11 @@ public class GameScene extends PixelScene {
 	private ActionIndicator action;
 	private ResumeIndicator resume;
 
+/**
+ * 私有方法，用于初始化游戏场景状态
+ * 该方法将inGameScene标志设置为true，表示当前处于游戏场景中
+ */
+
 	{
 		inGameScene = true;
 	}

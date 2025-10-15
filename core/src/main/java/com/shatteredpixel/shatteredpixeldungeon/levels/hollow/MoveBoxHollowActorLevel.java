@@ -7,7 +7,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.PacManQuest;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -23,9 +25,10 @@ public class MoveBoxHollowActorLevel extends Level {
 
     {
         onlyBoxMove = true;
+        viewDistance = 10000;
     }
 
-    public int rules = Random.Int(1,4);
+    public int rules = Random.Int(1,7);
 
     private int codeToTerrain(int code){
         switch (code){
@@ -35,6 +38,8 @@ public class MoveBoxHollowActorLevel extends Level {
                 return Terrain.WALL;
             case 21:
                 return Terrain.PEDESTAL;
+            case 51:
+                return Terrain.BOOKSHELF;
             case 5:
                 return Terrain.EMPTY_SP;
             default:
@@ -85,6 +90,63 @@ public class MoveBoxHollowActorLevel extends Level {
             25, 25, 25, 49, 49, 49, 49, 49, 49, 49, 49, 49
     };
 
+    private static final int[] boxMap_hard_one = {
+            25, 25, 25, 25, 25, 25, 25, 49, 51, 51, 51, 51, 51, 49, 25, 25, 25, 25,
+            25, 49, 49, 49, 49, 49, 49, 49, 5, 5, 5, 5, 5, 49, 25, 25, 25, 25,
+            25, 49, 1, 1, 5, 5, 5, 49, 5, 5, 5, 5, 5, 49, 25, 25, 25, 25,
+            25, 49, 1, 1, 5, 49, 5, 5, 5, 49, 49, 49, 49, 49, 49, 49, 49, 49,
+            25, 49, 1, 49, 49, 49, 21, 21, 21, 21, 21, 21, 49, 49, 5, 5, 1, 49,
+            25, 49, 1, 5, 5, 5, 21, 21, 21, 21, 21, 21, 49, 49, 5, 49, 1, 49,
+            25, 49, 1, 51, 51, 49, 21, 21, 21, 21, 21, 21, 5, 5, 5, 1, 1, 49,
+            49, 49, 1, 1, 1, 49, 49, 49, 49, 5, 49, 49, 49, 5, 49, 1, 49, 49,
+            49, 1, 1, 49, 1, 1, 1, 5, 49, 5, 5, 5, 5, 5, 49, 1, 49, 25,
+            49, 1, 1, 1, 1, 1, 1, 5, 5, 5, 49, 5, 5, 49, 49, 1, 49, 25,
+            49, 1, 1, 1, 1, 1, 1, 1, 51, 51, 51, 1, 1, 1, 49, 1, 49, 25,
+            49, 49, 49, 49, 49, 1, 1, 1, 1, 1, 1, 1, 1, 1, 49, 1, 49, 25,
+            25, 25, 25, 25, 49, 49, 49, 1, 49, 49, 49, 1, 1, 1, 49, 5, 49, 25,
+            25, 25, 25, 25, 25, 25, 49, 1, 1, 1, 1, 1, 49, 5, 5, 5, 49, 25,
+            25, 25, 25, 25, 25, 25, 49, 49, 49, 49, 49, 49, 49, 49, 5, 5, 49, 25,
+            25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 49, 49, 49, 49, 25
+    };
+
+    private static final int[] boxMap_hard_two = {
+            25, 25, 25, 49, 49, 51, 51, 49, 49, 49, 49, 25, 25, 25, 25, 25, 25, 25,
+            25, 25, 25, 49, 1, 1, 1, 49, 1, 1, 49, 25, 25, 25, 25, 25, 25, 25,
+            25, 25, 25, 49, 1, 1, 1, 1, 1, 1, 49, 25, 25, 25, 25, 25, 25, 25,
+            25, 49, 49, 49, 1, 49, 1, 1, 1, 1, 51, 51, 49, 49, 25, 25, 25, 25,
+            25, 51, 1, 1, 1, 1, 1, 49, 49, 1, 1, 1, 1, 49, 25, 25, 25, 25,
+            25, 51, 1, 5, 49, 5, 5, 5, 5, 5, 49, 1, 1, 49, 25, 25, 25, 25,
+            25, 51, 5, 5, 49, 5, 5, 5, 5, 5, 5, 5, 1, 51, 51, 51, 49, 49,
+            25, 51, 51, 5, 49, 49, 49, 49, 5, 49, 49, 5, 1, 1, 1, 1, 1, 49,
+            25, 49, 5, 5, 49, 21, 21, 21, 21, 21, 49, 5, 49, 1, 1, 1, 1, 49,
+            25, 49, 5, 5, 5, 21, 21, 21, 21, 21, 5, 5, 49, 5, 49, 49, 49, 49,
+            49, 49, 5, 5, 49, 21, 21, 21, 21, 21, 49, 5, 5, 5, 49, 25, 25, 25,
+            49, 1, 1, 1, 49, 49, 49, 5, 49, 49, 49, 49, 49, 49, 49, 25, 25, 25,
+            49, 1, 1, 1, 1, 1, 49, 5, 5, 49, 25, 25, 25, 25, 25, 25, 25, 25,
+            49, 1, 1, 49, 1, 1, 5, 5, 5, 49, 25, 25, 25, 25, 25, 25, 25, 25,
+            49, 49, 49, 49, 49, 49, 5, 5, 5, 49, 25, 25, 25, 25, 25, 25, 25, 25,
+            25, 25, 25, 25, 25, 49, 49, 49, 49, 49, 25, 25, 25, 25, 25, 25, 25, 25
+    };
+
+    private static final int[] boxMap_hard_three = {
+            25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+            25, 25, 25, 25, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 25, 25, 25, 25,
+            25, 25, 25, 25, 49, 21, 21, 5, 5, 49, 5, 5, 5, 49, 25, 25, 25, 25,
+            25, 25, 25, 25, 49, 21, 21, 5, 5, 5, 5, 5, 5, 49, 25, 25, 25, 25,
+            25, 25, 25, 25, 49, 21, 21, 5, 5, 49, 5, 5, 49, 49, 49, 49, 25, 25,
+            25, 25, 25, 49, 49, 49, 51, 51, 51, 51, 1, 1, 49, 1, 1, 49, 49, 25,
+            25, 25, 25, 49, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 49, 25,
+            25, 25, 25, 49, 1, 1, 51, 1, 1, 49, 49, 1, 1, 49, 1, 1, 49, 25,
+            25, 51, 51, 51, 51, 1, 51, 51, 1, 1, 49, 49, 49, 49, 5, 49, 49, 25,
+            25, 51, 5, 5, 5, 1, 1, 51, 51, 51, 49, 49, 5, 49, 5, 5, 49, 25,
+            25, 51, 5, 49, 5, 1, 1, 1, 1, 1, 1, 49, 5, 5, 5, 5, 49, 25,
+            25, 49, 5, 5, 5, 1, 1, 1, 1, 1, 1, 49, 5, 5, 5, 49, 49, 25,
+            25, 49, 49, 49, 49, 1, 49, 49, 1, 49, 49, 49, 49, 49, 49, 49, 25, 25,
+            25, 25, 25, 25, 49, 1, 1, 1, 1, 49, 25, 25, 25, 25, 25, 25, 25, 25,
+            25, 25, 25, 25, 49, 49, 49, 49, 49, 49, 25, 25, 25, 25, 25, 25, 25, 25,
+            25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25
+    };
+
 
     @Override
     protected boolean build() {
@@ -96,6 +158,10 @@ public class MoveBoxHollowActorLevel extends Level {
             case 3:
                 width = 12;
                 height = 11;
+                break;
+            case 4: case 5: case 6:
+                width = 18;
+                height = 16;
                 break;
             default:
                 width = 17;
@@ -123,6 +189,12 @@ public class MoveBoxHollowActorLevel extends Level {
                 return 133;
             case 3:
                 return 21;
+            case 4:
+                return 46;
+            case 5:
+                return 96;
+            case 6:
+                return 201;
             default:
                 return 31;
         }
@@ -134,6 +206,12 @@ public class MoveBoxHollowActorLevel extends Level {
                 return boxMap_two;
             case 3:
                return boxMap_three;
+            case 4:
+                return boxMap_hard_one;
+            case 5:
+                return boxMap_hard_two;
+            case 6:
+                return boxMap_hard_three;
             default:
                 return boxMap_one;
         }
@@ -151,6 +229,18 @@ public class MoveBoxHollowActorLevel extends Level {
             44,45,57,69,80,93,104,90,77,101
     };
 
+    private static final int[] Box_Map_Four = {
+            148,165,167,184,168,186,208,191,192,174,155,141,45,47,56,57,95,169
+    };
+
+    private static final int[] Box_Map_Five = {
+            169,170,166,147,218,219,76,60,42,134,98,81,119,102,173
+    };
+
+    private static final int[] Box_Map_Six = {
+            202,185,166,205,188,193
+    };
+
     @Override
     protected void createMobs() {
 
@@ -166,16 +256,25 @@ public class MoveBoxHollowActorLevel extends Level {
         ScoreBar.updateScoreFromBuff(hero.buff(ScoreBuff.class));
         ScoreBar.setRules(2);
         Buff.affect(hero, PacManQuest.RandomItemPlus.class);
+        Buff.affect(hero, MagicalSight.class, MagicalSight.DURATION*200);
     }
 
-    private int[] BoxRules() {
+    public int[] BoxRules() {
         switch (rules){
             case 2:
                 return Box_Map_Two;
             case 3:
                 return Box_Map_Three;
-            default:
+            case 1:
                 return Box_Map_One;
+            case 4:
+                return Box_Map_Four;
+            case 5:
+                return Box_Map_Five;
+            case 6:
+                return Box_Map_Six;
+            default:
+                return new int[0];
         }
     }
 
@@ -232,6 +331,7 @@ public class MoveBoxHollowActorLevel extends Level {
             if (moved) {
                 Dungeon.hero.sprite.move(Dungeon.hero.pos, curPos);
                 Dungeon.hero.move(curPos);
+                Dungeon.hero.spendAndNext(1f);
             }
 
             return true;
@@ -252,6 +352,11 @@ public class MoveBoxHollowActorLevel extends Level {
         super.restoreFromBundle(bundle);
         rules = bundle.getInt(RULES);
         ScoreBar.setRules(2);
+    }
+
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        return false;
     }
 
 }

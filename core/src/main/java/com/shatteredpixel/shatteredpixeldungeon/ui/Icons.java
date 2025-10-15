@@ -146,6 +146,12 @@ public enum Icons {
 	CELESTI,
 	KRISTJAN,
 	CUBE_CODE,
+
+	LEFT_DICT,
+	RIGHT_DICT,
+	UP_DICT,
+	DOWN_DICT,
+
 	PURIGRO,
 	ARCNOR,
 
@@ -543,6 +549,18 @@ public enum Icons {
 				icon.scale.set(PixelScene.align(0.49f));
 				break;
 
+			case UP_DICT:
+				icon.frame( icon.texture.uvRectBySize( 192, 112, 9, 11 ) );
+				break;
+			case DOWN_DICT:
+				icon.frame( icon.texture.uvRectBySize( 202, 112, 9, 11 ) );
+				break;
+			case LEFT_DICT:
+				icon.frame( icon.texture.uvRectBySize( 212, 112, 11, 9 ) );
+				break;
+			case RIGHT_DICT:
+				icon.frame( icon.texture.uvRectBySize( 224, 112, 11, 9 ) );
+				break;
 
 			//250-LARGE TILED
 			case STAIRS_CHASM:
