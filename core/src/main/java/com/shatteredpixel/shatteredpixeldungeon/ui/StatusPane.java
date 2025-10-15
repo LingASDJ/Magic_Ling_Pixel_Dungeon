@@ -138,6 +138,8 @@ public class StatusPane extends Component {
 	private RenderedTextBlock timeText;
 	private RenderedTextBlock timeStatusText;
 
+	private VirtualControls virtualControls;
+
 	public StatusPane( boolean large ){
 		super();
 
@@ -174,6 +176,11 @@ public class StatusPane extends Component {
 
 		avatar = HeroSprite.avatar( Dungeon.hero );
 		add( avatar );
+
+		virtualControls = new VirtualControls();
+		if(Dungeon.level.onlyBoxMove){
+			add( virtualControls );
+		}
 
 		talentBlink = 0;
 

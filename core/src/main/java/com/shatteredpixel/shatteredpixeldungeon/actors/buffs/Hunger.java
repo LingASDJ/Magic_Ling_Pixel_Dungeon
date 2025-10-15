@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -86,7 +87,9 @@ public class Hunger extends Buff implements Hero.Doom {
 
 		if (Dungeon.level.locked
 				|| target.buff(WellFed.class) != null
-				|| target.buff(ScrollOfChallenge.ChallengeArena.class) != null || Dungeon.depth == 0){
+				|| target.buff(ScrollOfChallenge.ChallengeArena.class) != null
+				|| Dungeon.depth == 0
+				|| Dungeon.depth == 31 && (branch == 1 ||branch == 2 || branch == 3) ){
 			spend(STEP);
 			return true;
 		}
