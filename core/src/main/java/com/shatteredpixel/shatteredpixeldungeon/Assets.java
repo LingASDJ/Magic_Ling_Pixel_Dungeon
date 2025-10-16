@@ -346,7 +346,7 @@ public class Assets {
 		public static final String BGM_5 = "music/Level5.ogg";
 
 		public static final String PACMAN = "music/hollow/pacman_10yearold_mix.ogg";
-
+		public static final String MOVEBOX = "music/hollow/movebox.ogg";
 
 		public static final String CHRAMSS     = "music/chrimas.ogg";
 		public static final String SEWERS_BOSS  = "music/Boss1.ogg";

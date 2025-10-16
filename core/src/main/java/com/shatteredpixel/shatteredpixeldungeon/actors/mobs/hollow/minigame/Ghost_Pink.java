@@ -91,7 +91,7 @@ public class Ghost_Pink extends Mob {
                 int powerOfTwo = 1 << buff.Plus;
                 PaswordBadges.loadGlobal();
                 List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
-                if(200 * powerOfTwo > 1600 && !(passwordbadges.contains(PaswordBadges.Badge.GHOST_HUNTER))){
+                if(200 * powerOfTwo > 800 && !(passwordbadges.contains(PaswordBadges.Badge.GHOST_HUNTER))){
                     PaswordBadges.GHOST_HUNTER();
                 } else if(200 * powerOfTwo <= 1600) {
                     hero.sprite.showStatus(Window.Pink_COLOR, "+"+200 * powerOfTwo);
