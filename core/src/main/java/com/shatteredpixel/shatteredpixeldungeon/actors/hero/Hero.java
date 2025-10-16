@@ -2436,8 +2436,8 @@ public class Hero extends Char {
 			int w = Dungeon.level.width();
 			int dx = (target % w) - (pos % w);
 			int dy = (target / w) - (pos / w);
-			// 允许纯水平或纯垂直移动，不限距离
-			if(dx != 0 && dy != 0){
+			boolean adjacent = (Math.abs(dx) + Math.abs(dy)) == 1;
+			if(!adjacent){
 				sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "not_move"));
 				spend(0f);
 				return false;

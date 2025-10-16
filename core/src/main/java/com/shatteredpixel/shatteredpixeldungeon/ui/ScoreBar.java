@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MoveBoxHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Image;
@@ -50,32 +51,13 @@ public class ScoreBar extends Component {
     private Image gameStatus;
 
     private static ScoreBar instance;
-    private static int score = 0;
+    public static int score = 0;
 
     public static int Rules;
 
     public static int highScoreThreshold = HighScoreRules();
 
     private static String asset = Assets.Interfaces.SCORE_BAR;
-
-    public static int HighScoreRules() {
-        if(Dungeon.depth == 31){
-            switch (Dungeon.branch){
-                case 2:
-                    highScoreThreshold = 3600;
-                    break;
-                case 3:
-                    highScoreThreshold = 12000;
-                    break;
-                default:
-                    highScoreThreshold = 6000;
-                    break;
-            }
-        } else {
-            highScoreThreshold = 0;
-        }
-        return highScoreThreshold;
-    }
 
     public ScoreBar() {
         super();
@@ -150,27 +132,63 @@ public class ScoreBar extends Component {
         PixelScene.align(scoreBar);
     }
 
+    public static int HighScoreRules() {
+        if(Dungeon.depth == 31){
+            switch (Dungeon.branch){
+                case 2:
+                    MoveBoxHollowActorLevel level = (Dungeon.level instanceof MoveBoxHollowActorLevel) ? (MoveBoxHollowActorLevel) Dungeon.level : null;
+                    if(level != null) {
+                        switch (level.rules) {
+                            case 1:
+                                highScoreThreshold = 1110;
+                                break;
+                            case 2:
+                                highScoreThreshold = 1200;
+                                break;
+                            case 3:
+                                highScoreThreshold = 1000;
+                                break;
+                            case 4:
+                                highScoreThreshold = 1800;
+                                break;
+                            case 5:
+                                highScoreThreshold = 1500;
+                                break;
+                            case 6:
+                                highScoreThreshold = 1650;
+                                break;
+                            default:
+                                highScoreThreshold = 100;
+                                break;
+                        }
+                    }
+                    break;
+                case 3:
+                    highScoreThreshold = 12000;
+                    break;
+                default:
+                    highScoreThreshold = 6000;
+                    break;
+            }
+        } else {
+            highScoreThreshold = 0;
+        }
+        return highScoreThreshold;
+    }
+
     @Override
     public void update() {
         super.update();
 
         asset = Assets.Interfaces.SCORE_BAR;
-
-        // Update score bar display
-        if(Dungeon.branch == 2){
-            ScoreBuff buff = hero.buff(ScoreBuff.class);
-            if (hero.buff(ScoreBuff.class) != null) {
-                scoreText.text("GameTurns:" + buff.turns );
-            }
+        ScoreBuff buff = hero.buff(ScoreBuff.class);
+        if (hero.buff(ScoreBuff.class) != null && Dungeon.branch == 2) {
+            scoreText.text(score + "/" + highScoreThreshold + "-TURNS:"+buff.turns);
         } else {
             scoreText.text(score + "/" + highScoreThreshold);
         }
 
-
-        // Define color based on score
-        if(Rules == 2){
-            scoreText.hardlight(ORAGNECOLOR);
-        } else if (score >= (highScoreThreshold * 6) / 6) {
+        if (score >= (highScoreThreshold * 6) / 6) {
             scoreText.hardlight(Pink_COLOR); // 优秀
             scoreBar.scale.x = (float) 6 /6;
         } else if (score >= (highScoreThreshold * 5) / 6) {

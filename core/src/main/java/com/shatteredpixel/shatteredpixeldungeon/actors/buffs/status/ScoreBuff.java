@@ -21,9 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.minigame.MorphsPacManPlot;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MoveBoxHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -34,8 +36,6 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 
 public class ScoreBuff extends Buff {
-
-    public int turns;
 
     {
         type = buffType.NEUTRAL;
@@ -53,6 +53,37 @@ public class ScoreBuff extends Buff {
 
     public int GameRules;
 
+    //MoveBox
+    public int turns;
+    public int maxTurns;
+
+    private int moveMaxTurns(){
+        MoveBoxHollowActorLevel level = (Dungeon.level instanceof MoveBoxHollowActorLevel) ? (MoveBoxHollowActorLevel) Dungeon.level : null;
+        if(level != null){
+            switch (level.rules){
+                case 1:
+                    maxTurns = 375;
+                break;
+                case 2:
+                    maxTurns = 400;
+                break;
+                case 3:
+                    maxTurns = 325;
+                break;
+                case 4:
+                    maxTurns = 510;
+                break;
+                case 5:
+                    maxTurns = 985;
+                break;
+                case 6:
+                    maxTurns = 550;
+                break;
+            }
+        }
+        return maxTurns;
+    }
+
     public void setGameRules(int rules){
         GameRules = rules;
     }
@@ -65,6 +96,13 @@ public class ScoreBuff extends Buff {
 
             if(ScoreBar.Rules == 2){
                 turns++;
+                maxTurns = moveMaxTurns();
+                if(turns > maxTurns){
+                    score = Math.max(0, score - 1);
+                    if(turns % 50 == 0){
+                        score = Math.max(0, score - 100);
+                    }
+                }
             }
 
             spend(1f);
@@ -186,7 +224,7 @@ public class ScoreBuff extends Buff {
                 string = Messages.get(this, "desc", score, SmallPoint, BiggerPoint);
                 break;
             case 2:
-                string = Messages.get(this, "desc2", score, turns);
+                string = Messages.get(this, "desc2", score, turns, maxTurns, maxTurns-turns);
         }
 
         return string;

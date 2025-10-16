@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.PacManQuest;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -18,6 +19,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BoxSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScoreBar;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -28,7 +31,13 @@ public class MoveBoxHollowActorLevel extends Level {
         viewDistance = 10000;
     }
 
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.MOVEBOX,true);
+    }
+
     public int rules = Random.Int(1,7);
+    public int readscore;
 
     private int codeToTerrain(int code){
         switch (code){
@@ -183,6 +192,27 @@ public class MoveBoxHollowActorLevel extends Level {
         return true;
     }
 
+    public boolean allBoxesOnTarget() {
+        for (Mob mob : Dungeon.level.mobs) {
+            if (mob instanceof Box) {
+                if (!(Dungeon.level.map[mob.pos] == Terrain.PEDESTAL)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    @Override
+    public void occupyCell(Char ch) {
+        super.occupyCell(ch);
+        if(allBoxesOnTarget()){
+            GLog.p("Boxes are on target!");
+        }
+    }
+
+
     private int heroCellRules() {
         switch (rules) {
             case 2:
@@ -241,6 +271,34 @@ public class MoveBoxHollowActorLevel extends Level {
             202,185,166,205,188,193
     };
 
+    private int InitScore(){
+        int highScoreThreshold;
+        switch (rules){
+            case 1:
+                highScoreThreshold = 1110;
+                break;
+            case 2:
+                highScoreThreshold = 1200;
+                break;
+            case 3:
+                highScoreThreshold = 1000;
+                break;
+            case 4:
+                highScoreThreshold = 1800;
+                break;
+            case 5:
+                highScoreThreshold = 1500;
+                break;
+            case 6:
+                highScoreThreshold = 1650;
+                break;
+            default:
+                highScoreThreshold = 100;
+                break;
+        }
+        return highScoreThreshold;
+    }
+
     @Override
     protected void createMobs() {
 
@@ -249,14 +307,13 @@ public class MoveBoxHollowActorLevel extends Level {
             box.pos = i;
             mobs.add(box);
         }
-
-        ScoreBar.assignScore(0,1000);
         Buff.detach(hero, ScoreBuff.class);
         Buff.affect(hero, ScoreBuff.class);
         ScoreBar.updateScoreFromBuff(hero.buff(ScoreBuff.class));
         ScoreBar.setRules(2);
         Buff.affect(hero, PacManQuest.RandomItemPlus.class);
         Buff.affect(hero, MagicalSight.class, MagicalSight.DURATION*200);
+        ScoreBar.assignScore(InitScore(),InitScore());
     }
 
     public int[] BoxRules() {
@@ -340,18 +397,24 @@ public class MoveBoxHollowActorLevel extends Level {
     }
 
     public final String RULES = "map_rules";
+    public final String READSCORE = "readscore";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle(bundle);
         bundle.put(RULES, rules);
+        bundle.put(READSCORE, readscore);
     }
 
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle(bundle);
         rules = bundle.getInt(RULES);
+        readscore = bundle.getInt(READSCORE);
         ScoreBar.setRules(2);
+        if(readscore != 0){
+            ScoreBar.assignScore(readscore,InitScore());
+        }
     }
 
     @Override
