@@ -62,7 +62,7 @@ public class PacmanHollowActorLevel extends Level {
     }
 
     @Override
-    public void playBossMusic(){
+    public void playLevelMusic(){
         Music.playModeBGM(Assets.Music.PACMAN,true);
     }
 
