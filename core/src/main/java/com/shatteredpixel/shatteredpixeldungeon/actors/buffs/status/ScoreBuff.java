@@ -71,10 +71,10 @@ public class ScoreBuff extends Buff {
                     maxTurns = 325;
                 break;
                 case 4:
-                    maxTurns = 510;
+                    maxTurns = 985;
                 break;
                 case 5:
-                    maxTurns = 985;
+                    maxTurns = 510;
                 break;
                 case 6:
                     maxTurns = 550;
@@ -99,7 +99,7 @@ public class ScoreBuff extends Buff {
                 maxTurns = moveMaxTurns();
                 if(turns > maxTurns){
                     score = Math.max(0, score - 1);
-                    if(turns % 50 == 0){
+                    if(turns-maxTurns % 50 == 0){
                         score = Math.max(0, score - 100);
                     }
                 }
