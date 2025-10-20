@@ -80,27 +80,67 @@ public class Messages {
 		setup(SPDSettings.language());
 	}
 
-	public static void setup( Languages lang ){
-		//seeing as missing keys are part of our process, this is faster than throwing an exception
+	public interface BundleLoadListener {
+		void onBundlesLoaded();
+		void onBundleLoadFailed(Throwable error);
+	}
+
+	private static BundleLoadListener loadListener;
+
+	public static void setBundleLoadListener(BundleLoadListener listener) {
+		Messages.loadListener = listener;
+	}
+
+	static final ArrayList<I18NBundle> loadedBundles = new ArrayList<>();
+	static Locale bundleLocal = new Locale(lang.code());
+	public static void setup(final Languages lang) {
 		I18NBundle.setExceptionOnMissingKey(false);
 
-		//store language and locale info for various string logic
 		Messages.lang = lang;
-		if (lang == Languages.ENGLISH){
+		if (lang == Languages.ENGLISH) {
 			locale = Locale.ENGLISH;
 		} else {
 			locale = new Locale(lang.code());
 		}
 
-		//strictly match the language code when fetching bundles however
-		bundles = new ArrayList<>();
-		Locale bundleLocal = new Locale(lang.code());
-		for (String file : prop_files) {
-			bundles.add(I18NBundle.createBundle(Gdx.files.internal(file), bundleLocal));
-		}
+		// Start a new thread for bundle loading
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+
+				try {
+					for (String file : prop_files) {
+						loadedBundles.add(I18NBundle.createBundle(Gdx.files.internal(file), bundleLocal));
+					}
+
+					// Post back to the main thread (UI thread) to update the bundles list
+					// This assumes an Android context where Gdx.app.postRunnable can be used,
+					// or you might need a Handler for non-libGDX Android context.
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run() {
+							bundles = loadedBundles;
+							if (loadListener != null) {
+								loadListener.onBundlesLoaded();
+							}
+						}
+					});
+
+				} catch (final Throwable e) {
+					// Handle potential exceptions during loading, and report on main thread
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run() {
+							ShatteredPixelDungeon.reportException(new Exception("Failed to load I18N bundles", e));
+							if (loadListener != null) {
+								loadListener.onBundleLoadFailed(e);
+							}
+						}
+					});
+				}
+			}
+		}).start();
 	}
-
-
 
 	/**
 	 * Resource grabbing methods
@@ -158,7 +198,7 @@ public class Messages {
 
 	private static String getFromBundle(String key){
 		String result;
-		for (I18NBundle b : bundles){
+		for (I18NBundle b : loadedBundles){
 			result = b.get(key);
 			//if it isn't the return string for no key found, return it
 			if (result.length() != key.length()+6 || !result.contains(key)){
