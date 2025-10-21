@@ -73,6 +73,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.SliceDeadRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.FiveLockedRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.FourLockedRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.OneLockedRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.TwoLockedRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.DragonCaveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
@@ -423,12 +427,10 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		//initRooms.add(new MagicCircleRoom());
-//		initRooms.add(new OneLockedRoom());
-//		initRooms.add(new TwoLockedRoom());
-//		initRooms.add(new ThreeLockedRoom());
-//		initRooms.add(new FourLockedRoom());
-//		initRooms.add(new FiveLockedRoom());
+		initRooms.add(new OneLockedRoom());
+		initRooms.add(new TwoLockedRoom());
+		initRooms.add(new FourLockedRoom());
+		initRooms.add(new FiveLockedRoom());
 
 		if(hero.buffs(SliceDeadBless.class) !=null && depth == 28){
 			initRooms.add(new SliceDeadRoom());
@@ -523,8 +525,8 @@ public abstract class RegularLevel extends Level {
 		}
 
 		// 在特定挑战中怪物生成翻倍
-		if (Dungeon.isChallenged(MOREROOM) || !Dungeon.isChallenged(CS)) {
-			mobs += Random.NormalIntRange(1,3);
+		if (Dungeon.isChallenged(MOREROOM) && !Dungeon.isChallenged(CS)) {
+			mobs *= Random.NormalIntRange(1,3);
 		}
 
 		if(Dungeon.isChallenged(CS) && Statistics.bossRushMode && depth != 21){
@@ -538,7 +540,6 @@ public abstract class RegularLevel extends Level {
 	
 	@Override
 	protected void createMobs() {
-		//on floor 1, 10 pre-set mobs are created so the player can get level 2.
 		int mobsToSpawn = Dungeon.depth == 1 ? Dungeon.isChallenged(CS) ? 5 : 10 : mobLimit();
 
 		ArrayList<Room> stdRooms = new ArrayList<>();

@@ -209,6 +209,7 @@ public class TyphonPlot extends Plot {
     }
 
     private void process_to_14() {
+        hero.busy();
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob instanceof MorphsNPC) {
                 mob.die(null);
@@ -231,6 +232,8 @@ public class TyphonPlot extends Plot {
                 mob.die(null);
             }
         }
+        hero.spendAndNext(1);
+        hero.sprite.operate(hero.pos);
     }
 
 }

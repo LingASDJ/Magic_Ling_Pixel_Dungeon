@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.AllSearchHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.CerDogBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MoveBoxHollowActorLevel;
@@ -345,6 +346,8 @@ public class LevelRules {
                     case 13:
                     case 14:
                         return new DragonFestivalMiniLevel();
+                    case 31:
+                        return new AllSearchHollowActorLevel();
                     default:
                         return new DeadEndLevel();
                 }

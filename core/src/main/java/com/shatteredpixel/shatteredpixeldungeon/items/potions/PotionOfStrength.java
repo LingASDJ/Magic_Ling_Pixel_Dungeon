@@ -77,6 +77,6 @@ public class PotionOfStrength extends Potion {
 
 	@Override
 	public String desc() {
-		return Dungeon.isChallenged(Challenges.EXSG) && isIdentified() && hero.STR>10 ? Messages.get(this, "descx") : isIdentified() ?  Messages.get(this, "desc") : super.desc();
+		return Dungeon.isChallenged(Challenges.EXSG) && isIdentified() && Dungeon.hero != null && hero.STR>10 ? Messages.get(this, "descx") : isIdentified() ?  Messages.get(this, "desc") : super.desc();
 	}
 }

@@ -106,6 +106,8 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
                 return Terrain.DOOR;
             case 59:
                 return Terrain.LOCKED_DOOR;
+            case 72:
+                return Terrain.GOLDEN_DOOR;
             case 49:
                 return Terrain.WALL;
             case 25:
