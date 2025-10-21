@@ -1,0 +1,109 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation "com.github.xpenatan.gdx-teavm:backend-teavm:$gdxTeaVMVersion"
+    implementation "com.github.xpenatan.gdx-teavm:gdx-freetype-teavm:$gdxTeaVMVersion"
+    implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    implementation project(':core')
+}
+
+repositories {
+    mavenCentral()
+    maven { url = uri("https://central.sonatype.com/repository/maven-snapshots/") }
+    maven { url = uri("https://jitpack.io") }
+    maven { url 'https://teavm.org/maven/repository' }
+}
+
+tasks.register('compileClient', JavaExec) {
+  classpath(sourceSets.main.runtimeClasspath)
+  mainClass.set('com.shatteredpixel.shatteredpixeldungeon.html.Compile')
+  jvmArgs('-Xms8g', '-Xmx14g', '-Xss16m', '-XX:MaxMetaspaceSize=12g', '-Dfile.encoding=UTF-8')
+  outputs.dir '../release/webapp'
+  doFirst {
+    println "Running compileClient..."
+  }
+  doLast {
+    println "compileClient completed!"
+  }
+}
+
+task modifyHtml {
+    doLast {
+	def rootFS = file("../release/webapp")
+	def htmlFile = new File(rootFS, "index.html")
+	def assetsDir = new File(rootFS, "assets")
+	def faviconDest = new File(rootFS, "favicon.ico")
+	def sourceFavicon = file("../desktop/src/main/assets/icons/windows.ico")
+	def startupLogo = new File(assetsDir, "startup-logo.png")
+	def assetsTxt = new File(assetsDir, "assets.txt")
+
+        // delete placeholder startup-logo.png
+        if (startupLogo.exists()) {
+            if (startupLogo.delete()) {
+                println "Deleted startup-logo.png from assets folder."
+            } else {
+                println "Failed to delete startup-logo.png. Check permissions."
+            }
+        } else {
+            println "startup-logo.png not found in assets folder. Nothing to delete."
+        }
+
+        // remove lines containing the word 'frame' (case-insensitive) from assets.txt
+        if (assetsTxt.exists()) {
+            def originalLines = assetsTxt.readLines('UTF-8')
+            def filteredLines = originalLines.findAll { line ->
+                !(line =~ /(?i)frame/)
+            }
+            if (filteredLines.size() != originalLines.size()) {
+                assetsTxt.withWriter('UTF-8') { writer ->
+                    filteredLines.eachWithIndex { l, i ->
+                        writer.write(l)
+                        if (i < filteredLines.size() - 1) writer.newLine()
+                    }
+                }
+                println "Removed lines containing 'frame' from assets.txt."
+            } else {
+                println "No lines containing 'frame' found in assets.txt. No changes made."
+            }
+        } else {
+            println "assets.txt not found in assets folder. Skipping assets.txt cleanup."
+        }
+
+	// copy windows.ico to favicon.ico
+	if (sourceFavicon.exists()) {
+            sourceFavicon.withInputStream { input ->
+                faviconDest.withOutputStream { output ->
+                    output << input
+                }
+            }
+            println "Copied windows.ico to assets folder."
+        } else {
+            println "windows.ico does not exist. Skipping copy step."
+        }
+
+        if (htmlFile.exists()) {
+            def content = htmlFile.text
+
+	    // Change page title
+	    if (content.contains("<title>")) {
+                content = content.replaceFirst("<title>.*?</title>", "<title>Shattered Pixel Dungeon</title>")
+                println "Title updated to 'Shattered Pixel Dungeon'."
+            } else {
+                println "No <title> tag found in index.html. Skipping title update."
+            }
+
+	htmlFile.text = content
+        } else {
+            println "index.html does not exist. Skipping favicon injection."
+        }
+    }
+}
+
+tasks.named('modifyHtml') {
+    mustRunAfter('compileClient')
+}
+
+tasks.named('build') {
+    dependsOn 'compileClient'
+    finalizedBy 'modifyHtml'
+}
