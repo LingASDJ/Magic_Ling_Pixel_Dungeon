@@ -2,7 +2,7 @@ name: 构建测试Web并上传工件
 
 on:
   push:
-    branches: [ 2025-Desktop ]
+    branches: [ 2022-Desktop ]
   workflow_dispatch:
 
 jobs:
@@ -15,15 +15,24 @@ jobs:
 
       - name: 执行buildTestWeb.sh
         run: |
-          # 赋予脚本本身执行权限
           chmod +x html/buildTestWeb.sh
-          # 执行脚本（相对路径）
           ./html/buildTestWeb.sh
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.logging.level=info"  # 输出详细构建日志
 
-      - name: 打包输出文件（修正路径为release/webapp）
+      - name: 检查构建产物目录（调试用）
         run: |
-          # 构建产物在根目录的release/webapp下
-          zip -r test-web-output.zip release/webapp/
+          echo "===== 根目录结构 ====="
+          ls -la
+          echo "===== html目录结构 ====="
+          ls -la html
+          echo "===== html/build目录 ====="
+          ls -la html/build || echo "html/build不存在"
+
+      - name: 打包输出文件（根据实际路径调整）
+        run: |
+          # 替换为调试后确认的产物路径
+          zip -r test-web-output.zip html/build/
 
       - name: 上传工件
         uses: actions/upload-artifact@v4
