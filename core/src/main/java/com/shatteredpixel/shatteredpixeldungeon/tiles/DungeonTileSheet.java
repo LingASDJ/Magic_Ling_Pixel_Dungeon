@@ -145,6 +145,7 @@ public class DungeonTileSheet {
 			Terrain.CUSTOM_DECO, Terrain.WELL, Terrain.STATUE, Terrain.ALCHEMY,Terrain.ALTWELL,
 			Terrain.CUSTOM_DECO_EMPTY, Terrain.MINE_CRYSTAL, Terrain.MINE_BOULDER,
 			Terrain.DOOR, Terrain.OPEN_DOOR, Terrain.LOCKED_DOOR, Terrain.CRYSTAL_DOOR,Terrain.SALT_WATER
+			,Terrain.GOLDEN_DOOR
 	));
 
 	//+1 for ground above, +2 for ground right, +4 for ground below, +8 for ground left.
@@ -181,7 +182,7 @@ public class DungeonTileSheet {
 	public static final int FLAT_DOOR_CRYSTAL   = FLAT_WALLS+11;
 	public static final int UNLOCKED_EXIT       = FLAT_WALLS+12;
 	public static final int LOCKED_EXIT         = FLAT_WALLS+13;
-
+	public static final int FLAT_DOOR_GOLDEN   = FLAT_WALLS+14;
 	public static final int FLAT_OTHER          =                           xy(1, 5);   //16 slots
 	public static final int FLAT_ALCHEMY_POT    = FLAT_OTHER+0;
 	public static final int FLAT_BARRICADE      = FLAT_OTHER+1;
@@ -258,6 +259,8 @@ public class DungeonTileSheet {
 	//floor tile that appears on a top/bottom doorway
 	public static final int RAISED_DOOR_SIDEWAYS    = RAISED_DOORS+4;
 
+	public static final int RAISED_DOOR_GOLDEN     	= RAISED_DOORS+5;
+
 
 	public static int getRaisedDoorTile(int tile, int below){
 		if (wallStitcheable(below))             return RAISED_DOOR_SIDEWAYS;
@@ -265,11 +268,12 @@ public class DungeonTileSheet {
 		else if (tile == Terrain.OPEN_DOOR)     return DungeonTileSheet.RAISED_DOOR_OPEN;
 		else if (tile == Terrain.LOCKED_DOOR)   return DungeonTileSheet.RAISED_DOOR_LOCKED;
 		else if (tile == Terrain.CRYSTAL_DOOR)   return DungeonTileSheet.RAISED_DOOR_CRYSTAL;
+		else if (tile == Terrain.GOLDEN_DOOR)   return DungeonTileSheet.RAISED_DOOR_GOLDEN;
 		else return -1;
 	}
 
 	private static int[] doorTiles = new int[]{
-			Terrain.DOOR, Terrain.LOCKED_DOOR, Terrain.CRYSTAL_DOOR, Terrain.OPEN_DOOR
+			Terrain.DOOR, Terrain.LOCKED_DOOR, Terrain.CRYSTAL_DOOR, Terrain.OPEN_DOOR,Terrain.GOLDEN_DOOR
 	};
 
 	public static boolean doorTile(int tile){
@@ -334,6 +338,7 @@ public class DungeonTileSheet {
 	public static final int DOOR_SIDEWAYS_OVERHANG_LOCKED   = WALLS_OVERHANG+24;
 	public static final int DOOR_SIDEWAYS_OVERHANG_CRYSTAL  = WALLS_OVERHANG+28;
 
+	public static final int DOOR_SIDEWAYS_OVERHANG_GOLDEN = WALLS_OVERHANG+29;
 
 	public static int stitchWallOverhangTile(int tile, int rightBelow, int below, int leftBelow){
 		int visual;
@@ -341,6 +346,7 @@ public class DungeonTileSheet {
 		else if (tile == Terrain.DOOR)                              visual = DOOR_SIDEWAYS_OVERHANG_CLOSED;
 		else if (tile == Terrain.LOCKED_DOOR)                       visual = DOOR_SIDEWAYS_OVERHANG_LOCKED;
 		else if (tile == Terrain.CRYSTAL_DOOR)                      visual = DOOR_SIDEWAYS_OVERHANG_CRYSTAL;
+		else if (tile == Terrain.GOLDEN_DOOR)                       visual = DOOR_SIDEWAYS_OVERHANG_GOLDEN;
 		//TODO currently this line on triggers on mining floors, do we want to make it universal?
 		else if (Dungeon.branch == 1 && below == Terrain.WALL_DECO) visual = WALL_OVERHANG_DECO;
 		else if (below == Terrain.BOOKSHELF)                        visual = WALL_OVERHANG_WOODEN;
@@ -428,6 +434,7 @@ public class DungeonTileSheet {
 		directFlatVisuals.put(Terrain.OPEN_DOOR,        FLAT_DOOR_OPEN);
 		directFlatVisuals.put(Terrain.LOCKED_DOOR,      FLAT_DOOR_LOCKED);
 		directFlatVisuals.put(Terrain.CRYSTAL_DOOR,     FLAT_DOOR_CRYSTAL);
+		directFlatVisuals.put(Terrain.GOLDEN_DOOR,      FLAT_DOOR_GOLDEN);
 		directFlatVisuals.put(Terrain.WALL_DECO,        FLAT_WALL_DECO);
 		directFlatVisuals.put(Terrain.BOOKSHELF,        FLAT_BOOKSHELF);
 		directFlatVisuals.put(Terrain.ALCHEMY,          FLAT_ALCHEMY_POT);

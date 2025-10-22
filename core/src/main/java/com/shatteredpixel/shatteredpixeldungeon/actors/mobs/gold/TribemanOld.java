@@ -42,7 +42,7 @@ public class TribemanOld extends GoldMob {
 
     @Override
     public float attackDelay() {
-        return 0.5f;
+        return 2f;
     }
 
     @Override

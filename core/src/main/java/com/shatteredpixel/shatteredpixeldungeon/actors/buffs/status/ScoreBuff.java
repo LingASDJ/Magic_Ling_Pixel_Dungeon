@@ -206,6 +206,8 @@ public class ScoreBuff extends Buff {
                 return BuffIndicator.PACMAN_GAME;
             case 2:
                 return BuffIndicator.BOX_GAME;
+            case 3:
+                return BuffIndicator.ALL_SEARCH;
         }
     }
 
@@ -225,6 +227,10 @@ public class ScoreBuff extends Buff {
                 break;
             case 2:
                 string = Messages.get(this, "desc2", score, turns, maxTurns, maxTurns-turns);
+                break;
+            case 3:
+                string = Messages.get(this, "desc3", score, PacManLevel);
+                break;
         }
 
         return string;
@@ -238,6 +244,10 @@ public class ScoreBuff extends Buff {
                break;
            case 2:
                string = Messages.get(this, "name2");
+               break;
+           case 3:
+               string = Messages.get(this, "name3");
+               break;
        }
        return string;
     }

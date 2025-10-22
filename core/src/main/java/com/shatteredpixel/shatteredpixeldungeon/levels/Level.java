@@ -1954,6 +1954,8 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "locked_door_name");
 			case Terrain.CRYSTAL_DOOR:
 				return Messages.get(Level.class, "crystal_door_name");
+			case Terrain.GOLDEN_DOOR:
+				return Messages.get(Level.class, "golden_door_name");
 			case Terrain.PEDESTAL:
 				return Messages.get(Level.class, "pedestal_name");
 			case Terrain.BARRICADE:
@@ -2005,6 +2007,8 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "locked_door_desc");
 			case Terrain.CRYSTAL_DOOR:
 				return Messages.get(Level.class, "crystal_door_desc");
+			case Terrain.GOLDEN_DOOR:
+				return Messages.get(Level.class, "golden_door_desc");
 			case Terrain.LOCKED_EXIT:
 				return Messages.get(Level.class, "locked_exit_desc");
 			case Terrain.BARRICADE:

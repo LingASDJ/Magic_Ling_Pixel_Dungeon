@@ -36,6 +36,10 @@ public class Terrain {
 	public static final int EMBERS			= 9;
 	public static final int LOCKED_DOOR		= 10;
 	public static final int CRYSTAL_DOOR	= 31;
+
+	public static final int GOLDEN_DOOR		= 34;
+
+
 	public static final int PEDESTAL		= 11;
 	public static final int WALL_DECO		= 12;
 	public static final int BARRICADE		= 13;

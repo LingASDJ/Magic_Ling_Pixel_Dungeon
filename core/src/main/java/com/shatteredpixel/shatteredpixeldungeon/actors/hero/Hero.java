@@ -1739,6 +1739,10 @@ public class Hero extends Char {
 					&& Notes.keyCount(new CrystalKey(Dungeon.depth)) > 0 || checkUnlocked()) {
 
 				hasKey = true;
+			} else if (door == Terrain.GOLDEN_DOOR
+					&& Notes.keyCount(new GoldenKey(Dungeon.depth)) > 0 || checkUnlocked()) {
+
+				hasKey = true;
 
 			} else if (door == Terrain.LOCKED_EXIT
 					&& Notes.keyCount(new SkeletonKey(Dungeon.depth)) > 0) {
@@ -2610,7 +2614,7 @@ public class Hero extends Char {
 					curAction = new HeroAction.OpenChest( cell );
 			}
 
-		} else if (Dungeon.level.map[cell] == Terrain.LOCKED_DOOR || Dungeon.level.map[cell] == Terrain.CRYSTAL_DOOR || Dungeon.level.map[cell] == Terrain.LOCKED_EXIT) {
+		} else if (Dungeon.level.map[cell] == Terrain.LOCKED_DOOR || Dungeon.level.map[cell] == Terrain.CRYSTAL_DOOR || Dungeon.level.map[cell] == Terrain.LOCKED_EXIT || Dungeon.level.map[cell] == Terrain.GOLDEN_DOOR) {
 
 			curAction = new HeroAction.Unlock( cell );
 
@@ -3357,6 +3361,14 @@ public class Hero extends Char {
 					if(checkUnlocked()) Buff.detach(this,BlessUnlock.class);
 				} else if (door == Terrain.CRYSTAL_DOOR) {
 					hasKey = Notes.remove(new CrystalKey(Dungeon.depth)) || checkUnlocked();
+					if (hasKey) {
+						Level.set(doorCell, Terrain.EMPTY);
+						Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+						CellEmitter.get( doorCell ).start( Speck.factory( Speck.DISCOVER ), 0.025f, 20 );
+					}
+					if(checkUnlocked()) Buff.detach(this,BlessUnlock.class);
+				} else if (door == Terrain.GOLDEN_DOOR) {
+					hasKey = Notes.remove(new GoldenKey(Dungeon.depth)) || checkUnlocked();
 					if (hasKey) {
 						Level.set(doorCell, Terrain.EMPTY);
 						Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
