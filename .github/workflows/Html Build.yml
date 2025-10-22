@@ -28,7 +28,7 @@ jobs:
       - name: 打包输出文件
         run: |
           # 假设脚本生成的文件在html/test-web目录下，可根据实际情况修改
-          zip -r test-web-output.zip html/test-web/
+          zip -r test-web-output.zip ../release/
         # 注意：如果生成文件在其他路径，需要修改这里的源路径
 
       # 4. 上传zip文件为工件，保留1天
