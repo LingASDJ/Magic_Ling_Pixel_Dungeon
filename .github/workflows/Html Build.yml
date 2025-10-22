@@ -2,7 +2,7 @@ name: 构建测试Web并上传工件
 
 on:
   push:
-    branches: [ 2022-Desktop ]
+    branches: [ 2025-Desktop ]
   workflow_dispatch:
 
 jobs:
