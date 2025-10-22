@@ -27,11 +27,11 @@ public class TeaVMLauncher {
 
         try {
 
-            com.shatteredpixel.shatteredpixeldungeon.html.HtmlPlatformSupport platformSupport = new com.shatteredpixel.shatteredpixeldungeon.html.HtmlPlatformSupport();
+            HtmlPlatformSupport platformSupport = new HtmlPlatformSupport();
 
             platformSupport.setupClickListener();
 
-            new TeaApplication(new ShatteredPixelDungeon(platformSupport), new com.shatteredpixel.shatteredpixeldungeon.html.CustomPreloadScreen(), config);
+            new TeaApplication(new ShatteredPixelDungeon(platformSupport), config);
 
         } catch (Exception e) {
             System.err.println("Error launching TeaApplication: " + e.getMessage());
@@ -40,7 +40,7 @@ public class TeaVMLauncher {
     }
 
     private static void initializeServices() {
-        Game.version = "3.2.5";
-        Game.versionCode = 877;
+        Game.version = "3.0.2";
+        Game.versionCode = 833;
     }
 }

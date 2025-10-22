@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
 
 import java.io.IOException;
@@ -54,6 +55,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,6 +67,12 @@ public enum Rankings {
     public static final int TABLE_SIZE = 11;
 
     public static final String RANKINGS_FILE = "rankings.dat";
+
+    private static String generateUUID() {
+        Random random = new Random();
+        return Long.toHexString(random.nextLong()) + "-" + Long.toHexString(random.nextLong());
+    }
+
     public static final String HERO = "hero";
     public static final String STATS = "stats";
     public static final String BADGES = "badges";
@@ -145,7 +153,11 @@ public enum Rankings {
 
         INSTANCE.saveGameData(rec);
 
-        rec.gameID = UUID.randomUUID().toString();
+        if (DeviceCompat.isWeb()) {
+            rec.gameID = generateUUID();
+        } else {
+            rec.gameID = UUID.randomUUID().toString();
+        }
 
 //        if (rec.daily) {
 //            if (Dungeon.dailyReplay) {

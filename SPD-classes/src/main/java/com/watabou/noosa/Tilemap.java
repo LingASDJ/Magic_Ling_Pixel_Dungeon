@@ -25,6 +25,7 @@ import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Quad;
 import com.watabou.glwrap.Vertexbuffer;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Rect;
 import com.watabou.utils.RectF;
 
@@ -197,6 +198,10 @@ public class Tilemap extends Visual {
 	public void draw() {
 
 		super.draw();
+
+		if (DeviceCompat.isWeb()) {
+			fullUpdate = true;
+		}
 
 		if (!updated.isEmpty()) {
 			updateVertices();

@@ -433,10 +433,12 @@ public class GameScene extends PixelScene {
 	public void destroy() {
 
 		//tell the actor thread to finish, then wait for it to complete any actions it may be doing.
-		if (!waitForActorThread( 4500, true )){
-			Throwable t = new Throwable();
-			t.setStackTrace(actorThread.getStackTrace());
-			throw new RuntimeException("timeout waiting for actor thread! ", t);
+		if (!DeviceCompat.isWeb()) {
+			if (!waitForActorThread(4500, true)) {
+				Throwable t = new Throwable();
+				t.setStackTrace(actorThread.getStackTrace());
+				throw new RuntimeException("timeout waiting for actor thread! ", t);
+			}
 		}
 
 		Emitter.freezeEmitters = false;

@@ -22,11 +22,13 @@
 package com.watabou.glwrap;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.watabou.utils.DeviceCompat;
 
 import java.nio.FloatBuffer;
 
 public class Attribute {
-
+	private static final GL20 activeGL = (DeviceCompat.isWeb()) ? Gdx.gl30 : Gdx.gl;
 	private int location;
 	
 	public Attribute( int location ) {
@@ -36,20 +38,19 @@ public class Attribute {
 	public int location() {
 		return location;
 	}
-	
+
 	public void enable() {
-		Gdx.gl.glEnableVertexAttribArray( location );
-	}
-	
-	public void disable() {
-		Gdx.gl.glDisableVertexAttribArray( location );
-	}
-	
-	public void vertexPointer( int size, int stride, FloatBuffer ptr ) {
-		Gdx.gl.glVertexAttribPointer( location, size, Gdx.gl.GL_FLOAT, false, stride * 4, ptr );
+		activeGL.glEnableVertexAttribArray( location );
 	}
 
+	public void disable() {
+		activeGL.glDisableVertexAttribArray( location );
+	}
+
+	public void vertexPointer( int size, int stride, FloatBuffer ptr ) {
+		activeGL.glVertexAttribPointer( location, size, GL20.GL_FLOAT, false, stride * 4, ptr );
+	}
 	public void vertexBuffer( int size, int stride, int offset) {
-		Gdx.gl.glVertexAttribPointer(location, size, Gdx.gl.GL_FLOAT, false, stride * 4, offset * 4);
+		activeGL.glVertexAttribPointer( location, size, GL20.GL_FLOAT, false, stride * 4, offset * 4 );
 	}
 }
