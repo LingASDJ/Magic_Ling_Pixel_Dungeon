@@ -11,28 +11,32 @@ jobs:
     
     steps:
       - name: 检出代码
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4  # 确保代码被正确检出到工作目录
+
+      - name: 检查根目录文件（调试）
+        run: |
+          echo "===== 根目录文件列表 ====="
+          ls -la  # 确认gradlew是否在列表中
 
       - name: 执行buildTestWeb.sh
         run: |
           chmod +x html/buildTestWeb.sh
           ./html/buildTestWeb.sh
         env:
-          GRADLE_OPTS: "-Dorg.gradle.logging.level=info"  # 输出详细构建日志
+          GRADLE_OPTS: "-Dorg.gradle.logging.level=info"
 
-      - name: 检查构建产物目录（调试用）
+      - name: 检查构建产物（调试）
         run: |
           echo "===== 根目录结构 ====="
           ls -la
-          echo "===== html目录结构 ====="
-          ls -la html
-          echo "===== html/build目录 ====="
-          ls -la html/build || echo "html/build不存在"
+          echo "===== 可能的产物目录 ====="
+          ls -la release || echo "release目录不存在"
+          ls -la release/webapp || echo "release/webapp目录不存在"
 
       - name: 打包输出文件（根据实际路径调整）
         run: |
-          # 替换为调试后确认的产物路径
-          zip -r test-web-output.zip html/build/
+          # 替换为实际产物路径（例如html/build或release/webapp）
+          zip -r test-web-output.zip 实际产物路径/
 
       - name: 上传工件
         uses: actions/upload-artifact@v4
