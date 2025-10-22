@@ -21,7 +21,7 @@ jobs:
           # 赋予脚本执行权限
           chmod +x html/buildTestWeb.sh
           # 执行脚本
-          ./html/buildTestWeb.sh
+          /html/buildTestWeb.sh
         # 如果脚本执行失败，工作流会自动终止
 
       # 3. 将生成的文件打包为zip（请根据实际生成的文件路径调整）
