@@ -3,7 +3,7 @@ name: 构建测试Web并上传工件
 # 触发条件：可根据需要调整（如push到特定分支、手动触发等）
 on:
   push:
-    branches: [ main ]  # 替换为你的目标分支
+    branches: [ 2025-Desktop ]  # 替换为你的目标分支
   workflow_dispatch:  # 允许手动触发
 
 jobs:
