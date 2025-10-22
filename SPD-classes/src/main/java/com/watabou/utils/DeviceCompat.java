@@ -24,6 +24,7 @@ package com.watabou.utils;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.watabou.noosa.Game;
 
 //TODO migrate to platformSupport class
@@ -49,19 +50,37 @@ public class DeviceCompat {
 	}
 
 	public static boolean isAndroid(){
-		return Gdx.app.getType() == Application.ApplicationType.Android;
+		if(Gdx.app == null){
+			return SharedLibraryLoader.isAndroid;
+		} else {
+			return Gdx.app.getType() == Application.ApplicationType.Android;
+		}
+
+
 	}
 	public static boolean isiOS(){
-		return Gdx.app.getType() == Application.ApplicationType.iOS;
+		if(Gdx.app == null){
+			return SharedLibraryLoader.isIos;
+		} else {
+			return Gdx.app.getType() == Application.ApplicationType.iOS;
+		}
 	}
 	public static boolean isDesktop(){
-		return System.getProperty("os.name").toLowerCase().contains("win") ||
-				System.getProperty("os.name").toLowerCase().contains("mac") ||
-				System.getProperty("os.name").toLowerCase().contains("nux") ||
-				Gdx.app.getType() == Application.ApplicationType.WebGL;
+		if(Gdx.app == null){
+			return SharedLibraryLoader.isWindows || SharedLibraryLoader.isMac || SharedLibraryLoader.isLinux;
+		} else {
+			return System.getProperty("os.name").toLowerCase().contains("win") ||
+					System.getProperty("os.name").toLowerCase().contains("mac") ||
+					System.getProperty("os.name").toLowerCase().contains("nux") ||
+					Gdx.app.getType() == Application.ApplicationType.WebGL;
+		}
 	}
 	public static boolean isWeb(){
-		return Gdx.app.getType() == Application.ApplicationType.WebGL;
+		if(Gdx.app == null){
+			return false;
+		} else {
+			return Gdx.app.getType() == Application.ApplicationType.WebGL;
+		}
 	}
 
 	public static boolean hasHardKeyboard(){

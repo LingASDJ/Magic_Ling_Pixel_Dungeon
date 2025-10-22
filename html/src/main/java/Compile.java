@@ -18,28 +18,23 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.html;
 
-import com.github.xpenatan.gdx.backends.teavm.config.AssetFileHandle;
-import com.github.xpenatan.gdx.backends.teavm.config.TeaBuildConfiguration;
 import com.github.xpenatan.gdx.backends.teavm.config.TeaBuilder;
-import com.github.xpenatan.gdx.backends.teavm.gen.SkipClass;
-import java.io.File;
-import java.io.IOException;
+
 import org.teavm.tooling.TeaVMTool;
 import org.teavm.vm.TeaVMOptimizationLevel;
 
-@SkipClass
+import java.io.File;
+import java.io.IOException;
+
 public class Compile {
 
   public static void main(String[] args) throws IOException {
-    deleteDir(new File("../release/webapp"));
+    File webappDir = new File("../release/webapp");
+    com.shatteredpixel.shatteredpixeldungeon.html.Configure.deleteDir(webappDir);
+    com.shatteredpixel.shatteredpixeldungeon.html.Configure.configure();
 
-    TeaBuildConfiguration conf = new TeaBuildConfiguration();
-
-    conf.webappPath = new File("../release").getAbsolutePath();
-    conf.assetsPath.add(new AssetFileHandle("../core/src/main/assets"));
-
-    TeaVMTool tool = TeaBuilder.config(conf);
-    tool.setMainClass(TeaVMLauncher.class.getName());
+    TeaVMTool tool = new TeaVMTool();
+    tool.setMainClass(com.shatteredpixel.shatteredpixeldungeon.html.TeaVMLauncher.class.getName());
     tool.setOptimizationLevel(TeaVMOptimizationLevel.ADVANCED);
     tool.setObfuscated(true);
     tool.setShortFileNames(true);
@@ -52,13 +47,4 @@ public class Compile {
     TeaBuilder.build(tool);
   }
 
-  private static void deleteDir(File dir) {
-    File[] files = dir.listFiles();
-    if (files != null) {
-      for (File file : files) {
-        deleteDir(file);
-      }
-    }
-    dir.delete();
-  }
 }

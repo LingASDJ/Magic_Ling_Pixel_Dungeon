@@ -1,48 +1,78 @@
 apply plugin: 'java-library'
 
 dependencies {
-    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion"
     implementation "com.github.xpenatan.gdx-teavm:backend-teavm:$gdxTeaVMVersion"
-    implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
     implementation "com.github.xpenatan.gdx-teavm:gdx-freetype-teavm:$gdxTeaVMVersion"
+    implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
     implementation project(':core')
-    implementation "org.teavm:teavm-jso:$teaVMVersion"
-    implementation "org.teavm:teavm-core:$teaVMVersion"
 }
 
 repositories {
-    google()
     mavenCentral()
+    maven { url = uri("https://central.sonatype.com/repository/maven-snapshots/") }
+    maven { url = uri("https://jitpack.io") }
     maven { url 'https://teavm.org/maven/repository' }
 }
 
 tasks.register('compileClient', JavaExec) {
-    classpath(sourceSets.main.runtimeClasspath)
-    mainClass.set('com.shatteredpixel.shatteredpixeldungeon.html.Compile')
-    jvmArgs('-Xms8g', '-Xmx14g', '-Xss16m', '-XX:MaxMetaspaceSize=12g', '-Dfile.encoding=UTF-8')
-    outputs.dir '../release/webapp'
-    doFirst {
-        println "Running compileClient..."
-    }
-    doLast {
-        println "compileClient completed!"
-    }
+  classpath(sourceSets.main.runtimeClasspath)
+  mainClass.set('com.shatteredpixel.shatteredpixeldungeon.html.Compile')
+  jvmArgs('-Xms8g', '-Xmx14g', '-Xss16m', '-XX:MaxMetaspaceSize=12g', '-Dfile.encoding=UTF-8')
+  outputs.dir '../release/webapp'
+  doFirst {
+    println "Running compileClient..."
+  }
+  doLast {
+    println "compileClient completed!"
+  }
 }
 
 task modifyHtml {
     doLast {
-        def htmlFile = file("../release/webapp/index.html")
-        def destinationDir = file("../release/webapp/assets")
-        def sourceFavicon = file("../desktop/src/main/assets/icons/windows.ico")
-        def sourceGif = file("../html/src/main/assets/logo.gif")
-        def destinationStartupLogo = file("../release/webapp/startup-logo.png")
+	def rootFS = file("../release/webapp")
+	def htmlFile = new File(rootFS, "index.html")
+	def assetsDir = new File(rootFS, "assets")
+	def faviconDest = new File(rootFS, "favicon.ico")
+	def sourceFavicon = file("../desktop/src/main/assets/icons/windows.ico")
+	def startupLogo = new File(assetsDir, "startup-logo.png")
+	def assetsTxt = new File(assetsDir, "assets.txt")
 
-        // copy windows.ico
-        if (sourceFavicon.exists()) {
-            def destinationFile = new File(destinationDir, "windows.ico")
+        // delete placeholder startup-logo.png
+        if (startupLogo.exists()) {
+            if (startupLogo.delete()) {
+                println "Deleted startup-logo.png from assets folder."
+            } else {
+                println "Failed to delete startup-logo.png. Check permissions."
+            }
+        } else {
+            println "startup-logo.png not found in assets folder. Nothing to delete."
+        }
+
+        // remove lines containing the word 'frame' (case-insensitive) from assets.txt
+        if (assetsTxt.exists()) {
+            def originalLines = assetsTxt.readLines('UTF-8')
+            def filteredLines = originalLines.findAll { line ->
+                !(line =~ /(?i)frame/)
+            }
+            if (filteredLines.size() != originalLines.size()) {
+                assetsTxt.withWriter('UTF-8') { writer ->
+                    filteredLines.eachWithIndex { l, i ->
+                        writer.write(l)
+                        if (i < filteredLines.size() - 1) writer.newLine()
+                    }
+                }
+                println "Removed lines containing 'frame' from assets.txt."
+            } else {
+                println "No lines containing 'frame' found in assets.txt. No changes made."
+            }
+        } else {
+            println "assets.txt not found in assets folder. Skipping assets.txt cleanup."
+        }
+
+	// copy windows.ico to favicon.ico
+	if (sourceFavicon.exists()) {
             sourceFavicon.withInputStream { input ->
-                destinationFile.withOutputStream { output ->
+                faviconDest.withOutputStream { output ->
                     output << input
                 }
             }
@@ -51,93 +81,18 @@ task modifyHtml {
             println "windows.ico does not exist. Skipping copy step."
         }
 
-        if (sourceGif.exists()) {
-            destinationStartupLogo.parentFile.mkdirs()
-            sourceGif.withInputStream { input ->
-                destinationStartupLogo.withOutputStream { output ->
-                    output << input
-                }
-            }
-            println "Replaced startup-logo.png with a gif."
-        } else {
-            println "Gif does not exist. Skipping replacement step."
-        }
-
         if (htmlFile.exists()) {
-            def faviconLink = '<link rel="icon" href="assets/windows.ico" type="image/x-icon">'
             def content = htmlFile.text
 
-            // add a link for the favicon
-            if (content.contains("</head>")) {
-                content = content.replace("</head>", faviconLink + "\n</head>")
-                println "Favicon link added to index.html."
-            }
-
-            // Change page title
-            if (content.contains("<title>")) {
+	    // Change page title
+	    if (content.contains("<title>")) {
                 content = content.replaceFirst("<title>.*?</title>", "<title>Shattered Pixel Dungeon</title>")
                 println "Title updated to 'Shattered Pixel Dungeon'."
             } else {
                 println "No <title> tag found in index.html. Skipping title update."
             }
 
-            if (content.contains("<style>") && content.contains("</style>")) {
-                content = content.replaceAll(
-                        "(?s)<style>.*?</style>",
-                        """<style>
-		  body {
-		    display: flex;
-		    justify-content: center;
-		    align-items: center;
-		    background: #000;
-		    height: 100vh;
-		    margin: 0;
-		    padding: 0;
-		    overflow: hidden;
-		  }
-		  #progress {
-		    display: flex;
-		    flex-direction: column;
-		    justify-content: center;
-		    align-items: center;
-		    position: fixed;
-		    top: 0;
-		    left: 0;
-		    height: 100%;
-		    width: 100%;
-		  }
-		  #progress-img {
-		    display: flex;
-		    width: 850px;
-		    height: auto;
-		    margin-bottom: -20px;
-		  }
-		  #progress-box {
-		    background: rgba(255,255,255,0.1);
-		    border: 2px solid #fff;
-		    display: flex;
-		    margin-top: -20px;
-		    justify-content: center;
-		    align-items: center;
-		    position: relative;
-		    height: 30px;
-		    width: 600px;
-		  }
-		  #progress-bar {
-		    display: block;
-		    background: #44FF82;
-		    height: 20px;
-		    width: 0%;
-		  }
-		</style>"""
-                )
-
-                println "Successfully replaced the <style> block in index.html."
-            } else {
-                println "No <style> block found in index.html. Skipping style replacement."
-            }
-
-            htmlFile.text = content
+	htmlFile.text = content
         } else {
             println "index.html does not exist. Skipping favicon injection."
         }

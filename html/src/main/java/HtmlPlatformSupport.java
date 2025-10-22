@@ -45,18 +45,18 @@ public class HtmlPlatformSupport extends PlatformSupport {
     }
 
     @JSBody(script = ""
-            + "document.body.addEventListener('click', function() {"
-            + "    console.log('User clicked. Triggering fullscreen and audio...');"
-            + "    document.getElementById('canvas').requestFullscreen();"
-            + "    if (!window.audioContext) {"
-            + "        window.audioContext = new (window.AudioContext || window.webkitAudioContext)();"
-            + "    }"
-            + "    window.audioContext.resume().then(() => {"
-            + "        console.log('AudioContext resumed successfully.');"
-            + "    }).catch((err) => {"
-            + "        console.error('Failed to resume AudioContext:', err);"
-            + "    });"
-            + "}, { once: true });")
+    + "document.body.addEventListener('click', function() {"
+    + "    console.log('User clicked. Triggering fullscreen and audio...');"
+    + "    document.getElementById('canvas').requestFullscreen();"
+    + "    if (!window.audioContext) {"
+    + "        window.audioContext = new (window.AudioContext || window.webkitAudioContext)();"
+    + "    }"
+    + "    window.audioContext.resume().then(() => {"
+    + "        console.log('AudioContext resumed successfully.');"
+    + "    }).catch((err) => {"
+    + "        console.error('Failed to resume AudioContext:', err);"
+    + "    });"
+    + "}, { once: true });")
     public static native void setupClickListener();
 
     @JSBody(params = {"id"}, script = "document.getElementById(id).requestFullscreen();")
@@ -78,33 +78,33 @@ public class HtmlPlatformSupport extends PlatformSupport {
 
     @Override
     public boolean supportsVibration() {
-        return ControllerHandler.vibrationSupported();
+	return ControllerHandler.vibrationSupported();
     }
 
     private static FreeTypeFontGenerator basicFontGenerator;
-
+	
     @Override
     public void setupFontGenerators(int pageSize, boolean systemfont) {
-        //don't bother doing anything if nothing has changed
-        if (fonts != null && this.pageSize == pageSize && this.systemfont == systemfont) {
-            return;
-        }
-        this.pageSize = pageSize;
-        this.systemfont = systemfont;
-
-        resetGenerators(false);
-        fonts = new HashMap<>();
-
-        basicFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixel_font.ttf"));
-
-        fonts.put(basicFontGenerator, new HashMap<>());
-
-        packer = new PixmapPacker(pageSize, pageSize, Pixmap.Format.RGBA8888, 1, false);
+    //don't bother doing anything if nothing has changed
+    if (fonts != null && this.pageSize == pageSize && this.systemfont == systemfont) {
+	return;
     }
+    this.pageSize = pageSize;
+    this.systemfont = systemfont;
 
+    resetGenerators(false);
+    fonts = new HashMap<>();
+
+    basicFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixel_font.ttf"));
+		
+    fonts.put(basicFontGenerator, new HashMap<>());
+		
+    packer = new PixmapPacker(pageSize, pageSize, Pixmap.Format.RGBA8888, 1, false);
+    }
+	
     @Override
     protected FreeTypeFontGenerator getGeneratorForString( String input ) {
-        return basicFontGenerator;
+	return basicFontGenerator;
     }
 
     private final Pattern regularsplitter = Pattern.compile("(?<=\n)|(?=\n)|(?<=_)|(?=_)|(?<=\\*\\*)|(?=\\*\\*)");
