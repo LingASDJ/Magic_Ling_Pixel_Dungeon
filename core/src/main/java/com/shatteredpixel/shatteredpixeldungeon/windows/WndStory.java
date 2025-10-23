@@ -278,13 +278,6 @@ public class WndStory extends Window {
 					mapnameSlain.show( Window.GDX_COLOR, 0.6f, 3f );
 					scene.showLogo( mapnameSlain );
 					break;
-				case 31:
-					if (Dungeon.branch == 3) {
-						mapnameSlain.texture( "interfaces/mapname/redriver.png" );
-						mapnameSlain.show( Window.ORAGNECOLOR, 0.6f, 3f );
-						scene.showLogo( mapnameSlain );
-					}
-					break;
 			}
 		}
 

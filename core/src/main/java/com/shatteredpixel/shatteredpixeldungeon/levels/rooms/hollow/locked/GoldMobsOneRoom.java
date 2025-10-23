@@ -10,6 +10,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.TribemanOld;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Switch;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.AllSearchIQuest;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -20,7 +27,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class OneLockedRoom extends CustomLuaRoom {
+public class GoldMobsOneRoom extends CustomLuaRoom {
 
     private ArrayList<Integer> perimeterCells;
     private boolean guardSpawned = false;
@@ -38,6 +45,10 @@ public class OneLockedRoom extends CustomLuaRoom {
     @Override
     public void paint(Level level) {
         super.paint(level);
+
+        Point center = new Point((left + right) / 2, (top + bottom) / 2);
+        int c = (top + 3) * level.width() + left + 5;
+        level.drop(HighChestRules(),c);
 
         if (!guardSpawned) {
             perimeterCells = new ArrayList<>();
@@ -75,6 +86,37 @@ public class OneLockedRoom extends CustomLuaRoom {
                 }
             }
         }
+    }
+
+    private Item HighChestRules() {
+        Item item;
+
+        ArrayList<Item> highValueItems = new ArrayList<>();
+        ArrayList<Item> midValueItems = new ArrayList<>();
+        ArrayList<Item> lowValueItems = new ArrayList<>();
+
+        highValueItems.add(new AllSearchIQuest.HollowLantern());
+        highValueItems.add(new AllSearchIQuest.HollowCityProps());
+        highValueItems.add(new AllSearchIQuest.HollowGoldCards());
+
+        midValueItems.add(new Food());
+        midValueItems.add(new MeatPie());
+        midValueItems.add(new Switch());
+
+        lowValueItems.add(new StoneOfAggression());
+        lowValueItems.add(new StoneOfBlink());
+
+        int randomValue = Random.Int(100);
+
+        if (randomValue < 25) {
+            item = highValueItems.get(Random.index(highValueItems));
+        } else if (randomValue < 85) {
+            item = midValueItems.get(Random.index(midValueItems));
+        } else {
+            item = lowValueItems.get(Random.index(lowValueItems));
+        }
+
+        return item;
     }
 
     public static class Guard extends TribemanOld {
