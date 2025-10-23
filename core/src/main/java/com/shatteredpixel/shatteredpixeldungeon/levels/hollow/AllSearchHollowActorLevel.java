@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.RiverPainter;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScoreBar;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class AllSearchHollowActorLevel extends RegularLevel {
@@ -47,16 +48,22 @@ public class AllSearchHollowActorLevel extends RegularLevel {
         ScoreBar.updateScoreFromBuff(hero.buff(ScoreBuff.class));
         ScoreBar.setRules(3);
         Buff.affect(hero, MagicalSight.class, MagicalSight.DURATION*200);
-        ScoreBar.assignScore(0,16000);
+        ScoreBar.assignScore(0,20000);
     }
 
     @Override
     protected Painter painter() {
         RiverPainter painter = new RiverPainter();
-        painter.setWater(0.15f, 4);  // 设置河流参数
-        painter.setGrass(0.25f, 3);  // 设置植被参数
+        painter.setWater(0.15f, 4);
+        painter.setGrass(0.25f, 3);
         painter.paint(this, rooms);
         return painter;
+    }
+
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle(bundle);
+        ScoreBar.setRules(3);
     }
 
 }

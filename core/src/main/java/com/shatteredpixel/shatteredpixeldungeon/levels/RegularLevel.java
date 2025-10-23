@@ -73,10 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.SliceDeadRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.FiveLockedRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.FourLockedRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.OneLockedRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.TwoLockedRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.GoldMobsOneRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.DragonCaveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
@@ -427,10 +424,7 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		initRooms.add(new OneLockedRoom());
-		initRooms.add(new TwoLockedRoom());
-		initRooms.add(new FourLockedRoom());
-		initRooms.add(new FiveLockedRoom());
+		initRooms.add(new GoldMobsOneRoom());
 
 		if(hero.buffs(SliceDeadBless.class) !=null && depth == 28){
 			initRooms.add(new SliceDeadRoom());

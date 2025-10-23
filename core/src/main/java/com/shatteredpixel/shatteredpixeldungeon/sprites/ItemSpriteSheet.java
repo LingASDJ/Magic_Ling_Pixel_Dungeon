@@ -1100,7 +1100,7 @@ public class ItemSpriteSheet {
     }
 
 
-    private static final int PUMPKM_LANTERN  =                                   xy(1, 45);
+    public static final int PUMPKM_LANTERN  =                                   xy(1, 45);
 
     public static final int CASTLE_AIRPORT  = PUMPKM_LANTERN+1;
     public static final int GOLD_CARDS      = PUMPKM_LANTERN+2;
