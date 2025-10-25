@@ -10,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaFloat;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GME;
@@ -173,20 +172,12 @@ public class ShieldHuntsman extends Mob {
 
     @Override
     public int attackSkill( Char target ) {
-        return 30;
+        return 50;
     }
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 2);
-    }
-
-    @Override
-    public void rollToDropLoot() {
-        Imp.Quest.process( this );
-
-        super.rollToDropLoot();
-//        super.rollToDropLoot();
+        return Random.NormalIntRange(0, 6);
     }
 
     protected float focusCooldown = 0;

@@ -1,11 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -145,12 +142,6 @@ public class GoldMobsOneRoom extends CustomLuaRoom {
         public static boolean seenBefore = false;
         @Override
         protected boolean act() {
-
-            if (!seenBefore && enemySeen && Dungeon.level.distance(pos, hero.pos) <= 1) {
-                sprite.showStatus(16711680, Messages.get(this,"alert_msg_"+Random.IntRange(1, 3)));
-                seenBefore = true;
-            }
-
             if (patrolPath != null && !patrolPath.isEmpty()) {
                 int to = patrolPath.get(patrolIndex);
                 if (pos != to) {
@@ -170,13 +161,6 @@ public class GoldMobsOneRoom extends CustomLuaRoom {
                 }
             }
             return super.act();
-        }
-
-        public int attackProc(Char enemy, int damage) {
-            if (Random.Int(0, 10) >= 4) {
-                yell(Messages.get(this,"attack_msg_"+Random.IntRange(1, 3)));
-            }
-            return super.attackProc(enemy,damage);
         }
 
         private boolean canMove(int to) {
