@@ -164,7 +164,7 @@ public class ScoreBar extends Component {
                     }
                     break;
                 case 3:
-                    highScoreThreshold = 12000;
+                    highScoreThreshold = 20000;
                     break;
                 default:
                     highScoreThreshold = 6000;

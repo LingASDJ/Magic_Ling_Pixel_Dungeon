@@ -245,11 +245,6 @@ public class PacManQuest extends Item {
         }
 
         @Override
-        public int icon() {
-            return BuffIndicator.GOODLUCK;
-        }
-
-        @Override
         public String desc() {
             return Messages.get(this, "desc", Plus);
         }

@@ -206,6 +206,13 @@ public class HeroSelectScene extends PixelScene {
 
 		window.add( a );
 
+		//		TODO Large Skin
+		//		Image image = new Image( "splashes/giftskin_mage.png" );
+		//		image.x = (SKY_WIDTH - image.width) / 2;
+		//		image.y = SKY_HEIGHT - image.height;
+		//		align(image);
+		//		window.addToFront( image );
+
 		window.add( new PointerArea( a ) {
 			protected void onClick( PointerEvent event ) {
 				if (GamesInProgress.selectedClass == null) return;

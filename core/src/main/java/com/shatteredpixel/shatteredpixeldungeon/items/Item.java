@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
@@ -48,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
@@ -192,17 +194,24 @@ public class Item implements Bundlable {
 	}
 
 	public boolean doPickUp(Hero hero, int pos) {
-		if (collect( hero.belongings.backpack )) {
-			
+		if(hero.buff(ScoreBuff.class)!=null && Dungeon.hero != null){
+			GameScene.pickUp( this, pos );
+			Sample.INSTANCE.play( Assets.Sounds.ITEM );
+			hero.spendAndNext( TIME_TO_PICK_UP );
+			ScoreBuff buff = hero.buff(ScoreBuff.class);
+			int score = value()/2;
+			hero.sprite.showStatus(Window.Pink_COLOR, "+"+score);
+			buff.addScore(score);
+			return true;
+		} else if (collect( hero.belongings.backpack )) {
 			GameScene.pickUp( this, pos );
 			Sample.INSTANCE.play( Assets.Sounds.ITEM );
 			hero.spendAndNext( TIME_TO_PICK_UP );
 			return true;
-			
 		} else {
 			return false;
 		}
-	}
+    }
 	
 	public void doDrop( Hero hero ) {
 		hero.spendAndNext(TIME_TO_DROP);

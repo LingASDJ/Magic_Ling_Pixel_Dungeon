@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.SliceAlter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.CustomLuaRoom;
 import com.watabou.utils.Point;
 
 public class SliceDeadRoom extends CustomLuaRoom {

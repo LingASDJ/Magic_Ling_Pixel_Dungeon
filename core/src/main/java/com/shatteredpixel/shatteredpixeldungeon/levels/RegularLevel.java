@@ -73,7 +73,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.SliceDeadRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.GoldMobsOneRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.DragonCaveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
@@ -240,7 +239,6 @@ public abstract class RegularLevel extends Level {
 		ArrayList<Room> initRooms = new ArrayList<>();
 
 		initRooms.add ( roomEntrance = EntranceRoom.createEntrance());
-
 		initRooms.add( roomExit = ExitRoom.createExit());
 
 
@@ -355,11 +353,13 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if(Dungeon.depth<26 && Random.Int(10) == 1) {
-			initRooms.add(new EyeRoom());
-		} else if(Random.Int(10) == 1 && depth>26 && Statistics.Hollow_Holiday) {
-			initRooms.add(new BigEyeRoom());
-			initRooms.add(new CoinRoom());
+		if(branch == 0){
+			if(Dungeon.depth<26 && Random.Int(10) == 1) {
+				initRooms.add(new EyeRoom());
+			} else if(Random.Int(10) == 1 && depth>26 && Statistics.Hollow_Holiday) {
+				initRooms.add(new BigEyeRoom());
+				initRooms.add(new CoinRoom());
+			}
 		}
 
 		if(Dungeon.depth<26 && Random.NormalIntRange(1, 100)<=21){
@@ -424,8 +424,6 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		initRooms.add(new GoldMobsOneRoom());
-
 		if(hero.buffs(SliceDeadBless.class) !=null && depth == 28){
 			initRooms.add(new SliceDeadRoom());
 		}
@@ -447,7 +445,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(s);
 		}
 
-		if(depth<26){
+		if(depth<26) {
 			int secrets = SecretRoom.secretsForFloor(Dungeon.depth);
 			if (feeling == Feeling.SECRETS && depth < 26) secrets++;
 			for (int i = 0; i < secrets; i++) {
@@ -455,8 +453,6 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-
-		
 		return initRooms;
 	}
 	
@@ -689,7 +685,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//DLC EX()SP
-		if(depth>25 && Statistics.Hollow_Holiday){
+		if(depth>25 && Statistics.Hollow_Holiday && branch == 0){
 			nItems /= 100;
 		}
 

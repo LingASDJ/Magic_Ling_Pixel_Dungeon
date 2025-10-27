@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow;
+package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.escape;
 
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
@@ -6,14 +6,15 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Point;
 
-public class MagicCircleRoom extends SpecialRoom {
+public class MagicCircleRoom extends ExitRoom {
 
     @Override
     public int minWidth() {
@@ -90,8 +91,16 @@ public class MagicCircleRoom extends SpecialRoom {
                     set(level, i, j, codeToTerrain(pre_map[index]));
                 }
             }
+
         }
-        entrance().set(Door.Type.REGULAR);
+
+        int centerX = left + width() / 2;
+        int centerY = top + height() / 2;
+        Point cx = new Point(centerX, centerY);
+
+        int exit =  (left + right) - cx.x + cx.y * level.width();
+        Painter.set( level, exit, Terrain.EXIT );
+        level.transitions.add(new LevelTransition(level, exit, LevelTransition.Type.REGULAR_EXIT));
     }
 
     public static class MagicCircleMaker extends CustomTilemap {

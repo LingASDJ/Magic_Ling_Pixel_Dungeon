@@ -93,28 +93,28 @@ public abstract class Plant implements Bundlable {
 	public abstract void activate( Char ch );
 	
 	public void wither() {
-		Dungeon.level.uproot( pos );
+		if(Dungeon.level != null){
+			Dungeon.level.uproot( pos );
+			if (Dungeon.level.heroFOV[pos]) {
+				CellEmitter.get( pos ).burst( LeafParticle.GENERAL, 6 );
+			}
 
-		if (Dungeon.level.heroFOV[pos]) {
-			CellEmitter.get( pos ).burst( LeafParticle.GENERAL, 6 );
-		}
+			float seedChance = 0f;
+			for (Char c : Actor.chars()){
+				if (c instanceof WandOfRegrowth.Lotus){
+					WandOfRegrowth.Lotus l = (WandOfRegrowth.Lotus) c;
+					if (l.inRange(pos)){
+						seedChance = Math.max(seedChance, l.seedPreservation());
+					}
+				}
+			}
 
-		float seedChance = 0f;
-		for (Char c : Actor.chars()){
-			if (c instanceof WandOfRegrowth.Lotus){
-				WandOfRegrowth.Lotus l = (WandOfRegrowth.Lotus) c;
-				if (l.inRange(pos)){
-					seedChance = Math.max(seedChance, l.seedPreservation());
+			if (Random.Float() < seedChance){
+				if (seedClass != null && seedClass != Rotberry.Seed.class) {
+					Dungeon.level.drop(Reflection.newInstance(seedClass), pos).sprite.drop();
 				}
 			}
 		}
-
-		if (Random.Float() < seedChance){
-			if (seedClass != null && seedClass != Rotberry.Seed.class) {
-				Dungeon.level.drop(Reflection.newInstance(seedClass), pos).sprite.drop();
-			}
-		}
-		
 	}
 	
 	private static final String POS	= "pos";

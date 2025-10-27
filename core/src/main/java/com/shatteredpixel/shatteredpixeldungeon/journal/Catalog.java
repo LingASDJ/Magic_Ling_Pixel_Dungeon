@@ -117,6 +117,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.AllSearchIQuest;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.PacManQuest;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
@@ -168,6 +170,7 @@ public enum Catalog {
 	EXOTIC_SCROLLS,
 	BOMBS,
 	PROPS,
+	MINIGAMES,
 	TIPPED_DARTS,
 	BREWS_ELIXIRS,
 	SPELLS,
@@ -304,6 +307,27 @@ public enum Catalog {
 				GooBlob.class, TengusMask.class, MetalShard.class, KingsCrown.class,
 				LiquidMetal.class, ArcaneResin.class, PotionOfNoWater.class);
 
+		MINIGAMES.addItems(
+				PacManQuest.SmallPoint.class,
+				PacManQuest.BigPoint.class,
+
+				AllSearchIQuest.HollowLantern.class,
+				AllSearchIQuest.HollowCityProps.class,
+				AllSearchIQuest.HollowGoldCards.class,
+
+				AllSearchIQuest.CrystalHeartChoco.class,
+				AllSearchIQuest.CreateWorldHeartModel.class,
+				AllSearchIQuest.GhostBlueModel.class,
+				AllSearchIQuest.GreenDamModel.class,
+				AllSearchIQuest.GreenStingModel.class,
+
+				AllSearchIQuest.THEATER_CARDS.class,
+				AllSearchIQuest.HOLLOW_SUGARS.class,
+				AllSearchIQuest.GREEN_PRISM.class,
+				AllSearchIQuest.GNOLL_WOOD.class,
+				AllSearchIQuest.FOUR_KIDS.class
+		);
+
 	}
 
 
@@ -322,6 +346,7 @@ public enum Catalog {
 		equipmentCatalogs.add(TRINKETS);
 		equipmentCatalogs.add(BOOKS);
 		equipmentCatalogs.add(MISC_EQUIPMENT);
+		equipmentCatalogs.add(MINIGAMES);
 	}
 
 	public static ArrayList<Catalog> consumableCatalogs = new ArrayList<>();
@@ -338,6 +363,7 @@ public enum Catalog {
 		consumableCatalogs.add(BREWS_ELIXIRS);
 		consumableCatalogs.add(SPELLS);
 		consumableCatalogs.add(MISC_CONSUMABLES);
+		consumableCatalogs.add(MINIGAMES);
 	}
 
 	public static boolean isSeen(Class<?> cls){
