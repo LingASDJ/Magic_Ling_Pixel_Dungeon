@@ -146,7 +146,11 @@ public class MobSpawner extends Actor {
 										MobsUtilsRoom.GreenSlingSP.class,
 										MobsUtilsRoom.DM275RPG_SP.class,
 										MobsUtilsRoom.FlameC02SP.class,
-										ShadowHunstman.class
+										ShadowHunstman.class,
+										ApprenticeWitch.class,
+										Butcher.class,
+										Pumking_Ghost.class,
+										PumkingBomber.class
 								));
 					}
 				case 5:
@@ -538,6 +542,20 @@ public class MobSpawner extends Actor {
 								ThreeLeafBug.class,ThreeLeafBug.class, AnomaloCaris.class, AnomaloCaris.class,
 								ThreeLeafBug.class,ThreeLeafBug.class, AnomaloCaris.class, AnomaloCaris.class,
 								ThreeLeafBug.class));
+					}
+				case 3:
+					if(Dungeon.depth == 31){
+						return new ArrayList<>(
+								Arrays.asList(
+										MobsUtilsRoom.GreenSlingSP.class,
+										MobsUtilsRoom.DM275RPG_SP.class,
+										MobsUtilsRoom.FlameC02SP.class,
+										ShadowHunstman.class,
+										ApprenticeWitch.class,
+										Butcher.class,
+										Pumking_Ghost.class,
+										PumkingBomber.class
+								));
 					}
 				case 5:
 					if(Dungeon.depth == 17){

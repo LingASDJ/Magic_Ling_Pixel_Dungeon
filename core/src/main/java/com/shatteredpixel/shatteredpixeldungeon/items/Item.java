@@ -180,8 +180,13 @@ public class Item implements Bundlable {
 	
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = new ArrayList<>();
-		actions.add( AC_DROP );
-		actions.add( AC_THROW );
+
+		//全面搜查
+		if(Dungeon.branch != 3){
+			actions.add( AC_DROP );
+			actions.add( AC_THROW );
+		}
+
 		return actions;
 	}
 

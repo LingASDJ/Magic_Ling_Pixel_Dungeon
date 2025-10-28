@@ -47,7 +47,6 @@ public class SRPDHBLR extends Mob {
         this.defenseSkill = 7;
         this.EXP = 15;
         this.maxLvl = 15;
-        this.state = this.SLEEPING;
         this.loot = new Crossbow();
         this.lootChance = 0.05f;
     }

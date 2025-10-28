@@ -846,9 +846,7 @@ public abstract class Char extends Actor {
 
 		String str = "";
 
-		if(DeviceCompat.isDesktop() &&
-				DeviceCompat.isDebug() ||
-				  DeviceCompat.isMidTest()){
+		if(DeviceCompat.isDesktop() && DeviceCompat.isDebug()){
 			if(this instanceof Hero){
 				str = "玩家";
 			}else {

@@ -3372,7 +3372,7 @@ public class Hero extends Char {
 							heap.open(this);
 							spend(Key.TIME_TO_UNLOCK);
 						break;
-						case SKELETON: case REMAINS:case TOMB:
+						case SKELETON: case REMAINS:case TOMB: case BLACK:
 							GameScene.updateKeyDisplay();
 							heap.open(this);
 							spend(Key.TIME_TO_UNLOCK);
