@@ -174,6 +174,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.PumkingBomber;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Pumking_Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Vampire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.allsearch.HelpTeleportPoint;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.allsearch.ShadowHunstman;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Anger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Junko;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Pink;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Smart;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
@@ -198,6 +204,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.utils.MobsUtilsRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SentryRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
@@ -275,6 +282,7 @@ public enum Bestiary {
 	ANCITY,
 	SHOP,
 	ANCIENT_CITY,
+	MINIGAMES,
 	ANCIENT_CITY_BOSS,
 
 	UNIVERSAL,
@@ -445,6 +453,23 @@ public enum Bestiary {
 		Frankenstein.class, Butcher.class, Crumb.class, ApprenticeWitch.class,
 		Ghost_Halloween.class, HollowMimic.class, Pumking_Ghost.class,PumkingBomber.class,
 		Vampire.class);
+
+		MINIGAMES.addEntities(
+				Ghost_Anger.class,
+				Ghost_Junko.class,
+				Ghost_Pink.class,
+				Ghost_Smart.class,
+
+				HelpTeleportPoint.class,
+				ShadowHunstman.class,
+
+				MobsUtilsRoom.RedGolem.class,
+				MobsUtilsRoom.RedSnake.class,
+				MobsUtilsRoom.RedTorchHuntsman.class,
+				MobsUtilsRoom.RedMagicShieldMan.class,
+				MobsUtilsRoom.RedShaman.class,
+				MobsUtilsRoom.RedSpider.class
+		);
 
 		ANCIENT_CITY_BOSS.addEntities(
 				//Boss T1

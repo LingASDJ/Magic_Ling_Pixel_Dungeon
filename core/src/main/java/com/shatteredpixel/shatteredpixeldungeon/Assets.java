@@ -692,7 +692,18 @@ public class Assets {
 
 		public static final String BOX_MINI	= "sprites/hollow/minigame/box.png";
 
+
 		public static final String TELE_FOCU	= "sprites/hollow/minigame/teleportation_focu.png";
+
+		//BLOOD MOBS
+		public static final String RED_GOLEM	=  "sprites/hollow/minigame/golem-ex.png";
+		public static final String RED_SNAKE	=  "sprites/hollow/minigame/snake-ex.png";
+		public static final String RED_TORCH	=  "sprites/hollow/minigame/torchhuntsman-ex.png";
+		public static final String RED_SAMH	=  "sprites/hollow/minigame/shieldhuntsman-ex.png";
+		public static final String RED_SPIDER	=  "sprites/hollow/minigame/spinner-ex.png";
+		public static final String RED_GNOLL	=  "sprites/hollow/minigame/skullshaman-ex.png";
+
+
 
 		public static final String APWHEEL = "sprites/hollow/apprentice_witch.png";
 

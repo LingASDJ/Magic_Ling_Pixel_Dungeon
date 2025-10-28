@@ -9,36 +9,23 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ActivePoint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.PrisonPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.crystal.CrystalOneRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.crystal.CrystalThreeRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.crystal.CrystalTwoRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.escape.MagicCircleRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.escape.MainTowerRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.gold.GoldFiveRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.gold.GoldFourRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.gold.GoldOneRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.gold.GoldThreeRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.gold.GoldTwoRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardFiveRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardFourRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardOneRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardThreeRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardTwoRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.crystal.*;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.gold.*;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.*;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.escape.*;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.*;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScoreBar;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -52,14 +39,6 @@ public class AllSearchHollowActorLevel extends RegularLevel {
 
     {
         extraGlass = false;
-    }
-
-    @Override
-    public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if (transition.type == LevelTransition.Type.REGULAR_EXIT) {
-            GLog.w("X");
-        }
-        return false;
     }
 
     @Override
@@ -95,25 +74,56 @@ public class AllSearchHollowActorLevel extends RegularLevel {
             initRooms.add(s);
         }
 
-        initRooms.add(new GoldOneRoom());
-        initRooms.add(new GoldTwoRoom());
-        initRooms.add(new GoldThreeRoom());
-        initRooms.add(new GoldFourRoom());
-        initRooms.add(new GoldFiveRoom());
-
-        initRooms.add(new CrystalOneRoom());
-        initRooms.add(new CrystalTwoRoom());
-        initRooms.add(new CrystalThreeRoom());
-
         for (int i = 0; i < 2; i++) {
             initRooms.add(new MainTowerRoom());
         }
 
-        initRooms.add(new GuardOneRoom());
-        initRooms.add(new GuardTwoRoom());
-        initRooms.add(new GuardThreeRoom());
-        initRooms.add(new GuardFourRoom());
-        initRooms.add(new GuardFiveRoom());
+        initRooms.add(new OneLockedRoom());
+        initRooms.add(new TwoLockedRoom());
+        initRooms.add(new ThreeLockedRoom());
+        initRooms.add(new FourLockedRoom());
+
+        int goldRooms = Random.Int(2) + 1;
+        ArrayList<Integer> goldRoomTypes = new ArrayList<>();
+        for (int i = 0; i < 5; i++) goldRoomTypes.add(i);
+        Random.shuffle(goldRoomTypes);
+        for (int i = 0; i < goldRooms; i++) {
+            switch (goldRoomTypes.get(i)) {
+                case 0: initRooms.add(new GoldOneRoom()); break;
+                case 1: initRooms.add(new GoldTwoRoom()); break;
+                case 2: initRooms.add(new GoldThreeRoom()); break;
+                case 3: initRooms.add(new GoldFourRoom()); break;
+                case 4: initRooms.add(new GoldFiveRoom()); break;
+            }
+        }
+
+        int crystalRooms = Random.Int(2) + 2;
+        ArrayList<Integer> crystalRoomTypes = new ArrayList<>();
+        for (int i = 0; i < 3; i++) crystalRoomTypes.add(i);
+        Random.shuffle(crystalRoomTypes);
+        for (int i = 0; i < crystalRooms; i++) {
+            switch (crystalRoomTypes.get(i)) {
+                case 0: initRooms.add(new CrystalOneRoom()); break;
+                case 1: initRooms.add(new CrystalTwoRoom()); break;
+                case 2: initRooms.add(new CrystalThreeRoom()); break;
+            }
+        }
+
+
+        // 随机生成1-3个守卫房间（不重复）
+        int guardRooms = Random.Int(3) + 1; // 生成1-3个
+        ArrayList<Integer> guardRoomTypes = new ArrayList<>();
+        for (int i = 0; i < 5; i++) guardRoomTypes.add(i);
+        Random.shuffle(guardRoomTypes);
+        for (int i = 0; i < guardRooms; i++) {
+            switch (guardRoomTypes.get(i)) {
+                case 0: initRooms.add(new GuardOneRoom()); break;
+                case 1: initRooms.add(new GuardTwoRoom()); break;
+                case 2: initRooms.add(new GuardThreeRoom()); break;
+                case 3: initRooms.add(new GuardFourRoom()); break;
+                case 4: initRooms.add(new GuardFiveRoom()); break;
+            }
+        }
 
 
         return initRooms;
