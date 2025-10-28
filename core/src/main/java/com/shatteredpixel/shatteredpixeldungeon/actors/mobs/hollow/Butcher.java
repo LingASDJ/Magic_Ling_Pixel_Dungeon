@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class Butcher extends Mob {
 
-    private int blinkCooldown = 0;
+    public int blinkCooldown = 0;
 
     @Override
     protected boolean getCloser( int target ) {
@@ -61,7 +61,7 @@ public class Butcher extends Mob {
         Dungeon.level.drop( new Gold(Random.NormalIntRange(120, 320)), pos );
     }
 
-    private boolean blink( int target ) {
+    public boolean blink( int target ) {
 
         Ballistica route = new Ballistica( pos, target, Ballistica.PROJECTILE);
         int cell = route.collisionPos;

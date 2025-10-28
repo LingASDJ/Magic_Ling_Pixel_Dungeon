@@ -1102,13 +1102,39 @@ public class ItemSpriteSheet {
 
     public static final int PUMPKM_LANTERN  =                                   xy(1, 45);
 
-    public static final int CASTLE_AIRPORT  = PUMPKM_LANTERN+1;
-    public static final int GOLD_CARDS      = PUMPKM_LANTERN+2;
+    public static final int CASTLE_AIRPORT      = PUMPKM_LANTERN+1;
+    public static final int GOLD_CARDS          = PUMPKM_LANTERN+2;
+    public static final int CRYSTAL_CHOCO       = PUMPKM_LANTERN+3;
+    public static final int WORLD_HEART_MODEL   = PUMPKM_LANTERN+4;
+    public static final int GHOST_BLUE_MODEL    = PUMPKM_LANTERN+5;
+    public static final int GREEN_DAM_MODEL     = PUMPKM_LANTERN+6;
+    public static final int GREEN_SLING_SMALL   = PUMPKM_LANTERN+7;
+    public static final int THEATER_CARDS       = PUMPKM_LANTERN+8;
+    public static final int HOLLOW_SUGAR        = PUMPKM_LANTERN+9;
+    public static final int GREEN_PRISM         = PUMPKM_LANTERN+10;
+    public static final int GNOLL_WOOD          = PUMPKM_LANTERN+11;
+    public static final int FOUR_KIDS           = PUMPKM_LANTERN+12;
 
     public static final int SMALL_POINT     = PUMPKM_LANTERN+13;
     public static final int BIG_POINT       = PUMPKM_LANTERN+14;
 
     static {
+        assignItemRect(PUMPKM_LANTERN, 14, 13);
+        assignItemRect(CASTLE_AIRPORT, 16, 16);
+        assignItemRect(GOLD_CARDS,     12, 16);
+
+        assignItemRect(CRYSTAL_CHOCO,  13, 13);
+        assignItemRect(WORLD_HEART_MODEL,  14, 13);
+        assignItemRect(GHOST_BLUE_MODEL,  13, 13);
+        assignItemRect(GREEN_DAM_MODEL,  15, 15);
+        assignItemRect(GREEN_SLING_SMALL,  12, 12);
+
+        assignItemRect(THEATER_CARDS,  14, 9);
+        assignItemRect(HOLLOW_SUGAR,  12, 10);
+        assignItemRect(GREEN_PRISM,  9, 15);
+        assignItemRect(GNOLL_WOOD,  11, 14);
+        assignItemRect(FOUR_KIDS,  14, 14);
+
         assignItemRect(SMALL_POINT, 6, 6);
         assignItemRect(BIG_POINT,  10, 10);
     }

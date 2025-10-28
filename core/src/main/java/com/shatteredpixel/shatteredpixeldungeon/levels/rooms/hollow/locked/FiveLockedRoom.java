@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.CustomLuaRoom;
 
 public class FiveLockedRoom extends CustomLuaRoom {
     {

@@ -162,6 +162,8 @@ public class WndInfoMob extends WndTitledMessage {
 			String level;
 			if (mob.properties.contains(Char.Property.BOSS)){
 				level = Messages.get(WndInfoMob.class,"boss");
+			} else if (mob.properties.contains(Char.Property.SEARCH)){
+				level = Messages.get(WndInfoMob.class,"seach");
 			} else if (mob.properties.contains(Char.Property.UNKNOWN)){
 				level = Messages.get(WndInfoMob.class,"unknown");
 			} else if (mob.properties.contains(Char.Property.MINIBOSS)){

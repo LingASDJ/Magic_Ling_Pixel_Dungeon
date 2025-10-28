@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
@@ -1193,7 +1194,7 @@ public abstract class Level implements Bundlable {
 		int terr = map[pos];
 
 		//0层 常规门 无法被摧毁
-		if((terr == Terrain.DOOR || terr == Terrain.OPEN_DOOR) && depth == 0){
+		if((terr == Terrain.DOOR || terr == Terrain.OPEN_DOOR) && (depth == 0 || depth == 31)){
 			return;
 		}
 
@@ -1295,7 +1296,9 @@ public abstract class Level implements Bundlable {
 				GameScene.add( heap );
 			}
 
-		} else if (heap.type == Heap.Type.LOCKED_CHEST || heap.type == Heap.Type.CRYSTAL_CHEST) {
+			//TODO 搜打撤后续需要优化
+		} else if ((heap.type == Heap.Type.LOCKED_CHEST || heap.type == Heap.Type.CRYSTAL_CHEST )
+				&& (depth != 31 && branch != 3) ) {
 
 			int n;
 			do {

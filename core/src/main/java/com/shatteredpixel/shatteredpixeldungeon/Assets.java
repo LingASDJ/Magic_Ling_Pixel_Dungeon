@@ -33,18 +33,36 @@ public class Assets {
 	}
 
 	public static class Map_Luas {
-		public static final String LockedOneRoom_MapLua      = "lua/iron_key1.lua";
-		public static final String LockedTwoRoom_MapLua      = "lua/iron_key2.lua";
-		public static final String LockedThreeRoom_MapLua      = "lua/iron_key3.lua";
-		public static final String LockedFourRoom_MapLua      = "lua/iron_key4.lua";
-		public static final String LockedFiveRoom_MapLua      = "lua/iron_key5.lua";
-		public static final String LockedSixRoom_MapLua      = "lua/iron_key6.lua";
-		public static final String LockedSevenRoom_MapLua      = "lua/iron_key7.lua";
-		public static final String LockedEightRoom_MapLua      = "lua/iron_key8.lua";
-		public static final String LockedNineRoom_MapLua      = "lua/iron_key9.lua";
+		public static final String LockedOneRoom_MapLua      = "lua/iron/iron_key1.lua";
+		public static final String LockedTwoRoom_MapLua      = "lua/iron/iron_key2.lua";
+		public static final String LockedThreeRoom_MapLua      = "lua/iron/iron_key3.lua";
+		public static final String LockedFourRoom_MapLua      = "lua/iron/iron_key4.lua";
+		public static final String LockedFiveRoom_MapLua      = "lua/iron/iron_key5.lua";
+		public static final String LockedSixRoom_MapLua      = "lua/iron/iron_key6.lua";
+		public static final String LockedSevenRoom_MapLua      = "lua/iron/iron_key7.lua";
+		public static final String LockedEightRoom_MapLua      = "lua/iron/iron_key8.lua";
+		public static final String LockedNineRoom_MapLua      = "lua/iron/iron_key9.lua";
+
+		public static final String GoldOneRoom_MapLua       = "lua/gold/gold_key1.lua";
+		public static final String GoldTwoRoom_MapLua       = "lua/gold/gold_key2.lua";
+		public static final String GoldThreeRoom_MapLua     = "lua/gold/gold_key3.lua";
+		public static final String GoldFourRoom_MapLua      = "lua/gold/gold_key4.lua";
+		public static final String GoldFiveRoom_MapLua      = "lua/gold/gold_key5.lua";
+
+		public static final String CryStalOneRoom_MapLua      = "lua/crystal/crystal_key1.lua";
+		public static final String CryStalTwoRoom_MapLua      = "lua/crystal/crystal_key2.lua";
+		public static final String CryStalThreeRoom_MapLua      = "lua/crystal/crystal_key3.lua";
+
+		public static final String GuardOneRoom_MapLua        = "lua/guard/guard_room1.lua";
+		public static final String GuardTwoRoom_MapLua        = "lua/guard/guard_room2.lua";
+		public static final String GuardThreeRoom_MapLua      = "lua/guard/guard_room3.lua";
+		public static final String GuardFourRoom_MapLua       = "lua/guard/guard_room4.lua";
+		public static final String GuardFiveRoom_MapLua       = "lua/guard/guard_room5.lua";
 
 		public static final String PinkGhostRoom_MapLua      = "lua/pinkghostroom.lua";
 		public static final String SliceDeadRoom_MapLua 	= "lua/slicetan.lua";
+
+		public static final String FocuRoom_MapLua      = "lua/focu_room.lua";
 	}
 
 	public static class Environment {
@@ -347,6 +365,8 @@ public class Assets {
 
 		public static final String PACMAN = "music/hollow/pacman_10yearold_mix.ogg";
 		public static final String MOVEBOX = "music/hollow/movebox.ogg";
+
+		public static final String SEACH = "music/hollow/seach.ogg";
 
 		public static final String CHRAMSS     = "music/chrimas.ogg";
 		public static final String SEWERS_BOSS  = "music/Boss1.ogg";
@@ -672,6 +692,8 @@ public class Assets {
 
 		public static final String BOX_MINI	= "sprites/hollow/minigame/box.png";
 
+		public static final String TELE_FOCU	= "sprites/hollow/minigame/teleportation_focu.png";
+
 		public static final String APWHEEL = "sprites/hollow/apprentice_witch.png";
 
 		public static final String BTSLIMH = "sprites/hollow/butcher.png";
@@ -951,8 +973,8 @@ public class Assets {
 		public static final String SPIRIT_HAWK= "sprites/spirit_hawk.png";
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
 
-		public static final String YOW_SENTRY= "sprites/boss/yellow_star.png";
-
+		public static final String YOW_SENTRY = "sprites/boss/yellow_star.png";
+		public static final String PINK_SENTRY = "sprites/boss/pink_star.png";
 		public static final String BUE_SENTRY= "sprites/npc/blue_star.png";
 
 		public static final String CANDLESTICK = "sprites/npc/candlestick.png";

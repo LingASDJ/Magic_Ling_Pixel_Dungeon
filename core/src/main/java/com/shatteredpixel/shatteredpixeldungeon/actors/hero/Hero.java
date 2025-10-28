@@ -684,6 +684,8 @@ public class Hero extends Char {
 				return 11;
 			case 3:
 				return 10;
+			case 4:
+				return 13;
 		}
 
 		if (armor instanceof ClassArmor){
@@ -1684,8 +1686,9 @@ public class Hero extends Char {
 			Heap heap = Dungeon.level.heaps.get( dst );
 			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE && heap.type != Type.FOR_RUSH)) {
 
-				if ((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
-						|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)|| (heap.type == Type.BLACK && Notes.keyCount(new BlackKey(Dungeon.depth)) < 1) || (heap.type == Type.GREEN_CHSET && Notes.keyCount(new GreenKey(Dungeon.depth)) < 1)){
+				//TODO 搜打撤后续需要优化
+				if (((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
+						|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)|| (heap.type == Type.BLACK && Notes.keyCount(new BlackKey(Dungeon.depth)) < 1) || (heap.type == Type.GREEN_CHSET && Notes.keyCount(new GreenKey(Dungeon.depth)) < 1)) && Dungeon.depth != 31 && branch != 3){
 
 					GLog.w( Messages.get(this, "locked_chest") );
 					ready();
@@ -1927,89 +1930,6 @@ public class Hero extends Char {
 			return false;
 		}
 	}
-
-//	private boolean actTransition(HeroAction.LvlTransition action ) {
-//		int stairs = action.dst;
-//		LevelTransition transition = Dungeon.level.getTransition(stairs);
-//
-//		if (rooted) {
-//			PixelScene.shake(1, 1f);
-//			ready();
-//			return false;
-//		} else if (!Dungeon.level.locked && transition != null && transition.inside(pos)) {
-//
-//			if (transition.type == LevelTransition.Type.SURFACE){
-//				if (belongings.getItem( Amulet.class ) == null) {
-//					Game.runOnRenderThread(new Callback() {
-//						@Override
-//						public void call() {
-//							GameScene.show( new WndMessage( Messages.get(Hero.this, "leave") ) );
-//						}
-//					});
-//					ready();
-//				} else {
-//					Statistics.ascended = true;
-//					Badges.silentValidateHappyEnd();
-//					Dungeon.win( Amulet.class );
-//					Dungeon.deleteGame( GamesInProgress.curSlot, true );
-//					Game.switchScene( SurfaceScene.class );
-//				}
-//
-//			} else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
-//					&& Dungeon.depth == 25
-//					//ascension challenge only works on runs started on v1.3+
-//					&& Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3
-//					&& belongings.getItem(Amulet.class) != null
-//					&& buff(AscensionChallenge.class) == null) {
-//
-//				Game.runOnRenderThread(new Callback() {
-//					@Override
-//					public void call() {
-//						GameScene.show( new WndOptions( new ItemSprite(ItemSpriteSheet.AMULET),
-//								Messages.get(Amulet.class, "ascent_title"),
-//								Messages.get(Amulet.class, "ascent_desc"),
-//								Messages.get(Amulet.class, "ascent_yes"),
-//								Messages.get(Amulet.class, "ascent_no")){
-//							@Override
-//							protected void onSelect(int index) {
-//								if (index == 0){
-//									Buff.affect(Hero.this, AscensionChallenge.class);
-//									Statistics.highestAscent = 35;
-//									actTransition(action);
-//								}
-//							}
-//						} );
-//					}
-//				});
-//				ready();
-//
-//			} else {
-//
-//				curAction = null;
-//
-//				Level.beforeTransition();
-//				InterlevelScene.curTransition = transition;
-//				if (transition.type == LevelTransition.Type.REGULAR_EXIT
-//						|| transition.type == LevelTransition.Type.BRANCH_EXIT) {
-//					InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-//				} else {
-//					InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
-//				}
-//				Game.switchScene(InterlevelScene.class);
-//
-//			}
-//
-//			return false;
-//
-//		} else if (getCloser( stairs )) {
-//
-//			return true;
-//
-//		} else {
-//			ready();
-//			return false;
-//		}
-//	}
 
 	private boolean actAttack( HeroAction.Attack action ) {
 
@@ -3393,19 +3313,23 @@ public class Hero extends Char {
 
 			if (Dungeon.level.distance(pos, heap.pos) <= 1){
 				boolean hasKey = true;
-				if (heap.type == Type.SKELETON || heap.type == Type.REMAINS) {
-					Sample.INSTANCE.play( Assets.Sounds.BONES );
-				} else if (heap.type == Type.LOCKED_CHEST){
-					hasKey = Notes.remove(new GoldenKey(Dungeon.depth));
-				} else if (heap.type == Type.CRYSTAL_CHEST){
-					hasKey = Notes.remove(new CrystalKey(Dungeon.depth));
-				} else if (heap.type == Type.BLACK){
-					hasKey = Notes.remove(new BlackKey(Dungeon.depth));
-				} else if(heap.type == Type.GREEN_CHSET){
-					hasKey = Notes.remove(new GreenKey(Dungeon.depth));
+				boolean noNeedKey = Dungeon.depth != 31 && branch != 3;
+
+				if(noNeedKey){
+					if (heap.type == Type.SKELETON || heap.type == Type.REMAINS) {
+						Sample.INSTANCE.play( Assets.Sounds.BONES );
+					} else if (heap.type == Type.LOCKED_CHEST){
+						hasKey = Notes.remove(new GoldenKey(Dungeon.depth));
+					} else if (heap.type == Type.CRYSTAL_CHEST){
+						hasKey = Notes.remove(new CrystalKey(Dungeon.depth));
+					} else if (heap.type == Type.BLACK){
+						hasKey = Notes.remove(new BlackKey(Dungeon.depth));
+					} else if(heap.type == Type.GREEN_CHSET){
+						hasKey = Notes.remove(new GreenKey(Dungeon.depth));
+					}
 				}
 
-				if(hasKey && heap.type == Type.WHITETOMB && Dungeon.depth>25){
+				if(hasKey && heap.type == Type.WHITETOMB && Dungeon.depth>25) {
 					GameScene.show(new WndOptions(new ItemSprite(heap),
 							Messages.titleCase(Messages.get(BigEyeRoom.class, "name")),
 							Messages.get(BigEyeRoom.class, "start_prompt"),
@@ -3421,6 +3345,39 @@ public class Hero extends Char {
 							}
 						}
 					});
+				//TODO 全面搜查-需要优化
+				} else if( Dungeon.depth == 31 && branch == 3){
+					switch (heap.type){
+						case GREEN_CHSET:
+							hero.spendAndNext( 8f );
+							GameScene.updateKeyDisplay();
+							heap.open(this);
+							spend(Key.TIME_TO_UNLOCK);
+						break;
+						case CRYSTAL_CHEST:
+							hero.spendAndNext( 6f );
+							GameScene.updateKeyDisplay();
+							heap.open(this);
+							spend(Key.TIME_TO_UNLOCK);
+						break;
+						case LOCKED_CHEST:
+							hero.spendAndNext( 4f );
+							GameScene.updateKeyDisplay();
+							heap.open(this);
+							spend(Key.TIME_TO_UNLOCK);
+						break;
+						case CHEST:
+							hero.spendAndNext( 2f );
+							GameScene.updateKeyDisplay();
+							heap.open(this);
+							spend(Key.TIME_TO_UNLOCK);
+						break;
+						case SKELETON: case REMAINS:case TOMB:
+							GameScene.updateKeyDisplay();
+							heap.open(this);
+							spend(Key.TIME_TO_UNLOCK);
+						break;
+					}
 				} else if (hasKey) {
 					GameScene.updateKeyDisplay();
 					heap.open(this);

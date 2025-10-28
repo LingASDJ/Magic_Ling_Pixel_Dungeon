@@ -39,14 +39,13 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DM275Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300SpiderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
@@ -57,8 +56,8 @@ import com.watabou.utils.Random;
 public class OldDM300 extends FlameC02 {
 	
 	{
-		spriteClass =  DM275Sprite.class;
-		state = PASSIVE;
+		spriteClass =  DM300SpiderSprite.class;
+
 		HP = HT = 270;
 		EXP = 30;
 		defenseSkill = 18;
@@ -92,8 +91,6 @@ public class OldDM300 extends FlameC02 {
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 
 		if (lock == null && Dungeon.level.heroFOV[pos]){
-			CavesLevel level = (CavesLevel) Dungeon.level;
-			level.seal();
 			if(Dungeon.isChallenged(MOREROOM)) {
 				AlarmTrap alarmTrap = new AlarmTrap();
 				alarmTrap.pos = pos;
@@ -172,12 +169,6 @@ public class OldDM300 extends FlameC02 {
 	@Override
 	public void die( Object cause ) {
 		super.die( cause );
-
-		CavesLevel level = (CavesLevel) Dungeon.level;
-
-		level.unseal();
-		////BGMPlayer.playBGMWithDepth();
-		//60% chance of 2 shards, 30% chance of 3, 10% chance for 4. Average of 2.5
 		int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
 		for (int i = 0; i < shards; i++){
 			int ofs;
@@ -191,7 +182,7 @@ public class OldDM300 extends FlameC02 {
 			Dungeon.level.drop( Generator.randomUsingDefaults(Generator.Category.WAND), pos).sprite.drop( pos );
 
 		}
-		GameScene.bossSlain();
+
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
 			if (mob instanceof DM201 ) {
 				mob.die( cause );
@@ -207,8 +198,6 @@ public class OldDM300 extends FlameC02 {
 			state = HUNTING;
 			notice();
 			ScrollOfTeleportation.appear(hero, pos+8);
-			CavesLevel level = (CavesLevel) Dungeon.level;
-			level.seal();
 		}
 
 		if(HP<50){

@@ -328,6 +328,10 @@ public class DungeonTileSheet {
 		return result;
 	}
 
+	private static final int WALLS_OVERHANG_ALTER             =                   xy(1, 12);
+
+	public static final int DOOR_SIDEWAYS_OVERHANG_GOLDEN = WALLS_OVERHANG_ALTER+28;
+
 	//+1 for open to the down-right, +2 for open to the down-left
 	private static final int WALLS_OVERHANG             =                   xy(1, 13);  //32 slots
 	public static final int WALL_OVERHANG                   = WALLS_OVERHANG+0;
@@ -337,8 +341,6 @@ public class DungeonTileSheet {
 	public static final int DOOR_SIDEWAYS_OVERHANG_CLOSED   = WALLS_OVERHANG+20;
 	public static final int DOOR_SIDEWAYS_OVERHANG_LOCKED   = WALLS_OVERHANG+24;
 	public static final int DOOR_SIDEWAYS_OVERHANG_CRYSTAL  = WALLS_OVERHANG+28;
-
-	public static final int DOOR_SIDEWAYS_OVERHANG_GOLDEN = WALLS_OVERHANG+29;
 
 	public static int stitchWallOverhangTile(int tile, int rightBelow, int below, int leftBelow){
 		int visual;

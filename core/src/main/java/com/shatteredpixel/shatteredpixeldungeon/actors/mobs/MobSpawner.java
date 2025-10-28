@@ -58,9 +58,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Ghost_Halloween;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.PumkingBomber;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Pumking_Ghost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.allsearch.ShadowHunstman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.GunHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.utils.MobsUtilsRoom;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -137,6 +139,15 @@ public class MobSpawner extends Actor {
 					if(Dungeon.depth == 11 || Dungeon.depth == 12|| Dungeon.depth == 13|| Dungeon.depth == 14){
 						return new ArrayList<>(Arrays.asList(
 								PiraLand.class, RiceRat.class));
+					}
+					if(Dungeon.depth == 31){
+						return new ArrayList<>(
+								Arrays.asList(
+										MobsUtilsRoom.GreenSlingSP.class,
+										MobsUtilsRoom.DM275RPG_SP.class,
+										MobsUtilsRoom.FlameC02SP.class,
+										ShadowHunstman.class
+								));
 					}
 				case 5:
 					if(Dungeon.depth == 17){
@@ -750,6 +761,8 @@ public class MobSpawner extends Actor {
 					cl = DrTerror.class;
 				} else if (cl == FireGhost.class) {
 					cl = MolotovHuntsman.class;
+				} else if (cl == MobsUtilsRoom.DM275RPG_SP.class) {
+					cl = MobsUtilsRoom.DM275X.class;
 				}
 				rotation.set(i, cl);
 			}

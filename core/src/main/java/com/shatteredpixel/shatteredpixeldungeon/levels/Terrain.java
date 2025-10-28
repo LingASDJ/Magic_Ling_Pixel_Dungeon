@@ -109,6 +109,7 @@ public class Terrain {
 		flags[EMBERS]		= PASSABLE;
 		flags[LOCKED_DOOR]	= LOS_BLOCKING | SOLID;
 		flags[CRYSTAL_DOOR]	= SOLID;
+		flags[GOLDEN_DOOR]	= SOLID;
 		flags[PEDESTAL]		= PASSABLE;
 		flags[WALL_DECO]	= flags[WALL];
 		flags[BARRICADE]	= FLAMABLE | SOLID | LOS_BLOCKING;
