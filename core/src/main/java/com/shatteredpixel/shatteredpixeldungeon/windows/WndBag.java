@@ -476,7 +476,7 @@ public class WndBag extends WndTabbed {
 		} else if (bag instanceof HerbBag) {
 			return Icons.get( Icons.F_BACKPACK );
 		} else if (bag instanceof LingBag) {
-			return new Image("Ling.png", 0, 0, 16, 16);
+			return Icons.get( Icons.MORHBAG );
 		} else if (bag instanceof PropBag) {
 			return Icons.get(Icons.PROPBAG);
 		} else if (bag instanceof BookBag) {

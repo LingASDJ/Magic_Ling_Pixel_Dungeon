@@ -21,7 +21,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.LingBag;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.PrisonPainter;
@@ -147,8 +146,6 @@ public class AllSearchHollowActorLevel extends RegularLevel {
               item.OnlyAllSearch = true;
             }
         }
-
-        drop(new LingBag(), entrance());
     }
 
     @Override
@@ -409,7 +406,6 @@ public class AllSearchHollowActorLevel extends RegularLevel {
         public static final float DURATION	= 1600f;
 
         {
-            type = buffType.POSITIVE;
             announced = true;
         }
 
@@ -427,13 +423,9 @@ public class AllSearchHollowActorLevel extends RegularLevel {
 
         @Override
         public int icon() {
-            return BuffIndicator.TIME;
+            return BuffIndicator.INVISIBLE_ACTION;
         }
 
-        @Override
-        public void tintIcon(Image icon) {
-            icon.hardlight(Window.GDX_COLOR);
-        }
 
         @Override
         public float iconFadePercent() {

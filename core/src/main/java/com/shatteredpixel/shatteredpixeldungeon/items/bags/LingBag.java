@@ -44,7 +44,7 @@ public class LingBag extends Bag {
     }
 
     public int capacity(){
-        return 24;
+        return 30;
     }
 
     @Override

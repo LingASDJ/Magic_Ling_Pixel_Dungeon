@@ -93,6 +93,9 @@ public enum Icons {
 	B_BACKPACK,
 	BOOKBAG,
 	PROPBAG,
+
+	MORHBAG,
+
 	SEED_POUCH,
 	SCROLL_HOLDER,
 	WAND_HOLSTER,
@@ -418,6 +421,9 @@ public enum Icons {
 				break;
 			case PROPBAG:
 				icon.frame( icon.texture.uvRectBySize( 232, 59, 10, 10 ) );
+				break;
+			case MORHBAG:
+				icon.frame( icon.texture.uvRectBySize( 242, 59, 10, 10 ) );
 				break;
 			case SCROLL_HOLDER:
 				icon.frame( icon.texture.uvRectBySize( 211, 48, 10, 10 ) );

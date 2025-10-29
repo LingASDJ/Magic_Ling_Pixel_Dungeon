@@ -10,18 +10,12 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Bundle;
 
 public class ActivePoint extends Buff {
-
-    {
-        type = buffType.POSITIVE;
-    }
 
     private int level = 0;
 
@@ -94,14 +88,8 @@ public class ActivePoint extends Buff {
 
     @Override
     public int icon() {
-        return BuffIndicator.HASTE;
+        return BuffIndicator.BASE_STATUS;
     }
-
-    @Override
-    public void tintIcon(Image icon) {
-        icon.hardlight(Window.SHPX_COLOR);
-    }
-
 
     @Override
     public String iconTextDisplay() {

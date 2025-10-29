@@ -70,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.LingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag;
@@ -223,6 +224,8 @@ public enum HeroClass {
 			Dungeon.LimitedDrops.BOOK_BAG.dropped();
 			new BlessingNecklace().quantity(1).identify().collect();
 			Dungeon.LimitedDrops.BLESSING_NECKLACE.dropped();
+
+			new LingBag().quantity(1).identify().collect();
 
 			new SpawnMisc().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();
