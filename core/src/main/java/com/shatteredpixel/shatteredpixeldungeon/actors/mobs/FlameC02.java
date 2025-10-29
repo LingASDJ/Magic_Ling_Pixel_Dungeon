@@ -24,6 +24,7 @@
 
 package  com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.utils.Bundle;
@@ -42,7 +43,9 @@ public class FlameC02 extends FlameC01 {
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle( bundle );
-        if (state != SLEEPING) BossHealthBar.assignBoss(this);
+
+        if (state != SLEEPING && Dungeon.depth != 31)
+            BossHealthBar.assignBoss(this);
     }
 
     public void die(Object cause) {

@@ -358,6 +358,11 @@ public class StatusPane extends Component {
 			lanter.setPos(0, 1000);
 			busy.x = x + bg.width + 1;
 			busy.y = y + bg.height - 9;
+
+			lanterfirevae.x= 1.0f;
+			lanterfirevae.y= 142.0f;
+			lanterfirevae.visible = false;
+
 		} else {
 			exp.x = x;
 			exp.y = y;
@@ -386,7 +391,7 @@ public class StatusPane extends Component {
 
 			lanterfirevae.x= 1.0f;
 			lanterfirevae.y= 142.0f;
-			lanterfirevae.visible = false; //
+			lanterfirevae.visible = false;
 
 			buffs.setPos( x + 34, y + 13 );
 

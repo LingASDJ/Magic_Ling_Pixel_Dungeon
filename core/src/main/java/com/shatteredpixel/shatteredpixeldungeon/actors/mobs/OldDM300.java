@@ -46,10 +46,8 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300SpiderSprite;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -157,16 +155,6 @@ public class OldDM300 extends FlameC02 {
 	}
 
 	@Override
-	public void notice() {
-		super.notice();
-		if (!BossHealthBar.isAssigned()) {
-			BossHealthBar.assignBoss(this);
-			yell(Messages.get(this, "notice"));
-			GameScene.bossReady();
-		}
-	}
-
-	@Override
 	public void die( Object cause ) {
 		super.die( cause );
 		int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
@@ -217,15 +205,6 @@ public class OldDM300 extends FlameC02 {
 	{
 		immunities.add( ToxicGas.class );
 		immunities.add( Terror.class );
-	}
-
-	@Override
-	public void restoreFromBundle(Bundle bundle) {
-		super.restoreFromBundle(bundle);
-		if (state == HUNTING){
-			BossHealthBar.assignBoss(this);
-		}
-
 	}
 }
 

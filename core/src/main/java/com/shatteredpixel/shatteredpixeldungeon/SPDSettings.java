@@ -1223,6 +1223,8 @@ public class SPDSettings extends GameSettings {
 	}
 
 	public static final String KEY_PACMANSOCRE	= "pacman";
+	public static final String KEY_MOVEBOXSCORE = "movebox";
+	public static final String KEY_ALLSEACHSCORE = "allseach";
 
 	public static void PacManScore(int value) {
 		put(KEY_PACMANSOCRE, value);
@@ -1230,6 +1232,22 @@ public class SPDSettings extends GameSettings {
 
 	public static int PacManScore() {
 		return getInt(KEY_PACMANSOCRE, 0);
+	}
+
+	public static void MoveBoxScore(int value) {
+		put(KEY_MOVEBOXSCORE, value);
+	}
+
+	public static int MoveBoxScore() {
+		return getInt(KEY_MOVEBOXSCORE, 0);
+	}
+
+	public static void AllSearchScore(int value) {
+		put(KEY_ALLSEACHSCORE, value);
+	}
+
+	public static int AllSearchScore() {
+		return getInt(KEY_ALLSEACHSCORE, 0);
 	}
 
 	public static final String KEY_BLOOD = "bloodxsd";

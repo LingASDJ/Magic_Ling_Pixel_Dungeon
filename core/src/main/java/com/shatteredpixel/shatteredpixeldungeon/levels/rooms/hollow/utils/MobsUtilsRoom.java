@@ -16,6 +16,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Acidic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
@@ -48,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.RedSkullShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedSpinnerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedTorchManSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Red_SnakeSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
@@ -782,6 +785,8 @@ public class MobsUtilsRoom extends CustomLuaRoom {
 
     public static class RedMagicShieldMan extends ShieldHuntsman {
 
+        protected boolean hasRaged = false;
+
         {
             spriteClass = RedShieldHuntsmanSpite.class;
             HT = HP = 200;
@@ -791,6 +796,14 @@ public class MobsUtilsRoom extends CustomLuaRoom {
             baseSpeed = 1.5f;
             maxLvl = 45;
             properties.add(Property.SEARCH);
+        }
+
+        @Override
+        public int attackProc(Char enemy, int damage){
+            if(hasRaged && damage>=enemy.HP){
+                Buff.affect(this, DeadSora.class).incShield(5);
+            }
+            return super.attackProc(enemy, damage);
         }
 
         @Override
@@ -805,7 +818,7 @@ public class MobsUtilsRoom extends CustomLuaRoom {
 
         @Override
         public float attackDelay() {
-            return 0.5f;
+            return hasRaged ? 0.25f : 0.5f;
         }
 
         @Override
@@ -822,8 +835,87 @@ public class MobsUtilsRoom extends CustomLuaRoom {
         public void die( Object cause ) {
             super.die(cause);
             Heap droppedGold = Dungeon.level.drop(HighChestRules(), pos);
-            droppedGold.type = Heap.Type.BLACK;
+            droppedGold.type = Heap.Type.GREEN_CHSET;
             droppedGold.sprite.view( droppedGold );
+        }
+
+        @Override
+        public synchronized boolean isAlive() {
+            if (super.isAlive()){
+                return true;
+            } else {
+                if (!hasRaged && HP <= (HT*0.75f)){
+                    triggerEnrage();
+                }
+                return !buffs(DeadSora.class).isEmpty();
+            }
+        }
+
+        protected void triggerEnrage(){
+            Buff.affect(this, DeadSora.class).setShield(HT/2 + 40);
+            spend( TICK );
+            hasRaged = true;
+        }
+
+        public static class DeadSora extends ShieldBuff {
+
+            {
+                type = buffType.POSITIVE;
+            }
+
+            @Override
+            public boolean act() {
+
+                if (target.HP > 0){
+                    detach();
+                    return true;
+                }
+
+                absorbDamage( 2);
+
+                if (shielding() <= 0){
+                    target.die(null);
+                }
+
+                spend( TICK );
+
+                return true;
+            }
+
+            @Override
+            public int icon () {
+                return BuffIndicator.FURY;
+            }
+
+            @Override
+            public String toString () {
+                return Messages.get(this, "name");
+            }
+
+            @Override
+            public String desc () {
+                return Messages.get(this, "desc", shielding());
+            }
+
+            {
+                immunities.add(Terror.class);
+            }
+        }
+
+        private static final String HAS_RAGED = "has_raged";
+        private static String FOCUS_COOLDOWN = "focus_cooldown";
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put(HAS_RAGED, hasRaged);
+            bundle.put( FOCUS_COOLDOWN, focusCooldown );
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+            hasRaged = bundle.getBoolean(HAS_RAGED);
+            focusCooldown = bundle.getInt( FOCUS_COOLDOWN );
         }
 
     }

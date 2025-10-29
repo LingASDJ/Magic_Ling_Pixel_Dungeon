@@ -90,6 +90,9 @@ public class Statistics {
 
 	public static boolean AutoOilPotion= false;
 
+	public static boolean AllSearchFailedEsc = false;
+	public static boolean AllSearchSuccessEsc = false;
+
 	public static boolean OnlyBloodUpgrade= false;
 
 	public static int zeroItemLevel;
@@ -556,6 +559,9 @@ public class Statistics {
 
 		OnlyBloodUpgrade = false;
 
+		AllSearchSuccessEsc = false;
+		AllSearchFailedEsc = false;
+
 		SmallLeafGet = false;
 		noClearKill = false;
 		Statistics.AutoOilPotion = false;
@@ -983,9 +989,15 @@ public class Statistics {
 		//BossRush2.5
 		bundle.put("LIMTAL",LimitLiquidMatal);
 		bundle.put("LIMTAL_DROP",LiquidMatalOnlyTen);
+
+		bundle.put("ESC",AllSearchFailedEsc);
+		bundle.put("ESC2",AllSearchSuccessEsc);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+
+		AllSearchSuccessEsc = bundle.getBoolean("ESC");
+		AllSearchFailedEsc = bundle.getBoolean("ESC2");
 
 		//BossRush2.5
 		LiquidMatalOnlyTen = bundle.getBoolean("LIMTAL_DROP");

@@ -1281,6 +1281,8 @@ public class ItemSpriteSheet {
     public static final int RATTAIL            = PROJECTILES + 9;
     public static final int ZAKOSOUP        = PROJECTILES + 10;
 
+    public static final int LINGBAG  = PROJECTILES + 11;
+
     static{
         assignItemRect(PROJECTILES_STAR,       9, 9);
         assignItemRect(SCROLL_GOLEM,       15, 14);

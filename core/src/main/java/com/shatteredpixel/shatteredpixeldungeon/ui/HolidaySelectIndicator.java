@@ -73,7 +73,6 @@ public class HolidaySelectIndicator extends Button {
             @Override
             protected void onClick() {
                 super.onClick();
-                //
                 GameScene.show(new HolidayWindows());
             }
 

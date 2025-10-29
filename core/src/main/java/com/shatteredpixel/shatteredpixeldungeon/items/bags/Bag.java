@@ -52,7 +52,7 @@ public class Bag extends Item implements Iterable<Item> {
 	public ArrayList<Item> items = new ArrayList<>();
 
 	public int capacity(){
-		return 36;
+		return 34;
 	}
 	
 	@Override

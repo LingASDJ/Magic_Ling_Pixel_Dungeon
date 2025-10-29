@@ -73,7 +73,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElectricalSmoke;
@@ -1367,9 +1366,7 @@ public abstract class Mob extends Char {
 	}
 
     public void beckon( int cell ) {
-
         notice();
-
         if (state != HUNTING && state != FLEEING) {
 			state = WANDERING;
 		}
