@@ -127,6 +127,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BloodLoss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.OozeStatueDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.QuestGold;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
@@ -268,6 +269,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WinAllSearchStatus;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndIceTradeItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -3144,8 +3146,7 @@ public class Hero extends Char {
 			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 			ScrollOfTeleportation.appear(hero, 91);
 			Statistics.TrueYogNoDied = true;
-			//Chinese
-			GLog.w("索托斯：真是遗憾，不过下次也有机会，做好准备再来尝试吧。");
+			GLog.w(Messages.get(Sothoth.class,"dead"));
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 				if (mob instanceof Sothoth || mob instanceof SothothEyeDied) {
 					mob.destroy();
@@ -3160,8 +3161,20 @@ public class Hero extends Char {
 			}
 
 			Dungeon.level.unseal();
+			return;
+		} else if(branch == 3 && Dungeon.depth == 31){
+			this.HP = HT / 4;
+			PotionOfHealing.cure(this);
+			Buff.prolong(this, Invulnerability.class, Invulnerability.DURATION);
+			SpellSprite.show(this, SpellSprite.ANKH);
+			GameScene.flash(0x80FFFF40);
 
+			Game.runOnRenderThread(() -> GameScene.show(new WinAllSearchStatus()));
 
+			if(hero.buffs(ScoreBuff.class)!=null) {
+				ScoreBuff buffs = hero.buff(ScoreBuff.class);
+				SPDSettings.AllSearchScore(buffs.score/2);
+			}
 			return;
 		}
 

@@ -62,11 +62,12 @@ public class Gold extends Item {
 	
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
-		if(hero.buff(ScoreBuff.class)!=null && Dungeon.hero != null) {
+		if(hero.buff(ScoreBuff.class)!=null && Dungeon.hero != null && OnlyAllSearch) {
 			GameScene.pickUp(this, pos);
 			Sample.INSTANCE.play(Assets.Sounds.ITEM);
 			hero.spendAndNext(TIME_TO_PICK_UP);
 			ScoreBuff buff = hero.buff(ScoreBuff.class);
+			OnlyAllSearch = false;
 			int score = quantity / 4;
 			hero.sprite.showStatus(Window.TITLE_COLOR, "+" + score);
 			buff.addScore(score);

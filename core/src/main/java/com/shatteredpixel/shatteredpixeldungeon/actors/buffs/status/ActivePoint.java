@@ -17,15 +17,13 @@ import com.watabou.utils.Bundle;
 
 public class ActivePoint extends Buff {
 
-    {
-        type = buffType.POSITIVE;
-    }
-
     private int level = 0;
 
     public int escLimit = 201;
 
     public int active = 0;
+
+    public boolean escActive = false;
 
     private int interval = 1;
 
@@ -41,12 +39,13 @@ public class ActivePoint extends Buff {
 
             if(escLimit>0 && escLimit != 201){
                 escLimit--;
-            } else if(escLimit <= 0){
+            } else  if(escLimit <= 0 && escActive){
                 escLimit = 201;
+                escActive = false;
+                active = 0;
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                     if (mob instanceof HelpTeleportPoint) {
                         ((HelpTeleportPoint) mob).activeX = false;
-                         active = 0;
                     }
                 }
             }
@@ -73,6 +72,7 @@ public class ActivePoint extends Buff {
         active += value;
         if(active>=2){
             escLimit = 200;
+            escActive = true;
             Camera.main.panTo(DungeonTilemap.tileCenterToWorld(Dungeon.level.exit()), 5f);
             GLog.w(Messages.get(HelpTeleportPoint.class,"esc"));
             hero.busy();
@@ -88,7 +88,7 @@ public class ActivePoint extends Buff {
 
     @Override
     public int icon() {
-        return BuffIndicator.TIME;
+        return BuffIndicator.BASE_STATUS;
     }
 
     @Override
@@ -106,6 +106,8 @@ public class ActivePoint extends Buff {
     private static final String ESCLIMIT = "esclimit";
     private static final String ACTIVE_COUNT = "active_count";
 
+    private static final String ACTIVE_ESC = "active_esc";
+
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
@@ -113,6 +115,7 @@ public class ActivePoint extends Buff {
         bundle.put( LEVEL, level );
         bundle.put( ESCLIMIT, escLimit );
         bundle.put( ACTIVE_COUNT, active );
+        bundle.put( ACTIVE_ESC, escActive );
     }
 
     @Override
@@ -122,6 +125,7 @@ public class ActivePoint extends Buff {
         level = bundle.getInt( LEVEL );
         escLimit = bundle.getInt( ESCLIMIT );
         active = bundle.getInt( ACTIVE_COUNT );
+        escActive = bundle.getBoolean( ACTIVE_ESC );
     }
 }
 

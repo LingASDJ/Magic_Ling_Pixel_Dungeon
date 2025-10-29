@@ -22,9 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.AllSearchIQuest;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 import java.util.ArrayList;
@@ -32,12 +31,12 @@ import java.util.ArrayList;
 public class LingBag extends Bag {
 
     {
-        image = ItemSpriteSheet.DG12;
+        image = ItemSpriteSheet.LINGBAG;
     }
 
     @Override
     public boolean canHold( Item item ) {
-        if (item instanceof OilLantern || item instanceof IceCyanBlueSquareCoin){
+        if (item instanceof AllSearchIQuest){
             return super.canHold(item);
         } else {
             return false;
@@ -45,7 +44,7 @@ public class LingBag extends Bag {
     }
 
     public int capacity(){
-        return 2;
+        return 30;
     }
 
     @Override

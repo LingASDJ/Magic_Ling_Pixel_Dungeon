@@ -71,6 +71,8 @@ public class Item implements Bundlable {
 
 	public interface LengedsItem{}
 
+	public boolean OnlyAllSearch = false;
+
 	public String anonymousName() {
 		return "ITEM_NAME_ANONYMOUS";
 	}
@@ -180,13 +182,8 @@ public class Item implements Bundlable {
 	
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = new ArrayList<>();
-
-		//全面搜查
-		if(Dungeon.branch != 3){
-			actions.add( AC_DROP );
-			actions.add( AC_THROW );
-		}
-
+		actions.add( AC_DROP );
+		actions.add( AC_THROW );
 		return actions;
 	}
 
@@ -199,7 +196,8 @@ public class Item implements Bundlable {
 	}
 
 	public boolean doPickUp(Hero hero, int pos) {
-		if(hero.buff(ScoreBuff.class)!=null && Dungeon.hero != null){
+		//全面搜查
+		if(hero.buff(ScoreBuff.class)!=null && Dungeon.hero != null && OnlyAllSearch){
 			GameScene.pickUp( this, pos );
 			Sample.INSTANCE.play( Assets.Sounds.ITEM );
 			hero.spendAndNext( TIME_TO_PICK_UP );
@@ -207,6 +205,7 @@ public class Item implements Bundlable {
 			int score = value()/2;
 			hero.sprite.showStatus(Window.Pink_COLOR, "+"+score);
 			buff.addScore(score);
+			OnlyAllSearch = false;
 			return true;
 		} else if (collect( hero.belongings.backpack )) {
 			GameScene.pickUp( this, pos );
@@ -673,6 +672,8 @@ public class Item implements Bundlable {
 	private static final String ANLIX       = "anlix";
 
 	private static final String WINDOWSBUY       = "windowsbuy";
+
+	public static final String ALLSEARCH = "allsearch";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -692,6 +693,8 @@ public class Item implements Bundlable {
 		bundle.put(ANLIX,animation);
 
 		bundle.put("NOUP",noUpgrade);
+
+		bundle.put(ALLSEARCH,OnlyAllSearch);
 	}
 	
 	@Override
@@ -723,6 +726,8 @@ public class Item implements Bundlable {
 		animation = bundle.getBoolean(ANLIX);
 
 		noUpgrade = bundle.getBoolean("NOUP");
+
+		OnlyAllSearch = bundle.getBoolean(ALLSEARCH);
 	}
 
 	public int targetingPos( Hero user, int dst ){

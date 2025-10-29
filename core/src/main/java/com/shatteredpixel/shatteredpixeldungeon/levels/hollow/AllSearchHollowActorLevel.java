@@ -1,41 +1,77 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.hollow;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ActivePoint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.PrisonPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.crystal.*;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.gold.*;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.*;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.escape.*;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.*;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.crystal.CrystalOneRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.crystal.CrystalThreeRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.crystal.CrystalTwoRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.escape.MagicCircleRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.escape.MainTowerRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.gold.GoldFiveRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.gold.GoldFourRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.gold.GoldOneRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.gold.GoldThreeRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.gold.GoldTwoRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardFiveRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardFourRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardOneRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardThreeRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardTwoRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.FourLockedRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.OneLockedRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.ThreeLockedRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.TwoLockedRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScoreBar;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WinAllSearchStatus;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
 public class AllSearchHollowActorLevel extends RegularLevel {
+
+    public int readscore;
 
     {
         extraGlass = false;
@@ -83,50 +119,33 @@ public class AllSearchHollowActorLevel extends RegularLevel {
         initRooms.add(new ThreeLockedRoom());
         initRooms.add(new FourLockedRoom());
 
-        int goldRooms = Random.Int(2) + 1;
-        ArrayList<Integer> goldRoomTypes = new ArrayList<>();
-        for (int i = 0; i < 5; i++) goldRoomTypes.add(i);
-        Random.shuffle(goldRoomTypes);
-        for (int i = 0; i < goldRooms; i++) {
-            switch (goldRoomTypes.get(i)) {
-                case 0: initRooms.add(new GoldOneRoom()); break;
-                case 1: initRooms.add(new GoldTwoRoom()); break;
-                case 2: initRooms.add(new GoldThreeRoom()); break;
-                case 3: initRooms.add(new GoldFourRoom()); break;
-                case 4: initRooms.add(new GoldFiveRoom()); break;
-            }
-        }
+        initRooms.add(new GoldOneRoom());
+        initRooms.add(new GoldTwoRoom());
+        initRooms.add(new GoldThreeRoom());
+        initRooms.add(new GoldFourRoom());
+        initRooms.add(new GoldFiveRoom());
 
-        int crystalRooms = Random.Int(2) + 2;
-        ArrayList<Integer> crystalRoomTypes = new ArrayList<>();
-        for (int i = 0; i < 3; i++) crystalRoomTypes.add(i);
-        Random.shuffle(crystalRoomTypes);
-        for (int i = 0; i < crystalRooms; i++) {
-            switch (crystalRoomTypes.get(i)) {
-                case 0: initRooms.add(new CrystalOneRoom()); break;
-                case 1: initRooms.add(new CrystalTwoRoom()); break;
-                case 2: initRooms.add(new CrystalThreeRoom()); break;
-            }
-        }
+        initRooms.add(new CrystalOneRoom());
+        initRooms.add(new CrystalTwoRoom());
+        initRooms.add(new CrystalThreeRoom());
 
-
-        // 随机生成1-3个守卫房间（不重复）
-        int guardRooms = Random.Int(3) + 1; // 生成1-3个
-        ArrayList<Integer> guardRoomTypes = new ArrayList<>();
-        for (int i = 0; i < 5; i++) guardRoomTypes.add(i);
-        Random.shuffle(guardRoomTypes);
-        for (int i = 0; i < guardRooms; i++) {
-            switch (guardRoomTypes.get(i)) {
-                case 0: initRooms.add(new GuardOneRoom()); break;
-                case 1: initRooms.add(new GuardTwoRoom()); break;
-                case 2: initRooms.add(new GuardThreeRoom()); break;
-                case 3: initRooms.add(new GuardFourRoom()); break;
-                case 4: initRooms.add(new GuardFiveRoom()); break;
-            }
-        }
-
+        initRooms.add(new GuardOneRoom());
+        initRooms.add(new GuardTwoRoom());
+        initRooms.add(new GuardThreeRoom());
+        initRooms.add(new GuardFourRoom());
+        initRooms.add(new GuardFiveRoom());
 
         return initRooms;
+    }
+
+    @Override
+    protected void createItems() {
+        super.createItems();
+        for (Heap heap : heaps.valueList()) {
+            for (Item item : heap.items) {
+              item.OnlyAllSearch = true;
+            }
+        }
     }
 
     @Override
@@ -137,13 +156,13 @@ public class AllSearchHollowActorLevel extends RegularLevel {
     @Override
     protected int standardRooms(boolean forceMax) {
         if (forceMax) return 1;
-        return 1 + Dungeon.depth/5 + Random.chances(new float[]{1,1,1});
+        return 3 + Dungeon.depth/5 + Random.chances(new float[]{1,1,1});
     }
 
     @Override
     protected int specialRooms(boolean forceMax) {
         if (forceMax) return 1;
-        return 2 + Dungeon.depth/5 + Random.chances(new float[]{1,1,1});
+        return 3 + Dungeon.depth/5 + Random.chances(new float[]{1,1,1});
     }
 
     @Override
@@ -161,13 +180,15 @@ public class AllSearchHollowActorLevel extends RegularLevel {
         super.createMobs();
         Buff.detach(hero, ScoreBuff.class);
         Buff.detach(hero, ActivePoint.class);
+        Buff.detach(hero, RecordTimeDead.class);
 
         Buff.affect(hero, ScoreBuff.class);
         Buff.affect(hero, ActivePoint.class).set(100, 1);
+        Buff.affect(hero, RecordTimeDead.class, RecordTimeDead.DURATION);
 
         ScoreBar.updateScoreFromBuff(hero.buff(ScoreBuff.class));
         ScoreBar.setRules(3);
-        Buff.affect(hero, MagicalSight.class, MagicalSight.DURATION*200);
+        Buff.detach(hero, MagicalSight.class);
         ScoreBar.assignScore(0,20000);
 
         PinkPrism pinkPrism = new PinkPrism();
@@ -183,10 +204,22 @@ public class AllSearchHollowActorLevel extends RegularLevel {
                 .setTraps(nTraps(), trapClasses(), trapChances());
     }
 
+    public final String READSCORE = "readscore";
+
+    @Override
+    public void storeInBundle( Bundle bundle ) {
+        super.storeInBundle(bundle);
+        bundle.put(READSCORE, readscore);
+    }
+
+
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle(bundle);
         ScoreBar.setRules(3);
+        if(readscore != 0){
+            ScoreBar.assignScore(readscore,20000);
+        }
     }
 
     public static class PinkPrism extends NPC {
@@ -212,12 +245,58 @@ public class AllSearchHollowActorLevel extends RegularLevel {
         }
 
         @Override
-        public boolean reset() {
-            return true;
-        }
+        public boolean act() {
 
+            if(hero.buff(BackTimeGoHome.class)!=null){
+                if(Dungeon.level.distance(pos, hero.pos) > 5){
+                    yell(Messages.get(PinkPrism.class,"failed"));
+                    Buff.detach(hero,BackTimeGoHome.class);
+                }
+            }
+
+            return super.act();
+        }
         @Override
         public boolean interact(Char c) {
+            ActivePoint buff = hero.buff(ActivePoint.class);
+            if(HT == 100){
+                Statistics.AllSearchSuccessEsc = true;
+                Game.runOnRenderThread(() -> GameScene.show(new WinAllSearchStatus()));
+                if(hero.buffs(ScoreBuff.class)!=null) {
+                    ScoreBuff buffs = hero.buff(ScoreBuff.class);
+                    SPDSettings.AllSearchScore(buffs.score);
+                }
+            } else if(buff != null){
+                if(buff.escActive){
+                    Game.runOnRenderThread(new Callback() {
+                        @Override
+                        public void call() {
+                            GameScene.show(new WndOptions(new PinkPrismSprite(),
+                                    Messages.titleCase(Messages.get(this, "name")),
+                                    Messages.get(this, "quest_start_prompt"),
+                                    Messages.get(this, "enter_yes"),
+                                    Messages.get(this, "enter_no")) {
+                                @Override
+                                protected void onSelect(int index) {
+                                    if (index == 0) {
+                                        Buff.affect(hero, BackTimeGoHome.class).set(100, 1);
+                                        yell(Messages.get(PinkPrism.class, "warning"));
+                                        for (int i = 0; i < 12; i++) {
+                                            Mob mob = Reflection.newInstance(MobSpawner.getMobRotation(31).get(0));
+                                            GameScene.add(mob);
+                                            mob.pos = level.randomDestination(mob);
+                                            mob.state = mob.HUNTING;
+                                            mob.beckon( pos );
+                                            CellEmitter.center( pos ).start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
+                                            Sample.INSTANCE.play( Assets.Sounds.ALERT );
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            }
             return true;
         }
 
@@ -320,7 +399,143 @@ public class AllSearchHollowActorLevel extends RegularLevel {
                 shadowOffset = 0.25f - 0.8f*(float) Math.sin(Game.timeTotal);
             }
         }
+    }
 
+    public static class RecordTimeDead extends FlavourBuff {
+
+        public static final float DURATION	= 1600f;
+
+        {
+            announced = true;
+        }
+
+        public void detach() {
+           super.detach();
+           Statistics.AllSearchFailedEsc = true;
+            if(hero.buffs(ScoreBuff.class)!=null && !Statistics.AllSearchSuccessEsc) {
+                ScoreBuff buffs = hero.buff(ScoreBuff.class);
+                SPDSettings.AllSearchScore(buffs.score/2);
+                Game.runOnRenderThread(() -> GameScene.show(new WinAllSearchStatus()));
+            }
+        }
+
+
+
+        @Override
+        public int icon() {
+            return BuffIndicator.INVISIBLE_ACTION;
+        }
+
+
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+        }
+
+    }
+
+    public static class BackTimeGoHome extends Buff {
+
+        {
+            type = buffType.POSITIVE;
+        }
+
+        private int level = 0;
+
+        public int timeRecords =45;
+
+        private int interval = 1;
+
+        @Override
+        public boolean act() {
+            if (target.isAlive()) {
+
+                spend( interval );
+
+                if (level <= 0) {
+                    detach();
+                }
+
+                for (Mob m : Dungeon.level.mobs){
+                    if (m.alignment == Char.Alignment.ENEMY && m.distance(hero) > 5) {
+                        m.beckon(hero.pos);
+                    }
+                }
+
+                if(timeRecords>=0){
+                    timeRecords--;
+                    if(timeRecords==10){
+                        GLog.w(Messages.get(PinkPrism.class,"end"));
+                    } else if(timeRecords<=0) {
+                        GLog.w(Messages.get(PinkPrism.class, "go"));
+                        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                            if (mob instanceof PinkPrism ){
+                                mob.HT = mob.HP = 100;
+                            }
+                        }
+                        detach();
+                    }
+                }
+
+            } else {
+                detach();
+            }
+
+            return true;
+        }
+
+        public int level() {
+            return level;
+        }
+
+        public void set( int value, int time ) {
+            if (level <= value) {
+                level = value;
+                interval = time;
+                spend(time - cooldown() - 1);
+            }
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.SNOW_SHILED;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(Window.SHPX_COLOR);
+        }
+
+
+        @Override
+        public String iconTextDisplay() {
+            return Integer.toString(timeRecords);
+        }
+
+        @Override
+        public String desc() {
+            return Messages.get(this, "desc", timeRecords);
+        }
+
+        private static final String LEVEL	    = "level";
+        private static final String INTERVAL    = "interval";
+        private static final String TIMERECORDS = "timerecords";
+
+        @Override
+        public void storeInBundle( Bundle bundle ) {
+            super.storeInBundle( bundle );
+            bundle.put( INTERVAL, interval );
+            bundle.put( LEVEL, level );
+            bundle.put( TIMERECORDS, timeRecords );
+        }
+
+        @Override
+        public void restoreFromBundle( Bundle bundle ) {
+            super.restoreFromBundle( bundle );
+            interval = bundle.getInt( INTERVAL );
+            level = bundle.getInt( LEVEL );
+            timeRecords = bundle.getInt( TIMERECORDS );
+        }
     }
 
 }

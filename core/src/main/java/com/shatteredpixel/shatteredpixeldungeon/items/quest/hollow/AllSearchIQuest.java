@@ -10,7 +10,7 @@ import com.watabou.noosa.audio.Sample;
 
 abstract public class AllSearchIQuest extends Item {
 
-    protected int RXlevel;
+    public int RXlevel;
 
     {
         stackable = false;
@@ -41,13 +41,15 @@ abstract public class AllSearchIQuest extends Item {
 
         @Override
         public boolean doPickUp(Hero hero, int pos) {
-           if (collect( hero.belongings.backpack )) {
-            GameScene.pickUp(this, pos);
-            Sample.INSTANCE.play( Assets.Sounds.ITEM );
-            hero.spendAndNext( 0f );
-            GetScore(hero, 3000);
-           }
-            return true;
+            if (collect( hero.belongings.backpack )) {
+                GameScene.pickUp(this, pos);
+                Sample.INSTANCE.play( Assets.Sounds.ITEM );
+                hero.spendAndNext( 0f );
+                GetScore(hero, 4000);
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -63,9 +65,11 @@ abstract public class AllSearchIQuest extends Item {
             GameScene.pickUp(this, pos);
             Sample.INSTANCE.play( Assets.Sounds.ITEM );
             hero.spendAndNext( 0f );
-            GetScore(hero, 4500);
+            GetScore(hero, 5000);
+               return true;
+           } else {
+               return false;
            }
-            return true;
         }
     }
 
@@ -81,9 +85,11 @@ abstract public class AllSearchIQuest extends Item {
             GameScene.pickUp(this, pos);
             Sample.INSTANCE.play( Assets.Sounds.ITEM );
             hero.spendAndNext( 0f );
-            GetScore(hero, 3000);
+            GetScore(hero, 2500);
+               return true;
+           } else {
+               return false;
            }
-            return true;
         }
     }
 
@@ -101,9 +107,11 @@ abstract public class AllSearchIQuest extends Item {
             GameScene.pickUp(this, pos);
             Sample.INSTANCE.play( Assets.Sounds.ITEM );
             hero.spendAndNext( 0f );
-            GetScore(hero, 1000);
+            GetScore(hero, 1200);
+               return true;
+           } else {
+               return false;
            }
-            return true;
         }
     }
 
@@ -121,8 +129,10 @@ abstract public class AllSearchIQuest extends Item {
             Sample.INSTANCE.play( Assets.Sounds.ITEM );
             hero.spendAndNext( 0f );
             GetScore(hero, 800);
+               return true;
+           } else {
+               return false;
            }
-            return true;
         }
     }
 
@@ -140,8 +150,10 @@ abstract public class AllSearchIQuest extends Item {
             Sample.INSTANCE.play( Assets.Sounds.ITEM );
             hero.spendAndNext( 0f );
             GetScore(hero, 850);
+               return true;
+           } else {
+               return false;
            }
-            return true;
         }
     }
 
@@ -158,9 +170,11 @@ abstract public class AllSearchIQuest extends Item {
             GameScene.pickUp(this, pos);
             Sample.INSTANCE.play( Assets.Sounds.ITEM );
             hero.spendAndNext( 0f );
-            GetScore(hero, 700);
+            GetScore(hero, 1500);
+               return true;
+           } else {
+               return false;
            }
-            return true;
         }
     }
 
@@ -178,8 +192,10 @@ abstract public class AllSearchIQuest extends Item {
             Sample.INSTANCE.play( Assets.Sounds.ITEM );
             hero.spendAndNext( 0f );
             GetScore(hero, 900);
+               return true;
+           } else {
+               return false;
            }
-            return true;
         }
     }
 
@@ -197,9 +213,11 @@ abstract public class AllSearchIQuest extends Item {
             GameScene.pickUp(this, pos);
             Sample.INSTANCE.play( Assets.Sounds.ITEM );
             hero.spendAndNext( 0f );
-            GetScore(hero, 500);
+            GetScore(hero, 250);
+               return true;
+           } else {
+               return false;
            }
-            return true;
         }
     }
 
@@ -216,9 +234,11 @@ abstract public class AllSearchIQuest extends Item {
             GameScene.pickUp(this, pos);
             Sample.INSTANCE.play( Assets.Sounds.ITEM );
             hero.spendAndNext( 0f );
-            GetScore(hero, 500);
+            GetScore(hero, 450);
+               return true;
+           } else {
+               return false;
            }
-            return true;
         }
     }
 
@@ -235,9 +255,11 @@ abstract public class AllSearchIQuest extends Item {
             GameScene.pickUp(this, pos);
             Sample.INSTANCE.play( Assets.Sounds.ITEM );
             hero.spendAndNext( 0f );
-            GetScore(hero, 500);
+            GetScore(hero, 600);
+               return true;
+           } else {
+               return false;
            }
-            return true;
         }
     }
 
@@ -255,8 +277,10 @@ abstract public class AllSearchIQuest extends Item {
             Sample.INSTANCE.play( Assets.Sounds.ITEM );
             hero.spendAndNext( 0f );
             GetScore(hero, 300);
+               return true;
+           } else {
+               return false;
            }
-            return true;
         }
     }
 
@@ -273,9 +297,11 @@ abstract public class AllSearchIQuest extends Item {
                GameScene.pickUp(this, pos);
                Sample.INSTANCE.play(Assets.Sounds.ITEM);
                hero.spendAndNext(0f);
-               GetScore(hero, 400);
+               GetScore(hero, 500);
+               return true;
+           } else {
+               return false;
            }
-            return true;
         }
     }
 

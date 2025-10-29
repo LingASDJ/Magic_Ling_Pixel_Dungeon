@@ -690,6 +690,11 @@ public class Assets {
 
 		public static final String GHOST_MINI	= "sprites/hollow/minigame/ghosts.png";
 
+		public static final String ESCFAIL	= "sprites/hollow/minigame/escfail.png";
+		public static final String ESCSSFL	= "sprites/hollow/minigame/escsucessful.png";
+
+		public static final String ESCSOUT	= "sprites/hollow/minigame/esctimeout.png";
+
 		public static final String BOX_MINI	= "sprites/hollow/minigame/box.png";
 
 

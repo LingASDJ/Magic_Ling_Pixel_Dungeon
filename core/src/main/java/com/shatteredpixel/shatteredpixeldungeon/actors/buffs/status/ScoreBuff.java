@@ -94,6 +94,7 @@ public class ScoreBuff extends Buff {
             ScoreBar.updateScoreFromBuff(this);
             ScoreBar.HighScoreRules();
 
+            //推箱子
             if(ScoreBar.Rules == 2){
                 turns++;
                 maxTurns = moveMaxTurns();
@@ -105,8 +106,7 @@ public class ScoreBuff extends Buff {
                 }
             }
 
-            spend(1f);
-
+            //吃豆人
             if(SmallPoint == 0 && BiggerPoint == 0 && !PacMan){
                if(score>6000){
                    MorphsPacManPlot.MorphsPacManPeactPlot plot = new MorphsPacManPlot.MorphsPacManPeactPlot();
@@ -166,6 +166,8 @@ public class ScoreBuff extends Buff {
                SPDSettings.PacManScore(score);
                PacMan = true;
             }
+
+            spend(1f);
 
         } else {
             detach();

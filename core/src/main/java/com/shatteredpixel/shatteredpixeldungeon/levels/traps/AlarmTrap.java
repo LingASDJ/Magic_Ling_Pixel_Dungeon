@@ -41,7 +41,7 @@ public class AlarmTrap extends Trap {
 	public void activate() {
 
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-				mob.beckon( pos );
+			mob.beckon( pos );
 		}
 
 		if (Dungeon.level.heroFOV[pos]) {

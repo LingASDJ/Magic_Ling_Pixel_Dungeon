@@ -167,6 +167,7 @@ public class Dungeon {
 		BLESSING_NECKLACE,
 		HERB_BAG,
 		KING_BAG,
+		LING_BAG,
 
 		//lore documents
 		LORE_SEWERS,
