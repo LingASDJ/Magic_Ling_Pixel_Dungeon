@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AbundantMagic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -39,6 +40,8 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class WandOfMagicMissile extends DamageWand {
 
@@ -177,4 +180,10 @@ public class WandOfMagicMissile extends DamageWand {
 		}
 	}
 
+	public static class AltWandOfMagicMissile extends WandOfMagicMissile {
+		@Override
+		public ArrayList<String> actions(Hero hero) {
+			return new ArrayList<>(); //yup, no dropping this one
+		}
+	}
 }

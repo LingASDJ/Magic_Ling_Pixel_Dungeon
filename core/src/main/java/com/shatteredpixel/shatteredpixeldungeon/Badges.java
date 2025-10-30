@@ -778,6 +778,14 @@ public class Badges {
 		displayBadge( Badge.MASTER );
 	}
 
+	public static void MINIGAME_MASTER_TWO() {
+		displayBadge( Badge.MASTER_TWO );
+	}
+
+	public static void  MINIGAME_MASTER_THREE() {
+		displayBadge( Badge.MASTER_THREE );
+	}
+
 	public static void KILL_ST() {
 		displayBadge( Badge.KILL_CLSISTER );
 	}
@@ -1151,8 +1159,8 @@ public class Badges {
 		KILL_DOG					( 152),
 		KILL_MORES					( ),
 		MASTER						(154,true,true ),
-		RED_DRAMATICUL				( ),
-		GOD_PLEASE					( ),
+		MASTER_TWO				(155,true,false ),
+		MASTER_THREE					(156,true,false ),
 		HOLLOWCITY					( 157),
 		WOC_MONEY_GIRL				( 158),
 
@@ -1287,6 +1295,9 @@ public class Badges {
 			{Badge.BOSS_SLAIN_1, Badge.BOSS_SLAIN_2, Badge.BOSS_SLAIN_3, Badge.BOSS_SLAIN_4},
 			{Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3, Badge.GAMES_PLAYED_4},
 			{Badge.CHAMPION_1X, Badge.CHAMPION_2X, Badge.CHAMPION_3X,Badge.CHAMPION_4X,Badge.CHAMPION_5X},
+
+			{Badge.MASTER,Badge.MASTER_TWO,Badge.MASTER_THREE},
+
 			{Badge.ANCITY_ONE,Badge.ANCITY_TWO, Badge.ANCITY_THREE},
 			{Badge.GHOSTDAGE,Badge.DAGETO},
 			{Badge.HIGH_SCORE_1, Badge.HIGH_SCORE_2, Badge.HIGH_SCORE_3, Badge.HIGH_SCORE_4, Badge.HIGH_SCORE_5},

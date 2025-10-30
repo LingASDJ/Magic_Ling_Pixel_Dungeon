@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
+import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
@@ -224,6 +225,8 @@ public class SpawnMisc extends TestItem {
     private static ArrayList<Class<? extends Prop>> propList = new ArrayList<>();
 
     private static ArrayList<Class<? extends Item>> miscList = new ArrayList<>();
+
+    private static ArrayList<Class<? extends Item>> miscList2 = new ArrayList<>();
 
     public SpawnMisc(){
         this.cateSelected = 0;
@@ -462,30 +465,32 @@ public class SpawnMisc extends TestItem {
             miscList.add(MIME.GOLD_THREE.class);
             miscList.add(MIME.GOLD_FOUR.class);
             miscList.add(MIME.GOLD_FIVE.class);
-            miscList.add(TestBooks.class);
-            miscList.add(BlessingNecklace.class);
-            miscList.add(OilPotion.class);
-            miscList.add(OilLantern.class);
-            miscList.add(CrivusFruitsFlake.class);
-            miscList.add(SakaFishSketon.class);
-            miscList.add(RandomChest.class);
-            miscList.add(Red.class);
-            miscList.add(CrystalLing.class);
-            miscList.add(RedWhiteRose.class);
-            miscList.add(CeremonialCandle.class);
-            miscList.add(MagicBook.class);
-            miscList.add(LingJing.class);
-            miscList.add(PotionOfHolyWater.class);
-            miscList.add(DragonWater.class);
-            miscList.add(TowerMachine.StarCanon.class);
+        }
 
-            miscList.add(SoulCrack.RedSoulCrack.class);
-            miscList.add(SoulCrack.YellowSoulCrack.class);
-            miscList.add(SoulCrack.BlueSoulCrack.class);
-            miscList.add(SoulCrack.GreenSoulCrack.class);
-            miscList.add(SoulCrack.PinkSoulCrack.class);
-
-            miscList.add(UnsignedInvitationLetter.class);
+        if(miscList2.isEmpty()) {
+            miscList2.add(TestBooks.class);
+            miscList2.add(BlessingNecklace.class);
+            miscList2.add(OilPotion.class);
+            miscList2.add(OilLantern.class);
+            miscList2.add(CrivusFruitsFlake.class);
+            miscList2.add(SakaFishSketon.class);
+            miscList2.add(RandomChest.class);
+            miscList2.add(Red.class);
+            miscList2.add(CrystalLing.class);
+            miscList2.add(RedWhiteRose.class);
+            miscList2.add(CeremonialCandle.class);
+            miscList2.add(MagicBook.class);
+            miscList2.add(LingJing.class);
+            miscList2.add(PotionOfHolyWater.class);
+            miscList2.add(DragonWater.class);
+            miscList2.add(TowerMachine.StarCanon.class);
+            miscList2.add(SoulCrack.RedSoulCrack.class);
+            miscList2.add(SoulCrack.YellowSoulCrack.class);
+            miscList2.add(SoulCrack.BlueSoulCrack.class);
+            miscList2.add(SoulCrack.GreenSoulCrack.class);
+            miscList2.add(SoulCrack.PinkSoulCrack.class);
+            miscList2.add(UnsignedInvitationLetter.class);
+            miscList2.add(LostBackpack.class);
         }
     }
 
@@ -555,7 +560,8 @@ public class SpawnMisc extends TestItem {
             case 11: return bookList.get(id);
             case 12: return trList.get(id);
             case 13: return propList.get(id);
-            case 14: default: return miscList.get(id);
+            case 14: return miscList.get(id);
+            case 15: default: return miscList2.get(id);
         }
     }
 
@@ -575,7 +581,8 @@ public class SpawnMisc extends TestItem {
             case 11: return ItemSpriteSheet.MASTERY;
             case 12: return ItemSpriteSheet.EYE_OF_NEWT;
             case 13: return ItemSpriteSheet.LUCKYGLOVE;
-            case 14: default: return ItemSpriteSheet.CHEST;
+            case 14: return ItemSpriteSheet.CHEST;
+            case 15: default: return ItemSpriteSheet.BLACKBOOK;
         }
     }
 
@@ -611,8 +618,10 @@ public class SpawnMisc extends TestItem {
                 return propList.size() - 1;
             case 14:
                 return miscList.size() - 1;
+            case 15:
+                return miscList2.size() - 1;
             default:
-                return 11;
+                return 0;
         }
     }
 
@@ -685,7 +694,7 @@ public class SpawnMisc extends TestItem {
         private void createCategoryImage(){
             float left;
             float top = GAP + TITLE_BTM;
-            int length = 15;
+            int length = 16;
             int maxImageCount = 6;
             for (int i = 0; i < length; ++i) {
                 final int j = i;
@@ -825,9 +834,16 @@ public class SpawnMisc extends TestItem {
                         btn.icon(im);
                     }
                     break;
-                    case 14: default:{
+                    case 14:{
                         Image im = new Image(Assets.Sprites.ITEMS);
                         im.frame(ItemSpriteSheet.film.get(Objects.requireNonNull(Reflection.newInstance(miscList.get(i))).image));
+                        im.scale.set(1.0f);
+                        btn.icon(im);
+                    }
+                    break;
+                    case 15:  default:{
+                        Image im = new Image(Assets.Sprites.ITEMS);
+                        im.frame(ItemSpriteSheet.film.get(Objects.requireNonNull(Reflection.newInstance(miscList2.get(i))).image));
                         im.scale.set(1.0f);
                         btn.icon(im);
                     }

@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghos
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Pink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Smart;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -68,6 +69,7 @@ public class PacManQuest extends Item {
             int score = 10;
             GetScore(hero,score);
             hero.sprite.showStatus(Window.TITLE_COLOR, "+"+score);
+            Catalog.setSeen(getClass());
             return true;
         }
     }
@@ -85,6 +87,7 @@ public class PacManQuest extends Item {
             GetScore(hero,score);
             hero.sprite.showStatus(Window.TITLE_COLOR, "+"+score);
             Buff.affect(hero, AntiAttack.class, AntiAttack.DURATION);
+            Catalog.setSeen(getClass());
             return true;
         }
     }

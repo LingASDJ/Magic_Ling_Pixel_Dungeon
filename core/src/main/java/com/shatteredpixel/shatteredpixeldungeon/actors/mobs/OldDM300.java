@@ -88,12 +88,14 @@ public class OldDM300 extends FlameC02 {
 	public boolean act() {
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 
-		if (lock == null && Dungeon.level.heroFOV[pos]){
-			if(Dungeon.isChallenged(MOREROOM)) {
-				AlarmTrap alarmTrap = new AlarmTrap();
-				alarmTrap.pos = pos;
-				alarmTrap.activate();
-				ScrollOfTeleportation.appear(hero, pos+8);
+		if(Dungeon.depth != 31){
+			if (lock == null && Dungeon.level.heroFOV[pos]){
+				if(Dungeon.isChallenged(MOREROOM)) {
+					AlarmTrap alarmTrap = new AlarmTrap();
+					alarmTrap.pos = pos;
+					alarmTrap.activate();
+					ScrollOfTeleportation.appear(hero, pos+8);
+				}
 			}
 		}
 

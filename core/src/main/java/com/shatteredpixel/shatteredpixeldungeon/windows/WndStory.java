@@ -86,7 +86,7 @@ public class WndStory extends Window {
 	public static final int ID_HOLLOW_POLT		= 41;
 	public static final int ID_HOLLOW_ALT_POLT	= 42;
 
-	//DLC BOSSRUSH
+	//DLC BOSS-RUSH
 	public static final int ID_GAME = 12;
 	public static final int ID_NOMOBS = 14;
 	public static final int ID_CALA = 15;
@@ -105,12 +105,14 @@ public class WndStory extends Window {
 	public static final int ID_ENDS = 28;
 
 	public static final int ID_ANCITY = 28;
-	//
+
 	public static final int ID_DWADA		= 13;
 
 	public static final int ID_ALC		= 33;
 	public static final int ID_LAVA		= 34;
 	public static final int ID_LAVABOSS		= 35;
+
+	public static final int ID_ALL_SEARCH_PLOT	= 43;
 
 	private static final SparseArray<String> CHAPTERS = new SparseArray<>();
 
@@ -134,6 +136,8 @@ public class WndStory extends Window {
 		CHAPTERS.put( ID_HOLLOW, "hollow" );
 		CHAPTERS.put( ID_HOLLOW_POLT, "hollowpolt" );
 		CHAPTERS.put( ID_HOLLOW_ALT_POLT, "hollowpolt_alt" );
+
+		CHAPTERS.put( ID_ALL_SEARCH_PLOT, "allsearch_polt" );
 
 		CHAPTERS.put( ID_GAME, "bossrushstart" );
 		CHAPTERS.put( ID_NOMOBS, "nomobs" );

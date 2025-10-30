@@ -265,6 +265,7 @@ public class AllSearchHollowActorLevel extends RegularLevel {
                 if(hero.buffs(ScoreBuff.class)!=null) {
                     ScoreBuff buffs = hero.buff(ScoreBuff.class);
                     SPDSettings.AllSearchScore(buffs.score);
+                    Statistics.getAlLSearchScore = buffs.score;
                 }
             } else if(buff != null){
                 if(buff.escActive){

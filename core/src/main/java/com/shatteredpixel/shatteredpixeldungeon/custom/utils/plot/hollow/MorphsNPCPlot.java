@@ -1,20 +1,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Script;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
-import com.watabou.noosa.Game;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndPacManReadyGo;
 import com.watabou.noosa.Image;
 
 public class MorphsNPCPlot extends Plot {
@@ -127,18 +121,7 @@ public class MorphsNPCPlot extends Plot {
     }
 
     private void process_to_7(){
-        InterlevelScene.mode = InterlevelScene.Mode.REDSTART;
-        TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-        if (timeFreeze != null) timeFreeze.disarmPresses();
-        Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-        if (timeBubble != null) timeBubble.disarmPresses();
-        InterlevelScene.curTransition = new LevelTransition();
-        InterlevelScene.curTransition.destDepth = depth;
-        InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
-        InterlevelScene.curTransition.destBranch = 1;
-        InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
-        InterlevelScene.curTransition.centerCell  = -1;
-        Game.switchScene( InterlevelScene.class );
+        GameScene.show( new WndPacManReadyGo());
     }
 
 }

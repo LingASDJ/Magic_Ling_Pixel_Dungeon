@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -460,7 +461,7 @@ public class MagesStaff extends MeleeWeapon {
 
 		@Override
 		public void onSelect( final Item item ) {
-			if(item instanceof WandOfAnmy){
+			if(item instanceof WandOfAnmy || item instanceof WandOfMagicMissile.AltWandOfMagicMissile){
 				GLog.n(Messages.get(MagesStaff.class,"no_wands")+item.trueName()+"!");
 			} else if (item != null) {
 

@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
@@ -83,7 +84,14 @@ public class WinAllSearchStatus extends Window {
         searchButton = new StyledButton(GREY_TR, Messages.get(this, "quest")){
             @Override
             protected void onClick() {
-
+                hide();
+                int levelc = Math.min(Statistics.getAlLSearchScore / (20000 / 6),6);
+                if (levelc > 0) {
+                    Statistics.miniGamesTotalLevel += levelc;
+                }
+                if(buff.score >= 20000 * 0.75f){
+                    Badges.MINIGAME_MASTER_THREE();
+                }
             }
         };
         searchButton.icon(new Image(Icons.get(Icons.CATALOG)));
@@ -118,7 +126,9 @@ public class WinAllSearchStatus extends Window {
         return string;
     }
 
-
+    @Override
+    public void onBackPressed() {
+    }
 
 }
 

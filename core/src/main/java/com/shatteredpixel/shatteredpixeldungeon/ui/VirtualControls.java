@@ -9,11 +9,14 @@ import static com.shatteredpixel.shatteredpixeldungeon.SPDAction.W;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MoveBoxHollowActorLevel;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Group;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Point;
@@ -83,7 +86,7 @@ public class VirtualControls extends Group {
         add(rightButton);
 
 
-        reloadButton = new StyledButton(Chrome.Type.WINDOW_SILVER, "局内重置",6) {
+        reloadButton = new StyledButton(Chrome.Type.WINDOW_SILVER, Messages.get(VirtualControls.class,"reload"),6) {
             @Override
             protected void onClick() {
                 ScrollOfTeleportation.appear(hero, Dungeon.level.entrance());
@@ -97,6 +100,13 @@ public class VirtualControls extends Group {
                     Set<Integer> targetPosSet = new HashSet<>();
                     for (int pos : targetPositions) {
                         targetPosSet.add(pos);
+                    }
+
+                    if(hero.buffs(ScoreBuff.class)!=null){
+                        GLog.w(Messages.get(VirtualControls.class,"down_score"));
+                        ScoreBuff buff = hero.buff(ScoreBuff.class);
+                        buff.downScore(100);
+                        hero.sprite.showStatus(Window.R_COLOR, "-"+200);
                     }
 
                     // 用于记录已经被占用的目标位置
