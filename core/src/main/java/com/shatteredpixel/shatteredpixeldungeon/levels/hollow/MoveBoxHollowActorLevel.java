@@ -1,28 +1,48 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.hollow;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.minigame.MorphsMoveBoxEndPlot;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.PacManQuest;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BoxSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScoreBar;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class MoveBoxHollowActorLevel extends Level {
 
@@ -36,8 +56,10 @@ public class MoveBoxHollowActorLevel extends Level {
         Music.playModeBGM(Assets.Music.MOVEBOX,true);
     }
 
-    public int rules = Random.Int(1,7);
+    public int rules =  Badges.isUnlocked(Badges.Badge.MASTER_TWO) ? Random.Int(1,7) : Random.Int(1,4);
     public int readscore;
+
+    private boolean getRecord = false;
 
     private int codeToTerrain(int code){
         switch (code){
@@ -189,6 +211,9 @@ public class MoveBoxHollowActorLevel extends Level {
 
         LevelTransition exit = new LevelTransition(this, 0, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(exit);
+
+        Statistics.moveBoxScoreMax = InitScore();
+
         return true;
     }
 
@@ -203,17 +228,139 @@ public class MoveBoxHollowActorLevel extends Level {
         return true;
     }
 
+    public static class ThreeLet_go extends Item {
+
+        private static final String Read	= "Read";
+
+        {
+            image = ItemSpriteSheet.HLPBOOKS;
+            cursed = false;
+        }
+
+        @Override
+        public ArrayList<String> actions(Hero hero ) {
+            ArrayList<String> actions = super.actions(hero);
+            actions.add(Read);
+            return actions;
+        }
+
+        @Override
+        public boolean isUpgradable() {
+            return false;
+        }
+
+        @Override
+        public boolean isIdentified() {
+            return true;
+        }
+
+        private void ReadGame (){
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndOptions(new BuffIcon(BuffIndicator.ALL_SEARCH,true),
+                            Messages.titleCase(Messages.get(ThreeLet_go.class, "game")),
+                            Messages.get(ThreeLet_go.class, "quest_start_prompt"),
+                            Messages.get(ThreeLet_go.class, "enter_yes"),
+                            Messages.get(ThreeLet_go.class, "enter_no")) {
+                        @Override
+                        protected void onSelect(int index) {
+                            if (index == 0) {
+                                InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+                                TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                                if (timeFreeze != null) timeFreeze.disarmPresses();
+                                Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                                if (timeBubble != null) timeBubble.disarmPresses();
+                                InterlevelScene.curTransition = new LevelTransition();
+                                InterlevelScene.curTransition.destDepth = depth;
+                                InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
+                                InterlevelScene.curTransition.destBranch = 3;
+                                InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+                                InterlevelScene.curTransition.centerCell  = -1;
+                                Game.switchScene( InterlevelScene.class );
+                                detach(hero.belongings.backpack);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        @Override
+        public void execute(final Hero hero, String action) {
+            super.execute(hero, action);
+            if (action.equals(Read)) {
+                ReadGame();
+            }
+        }
+
+        @Override
+        public boolean doPickUp(Hero hero, int pos) {
+            if (super.doPickUp( hero, pos )) {
+                ReadGame();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 
     @Override
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
-        if(allBoxesOnTarget()){
-            GLog.p("Boxes are on target!");
+
+        if(allBoxesOnTarget() && !getRecord){
+            if(hero.buffs(ScoreBuff.class)!=null) {
+                getRecord = true;
+                ScoreBuff buff = hero.buff(ScoreBuff.class);
+                if (InitScore() * 0.75f >= buff.score) {
+                    Badges.MINIGAME_MASTER_TWO();
+                }
+
+                MorphsMoveBoxEndPlot plot = new MorphsMoveBoxEndPlot();
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndDialog(plot, false));
+                    }
+                });
+
+                Buff.detach(hero, LostInventory.class);
+
+                Dungeon.level.drop(new ThreeLet_go(), heroCellRules());
+                ScrollOfTeleportation.appear(hero, heroCellRules());
+
+                int count = 0;
+                for (Mob mob : Dungeon.level.mobs) {
+                    if (mob instanceof MoveBoxHollowActorLevel.Box) {
+                        if ((Dungeon.level.map[mob.pos] == Terrain.PEDESTAL)) {
+                            count++;
+                        }
+                    }
+                }
+                if (buff.score >= InitScore()) {
+                    SPDSettings.MoveBoxScore(buff.score + count * 20);
+                    Statistics.getMoveBoxScore = buff.score + count * 20;
+                } else if (buff.score >= InitScore() * 0.75f) {
+                    SPDSettings.MoveBoxScore(buff.score + count * 15);
+                    Statistics.getMoveBoxScore = buff.score + count * 15;
+                } else {
+                    SPDSettings.MoveBoxScore(buff.score + count * 12);
+                    Statistics.getMoveBoxScore = buff.score + count * 12;
+                }
+                int levelc = Math.min(Statistics.getMoveBoxScore / (InitScore() / 6), 6);
+                if (levelc > 0) {
+                    Statistics.miniGamesTotalLevel += levelc;
+                }
+                if(buff.score >= InitScore() * 0.75f){
+                    Badges.MINIGAME_MASTER_TWO();
+                }
+            }
         }
     }
 
 
-    private int heroCellRules() {
+    public int heroCellRules() {
         switch (rules) {
             case 2:
                 return 133;
@@ -271,7 +418,7 @@ public class MoveBoxHollowActorLevel extends Level {
             202,185,166,205,188,193
     };
 
-    private int InitScore(){
+    public int InitScore(){
         int highScoreThreshold;
         switch (rules){
             case 1:
@@ -399,11 +546,14 @@ public class MoveBoxHollowActorLevel extends Level {
     public final String RULES = "map_rules";
     public final String READSCORE = "readscore";
 
+    public final String GETRECORDS = "getrecords";
+
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle(bundle);
         bundle.put(RULES, rules);
         bundle.put(READSCORE, readscore);
+        bundle.put(GETRECORDS, getRecord);
     }
 
     @Override
@@ -415,6 +565,7 @@ public class MoveBoxHollowActorLevel extends Level {
         if(readscore != 0){
             ScoreBar.assignScore(readscore,InitScore());
         }
+        getRecord = bundle.getBoolean(GETRECORDS);
     }
 
     @Override

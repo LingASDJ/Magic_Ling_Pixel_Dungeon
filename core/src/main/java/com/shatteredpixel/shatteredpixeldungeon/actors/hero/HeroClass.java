@@ -210,6 +210,7 @@ public enum HeroClass {
 		new ScrollOfIdentify().identify();
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
+
 			new PropBag().quantity(1).identify().collect();
 
 			new ScrollOfGolems().collect();

@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourg
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.AllSearchHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -222,6 +223,7 @@ public class LevelTeleporter extends TestItem {
             GameScene.show(new WndSelectLevel());
         }else if (action.equals(AC_RESET)) {
             Statistics.NoTime = false;
+            Buff.detach(hero,AllSearchHollowActorLevel.RecordTimeDead.class);
             Statistics.AllSearchSuccessEsc = false;
             Statistics.AllSearchFailedEsc = false;
             switch (depth){

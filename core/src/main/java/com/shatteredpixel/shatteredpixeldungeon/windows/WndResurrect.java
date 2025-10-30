@@ -29,6 +29,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitsle
 
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.TestItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -41,6 +42,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
+
+import java.util.ArrayList;
 
 public class WndResurrect extends Window {
 	
@@ -144,6 +147,11 @@ public class WndResurrect extends Window {
 				
 				Statistics.ankhsUsed++;
 
+				ArrayList<TestItem> asi = hero.belongings.getAllItems(TestItem.class);
+				for (TestItem w : asi.toArray(new TestItem[0])){
+					w.keptThoughLostInvent = true;
+				}
+
 				ankh.detach(hero.belongings.backpack);
 
 				if (btnItem1.item != null){
@@ -173,7 +181,6 @@ public class WndResurrect extends Window {
 						crivusfruitslevel2 = false;
 					}
 				}
-
 
 				//拟态王二阶段死亡的时候给予重新评估
 				if(TPDoorDieds){

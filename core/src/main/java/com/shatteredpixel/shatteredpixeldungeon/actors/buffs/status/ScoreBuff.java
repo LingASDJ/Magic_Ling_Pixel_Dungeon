@@ -21,10 +21,20 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.minigame.MorphsPacManPlot;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.minigame.MorphsMoveBoxEndPlot;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.minigame.MorphsPacmanEndPlot;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MoveBoxHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -88,6 +98,16 @@ public class ScoreBuff extends Buff {
         GameRules = rules;
     }
 
+
+    private static final int HIGH_SCORE_THRESHOLD = 6000;
+    private static final int MAX_LEVEL = 6;
+
+    private int PacManScoreRules() {
+        if (score <= 0) return 0;
+        return Math.min(Statistics.getPacManScore / (HIGH_SCORE_THRESHOLD / MAX_LEVEL), MAX_LEVEL);
+    }
+
+
     @Override
     public boolean act() {
         if (target.isAlive()) {
@@ -95,7 +115,8 @@ public class ScoreBuff extends Buff {
             ScoreBar.HighScoreRules();
 
             //推箱子
-            if(ScoreBar.Rules == 2){
+            MoveBoxHollowActorLevel level = (Dungeon.level instanceof MoveBoxHollowActorLevel) ? (MoveBoxHollowActorLevel) Dungeon.level : null;
+            if(ScoreBar.Rules == 2 && level != null && !PacMan){
                 turns++;
                 maxTurns = moveMaxTurns();
                 if(turns > maxTurns){
@@ -104,67 +125,58 @@ public class ScoreBuff extends Buff {
                         score = Math.max(0, score - 100);
                     }
                 }
+                if(score <= 0){
+                    MorphsMoveBoxEndPlot plot = new MorphsMoveBoxEndPlot();
+                    Game.runOnRenderThread(new Callback() {
+                        @Override
+                        public void call() {
+                            GameScene.show(new WndDialog(plot,false));
+                        }
+                    });
+                    Buff.detach(hero, LostInventory.class);
+
+                    Dungeon.level.drop(new MoveBoxHollowActorLevel.ThreeLet_go(),level.heroCellRules());
+                    ScrollOfTeleportation.appear(hero, level.heroCellRules());
+                    PacMan = true;
+                    int count = 0;
+                    for (Mob mob : Dungeon.level.mobs) {
+                        if (mob instanceof MoveBoxHollowActorLevel.Box) {
+                            if ((Dungeon.level.map[mob.pos] == Terrain.PEDESTAL)) {
+                                count++;
+                            }
+                        }
+                    }
+                    Statistics.getMoveBoxScore = count * 10;
+                    SPDSettings.MoveBoxScore(count * 10);
+
+                    int levelc = Math.min(Statistics.getMoveBoxScore / (level.InitScore() / MAX_LEVEL), MAX_LEVEL);
+                    if (levelc > 0) {
+                        Statistics.miniGamesTotalLevel += levelc;
+                    }
+                }
             }
 
             //吃豆人
-            if(SmallPoint == 0 && BiggerPoint == 0 && !PacMan){
-               if(score>6000){
-                   MorphsPacManPlot.MorphsPacManPeactPlot plot = new MorphsPacManPlot.MorphsPacManPeactPlot();
-                   Game.runOnRenderThread(new Callback() {
-                       @Override
-                       public void call() {
-                           GameScene.show(new WndDialog(plot,false));
-                       }
-                   });
-                   PacManLevel = 6;
-               } else if(score>=4500) {
-                   MorphsPacManPlot.MorphsPacManVeryGoodlPlot plot = new MorphsPacManPlot.MorphsPacManVeryGoodlPlot();
-                   Game.runOnRenderThread(new Callback() {
-                       @Override
-                       public void call() {
-                           GameScene.show(new WndDialog(plot,false));
-                       }
-                   });
-                   PacManLevel = 5;
-               } else if(score>=3001){
-                   MorphsPacManPlot.MorphsPacManGoodPlot plot = new MorphsPacManPlot.MorphsPacManGoodPlot();
-                   Game.runOnRenderThread(new Callback() {
-                       @Override
-                       public void call() {
-                           GameScene.show(new WndDialog(plot,false));
-                       }
-                   });
-                   PacManLevel = 4;
-               } else if(score>=2001){
-                   MorphsPacManPlot.MorphsPacManEndPlot plot = new MorphsPacManPlot.MorphsPacManEndPlot();
-                   Game.runOnRenderThread(new Callback() {
-                       @Override
-                       public void call() {
-                           GameScene.show(new WndDialog(plot,false));
-                       }
-                   });
-                   PacManLevel = 3;
-               } else if(score>=1000){
-                   MorphsPacManPlot.MorphsPacManNormalPlot plot = new MorphsPacManPlot.MorphsPacManNormalPlot();
-                   Game.runOnRenderThread(new Callback() {
-                       @Override
-                       public void call() {
-                           GameScene.show(new WndDialog(plot,false));
-                       }
-                   });
-                   PacManLevel = 2;
-               } else {
-                   MorphsPacManPlot plot = new MorphsPacManPlot();
-                   Game.runOnRenderThread(new Callback() {
-                       @Override
-                       public void call() {
-                           GameScene.show(new WndDialog(plot,false));
-                       }
-                   });
-                   PacManLevel = 1;
-               }
+            if(SmallPoint == 0 && BiggerPoint == 0 && !PacMan && Dungeon.depth == 31 && branch == 1){
+                MorphsPacmanEndPlot plot = new MorphsPacmanEndPlot();
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndDialog(plot,false));
+                    }
+                });
                SPDSettings.PacManScore(score);
                PacMan = true;
+               Statistics.getPacManScore = score;
+
+               //S评估
+               if(score >= 4500 && branch == 1 && Dungeon.depth == 31){
+                   Badges.MINIGAME_MASTER_ONE();
+               }
+
+                Statistics.miniGamesTotalLevel += PacManScoreRules();
+
+               Buff.detach(hero, LostInventory.class);
             }
 
             spend(1f);

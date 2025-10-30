@@ -1060,7 +1060,7 @@ public class Hero extends Char {
 			speed = CustomPlayer.baseSpeed;
 		}
 
-		if ( buff( DeadDogCerberus.SoulDead.class ) != null){
+		if ( buff( DeadDogCerberus.SoulDead.class ) != null || Dungeon.depth == 31 && (branch == 1 || branch == 2) ){
 			speed = 1f;
 		}
 
@@ -3174,6 +3174,7 @@ public class Hero extends Char {
 			if(hero.buffs(ScoreBuff.class)!=null) {
 				ScoreBuff buffs = hero.buff(ScoreBuff.class);
 				SPDSettings.AllSearchScore(buffs.score/2);
+				Statistics.getAlLSearchScore = buffs.score/2;
 			}
 			return;
 		}

@@ -1568,12 +1568,16 @@ public class GameScene extends PixelScene {
 							break;
 						case 27:
 							if(Statistics.Hollow_Holiday){
-								//TODO Dialog Progress...
-								if((Badges.isUnlocked(Badges.Badge.KILL_DOG)) && 1 == 0){
+								if((Badges.isUnlocked(Badges.Badge.KILL_DOG))){
 									WndStory.showChapter(WndStory.ID_HOLLOW_ALT_POLT);
 								} else {
 									WndStory.showChapter(WndStory.ID_HOLLOW_POLT);
 								}
+							}
+							break;
+						case 31:
+							if(Dungeon.branch == 3){
+								WndStory.showChapter(WndStory.ID_ALL_SEARCH_PLOT);
 							}
 							break;
 					}

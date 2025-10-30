@@ -284,6 +284,11 @@ public class Statistics {
 
 	public static int gudaZiRandomSkin;
 
+	//小游戏局内计分
+	public static int getPacManScore;
+	public static int getMoveBoxScore;
+	public static int getAlLSearchScore;
+
 	//Holiday Boolean
 	public static boolean Hollow_Holiday = false;
 
@@ -450,6 +455,10 @@ public class Statistics {
 	public static ArrayList<Prop> propNegative2;
 	public static int PacManScore;
 
+	public static int miniGamesTotalLevel;
+
+	public static int moveBoxScoreMax;
+
 	static {
 		propPositive0 = new ArrayList<>(Arrays.asList(
 				new ArmorScalesOfBzmdr(),
@@ -561,6 +570,11 @@ public class Statistics {
 
 		AllSearchSuccessEsc = false;
 		AllSearchFailedEsc = false;
+
+		getPacManScore = 0;
+		getMoveBoxScore = 0;
+		getAlLSearchScore = 0;
+		moveBoxScoreMax = 0;
 
 		SmallLeafGet = false;
 		noClearKill = false;
@@ -716,6 +730,8 @@ public class Statistics {
 		LiquidMatalOnlyTen = false;
 
 		PacManScore = 0;
+
+		miniGamesTotalLevel = 0;
 	}
 
 	public static boolean hasAllRarenessProp(int rare,int kind){
@@ -865,6 +881,8 @@ public class Statistics {
 
 
 		bundle.put("PACMANSCORE",PacManScore);
+		bundle.put("MINIGAMELEVEL",miniGamesTotalLevel);
+		bundle.put("MOVEBOXSCOREMAX",moveBoxScoreMax);
 
 		//分数
 		bundle.put( PROG_SCORE,  progressScore );
@@ -992,9 +1010,20 @@ public class Statistics {
 
 		bundle.put("ESC",AllSearchFailedEsc);
 		bundle.put("ESC2",AllSearchSuccessEsc);
+
+		//小游戏局内计分
+		bundle.put("PACMANSOCRE", getPacManScore);
+		bundle.put("MOVEBOXSCORE", getMoveBoxScore);
+		bundle.put("PROGRESSCORE", getAlLSearchScore);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+
+		//小游戏局内计分
+		getPacManScore = bundle.getInt("PACMANSOCRE");
+		getMoveBoxScore = bundle.getInt("MOVEBOXSCORE");
+		getAlLSearchScore = bundle.getInt("PROGRESSCORE");
+		moveBoxScoreMax = bundle.getInt("MOVEBOXSCOREMAX");
 
 		AllSearchSuccessEsc = bundle.getBoolean("ESC");
 		AllSearchFailedEsc = bundle.getBoolean("ESC2");
@@ -1102,6 +1131,7 @@ public class Statistics {
 		NoTime = bundle.getBoolean("NOTIME");
 
 		PacManScore = bundle.getInt("PACMANSCORE");
+		miniGamesTotalLevel = bundle.getInt("MINIGAMELEVEL");
 
 		//嗜血荆棘等级处理
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );

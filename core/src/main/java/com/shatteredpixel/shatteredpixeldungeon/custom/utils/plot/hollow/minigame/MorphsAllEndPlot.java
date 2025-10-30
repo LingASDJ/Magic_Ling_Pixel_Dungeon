@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.minigame;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
@@ -17,7 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Random;
 
-public class MorphsPacManPlot extends Plot {
+public class MorphsAllEndPlot extends Plot {
 
     private final static int maxprocess = 6;
 
@@ -505,7 +504,6 @@ public class MorphsPacManPlot extends Plot {
         }
 
         private void process_to_5() {
-            Badges.MINIGAME_MASTER_ONE();
             diagulewindow.changeText(Messages.get(this, "message5e"));
         }
     }
@@ -610,7 +608,6 @@ public class MorphsPacManPlot extends Plot {
         }
 
         private void process_to_7() {
-            Badges.MINIGAME_MASTER_ONE();
             diagulewindow.changeText(Messages.get(this, "message7f"));
         }
     }
