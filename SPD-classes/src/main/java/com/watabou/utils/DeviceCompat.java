@@ -54,6 +54,10 @@ public class DeviceCompat {
 		return SharedLibraryLoader.isAndroid;
 	}
 
+	public static boolean isWeb(){
+		return false;
+	}
+
 	public static boolean isiOS(){
 		return SharedLibraryLoader.isIos;
 	}
