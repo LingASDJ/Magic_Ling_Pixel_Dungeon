@@ -31,12 +31,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.Typhon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.BoatPlot;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.GalaxyHeartDeadEndPlot;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.MorphsGodEndTheaterPlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnsignedInvitationLetter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.ZeroHallsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ZeroBoatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
@@ -196,6 +198,12 @@ public class RankingsScene extends PixelScene {
 
 		private static final int[] TEXT_WIN4	= {Window.Pink_COLOR, Window.DeepPK_COLOR};
 
+		private static final int[] TEXT_WIN5	= {Window.SKYBULE_COLOR, Window.WATA_COLOR};
+
+		private static final int[] TEXT_WIN6	= {Window.RED_COLOR, Window.GDX_COLOR};
+
+		private static final int[] TEXT_WIN7	= {Window.DeepPK_COLOR, Window.Pink_COLOR};
+
 		private static final int[] TEXT_LOSE= {0xDDDDDD, 0x888888};
 		private static final int FLARE_WIN	= 0x888866;
 		private static final int FLARE_LOSE	= 0x666666;
@@ -240,7 +248,25 @@ public class RankingsScene extends PixelScene {
 
 
 			if (rec.win) {
-				if (rec.cause == UnsignedInvitationLetter.class) {
+				if (rec.cause == MorphsGodEndTheaterPlot.Shadow.class) {
+					shield.copy(new ItemSprite(ItemSpriteSheet.DARK_X));
+					position.hardlight(TEXT_WIN7[odd]);
+					desc.hardlight(TEXT_WIN7[odd]);
+					depth.hardlight(TEXT_WIN7[odd]);
+					level.hardlight(TEXT_WIN7[odd]);
+				} else if (rec.cause == GalaxyHeartDeadEndPlot.RedEnd.class) {
+					shield.copy(new ItemSprite(ItemSpriteSheet.CITY_HOOD+5));
+					position.hardlight(TEXT_WIN6[odd]);
+					desc.hardlight(TEXT_WIN6[odd]);
+					depth.hardlight(TEXT_WIN6[odd]);
+					level.hardlight(TEXT_WIN6[odd]);
+				} else if (rec.cause == ZeroHallsBossLevel.BadDream.class) {
+					shield.copy(new ItemSprite(ItemSpriteSheet.CITY_HOOD));
+					position.hardlight(TEXT_WIN5[odd]);
+					desc.hardlight(TEXT_WIN5[odd]);
+					depth.hardlight(TEXT_WIN5[odd]);
+					level.hardlight(TEXT_WIN5[odd]);
+				} else if (rec.cause == UnsignedInvitationLetter.class) {
 					shield.copy(new ItemSprite(ItemSpriteSheet.HLPBOOKS));
 					position.hardlight(TEXT_WIN2[odd]);
 					desc.hardlight(TEXT_WIN2[odd]);
@@ -302,9 +328,7 @@ public class RankingsScene extends PixelScene {
 			}
 
 			if(rec.cause == BoatPlot.DiedBoat.class){
-				Image xs = new ZeroBoatSprite();
-				xs.scale.set(PixelScene.align(0.75f));
-				shield.copy(xs);
+				shield.copy(new Image(new ItemSprite( ItemSpriteSheet.CITY_HOOD+1, null )));
 				shield.hardlight(Window.CBLACK);
 			} else if (rec.daily){
 				shield.copy( Icons.get(Icons.CALENDAR) );

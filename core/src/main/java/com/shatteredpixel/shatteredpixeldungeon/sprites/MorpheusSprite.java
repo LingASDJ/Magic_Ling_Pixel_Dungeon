@@ -48,6 +48,11 @@ public class MorpheusSprite extends MobSprite {
         idle();
     }
 
+    public void SelectActivate(){
+        idle = SelectFate.clone();
+        idle();
+    }
+
     @Override
     public void die() {
         super.die();

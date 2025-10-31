@@ -1,10 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
@@ -19,15 +19,33 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerGodsBad;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMachineBad;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMindBad;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerTimeBad;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.GalaxyHeartDeadEndPlot;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MyCoreHeartSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 public class MyCoreHeart extends Boss {
 
     private int summonedmobsCount = 1;
+
+    private int brokenCount;
 
     {
         initProperty();
@@ -64,42 +82,113 @@ public class MyCoreHeart extends Boss {
         return mob;
     }
 
-    public static class SummonColdDown extends FlavourBuff {
+    private boolean getHP = false;
 
-        {
-            type = buffType.POSITIVE;
-        }
+    public int end;
 
-        public static final float DURATION	= 10f;
+    private boolean one = false;
+    private boolean two = false;
+    private boolean three = false;
+    private boolean four = false;
 
-        @Override
-        public float iconFadePercent() {
-            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
-        }
-
+    @Override
+    public boolean isAlive() {
+        return true;
     }
-
-
+    boolean talk = false;
     public boolean act() {
         alerted = false;
         state = PASSIVE;
+        if(HP == 0 && !talk){
+            GalaxyHeartDeadEndPlot plot = new GalaxyHeartDeadEndPlot();
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(plot,false));
+                }
+            });
+            talk = true;
+        }
+
+        if(buff(SummonColdDown.class) != null && !getHP){
+            boolean hasEnemy = false;
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if(mob.alignment == Alignment.ENEMY){
+                    if(!(mob instanceof TowerGodsBad || mob instanceof TowerMindBad || mob instanceof TowerMachineBad || mob instanceof TowerTimeBad)) {
+                        hasEnemy = true;
+                        break;
+                    }
+                }
+            }
+            if(!hasEnemy && brokenCount<3){
+                getHP = true;
+                HP += Math.min(HT - HP, 2);
+                sprite.emitter().burst(Speck.factory(Speck.HEALING), 2);
+                yell(Messages.get(this, "gethp"));
+            }
+        }
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if(mob instanceof TowerGodsBad && ((TowerGodsBad) mob).repiaer && !one && mob.buff(RepaierDown.class) == null){
+                end++;
+                one = true;
+                break;
+            }
+            if(mob instanceof TowerMachineBad && ((TowerMachineBad) mob).repiaer && !two && mob.buff(RepaierDown.class) == null){
+                end++;
+                two = true;
+                break;
+            }
+            if(mob instanceof TowerMindBad && ((TowerMindBad) mob).repiaer && !three && mob.buff(RepaierDown.class) == null){
+                end++;
+                three = true;
+                break;
+            }
+            if(mob instanceof TowerTimeBad && ((TowerTimeBad) mob).repiaer && !four && mob.buff(RepaierDown.class) == null){
+                end++;
+                four = true;
+                break;
+            }
+        }
+        if(end >= 4){
+            ScrollOfTeleportation.appear(this,562);
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+               if(mob instanceof Morphs){
+                   ((Morphs) mob).EndStory = true;
+                   ScrollOfTeleportation.appear(mob,312);
+                   mob.yell(Messages.get(mob, "endtalk"));
+               } else {
+                   Buff.affect(mob, Bleeding.class).set(1000f);
+               }
+            }
+            destroy();
+            sprite.killAndErase();
+        }
+
         TryGetSummonedMobs();
+        GLog.w(String.valueOf(Statistics.RepaierTowerCount));
         return super.act();
     }
 
+
+    public static int[] safePos = new int[] {
+        306,462,318,137
+    };
     public void TryGetSummonedMobs() {
-        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-            if(!mob.isOldDay){
-                if (buff(SummonColdDown.class) == null) {
-                    for (int i = 0; i < 5; i++) {
-                        Mob testActor = getSummonTimeMobs();
-                        testActor.pos =Dungeon.level.randomDestination(MyCoreHeart.this);
-                        testActor.isOldDay = true;
-                        testActor.state = testActor.HUNTING;
-                        GameScene.add(testActor);
+        if(summonedmobsCount < 26){
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                if(!mob.isOldDay){
+                    if (buff(SummonColdDown.class) == null) {
+                        for (int i = 0; i < 5; i++) {
+                            Mob testActor = getSummonTimeMobs();
+                            testActor.pos = safePos[Random.Int(safePos.length)];
+                            testActor.isOldDay = true;
+                            testActor.state = testActor.HUNTING;
+                            GameScene.add(testActor);
+                        }
+                        Buff.affect(this, SummonColdDown.class, SummonColdDown.DURATION);
+                        summonedmobsCount++;
                     }
-                    Buff.affect(this, SummonColdDown.class, 30f);
-                    summonedmobsCount++;
                 }
             }
         }
@@ -120,6 +209,85 @@ public class MyCoreHeart extends Boss {
         return false;
     }
 
+    public static class RepaierDown extends FlavourBuff {
+
+
+        {
+            announced = true;
+            type = buffType.POSITIVE;
+        }
+
+
+        public static final float DURATION	= 25f;
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.TIME;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(Window.ORAGNECOLOR);
+        }
+    }
+
+    public static class SummonColdDown extends FlavourBuff {
+
+        {
+            type = buffType.POSITIVE;
+        }
+
+        public static final float DURATION	= 30f;
+
+        public void detach() {
+            super.detach();
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                if (mob instanceof MyCoreHeart) {
+                    MyCoreHeart heart = (MyCoreHeart) mob;
+                    heart.getHP = false;
+                    heart.brokenCount = 0;
+                    if(heart.summonedmobsCount % 5 == 0){
+                        Statistics.RepaierTowerCount++;
+                    }
+                }
+            }
+        }
+
+
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.TIME;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(Window.WATA_COLOR);
+        }
+
+        @Override
+        public String desc() {
+            int s = 0;
+            int r = 0;
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                if (mob instanceof MyCoreHeart) {
+                    s = ((MyCoreHeart) mob).summonedmobsCount;
+                    r = ((MyCoreHeart) mob).brokenCount;
+                }
+            }
+            return Messages.get(this, "desc", dispTurns(visualcooldown()),s,r);
+        }
+
+    }
+
     private class Waiting extends Mob.Wandering{
 
         @Override
@@ -132,10 +300,29 @@ public class MyCoreHeart extends Boss {
 
     private static final String STRING = "STRING";
 
+    private static final String GETHP = "GETHP";
+
+    private static final String BROKEN = "BROKEN";
+
+    private static final String COUNS = "COUNS";
+
+    private static final String ONE = "ONE";
+    private static final String TWO = "TWO";
+    private static final String THREE = "THREE";
+    private static final String FOUR = "FOUR";
+
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
         bundle.put( STRING, summonedmobsCount );
+        bundle.put(GETHP,getHP);
+        bundle.put(BROKEN,brokenCount);
+        bundle.put(COUNS,end);
+
+        bundle.put(ONE,one);
+        bundle.put(TWO,two);
+        bundle.put(THREE,three);
+        bundle.put(FOUR,four);
     }
 
     @Override
@@ -143,18 +330,28 @@ public class MyCoreHeart extends Boss {
         super.restoreFromBundle( bundle );
         BossHealthBar.assignBoss(this);
         summonedmobsCount = bundle.getInt( STRING );
+        getHP = bundle.getBoolean(GETHP);
+        brokenCount = bundle.getInt(BROKEN);
+        end = bundle.getInt(COUNS);
+
+        one = bundle.getBoolean(ONE);
+        two = bundle.getBoolean(TWO);
+        three = bundle.getBoolean(THREE);
+        four = bundle.getBoolean(FOUR);
     }
 
     @Override
     public void damage(int dmg, Object src, DamageType type) {
 
-        if(src == hero){
+        if(src != enemy){
             return;
         }
 
-        if(enemy != null){
+        if(enemy != null && enemy instanceof Mob){
             dmg =  1;
             enemy.damage(HT,this);
+            Buff.affect(enemy, Bleeding.class).set(1000f);
+            brokenCount++;
         } else {
             return;
         }

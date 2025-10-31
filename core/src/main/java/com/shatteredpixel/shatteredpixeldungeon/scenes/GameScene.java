@@ -1174,6 +1174,13 @@ public class GameScene extends PixelScene {
 		scene.showBannerX(bossSlain);
 	}
 
+	public static void fadeToWhite(float duration,float delay) {
+		Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
+		bossSlain.texture(Assets.Interfaces.WHITE_RECT);
+		bossSlain.show(Window.CBLACK, duration, delay);
+		scene.showBannerX(bossSlain);
+	}
+
 	@Override
 	public void create() {
 
@@ -1964,7 +1971,7 @@ public class GameScene extends PixelScene {
 						scene.showBanner(bossSlain);
 						break;
 					case 31:
-						if(Dungeon.hero.buffs(SliceDeadBless.class) !=null ){
+						if(Dungeon.hero.buff(SliceDeadBless.class) !=null ){
 							bossSlain.texture(Assets.Interfaces.Morpheus_Title);
 							bossSlain.show(Window.DeepPK_COLOR, 0.3f, 5f);
 							scene.showBanner(bossSlain);

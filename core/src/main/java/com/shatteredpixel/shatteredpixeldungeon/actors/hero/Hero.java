@@ -128,6 +128,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.OozeStatueDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.QuestGold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
@@ -408,6 +409,10 @@ public class Hero extends Char {
 			strBonus -= 1;
 		} else if(Dungeon.hero.buff(BlessGoodSTR.class) != null) {
 			strBonus += 2;
+		}
+
+		if(hero.buff(SliceDeadBless.class)!=null && branch == 0 && Dungeon.depth>29){
+			strBonus += 3;
 		}
 
 		if(Dungeon.hero.buff(BlessRedWhite.class) != null) {
@@ -1025,6 +1030,10 @@ public class Hero extends Char {
 		MIME.GOLD_THREE getSpeed = Dungeon.hero.belongings.getItem(MIME.GOLD_THREE.class);
 		if (getSpeed!=null) {
 			speed *= 1.2f;
+		}
+
+		if(hero.buff(SliceDeadBless.class)!=null && branch == 0 && Dungeon.depth>28){
+			speed *= 1.26f;
 		}
 
 		if(Dungeon.isChallenged(CS) && !gameNight){
@@ -2566,10 +2575,10 @@ public class Hero extends Char {
 		boolean result;
 		if(bossRushMode){
 			result = Dungeon.depth < 43;
+		} else if(Statistics.Hollow_Holiday) {
+			result = Dungeon.depth < 35;
 		} else if(holiday == RegularLevel.WestHoliday.XMAS) {
 			result = Dungeon.depth < 31;
-		} else if(Statistics.Hollow_Holiday) {
-			result = Dungeon.depth < 32;
 		} else {
 			result = Dungeon.depth < 27;
 		}
@@ -3171,7 +3180,7 @@ public class Hero extends Char {
 
 			Game.runOnRenderThread(() -> GameScene.show(new WinAllSearchStatus()));
 
-			if(hero.buffs(ScoreBuff.class)!=null) {
+			if(hero.buff(ScoreBuff.class)!=null) {
 				ScoreBuff buffs = hero.buff(ScoreBuff.class);
 				SPDSettings.AllSearchScore(buffs.score/2);
 				Statistics.getAlLSearchScore = buffs.score/2;

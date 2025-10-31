@@ -1,11 +1,18 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerGodsBad;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMachineBad;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMindBad;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerTimeBad;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.HollowEndStoryPlot;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
@@ -14,9 +21,11 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 
 public class Morphs extends Boss {
 
@@ -27,12 +36,14 @@ public class Morphs extends Boss {
      */
     @Override
     public boolean isInvulnerable(Class effect) {
-        return true;
+        return !EndStory || super.isInvulnerable(effect);
     }
 
     public boolean FourToneActive = false;
 
     public float phase;
+
+    public boolean EndStory = false;
 
     {
         initProperty();
@@ -45,13 +56,36 @@ public class Morphs extends Boss {
 
         flying = true;
 
-        alignment = Alignment.NEUTRAL;
+        alignment = EndStory ? Alignment.ENEMY : Alignment.NEUTRAL;
 
         properties.add(Property.IMMOVABLE);
         properties.add(Property.BOSS);
 
         immunities.add(Blob.class);
         immunities.add(Buff.class);
+    }
+
+    @Override
+    public void damage(int dmg, Object src, DamageType type) {
+        if(src == hero){
+            interact(hero);
+        }
+    }
+
+
+    @Override
+    public boolean interact(Char c) {
+        sprite.turnTo(pos, hero.pos);
+        if(EndStory){
+            HollowEndStoryPlot plot = new HollowEndStoryPlot();
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(plot,false));
+                }
+            });
+        }
+        return true;
     }
 
     @Override
@@ -90,12 +124,28 @@ public class Morphs extends Boss {
             GameScene.add(myCoreHeart);
             BossHealthBar.assignBoss(myCoreHeart);
 
-            ScrollOfTeleportation.appear(this,0);
+            TowerGodsBad towerGodsBad = new TowerGodsBad();
+            towerGodsBad.pos = 304;
+            GameScene.add(towerGodsBad);
+
+            TowerTimeBad towerTimeBad = new TowerTimeBad();
+            towerTimeBad.pos = 512;
+            GameScene.add(towerTimeBad);
+
+            TowerMachineBad towerMachineBad = new TowerMachineBad();
+            towerMachineBad.pos = 112;
+            GameScene.add(towerMachineBad);
+
+            TowerMindBad towerMindBad = new TowerMindBad();
+            towerMindBad.pos = 320;
+            GameScene.add(towerMindBad );
+
+            ScrollOfTeleportation.appear(this,562);
 
             phase++;
         }
 
-        GLog.n(String.valueOf(phase));
+        //GLog.n(String.valueOf(phase));
 
         return super.act();
     }
@@ -127,11 +177,14 @@ public class Morphs extends Boss {
 
     private static final String FTAV = "FourToneActive";
 
+    private static final String XDFR = "XDFR";
+
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(FTAV, FourToneActive);
         bundle.put("phase", phase);
+        bundle.put(XDFR, EndStory);
     }
 
     @Override
@@ -139,6 +192,7 @@ public class Morphs extends Boss {
         super.restoreFromBundle(bundle);
         FourToneActive = bundle.getBoolean(FTAV);
         phase = bundle.getFloat("phase");
+        EndStory = bundle.getBoolean(XDFR);
     }
 
     public void activate(){

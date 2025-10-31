@@ -28,7 +28,7 @@ public class SliceDeadBless extends Buff {
 
     private int level = 0;
     private int interval = 1;
-    private int cooldown = 0; // 添加冷却时间属性
+    private int cooldown = 0;
 
     protected float left;
     ArrayList<Lightning.Arc> arcs = new ArrayList<>();
@@ -77,7 +77,7 @@ public class SliceDeadBless extends Buff {
         if (target.isAlive()) {
             spend(interval);
 
-            LightAttackLimitEnemy(Dungeon.depth>27);
+            LightAttackLimitEnemy(Dungeon.depth>27 && Dungeon.branch == 0);
 
         } else {
             detach();
@@ -110,12 +110,24 @@ public class SliceDeadBless extends Buff {
 
     public String desc() {
         String string = super.desc();
-        if(Dungeon.depth>27){
-            string = Messages.get(this, "desc_plus1",(10 + Dungeon.hero.lvl / 5 + Dungeon.depth / 5) );
-            if(cooldown>0){
-                string += "\n\n" + Messages.get(this, "desc_cooldown", cooldown);
+        if(Dungeon.branch == 0){
+            if(Dungeon.depth>27){
+                string = Messages.get(this, "desc_plus1",(10 + Dungeon.hero.lvl / 5 + Dungeon.depth / 5) );
+                if(cooldown>0){
+                    string += "\n\n" + Messages.get(this, "desc_cooldown", cooldown);
+                }
+            }
+            if(Dungeon.depth>28){
+                string += "\n\n" + Messages.get(this, "desc_plus2" );
+            }
+            if(Dungeon.depth>29){
+                string += "\n\n" + Messages.get(this, "desc_plus3" );
+            }
+            if(Dungeon.depth>30){
+                string += "\n\n" + Messages.get(this, "desc_plus4" );
             }
         }
+
         string += "\n\n" + Messages.get(this, "bless",Dungeon.depth-27);
         return string;
     }

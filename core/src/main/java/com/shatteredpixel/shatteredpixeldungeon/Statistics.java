@@ -289,6 +289,9 @@ public class Statistics {
 	public static int getMoveBoxScore;
 	public static int getAlLSearchScore;
 
+	//防卫战
+	public static int RepaierTowerCount;
+
 	//Holiday Boolean
 	public static boolean Hollow_Holiday = false;
 
@@ -575,6 +578,8 @@ public class Statistics {
 		getMoveBoxScore = 0;
 		getAlLSearchScore = 0;
 		moveBoxScoreMax = 0;
+
+		RepaierTowerCount = 1;
 
 		SmallLeafGet = false;
 		noClearKill = false;
@@ -1015,6 +1020,7 @@ public class Statistics {
 		bundle.put("PACMANSOCRE", getPacManScore);
 		bundle.put("MOVEBOXSCORE", getMoveBoxScore);
 		bundle.put("PROGRESSCORE", getAlLSearchScore);
+		bundle.put("GETPRIAEX",		RepaierTowerCount);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
@@ -1024,6 +1030,7 @@ public class Statistics {
 		getMoveBoxScore = bundle.getInt("MOVEBOXSCORE");
 		getAlLSearchScore = bundle.getInt("PROGRESSCORE");
 		moveBoxScoreMax = bundle.getInt("MOVEBOXSCOREMAX");
+		RepaierTowerCount = bundle.getInt("GETPRIAEX");
 
 		AllSearchSuccessEsc = bundle.getBoolean("ESC");
 		AllSearchFailedEsc = bundle.getBoolean("ESC2");

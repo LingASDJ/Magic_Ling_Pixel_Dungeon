@@ -424,7 +424,7 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if(hero.buffs(SliceDeadBless.class) !=null && depth == 28){
+		if(hero.buff(SliceDeadBless.class) !=null && depth == 28){
 			initRooms.add(new SliceDeadRoom());
 		}
 
