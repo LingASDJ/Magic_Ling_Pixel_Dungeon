@@ -699,7 +699,7 @@ public class CerDogBossLevel extends Level {
         GameScene.scene.add(new Delayer(3f){
             @Override
             protected void onComplete() {
-                Statistics.winGame = true;
+                Badges.validateVictory();
                 PaswordBadges.ALLCS(Challenges.activeChallenges());
                 Rankings.INSTANCE.submit(true, UnsignedInvitationLetter.class);
                 Game.switchScene( RankingsScene.class );

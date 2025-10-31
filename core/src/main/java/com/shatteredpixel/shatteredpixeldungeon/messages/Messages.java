@@ -49,7 +49,7 @@ public class Messages {
 	private static ArrayList<I18NBundle> bundles;
 	private static Languages lang;
 	private static Locale locale;
-	public static String baseNameX;
+
 	public static final String NO_TEXT_FOUND = "!!!NO TEXT FOUND!!!";
 
 	public static Languages lang(){
@@ -73,78 +73,39 @@ public class Messages {
 			Assets.Messages.PLANTS,
 			Assets.Messages.SCENES,
 			Assets.Messages.UI,
-			Assets.Messages.WINDOWS
+			Assets.Messages.WINDOWS,
 	};
 
 	static{
 		setup(SPDSettings.language());
 	}
 
-	public interface BundleLoadListener {
-		void onBundlesLoaded();
-		void onBundleLoadFailed(Throwable error);
-	}
-
-	private static BundleLoadListener loadListener;
-
-	public static void setBundleLoadListener(BundleLoadListener listener) {
-		Messages.loadListener = listener;
-	}
-
-	static final ArrayList<I18NBundle> loadedBundles = new ArrayList<>();
-	static Locale bundleLocal = new Locale(lang.code());
-	public static void setup(final Languages lang) {
+	public static void setup( Languages lang ){
+		//seeing as missing keys are part of our process, this is faster than throwing an exception
 		I18NBundle.setExceptionOnMissingKey(false);
 
+		//store language and locale info for various string logic
 		Messages.lang = lang;
-		if (lang == Languages.ENGLISH) {
+		if (lang == Languages.ENGLISH){
 			locale = Locale.ENGLISH;
 		} else {
 			locale = new Locale(lang.code());
 		}
 
-		// Start a new thread for bundle loading
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-
-				try {
-					for (String file : prop_files) {
-						loadedBundles.add(I18NBundle.createBundle(Gdx.files.internal(file), bundleLocal));
-					}
-
-					// Post back to the main thread (UI thread) to update the bundles list
-					// This assumes an Android context where Gdx.app.postRunnable can be used,
-					// or you might need a Handler for non-libGDX Android context.
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run() {
-							bundles = loadedBundles;
-							if (loadListener != null) {
-								loadListener.onBundlesLoaded();
-							}
-						}
-					});
-
-				} catch (final Throwable e) {
-					// Handle potential exceptions during loading, and report on main thread
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run() {
-							ShatteredPixelDungeon.reportException(new Exception("Failed to load I18N bundles", e));
-							if (loadListener != null) {
-								loadListener.onBundleLoadFailed(e);
-							}
-						}
-					});
-				}
-			}
-		}).start();
+		//strictly match the language code when fetching bundles however
+		bundles = new ArrayList<>();
+		Locale bundleLocal = new Locale(lang.code());
+		for (String file : prop_files) {
+			bundles.add(I18NBundle.createBundle(Gdx.files.internal(file), bundleLocal));
+		}
 	}
+
+
 
 	/**
 	 * Resource grabbing methods
 	 */
+	public static String errorName;
 
 	public static String get(String key, Object...args){
 		return get(null, key, args);
@@ -175,13 +136,13 @@ public class Messages {
 			//Use baseName so the missing string is clear what exactly needs replacing. Otherwise, it just says java.lang.Object.[key]
 			if (baseName == null) {
 				baseName = key;
-				baseNameX = baseName;
-				//转换为小写
+				errorName = baseName;
 				baseName = baseName.toLowerCase();
 			}
 			//this is so child classes can inherit properties from their parents.
 			//in cases where text is commonly grabbed as a utility from classes that aren't mean to be instantiated
 			//(e.g. flavourbuff.dispTurns()) using .class directly is probably smarter to prevent unnecessary recursive calls.
+
 			if (c != null && c.getSuperclass() != null){
 				return get(c.getSuperclass(), k, baseName, args);
 			} else {
@@ -189,16 +150,15 @@ public class Messages {
 				if (DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
 					System.out.println("[MissString]: "+baseName);
 				}
-
 				return "Ms:"+baseName;
 			}
+
 		}
 	}
 
-
 	private static String getFromBundle(String key){
 		String result;
-		for (I18NBundle b : loadedBundles){
+		for (I18NBundle b : bundles){
 			result = b.get(key);
 			//if it isn't the return string for no key found, return it
 			if (result.length() != key.length()+6 || !result.contains(key)){
@@ -207,7 +167,6 @@ public class Messages {
 		}
 		return null;
 	}
-
 
 
 

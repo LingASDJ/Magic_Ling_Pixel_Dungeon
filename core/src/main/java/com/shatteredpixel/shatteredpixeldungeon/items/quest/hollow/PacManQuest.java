@@ -39,7 +39,7 @@ public class PacManQuest extends Item {
     }
 
     public static void GetScore(Hero hero,int score){
-        if(hero.buffs(ScoreBuff.class)!=null){
+        if(hero.buff(ScoreBuff.class)!=null){
             ScoreBuff buff = hero.buff(ScoreBuff.class);
             buff.addScore(score);
         }

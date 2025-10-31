@@ -270,8 +270,8 @@ public class LevelTeleporter extends TestItem {
             if(Dungeon.level.locked)
                 Dungeon.level.unseal();
             InterlevelScene.mode = InterlevelScene.Mode.RESET;
+
             Buff.detach( hero, DragonWall.class);
-            //克里弗斯之果二阶段死亡的时候的给予重新评估
             if(crivusfruitslevel2){
                 crivusfruitslevel2 = false;
             }
@@ -305,6 +305,8 @@ public class LevelTeleporter extends TestItem {
             Statistics.doNotLookLing = false;
 
             Statistics.sakaBackStage = 0;
+
+            Statistics.RepaierTowerCount = 0;
 
             Game.switchScene(InterlevelScene.class);
         }

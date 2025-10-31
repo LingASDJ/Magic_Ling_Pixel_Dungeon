@@ -191,6 +191,8 @@ public class WndResurrect extends Window {
 
 				Statistics.sakaBackStage = 0;
 
+				Statistics.RepaierTowerCount = 0;
+
 				InterlevelScene.mode = InterlevelScene.Mode.RESURRECT;
 				Game.switchScene( InterlevelScene.class );
 			}

@@ -102,11 +102,11 @@ public class VirtualControls extends Group {
                         targetPosSet.add(pos);
                     }
 
-                    if(hero.buffs(ScoreBuff.class)!=null){
+                    if(hero.buff(ScoreBuff.class)!=null){
                         GLog.w(Messages.get(VirtualControls.class,"down_score"));
                         ScoreBuff buff = hero.buff(ScoreBuff.class);
                         buff.downScore(100);
-                        hero.sprite.showStatus(Window.R_COLOR, "-"+200);
+                        hero.sprite.showStatus(Window.R_COLOR, "-"+100);
                     }
 
                     // 用于记录已经被占用的目标位置

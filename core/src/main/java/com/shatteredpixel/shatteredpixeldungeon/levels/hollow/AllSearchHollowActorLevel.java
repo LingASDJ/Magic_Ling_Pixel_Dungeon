@@ -262,7 +262,7 @@ public class AllSearchHollowActorLevel extends RegularLevel {
             if(HT == 100){
                 Statistics.AllSearchSuccessEsc = true;
                 Game.runOnRenderThread(() -> GameScene.show(new WinAllSearchStatus()));
-                if(hero.buffs(ScoreBuff.class)!=null) {
+                if(hero.buff(ScoreBuff.class)!=null) {
                     ScoreBuff buffs = hero.buff(ScoreBuff.class);
                     SPDSettings.AllSearchScore(buffs.score);
                     Statistics.getAlLSearchScore = buffs.score;
@@ -413,9 +413,10 @@ public class AllSearchHollowActorLevel extends RegularLevel {
         public void detach() {
            super.detach();
            Statistics.AllSearchFailedEsc = true;
-            if(hero.buffs(ScoreBuff.class)!=null && !Statistics.AllSearchSuccessEsc) {
+            if(hero.buff(ScoreBuff.class)!=null && !Statistics.AllSearchSuccessEsc) {
                 ScoreBuff buffs = hero.buff(ScoreBuff.class);
                 SPDSettings.AllSearchScore(buffs.score/2);
+                Statistics.getAlLSearchScore = buffs.score/2;
                 Game.runOnRenderThread(() -> GameScene.show(new WinAllSearchStatus()));
             }
         }

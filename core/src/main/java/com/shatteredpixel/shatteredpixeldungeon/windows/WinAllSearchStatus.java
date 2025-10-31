@@ -5,15 +5,23 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.AllSearchIQuest;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 
 import java.util.ArrayList;
@@ -92,6 +100,20 @@ public class WinAllSearchStatus extends Window {
                 if(buff.score >= 20000 * 0.75f){
                     Badges.MINIGAME_MASTER_THREE();
                 }
+                InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+                TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                if (timeFreeze != null) timeFreeze.disarmPresses();
+                Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                if (timeBubble != null) timeBubble.disarmPresses();
+                InterlevelScene.curTransition = new LevelTransition();
+                InterlevelScene.curTransition.destDepth = 32;
+                InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
+                InterlevelScene.curTransition.destBranch = 0;
+                InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+                InterlevelScene.curTransition.centerCell  = -1;
+                Game.switchScene( InterlevelScene.class );
+                Buff.detach( hero, LostInventory.class);
+                Buff.detach( hero, ScoreBuff.class);
             }
         };
         searchButton.icon(new Image(Icons.get(Icons.CATALOG)));

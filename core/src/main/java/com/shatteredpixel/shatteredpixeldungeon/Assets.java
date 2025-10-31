@@ -191,6 +191,8 @@ public class Assets {
 	public static class Interfaces {
 
 		public static final String BLACK_RECT  = "interfaces/black_rect.png";
+		public static final String WHITE_RECT  = "interfaces/white_rect.png";
+
 
 		//Boss 贴图
 		public static final String QliPhothEX_Title  = "interfaces/bosslogo/qliphoth-title-ex.png";

@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MoveBoxHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.PacmanHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.TheatreLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.ZeroHallsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonCaveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
@@ -273,12 +274,18 @@ public class LevelRules {
                         return Statistics.Hollow_Holiday ? new HollowLevel() : new DeadEndLevel();
 
                     case 31:
-                        if(hero.buffs(SliceDeadBless.class) !=null ){
+                        if(hero.buff(SliceDeadBless.class) !=null ){
                             return new TheatreLevel();
                         } else {
                             return new CerDogBossLevel();
                         }
 
+                    case 32:
+                        if(hero.buff(SliceDeadBless.class) !=null ){
+                            return new TheatreLevel();
+                        } else {
+                            return new DeadEndLevel();
+                        }
 
                     case 33:
                         return new MorpheusBossLevel();
@@ -309,8 +316,6 @@ public class LevelRules {
                         return new AncientMysteryCityLevel();
                     case 20:
                         return new DwarfGeneralBossLevel();
-                    case 28:
-                        return new TheatreLevel();
                     case 31:
                         return new PacmanHollowActorLevel();
                     default:
@@ -470,6 +475,8 @@ public class LevelRules {
                         return new DeadEndLevel();
                     case 26:
                         return new GalaxyKeyBossLevel();
+                    case 25:
+                        return new ZeroHallsBossLevel();
                 }
         }
     }

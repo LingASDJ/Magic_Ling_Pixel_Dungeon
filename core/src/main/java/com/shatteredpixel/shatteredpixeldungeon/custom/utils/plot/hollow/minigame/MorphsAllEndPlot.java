@@ -1,16 +1,22 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.minigame;
 
+import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomUsingDefaults;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DeepBloodBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.SelectableWand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
@@ -206,6 +212,10 @@ public class MorphsAllEndPlot extends Plot {
 
 
         private void process_to_6() {
+            for (int i = 0; i < 2; i++) {
+                Dungeon.level.drop( randomUsingDefaults( Generator.Category.SCROLL ), Dungeon.hero.pos ).sprite.drop();
+                Dungeon.level.drop( randomUsingDefaults( Generator.Category.POTION ), Dungeon.hero.pos ).sprite.drop();
+            }
             diagulewindow.changeText(Messages.get(this, "message6b"));
         }
     }
@@ -293,19 +303,8 @@ public class MorphsAllEndPlot extends Plot {
         }
 
         private void process_to_4() {
-           
             diagulewindow.setMainAvatar(new Image(Assets.Splashes.Morphs_3));
             diagulewindow.changeText(Messages.get(this, "message4c"));
-            Item w;
-            switch (Random.Int(6)){
-                default:
-                case 1: w = new WaterSoul();   break;
-                case 2: w = new BlizzardBrew(); break;
-                case 3: w = new CausticBrew();    break;
-                case 4: w = new InfernalBrew();   break;
-                case 5: w = new ShockingBrew();   break;
-            }
-            Dungeon.level.drop(w,Dungeon.hero.pos);
         }
 
         private void process_to_5() {
@@ -314,6 +313,12 @@ public class MorphsAllEndPlot extends Plot {
 
 
         private void process_to_6() {
+            for (int i = 0; i < 2; i++) {
+                Dungeon.level.drop( randomUsingDefaults( Generator.Category.SCROLL ), Dungeon.hero.pos ).sprite.drop();
+                Dungeon.level.drop( randomUsingDefaults( Generator.Category.POTION ), Dungeon.hero.pos ).sprite.drop();
+            }
+            Dungeon.level.drop( new PotionOfHealing(), Dungeon.hero.pos ).sprite.drop();
+            Dungeon.level.drop( new PotionOfHealing(), Dungeon.hero.pos ).sprite.drop();
             diagulewindow.changeText(Messages.get(this, "message6c"));
         }
     }
@@ -401,10 +406,6 @@ public class MorphsAllEndPlot extends Plot {
         }
 
         private void process_to_4() {
-           
-            Ankh ankh = new Ankh();
-            ankh.blessed = true;
-            Dungeon.level.drop(ankh,Dungeon.hero.pos);
             diagulewindow.changeText(Messages.get(this, "message4d"));
         }
 
@@ -414,6 +415,36 @@ public class MorphsAllEndPlot extends Plot {
 
 
         private void process_to_6() {
+            for (int i = 0; i < 2; i++) {
+                Dungeon.level.drop( randomUsingDefaults( Generator.Category.SCROLL ), Dungeon.hero.pos ).sprite.drop();
+                Dungeon.level.drop( randomUsingDefaults( Generator.Category.POTION ), Dungeon.hero.pos ).sprite.drop();
+            }
+            Dungeon.level.drop( new PotionOfHealing(), Dungeon.hero.pos ).sprite.drop();
+            Dungeon.level.drop( new PotionOfHealing(), Dungeon.hero.pos ).sprite.drop();
+            Dungeon.level.drop( new PotionOfHealing(), Dungeon.hero.pos ).sprite.drop();
+            switch (Random.Int(8)) {
+                case 2:
+                    Dungeon.level.drop(new BrokenBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+                case 3:
+                    Dungeon.level.drop(new IceCityBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+                case 4:
+                    Dungeon.level.drop(new NoKingMobBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+                case 5:
+                    Dungeon.level.drop(new DeepBloodBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+                case 6:
+                    Dungeon.level.drop(new MagicGirlBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+                case 7:
+                    Dungeon.level.drop(new GrassKingBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+                default:
+                    Dungeon.level.drop(new YellowSunBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+            }
             diagulewindow.changeText(Messages.get(this, "message6d"));
         }
     }
@@ -498,12 +529,39 @@ public class MorphsAllEndPlot extends Plot {
         }
 
         private void process_to_4() {
-           
             diagulewindow.setMainAvatar(new Image(Assets.Splashes.Morphs_2));
             diagulewindow.changeText(Messages.get(this, "message4e"));
         }
 
         private void process_to_5() {
+            for (int i = 0; i < 3; i++) {
+                Dungeon.level.drop( randomUsingDefaults( Generator.Category.SCROLL ), Dungeon.hero.pos ).sprite.drop();
+                Dungeon.level.drop( randomUsingDefaults( Generator.Category.POTION ), Dungeon.hero.pos ).sprite.drop();
+                Dungeon.level.drop( new PotionOfHealing(), Dungeon.hero.pos ).sprite.drop();
+            }
+            switch (Random.Int(8)) {
+                case 2:
+                    Dungeon.level.drop(new BrokenBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+                case 3:
+                    Dungeon.level.drop(new IceCityBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+                case 4:
+                    Dungeon.level.drop(new NoKingMobBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+                case 5:
+                    Dungeon.level.drop(new DeepBloodBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+                case 6:
+                    Dungeon.level.drop(new MagicGirlBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+                case 7:
+                    Dungeon.level.drop(new GrassKingBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+                default:
+                    Dungeon.level.drop(new YellowSunBooks(), Dungeon.hero.pos).sprite.drop();
+                    break;
+            }
             diagulewindow.changeText(Messages.get(this, "message5e"));
         }
     }
@@ -609,6 +667,45 @@ public class MorphsAllEndPlot extends Plot {
 
         private void process_to_7() {
             diagulewindow.changeText(Messages.get(this, "message7f"));
+            for (int i = 0; i < 3; i++) {
+                Dungeon.level.drop( randomUsingDefaults( Generator.Category.SCROLL ), Dungeon.hero.pos ).sprite.drop();
+                Dungeon.level.drop( randomUsingDefaults( Generator.Category.POTION ), Dungeon.hero.pos ).sprite.drop();
+            }
+            for (int i = 0; i < 3; i++) {
+                Dungeon.level.drop( new PotionOfHealing(), Dungeon.hero.pos ).sprite.drop();
+            }
+            for (int i = 0; i < 2; i++) {
+                switch (Random.Int(8)) {
+                    case 2:
+                        Dungeon.level.drop(new BrokenBooks(), Dungeon.hero.pos).sprite.drop();
+                        break;
+                    case 3:
+                        Dungeon.level.drop(new IceCityBooks(), Dungeon.hero.pos).sprite.drop();
+                        break;
+                    case 4:
+                        Dungeon.level.drop(new NoKingMobBooks(), Dungeon.hero.pos).sprite.drop();
+                        break;
+                    case 5:
+                        Dungeon.level.drop(new DeepBloodBooks(), Dungeon.hero.pos).sprite.drop();
+                        break;
+                    case 6:
+                        Dungeon.level.drop(new MagicGirlBooks(), Dungeon.hero.pos).sprite.drop();
+                        break;
+                    case 7:
+                        Dungeon.level.drop(new GrassKingBooks(), Dungeon.hero.pos).sprite.drop();
+                        break;
+                    default:
+                        Dungeon.level.drop(new YellowSunBooks(), Dungeon.hero.pos).sprite.drop();
+                        break;
+                }
+            }
+
+            Ankh ankh = new Ankh();
+            ankh.blessed = true;
+            Dungeon.level.drop(ankh, Dungeon.hero.pos).sprite.drop();
+
+            Dungeon.level.drop(new SelectableWand(),Dungeon.hero.pos).sprite.drop();
+            Dungeon.level.drop(new SelectableWand(),Dungeon.hero.pos).sprite.drop();
         }
     }
 

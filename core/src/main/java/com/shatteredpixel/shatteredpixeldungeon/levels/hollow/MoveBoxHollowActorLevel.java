@@ -310,7 +310,7 @@ public class MoveBoxHollowActorLevel extends Level {
         super.occupyCell(ch);
 
         if(allBoxesOnTarget() && !getRecord){
-            if(hero.buffs(ScoreBuff.class)!=null) {
+            if(hero.buff(ScoreBuff.class)!=null) {
                 getRecord = true;
                 ScoreBuff buff = hero.buff(ScoreBuff.class);
                 if (InitScore() * 0.75f >= buff.score) {

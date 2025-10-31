@@ -6,6 +6,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EXIT;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNPC;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -22,7 +23,12 @@ public class TheatreLevel extends Level {
 
     @Override
     public void playLevelMusic(){
-        Music.INSTANCE.end();
+        if(Dungeon.depth == 31){
+            Music.INSTANCE.end();
+        } else {
+            Music.INSTANCE.play(Assets.Music.HOLLOW_CITY_HARD, true);
+        }
+
     }
 
     private static final int WIDTH = 21;

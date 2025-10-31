@@ -79,7 +79,7 @@ public class Ghost_Anger extends Mob {
 
     @Override
     public int attackProc(Char enemy, int damage) {
-        if(hero.buffs(ScoreBuff.class)!=null){
+        if(hero.buff(ScoreBuff.class)!=null){
             ScoreBuff buff = hero.buff(ScoreBuff.class);
             buff.downScore(200);
             hero.sprite.showStatus(Window.R_COLOR, "-"+200);

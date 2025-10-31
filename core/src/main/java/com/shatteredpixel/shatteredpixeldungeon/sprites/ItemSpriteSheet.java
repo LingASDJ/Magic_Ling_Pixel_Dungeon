@@ -1066,7 +1066,8 @@ public class ItemSpriteSheet {
     public static final int  BOSSRUSH_GOLD			= SCROLL_GOLD+4;
 
     public static final int  BZMDR_BOOKS			= SCROLL_GOLD+5;
-    public static final int  BOSSRUSH_MINI			= SCROLL_GOLD+6;
+
+    public static final int  DARK_X		= SCROLL_GOLD+6;
 
     private static final int HOLLOW_INDEX   	 = xy(1, 44);
 
@@ -1096,7 +1097,6 @@ public class ItemSpriteSheet {
     static {
         assignItemRect(SCROLL_GOLD, 15, 14);
         assignItemRect(BOSSRUSH_GOLD, 16, 12);
-        assignItemRect(BOSSRUSH_MINI, 7, 7);
     }
 
 

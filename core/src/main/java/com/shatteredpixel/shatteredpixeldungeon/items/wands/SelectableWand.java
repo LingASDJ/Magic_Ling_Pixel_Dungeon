@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.TestItem;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -88,7 +89,12 @@ public class SelectableWand extends TestItem {
     }
 
     private Wand modifyWand(Wand wand) {
-        wand.level = Random.Int(2,4);
+        if(Dungeon.depth == 32){
+            wand.level = 4;
+        } else {
+            wand.level = Random.Int(2,4);
+        }
+        wand.upgrade();
         return wand;
     }
 
@@ -97,6 +103,7 @@ public class SelectableWand extends TestItem {
         if (Challenges.isItemBlocked(wand)) {
             return;
         }
+
         wand = modifyWand(wand);
         wand.identify();
         if (wand.collect()) {
@@ -106,6 +113,7 @@ public class SelectableWand extends TestItem {
         } else {
             wand.doDrop(curUser);
         }
+
         detach(hero.belongings.backpack);
     }
 

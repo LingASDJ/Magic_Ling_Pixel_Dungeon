@@ -774,6 +774,10 @@ public class Badges {
 		displayBadge( Badge.KILL_DOG );
 	}
 
+	public static void KILL_MORES() {
+		displayBadge( Badge.KILL_MORES );
+	}
+
 	public static void MINIGAME_MASTER_ONE() {
 		displayBadge( Badge.MASTER );
 	}
@@ -1157,7 +1161,7 @@ public class Badges {
 		KILL_FIRE_DRAGON(139),
 
 		KILL_DOG					( 152),
-		KILL_MORES					( ),
+		KILL_MORES					( 153),
 		MASTER						(154,true,true ),
 		MASTER_TWO				(155,true,false ),
 		MASTER_THREE					(156,true,false ),
