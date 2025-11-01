@@ -80,7 +80,7 @@ public class MorphsNPC extends GodNPC {
             return true;
         } else {
 
-            if(Statistics.miniGamesTotalLevel > 13 ){
+            if(Statistics.miniGamesTotalLevel > 13  ){
                 ((MorpheusSprite) sprite).SelectActivate();
                 MorphsGodEndTheaterPlot plot = new MorphsGodEndTheaterPlot();
                 Game.runOnRenderThread(new Callback() {

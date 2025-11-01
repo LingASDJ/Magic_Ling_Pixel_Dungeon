@@ -19,9 +19,14 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Callback;
@@ -218,7 +223,31 @@ public class BoilerRoom extends SpecialRoom {
                 SoulCrack.PinkSoulCrack purpleSoulCrack = hero.belongings.getItem(SoulCrack.PinkSoulCrack.class);
                 if(purpleSoulCrack != null) five = true;
 
-                if(one && two && three && four && five) {
+                if (Badges.isUnlocked(Badges.Badge.KILL_MORES) && Statistics.AbyssCityRules == 0){
+                    Game.runOnRenderThread(new Callback() {
+                        @Override
+                        public void call() {
+                            GameScene.show(new WndOptions(new Image(new ItemSprite(ItemSpriteSheet.CASTLE_AIRPORT)),
+                                    Messages.titleCase(Messages.get(BoilerRoom.class, "name")),
+                                    Messages.get(BoilerRoom.class, "quest_start_prompt",hero.name()),
+                                    Messages.get(BoilerRoom.class, "enter_1"),
+                                    Messages.get(BoilerRoom.class, "enter_2"),
+                                    Messages.get(BoilerRoom.class, "enter_no")) {
+                                @Override
+                                protected void onSelect(int index) {
+                                    if(index == 1){
+                                        Statistics.AbyssCityRules = 2;
+                                    } else if (index == 0) {
+                                        Statistics.AbyssCityRules = 1;
+                                    }
+                                    Statistics.Hollow_Holiday = true;
+                                    yell(Messages.get(BoilerRoom.class, "yell"));
+                                }
+                            });
+                        }
+
+                    });
+                } else if(one && two && three && four && five && !(Badges.isUnlocked(Badges.Badge.KILL_MORES))) {
 
                     MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
                     msc.reset(

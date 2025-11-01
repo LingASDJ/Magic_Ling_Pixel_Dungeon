@@ -79,6 +79,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BlueAltStoneRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BoilerRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CerbusSleepRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.GoldRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
@@ -301,6 +302,10 @@ public abstract class RegularLevel extends Level {
 			if(one && two && three && four && five && depth == 24 ||  (Badges.isUnlocked(Badges.Badge.KILL_DOG) && depth == 24 && !Statistics.bossRushMode && !Statistics.RandMode) ){
 				initRooms.add(new BoilerRoom());
 			}
+		}
+
+		if (Badges.isUnlocked(Badges.Badge.KILL_MORES) && depth == 29){
+			initRooms.add(new CerbusSleepRoom());
 		}
 
 		if (depth == 14 && branch == 0) {

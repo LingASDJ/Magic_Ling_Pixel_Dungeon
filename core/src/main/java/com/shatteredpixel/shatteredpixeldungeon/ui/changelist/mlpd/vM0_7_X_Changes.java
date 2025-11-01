@@ -71,6 +71,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0900_Changes(changeInfos);
         add_V0880_Changes(changeInfos);
         add_V0874_Changes(changeInfos);
         add_V0872_Changes(changeInfos);
@@ -122,6 +123,35 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0900_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.9.0.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("重大更新"),
+                ("魔绫现已进入0.9.0.0版本！")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CASTLE_AIRPORT), ("首个外传：渊落古堡"),
+                (
+                        "魔绫像素地牢-渊落古堡外传，于2023年10月立项，期间经过了太多问题和冲突，但最终，她在2025年11月01日圆满完成！\n\n" +
+                                "制作名单：\n\n" +
+                                "_-_ 总策划：JDSALing QinYueQwQ\n" +
+                                "_-_ 编码支持：JDSALing 手电 潘多拉\n" +
+                                "_-_ 剧情原案：JDSALing QinYueQwQ\n" +
+                                "_-_ 美术设计：Daniel Clan\n" +
+                                "_-_ 音乐制作：犬罗 スタ-Tatsuro\n" +
+                                "_-_ 中测协力：Archetto喵，大猫，其他中测人员\n\n" +
+                                "谨以此外传，献给所有热爱 魔绫像素地牢 的玩家！！！\n\n" +
+                                "祝各位玩家玩的愉快，冒险之路永不停歇！")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：NINENINEZEROONE"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：永久")));
     }
 
     public static void add_V0880_Changes(ArrayList<ChangeInfo> changeInfos ) {

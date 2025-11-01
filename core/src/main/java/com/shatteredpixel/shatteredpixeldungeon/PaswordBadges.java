@@ -130,6 +130,10 @@ public class PaswordBadges {
         displayBadge(Badge.SUGAR_FRIENDLY);
     }
 
+    public static void DOG_TOUCH() {
+        displayBadge(Badge.DOG_TOUCH);
+    }
+
     public static void GHOST_HUNTER() {
         displayBadge(Badge.GHOST_HUNTER);
     }
@@ -194,6 +198,8 @@ public class PaswordBadges {
         VAMGHOST_DEAD(32),
 
         SUGAR_FRIENDLY(33,true),
+
+        DOG_TOUCH(34,true),
 
         GHOST_HUNTER(35,true);
 

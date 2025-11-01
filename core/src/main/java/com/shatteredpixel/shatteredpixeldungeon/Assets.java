@@ -487,6 +487,9 @@ public class Assets {
 		public static final String RAY      = "sounds/ray.mp3";
 		public static final String BEACON   = "sounds/beacon.mp3";
 		public static final String TELEPORT = "sounds/teleport.mp3";
+
+		public static final String DOG_ANAGY = "sounds/dog_growl.ogg";
+
 		public static final String CHARMS   = "sounds/charms.mp3";
 		public static final String MASTERY  = "sounds/mastery.mp3";
 		public static final String PUFF     = "sounds/puff.mp3";
@@ -519,7 +522,8 @@ public class Assets {
 				DESCEND, EAT, READ, LULLABY, DRINK, SHATTER, ZAP, LIGHTNING, LEVELUP, DEATH,
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
-				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, ANSDOSHIP,MINE
+				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, ANSDOSHIP,MINE,
+				DOG_ANAGY
 		};
 	}
 

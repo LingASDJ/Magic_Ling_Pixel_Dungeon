@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerGodsBad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMachineBad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMindBad;
@@ -123,6 +124,8 @@ public class Morphs extends Boss {
             myCoreHeart.pos = 312;
             GameScene.add(myCoreHeart);
             BossHealthBar.assignBoss(myCoreHeart);
+
+            Buff.detach(hero, SliceDeadBless.class);
 
             TowerGodsBad towerGodsBad = new TowerGodsBad();
             towerGodsBad.pos = 304;

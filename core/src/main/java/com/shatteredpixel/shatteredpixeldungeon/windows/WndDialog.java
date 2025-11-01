@@ -37,7 +37,7 @@ public class WndDialog extends Window {
     //By Teller in 2021/8/21
 
     //We used Teller ARKPD-CN in 2023-11-2
-    //By KDSALing in 2023-11-2
+    //By JDSALing in 2023-11-2
 
     private static final int MARGIN 		= 2;
     private static final int BUTTON_HEIGHT	= 18;
