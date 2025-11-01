@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Morphs;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRong;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -23,18 +24,16 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.tweeners.Delayer;
 
 public class MorphsGodEndTheaterPlot extends Plot {
 
     {
-        process = 1;
+        process = 1 ;
     }
-
-    private final static int maxprocess = 4;
 
     protected String getPlotName() {
         return SEWER_NAME;
@@ -43,18 +42,21 @@ public class MorphsGodEndTheaterPlot extends Plot {
     @Override
     public void reachProcess(WndDialog wndDialog) {
         diagulewindow = wndDialog;
-        while (this.process < needed_process) {
+
+        while(this.process < needed_process )
+        {
             this.process();
         }
     }
 
-    boolean diaglogic = false;
     boolean alt_diaglogic = false;
+
     boolean branch_logic = false;
 
     @Override
     public void process() {
-        if (diagulewindow != null) {
+
+        if(diagulewindow!=null && process < 4) {
             switch (process) {
                 case 1:
                     process_to_1();
@@ -63,22 +65,33 @@ public class MorphsGodEndTheaterPlot extends Plot {
                     process_to_2();
                     break;
                 case 3:
-                    process_to_3();
+                    process_to_Select();
                     break;
-
             }
             diagulewindow.update();
             process++;
-        } else {
-            switch (process) {
-                case 4:
-                    if (alt_diaglogic) {
-                        process_to_4();
-                    } else {
-                        process_to_4B();
-                    }
-                    break;
+        } else if(diagulewindow != null && alt_diaglogic) {
+            if (branch_logic) {
+                switch (process) {
+                    case 4:
+                        process_to_4A_1();
+                        break;
+                    case 5:
+                        process_to_5A_1();
+                        break;
+                }
+            } else {
+                switch (process) {
+                    case 4:
+                        process_to_4B_1();
+                        break;
+                    case 5:
+                        process_to_5B_1();
+                        break;
+                }
             }
+            diagulewindow.update();
+            process++;
         }
     }
 
@@ -92,21 +105,19 @@ public class MorphsGodEndTheaterPlot extends Plot {
     @Override
     public boolean end() {
         int maxprocess;
-       if(alt_diaglogic){
-           maxprocess = 5;
-       } else {
-           maxprocess =111;
-       }
-
+        maxprocess = 5;
         return process > maxprocess;
     }
 
+
+
     @Override
     public void skip() {
-        // 空实现
+
     }
 
-    private void process_to_1() {
+    private void process_to_1()
+    {
         diagulewindow.hideSkip();
         diagulewindow.hideAll();
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.Morphs_1));
@@ -114,50 +125,11 @@ public class MorphsGodEndTheaterPlot extends Plot {
         diagulewindow.changeText(Messages.get(MorphsGodEndTheaterPlot.class, "message1"));
     }
 
-    private void process_to_2() {
+    private void process_to_2()
+    {
+        diagulewindow.hideAll();
         diagulewindow.setLeftName(hero.name());
         diagulewindow.changeText(Messages.get(MorphsGodEndTheaterPlot.class, "message2"));
-    }
-
-    RedButton choice1;
-    RedButton choice2;
-
-    private void process_to_3() {
-        diagulewindow.hideAll();
-        diagulewindow.setLeftName(Messages.get(Morphs.class, "name"));
-        diagulewindow.setMainAvatar(new Image(Assets.Splashes.Morphs_5));
-        diagulewindow.changeText(Messages.get(MorphsGodEndTheaterPlot.class, "message3"));
-
-        // 选项1
-        choice1 = new RedButton(Messages.get(MorphsGodEndTheaterPlot.class, "choice1")) {
-            @Override
-            protected void onClick() {
-                diaglogic = true;
-                destroy();
-                process_to_4();
-                diagulewindow.update();
-                choice2.destroy();
-                choice1.destroy();
-                process++;
-            }
-        };
-        choice1.setRect(diagulewindow.thirdAvatar.x - diagulewindow.rightname.width(),
-                diagulewindow.chrome.y - 30, 20, 16);
-        diagulewindow.add(choice1);
-
-        // 选项2
-        choice2 = new RedButton(Messages.get(MorphsGodEndTheaterPlot.class, "choice2")) {
-            @Override
-            protected void onClick() {
-                alt_diaglogic = true;
-                choice2.destroy();
-                choice1.destroy();
-                process_to_4B();
-                diagulewindow.update();
-            }
-        };
-        choice2.setRect(diagulewindow.thirdAvatar.x + diagulewindow.rightname.width(), diagulewindow.chrome.y - 30, 20, 16);
-        diagulewindow.add(choice2);
     }
 
     public static class Shadow extends Item {
@@ -176,45 +148,88 @@ public class MorphsGodEndTheaterPlot extends Plot {
         }
     }
 
-    private void process_to_4() {
+
+    RedButton Select_B_Button;
+    RedButton Select_A_Button;
+    /** 分支选项 */
+    private void process_to_Select()
+    {
+        diagulewindow.hideAll();
+        diagulewindow.setLeftName(Messages.get(Morphs.class, "name"));
+        diagulewindow.setMainAvatar(new Image(Assets.Splashes.Morphs_5));
+        diagulewindow.changeText(Messages.get(MorphsGodEndTheaterPlot.class, "message3"));
+
+        Select_A_Button = new RedButton(Messages.get(DeathRong.class,"button2a")){
+            @Override
+            protected void onClick() {
+                alt_diaglogic = true;
+                branch_logic = true;
+                destroy();
+                Select_B_Button.destroy();
+                process_to_4A_1();
+                diagulewindow.update();
+            }
+        };
+        Select_A_Button.setRect(diagulewindow.thirdAvatar.x - diagulewindow.rightname.width(),diagulewindow.chrome.y-30,20,16);
+        diagulewindow.add(Select_A_Button);
+
+
+        Select_B_Button = new RedButton(Messages.get(DeathRong.class,"button2b")){
+            @Override
+            protected void onClick() {
+                alt_diaglogic = true;
+                destroy();
+                Select_A_Button.destroy();
+                diagulewindow.update();
+            }
+        };
+        Select_B_Button.setRect(diagulewindow.thirdAvatar.x + diagulewindow.rightname.width(),diagulewindow.chrome.y-30,20,16);
+        diagulewindow.add(Select_B_Button);
+    }
+
+    /** 选择A分支 */
+    private void process_to_4A_1()
+    {
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.Morphs_1));
         diagulewindow.changeText(Messages.get(MorphsGodEndTheaterPlot.class, "message4"));
+        GameScene.flash(Window.DeepPK_COLOR);
         Badges.CITY_END();
-        GameScene.scene.add(new Delayer(3f){
-            @Override
-            protected void onComplete() {
-                Badges.validateVictory();
-                PaswordBadges.ALLCS(Challenges.activeChallenges());
-                Rankings.INSTANCE.submit(true,Shadow.class);
-                Game.switchScene( RankingsScene.class );
-                Dungeon.deleteGame( GamesInProgress.curSlot, true );
-            }
-        });
     }
 
-    private void process_to_4B() {
+    private void process_to_5A_1()
+    {
+        Badges.validateVictory();
+        PaswordBadges.ALLCS(Challenges.activeChallenges());
+        Rankings.INSTANCE.submit(true,Shadow.class);
+        Game.switchScene( RankingsScene.class );
+        Dungeon.deleteGame( GamesInProgress.curSlot, true );
+    }
+
+
+
+    /** 选择B分支 */
+    private void process_to_4B_1()
+    {
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.Morphs_2));
         diagulewindow.changeText(Messages.get(MorphsGodEndTheaterPlot.class, "message5"));
-        GameScene.scene.add(new Delayer(3f){
-            @Override
-            protected void onComplete() {
-                InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-                TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-                if (timeFreeze != null) timeFreeze.disarmPresses();
-                Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-                if (timeBubble != null) timeBubble.disarmPresses();
-                InterlevelScene.curTransition = new LevelTransition();
-                InterlevelScene.curTransition.destDepth = 33;
-                InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
-                InterlevelScene.curTransition.destBranch = 0;
-                InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
-                InterlevelScene.curTransition.centerCell  = -1;
-                Game.switchScene( InterlevelScene.class );
-                Buff.detach( hero, LostInventory.class);
-            }
-        });
     }
 
-
+    private void process_to_5B_1()
+    {
+        InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+        TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+        if (timeFreeze != null) timeFreeze.disarmPresses();
+        Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+        if (timeBubble != null) timeBubble.disarmPresses();
+        InterlevelScene.curTransition = new LevelTransition();
+        InterlevelScene.curTransition.destDepth = 33;
+        InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
+        InterlevelScene.curTransition.destBranch = 0;
+        InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+        InterlevelScene.curTransition.centerCell  = -1;
+        Game.switchScene( InterlevelScene.class );
+        Buff.detach( hero, LostInventory.class);
+    }
 
 }
+

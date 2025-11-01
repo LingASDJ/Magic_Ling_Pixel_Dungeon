@@ -192,7 +192,11 @@ public class HollowLevel extends RegularLevel {
         }
 
         //古堡第二幕
-        if((Badges.isUnlocked(Badges.Badge.KILL_DOG)) && depth == 27 && Statistics.Hollow_Holiday) {
+        if(Statistics.AbyssCityRules == 2){
+            SliceGirl sliceGirl = new SliceGirl();
+            sliceGirl.pos = exit();
+            mobs.add(sliceGirl);
+        } else if((Badges.isUnlocked(Badges.Badge.KILL_DOG)) && depth == 27 && Statistics.Hollow_Holiday) {
             SliceGirl sliceGirl = new SliceGirl();
             sliceGirl.pos = exit();
             mobs.add(sliceGirl);

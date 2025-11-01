@@ -35,6 +35,8 @@ public class Gift implements Bundlable {
             "TUhKSCw0MDcwOTUxNzc1LGZhbHNl",
             "WUxHQiw0MDcwOTUxNzc1LGZhbHNl",
 
+            "TklORU5JTkVaRVJPT05FLDQwNzA5NTE3NzUsZmFsc2U=",
+
             "UHJvcHNGaXhlZCw0MDcwOTUxNzc1LGZhbHNl",
 
             //KPL 永久赌注兑换码
@@ -110,6 +112,11 @@ public class Gift implements Bundlable {
         code8.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 1010 );
         code8.put( "com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade", 2 );
         tempMap.put( "Q2hpbmFCaXJ0aERheQ==",         code8 );
+
+        LinkedHashMap<String, Integer> code7 = new LinkedHashMap<>();
+        code7.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 900 );
+        code7.put( "com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade", 2 );
+        tempMap.put( "TklORU5JTkVaRVJPT05F",         code7 );
 
 
         GIFT_ITEM = new HashMap<>( Collections.unmodifiableMap( tempMap ) );

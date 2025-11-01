@@ -237,6 +237,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WhiteBlastSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WitheWoodSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.hollow.DeathRongBoat;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ClearSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
@@ -247,6 +248,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSw
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.thanks.GrilledHerring;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CrossReback;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCube;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
@@ -639,6 +641,8 @@ public class Generator {
 					IceSan.class,
 
 					WhiteBlastSword.class,
+
+					DeathRongBoat.class
 			};
 
 			PaswordBadges.loadGlobal();
@@ -647,7 +651,10 @@ public class Generator {
 			WEP_T5.probs = new float[]{0, 3, 3, 3, 3, 3, 3, 4, SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName()) ? 1.5f : 0, 2, SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName()) ? 3f : 0, 0, SPDSettings.KillDwarf() ? 3f : 0, 4, passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD) ? 4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName()) ? 4f : 0,
 					SPDSettings.isItemUnlock(ClearSword.class.getSimpleName()) ? 5f : 0,
 					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 0f : 0,
-					Statistics.RandMode ? 5 : 0, 5};
+					Statistics.RandMode ? 5 : 0,
+					5,
+					Badges.isUnlocked(Badges.Badge.KILL_DOG) ? 5 : 0,
+			};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
@@ -694,9 +701,15 @@ public class Generator {
 					ThrowingSpear.class,
 					Kunai.class,
 					Bolas.class,
-					RedBlock.class
+					RedBlock.class,
+
+					CrossReback.class
 			};
-			MIS_T3.probs = new float[]{6, 5, 4, 3};
+
+			MIS_T3.probs = new float[]{6, 5, 4, 3
+			,
+					passwordbadges.contains(PaswordBadges.Badge.VAMGHOST_DEAD) ? 5 : 0
+			};
 
 			MIS_T4.classes = new Class<?>[]{
 					Javelin.class,

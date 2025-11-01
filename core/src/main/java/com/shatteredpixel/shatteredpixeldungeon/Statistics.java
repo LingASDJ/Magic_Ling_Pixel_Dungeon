@@ -292,6 +292,8 @@ public class Statistics {
 	//防卫战
 	public static int RepaierTowerCount;
 
+	public static int AbyssCityRules;
+
 	//Holiday Boolean
 	public static boolean Hollow_Holiday = false;
 
@@ -579,7 +581,9 @@ public class Statistics {
 		getAlLSearchScore = 0;
 		moveBoxScoreMax = 0;
 
-		RepaierTowerCount = 1;
+		RepaierTowerCount = 0;
+
+		AbyssCityRules = 0;
 
 		SmallLeafGet = false;
 		noClearKill = false;
@@ -1021,9 +1025,14 @@ public class Statistics {
 		bundle.put("MOVEBOXSCORE", getMoveBoxScore);
 		bundle.put("PROGRESSCORE", getAlLSearchScore);
 		bundle.put("GETPRIAEX",		RepaierTowerCount);
+
+		//自选
+		bundle.put("AbyssRules",AbyssCityRules);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+
+		AbyssCityRules = bundle.getInt("AbyssRules");
 
 		//小游戏局内计分
 		getPacManScore = bundle.getInt("PACMANSOCRE");

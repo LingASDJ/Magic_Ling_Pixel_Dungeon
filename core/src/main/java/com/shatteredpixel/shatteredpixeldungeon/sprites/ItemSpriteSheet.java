@@ -1283,6 +1283,10 @@ public class ItemSpriteSheet {
 
     public static final int LINGBAG  = PROJECTILES + 11;
 
+    public static final int SZJ_REBACK  = PROJECTILES + 13;
+    public static final int DEATHRONG_BOAT  = PROJECTILES + 14;
+
+
     static{
         assignItemRect(PROJECTILES_STAR,       9, 9);
         assignItemRect(SCROLL_GOLEM,       15, 14);
@@ -1290,6 +1294,9 @@ public class ItemSpriteSheet {
         assignItemRect(BONESOUP,         16, 14);
         assignItemRect(ZAKOSOUP,         16, 14);
         assignItemRect(RATTAIL,            15, 16);
+
+        assignItemRect(SZJ_REBACK,            15, 15);
+        assignItemRect(DEATHRONG_BOAT,            15, 15);
     }
 
     private static final int PROP1  = xy(9,46);

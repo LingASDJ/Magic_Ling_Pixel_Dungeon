@@ -75,9 +75,6 @@ public class ClearSword extends MeleeWeapon implements Item.LengedsItem {
                 }
             }
         }
-
-
-
         return super.proc(attacker, defender, damage);
     }
 
