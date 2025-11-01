@@ -367,7 +367,7 @@ public class BoatPlot extends Plot {
     public static class DiedBoat{}
     /** 选择A分支 GAME-OVER*/
     private void process_to_9A_11() {
-        GameScene.fadeToBlack(2f,50f);
+        GameScene.fadeToBlack(2f,6f);
         diagulewindow.changeText(Messages.get(DeathRong.class, "message9a_11"));
         //2s延迟后，恢复闲置状态
         GameScene.scene.add(new Delayer(3f){

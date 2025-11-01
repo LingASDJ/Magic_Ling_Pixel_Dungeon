@@ -1975,7 +1975,7 @@ public class GameScene extends PixelScene {
 						scene.showBanner(bossSlain);
 						break;
 					case 31:
-						if(Dungeon.hero.buff(SliceDeadBless.class) !=null ){
+						if(Dungeon.hero.buff(SliceDeadBless.class) !=null || Statistics.AbyssCityRules == 2 ){
 							bossSlain.texture(Assets.Interfaces.Morpheus_Title);
 							bossSlain.show(Window.DeepPK_COLOR, 0.3f, 5f);
 							scene.showBanner(bossSlain);

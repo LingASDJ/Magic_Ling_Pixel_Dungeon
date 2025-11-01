@@ -274,14 +274,14 @@ public class LevelRules {
                         return Statistics.Hollow_Holiday ? new HollowLevel() : new DeadEndLevel();
 
                     case 31:
-                        if(hero.buff(SliceDeadBless.class) !=null ){
+                        if(hero.buff(SliceDeadBless.class) !=null || Statistics.AbyssCityRules == 2){
                             return new TheatreLevel();
                         } else {
                             return new CerDogBossLevel();
                         }
 
                     case 32:
-                        if(hero.buff(SliceDeadBless.class) !=null ){
+                        if(hero.buff(SliceDeadBless.class) !=null  || Statistics.AbyssCityRules == 2){
                             return new TheatreLevel();
                         } else {
                             return new DeadEndLevel();

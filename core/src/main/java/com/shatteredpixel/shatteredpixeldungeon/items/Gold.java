@@ -62,7 +62,7 @@ public class Gold extends Item {
 	
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
-		if(hero.buff(ScoreBuff.class)!=null && Dungeon.hero != null && OnlyAllSearch) {
+		if(hero.buff(ScoreBuff.class)!=null && Dungeon.hero != null) {
 			GameScene.pickUp(this, pos);
 			Sample.INSTANCE.play(Assets.Sounds.ITEM);
 			hero.spendAndNext(TIME_TO_PICK_UP);

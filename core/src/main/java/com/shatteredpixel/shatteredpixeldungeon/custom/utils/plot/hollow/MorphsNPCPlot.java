@@ -14,7 +14,7 @@ import com.watabou.noosa.Image;
 public class MorphsNPCPlot extends Plot {
 
 
-    private final static int maxprocess = 7;
+    private final static int maxprocess = 6;
 
     {
         process = 1;
@@ -55,9 +55,6 @@ public class MorphsNPCPlot extends Plot {
                     break;
                 case 6:
                     process_to_6();
-                    break;
-                case 7:
-                    process_to_7();
                     break;
             }
             diagulewindow.update();
@@ -118,9 +115,6 @@ public class MorphsNPCPlot extends Plot {
         diagulewindow.setLeftName(" ");
         diagulewindow.changeText(Messages.get(MorphsNPC.class, "message6"));
         Dungeon.level.playLevelMusic();
-    }
-
-    private void process_to_7(){
         GameScene.show( new WndPacManReadyGo());
     }
 

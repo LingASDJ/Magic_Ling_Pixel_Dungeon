@@ -189,7 +189,7 @@ public abstract class ChampionEnemy extends Buff {
 				&& !m.properties.contains(Char.Property.NOBIG)
 				|| Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.SBSG)
 				&& depth>5 && Random.Float()<=0.45f ||
-				Statistics.bossRushMode && m.properties.contains(Char.Property.BOSS)) {
+				Statistics.bossRushMode && m.properties.contains(Char.Property.BOSS) || depth == 33 && Statistics.Hollow_Holiday) {
 			Buff.affect(m, buffCls);
 			m.state = m.WANDERING;
 		}
@@ -510,7 +510,7 @@ public abstract class ChampionEnemy extends Buff {
 			case 7:             buffCls = DelayMob.class;     break;
 		}
 
-		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) && depth>5 && Random.Float()<=0.45f || Statistics.bossRushMode && m.properties.contains(Char.Property.BOSS)) {
+		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) && depth>5 && Random.Float()<=0.45f || Statistics.bossRushMode && m.properties.contains(Char.Property.BOSS) || depth == 33 && Statistics.Hollow_Holiday) {
 			Buff.affect(m, buffCls);
 			m.state = m.WANDERING;
 		}

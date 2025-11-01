@@ -158,7 +158,7 @@ public class BeaconOfReturning extends Spell {
 			if (curUser.buff(MagicImmune.class) != null){
 				GLog.w( Messages.get(this, "no_magic") );
 			} else if (!Dungeon.interfloorTeleportAllowed()) {
-				GLog.n( Messages.get(this, "preventing_2") );
+				GLog.n( Messages.get(this, "preventing") );
 			} else {
 				onCast(hero);
 			}

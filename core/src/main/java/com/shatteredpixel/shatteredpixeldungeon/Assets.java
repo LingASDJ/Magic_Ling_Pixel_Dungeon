@@ -319,6 +319,8 @@ public class Assets {
 
 		public static final String LOADING_HOLLOW    = "interfaces/loading_halloween.png";
 
+		public static final String LOADING_THRATRE   = "interfaces/loading_theatre.png";
+
 		public static final String BUFFS_SMALL      = "interfaces/buffs.png";
 		public static final String BUFFS_LARGE      = "interfaces/large_buffs.png";
 

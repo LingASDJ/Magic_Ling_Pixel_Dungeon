@@ -8,10 +8,14 @@ import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.SliceDogPlot;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadDogSleepCerberusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 
@@ -61,7 +65,13 @@ public class CerbusSleep extends NPC {
         sprite.turnTo(pos, Dungeon.hero.pos);
 
         if (first && Dungeon.level.heroFOV[pos] && Dungeon.level.distance(pos, hero.pos) <= 3) {
-            GLog.w(Messages.get(this,"sleep"));
+            SliceDogPlot plot = new SliceDogPlot();
+            Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot,false)));
+
+            SliceGirl sliceGirl = new SliceGirl();
+            sliceGirl.pos = pos - 2;
+            GameScene.add(sliceGirl);
+
             first = false;
         } else if(touchdog < 4){
             touchdog++;

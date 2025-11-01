@@ -105,7 +105,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CrossReback;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -206,8 +205,6 @@ public enum HeroClass {
 
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
-
-		new CrossReback().quantity(1).identify().collect();
 
 		new HerbBag().quantity(1).identify().collect();
 		new KingBag().quantity(1).identify().collect();

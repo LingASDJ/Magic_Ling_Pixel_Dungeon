@@ -30,6 +30,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.ready;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -261,7 +262,7 @@ public abstract class Level implements Bundlable {
 	public boolean[] mapped;
 	public boolean[] discoverable;
 
-	public int viewDistance = Dungeon.isChallenged( Challenges.DARKNESS ) ? 2 : 8;
+	public int viewDistance = Dungeon.isChallenged( Challenges.DARKNESS ) && depth != 31 && Statistics.Hollow_Holiday ? 2 : 8;
 	
 	public boolean[] heroFOV;
 	
@@ -704,7 +705,10 @@ public abstract class Level implements Bundlable {
 				Buff.affect(m, ChampionEnemy.AloneCity.class);
 			}
 
-			SoulCrackEliteSpawner.handleSoulEliteSpawn(Dungeon.hero, m, Dungeon.depth);
+			if(!(Badges.isUnlocked(Badges.Badge.KILL_MORES))){
+				SoulCrackEliteSpawner.handleSoulEliteSpawn(Dungeon.hero, m, Dungeon.depth);
+			}
+
 		}
 		return m;
 	}

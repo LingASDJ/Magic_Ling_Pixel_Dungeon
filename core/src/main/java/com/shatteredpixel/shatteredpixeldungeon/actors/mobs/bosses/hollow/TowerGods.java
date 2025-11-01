@@ -410,5 +410,18 @@ public class TowerGods extends Boss {
 
     }
 
+    @Override
+    public boolean reset() {
+        return true;
+    }
 
+    @Override
+    protected boolean getCloser(int target) {
+        return false;
+    }
+
+    @Override
+    protected boolean getFurther(int target) {
+        return false;
+    }
 }

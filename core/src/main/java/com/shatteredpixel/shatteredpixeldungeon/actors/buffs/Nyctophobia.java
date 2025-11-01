@@ -9,6 +9,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.cure;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.ClearLanterBuff;
@@ -114,7 +115,10 @@ public class Nyctophobia extends Buff implements Hero.Doom {
         }
         spend(1f);
 
-        if(hero.lanterfire >= (Dungeon.isChallenged(DHXD) ? 60 : 90)){
+        if(Dungeon.depth == 31 && Statistics.Hollow_Holiday){
+            cure( Dungeon.hero );
+            spend(100f);
+        } else if(hero.lanterfire >= (Dungeon.isChallenged(DHXD) ? 60 : 90)){
             for (Buff b : hero.buffs(ClearLanterBuff.class)){
                if(b == null){
                    goodLanterFire();

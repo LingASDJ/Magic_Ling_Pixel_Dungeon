@@ -5,17 +5,25 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSoulSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Image;
 import com.watabou.utils.Random;
 
 public class YogSoul extends Boss {
 
     {
         initProperty();
-        initBaseStatus(0, 0, 40, 0, 700, 5, 12);
+        initBaseStatus(0, 0, 40, 0, 1500, 10, 25);
         initStatus(20);
         spriteClass = YogSoulSprite.class;
 
@@ -31,7 +39,7 @@ public class YogSoul extends Boss {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 15, 50 );
+        return Random.NormalIntRange( 10, 25 );
     }
     @Override
     public int attackSkill( Char target ) {
@@ -66,8 +74,117 @@ public class YogSoul extends Boss {
     @Override
     public int attackProc(Char enemy, int damage) {
         damage = super.attackProc(enemy, 0);
-        enemy.damage( damageRoll(), this );
+        enemy.damage( damageRoll(), new DM100.LightningBolt() );
         return damage;
+    }
+
+    @Override
+    protected boolean act() {
+        alerted = false;
+        state = PASSIVE;
+
+
+        if(Dungeon.level.distance(pos, hero.pos) >= 1){
+
+            if (buff(FriendBuffGet.class) == null) {
+                Buff.affect(this, FriendBuffGet.class, 5f);
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                    if (mob instanceof ShubNiggurath) {
+                        mob.HT += 200;
+                        mob.HP += (int) (HT * 0.05f);
+                    }
+                    if (mob instanceof Nyarlathotep) {
+                        mob.HT += 100;
+                        mob.HP += (int) (HT * 0.05f);
+                    }
+                }
+            }
+
+            if (buff(DeadHeartMagic.class) == null) {
+                Buff.affect(this, DeadHeartMagic.class, 10f);
+                Buff.affect(this, AttackDamageMagic.class, 5f);
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                    if(mob.buff(AttackDamageMagic.class)== null){
+                        if (mob instanceof ShubNiggurath || mob instanceof Nyarlathotep) {
+                            Buff.affect(mob, AttackDamageMagic.class, 5f);
+                        }
+                    }
+                }
+            }
+
+            if(buff(AttackDamageMagic.class)!=null && Dungeon.level.distance(pos, hero.pos) <= 7){
+                if (enemy != null && enemy == hero && enemySeen) {
+                    boolean isNyzAlive = false;
+                    for (Mob mob : Dungeon.level.mobs) {
+                        if (mob instanceof Nyarlathotep) {
+                            isNyzAlive = true;
+                            break;
+                        }
+                    }
+                    boolean hasScaryBuff = false;
+                    for (Buff buff : enemy.buffs()) {
+                        if (buff instanceof ScaryDamageBuff) {
+                            if (isNyzAlive) {
+                                int heartDamage = (int) (8 * Random.Float(0.5f, 1));
+                                enemy.damage(heartDamage, new DM100.LightningBolt());
+                                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                                    mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
+                                }
+                            }
+                        } else if (buff instanceof ScaryBuff) {
+                            hasScaryBuff = true;
+                            if (isNyzAlive) {
+                                int heartDamage = (int) (8 * Random.Float(0.5f, 1));
+                                enemy.damage(heartDamage, new DM100.LightningBolt());
+                                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                                    mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
+                                }
+                            }
+                            ((ScaryBuff) buff).damgeScary(4 * (isNyzAlive ? 2 : 1));
+                        }
+                    }
+
+                    if (!hasScaryBuff) {
+                        Buff.affect(enemy, ScaryBuff.class).set(100, 5);
+                    }
+                }
+            }
+        }
+
+
+        return super.act();
+    }
+
+    public static class FriendBuffGet extends FlavourBuff {
+        {
+            type = buffType.POSITIVE;
+        }
+    }
+
+    public static class DeadHeartMagic extends FlavourBuff {
+        {
+            type = buffType.POSITIVE;
+        }
+    }
+
+    public static class AttackDamageMagic extends FlavourBuff {
+
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(Window.GDX_COLOR);
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.LANTERFIRE_FIVE;
+        }
+
+        @Override
+        public void fx(boolean on) {
+            if (on) target.sprite.aura(Window.ANSDO_COLOR);
+            else target.sprite.clearAura();
+        }
     }
 
     @Override

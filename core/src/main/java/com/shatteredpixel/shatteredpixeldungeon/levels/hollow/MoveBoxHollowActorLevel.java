@@ -499,8 +499,6 @@ public class MoveBoxHollowActorLevel extends Level {
 
     public static class Box extends NTNPC {
 
-        private static final String[] QUOTES = {Messages.get(Box.class, "one"), Messages.get(Box.class, "two"), Messages.get(Box.class, "three"), Messages.get(Box.class, "four")};
-
         {
             spriteClass = BoxSprite.class;
             properties.add(Property.IMMOVABLE);

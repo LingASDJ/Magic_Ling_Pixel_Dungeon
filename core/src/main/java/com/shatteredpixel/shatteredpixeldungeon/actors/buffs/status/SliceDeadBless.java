@@ -110,22 +110,20 @@ public class SliceDeadBless extends Buff {
 
     public String desc() {
         String string = super.desc();
-        if(Dungeon.branch == 0){
-            if(Dungeon.depth>27){
-                string = Messages.get(this, "desc_plus1",(10 + Dungeon.hero.lvl / 5 + Dungeon.depth / 5) );
-                if(cooldown>0){
-                    string += "\n\n" + Messages.get(this, "desc_cooldown", cooldown);
-                }
+        if(Dungeon.depth>27){
+            string = Messages.get(this, "desc_plus1",(10 + Dungeon.hero.lvl / 5 + Dungeon.depth / 5) );
+            if(cooldown>0){
+                string += "\n\n" + Messages.get(this, "desc_cooldown", cooldown);
             }
-            if(Dungeon.depth>28){
-                string += "\n\n" + Messages.get(this, "desc_plus2" );
-            }
-            if(Dungeon.depth>29){
-                string += "\n\n" + Messages.get(this, "desc_plus3" );
-            }
-            if(Dungeon.depth>30){
-                string += "\n\n" + Messages.get(this, "desc_plus4" );
-            }
+        }
+        if(Dungeon.depth>28){
+            string += "\n\n" + Messages.get(this, "desc_plus2" );
+        }
+        if(Dungeon.depth>29){
+            string += "\n\n" + Messages.get(this, "desc_plus3" );
+        }
+        if(Dungeon.depth>30){
+            string += "\n\n" + Messages.get(this, "desc_plus4" );
         }
 
         string += "\n\n" + Messages.get(this, "bless",Dungeon.depth-27);

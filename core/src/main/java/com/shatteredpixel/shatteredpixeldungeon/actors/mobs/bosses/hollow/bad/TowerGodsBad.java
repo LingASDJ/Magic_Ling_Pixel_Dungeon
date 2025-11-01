@@ -8,7 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.MyCoreHeart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -69,16 +68,6 @@ public class TowerGodsBad extends Mob {
     protected boolean act() {
         alerted = false;
         state = PASSIVE;
-        if(repiaer && buff(MyCoreHeart.RepaierDown.class)==null && slowCoolDown <= 0){
-            ((TowerBadGodSprite) sprite).ReActivate();
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if(mob instanceof MyCoreHeart ){
-                    Buff.affect(mob, Healing.class).setHeal(5, 0f, 6);
-                }
-            }
-            slowCoolDown = 30;
-        }
-
         if(buff(MyCoreHeart.RepaierDown.class)==null && repiaer && Dungeon.hero.buff(ArtifactRecharge.class) == null && blobCoolDown <= 0){
             Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(10f);
             blobCoolDown = 40;
