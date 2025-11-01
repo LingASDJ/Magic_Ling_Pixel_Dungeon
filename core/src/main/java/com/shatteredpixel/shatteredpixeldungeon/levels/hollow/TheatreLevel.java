@@ -7,6 +7,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNPC;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -19,6 +20,11 @@ public class TheatreLevel extends Level {
         color1 = 0x801500;
         color2 = 0xa68521;
         viewDistance = 16;
+    }
+
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        return false;
     }
 
     @Override
