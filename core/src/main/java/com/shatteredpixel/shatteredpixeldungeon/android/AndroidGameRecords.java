@@ -55,6 +55,10 @@ public class AndroidGameRecords {
         params.putString("是否返程", String.valueOf(Statistics.ascended));
         params.putString("地图种子", DungeonSeed.convertToCode(Dungeon.seed));
         params.putString("游戏版本", String.valueOf(Game.version));
+
+        params.putString("吃豆人积分", String.valueOf(Statistics.getPacManScore));
+        params.putString("全面搜查积分", String.valueOf(Statistics.getAlLSearchScore));
+
         mFirebaseAnalyticsRecords.logEvent("作战报告", params);
     }
 
@@ -97,5 +101,12 @@ public class AndroidGameRecords {
         params.putString("地图种子", DungeonSeed.convertToCode(Dungeon.seed));
         params.putString("游戏版本", String.valueOf(Game.version));
         mFirebaseAnalyticsRecords.logEvent("中秋节真结局达成次数", params);
+    }
+
+    public static void AbyssRecord() {
+        Bundle params = new Bundle();
+        params.putString("地图种子", DungeonSeed.convertToCode(Dungeon.seed));
+        params.putString("游戏版本", String.valueOf(Game.version));
+        mFirebaseAnalyticsRecords.logEvent("渊落古堡真结局达成次数", params);
     }
 }
