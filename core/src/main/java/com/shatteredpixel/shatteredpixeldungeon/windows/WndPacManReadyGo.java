@@ -170,6 +170,7 @@ public class WndPacManReadyGo extends Window {
                 Game.switchScene( InterlevelScene.class );
                 Buff.affect( hero, LostInventory.class);
                 Buff.affect( hero, ScoreMiniGame.class).set((100), 1);
+                GameScene.cure( Dungeon.hero );
             }
         };
         btnContinue.setRect( 0, btnItem1.bottom() + BTN_GAP, WIDTH, BTN_HEIGHT );

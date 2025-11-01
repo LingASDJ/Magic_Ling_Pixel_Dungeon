@@ -772,7 +772,6 @@ public class CursedWand {
 			//scroll of teleportation if positive only, or inter-floor teleport disallowed
 			} else {
 				ScrollOfTeleportation.teleportChar(user);
-
 			}
 			return true;
 		}
@@ -1004,7 +1003,7 @@ public class CursedWand {
 		VERY_RARE_EFFECTS.add(new SpawnGoldenMimic());
 		VERY_RARE_EFFECTS.add(new AbortRetryFail());
 		VERY_RARE_EFFECTS.add(new RandomTransmogrify());
-		VERY_RARE_EFFECTS.add(new HeroShapeShift());
+//		VERY_RARE_EFFECTS.add(new HeroShapeShift());
 		VERY_RARE_EFFECTS.add(new SuperNova());
 		VERY_RARE_EFFECTS.add(new SinkHole());
 	}

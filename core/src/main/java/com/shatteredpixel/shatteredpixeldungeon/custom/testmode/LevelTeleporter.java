@@ -308,8 +308,6 @@ public class LevelTeleporter extends TestItem {
 
             Statistics.RepaierTowerCount = 0;
 
-            Statistics.AbyssCityRules = 0;
-
             Game.switchScene(InterlevelScene.class);
         }
     }

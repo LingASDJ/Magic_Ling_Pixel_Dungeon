@@ -412,8 +412,8 @@ public class AllSearchHollowActorLevel extends RegularLevel {
 
         public void detach() {
            super.detach();
-           Statistics.AllSearchFailedEsc = true;
             if(hero.buff(ScoreBuff.class)!=null && !Statistics.AllSearchSuccessEsc) {
+                Statistics.AllSearchFailedEsc = true;
                 ScoreBuff buffs = hero.buff(ScoreBuff.class);
                 SPDSettings.AllSearchScore(buffs.score/2);
                 Statistics.getAlLSearchScore = buffs.score/2;

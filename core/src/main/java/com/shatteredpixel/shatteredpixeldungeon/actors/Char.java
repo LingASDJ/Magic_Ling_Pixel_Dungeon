@@ -1012,7 +1012,9 @@ public abstract class Char extends Actor {
 
 			if(src == DamageType.PHYSICAL){
 				icon = FloatingText.PHYS_DMG;
-			}
+			} else if(src == DamageType.MAGIC){
+				icon = FloatingText.MAGIC_DMG;
+            }
 
 			if (NO_ARMOR_PHYSICAL_SOURCES.contains(src.getClass()))     icon = FloatingText.PHYS_DMG_NO_BLOCK;
 			if (AntiMagic.RESISTS.contains(src.getClass()))             icon = FloatingText.MAGIC_DMG;

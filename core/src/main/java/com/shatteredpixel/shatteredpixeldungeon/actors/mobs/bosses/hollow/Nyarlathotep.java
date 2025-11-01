@@ -5,6 +5,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -53,7 +56,7 @@ public class Nyarlathotep extends Boss {
 
     {
         initProperty();
-        initBaseStatus(0, 0, 33, 0, 700, 0, 0);
+        initBaseStatus(0, 0, 33, 0, 2000, 0, 0);
         initStatus(20);
         spriteClass = NyarlathotepSprite.class;
 
@@ -85,12 +88,87 @@ public class Nyarlathotep extends Boss {
     }
 
     @Override
+    protected boolean act() {
+        if(buff(YogSoul.AttackDamageMagic.class)!=null && Dungeon.level.distance(pos, hero.pos) <= 7){
+            if (enemy != null && enemy == hero && enemySeen) {
+                boolean isNyzAlive = false;
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                    if (mob instanceof Nyarlathotep) {
+                        isNyzAlive = true;
+                        break;
+                    }
+                }
+                boolean hasScaryBuff = false;
+                for (Buff buff : enemy.buffs()) {
+                    if (buff instanceof ScaryDamageBuff) {
+                        if (isNyzAlive) {
+                            int heartDamage = (int) (8 * Random.Float(0.5f, 1));
+                            enemy.damage(heartDamage, new DM100.LightningBolt());
+                            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                                mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
+                            }
+                        }
+                    } else if (buff instanceof ScaryBuff) {
+                        hasScaryBuff = true;
+                        if (isNyzAlive) {
+                            int heartDamage = (int) (8 * Random.Float(0.5f, 1));
+                            enemy.damage(heartDamage, new DM100.LightningBolt());
+                            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                                mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
+                            }
+                        }
+                        ((ScaryBuff) buff).damgeScary(4 * (isNyzAlive ? 2 : 1));
+                    }
+                }
+
+                if (!hasScaryBuff) {
+                    Buff.affect(enemy, ScaryBuff.class).set(100, 5);
+                }
+            }
+        }
+
+        return super.act();
+    }
+
+    @Override
     public int attackProc(Char enemy, int damage) {
         damage = super.attackProc(enemy, 0);
 
-        enemy.damage( damageRoll(), new DM100.LightningBolt() );
+        boolean isNyzAlive = false;
+        for (Mob mob : Dungeon.level.mobs) {
+            if (mob instanceof Nyarlathotep) {
+                isNyzAlive = true;
+                break;
+            }
+        }
+        boolean hasScaryBuff = false;
+        for (Buff buff : enemy.buffs()) {
+            if (buff instanceof ScaryDamageBuff) {
+                if (isNyzAlive) {
+                    int heartDamage = (int) (Random.Int(14,28) * Random.Float(0.5f, 1));
+                    enemy.damage(heartDamage, new DM100.LightningBolt());
+                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                        mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
+                    }
+                }
+            } else if (buff instanceof ScaryBuff) {
+                hasScaryBuff = true;
+                if (isNyzAlive) {
+                    int heartDamage = (int) (Random.Int(7,14) * Random.Float(0.5f, 1));
+                    enemy.damage(heartDamage, new DM100.LightningBolt());
+                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                        mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
+                    }
+                }
+                ((ScaryBuff) buff).damgeScary(4 * (isNyzAlive ? 2 : 1));
+            }
+        }
 
-        if(Random.Int(100)<25){
+        if (!hasScaryBuff) {
+            Buff.affect(enemy, ScaryBuff.class).set(100, 5);
+        }
+
+        if(Random.Int(100)>=50 ){
             int pos = Dungeon.level.randomDestination(this);
             createRandomTrap(pos);
         }

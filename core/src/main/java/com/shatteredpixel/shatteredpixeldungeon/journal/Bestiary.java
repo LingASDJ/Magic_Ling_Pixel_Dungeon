@@ -146,6 +146,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.Riva
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.SkyGoo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.BleedCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Morphs;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.MyCoreHeart;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Nyarlathotep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.ShubNiggurath;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerGods;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerMachine;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerMind;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerTime;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.YogSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruitsLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.DiedClearElemet;
@@ -473,7 +482,14 @@ public enum Bestiary {
 
 		ANCIENT_CITY_BOSS.addEntities(
 				//Boss T1
-				DeadDogCerberus.class, BleedCrystal.class);
+				DeadDogCerberus.class, BleedCrystal.class,
+				//Boss T2
+				Morphs.class,
+				Nyarlathotep.class, ShubNiggurath.class, YogSoul.class,
+				TowerGods.class, TowerMind.class, TowerMachine.class, TowerTime.class,
+				MyCoreHeart.class
+				);
+
 
 
 		UNIVERSAL.addEntities(Wraith.class, Piranha.class, Mimic.class, GoldenMimic.class, EbonyMimic.class,  GreenDiamndMimic.class,Statue.class, GuardianTrap.Guardian.class, SentryRoom.Sentry.class);

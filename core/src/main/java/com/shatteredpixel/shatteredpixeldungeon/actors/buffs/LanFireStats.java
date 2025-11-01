@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -31,7 +32,7 @@ public class LanFireStats extends Buff implements Hero.Doom {
         if (Dungeon.depth <= 5) {
             spend(STEP);
             return true;
-        } else if (Dungeon.level.locked || this.target.buff(LighS.class) != null) {
+        } else if (Dungeon.level.locked || this.target.buff(LighS.class) != null || Dungeon.depth == 31 && Statistics.Hollow_Holiday) {
             spend(STEP);
             return true;
         } else {

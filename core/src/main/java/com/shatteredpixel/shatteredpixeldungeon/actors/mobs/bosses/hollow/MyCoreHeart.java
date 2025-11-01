@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
@@ -24,7 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.To
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMindBad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerTimeBad;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.GalaxyHeartDeadEndPlot;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -32,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MyCoreHeartSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -49,7 +48,7 @@ public class MyCoreHeart extends Boss {
 
     {
         initProperty();
-        initBaseStatus(0, 0, 0, 0, 42, 0, 0);
+        initBaseStatus(0, 0, 0, 0, 30, 0, 0);
         initStatus(0);
 
         spriteClass = MyCoreHeartSprite.class;
@@ -120,12 +119,6 @@ public class MyCoreHeart extends Boss {
                     }
                 }
             }
-            if(!hasEnemy && brokenCount<3){
-                getHP = true;
-                HP += Math.min(HT - HP, 2);
-                sprite.emitter().burst(Speck.factory(Speck.HEALING), 2);
-                yell(Messages.get(this, "gethp"));
-            }
         }
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
@@ -166,7 +159,7 @@ public class MyCoreHeart extends Boss {
         }
 
         TryGetSummonedMobs();
-        GLog.w(String.valueOf(Statistics.RepaierTowerCount));
+
         return super.act();
     }
 
@@ -182,6 +175,8 @@ public class MyCoreHeart extends Boss {
                         for (int i = 0; i < 5; i++) {
                             Mob testActor = getSummonTimeMobs();
                             testActor.pos = safePos[Random.Int(safePos.length)];
+                            ChampionEnemy.rollForChampion(testActor);
+                            ChampionEnemy.rollForStateLing(testActor);
                             testActor.isOldDay = true;
                             testActor.state = testActor.HUNTING;
                             GameScene.add(testActor);

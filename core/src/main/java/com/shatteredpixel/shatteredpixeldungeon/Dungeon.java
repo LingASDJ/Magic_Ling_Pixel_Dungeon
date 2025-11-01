@@ -74,6 +74,11 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.AllSearchHollowActorLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MoveBoxHollowActorLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.PacmanHollowActorLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.TheatreLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -563,13 +568,15 @@ public class Dungeon {
 	}
 
 	public static boolean interfloorTeleportAllowed(){
-		if (Dungeon.level.locked
-				|| Dungeon.level instanceof MiningLevel
-				|| (Dungeon.hero != null && Dungeon.hero.belongings.getItem(Amulet.class) != null)|| Dungeon.level instanceof ShopBossLevel || Dungeon.level instanceof LinkLevel){
-			return false;
-		}
-		return true;
-	}
+        return !Dungeon.level.locked
+                && !(Dungeon.level instanceof MiningLevel)
+                && !(Dungeon.level instanceof TheatreLevel)
+                && !(Dungeon.level instanceof MorpheusBossLevel)
+                && !(Dungeon.level instanceof PacmanHollowActorLevel)
+                && !(Dungeon.level instanceof MoveBoxHollowActorLevel)
+                && !(Dungeon.level instanceof AllSearchHollowActorLevel)
+                && (Dungeon.hero == null || Dungeon.hero.belongings.getItem(Amulet.class) == null) && !(Dungeon.level instanceof ShopBossLevel) && !(Dungeon.level instanceof LinkLevel);
+    }
 
 	public static void switchLevel( final Level level, int pos ) {
 

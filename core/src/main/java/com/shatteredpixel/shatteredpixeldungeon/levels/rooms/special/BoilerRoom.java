@@ -117,7 +117,7 @@ public class BoilerRoom extends SpecialRoom {
         int RPos = left + right - xpos.x + xpos.y * level.width();
 
         //击败狗子送碎片
-        if(Badges.isUnlocked(Badges.Badge.KILL_DOG)){
+        if(Badges.isUnlocked(Badges.Badge.KILL_DOG) && !(Badges.isUnlocked(Badges.Badge.KILL_MORES))){
             Point Redpos = new Point(centerX+3, centerY);
             int RedXPos = left + right - Redpos.x + Redpos.y * level.width();
             level.drop(new SoulCrack.RedSoulCrack(), RedXPos);
@@ -241,6 +241,8 @@ public class BoilerRoom extends SpecialRoom {
                                         Statistics.AbyssCityRules = 1;
                                     }
                                     Statistics.Hollow_Holiday = true;
+                                    GameScene.flash(Window.CBLACK, true);
+                                    ((CandleActivePointSprite)sprite).activateidle();
                                     yell(Messages.get(BoilerRoom.class, "yell"));
                                 }
                             });

@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -94,7 +95,7 @@ public class WandOfTransfusion extends DamageWand {
 
 				int healing = selfDmg + 3*buffedLvl();
 				int shielding = (ch.HP + healing) - ch.HT;
-				if (shielding > 0 && Dungeon.depth != 5){
+				if (shielding > 0 && (Dungeon.depth != 5 && (Dungeon.depth != 33&& Statistics.Hollow_Holiday))){
 					healing -= shielding;
 					Buff.affect(ch, Barrier.class).setShield(shielding);
 				} else {
@@ -123,12 +124,12 @@ public class WandOfTransfusion extends DamageWand {
 				//for enemies...
 				//(or for mimics which are hiding, special case)
 			} else if (ch.alignment == Char.Alignment.ENEMY || ch instanceof Mimic) {
-				if(ch.properties().contains(Char.Property.BOSS) && Dungeon.depth == 5) {
+				if(ch.properties().contains(Char.Property.BOSS) && (Dungeon.depth == 5 || Dungeon.depth == 33)){
 					ch.HP += 0;
 					ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2 + buffedLvl() / 2);
 					ch.sprite.showStatus(CharSprite.WARNING, "+0SP");
 					GLog.n(Messages.get(this, "error"));
-				} else if(Dungeon.depth != 5){
+				} else if(Dungeon.depth != 5 && (Dungeon.depth != 33 && Statistics.Hollow_Holiday)){
 					//grant a self-shield, and...
 					Buff.affect(curUser, Barrier.class).setShield((5 + (int)(1.5f*buffedLvl())));
 					curUser.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(5+buffedLvl()), FloatingText.SHIELDING);

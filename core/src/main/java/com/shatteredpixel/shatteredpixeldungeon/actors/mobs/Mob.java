@@ -113,6 +113,7 @@ import com.watabou.utils.Reflection;
 
 import net.iharder.Base64;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -488,9 +489,28 @@ public abstract class Mob extends Char {
 		return state.act( enemyInFOV, justAlerted );
 	}
 
+	boolean hasGetCloserOverride = false;
+	boolean hasGetonZapComplete = false;
     protected Char chooseEnemy() {
 
-		if(isOldDay){
+		Class<?> clazz = getClass();
+		Method[] methods2 = clazz.getDeclaredMethods();
+		for (Method method : methods2) {
+			if (method.getName().equals("getCloser")) {
+				hasGetCloserOverride = true;
+				break;
+			}
+		}
+
+		Method[] methods3 = clazz.getDeclaredMethods();
+		for (Method method : methods3) {
+			if (method.getName().equals("onZapComplete")) {
+				hasGetonZapComplete = true;
+				break;
+			}
+		}
+
+		if(isOldDay && !hasGetCloserOverride && !hasGetonZapComplete){
 			for (Mob mob : Dungeon.level.mobs) {
 				if (!(mob == this)
 						&& mob.alignment != Alignment.NEUTRAL

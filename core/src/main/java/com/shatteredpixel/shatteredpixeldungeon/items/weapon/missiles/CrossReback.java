@@ -45,7 +45,12 @@ public class CrossReback extends MissileWeapon {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", 10+5*level(),4 + Dungeon.hero.lvl/5);
+        if(Dungeon.hero != null){
+            return Messages.get(this, "desc", 10+5*level(),4 + Dungeon.hero.lvl/5);
+        } else {
+            return Messages.get(this, "desc", 10+5*level(),4);
+        }
+
     }
 
 

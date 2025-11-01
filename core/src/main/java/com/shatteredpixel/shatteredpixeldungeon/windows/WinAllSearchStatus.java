@@ -9,10 +9,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ActivePoint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.AllSearchIQuest;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.AllSearchHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -114,6 +116,8 @@ public class WinAllSearchStatus extends Window {
                 Game.switchScene( InterlevelScene.class );
                 Buff.detach( hero, LostInventory.class);
                 Buff.detach( hero, ScoreBuff.class);
+                Buff.detach(hero, ActivePoint.class);
+                Buff.detach(hero, AllSearchHollowActorLevel.RecordTimeDead.class);
             }
         };
         searchButton.icon(new Image(Icons.get(Icons.CATALOG)));

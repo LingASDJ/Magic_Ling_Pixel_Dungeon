@@ -135,6 +135,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.El
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
@@ -144,6 +145,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.Sothot
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SothothEyeDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SothothLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Nyarlathotep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
@@ -411,7 +413,7 @@ public class Hero extends Char {
 			strBonus += 2;
 		}
 
-		if(hero.buff(SliceDeadBless.class)!=null && branch == 0 && Dungeon.depth>29){
+		if(hero.buff(SliceDeadBless.class)!=null && Dungeon.depth>29){
 			strBonus += 3;
 		}
 
@@ -1032,7 +1034,7 @@ public class Hero extends Char {
 			speed *= 1.2f;
 		}
 
-		if(hero.buff(SliceDeadBless.class)!=null && branch == 0 && Dungeon.depth>28){
+		if(hero.buff(SliceDeadBless.class)!=null && Dungeon.depth>28){
 			speed *= 1.26f;
 		}
 
@@ -1179,6 +1181,51 @@ public class Hero extends Char {
 		//水中祝福 但在BR不生效
 		if((branch == 0 || branch == 10) && !bossRushMode){
 			MoveWater();
+		}
+
+		boolean isNyzAlive = false;
+		if(Dungeon.level.map[pos] == Terrain.TRAP){
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+				if (mob instanceof Nyarlathotep) {
+					isNyzAlive = true;
+				}
+			}
+			if(isNyzAlive){
+				for (Buff buff : buffs()) {
+					if(buff instanceof ScaryDamageBuff && isNyzAlive){
+						int heartDamage = (int) (20 * Random.Float(0.5f, 1));
+						enemy.damage(heartDamage, new DM100.LightningBolt());
+						for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+							mob.HP += Math.max(HT,heartDamage);
+						}
+					} else if (buff instanceof ScaryBuff) {
+						if(((ScaryBuff) buff).Scary > 100){
+							damage(20,this,DamageType.MAGIC);
+						} else {
+							int heartDamage = (int) (20 * Random.Float(0.5f, 1));
+							enemy.damage(heartDamage, new DM100.LightningBolt());
+							for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+								mob.HP += Math.max(HT,heartDamage);
+							}
+							((ScaryBuff) buff).damgeScary(20);
+						}
+					} else {
+						Buff.affect(this, ScaryBuff.class).set((100), 5);
+					}
+				}
+			} else {
+				for (Buff buff : buffs()) {
+					if (buff instanceof ScaryBuff) {
+						if(((ScaryBuff) buff).Scary > 100){
+							damage(10,this,DamageType.MAGIC);
+						} else {
+							((ScaryBuff) buff).damgeScary(10);
+						}
+					} else {
+						Buff.affect(this, ScaryBuff.class).set((100), 5);
+					}
+				}
+			}
 		}
 
 		if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.depth>0 && !Dungeon.bossLevel()){
