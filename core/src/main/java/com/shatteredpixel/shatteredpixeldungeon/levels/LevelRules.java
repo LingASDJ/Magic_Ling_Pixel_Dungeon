@@ -270,7 +270,7 @@ public class LevelRules {
                     case 26:
                         return !Statistics.Hollow_Holiday ? new LastLevel() : new HollowExitLevel();
 
-                    case 27: case 28: case 29:    case 30:
+                    case 27: case 28: case 29:   case 30:
                         return Statistics.Hollow_Holiday ? new HollowLevel() : new DeadEndLevel();
 
                     case 31:

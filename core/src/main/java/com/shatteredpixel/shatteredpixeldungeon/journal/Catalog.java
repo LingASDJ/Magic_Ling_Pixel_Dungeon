@@ -311,9 +311,17 @@ public enum Catalog {
 				PacManQuest.SmallPoint.class,
 				PacManQuest.BigPoint.class,
 
-				AllSearchIQuest.HollowLantern.class,
-				AllSearchIQuest.HollowCityProps.class,
-				AllSearchIQuest.HollowGoldCards.class,
+				PacManQuest.Gumdrop.class,
+				PacManQuest.Lollipop.class,
+				PacManQuest.Chocolate.class,
+				PacManQuest.SugarBomb.class,
+				PacManQuest.Toffee.class,
+
+				AllSearchIQuest.THEATER_CARDS.class,
+				AllSearchIQuest.HOLLOW_SUGARS.class,
+				AllSearchIQuest.GREEN_PRISM.class,
+				AllSearchIQuest.GNOLL_WOOD.class,
+				AllSearchIQuest.FOUR_KIDS.class,
 
 				AllSearchIQuest.CrystalHeartChoco.class,
 				AllSearchIQuest.CreateWorldHeartModel.class,
@@ -321,11 +329,9 @@ public enum Catalog {
 				AllSearchIQuest.GreenDamModel.class,
 				AllSearchIQuest.GreenStingModel.class,
 
-				AllSearchIQuest.THEATER_CARDS.class,
-				AllSearchIQuest.HOLLOW_SUGARS.class,
-				AllSearchIQuest.GREEN_PRISM.class,
-				AllSearchIQuest.GNOLL_WOOD.class,
-				AllSearchIQuest.FOUR_KIDS.class
+				AllSearchIQuest.HollowLantern.class,
+				AllSearchIQuest.HollowGoldCards.class,
+				AllSearchIQuest.HollowCityProps.class
 		);
 
 	}

@@ -45,7 +45,6 @@ public class ShubNiggurath extends Boss {
         properties.add(Property.ACIDIC);
 
         noDropIceCoin = true;
-        maxLvl = -1;
     }
     int generation	= 0;
 
@@ -98,7 +97,6 @@ public class ShubNiggurath extends Boss {
                         return true;
                     }
                 }
-
             }
         } else {
             return super.isAlive();
@@ -236,6 +234,7 @@ public class ShubNiggurath extends Boss {
                 if (mob instanceof ShubNiggurath) {
                     clone.HT = mob.HP;
                     clone.HP = mob.HP;
+                    clone.notFirst = true;
                 }
             }
             summonIndex++;

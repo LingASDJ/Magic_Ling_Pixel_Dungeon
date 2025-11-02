@@ -28,6 +28,7 @@ public class TowerTimeBad extends Mob {
     {
         HP = HT = 1;
         spriteClass = TowerTimeBadSprite.class;
+        properties.add(Property.BOSS);
     }
 
 
