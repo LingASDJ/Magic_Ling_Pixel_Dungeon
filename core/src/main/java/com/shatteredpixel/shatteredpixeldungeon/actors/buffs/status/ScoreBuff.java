@@ -240,7 +240,7 @@ public class ScoreBuff extends Buff {
                 string = Messages.get(this, "desc", score, SmallPoint, BiggerPoint);
                 break;
             case 2:
-                string = Messages.get(this, "desc2", score, turns, maxTurns, maxTurns-turns);
+                string = Messages.get(this, "desc2", score, turns, maxTurns, Math.max(0, maxTurns - turns));
                 break;
             case 3:
                 string = Messages.get(this, "desc3", score, PacManLevel);

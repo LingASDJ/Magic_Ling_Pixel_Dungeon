@@ -34,7 +34,7 @@ public class YogSoul extends Boss {
         properties.add(Property.ELECTRIC);
 
         state = WANDERING = new Waiting();
-        maxLvl = -1;
+
         noDropIceCoin = true;
     }
 

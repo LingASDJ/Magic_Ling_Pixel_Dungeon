@@ -2117,6 +2117,17 @@ public class GameScene extends PixelScene {
 							scene.showBanner(bossSlain);
 						}
 						break;
+					case 31:
+						if(Dungeon.hero.buff(SliceDeadBless.class) !=null || Statistics.AbyssCityRules == 2 ){
+							bossSlain.texture(Assets.Interfaces.Morpheus_Title);
+							bossSlain.show(Window.DeepPK_COLOR, 0.3f, 5f);
+							scene.showBanner(bossSlain);
+						} else {
+							bossSlain.texture(Assets.Interfaces.Cerdog_Clear);
+							bossSlain.show(Window.CYELLOW, 0.3f, 5f);
+							scene.showBanner(bossSlain);
+						}
+						break;
 					case 33:
 						bossSlain.texture(Assets.Interfaces.Morpheus_Clear);
 						bossSlain.show( 0x800080, 0.3f, 5f);

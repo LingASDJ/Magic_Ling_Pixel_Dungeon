@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -198,11 +199,13 @@ public class MorphsGodEndTheaterPlot extends Plot {
 
     private void process_to_5A_1()
     {
-        Badges.validateVictory();
-        PaswordBadges.ALLCS(Challenges.activeChallenges());
-        Rankings.INSTANCE.submit(true,Shadow.class);
-        Game.switchScene( RankingsScene.class );
-        Dungeon.deleteGame( GamesInProgress.curSlot, true );
+        if(!(Dungeon.isDLC(Conducts.Conduct.DEV))) {
+            Badges.validateVictory();
+            PaswordBadges.ALLCS(Challenges.activeChallenges());
+            Rankings.INSTANCE.submit(true, Shadow.class);
+            Game.switchScene(RankingsScene.class);
+            Dungeon.deleteGame(GamesInProgress.curSlot, true);
+        }
     }
 
 

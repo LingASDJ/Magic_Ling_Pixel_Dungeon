@@ -11,7 +11,7 @@ public class ShubNiggurathSprite extends MobSprite {
 
         texture( Assets.Sprites.SHUBNIGGURATH );
 
-        TextureFilm frames = new TextureFilm( texture, 42, 38 );
+        TextureFilm frames = new TextureFilm( texture, 42, 40 );
 
         idle = new MovieClip.Animation( 8, true );
         idle.frames( frames, 0,1,2,3,4,5 );

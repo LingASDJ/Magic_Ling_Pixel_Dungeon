@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -187,6 +188,7 @@ public class SlicePlot extends Plot {
                         Dungeon.level.occupyCell(hero);
                         Dungeon.observe();
                         GameScene.updateFog();
+                        Statistics.godGirl = true;
                     }
                 });
             }

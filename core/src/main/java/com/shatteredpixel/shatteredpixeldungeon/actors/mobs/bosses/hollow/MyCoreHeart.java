@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
@@ -100,14 +101,16 @@ public class MyCoreHeart extends Boss {
         alerted = false;
         state = PASSIVE;
         if(HP == 0 && !talk){
-            GalaxyHeartDeadEndPlot plot = new GalaxyHeartDeadEndPlot();
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndDialog(plot,false));
-                }
-            });
-            talk = true;
+            if(!(Dungeon.isDLC(Conducts.Conduct.DEV))) {
+                GalaxyHeartDeadEndPlot plot = new GalaxyHeartDeadEndPlot();
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndDialog(plot, false));
+                    }
+                });
+                talk = true;
+            }
         }
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
@@ -297,10 +300,9 @@ public class MyCoreHeart extends Boss {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (mob instanceof MyCoreHeart) {
                     s = ((MyCoreHeart) mob).summonedmobsCount;
-                    r = ((MyCoreHeart) mob).brokenCount;
                 }
             }
-            return Messages.get(this, "desc", dispTurns(visualcooldown()),s,r);
+            return Messages.get(this, "desc", dispTurns(visualcooldown()),s);
         }
 
     }

@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -226,22 +227,24 @@ public class ZeroHallsBossLevel extends Level {
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if(transition.type == LevelTransition.Type.REGULAR_ENTRANCE){
-            GLog.w(Messages.get(BadDream.class,"dream",hero.name()));
-            Badges.CITY_END();
-            Badges.KILL_MORES();
-            SPDSettings.unlockItem("avatars_mage_3");
-            GameScene.scene.add(new Delayer(3f){
-                @Override
-                protected void onComplete() {
-                    Badges.validateVictory();
-                    PaswordBadges.ALLCS(Challenges.activeChallenges());
-                    Rankings.INSTANCE.submit(true, BadDream.class);
-                    Game.switchScene( RankingsScene.class );
-                    Dungeon.deleteGame( GamesInProgress.curSlot, true );
-                    AndroidGameRecords.AbyssRecord();
-                }
-            });
+        if(!(Dungeon.isDLC(Conducts.Conduct.DEV))){
+            if(transition.type == LevelTransition.Type.REGULAR_ENTRANCE){
+                GLog.w(Messages.get(BadDream.class,"dream",hero.name()));
+                Badges.CITY_END();
+                Badges.KILL_MORES();
+                SPDSettings.unlockItem("avatars_mage_3");
+                GameScene.scene.add(new Delayer(3f){
+                    @Override
+                    protected void onComplete() {
+                        Badges.validateVictory();
+                        PaswordBadges.ALLCS(Challenges.activeChallenges());
+                        Rankings.INSTANCE.submit(true, BadDream.class);
+                        Game.switchScene( RankingsScene.class );
+                        Dungeon.deleteGame( GamesInProgress.curSlot, true );
+                        AndroidGameRecords.AbyssRecord();
+                    }
+                });
+            }
         }
         return false;
     }

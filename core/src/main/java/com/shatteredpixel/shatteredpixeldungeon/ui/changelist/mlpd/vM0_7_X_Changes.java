@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.ArtilleristSprite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.GnollBlindSprite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.HermitCrabSprite;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.TribemanOldSprite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.RivalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
@@ -39,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.KongFuSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MintSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonLowSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PeachGodStateSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PianoLeSprite;
@@ -135,7 +137,12 @@ public class vM0_7_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("重大更新"),
-                ("魔绫现已进入0.9.0.0版本！")));
+                ("魔绫现已进入0.9.0.0版本！感谢所有支持魔绫像素地牢的玩家们。\n\n全新古堡外传章节现已开启，欢迎尝鲜！")));
+
+        Image mp = new MorpheusSprite();
+        mp.scale.set(PixelScene.align(0.6f));
+        changes.addButton(new ChangeButton(mp, ("新Boss：墨菲厄斯"),
+                ("盛大的剧目即将开演，猩红的宴会现在开始！")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CASTLE_AIRPORT), ("首个外传：渊落古堡"),
                 (
@@ -144,9 +151,9 @@ public class vM0_7_X_Changes {
                                 "_-_ 总策划：JDSALing\n" +
                                 "_-_ 编码支持：JDSALing 手电 潘多拉\n" +
                                 "_-_ 剧情原案：JDSALing\n" +
-                                "_-_ 美术设计：Daniel Clan\n" +
+                                "_-_ 美术设计：Daniel Calan\n" +
                                 "_-_ 领袖设计：寄神\n" +
-                                "_-_ 文案设计：Kuzumi 小叶\n" +
+                                "_-_ 文案设计：久住 小叶\n" +
                                 "_-_ 武器设计：小叶\n" +
                                 "_-_ 音乐制作：犬罗 スタ-Tatsuro\n" +
                                 "_-_ 领航测试：Archetto喵 大猫 太上忘情\n\n" +
@@ -158,6 +165,55 @@ public class vM0_7_X_Changes {
 
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：HELLO-MLPD-V0.9"),
                 ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：永久")));
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.PACMAN_GAME, true), "三大小游戏登场",
+                "吃豆人，推箱子，全面搜查小游戏登场，探索渊落古堡外传，游玩这些小游戏。"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.LIBGDX), ("LibGDX 1.14！"),
+                ("魔绫现在使用LibGDX1.14系统，对高版本安卓设备支持性能更好。")));
+
+        Image xs =new PeachGodStateSprite();
+        xs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(xs, ("桃源祈愿-复刻"),
+                ("【限时活动--桃源祈愿·十连必得】-复刻活动时间：2025.11.2-2025.11.30\n\n" +
+                        "地牢深处将随机生成 「桃源祈愿间」55%概率 \n" +
+                        "（13挑战以下触发【不包含13挑】）\n" +
+                        "祈愿规则：\n" +
+                        "单次投掷 50钴币\n" +
+                        "保底机制 ：\n\n" +
+                        "【小保底】\n" +
+                        "每10次祈愿雕像必出 1 次罕见奖励 \n" +
+                        "\n【大保底】--【可跨存档】" +
+                        "累计40抽且未出现传说及以上，\n下次必出传说以上奖励\n"),
+                ("奖励类型概率公示【以单抽标准】：\n\n"+
+                        "常规【40%】 稀有【35%】 \n\n" +
+                        "罕见【20%】 传说【4%】 神话【1%】\n\n" +
+                        "10连概率规则：\n" +
+                        "小保底必出概率：\n" +
+                        "罕见70% 传说28% 神话2%\n" +
+                        "则9+1【必出罕见以上】\n" +
+                        "累计40抽还未出现传说的10抽：\n" +
+                        "大保底10连必出概率：\n\n" +
+                        "罕见70% 传说28% 神话2%\n" +
+                        "传说95% 神话5%")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "魔绫像素地牢-修复内容：\n\n" +
+                        ("0.9.0.0-修复内容：\n" +
+                                "中测相关反馈问题已经完全修复。\n" +
+                                "中测协力领航人：Archetto喵 大猫 太上忘情"
+                        )));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new TribemanOldSprite(), ("豺狼悍匪"),
+                ("攻速改为2.0，而非之前的0.5。")));
     }
 
     public static void add_V0880_Changes(ArrayList<ChangeInfo> changeInfos ) {

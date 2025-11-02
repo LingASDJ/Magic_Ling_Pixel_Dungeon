@@ -51,6 +51,7 @@ public class HollowLevel extends RegularLevel {
     {
         color1 = 0x6a723d;
         color2 = 0x88924c;
+        extraGlass = false;
     }
 
     @Override

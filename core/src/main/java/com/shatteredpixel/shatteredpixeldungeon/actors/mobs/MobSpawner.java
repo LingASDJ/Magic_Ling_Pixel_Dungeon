@@ -100,7 +100,9 @@ public class MobSpawner extends Actor {
 	public static ArrayList<Class<? extends Mob>> getMobRotation(int depth ){
 		ArrayList<Class<? extends Mob>> mobs;
 
-		if(!(Dungeon.isChallenged(RLPT)) || Dungeon.depth < 6 && Dungeon.isChallenged(RLPT) || Statistics.RandMode || Statistics.bossRushMode){
+		if(Dungeon.depth == 33 && Statistics.Hollow_Holiday){
+			mobs = standardMobRotation( depth );
+		} else if(!(Dungeon.isChallenged(RLPT)) || Dungeon.depth < 6 && Dungeon.isChallenged(RLPT) || Statistics.RandMode || Statistics.bossRushMode){
 			mobs = standardMobRotation( depth );
 		} else {
 			mobs = rlptMobDied( depth );

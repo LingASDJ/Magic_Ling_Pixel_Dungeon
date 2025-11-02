@@ -299,6 +299,8 @@ public class Statistics {
 
 	public static boolean soulsSpawn = false;
 
+	public static boolean godGirl = false;
+
 	private static final String ICECLAN ="iceCyanBlueSquareCoin";
 
 	private static final String GAMETIME = "gameTime";
@@ -610,6 +612,8 @@ public class Statistics {
 
 		defalult_deaddog = false;
 
+		godGirl = false;
+
 		LoveMagicGirl = 0;
 
 		gameDay = 1;
@@ -814,6 +818,8 @@ public class Statistics {
 		bundle.put("GDZRSKIN",gudaZiRandomSkin);
 
 		bundle.put("ReSoulPing",soulsSpawn);
+
+		bundle.put("GODGIRL",godGirl);
 
 		bundle.put(DWSX, dwarfKill);
 
@@ -1055,6 +1061,8 @@ public class Statistics {
 		defalult_deaddog = bundle.getBoolean("defalult_deaddog");
 
 		onlyLing = bundle.getBoolean("onlyLing");
+
+		godGirl = bundle.getBoolean("GODGIRL");
 
 		/**/
 		Hollow_Holiday = bundle.getBoolean("HOLLOW_DAY");

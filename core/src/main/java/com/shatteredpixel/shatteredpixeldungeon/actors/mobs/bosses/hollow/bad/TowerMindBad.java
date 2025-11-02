@@ -43,6 +43,7 @@ public class TowerMindBad extends Mob {
     {
         HT = HP = 1;
         spriteClass = TowerBadMindSprite.class;
+        properties.add(Property.BOSS);
     }
 
     @Override

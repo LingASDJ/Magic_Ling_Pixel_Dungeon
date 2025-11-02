@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -66,6 +67,10 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class CerDogBossLevel extends Level {
+
+    {
+        extraGlass = false;
+    }
 
     private static final int W = WALL;
     private static final int E = EMPTY_SP;
@@ -694,18 +699,20 @@ public class CerDogBossLevel extends Level {
     UnsignedInvitationLetter unsignedInvitationLetter = Dungeon.hero.belongings.getItem(UnsignedInvitationLetter.class);
 
     if(transition.type == LevelTransition.Type.REGULAR_ENTRANCE && unsignedInvitationLetter!=null){
-        GLog.w(Messages.get(UnsignedInvitationLetter.class,"hollow_city_1",hero.name()));
-        Badges.CITY_END();
-        GameScene.scene.add(new Delayer(3f){
-            @Override
-            protected void onComplete() {
-                Badges.validateVictory();
-                PaswordBadges.ALLCS(Challenges.activeChallenges());
-                Rankings.INSTANCE.submit(true, UnsignedInvitationLetter.class);
-                Game.switchScene( RankingsScene.class );
-                Dungeon.deleteGame( GamesInProgress.curSlot, true );
-            }
-        });
+        if(!(Dungeon.isDLC(Conducts.Conduct.DEV))) {
+            GLog.w(Messages.get(UnsignedInvitationLetter.class, "hollow_city_1", hero.name()));
+            Badges.CITY_END();
+            GameScene.scene.add(new Delayer(3f) {
+                @Override
+                protected void onComplete() {
+                    Badges.validateVictory();
+                    PaswordBadges.ALLCS(Challenges.activeChallenges());
+                    Rankings.INSTANCE.submit(true, UnsignedInvitationLetter.class);
+                    Game.switchScene(RankingsScene.class);
+                    Dungeon.deleteGame(GamesInProgress.curSlot, true);
+                }
+            });
+        }
         return false;
     } else if(Statistics.bossRushMode && transition.type == LevelTransition.Type.REGULAR_ENTRANCE){
             TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);

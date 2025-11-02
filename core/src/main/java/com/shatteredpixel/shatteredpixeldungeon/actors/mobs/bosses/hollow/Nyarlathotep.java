@@ -64,7 +64,7 @@ public class Nyarlathotep extends Boss {
         properties.add(Property.BOSS);
         properties.add(Property.ACIDIC);
         properties.add(Property.INORGANIC);
-        maxLvl = -1;
+
         noDropIceCoin = true;
     }
 
