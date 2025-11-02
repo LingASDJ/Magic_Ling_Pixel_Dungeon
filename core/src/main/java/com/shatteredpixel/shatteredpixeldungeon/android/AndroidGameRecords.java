@@ -57,6 +57,7 @@ public class AndroidGameRecords {
         params.putString("游戏版本", String.valueOf(Game.version));
 
         params.putString("吃豆人积分", String.valueOf(Statistics.getPacManScore));
+        params.putString("推箱子积分", String.valueOf(Statistics.getMoveBoxScore));
         params.putString("全面搜查积分", String.valueOf(Statistics.getAlLSearchScore));
 
         mFirebaseAnalyticsRecords.logEvent("作战报告", params);
