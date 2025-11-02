@@ -13,4 +13,8 @@ public class AndroidGameRecords {
     public static void ZQJRecord() {
         System.out.println("1");
     }
+
+    public static void AbyssRecord() {
+        System.out.println("Not Desktop Used");
+    }
 }
