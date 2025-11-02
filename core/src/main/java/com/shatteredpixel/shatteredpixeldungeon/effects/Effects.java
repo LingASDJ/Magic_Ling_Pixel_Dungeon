@@ -40,6 +40,10 @@ public class Effects {
 		LIGHT_RAY,
 		HEALTH_RAY,
 		BLUE_RAY,
+		M_CHAIN,
+		L_CHAIN,
+		P_CHAIN,
+		D_CHAIN
 	}
 
 	public static Image get( Type type ) {
@@ -83,6 +87,20 @@ public class Effects {
 				break;
 			case BLUE_RAY:
 				icon.frame(icon.texture.uvRect(16, 37, 32, 46));
+				break;
+
+			case M_CHAIN:
+				icon.frame(icon.texture.uvRect(6, 32, 11, 38));
+				break;
+			case L_CHAIN:
+				icon.frame(icon.texture.uvRect(6, 38, 10, 44));
+				break;
+
+			case P_CHAIN:
+				icon.frame(icon.texture.uvRect(11, 32, 16, 38));
+				break;
+			case D_CHAIN:
+				icon.frame(icon.texture.uvRect(11, 38, 16, 44));
 				break;
 		}
 		return icon;

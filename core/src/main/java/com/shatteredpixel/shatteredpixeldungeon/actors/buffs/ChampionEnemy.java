@@ -156,11 +156,14 @@ public abstract class ChampionEnemy extends Buff {
 						buffCls = ChampionEnemy.LongSider.class;
 						break;
 					case 4:
-						buffCls = ChampionEnemy.HealRight.class;
+						buffCls =
+								Dungeon.depth == 33 && Statistics.Hollow_Holiday ?
+										ChampionEnemy.Bomber.class : ChampionEnemy.HealRight.class;
 						break;
 				}
 		} else if (randomNumber < 10) {
-			buffCls = ChampionEnemy.Bomber.class;
+			buffCls = Dungeon.depth == 33 && Statistics.Hollow_Holiday ?
+					ChampionEnemy.Bomber.class : ChampionEnemy.HealRight.class;
 		} else {
 			switch (randomNumber % 6) {
 				case 0: default:
@@ -176,7 +179,7 @@ public abstract class ChampionEnemy extends Buff {
 					buffCls = ChampionEnemy.LongSider.class;
 					break;
 				case 4:
-					if (m.properties.contains(Char.Property.NOBIG)) {
+					if (m.properties.contains(Char.Property.NOBIG) || Dungeon.depth == 33 && Statistics.Hollow_Holiday ) {
 						buffCls = ChampionEnemy.Bomber.class;
 					} else {
 						buffCls = ChampionEnemy.HealRight.class;

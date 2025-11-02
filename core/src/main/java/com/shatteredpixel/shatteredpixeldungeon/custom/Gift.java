@@ -34,7 +34,6 @@ public class Gift implements Bundlable {
             "QmFkTGFudGVyRmlyZS1Hbyw0MDcwOTUxNzc1LGZhbHNl",
             "TUhKSCw0MDcwOTUxNzc1LGZhbHNl",
             "WUxHQiw0MDcwOTUxNzc1LGZhbHNl",
-
             "TklORU5JTkVaRVJPT05FLDQwNzA5NTE3NzUsZmFsc2U=",
 
             "UHJvcHNGaXhlZCw0MDcwOTUxNzc1LGZhbHNl",

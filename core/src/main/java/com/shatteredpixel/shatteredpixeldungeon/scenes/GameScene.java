@@ -68,6 +68,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Morphs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.DragonBluePlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
@@ -1562,7 +1563,9 @@ public class GameScene extends PixelScene {
 							WndStory.showChapter( WndStory.ID_HALLS );
 							break;
 						case 25:
-							if(Dungeon.branch == 5){
+							if(Dungeon.branch == 10){
+								WndStory.showChapter(WndStory.ID_DEAD_CITY_END);
+							} else if(Dungeon.branch == 5){
 								WndStory.showChapter( WndStory.ID_CHAPTONEEND );
 							} else if(Dungeon.isChallenged(CS)&& Dungeon.branch == 0){
 								WndStory.showChapter(WndStory.ID_ZTBS);
@@ -1985,6 +1988,17 @@ public class GameScene extends PixelScene {
 							scene.showBanner(bossSlain);
 						}
 						break;
+					case 33:
+						for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+							if(mob instanceof Morphs){
+								if(((Morphs) mob).phase == 0){
+									bossSlain.texture(Assets.Interfaces.Morpheus_Title);
+									bossSlain.show(Window.DeepPK_COLOR, 0.3f, 5f);
+									scene.showBanner(bossSlain);
+								}
+							}
+						}
+						break;
 				}
 
 			}
@@ -2092,7 +2106,6 @@ public class GameScene extends PixelScene {
 						}
 						Statistics.GetFoodLing=0;
 						break;
-					case 30:
 					case 26:
 						if(Dungeon.branch == 10){
 							bossSlain.texture(Assets.Interfaces.Tawi_Clear);
@@ -2103,6 +2116,11 @@ public class GameScene extends PixelScene {
 							bossSlain.show( 0xF7941D, 0.3f, 5f);
 							scene.showBanner(bossSlain);
 						}
+						break;
+					case 33:
+						bossSlain.texture(Assets.Interfaces.Morpheus_Clear);
+						bossSlain.show( 0x800080, 0.3f, 5f);
+						scene.showBanner(bossSlain);
 						break;
 				}
 			}

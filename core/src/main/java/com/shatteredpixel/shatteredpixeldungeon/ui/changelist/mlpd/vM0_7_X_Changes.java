@@ -155,6 +155,9 @@ public class vM0_7_X_Changes {
 
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：NINENINEZEROONE"),
                 ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：永久")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：HELLO-MLPD-V0.9"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：永久")));
     }
 
     public static void add_V0880_Changes(ArrayList<ChangeInfo> changeInfos ) {

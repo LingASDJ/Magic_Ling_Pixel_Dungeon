@@ -177,7 +177,7 @@ public class LevelTeleporter extends TestItem {
             }
 
         } else if (action.equals(AC_BRANCH_DESCEND)){
-            if(branch==8){
+            if(branch==10){
                 GLog.w(Messages.get(this, "cannot_asend_branch"));
                 return;
             }

@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.Immunities.ScaryImmunitiesBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
@@ -33,7 +34,7 @@ public class YogSoul extends Boss {
         properties.add(Property.ELECTRIC);
 
         state = WANDERING = new Waiting();
-
+        maxLvl = -1;
         noDropIceCoin = true;
     }
 
@@ -80,9 +81,6 @@ public class YogSoul extends Boss {
 
     @Override
     protected boolean act() {
-        alerted = false;
-        state = PASSIVE;
-
 
         if(Dungeon.level.distance(pos, hero.pos) >= 1){
 
@@ -91,13 +89,21 @@ public class YogSoul extends Boss {
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                     if (mob instanceof ShubNiggurath) {
                         mob.HT += 200;
-                        mob.HP += (int) (HT * 0.05f);
+                        mob.HP += (int) (mob.HT * 0.05f);
                     }
                     if (mob instanceof Nyarlathotep) {
                         mob.HT += 100;
-                        mob.HP += (int) (HT * 0.05f);
+                        mob.HP += (int) (mob.HT * 0.05f);
                     }
                 }
+                HT += 100;
+                HP += (int) (HT * 0.05f);
+            }
+            
+            if(buff(ReHealHP.class)==null){
+                Buff.affect(this, ReHealHP.class, 15f);
+                int heartDamage = (int) (HT * Random.NormalFloat(0.1f, 0.2f));
+                HP += Math.min(heartDamage,HT - HP);
             }
 
             if (buff(DeadHeartMagic.class) == null) {
@@ -123,9 +129,9 @@ public class YogSoul extends Boss {
                     }
                     boolean hasScaryBuff = false;
                     for (Buff buff : enemy.buffs()) {
-                        if (buff instanceof ScaryDamageBuff) {
+                        if(buff instanceof ScaryDamageBuff || buff instanceof ScaryImmunitiesBuff){
                             if (isNyzAlive) {
-                                int heartDamage = (int) (8 * Random.Float(0.5f, 1));
+                                int heartDamage = (int) (8 * Random.NormalFloat(0.5f, 1));
                                 enemy.damage(heartDamage, new DM100.LightningBolt());
                                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                     mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
@@ -134,7 +140,7 @@ public class YogSoul extends Boss {
                         } else if (buff instanceof ScaryBuff) {
                             hasScaryBuff = true;
                             if (isNyzAlive) {
-                                int heartDamage = (int) (8 * Random.Float(0.5f, 1));
+                                int heartDamage = (int) (8 * Random.NormalFloat(0.5f, 1));
                                 enemy.damage(heartDamage, new DM100.LightningBolt());
                                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                     mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
@@ -162,6 +168,12 @@ public class YogSoul extends Boss {
     }
 
     public static class DeadHeartMagic extends FlavourBuff {
+        {
+            type = buffType.POSITIVE;
+        }
+    }
+
+    public static class ReHealHP extends FlavourBuff {
         {
             type = buffType.POSITIVE;
         }

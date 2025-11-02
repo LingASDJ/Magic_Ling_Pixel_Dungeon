@@ -190,7 +190,8 @@ public class TyphonPlot extends Plot {
         diagulewindow.changeText(Messages.get(TyphonPlot.class, "message13", hero.name()));
 
        Rat rat = new Rat();
-       rat.pos = 0;
+       rat.flying = true;
+       rat.pos = 1;
        GameScene.add(rat);
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob instanceof Rat) {

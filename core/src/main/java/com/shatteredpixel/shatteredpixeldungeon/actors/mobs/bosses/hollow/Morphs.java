@@ -61,7 +61,7 @@ public class Morphs extends Boss {
 
         properties.add(Property.IMMOVABLE);
         properties.add(Property.BOSS);
-
+        noDropIceCoin = true;
         immunities.add(Blob.class);
         immunities.add(Buff.class);
     }
@@ -176,6 +176,12 @@ public class Morphs extends Boss {
         MorpheusSprite sprite = (MorpheusSprite) super.sprite();
         sprite.HatActivate();
         return sprite;
+    }
+
+    @Override
+    public void die( Object cause ) {
+        super.die(cause);
+        GameScene.bossSlain();
     }
 
     private static final String FTAV = "FourToneActive";
