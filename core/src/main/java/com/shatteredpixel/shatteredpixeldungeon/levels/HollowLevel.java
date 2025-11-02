@@ -192,7 +192,7 @@ public class HollowLevel extends RegularLevel {
         }
 
         //古堡第二幕
-        if(Statistics.AbyssCityRules == 2){
+        if(Statistics.AbyssCityRules == 2 && depth == 27  && Statistics.Hollow_Holiday){
             SliceGirl sliceGirl = new SliceGirl();
             sliceGirl.pos = exit();
             mobs.add(sliceGirl);

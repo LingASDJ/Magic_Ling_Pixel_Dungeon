@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.Immunities.ScaryImmunitiesBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -63,7 +64,7 @@ public class Nyarlathotep extends Boss {
         properties.add(Property.BOSS);
         properties.add(Property.ACIDIC);
         properties.add(Property.INORGANIC);
-
+        maxLvl = -1;
         noDropIceCoin = true;
     }
 
@@ -100,9 +101,9 @@ public class Nyarlathotep extends Boss {
                 }
                 boolean hasScaryBuff = false;
                 for (Buff buff : enemy.buffs()) {
-                    if (buff instanceof ScaryDamageBuff) {
+                    if(buff instanceof ScaryDamageBuff || buff instanceof ScaryImmunitiesBuff){
                         if (isNyzAlive) {
-                            int heartDamage = (int) (8 * Random.Float(0.5f, 1));
+                            int heartDamage = (int) (8 * Random.NormalFloat(0.5f, 1));
                             enemy.damage(heartDamage, new DM100.LightningBolt());
                             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                 mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
@@ -111,7 +112,7 @@ public class Nyarlathotep extends Boss {
                     } else if (buff instanceof ScaryBuff) {
                         hasScaryBuff = true;
                         if (isNyzAlive) {
-                            int heartDamage = (int) (8 * Random.Float(0.5f, 1));
+                            int heartDamage = (int) (8 * Random.NormalFloat(0.5f, 1));
                             enemy.damage(heartDamage, new DM100.LightningBolt());
                             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                 mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
@@ -143,9 +144,9 @@ public class Nyarlathotep extends Boss {
         }
         boolean hasScaryBuff = false;
         for (Buff buff : enemy.buffs()) {
-            if (buff instanceof ScaryDamageBuff) {
+            if(buff instanceof ScaryDamageBuff || buff instanceof ScaryImmunitiesBuff) {
                 if (isNyzAlive) {
-                    int heartDamage = (int) (Random.Int(14,28) * Random.Float(0.5f, 1));
+                    int heartDamage = (int) (Random.Int(14,29) * Random.NormalFloat(0.5f, 1));
                     enemy.damage(heartDamage, new DM100.LightningBolt());
                     for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                         mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
@@ -154,7 +155,7 @@ public class Nyarlathotep extends Boss {
             } else if (buff instanceof ScaryBuff) {
                 hasScaryBuff = true;
                 if (isNyzAlive) {
-                    int heartDamage = (int) (Random.Int(7,14) * Random.Float(0.5f, 1));
+                    int heartDamage = (int) (Random.Int(7,15) * Random.NormalFloat(0.5f, 1));
                     enemy.damage(heartDamage, new DM100.LightningBolt());
                     for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                         mob.HP += Math.min(heartDamage, mob.HT - mob.HP);

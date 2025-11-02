@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.MyCore
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.MovieClip;
@@ -105,6 +106,8 @@ public class TowerTimeBad extends Mob {
                         });
                     }
                 });
+            } else {
+                GLog.w(Messages.get(MyCoreHeart.class,"not_count",Statistics.RepaierTowerCount));
             }
         }
         return true;

@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.To
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerTimeBad;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.GalaxyHeartDeadEndPlot;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MyCoreHeartSprite;
@@ -109,18 +110,6 @@ public class MyCoreHeart extends Boss {
             talk = true;
         }
 
-        if(buff(SummonColdDown.class) != null && !getHP){
-            boolean hasEnemy = false;
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if(mob.alignment == Alignment.ENEMY){
-                    if(!(mob instanceof TowerGodsBad || mob instanceof TowerMindBad || mob instanceof TowerMachineBad || mob instanceof TowerTimeBad)) {
-                        hasEnemy = true;
-                        break;
-                    }
-                }
-            }
-        }
-
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if(mob instanceof TowerGodsBad && ((TowerGodsBad) mob).repiaer && !one && mob.buff(RepaierDown.class) == null){
                 end++;
@@ -147,6 +136,7 @@ public class MyCoreHeart extends Boss {
             ScrollOfTeleportation.appear(this,562);
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                if(mob instanceof Morphs){
+                   Bestiary.setSeen(mob.getClass());
                    ((Morphs) mob).EndStory = true;
                    ScrollOfTeleportation.appear(mob,312);
                    mob.yell(Messages.get(mob, "endtalk"));
@@ -154,6 +144,7 @@ public class MyCoreHeart extends Boss {
                    Buff.affect(mob, Bleeding.class).set(1000f);
                }
             }
+            Bestiary.setSeen(getClass());
             destroy();
             sprite.killAndErase();
         }
@@ -165,18 +156,49 @@ public class MyCoreHeart extends Boss {
 
 
     public static int[] safePos = new int[] {
-        306,462,318,137
+        301,587,323,37
     };
+
     public void TryGetSummonedMobs() {
+        int spawnCount = 0;
         if(summonedmobsCount < 26){
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                 if(!mob.isOldDay){
                     if (buff(SummonColdDown.class) == null) {
-                        for (int i = 0; i < 5; i++) {
+                        if (summonedmobsCount < 5) {
+                            spawnCount = 12;
+                        } else if (summonedmobsCount < 10) {
+                            spawnCount = 8;
+                        } else if (summonedmobsCount < 15) {
+                            spawnCount = 6;
+                        } else if (summonedmobsCount < 20) {
+                            spawnCount = 5;
+                        } else {
+                            spawnCount = 3;
+                        }
+
+                        for (int i = 0; i < spawnCount; i++) {
                             Mob testActor = getSummonTimeMobs();
                             testActor.pos = safePos[Random.Int(safePos.length)];
-                            ChampionEnemy.rollForChampion(testActor);
-                            ChampionEnemy.rollForStateLing(testActor);
+
+                            if(summonedmobsCount >= 15){
+                                ChampionEnemy.rollForChampion(testActor);
+                                ChampionEnemy.rollForStateLing(testActor);
+                            } else if(summonedmobsCount >= 10){
+                                if(Random.Float()>0.75f){
+                                    ChampionEnemy.rollForChampion(testActor);
+                                    ChampionEnemy.rollForStateLing(testActor);
+                                } else {
+                                    ChampionEnemy.rollForChampion(testActor);
+                                }
+                            } else {
+                                if(Random.Float()>0.75f){
+                                    ChampionEnemy.rollForChampion(testActor);
+                                } else {
+                                    ChampionEnemy.rollForStateLing(testActor);
+                                }
+                            }
+
                             testActor.isOldDay = true;
                             testActor.state = testActor.HUNTING;
                             GameScene.add(testActor);
@@ -323,7 +345,7 @@ public class MyCoreHeart extends Boss {
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle( bundle );
-        BossHealthBar.assignBoss(this);
+
         summonedmobsCount = bundle.getInt( STRING );
         getHP = bundle.getBoolean(GETHP);
         brokenCount = bundle.getInt(BROKEN);
@@ -333,6 +355,9 @@ public class MyCoreHeart extends Boss {
         two = bundle.getBoolean(TWO);
         three = bundle.getBoolean(THREE);
         four = bundle.getBoolean(FOUR);
+
+        if (state != SLEEPING) BossHealthBar.assignBoss(this);
+        if ((HP*2 <= HT)) BossHealthBar.bleed(true);
     }
 
     @Override

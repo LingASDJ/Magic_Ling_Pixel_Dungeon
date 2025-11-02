@@ -86,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.Immunities.ScaryImmunitiesBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
@@ -1186,14 +1187,15 @@ public class Hero extends Char {
 		boolean isNyzAlive = false;
 		if(Dungeon.level.map[pos] == Terrain.TRAP){
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-				if (mob instanceof Nyarlathotep) {
-					isNyzAlive = true;
-				}
+                if (mob instanceof Nyarlathotep) {
+                    isNyzAlive = true;
+                    break;
+                }
 			}
 			if(isNyzAlive){
 				for (Buff buff : buffs()) {
-					if(buff instanceof ScaryDamageBuff && isNyzAlive){
-						int heartDamage = (int) (20 * Random.Float(0.5f, 1));
+					if(buff instanceof ScaryDamageBuff || buff instanceof ScaryImmunitiesBuff){
+						int heartDamage = (int) (20 * Random.NormalFloat(0.5f, 1));
 						enemy.damage(heartDamage, new DM100.LightningBolt());
 						for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
 							mob.HP += Math.max(HT,heartDamage);
@@ -1202,7 +1204,7 @@ public class Hero extends Char {
 						if(((ScaryBuff) buff).Scary > 100){
 							damage(20,this,DamageType.MAGIC);
 						} else {
-							int heartDamage = (int) (20 * Random.Float(0.5f, 1));
+							int heartDamage = (int) (20 * Random.NormalFloat(0.5f, 1));
 							enemy.damage(heartDamage, new DM100.LightningBolt());
 							for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
 								mob.HP += Math.max(HT,heartDamage);

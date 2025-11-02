@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.Immunities.ScaryImmunitiesBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
@@ -30,6 +31,8 @@ public class ShubNiggurath extends Boss {
 
     public int summonIndex = 0;
 
+    public int notDamage = 0;
+
     public boolean notFirst = false;
 
     {
@@ -42,8 +45,10 @@ public class ShubNiggurath extends Boss {
         properties.add(Property.ACIDIC);
 
         noDropIceCoin = true;
+        maxLvl = -1;
     }
     int generation	= 0;
+
     private static final float SPLIT_DELAY	= 1f;
     @Override
     public int defenseProc(Char enemy, int damage ) {
@@ -61,7 +66,7 @@ public class ShubNiggurath extends Boss {
                 }
             }
 
-            if (candidates.size() > 0) {
+            if (candidates.size() > 0 && summonIndex < 17) {
 
                 ShubNiggurath clone = split();
                 clone.pos = Random.element( candidates );
@@ -130,6 +135,7 @@ public class ShubNiggurath extends Boss {
             int multiple = 1;
             lock.addTime(dmg*multiple);
         }
+        notDamage = 0;
         super.damage(dmg, src, type);
     }
 
@@ -149,9 +155,9 @@ public class ShubNiggurath extends Boss {
                     }
                     boolean hasScaryBuff = false;
                     for (Buff buff : enemy.buffs()) {
-                        if (buff instanceof ScaryDamageBuff) {
+                        if(buff instanceof ScaryDamageBuff || buff instanceof ScaryImmunitiesBuff){
                             if (isNyzAlive) {
-                                int heartDamage = (int) (16 * Random.Float(0.5f, 1));
+                                int heartDamage = (int) (16 * Random.NormalFloat(0.5f, 1)); 
                                 enemy.damage(heartDamage, new DM100.LightningBolt());
                                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                     mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
@@ -160,7 +166,7 @@ public class ShubNiggurath extends Boss {
                         } else if (buff instanceof ScaryBuff) {
                             hasScaryBuff = true;
                             if (isNyzAlive) {
-                                int heartDamage = (int) (16 * Random.Float(0.5f, 1));
+                                int heartDamage = (int) (16 * Random.NormalFloat(0.5f, 1)); 
                                 enemy.damage(heartDamage, new DM100.LightningBolt());
                                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                    mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
@@ -196,9 +202,9 @@ public class ShubNiggurath extends Boss {
                 }
                 boolean hasScaryBuff = false;
                 for (Buff buff : enemy.buffs()) {
-                    if (buff instanceof ScaryDamageBuff) {
+                    if(buff instanceof ScaryDamageBuff || buff instanceof ScaryImmunitiesBuff){
                         if (isNyzAlive) {
-                            int heartDamage = (int) (8 * Random.Float(0.5f, 1));
+                            int heartDamage = (int) (8 * Random.NormalFloat(0.5f, 1));
                             enemy.damage(heartDamage, new DM100.LightningBolt());
                             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                 mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
@@ -207,7 +213,7 @@ public class ShubNiggurath extends Boss {
                     } else if (buff instanceof ScaryBuff) {
                         hasScaryBuff = true;
                         if (isNyzAlive) {
-                            int heartDamage = (int) (8 * Random.Float(0.5f, 1));
+                            int heartDamage = (int) (8 * Random.NormalFloat(0.5f, 1));
                             enemy.damage(heartDamage, new DM100.LightningBolt());
                             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                 mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
@@ -223,7 +229,7 @@ public class ShubNiggurath extends Boss {
             }
         }
 
-        if (buff(HeartMagicDamage.class) == null && (getClass() == ShubNiggurath.class)) {
+        if (buff(HeartMagicDamage.class) == null && (getClass() == ShubNiggurath.class) && summonIndex < 17 && notDamage >=8) {
             Buff.affect(this, HeartMagicDamage.class, 10f);
             ShubNiggurathClone clone = new ShubNiggurathClone();
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
@@ -248,9 +254,9 @@ public class ShubNiggurath extends Boss {
                     }
                     boolean hasScaryBuff = false;
                     for (Buff buff : enemy.buffs()) {
-                        if (buff instanceof ScaryDamageBuff) {
+                        if(buff instanceof ScaryDamageBuff || buff instanceof ScaryImmunitiesBuff){
                             if (isNyzAlive) {
-                                int heartDamage = (int) (16 * Random.Float(0.5f, 1));
+                                int heartDamage = (int) (16 * Random.NormalFloat(0.5f, 1)); 
                                 enemy.damage(heartDamage, new DM100.LightningBolt());
                                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                     mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
@@ -259,7 +265,7 @@ public class ShubNiggurath extends Boss {
                         } else if (buff instanceof ScaryBuff) {
                             hasScaryBuff = true;
                             if (isNyzAlive) {
-                                int heartDamage = (int) (16 * Random.Float(0.5f, 1));
+                                int heartDamage = (int) (16 * Random.NormalFloat(0.5f, 1)); 
                                 enemy.damage(heartDamage, new DM100.LightningBolt());
                                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                     mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
@@ -276,6 +282,8 @@ public class ShubNiggurath extends Boss {
             }
         }
 
+        notDamage++;
+
         return super.act();
     }
 
@@ -284,12 +292,15 @@ public class ShubNiggurath extends Boss {
 
     private static final String NOTFIRST_INDEX	= "notfirst_index";
 
+    private static final String NOT_DAMAGE	= "not_damage";
+
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
         bundle.put( GENERATION, generation );
         bundle.put( SUMMON_INDEX, summonIndex );
         bundle.put(NOTFIRST_INDEX, notFirst);
+        bundle.put(NOT_DAMAGE, notDamage);
     }
 
     @Override
@@ -299,6 +310,7 @@ public class ShubNiggurath extends Boss {
         summonIndex = bundle.getInt( SUMMON_INDEX );
         if (generation > 0) EXP = 0;
         notFirst = bundle.getBoolean(NOTFIRST_INDEX);
+        notDamage = bundle.getInt(NOT_DAMAGE);
     }
     boolean  isShubCloneAlive = false;
     @Override
@@ -314,6 +326,7 @@ public class ShubNiggurath extends Boss {
                 }
             }
         }
+        summonIndex--;
     }
 
     public static class HeartMagicDamage extends FlavourBuff {

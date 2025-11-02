@@ -114,6 +114,8 @@ public class WndStory extends Window {
 
 	public static final int ID_ALL_SEARCH_PLOT	= 43;
 
+	public static final int ID_DEAD_CITY_END	= 44;
+
 	private static final SparseArray<String> CHAPTERS = new SparseArray<>();
 
 	static {
@@ -138,6 +140,8 @@ public class WndStory extends Window {
 		CHAPTERS.put( ID_HOLLOW_ALT_POLT, "hollowpolt_alt" );
 
 		CHAPTERS.put( ID_ALL_SEARCH_PLOT, "allsearch_polt" );
+
+		CHAPTERS.put( ID_DEAD_CITY_END, "deadcityend" );
 
 		CHAPTERS.put( ID_GAME, "bossrushstart" );
 		CHAPTERS.put( ID_NOMOBS, "nomobs" );

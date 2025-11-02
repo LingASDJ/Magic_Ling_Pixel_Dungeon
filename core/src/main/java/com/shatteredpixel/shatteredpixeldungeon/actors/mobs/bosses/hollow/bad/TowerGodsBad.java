@@ -8,11 +8,13 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.MyCoreHeart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.MovieClip;
@@ -72,6 +74,19 @@ public class TowerGodsBad extends Mob {
             Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(10f);
             blobCoolDown = 40;
         }
+
+        if(repiaer && buff(MyCoreHeart.RepaierDown.class)==null && slowCoolDown <= 0){
+            ((TowerBadGodSprite) sprite).ReActivate();
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if(mob.distance(this) <= 50 && mob != this ){
+                    if(mob.isOldDay){
+                        Buff.prolong(mob, Cripple.class, 8f);
+                    }
+                }
+            }
+            slowCoolDown = 30;
+        }
+
         if(blobCoolDown >= 0){
             blobCoolDown--;
         }
@@ -122,6 +137,8 @@ public class TowerGodsBad extends Mob {
                         });
                     }
                 });
+            } else {
+                GLog.w(Messages.get(MyCoreHeart.class,"not_count",Statistics.RepaierTowerCount));
             }
         }
 

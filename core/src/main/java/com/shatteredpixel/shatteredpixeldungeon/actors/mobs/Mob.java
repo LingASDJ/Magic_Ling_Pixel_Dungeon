@@ -99,6 +99,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -113,6 +114,7 @@ import com.watabou.utils.Reflection;
 
 import net.iharder.Base64;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -489,11 +491,31 @@ public abstract class Mob extends Char {
 		return state.act( enemyInFOV, justAlerted );
 	}
 
+	boolean hasZapMethod = false;
+	boolean hasBallisticaReference = false;
 	boolean hasGetCloserOverride = false;
 	boolean hasGetonZapComplete = false;
+	boolean hasCall = false;
     protected Char chooseEnemy() {
 
 		Class<?> clazz = getClass();
+
+		Method[] methods = clazz.getDeclaredMethods();
+		for (Method method : methods) {
+			if (method.getName().equals("zap")) {
+				hasZapMethod = true;
+				break;
+			}
+		}
+
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field field : fields) {
+			if (field.getType().equals(Ballistica.class)) {
+				hasBallisticaReference = true;
+				break;
+			}
+		}
+
 		Method[] methods2 = clazz.getDeclaredMethods();
 		for (Method method : methods2) {
 			if (method.getName().equals("getCloser")) {
@@ -510,7 +532,15 @@ public abstract class Mob extends Char {
 			}
 		}
 
-		if(isOldDay && !hasGetCloserOverride && !hasGetonZapComplete){
+		Method[] methods4 = clazz.getDeclaredMethods();
+		for (Method method : methods4) {
+			if (method.getName().equals("call")) {
+				hasCall = true;
+				break;
+			}
+		}
+
+		if(isOldDay && !hasGetCloserOverride && !hasGetonZapComplete && !hasBallisticaReference && !hasZapMethod && !hasCall) {
 			for (Mob mob : Dungeon.level.mobs) {
 				if (!(mob == this)
 						&& mob.alignment != Alignment.NEUTRAL
