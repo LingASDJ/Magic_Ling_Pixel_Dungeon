@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.android.AndroidGameRecords;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
@@ -238,6 +239,7 @@ public class ZeroHallsBossLevel extends Level {
                     Rankings.INSTANCE.submit(true, BadDream.class);
                     Game.switchScene( RankingsScene.class );
                     Dungeon.deleteGame( GamesInProgress.curSlot, true );
+                    AndroidGameRecords.AbyssRecord();
                 }
             });
         }
