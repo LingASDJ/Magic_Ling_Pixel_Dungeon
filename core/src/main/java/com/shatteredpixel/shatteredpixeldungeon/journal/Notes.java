@@ -362,7 +362,7 @@ public class Notes {
 
 	public static class KeyRecord extends Record {
 
-		protected Key key;
+		public Key key;
 
 		public KeyRecord() {}
 

@@ -52,8 +52,8 @@ public class SeedALRLogScene extends PixelScene {
         list = new ScrollPane(new Component());
         add(list);
 
-        Component content = list.content();
-        content.clear();
+        contentx = list.content();
+        contentx.clear();
 
         ShatteredPixelDungeon.scene().addToFront( wndTextInput = new WndTextInput(Messages.get(this, "title"), Messages.get(this, "body"), Messages.get(this, "initial_value", SPDSettings.seedfinderFloors()), 1000, true, Messages.get(this, "clear"),null) {
             @Override
@@ -80,8 +80,8 @@ public class SeedALRLogScene extends PixelScene {
                             txt.setRect((Camera.main.width - colWidth)/2f, 12, colWidth, 0);
 
                             if (!thread.isInterrupted()) {
-                                content.add(txt);
-                                content.setSize( fullWidth, txt.bottom()+10 );
+                                contentx.add(txt);
+                                contentx.setSize( fullWidth, txt.bottom()+10 );
                             }
 
                             if (list.isActive()) {

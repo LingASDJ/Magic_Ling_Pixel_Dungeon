@@ -36,17 +36,21 @@ public class TimeStasis extends FlavourBuff {
 	@Override
 	public boolean attachTo(Char target) {
 
-		if (super.attachTo(target)) {
+		if(target != null) {
+			if (super.attachTo(target)) {
 
-			target.invisible++;
-			target.paralysed++;
-			target.next();
+				target.invisible++;
+				target.paralysed++;
+				target.next();
 
-			if (Dungeon.hero != null) {
-				Dungeon.observe();
+				if (Dungeon.hero != null) {
+					Dungeon.observe();
+				}
+
+				return true;
+			} else {
+				return false;
 			}
-
-			return true;
 		} else {
 			return false;
 		}
@@ -58,9 +62,12 @@ public class TimeStasis extends FlavourBuff {
 
 		//don't punish the player for going into stasis frequently
 		Hunger hunger = Buff.affect(target, Hunger.class);
-		if (hunger != null && !hunger.isStarving()) {
-			hunger.affectHunger(cooldown(), true);
+		if(target != null){
+			if (!hunger.isStarving()) {
+				hunger.affectHunger(cooldown(), true);
+			}
 		}
+
 	}
 
 	@Override

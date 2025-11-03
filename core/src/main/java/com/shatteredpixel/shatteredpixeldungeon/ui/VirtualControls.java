@@ -28,13 +28,7 @@ import java.util.Set;
 
 public class VirtualControls extends Group {
 
-    private StyledButton upButton;
-    private StyledButton downButton;
-    private StyledButton leftButton;
-    private StyledButton rightButton;
-    private StyledButton reloadButton;
-    private StyledButton remapButton;
-
+    @SuppressWarnings("all")
     public VirtualControls() {
         super();
 
@@ -42,20 +36,23 @@ public class VirtualControls extends Group {
         float centerY = screenHeight / 2;
         float bottomY = screenHeight - 20;
 
+        float initwidth = PixelScene.uiCamera.width-52;
+
+
         float buttonAreaY = centerY + (bottomY - centerY) / 2;
 
-        upButton = new StyledButton(Chrome.Type.WINDOW, "") {
+        StyledButton upButton = new StyledButton(Chrome.Type.WINDOW, "") {
             @Override
             protected void onClick() {
                 moveHero((SPDAction) N);
             }
         };
-        // 调整按钮位置到屏幕下半部分
-        upButton.setRect(MenuPane.version.x, buttonAreaY - 10, 20, 20);
+
+        upButton.setRect( initwidth , buttonAreaY - 10, 20, 20);
         upButton.icon(Icons.get(Icons.UP_DICT));
         add(upButton);
 
-        downButton = new StyledButton(Chrome.Type.WINDOW, "") {
+        StyledButton downButton = new StyledButton(Chrome.Type.WINDOW, "") {
             @Override
             protected void onClick() {
                 moveHero((SPDAction) S);
@@ -65,7 +62,7 @@ public class VirtualControls extends Group {
         downButton.icon(Icons.get(Icons.DOWN_DICT));
         add(downButton);
 
-        leftButton = new StyledButton(Chrome.Type.WINDOW, "") {
+        StyledButton leftButton = new StyledButton(Chrome.Type.WINDOW, "") {
             @Override
             protected void onClick() {
                 moveHero((SPDAction) W);
@@ -75,7 +72,7 @@ public class VirtualControls extends Group {
         leftButton.icon(Icons.get(Icons.RIGHT_DICT));
         add(leftButton);
 
-        rightButton = new StyledButton(Chrome.Type.WINDOW, "") {
+        StyledButton rightButton = new StyledButton(Chrome.Type.WINDOW, "") {
             @Override
             protected void onClick() {
                 moveHero((SPDAction) E);
@@ -85,8 +82,7 @@ public class VirtualControls extends Group {
         rightButton.icon(Icons.get(Icons.LEFT_DICT));
         add(rightButton);
 
-
-        reloadButton = new StyledButton(Chrome.Type.WINDOW_SILVER, Messages.get(VirtualControls.class,"reload"),6) {
+        StyledButton reloadButton = new StyledButton(Chrome.Type.WINDOW_SILVER, Messages.get(VirtualControls.class, "reload"), 6) {
             @Override
             protected void onClick() {
                 ScrollOfTeleportation.appear(hero, Dungeon.level.entrance());
@@ -102,11 +98,11 @@ public class VirtualControls extends Group {
                         targetPosSet.add(pos);
                     }
 
-                    if(hero.buff(ScoreBuff.class)!=null){
-                        GLog.w(Messages.get(VirtualControls.class,"down_score"));
+                    if (hero.buff(ScoreBuff.class) != null) {
+                        GLog.w(Messages.get(VirtualControls.class, "down_score"));
                         ScoreBuff buff = hero.buff(ScoreBuff.class);
                         buff.downScore(100);
-                        hero.sprite.showStatus(Window.R_COLOR, "-"+100);
+                        hero.sprite.showStatus(Window.R_COLOR, "-" + 100);
                     }
 
                     // 用于记录已经被占用的目标位置
@@ -133,7 +129,7 @@ public class VirtualControls extends Group {
                                 int nearestTarget = findNearestUnoccupiedPosition(currentPos, targetPositions, occupiedPositions);
                                 if (nearestTarget != -1) {
                                     movesToMake.add(new BoxMove((MoveBoxHollowActorLevel.Box) mob, currentPos, nearestTarget));
-                                    occupiedPositions.add(nearestTarget); // 立即标记为已占用
+                                    occupiedPositions.add(nearestTarget);
                                 }
                             }
                         }
@@ -163,9 +159,9 @@ public class VirtualControls extends Group {
 
             // 辅助类：存储箱子移动信息
             class BoxMove {
-                MoveBoxHollowActorLevel.Box box;
-                int from;
-                int to;
+                final MoveBoxHollowActorLevel.Box box;
+                final int from;
+                final int to;
 
                 BoxMove(MoveBoxHollowActorLevel.Box box, int from, int to) {
                     this.box = box;
@@ -193,7 +189,7 @@ public class VirtualControls extends Group {
                     }
                 });
             }
-            // 辅助方法：找到最近的未被占用的目标位置
+
             private int findNearestUnoccupiedPosition(int currentPos, int[] targetPositions, Set<Integer> occupiedPositions) {
                 int nearestPos = -1;
                 int minDistance = Integer.MAX_VALUE;
@@ -211,7 +207,6 @@ public class VirtualControls extends Group {
                 return nearestPos;
             }
 
-            // 辅助方法：计算两个位置之间的距离
             private int calculateDistance(int pos1, int pos2) {
                 int levelWidth = Dungeon.level.width();
                 int x1 = pos1 % levelWidth;
@@ -219,7 +214,7 @@ public class VirtualControls extends Group {
                 int x2 = pos2 % levelWidth;
                 int y2 = pos2 / levelWidth;
 
-                return Math.abs(x1 - x2) + Math.abs(y1 - y2); // 曼哈顿距离
+                return Math.abs(x1 - x2) + Math.abs(y1 - y2);
             }
 
         };

@@ -82,7 +82,7 @@ public class YogSoul extends Boss {
     @Override
     protected boolean act() {
 
-        if(Dungeon.level.distance(pos, hero.pos) >= 1){
+        if(Dungeon.level.distance(pos, hero.pos) >= 2){
 
             if (buff(FriendBuffGet.class) == null) {
                 Buff.affect(this, FriendBuffGet.class, 5f);

@@ -50,6 +50,12 @@ public class HalomethaneFire extends Blob {
         for (int i = area.left-1; i <= area.right; i++) {
             for (int j = area.top-1; j <= area.bottom; j++) {
                 cell = i + j*Dungeon.level.width();
+
+                // 边界检查
+                if (i < 0 || i >= Dungeon.level.width() || j < 0 || j >= Dungeon.level.height()) {
+                    continue;
+                }
+
                 if (cur[cell] > 0) {
 
                     if (freeze != null && freeze.volume > 0 && freeze.cur[cell] > 0){

@@ -25,6 +25,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ShubNiggurath extends Boss {
 
@@ -85,8 +86,10 @@ public class ShubNiggurath extends Boss {
     public boolean isAlive() {
         if(getClass() == ShubNiggurath.class) {
             if(!notFirst){
-                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if(mob instanceof ShubNiggurathClone || mob instanceof ShubNiggurath && ((ShubNiggurath) mob).notFirst){
+                List<Mob> mobsCopy = new ArrayList<>(Dungeon.level.mobs);
+                for (Mob mob : mobsCopy) {
+                    if(mob instanceof ShubNiggurathClone ||
+                            (mob instanceof ShubNiggurath && ((ShubNiggurath) mob).notFirst)){
                         if(HP <= 0){
                             HP = 500;
                         }
@@ -94,12 +97,10 @@ public class ShubNiggurath extends Boss {
                     }
                 }
             }
-        } else {
-            return super.isAlive();
         }
-
         return super.isAlive();
     }
+
 
     private ShubNiggurath split() {
         ShubNiggurath clone = new ShubNiggurath();

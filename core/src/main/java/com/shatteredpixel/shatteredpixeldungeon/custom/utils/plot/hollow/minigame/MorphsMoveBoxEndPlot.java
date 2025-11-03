@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -94,6 +95,10 @@ public class MorphsMoveBoxEndPlot extends Plot {
     private void process_to_4() {
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.Morphs_3));
         diagulewindow.changeText(Messages.get(this, "message4"));
+        if(hero.buff(ScoreBuff.class)!=null) {
+            ScoreBuff buff = hero.buff(ScoreBuff.class);
+            buff.onlyChecker = true;
+        }
     }
 }
 
