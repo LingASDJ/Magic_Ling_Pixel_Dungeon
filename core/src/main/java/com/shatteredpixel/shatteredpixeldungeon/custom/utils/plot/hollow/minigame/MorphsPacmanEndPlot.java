@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNPC;
@@ -147,6 +148,10 @@ public class MorphsPacmanEndPlot extends Plot {
         if(alw != null){
             alw.detach(hero.belongings.backpack);
         }
+        if(hero.buff(ScoreBuff.class)!=null) {
+            ScoreBuff buff = hero.buff(ScoreBuff.class);
+            buff.onlyChecker = true;
+        }
     }
 
     public static class TwoLet_go extends Item {
@@ -156,6 +161,7 @@ public class MorphsPacmanEndPlot extends Plot {
         {
             image = ItemSpriteSheet.HLPBOOKS;
             cursed = false;
+            stackable = true;
         }
 
         @Override

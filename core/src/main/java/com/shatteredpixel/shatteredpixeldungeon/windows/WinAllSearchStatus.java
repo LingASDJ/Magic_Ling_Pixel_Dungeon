@@ -12,7 +12,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ActivePoint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.AllSearchIQuest;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.AllSearchHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -27,6 +29,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WinAllSearchStatus extends Window {
     private static final int WIDTH = 120;
@@ -38,11 +41,17 @@ public class WinAllSearchStatus extends Window {
     Image escfail;
 
     RenderedTextBlock totalsocre;
-    RenderedTextBlock priceitems;
-    RenderedTextBlock lowitems;
-    RenderedTextBlock middleitems;
-    RenderedTextBlock highitems;
     StyledButton searchButton;
+    public static void removeKeysInArea(int targetDepth) {
+        List<Notes.KeyRecord> keyRecords = new ArrayList<>(Notes.getRecords(Notes.KeyRecord.class));
+        for (Notes.KeyRecord record : keyRecords) {
+            if (record.depth() == targetDepth) {
+                Key key = record.key;
+                Notes.remove(key);
+            }
+        }
+    }
+
 
     public WinAllSearchStatus(){
 
@@ -118,6 +127,8 @@ public class WinAllSearchStatus extends Window {
                 Buff.detach( hero, ScoreBuff.class);
                 Buff.detach(hero, ActivePoint.class);
                 Buff.detach(hero, AllSearchHollowActorLevel.RecordTimeDead.class);
+
+                removeKeysInArea(Dungeon.depth);
             }
         };
         searchButton.icon(new Image(Icons.get(Icons.CATALOG)));

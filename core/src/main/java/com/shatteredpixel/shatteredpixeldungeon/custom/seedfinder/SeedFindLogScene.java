@@ -118,7 +118,7 @@ public class SeedFindLogScene extends PixelScene {
                 if (positive && !text.isEmpty() && floorOption) {
                     String[] itemList = floorOption ? Arrays.copyOfRange(text.split("\n"), 1, text.split("\n").length) : text.split("\n");
 
-                    Component content = list.content();
+                    content = list.content();
                     content.clear();
 
                     r = PixelScene.renderTextBlock("abc",7);

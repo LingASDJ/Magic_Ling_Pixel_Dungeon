@@ -60,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.SmallLeafSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YetYogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSoulSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZakoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -129,7 +130,7 @@ public class vM0_7_X_Changes {
     }
 
     public static void add_V0900_Changes(ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.9.0.0-1", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.9.0.0-2", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -150,10 +151,19 @@ public class vM0_7_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DEATHRONG_BOAT), ("新武器：卡戎的船桨"),
                 ("武器设计：小叶\n\n如果你的脚下是水面，则对此次攻击目标的攻击伤害将传导至水面上的所有敌人，每扩大一格，伤害就丢失若干。\n\n小船儿荡起双桨，让我们推开波浪~\n\n<#FFA500>渊落古堡外传击败刻耳柏洛斯限定武器，再次感谢你游玩魔绫的首个外传。<RGB>")));
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.IRON_KEY), ("新机制：赘余钥匙清理"),
+                ("在小游戏全面搜查结束后，将移除全部多余的钥匙。")));
+
         Image mp = new MorpheusSprite();
         mp.scale.set(PixelScene.align(0.6f));
         changes.addButton(new ChangeButton(mp, ("新Boss：墨菲厄斯"),
                 ("盛大的剧目即将开演，猩红的宴会现在开始！")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：繁体中文"),
+                ("来自Sotis的繁体中文已经更新")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY_LAND), ("UI更新"),
+                ("由 BrogField 制作的桌面端全尺寸已经实装，欢迎使用！")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CASTLE_AIRPORT), ("首个外传：渊落古堡"),
                 (
@@ -214,6 +224,16 @@ public class vM0_7_X_Changes {
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 "魔绫像素地牢-修复内容：\n\n" +
+                        ("0.9.0.2-修复内容：\n" +
+                                "_-_ 修复三大小游戏流程问题，即便崩溃也不会再卡死游戏进程\n" +
+                                "_-_ 修复查种器因为控件调用不一致导致的崩溃\n" +
+                                "_-_ 修复角斗士连击技能的一些判定问题导致的游戏崩溃\n" +
+                                "_-_ 修复撤离点效果的一些判定问题导致的游戏崩溃\n" +
+                                "_-_ 修复推箱子错误的坐标算法导致的部分状态下的按钮错乱"
+                        )));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "魔绫像素地牢-修复内容：\n\n" +
                         ("0.9.0.1-修复内容：\n" +
                                 "_-_ 修复传送晶柱可回到 0 层的异常问题\n" +
                                 "_-_ 修复0层使用金蝶可以荆棘嬗变相关异常问题\n" +
@@ -231,6 +251,10 @@ public class vM0_7_X_Changes {
                                 "中测相关反馈问题已经完全修复。\n" +
                                 "中测协力领航人：Archetto喵 大猫 太上忘情"
                         )));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.素材优化迭代\n" +
+                        "2.古堡图块优化迭代")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
         changes.hardlight(Window.GREEN_COLOR);
@@ -254,6 +278,9 @@ public class vM0_7_X_Changes {
                 ("1.分裂个体至多为18个，超过这个后不再自动分裂，攻击也无法自动分裂\n" +
                         "2.现在本体有 突变爆炸体 的特殊标记\n" +
                         "3.现在可以吃到灵爆秘卷的伤害")));
+
+        changes.addButton(new ChangeButton(new YogSoulSprite(), ("犹格·索托斯"),
+                ("在 犹格·索托斯 周围时，犹格·索托斯将不再释放任何技能。")));
     }
 
     public static void add_V0880_Changes(ArrayList<ChangeInfo> changeInfos ) {

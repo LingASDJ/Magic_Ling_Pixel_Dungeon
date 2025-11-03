@@ -69,7 +69,9 @@ public class HelpTeleportPoint extends NTNPC {
                         if (index == 0 && MaxActive < 2 && !activeX) {
                             activeX = true;
                             ActivePoint buff = hero.buff(ActivePoint.class);
-                            buff.Active(1);
+                            if(buff != null){
+                                buff.Active(1);
+                            }
                             MaxActive++;
                             hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(HelpTeleportPointSprites.class, "active"));
 

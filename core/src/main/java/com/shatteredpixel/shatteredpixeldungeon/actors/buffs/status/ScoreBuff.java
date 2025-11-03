@@ -58,7 +58,7 @@ public class ScoreBuff extends Buff {
     public int SmallPoint = 300;
     public int BiggerPoint = 300;
 
-    public boolean PacMan = false;
+    public boolean onlyChecker = false;
     public int PacManLevel = 0;
 
     public int GameRules;
@@ -116,7 +116,7 @@ public class ScoreBuff extends Buff {
 
             //推箱子
             MoveBoxHollowActorLevel level = (Dungeon.level instanceof MoveBoxHollowActorLevel) ? (MoveBoxHollowActorLevel) Dungeon.level : null;
-            if(ScoreBar.Rules == 2 && level != null && !PacMan){
+            if(ScoreBar.Rules == 2 && level != null && !onlyChecker){
                 turns++;
                 maxTurns = moveMaxTurns();
                 if(turns > maxTurns){
@@ -137,7 +137,7 @@ public class ScoreBuff extends Buff {
 
                     Dungeon.level.drop(new MoveBoxHollowActorLevel.ThreeLet_go(),level.heroCellRules());
                     ScrollOfTeleportation.appear(hero, level.heroCellRules());
-                    PacMan = true;
+
                     int count = 0;
                     for (Mob mob : Dungeon.level.mobs) {
                         if (mob instanceof MoveBoxHollowActorLevel.Box) {
@@ -157,7 +157,7 @@ public class ScoreBuff extends Buff {
             }
 
             //吃豆人
-            if(SmallPoint == 0 && BiggerPoint == 0 && !PacMan && Dungeon.depth == 31 && branch == 1){
+            if(SmallPoint == 0 && BiggerPoint == 0 && !onlyChecker && Dungeon.depth == 31 && branch == 1){
                 MorphsPacmanEndPlot plot = new MorphsPacmanEndPlot();
                 Game.runOnRenderThread(new Callback() {
                     @Override
@@ -166,7 +166,6 @@ public class ScoreBuff extends Buff {
                     }
                 });
                SPDSettings.PacManScore(score);
-               PacMan = true;
                Statistics.getPacManScore = score;
 
                //S评估
@@ -284,7 +283,7 @@ public class ScoreBuff extends Buff {
         bundle.put( HSOCRE, hscore);
         bundle.put(SMALL, SmallPoint);
         bundle.put(BIGGER, BiggerPoint);
-        bundle.put(PACMAN, PacMan);
+        bundle.put(PACMAN, onlyChecker);
         bundle.put(PACMANLEVEL, PacManLevel);
         bundle.put(GAMERULES, GameRules);
         bundle.put(GAMETURNS, turns);
@@ -297,7 +296,7 @@ public class ScoreBuff extends Buff {
         hscore = bundle.getInt( HSOCRE );
         SmallPoint = bundle.getInt(SMALL);
         BiggerPoint = bundle.getInt(BIGGER);
-        PacMan = bundle.getBoolean(PACMAN);
+        onlyChecker = bundle.getBoolean(PACMAN);
         PacManLevel = bundle.getInt(PACMANLEVEL);
         GameRules = bundle.getInt(GAMERULES);
         turns = bundle.getInt(GAMETURNS);

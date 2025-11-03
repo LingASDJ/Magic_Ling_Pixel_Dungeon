@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghos
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Junko;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Pink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Smart;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.minigame.MorphsPacmanEndPlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -172,6 +173,7 @@ public class PacmanHollowActorLevel extends Level {
                buff.onlyItem = true;
             }
         }
+
 
         ScoreBuff scoreBuff = hero.buff(ScoreBuff.class);
         int bigPointCount = 0;
