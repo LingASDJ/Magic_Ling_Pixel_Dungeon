@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Random;
 
 import java.util.HashSet;
@@ -134,6 +135,16 @@ public class GalaxyKeyBossLevel extends Level {
     public static int[] RandomPos = new int[]{
             1152,1263,1053,1336,1263,1177,1187
     };
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.YOGALXY,true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Music.playModeBGM(Assets.Music.YOGGOD,true);
+    }
 
     //四 碑 法 阵
     public static int[] FourStoneTower = new int[]{

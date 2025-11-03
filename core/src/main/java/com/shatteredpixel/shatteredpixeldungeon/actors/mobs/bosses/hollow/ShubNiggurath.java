@@ -86,7 +86,7 @@ public class ShubNiggurath extends Boss {
         if(getClass() == ShubNiggurath.class) {
             if(!notFirst){
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if(mob instanceof ShubNiggurathClone){
+                    if(mob instanceof ShubNiggurathClone || mob instanceof ShubNiggurath && ((ShubNiggurath) mob).notFirst){
                         if(HP <= 0){
                             HP = 500;
                         }
