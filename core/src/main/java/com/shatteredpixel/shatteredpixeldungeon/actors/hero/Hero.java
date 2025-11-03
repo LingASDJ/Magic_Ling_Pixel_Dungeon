@@ -3142,7 +3142,27 @@ public class Hero extends Char {
 			}
 		}
 
-		if (ankh != null) {
+		if(Dungeon.depth == 31 && (Statistics.Hollow_Holiday || Dungeon.isDLC(Conducts.Conduct.DEV))){
+			interrupt();
+			resting = false;
+			this.HP = HT / 4;
+			PotionOfHealing.cure(this);
+			Buff.prolong(this, Invulnerability.class, Invulnerability.DURATION);
+			SpellSprite.show(this, SpellSprite.ANKH);
+			GameScene.flash(0x80FFFF40);
+
+			if(branch == 3){
+				Game.runOnRenderThread(() -> GameScene.show(new WinAllSearchStatus()));
+
+
+				if(hero.buff(ScoreBuff.class)!=null) {
+					ScoreBuff buffs = hero.buff(ScoreBuff.class);
+					SPDSettings.AllSearchScore(buffs.score/2);
+					Statistics.getAlLSearchScore = buffs.score/2;
+				}
+			}
+			return;
+		} else if (ankh != null) {
 			interrupt();
 			resting = false;
 
@@ -3225,21 +3245,6 @@ public class Hero extends Char {
 			}
 
 			Dungeon.level.unseal();
-			return;
-		} else if(branch == 3 && Dungeon.depth == 31){
-			this.HP = HT / 4;
-			PotionOfHealing.cure(this);
-			Buff.prolong(this, Invulnerability.class, Invulnerability.DURATION);
-			SpellSprite.show(this, SpellSprite.ANKH);
-			GameScene.flash(0x80FFFF40);
-
-			Game.runOnRenderThread(() -> GameScene.show(new WinAllSearchStatus()));
-
-			if(hero.buff(ScoreBuff.class)!=null) {
-				ScoreBuff buffs = hero.buff(ScoreBuff.class);
-				SPDSettings.AllSearchScore(buffs.score/2);
-				Statistics.getAlLSearchScore = buffs.score/2;
-			}
 			return;
 		}
 
