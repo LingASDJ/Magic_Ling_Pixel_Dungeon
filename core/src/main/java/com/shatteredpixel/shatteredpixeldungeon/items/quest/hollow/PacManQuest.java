@@ -50,6 +50,7 @@ public class PacManQuest extends Item {
         GameScene.pickUp(this, pos);
         Sample.INSTANCE.play( Assets.Sounds.ITEM );
         hero.spendAndNext( 0f );
+        Catalog.setSeen(getClass());
         return true;
     }
 
@@ -69,7 +70,6 @@ public class PacManQuest extends Item {
             int score = 10;
             GetScore(hero,score);
             hero.sprite.showStatus(Window.TITLE_COLOR, "+"+score);
-            Catalog.setSeen(getClass());
             return true;
         }
     }
@@ -87,7 +87,6 @@ public class PacManQuest extends Item {
             GetScore(hero,score);
             hero.sprite.showStatus(Window.TITLE_COLOR, "+"+score);
             Buff.affect(hero, AntiAttack.class, AntiAttack.DURATION);
-            Catalog.setSeen(getClass());
             return true;
         }
     }

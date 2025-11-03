@@ -21,12 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.AllSearchIQuest;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-
-import java.util.ArrayList;
 
 public class LingBag extends Bag {
 
@@ -44,12 +41,7 @@ public class LingBag extends Bag {
     }
 
     public int capacity(){
-        return 30;
-    }
-
-    @Override
-    public ArrayList<String> actions(Hero hero) {
-        return new ArrayList<>();
+        return 40;
     }
 
 }

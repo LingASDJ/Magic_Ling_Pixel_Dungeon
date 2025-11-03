@@ -9,6 +9,8 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.MorphsE
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.MorphsGodEndTheaterPlot;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.MorphsNPCPlot;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.minigame.MorphsAllEndPlot;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.LingBag;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
@@ -46,14 +48,20 @@ public class MorphsNPC extends GodNPC {
 
         sprite.turnTo(pos, Dungeon.hero.pos);
 
+
         if(Dungeon.depth == 31 && Statistics.deepestFloor == 31){
-            MorphsNPCPlot plot = new MorphsNPCPlot();
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndDialog(plot,false));
-                }
-            });
+            LingBag lingBag = Dungeon.hero.belongings.getItem(LingBag.class);
+            if(lingBag != null){
+                MorphsNPCPlot plot = new MorphsNPCPlot();
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndDialog(plot,false));
+                    }
+                });
+            } else {
+                yell(Messages.get(this, "lingbag"));
+            }
             return true;
         } else if(Dungeon.depth == 32 && first) {
             Plot plot;

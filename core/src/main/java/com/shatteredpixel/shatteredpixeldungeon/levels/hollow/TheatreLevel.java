@@ -7,8 +7,10 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNPC;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.LingBag;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
@@ -25,6 +27,9 @@ public class TheatreLevel extends Level {
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
+        if(Dungeon.depth == 31){
+            super.activateTransition(hero, transition);
+        }
         return false;
     }
 
@@ -120,6 +125,10 @@ public class TheatreLevel extends Level {
         MorphsNPC boss = new MorphsNPC();
         boss.pos = 136;
         mobs.add(boss);
+
+        if(Dungeon.depth == 31 && Statistics.deepestFloor == 31){
+           drop(new LingBag(),157);
+        }
     }
 
     @Override

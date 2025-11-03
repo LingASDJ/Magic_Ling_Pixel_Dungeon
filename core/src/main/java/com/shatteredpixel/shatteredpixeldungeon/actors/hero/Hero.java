@@ -254,6 +254,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
@@ -1185,50 +1186,53 @@ public class Hero extends Char {
 		}
 
 		boolean isNyzAlive = false;
-		if(Dungeon.level.map[pos] == Terrain.TRAP){
-			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-                if (mob instanceof Nyarlathotep) {
-                    isNyzAlive = true;
-                    break;
-                }
-			}
-			if(isNyzAlive){
-				for (Buff buff : buffs()) {
-					if(buff instanceof ScaryDamageBuff || buff instanceof ScaryImmunitiesBuff){
-						int heartDamage = (int) (20 * Random.NormalFloat(0.5f, 1));
-						enemy.damage(heartDamage, new DM100.LightningBolt());
-						for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-							mob.HP += Math.max(HT,heartDamage);
-						}
-					} else if (buff instanceof ScaryBuff) {
-						if(((ScaryBuff) buff).Scary > 100){
-							damage(20,this,DamageType.MAGIC);
-						} else {
+		if(Dungeon.level instanceof MorpheusBossLevel){
+			if(Dungeon.level.map[pos] == Terrain.TRAP){
+				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+					if (mob instanceof Nyarlathotep) {
+						isNyzAlive = true;
+						break;
+					}
+				}
+				if(isNyzAlive){
+					for (Buff buff : buffs()) {
+						if(buff instanceof ScaryDamageBuff || buff instanceof ScaryImmunitiesBuff){
 							int heartDamage = (int) (20 * Random.NormalFloat(0.5f, 1));
 							enemy.damage(heartDamage, new DM100.LightningBolt());
 							for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
 								mob.HP += Math.max(HT,heartDamage);
 							}
-							((ScaryBuff) buff).damgeScary(20);
-						}
-					} else {
-						Buff.affect(this, ScaryBuff.class).set((100), 5);
-					}
-				}
-			} else {
-				for (Buff buff : buffs()) {
-					if (buff instanceof ScaryBuff) {
-						if(((ScaryBuff) buff).Scary > 100){
-							damage(10,this,DamageType.MAGIC);
+						} else if (buff instanceof ScaryBuff) {
+							if(((ScaryBuff) buff).Scary > 100){
+								damage(20,this,DamageType.MAGIC);
+							} else {
+								int heartDamage = (int) (20 * Random.NormalFloat(0.5f, 1));
+								enemy.damage(heartDamage, new DM100.LightningBolt());
+								for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+									mob.HP += Math.max(HT,heartDamage);
+								}
+								((ScaryBuff) buff).damgeScary(20);
+							}
 						} else {
-							((ScaryBuff) buff).damgeScary(10);
+							Buff.affect(this, ScaryBuff.class).set((100), 5);
 						}
-					} else {
-						Buff.affect(this, ScaryBuff.class).set((100), 5);
+					}
+				} else {
+					for (Buff buff : buffs()) {
+						if (buff instanceof ScaryBuff) {
+							if(((ScaryBuff) buff).Scary > 100){
+								damage(10,this,DamageType.MAGIC);
+							} else {
+								((ScaryBuff) buff).damgeScary(10);
+							}
+						} else {
+							Buff.affect(this, ScaryBuff.class).set((100), 5);
+						}
 					}
 				}
 			}
 		}
+
 
 		if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.depth>0 && !Dungeon.bossLevel()){
 			if(Dungeon.level.map[pos] == Terrain.SALT_WATER && !flying && Dungeon.hero.buff(WaterSoulX.class) == null){

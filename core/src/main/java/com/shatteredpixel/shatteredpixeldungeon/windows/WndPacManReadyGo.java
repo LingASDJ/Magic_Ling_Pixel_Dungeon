@@ -11,8 +11,8 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.TestItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.LingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
@@ -172,7 +172,6 @@ public class WndPacManReadyGo extends Window {
                 Buff.affect( hero, LostInventory.class);
                 Buff.affect( hero, ScoreMiniGame.class).set((100), 1);
                 GameScene.cure( Dungeon.hero );
-                new LingBag().quantity(1).identify().collect();
             }
         };
         btnContinue.setRect( 0, btnItem1.bottom() + BTN_GAP, WIDTH, BTN_HEIGHT );
@@ -190,7 +189,7 @@ public class WndPacManReadyGo extends Window {
 
         @Override
         public boolean itemSelectable(Item item) {
-            return item instanceof Weapon || item instanceof Ring && !(item instanceof RingOfHaste) || item instanceof Armor || item instanceof Artifact;
+            return item instanceof Weapon || item instanceof Ring && !(item instanceof RingOfHaste) || item instanceof Armor || item instanceof Artifact && !(item instanceof EtherealChains);
         }
 
         @Override

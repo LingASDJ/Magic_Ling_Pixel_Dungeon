@@ -1,7 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
@@ -21,11 +25,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.InventoryScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -35,8 +41,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Tipp
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.utils.Reflection;
 
 public class ScrollOfTeleTation extends InventoryScroll {
@@ -53,6 +61,14 @@ public class ScrollOfTeleTation extends InventoryScroll {
 
     @Override
     protected boolean usableOnItem(Item item) {
+
+        if(item instanceof BloodthirstyThorn){
+            if(item.level<10){
+                return false;
+            } else if(item.level() >= 10 && Statistics.OnlyBloodUpgrade){
+                return false;
+            }
+        }
 
         if(item instanceof MeleeWeapon) {
             if(item instanceof LockSword)
@@ -144,6 +160,45 @@ public class ScrollOfTeleTation extends InventoryScroll {
     }
 
     public static Item changeItem( Item item ){
+
+        if(item instanceof BloodthirstyThorn && item.level() >= 10 && !Statistics.OnlyBloodUpgrade){
+            ShatteredPixelDungeon.scene().add(new WndOptions(new ItemSprite(item.image()),
+                    item.name(),
+                    Messages.get(ScrollOfTransmutation.class, SPDSettings.blood() ? "bloodthirsty_areyts" : "bloodthirsty_areyou"),
+                    Messages.get(ScrollOfTransmutation.class, "bloodthirsty_yes"),
+                    Messages.get(ScrollOfTransmutation.class, "bloodthirsty_no")) {
+                @Override
+                protected void onSelect(int index) {
+                    if (index == 0) {
+                        Statistics.OnlyBloodUpgrade = true;
+                        GLog.p( Messages.get(ScrollOfTransmutation.class, "bloodthirsty") );
+                        Dungeon.level.drop(new ScrollOfUpgrade(),hero.pos);
+                        ScrollOfTransmutation s = hero.belongings.getItem(ScrollOfTransmutation.class);
+                        if (s != null) {
+                            s.detach( hero.belongings.backpack );
+                        }
+                        if(hero.belongings.weapon instanceof BloodthirstyThorn){
+                            hero.belongings.weapon = null;
+                        } else {
+                            item.detach( hero.belongings.backpack );
+                        }
+                        super.hide();
+                        SPDSettings.blood(true);
+                    } else if(index == 1){
+                        super.hide();
+                    }
+                }
+                @Override
+                public void hide() {
+                }
+            });
+            return null;
+        } else if(item instanceof BloodthirstyThorn && item.level() < 10){
+            return null;
+        } else if(item instanceof BloodthirstyThorn && item.level() >= 10 && Statistics.OnlyBloodUpgrade){
+            return null;
+        }
+
         if (item instanceof MagesStaff) {
             return changeStaff((MagesStaff) item);
         }else if (item instanceof TippedDart){

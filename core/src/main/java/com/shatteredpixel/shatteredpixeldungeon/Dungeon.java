@@ -73,6 +73,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.LinkLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ZeroCityLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ZeroLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.AllSearchHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
@@ -571,6 +573,8 @@ public class Dungeon {
         return !Dungeon.level.locked
                 && !(Dungeon.level instanceof MiningLevel)
                 && !(Dungeon.level instanceof TheatreLevel)
+				&& !(Dungeon.level instanceof ZeroLevel)
+				&& !(Dungeon.level instanceof ZeroCityLevel)
                 && !(Dungeon.level instanceof MorpheusBossLevel)
                 && !(Dungeon.level instanceof PacmanHollowActorLevel)
                 && !(Dungeon.level instanceof MoveBoxHollowActorLevel)

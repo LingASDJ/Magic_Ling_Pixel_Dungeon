@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -95,7 +94,7 @@ public class WandOfTransfusion extends DamageWand {
 
 				int healing = selfDmg + 3*buffedLvl();
 				int shielding = (ch.HP + healing) - ch.HT;
-				if (shielding > 0 && (Dungeon.depth != 5 && (Dungeon.depth != 33&& Statistics.Hollow_Holiday))){
+				if (shielding > 0 && Dungeon.depth != 5){
 					healing -= shielding;
 					Buff.affect(ch, Barrier.class).setShield(shielding);
 				} else {
@@ -129,7 +128,7 @@ public class WandOfTransfusion extends DamageWand {
 					ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2 + buffedLvl() / 2);
 					ch.sprite.showStatus(CharSprite.WARNING, "+0SP");
 					GLog.n(Messages.get(this, "error"));
-				} else if(Dungeon.depth != 5 && (Dungeon.depth != 33 && Statistics.Hollow_Holiday)){
+				} else if(Dungeon.depth != 5){
 					//grant a self-shield, and...
 					Buff.affect(curUser, Barrier.class).setShield((5 + (int)(1.5f*buffedLvl())));
 					curUser.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(5+buffedLvl()), FloatingText.SHIELDING);

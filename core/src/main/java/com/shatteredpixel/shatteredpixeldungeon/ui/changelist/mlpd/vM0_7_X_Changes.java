@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShieldHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShubNiggurathSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SkyDeadSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SmallLeafSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
@@ -128,7 +129,7 @@ public class vM0_7_X_Changes {
     }
 
     public static void add_V0900_Changes(ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.9.0.0", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.9.0.0-1", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -213,10 +214,32 @@ public class vM0_7_X_Changes {
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 "魔绫像素地牢-修复内容：\n\n" +
+                        ("0.9.0.1-修复内容：\n" +
+                                "_-_ 修复传送晶柱可回到 0 层的异常问题\n" +
+                                "_-_ 修复0层使用金蝶可以荆棘嬗变相关异常问题\n" +
+                                "_-_ 修复墨菲厄运斯三阶段四柱异常问题\n" +
+                                "_-_ 修复部分古堡物品图鉴解锁异常问题\n" +
+                                "_-_ 修复注魂法杖异常问题\n" +
+                                "_-_ 修复陷阱给予心魔损伤异常问题\n" +
+                                "_-_ 修复全面搜查刷分异常问题\n" +
+                                "_-_ 修复吃豆人可以使用虚空锁链的问题"
+                        )));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "魔绫像素地牢-修复内容：\n\n" +
                         ("0.9.0.0-修复内容：\n" +
                                 "中测相关反馈问题已经完全修复。\n" +
                                 "中测协力领航人：Archetto喵 大猫 太上忘情"
                         )));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        Image s =new ShubNiggurathSprite();
+        s.scale.set(PixelScene.align(0.4f));
+        changes.addButton(new ChangeButton(s, ("莎布·尼古拉丝"),
+                ("灵爆秘卷对其的伤害降低60%。")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changes.hardlight(Window.R_COLOR);
@@ -224,6 +247,13 @@ public class vM0_7_X_Changes {
 
         changes.addButton(new ChangeButton(new TribemanOldSprite(), ("豺狼悍匪"),
                 ("攻速改为2.0，而非之前的0.5。")));
+
+        Image ss =new ShubNiggurathSprite();
+        ss.scale.set(PixelScene.align(0.4f));
+        changes.addButton(new ChangeButton(ss, ("莎布·尼古拉丝"),
+                ("1.分裂个体至多为18个，超过这个后不再自动分裂，攻击也无法自动分裂\n" +
+                        "2.现在本体有 突变爆炸体 的特殊标记\n" +
+                        "3.现在可以吃到灵爆秘卷的伤害")));
     }
 
     public static void add_V0880_Changes(ArrayList<ChangeInfo> changeInfos ) {
