@@ -229,7 +229,9 @@ public class vM0_7_X_Changes {
                                 "_-_ 修复查种器因为控件调用不一致导致的崩溃\n" +
                                 "_-_ 修复角斗士连击技能的一些判定问题导致的游戏崩溃\n" +
                                 "_-_ 修复撤离点效果的一些判定问题导致的游戏崩溃\n" +
-                                "_-_ 修复推箱子错误的坐标算法导致的部分状态下的按钮错乱"
+                                "_-_ 修复推箱子错误的坐标算法导致的部分状态下的按钮错乱\n" +
+                                "_-_ 任何类型十字架现在小游戏中无任何作用，但英雄也永远不会在小游戏中死亡\n" +
+                                "_-_ 修复抢劫返还十字架异常"
                         )));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
