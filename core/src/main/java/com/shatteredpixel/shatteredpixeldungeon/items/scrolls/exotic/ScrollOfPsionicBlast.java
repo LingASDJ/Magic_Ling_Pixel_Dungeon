@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.ShubNiggurath;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -64,9 +65,14 @@ public class ScrollOfPsionicBlast extends ExoticScroll {
 		for (Mob mob : targets){
 			//always kills non-resistant enemies
 			//resistant enemies take 50% current HP at full health, scaling to 75% at 1/2 HP, and 100% at 1/3 hp
-			mob.damage(Math.round(mob.HT/2f + mob.HP/2f), this);
-			if (mob.isAlive()) {
-				Buff.prolong(mob, Blindness.class, Blindness.DURATION);
+
+			if(mob instanceof ShubNiggurath){
+				mob.damage(Math.round(mob.HT/5f + mob.HP/5f), this);
+			} else {
+				mob.damage(Math.round(mob.HT/2f + mob.HP/2f), this);
+				if (mob.isAlive()) {
+					Buff.prolong(mob, Blindness.class, Blindness.DURATION);
+				}
 			}
 		}
 		

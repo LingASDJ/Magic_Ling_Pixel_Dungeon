@@ -8,12 +8,19 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 
+import java.util.ArrayList;
+
 abstract public class AllSearchIQuest extends Item {
 
     public int RXlevel;
 
     {
         stackable = false;
+    }
+
+    @Override
+    public ArrayList<String> actions(Hero hero) {
+        return new ArrayList<>();
     }
 
     @Override

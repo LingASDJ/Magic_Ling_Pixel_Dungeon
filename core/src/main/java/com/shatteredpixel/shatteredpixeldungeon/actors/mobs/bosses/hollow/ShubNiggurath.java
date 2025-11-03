@@ -18,7 +18,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShubNiggurathSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
@@ -29,21 +28,17 @@ import java.util.ArrayList;
 
 public class ShubNiggurath extends Boss {
 
-    public int summonIndex = 0;
-
     public int notDamage = 0;
 
     public boolean notFirst = false;
 
     {
-        initProperty();
         initBaseStatus(0, 0, 0, 0, 4000, 0, 0);
         initStatus(20);
         spriteClass = ShubNiggurathSprite.class;
 
-        properties.add(Property.BOSS);
-        properties.add(Property.ACIDIC);
-
+        properties.add(Property.UNKNOWN);
+        properties.add(Property.MINIBOSS);
         noDropIceCoin = true;
     }
     int generation	= 0;
@@ -65,15 +60,16 @@ public class ShubNiggurath extends Boss {
                 }
             }
 
-            if (candidates.size() > 0 && summonIndex < 17) {
+            if (!candidates.isEmpty() && !hasTooManyShubs()) {
 
                 ShubNiggurath clone = split();
-                clone.pos = Random.element( candidates );
                 clone.notFirst = true;
                 clone.state = clone.HUNTING;
                 GameScene.add( clone, SPLIT_DELAY ); //we add before assigning HP due to ascension
 
                 clone.HP = (HP - damage) / 2;
+                Dungeon.level.randomDestination(clone);
+                clone.pos = Dungeon.level.randomDestination(clone);
                 Actor.add( new Pushing( clone, pos, clone.pos ) );
 
                 Dungeon.level.occupyCell(clone);
@@ -122,11 +118,10 @@ public class ShubNiggurath extends Boss {
         return clone;
     }
 
+
     @Override
     public void damage(int dmg, Object src, DamageType type) {
-        if(src == Trap.class){
-            return;
-        }
+        super.damage(dmg, src, type);
         BossHealthBar.assignBoss(this);
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) {
@@ -134,7 +129,6 @@ public class ShubNiggurath extends Boss {
             lock.addTime(dmg*multiple);
         }
         notDamage = 0;
-        super.damage(dmg, src, type);
     }
 
     public static class ShubNiggurathClone extends ShubNiggurath {
@@ -184,12 +178,34 @@ public class ShubNiggurath extends Boss {
         }
     }
 
+    private boolean tooManyShubs = false;
+
+    public boolean hasTooManyShubs() {
+        return tooManyShubs;
+    }
+
     @Override
     protected boolean act() {
         alerted = false;
         state = PASSIVE;
 
-        if(buff(YogSoul.AttackDamageMagic.class)!=null && Dungeon.level.distance(pos, hero.pos) <= 7){
+        if(!notFirst){
+            initProperty();
+            Buff.affect(this, ChampionEnemy.Bomber.class);
+        } else {
+            Buff.detach(this, ChampionEnemy.Bomber.class);
+        }
+
+        int shubCount = 0;
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof ShubNiggurath) {
+                shubCount++;
+            }
+        }
+
+        tooManyShubs = shubCount >= 18;
+
+        if(buff(YogSoul.AttackDamageMagic.class)!=null && Dungeon.level.distance(pos, hero.pos) <= 7 && !hasTooManyShubs()){
             if (enemy != null && enemy == hero && enemySeen) {
                 boolean isNyzAlive = false;
                 for (Mob mob : Dungeon.level.mobs) {
@@ -227,7 +243,7 @@ public class ShubNiggurath extends Boss {
             }
         }
 
-        if (buff(HeartMagicDamage.class) == null && (getClass() == ShubNiggurath.class) && summonIndex < 17 && notDamage >=8) {
+        if (buff(HeartMagicDamage.class) == null && (getClass() == ShubNiggurath.class) && !hasTooManyShubs() && notDamage >=8) {
             Buff.affect(this, HeartMagicDamage.class, 10f);
             ShubNiggurathClone clone = new ShubNiggurathClone();
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
@@ -237,7 +253,7 @@ public class ShubNiggurath extends Boss {
                     clone.notFirst = true;
                 }
             }
-            summonIndex++;
+
             clone.pos = Dungeon.level.randomDestination(clone);
             GameScene.add(clone, 1f);
             Actor.add( new Pushing( clone, pos, clone.pos ) );
@@ -287,17 +303,13 @@ public class ShubNiggurath extends Boss {
     }
 
     private static final String GENERATION	= "generation";
-    private static final String SUMMON_INDEX	= "summon_index";
-
     private static final String NOTFIRST_INDEX	= "notfirst_index";
-
     private static final String NOT_DAMAGE	= "not_damage";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
         bundle.put( GENERATION, generation );
-        bundle.put( SUMMON_INDEX, summonIndex );
         bundle.put(NOTFIRST_INDEX, notFirst);
         bundle.put(NOT_DAMAGE, notDamage);
     }
@@ -306,7 +318,6 @@ public class ShubNiggurath extends Boss {
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle( bundle );
         generation = bundle.getInt( GENERATION );
-        summonIndex = bundle.getInt( SUMMON_INDEX );
         if (generation > 0) EXP = 0;
         notFirst = bundle.getBoolean(NOTFIRST_INDEX);
         notDamage = bundle.getInt(NOT_DAMAGE);
@@ -325,7 +336,6 @@ public class ShubNiggurath extends Boss {
                 }
             }
         }
-        summonIndex--;
     }
 
     public static class HeartMagicDamage extends FlavourBuff {
