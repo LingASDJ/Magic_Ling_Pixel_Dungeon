@@ -89,15 +89,15 @@ public class YogSoul extends Boss {
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                     if (mob instanceof ShubNiggurath) {
                         mob.HT += 200;
-                        mob.HP += (int) (mob.HT * 0.05f);
+                        mob.HP += Math.min( (int) (mob.HT * 0.05f), mob.HT - mob.HP);
                     }
                     if (mob instanceof Nyarlathotep) {
                         mob.HT += 100;
-                        mob.HP += (int) (mob.HT * 0.05f);
+                        mob.HP += Math.min( (int) (mob.HT * 0.05f), mob.HT - mob.HP);
                     }
                 }
                 HT += 100;
-                HP += (int) (HT * 0.05f);
+                HP += Math.min( (int) (HT * 0.05f), HT - HP);
             }
             
             if(buff(ReHealHP.class)==null){

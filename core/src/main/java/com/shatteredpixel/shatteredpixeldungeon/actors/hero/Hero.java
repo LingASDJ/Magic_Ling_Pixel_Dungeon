@@ -1219,7 +1219,9 @@ public class Hero extends Char {
 					}
 				} else {
 					for (Buff buff : buffs()) {
-						if (buff instanceof ScaryBuff) {
+						if(buff instanceof ScaryDamageBuff || buff instanceof ScaryImmunitiesBuff) {
+							damage(10,this,DamageType.MAGIC);
+						} else if (buff instanceof ScaryBuff) {
 							if(((ScaryBuff) buff).Scary > 100){
 								damage(10,this,DamageType.MAGIC);
 							} else {
