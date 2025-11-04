@@ -7,7 +7,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.LingBag;
@@ -126,9 +125,7 @@ public class TheatreLevel extends Level {
         boss.pos = 136;
         mobs.add(boss);
 
-        if(Dungeon.depth == 31 && Statistics.deepestFloor == 31){
-           drop(new LingBag(),157);
-        }
+        new LingBag().collect();
     }
 
     @Override
