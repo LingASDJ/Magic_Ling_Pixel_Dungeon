@@ -139,8 +139,10 @@ public class SeedFindLogScene extends PixelScene {
                             txt.setRect((Camera.main.width - colWidth)/2f, 12, colWidth, 0);
 
                             if (!thread.isInterrupted()) {
-                                content.add(txt);
-                                content.setSize( fullWidth, txt.bottom()+10 );
+                                if(content != null){
+                                    content.add(txt);
+                                    content.setSize( fullWidth, txt.bottom()+10 );
+                                }
                             }
 
                             if (list.isActive()) {
