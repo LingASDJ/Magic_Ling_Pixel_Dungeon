@@ -6,6 +6,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 public class UpdateChecker {
 	public static JsonNode config;
 	// 配置获取地址
@@ -59,8 +66,54 @@ public class UpdateChecker {
 	}
 
 	public static void getHttpStringFromUrl(String url, Net.HttpResponseListener listener) {
-		Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
-		request.setUrl(url);
-		Gdx.net.sendHttpRequest(request, listener);
+		try {
+			// 如果是HTTPS请求，设置SSL上下文
+			if (url.startsWith("https://")) {
+				// 创建信任所有证书的TrustManager
+				TrustManager[] trustAllCerts = new TrustManager[] {
+						new X509TrustManager() {
+							public X509Certificate[] getAcceptedIssuers() {
+								return null;
+							}
+							public void checkClientTrusted(X509Certificate[] certs, String authType) {
+							}
+							public void checkServerTrusted(X509Certificate[] certs, String authType) {
+							}
+						}
+				};
+
+				// 安装全信任的TrustManager
+				SSLContext sc = SSLContext.getInstance("TLS");
+				sc.init(null, trustAllCerts, new java.security.SecureRandom());
+				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+				// 创建不验证主机名的HostnameVerifier
+				HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+			}
+
+			Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
+			request.setUrl(url);
+			request.setHeader("User-Agent", "Mozilla/5.0");
+
+			Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+				@Override
+				public void handleHttpResponse(Net.HttpResponse httpResponse) {
+					listener.handleHttpResponse(httpResponse);
+				}
+
+				@Override
+				public void failed(Throwable t) {
+					listener.failed(t);
+				}
+
+				@Override
+				public void cancelled() {
+					listener.cancelled();
+				}
+			});
+		} catch (Exception e) {
+			listener.failed(e);
+		}
 	}
+
 }

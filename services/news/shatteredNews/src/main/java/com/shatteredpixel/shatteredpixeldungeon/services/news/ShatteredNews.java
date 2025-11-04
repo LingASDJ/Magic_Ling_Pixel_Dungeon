@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader;
 import com.watabou.noosa.Game;
 
+import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,12 +35,49 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 public class ShatteredNews extends NewsService {
 
-	@Override
-	public void checkForArticles(boolean useMetered, boolean preferHTTPS, NewsResultCallback callback) {
+	private static class TrustAllManager implements X509TrustManager {
+		@Override
+		public void checkClientTrusted(X509Certificate[] chain, String authType) {
+		}
 
+		@Override
+		public void checkServerTrusted(X509Certificate[] chain, String authType) {}
+
+		@Override
+		public X509Certificate[] getAcceptedIssuers() {
+			return new X509Certificate[0];
+		}
+	}
+
+	private static void setupSSL() throws Exception {
+		TrustManager[] trustAllCerts = new TrustManager[] { new TrustAllManager() };
+
+		SSLContext sc = SSLContext.getInstance("TLS");
+		sc.init(null, trustAllCerts, new java.security.SecureRandom());
+		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+		HostnameVerifier allHostsValid = (hostname, session) -> true;
+		HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+	}
+
+	@Override
+	public void checkForArticles(boolean useMetered, boolean preferHTTPS, NewsService.NewsResultCallback callback) {
 		if (!useMetered && !Game.platform.connectedToUnmeteredNetwork()){
+			callback.onConnectionFailed();
+			return;
+		}
+
+		try {
+			setupSSL();
+		} catch (Exception e) {
 			callback.onConnectionFailed();
 			return;
 		}
@@ -50,48 +88,52 @@ public class ShatteredNews extends NewsService {
 		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
 			@Override
 			public void handleHttpResponse(Net.HttpResponse httpResponse) {
-				ArrayList<NewsArticle> articles = new ArrayList<>();
-				XmlReader reader = new XmlReader();
-				XmlReader.Element xmlDoc = reader.parse(httpResponse.getResultAsStream());
+				try {
+					ArrayList<NewsArticle> articles = new ArrayList<>();
+					XmlReader reader = new XmlReader();
+					XmlReader.Element xmlDoc = reader.parse(httpResponse.getResultAsStream());
 
-				SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+					SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
-				for (XmlReader.Element xmlArticle : xmlDoc.getChildrenByName("entry")){
-					NewsArticle article = new NewsArticle();
-					article.title = xmlArticle.get("title");
-					try {
-						article.date = dateParser.parse(xmlArticle.get("published"));
-					} catch (ParseException e) {
-						Game.reportException(e);
-					}
-					article.summary = xmlArticle.get("summary");
-					article.URL = xmlArticle.getChildByName("link").getAttribute("href");
-					if (!preferHTTPS) {
-						article.URL = article.URL.replace("http://", "http://");
-					}
+					for (XmlReader.Element xmlArticle : xmlDoc.getChildrenByName("entry")){
+						NewsArticle article = new NewsArticle();
+						article.title = xmlArticle.get("title");
+						try {
+							article.date = dateParser.parse(xmlArticle.get("published"));
+						} catch (ParseException e) {
+							Game.reportException(e);
+						}
+						article.summary = xmlArticle.get("summary");
+						article.URL = xmlArticle.getChildByName("link").getAttribute("href");
+						if (!preferHTTPS) {
+							article.URL = article.URL.replace("https://", "http://");
+						}
 
-					Pattern versionCodeMatcher = Pattern.compile("v[0-9]+");
-					try {
-						Array<XmlReader.Element> properties = xmlArticle.getChildrenByName("category");
-						for (XmlReader.Element prop : properties){
-							String propVal = prop.getAttribute("term");
-							if (propVal.startsWith("SHPD_ICON")){
-								Matcher m = versionCodeMatcher.matcher(propVal);
-								if (m.find()) {
-									int iconGameVer = Integer.parseInt(m.group().substring(1));
-									if (iconGameVer <= Game.versionCode) {
-										article.icon = propVal.substring(propVal.indexOf(": ") + 2);
+						Pattern versionCodeMatcher = Pattern.compile("v[0-9]+");
+						try {
+							Array<XmlReader.Element> properties = xmlArticle.getChildrenByName("category");
+							for (XmlReader.Element prop : properties){
+								String propVal = prop.getAttribute("term");
+								if (propVal.startsWith("SHPD_ICON")){
+									Matcher m = versionCodeMatcher.matcher(propVal);
+									if (m.find()) {
+										int iconGameVer = Integer.parseInt(m.group().substring(1));
+										if (iconGameVer <= Game.versionCode) {
+											article.icon = propVal.substring(propVal.indexOf(": ") + 2);
+										}
 									}
 								}
 							}
+						} catch (Exception e){
+							article.icon = null;
 						}
-					} catch (Exception e){
-						article.icon = null;
-					}
 
-					articles.add(article);
+						articles.add(article);
+					}
+					callback.onArticlesFound(articles);
+				} catch (Exception e) {
+					callback.onConnectionFailed();
 				}
-				callback.onArticlesFound(articles);
 			}
 
 			@Override
@@ -105,5 +147,4 @@ public class ShatteredNews extends NewsService {
 			}
 		});
 	}
-
 }
