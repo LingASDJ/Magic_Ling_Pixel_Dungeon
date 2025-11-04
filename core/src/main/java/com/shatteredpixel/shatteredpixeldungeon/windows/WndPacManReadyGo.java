@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreMiniGam
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.TestItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -75,7 +76,7 @@ public class WndPacManReadyGo extends Window {
                 GameScene.selectItem( itemSelector );
             }
         };
-        btnItem1.item(hero.belongings.weapon());
+        btnItem1.item(null);
         btnItem1.setRect( (WIDTH - BTN_GAP) / 4 - BTN_SIZE, message.bottom() + BTN_GAP, BTN_SIZE, BTN_SIZE );
         add( btnItem1 );
 
@@ -86,23 +87,9 @@ public class WndPacManReadyGo extends Window {
                 GameScene.selectItem( itemSelector );
             }
         };
-        btnItem2.item(hero.belongings.armor());
+        btnItem2.item(null);
         btnItem2.setRect( btnItem1.right() + BTN_GAP, btnItem1.top(), BTN_SIZE, BTN_SIZE );
         add( btnItem2 );
-
-        Item item3 = null, item4 =null;
-        if(hero.belongings.artifact() != null){
-            item3 = hero.belongings.artifact();
-        }else if(hero.belongings.misc() != null){
-            item3 = hero.belongings.misc();
-        }else {
-            item3 = hero.belongings.ring();
-        }
-        if( hero.belongings.misc() != null && item3!=hero.belongings.misc() ){
-            item4 = hero.belongings.misc();
-        }else if(item3!=hero.belongings.ring()){
-            item4 = hero.belongings.ring();
-        }
 
         btnItem3 = new WndBlacksmith.ItemButtonX() {
             @Override
@@ -111,7 +98,7 @@ public class WndPacManReadyGo extends Window {
                 GameScene.selectItem( itemSelector );
             }
         };
-        btnItem3.item(item3);
+        btnItem3.item(null);
         btnItem3.setRect( btnItem2.right() + BTN_GAP, btnItem2.top(), BTN_SIZE, BTN_SIZE );
         add( btnItem3 );
 
@@ -123,7 +110,7 @@ public class WndPacManReadyGo extends Window {
                 GameScene.selectItem( itemSelector );
             }
         };
-        btnItem4.item(item4);
+        btnItem4.item(null);
         btnItem4.setRect( btnItem3.right() + BTN_GAP, btnItem3.top(), BTN_SIZE, BTN_SIZE );
         add( btnItem4);
 
@@ -189,7 +176,7 @@ public class WndPacManReadyGo extends Window {
 
         @Override
         public boolean itemSelectable(Item item) {
-            return item instanceof Weapon || item instanceof Ring && !(item instanceof RingOfHaste) || item instanceof Armor || item instanceof Artifact && !(item instanceof EtherealChains);
+            return item instanceof Weapon || item instanceof Ring && !(item instanceof RingOfHaste) || item instanceof Armor && !(item instanceof ClassArmor) || item instanceof Artifact && !(item instanceof EtherealChains);
         }
 
         @Override
