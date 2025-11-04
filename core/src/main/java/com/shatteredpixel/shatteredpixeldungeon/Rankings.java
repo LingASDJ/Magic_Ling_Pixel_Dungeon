@@ -273,7 +273,7 @@ public enum Rankings {
 
         Statistics.totalScore *= Statistics.winMultiplier * Statistics.chalMultiplier;
 
-        Statistics.totalScore *= Statistics.seedCustom ? (int) 0.5 : 1;
+        Statistics.totalScore *= Statistics.seedCustom ? 0.5 : 1;
 
         Statistics.totalScore *= DifficultyScore();
 
