@@ -333,8 +333,44 @@ public class RankingsScene extends PixelScene {
 			} else if (rec.daily){
 				shield.copy( Icons.get(Icons.CALENDAR) );
 				shield.hardlight(0.5f, 1f, 2f);
-			} else if (!rec.customSeed.isEmpty() && !rec.win){
-				shield.copy(new Image(new ItemSprite( ItemSpriteSheet.RIP, null )));
+			} else if (!rec.customSeed.isEmpty() && !rec.win) {
+				shield.copy(new Image(new ItemSprite(ItemSpriteSheet.RIP, null)));
+			} if (rec.cause == MorphsGodEndTheaterPlot.Shadow.class) {
+				shield.copy(new ItemSprite(ItemSpriteSheet.DARK_X));
+				position.hardlight(TEXT_WIN7[odd]);
+				desc.hardlight(TEXT_WIN7[odd]);
+				depth.hardlight(TEXT_WIN7[odd]);
+				level.hardlight(TEXT_WIN7[odd]);
+			} else if (rec.cause == GalaxyHeartDeadEndPlot.RedEnd.class) {
+				shield.copy(new ItemSprite(ItemSpriteSheet.CITY_HOOD+5));
+				position.hardlight(TEXT_WIN6[odd]);
+				desc.hardlight(TEXT_WIN6[odd]);
+				depth.hardlight(TEXT_WIN6[odd]);
+				level.hardlight(TEXT_WIN6[odd]);
+			} else if (rec.cause == ZeroHallsBossLevel.BadDream.class) {
+				shield.copy(new ItemSprite(ItemSpriteSheet.CITY_HOOD));
+				position.hardlight(TEXT_WIN5[odd]);
+				desc.hardlight(TEXT_WIN5[odd]);
+				depth.hardlight(TEXT_WIN5[odd]);
+				level.hardlight(TEXT_WIN5[odd]);
+			} else if (rec.cause == UnsignedInvitationLetter.class) {
+				shield.copy(new ItemSprite(ItemSpriteSheet.HLPBOOKS));
+				position.hardlight(TEXT_WIN2[odd]);
+				desc.hardlight(TEXT_WIN2[odd]);
+				depth.hardlight(TEXT_WIN2[odd]);
+				level.hardlight(TEXT_WIN2[odd]);
+			} else if (rec.cause == YogReal.class) {
+				shield.copy(new ItemSprite(ItemSpriteSheet.SKELETONGOLD));
+				position.hardlight(TEXT_WIN3[odd]);
+				desc.hardlight(TEXT_WIN3[odd]);
+				depth.hardlight(TEXT_WIN3[odd]);
+				level.hardlight(TEXT_WIN3[odd]);
+			} else if (rec.cause == Nxhy.class) {
+				shield.copy(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD));
+				position.hardlight(TEXT_WIN4[odd]);
+				desc.hardlight(TEXT_WIN4[odd]);
+				depth.hardlight(TEXT_WIN4[odd]);
+				level.hardlight(TEXT_WIN4[odd]);
 			} else if (!rec.customSeed.isEmpty()){
 				shield.copy(new Image(new ItemSprite( ItemSpriteSheet.AMULET, null )));
 				shield.hardlight(Window.SHPX_COLOR);
