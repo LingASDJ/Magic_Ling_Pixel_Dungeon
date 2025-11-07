@@ -144,7 +144,7 @@ public class vM0_7_X_Changes {
         changes.addButton(new ChangeButton(NetIcons.get(NetIcons.GLOBE), ("在线更新系统V2.1"),
                 ("因协议调整，0.9.0.3起将使用新的更新接口。老版本的更新接口将陆续退场。")));
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("新 普通徽章 & 隐藏徽章"),
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("新-普通徽章 & 隐藏徽章"),
                 ("新的一批普通 & 隐藏徽章现已上线，游玩游戏获得！\n\n" +
                         "普通徽章：剧院新星->知名演员->金奖影帝，幽寂之梦\n\n" +
                         "隐藏徽章：我从地狱归来，神圣裁决，不给糖就捣蛋，再摸亿下，幽灵猎人")));
