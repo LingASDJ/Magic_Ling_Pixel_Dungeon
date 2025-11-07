@@ -262,7 +262,17 @@ public abstract class Level implements Bundlable {
 	public boolean[] mapped;
 	public boolean[] discoverable;
 
-	public int viewDistance = Dungeon.isChallenged( Challenges.DARKNESS ) && depth != 31 && Statistics.Hollow_Holiday ? 2 : 8;
+	public int viewDistance;
+
+	{
+		if(depth == 31 && Statistics.Hollow_Holiday){
+			viewDistance = 8;
+		} else if (Dungeon.isChallenged(Challenges.DARKNESS)) {
+			viewDistance = 2;
+		} else {
+			viewDistance = 8;
+		}
+	}
 	
 	public boolean[] heroFOV;
 	

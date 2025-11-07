@@ -505,18 +505,21 @@ public class GameScene extends PixelScene {
 		lastOffset = null;
 
 		//TODO 临时更换素材策略 应用于吃豆人
-		if (Dungeon.hero.buff(PacManQuest.AntiAttack.class) != null && Dungeon.hero != null) {
-			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-				if (mob instanceof GhostTemplate) {
-					if (mob.sprite != null){
-						if(!((GhostTemplate) mob).active) {
-							((MiniGhostSprite)mob.sprite).crumple();
-							((GhostTemplate) mob).active = true;
+		if(Dungeon.hero != null){
+			if (Dungeon.hero.buff(PacManQuest.AntiAttack.class) != null) {
+				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+					if (mob instanceof GhostTemplate) {
+						if (mob.sprite != null){
+							if(!((GhostTemplate) mob).active) {
+								((MiniGhostSprite)mob.sprite).crumple();
+								((GhostTemplate) mob).active = true;
+							}
 						}
 					}
 				}
 			}
 		}
+
 
 		if (updateTags){
 			tagAttack = attack.active;
