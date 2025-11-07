@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerGodsBad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMachineBad;
@@ -117,7 +118,7 @@ public class Morphs extends Boss {
             yell(Messages.get(this, "four_tone_active"));
             phase++;
         } else if(phase == 3){
-
+            Buff.detach(hero, MindVision.class);
             Dungeon.level.unseal();
 
             yell(Messages.get(this, "phase_tone_active"));
