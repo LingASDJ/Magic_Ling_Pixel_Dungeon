@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FrostTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GatewayTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrippingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GuardianTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.OozeTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PitfallTrap;
@@ -205,7 +204,7 @@ public class Nyarlathotep extends Boss {
         trapLib.put(23, CorrosionTrap.class);
         trapLib.put(31, FlashingTrap.class);
         trapLib.put(55, GrimTrap.class);
-        trapLib.put(7, GrippingTrap.class);
+        trapLib.put(7,  ToxicTrap.class);
         trapLib.put(39, RockfallTrap.class);
         trapLib.put(47, WornDartTrap.class);
         trapLib.put(36, GeyserTrap.class);
