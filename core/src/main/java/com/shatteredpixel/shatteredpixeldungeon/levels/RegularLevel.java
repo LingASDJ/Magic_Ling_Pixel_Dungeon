@@ -62,7 +62,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.SoulCrack;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -289,19 +288,7 @@ public abstract class RegularLevel extends Level {
 
 		//TODO ANCITY
 		if(1 == 1){
-			SoulCrack.RedSoulCrack redSoulCrack = hero.belongings.getItem(SoulCrack.RedSoulCrack.class);
-			if(redSoulCrack != null) one = true;
-			SoulCrack.BlueSoulCrack blueSoulCrack = hero.belongings.getItem(SoulCrack.BlueSoulCrack.class);
-			if(blueSoulCrack != null) two = true;
-			SoulCrack.GreenSoulCrack greenSoulCrack = hero.belongings.getItem(SoulCrack.GreenSoulCrack.class);
-			if(greenSoulCrack != null) three = true;
-			SoulCrack.YellowSoulCrack yellowSoulCrack = hero.belongings.getItem(SoulCrack.YellowSoulCrack.class);
-			if(yellowSoulCrack != null) four = true;
-			SoulCrack.PinkSoulCrack purpleSoulCrack = hero.belongings.getItem(SoulCrack.PinkSoulCrack.class);
-			if(purpleSoulCrack != null) five = true;
-			if(one && two && three && four && five && depth == 24 ||  (Badges.isUnlocked(Badges.Badge.KILL_DOG) && depth == 24 && !Statistics.bossRushMode && !Statistics.RandMode) ){
-				initRooms.add(new BoilerRoom());
-			}
+			initRooms.add(new BoilerRoom());
 		}
 
 		if (Badges.isUnlocked(Badges.Badge.KILL_MORES) && depth == 29 && Statistics.AbyssCityRules == 2){
