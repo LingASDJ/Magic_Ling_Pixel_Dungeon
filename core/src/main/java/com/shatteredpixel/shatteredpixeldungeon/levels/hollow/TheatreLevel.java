@@ -124,8 +124,9 @@ public class TheatreLevel extends Level {
         MorphsNPC boss = new MorphsNPC();
         boss.pos = 136;
         mobs.add(boss);
-
-        new LingBag().collect();
+        if(Dungeon.depth == 31){
+            new LingBag().collect();
+        }
     }
 
     @Override

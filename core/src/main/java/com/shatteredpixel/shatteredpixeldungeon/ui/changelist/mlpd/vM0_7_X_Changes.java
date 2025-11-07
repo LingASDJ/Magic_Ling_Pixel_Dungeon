@@ -130,7 +130,7 @@ public class vM0_7_X_Changes {
     }
 
     public static void add_V0900_Changes(ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.9.0.0-2", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.9.0.3", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -140,6 +140,14 @@ public class vM0_7_X_Changes {
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("重大更新"),
                 ("魔绫现已进入0.9.0.0版本！感谢所有支持魔绫像素地牢的玩家们。\n\n全新古堡外传章节现已开启，欢迎尝鲜！")));
+
+        changes.addButton(new ChangeButton(NetIcons.get(NetIcons.GLOBE), ("在线更新系统V2.1"),
+                ("因协议调整，0.9.0.3起将使用新的更新接口。老版本的更新接口将陆续退场。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("新 普通徽章 & 隐藏徽章"),
+                ("新的一批普通 & 隐藏徽章现已上线，游玩游戏获得！\n\n" +
+                        "普通徽章：我从地狱归来\n\n" +
+                        "隐藏徽章：神圣裁决，不给糖就捣蛋，再摸亿下，幽灵猎人")));
 
 
         changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("新原创音乐：决战星海"),
@@ -194,8 +202,8 @@ public class vM0_7_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.LIBGDX), ("LibGDX 1.14！"),
-                ("魔绫现在使用LibGDX1.14系统，对高版本安卓设备支持性能更好。")));
+        changes.addButton(new ChangeButton(Icons.get(Icons.LIBGDX), ("LibGDX 1.11"),
+                ("魔绫现在使用LibGDX1.11系统，此版本对于所有系统都有较好的兼容性。")));
 
         Image xs =new PeachGodStateSprite();
         xs.scale.set(PixelScene.align(0.8f));
@@ -221,6 +229,20 @@ public class vM0_7_X_Changes {
                         "大保底10连必出概率：\n\n" +
                         "罕见70% 传说28% 神话2%\n" +
                         "传说95% 神话5%")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "魔绫像素地牢-修复内容：\n\n" +
+                        ("0.9.0.3-修复内容：\n" +
+                                "_-_ 修复种子局下得分为0\n" +
+                                "_-_ 修复查种崩溃\n" +
+                                "_-_ 优化墨菲厄斯更好的背包赠送\n" +
+                                "_-_ 优化吃豆人战前默认没有任何装备。避免携带部分被Ban物品直接被带入\n" +
+                                "_-_ 种子局也显示古堡结局图标\n" +
+                                "_-_ 修复吃豆人游戏卡死的严重异常\n" +
+                                "_-_ 优化商店抢劫十字架处理\n" +
+                                "_-_ 奈亚不再生成捕猎陷阱\n" +
+                                "_-_ 黑山羊分身如果与本体重合将自动死亡"
+                        )));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 "魔绫像素地牢-修复内容：\n\n" +
@@ -279,7 +301,8 @@ public class vM0_7_X_Changes {
         changes.addButton(new ChangeButton(ss, ("莎布·尼古拉丝"),
                 ("1.分裂个体至多为18个，超过这个后不再自动分裂，攻击也无法自动分裂\n" +
                         "2.现在本体有 突变爆炸体 的特殊标记\n" +
-                        "3.现在可以吃到灵爆秘卷的伤害")));
+                        "3.现在可以吃到灵爆秘卷的伤害\n" +
+                        "4.当场上只剩下黑山羊时，攻击黑山羊导致它的血量重置时，给予英雄50000回合灵视，但在黑山羊死亡时，将去除英雄的灵视效果。")));
 
         changes.addButton(new ChangeButton(new YogSoulSprite(), ("犹格·索托斯"),
                 ("在 犹格·索托斯 周围时，犹格·索托斯将不再释放任何技能。")));

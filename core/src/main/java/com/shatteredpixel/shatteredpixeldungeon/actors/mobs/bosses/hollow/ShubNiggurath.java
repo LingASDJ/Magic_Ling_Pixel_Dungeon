@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.Damag
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.Immunities.ScaryImmunitiesBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -93,6 +94,7 @@ public class ShubNiggurath extends Boss {
                             (mob instanceof ShubNiggurath && ((ShubNiggurath) mob).notFirst)){
                         if(HP <= 0){
                             HP = 500;
+                            Buff.prolong(hero, MindVision.class, 50000);
                         }
                         return true;
                     }
@@ -136,6 +138,15 @@ public class ShubNiggurath extends Boss {
     public static class ShubNiggurathClone extends ShubNiggurath {
         @Override
         protected boolean act() {
+
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                if (mob instanceof ShubNiggurath && !(((ShubNiggurath) mob).notFirst)){
+                    if(level.distance(pos,mob.pos)<1) {
+                        mob.die(null);
+                        break;
+                    }
+                }
+            }
 
             if (buff(HeartMagicDamage.class) == null) {
                 Buff.affect(this, HeartMagicDamage.class, 10f);
@@ -190,15 +201,6 @@ public class ShubNiggurath extends Boss {
     protected boolean act() {
         alerted = false;
         state = PASSIVE;
-
-        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-            if (mob instanceof ShubNiggurathClone) {
-                if(level.distance(pos,mob.pos)<1) {
-                    mob.die(null);
-                    break;
-                }
-            }
-        }
 
         if(!notFirst){
             initProperty();
@@ -347,6 +349,7 @@ public class ShubNiggurath extends Boss {
                 }
             }
         }
+        Buff.detach(hero,MindVision.class);
     }
 
     public static class HeartMagicDamage extends FlavourBuff {
