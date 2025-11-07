@@ -348,8 +348,8 @@ public class ShubNiggurath extends Boss {
                     ((Morphs) mob).phase += 0.30f;
                 }
             }
+            Buff.detach(hero,MindVision.class);
         }
-        Buff.detach(hero,MindVision.class);
     }
 
     public static class HeartMagicDamage extends FlavourBuff {

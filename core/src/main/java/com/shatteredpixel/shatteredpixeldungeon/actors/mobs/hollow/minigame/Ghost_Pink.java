@@ -75,6 +75,13 @@ public class Ghost_Pink extends GhostTemplate {
     @Override
     protected boolean act() {
         AiState lastState = state;
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if(mob.alignment != Alignment.ENEMY) {
+                mob.damage(mob.HP, this,DamageType.MAGIC);
+            }
+        }
+
         if(HP < 1){
             ScrollOfTeleportation.appear(this, 274);
             Buff.affect(this, Paralysis.class, Paralysis.DURATION);

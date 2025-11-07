@@ -82,6 +82,7 @@ public class WndGoShop extends Window {
                     ArrayList<Ankh> ankh = hero.belongings.getAllItems(Ankh.class);
                     for (Ankh w : ankh.toArray(new Ankh[0])){
                         Dungeon.level.drop(w, hero.pos).sprite.drop();
+                        w.detachAll(hero.belongings.backpack);
                     }
 
                     Statistics.fireGirlnoshopping = true;

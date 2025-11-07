@@ -2,8 +2,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
@@ -112,11 +112,11 @@ public class Frankenstein extends Mob {
                 maxLvl = -1;
             }
             state = HUNTING;
-            spend(TICK); // Time spent on revival
+            spend(TICK);
         } else {
             yell(Messages.get(this,"die_yes"));
             die(true);
-            Badges.HELL_BACK();
+            PaswordBadges.HELL_BACK();
         }
     }
 
