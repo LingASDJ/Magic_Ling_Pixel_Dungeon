@@ -288,7 +288,9 @@ public abstract class RegularLevel extends Level {
 
 		//TODO ANCITY
 		if(1 == 1){
-			initRooms.add(new BoilerRoom());
+			if (depth == 24) {
+				initRooms.add(new BoilerRoom());
+			}
 		}
 
 		if (Badges.isUnlocked(Badges.Badge.KILL_MORES) && depth == 29 && Statistics.AbyssCityRules == 2){
