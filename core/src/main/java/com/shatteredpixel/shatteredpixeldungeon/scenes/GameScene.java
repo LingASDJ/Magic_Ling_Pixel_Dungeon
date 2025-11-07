@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Morphs;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.GhostTemplate;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.DragonBluePlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
@@ -86,6 +87,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.PacManQuest;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
@@ -106,6 +108,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiscardedItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniGhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTerrainTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
@@ -500,6 +503,20 @@ public class GameScene extends PixelScene {
 	@Override
 	public synchronized void update() {
 		lastOffset = null;
+
+		//TODO 临时更换素材策略 应用于吃豆人
+		if (Dungeon.hero.buff(PacManQuest.AntiAttack.class) != null && Dungeon.hero != null) {
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+				if (mob instanceof GhostTemplate) {
+					if (mob.sprite != null){
+						if(!((GhostTemplate) mob).active) {
+							((MiniGhostSprite)mob.sprite).crumple();
+							((GhostTemplate) mob).active = true;
+						}
+					}
+				}
+			}
+		}
 
 		if (updateTags){
 			tagAttack = attack.active;
