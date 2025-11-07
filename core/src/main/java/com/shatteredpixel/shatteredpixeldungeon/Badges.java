@@ -807,6 +807,10 @@ public class Badges {
 		displayBadge( Badge.WOC_MONEY_GIRL);
 	}
 
+	public static void HELL_BACK() {
+		displayBadge( Badge.HELL_BACK);
+	}
+
 	public static void validateVictory() {
 
 		Statistics.winGame = true;
@@ -1167,6 +1171,8 @@ public class Badges {
 		MASTER_THREE					(156,true,false ),
 		HOLLOWCITY					( 157),
 		WOC_MONEY_GIRL				( 158),
+
+		HELL_BACK					(159),
 
 		BOSS_CHALLENGE_1(168),
 		BOSS_CHALLENGE_2(169),

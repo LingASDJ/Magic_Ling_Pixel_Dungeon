@@ -102,13 +102,13 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	}
 	private int stunStates = 0;
 
-	protected Animation idle;
+	public Animation idle;
 	protected Animation run;
 	public Animation attack;
 	protected Animation operate;
 	protected Animation toss;
 	protected Animation zap;
-	protected Animation die;
+	public Animation die;
 
 	protected Callback animCallback;
 
@@ -124,25 +124,6 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected Emitter haloburning;
 	protected Emitter soling;
 	protected RoseHalo roseshield;
-
-	public void zaplink(int cell) {
-
-		turnTo(ch.pos, cell);
-		play(attack);
-
-		MagicMissile.boltFromChar(parent,
-				MagicMissile.SHAMAN_BLUE,
-				this,
-				cell,
-				new Callback() {
-					@Override
-					public void call() {
-						((Mob) ch).onZapComplete();
-					}
-				});
-		Sample.INSTANCE.play(Assets.Sounds.ZAP);
-	}
-
 	protected Emitter hearts;
 
 	protected Emitter mutation;
@@ -276,6 +257,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public void idle() {
 		play(idle);
+	}
+
+	public void run() {
+		play(run);
 	}
 
 	public void move( int from, int to ) {
@@ -1019,6 +1004,25 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 		}
 	}
+
+	public void zap_link(int cell) {
+
+		turnTo(ch.pos, cell);
+		play(attack);
+
+		MagicMissile.boltFromChar(parent,
+				MagicMissile.SHAMAN_BLUE,
+				this,
+				cell,
+				new Callback() {
+					@Override
+					public void call() {
+						((Mob) ch).onZapComplete();
+					}
+				});
+		Sample.INSTANCE.play(Assets.Sounds.ZAP);
+	}
+
 
 	private static class JumpTweener extends Tweener {
 

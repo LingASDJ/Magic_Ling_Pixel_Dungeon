@@ -9,16 +9,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.PacManQuest;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniGhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 
 import java.util.List;
 
-public class Ghost_Anger extends Mob {
+public class Ghost_Anger extends GhostTemplate {
 
     {
         spriteClass = MiniGhostSprite.class;
@@ -36,12 +34,6 @@ public class Ghost_Anger extends Mob {
 
     @Override
     public boolean isAlive() {
-        if (hero.buff(PacManQuest.AntiAttack.class) != null) {
-            Bestiary.setSeen(getClass());
-            Bestiary.countEncounter(getClass());
-            if (sprite != null) ((MiniGhostSprite) sprite).crumple();
-        }
-
         return true;
     }
 
@@ -79,13 +71,17 @@ public class Ghost_Anger extends Mob {
 
     @Override
     public int attackProc(Char enemy, int damage) {
-        if(hero.buff(ScoreBuff.class)!=null){
-            ScoreBuff buff = hero.buff(ScoreBuff.class);
-            buff.downScore(200);
-            hero.sprite.showStatus(Window.R_COLOR, "-"+200);
-            ScrollOfTeleportation.appear(this, 257);
-            ScrollOfTeleportation.appear(hero, 389);
-            Buff.affect(hero,  Invisibility.class, 3f);
+        if(enemy == hero) {
+            if (hero.buff(ScoreBuff.class) != null) {
+                ScoreBuff buff = hero.buff(ScoreBuff.class);
+                buff.downScore(200);
+                hero.sprite.showStatus(Window.R_COLOR, "-" + 200);
+                ScrollOfTeleportation.appear(this, 257);
+                ScrollOfTeleportation.appear(hero, 389);
+                Buff.affect(hero, Invisibility.class, 3f);
+            }
+        } else {
+            enemy.damage(10000,this,DamageType.MAGIC);
         }
         return super.attackProc(enemy, damage);
     }

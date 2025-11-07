@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghos
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Junko;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Pink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Smart;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.minigame.MorphsPacmanEndPlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -157,7 +156,6 @@ public class PacmanHollowActorLevel extends Level {
     @Override
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
-
         PacManQuest.RandomItemPlus buff = hero.buff(PacManQuest.RandomItemPlus.class);
         int i = 218;
         Heap highItems = Dungeon.level.heaps.get(i);
@@ -322,14 +320,20 @@ public class PacmanHollowActorLevel extends Level {
 
     @Override
     protected void createItems() {
-
         for (int i = 0; i < map.length; i++) {
-            int finalI = i;
-            if (passable[i] &&
-                    Arrays.stream(noStop_spawnItem).noneMatch(pos -> pos == finalI)
-                        && (map[i] != DOOR && map[i] != WATER && map[i] != HIGH_GRASS)) {
-                if (i != 0) {
-                    drop(new PacManQuest.SmallPoint(), i);
+            if (passable[i]) {
+                boolean isNoStop = false;
+                for (int pos : noStop_spawnItem) {
+                    if (pos == i) {
+                        isNoStop = true;
+                        break;
+                    }
+                }
+                if (!isNoStop &&
+                        (map[i] != DOOR && map[i] != WATER && map[i] != HIGH_GRASS)) {
+                    if (i != 0) {
+                        drop(new PacManQuest.SmallPoint(), i);
+                    }
                 }
             }
         }

@@ -8,7 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.AnkhCount;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
@@ -82,11 +81,8 @@ public class WndGoShop extends Window {
                     int ankhCount = 0;
                     ArrayList<Ankh> ankh = hero.belongings.getAllItems(Ankh.class);
                     for (Ankh w : ankh.toArray(new Ankh[0])){
-                        ankhCount++;
-                        w.detachAll(hero.belongings.backpack);
+                        Dungeon.level.drop(w, hero.pos).sprite.drop();
                     }
-
-                    Buff.affect(hero, AnkhCount.class).set( ankhCount, 100 );
 
                     Statistics.fireGirlnoshopping = true;
                 }

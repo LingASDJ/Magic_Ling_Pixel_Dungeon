@@ -118,6 +118,8 @@ public class Morphs extends Boss {
             phase++;
         } else if(phase == 3){
 
+            Dungeon.level.unseal();
+
             yell(Messages.get(this, "phase_tone_active"));
 
             MyCoreHeart myCoreHeart = new MyCoreHeart();

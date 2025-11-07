@@ -289,7 +289,7 @@ public abstract class ChampionEnemy extends Buff {
 						Sample.INSTANCE.play(Assets.Sounds.DEBUFF);
 					}
 					scount++;
-					target.sprite.zaplink(enemy.pos);
+					target.sprite.zap_link(enemy.pos);
 					int dmg = Random.NormalIntRange(target.damageRoll() / 5 + 3, target.damageRoll() / 5 + 7);
 					enemy.damage(dmg, new DarkBolt());
 				}

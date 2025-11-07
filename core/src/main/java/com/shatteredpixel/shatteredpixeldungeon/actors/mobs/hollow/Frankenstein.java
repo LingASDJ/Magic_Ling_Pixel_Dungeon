@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -10,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FrankensteinSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -101,15 +103,21 @@ public class Frankenstein extends Mob {
 
     public void AnkhResetLive() {
         HP = HT; // Reset HP to maximum
-        if (Dungeon.level.heroFOV[pos]) {
-            SpellSprite.show( this, SpellSprite.ANKH);
-            new Flare( 5, 32 ).color(Window.CYELLOW, true ).show( sprite, 2f );
+        if(sprite.parent != null){
+            if (Dungeon.level.heroFOV[pos]) {
+                SpellSprite.show( this, SpellSprite.ANKH);
+                new Flare( 5, 32 ).color(Window.CYELLOW, true ).show( sprite, 2f );
+            }
+            if(deathCount>0){
+                maxLvl = -1;
+            }
+            state = HUNTING;
+            spend(TICK); // Time spent on revival
+        } else {
+            yell(Messages.get(this,"die_yes"));
+            die(true);
+            Badges.HELL_BACK();
         }
-        if(deathCount>0){
-            maxLvl = -1;
-        }
-        state = HUNTING;
-        spend(TICK); // Time spent on revival
     }
 
     @Override
