@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -189,6 +190,15 @@ public class ShubNiggurath extends Boss {
     protected boolean act() {
         alerted = false;
         state = PASSIVE;
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof ShubNiggurathClone) {
+                if(level.distance(pos,mob.pos)<1) {
+                    mob.die(null);
+                    break;
+                }
+            }
+        }
 
         if(!notFirst){
             initProperty();
