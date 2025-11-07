@@ -255,6 +255,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MoveBoxHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
@@ -1183,6 +1184,14 @@ public class Hero extends Char {
 		//水中祝福 但在BR不生效
 		if((branch == 0 || branch == 10) && !bossRushMode){
 			MoveWater();
+		}
+
+		if(Dungeon.level instanceof MoveBoxHollowActorLevel){
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+				if(!(mob instanceof MoveBoxHollowActorLevel.Box)){
+					mob.damage(mob.HP, this,DamageType.MAGIC);
+				}
+			}
 		}
 
 		boolean isNyzAlive = false;

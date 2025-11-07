@@ -144,11 +144,10 @@ public class vM0_7_X_Changes {
         changes.addButton(new ChangeButton(NetIcons.get(NetIcons.GLOBE), ("在线更新系统V2.1"),
                 ("因协议调整，0.9.0.3起将使用新的更新接口。老版本的更新接口将陆续退场。")));
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("新 普通徽章 & 隐藏徽章"),
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("新-普通徽章 & 隐藏徽章"),
                 ("新的一批普通 & 隐藏徽章现已上线，游玩游戏获得！\n\n" +
-                        "普通徽章：我从地狱归来\n\n" +
-                        "隐藏徽章：神圣裁决，不给糖就捣蛋，再摸亿下，幽灵猎人")));
-
+                        "普通徽章：剧院新星->知名演员->金奖影帝，幽寂之梦\n\n" +
+                        "隐藏徽章：我从地狱归来，神圣裁决，不给糖就捣蛋，再摸亿下，幽灵猎人")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("新原创音乐：决战星海"),
                 ("作者：犬罗\n\n为古堡最终Boss的战斗BGM，欢迎欣赏！")));
@@ -302,7 +301,7 @@ public class vM0_7_X_Changes {
                 ("1.分裂个体至多为18个，超过这个后不再自动分裂，攻击也无法自动分裂\n" +
                         "2.现在本体有 突变爆炸体 的特殊标记\n" +
                         "3.现在可以吃到灵爆秘卷的伤害\n" +
-                        "4.当场上只剩下黑山羊时，攻击黑山羊导致它的血量重置时，给予英雄50000回合灵视，但在黑山羊死亡时，将去除英雄的灵视效果。")));
+                        "\n4.当场上只剩下黑山羊和它的分身时，攻击_黑山羊本体_将导致它的血量重置时，给予英雄50000回合灵视。\n同时，在_黑山羊本体_死亡时，将去除英雄的灵视效果。")));
 
         changes.addButton(new ChangeButton(new YogSoulSprite(), ("犹格·索托斯"),
                 ("在 犹格·索托斯 周围时，犹格·索托斯将不再释放任何技能。")));

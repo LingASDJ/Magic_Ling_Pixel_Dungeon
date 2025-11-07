@@ -134,6 +134,10 @@ public class PaswordBadges {
         displayBadge(Badge.DOG_TOUCH);
     }
 
+    public static void HELL_BACK() {
+        displayBadge(Badge.HELL_BACK);
+    }
+
     public static void GHOST_HUNTER() {
         displayBadge(Badge.GHOST_HUNTER);
     }
@@ -201,7 +205,9 @@ public class PaswordBadges {
 
         DOG_TOUCH(34,true),
 
-        GHOST_HUNTER(35,true);
+        GHOST_HUNTER(35,true),
+
+        HELL_BACK					(36);
 
         public boolean meta;
 
