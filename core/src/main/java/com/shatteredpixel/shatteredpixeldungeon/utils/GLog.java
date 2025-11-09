@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.utils;
 
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Signal;
@@ -60,12 +61,14 @@ public class GLog {
 
 	public static void i( String text, Object... args ) {
 
-		if (args.length > 0) {
-			text = Messages.format( text, args );
-		}
+		if(!SPDSettings.HideScreen()){
+			if (args.length > 0) {
+				text = Messages.format( text, args );
+			}
 
-		DeviceCompat.log( TAG, text );
-		update.dispatch( text );
+			DeviceCompat.log( TAG, text );
+			update.dispatch( text );
+		}
 	}
 
 	public static void p( String text, Object... args ) {

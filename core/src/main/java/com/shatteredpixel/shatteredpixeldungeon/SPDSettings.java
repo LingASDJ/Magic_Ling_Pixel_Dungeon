@@ -369,6 +369,8 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_INTRO		= "intro";
 
+	public static final String KEY_HIDESCREEN		= "hidescreen";
+
 	public static void screenShake(int value) {
 		put(KEY_SCREEN_SHAKE, value);
 	}
@@ -391,10 +393,6 @@ public class SPDSettings extends GameSettings {
 				size = 0;
 			}
 		}
-
-//		if(size == 2){
-//			size = 1;
-//		}
 		return size;
 	}
 
@@ -404,6 +402,14 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean intro() {
 		return getBoolean(KEY_INTRO, true);
+	}
+
+	public static void HideScreen( boolean value ) {
+		put( KEY_HIDESCREEN, value );
+	}
+
+	public static boolean HideScreen() {
+		return getBoolean(KEY_HIDESCREEN, false);
 	}
 
 	public static void lastClass(int value) {

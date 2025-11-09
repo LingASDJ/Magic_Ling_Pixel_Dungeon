@@ -1820,20 +1820,22 @@ public class GameScene extends PixelScene {
 		}
 
 		//Tutorial
-		if (SPDSettings.intro()){
-
-			if (Document.ADVENTURERS_GUIDE.isPageFound(Document.GUIDE_INTRO)){
-				GLog.p(Messages.get(GameScene.class, "tutorial_guidebook"));
-				flashForDocument(Document.ADVENTURERS_GUIDE, Document.GUIDE_INTRO);
-			} else {
-				if (ControllerHandler.isControllerConnected()) {
-					GLog.p(Messages.get(GameScene.class, "tutorial_move_controller"));
-				} else if (SPDSettings.interfaceSize() == 0) {
-					GLog.p(Messages.get(GameScene.class, "tutorial_move_mobile"));
+		if (SPDSettings.intro() || SPDSettings.HideScreen()){
+			if(SPDSettings.intro()) {
+				if (Document.ADVENTURERS_GUIDE.isPageFound(Document.GUIDE_INTRO)) {
+					GLog.p(Messages.get(GameScene.class, "tutorial_guidebook"));
+					flashForDocument(Document.ADVENTURERS_GUIDE, Document.GUIDE_INTRO);
 				} else {
-					GLog.p(Messages.get(GameScene.class, "tutorial_move_desktop"));
+					if (ControllerHandler.isControllerConnected()) {
+						GLog.p(Messages.get(GameScene.class, "tutorial_move_controller"));
+					} else if (SPDSettings.interfaceSize() == 0) {
+						GLog.p(Messages.get(GameScene.class, "tutorial_move_mobile"));
+					} else {
+						GLog.p(Messages.get(GameScene.class, "tutorial_move_desktop"));
+					}
 				}
 			}
+
 			toolbar.visible = toolbar.active = false;
 			status.visible = status.active = false;
 			if (inventory != null) inventory.visible = inventory.active = false;
