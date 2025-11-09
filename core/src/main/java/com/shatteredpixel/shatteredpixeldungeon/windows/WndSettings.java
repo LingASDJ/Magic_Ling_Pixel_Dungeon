@@ -1061,9 +1061,7 @@ public class WndSettings extends WndTabbed {
 
 		CheckBox RTC_itch;
 
-		//OptionSlider timeOut;
-
-//		RedButton ResetButton;
+		CheckBox hide_screen;
 
 		@Override
 		protected void createChildren() {
@@ -1113,6 +1111,16 @@ public class WndSettings extends WndTabbed {
 			};
 			RTC_itch.checked(SPDSettings.UPos());
 			add(RTC_itch);
+
+			hide_screen = new CheckBox( Messages.get(this, "hide_screen") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.HideScreen(checked());
+				}
+			};
+			hide_screen.checked(SPDSettings.HideScreen());
+			add(hide_screen);
 		}
 
 		@Override
@@ -1131,11 +1139,13 @@ public class WndSettings extends WndTabbed {
 				ATBSwitch.setRect(0, LockFing.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				VSBwitch.setRect(width/2, LockFing.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				RTC_itch.setRect(0, VSBwitch.bottom() + GAP, width, SLIDER_HEIGHT);
+				hide_screen.setRect(0, RTC_itch.bottom() + GAP, width, SLIDER_HEIGHT);
 			} else {
 				LockFing.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				ATBSwitch.setRect(0, LockFing.bottom() + GAP, width, SLIDER_HEIGHT);
 				VSBwitch.setRect(0, ATBSwitch.bottom() + GAP, width, SLIDER_HEIGHT);
 				RTC_itch.setRect(0, VSBwitch.bottom() + GAP, width, SLIDER_HEIGHT);
+				hide_screen.setRect(0, RTC_itch.bottom() + GAP, width, SLIDER_HEIGHT);
 			}
 
 
