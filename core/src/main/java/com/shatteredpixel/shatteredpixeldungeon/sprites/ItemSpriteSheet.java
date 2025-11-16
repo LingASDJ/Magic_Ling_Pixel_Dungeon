@@ -1286,6 +1286,8 @@ public class ItemSpriteSheet {
     public static final int SZJ_REBACK  = PROJECTILES + 13;
     public static final int DEATHRONG_BOAT  = PROJECTILES + 14;
 
+    public static final int MAGNETIC_CROWN  = PROJECTILES + 15;
+
 
     static{
         assignItemRect(PROJECTILES_STAR,       9, 9);
@@ -1297,6 +1299,8 @@ public class ItemSpriteSheet {
 
         assignItemRect(SZJ_REBACK,            15, 15);
         assignItemRect(DEATHRONG_BOAT,            15, 15);
+
+        assignItemRect(MAGNETIC_CROWN,            14, 13);
     }
 
     private static final int PROP1  = xy(9,46);

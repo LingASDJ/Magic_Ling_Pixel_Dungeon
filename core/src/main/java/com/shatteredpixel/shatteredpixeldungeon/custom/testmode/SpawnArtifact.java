@@ -122,15 +122,15 @@ public class SpawnArtifact extends TestItem {
             case 8:
             case 9:
             case 10:
+            case 12:
             case 13:
             default:
                 return 10;
-            case 7:
-            case 12:
-                return 5;
             case 5:
-            case 11:
                 return 3;
+            case 7:
+            case 11:
+                return 5;
         }
     }
 

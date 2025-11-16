@@ -210,7 +210,7 @@ public class QliphothLasher extends Mob implements Hero.Doom {
 
     @Override
     public int drRoll() {
-        return (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? Random.NormalIntRange(0,4) : Random.NormalIntRange(0, 2));
+        return (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? Random.NormalIntRange(0,4     ) : Random.NormalIntRange(0, 2));
     }
 
     private static final String STATE_LASHER_BOSS   = "state_lasher_boss";

@@ -71,6 +71,8 @@ public abstract class Trap implements Bundlable {
 	public boolean canBeHidden = true;
 	public boolean canBeSearched = true;
 
+	public boolean mcOnlyUpgrade = false;
+
 	public boolean avoidsHallways = false; //whether this trap should avoid being placed in hallways
 
 	public Trap set(int pos){
@@ -144,13 +146,16 @@ public abstract class Trap implements Bundlable {
 	private static final String POS	= "pos";
 	private static final String VISIBLE	= "visible";
 	private static final String ACTIVE = "active";
-
+	private static final String MC_ONLY = "mc";
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		pos = bundle.getInt( POS );
 		visible = bundle.getBoolean( VISIBLE );
 		if (bundle.contains(ACTIVE)){
 			active = bundle.getBoolean(ACTIVE);
+		}
+		if (bundle.contains(MC_ONLY)) {
+			mcOnlyUpgrade = bundle.getBoolean(MC_ONLY);
 		}
 	}
 
@@ -159,5 +164,6 @@ public abstract class Trap implements Bundlable {
 		bundle.put( POS, pos );
 		bundle.put( VISIBLE, visible );
 		bundle.put( ACTIVE, active );
+		bundle.put( MC_ONLY, mcOnlyUpgrade );
 	}
 }
