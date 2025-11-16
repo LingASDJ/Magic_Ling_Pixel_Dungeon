@@ -3151,7 +3151,7 @@ public class Hero extends Char {
 			}
 		}
 
-		if(Dungeon.depth == 31 && (Statistics.Hollow_Holiday || Dungeon.isDLC(Conducts.Conduct.DEV))){
+		if(Dungeon.depth == 31 && (Statistics.Hollow_Holiday || Dungeon.isDLC(Conducts.Conduct.DEV)) && branch != 0){
 			interrupt();
 			resting = false;
 			this.HP = HT / 4;
@@ -3162,8 +3162,6 @@ public class Hero extends Char {
 
 			if(branch == 3){
 				Game.runOnRenderThread(() -> GameScene.show(new WinAllSearchStatus()));
-
-
 				if(hero.buff(ScoreBuff.class)!=null) {
 					ScoreBuff buffs = hero.buff(ScoreBuff.class);
 					SPDSettings.AllSearchScore(buffs.score/2);
