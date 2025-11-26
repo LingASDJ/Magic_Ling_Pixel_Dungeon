@@ -79,6 +79,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoo
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BlueAltStoneRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BoilerRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CerbusSleepRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.DearthRongShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.GoldRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
@@ -293,6 +294,10 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
+		if( (depth == 27 || depth == 30) && Badges.isUnlocked(Badges.Badge.KILL_DOG)){
+			initRooms.add(new DearthRongShopRoom());
+		}
+
 		if (Badges.isUnlocked(Badges.Badge.KILL_MORES) && depth == 29 && Statistics.AbyssCityRules == 2){
 			initRooms.add(new CerbusSleepRoom());
 		}
@@ -300,6 +305,7 @@ public abstract class RegularLevel extends Level {
 		if (depth == 14 && branch == 0) {
 			initRooms.add(new NxhyShopRoom());
 		}
+
 
 		if(depth == 9 && chinaHoliday == ChinaHoliday.PQJ && Challenges.activeChallenges()<=12 && Random.Float()>0.55f) {
 			initRooms.add(new PeachGodBlessRoom());
