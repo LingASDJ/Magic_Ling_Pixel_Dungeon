@@ -120,6 +120,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
@@ -511,6 +512,10 @@ public abstract class Char extends Actor {
 				//vulnerable specifically applies after armor reductions
 				if (enemy.buff(Vulnerable.class) != null) {
 					effectiveDamage *= 1.33f;
+				}
+
+				if(hero.belongings.getItem(EmotionalAggregationB.class)!=null){
+					effectiveDamage += (int) Dungeon.hero.getZone()*2 -1;
 				}
 
 				effectiveDamage = attackProc(enemy, effectiveDamage);

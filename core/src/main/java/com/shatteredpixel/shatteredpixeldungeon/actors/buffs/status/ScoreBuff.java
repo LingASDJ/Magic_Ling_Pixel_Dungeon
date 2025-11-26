@@ -73,22 +73,22 @@ public class ScoreBuff extends Buff {
             switch (level.rules){
                 case 1:
                     maxTurns = 375;
-                break;
+                    break;
                 case 2:
                     maxTurns = 400;
-                break;
+                    break;
                 case 3:
                     maxTurns = 325;
-                break;
+                    break;
                 case 4:
                     maxTurns = 985;
-                break;
+                    break;
                 case 5:
                     maxTurns = 510;
-                break;
+                    break;
                 case 6:
                     maxTurns = 550;
-                break;
+                    break;
             }
         }
         return maxTurns;
@@ -97,7 +97,6 @@ public class ScoreBuff extends Buff {
     public void setGameRules(int rules){
         GameRules = rules;
     }
-
 
     private static final int HIGH_SCORE_THRESHOLD = 6000;
     private static final int MAX_LEVEL = 6;
@@ -125,7 +124,7 @@ public class ScoreBuff extends Buff {
                         score = Math.max(0, score - 100);
                     }
                 }
-                if(score <= 0){
+                if(score <= 0 || level.SkipGame){
                     MorphsMoveBoxEndPlot plot = new MorphsMoveBoxEndPlot();
                     Game.runOnRenderThread(new Callback() {
                         @Override

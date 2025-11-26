@@ -43,6 +43,7 @@ public class ShubNiggurath extends Boss {
         spriteClass = ShubNiggurathSprite.class;
 
         properties.add(Property.UNKNOWN);
+        properties.add(Property.LARGE);
         properties.add(Property.MINIBOSS);
         noDropIceCoin = true;
     }

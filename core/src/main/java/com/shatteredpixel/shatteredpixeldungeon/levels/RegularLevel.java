@@ -288,7 +288,7 @@ public abstract class RegularLevel extends Level {
 		boolean five = false;
 
 		//TODO ANCITY
-		if(1 == 1){
+		if(!(Statistics.RandMode || Statistics.bossRushMode) ){
 			if (depth == 24) {
 				initRooms.add(new BoilerRoom());
 			}

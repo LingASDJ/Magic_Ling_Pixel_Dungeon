@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RustedGoldCoin;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -77,11 +78,21 @@ public class Gold extends Item {
 			hero.spendAndNext( TIME_TO_PICK_UP );
 			hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "ling",quantity/50));
         } else {
-			Dungeon.gold += quantity;
-			Statistics.goldCollected += quantity;
-			Badges.validateGoldCollected();
-			GameScene.pickUp( this, pos );
-			hero.sprite.showStatusWithIcon( CharSprite.NEUTRAL, Integer.toString(quantity), FloatingText.GOLD );
+			if(hero.belongings.getItem(RustedGoldCoin.class)!=null){
+				quantity *= 0.75f;
+				Dungeon.gold += quantity == 0 ? 1 : quantity;
+				Statistics.goldCollected += quantity == 0 ? 1 : quantity;
+				Badges.validateGoldCollected();
+				GameScene.pickUp( this, pos );
+				hero.sprite.showStatusWithIcon( CharSprite.NEUTRAL, Integer.toString( quantity == 0 ? 1 : quantity), FloatingText.GOLD );
+			} else {
+				Dungeon.gold += quantity;
+				Statistics.goldCollected += quantity;
+				Badges.validateGoldCollected();
+				GameScene.pickUp( this, pos );
+				hero.sprite.showStatusWithIcon( CharSprite.NEUTRAL, Integer.toString(quantity), FloatingText.GOLD );
+			}
+
 			hero.spendAndNext( TIME_TO_PICK_UP );
         }
         Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
