@@ -35,8 +35,10 @@ public class ShubNiggurath extends Boss {
 
     public boolean notFirst = false;
 
+    public int maxReHeal = 0;
+
     {
-        initBaseStatus(0, 0, 0, 0, 4000, 0, 0);
+        initBaseStatus(0, 0, 0, 0, 3200, 0, 0);
         initStatus(20);
         spriteClass = ShubNiggurathSprite.class;
 
@@ -92,9 +94,12 @@ public class ShubNiggurath extends Boss {
                 for (Mob mob : mobsCopy) {
                     if(mob instanceof ShubNiggurathClone ||
                             (mob instanceof ShubNiggurath && ((ShubNiggurath) mob).notFirst)){
-                        if(HP <= 0){
+                        if(HP <= 0 && maxReHeal<9){
                             HP = 500;
+                            maxReHeal++;
                             Buff.prolong(hero, MindVision.class, 50000);
+                        } else {
+                            die(true);
                         }
                         return true;
                     }
@@ -216,7 +221,7 @@ public class ShubNiggurath extends Boss {
             }
         }
 
-        tooManyShubs = shubCount >= 18;
+        tooManyShubs = shubCount >= 9;
 
         if(buff(YogSoul.AttackDamageMagic.class)!=null && Dungeon.level.distance(pos, hero.pos) <= 7 && !hasTooManyShubs()){
             if (enemy != null && enemy == hero && enemySeen) {
@@ -319,12 +324,15 @@ public class ShubNiggurath extends Boss {
     private static final String NOTFIRST_INDEX	= "notfirst_index";
     private static final String NOT_DAMAGE	= "not_damage";
 
+    private static final String REHEAL_HP	= "re_heal_hp";
+
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
         bundle.put( GENERATION, generation );
         bundle.put(NOTFIRST_INDEX, notFirst);
         bundle.put(NOT_DAMAGE, notDamage);
+        bundle.put(REHEAL_HP, maxReHeal);
     }
 
     @Override
@@ -334,6 +342,7 @@ public class ShubNiggurath extends Boss {
         if (generation > 0) EXP = 0;
         notFirst = bundle.getBoolean(NOTFIRST_INDEX);
         notDamage = bundle.getInt(NOT_DAMAGE);
+        maxReHeal = bundle.getInt(REHEAL_HP);
     }
     boolean  isShubCloneAlive = false;
     @Override
