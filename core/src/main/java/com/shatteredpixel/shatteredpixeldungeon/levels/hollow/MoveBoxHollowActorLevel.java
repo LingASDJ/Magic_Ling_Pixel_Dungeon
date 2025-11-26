@@ -59,7 +59,9 @@ public class MoveBoxHollowActorLevel extends Level {
     public int rules =  Badges.isUnlocked(Badges.Badge.MASTER_TWO) ? Random.Int(1,7) : Random.Int(1,4);
     public int readscore;
 
-    private boolean getRecord = false;
+    public boolean getRecord = false;
+
+    public boolean SkipGame = false;
 
     private int codeToTerrain(int code){
         switch (code){
@@ -543,8 +545,10 @@ public class MoveBoxHollowActorLevel extends Level {
 
     public final String RULES = "map_rules";
     public final String READSCORE = "readscore";
-
     public final String GETRECORDS = "getrecords";
+
+    public final String SKIPGAME = "skipgames";
+
 
     @Override
     public void storeInBundle( Bundle bundle ) {
@@ -552,6 +556,7 @@ public class MoveBoxHollowActorLevel extends Level {
         bundle.put(RULES, rules);
         bundle.put(READSCORE, readscore);
         bundle.put(GETRECORDS, getRecord);
+        bundle.put(SKIPGAME, SkipGame);
     }
 
     @Override
@@ -564,6 +569,7 @@ public class MoveBoxHollowActorLevel extends Level {
             ScoreBar.assignScore(readscore,InitScore());
         }
         getRecord = bundle.getBoolean(GETRECORDS);
+        SkipGame = bundle.getBoolean(SKIPGAME);
     }
 
     @Override

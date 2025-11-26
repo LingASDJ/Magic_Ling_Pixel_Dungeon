@@ -170,15 +170,16 @@ public class Shopkeeper extends NPC {
 			if(item instanceof Ankh ||item instanceof Food || item instanceof PotionOfHealing){
 				price *= 2.5;
 			}
-		} else if (hero.buff(BlessNoMoney.class) != null) {
+		}
+
+		if (hero.buff(BlessNoMoney.class) != null) {
 			price *= 0.6f;
 		}
+
 		if (Dungeon.hero.buff(AscensionChallenge.class) != null && Dungeon.shopOnLevel()){
 			price *= 3f;
 		}
-//		if(Dungeon.isDLC(Conducts.Conduct.MONEYLETGO)){
-//			price *= 0.5;
-//		}
+
 		return price;
 	}
 

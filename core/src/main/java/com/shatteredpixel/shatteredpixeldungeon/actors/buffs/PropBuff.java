@@ -7,12 +7,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -35,6 +37,7 @@ public class PropBuff extends Buff{
     public int timeA = 0,timeB = 0,timeC = 0, timeD = 0, timeE =0;
 
     public boolean potionLost = false;
+    public int warningTime = 0;
 
     @Override
     public boolean act() {
@@ -69,34 +72,55 @@ public class PropBuff extends Buff{
 
             if(Dungeon.hero.belongings.getItem(ConfusedMieMieTalisman.class)!=null) {
                 if(timeD>0) timeD--;
+
+                // 预警计时器
+                if(warningTime > 1) {
+                    warningTime--;
+                    if(warningTime == 4) {
+                        GLog.n(Messages.get(ConfusedMieMieTalisman.class, "warning", warningTime-1));
+                    }
+                    if(warningTime == 1){
+                        // 预警结束，执行实际效果
+                        GLog.n(Messages.get(ConfusedMieMieTalisman.class,"sheep"));
+                        timeD = 75;
+                        warningTime = 0;
+
+                        int cell = hero.pos;
+                        PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), 2 );
+                        ArrayList<Integer> spawnPoints = new ArrayList<>();
+                        for (int i = 0; i < PathFinder.distance.length; i++) {
+                            if (PathFinder.distance[i] < Integer.MAX_VALUE) {
+                                spawnPoints.add(i);
+                            }
+                        }
+
+                        for (int i : spawnPoints){
+                            if (Dungeon.level.insideMap(i)
+                                    && Actor.findChar(i) == null
+                                    && !(Dungeon.level.pit[i])) {
+                                Sheep sheep = new Sheep();
+                                sheep.lifespan = 8;
+                                sheep.pos = i;
+                                GameScene.add(sheep);
+                                Dungeon.level.occupyCell(sheep);
+                                CellEmitter.get(i).burst(Speck.factory(Speck.WOOL), 4);
+                            }
+                        }
+
+                        CellEmitter.get(cell).burst(Speck.factory(Speck.WOOL), 4);
+                        Sample.INSTANCE.play(Assets.Sounds.PUFF);
+                        Sample.INSTANCE.play(Assets.Sounds.SHEEP);
+                    }
+                }
+
                 if(Random.Int(1,100)<=2 && timeD==0){
-                    GLog.n(Messages.get(ConfusedMieMieTalisman.class,"sheep"));
-                    timeD = 75;
-                    int cell = hero.pos;
-                    PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), 2 );
-                    ArrayList<Integer> spawnPoints = new ArrayList<>();
-                    for (int i = 0; i < PathFinder.distance.length; i++) {
-                        if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-                            spawnPoints.add(i);
-                        }
+                    // 如果预警计时器未启动，则启动预警
+                    if(warningTime <= 0) {
+                        Transmuting.show(Dungeon.hero, new RandomChest(), new ConfusedMieMieTalisman());
+                        Dungeon.hero.sprite.emitter().start(Speck.factory(Speck.STAR), 0.2f, 10);
+                        warningTime = 11;
+                        GLog.w(Messages.get(ConfusedMieMieTalisman.class, "warning_start"));
                     }
-
-                    for (int i : spawnPoints){
-                        if (Dungeon.level.insideMap(i)
-                                && Actor.findChar(i) == null
-                                && !(Dungeon.level.pit[i])) {
-                            Sheep sheep = new Sheep();
-                            sheep.lifespan = 8;
-                            sheep.pos = i;
-                            GameScene.add(sheep);
-                            Dungeon.level.occupyCell(sheep);
-                            CellEmitter.get(i).burst(Speck.factory(Speck.WOOL), 4);
-                        }
-                    }
-
-                    CellEmitter.get(cell).burst(Speck.factory(Speck.WOOL), 4);
-                    Sample.INSTANCE.play(Assets.Sounds.PUFF);
-                    Sample.INSTANCE.play(Assets.Sounds.SHEEP);
                 }
             }
 
@@ -128,6 +152,8 @@ public class PropBuff extends Buff{
     private static final String TIMED = "timeD";
     private static final String TIMEE = "timeE";
 
+    private static final String WRTME = "wrtme";
+
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
@@ -136,6 +162,7 @@ public class PropBuff extends Buff{
         bundle.put( TIMEC, timeC );
         bundle.put( TIMED, timeD );
         bundle.put( TIMEE, timeE );
+        bundle.put( WRTME,warningTime );
     }
 
     @Override
@@ -146,6 +173,7 @@ public class PropBuff extends Buff{
         timeC = bundle.getInt( TIMEC );
         timeD = bundle.getInt( TIMED );
         timeE = bundle.getInt( TIMEE );
+        warningTime = bundle.getInt( WRTME );
     }
 
 }

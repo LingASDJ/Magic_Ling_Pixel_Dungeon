@@ -55,6 +55,7 @@ import com.watabou.input.KeyEvent;
 import com.watabou.input.PointerEvent;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Gizmo;
 import com.watabou.noosa.Image;
 import com.watabou.utils.PointF;
 
@@ -117,8 +118,18 @@ public class WndBag extends WndTabbed {
 		nCols = PixelScene.landscape() ? COLS_L : COLS_P;
 		nRows = (int)Math.ceil(45/(float)nCols); //we expect to lay out 25 slots in all cases
 
+		// 在构造函数中修改窗口高度计算
 		int windowWidth = slotWidth * nCols + SLOT_MARGIN * (nCols - 1);
-		int windowHeight = TITLE_HEIGHT + slotHeight * nRows + SLOT_MARGIN * (nRows - 1);
+		int windowHeight = TITLE_HEIGHT + slotHeight * nRows + SLOT_MARGIN * (nRows - 1) +7;
+
+		// 计算标签行数并添加到窗口高度
+		int tabCount = 0;
+		for (Bag b : Dungeon.hero.belongings.getBags()) {
+			if (b != null) tabCount++;
+		}
+		int tabRows = (int)Math.ceil(tabCount / 6.0);
+		windowHeight += tabRows * tabHeight(); // 为标签行预留空间
+
 
 		if (PixelScene.landscape()){
 			while (slotHeight >= 24 && (windowHeight + 20 + chrome.marginTop()) > PixelScene.uiCamera.height){
@@ -149,7 +160,7 @@ public class WndBag extends WndTabbed {
 
 		layoutTabs();
 	}
-	
+
 	public static WndBag lastBag( ItemSelector selector ) {
 		
 		if (lastBag != null && Dungeon.hero.belongings.backpack.contains( lastBag )) {
@@ -162,6 +173,43 @@ public class WndBag extends WndTabbed {
 			
 		}
 	}
+
+	@Override
+	public void layoutTabs() {
+		float tabWidth = width / 6f; // 每行6个标签
+		float left = 0;
+
+		// 计算需要的标签行数
+		int tabCount = 0;
+		for (Gizmo c : members) {
+			if (c instanceof Tab) tabCount++;
+		}
+		int tabRows = (int)Math.ceil(tabCount / 6.0);
+
+		// 从底部开始布局标签
+		float top = height - tabHeight() * tabRows;
+
+		int tabsInRow = 0;
+
+		for (Gizmo c : members) {
+			if (c instanceof Tab) {
+				Tab tab = (Tab) c;
+
+				// 如果当前行已满，换行
+				if (tabsInRow >= 6) {
+					left = 0;
+					top += tabHeight();
+					tabsInRow = 0;
+				}
+
+				// 设置标签位置和大小
+				tab.setRect(left, top, tabWidth, tabHeight()+5);
+				left += tabWidth;
+				tabsInRow++;
+			}
+		}
+	}
+
 
 	public static WndBag getBag( ItemSelector selector ) {
 		if (selector.preferredBag() == Belongings.Backpack.class){
@@ -456,7 +504,7 @@ public class WndBag extends WndTabbed {
 			INSTANCE = null;
 		}
 	}
-	
+
 	@Override
 	protected int tabHeight() {
 		return 20;

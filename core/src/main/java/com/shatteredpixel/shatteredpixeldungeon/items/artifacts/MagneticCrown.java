@@ -1,21 +1,27 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.ColorTargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 
@@ -67,29 +73,6 @@ public class MagneticCrown extends Artifact {
         return new Recharge();
     }
 
-    private float chargeAccumulator = 0f;
-
-    @Override
-    public void charge(Hero target, float amount) {
-        if (cursed || target.buff(MagicImmune.class) != null) return;
-
-        if (charge < chargeCap) {
-            chargeAccumulator += 0.3f;
-            while (chargeAccumulator >= 1f) {
-                charge++;
-                chargeAccumulator -= 1f;
-            }
-
-            if (charge > chargeCap) {
-                charge = chargeCap;
-                chargeAccumulator = 0f;
-            }
-
-            updateQuickslot();
-        }
-    }
-
-
     @Override
     public String desc() {
         String desc = Messages.get(this, "desc");
@@ -102,7 +85,6 @@ public class MagneticCrown extends Artifact {
         }
         return desc;
     }
-
 
     @Override
     public String name() {
@@ -118,15 +100,26 @@ public class MagneticCrown extends Artifact {
     }
 
     public class DragSelector extends CellSelector.Listener {
+        private int range = (int)(3 + level * 0.5f);
+
         @Override
         public void onSelect(Integer target) {
             if (target == null) return;
 
             int targetPos = target;
-            ArrayList<Char> validTargets = new ArrayList<>();
-            ArrayList<Char> enemyTargets = new ArrayList<>();  // 分离敌人目标
             float minDist = Float.MAX_VALUE;
             Char nearest = null;
+
+            // 首先检查英雄附近是否有敌人
+            boolean hasNearbyEnemy = false;
+            for (Char ch : Actor.chars()) {
+                if (Dungeon.hero.fieldOfView[ch.pos] && ch.alignment == Char.Alignment.ENEMY) {
+                    if (Dungeon.level.distance(Dungeon.hero.pos, ch.pos) <= range) {
+                        hasNearbyEnemy = true;
+                        break;
+                    }
+                }
+            }
 
             for (Char ch : Actor.chars()) {
                 if (Dungeon.hero.fieldOfView[ch.pos]) {
@@ -136,55 +129,39 @@ public class MagneticCrown extends Artifact {
                     }
 
                     float dist = Dungeon.level.distance(targetPos, ch.pos);
-                    if (dist <= 3 + level * 0.5f) {
-                        validTargets.add(ch);
-                        // 如果是敌人，加入敌人列表
-                        if (ch.alignment != Char.Alignment.ALLY) {
-                            enemyTargets.add(ch);
+                    if (dist <= range) {
+                        Ballistica trajectory = new Ballistica(ch.pos, targetPos, Ballistica.PROJECTILE);
+
+                        // 检查轨迹是否有效
+                        if (trajectory.collisionPos == targetPos || !Dungeon.level.solid[trajectory.collisionPos]) {
+                            // 如果有附近敌人，只考虑敌人
+                            if (hasNearbyEnemy && ch.alignment != Char.Alignment.ENEMY) {
+                                continue;
+                            }
+
+                            // 如果距离更近，直接更新
+                            if (dist < minDist) {
+                                minDist = dist;
+                                nearest = ch;
+                            }
+                            // 如果距离相等，则按优先级选择
+                            else if (dist == minDist) {
+                                // 定义优先级：敌人 > 玩家 > 友方
+                                int currentPriority = getPriority(ch);
+                                int nearestPriority = getPriority(nearest);
+
+                                if (currentPriority > nearestPriority) {
+                                    nearest = ch;
+                                }
+                            }
                         }
                     }
                 }
             }
 
-            if (validTargets.isEmpty()) {
+            if (nearest == null) {
                 GLog.w(Messages.get(MagneticCrown.this, "no_target"));
                 return;
-            }
-
-            // 优先从敌人列表中选择目标
-            ArrayList<Char> priorityTargets = enemyTargets.isEmpty() ? validTargets : enemyTargets;
-
-            for (Char ch : priorityTargets) {
-                Ballistica trajectory = new Ballistica(ch.pos, targetPos, Ballistica.PROJECTILE);
-                float dist = Dungeon.level.distance(targetPos, ch.pos);
-
-                if (trajectory.collisionPos == targetPos ||
-                        (dist < minDist && !Dungeon.level.solid[trajectory.collisionPos])) {
-                    minDist = dist;
-                    nearest = ch;
-                } else if (dist == minDist) {
-                    if (ch.alignment != Char.Alignment.ALLY &&
-                            nearest.alignment == Char.Alignment.ALLY) {
-                        nearest = ch;
-                    }
-                }
-            }
-
-            // 如果没有找到理想目标，从优先目标列表中选择最近的
-            if (nearest == null) {
-                nearest = priorityTargets.get(0);
-                for (Char ch : priorityTargets) {
-                    float dist = Dungeon.level.distance(targetPos, ch.pos);
-                    if (dist < minDist) {
-                        minDist = dist;
-                        nearest = ch;
-                    } else if (dist == minDist) {
-                        if (ch.alignment != Char.Alignment.ALLY &&
-                                nearest.alignment == Char.Alignment.ALLY) {
-                            nearest = ch;
-                        }
-                    }
-                }
             }
 
             charge--;
@@ -217,6 +194,7 @@ public class MagneticCrown extends Artifact {
                 Actor.addDelayed(new Pushing(nearest, nearest.pos, newPos), -1);
                 nearest.pos = newPos;
                 Dungeon.level.occupyCell(nearest);
+                showRange(nearest.pos, range, nearest);
                 Dungeon.hero.spendAndNext(1f);
             }
 
@@ -229,35 +207,67 @@ public class MagneticCrown extends Artifact {
             } catch (NullPointerException ignored) {}
 
             CellEmitter.get(nearest.pos).burst(ShadowParticle.UP, 5);
+            Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
         }
 
         @Override
         public String prompt() {
+            // 在显示提示时更新范围
+            range = (int)(3 + level * 0.5f);
+            showRange(Dungeon.hero.pos, range, Dungeon.hero);
             return Messages.get(MagneticCrown.this, "prompt");
+        }
+
+        private void showRange(int center, int range, Char ch) {
+            for (int i = 0; i < Dungeon.level.length(); i++) {
+                // 只显示最外围的范围
+                if (Dungeon.level.distance(center, i) == range) {
+                    Game.scene().addToFront(new ColorTargetedCell(i, ch != Dungeon.hero ? 0xff0000 : Window.ORAGNECOLOR));
+                }
+            }
+        }
+
+        // 辅助方法：获取目标的优先级
+        private int getPriority(Char ch) {
+            if (ch.alignment == Char.Alignment.ENEMY) {
+                return 3;  // 敌人优先级最高
+            } else if (ch == Dungeon.hero) {
+                return 2;  // 玩家次之
+            } else if (ch.alignment == Char.Alignment.ALLY) {
+                return 1;  // 友方优先级最低
+            }
+            return 0;
         }
     }
 
-
     public class Recharge extends ArtifactBuff {
-        private int turnsToCharge = Math.max(1, 50 - level());
+        private float partialCharge = 0f;
 
         @Override
         public boolean act() {
-            if (charge < chargeCap) {
-                turnsToCharge--;
-                if (turnsToCharge <= 0) {
-                    charge++;
-                    turnsToCharge = Math.max(1, 50 - level());
-                    updateQuickslot();
+            if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null) {
+                float chargeToGain = 1f / (50f - level());
+
+                chargeToGain *= RingOfEnergy.artifactChargeMultiplier(target);
+
+                partialCharge += chargeToGain;
+
+                while (partialCharge >= 1f) {
+                    if (charge < chargeCap) {
+                        charge++;
+                        partialCharge -= 1f;
+                    } else {
+                        partialCharge = 0f;
+                        break;
+                    }
                 }
+            } else {
+                partialCharge = 0f;
             }
+
+            updateQuickslot();
             spend(TICK);
             return true;
-        }
-
-        @Override
-        public String desc() {
-            return Messages.get(this, "desc", turnsToCharge);
         }
     }
 
@@ -290,15 +300,12 @@ public class MagneticCrown extends Artifact {
     private static final String CHARGECAP = "chargeCap";
     private static final String EXP = "exp";
 
-    private static final String CHARGEACCUMULATOR = "chargeAccumulator";
-
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(CHARGE, charge);
         bundle.put(CHARGECAP, chargeCap);
         bundle.put(EXP, exp);
-        bundle.put(CHARGEACCUMULATOR, chargeAccumulator);
     }
 
     @Override
@@ -307,6 +314,5 @@ public class MagneticCrown extends Artifact {
         charge = bundle.getInt(CHARGE);
         chargeCap = bundle.getInt(CHARGECAP);
         exp = bundle.getInt(EXP);
-        chargeAccumulator = bundle.getFloat(CHARGEACCUMULATOR);
     }
 }
