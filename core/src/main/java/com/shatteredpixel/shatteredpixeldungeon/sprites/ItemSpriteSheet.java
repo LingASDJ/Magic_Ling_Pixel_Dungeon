@@ -1303,6 +1303,17 @@ public class ItemSpriteSheet {
         assignItemRect(MAGNETIC_CROWN,            14, 13);
     }
 
+    public static final int RITUAL_SWORD        =                               xy(1, 60);
+
+    public static final int TREE_LIST                                           = RITUAL_SWORD + 1;
+    public static final int SAD_MAGIC_BOOK                                      = RITUAL_SWORD + 2;
+    public static final int SHEPHERD_FLUTE                                      = RITUAL_SWORD + 3;
+
+    static{
+        assignItemRect(RITUAL_SWORD,       13, 13);
+        assignItemRect(TREE_LIST,          14, 13);
+    }
+
     private static final int PROP1  = xy(9,46);
     private static final int PROP2  = xy(9,47);
     private static final int PROP3  = xy(9,48);

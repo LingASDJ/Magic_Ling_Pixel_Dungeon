@@ -15,10 +15,12 @@ public class ConfusedMieMieTalisman extends Prop{
 
     @Override
     public ItemSprite.Glowing glowing() {
-        PropBuff buff = Dungeon.hero.buff(PropBuff.class);
-        if(buff != null){
-            if(buff.warningTime>0){
-                return new ItemSprite.Glowing(0x880000, 6f);
+        if(Dungeon.hero != null){
+            PropBuff buff = Dungeon.hero.buff(PropBuff.class);
+            if(buff != null){
+                if(buff.warningTime>0){
+                    return new ItemSprite.Glowing(0x880000, 6f);
+                }
             }
         }
         return null;

@@ -38,9 +38,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -165,6 +168,12 @@ public class Shopkeeper extends NPC {
 	//shopkeepers are greedy!
 	public static int sellPrice(Item item){
 		int price = item.value() * 5 * (Dungeon.depth / 5 + 1);
+
+		if(Dungeon.depth>26){
+			if(!(item instanceof Ring || item instanceof Wand || item instanceof Artifact)){
+				price *= 0.8;
+			}
+		}
 
 		if(hero.buff(MagicGirlSayMoneyMore.class) != null){
 			if(item instanceof Ankh ||item instanceof Food || item instanceof PotionOfHealing){

@@ -57,6 +57,14 @@ public class ShatteredPixelDungeon extends Game {
 	public ShatteredPixelDungeon( PlatformSupport platform ) {
 		super( sceneClass == null ? (!SPDSettings.firebase()) ? EulaScene.class : GoScene.class : sceneClass, platform );
 
+		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.RitualSword.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword" );
+
+		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TreeList.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff" );
+
 		//pre-v2.5.0
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner.class,

@@ -55,14 +55,13 @@ import com.watabou.input.KeyEvent;
 import com.watabou.input.PointerEvent;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.Gizmo;
 import com.watabou.noosa.Image;
 import com.watabou.utils.PointF;
 
 import java.util.Locale;
 
 public class WndBag extends WndTabbed {
-	
+
 	//only one bag window can appear at a time
 	public static Window INSTANCE;
 
@@ -80,7 +79,7 @@ public class WndBag extends WndTabbed {
 	protected static final int SLOT_MARGIN	= 1;
 
 	protected static final int TITLE_HEIGHT	= 20;
-	
+
 	private ItemSelector selector;
 
 	private int nCols;
@@ -92,7 +91,7 @@ public class WndBag extends WndTabbed {
 	protected int count;
 	protected int col;
 	protected int row;
-	
+
 	private static Bag lastBag;
 
 	public WndBag( Bag bag ) {
@@ -118,18 +117,8 @@ public class WndBag extends WndTabbed {
 		nCols = PixelScene.landscape() ? COLS_L : COLS_P;
 		nRows = (int)Math.ceil(45/(float)nCols); //we expect to lay out 25 slots in all cases
 
-		// 在构造函数中修改窗口高度计算
 		int windowWidth = slotWidth * nCols + SLOT_MARGIN * (nCols - 1);
-		int windowHeight = TITLE_HEIGHT + slotHeight * nRows + SLOT_MARGIN * (nRows - 1) +7;
-
-		// 计算标签行数并添加到窗口高度
-		int tabCount = 0;
-		for (Bag b : Dungeon.hero.belongings.getBags()) {
-			if (b != null) tabCount++;
-		}
-		int tabRows = (int)Math.ceil(tabCount / 6.0);
-		windowHeight += tabRows * tabHeight(); // 为标签行预留空间
-
+		int windowHeight = TITLE_HEIGHT + slotHeight * nRows + SLOT_MARGIN * (nRows - 1);
 
 		if (PixelScene.landscape()){
 			while (slotHeight >= 24 && (windowHeight + 20 + chrome.marginTop()) > PixelScene.uiCamera.height){
@@ -162,54 +151,17 @@ public class WndBag extends WndTabbed {
 	}
 
 	public static WndBag lastBag( ItemSelector selector ) {
-		
+
 		if (lastBag != null && Dungeon.hero.belongings.backpack.contains( lastBag )) {
-			
+
 			return new WndBag( lastBag, selector );
-			
+
 		} else {
-			
+
 			return new WndBag( Dungeon.hero.belongings.backpack, selector );
-			
+
 		}
 	}
-
-	@Override
-	public void layoutTabs() {
-		float tabWidth = width / 6f; // 每行6个标签
-		float left = 0;
-
-		// 计算需要的标签行数
-		int tabCount = 0;
-		for (Gizmo c : members) {
-			if (c instanceof Tab) tabCount++;
-		}
-		int tabRows = (int)Math.ceil(tabCount / 6.0);
-
-		// 从底部开始布局标签
-		float top = height - tabHeight() * tabRows;
-
-		int tabsInRow = 0;
-
-		for (Gizmo c : members) {
-			if (c instanceof Tab) {
-				Tab tab = (Tab) c;
-
-				// 如果当前行已满，换行
-				if (tabsInRow >= 6) {
-					left = 0;
-					top += tabHeight();
-					tabsInRow = 0;
-				}
-
-				// 设置标签位置和大小
-				tab.setRect(left, top, tabWidth, tabHeight()+5);
-				left += tabWidth;
-				tabsInRow++;
-			}
-		}
-	}
-
 
 	public static WndBag getBag( ItemSelector selector ) {
 		if (selector.preferredBag() == Belongings.Backpack.class){
@@ -218,13 +170,13 @@ public class WndBag extends WndTabbed {
 		} else if (selector.preferredBag() != null){
 			Bag bag = Dungeon.hero.belongings.getItem( selector.preferredBag() );
 			if (bag != null)    return new WndBag( bag, selector );
-			//if a specific preferred bag isn't present, then the relevant items will be in backpack
+				//if a specific preferred bag isn't present, then the relevant items will be in backpack
 			else                return new WndBag( Dungeon.hero.belongings.backpack, selector );
 		}
 
 		return lastBag( selector );
 	}
-	
+
 	protected void placeTitle( Bag bag, int width ){
 
 		float titleWidth;
@@ -385,7 +337,7 @@ public class WndBag extends WndTabbed {
 	protected void placeItem( final Item item ) {
 
 		count++;
-		
+
 		int x = col * (slotWidth + SLOT_MARGIN);
 		int y = TITLE_HEIGHT + row * (slotHeight + SLOT_MARGIN);
 
@@ -460,7 +412,7 @@ public class WndBag extends WndTabbed {
 		if (item == null || (selector != null && !selector.itemSelectable(item))){
 			slot.enable(false);
 		}
-		
+
 		if (++col >= nCols) {
 			col = 0;
 			row++;
@@ -477,7 +429,7 @@ public class WndBag extends WndTabbed {
 			return super.onSignal(event);
 		}
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		if (selector != null) {
@@ -485,7 +437,7 @@ public class WndBag extends WndTabbed {
 		}
 		super.onBackPressed();
 	}
-	
+
 	@Override
 	protected void onClick( Tab tab ) {
 		hide();
@@ -496,7 +448,7 @@ public class WndBag extends WndTabbed {
 			Game.scene().addToFront(w);
 		}
 	}
-	
+
 	@Override
 	public void hide() {
 		super.hide();
@@ -509,7 +461,7 @@ public class WndBag extends WndTabbed {
 	protected int tabHeight() {
 		return 20;
 	}
-	
+
 	private Image icon( Bag bag ) {
 		if (bag instanceof VelvetPouch) {
 			return Icons.get( Icons.SEED_POUCH );
@@ -533,15 +485,15 @@ public class WndBag extends WndTabbed {
 			return Icons.get( Icons.BACKPACK );
 		}
 	}
-	
+
 	private class BagTab extends IconTab {
 
 		private Bag bag;
 		private int index;
-		
+
 		public BagTab( Bag bag, int index ) {
 			super( icon(bag) );
-			
+
 			this.bag = bag;
 			this.index = index;
 		}
@@ -567,7 +519,7 @@ public class WndBag extends WndTabbed {
 			return Messages.titleCase(bag.name());
 		}
 	}
-	
+
 	public static class Placeholder extends Item {
 
 		public Placeholder(int image ) {
@@ -583,7 +535,7 @@ public class WndBag extends WndTabbed {
 		public boolean isIdentified() {
 			return true;
 		}
-		
+
 		@Override
 		public boolean isEquipped( Hero hero ) {
 			return true;

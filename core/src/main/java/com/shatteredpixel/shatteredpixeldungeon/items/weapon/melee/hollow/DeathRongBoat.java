@@ -37,14 +37,16 @@ public class DeathRongBoat extends MeleeWeapon {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (mob.pos == targetPos) continue;
                 if (Dungeon.level.water[mob.pos] || Dungeon.level.map[mob.pos] == Terrain.SALT_WATER) {
-                    int distance = Dungeon.level.distance(targetPos, mob.pos);
-                    // 确保伤害递减率至少为0，避免增伤
-                    float damageReduction = Math.max(0, (25 - level()) / 100f);
-                    // 计算最终伤害，确保不超过原始伤害
-                    int finalDamage = (int) (damage * Math.max(0, 1 - damageReduction * distance));
-                    // 确保最小伤害为1
-                    finalDamage = Math.min(damage, Math.max(1, finalDamage));
-                    mob.damage(finalDamage, attacker, Char.DamageType.PHYSICAL);
+                    if(mob.alignment == Char.Alignment.ENEMY){
+                        int distance = Dungeon.level.distance(targetPos, mob.pos);
+                        // 确保伤害递减率至少为0，避免增伤
+                        float damageReduction = Math.max(0, (25 - level()) / 100f);
+                        // 计算最终伤害，确保不超过原始伤害
+                        int finalDamage = (int) (damage * Math.max(0, 1 - damageReduction * distance));
+                        // 确保最小伤害为1
+                        finalDamage = Math.min(damage, Math.max(1, finalDamage));
+                        mob.damage(finalDamage, attacker, Char.DamageType.PHYSICAL);
+                    }
                 }
             }
         }
