@@ -70,7 +70,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.LingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag;
@@ -105,6 +104,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.RitualSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TreeList;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -212,6 +213,11 @@ public enum HeroClass {
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 
+
+			//TODO LIST WEAPON
+			new RitualSword().identify().collect();
+			new TreeList().identify().collect();
+
 			new PropBag().quantity(1).identify().collect();
 
 			new ScrollOfGolems().collect();
@@ -226,8 +232,6 @@ public enum HeroClass {
 			Dungeon.LimitedDrops.BOOK_BAG.dropped();
 			new BlessingNecklace().quantity(1).identify().collect();
 			Dungeon.LimitedDrops.BLESSING_NECKLACE.dropped();
-
-			new LingBag().quantity(1).identify().collect();
 
 			new SpawnMisc().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();

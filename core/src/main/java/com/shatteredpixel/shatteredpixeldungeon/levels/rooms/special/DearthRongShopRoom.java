@@ -39,7 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMastery;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
@@ -173,6 +173,28 @@ public class DearthRongShopRoom extends SpecialRoom {
         return w;
     }
 
+    public static Item HighEXPotion() {
+        Item w;
+        switch (Random.Int(14)) {
+            default:
+            case 0: w = new PotionOfShielding(); break;
+            case 1: w = new PotionOfCorrosiveGas(); break;
+            case 2: w = new PotionOfMastery(); break;
+            case 3: w = new PotionOfSnapFreeze(); break;
+            case 4: w = new PotionOfStamina(); break;
+            case 5: w = new PotionOfDragonsBreath(); break;
+            case 6: w = new PotionOfLightStromCloud(); break;
+            case 7: w = new PotionOfDragonKingBreath(); break;
+            case 8: w = new PotionOfShroudingFog(); break;
+            case 9: w = new PotionOfMagicalSight(); break;
+            case 10: w = new PotionOfStormClouds(); break;
+            case 11: w = new PotionOfDivineInspiration(); break;
+            case 12: w = new PotionOfCleansing(); break;
+            case 13: w = new PotionOfEarthenArmor(); break;
+        }
+        return w;
+    }
+
     protected static ArrayList<Item> generateItems() {
         ArrayList<Item> itemsToSpawn = new ArrayList<>();
 
@@ -263,13 +285,10 @@ public class DearthRongShopRoom extends SpecialRoom {
         itemsToSpawn.add (new Firebomb().quantity(1));
         itemsToSpawn.add (new FrostBomb().quantity(1));
 
-        Item rare2;
-        rare2 = Generator.random(Generator.Category.ARMOR);
-        rare2.level(Random.Int(2,5));
-        rare2.upgrade();
-        rare2.cursed = false;
-        rare2.cursedKnown = true;
-        itemsToSpawn.add(rare2);
+        itemsToSpawn.add(HighEXPotion());
+        itemsToSpawn.add(HighEXPotion());
+
+        itemsToSpawn.add (Generator.random( Generator.Category.ARTIFACT ));
 
         Bag bag = ChooseBag(Dungeon.hero.belongings);
         if (bag != null) {

@@ -34,7 +34,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.RitualSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -60,7 +62,7 @@ public class CursingTrap extends Trap {
 		Heap heap = Dungeon.level.heaps.get(pos);
 		if (heap != null) {
 			for (Item item : heap.items) {
-				if ((item.isUpgradable() && !(item instanceof MissileWeapon)) || (item instanceof BrokenSeal && Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE)))
+				if ((item.isUpgradable() && !(item instanceof MissileWeapon || item instanceof RitualSword || item instanceof BloodthirstyThorn)) || (item instanceof BrokenSeal && Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE)))
 					curse(item);
 			}
 		}

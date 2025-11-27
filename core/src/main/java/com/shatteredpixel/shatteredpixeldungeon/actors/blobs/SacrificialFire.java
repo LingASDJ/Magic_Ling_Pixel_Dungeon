@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SacrificialParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.RitualSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SacrificeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -159,8 +160,10 @@ public class SacrificialFire extends Blob {
 
 			int exp = 0;
 			if (ch instanceof Mob) {
-				//same rates as used in wand of corruption, except for swarms
-				if (ch instanceof Statue || ch instanceof Mimic){
+				if(Dungeon.hero.belongings.weapon() instanceof RitualSword){
+					exp = 1_000_000;
+					GLog.p(Messages.get(RitualSword.class,"sacrifice"));
+				} else if (ch instanceof Statue || ch instanceof Mimic){
 					exp = 1 + Dungeon.depth;
 				} else if (ch instanceof Piranha || ch instanceof Bee) {
 					exp = 1 + Dungeon.depth/2;
