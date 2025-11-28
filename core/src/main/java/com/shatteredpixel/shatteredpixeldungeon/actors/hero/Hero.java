@@ -240,7 +240,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
@@ -1181,6 +1180,10 @@ public class Hero extends Char {
 
 	@Override
 	public boolean act() {
+
+		if(belongings.weapon instanceof TreeList){
+			Buff.affect(this, TreeList.TreeBarrier.class);
+		}
 
 		//水中祝福 但在BR不生效
 		if((branch == 0 || branch == 10) && !bossRushMode){
