@@ -72,10 +72,13 @@ public class PaswordBadges {
     public static void ALLCS(int challenges){
         PaswordBadges.Badge badge = null;
 
-        if (challenges == 0) return;
+        boolean isNoSeedMode =SPDSettings.customSeed().isEmpty();
+
+        if (challenges == 0 || !isNoSeedMode) return;
         boolean isNoChampion = Statistics.bossRushMode || Statistics.RandMode;
 
-        if (challenges >= 15 && !(Dungeon.isDLC(Conducts.Conduct.DEV))|| !isNoChampion && challenges >= 15) {
+
+        if (challenges >= 15 && !(Dungeon.isDLC(Conducts.Conduct.DEV))|| !isNoChampion  && challenges >= 15) {
             disown( Badge.ALLCHSX );
             badge = Badge.GODCHSX;
             local.add( badge );
