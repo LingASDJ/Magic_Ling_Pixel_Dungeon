@@ -349,7 +349,11 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 		do {
 			if(Statistics.RandMode){
-				n = Generator.randomWeapon(true);
+				if(w instanceof MissileWeapon){
+					n = (Weapon)Generator.randomUsingDefaults(c);
+				} else {
+					n = Generator.randomWeapon(true);
+				}
 			} else {
 				n = (Weapon)Generator.randomUsingDefaults(c);
 			}
