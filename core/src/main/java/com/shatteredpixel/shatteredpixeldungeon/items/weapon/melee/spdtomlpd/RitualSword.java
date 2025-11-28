@@ -12,10 +12,19 @@ public class RitualSword extends MeleeWeapon {
     {
         image = ItemSpriteSheet.RITUAL_SWORD;
         tier = 2;
-        cursed = false;
         if (!hasGoodEnchant()){
             enchantment = null;
+            cursed = false;
         };
+    }
+
+    @Override
+    public int image() {
+        if (!hasGoodEnchant()){
+            enchantment = null;
+            cursed = false;
+        };
+        return ItemSpriteSheet.RITUAL_SWORD;
     }
 
     @Override
