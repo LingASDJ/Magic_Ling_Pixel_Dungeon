@@ -332,7 +332,12 @@ public class DwarfMaster extends Boss {
         }
     }
 
+    private static final int MAX_SUMMONS = 20;
+
     private boolean summonSubject( int delay, Class<?extends Mob> type ){
+        if (aliveSummons() >= MAX_SUMMONS) {
+            return false;
+        }
         DwarfMaster.Summoning s = new DwarfMaster.Summoning();
         s.pos = ((DwarfMasterBossLevel)Dungeon.level).getSummoningPos();
         if (s.pos == -1) return false;
@@ -1243,12 +1248,14 @@ public class DwarfMaster extends Boss {
 
 
     private void extraSummonSubject(){
-        summonSubject(2);
-        summonsMade++;
-        summonSubject(3);
-        summonsMade++;
-        yell(Messages.get(this, "more_summon"));
-        new Flare(4, 32).color(0x4040FF, false).show(sprite, 1.5f);
+        if (aliveSummons() + 2 <= MAX_SUMMONS) {
+            summonSubject(2);
+            summonsMade++;
+            summonSubject(3);
+            summonsMade++;
+            yell(Messages.get(this, "more_summon"));
+            new Flare(4, 32).color(0x4040FF, false).show(sprite, 1.5f);
+        }
     }
 
     private HashSet<Mob> getSubjects(){
@@ -1300,17 +1307,21 @@ public class DwarfMaster extends Boss {
                 protected boolean act() {
                     Actor.remove(this);
                     yell(Messages.get(DwarfMaster.class, "wave_1"));
-                    new GnollShiled().spawnAround(pos);
-                    summonSubject(2, DwarfMaster.DKGhoul.class);
-                    summonSubject(3, DwarfMaster.DKGhoul.class);
+                    if (aliveSummons() + 2 <= MAX_SUMMONS) {
+                        new GnollShiled().spawnAround(pos);
+                        summonSubject(2, DwarfMaster.DKGhoul.class);
+                        summonSubject(3, DwarfMaster.DKGhoul.class);
+                    }
                     ++wave;
                     spend(TICK*9);
                     return true;
                 }
             });
         }else if(wave == 1){
-            summonSubject(1, DwarfMaster.DKGhoul.class);
-            summonSubject(5, DwarfMaster.DKMonk.class);
+            if (aliveSummons() + 2 <= MAX_SUMMONS) {
+                summonSubject(1, DwarfMaster.DKGhoul.class);
+                summonSubject(5, DwarfMaster.DKMonk.class);
+            }
             ++wave;
             Char enemy = (this.enemy == null ? Dungeon.hero : this.enemy);
             int w = Dungeon.level.width();
@@ -1322,21 +1333,25 @@ public class DwarfMaster extends Boss {
             beamCD = 20 + 8 - (phase == 5 ? 19 : 0);
             spend(TICK*12);
         }else if(wave == 2){
-            summonSubject(1, DwarfMaster.DKGhoul.class);
-            summonSubject(2, DwarfMaster.DKWarlock.class);
-            summonSubject(6, DwarfMaster.DKGhoul.class);
-            summonSubject(6, DwarfMaster.DKGhoul.class);
+            if (aliveSummons() + 2 <= MAX_SUMMONS) {
+                summonSubject(1, DwarfMaster.DKGhoul.class);
+                summonSubject(2, DwarfMaster.DKWarlock.class);
+                summonSubject(6, DwarfMaster.DKGhoul.class);
+                summonSubject(6, DwarfMaster.DKGhoul.class);
+            }
             ++wave;
             spend(TICK*15);
         }else if(wave == 3){
             yell(Messages.get(this, "wave_2"));
             //Eye.spawnAround(pos);
-            summonSubject(1, DwarfMaster.DKGhoul.class);
-            summonSubject(2, DwarfMaster.DKWarlock.class);
-            summonSubject(2, DwarfMaster.DKGhoul.class);
-            summonSubject(11, DwarfMaster.DKMonk.class);
-            summonSubject(5, OGPDZSLS.class);
-            summonSubject(7, SRPDHBLR.class);
+            if (aliveSummons() + 2 <= MAX_SUMMONS) {
+                summonSubject(1, DwarfMaster.DKGhoul.class);
+                summonSubject(2, DwarfMaster.DKWarlock.class);
+                summonSubject(2, DwarfMaster.DKGhoul.class);
+                summonSubject(11, DwarfMaster.DKMonk.class);
+                summonSubject(5, OGPDZSLS.class);
+                summonSubject(7, SRPDHBLR.class);
+            }
             Char enemy = (this.enemy == null ? Dungeon.hero : this.enemy);
             int w = Dungeon.level.width();
             int dx = enemy.pos % w - pos % w;
@@ -1348,25 +1363,29 @@ public class DwarfMaster extends Boss {
             ++wave;
             spend(TICK*15);
         }else if(wave == 4){
-            summonSubject(2, DwarfMaster.DKGhoul.class);
-            summonSubject(5, DwarfMaster.DKWarlock.class);
-            summonSubject(5, DwarfMaster.DKMonk.class);
-            summonSubject(2, DwarfMaster.DKGhoul.class);
-            summonSubject(5, OGPDZSLS.class);
-            summonSubject(7, SRPDHBLR.class);
-            summonSubject(5, DM100.class);
+            if (aliveSummons() + 2 <= MAX_SUMMONS) {
+                summonSubject(2, DwarfMaster.DKGhoul.class);
+                summonSubject(5, DwarfMaster.DKWarlock.class);
+                summonSubject(5, DwarfMaster.DKMonk.class);
+                summonSubject(2, DwarfMaster.DKGhoul.class);
+                summonSubject(5, OGPDZSLS.class);
+                summonSubject(7, SRPDHBLR.class);
+                summonSubject(5, DM100.class);
+            }
             ++wave;
             spend(TICK*14);
         }else if(wave == 5){
             yell(Messages.get(this,"wave_3"));
-            summonSubject(2, DwarfMaster.DKGhoul.class);
-            summonSubject(4, DwarfMaster.DKWarlock.class);
-            summonSubject(4, DwarfMaster.DKMonk.class);
-            summonSubject(8, DwarfMaster.DKMonk.class);
-            summonSubject(2, DwarfMaster.DKGhoul.class);
-            summonSubject(4, OGPDZSLS.class);
-            summonSubject(4, SRPDHBLR.class);
-            summonSubject(3, DM100.class);
+            if (aliveSummons() + 2 <= MAX_SUMMONS) {
+                summonSubject(2, DwarfMaster.DKGhoul.class);
+                summonSubject(4, DwarfMaster.DKWarlock.class);
+                summonSubject(4, DwarfMaster.DKMonk.class);
+                summonSubject(8, DwarfMaster.DKMonk.class);
+                summonSubject(2, DwarfMaster.DKGhoul.class);
+                summonSubject(4, OGPDZSLS.class);
+                summonSubject(4, SRPDHBLR.class);
+                summonSubject(3, DM100.class);
+            }
             Buff.affect(this, Haste.class, 5f);
             Buff.affect(this, Healing.class).setHeal(20, 0f, 6);
             Char enemy = (this.enemy == null ? Dungeon.hero : this.enemy);
@@ -1380,19 +1399,20 @@ public class DwarfMaster extends Boss {
             ++wave;
             spend(TICK*13);
         }else if(wave == 6){
-            summonSubject(3, DwarfMaster.DKWarlock.class);
-            summonSubject(3, DwarfMaster.DKMonk.class);
-            summonSubject(3, DwarfMaster.DKMonk.class);
-            summonSubject(3, DwarfMaster.DKWarlock.class);
-            summonSubject(2, DwarfMaster.DKGhoul.class);
-            summonSubject(5, OGPDZSLS.class);
-            summonSubject(7, SRPDHBLR.class);
-            summonSubject(5, DM100.class);
-            summonSubject(2, DM201.class);
-            summonSubject(5, DM200.class);
-            summonSubject(3, Skeleton.class);
-            summonSubject(3, Necromancer.class);
-            //summonSubject(3, RedNecromancer.class);
+            if (aliveSummons() + 2 <= MAX_SUMMONS) {
+                summonSubject(3, DwarfMaster.DKWarlock.class);
+                summonSubject(3, DwarfMaster.DKMonk.class);
+                summonSubject(3, DwarfMaster.DKMonk.class);
+                summonSubject(3, DwarfMaster.DKWarlock.class);
+                summonSubject(2, DwarfMaster.DKGhoul.class);
+                summonSubject(5, OGPDZSLS.class);
+                summonSubject(7, SRPDHBLR.class);
+                summonSubject(5, DM100.class);
+                summonSubject(2, DM201.class);
+                summonSubject(5, DM200.class);
+                summonSubject(3, Skeleton.class);
+                summonSubject(3, Necromancer.class);
+            }
             Buff.affect(this, Invulnerability.class, 20f);
             Buff.affect(this, Haste.class, 5f);
             Buff.affect(this, ArcaneArmor.class).set(Dungeon.hero.lvl + 10, 10);
