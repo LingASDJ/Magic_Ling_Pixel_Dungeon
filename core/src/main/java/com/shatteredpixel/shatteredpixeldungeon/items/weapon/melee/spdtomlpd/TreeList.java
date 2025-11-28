@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -77,7 +78,7 @@ public class TreeList extends MeleeWeapon {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         if(attacker instanceof Hero){
-            attacker.buff(TreeBarrier.class).accumulateOnAttack(2 + (int)(0.2f * level()));
+            attacker.buff(TreeBarrier.class).accumulateOnAttack(this);
         }
         return super.proc(attacker, defender, damage);
     }
@@ -109,15 +110,9 @@ public class TreeList extends MeleeWeapon {
         }
 
         // 攻击时积攒护盾
-        public void accumulateOnAttack(int weaponLevel) {
-            int gained = 2 + (int)(0.2 * weaponLevel);
+        public void accumulateOnAttack(Weapon weaponLevel) {
+            int gained = 2 + (int)(0.2 * weaponLevel.level());
             accumulatedShield = Math.min(accumulatedShield + gained, maxShield);
-        }
-
-        public int releaseShield() {
-            int released = accumulatedShield;
-            accumulatedShield = 0;
-            return released;
         }
 
         // 获取当前累积的护盾值
@@ -207,6 +202,28 @@ public class TreeList extends MeleeWeapon {
     public String upgradeAbilityStat(int level) {
         return Integer.toString(4+level);
     }
+
+    public String statsInfo(){
+        if (isIdentified()){
+            return Messages.get(this, "stats_desc", 3+buffedLvl());
+        } else {
+            return Messages.get(this, "typical_stats_desc", 3);
+        }
+    }
+
+    @Override
+    public int defenseFactor( Char owner ) {
+        return DRMax();
+    }
+
+    public int DRMax(){
+        return DRMax(buffedLvl());
+    }
+
+    public int DRMax(int lvl){
+        return 3 + lvl;
+    }
+
 
     public static class DefensiveStance extends FlavourBuff {
 
