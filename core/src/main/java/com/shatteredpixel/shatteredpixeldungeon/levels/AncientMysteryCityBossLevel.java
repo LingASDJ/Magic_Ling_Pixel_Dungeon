@@ -44,7 +44,6 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class AncientMysteryCityBossLevel extends Level{
 
@@ -408,18 +407,6 @@ public class AncientMysteryCityBossLevel extends Level{
         return cell;
     }
 
-    private static final HashMap<Integer, Integer> MAIN_PORTAL = new HashMap<>(2);
-    {
-        MAIN_PORTAL.put(614,371);
-        MAIN_PORTAL.put(303,573);
-    }
-
-    private static final HashMap<Integer, Integer> IF_MAIN_PORTAL = new HashMap<>(2);
-    {
-        IF_MAIN_PORTAL.put(614,371);
-        IF_MAIN_PORTAL.put(303,573);
-    }
-
     private static final int getBossDoor = 688;
     private static final int LDBossDoor = 661;
     @Override
@@ -436,18 +423,12 @@ public class AncientMysteryCityBossLevel extends Level{
         }
 
         if(ch == hero && Dungeon.level.locked){
-            //指定区域
-            if(MAIN_PORTAL.containsKey(ch.pos)) {
-                ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
-                //传送目标区域
-                hero.interrupt();
-                Dungeon.observe();
-                GameScene.updateFog();
+            if (ch.pos == 614) {
+                teleportHeroIfHeapEmpty(ch, 371, 614);
+            } else if (ch.pos == 303) {
+                teleportHeroIfHeapEmpty(ch, 573, 303);
             }
         }
-
-        //GLog.w(String.valueOf(hero.pos));
-
     }
 
     @Override

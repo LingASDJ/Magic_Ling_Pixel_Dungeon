@@ -69,18 +69,17 @@ public class DoubleBeeRoom extends SpecialRoom {
             }
         }
         level.addItemToSpawn( new PotionOfLevitation());
-        ArrayList<Item> mis = new ArrayList<>();
-        mis.add(Generator.random(Generator.Category.SEED));
+
         for (int i=0; i < 2; i++) {
-            for (Item item : mis) {
-                int Lpos;
-                do {
-                    Lpos = level.pointToCell(random(1));
-                } while (level.map[Lpos] != EMPTY_SP || level.heaps.get(Lpos) != null);
-                Heap h = level.drop(item, Lpos);
-                h.type = Heap.Type.HEAP;
-            }
+            Item seed = Generator.random(Generator.Category.SEED);
+            int Lpos;
+            do {
+                Lpos = level.pointToCell(random(1));
+            } while (level.map[Lpos] != EMPTY_SP || level.heaps.get(Lpos) != null);
+            Heap h = level.drop(seed, Lpos);
+            h.type = Heap.Type.HEAP;
         }
+
 
         ArrayList<Item> misx = new ArrayList<>();
         misx.add(new Blandfruit());

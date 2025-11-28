@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeSeed;
-import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeTippedDart;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeWand;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeWeapon;
 
@@ -239,8 +238,7 @@ public class WndGoldBurrety extends Window {
             Item item = items[i];
             Item result = item;
 
-            if ((item instanceof MeleeWeapon || item instanceof MissileWeapon) &&
-                    !(item instanceof MagesStaff || item instanceof TippedDart)) {
+            if (item instanceof MeleeWeapon && !(item instanceof MagesStaff)) {
 
                 if (item == hero.belongings.weapon()) {
                     hero.belongings.weapon = changeWeapon((Weapon) hero.belongings.weapon);
@@ -266,8 +264,10 @@ public class WndGoldBurrety extends Window {
 
                 result.collect();
                 item.detach(Dungeon.hero.belongings.backpack);
-            } else if (item instanceof TippedDart) {
-                result = changeTippedDart((TippedDart) item);
+            } else if (item instanceof MissileWeapon) {
+                result = changeWeapon((MissileWeapon) item);
+                result.noUpgrade = true;
+                result.upgrade();
                 result.collect();
                 result.quantity(item.quantity);
                 item.detachAll(Dungeon.hero.belongings.backpack);

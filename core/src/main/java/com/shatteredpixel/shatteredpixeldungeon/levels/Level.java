@@ -96,6 +96,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
@@ -156,6 +157,18 @@ public abstract class Level implements Bundlable {
 	public boolean extraGlass = true;
 
 	public boolean onlyBoxMove = false;
+
+	public void teleportHeroIfHeapEmpty(Char ch, int targetPos,int heappos) {
+		Heap heap = Dungeon.level.heaps.get(heappos);
+		if (heap == null || heap.isEmpty()) {
+			ScrollOfTeleportation.appear(ch, targetPos);
+			if(ch instanceof Hero){
+				((Hero) ch).interrupt();
+			}
+			Dungeon.observe();
+			GameScene.updateFog();
+		}
+	}
 
     //静态地图改变的轮子调用
 	public void changeMap(int[] map){

@@ -395,7 +395,11 @@ public class SakaFishBoss extends Boss {
     @Override
     public boolean isAlive() {
         AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
-        return super.isAlive() || !(level == AncientMysteryCityBossLevel.State.FALL_BOSS);
+        if(level != null){
+            return super.isAlive() || !(level == AncientMysteryCityBossLevel.State.FALL_BOSS);
+        } else {
+            return super.isAlive();
+        }
     }
 
     public void dropRocks( Char target ) {

@@ -79,7 +79,7 @@ public class CursingTrap extends Trap {
 		ArrayList<Item> canCurse = new ArrayList<>();
 
 		KindOfWeapon weapon = hero.belongings.weapon();
-		if (weapon instanceof Weapon && !(weapon instanceof MagesStaff)){
+		if (weapon instanceof Weapon && !(weapon instanceof MagesStaff || weapon instanceof RitualSword)){
 			if (((Weapon) weapon).enchantment == null)
 				priorityCurse.add(weapon);
 			else

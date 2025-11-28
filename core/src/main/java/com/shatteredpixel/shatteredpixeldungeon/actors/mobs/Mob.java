@@ -1641,30 +1641,49 @@ public abstract class Mob extends Char {
 	public void GetBossLoot(int pos){
 		int flakes = Random.chances(new float[]{0, 0, 6, 3, 1});
 		for (int i = 0; i < flakes; i++){
-			int ofs;
-			do {
-				ofs = PathFinder.NEIGHBOURS9[Random.Int(4)];
-			} while (!(Dungeon.level.passable[pos + ofs] || pos + ofs == this.pos));
+			int dropPos = pos;
+			int attempts = 0;
+
+			// 尝试找到合适的位置
+			while(attempts < 20) {
+				int ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
+				int tryPos = pos + ofs;
+
+				if(Dungeon.level.passable[tryPos] && Actor.findChar(tryPos) == null) {
+					dropPos = tryPos;
+					break;
+				}
+				attempts++;
+			}
+
+			// 如果没找到合适位置，使用英雄位置
+			if(attempts >= 20) {
+				dropPos = Dungeon.hero.pos;
+			}
+
+			// 掉落物品
 			switch (Random.Int(5)) {
 				case 0:
-					Dungeon.level.drop( ( Generator.random(Generator.Category.POTION)), pos+ofs );
+					Dungeon.level.drop( Generator.random(Generator.Category.POTION), dropPos );
 					break;
 				case 1:
-					Dungeon.level.drop( ( Generator.randomMissile() ), pos+ofs );
+					Dungeon.level.drop( Generator.randomMissile(), dropPos );
 					break;
 				case 2:
-					Dungeon.level.drop( ( Generator.randomArmor() ), pos+ofs );
+					Dungeon.level.drop( Generator.randomArmor(), dropPos );
 					break;
 				case 3:
-					Dungeon.level.drop( ( Generator.randomWeapon() ), pos+ofs );
+					Dungeon.level.drop( Generator.randomWeapon(), dropPos );
 					break;
 				case 4:
-					Dungeon.level.drop( ( Generator.random(Generator.Category.RING) ), pos+ofs );
+					Dungeon.level.drop( Generator.random(Generator.Category.RING), dropPos );
 					break;
 			}
 		}
-		Dungeon.level.drop( new Food(), pos ).sprite.drop();
-		Dungeon.level.drop( new PotionOfExperience(), pos ).sprite.drop();
+
+		// 基础物品直接放到英雄位置
+		Dungeon.level.drop( new Food(), Dungeon.hero.pos ).sprite.drop();
+		Dungeon.level.drop( new PotionOfExperience(), Dungeon.hero.pos ).sprite.drop();
 	}
 
 
