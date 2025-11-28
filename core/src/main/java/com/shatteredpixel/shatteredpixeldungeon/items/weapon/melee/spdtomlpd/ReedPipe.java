@@ -2,53 +2,40 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class RitualSword extends MeleeWeapon {
+public class ReedPipe extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.RITUAL_SWORD;
-        tier = 2;
-        if (!hasGoodEnchant()){
-            enchantment = null;
-            cursed = false;
-        };
-    }
-
-    @Override
-    public int image() {
-        if (!hasGoodEnchant()){
-            enchantment = null;
-            cursed = false;
-        };
-        return ItemSpriteSheet.RITUAL_SWORD;
-    }
-
-    @Override
-    public int proc(Char attacker, Char defender, int damage ) {
-
-        return super.proc( attacker, defender, damage );
+        image = ItemSpriteSheet.SHEPHERD_FLUTE;
+        tier = 3;
+        RCH = 10;
     }
 
     @Override
     public int min(int lvl) {
-        return 3 + lvl;
+        return 2 + lvl;
     }
 
     @Override
     public int max(int lvl) {
-        return  15 + lvl*3;
+        return 9 + lvl * 2;
     }
 
     @Override
-    protected int baseChargeUse(Hero hero, Char target){
-        if (hero.buff(TragicCode.CleaveTracker.class) != null){
-            return 0;
-        } else {
-            return 1;
+    public int proc(Char attacker, Char defender, int damage) {
+        int distance = attacker.distance(defender);
+        float damageMultiplier = Math.max(0.1f, 1.0f - (distance * 0.1f));
+        int actualDamage = Math.round(damage * damageMultiplier);
+        if (distance > 1) {
+            attacker.sprite.showStatus(0xFF8800, "-%d%%", distance * 10);
         }
+        defender.damage(actualDamage,new DM100.LightningBolt());
+        return super.proc(attacker, defender, 0);
     }
 
     @Override
@@ -58,14 +45,14 @@ public class RitualSword extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //+(4+lvl) damage, roughly +50% base dmg, +50% scaling
-        int dmgBoost = augment.damageFactor(4 + buffedLvl());
-        TragicCode.cleaveAbility(hero, target, 1, dmgBoost, this);
+        //+(4+1.5*lvl) damage, roughly +55% base dmg, +60% scaling
+        int dmgBoost = augment.damageFactor(5 + Math.round(1.5f*buffedLvl()));
+        Mace.heavyBlowAbility(hero, target, 1, dmgBoost, this);
     }
 
     @Override
     public String abilityInfo() {
-        int dmgBoost = levelKnown ? 4 + buffedLvl() : 4;
+        int dmgBoost = levelKnown ? 5 + Math.round(1.5f*buffedLvl()) : 5;
         if (levelKnown){
             return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
         } else {
@@ -74,7 +61,7 @@ public class RitualSword extends MeleeWeapon {
     }
 
     public String upgradeAbilityStat(int level){
-        int dmgBoost = 4 + level;
+        int dmgBoost = 5 + Math.round(1.5f*level);
         return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
     }
 
