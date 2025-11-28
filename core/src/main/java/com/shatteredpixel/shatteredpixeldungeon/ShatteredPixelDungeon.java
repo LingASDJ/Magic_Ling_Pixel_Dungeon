@@ -65,6 +65,18 @@ public class ShatteredPixelDungeon extends Game {
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TreeList.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff" );
 
+		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TragicCode.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword" );
+
+		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.ReedPipe.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace" );
+
+		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.Break.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield" );
+
 		//pre-v2.5.0
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner.class,

@@ -204,7 +204,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
@@ -215,7 +214,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -230,7 +228,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Seekingspear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WhiteBlastSword;
@@ -245,7 +242,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.KingAx
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.Break;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.ReedPipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.RitualSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TragicCode;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TreeList;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.thanks.GrilledHerring;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
@@ -575,8 +575,9 @@ public class Generator {
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 
 			WEP_T3.classes = new Class<?>[]{
-					Sword.class,
-					Mace.class,
+					TragicCode.class,
+					ReedPipe.class,
+
 					Scimitar.class,
 					RoundShield.class,
 
@@ -624,7 +625,9 @@ public class Generator {
 					WitheWoodSword.class,
 					Glaive.class,
 					Greataxe.class,
-					Greatshield.class,
+
+					Break.class,
+
 					WashCrime.class,
 					BoomSword.class,
 

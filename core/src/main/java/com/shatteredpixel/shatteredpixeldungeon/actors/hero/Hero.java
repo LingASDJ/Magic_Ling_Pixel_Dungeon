@@ -244,6 +244,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.Break;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TreeList;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -274,6 +275,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WinAllSearchStatus;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
@@ -2074,6 +2076,16 @@ public class Hero extends Char {
 			wep = belongings.attackingWeapon();
 		}
 
+		if (hero.belongings.weapon() instanceof Break) {
+			if (enemy != null && enemy.HP <= enemy.HT * 0.5f) {
+				float damageMultiplier = 1.0f + (0.3f + (0.03f * ((Break) Dungeon.hero.belongings.weapon()).level()));
+
+				damage *= Math.round(damageMultiplier);
+
+				Dungeon.hero.sprite.showStatus(Window.SKYBULE_COLOR, "+%d%%", Math.round((damageMultiplier - 1.0f) * 100));
+			}
+		}
+
 		if (wep != null) damage = wep.proc( this, enemy, damage );
 
 		damage = Talent.onAttackProc( this, enemy, damage );
@@ -2139,6 +2151,7 @@ public class Hero extends Char {
 			GLog.n(Messages.get(EmotionalAggregation.class,"block"));
 			return;
 		}
+
 
 		if(hero.belongings.getItem(EmotionalAggregationB.class)!=null && !(src instanceof Buff) && !(src instanceof Blob)){
 			dmg += (int) getZone()*2 -1;

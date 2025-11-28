@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TragicCode;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -41,7 +42,7 @@ public class WornShortsword extends MeleeWeapon {
 
 	@Override
 	protected int baseChargeUse(Hero hero, Char target){
-		if (hero.buff(Sword.CleaveTracker.class) != null){
+		if (hero.buff(TragicCode.CleaveTracker.class) != null){
 			return 0;
 		} else {
 			return 1;
@@ -57,7 +58,7 @@ public class WornShortsword extends MeleeWeapon {
 	protected void duelistAbility(Hero hero, Integer target) {
 		//+(3+lvl) damage, roughly +55% base dmg, +67% scaling
 		int dmgBoost = augment.damageFactor(3 + buffedLvl());
-		Sword.cleaveAbility(hero, target, 1, dmgBoost, this);
+		TragicCode.cleaveAbility(hero, target, 1, dmgBoost, this);
 	}
 
 	@Override
