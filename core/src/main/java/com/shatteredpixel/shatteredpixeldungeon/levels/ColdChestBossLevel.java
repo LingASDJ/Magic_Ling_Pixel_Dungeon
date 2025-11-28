@@ -37,7 +37,6 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 //宝藏迷宫 10层
 public class ColdChestBossLevel extends Level {
@@ -240,42 +239,6 @@ public class ColdChestBossLevel extends Level {
         Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
     }
 
-    private static final HashMap<Integer, Integer> MAIN_PORTAL = new HashMap<>(5);
-    {
-        MAIN_PORTAL.put(32 + WIDTH * 33, WIDTH*3 + 3);
-        MAIN_PORTAL.put(211, 628);
-        MAIN_PORTAL.put(1136, 533);
-        MAIN_PORTAL.put(841, 1156);
-        MAIN_PORTAL.put(241, 474);
-    }
-
-    private static final HashMap<Integer, Integer> IF_MAIN_PORTAL = new HashMap<>(5);
-    {
-        IF_MAIN_PORTAL.put(32 + WIDTH * 33, WIDTH*3 + 3);
-        IF_MAIN_PORTAL.put(211, 628);
-        IF_MAIN_PORTAL.put(1136, 533);
-        IF_MAIN_PORTAL.put(841, 1156);
-        IF_MAIN_PORTAL.put(241, 474);
-    }
-
-    private static final HashMap<Integer, Integer> S_MAIN_PORTAL = new HashMap<>(5);
-    {
-        S_MAIN_PORTAL.put(844, 111);
-        S_MAIN_PORTAL.put(869, 133);
-
-        S_MAIN_PORTAL.put(181, 682);
-        S_MAIN_PORTAL.put(203, 682);
-    }
-
-    private static final HashMap<Integer, Integer> IF_S_MAIN_PORTAL = new HashMap<>(5);
-    {
-        IF_S_MAIN_PORTAL.put(844, 111);
-        IF_S_MAIN_PORTAL.put(869, 133);
-
-        IF_S_MAIN_PORTAL.put(181, 682);
-        IF_S_MAIN_PORTAL.put(203, 682);
-    }
-
     @Override
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
@@ -303,32 +266,24 @@ public class ColdChestBossLevel extends Level {
             }
         }
 
-        if(ch == hero){
-            //指定区域
-            if(S_MAIN_PORTAL.containsKey(ch.pos) && pro == START) {
-                ScrollOfTeleportation.appear(ch, IF_S_MAIN_PORTAL.get(ch.pos));
-                //传送目标区域 第一场景
-                hero.interrupt();
-                Dungeon.observe();
-                GameScene.updateFog();
+        if(pro == START) {
+            if (ch == hero) {
+                if (ch.pos == 844) {
+                    teleportHeroIfHeapEmpty(ch, 111, 844);
+                } else if (ch.pos == 869) {
+                    teleportHeroIfHeapEmpty(ch, 133, 869);
+                } else if (ch.pos == 181) {
+                    teleportHeroIfHeapEmpty(ch, 682, 181);
+                } else if (ch.pos == 203) {
+                    teleportHeroIfHeapEmpty(ch, 682, 203);
+                }
                 if(ch.pos==682){
                     Buff.detach(hero, Levitation.class);
                 } else if(ch.pos==111||ch.pos==133) {
-                    Buff.affect( hero, Levitation.class, 99999999999999999999999999999999f );
+                    Buff.affect(hero, Levitation.class, 99999999999999999999999999999999f);
                 }
             }
-
-            if(MAIN_PORTAL.containsKey(ch.pos) && pro == MAZE_START) {
-                ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
-
-                //传送目标区域 第二场景
-                hero.interrupt();
-                Dungeon.observe();
-                GameScene.updateFog();
-            }
-
         }
-        //GLog.n(String.valueOf(Statistics.dimandchestmazeCollected));
     }
 
 

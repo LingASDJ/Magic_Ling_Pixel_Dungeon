@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
@@ -16,7 +17,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.FireMagicDiedNPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -146,20 +146,27 @@ public class ShopBossLevel extends Level {
         super.occupyCell( ch );
 
         if (map[entrance] == Terrain.STATUE && map[exit] != Terrain.EXIT
-                && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2) {
+                && ch == hero && level.distance(ch.pos, entrance) >= 2) {
             seal();
         }
 
-        //GLog.p(String.valueOf(hero.pos));
-
         if(ch == hero){
-            //指定区域
-            if(MAIN_PORTAL.containsKey(ch.pos)) {
-                ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
-                //传送目标区域
-                hero.interrupt();
-                Dungeon.observe();
-                GameScene.updateFog();
+            if(ch.pos == 10+10*WIDTH) {
+                teleportHeroIfHeapEmpty(ch, 2+2*WIDTH,10+10*WIDTH);
+            } else if(ch.pos == 1+WIDTH) {
+                teleportHeroIfHeapEmpty(ch, throne, 1+WIDTH);
+            } else if(ch.pos == 24+10*WIDTH) {
+                teleportHeroIfHeapEmpty(ch, 32+2*WIDTH, 24+10*WIDTH);
+            } else if(ch.pos == 33+WIDTH) {
+                teleportHeroIfHeapEmpty(ch, throne,33+WIDTH);
+            } else if(ch.pos == 10+24*WIDTH) {
+                teleportHeroIfHeapEmpty(ch, 2+32*WIDTH, 10+24*WIDTH);
+            } else if(ch.pos == 1+33*WIDTH) {
+                teleportHeroIfHeapEmpty(ch, throne,1+33*WIDTH);
+            } else if(ch.pos == 24+24*WIDTH) {
+                teleportHeroIfHeapEmpty(ch,  32+32*WIDTH, 24+24*WIDTH);
+            } else if(ch.pos == 33+33*WIDTH) {
+                teleportHeroIfHeapEmpty(ch, throne,33+33*WIDTH);
             }
         }
     }
@@ -190,17 +197,7 @@ public class ShopBossLevel extends Level {
 
     private static final HashMap<Integer, Integer> MAIN_PORTAL = new HashMap<>(4);
     {
-        MAIN_PORTAL.put(10+10*WIDTH, 2+2*WIDTH);
-        MAIN_PORTAL.put(1+WIDTH, throne);
 
-        MAIN_PORTAL.put(24+10*WIDTH, 32+2*WIDTH);
-        MAIN_PORTAL.put(33+WIDTH, throne);
-
-        MAIN_PORTAL.put(10+24*WIDTH, 2+32*WIDTH);
-        MAIN_PORTAL.put(1+33*WIDTH, throne);
-
-        MAIN_PORTAL.put(24+24*WIDTH, 32+32*WIDTH);
-        MAIN_PORTAL.put(33+33*WIDTH, throne);
     }
 
     private static final HashMap<Integer, Integer> IF_MAIN_PORTAL = new HashMap<>(4);

@@ -21,7 +21,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -203,27 +202,6 @@ public class YogGodHardBossLevel extends Level {
     public void occupyCell( Char ch ) {
         super.occupyCell( ch );
 
-        if (map[ENTRANCE] == Terrain.ENTRANCE && map[EXIT] == Terrain.WALL){
-            if(ch == Dungeon.hero){
-                if(MAIN_PORTAL.containsKey(ch.pos)) {
-                    if (ch.buff(LockedFloor.class) != null) {
-                        ScrollOfTeleportation.appear(ch, MAIN_PORTAL.get(ch.pos));
-                    }else{
-                        ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
-                    }
-                    Dungeon.hero.interrupt();
-                    Dungeon.observe();
-                    GameScene.updateFog();
-                }else if(SUB_PORTAL.containsKey(ch.pos)){
-                    ScrollOfTeleportation.appear(ch, SUB_PORTAL.get(ch.pos));
-                    Dungeon.hero.interrupt();
-                    Dungeon.observe();
-                    GameScene.updateFog();
-                }
-            }
-            return;
-        }
-
         if (map[ENTRANCE] == Terrain.ENTRANCE && map[EXIT] != Terrain.EXIT
                 && ch == Dungeon.hero && Dungeon.level.distance(ch.pos, ENTRANCE) >= 2 && !Statistics.TrueYogNoDied) {
             seal();
@@ -232,18 +210,52 @@ public class YogGodHardBossLevel extends Level {
         if(ch == Dungeon.hero){
             if(MAIN_PORTAL.containsKey(ch.pos)) {
                 if (ch.buff(LockedFloor.class) != null) {
-                    ScrollOfTeleportation.appear(ch, MAIN_PORTAL.get(ch.pos));
+                    if (ch.pos == 9+9*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 12+28*WIDTH, 9+9*WIDTH);
+                    } else if (ch.pos == 9+31*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 28+28*WIDTH, 9+31*WIDTH);
+                    } else if (ch.pos == 31+31*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 28+12*WIDTH, 31+31*WIDTH);
+                    } else if (ch.pos == 31+9*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 12+12*WIDTH, 31+9*WIDTH);
+                    } else if (ch.pos == 15+15*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 32+20*WIDTH, 15+15*WIDTH);
+                    } else if (ch.pos == 15+25*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 20+8*WIDTH, 15+25*WIDTH);
+                    } else if (ch.pos == 25+25*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 8+20*WIDTH, 25+25*WIDTH);
+                    } else if (ch.pos == 25+15*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 20+32*WIDTH, 25+15*WIDTH);
+                    }
                 }else{
-                    ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
+                    if (ch.pos == 9+9*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 35+35*WIDTH, 9+9*WIDTH);
+                    } else if (ch.pos == 9+31*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 35+5*WIDTH, 9+31*WIDTH);
+                    } else if (ch.pos == 31+31*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 5+5*WIDTH, 31+31*WIDTH);
+                    } else if (ch.pos == 31+9*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 5+35*WIDTH, 31+9*WIDTH);
+                    } else if (ch.pos == 15+15*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 32+20*WIDTH, 15+15*WIDTH);
+                    } else if (ch.pos == 15+25*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 20+8*WIDTH, 15+25*WIDTH);
+                    } else if (ch.pos == 25+25*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 8+20*WIDTH, 25+25*WIDTH);
+                    } else if (ch.pos == 25+15*WIDTH) {
+                        teleportHeroIfHeapEmpty(ch, 20+32*WIDTH, 25+15*WIDTH);
+                    }
                 }
-                Dungeon.hero.interrupt();
-                Dungeon.observe();
-                GameScene.updateFog();
             }else if(SUB_PORTAL.containsKey(ch.pos)){
-                ScrollOfTeleportation.appear(ch, SUB_PORTAL.get(ch.pos));
-                Dungeon.hero.interrupt();
-                Dungeon.observe();
-                GameScene.updateFog();
+                if (ch.pos == 34*WIDTH+34) {
+                    teleportHeroIfHeapEmpty(ch, 12*WIDTH + 28, 34*WIDTH+34);
+                } else if (ch.pos == 6*WIDTH+34) {
+                    teleportHeroIfHeapEmpty(ch, 12*WIDTH+12, 6*WIDTH+34);
+                } else if (ch.pos == 6*WIDTH+6) {
+                    teleportHeroIfHeapEmpty(ch, 28*WIDTH+12, 6*WIDTH+6);
+                } else if (ch.pos == 34*WIDTH+6) {
+                    teleportHeroIfHeapEmpty(ch, 28*WIDTH+28, 34*WIDTH+6);
+                }
             }
         }
     }

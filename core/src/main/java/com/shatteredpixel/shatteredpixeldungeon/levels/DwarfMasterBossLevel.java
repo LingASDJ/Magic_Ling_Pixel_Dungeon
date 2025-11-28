@@ -21,7 +21,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
@@ -64,18 +63,13 @@ public class DwarfMasterBossLevel extends Level {
     public static final int CENTER = 18 + WIDTH * 17;
 
     private int status = 0;
-    private static final int START = 0;
-    private static final int FIGHTING = 1;
-    private static final int WON = 2;
-    private static final int ERROR = 9999999;
-
 
     @Override
     public String tilesTex() {
         if(Dungeon.depth == 15){
             return Assets.Environment.TILES_CAVES_GNOLL;
         } else {
-            return Assets.Environment.TILES_HALLS;
+            return Assets.Environment.TILES_CITY;
         }
 
     }
@@ -85,7 +79,7 @@ public class DwarfMasterBossLevel extends Level {
         if(Dungeon.depth == 15){
             return Assets.Environment.WATER_SEWERS;
         } else {
-            return Assets.Environment.WATER_HALLS;
+            return Assets.Environment.WATER_CITY;
         }
 
     }
@@ -337,13 +331,19 @@ public class DwarfMasterBossLevel extends Level {
         }
 
         if(ch == hero){
-            if(MAIN_PORTAL.containsKey(ch.pos)) {
-                ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
-                hero.interrupt();
-                Dungeon.observe();
-                GameScene.updateFog();
+            if (ch.pos == 26 + WIDTH * 25) {
+                teleportHeroIfHeapEmpty(ch, WIDTH*31 + 18, 26 + WIDTH * 25);
+            } else if (ch.pos == 31 + WIDTH * 6) {
+                teleportHeroIfHeapEmpty(ch, WIDTH*31 + 18, 31 + WIDTH * 6);
+            } else if (ch.pos == 6 + WIDTH * 6) {
+                teleportHeroIfHeapEmpty(ch, WIDTH*31 + 18, 6 + WIDTH * 6);
+            } else if (ch.pos == 12 + WIDTH * 23) {
+                teleportHeroIfHeapEmpty(ch, WIDTH*31 + 18, 12 + WIDTH * 23);
+            } else if (ch.pos == 26 + WIDTH * 31) {
+                teleportHeroIfHeapEmpty(ch, WIDTH*31 + 18, 26 + WIDTH * 31);
             }
         }
+
     }
 
     private static final HashMap<Integer, Integer> IF_MAIN_PORTAL = new HashMap<>(4);
