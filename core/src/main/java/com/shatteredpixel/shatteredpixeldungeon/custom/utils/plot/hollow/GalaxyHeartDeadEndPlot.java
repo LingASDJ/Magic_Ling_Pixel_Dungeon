@@ -6,7 +6,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
-import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Morphs;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -122,7 +121,7 @@ public class GalaxyHeartDeadEndPlot extends Plot {
                                     protected void onComplete() {
                                         Badges.validateVictory();
                                         PaswordBadges.ALLCS(Challenges.activeChallenges());
-                                        Rankings.INSTANCE.submit(true, RedEnd.class);
+                                        Dungeon.win(RedEnd.class);
                                         Game.switchScene( RankingsScene.class );
                                         Dungeon.deleteGame( GamesInProgress.curSlot, true );
                                     }

@@ -14,7 +14,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
-import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -699,7 +698,7 @@ public class CerDogBossLevel extends Level {
     UnsignedInvitationLetter unsignedInvitationLetter = Dungeon.hero.belongings.getItem(UnsignedInvitationLetter.class);
 
     if(transition.type == LevelTransition.Type.REGULAR_ENTRANCE && unsignedInvitationLetter!=null){
-        if(!(Dungeon.isDLC(Conducts.Conduct.DEV))) {
+        if((Dungeon.isDLC(Conducts.Conduct.DEV))) {
             GLog.w(Messages.get(UnsignedInvitationLetter.class, "hollow_city_1", hero.name()));
             Badges.CITY_END();
             GameScene.scene.add(new Delayer(3f) {
@@ -707,7 +706,7 @@ public class CerDogBossLevel extends Level {
                 protected void onComplete() {
                     Badges.validateVictory();
                     PaswordBadges.ALLCS(Challenges.activeChallenges());
-                    Rankings.INSTANCE.submit(true, UnsignedInvitationLetter.class);
+                    Dungeon.win(UnsignedInvitationLetter.class);
                     Game.switchScene(RankingsScene.class);
                     Dungeon.deleteGame(GamesInProgress.curSlot, true);
                 }

@@ -8,7 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
-import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -238,7 +237,7 @@ public class ZeroHallsBossLevel extends Level {
                     protected void onComplete() {
                         Badges.validateVictory();
                         PaswordBadges.ALLCS(Challenges.activeChallenges());
-                        Rankings.INSTANCE.submit(true, BadDream.class);
+                        Dungeon.win( BadDream.class );
                         Game.switchScene( RankingsScene.class );
                         Dungeon.deleteGame( GamesInProgress.curSlot, true );
                         AndroidGameRecords.AbyssRecord();
