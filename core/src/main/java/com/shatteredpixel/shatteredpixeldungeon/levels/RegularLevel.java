@@ -294,7 +294,7 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if( (depth == 27 || depth == 30) && Badges.isUnlocked(Badges.Badge.KILL_DOG)){
+		if( (depth == 27 || depth == 30) && Badges.isUnlocked(Badges.Badge.KILL_DOG) && Statistics.Hollow_Holiday){
 			initRooms.add(new DearthRongShopRoom());
 		}
 
