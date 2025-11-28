@@ -73,39 +73,6 @@ public class QliphothLasher extends Mob implements Hero.Doom {
                 q.amount++;
             }
         }
-        /*
-            // 获取当前Dungeon.level上的Mob数组
-            Mob[] mobsx = Dungeon.level.mobs.toArray(new Mob[0]);
-            ArrayList<Mob> enemys = new ArrayList<>();
-            for(Mob mob : mobsx){
-                if(mob instanceof Qliphoth) enemys.add(mob);
-                if(mob.alignment == Alignment.ENEMY) enemys.add(mob);
-            }
-
-            if (!enemys.isEmpty()) {
-                boolean containsBoss = false;
-                boolean onlyCRWithBoss = true;
-                for (Mob mob : enemys) {
-                    if (mob instanceof Qliphoth) {
-                        containsBoss = true;
-                    } else if (!(mob instanceof ClearElemental)) {
-                        onlyCRWithBoss = false;
-                    }
-                }
-                // 如果场景中包含Boss并且除了Boss外只含有CR怪物
-                if (containsBoss && onlyCRWithBoss) {
-                    for (Mob mob : enemys) {
-                        if (mob instanceof ClearElemental) {
-                            mob.die(true ); // CR怪物死亡
-                        } else if (mob instanceof Qliphoth) {
-                            if((mob.HP>=60 && mob.HP<=100)){
-                                mob.HP = 60;
-                            }
-                        }
-                    }
-                }
-           }
-         */
     }
 
 
@@ -210,7 +177,7 @@ public class QliphothLasher extends Mob implements Hero.Doom {
 
     @Override
     public int drRoll() {
-        return (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? Random.NormalIntRange(0,4     ) : Random.NormalIntRange(0, 2));
+        return (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? Random.NormalIntRange(0,4) : Random.NormalIntRange(0, 2));
     }
 
     private static final String STATE_LASHER_BOSS   = "state_lasher_boss";
