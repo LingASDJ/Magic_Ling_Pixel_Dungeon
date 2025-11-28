@@ -275,6 +275,8 @@ public enum Rankings {
 
         Statistics.totalScore *= Statistics.seedCustom ? 0.5 : 1;
 
+        Statistics.totalScore *= Statistics.RandMode  ? 0 : 1;
+
         Statistics.totalScore *= DifficultyScore();
 
         int totalProps = (int) (Statistics.badMultiplier + Statistics.goodMultiplier);

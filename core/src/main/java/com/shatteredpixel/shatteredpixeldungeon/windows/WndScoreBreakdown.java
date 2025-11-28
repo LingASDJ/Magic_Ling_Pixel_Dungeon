@@ -8,7 +8,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -77,9 +76,15 @@ public class WndScoreBreakdown extends Window {
             pos = statSlot(content, Messages.get(this, "win_multiplier"), Statistics.winMultiplier + "x", pos, false);
         }
 
+        if(Statistics.RandMode){
+            pos = statSlot(content, Messages.get(this, "get_multiplier"), "0" + "x", pos, false);
+            pos = addInfo(content, Messages.get(this, "get_desc"), pos);
+        }
+
         if(Statistics.seedCustom){
             pos = statSlot(content, Messages.get(this, "seed_multiplier"), "0.5" + "x", pos, false);
         }
+
 
         if(Dungeon.isDLC(Conducts.Conduct.EASY)){
             pos = statSlot(content, Messages.get(this, "diff_multiplier"), "0.5" + "x", pos, false);
