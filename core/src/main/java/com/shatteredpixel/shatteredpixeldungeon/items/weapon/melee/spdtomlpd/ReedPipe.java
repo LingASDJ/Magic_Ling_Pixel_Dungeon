@@ -32,7 +32,7 @@ public class ReedPipe extends MeleeWeapon {
         float damageMultiplier = Math.max(0.1f, 1.0f - (distance * 0.1f));
         int actualDamage = Math.round(damage * damageMultiplier);
         if (distance > 1) {
-            attacker.sprite.showStatus(0xFF8800, "-%d%%", distance * 10);
+            attacker.sprite.showStatus(0xFF8800, "-%d%%", (distance-1) * 10);
         }
         defender.damage(actualDamage,new DM100.LightningBolt());
         return super.proc(attacker, defender, 0);
