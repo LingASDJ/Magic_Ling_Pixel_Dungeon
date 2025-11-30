@@ -295,9 +295,10 @@ public enum Bestiary {
 	ANCIENT_CITY_BOSS,
 
 	UNIVERSAL,
-	RARE,
 	QUEST,
 	BOSSRUSH,
+	RARE,
+
 	NEUTRAL,
 
 	ALLY,
