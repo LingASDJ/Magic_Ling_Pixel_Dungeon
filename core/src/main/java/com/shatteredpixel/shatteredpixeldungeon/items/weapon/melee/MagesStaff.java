@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -28,10 +30,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
@@ -51,10 +55,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ItemButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUseItem;
 import com.watabou.noosa.audio.Sample;
@@ -69,9 +79,13 @@ public class MagesStaff extends MeleeWeapon {
 
 	public Wand wand;
 
+	public Wand wandcount;
+
 	public static final String AC_IMBUE = "IMBUE";
 	public static final String AC_ZAP	= "ZAP";
 	public static final String AC_DISMISS = "DISMISS";
+
+	public static final String AC_HAND  = "HAND";
 
 	private static final float STAFF_SCALE_FACTOR = 0.75f;
 
@@ -124,6 +138,11 @@ public class MagesStaff extends MeleeWeapon {
 			actions.add( AC_DISMISS );
 		}
 
+		if(Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE){
+			actions.add(AC_HAND);
+		}
+
+
 		return actions;
 	}
 
@@ -173,6 +192,14 @@ public class MagesStaff extends MeleeWeapon {
 			GameScene.selectCell(cellSelector);
 		}
 
+		if( action.equals(AC_HAND) ) {
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+				if (mob instanceof MageHand) {
+					GameScene.show(new WndMageHand((MageHand) mob));
+				}
+			}
+		}
+
 	}
 
 	protected CellSelector.Listener cellSelector = new CellSelector.Listener(){
@@ -217,7 +244,7 @@ public class MagesStaff extends MeleeWeapon {
 
 		Talent.EmpoweredStrikeTracker empoweredStrike = attacker.buff(Talent.EmpoweredStrikeTracker.class);
 		if (empoweredStrike != null){
-			damage = Math.round( damage * (1f + Dungeon.hero.pointsInTalent(Talent.EMPOWERED_STRIKE)/6f));
+			damage = Math.round( damage * (1f + hero.pointsInTalent(Talent.EMPOWERED_STRIKE)/6f));
 		}
 
 		if (wand != null &&
@@ -268,8 +295,8 @@ public class MagesStaff extends MeleeWeapon {
 
 		int oldStaffcharges = this.wand != null ? this.wand.curCharges : 0;
 
-		if (owner == Dungeon.hero && Dungeon.hero.hasTalent(Talent.WAND_PRESERVATION)){
-			Talent.WandPreservationCounter counter = Buff.affect(Dungeon.hero, Talent.WandPreservationCounter.class);
+		if (owner == hero && hero.hasTalent(Talent.WAND_PRESERVATION)){
+			Talent.WandPreservationCounter counter = Buff.affect(hero, Talent.WandPreservationCounter.class);
 			if (counter.count() == 0){
 				counter.countUp(1);
 				this.wand.level(0);
@@ -298,8 +325,8 @@ public class MagesStaff extends MeleeWeapon {
 		wand.curCharges = Math.min(wand.maxCharges, wand.curCharges+oldStaffcharges);
 		if (owner != null){
 			applyWandChargeBuff(owner);
- 		} else if (Dungeon.hero.belongings.contains(this)){
-			applyWandChargeBuff(Dungeon.hero);
+ 		} else if (hero.belongings.contains(this)){
+			applyWandChargeBuff(hero);
 		}
 
 		//This is necessary to reset any particles.
@@ -393,7 +420,7 @@ public class MagesStaff extends MeleeWeapon {
 			if ((!cursed && !hasCurseEnchant()) || !cursedKnown)    info += " " + wand.statsDesc();
 			else                                                    info += " " + Messages.get(this, "cursed_wand");
 
-			if (Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE){
+			if (hero.subClass == HeroSubClass.BATTLEMAGE){
 				info += "\n\n" + Messages.get(wand, "bmage_desc");
 			}
 		}
@@ -486,8 +513,8 @@ public class MagesStaff extends MeleeWeapon {
 					}
 
 					String bodyText = Messages.get(MagesStaff.class, "imbue_desc", newLevel);
-					if (Dungeon.hero.hasTalent(Talent.WAND_PRESERVATION)
-						&& Dungeon.hero.buff(Talent.WandPreservationCounter.class) == null){
+					if (hero.hasTalent(Talent.WAND_PRESERVATION)
+						&& hero.buff(Talent.WandPreservationCounter.class) == null){
 						bodyText += "\n\n" + Messages.get(MagesStaff.class, "imbue_talent");
 					} else {
 						bodyText += "\n\n" + Messages.get(MagesStaff.class, "imbue_lost");
@@ -600,4 +627,110 @@ public class MagesStaff extends MeleeWeapon {
 			size(minSize + (left / lifespan)*(maxSize-minSize) + Random.Float(sizeJitter));
 		}
 	}
+
+	private static class WndMageHand extends Window {
+
+		private static final int BTN_SIZE  = 32;
+		private static final float GAP     = 2;
+		private static final float BTN_GAP = 12;
+		private static final int WIDTH     = 116;
+
+		private ItemButton btnWand;
+
+		WndMageHand(final MageHand hand){
+
+			IconTitle titlebar = new IconTitle();
+			titlebar.icon( new ItemSprite(ItemSpriteSheet.MAGES_STAFF) );
+			titlebar.label( Messages.get(this, "title") );
+			titlebar.setRect( 0, 0, WIDTH, 0 );
+			add( titlebar );
+
+			RenderedTextBlock message =
+					PixelScene.renderTextBlock(Messages.get(this, "desc"), 6);
+			message.maxWidth( WIDTH );
+			message.setPos(0, titlebar.bottom() + GAP);
+			add( message );
+
+			btnWand = new ItemButton(){
+				@Override
+				protected void onClick() {
+					if (hand.hasWand()){
+						// 卸下当前法杖
+						Wand currentWand = hand.getEquippedWand();
+						item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
+						if (!currentWand.doPickUp(hero)){
+							Dungeon.level.drop(currentWand, hero.pos);
+						}
+						hand.unequipWand();
+					} else {
+						// 选择新法杖
+						GameScene.selectItem(new WndBag.ItemSelector() {
+							@Override
+							public String textPrompt() {
+								return Messages.get(WndMageHand.class, "wand_prompt");
+							}
+
+							@Override
+							public Class<?extends Bag> preferredBag(){
+								return Belongings.Backpack.class;
+							}
+
+							@Override
+							public boolean itemSelectable(Item item) {
+								return item instanceof Wand;
+							}
+
+							@Override
+							public void onSelect(Item item) {
+								if (!(item instanceof Wand)) {
+									// 窗口取消时不做任何操作
+								} else if (item.unique) {
+									GLog.w( Messages.get(WndMageHand.class, "cant_unique"));
+									hide();
+								} else if (!item.isIdentified()) {
+									GLog.w( Messages.get(WndMageHand.class, "cant_unidentified"));
+									hide();
+								} else if (item.cursed) {
+									GLog.w( Messages.get(WndMageHand.class, "cant_cursed"));
+									hide();
+								} else {
+									if (item.isEquipped(hero)){
+										// 如果法杖已装备，先卸下
+										item.doDrop(hero);
+									} else {
+										// 从背包中移除
+										item.detach(hero.belongings.backpack);
+									}
+									hand.equipWand((Wand) item);
+									item(hand.getEquippedWand());
+								}
+							}
+						});
+					}
+				}
+
+				@Override
+				protected boolean onLongClick() {
+					if (item() != null && item().name() != null){
+						GameScene.show(new WndInfoItem(item()));
+						return true;
+					}
+					return false;
+				}
+			};
+
+			btnWand.setRect( (WIDTH - BTN_SIZE) / 2f, message.top() + message.height() + GAP, BTN_SIZE, BTN_SIZE );
+
+			if (hand.hasWand()) {
+				btnWand.item(hand.getEquippedWand());
+			} else {
+				btnWand.item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
+			}
+
+			add( btnWand );
+
+			resize(WIDTH, (int)(btnWand.bottom() + GAP));
+		}
+	}
+
 }
