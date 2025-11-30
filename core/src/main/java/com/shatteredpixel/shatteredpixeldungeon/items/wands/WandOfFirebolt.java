@@ -59,6 +59,11 @@ public class WandOfFirebolt extends DamageWand {
     }
 
     @Override
+    public int getMissileType() {
+        return MagicMissile.ELMO;
+    }
+
+    @Override
     public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
         //acts like blazing enchantment
         new Blazing().proc( staff, attacker, defender, damage);

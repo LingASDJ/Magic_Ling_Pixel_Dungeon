@@ -275,6 +275,11 @@ public class WandOfRegrowth extends Wand {
 	}
 
 	@Override
+	public int getMissileType() {
+		return MagicMissile.FOLIAGE;
+	}
+
+	@Override
 	protected int chargesPerCast() {
 		if (cursed ||
 				(charger != null && charger.target == null && charger.target.buff(WildMagic.WildMagicTracker.class) != null)){

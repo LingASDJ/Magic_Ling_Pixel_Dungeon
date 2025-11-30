@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
@@ -183,6 +184,11 @@ public class WandOfLightning extends DamageWand {
 		curUser.sprite.parent.addToFront( new Lightning( arcs, null ) );
 		Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
 		callback.call();
+	}
+
+	@Override
+	public int getMissileType() {
+		return MagicMissile.SHAMAN_PURPLE;
 	}
 
 	@Override

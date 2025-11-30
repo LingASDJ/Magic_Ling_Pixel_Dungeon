@@ -133,6 +133,11 @@ public class WandOfGodIce extends DamageWand {
     }
 
     @Override
+    public int getMissileType() {
+        return MagicMissile.FROST;
+    }
+
+    @Override
     public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
         new Lucky().proc( staff, attacker, defender, damage);
     }

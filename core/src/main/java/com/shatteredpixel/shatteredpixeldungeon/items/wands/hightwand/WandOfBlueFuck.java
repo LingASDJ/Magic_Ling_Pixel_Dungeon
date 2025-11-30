@@ -167,6 +167,11 @@ public class WandOfBlueFuck extends DamageWand {
     }
 
     @Override
+    public int getMissileType() {
+        return MagicMissile.SHAMAN_PURPLE;
+    }
+
+    @Override
     public void fx( Ballistica bolt, Callback callback ) {
         //need to perform flame spread logic here so we can determine what cells to put flames in.
 

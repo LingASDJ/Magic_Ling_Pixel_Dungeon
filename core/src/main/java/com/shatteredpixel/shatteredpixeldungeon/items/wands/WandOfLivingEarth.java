@@ -217,6 +217,11 @@ public class WandOfLivingEarth extends DamageWand {
 				callback);
 		Sample.INSTANCE.play(Assets.Sounds.ZAP);
 	}
+
+	@Override
+	public int getMissileType() {
+		return MagicMissile.EARTH;
+	}
 	
 	@Override
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {

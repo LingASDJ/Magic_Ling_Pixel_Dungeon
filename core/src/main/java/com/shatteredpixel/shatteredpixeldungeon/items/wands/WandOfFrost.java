@@ -125,6 +125,11 @@ public class WandOfFrost extends DamageWand {
 	}
 
 	@Override
+	public int getMissileType() {
+		return MagicMissile.FROST;
+	}
+
+	@Override
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
 		Chill chill = defender.buff(Chill.class);
 

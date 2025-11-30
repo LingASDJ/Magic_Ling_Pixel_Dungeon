@@ -85,7 +85,7 @@ public abstract class Wand extends Item {
 	public int curCharges = maxCharges;
 	public float partialCharge = 0f;
 	
-	protected Charger charger;
+	public Charger charger;
 	
 	public boolean curChargeKnown = false;
 	
@@ -97,7 +97,11 @@ public abstract class Wand extends Item {
 	private float availableUsesToID = USES_TO_ID/2f;
 
 	public int collisionProperties = Ballistica.MAGIC_BOLT;
-	
+
+	public int getMissileType() {
+		return MagicMissile.MAGIC_MISSILE;
+	}
+
 	{
 		defaultAction = AC_ZAP;
 		usesTargeting = true;
