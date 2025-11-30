@@ -1,26 +1,6 @@
-/*
- * Pixel Dungeon
- * Copyright (C) 2012-2015 Oleg Dolya
- *
- * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 package com.shatteredpixel.shatteredpixeldungeon.android;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -28,7 +8,8 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.ViewConfiguration;
+
+import androidx.annotation.RequiresPermission;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -41,15 +22,13 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.CrashHandler;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.shatteredpixel.shatteredpixeldungeon.update.UpdateImpl;
 import com.shatteredpixel.shatteredpixeldungeon.update.Updates;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
-
-import cat.ereza.customactivityoncrash.config.CaocConfig;
 
 public class AndroidLauncher extends AndroidApplication {
 
@@ -59,16 +38,24 @@ public class AndroidLauncher extends AndroidApplication {
 
     public static FirebaseAnalytics mFirebaseAnalyticsRecords;
 
+    @RequiresPermission(allOf = {Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.WAKE_LOCK})
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CaocConfig.Builder.create()
-                .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
-                .minTimeBetweenCrashesMs(2000) //default: 3000
-                .errorActivity(ErrorActivity.class) //default: null (default error activity)
-                .apply();
+
+//        // 配置自定义崩溃处理
+//        CaocConfig.Builder.create()
+//                .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
+//                .minTimeBetweenCrashesMs(2000) //default: 3000
+//                .errorActivity(ErrorActivity.class) //default: null (default error activity)
+//                .apply();
+
         FirebaseApp.initializeApp(this);
+
+        CrashHandler handler = CrashHandler.getInstance();
+        handler.init();
+
         mFirebaseAnalyticsRecords = FirebaseAnalytics.getInstance(this);
         try {
             GdxNativesLoader.load();
@@ -81,7 +68,7 @@ public class AndroidLauncher extends AndroidApplication {
             return;
         }
 
-        //there are some things we only need to set up on first launch
+        // there are some things we only need to set up on first launch
         if (instance == null) {
 
             instance = this;
@@ -96,7 +83,6 @@ public class AndroidLauncher extends AndroidApplication {
             } catch (PackageManager.NameNotFoundException e) {
                 Game.versionCode = 0;
             }
-
 
             if (NewsImpl.supportsNews()) {
                 Updates.service = UpdateImpl.getUpdateService();
@@ -115,7 +101,7 @@ public class AndroidLauncher extends AndroidApplication {
             instance = this;
         }
 
-        //set desired orientation (if it exists) before initializing the app.
+        // set desired orientation (if it exists) before initializing the app.
         if (SPDSettings.landscape() != null) {
             instance.setRequestedOrientation(SPDSettings.landscape() ?
                     ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
@@ -135,8 +121,6 @@ public class AndroidLauncher extends AndroidApplication {
 
         support.updateSystemUI();
 
-        Button.longClick = ViewConfiguration.getLongPressTimeout() / 1000f;
-
         initialize(new ShatteredPixelDungeon(support), config);
     }
 
@@ -147,7 +131,7 @@ public class AndroidLauncher extends AndroidApplication {
 
     @Override
     protected void onResume() {
-        //prevents weird rare cases where the app is running twice
+        // prevents weird rare cases where the app is running twice
         if (instance != this) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 finishAndRemoveTask();
@@ -160,7 +144,7 @@ public class AndroidLauncher extends AndroidApplication {
 
     @Override
     public void onBackPressed() {
-        //do nothing, game should catch all back presses
+        // do nothing, game should catch all back presses
     }
 
     @Override
