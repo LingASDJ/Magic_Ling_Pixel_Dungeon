@@ -103,6 +103,11 @@ public class WandOfVenom extends DamageWand {
     }
 
     @Override
+    public int getMissileType() {
+        return MagicMissile.CORROSION;
+    }
+
+    @Override
     public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
         new Unstable().proc( staff, attacker, defender, damage);
     }

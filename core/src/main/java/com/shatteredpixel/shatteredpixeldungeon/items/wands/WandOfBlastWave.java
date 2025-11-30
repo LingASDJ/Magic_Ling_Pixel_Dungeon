@@ -235,6 +235,11 @@ public class WandOfBlastWave extends DamageWand {
 	}
 
 	@Override
+	public int getMissileType() {
+		return MagicMissile.FORCE;
+	}
+
+	@Override
 	public void staffFx(MagesStaff.StaffParticle particle) {
 		particle.color( 0x664422 ); particle.am = 0.6f;
 		particle.setLifespan(3f);

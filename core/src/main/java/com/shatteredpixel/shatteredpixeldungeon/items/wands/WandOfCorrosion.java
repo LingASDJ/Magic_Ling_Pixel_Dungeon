@@ -90,6 +90,11 @@ public class WandOfCorrosion extends Wand {
 	}
 
 	@Override
+	public int getMissileType() {
+		return MagicMissile.CORROSION;
+	}
+
+	@Override
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
 		int level = Math.max( 0, buffedLvl() );
 

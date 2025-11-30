@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -82,6 +83,12 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
                 new Beam.LightRay(curUser.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(collisionPos)));
         callback.call();
     }
+
+    @Override
+    public int getMissileType() {
+        return MagicMissile.SHAMAN_RED;
+    }
+
     public String statsDesc(){
         if(isIdentified()) return Messages.get(this, "stats_desc",min(),max());
         else return Messages.get(this, "stats_desc",min(0),max(0));

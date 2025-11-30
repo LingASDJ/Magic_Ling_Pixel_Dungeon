@@ -176,6 +176,11 @@ public class WandOfHightHunderStorm extends DamageWand {
     }
 
     @Override
+    public int getMissileType() {
+        return MagicMissile.ELMO;
+    }
+
+    @Override
     public void fx(Ballistica bolt, Callback callback) {
 
         affected.clear();

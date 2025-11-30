@@ -128,6 +128,11 @@ public class WandOfScale extends DamageWand {
     }
 
     @Override
+    public int getMissileType() {
+        return MagicMissile.SHAMAN_BLUE;
+    }
+
+    @Override
     protected int chargesPerCast() {
         //consumes 30% of current charges, rounded up, with a minimum of one.
         return Math.max(1, (int)Math.ceil(curCharges*0.3f));

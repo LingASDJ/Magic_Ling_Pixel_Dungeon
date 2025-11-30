@@ -272,6 +272,11 @@ public class WandOfCorruption extends Wand {
 	}
 
 	@Override
+	public int getMissileType() {
+		return MagicMissile.SHADOW;
+	}
+
+	@Override
 	public void staffFx(MagesStaff.StaffParticle particle) {
 		particle.color( 0 );
 		particle.am = 0.6f;

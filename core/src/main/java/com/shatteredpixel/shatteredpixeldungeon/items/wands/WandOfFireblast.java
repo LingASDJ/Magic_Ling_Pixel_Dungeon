@@ -221,6 +221,11 @@ public class WandOfFireblast extends DamageWand {
 	}
 
 	@Override
+	public int getMissileType() {
+		return MagicMissile.FIRE_CONE;
+	}
+
+	@Override
 	protected int chargesPerCast() {
 		if (cursed ||
 				(charger != null && charger.target == null && charger.target.buff(WildMagic.WildMagicTracker.class) != null)){
