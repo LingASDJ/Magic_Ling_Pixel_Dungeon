@@ -453,6 +453,10 @@ public class TitleScene extends PixelScene {
 		btnNews.icon(new Image(Icons.get(Icons.NEWS)));
 		add(btnNews);
 
+		StyledButton btnErrors = new ErrorsButton(GREY_TR, Messages.get(this, "errors"));
+		btnErrors.icon(new Image(Icons.get(Icons.WARNING)));
+		add(btnErrors);
+
 		final int BTN_HEIGHT = 20;
 		int GAP = (int)(h - topRegion - (landscape() ? 3 : 4) * BTN_HEIGHT) / 3;
 		GAP /= landscape() ? 3 : 5;
@@ -475,7 +479,8 @@ public class TitleScene extends PixelScene {
 			btnChanges.setRect(btnSupport.left(), btnSupport.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
 			btnSettings.setRect(btnSupport.right() + 2, btnSupport.top(), btnRankings.width(), BTN_HEIGHT);
 			btnAbout.setRect(btnSettings.left(), btnSettings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
-			btnNews.setRect(btnPlay.left(), btnAbout.bottom() + GAP, btnAbout.width() + 157 - 1, BTN_HEIGHT);
+			btnNews.setRect(btnPlay.left(), btnAbout.bottom() + GAP, btnAbout.width() + 39, BTN_HEIGHT);
+			btnErrors.setRect(btnNews.right() + 2, btnNews.top(), btnNews.width(), BTN_HEIGHT);
 			seed.setRect(0, 0,40,20);
 
 			align(btnNews);
@@ -490,7 +495,8 @@ public class TitleScene extends PixelScene {
 			btnChanges.setRect(btnSupport.right() + 2, btnSupport.top(), btnSupport.width(), BTN_HEIGHT);
 			btnSettings.setRect(btnSupport.left(), btnSupport.bottom()+GAP, btnRankings.width(), BTN_HEIGHT);
 			btnAbout.setRect(btnSettings.right() + 2, btnSettings.top(), btnSettings.width(), BTN_HEIGHT);
-			btnNews.setRect(btnPlay.left(), btnAbout.bottom() + GAP, btnAbout.width() + 68 - 1, BTN_HEIGHT);
+			btnNews.setRect(btnPlay.left(), btnAbout.bottom() + GAP, btnAbout.width(), BTN_HEIGHT);
+			btnErrors.setRect(btnNews.right() + 2, btnNews.top(), btnNews.width(), BTN_HEIGHT);
 			align(btnNews);
 		}
 
@@ -554,6 +560,19 @@ public class TitleScene extends PixelScene {
 		protected void onClick() {
 			super.onClick();
 			ShatteredPixelDungeon.switchNoFade( NewsScene.class );
+		}
+	}
+
+	private static class ErrorsButton extends StyledButton {
+
+		public ErrorsButton( Chrome.Type type, String label ){
+			super(type, label);
+		}
+
+		@Override
+		protected void onClick() {
+			super.onClick();
+			ShatteredPixelDungeon.switchNoFade( CrashReportScene.class );
 		}
 	}
 
