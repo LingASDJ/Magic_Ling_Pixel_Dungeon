@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.watabou.noosa.Game;
@@ -194,7 +195,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             sb.append("System Information:\n");
             sb.append("Java Version: ").append(System.getProperty("java.version")).append("\n");
             sb.append("JVM Name: ").append(System.getProperty("java.vm.name")).append("\n");
-            sb.append("OS: ").append(System.getProperty("os.name")).append(" ").append(System.getProperty("os.version")).append("\n");
+            sb.append(getSystemInfo());
             sb.append("Available Processors: ").append(Runtime.getRuntime().availableProcessors()).append("\n");
             sb.append("Max Memory: ").append(Runtime.getRuntime().maxMemory() / (1024 * 1024)).append(" MB\n");
             sb.append("Total Memory: ").append(Runtime.getRuntime().totalMemory() / (1024 * 1024)).append(" MB\n");
@@ -210,6 +211,35 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             System.err.println("Failed to save fatal error report: " + e.getMessage());
         }
     }
+
+    private String getSystemInfo() {
+        StringBuilder sb = new StringBuilder();
+
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            // 通过Gdx获取Android系统信息
+            try {
+                // 获取Android版本
+                String version = String.valueOf(Gdx.app.getVersion());
+                // 获取设备信息
+                String model = Gdx.graphics.getDisplayMode().toString();
+
+                sb.append("OS: Android ").append(version)
+                        .append(" (").append(model).append(")\n");
+            } catch (Exception e) {
+                sb.append("OS: Android\n");
+            }
+        } else {
+            sb.append("OS: ")
+                    .append(System.getProperty("os.name"))
+                    .append(" ")
+                    .append(System.getProperty("os.version"))
+                    .append("\n");
+        }
+
+        return sb.toString();
+    }
+
+
 
     private String getStackTrace(Throwable ex) {
         StringWriter sw = new StringWriter();
