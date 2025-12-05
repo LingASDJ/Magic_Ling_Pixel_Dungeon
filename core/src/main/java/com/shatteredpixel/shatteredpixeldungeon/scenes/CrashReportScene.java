@@ -27,10 +27,14 @@ public class CrashReportScene extends PixelScene {
     private final ArrayList<CrashInfo> infos = new ArrayList<>();
 
     // 响应式布局参数
-    private static final int WIDTH_P = 120;
-    private static final int WIDTH_L = 160;
-    private static final int MARGIN = 8;
-    private static final int GAP = 4;
+    private static final int WIDTH_P = 160; // 竖屏模式下的面板宽度
+    private static final int WIDTH_L = 160; // 横屏模式下的面板宽度
+
+    private static final int HEIGHT_P = 160; // 横屏模式下的面板宽度
+
+    private static final int HEIGHT_L = 160; // 横屏模式下的面板宽度
+    private static final int MARGIN = 8;    // 边缘间距
+    private static final int GAP = 4;      // 组件间距
 
     @Override
     public void create() {
@@ -42,7 +46,7 @@ public class CrashReportScene extends PixelScene {
         // 响应式布局计算
         boolean isLandscape = SPDSettings.landscape() != null;
         int panelWidth = isLandscape ? WIDTH_L : WIDTH_P;
-        int panelHeight = h-20;
+        int panelHeight = isLandscape ? HEIGHT_L : HEIGHT_P;
 
         // 现代化标题
         RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(this, "title"), 11);
@@ -87,11 +91,11 @@ public class CrashReportScene extends PixelScene {
         btnDelete.setPos(MARGIN, MARGIN);
         add(btnDelete);
 
-        // 现代化面板
+        // 根据屏幕方向调整面板位置和大小
         NinePatch panel = Chrome.get(Chrome.Type.WINDOW_SILVER);
         panel.size(panelWidth, panelHeight);
         panel.x = (w - panelWidth) / 2f;
-        panel.y = title.bottom() + GAP;
+        panel.y = isLandscape ? title.bottom() + GAP + 20 : title.bottom() + GAP - 20;
         align(panel);
         add(panel);
 
@@ -154,7 +158,7 @@ public class CrashReportScene extends PixelScene {
 
         float posY = 0;
         for (CrashInfo info1 : infos) {
-            info1.setRect(0, posY, panel.innerWidth(), 0);
+            info1.setRect(0, posY, panel.innerWidth(), panel.innerHeight());
             content.add(info1);
             posY += info1.height() + GAP;
         }
@@ -190,11 +194,6 @@ public class CrashReportScene extends PixelScene {
         msg.setPos((w - msg.width()) / 2f, (h - msg.height()) / 2f);
         align(msg);
         add(msg);
-    }
-
-    @Override
-    protected void onBackPressed() {
-        ShatteredPixelDungeon.switchNoFade(TitleScene.class);
     }
 
     private static class CrashInfo extends Component {
@@ -249,11 +248,10 @@ public class CrashReportScene extends PixelScene {
             super();
 
             // 现代化背景
-            bg = Chrome.get(Chrome.Type.SCROLL);
+            bg = Chrome.get(Chrome.Type.TOAST_TR);
             add(bg);
 
-            this.icon = Icons.get(Icons.WARNING);
-            this.icon.hardlight(0xFFCC00);
+            this.icon = Icons.get(Icons.INFO);
             add(this.icon);
 
             this.es = es;
@@ -310,10 +308,10 @@ public class CrashReportScene extends PixelScene {
                 timestamp.setPos(title.left(), title.bottom() + 2);
                 height = Math.max(height, timestamp.bottom() - y + GAP);
             } else {
-                height = Math.max(height, title.bottom() - y + GAP);
+                height = Math.max(24, title.bottom() - y + GAP);
             }
-
-            bg.size(100, height);
+            int panelWidth = SPDSettings.landscape()!=null ? WIDTH_L-20 : WIDTH_P;
+            bg.size(panelWidth, height);
         }
 
         @Override
@@ -327,74 +325,70 @@ public class CrashReportScene extends PixelScene {
         }
     }
 
-/**
- * 现代化崩溃报告窗口类，用于显示应用程序崩溃时的详细信息
- * 该类继承自Window，提供了格式化的崩溃信息展示和复制功能
- */
-private static class ModernCrashReportWindow extends Window {
+    private static class ModernCrashReportWindow extends Window {
 
-    public ModernCrashReportWindow(CrashHandler.ExceptionStrings es) {
-        super();
+        public ModernCrashReportWindow(CrashHandler.ExceptionStrings es) {
+            super();
 
-        int width = 200;
-        int height = 210;
-        resize(width, height);
+            int width = 140;
+            int height = 170;
+            resize(width, height);
 
-        // 现代化标题栏
-        IconTitle titlebar = new IconTitle(Icons.get(Icons.WARNING),
-                Messages.get(CrashReportScene.class, "details_title"));
-        titlebar.color(0xFFCC00);
-        titlebar.setRect(0, 0, width, 0);
-        add(titlebar);
+            // 现代化标题栏
+            IconTitle titlebar = new IconTitle(Icons.get(Icons.WARNING),
+                    Messages.get(CrashReportScene.class, "details_title"));
+            titlebar.color(0xFFCC00);
+            titlebar.setRect(0, 0, width, 0);
+            add(titlebar);
 
-        // 格式化崩溃信息
-        String formattedMessage = formatCrashMessage(es.message, es.stackTrace);
+            // 格式化崩溃信息
+            String formattedMessage = formatCrashMessage(es.message, es.stackTrace);
 
-        // 创建文本块并设置自动换行
-        RenderedTextBlock text = PixelScene.renderTextBlock(formattedMessage, 6);
-        text.maxWidth(width - GAP * 3); // 确保文本块宽度适应窗口
-        text.setPos(GAP, titlebar.bottom() + GAP);
+            // 创建文本块并设置自动换行
+            RenderedTextBlock text = PixelScene.renderTextBlock(formattedMessage, 6);
+            text.maxWidth(width - GAP * 3); // 确保文本块宽度适应窗口
+            text.setPos(GAP, titlebar.bottom() + GAP);
 
-        // 滚动视图
-        ScrollPane list = new ScrollPane(new Component());
-        add(list);
+            // 滚动视图
+            ScrollPane list = new ScrollPane(new Component());
+            add(list);
 
-        Component content = list.content();
-        content.clear();
-        content.add(text);
-        content.setSize(width - GAP * 2, text.height() + GAP * 3+20);
-        list.setRect(GAP, titlebar.bottom(), width - GAP * 2, height - titlebar.height() - GAP);
-        list.scrollTo(0, 0);
+            Component content = list.content();
+            content.clear();
+            content.add(text);
+            content.setSize(width - GAP * 2, text.height() + GAP * 3 + 20);
+            list.setRect(GAP, titlebar.bottom(), width - GAP * 2, height - titlebar.height() - GAP);
+            list.scrollTo(0, 0);
 
-        // 复制按钮
-        RedButton copyBtn = new RedButton(Messages.get(CrashReportScene.class, "copy"), 8) {
-            @Override
-            protected void onClick() {
-                Gdx.app.getClipboard().setContents(es.message + "\n" + es.stackTrace);
-            }
-        };
-        copyBtn.icon(Icons.get(Icons.COPY));
-        copyBtn.setSize(40, 16);
-        copyBtn.setPos(width - copyBtn.width() - GAP, height - copyBtn.height() - GAP);
-        add(copyBtn);
-    }
-
-    private String formatCrashMessage(String message, String stackTrace) {
-        StringBuilder sb = new StringBuilder();
-        if (message != null && !message.isEmpty()) {
-            sb.append("Message: ").append(message).append("\n\n");
+            // 复制按钮
+            RedButton copyBtn = new RedButton(Messages.get(CrashReportScene.class, "copy"), 8) {
+                @Override
+                protected void onClick() {
+                    Gdx.app.getClipboard().setContents(es.message + "\n" + es.stackTrace);
+                }
+            };
+            copyBtn.icon(Icons.get(Icons.COPY));
+            copyBtn.setSize(40, 16);
+            copyBtn.setPos(width - copyBtn.width() - GAP, height - copyBtn.height() - GAP);
+            add(copyBtn);
         }
-        if (stackTrace != null) {
-            String[] lines = stackTrace.split("\n");
-            sb.append("Stack Trace:\n");
-            for (int i = 0; i < Math.min(lines.length, 15); i++) {
-                sb.append(lines[i]).append("\n");
+
+        private String formatCrashMessage(String message, String stackTrace) {
+            StringBuilder sb = new StringBuilder();
+            if (message != null && !message.isEmpty()) {
+                sb.append("Message: ").append(message).append("\n\n");
             }
-            if (lines.length > 15) {
-                sb.append("... (").append(lines.length - 15).append(" more lines)");
+            if (stackTrace != null) {
+                String[] lines = stackTrace.split("\n");
+                sb.append("Stack Trace:\n");
+                for (int i = 0; i < Math.min(lines.length, 15); i++) {
+                    sb.append(lines[i]).append("\n");
+                }
+                if (lines.length > 15) {
+                    sb.append("... (").append(lines.length - 15).append(" more lines)");
+                }
             }
+            return sb.toString();
         }
-        return sb.toString();
     }
-}
 }
