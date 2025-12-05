@@ -8,9 +8,11 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3FileHandle;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.CrashHandler;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
 import com.shatteredpixel.shatteredpixeldungeon.update.UpdateImpl;
@@ -22,9 +24,11 @@ import com.watabou.utils.Point;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 public class DesktopLauncher {
+
 
 	public static void main(String[] args) {
 
@@ -79,15 +83,32 @@ public class DesktopLauncher {
 
 				// 显示错误对话框
 				try {
-					JOptionPane.showMessageDialog(null,
-							"游戏遇到了严重错误并即将关闭。\n\n" +
-									"错误信息已保存到日志文件。\n" +
-									"请联系开发者并提供错误日志。\n\n" +
-									"版本: " + Game.version,
-							title + " - 严重错误",
-							JOptionPane.ERROR_MESSAGE);
+					// 创建一个模态对话框，确保必须确认才能关闭
+					JOptionPane optionPane = new JOptionPane(
+							Messages.get(DesktopLauncher.class, "crash_message") + "\n\n" +
+									Messages.get(DesktopLauncher.class, "crash_log_saved") + "\n\n" +
+									Messages.get(DesktopLauncher.class, "version") + ": " + Game.version + "\n\n" +
+									Messages.get(DesktopLauncher.class, "seed") + ": " + Dungeon.seed + "\n\n",
+							JOptionPane.ERROR_MESSAGE,
+							JOptionPane.DEFAULT_OPTION);
+
+					// 创建对话框并设置为模态
+					JDialog dialog = optionPane.createDialog(null, title + " - Crash Error");
+					dialog.setModal(true);
+					dialog.setAlwaysOnTop(true);
+					dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+					dialog.setVisible(true);
+
+					// 确保对话框被确认
+					while (dialog.isVisible()) {
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							Thread.currentThread().interrupt();
+						}
+					}
 				} catch (Exception e) {
-					System.err.println("Failed to display JOptionPane: " + e.getMessage());
+					System.err.println("Failed to display error dialog: " + e.getMessage());
 				}
 
 				// 使用 CrashHandler 处理异常

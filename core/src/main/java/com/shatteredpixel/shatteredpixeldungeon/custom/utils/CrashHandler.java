@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -138,6 +139,9 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         sb.append("Game Version: ").append(Game.version).append("\n");
         sb.append("Java Version: ").append(System.getProperty("java.version")).append("\n");
         sb.append("OS: ").append(System.getProperty("os.name")).append(" ").append(System.getProperty("os.version")).append("\n\n");
+
+        sb.append("GameSeed: ").append(Dungeon.seed).append("\n");
+        sb.append("Challenges: ").append(Dungeon.challenges).append("\n\n");
 
         sb.append("Exception Type: ").append(ex.getClass().getName()).append("\n");
         sb.append("Exception Message: ").append(ex.getMessage()).append("\n\n");
