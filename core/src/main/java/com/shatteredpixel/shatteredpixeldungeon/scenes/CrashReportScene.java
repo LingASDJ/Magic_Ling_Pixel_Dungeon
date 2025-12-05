@@ -15,6 +15,9 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
@@ -27,14 +30,10 @@ public class CrashReportScene extends PixelScene {
     private final ArrayList<CrashInfo> infos = new ArrayList<>();
 
     // 响应式布局参数
-    private static final int WIDTH_P = 160; // 竖屏模式下的面板宽度
-    private static final int WIDTH_L = 160; // 横屏模式下的面板宽度
-
-    private static final int HEIGHT_P = 160; // 横屏模式下的面板宽度
-
-    private static final int HEIGHT_L = 160; // 横屏模式下的面板宽度
-    private static final int MARGIN = 8;    // 边缘间距
-    private static final int GAP = 4;      // 组件间距
+    private static final int WIDTH_P = 120;
+    private static final int WIDTH_L = 160;
+    private static final int MARGIN = 8;
+    private static final int GAP = 4;
 
     @Override
     public void create() {
@@ -46,7 +45,7 @@ public class CrashReportScene extends PixelScene {
         // 响应式布局计算
         boolean isLandscape = SPDSettings.landscape() != null;
         int panelWidth = isLandscape ? WIDTH_L : WIDTH_P;
-        int panelHeight = isLandscape ? HEIGHT_L : HEIGHT_P;
+        int panelHeight = h-20;
 
         // 现代化标题
         RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(this, "title"), 11);
@@ -61,7 +60,7 @@ public class CrashReportScene extends PixelScene {
         add(btnExit);
 
         // 清除按钮 - 现代化设计
-        RedButton btnDelete = new RedButton(Messages.get(this, "clear"), 8) {
+        RedButton btnDelete = new RedButton(Messages.get(this, "clear"), 7) {
             @Override
             protected void onClick() {
                 try {
@@ -79,23 +78,21 @@ public class CrashReportScene extends PixelScene {
                             crashDir.deleteDirectory();
                         }
                     }
-                    Gdx.app.log(CrashHandler.TAG, "All crash logs cleared");
                     onBackPressed();
                 } catch (Exception e) {
-                    Gdx.app.error(CrashHandler.TAG, "Failed to clear crash logs", e);
+                    onBackPressed();
                 }
             }
         };
-        btnDelete.icon(Icons.get(Icons.WARNING));
-        btnDelete.setSize(50, 20);
-        btnDelete.setPos(MARGIN, MARGIN);
+        btnDelete.setSize(30, 20);
+        btnDelete.setPos(2, MARGIN);
         add(btnDelete);
 
-        // 根据屏幕方向调整面板位置和大小
+        // 现代化面板
         NinePatch panel = Chrome.get(Chrome.Type.WINDOW_SILVER);
         panel.size(panelWidth, panelHeight);
         panel.x = (w - panelWidth) / 2f;
-        panel.y = isLandscape ? title.bottom() + GAP + 20 : title.bottom() + GAP - 20;
+        panel.y = title.bottom() + GAP;
         align(panel);
         add(panel);
 
@@ -158,7 +155,7 @@ public class CrashReportScene extends PixelScene {
 
         float posY = 0;
         for (CrashInfo info1 : infos) {
-            info1.setRect(0, posY, panel.innerWidth(), panel.innerHeight());
+            info1.setRect(0, posY, panel.innerWidth(), 0);
             content.add(info1);
             posY += info1.height() + GAP;
         }
@@ -194,6 +191,11 @@ public class CrashReportScene extends PixelScene {
         msg.setPos((w - msg.width()) / 2f, (h - msg.height()) / 2f);
         align(msg);
         add(msg);
+    }
+
+    @Override
+    protected void onBackPressed() {
+        ShatteredPixelDungeon.switchNoFade(TitleScene.class);
     }
 
     private static class CrashInfo extends Component {
@@ -248,37 +250,40 @@ public class CrashReportScene extends PixelScene {
             super();
 
             // 现代化背景
-            bg = Chrome.get(Chrome.Type.TOAST_TR);
+            bg = Chrome.get(Chrome.Type.WINDOW_SILVER);
             add(bg);
 
-            this.icon = Icons.get(Icons.INFO);
+            this.icon = Icons.get(Icons.WARNING);
+            this.icon.hardlight(0xFFCC00);
             add(this.icon);
 
             this.es = es;
 
-            // 解析文件名获取时间戳
-            String displayName = es.fileName;
-            String timeInfo = "";
-            try {
-                if (es.fileName.contains("_")) {
-                    String[] parts = es.fileName.split("_");
-                    if (parts.length >= 2) {
-                        timeInfo = parts[1].replace(".crash", "");
-                        displayName = "Crash " + timeInfo;
-                    }
+            // 从堆栈跟踪中提取时间戳
+            String crashTime = "";
+            String recordTime = "";
+
+            String[] lines = es.stackTrace.split("\n");
+            for (String line : lines) {
+                if (line.startsWith("Time: ")) {
+                    crashTime = line.substring(6).trim();
+                    break;
                 }
-            } catch (Exception e) {
-                // 忽略解析错误
             }
 
-            title = PixelScene.renderTextBlock(displayName, 8);
+            title = PixelScene.renderTextBlock(Messages.get(CrashReportScene.class,"crash_error"), 6);
             title.hardlight(0xFFFFFF);
             add(title);
 
-            if (!timeInfo.isEmpty()) {
-                timestamp = PixelScene.renderTextBlock(timeInfo, 6);
-                timestamp.hardlight(0xCCCCCC);
-                add(timestamp);
+            String[] linesty = es.stackTrace.split("\n");
+            for (String linest : linesty) {
+                if (linest.startsWith("Time: ")) {
+                    recordTime = linest.substring(6).trim();
+                    timestamp = PixelScene.renderTextBlock(recordTime, 6);
+                    timestamp.hardlight(0xCCCCCC);
+                    add(timestamp);
+                    break;
+                }
             }
 
             layout();
@@ -300,18 +305,17 @@ public class CrashReportScene extends PixelScene {
             icon.y = y + (height - icon.height()) / 2f;
             PixelScene.align(icon);
 
-            title.maxWidth((int)(width - icon.width - GAP * 3));
+
             title.setPos(icon.x + icon.width + GAP, y + GAP);
 
             if (timestamp != null) {
-                timestamp.maxWidth((int)(width - icon.width - GAP * 3));
                 timestamp.setPos(title.left(), title.bottom() + 2);
                 height = Math.max(height, timestamp.bottom() - y + GAP);
             } else {
-                height = Math.max(24, title.bottom() - y + GAP);
+                height = Math.max(height, title.bottom() - y + GAP);
             }
-            int panelWidth = SPDSettings.landscape()!=null ? WIDTH_L-20 : WIDTH_P;
-            bg.size(panelWidth, height);
+
+            bg.size(100, height);
         }
 
         @Override
@@ -325,13 +329,26 @@ public class CrashReportScene extends PixelScene {
         }
     }
 
+    /**
+     * 现代化崩溃报告窗口类，用于显示应用程序崩溃时的详细信息
+     * 该类继承自Window，提供了格式化的崩溃信息展示和复制功能
+     */
     private static class ModernCrashReportWindow extends Window {
+
+        private RenderedTextBlock notesText;
+        private String notesContent = "";
+        private final CrashHandler.ExceptionStrings es;
+        private static final String NOTES_SEPARATOR = "\n=== NOTES ===\n";
 
         public ModernCrashReportWindow(CrashHandler.ExceptionStrings es) {
             super();
+            this.es = es;
 
-            int width = 140;
-            int height = 170;
+            // 读取已保存的备注
+            loadNotes();
+
+            int width = Camera.main.width/2;
+            int height = Camera.main.height-50;
             resize(width, height);
 
             // 现代化标题栏
@@ -341,53 +358,244 @@ public class CrashReportScene extends PixelScene {
             titlebar.setRect(0, 0, width, 0);
             add(titlebar);
 
-            // 格式化崩溃信息
-            String formattedMessage = formatCrashMessage(es.message, es.stackTrace);
-
-            // 创建文本块并设置自动换行
-            RenderedTextBlock text = PixelScene.renderTextBlock(formattedMessage, 6);
-            text.maxWidth(width - GAP * 3); // 确保文本块宽度适应窗口
-            text.setPos(GAP, titlebar.bottom() + GAP);
-
-            // 滚动视图
-            ScrollPane list = new ScrollPane(new Component());
+            // 创建滚动容器
+            Component content = new Component();
+            ScrollPane list = new ScrollPane(content);
             add(list);
 
-            Component content = list.content();
-            content.clear();
+            // 格式化崩溃信息
+            String formattedMessage = formatCrashMessage(es.message, es.stackTrace);
+            RenderedTextBlock text = PixelScene.renderTextBlock(formattedMessage, 6);
+            text.maxWidth(width - GAP * 3);
             content.add(text);
-            content.setSize(width - GAP * 2, text.height() + GAP * 3 + 20);
-            list.setRect(GAP, titlebar.bottom(), width - GAP * 2, height - titlebar.height() - GAP);
+            text.setPos(GAP, 0);
+
+            float currentY = text.height() + GAP;
+
+            // 添加问题备注部分
+            RenderedTextBlock notesTitle = PixelScene.renderTextBlock(Messages.get(CrashReportScene.class, "notes_title"), 6);
+            notesTitle.hardlight(0xFFCC00);
+            notesTitle.setPos(GAP, currentY);
+            content.add(notesTitle);
+            currentY += notesTitle.height() + GAP;
+
+            notesText = PixelScene.renderTextBlock("", 6);
+            notesText.maxWidth(width - GAP * 3);
+            notesText.setPos(GAP, currentY);
+            content.add(notesText);
+            currentY += notesText.height() + GAP;
+
+            // 初始化显示备注内容
+            notesText.text(notesContent.isEmpty() ?
+                    Messages.get(CrashReportScene.class, "no_notes") :
+                    notesContent);
+
+            // 设置内容大小
+            content.setSize(width - GAP * 2, currentY + 20);
+
+            // 设置滚动区域
+            list.setRect(GAP, titlebar.bottom(), width - GAP * 2, height - titlebar.height() - 40);
             list.scrollTo(0, 0);
 
-            // 复制按钮
             RedButton copyBtn = new RedButton(Messages.get(CrashReportScene.class, "copy"), 8) {
                 @Override
                 protected void onClick() {
-                    Gdx.app.getClipboard().setContents(es.message + "\n" + es.stackTrace);
+                    StringBuilder contentToCopy = new StringBuilder();
+
+                    // 获取完整的文件内容
+                    String fullContent = es.message + "\n" + es.stackTrace;
+
+                    // 移除开头的重复文件名
+                    String[] lines = fullContent.split("\n");
+                    int startIdx = 0;
+                    for (int i = 0; i < lines.length; i++) {
+                        if (!lines[i].startsWith("Crash log from")) {
+                            startIdx = i;
+                            break;
+                        }
+                    }
+
+                    for (int i = startIdx; i < lines.length; i++) {
+                        if (lines[i].equals("=== NOTES ===")) {
+                            break;
+                        }
+                        contentToCopy.append(lines[i]).append("\n");
+                    }
+
+                    // 如果有备注，添加备注内容
+                    if (!notesContent.isEmpty()) {
+                        contentToCopy.append("\n")
+                                .append(Messages.get(CrashReportScene.class, "notes_title"))
+                                .append(":\n")
+                                .append(notesContent);
+                    }
+
+                    Gdx.app.getClipboard().setContents(contentToCopy.toString());
+                    ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(CrashReportScene.class, "copy_success")));
                 }
             };
             copyBtn.icon(Icons.get(Icons.COPY));
-            copyBtn.setSize(40, 16);
-            copyBtn.setPos(width - copyBtn.width() - GAP, height - copyBtn.height() - GAP);
+            copyBtn.setSize(50, 16);
+            copyBtn.setPos(width - copyBtn.width(), height - copyBtn.height() - GAP);
             add(copyBtn);
+
+            // 添加备注按钮
+            RedButton addNoteBtn = new RedButton(Messages.get(CrashReportScene.class, "add_note"), 6) {
+                @Override
+                protected void onClick() {
+                    ShatteredPixelDungeon.scene().add(new WndTextInput(
+                            Messages.get(CrashReportScene.class, "add_note_title"),
+                            Messages.get(CrashReportScene.class, "add_note_prompt"),
+                            notesContent,
+                            100,
+                            false,
+                            Messages.get(CrashReportScene.class, "confirm"),
+                            Messages.get(CrashReportScene.class, "cancel")
+                    ) {
+                        @Override
+                        public void onSelect(boolean positive, String text) {
+                            if (positive) {
+                                notesContent = text;
+                                saveNotes(); // 保存备注
+                                notesText.text(notesContent.isEmpty() ?
+                                        Messages.get(CrashReportScene.class, "no_notes") :
+                                        notesContent);
+                                list.content();
+                            }
+                        }
+                    });
+                }
+            };
+            addNoteBtn.setSize(40, 16);
+            addNoteBtn.setPos(0, copyBtn.top()-18);
+            add(addNoteBtn);
+
+            // 删除报告按钮
+            RedButton deleteBtn = new RedButton(Messages.get(CrashReportScene.class, "delete_report"), 6) {
+                @Override
+                protected void onClick() {
+                    ShatteredPixelDungeon.scene().add(new WndOptions(
+                            Icons.get(Icons.WARNING),
+                            Messages.get(CrashReportScene.class, "delete_confirm_title"),
+                            Messages.get(CrashReportScene.class, "delete_confirm_message"),
+                            Messages.get(CrashReportScene.class, "confirm"),
+                            Messages.get(CrashReportScene.class, "cancel")
+                    ) {
+                        @Override
+                        protected void onSelect(int index) {
+                            if (index == 0) {
+                                try {
+                                    FileHandle file = Gdx.files.local(CrashHandler.CRASH_DIR + "/" + es.fileName);
+                                    if (file.exists()) {
+                                        file.delete();
+                                    }
+                                    hide();
+                                    ShatteredPixelDungeon.switchNoFade(CrashReportScene.class);
+                                } catch (Exception e) {
+                                    Gdx.app.error(CrashHandler.TAG, "Failed to delete crash log", e);
+                                }
+                            }
+                        }
+                    });
+                }
+            };
+            deleteBtn.setSize(40, 16);
+            deleteBtn.setPos(addNoteBtn.right()+GAP, copyBtn.top()-18);
+            add(deleteBtn);
+
+            // 复制按钮
+
+        }
+
+        private void saveNotes() {
+            try {
+                FileHandle file = Gdx.files.local(CrashHandler.CRASH_DIR + "/" + es.fileName);
+
+                // 读取原始内容，移除所有NOTE分隔符和已有的备注
+                String originalContent = es.message + "\n" + es.stackTrace;
+                String[] lines = originalContent.split("\n");
+                StringBuilder cleanContent = new StringBuilder();
+
+                boolean skipNotes = false;
+                for (String line : lines) {
+                    if (line.equals("=== NOTES ===")) {
+                        skipNotes = true;
+                        continue;
+                    }
+                    if (!skipNotes) {
+                        cleanContent.append(line).append("\n");
+                    }
+                }
+
+                // 如果有新备注，添加单个NOTE分隔符和备注内容
+                if (!notesContent.isEmpty()) {
+                    // 统一处理换行符：将Windows换行符转为Unix换行符，并将多个连续换行符合并为单个
+                    String normalizedNotes = notesContent
+                            .replaceAll("\r\n", "\n")  // Windows换行符转为Unix
+                            .replaceAll("\r", "\n")     // 旧Mac换行符转为Unix
+                            .replaceAll("\n{2,}", "\n") // 多个连续换行符合并为单个
+                            .trim();                    // 移除首尾空白
+
+                    cleanContent.append(NOTES_SEPARATOR).append(normalizedNotes);
+                }
+
+                // 写入文件
+                file.writeString(cleanContent.toString(), false);
+            } catch (Exception e) {
+                Gdx.app.error(CrashHandler.TAG, "Failed to save notes", e);
+            }
+        }
+
+        private void loadNotes() {
+            try {
+                FileHandle file = Gdx.files.local(CrashHandler.CRASH_DIR + "/" + es.fileName);
+                if (file.exists()) {
+                    String content = file.readString();
+                    // 查找最后一个NOTE分隔符
+                    int lastNotesIndex = content.lastIndexOf(NOTES_SEPARATOR);
+                    if (lastNotesIndex != -1) {
+                        notesContent = content.substring(lastNotesIndex + NOTES_SEPARATOR.length()).trim();
+                        // 统一处理换行符
+                        notesContent = notesContent
+                                .replaceAll("\r\n", "\n")  // Windows换行符转为Unix
+                                .replaceAll("\r", "\n")     // 旧Mac换行符转为Unix
+                                .replaceAll("\n{2,}", "\n") // 多个连续换行符合并为单个
+                                .trim();                    // 移除首尾空白
+                    }
+                }
+            } catch (Exception e) {
+                Gdx.app.error(CrashHandler.TAG, "Failed to load notes", e);
+            }
         }
 
         private String formatCrashMessage(String message, String stackTrace) {
             StringBuilder sb = new StringBuilder();
-            if (message != null && !message.isEmpty()) {
-                sb.append("Message: ").append(message).append("\n\n");
+            String fullContent = message + "\n" + stackTrace;
+
+            // 移除开头的重复文件名
+            String[] lines = fullContent.split("\n");
+            int startIdx = 0;
+            for (int i = 0; i < lines.length; i++) {
+                if (!lines[i].startsWith("Crash log from")) {
+                    startIdx = i;
+                    break;
+                }
             }
-            if (stackTrace != null) {
-                String[] lines = stackTrace.split("\n");
-                sb.append("Stack Trace:\n");
-                for (int i = 0; i < Math.min(lines.length, 15); i++) {
+
+            // 添加从第一个非文件名行开始到NOTE分隔符之前的内容
+            for (int i = startIdx; i < lines.length; i++) {
+                if (lines[i].equals("=== NOTES ===")) {
+                    break;
+                }
+                if (lines[i].startsWith("Message: ")) {
+                    sb.append(lines[i]).append("\n\n");
+                } else if (lines[i].startsWith("Stack Trace:")) {
+                    sb.append(lines[i]).append("\n");
+                } else {
                     sb.append(lines[i]).append("\n");
                 }
-                if (lines.length > 15) {
-                    sb.append("... (").append(lines.length - 15).append(" more lines)");
-                }
             }
+
             return sb.toString();
         }
     }
