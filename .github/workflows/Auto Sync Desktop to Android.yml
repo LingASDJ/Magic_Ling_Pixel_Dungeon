@@ -64,9 +64,9 @@ jobs:
           fi
           
           # 备份 CrashHandler.java
-          if [ -f "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/CrashHandler.java" ]; then
+          if [ -f "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/CrashHandler.java" ]; then
             mkdir -p /tmp/android_backup/crashhandler
-            cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/CrashHandler.java" /tmp/android_backup/crashhandler/
+            cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/CrashHandler.java" /tmp/android_backup/crashhandler/
             echo "CrashHandler.java backed up"
           fi
 
@@ -92,8 +92,8 @@ jobs:
           
           # 恢复 CrashHandler.java
           if [ -f "/tmp/android_backup/crashhandler/CrashHandler.java" ]; then
-            mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon"
-            cp /tmp/android_backup/crashhandler/CrashHandler.java "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/"
+            mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/"
+            cp /tmp/android_backup/crashhandler/CrashHandler.java "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/"
             echo "CrashHandler.java restored"
           fi
 
