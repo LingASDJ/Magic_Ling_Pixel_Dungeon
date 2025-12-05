@@ -16,6 +16,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.color.DynamicColorsOptions;
 import com.google.android.material.snackbar.Snackbar;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.CrashHandler;
 
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
@@ -28,6 +29,11 @@ public class ErrorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 首先初始化 CrashHandler
+        CrashHandler handler = CrashHandler.getInstance();
+        handler.init();
+
         DynamicColors.applyToActivityIfAvailable(this, new DynamicColorsOptions.Builder().setPrecondition((activity, theme) -> true).build());
         BarUtils.transparentStatusBar(this);
         BarUtils.setStatusBarLightMode(this, true);
@@ -35,7 +41,13 @@ public class ErrorActivity extends AppCompatActivity {
             BarUtils.setNavBarColor(this, 0x00000000);
         }
         setContentView(R.layout.activity_error);
+
+        // 获取错误信息
         errorMsg = CustomActivityOnCrash.getAllErrorDetailsFromIntent(this, getIntent());
+
+        // 保存到 CrashHandler
+        saveCrashToHandler(errorMsg);
+
         final MaterialToolbar toolbar = findViewById(R.id.materialToolbar);
         setSupportActionBar(toolbar);
         final TextView textView = findViewById(R.id.error_info_text_view);
@@ -52,6 +64,7 @@ public class ErrorActivity extends AppCompatActivity {
             }
             CustomActivityOnCrash.restartApplication(ErrorActivity.this, config);
         });
+
         final Button copyButton = findViewById(R.id.copy_button);
         copyButton.setOnClickListener(v -> {
             final ClipboardManager systemService =
@@ -60,5 +73,36 @@ public class ErrorActivity extends AppCompatActivity {
             systemService.setPrimaryClip(mClipData);
             Snackbar.make(v, R.string.copy_complete, Snackbar.LENGTH_LONG).show();
         });
+    }
+
+    private void saveCrashToHandler(String errorMessage) {
+        try {
+            // 创建一个包含完整错误信息的异常
+            RuntimeException ex = new RuntimeException(errorMessage);
+
+            // 获取当前线程的堆栈
+            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+
+            // 过滤掉不相关的堆栈信息
+            java.util.List<StackTraceElement> filtered = new java.util.ArrayList<>();
+            for (StackTraceElement element : stackTrace) {
+                if (!element.getClassName().contains("ErrorActivity") &&
+                        !element.getClassName().contains("CustomActivityOnCrash")) {
+                    filtered.add(element);
+                }
+            }
+
+            // 设置过滤后的堆栈
+            ex.setStackTrace(filtered.toArray(new StackTraceElement[0]));
+
+            // 保存到 CrashHandler，使用Android上下文
+            CrashHandler handler = CrashHandler.getInstance();
+            handler.saveCrashInfo(this, Thread.currentThread(), ex);
+
+            android.util.Log.d("ErrorActivity", "Crash info saved successfully");
+        } catch (Exception e) {
+            android.util.Log.e("ErrorActivity", "Failed to save crash info: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

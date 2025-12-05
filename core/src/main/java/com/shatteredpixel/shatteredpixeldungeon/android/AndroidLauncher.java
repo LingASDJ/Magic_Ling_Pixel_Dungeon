@@ -22,13 +22,14 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.CrashHandler;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
 import com.shatteredpixel.shatteredpixeldungeon.update.UpdateImpl;
 import com.shatteredpixel.shatteredpixeldungeon.update.Updates;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
+
+import cat.ereza.customactivityoncrash.config.CaocConfig;
 
 public class AndroidLauncher extends AndroidApplication {
 
@@ -44,17 +45,15 @@ public class AndroidLauncher extends AndroidApplication {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        // 配置自定义崩溃处理
-//        CaocConfig.Builder.create()
-//                .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
-//                .minTimeBetweenCrashesMs(2000) //default: 3000
-//                .errorActivity(ErrorActivity.class) //default: null (default error activity)
-//                .apply();
+        // 配置自定义崩溃处理
+        CaocConfig.Builder.create()
+                .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
+                .minTimeBetweenCrashesMs(2000) //default: 3000
+                .errorActivity(ErrorActivity.class) //default: null (default error activity)
+                .apply();
+
 
         FirebaseApp.initializeApp(this);
-
-        CrashHandler handler = CrashHandler.getInstance();
-        handler.init();
 
         mFirebaseAnalyticsRecords = FirebaseAnalytics.getInstance(this);
         try {
