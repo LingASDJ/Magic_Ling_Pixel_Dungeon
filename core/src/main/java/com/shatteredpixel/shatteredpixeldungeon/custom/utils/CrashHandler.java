@@ -195,18 +195,8 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         sb.append("Time: ").append(timestamp).append("\n");
         sb.append("=== CRASH REPORT ===\n");
-        if(DeviceCompat.isDesktop()){
-            sb.append("Java Version: ").append(System.getProperty("java.version")).append("\n");
 
-
-            sb.append("Thread: ").append(thread.getName()).append(" (").append(thread.getId()).append(")\n");
-            sb.append("Game Version: ").append(Game.version).append("\n");
-            sb.append(getSystemInfo());
-
-            sb.append("Exception Type: ").append(ex.getClass().getName()).append("\n");
-            sb.append("Exception Message: ").append(ex.getMessage()).append("\n\n");
-        }
-        sb.append("Stack Trace:\n");
+        sb.append("Stack Trace:\n\n");
         sb.append(getStackTrace(ex));
 
         // 添加原因异常
