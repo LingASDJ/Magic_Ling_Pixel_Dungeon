@@ -196,17 +196,8 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         sb.append("Time: ").append(timestamp).append("\n");
         sb.append("=== CRASH REPORT ===\n");
 
-        sb.append("Stack Trace:\n\n");
         sb.append(getStackTrace(ex));
 
-        // 添加原因异常
-        Throwable cause = ex.getCause();
-        while (cause != null) {
-            sb.append("\nCaused by:\n");
-            sb.append(cause.getClass().getName()).append(": ").append(cause.getMessage()).append("\n");
-            sb.append(getStackTrace(cause));
-            cause = cause.getCause();
-        }
         sb.append("\n=== END REPORT ===\n");
 
         return sb.toString();
@@ -301,7 +292,12 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         ex.printStackTrace(pw);
-        return sw.toString();
+        String stackTrace = sw.toString();
+        // 移除第一行的异常类型信息
+        if (stackTrace.contains(":")) {
+            stackTrace = stackTrace.substring(stackTrace.indexOf(":") + 1).trim();
+        }
+        return stackTrace;
     }
 
     private boolean handleException(Throwable ex) {
