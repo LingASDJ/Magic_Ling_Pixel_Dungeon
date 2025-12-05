@@ -54,13 +54,20 @@ jobs:
       - name: Backup Android-specific code
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
+          # 创建备份目录
+          mkdir -p /tmp/android_backup
+          
           # 备份安卓分支上的安卓特定代码
           if [ -d "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android" ]; then
-            mkdir -p /tmp/android_backup
             cp -r "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android" /tmp/android_backup/
             echo "Android-specific code backed up"
-          else
-            echo "No Android-specific code found to backup"
+          fi
+          
+          # 备份 CrashHandler.java
+          if [ -f "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/CrashHandler.java" ]; then
+            mkdir -p /tmp/android_backup/crashhandler
+            cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/CrashHandler.java" /tmp/android_backup/crashhandler/
+            echo "CrashHandler.java backed up"
           fi
 
       - name: Merge folder from 2025-Desktop to 2025-Android
@@ -81,8 +88,13 @@ jobs:
             mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon"
             cp -r /tmp/android_backup/android "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/"
             echo "Android-specific code restored"
-          else
-            echo "No Android-specific code to restore"
+          fi
+          
+          # 恢复 CrashHandler.java
+          if [ -f "/tmp/android_backup/crashhandler/CrashHandler.java" ]; then
+            mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon"
+            cp /tmp/android_backup/crashhandler/CrashHandler.java "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/"
+            echo "CrashHandler.java restored"
           fi
 
       - name: Commit and push changes
