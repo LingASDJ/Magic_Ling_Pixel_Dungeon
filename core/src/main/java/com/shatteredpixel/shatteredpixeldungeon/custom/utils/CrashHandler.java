@@ -1,17 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
-import android.content.Context;
-
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.DeviceCompat;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -42,63 +37,6 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
     /** 保证只有一个CrashHandler实例 */
     private CrashHandler() {}
-
-    /**
-     * 公共方法：保存崩溃信息（不依赖Gdx）
-     * @param thread 发生崩溃的线程
-     * @param ex 崩溃异常
-     * @param context Android上下文
-     */
-    public void saveCrashInfo(Context context, Thread thread, Throwable ex) {
-        try {
-            // 创建崩溃报告
-            String crashReport = generateCrashReport(thread, ex);
-
-            // 使用Android的文件系统保存
-            saveCrashReportAndroid(context, crashReport);
-
-            // 输出到控制台
-            if (DEBUG) {
-                System.out.println("Crash report saved successfully");
-            }
-        } catch (Exception e) {
-            System.err.println("Failed to save crash info: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 使用Android文件系统保存崩溃报告
-     */
-    private void saveCrashReportAndroid(Context context, String crashReport) {
-        try {
-            // 获取应用私有目录
-            File crashDir = new File(context.getFilesDir(), CRASH_DIR);
-            if (!crashDir.exists()) {
-                crashDir.mkdirs();
-            }
-
-            // 创建崩溃报告文件
-            String timestamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(new Date());
-            String fileName = CRASH_FILE_PREFIX + timestamp + CRASH_FILE_EXTENSION;
-            File crashFile = new File(crashDir, fileName);
-
-            // 写入文件
-            try (FileOutputStream fos = new FileOutputStream(crashFile);
-                 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8")) {
-                osw.write(crashReport);
-                osw.flush();
-            }
-
-            if (DEBUG) {
-                System.out.println("Crash report saved to: " + crashFile.getAbsolutePath());
-            }
-        } catch (Exception e) {
-            System.err.println("Failed to save crash report: " + e.getMessage());
-            // 即使保存失败，也要输出到控制台
-            System.err.println(crashReport);
-        }
-    }
 
     /** 获取CrashHandler实例 ,单例模式*/
     public static CrashHandler getInstance() {
@@ -156,7 +94,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             mDefaultHandler.uncaughtException(thread, ex);
         } else {
             try {
-                Thread.sleep(0);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 System.err.println("Error while waiting to exit: " + e.getMessage());
             }
@@ -193,19 +131,17 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private String generateCrashReport(Thread thread, Throwable ex) {
         StringBuilder sb = new StringBuilder();
         String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-        sb.append("Time: ").append(timestamp).append("\n");
+
         sb.append("=== CRASH REPORT ===\n");
-        if(DeviceCompat.isDesktop()){
-            sb.append("Java Version: ").append(System.getProperty("java.version")).append("\n");
+        sb.append("Time: ").append(timestamp).append("\n");
+        sb.append("Thread: ").append(thread.getName()).append(" (").append(thread.getId()).append(")\n");
+        sb.append("Game Version: ").append(Game.version).append("\n");
+        sb.append("Java Version: ").append(System.getProperty("java.version")).append("\n");
+        sb.append("OS: ").append(System.getProperty("os.name")).append(" ").append(System.getProperty("os.version")).append("\n\n");
 
+        sb.append("Exception Type: ").append(ex.getClass().getName()).append("\n");
+        sb.append("Exception Message: ").append(ex.getMessage()).append("\n\n");
 
-            sb.append("Thread: ").append(thread.getName()).append(" (").append(thread.getId()).append(")\n");
-            sb.append("Game Version: ").append(Game.version).append("\n");
-            sb.append(getSystemInfo());
-
-            sb.append("Exception Type: ").append(ex.getClass().getName()).append("\n");
-            sb.append("Exception Message: ").append(ex.getMessage()).append("\n\n");
-        }
         sb.append("Stack Trace:\n");
         sb.append(getStackTrace(ex));
 
@@ -217,6 +153,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             sb.append(getStackTrace(cause));
             cause = cause.getCause();
         }
+
         sb.append("\n=== END REPORT ===\n");
 
         return sb.toString();
@@ -278,34 +215,31 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private String getSystemInfo() {
         StringBuilder sb = new StringBuilder();
 
-        if (DeviceCompat.isAndroid()) {
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            // 通过Gdx获取Android系统信息
             try {
-                // 通过反射获取Android设备名称
-                Class<?> buildClass = Class.forName("android.os.Build");
-                String model = (String) buildClass.getField("MODEL").get(null);
-                String version = (String) buildClass.getField("RELEASE").get(null);
+                // 获取Android版本
+                String version = String.valueOf(Gdx.app.getVersion());
+                // 获取设备信息
+                String model = Gdx.graphics.getDisplayMode().toString();
 
                 sb.append("OS: Android ").append(version)
-                        .append(" (").append(model).append(")\n\n");
+                        .append(" (").append(model).append(")\n");
             } catch (Exception e) {
-                // 如果反射获取失败，使用基础信息
-                try {
-                    String version = String.valueOf(Gdx.app.getVersion());
-                    sb.append("OS: Android ").append(version).append("\n\n");
-                } catch (Exception ex) {
-                    sb.append("OS: Android\n\n");
-                }
+                sb.append("OS: Android\n");
             }
         } else {
             sb.append("OS: ")
                     .append(System.getProperty("os.name"))
                     .append(" ")
                     .append(System.getProperty("os.version"))
-                    .append("\n\n");
+                    .append("\n");
         }
 
         return sb.toString();
     }
+
+
 
     private String getStackTrace(Throwable ex) {
         StringWriter sw = new StringWriter();

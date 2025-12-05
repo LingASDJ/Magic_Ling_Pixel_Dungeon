@@ -22,7 +22,6 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Component;
-import com.watabou.utils.DeviceCompat;
 
 import java.util.ArrayList;
 
@@ -316,7 +315,7 @@ public class CrashReportScene extends PixelScene {
                 height = Math.max(height, title.bottom() - y + GAP);
             }
 
-            bg.size(DeviceCompat.isAndroid() ? 140 : 100, height);
+            bg.size(100, height);
         }
 
         @Override
@@ -348,7 +347,7 @@ public class CrashReportScene extends PixelScene {
             // 读取已保存的备注
             loadNotes();
 
-            int width = Camera.main.width-50;
+            int width = Camera.main.width/2;
             int height = Camera.main.height-50;
             resize(width, height);
 
