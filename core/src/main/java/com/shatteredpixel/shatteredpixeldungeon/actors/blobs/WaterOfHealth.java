@@ -49,14 +49,17 @@ public class WaterOfHealth extends WellWater {
 	
 	@Override
 	protected boolean affectHero( Hero hero ) {
-		
+
 		if (!hero.isAlive()) return false;
-		
+
 		Sample.INSTANCE.play( Assets.Sounds.DRINK );
 
 		PotionOfHealing.cure( hero );
 		hero.belongings.uncurseEquipped();
-		hero.buff( Hunger.class ).satisfy( Hunger.STARVING );
+
+        if(hero.buff(Hunger.class)!=null) {
+            hero.buff(Hunger.class).satisfy(Hunger.STARVING);
+        }
 
 		if (VialOfBlood.delayBurstHealing()){
 			Healing healing = Buff.affect(hero, Healing.class);
