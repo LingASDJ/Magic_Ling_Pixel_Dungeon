@@ -896,6 +896,7 @@ public class Assets {
 
 		public static final String NONE		= "sprites/none.png";
 		public static final String FLOWER_SLIME		= "sprites/flowers_slime.png";
+        public static final String GIANT_FLOWER_SLIME		= "sprites/flowers_slime_giant.png";
 
 		public static final String GREEN		= "sprites/greenslting.png";
 
