@@ -59,9 +59,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
@@ -111,11 +115,18 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( WandOfWarding.Ward.class );
 		RESISTS.add( WandOfSun.MiniSun.class );
 
+        RESISTS.add( WandOfVenom.class );
+        RESISTS.add( WandOfHightHunderStorm.class );
+        RESISTS.add( WandOfBlueFuck.class );
+		RESISTS.add( WandOfScale.class );
+
 		RESISTS.add( ElementalStrike.class );
 		RESISTS.add( Blazing.class );
 		RESISTS.add( WandOfFireblast.FireBlastOnHit.class );
 		RESISTS.add( Shocking.class );
+
 		RESISTS.add( WandOfLightning.LightningOnHit.class );
+        RESISTS.add( WandOfHightHunderStorm.LightningOnHit.class );
 		RESISTS.add( Grim.class );
 
 		RESISTS.add( WarpBeacon.class );
@@ -142,7 +153,7 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add(YogFist.HaloFist.DarkBolt.class);
 		RESISTS.add(YogFist.FreezingFist.LightBeam.class);
 
-
+        RESISTS.add(DiedCrossBow.class);
 		RESISTS.add(DiedCrossBow.BombArrow.class);
 	}
 	
