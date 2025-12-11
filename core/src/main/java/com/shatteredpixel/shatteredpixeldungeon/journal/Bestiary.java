@@ -203,6 +203,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRong;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GiantFlowerSlime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
@@ -296,9 +297,9 @@ public enum Bestiary {
 
 	UNIVERSAL,
 	QUEST,
-	BOSSRUSH,
-	RARE,
+    RARE,
 
+	BOSSRUSH,
 	NEUTRAL,
 
 	ALLY,
@@ -496,7 +497,9 @@ public enum Bestiary {
 		UNIVERSAL.addEntities(Wraith.class, Piranha.class, Mimic.class, GoldenMimic.class, EbonyMimic.class,  GreenDiamndMimic.class,Statue.class, GuardianTrap.Guardian.class, SentryRoom.Sentry.class);
 
 		RARE.addEntities(
-				Albino.class, CausticSlime.class, Salamander.class,
+				Albino.class, GiantFlowerSlime.class,
+
+                CausticSlime.class, Salamander.class,
 
 				Bandit.class, SpectralNecromancer.class,
 				SRPDHBLR.class, NewBlackHost.class,
