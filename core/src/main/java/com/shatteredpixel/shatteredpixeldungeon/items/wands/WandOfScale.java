@@ -87,6 +87,52 @@ public class WandOfScale extends DamageWand {
     }
 
     @Override
+    public void onAIZap( Ballistica bolt ) {
+        ConeAOE conex;
+        ArrayList<Char> affectedChars = new ArrayList<>();
+        int maxDist = 2 + 2*chargesPerCast();
+        conex = new ConeAOE( bolt,
+                maxDist,
+                30 + 40*chargesPerCast(),
+                collisionProperties | Ballistica.STOP_TARGET);
+        for( int cell : conex.cells ){
+
+            //ignore caster cell
+            if (cell == bolt.sourcePos){
+                continue;
+            }
+
+            //only ignite cells directly near caster if they are flammable
+            if (!Dungeon.level.adjacent(bolt.sourcePos, cell) || Dungeon.level.flamable[cell]){
+                GameScene.add( Blob.seed( cell, 4+chargesPerCast(), StormCloud.class ) );
+            }
+
+            Char ch = Actor.findChar( cell );
+            if (ch != null) {
+                affectedChars.add(ch);
+            }
+        }
+
+        for ( Char ch : affectedChars ){
+            processSoulMark(ch, chargesPerCast());
+            ch.damage(damageRoll(), this);
+            if (ch.isAlive()) {
+                Buff.affect(ch, Terror.class, 4+buffedLvl());
+                switch (chargesPerCast()) {
+                    case 1:
+                        break; //no effects
+                    case 2:
+                        Buff.affect(ch, Cripple.class, 4f);
+                        break;
+                    case 3:
+                        Buff.affect(ch, Paralysis.class, 4f);
+                        break;
+                }
+            }
+        }
+    }
+
+    @Override
     public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
         //acts like blazing enchantment
 
@@ -133,7 +179,7 @@ public class WandOfScale extends DamageWand {
     }
 
     @Override
-    protected int chargesPerCast() {
+    public int chargesPerCast() {
         //consumes 30% of current charges, rounded up, with a minimum of one.
         return Math.max(1, (int)Math.ceil(curCharges*0.3f));
     }

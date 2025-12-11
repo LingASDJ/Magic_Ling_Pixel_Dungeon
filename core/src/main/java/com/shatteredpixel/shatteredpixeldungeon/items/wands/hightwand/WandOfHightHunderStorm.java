@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.DamageWand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -72,9 +73,9 @@ public class WandOfHightHunderStorm extends DamageWand {
 
     }
 
-    private ArrayList<Char> affected = new ArrayList<>();
+    public ArrayList<Char> affected = new ArrayList<>();
 
-    private ArrayList<Lightning.Arc> arcs = new ArrayList<>();
+    public ArrayList<Lightning.Arc> arcs = new ArrayList<>();
 
     public int min(int lvl){
         return 4+lvl;
@@ -83,7 +84,7 @@ public class WandOfHightHunderStorm extends DamageWand {
     public int max(int lvl){
         return 4+6*lvl;
     }
-    ConeAOE cone;
+    public ConeAOE cone;
     @Override
     public void onZap(Ballistica bolt) {
 
@@ -147,10 +148,17 @@ public class WandOfHightHunderStorm extends DamageWand {
     @Override
     public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
         //acts like shocking enchantment
-        new Shocking().proc(staff, attacker, defender, damage);
+        new LightningOnHit().proc(staff, attacker, defender, damage);
     }
 
-    private void arc( Char ch ) {
+    public static class LightningOnHit extends Shocking {
+        @Override
+        public float procChanceMultiplier(Char attacker) {
+            return Wand.procChanceMultiplier(attacker);
+        }
+    }
+
+    public void arc(Char ch) {
 
         int dist = (Dungeon.level.water[ch.pos] && !ch.flying) ? 2 : 1;
 

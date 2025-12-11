@@ -332,7 +332,7 @@ public class EndingBlade extends MeleeWeapon {
         }
     }
 
-    protected int chargesPerCast() {
+    public int chargesPerCast() {
         return 2;
     }
 

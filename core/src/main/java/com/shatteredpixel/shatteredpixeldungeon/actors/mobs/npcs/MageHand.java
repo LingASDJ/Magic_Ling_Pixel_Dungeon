@@ -14,10 +14,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.DamageWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -29,6 +34,8 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
+
 public class MageHand extends DirectableAlly {
 
     {
@@ -37,11 +44,111 @@ public class MageHand extends DirectableAlly {
         state = HUNTING;
         properties.add(Property.UNKNOWN);
         immunities.add(Blob.class);
+        viewDistance =10;
     }
 
     @Override
-    public boolean isInvulnerable(Class effect) {
-        return true;
+    public void damage(int dmg, Object src, DamageType type) {
+        // 先执行伤害逻辑
+        super.damage(0, src, type);
+
+        // 尝试传送到英雄周围5x5区域
+        if (!teleportNearHero()) {
+            // 如果失败，尝试传送到全图随机位置
+            teleportToRandomLocation();
+        }
+    }
+
+    // 尝试传送到英雄周围5x5区域
+    private boolean teleportNearHero() {
+        int heroPos = Dungeon.hero.pos;
+        ArrayList<Integer> validPositions = new ArrayList<>();
+
+        // 获取5x5区域内的有效位置
+        for (int i = -2; i <= 2; i++) {
+            for (int j = -2; j <= 2; j++) {
+                int newPos = heroPos + i + j * Dungeon.level.width();
+
+                // 检查位置是否有效
+                if (isValidTeleportPosition(newPos)) {
+                    validPositions.add(newPos);
+                }
+            }
+        }
+
+        // 如果找到有效位置，随机选择一个传送
+        if (!validPositions.isEmpty()) {
+            int targetPos = Random.element(validPositions);
+            teleportTo(targetPos);
+            return true;
+        }
+
+        return false;
+    }
+
+    // 传送到全图随机位置
+    private boolean teleportToRandomLocation() {
+        ArrayList<Integer> validPositions = new ArrayList<>();
+
+        // 遍历整个地图寻找有效位置
+        for (int i = 0; i < Dungeon.level.length(); i++) {
+            if (isValidTeleportPosition(i)) {
+                validPositions.add(i);
+            }
+        }
+
+        // 如果找到有效位置，随机选择一个传送
+        if (!validPositions.isEmpty()) {
+            int targetPos = Random.element(validPositions);
+            teleportTo(targetPos);
+            return true;
+        }
+
+        return false;
+    }
+
+    // 检查位置是否适合传送
+    private boolean isValidTeleportPosition(int pos) {
+        return pos >= 0
+                && pos < Dungeon.level.length()
+                && !Dungeon.level.solid[pos]
+                && !Dungeon.level.pit[pos]
+                && Actor.findChar(pos) == null;
+    }
+
+    // 执行传送
+    private void teleportTo(int targetPos) {
+        // 添加传送特效
+        sprite.emitter().burst(Speck.factory(Speck.LIGHT), 6);
+
+        // 更新位置
+        pos = targetPos;
+
+        // 更新精灵位置
+        sprite.place(pos);
+
+        // 添加到达特效
+        sprite.emitter().burst(Speck.factory(Speck.LIGHT), 6);
+
+        // 更新视野
+        Dungeon.level.occupyCell(this);
+
+        // 如果需要，可以添加音效
+        Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+    }
+
+
+    @Override
+    public String description() {
+        String desc = super.description();
+
+        if(equippedWand != null){
+            desc += "\n\n" + Messages.get(this, "desc_equipped_wand", equippedWand.name());
+            desc += "\n" + Messages.get(this, "desc_charges", equippedWand.curCharges, equippedWand.maxCharges);
+            desc += "\n" + Messages.get(this, "desc_colddown", wandCooldown);
+        }
+
+        return desc;
     }
 
     // 在MageHand类中添加以下常量
@@ -108,7 +215,6 @@ public class MageHand extends DirectableAlly {
 
     public Wand equippedWand = null;
     private int wandCooldown = 0;
-    private int respawnTimer = -1;
 
     public MageHand(){
         super();
@@ -118,17 +224,12 @@ public class MageHand extends DirectableAlly {
         }
     }
 
-    private void manageCharging() {
-        chargeWand();
-    }
-
 
     // 修改equipWand方法
     public void equipWand(Wand wand) {
         this.equippedWand = wand;
         // 重置部分充能值
         wand.partialCharge = 0f;
-        updateWandStats();
         // 立即开始充能
         wand.charge(this);
         GLog.i(Messages.get(this, "wand_equipped", wand.name()));
@@ -148,14 +249,11 @@ public class MageHand extends DirectableAlly {
         if (equippedWand != null && wandCooldown == 0) {
             // 检查法杖是否有能量
             if (equippedWand.curCharges > 0) {
-                invisible = 0;
                 return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
             } else {
-                invisible = 1;
                 return false;
             }
         } else {
-            invisible = 1;
             return false;
         }
     }
@@ -168,19 +266,11 @@ public class MageHand extends DirectableAlly {
         return equippedWand;
     }
 
-    private void updateWandStats() {
-        if (equippedWand == null) return;
-        defenseSkill = hero.lvl + 4 + equippedWand.level();
-    }
-
     @Override
     protected boolean act() {
-        // 更新法杖冷却
         if (wandCooldown > 0) {
             wandCooldown--;
         }
-
-        // 如果没有法杖或法杖在冷却中，进行近战攻击
         return super.act();
     }
 
@@ -234,8 +324,8 @@ public class MageHand extends DirectableAlly {
     private void zap() {
         if (equippedWand != null && enemy != null) {
             if (equippedWand.curCharges > 0) {
-                if(equippedWand instanceof WandOfFireblast){
-                    ((WandOfFireblast) equippedWand).onAIZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
+                if(equippedWand instanceof WandOfFireblast || equippedWand instanceof WandOfBlueFuck || equippedWand instanceof WandOfScale || equippedWand instanceof WandOfRegrowth){
+                    equippedWand.onAIZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
                 } else {
                     equippedWand.onZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
                 }
