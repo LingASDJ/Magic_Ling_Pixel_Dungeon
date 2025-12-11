@@ -21,6 +21,10 @@ import static com.watabou.utils.Random.getRandomElement;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.FrostFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -169,6 +173,13 @@ public class PacmanHollowActorLevel extends Level {
                             Dungeon.level.drop(HighGoodItem(), i);
                         });
                buff.onlyItem = true;
+            }
+        }
+
+        //特定清除火焰
+        for (Blob blob: blobs.values()){
+            if(blob instanceof Fire || blob instanceof HalomethaneFire || blob instanceof FrostFire) {
+                blob.fullyClear();
             }
         }
 
