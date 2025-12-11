@@ -34,14 +34,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
@@ -51,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -79,13 +84,9 @@ public class MagesStaff extends MeleeWeapon {
 
 	public Wand wand;
 
-	public Wand wandcount;
-
 	public static final String AC_IMBUE = "IMBUE";
 	public static final String AC_ZAP	= "ZAP";
 	public static final String AC_DISMISS = "DISMISS";
-
-	public static final String AC_HAND  = "HAND";
 
 	private static final float STAFF_SCALE_FACTOR = 0.75f;
 
@@ -138,11 +139,6 @@ public class MagesStaff extends MeleeWeapon {
 			actions.add( AC_DISMISS );
 		}
 
-		if(Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE){
-			actions.add(AC_HAND);
-		}
-
-
 		return actions;
 	}
 
@@ -191,15 +187,6 @@ public class MagesStaff extends MeleeWeapon {
 		if (action.equals(AC_DISMISS)) {
 			GameScene.selectCell(cellSelector);
 		}
-
-		if( action.equals(AC_HAND) ) {
-			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-				if (mob instanceof MageHand) {
-					GameScene.show(new WndMageHand((MageHand) mob));
-				}
-			}
-		}
-
 	}
 
 	protected CellSelector.Listener cellSelector = new CellSelector.Listener(){
@@ -628,6 +615,8 @@ public class MagesStaff extends MeleeWeapon {
 		}
 	}
 
+
+
 	private static class WndMageHand extends Window {
 
 		private static final int BTN_SIZE  = 32;
@@ -677,7 +666,7 @@ public class MagesStaff extends MeleeWeapon {
 
 							@Override
 							public boolean itemSelectable(Item item) {
-								return item instanceof Wand;
+								return item instanceof Wand && !(item instanceof WandOfWarding);
 							}
 
 							@Override
@@ -732,5 +721,71 @@ public class MagesStaff extends MeleeWeapon {
 			resize(WIDTH, (int)(btnWand.bottom() + GAP));
 		}
 	}
+
+    public static class MageHandControl extends Item {
+        public static final String AC_HAND  = "HAND";
+
+        public static final String AC_DIRECT = "DIRECT";
+
+        {
+            defaultAction = AC_HAND;
+            image = ItemSpriteSheet.WAND_HAND_CONTROL;
+        }
+
+        @Override
+        public boolean isUpgradable() {
+            return false;
+        }
+
+        @Override
+        public boolean isIdentified() {
+            return true;
+        }
+
+        @Override
+        public ArrayList<String> actions(Hero hero) {
+            ArrayList<String> actions = super.actions( hero );
+            actions.add(AC_HAND);
+            actions.add(AC_DIRECT);
+            return actions;
+        }
+
+        @Override
+        public void execute(Hero hero, String action) {
+            super.execute(hero, action);
+            if( action.equals(AC_HAND) ) {
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                    if (mob instanceof MageHand) {
+                        GameScene.show(new WndMageHand((MageHand) mob));
+                    }
+                }
+            } else if( action.equals(AC_DIRECT) ) {
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                    if (mob instanceof MageHand) {
+                        GameScene.selectCell(handDirector);
+                    }
+                }
+            }
+        }
+
+        public CellSelector.Listener handDirector = new CellSelector.Listener(){
+
+            @Override
+            public void onSelect(Integer cell) {
+                if (cell == null) return;
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (mob instanceof MageHand) {
+                        ScrollOfTeleportation.appear(mob,cell);
+                    }
+                }
+            }
+
+            @Override
+            public String prompt() {
+                return  "\"" + Messages.get(DriedRose.GhostHero.class, "direct_prompt") + "\"";
+            }
+        };
+
+    }
 
 }
