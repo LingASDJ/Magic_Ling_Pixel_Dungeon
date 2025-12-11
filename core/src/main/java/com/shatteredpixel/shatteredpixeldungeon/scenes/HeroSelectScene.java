@@ -542,7 +542,7 @@ public class HeroSelectScene extends PixelScene {
 		add( btnExit );
 		btnExit.visible = !SPDSettings.intro() || Rankings.INSTANCE.totalNumber > 0;
 		if (landscape()) {
-			Image title = new Image(GameRules.BannersRules(), 0, 0, 126, 33);
+			Image title = new Image(GameRules.BannersRules(), 0, 0, 126, 32);
 
 			title.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 4 - BUTTON_HEIGHT - 40);
 			placeTorch(title.x - 8, title.y + 42);
@@ -553,7 +553,7 @@ public class HeroSelectScene extends PixelScene {
 			fourYearsAnimationSP.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 2 - BUTTON_HEIGHT + 100);
 			add(fourYearsAnimationSP);
 		} else {
-			Image title = new Image(GameRules.BannersRules(), 0, 0, 126, 33);
+			Image title = new Image(GameRules.BannersRules(), 0, 0, 126, 32);
 			title.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 8 - BUTTON_HEIGHT - 45);
 			placeTorch(title.x - 8, title.y + 42);
 			placeTorch(title.x + 132, title.y + 42);
