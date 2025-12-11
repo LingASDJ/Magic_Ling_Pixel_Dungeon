@@ -106,18 +106,10 @@ public class WandOfBlueFuck extends DamageWand {
         ArrayList<Char> affectedChars = new ArrayList<>();
         ArrayList<Integer> adjacentCells = new ArrayList<>();
         for (int cell : cone.cells) {
-            // 忽略施法者所在的格子
             if (cell == bolt.sourcePos) {
                 continue;
             }
 
-            // 打开门
-            if (Dungeon.level.map[cell] == Terrain.DOOR) {
-                Level.set(cell, Terrain.OPEN_DOOR);
-                GameScene.updateMap(cell);
-            }
-
-            // 如果格子直接相邻并且不可燃，则加入到 adjacentCells 列表
             if (Dungeon.level.adjacent(bolt.sourcePos, cell) && !Dungeon.level.flamable[cell]) {
                 adjacentCells.add(cell);
             } else {
@@ -129,8 +121,6 @@ public class WandOfBlueFuck extends DamageWand {
                 affectedChars.add(ch);
             }
         }
-
-        // 点燃与 adjacentCells 相邻的可燃格子（排除已经点燃的格子）
         for (int cell : adjacentCells) {
             for (int i : PathFinder.CIRCLE8) {
                 if (Dungeon.level.trueDistance(cell + i, bolt.sourcePos) > Dungeon.level.trueDistance(cell, bolt.sourcePos)
@@ -148,7 +138,66 @@ public class WandOfBlueFuck extends DamageWand {
                 Buff.affect(ch, HalomethaneBurning.class).reignite(ch);
                 switch (chargesPerCast()) {
                     case 1:
-                        break; // 没有额外效果
+                        break;
+                    case 2:
+                        Buff.affect(ch, Blindness.class, 4f);
+                        break;
+                    case 3:
+                        Buff.affect(ch, Paralysis.class, 4f);
+                        break;
+                }
+            }
+        }
+    }
+
+    public void onAIZap(Ballistica bolt) {
+        ConeAOE conex;
+        //need to perform flame spread logic here so we can determine what cells to put flames in.
+
+        // 5/7/9 distance
+        int maxDist = (1 + chargesPerCast())*level/5+3;
+
+        conex = new ConeAOE( bolt,
+                maxDist,
+                30 + 40*chargesPerCast(),
+                collisionProperties | Ballistica.STOP_TARGET);
+
+        ArrayList<Char> affectedChars = new ArrayList<>();
+        ArrayList<Integer> adjacentCells = new ArrayList<>();
+        for (int cell : conex.cells) {
+            if (cell == bolt.sourcePos) {
+                continue;
+            }
+
+            if (Dungeon.level.adjacent(bolt.sourcePos, cell) && !Dungeon.level.flamable[cell]) {
+                adjacentCells.add(cell);
+            } else {
+                GameScene.add(Blob.seed(cell, 6 + chargesPerCast(), HalomethaneFire.class));
+            }
+
+            Char ch = Actor.findChar(cell);
+            if (ch != null) {
+                affectedChars.add(ch);
+            }
+        }
+        for (int cell : adjacentCells) {
+            for (int i : PathFinder.CIRCLE8) {
+                if (Dungeon.level.trueDistance(cell + i, bolt.sourcePos) > Dungeon.level.trueDistance(cell, bolt.sourcePos)
+                        && Dungeon.level.flamable[cell + i]
+                        && HalomethaneFire.volumeAt(cell + i, HalomethaneFire.class) == 0) {
+                    GameScene.add(Blob.seed(cell + i, 12 + chargesPerCast(), HalomethaneFire.class));
+                }
+            }
+        }
+
+        for (Char ch : affectedChars) {
+            processSoulMark(ch, chargesPerCast());
+            ch.damage(damageRoll(), this);
+            if (ch.isAlive()) {
+                Buff.affect(ch, HalomethaneBurning.class).reignite(ch);
+                switch (chargesPerCast()) {
+                    case 1:
+                        break;
                     case 2:
                         Buff.affect(ch, Blindness.class, 4f);
                         break;
@@ -205,7 +254,7 @@ public class WandOfBlueFuck extends DamageWand {
     }
 
     @Override
-    protected int chargesPerCast() {
+    public int chargesPerCast() {
         //consumes 30% of current charges, rounded up, with
         // a minimum of one.
         return Math.max(1, (int)Math.ceil(curCharges*0.3f));

@@ -200,6 +200,130 @@ public class WandOfRegrowth extends Wand {
 
 	}
 
+    public void onAIZap(Ballistica bolt) {
+        ConeAOE conex;
+
+        int maxDist = 2 + 2*chargesPerCast();
+
+        conex = new ConeAOE( bolt,
+                maxDist,
+                20 + 10*chargesPerCast(),
+                Ballistica.STOP_SOLID | Ballistica.STOP_TARGET);
+
+        ArrayList<Integer> cells = new ArrayList<>(conex.cells);
+
+        float furrowedChance = 0;
+        if (totChrgUsed >= chargeLimit(Dungeon.hero.lvl)){
+            furrowedChance = (chargesOverLimit+1)/5f;
+        }
+
+        int chrgUsed = chargesPerCast();
+        int grassToPlace = Math.round((3.67f+buffedLvl()/3f)*chrgUsed);
+
+        //ignore cells which can't have anything grow in them.
+        for (Iterator<Integer> i = cells.iterator(); i.hasNext();) {
+            int cell = i.next();
+            int terr = Dungeon.level.map[cell];
+            if (!(terr == Terrain.EMPTY || terr == Terrain.EMBERS || terr == Terrain.EMPTY_DECO ||
+                    terr == Terrain.GRASS || terr == Terrain.HIGH_GRASS || terr == Terrain.FURROWED_GRASS)) {
+                i.remove();
+            } else if (Char.hasProp(Actor.findChar(cell), Char.Property.IMMOVABLE)) {
+                i.remove();
+            } else if (Dungeon.level.plants.get(cell) != null){
+                i.remove();
+            } else {
+                if (terr != Terrain.HIGH_GRASS && terr != Terrain.FURROWED_GRASS) {
+                    Level.set(cell, Terrain.GRASS);
+                    GameScene.updateMap( cell );
+                }
+                Char ch = Actor.findChar(cell);
+                if (ch != null){
+                    if (ch instanceof DwarfKing){
+                        Statistics.qualifiedForBossChallengeBadge = false;
+                    }
+                    wandProc(ch, chargesPerCast());
+                    Buff.prolong( ch, Roots.class, 4f * chrgUsed );
+                }
+            }
+        }
+
+        Random.shuffle(cells);
+
+        if (chargesPerCast() >= 3){
+            Lotus l = new Lotus();
+            l.setLevel(buffedLvl());
+            if (cells.contains(target) && Actor.findChar(target) == null){
+                cells.remove((Integer)target);
+                l.pos = target;
+                GameScene.add(l);
+            } else {
+                for (int i = bolt.path.size()-1; i >= 0; i--){
+                    int c = bolt.path.get(i);
+                    if (cells.contains(c) && Actor.findChar(c) == null){
+                        cells.remove((Integer)c);
+                        l.pos = c;
+                        GameScene.add(l);
+                        break;
+                    }
+                }
+            }
+        }
+
+        //places grass along center of cone
+        for (int cell : bolt.path){
+            if (grassToPlace > 0 && cells.contains(cell)){
+                if (Random.Float() > furrowedChance) {
+                    Level.set(cell, Terrain.HIGH_GRASS);
+                } else {
+                    Level.set(cell, Terrain.FURROWED_GRASS);
+                }
+                GameScene.updateMap( cell );
+                grassToPlace--;
+                //moves cell to the back
+                cells.remove((Integer)cell);
+                cells.add(cell);
+            }
+        }
+
+        if (!cells.isEmpty() && Random.Float() > furrowedChance &&
+                (Random.Int(6) < chrgUsed)){ // 16%/33%/50% chance to spawn a seed pod or dewcatcher
+            int cell = cells.remove(0);
+            Dungeon.level.plant( Random.Int(2) == 0 ? new Seedpod.Seed() : new Dewcatcher.Seed(), cell);
+        }
+
+        if (!cells.isEmpty() && Random.Float() > furrowedChance &&
+                (Random.Int(3) < chrgUsed)){ // 33%/66%/100% chance to spawn a plant
+            int cell = cells.remove(0);
+            Dungeon.level.plant((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), cell);
+        }
+
+        for (int cell : cells){
+            if (grassToPlace <= 0 || bolt.path.contains(cell)) break;
+
+            if (Dungeon.level.map[cell] == Terrain.HIGH_GRASS) continue;
+
+            if (Random.Float() > furrowedChance) {
+                Level.set(cell, Terrain.HIGH_GRASS);
+            } else {
+                Level.set(cell, Terrain.FURROWED_GRASS);
+            }
+            GameScene.updateMap( cell );
+            grassToPlace--;
+        }
+
+        if (totChrgUsed < chargeLimit(Dungeon.hero.lvl)) {
+            chargesOverLimit = 0;
+            totChrgUsed += chrgUsed;
+            if (totChrgUsed > chargeLimit(Dungeon.hero.lvl)){
+                chargesOverLimit = totChrgUsed - chargeLimit(Dungeon.hero.lvl);
+                totChrgUsed = chargeLimit(Dungeon.hero.lvl);
+            }
+        } else {
+            chargesOverLimit += chrgUsed;
+        }
+
+    }
+
 	private int chargeLimit( int heroLvl ){
 		return chargeLimit(  heroLvl, level() );
 	}
@@ -280,7 +404,7 @@ public class WandOfRegrowth extends Wand {
 	}
 
 	@Override
-	protected int chargesPerCast() {
+	public int chargesPerCast() {
 		if (cursed ||
 				(charger != null && charger.target == null && charger.target.buff(WildMagic.WildMagicTracker.class) != null)){
 			return 1;
