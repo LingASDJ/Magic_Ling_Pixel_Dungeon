@@ -1,9 +1,30 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
+import static com.shatteredpixel.shatteredpixeldungeon.items.Item.curUser;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
@@ -42,10 +63,10 @@ public class MageHandSprite extends MobSprite {
     }
 
     public void zap( int cell ) {
-        turnTo( ch.pos , cell );
-        play( zap );
+        turnTo(ch.pos, cell);
+        play(zap);
 
-        MageHand mageHand = (MageHand)ch;
+        MageHand mageHand = (MageHand) ch;
         Wand equippedWand = mageHand.getEquippedWand();
 
         int missileType = getWandMissileType(mageHand.equippedWand);
@@ -54,16 +75,52 @@ public class MageHandSprite extends MobSprite {
             missileType = getWandMissileType(equippedWand);
         }
 
-        MagicMissile.boltFromChar( parent,
-                missileType,
-                this,
-                cell,
-                new Callback() {
-                    @Override
-                    public void call() {
-                        mageHand.onZapComplete();
-                    }
-                } );
+        curUser = Dungeon.hero;
+
+        if (equippedWand instanceof WandOfPrismaticLight || equippedWand instanceof WandOfSun){
+            if(equippedWand instanceof WandOfSun){
+                equippedWand.tryToZap(Dungeon.hero, cell);
+            }
+            mageHand.sprite.parent.add(
+                    new Beam.LightRay(mageHand.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
+            mageHand.onZapComplete();
+        } else if(equippedWand instanceof WandOfTransfusion) {
+            mageHand.sprite.parent.add(
+                    new Beam.HealthRay(mageHand.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
+            mageHand.onZapComplete();
+        } else if(equippedWand instanceof WandOfLightning){
+            ((WandOfLightning) equippedWand).affected.clear();
+            ((WandOfLightning) equippedWand).arcs.clear();
+            Char ch = Actor.findChar( cell );
+            if (ch != null) {
+                if (ch instanceof DwarfKing){
+                    Statistics.qualifiedForBossChallengeBadge = false;
+                }
+                  ((WandOfLightning) equippedWand).affected.add( ch );
+                  ((WandOfLightning) equippedWand).arcs.add( new Lightning.Arc(mageHand.sprite.center(), ch.sprite.center()));
+                  ((WandOfLightning) equippedWand).arc(ch);
+            } else {
+                ((WandOfLightning) equippedWand).arcs.add( new Lightning.Arc(mageHand.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
+                CellEmitter.center( cell ).burst( SparkParticle.FACTORY, 3 );
+            }
+            mageHand.sprite.parent.addToFront( new Lightning(((WandOfLightning) equippedWand).arcs, null ) );
+            Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
+            mageHand.onZapComplete();
+        } else if(equippedWand instanceof WandOfDisintegration){
+            mageHand.sprite.parent.add(new Beam.DeathRay(mageHand.sprite.center(), DungeonTilemap.raisedTileCenterToWorld( cell )));
+            mageHand.onZapComplete();
+        } else {
+            MagicMissile.boltFromChar( parent,
+                    missileType,
+                    this,
+                    cell,
+                    new Callback() {
+                        @Override
+                        public void call() {
+                            mageHand.onZapComplete();
+                        }
+                    } );
+        }
         Sample.INSTANCE.play( Assets.Sounds.ZAP );
     }
 }
