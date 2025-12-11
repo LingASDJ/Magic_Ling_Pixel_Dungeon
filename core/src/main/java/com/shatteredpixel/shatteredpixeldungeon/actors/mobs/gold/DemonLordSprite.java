@@ -12,13 +12,13 @@ public class DemonLordSprite extends MobSprite {
 
         TextureFilm frames = new TextureFilm( texture, 22, 20 );
         idle = new Animation( 3, true );
-        idle.frames( frames, 0,1,3,4);
+        idle.frames( frames,  0,1,2,3);
 
         run = new Animation( 7, true );
-        run.frames( frames,  5, 6 ,7,8,9);
+        run.frames( frames,  4,5,6,7,8);
 
         attack = new Animation( 9, false );
-        attack.frames( frames, 10,11,12,13);
+        attack.frames( frames, 9,10,11,12,13);
 
         zap = attack.clone();
 
