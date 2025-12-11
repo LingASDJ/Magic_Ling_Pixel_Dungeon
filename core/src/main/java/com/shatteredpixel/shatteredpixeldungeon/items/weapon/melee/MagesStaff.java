@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Shad
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -773,10 +774,21 @@ public class MagesStaff extends MeleeWeapon {
             @Override
             public void onSelect(Integer cell) {
                 if (cell == null) return;
-                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if (mob instanceof MageHand) {
-                        ScrollOfTeleportation.appear(mob,cell);
+                if(Dungeon.level.distance(hero.pos, cell) < hero.viewDistance){
+                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                        if (mob instanceof MageHand) {
+                            ScrollOfTeleportation.appear(mob,cell);
+                        }
                     }
+                    curUser.spend( Actor.TICK );
+                    curUser.busy();
+                    curUser.sprite.operate( curUser.pos );
+                    Sample.INSTANCE.play( Assets.Sounds.READ );
+                    Emitter e = curUser.sprite.centerEmitter();
+                    e.pos(e.x-2, e.y-6, 4, 4);
+                    e.start(Speck.factory(Speck.STAR), 0.05f, 20);
+                } else {
+                    GLog.w(Messages.get(MageHand.class, "out_of_range"));
                 }
             }
 

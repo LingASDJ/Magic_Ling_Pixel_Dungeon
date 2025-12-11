@@ -22,6 +22,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -87,6 +88,40 @@ public class MageHandSprite extends MobSprite {
         } else if(equippedWand instanceof WandOfTransfusion) {
             mageHand.sprite.parent.add(
                     new Beam.HealthRay(mageHand.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
+            mageHand.onZapComplete();
+        } else if(equippedWand instanceof WandOfHightHunderStorm){
+            ((WandOfHightHunderStorm) equippedWand).affected.clear();
+            ((WandOfHightHunderStorm) equippedWand).arcs.clear();
+
+            // 4/6/8 distance
+            int maxDist = (1 + 2*equippedWand.chargesPerCast())* equippedWand.level/5+2;
+
+            ((WandOfHightHunderStorm) equippedWand).cone = new ConeAOE( new Ballistica(ch.pos, cell,Ballistica.STOP_TARGET),
+                    maxDist,
+                    30 + 40*((WandOfHightHunderStorm) equippedWand).chargesPerCast(),
+                    ((WandOfHightHunderStorm) equippedWand).collisionProperties | Ballistica.STOP_TARGET);
+
+            //cast to cells at the tip, rather than all cells, better performance.
+            for (Ballistica ray : ((WandOfHightHunderStorm) equippedWand).cone.rays){
+                ((MagicMissile)curUser.sprite.parent.recycle( MagicMissile.class )).reset(
+                        MagicMissile.ELMO,
+                        curUser.sprite,
+                        ray.path.get(ray.dist),
+                        null
+                );
+            }
+
+            Char ch = Actor.findChar( cell );
+            if (ch != null) {
+                ((WandOfHightHunderStorm) equippedWand).affected.add( ch );
+                ((WandOfHightHunderStorm) equippedWand).arcs.add( new Lightning.Arc(curUser.sprite.center(), ch.sprite.center()));
+                ((WandOfHightHunderStorm) equippedWand).arc(ch);
+            } else {
+                ((WandOfHightHunderStorm) equippedWand).arcs.add( new Lightning.Arc(curUser.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
+                CellEmitter.center( cell ).burst( SparkParticle.FACTORY, 3 );
+            }
+
+            curUser.sprite.parent.addToFront( new Lightning( ((WandOfHightHunderStorm) equippedWand).arcs, null ) );
             mageHand.onZapComplete();
         } else if(equippedWand instanceof WandOfLightning){
             ((WandOfLightning) equippedWand).affected.clear();
