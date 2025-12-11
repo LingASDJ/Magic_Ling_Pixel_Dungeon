@@ -203,21 +203,6 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         return sb.toString();
     }
 
-//    private void saveCrashReport(String crashReport) {
-//        try {
-//            String timestamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(new Date());
-//            String fileName = CRASH_FILE_PREFIX + timestamp + CRASH_FILE_EXTENSION;
-//            FileHandle crashFile = Gdx.files.local(CRASH_DIR).child(fileName);
-//            crashFile.writeString(crashReport, false);
-//
-//            if (DEBUG) {
-//                System.out.println("Crash report saved to: " + crashFile.path());
-//            }
-//        } catch (Exception e) {
-//            System.err.println("Failed to save crash report: " + e.getMessage());
-//        }
-//    }
-
     private boolean isFatalError(Throwable ex) {
         return ex instanceof InternalError ||
                 ex instanceof OutOfMemoryError ||
