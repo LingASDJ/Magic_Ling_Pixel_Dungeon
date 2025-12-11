@@ -159,6 +159,10 @@ public abstract class Wand extends Item {
 	}
 
 	public abstract void onZap(Ballistica attack);
+    public void onAIZap(Ballistica attack){
+
+    };
+
 
 	public abstract void onHit( MagesStaff staff, Char attacker, Char defender, int damage);
 
@@ -438,7 +442,7 @@ public abstract class Wand extends Item {
 		return 2;
 	}
 
-	protected int chargesPerCast() {
+	public int chargesPerCast() {
 		return 1;
 	}
 	
