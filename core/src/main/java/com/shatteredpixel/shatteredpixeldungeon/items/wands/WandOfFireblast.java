@@ -171,6 +171,84 @@ public class WandOfFireblast extends DamageWand {
 		}
 	}
 
+
+    public void onAIZap(Ballistica bolt) {
+        ConeAOE conex;
+        ArrayList<Char> affectedChars = new ArrayList<>();
+        ArrayList<Integer> adjacentCells = new ArrayList<>();
+        int maxDist = 3 + 2*chargesPerCast();
+
+        conex = new ConeAOE( bolt,
+                maxDist,
+                30 + 20*chargesPerCast(),
+                Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID);
+        for( int cell : conex.cells ){
+
+            //ignore caster cell
+            if (cell == bolt.sourcePos){
+                continue;
+            }
+
+            //knock doors open
+            if (Dungeon.level.map[cell] == Terrain.DOOR){
+                Level.set(cell, Terrain.OPEN_DOOR);
+                GameScene.updateMap(cell);
+            }
+
+            //only ignite cells directly near caster if they are flammable or solid
+            if (Dungeon.level.adjacent(bolt.sourcePos, cell)
+                    && !(Dungeon.level.flamable[cell] || Dungeon.level.solid[cell])){
+                adjacentCells.add(cell);
+                //do burn any heaps located here though
+                if (Dungeon.level.heaps.get(cell) != null){
+                    Dungeon.level.heaps.get(cell).burn();
+                }
+            } else {
+                GameScene.add( Blob.seed( cell, 1+chargesPerCast(), Fire.class ) );
+            }
+
+            Char ch = Actor.findChar( cell );
+            if (ch != null) {
+                affectedChars.add(ch);
+            }
+        }
+
+        //if wand was shot right at a wall
+        if (conex.cells.isEmpty()){
+            adjacentCells.add(bolt.sourcePos);
+        }
+
+        //ignite cells that share a side with an adjacent cell, are flammable, and are closer to the collision pos
+        //This prevents short-range casts not igniting barricades or bookshelves
+        for (int cell : adjacentCells){
+            for (int i : PathFinder.NEIGHBOURS8){
+                if (Dungeon.level.trueDistance(cell+i, bolt.collisionPos) < Dungeon.level.trueDistance(cell, bolt.collisionPos)
+                        && Dungeon.level.flamable[cell+i]
+                        && Fire.volumeAt(cell+i, Fire.class) == 0){
+                    GameScene.add( Blob.seed( cell+i, 1+chargesPerCast(), Fire.class ) );
+                }
+            }
+        }
+
+        for ( Char ch : affectedChars ){
+            wandProc(ch, chargesPerCast());
+            ch.damage(damageRoll(), this);
+            if (ch.isAlive()) {
+                Buff.affect(ch, Burning.class).reignite(ch);
+                switch (chargesPerCast()) {
+                    case 1:
+                        break; //no effects
+                    case 2:
+                        Buff.affect(ch, Cripple.class, 5f);
+                        break;
+                    case 3:
+                        Buff.affect(ch, Paralysis.class, 5f);
+                        break;
+                }
+            }
+        }
+    }
+
 	@Override
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
 		//acts like blazing enchantment
@@ -226,7 +304,7 @@ public class WandOfFireblast extends DamageWand {
 	}
 
 	@Override
-	protected int chargesPerCast() {
+    public int chargesPerCast() {
 		if (cursed ||
 				(charger != null && charger.target == null && charger.target.buff(WildMagic.WildMagicTracker.class) != null)){
 			return 1;

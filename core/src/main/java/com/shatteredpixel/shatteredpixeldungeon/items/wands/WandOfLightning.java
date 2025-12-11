@@ -78,9 +78,9 @@ public class WandOfLightning extends DamageWand {
 		image = ItemSpriteSheet.WAND_LIGHTNING;
 	}
 	
-	private ArrayList<Char> affected = new ArrayList<>();
+	public ArrayList<Char> affected = new ArrayList<>();
 
-	private ArrayList<Lightning.Arc> arcs = new ArrayList<>();
+	public ArrayList<Lightning.Arc> arcs = new ArrayList<>();
 
 	public int min(int lvl){
 		return 5+lvl;
@@ -133,7 +133,7 @@ public class WandOfLightning extends DamageWand {
 		}
 	}
 
-	private void arc( Char ch ) {
+	public void arc(Char ch) {
 
 		int dist = Dungeon.level.water[ch.pos] ? 2 : 1;
 

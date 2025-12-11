@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -123,6 +124,9 @@ public class TengusMask extends Item {
 					spawnPoints.add(p);
 				}
 			}
+
+            MagesStaff.MageHandControl mageHandControl = new MagesStaff.MageHandControl();
+            mageHandControl.collect();
 
 			if (spawnPoints.size() > 0) {
 				MageHand mageHand = new MageHand();

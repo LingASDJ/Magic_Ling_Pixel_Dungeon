@@ -115,8 +115,8 @@ public class ItemSpriteSheet {
         assignItemRect(TENGU_BOMB,      10, 10);
         assignItemRect(TENGU_SHOCKER,   10, 10);
 
-        assignItemRect(GREEN_DARK,      12, 13);
-        assignItemRect(RED_BLOOD,       12, 14);
+        assignItemRect(GREEN_DARK,      14, 14);
+        assignItemRect(RED_BLOOD,       11, 11);
 
         assignItemRect(BEST_RAT,       15, 14);
     }
@@ -457,12 +457,16 @@ public class ItemSpriteSheet {
     private static final int RINGS          =                               xy(1, 15);  //16 slots
     public static final int WAND_UNKNOWN   = RINGS+13;
 
+    public static final int WAND_HAND_CONTROL   = RINGS+15;
+
     public static final int WAND_HTR    = WANDS+14;
     public static final int WAND_KCX    = WANDS+15;
     static {
         for (int i = WANDS; i < WANDS+15; i++)
             assignItemRect(i, 14, 14);
         assignItemRect(WAND_UNKNOWN, 14, 14);
+
+        assignItemRect(WAND_HAND_CONTROL, 14, 14);
     }
 
     public static final int RING_GARNET     = RINGS+0;
@@ -1293,9 +1297,9 @@ public class ItemSpriteSheet {
         assignItemRect(PROJECTILES_STAR,       9, 9);
         assignItemRect(SCROLL_GOLEM,       15, 14);
 
-        assignItemRect(BONESOUP,         16, 14);
-        assignItemRect(ZAKOSOUP,         16, 14);
-        assignItemRect(RATTAIL,            15, 16);
+        assignItemRect(BONESOUP,         14, 13);
+        assignItemRect(RATTAIL,          11, 13);
+        assignItemRect(ZAKOSOUP,         15, 12);
 
         assignItemRect(SZJ_REBACK,            15, 15);
         assignItemRect(DEATHRONG_BOAT,            15, 15);

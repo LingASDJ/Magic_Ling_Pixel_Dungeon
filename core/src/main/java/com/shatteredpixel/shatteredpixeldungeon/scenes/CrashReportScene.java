@@ -25,6 +25,8 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class CrashReportScene extends PixelScene {
 
@@ -118,15 +120,32 @@ public class CrashReportScene extends PixelScene {
             try {
                 FileHandle[] files = crashDir.list();
                 if (files != null && files.length > 0) {
+                    // 创建临时列表存储带时间戳的崩溃报告
+                    ArrayList<CrashReportWithTime> crashReports = new ArrayList<>();
+
                     for (FileHandle file : files) {
                         if (file.name().endsWith(CrashHandler.CRASH_FILE_EXTENSION)) {
                             String crashContent = file.readString();
-                            exceptions.add(new CrashHandler.ExceptionStrings(
+                            String crashTime = extractCrashTime(crashContent);
+                            crashReports.add(new CrashReportWithTime(
                                     file.name(),
                                     crashContent,
-                                    "Crash log from " + file.name()
+                                    "Crash log from " + file.name(),
+                                    crashTime
                             ));
                         }
+                    }
+
+                    // 按时间戳降序排序（最新的在前）
+                    Collections.sort(crashReports, (o1, o2) -> o2.timestamp.compareTo(o1.timestamp));
+
+                    // 转换为ExceptionStrings列表
+                    for (CrashReportWithTime report : crashReports) {
+                        exceptions.add(new CrashHandler.ExceptionStrings(
+                                report.fileName,
+                                report.content,
+                                report.title
+                        ));
                     }
                 } else {
                     showNoCrashMessage(w, h, Messages.get(this, "no_crashes"), 0x88CCEE);
@@ -184,6 +203,32 @@ public class CrashReportScene extends PixelScene {
         add(footer);
 
         fadeIn();
+    }
+
+    // 辅助类：带时间戳的崩溃报告
+    private static class CrashReportWithTime {
+        String fileName;
+        String content;
+        String title;
+        String timestamp;
+
+        CrashReportWithTime(String fileName, String content, String title, String timestamp) {
+            this.fileName = fileName;
+            this.content = content;
+            this.title = title;
+            this.timestamp = timestamp;
+        }
+    }
+
+    // 辅助方法：从崩溃内容中提取时间戳
+    private String extractCrashTime(String crashContent) {
+        String[] lines = crashContent.split("\n");
+        for (String line : lines) {
+            if (line.startsWith("Time: ")) {
+                return line.substring(6).trim();
+            }
+        }
+        return "0000-00-00 00:00"; // 默认值，确保没有时间戳的记录排在最后
     }
 
     private void showNoCrashMessage(int w, int h, String message, int color) {
@@ -262,8 +307,6 @@ public class CrashReportScene extends PixelScene {
 
             // 从堆栈跟踪中提取时间戳
             String crashTime = "";
-            String recordTime = "";
-
             String[] lines = es.stackTrace.split("\n");
             for (String line : lines) {
                 if (line.startsWith("Time: ")) {
@@ -276,16 +319,9 @@ public class CrashReportScene extends PixelScene {
             title.hardlight(0xFFFFFF);
             add(title);
 
-            String[] linesty = es.stackTrace.split("\n");
-            for (String linest : linesty) {
-                if (linest.startsWith("Time: ")) {
-                    recordTime = linest.substring(6).trim();
-                    timestamp = PixelScene.renderTextBlock(recordTime, 6);
-                    timestamp.hardlight(0xCCCCCC);
-                    add(timestamp);
-                    break;
-                }
-            }
+            timestamp = PixelScene.renderTextBlock(crashTime, 6);
+            timestamp.hardlight(0xCCCCCC);
+            add(timestamp);
 
             layout();
         }
@@ -305,7 +341,6 @@ public class CrashReportScene extends PixelScene {
             icon.x = x + GAP;
             icon.y = y + (height - icon.height()) / 2f;
             PixelScene.align(icon);
-
 
             title.setPos(icon.x + icon.width + GAP, y + GAP);
 
@@ -503,9 +538,6 @@ public class CrashReportScene extends PixelScene {
             deleteBtn.setSize(40, 16);
             deleteBtn.setPos(addNoteBtn.right()+GAP, copyBtn.top()-18);
             add(deleteBtn);
-
-            // 复制按钮
-
         }
 
         private void saveNotes() {

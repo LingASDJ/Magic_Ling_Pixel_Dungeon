@@ -16,6 +16,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.DamageWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -34,7 +36,6 @@ public class MageHand extends DirectableAlly {
         flying = true;
         state = HUNTING;
         properties.add(Property.UNKNOWN);
-        immunities.add(Buff.class);
         immunities.add(Blob.class);
     }
 
@@ -108,8 +109,6 @@ public class MageHand extends DirectableAlly {
     public Wand equippedWand = null;
     private int wandCooldown = 0;
     private int respawnTimer = -1;
-    private boolean isBlockingPath = false;
-    private int blockCheckCooldown = 0;
 
     public MageHand(){
         super();
@@ -144,15 +143,20 @@ public class MageHand extends DirectableAlly {
     }
 
     @Override
-    protected boolean canAttack( Char enemy ) {
-        if(equippedWand!=null && wandCooldown == 0) {
-            if(equippedWand.curCharges>0){
+    protected boolean canAttack(Char enemy) {
+        // 只有装备了法杖且不在冷却中才能攻击
+        if (equippedWand != null && wandCooldown == 0) {
+            // 检查法杖是否有能量
+            if (equippedWand.curCharges > 0) {
+                invisible = 0;
                 return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
             } else {
+                invisible = 1;
                 return false;
             }
         } else {
-            return super.canAttack(enemy);
+            invisible = 1;
+            return false;
         }
     }
 
@@ -164,10 +168,6 @@ public class MageHand extends DirectableAlly {
         return equippedWand;
     }
 
-    public boolean isWandReady() {
-        return wandCooldown == 0;
-    }
-
     private void updateWandStats() {
         if (equippedWand == null) return;
         defenseSkill = hero.lvl + 4 + equippedWand.level();
@@ -175,29 +175,6 @@ public class MageHand extends DirectableAlly {
 
     @Override
     protected boolean act() {
-        // 每5回合检查一次是否阻挡路径
-        if (blockCheckCooldown <= 0) {
-            checkBlockingPath();
-            blockCheckCooldown = 5;
-        } else {
-            blockCheckCooldown--;
-        }
-        manageCharging();
-        // 如果正在阻挡路径，开始消散计时
-        if (isBlockingPath) {
-            disappear();
-            return true;
-        }
-
-        // 如果处于重生冷却中
-        if (respawnTimer > 0) {
-            respawnTimer--;
-            if (respawnTimer == 0) {
-                respawn();
-            }
-            return true;
-        }
-
         // 更新法杖冷却
         if (wandCooldown > 0) {
             wandCooldown--;
@@ -222,16 +199,14 @@ public class MageHand extends DirectableAlly {
         }
     }
 
-    // 修改攻击逻辑，添加动画支持
-    @Override
     protected boolean doAttack(Char enemy) {
-        // 优先使用法杖攻击（如果法杖就绪且有敌人）
+        // 只有装备了法杖且不在冷却中才能攻击
         if (equippedWand != null && wandCooldown == 0) {
             if (equippedWand.curCharges > 0) {
                 // 有能量时使用法杖攻击
                 if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
                     // 可见时播放法杖动画
-                    sprite.zap( enemy.pos );
+                    sprite.zap(enemy.pos);
                     return false; // 等待动画完成
                 } else {
                     // 不可见时直接施法
@@ -239,14 +214,13 @@ public class MageHand extends DirectableAlly {
                     return true;
                 }
             } else {
-                // 法杖没有能量，转换为近战攻击
+                // 法杖没有能量，不进行攻击
                 GLog.w(Messages.get(this, "wand_no_energy", equippedWand.name()));
-                return super.doAttack(enemy);
+                return false;
             }
+        } else {
+            return false;
         }
-
-        // 如果没有法杖或法杖在冷却中，进行近战攻击
-        return super.doAttack(enemy);
     }
 
 
@@ -260,68 +234,16 @@ public class MageHand extends DirectableAlly {
     private void zap() {
         if (equippedWand != null && enemy != null) {
             if (equippedWand.curCharges > 0) {
-                equippedWand.onZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
+                if(equippedWand instanceof WandOfFireblast){
+                    ((WandOfFireblast) equippedWand).onAIZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
+                } else {
+                    equippedWand.onZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
+                }
                 wandCooldown = 3;
                 equippedWand.curCharges--;
                 spend(1f);
                 GLog.i(Messages.get(this, "wand_used", equippedWand.name()));
-            }
-        }
-    }
 
-
-    private void checkBlockingPath() {
-        isBlockingPath = false;
-
-        // 检查周围8格内是否有敌人
-        for (int i = 0; i < Dungeon.level.length(); i++) {
-            if (Dungeon.level.distance(pos, i) <= 2) { // 2格范围内
-                Char ch = Actor.findChar(i);
-                if (ch != null && ch != this && ch.alignment == Char.Alignment.ENEMY) {
-                    // 如果敌人无法移动到法师之手的位置，则认为被阻挡
-                    if (!Dungeon.level.passable[i] || Dungeon.level.avoid[i]) {
-                        isBlockingPath = true;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    private void disappear() {
-        yell(Messages.get(this, "disappear"));
-        sayDisappear();
-
-        // 保存当前法杖信息
-        Wand savedWand = equippedWand;
-        equippedWand = null;
-
-        destroy();
-        respawnTimer = 50; // 50回合后重生
-
-        // 重生时恢复法杖
-        Game.runOnRenderThread(new Callback() {
-            @Override
-            public void call() {
-                if (respawnTimer == 0) {
-                    MageHand newHand = new MageHand();
-                    newHand.equipWand(savedWand);
-                }
-            }
-        });
-    }
-
-    private void respawn() {
-        // 在英雄附近寻找空位重生
-        int newPos = Dungeon.level.randomRespawnCell(this);
-        if (newPos != -1) {
-            MageHand newHand = new MageHand();
-            newHand.pos = newPos;
-            GameScene.add(newHand);
-            newHand.sayAppeared();
-
-            if (equippedWand != null) {
-                newHand.equipWand(equippedWand);
             }
         }
     }
@@ -336,66 +258,33 @@ public class MageHand extends DirectableAlly {
     }
 
     @Override
-    public float attackDelay() {
-        float delay = 1f; // 默认1回合攻击延迟
-
-        // 如果有法杖且是老魔杖（通过名称或其他特征判断）
-        if (equippedWand != null && equippedWand.name().contains("Elder")) {
-            delay = 1f; // 老魔杖近战攻击延迟为1回合
-        }
-
-        return delay;
-    }
-
-    @Override
     public int damageRoll() {
         if (equippedWand != null) {
-            // 根据法杖类型决定近战伤害
             if (equippedWand.name().contains("Elder")) {
-                // 老魔杖的近战伤害较高
                 return Random.NormalIntRange(5 + equippedWand.level(), 10 + equippedWand.level() * 2);
             }
-            // 其他法杖的近战伤害
             return Random.NormalIntRange(2 + equippedWand.level(), 5 + equippedWand.level());
         }
-        return Random.NormalIntRange(1, 3); // 默认伤害
+        return Random.NormalIntRange(1, 3);
     }
 
     @Override
     public int attackProc(Char enemy, int damage) {
         damage = super.attackProc(enemy, damage);
         if (equippedWand != null) {
-            // 法杖可能有的特殊近战效果
-            damage += equippedWand.level(); // 简单增加法杖等级的伤害
+            damage += equippedWand.level();
         }
         return damage;
     }
 
     @Override
-    public void damage(int dmg, Object src, DamageType type) {
-        // 无敌状态，不受任何伤害
-        // 但仍然记录被攻击的事件
-        if (src instanceof Char) {
-            GLog.i(Messages.get(this, "immune_damage"));
-        }
-    }
-
-    @Override
     public boolean isImmune(Class effect) {
-        // 对大多数负面效果免疫
         if (effect == Burning.class ||
                 effect == CorrosiveGas.class ||
                 effect == MagicImmune.class) {
             return true;
         }
         return super.isImmune(effect);
-    }
-
-    @Override
-    public void destroy() {
-        // 清理资源
-        equippedWand = null;
-        super.destroy();
     }
 
     public void sayAppeared(){
@@ -405,41 +294,21 @@ public class MageHand extends DirectableAlly {
         }
     }
 
-    public void sayDisappear(){
-        yell(Messages.get(this, "disappear"));
-        Sample.INSTANCE.play(Assets.Sounds.GHOST);
-    }
-
-    @Override
-    public void defendPos(int cell) {
-        yell(Messages.get(this, "directed_position"));
-        super.defendPos(cell);
-    }
-
-    @Override
-    public void followHero() {
-        yell(Messages.get(this, "directed_follow"));
-        super.followHero();
-    }
-
-    @Override
-    public void targetChar(Char ch) {
-        yell(Messages.get(this, "directed_attack"));
-        super.targetChar(ch);
-    }
-
     private static final String WAND =        "wand";
+    private static final String ID_R =     "ID";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle(bundle);
+
         if (equippedWand != null)  bundle.put( WAND,equippedWand );
     }
 
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle(bundle);
+
         if (bundle.contains(WAND))
-            equippedWand = (DamageWand) bundle.get( WAND );
+            equippedWand = (Wand) bundle.get( WAND );
     }
 }

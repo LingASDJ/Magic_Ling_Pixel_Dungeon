@@ -423,7 +423,7 @@ public class TitleScene extends PixelScene {
 				return super.onLongClick();
 			}
 		};
-		btnBadges.icon(new Image(Icons.get(Icons.BADGES)));
+		btnBadges.icon(new Image(Icons.get(Icons.CATALOG)));
 		add(btnBadges);
 
 		StyledButton btnSupport = new SupportButton(GREY_TR, Messages.get(this, "support"));
