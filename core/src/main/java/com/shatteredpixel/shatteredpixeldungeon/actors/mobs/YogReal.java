@@ -386,7 +386,6 @@ public class YogReal extends Boss {
 
     @Override
     protected boolean act() {
-
         //Fixed 0 HP
         if(HP<1) die(null);
 
@@ -607,9 +606,7 @@ public class YogReal extends Boss {
 
         Statistics.TrueYogNoDied = true;
 
-        if(Statistics.Hollow_Holiday){
-            Dungeon.level.drop(new SkeletonKey(depth),pos+1);
-        }
+        Dungeon.level.drop(new SkeletonKey(depth),pos+1);
 
         Dungeon.level.drop(new IceCyanBlueSquareCoin(30),pos);
 
@@ -625,27 +622,7 @@ public class YogReal extends Boss {
             Statistics.qualifiedForBossChallengeBadge = false;
         }
 
-        if(Statistics.RandMode){
-            Statistics.winGame = true;
-            Statistics.questScores[4] += 30000;
-            Dungeon.win( Nxhy.class );
-            Dungeon.deleteGame( GamesInProgress.curSlot, true );
-            GameScene.scene.add(new Delayer(0.1f){
-                @Override
-                protected void onComplete() {
-                    GameScene.scene.add(new Delayer(3f){
-                        @Override
-                        protected void onComplete() {
-                            Game.switchScene( RankingsScene.class );
-                        }
-                    });
-                }
-            });
-            Music.INSTANCE.playTracks(
-                    new String[]{Assets.Music.THEME_2, Assets.Music.THEME_1},
-                    new float[]{1, 1},
-                    false);
-        } else if(Statistics.bossRushMode){
+        if(Statistics.bossRushMode){
             Statistics.winGame = true;
             PaswordBadges.BOSSRUSH();
             Statistics.questScores[4] += 30000;

@@ -13,56 +13,74 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 
 public class FrostFire extends Blob {
-
+    private boolean isValidCell(int cell) {
+        return cell >= 0 && cell < Dungeon.level.length();
+    }
     @Override
     protected void evolve() {
-
         boolean[] flamable = Dungeon.level.flamable;
         int cell;
         int fire;
 
-        Freezing freeze = (Freezing)Dungeon.level.blobs.get( Freezing.class );
-        //燃烧效果粒子总和
-
+        Freezing freeze = (Freezing)Dungeon.level.blobs.get(Freezing.class);
         boolean observe = false;
+        int width = Dungeon.level.width();
+        int length = Dungeon.level.length();
 
         for (int i = area.left-1; i <= area.right; i++) {
             for (int j = area.top-1; j <= area.bottom; j++) {
-                cell = i + j*Dungeon.level.width();
-                if (cur[cell] > 0) {
+                cell = i + j*width;
 
+                // 验证当前cell是否有效
+                if (!isValidCell(cell)) {
+                    continue;
+                }
+
+                if (cur[cell] > 0) {
                     if (freeze != null && freeze.volume > 0 && freeze.cur[cell] > 0){
                         freeze.clear(cell);
                         off[cell] = cur[cell] = 0;
                         continue;
                     }
 
-                    burn( cell );
-
+                    burn(cell);
                     fire = cur[cell] - 1;
+
                     if (fire <= 0 && flamable[cell]) {
-
-                        Dungeon.level.destroy( cell );
-
+                        Dungeon.level.destroy(cell);
                         observe = true;
-                        GameScene.updateMap( cell );
-
+                        GameScene.updateMap(cell);
                     }
 
                 } else if (freeze == null || freeze.volume <= 0 || freeze.cur[cell] <= 0) {
+                    if (flamable[cell]) {
+                        boolean hasAdjacentFire = false;
 
-                    if (flamable[cell]
-                            && (cur[cell-1] > 0
-                            || cur[cell+1] > 0
-                            || cur[cell-Dungeon.level.width()] > 0
-                            || cur[cell+Dungeon.level.width()] > 0)) {
-                        fire = 4;
-                        burn( cell );
-                        area.union(i, j);
+                        // 检查左边界
+                        if (cell % width != 0 && isValidCell(cell-1) && cur[cell-1] > 0) {
+                            hasAdjacentFire = true;
+                        }
+                        // 检查右边界
+                        else if (cell % width != width-1 && isValidCell(cell+1) && cur[cell+1] > 0) {
+                            hasAdjacentFire = true;
+                        }
+                        // 检查上边界
+                        else if (cell >= width && isValidCell(cell-width) && cur[cell-width] > 0) {
+                            hasAdjacentFire = true;
+                        }
+                        // 检查下边界
+                        else if (cell < length - width && isValidCell(cell+width) && cur[cell+width] > 0) {
+                            hasAdjacentFire = true;
+                        }
+
+                        fire = hasAdjacentFire ? 4 : 0;
+                        if (hasAdjacentFire) {
+                            burn(cell);
+                            area.union(i, j);
+                        }
                     } else {
                         fire = 0;
                     }
-
                 } else {
                     fire = 0;
                 }

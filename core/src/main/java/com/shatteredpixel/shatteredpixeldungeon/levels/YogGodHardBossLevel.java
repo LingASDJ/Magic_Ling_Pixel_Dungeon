@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -11,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
@@ -29,11 +31,14 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -262,7 +267,34 @@ public class YogGodHardBossLevel extends Level {
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
+        if(transition.type == LevelTransition.Type.REGULAR_EXIT && Statistics.RandMode){
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show( new WndMessage( Messages.get(hero, "gold_common_desc") ) );
+                    Statistics.winGame = true;
+                    Dungeon.win( Nxhy.class );
+                    Dungeon.deleteGame( GamesInProgress.curSlot, true );
+                    GameScene.scene.add(new Delayer(0.1f){
+                        @Override
+                        protected void onComplete() {
+                            GameScene.scene.add(new Delayer(3f){
+                                @Override
+                                protected void onComplete() {
+                                    Statistics.questScores[4] += 30000;
+                                    Game.switchScene( RankingsScene.class );
+                                }
+                            });
+                        }
+                    });
+                    Music.INSTANCE.playTracks(
+                            new String[]{Assets.Music.THEME_2, Assets.Music.THEME_1},
+                            new float[]{1, 1},
+                            false);
+                }
+            });
+            return false;
+        } else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
                 && hero.belongings.getItem(Amulet.class) != null) {
 
             Game.runOnRenderThread(new Callback() {
@@ -321,12 +353,6 @@ public class YogGodHardBossLevel extends Level {
 
         set( ENTRANCE, Terrain.ENTRANCE );
         GameScene.updateMap( ENTRANCE );
-
-        if(!Statistics.Hollow_Holiday){
-            set( EXIT, Terrain.WALL );
-            GameScene.updateMap( EXIT );
-
-        }
 
         CellEmitter.get(CENTER-1).burst(ShadowParticle.UP, 25);
         CellEmitter.get(CENTER).burst(ShadowParticle.UP, 100);

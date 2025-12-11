@@ -1260,43 +1260,69 @@ public abstract class Level implements Bundlable {
 	public static void set( int cell, int terrain ){
 		set( cell, terrain, Dungeon.level );
 	}
-	
-	public static void set( int cell, int terrain, Level level ) {
-		Painter.set( level, cell, terrain );
 
-		if (terrain != Terrain.TRAP && terrain != Terrain.SECRET_TRAP && terrain != Terrain.INACTIVE_TRAP){
-			level.traps.remove( cell );
-		}
+    public static void set( int cell, int terrain, Level level ) {
+        Painter.set( level, cell, terrain );
 
-		int flags = Terrain.flags[terrain];
-		level.passable[cell]		= (flags & Terrain.PASSABLE) != 0;
-		level.losBlocking[cell]	    = (flags & Terrain.LOS_BLOCKING) != 0;
-		level.flamable[cell]		= (flags & Terrain.FLAMABLE) != 0;
-		level.secret[cell]		    = (flags & Terrain.SECRET) != 0;
-		level.solid[cell]			= (flags & Terrain.SOLID) != 0;
-		level.avoid[cell]			= (flags & Terrain.AVOID) != 0;
-		level.pit[cell]			    = (flags & Terrain.PIT) != 0;
-		level.water[cell]			= terrain == Terrain.WATER;
+        if (terrain != Terrain.TRAP && terrain != Terrain.SECRET_TRAP && terrain != Terrain.INACTIVE_TRAP){
+            level.traps.remove( cell );
+        }
 
-		for (int i : PathFinder.NEIGHBOURS9){
-			i = cell + i;
-			if (level.solid[i]){
-				level.openSpace[i] = false;
-			} else {
-				for (int j = 1; j < PathFinder.CIRCLE8.length; j += 2){
-					if (level.solid[i+PathFinder.CIRCLE8[j]]) {
-						level.openSpace[i] = false;
-					} else if (!level.solid[i+PathFinder.CIRCLE8[(j+1)%8]]
-							&& !level.solid[i+PathFinder.CIRCLE8[(j+2)%8]]){
-						level.openSpace[i] = true;
-						break;
-					}
-				}
-			}
-		}
-	}
+        int flags = Terrain.flags[terrain];
+        level.passable[cell]      = (flags & Terrain.PASSABLE) != 0;
+        level.losBlocking[cell]    = (flags & Terrain.LOS_BLOCKING) != 0;
+        level.flamable[cell]       = (flags & Terrain.FLAMABLE) != 0;
+        level.secret[cell]         = (flags & Terrain.SECRET) != 0;
+        level.solid[cell]          = (flags & Terrain.SOLID) != 0;
+        level.avoid[cell]          = (flags & Terrain.AVOID) != 0;
+        level.pit[cell]            = (flags & Terrain.PIT) != 0;
+        level.water[cell]          = terrain == Terrain.WATER;
 
-	public Heap drop( Item item, int cell ) {
+        int width = level.width();
+        int height = level.height();
+
+        for (int i : PathFinder.NEIGHBOURS9){
+            int neighbor = cell + i;
+
+            // 检查是否在地图范围内
+            if (neighbor < 0 || neighbor >= width * height) {
+                continue;
+            }
+
+            if (level.solid[neighbor]){
+                level.openSpace[neighbor] = false;
+            } else {
+                boolean isOpenSpace = false;
+                for (int j = 1; j < PathFinder.CIRCLE8.length; j += 2){
+                    // 检查是否在地图边界内
+                    if (neighbor % width == 0 && PathFinder.CIRCLE8[j] % width == -1) continue;
+                    if (neighbor % width == width-1 && PathFinder.CIRCLE8[j] % width == 1) continue;
+
+                    int adj1 = neighbor + PathFinder.CIRCLE8[j];
+                    int adj2 = neighbor + PathFinder.CIRCLE8[(j+1)%8];
+                    int adj3 = neighbor + PathFinder.CIRCLE8[(j+2)%8];
+
+                    // 检查所有相邻位置是否在地图范围内
+                    if (adj1 >= 0 && adj1 < width * height &&
+                            adj2 >= 0 && adj2 < width * height &&
+                            adj3 >= 0 && adj3 < width * height) {
+
+                        if (level.solid[adj1]) {
+                            level.openSpace[neighbor] = false;
+                            isOpenSpace = false;
+                            break;
+                        } else if (!level.solid[adj2] && !level.solid[adj3]){
+                            isOpenSpace = true;
+                            break;
+                        }
+                    }
+                }
+                level.openSpace[neighbor] = isOpenSpace;
+            }
+        }
+    }
+
+    public Heap drop( Item item, int cell ) {
 
 		if (item == null || Challenges.isItemBlocked(item)){
 
