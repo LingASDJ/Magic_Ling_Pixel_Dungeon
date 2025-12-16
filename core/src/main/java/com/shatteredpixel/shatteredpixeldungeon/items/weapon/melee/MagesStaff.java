@@ -34,9 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
@@ -45,7 +43,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
@@ -231,15 +228,19 @@ public class MagesStaff extends MeleeWeapon {
 		}
 
 		Talent.EmpoweredStrikeTracker empoweredStrike = attacker.buff(Talent.EmpoweredStrikeTracker.class);
-		if (empoweredStrike != null){
-			damage = Math.round( damage * (1f + hero.pointsInTalent(Talent.EMPOWERED_STRIKE)/6f));
-		}
 
-		if (wand != null &&
-				attacker instanceof Hero && ((Hero)attacker).subClass == HeroSubClass.BATTLEMAGE) {
-			if (wand.curCharges < wand.maxCharges) wand.partialCharge += 0.5f;
-			ScrollOfRecharging.charge((Hero)attacker);
-			wand.onHit(this, attacker, defender, damage);
+		//			if (wand.curCharges < wand.maxCharges){
+		//				wand.partialCharge += 0.5f;
+		//			}
+		//			ScrollOfRecharging.charge(attacker);
+
+		//NEW 新天赋 多样打击----替换蓄能打击
+		if (wand != null && hero.subClass == HeroSubClass.BATTLEMAGE) {
+			int battleMageLevel = hero.pointsInTalent(Talent.EMPOWERED_STRIKE);
+			float triggerChance = Math.min(1.0f, battleMageLevel * 0.33f);
+			if (Random.Float() < triggerChance) {
+				wand.onHit(this, hero, defender, damage);
+			}
 		}
 
 		if (empoweredStrike != null){
@@ -644,8 +645,14 @@ public class MagesStaff extends MeleeWeapon {
 			btnWand = new ItemButton(){
 				@Override
 				protected void onClick() {
-					if (hand.hasWand()){
-						// 卸下当前法杖
+					if (hand.hasMageStaff()){
+						MagesStaff currentStaff = hand.getEquippedMageStaff();
+						item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
+						if (!currentStaff.doPickUp(hero)){
+							Dungeon.level.drop(currentStaff, hero.pos);
+						}
+						hand.unequipMageStaff();
+					} else if (hand.hasWand()){
 						Wand currentWand = hand.getEquippedWand();
 						item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
 						if (!currentWand.doPickUp(hero)){
@@ -653,7 +660,6 @@ public class MagesStaff extends MeleeWeapon {
 						}
 						hand.unequipWand();
 					} else {
-						// 选择新法杖
 						GameScene.selectItem(new WndBag.ItemSelector() {
 							@Override
 							public String textPrompt() {
@@ -667,16 +673,13 @@ public class MagesStaff extends MeleeWeapon {
 
 							@Override
 							public boolean itemSelectable(Item item) {
-								return item instanceof Wand && !(item instanceof WandOfWarding);
+								return item instanceof Wand && !(item instanceof WandOfWarding) || item instanceof MagesStaff;
 							}
 
 							@Override
 							public void onSelect(Item item) {
-								if (!(item instanceof Wand)) {
+								if (!(item instanceof Wand) && !(item instanceof MagesStaff)) {
 									// 窗口取消时不做任何操作
-								} else if (item.unique) {
-									GLog.w( Messages.get(WndMageHand.class, "cant_unique"));
-									hide();
 								} else if (!item.isIdentified()) {
 									GLog.w( Messages.get(WndMageHand.class, "cant_unidentified"));
 									hide();
@@ -685,14 +688,17 @@ public class MagesStaff extends MeleeWeapon {
 									hide();
 								} else {
 									if (item.isEquipped(hero)){
-										// 如果法杖已装备，先卸下
 										item.doDrop(hero);
 									} else {
-										// 从背包中移除
 										item.detach(hero.belongings.backpack);
 									}
-									hand.equipWand((Wand) item);
-									item(hand.getEquippedWand());
+									if(item instanceof MagesStaff){
+										hand.equipMageStaff((MagesStaff) item);
+										item(hand.getEquippedMageStaff());
+									} else if(item instanceof Wand) {
+										hand.equipWand((Wand) item);
+										item(hand.getEquippedWand());
+									}
 								}
 							}
 						});
@@ -711,7 +717,9 @@ public class MagesStaff extends MeleeWeapon {
 
 			btnWand.setRect( (WIDTH - BTN_SIZE) / 2f, message.top() + message.height() + GAP, BTN_SIZE, BTN_SIZE );
 
-			if (hand.hasWand()) {
+			if(hand.hasMageStaff()){
+				btnWand.item(hand.getEquippedMageStaff());
+			} else if (hand.hasWand()) {
 				btnWand.item(hand.getEquippedWand());
 			} else {
 				btnWand.item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));

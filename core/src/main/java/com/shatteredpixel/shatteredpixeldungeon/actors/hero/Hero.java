@@ -2068,6 +2068,14 @@ public class Hero extends Char {
 
 		damage = super.attackProc( enemy, damage );
 
+		MagesStaff staff = belongings.getItem(MagesStaff.class);
+		if (staff != null && hero.subClass == HeroSubClass.BATTLEMAGE) {
+			int battleMageLevel = hero.pointsInTalent(Talent.EMPOWERED_STRIKE);
+			float triggerChance = Math.min(1.0f, battleMageLevel * 0.33f);
+			if (Random.Float() < triggerChance) {
+				staff.wand.onHit(staff, hero, enemy, damage);
+			}
+		}
 
 		KindOfWeapon wep;
 		if (RingOfForce.fightingUnarmed(this) && !RingOfForce.unarmedGetsWeaponEnchantment(this)){

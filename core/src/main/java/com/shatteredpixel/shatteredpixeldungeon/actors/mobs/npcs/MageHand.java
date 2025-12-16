@@ -9,29 +9,24 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.DamageWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MageHandSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -142,6 +137,11 @@ public class MageHand extends DirectableAlly {
     public String description() {
         String desc = super.description();
 
+        if(magesStaff != null){
+            desc += "\n\n" + Messages.get(this, "desc_staff", magesStaff.name());
+            desc += "\n" + Messages.get(this, "desc_colddown", 1);
+        }
+
         if(equippedWand != null){
             desc += "\n\n" + Messages.get(this, "desc_equipped_wand", equippedWand.name());
             desc += "\n" + Messages.get(this, "desc_charges", equippedWand.curCharges, equippedWand.maxCharges);
@@ -214,6 +214,9 @@ public class MageHand extends DirectableAlly {
     }
 
     public Wand equippedWand = null;
+
+    public MagesStaff magesStaff = null;
+
     private int wandCooldown = 0;
 
     public MageHand(){
@@ -243,33 +246,58 @@ public class MageHand extends DirectableAlly {
         this.equippedWand = null;
     }
 
+    public void equipMageStaff(MagesStaff magesStaff) {
+        this.magesStaff = magesStaff;
+        GLog.i(Messages.get(this, "wand_equipped", magesStaff.name()));
+    }
+
+    public void unequipMageStaff() {
+        if (magesStaff != null) {
+            GLog.i(Messages.get(this, "wand_unequipped", magesStaff.name()));
+        }
+        this.magesStaff = null;
+    }
+
     @Override
     protected boolean canAttack(Char enemy) {
-        // 只有装备了法杖且不在冷却中才能攻击
-        if (equippedWand != null && wandCooldown == 0) {
-            // 检查法杖是否有能量
+        if (magesStaff != null) {
+            // 装备法师之杖时，检查是否在攻击范围内
+            return Dungeon.level.adjacent(pos, enemy.pos);
+        } else if (equippedWand != null && wandCooldown == 0) {
             if (equippedWand.curCharges > 0) {
                 return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
             } else {
                 return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     public boolean hasWand() {
         return equippedWand != null;
     }
 
+    public boolean hasMageStaff() {
+        return magesStaff != null;
+    }
+
     public Wand getEquippedWand() {
         return equippedWand;
+    }
+
+    public MagesStaff getEquippedMageStaff() {
+        return magesStaff;
     }
 
     @Override
     protected boolean act() {
         if (wandCooldown > 0) {
             wandCooldown--;
+        }
+        if(equippedWand != null){
+            invisible = 0;
+        } else {
+            invisible = 1;
         }
         return super.act();
     }
@@ -291,25 +319,35 @@ public class MageHand extends DirectableAlly {
 
     protected boolean doAttack(Char enemy) {
         // 只有装备了法杖且不在冷却中才能攻击
-        if (equippedWand != null && wandCooldown == 0) {
-            if (equippedWand.curCharges > 0) {
-                // 有能量时使用法杖攻击
-                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                    // 可见时播放法杖动画
-                    sprite.zap(enemy.pos);
-                    return false; // 等待动画完成
-                } else {
-                    // 不可见时直接施法
-                    zap();
-                    return true;
-                }
-            } else {
-                // 法杖没有能量，不进行攻击
-                GLog.w(Messages.get(this, "wand_no_energy", equippedWand.name()));
+        // 如果装备了法师之杖，使用近战攻击
+        if (magesStaff != null) {
+            if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                sprite.attack(enemy.pos);
                 return false;
+            } else {
+                return true;
             }
         } else {
-            return false;
+            if (equippedWand != null && wandCooldown == 0) {
+                if (equippedWand.curCharges > 0) {
+                    // 有能量时使用法杖攻击
+                    if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                        // 可见时播放法杖动画
+                        sprite.zap(enemy.pos);
+                        return false; // 等待动画完成
+                    } else {
+                        // 不可见时直接施法
+                        zap();
+                        return true;
+                    }
+                } else {
+                    // 法杖没有能量，不进行攻击
+                    GLog.w(Messages.get(this, "wand_no_energy", equippedWand.name()));
+                    return false;
+                }
+            } else {
+                return false;
+            }
         }
     }
 
@@ -347,13 +385,13 @@ public class MageHand extends DirectableAlly {
         return acc;
     }
 
+    // 修改damageRoll方法
     @Override
     public int damageRoll() {
-        if (equippedWand != null) {
-            if (equippedWand.name().contains("Elder")) {
-                return Random.NormalIntRange(5 + equippedWand.level(), 10 + equippedWand.level() * 2);
-            }
-            return Random.NormalIntRange(2 + equippedWand.level(), 5 + equippedWand.level());
+        if (magesStaff != null) {
+            return magesStaff.damageRoll(this);
+        } else if (equippedWand != null) {
+            return equippedWand.buffedLvl();
         }
         return Random.NormalIntRange(1, 3);
     }
@@ -361,7 +399,9 @@ public class MageHand extends DirectableAlly {
     @Override
     public int attackProc(Char enemy, int damage) {
         damage = super.attackProc(enemy, damage);
-        if (equippedWand != null) {
+        if (magesStaff != null) {
+            damage = magesStaff.proc(this, enemy, damage);
+        } else if (equippedWand != null) {
             damage += equippedWand.level();
         }
         return damage;
@@ -385,13 +425,14 @@ public class MageHand extends DirectableAlly {
     }
 
     private static final String WAND =        "wand";
-    private static final String ID_R =     "ID";
+    private static final String MAGE_STAFF = "mage_staff";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle(bundle);
 
         if (equippedWand != null)  bundle.put( WAND,equippedWand );
+        if(magesStaff != null) bundle.put( MAGE_STAFF, magesStaff );
     }
 
     @Override
@@ -400,5 +441,7 @@ public class MageHand extends DirectableAlly {
 
         if (bundle.contains(WAND))
             equippedWand = (Wand) bundle.get( WAND );
+        if (bundle.contains(MAGE_STAFF))
+            magesStaff = (MagesStaff) bundle.get( MAGE_STAFF );
     }
 }
