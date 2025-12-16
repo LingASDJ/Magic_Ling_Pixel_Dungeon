@@ -779,33 +779,37 @@ public class MagesStaff extends MeleeWeapon {
 
         public CellSelector.Listener handDirector = new CellSelector.Listener(){
 
-            @Override
-            public void onSelect(Integer cell) {
-                if (cell == null) return;
-                if(Dungeon.level.distance(hero.pos, cell) < hero.viewDistance){
-                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                        if (mob instanceof MageHand) {
-                            ScrollOfTeleportation.appear(mob,cell);
-                        }
-                    }
-                    curUser.spend( Actor.TICK );
-                    curUser.busy();
-                    curUser.sprite.operate( curUser.pos );
-                    Sample.INSTANCE.play( Assets.Sounds.READ );
-                    Emitter e = curUser.sprite.centerEmitter();
-                    e.pos(e.x-2, e.y-6, 4, 4);
-                    e.start(Speck.factory(Speck.STAR), 0.05f, 20);
-                } else {
-                    GLog.w(Messages.get(MageHand.class, "out_of_range"));
-                }
-            }
+			@Override
+			public void onSelect(Integer cell) {
+				if (cell == null) return;
 
-            @Override
-            public String prompt() {
-                return  "\"" + Messages.get(DriedRose.GhostHero.class, "direct_prompt") + "\"";
-            }
-        };
+				// 检查目标位置是否在可视区域内（已探索区域或灵视范围内）
+				boolean isVisible = Dungeon.level.heroFOV[cell];
 
-    }
+				if (isVisible) {
+					for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+						if (mob instanceof MageHand) {
+							ScrollOfTeleportation.appear(mob, cell);
+						}
+					}
+					curUser.spend(Actor.TICK);
+					curUser.busy();
+					curUser.sprite.operate(curUser.pos);
+					Sample.INSTANCE.play(Assets.Sounds.READ);
+					Emitter e = curUser.sprite.centerEmitter();
+					e.pos(e.x-2, e.y-6, 4, 4);
+					e.start(Speck.factory(Speck.STAR), 0.05f, 20);
+				} else {
+					GLog.w(Messages.get(MageHand.class, "out_of_range"));
+				}
+			}
+
+			@Override
+			public String prompt() {
+				return "\"" + Messages.get(DriedRose.GhostHero.class, "direct_prompt") + "\"";
+			}
+		};
+
+	}
 
 }
