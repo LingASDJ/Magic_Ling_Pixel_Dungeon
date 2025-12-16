@@ -141,11 +141,10 @@ public class TengusMask extends Item {
 				hero.busy();
 				hero.sprite.operate(hero.pos);
 
-				// 如果法师之手上有装备的法杖，让它说话
 				if (mageHand.equippedWand != null) {
 					mageHand.equipWand(mageHand.equippedWand);
 					mageHand.yell(Messages.get(MageHand.class, "appear"));
-					Sample.INSTANCE.play(Assets.Sounds.GHOST);
+					Sample.INSTANCE.play(Assets.Sounds.MASTERY);
 					mageHand.sayAppeared();
 				}
 

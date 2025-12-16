@@ -168,9 +168,6 @@ public abstract class Wand extends Item {
 
 	//not affected by enchantment proc chance changers
 	public static float procChanceMultiplier( Char attacker ){
-		if (attacker.buff(Talent.EmpoweredStrikeTracker.class) != null){
-			return 1f + ((Hero)attacker).pointsInTalent(Talent.EMPOWERED_STRIKE)/2f;
-		}
 		return 1f;
 	}
 
@@ -509,14 +506,6 @@ public abstract class Wand extends Item {
 			if (empower != null){
 				empower.use();
 			}
-		}
-
-		//If hero owns wand but it isn't in belongings it must be in the staff
-		if (Dungeon.hero.hasTalent(Talent.EMPOWERED_STRIKE)
-				&& charger != null && charger.target == Dungeon.hero
-				&& !Dungeon.hero.belongings.contains(this)){
-
-			Buff.prolong(Dungeon.hero, Talent.EmpoweredStrikeTracker.class, 10f);
 		}
 
 //		if (Dungeon.hero.hasTalent(Talent.LINGERING_MAGIC)

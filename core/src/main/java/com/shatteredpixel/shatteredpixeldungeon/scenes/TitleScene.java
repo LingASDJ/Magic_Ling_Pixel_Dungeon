@@ -20,7 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GudaziSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.EndButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -85,7 +85,11 @@ public class TitleScene extends PixelScene {
 		int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
 		Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
 
-		Music.playModeBGM(Assets.Music.THEME, true);
+		if(holiday == XMAS){
+			Music.playModeBGM(Assets.Music.CHRAMSS, true);
+		} else {
+			Music.playModeBGM(Assets.Music.THEME, true);
+		}
 
 		Badges.loadGlobal();
 		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
@@ -398,7 +402,7 @@ public class TitleScene extends PixelScene {
 				return super.onLongClick();
 			}
 		};
-		btnPlay.icon(holiday == XMAS ?  new Image(new SliceGirlSprite()) :
+		btnPlay.icon(holiday == XMAS ?  new Image(new GudaziSprite()) :
 				new Image(Icons.get(Icons.ENTER)));
 		add(btnPlay);
 

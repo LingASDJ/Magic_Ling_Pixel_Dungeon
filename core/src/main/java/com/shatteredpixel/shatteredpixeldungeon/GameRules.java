@@ -261,9 +261,10 @@ public class GameRules {
                 banners = Assets.Interfaces.BANNERS_ZQ;
             } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CYJ) {
                 banners = Assets.Interfaces.BANNERS_CY;
-
-            //四季主题
+            } else if (RegularLevel.holiday == RegularLevel.WestHoliday.XMAS) {
+                banners = Assets.Interfaces.BANNERS_SD;
             } else  if (4 == month) {
+                //四季主题
                banners = Assets.Interfaces.BANNERS_LD;
             } else if (month == 2 || month == 3 ) { // 春季：3, 4, 5月
                 banners = Assets.Interfaces.BANNERS_SR;
