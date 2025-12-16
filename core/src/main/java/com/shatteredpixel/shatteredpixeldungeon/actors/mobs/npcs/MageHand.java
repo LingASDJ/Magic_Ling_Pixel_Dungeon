@@ -367,11 +367,10 @@ public class MageHand extends DirectableAlly {
                 } else {
                     equippedWand.onZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
                 }
+                equippedWand.curCharges -= Math.max(1, equippedWand.chargesPerCast());
                 wandCooldown = 3;
-                equippedWand.curCharges--;
                 spend(1f);
                 GLog.i(Messages.get(this, "wand_used", equippedWand.name()));
-
             }
         }
     }
