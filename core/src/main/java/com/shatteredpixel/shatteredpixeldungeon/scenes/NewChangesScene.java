@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_6_4_P_Cha
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_6_6_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_6_7_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_7_X_Changes;
+import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vm0_8_X_Changes;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Component;
@@ -63,15 +64,16 @@ public class NewChangesScene extends PixelScene {
 
         switch (changesSelected){
             case 0:default:
-                vM0_7_X_Changes.addAllChanges(changeInfos);
+                vm0_8_X_Changes.addAllChanges(changeInfos);
                 break;
             case 1:
-                vM0_6_6_Changes.addAllChanges(changeInfos);
+                vM0_7_X_Changes.addAllChanges(changeInfos);
                 break;
             case 2:
-                vM0_6_4_P_Changes.addAllChanges(changeInfos);
+                vM0_6_6_Changes.addAllChanges(changeInfos);
                 break;
             case 3:
+                vM0_6_4_P_Changes.addAllChanges(changeInfos);
                 vM0_6_7_X_Changes.addAllChanges(changeInfos);
                 break;
             case 4:
@@ -134,7 +136,7 @@ public class NewChangesScene extends PixelScene {
                 panel.innerHeight() + 2);
         list.scrollTo(0, fromChangesScene ? posY - list.height() : 0);
 
-        StyledButton btn07 = new StyledButton(Chrome.Type.TOAST, "0.9-0.7"){
+        StyledButton btn07 = new StyledButton(Chrome.Type.TOAST, "0.8+"){
             @Override
             protected void onClick() {
                 super.onClick();
@@ -149,7 +151,7 @@ public class NewChangesScene extends PixelScene {
         btn07.setRect(list.left()-4f, list.bottom(), 28, changesSelected == 0 ? 19 : 15);
         addToBack(btn07);
 
-        StyledButton btnBeta1 = new StyledButton(Chrome.Type.TOAST, "0.6"){
+        StyledButton btnBeta1 = new StyledButton(Chrome.Type.TOAST, "0.7"){
             @Override
             protected void onClick() {
                 super.onClick();
@@ -164,7 +166,7 @@ public class NewChangesScene extends PixelScene {
         addToBack(btnBeta1);
 
 
-        StyledButton btnBeta2 = new StyledButton(Chrome.Type.TOAST, "0.6.4"){
+        StyledButton btnBeta2 = new StyledButton(Chrome.Type.TOAST, "0.65"){
             @Override
             protected void onClick() {
                 super.onClick();
@@ -179,7 +181,7 @@ public class NewChangesScene extends PixelScene {
         btnBeta2.setRect(btnBeta1.right()+1, list.bottom(), 28, changesSelected == 2 ? 19 : 15);
         addToBack(btnBeta2);
 
-        StyledButton btnBeta = new StyledButton(Chrome.Type.TOAST, "0.6.3"){
+        StyledButton btnBeta = new StyledButton(Chrome.Type.TOAST, "0.6"){
             @Override
             protected void onClick() {
                 super.onClick();
