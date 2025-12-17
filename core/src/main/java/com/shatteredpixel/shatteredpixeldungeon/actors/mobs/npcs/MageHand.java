@@ -231,9 +231,7 @@ public class MageHand extends DirectableAlly {
     // 修改equipWand方法
     public void equipWand(Wand wand) {
         this.equippedWand = wand;
-        // 重置部分充能值
         wand.partialCharge = 0f;
-        // 立即开始充能
         wand.charge(this);
         GLog.i(Messages.get(this, "wand_equipped", wand.name()));
     }
@@ -241,7 +239,6 @@ public class MageHand extends DirectableAlly {
     public void unequipWand() {
         if (equippedWand != null) {
             GLog.i(Messages.get(this, "wand_unequipped", equippedWand.name()));
-            equippedWand.stopCharging();
         }
         this.equippedWand = null;
     }
