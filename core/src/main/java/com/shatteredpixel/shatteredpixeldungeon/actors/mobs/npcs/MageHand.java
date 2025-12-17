@@ -231,9 +231,7 @@ public class MageHand extends DirectableAlly {
     // 修改equipWand方法
     public void equipWand(Wand wand) {
         this.equippedWand = wand;
-        // 重置部分充能值
         wand.partialCharge = 0f;
-        // 立即开始充能
         wand.charge(this);
         GLog.i(Messages.get(this, "wand_equipped", wand.name()));
     }
@@ -241,7 +239,6 @@ public class MageHand extends DirectableAlly {
     public void unequipWand() {
         if (equippedWand != null) {
             GLog.i(Messages.get(this, "wand_unequipped", equippedWand.name()));
-            equippedWand.stopCharging();
         }
         this.equippedWand = null;
     }
@@ -261,8 +258,14 @@ public class MageHand extends DirectableAlly {
     @Override
     protected boolean canAttack(Char enemy) {
         if (magesStaff != null) {
-            // 装备法师之杖时，检查是否在攻击范围内
-            return Dungeon.level.adjacent(pos, enemy.pos);
+            Wand mwand = magesStaff.wand;
+            if (mwand != null && wandCooldown == 0) {
+                if (mwand.curCharges > 0) {
+                    return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
+                } else {
+                    return Dungeon.level.adjacent(pos, enemy.pos);
+                }
+            }
         } else if (equippedWand != null && wandCooldown == 0) {
             if (equippedWand.curCharges > 0) {
                 return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
@@ -318,30 +321,36 @@ public class MageHand extends DirectableAlly {
     }
 
     protected boolean doAttack(Char enemy) {
-        // 只有装备了法杖且不在冷却中才能攻击
-        // 如果装备了法师之杖，使用近战攻击
         if (magesStaff != null) {
-            if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                sprite.attack(enemy.pos);
-                return false;
-            } else {
-                return true;
+            Wand mwand = magesStaff.wand;
+            if (mwand != null && wandCooldown == 0) {
+                if (mwand.curCharges > 0) {
+                    if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                        sprite.zap(enemy.pos);
+                        return false;
+                    } else {
+                        zap();
+                        return true;
+                    }
+                } else if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                    sprite.attack(enemy.pos);
+                    return false;
+                } else {
+                    GLog.w(Messages.get(this, "wand_no_energy", mwand.name()));
+                    return false;
+                }
             }
         } else {
             if (equippedWand != null && wandCooldown == 0) {
                 if (equippedWand.curCharges > 0) {
-                    // 有能量时使用法杖攻击
                     if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                        // 可见时播放法杖动画
                         sprite.zap(enemy.pos);
-                        return false; // 等待动画完成
+                        return false;
                     } else {
-                        // 不可见时直接施法
                         zap();
                         return true;
                     }
                 } else {
-                    // 法杖没有能量，不进行攻击
                     GLog.w(Messages.get(this, "wand_no_energy", equippedWand.name()));
                     return false;
                 }
@@ -349,6 +358,7 @@ public class MageHand extends DirectableAlly {
                 return false;
             }
         }
+        return false;
     }
 
 
@@ -356,21 +366,36 @@ public class MageHand extends DirectableAlly {
         zap();
         next();
     }
-    
+
 
     // 同时修改useWand方法，添加能量检查
     private void zap() {
-        if (equippedWand != null && enemy != null) {
-            if (equippedWand.curCharges > 0) {
-                if(equippedWand instanceof WandOfFireblast || equippedWand instanceof WandOfBlueFuck || equippedWand instanceof WandOfScale || equippedWand instanceof WandOfRegrowth){
-                    equippedWand.onAIZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
+        if(magesStaff != null && enemy != null){
+            if (magesStaff.wand.curCharges > 0) {
+                Wand mwand = magesStaff.wand;
+                if(mwand instanceof WandOfFireblast || mwand instanceof WandOfBlueFuck || mwand instanceof WandOfScale || mwand instanceof WandOfRegrowth){
+                    mwand.onAIZap(new Ballistica(pos, enemy.pos, mwand.collisionProperties));
                 } else {
-                    equippedWand.onZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
+                    mwand.onZap(new Ballistica(pos, enemy.pos, mwand.collisionProperties));
                 }
-                equippedWand.curCharges -= Math.max(1, equippedWand.chargesPerCast());
+                mwand.curCharges -= Math.max(1, mwand.chargesPerCast());
                 wandCooldown = 3;
                 spend(1f);
-                GLog.i(Messages.get(this, "wand_used", equippedWand.name()));
+                GLog.i(Messages.get(this, "wand_used", mwand.name()));
+            }
+        } else {
+            if (equippedWand != null && enemy != null) {
+                if (equippedWand.curCharges > 0) {
+                    if(equippedWand instanceof WandOfFireblast || equippedWand instanceof WandOfBlueFuck || equippedWand instanceof WandOfScale || equippedWand instanceof WandOfRegrowth){
+                        equippedWand.onAIZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
+                    } else {
+                        equippedWand.onZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
+                    }
+                    equippedWand.curCharges -= Math.max(1, equippedWand.chargesPerCast());
+                    wandCooldown = 3;
+                    spend(1f);
+                    GLog.i(Messages.get(this, "wand_used", equippedWand.name()));
+                }
             }
         }
     }
