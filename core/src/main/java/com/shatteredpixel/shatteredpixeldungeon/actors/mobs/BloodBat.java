@@ -190,7 +190,7 @@ public class BloodBat extends Mob implements Callback {
     public void damage(int dmg, Object src, DamageType type) {
         super.damage(dmg, src , DamageType.PHYSICAL);
         if(Random.Int(100)>=50 && hero.lvl>=10){
-            Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(dmg/2f*2);
+            Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(dmg/2f);
         }
 
     }

@@ -8,12 +8,11 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
@@ -39,7 +38,16 @@ public class MageHand extends DirectableAlly {
         state = HUNTING;
         properties.add(Property.UNKNOWN);
         immunities.add(Blob.class);
+        immunities.add(Buff.class);
         viewDistance =10;
+    }
+
+    @Override
+    public void aggro(Char ch) {
+        enemy = ch;
+        if (!movingToDefendPos && alignment != Alignment.ALLY && state != PASSIVE){
+            state = HUNTING;
+        }
     }
 
     @Override
@@ -82,7 +90,7 @@ public class MageHand extends DirectableAlly {
     }
 
     // 传送到全图随机位置
-    private boolean teleportToRandomLocation() {
+    private void teleportToRandomLocation() {
         ArrayList<Integer> validPositions = new ArrayList<>();
 
         // 遍历整个地图寻找有效位置
@@ -96,10 +104,8 @@ public class MageHand extends DirectableAlly {
         if (!validPositions.isEmpty()) {
             int targetPos = Random.element(validPositions);
             teleportTo(targetPos);
-            return true;
         }
 
-        return false;
     }
 
     // 检查位置是否适合传送
@@ -373,7 +379,9 @@ public class MageHand extends DirectableAlly {
         if(magesStaff != null && enemy != null){
             if (magesStaff.wand.curCharges > 0) {
                 Wand mwand = magesStaff.wand;
-                if(mwand instanceof WandOfFireblast || mwand instanceof WandOfBlueFuck || mwand instanceof WandOfScale || mwand instanceof WandOfRegrowth){
+                if(mwand.cursed){
+                    CursedWand.cursedZap(null, this, new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET), this::next);
+                } else if(mwand instanceof WandOfFireblast || mwand instanceof WandOfBlueFuck || mwand instanceof WandOfScale || mwand instanceof WandOfRegrowth){
                     mwand.onAIZap(new Ballistica(pos, enemy.pos, mwand.collisionProperties));
                 } else {
                     mwand.onZap(new Ballistica(pos, enemy.pos, mwand.collisionProperties));
@@ -386,7 +394,9 @@ public class MageHand extends DirectableAlly {
         } else {
             if (equippedWand != null && enemy != null) {
                 if (equippedWand.curCharges > 0) {
-                    if(equippedWand instanceof WandOfFireblast || equippedWand instanceof WandOfBlueFuck || equippedWand instanceof WandOfScale || equippedWand instanceof WandOfRegrowth){
+                    if(equippedWand.cursed) {
+                        CursedWand.cursedZap(equippedWand, this, new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET), this::next);
+                    } else if(equippedWand instanceof WandOfFireblast || equippedWand instanceof WandOfBlueFuck || equippedWand instanceof WandOfScale || equippedWand instanceof WandOfRegrowth){
                         equippedWand.onAIZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
                     } else {
                         equippedWand.onZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
@@ -429,16 +439,6 @@ public class MageHand extends DirectableAlly {
             damage += equippedWand.level();
         }
         return damage;
-    }
-
-    @Override
-    public boolean isImmune(Class effect) {
-        if (effect == Burning.class ||
-                effect == CorrosiveGas.class ||
-                effect == MagicImmune.class) {
-            return true;
-        }
-        return super.isImmune(effect);
     }
 
     public void sayAppeared(){

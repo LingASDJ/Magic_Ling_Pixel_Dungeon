@@ -683,9 +683,6 @@ public class MagesStaff extends MeleeWeapon {
 								} else if (!item.isIdentified()) {
 									GLog.w( Messages.get(WndMageHand.class, "cant_unidentified"));
 									hide();
-								} else if (item.cursed) {
-									GLog.w( Messages.get(WndMageHand.class, "cant_cursed"));
-									hide();
 								} else {
 									if (item.isEquipped(hero)){
 										item.doDrop(hero);
