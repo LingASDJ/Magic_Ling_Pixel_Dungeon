@@ -695,7 +695,7 @@ public class MagesStaff extends MeleeWeapon {
 									if(item instanceof MagesStaff){
 										hand.equipMageStaff((MagesStaff) item);
 										item(hand.getEquippedMageStaff());
-									} else if(item instanceof Wand) {
+									} else {
 										hand.equipWand((Wand) item);
 										item(hand.getEquippedWand());
 									}
