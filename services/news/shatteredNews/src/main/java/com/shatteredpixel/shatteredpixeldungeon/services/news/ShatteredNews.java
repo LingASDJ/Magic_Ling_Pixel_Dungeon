@@ -98,6 +98,7 @@ public class ShatteredNews extends NewsService {
 					for (XmlReader.Element xmlArticle : xmlDoc.getChildrenByName("entry")){
 						NewsArticle article = new NewsArticle();
 						article.title = xmlArticle.get("title");
+						article.top = xmlArticle.get("top");
 						try {
 							article.date = dateParser.parse(xmlArticle.get("published"));
 						} catch (ParseException e) {

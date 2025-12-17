@@ -29,7 +29,7 @@ public class NewsArticle {
 	public Date date;
 	public String summary;
 
-	public int ling;
+	public String top;
 
 	public String URL;
 
