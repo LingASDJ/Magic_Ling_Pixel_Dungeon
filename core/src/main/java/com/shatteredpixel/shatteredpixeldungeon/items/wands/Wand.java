@@ -84,6 +84,8 @@ public abstract class Wand extends Item {
 	public int maxCharges = initialCharges();
 	public int curCharges = maxCharges;
 	public float partialCharge = 0f;
+
+	public float altPartialCharge = 0f;
 	
 	public Charger charger;
 	
@@ -303,7 +305,9 @@ public abstract class Wand extends Item {
 		}
 
 		if (Dungeon.hero != null && Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE){
-			desc += "\n\n" + Messages.get(this, "bmage_desc");
+			if (Dungeon.hero.hasTalent(Talent.EMPOWERED_STRIKE)) {
+				desc += "\n\n" + Messages.get(this, "bmage_desc");
+			}
 		}
 
 		return desc;
@@ -592,6 +596,8 @@ public abstract class Wand extends Item {
 	private static final String CURSE_INFUSION_BONUS= "curse_infusion_bonus";
 	private static final String RESIN_BONUS         = "resin_bonus";
 
+	private static final String ALT_PARTIALCHARGE         = "alt_partialCharge";
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
@@ -602,6 +608,8 @@ public abstract class Wand extends Item {
 		bundle.put( PARTIALCHARGE , partialCharge );
 		bundle.put( CURSE_INFUSION_BONUS, curseInfusionBonus );
 		bundle.put( RESIN_BONUS, resinBonus );
+
+		bundle.put(ALT_PARTIALCHARGE,altPartialCharge);
 
 		if (!this.customName.equals("")) {
 			bundle.put("customName", this.customName);
@@ -621,6 +629,7 @@ public abstract class Wand extends Item {
 		curCharges = bundle.getInt( CUR_CHARGES );
 		curChargeKnown = bundle.getBoolean( CUR_CHARGE_KNOWN );
 		partialCharge = bundle.getFloat( PARTIALCHARGE );
+		altPartialCharge = bundle.getFloat(ALT_PARTIALCHARGE);
 
 		if (bundle.contains("customName")) {
 			this.customName = bundle.getString("customName");

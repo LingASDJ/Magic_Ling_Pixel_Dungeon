@@ -10,8 +10,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
@@ -31,6 +33,10 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class MageHand extends DirectableAlly {
+
+    private ArrayList<Wand> wands = hero.belongings.getAllItems(Wand.class);
+
+    private int chargeNeeded = 2;
 
     {
         spriteClass = MageHandSprite.class;
@@ -168,12 +174,15 @@ public class MageHand extends DirectableAlly {
         super.spend(time);
         // 在每回合结束时处理充能
         if (equippedWand != null) {
-            chargeWand();
+            chargeWand(equippedWand);
+        }
+        if (magesStaff != null) {
+            chargeWand(magesStaff.wand);
         }
     }
 
-    private void chargeWand() {
-        if (equippedWand == null || equippedWand.curCharges >= equippedWand.maxCharges) {
+    private void chargeWand(Wand equippedWand) {
+        if (equippedWand == null || equippedWand.curCharges >= equippedWand.maxCharges ) {
             return;
         }
 
@@ -269,13 +278,32 @@ public class MageHand extends DirectableAlly {
                 if (mwand.curCharges > 0) {
                     return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
                 } else {
-                    return Dungeon.level.adjacent(pos, enemy.pos);
+                    // 检查法师之手天赋
+                    if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
+                        // 检查是否有其他可用法杖的充能
+                        for (Wand w : wands) {
+                            if (w.curCharges >= chargeNeeded) {
+                                return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
+                            } else {
+                                return Dungeon.level.adjacent(pos, enemy.pos);
+                            }
+                        }
+                    }
                 }
             }
         } else if (equippedWand != null && wandCooldown == 0) {
             if (equippedWand.curCharges > 0) {
                 return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
             } else {
+                // 检查法师之手天赋
+                if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
+                    // 检查是否有其他可用法杖的充能
+                    for (Wand w : wands) {
+                        if (w.curCharges >= chargeNeeded) {
+                            return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
+                        }
+                    }
+                }
                 return false;
             }
         }
@@ -338,12 +366,27 @@ public class MageHand extends DirectableAlly {
                         zap();
                         return true;
                     }
-                } else if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                    sprite.attack(enemy.pos);
-                    return false;
                 } else {
-                    GLog.w(Messages.get(this, "wand_no_energy", mwand.name()));
-                    return false;
+                    // 检查法师之手天赋
+                    if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
+                        for (Wand w : wands) {
+                            if (w.curCharges >= chargeNeeded) {
+                                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                                    sprite.zap(enemy.pos);
+                                    return false;
+                                } else {
+                                    zap();
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                        sprite.attack(enemy.pos);
+                        return false;
+                    } else {
+                        return false;
+                    }
                 }
             }
         } else {
@@ -357,7 +400,20 @@ public class MageHand extends DirectableAlly {
                         return true;
                     }
                 } else {
-                    GLog.w(Messages.get(this, "wand_no_energy", equippedWand.name()));
+                    // 检查法师之手天赋
+                    if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
+                        for (Wand w : wands) {
+                            if (w.curCharges >= chargeNeeded) {
+                                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                                    sprite.zap(enemy.pos);
+                                    return false;
+                                } else {
+                                    zap();
+                                    return true;
+                                }
+                            }
+                        }
+                    }
                     return false;
                 }
             } else {
@@ -374,41 +430,142 @@ public class MageHand extends DirectableAlly {
     }
 
 
-    // 同时修改useWand方法，添加能量检查
     private void zap() {
-        if(magesStaff != null && enemy != null){
+        if (magesStaff != null && enemy != null) {
             if (magesStaff.wand.curCharges > 0) {
-                Wand mwand = magesStaff.wand;
-                if(mwand.cursed){
-                    CursedWand.cursedZap(null, this, new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET), this::next);
-                } else if(mwand instanceof WandOfFireblast || mwand instanceof WandOfBlueFuck || mwand instanceof WandOfScale || mwand instanceof WandOfRegrowth){
-                    mwand.onAIZap(new Ballistica(pos, enemy.pos, mwand.collisionProperties));
-                } else {
-                    mwand.onZap(new Ballistica(pos, enemy.pos, mwand.collisionProperties));
-                }
-                mwand.curCharges -= Math.max(1, mwand.chargesPerCast());
-                wandCooldown = 3;
-                spend(1f);
-                GLog.i(Messages.get(this, "wand_used", mwand.name()));
+                zapWithMagesStaff();
+            } else if (tryMysticalCharge()) {
+                return;
             }
-        } else {
-            if (equippedWand != null && enemy != null) {
-                if (equippedWand.curCharges > 0) {
-                    if(equippedWand.cursed) {
-                        CursedWand.cursedZap(equippedWand, this, new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET), this::next);
-                    } else if(equippedWand instanceof WandOfFireblast || equippedWand instanceof WandOfBlueFuck || equippedWand instanceof WandOfScale || equippedWand instanceof WandOfRegrowth){
-                        equippedWand.onAIZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
-                    } else {
-                        equippedWand.onZap(new Ballistica(pos, enemy.pos, equippedWand.collisionProperties));
-                    }
-                    equippedWand.curCharges -= Math.max(1, equippedWand.chargesPerCast());
-                    wandCooldown = 3;
-                    spend(1f);
-                    GLog.i(Messages.get(this, "wand_used", equippedWand.name()));
-                }
+        } else if (equippedWand != null && enemy != null) {
+            if (equippedWand.curCharges > 0) {
+                zapWithEquippedWand();
+            } else if (tryMysticalCharge()) {
+                return;
             }
         }
     }
+
+    private boolean tryMysticalCharge() {
+        if (!hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
+            return false;
+        }
+
+        // 获取背包中的所有法杖
+        ArrayList<Wand> availableWands = new ArrayList<>();
+        for (Item item : hero.belongings) {
+            if (item instanceof Wand) {
+                Wand wand = (Wand) item;
+                // 排除老魔杖和当前装备的法杖
+                if(magesStaff != null){
+                    if (wand != magesStaff.wand && wand.curCharges >= chargeNeeded) {
+                        availableWands.add(wand);
+                    }
+                }
+                if(equippedWand != null){
+                    if (wand != equippedWand && wand.curCharges >= chargeNeeded) {
+                        availableWands.add(wand);
+                    }
+                }
+            }
+        }
+
+        if (availableWands.isEmpty()) {
+            return false;
+        }
+
+        // 找到等级最低的法杖
+        Wand lowestLevelWand = findLowestLevelWand(availableWands);
+        if (lowestLevelWand == null) {
+            return false;
+        }
+
+        consumeWandCharges(lowestLevelWand, chargeNeeded);
+        executeWandEffect(magesStaff != null ? magesStaff.wand : equippedWand);
+        finalizeWandUse(magesStaff != null ? magesStaff.wand : equippedWand);
+        return true;
+    }
+
+    private Wand findLowestLevelWand(ArrayList<Wand> wands) {
+        Wand lowestLevelWand = null;
+        for (Wand w : wands) {
+            if (lowestLevelWand == null || w.level < lowestLevelWand.level) {
+                lowestLevelWand = w;
+            }
+        }
+        return lowestLevelWand;
+    }
+
+    private void consumeWandCharges(Wand wand, int chargeNeeded) {
+        wand.curCharges -= chargeNeeded;
+
+        // 计算内部充能返还
+        float internalChargeReturn = 0f;
+        switch (hero.pointsInTalent(Talent.MYSTICAL_CHARGE)) {
+            case 1: internalChargeReturn = 0f; break;
+            case 2: internalChargeReturn = 0.25f; break;
+            case 3: internalChargeReturn = 0.5f; break;
+        }
+
+        // 使用法杖自身的altPartialCharge属性存储内部充能
+        wand.altPartialCharge += internalChargeReturn;
+
+        // 检查是否可以返还真实充能
+        if (wand.altPartialCharge >= 1f) {
+            int realChargesToAdd = (int) wand.altPartialCharge;
+            wand.curCharges += realChargesToAdd;
+            wand.altPartialCharge -= realChargesToAdd;
+            GLog.i(Messages.get(Talent.class, "mystical_charge_returned",
+                    wand.name(), realChargesToAdd));
+        }
+
+        // 更新快捷栏显示
+        Item.updateQuickslot();
+        GLog.i(Messages.get(Talent.class, "mystical_charge_used",
+                wand.name(), chargeNeeded));
+    }
+
+    private void zapWithMagesStaff() {
+        Wand mwand = magesStaff.wand;
+        executeWandEffect(mwand);
+        mwand.curCharges -= Math.max(1, mwand.chargesPerCast());
+        finalizeWandUse(mwand);
+    }
+
+    private void zapWithEquippedWand() {
+        executeWandEffect(equippedWand);
+        equippedWand.curCharges -= Math.max(1, equippedWand.chargesPerCast());
+        finalizeWandUse(equippedWand);
+    }
+
+    private void executeWandEffect(Wand wand) {
+        if (wand.cursed) {
+            CursedWand.cursedZap(
+                    wand == equippedWand ? wand : null,
+                    this,
+                    new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET),
+                    this::next
+            );
+        } else if (isSpecialWand(wand)) {
+            wand.onAIZap(new Ballistica(pos, enemy.pos, wand.collisionProperties));
+        } else {
+            wand.onZap(new Ballistica(pos, enemy.pos, wand.collisionProperties));
+        }
+    }
+
+    private boolean isSpecialWand(Wand wand) {
+        return wand instanceof WandOfFireblast ||
+                wand instanceof WandOfBlueFuck ||
+                wand instanceof WandOfScale ||
+                wand instanceof WandOfRegrowth;
+    }
+
+    private void finalizeWandUse(Wand wand) {
+        wandCooldown = 3;
+        spend(1f);
+        GLog.i(Messages.get(this, "wand_used", wand.name()));
+    }
+
 
     @Override
     public int attackSkill(Char target) {
@@ -419,7 +576,6 @@ public class MageHand extends DirectableAlly {
         return acc;
     }
 
-    // 修改damageRoll方法
     @Override
     public int damageRoll() {
         if (magesStaff != null) {
