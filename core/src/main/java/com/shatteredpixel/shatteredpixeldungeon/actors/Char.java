@@ -107,6 +107,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerGods;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -733,7 +734,7 @@ public abstract class Char extends Actor {
 	public int drRoll() {
 		int dr = 0;
 
-		dr += Random.NormalIntRange( 0 , Barkskin.currentLevel(this) );
+		dr += Random.NormalIntRange( 0 , Barkskin.currentLevel(this) + MageHand.HandShield.currentLevel(this));
 
 		return dr;
 	}
