@@ -373,24 +373,21 @@ public class MageHand extends DirectableAlly {
                 } else {
                     // 检查法师之手天赋
                     if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                        for (Wand w : wands) {
-                            if (w.curCharges >= chargeNeeded) {
-                                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                                    sprite.zap(enemy.pos);
-                                    return false;
-                                } else {
-                                    zap();
-                                    return true;
-                                }
+                        if (tryMysticalCharge()) {
+                            if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                                sprite.zap(enemy.pos);
+                                return false;
+                            } else {
+                                zap();
+                                return true;
                             }
                         }
                     }
+                    // 没有充能时进行近战攻击
                     if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
                         sprite.attack(enemy.pos);
-                        return false;
-                    } else {
-                        return false;
                     }
+                    return false;
                 }
             }
         } else {
