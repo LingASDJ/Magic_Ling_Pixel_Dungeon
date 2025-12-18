@@ -326,6 +326,10 @@ public class MageHand extends DirectableAlly {
         return magesStaff;
     }
 
+    public Wand getEquippedMageStaffWand() {
+        return magesStaff.wand;
+    }
+
     @Override
     protected boolean act() {
         if (wandCooldown > 0) {
@@ -515,14 +519,10 @@ public class MageHand extends DirectableAlly {
             int realChargesToAdd = (int) wand.altPartialCharge;
             wand.curCharges += realChargesToAdd;
             wand.altPartialCharge -= realChargesToAdd;
-            GLog.i(Messages.get(Talent.class, "mystical_charge_returned",
-                    wand.name(), realChargesToAdd));
         }
 
         // 更新快捷栏显示
         Item.updateQuickslot();
-        GLog.i(Messages.get(Talent.class, "mystical_charge_used",
-                wand.name(), chargeNeeded));
     }
 
     private void zapWithMagesStaff() {

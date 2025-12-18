@@ -1,23 +1,20 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
-import static com.shatteredpixel.shatteredpixeldungeon.items.Item.curUser;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
@@ -68,7 +65,7 @@ public class MageHandSprite extends MobSprite {
         play(zap);
 
         MageHand mageHand = (MageHand) ch;
-        Wand equippedWand = mageHand.getEquippedWand();
+        Wand equippedWand = ((MageHand) ch).magesStaff != null ? mageHand.getEquippedMageStaffWand() : mageHand.getEquippedWand();
 
         int missileType = getWandMissileType(mageHand.equippedWand);
 
@@ -76,7 +73,12 @@ public class MageHandSprite extends MobSprite {
             missileType = getWandMissileType(equippedWand);
         }
 
-        curUser = Dungeon.hero;
+        Char handuser = null;
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof MageHand) {
+                handuser = mob;
+            }
+        }
 
         if (equippedWand instanceof WandOfPrismaticLight || equippedWand instanceof WandOfSun){
             if(equippedWand instanceof WandOfSun){
@@ -103,9 +105,9 @@ public class MageHandSprite extends MobSprite {
 
             //cast to cells at the tip, rather than all cells, better performance.
             for (Ballistica ray : ((WandOfHightHunderStorm) equippedWand).cone.rays){
-                ((MagicMissile)curUser.sprite.parent.recycle( MagicMissile.class )).reset(
+                ((MagicMissile)handuser.sprite.parent.recycle( MagicMissile.class )).reset(
                         MagicMissile.ELMO,
-                        curUser.sprite,
+                        handuser.sprite,
                         ray.path.get(ray.dist),
                         null
                 );
@@ -114,14 +116,14 @@ public class MageHandSprite extends MobSprite {
             Char ch = Actor.findChar( cell );
             if (ch != null) {
                 ((WandOfHightHunderStorm) equippedWand).affected.add( ch );
-                ((WandOfHightHunderStorm) equippedWand).arcs.add( new Lightning.Arc(curUser.sprite.center(), ch.sprite.center()));
+                ((WandOfHightHunderStorm) equippedWand).arcs.add( new Lightning.Arc(handuser.sprite.center(), ch.sprite.center()));
                 ((WandOfHightHunderStorm) equippedWand).arc(ch);
             } else {
-                ((WandOfHightHunderStorm) equippedWand).arcs.add( new Lightning.Arc(curUser.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
+                ((WandOfHightHunderStorm) equippedWand).arcs.add( new Lightning.Arc(handuser.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
                 CellEmitter.center( cell ).burst( SparkParticle.FACTORY, 3 );
             }
 
-            curUser.sprite.parent.addToFront( new Lightning( ((WandOfHightHunderStorm) equippedWand).arcs, null ) );
+            handuser.sprite.parent.addToFront( new Lightning( ((WandOfHightHunderStorm) equippedWand).arcs, null ) );
             mageHand.onZapComplete();
         } else if(equippedWand instanceof WandOfLightning){
             ((WandOfLightning) equippedWand).affected.clear();
