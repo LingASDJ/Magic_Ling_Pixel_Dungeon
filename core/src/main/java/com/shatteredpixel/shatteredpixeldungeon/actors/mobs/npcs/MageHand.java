@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -26,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MageHandSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -628,4 +630,72 @@ public class MageHand extends DirectableAlly {
         if (bundle.contains(MAGE_STAFF))
             magesStaff = (MagesStaff) bundle.get( MAGE_STAFF );
     }
+
+    public static class HandShield extends FlavourBuff {
+
+        {
+            type = buffType.POSITIVE;
+        }
+
+        private int level = 0;
+        private int interval = 1;
+
+
+        @Override
+        public boolean act() {
+            super.act();
+            if(--interval <= 0){
+                detach();
+            }
+            return true;
+        }
+
+        public void set( int value, int ints) {
+            if (level <= value) {
+                level = value;
+                interval = ints;
+                spend(ints - cooldown() - 1);
+            }
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.ARMOR;
+        }
+
+        @Override
+        public String desc() {
+            return Messages.get(this, "desc", level, dispTurns(visualcooldown()));
+        }
+
+        private static final String LEVEL	    = "level";
+        private static final String INTERVAL    = "interval";
+
+        @Override
+        public void storeInBundle( Bundle bundle ) {
+            super.storeInBundle( bundle );
+            bundle.put( INTERVAL, interval );
+            bundle.put( LEVEL, level );
+        }
+
+        @Override
+        public void restoreFromBundle( Bundle bundle ) {
+            super.restoreFromBundle( bundle );
+            interval = bundle.getInt( INTERVAL );
+            level = bundle.getInt( LEVEL );
+        }
+
+        //These two methods allow for multiple instances of barkskin to stack in terms of duration
+        // but only the stronger bonus is applied
+
+        public static int currentLevel(Char ch ){
+            int level = 0;
+            for (HandShield b : ch.buffs(HandShield.class)){
+                level = Math.max(level, b.level);
+            }
+            return level;
+        }
+    }
+    
+    
 }
