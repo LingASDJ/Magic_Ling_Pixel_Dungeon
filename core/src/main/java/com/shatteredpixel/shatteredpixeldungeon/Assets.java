@@ -930,6 +930,8 @@ public class Assets {
 		public static final String EYE		= "sprites/eye.png";
 		public static final String GNOLL	= "sprites/gnoll.png";
 		public static final String CRAB		= "sprites/crab.png";
+
+		public static final String NEWBORN_CRAB		= "sprites/crab_newborn.png";
 		public static final String GOO		= "sprites/goo.png";
 		public static final String SWARM	= "sprites/swarm.png";
 		public static final String SKELETON	= "sprites/skeleton.png";
@@ -986,6 +988,9 @@ public class Assets {
 		public static final String RIPPER	= "sprites/ripper.png";
 		public static final String SPAWNER	= "sprites/spawner.png";
 		public static final String DM100	= "sprites/dm100.png";
+
+		public static final String DM111	= "sprites/dm111.png";
+
 		public static final String DM275	= "sprites/dm275-RPG.png";
 		public static final String PYLON	= "sprites/pylon.png";
 		public static final String PYLONCS	= "sprites/pylonks.png";

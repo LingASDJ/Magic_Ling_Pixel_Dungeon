@@ -52,4 +52,35 @@ public class CrabSprite extends MobSprite {
 	public int blood() {
 		return 0xFFFFEA80;
 	}
+
+	public static class NewBornCrabSprite extends MobSprite {
+
+		public NewBornCrabSprite() {
+			super();
+
+			texture( Assets.Sprites.NEWBORN_CRAB );
+
+			TextureFilm frames = new TextureFilm( texture, 16, 16 );
+
+			idle = new Animation( 4, true );
+			idle.frames( frames, 0, 1, 2, 3 );
+
+			run = new Animation( 11, true );
+			run.frames( frames, 4, 5, 6, 7 );
+
+			attack = new Animation( 11, false );
+			attack.frames( frames, 8, 9,10,11 );
+
+			die = new Animation( 11, false );
+			die.frames( frames, 12, 13,14,15 );
+
+			play( idle );
+		}
+
+		@Override
+		public int blood() {
+			return 0xFFFFEA80;
+		}
+	}
+
 }
