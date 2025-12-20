@@ -205,6 +205,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DM111;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GiantFlowerSlime;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GuardCapital;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.NewBornCrab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
@@ -502,7 +503,7 @@ public enum Bestiary {
 				Albino.class, GiantFlowerSlime.class, NewBornCrab.class,
                 CausticSlime.class, Salamander.class,
 
-				DM111.class,
+				DM111.class, GuardCapital.class,
 				SRPDHBLR.class, NewBlackHost.class,
 
 				Bandit.class, SpectralNecromancer.class,
