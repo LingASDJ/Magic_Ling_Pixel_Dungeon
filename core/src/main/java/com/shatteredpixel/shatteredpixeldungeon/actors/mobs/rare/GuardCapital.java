@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GuardCapitalSprite;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class GuardCapital extends Mob {
@@ -21,7 +22,6 @@ public class GuardCapital extends Mob {
 
         EXP = 7;
 
-        isAnimal = true;
         maxLvl = 14;
 
         loot = Random.Float() > 0.5f ? Generator.Category.WEAPON : Generator.Category.ARMOR;
@@ -86,17 +86,66 @@ public class GuardCapital extends Mob {
 
     @Override
     public int attackProc(Char enemy, int damage) {
-        if (!Dungeon.level.adjacent(pos, enemy.pos) && knockbackCooldown <= 0 &&
-                canKnockBack(enemy)) {
-
+        if (!Dungeon.level.adjacent(pos, enemy.pos) && knockbackCooldown <= 0) {
             int direction = enemy.pos - pos;
             Ballistica trajectory = new Ballistica(enemy.pos, enemy.pos + direction, Ballistica.PROJECTILE);
 
-            WandOfBlastWave.throwChar(enemy, trajectory, 3, true, false, this);
+            // 计算实际可击退的距离
+            int knockbackDistance = calculateKnockbackDistance(enemy, trajectory);
 
-            knockbackCooldown = 20;
+            if (knockbackDistance > 0) {
+                WandOfBlastWave.throwChar(enemy, trajectory, knockbackDistance, false, true, this);
+                knockbackCooldown = 20;
+            }
         }
         return super.attackProc(enemy, damage);
+    }
+
+    private int calculateKnockbackDistance(Char target, Ballistica trajectory) {
+        if (target == null) return 0;
+
+        int maxDistance = 3;
+        int actualDistance = 0;
+        boolean foundChasm = false;
+
+        for (int i = 1; i <= Math.min(maxDistance, trajectory.dist); i++) {
+            int nextPos = trajectory.path.get(i);
+
+            // 如果找到悬崖，记录位置但继续检查
+            if (Dungeon.level.map[nextPos] == Terrain.CHASM) {
+                foundChasm = true;
+                continue;
+            }
+
+            // 如果是不可通过的地形且不是悬崖，停止
+            if (!Dungeon.level.passable[nextPos]) {
+                break;
+            }
+
+            // 如果之前找到过悬崖，现在到达了安全位置
+            if (foundChasm) {
+                // 检查落点是否安全（周围没有危险）
+                if (isSafeLanding(nextPos)) {
+                    actualDistance = i;
+                    break;
+                }
+            } else {
+                actualDistance = i;
+            }
+        }
+
+        return actualDistance;
+    }
+
+    private boolean isSafeLanding(int pos) {
+        // 检查目标位置周围是否有危险
+        for (int n : PathFinder.NEIGHBOURS8) {
+            int neighborPos = pos + n;
+            if (Dungeon.level.map[neighborPos] == Terrain.CHASM) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean canKnockBack(Char target) {
@@ -105,15 +154,8 @@ public class GuardCapital extends Mob {
         int direction = target.pos - pos;
         Ballistica trajectory = new Ballistica(target.pos, target.pos + direction, Ballistica.PROJECTILE);
 
-        for (int i = 1; i <= Math.min(3, trajectory.dist); i++) {
-            int nextPos = trajectory.path.get(i);
-
-            if (!Dungeon.level.passable[nextPos] ||
-                    Dungeon.level.map[nextPos] == Terrain.CHASM) {
-                return false;
-            }
-        }
-        return true;
+        // 使用新的计算方法检查是否可以击退
+        return calculateKnockbackDistance(target, trajectory) > 0;
     }
 
     @Override

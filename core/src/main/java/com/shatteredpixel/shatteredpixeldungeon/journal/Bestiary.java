@@ -36,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BrownBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CausticSlime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ClearElemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
@@ -207,6 +206,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DM111;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GiantFlowerSlime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GuardCapital;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.NewBornCrab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.VeryColdRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
@@ -501,11 +501,12 @@ public enum Bestiary {
 
 		RARE.addEntities(
 				Albino.class, GiantFlowerSlime.class, NewBornCrab.class,
-                CausticSlime.class, Salamander.class,
+                Salamander.class,
 
 				DM111.class, GuardCapital.class,
 				SRPDHBLR.class, NewBlackHost.class,
 
+				VeryColdRat.class,
 				Bandit.class, SpectralNecromancer.class,
 				ArmoredBrute.class, DM201.class, MolotovHuntsman.class,
 				Elemental.ChaosElemental.class, Senior.class,
