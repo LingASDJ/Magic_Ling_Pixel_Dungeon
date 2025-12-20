@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -22,6 +23,9 @@ public class GuardCapital extends Mob {
 
         isAnimal = true;
         maxLvl = 14;
+
+        loot = Random.Float() > 0.5f ? Generator.Category.WEAPON : Generator.Category.ARMOR;
+        lootChance = 1f;
     }
 
     private int knockbackCooldown = 0;
@@ -74,7 +78,7 @@ public class GuardCapital extends Mob {
     @Override
     public int damageRoll() {
         int distance = enemy != null ? Dungeon.level.distance(pos, enemy.pos) : 0;
-        if (distance >= 2) {
+        if (distance > 1) {
             return Random.NormalIntRange(6, 12);
         }
         return Random.NormalIntRange(6, 16);
@@ -88,7 +92,7 @@ public class GuardCapital extends Mob {
             int direction = enemy.pos - pos;
             Ballistica trajectory = new Ballistica(enemy.pos, enemy.pos + direction, Ballistica.PROJECTILE);
 
-            WandOfBlastWave.throwChar(enemy, trajectory, 3, false, false, this);
+            WandOfBlastWave.throwChar(enemy, trajectory, 3, true, false, this);
 
             knockbackCooldown = 20;
         }
