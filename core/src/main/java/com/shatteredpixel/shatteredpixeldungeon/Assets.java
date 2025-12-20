@@ -842,6 +842,8 @@ public class Assets {
 		public static final String JAMULET	= "sprites/jamulet.png";
 		public static final String COLDRAT	= "sprites/coldrat.png";
 
+		public static final String VERYCOLDRAT = "sprites/rat_ice.png";
+
 
 		public static final String AOREADY	= "sprites/aodragon.png";
 
