@@ -27,9 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HaloFireImBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -38,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.DemonLord;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
@@ -391,9 +388,6 @@ public class YogReal extends Boss {
 
         for (Buff buff : hero.buffs()) {
             if (buff instanceof RoseShiled) {
-                buff.detach();
-            }
-            if (buff instanceof HaloFireImBlue ||buff instanceof FireImbue) {
                 buff.detach();
             }
         }

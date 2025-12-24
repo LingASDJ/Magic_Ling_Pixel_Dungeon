@@ -32,7 +32,7 @@ public class DM111Sprite extends MobSprite {
         zap.frames( frames, 4, 5, 1 );
 
         die = new Animation( 11, false );
-        die.frames( frames, 10, 11, 12, 13, 14 );
+        die.frames( frames, 10, 11, 12, 13 );
 
         play( idle );
     }
