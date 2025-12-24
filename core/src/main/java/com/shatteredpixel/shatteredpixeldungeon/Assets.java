@@ -896,6 +896,8 @@ public class Assets {
 
 		public static final String BLOOD_SWARM		= "sprites/swarm_red.png";
 
+		public static final String GHOUL_HILL		= "sprites/ghoul_hill.png";
+
 		public static final String PEACHGODSTATUE	= "sprites/peachgodstatue.png";
 
 		public static final String NONE		= "sprites/none.png";

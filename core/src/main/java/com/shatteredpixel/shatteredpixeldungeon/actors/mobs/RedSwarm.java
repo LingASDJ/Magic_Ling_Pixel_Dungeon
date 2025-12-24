@@ -215,7 +215,6 @@ public class RedSwarm extends Mob implements Callback {
         public boolean act(boolean enemyInFOV, boolean justAlerted) {
             if (enemyInFOV) {
                 enemySeen = true;
-                notice();
                 alerted = true;
                 state = HUNTING;
                 target = enemy.pos;

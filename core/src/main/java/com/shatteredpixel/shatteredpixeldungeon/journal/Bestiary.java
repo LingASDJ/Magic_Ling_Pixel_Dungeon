@@ -108,6 +108,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.BloodsSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DM111;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GhoulPlus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GiantFlowerSlime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GuardCapital;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.NewBornCrab;
@@ -305,7 +306,7 @@ public enum Bestiary {
 		CITY.addEntities(
 				Shaman.RedShaman.class, Shaman.BlueShaman.class, Shaman.PurpleShaman.class,
 				Monk.class, Elemental.FrostElemental.class, Elemental.ShockElemental.class,
-				Elemental.FireElemental.class,
+				Elemental.FireElemental.class,Ghoul.class,
 				BruteBot.class, Warlock.class, Golem.class, ShieldHuntsman.class, IceGolem.class);
 
 		CITY_BOSS.addEntities(
@@ -424,7 +425,8 @@ public enum Bestiary {
 		RARE_T.addEntities(
 				GiantFlowerSlime.class, NewBornCrab.class,
 				DM111.class, GuardCapital.class,
-				VeryColdRat.class, BloodsSwarm.class
+				VeryColdRat.class, BloodsSwarm.class,
+				GhoulPlus.class
 		);
 
 		RLPT.addEntities(
