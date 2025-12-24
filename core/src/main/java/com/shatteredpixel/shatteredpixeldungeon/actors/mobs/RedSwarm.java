@@ -24,8 +24,12 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.BloodsSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -35,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
@@ -57,7 +62,32 @@ public class RedSwarm extends Mob implements Callback {
         loot = Generator.Category.POTION;
         lootChance = 0.1f;
 
+        WANDERING = new Wandering();
+
         properties.add(Property.UNDEAD);
+    }
+
+    public static final float SPLIT_DELAY	= 1f;
+
+    int generation	= 0;
+
+    public boolean spawnBloods = false;
+
+    public RedSwarm split() {
+        RedSwarm clone = new RedSwarm ();
+        clone.generation = generation + 1;
+        clone.EXP = 0;
+        if (buff( Poison.class ) != null) {
+            Buff.affect( clone, Poison.class ).set(2);
+        }
+        for (Buff b : buffs(AllyBuff.class)){
+            Buff.affect( clone, b.getClass());
+        }
+        for (Buff b : buffs(ChampionEnemy.class)){
+            Buff.affect( clone, b.getClass());
+        }
+
+        return clone;
     }
 
     @Override
@@ -105,7 +135,6 @@ public class RedSwarm extends Mob implements Callback {
         spend( TIME_TO_ZAP );
 
         if (hit( this, enemy, true )) {
-            //TODO would be nice for this to work on ghost/statues too
             if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
                 Buff.affect(enemy, Burning.class).reignite(enemy);
                 Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
@@ -161,4 +190,69 @@ public class RedSwarm extends Mob implements Callback {
         }
 
     }
+
+    private static final String GENERATION	= "generation";
+    private static final String SPAWN_BLOODS = "spawnBloods";
+
+    @Override
+    public void storeInBundle( Bundle bundle ) {
+        super.storeInBundle( bundle );
+        bundle.put( GENERATION, generation );
+        bundle.put( SPAWN_BLOODS, spawnBloods );
+    }
+
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle( bundle );
+        generation = bundle.getInt( GENERATION );
+        if (generation > 0) EXP = 0;
+        spawnBloods = bundle.getBoolean( SPAWN_BLOODS );
+    }
+
+    public class Wandering extends Mob.Wandering {
+
+        @Override
+        public boolean act(boolean enemyInFOV, boolean justAlerted) {
+            if (enemyInFOV) {
+                enemySeen = true;
+                notice();
+                alerted = true;
+                state = HUNTING;
+                target = enemy.pos;
+            } else if(spawnBloods) {
+                enemySeen = false;
+
+                int oldPos = pos;
+                int minDistance = 5;
+                int nearestPos = -1;
+
+                // 遍历所有怪物，寻找最近的BloodsSwarm
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (mob instanceof BloodsSwarm) {
+                        int distance = Dungeon.level.distance(pos, mob.pos);
+                        if (distance < minDistance) {
+                            minDistance = distance;
+                            nearestPos = mob.pos;
+                        }
+                    }
+                }
+
+                if (nearestPos != -1) {
+                    target = nearestPos;
+                }
+
+                if (getCloser(target)) {
+                    spend(1 / speed());
+                    return moveSprite(oldPos, pos);
+                } else {
+                    spend(TICK);
+                }
+            } else {
+                return super.act(false, justAlerted);
+            }
+
+            return true;
+        }
+    }
+
 }

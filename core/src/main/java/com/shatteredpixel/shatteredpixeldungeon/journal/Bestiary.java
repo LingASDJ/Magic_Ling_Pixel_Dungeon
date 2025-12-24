@@ -106,6 +106,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRong;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.BloodsSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DM111;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GiantFlowerSlime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GuardCapital;
@@ -207,7 +208,9 @@ public enum Bestiary {
 	UNIVERSAL,
 	QUEST,
 	RLPT,
+	RARE_T,
     RARE,
+
 
 	BOSSRUSH,
 	NEUTRAL,
@@ -407,13 +410,9 @@ public enum Bestiary {
 		UNIVERSAL.addEntities(Wraith.class, Piranha.class, Mimic.class, GoldenMimic.class, EbonyMimic.class,  GreenDiamndMimic.class,Statue.class, GuardianTrap.Guardian.class, SentryRoom.Sentry.class);
 
 		RARE.addEntities(
-				Albino.class, GiantFlowerSlime.class, NewBornCrab.class,
+				Albino.class,
                 Salamander.class,
-
-				DM111.class, GuardCapital.class,
 				SRPDHBLR.class, NewBlackHost.class,
-
-				VeryColdRat.class,
 				Bandit.class, SpectralNecromancer.class,
 				ArmoredBrute.class, DM201.class, MolotovHuntsman.class,
 				Elemental.ChaosElemental.class, Senior.class,
@@ -421,6 +420,12 @@ public enum Bestiary {
 
 				TormentedSpirit.class, PhantomPiranha.class,
 				CrystalMimic.class, ArmoredStatue.class);
+
+		RARE_T.addEntities(
+				GiantFlowerSlime.class, NewBornCrab.class,
+				DM111.class, GuardCapital.class,
+				VeryColdRat.class, BloodsSwarm.class
+		);
 
 		RLPT.addEntities(
 				KagenoNusujin.class,

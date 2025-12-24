@@ -148,16 +148,6 @@ public class GuardCapital extends Mob {
         return true;
     }
 
-    private boolean canKnockBack(Char target) {
-        if (target == null) return false;
-
-        int direction = target.pos - pos;
-        Ballistica trajectory = new Ballistica(target.pos, target.pos + direction, Ballistica.PROJECTILE);
-
-        // 使用新的计算方法检查是否可以击退
-        return calculateKnockbackDistance(target, trajectory) > 0;
-    }
-
     @Override
     public int attackSkill(Char target) {
         return 12;
