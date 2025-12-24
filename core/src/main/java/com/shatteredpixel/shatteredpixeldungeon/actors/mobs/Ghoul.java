@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GhoulPlus;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -44,23 +45,23 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class Ghoul extends Mob {
-	
+
 	{
 		spriteClass = GhoulSprite.class;
-		
+
 		HP = HT = 45;
 		defenseSkill = 20;
-		
+
 		EXP = 5;
 		maxLvl = 20;
-		
+
 		SLEEPING = new Sleeping();
 		WANDERING = new Wandering();
 		state = SLEEPING;
 
 		loot = Gold.class;
 		lootChance = 0.2f;
-		
+
 		properties.add(Property.UNDEAD);
 	}
 
@@ -89,28 +90,28 @@ public class Ghoul extends Mob {
 
 	private static final String PARTNER_ID = "partner_id";
 	private static final String TIMES_DOWNED = "times_downed";
-	
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( PARTNER_ID, partnerID );
 		bundle.put( TIMES_DOWNED, timesDowned );
 	}
-	
+
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		partnerID = bundle.getInt( PARTNER_ID );
 		timesDowned = bundle.getInt( TIMES_DOWNED );
 	}
-	
+
 	@Override
 	protected boolean act() {
 		//create a child
 		if (partnerID == -1){
-			
+
 			ArrayList<Integer> candidates = new ArrayList<>();
-			
+
 			int[] neighbours = {pos + 1, pos - 1, pos + Dungeon.level.width(), pos - Dungeon.level.width()};
 			for (int n : neighbours) {
 				if (Dungeon.level.passable[n]
@@ -119,7 +120,7 @@ public class Ghoul extends Mob {
 					candidates.add( n );
 				}
 			}
-			
+
 			if (!candidates.isEmpty()){
 				Ghoul child = new Ghoul();
 				child.partnerID = this.id();
@@ -127,12 +128,12 @@ public class Ghoul extends Mob {
 				if (state != SLEEPING) {
 					child.state = child.WANDERING;
 				}
-				
+
 				child.pos = Random.element( candidates );
 
 				GameScene.add( child );
 				Dungeon.level.occupyCell(child);
-				
+
 				if (sprite.visible) {
 					Actor.add( new Pushing( child, pos, child.pos ) );
 				}
@@ -142,15 +143,56 @@ public class Ghoul extends Mob {
 				}
 
 			}
-			
+
 		}
 		return super.act();
 	}
+
+	@Override
+	public void damage(int damage, Object src, DamageType type){
+		// 检查附近是否有尸山
+		boolean nearGhoulPlus = false;
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+			if (mob instanceof GhoulPlus) {
+				int distance = Dungeon.level.distance(pos, mob.pos);
+				if (distance <= 2) { // 5x5范围
+					nearGhoulPlus = true;
+					break;
+				}
+			}
+		}
+
+
+		if (nearGhoulPlus) {
+			damage *= 1.3f;
+		}
+
+		super.damage(damage, src, type);
+	}
+
 
 	private boolean beingLifeLinked = false;
 
 	@Override
 	public void die(Object cause) {
+		// 检查附近是否有尸山
+		GhoulPlus nearbyGhoulPlus = null;
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+			if (mob instanceof GhoulPlus) {
+				int distance = Dungeon.level.distance(pos, mob.pos);
+				if (distance <= 2) { // 5x5范围
+					nearbyGhoulPlus = (GhoulPlus) mob;
+					break;
+				}
+			}
+		}
+
+		if (nearbyGhoulPlus != null) {
+			nearbyGhoulPlus.gainBuffFromGhoulDeath();
+			super.die(cause);
+			return;
+		}
+
 		if (cause != Chasm.class && cause != GhoulLifeLink.class && !Dungeon.level.pit[pos]){
 			Ghoul nearby = GhoulLifeLink.searchForHost(this);
 			if (nearby != null){
@@ -167,8 +209,28 @@ public class Ghoul extends Mob {
 		super.die(cause);
 	}
 
+
+
 	@Override
 	public boolean isAlive() {
+		// 检查附近是否有尸山
+		boolean nearGhoulPlus = false;
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+			if (mob instanceof GhoulPlus) {
+				int distance = Dungeon.level.distance(pos, mob.pos);
+				if (distance <= 2) { // 5x5范围
+					nearGhoulPlus = true;
+					break;
+				}
+			}
+		}
+
+		// 如果在尸山附近，直接返回基础存活状态
+		if (nearGhoulPlus) {
+			return super.isAlive();
+		}
+
+		// 否则保持原来的逻辑
 		return super.isAlive() || beingLifeLinked;
 	}
 
@@ -211,13 +273,13 @@ public class Ghoul extends Mob {
 			}
 		}
 	}
-	
+
 	private class Wandering extends Mob.Wandering {
-		
+
 		@Override
 		protected boolean continueWandering() {
 			enemySeen = false;
-			
+
 			Ghoul partner = (Ghoul) Actor.findById( partnerID );
 			if (partner != null && (partner.state != partner.WANDERING || Dungeon.level.distance( pos,  partner.target) > 1)){
 				target = partner.pos;

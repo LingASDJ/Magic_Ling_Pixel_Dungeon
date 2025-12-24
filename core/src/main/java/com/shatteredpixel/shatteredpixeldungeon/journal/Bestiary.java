@@ -106,11 +106,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRong;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.BloodsSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DM111;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GhoulPlus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GiantFlowerSlime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GuardCapital;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.NewBornCrab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.VeryColdRat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.WarlockHead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.GunHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
@@ -207,7 +210,9 @@ public enum Bestiary {
 	UNIVERSAL,
 	QUEST,
 	RLPT,
+	RARE_T,
     RARE,
+
 
 	BOSSRUSH,
 	NEUTRAL,
@@ -302,7 +307,7 @@ public enum Bestiary {
 		CITY.addEntities(
 				Shaman.RedShaman.class, Shaman.BlueShaman.class, Shaman.PurpleShaman.class,
 				Monk.class, Elemental.FrostElemental.class, Elemental.ShockElemental.class,
-				Elemental.FireElemental.class,
+				Elemental.FireElemental.class,Ghoul.class,
 				BruteBot.class, Warlock.class, Golem.class, ShieldHuntsman.class, IceGolem.class);
 
 		CITY_BOSS.addEntities(
@@ -407,13 +412,9 @@ public enum Bestiary {
 		UNIVERSAL.addEntities(Wraith.class, Piranha.class, Mimic.class, GoldenMimic.class, EbonyMimic.class,  GreenDiamndMimic.class,Statue.class, GuardianTrap.Guardian.class, SentryRoom.Sentry.class);
 
 		RARE.addEntities(
-				Albino.class, GiantFlowerSlime.class, NewBornCrab.class,
+				Albino.class,
                 Salamander.class,
-
-				DM111.class, GuardCapital.class,
 				SRPDHBLR.class, NewBlackHost.class,
-
-				VeryColdRat.class,
 				Bandit.class, SpectralNecromancer.class,
 				ArmoredBrute.class, DM201.class, MolotovHuntsman.class,
 				Elemental.ChaosElemental.class, Senior.class,
@@ -421,6 +422,13 @@ public enum Bestiary {
 
 				TormentedSpirit.class, PhantomPiranha.class,
 				CrystalMimic.class, ArmoredStatue.class);
+
+		RARE_T.addEntities(
+				GiantFlowerSlime.class, NewBornCrab.class,
+				DM111.class, GuardCapital.class,
+				VeryColdRat.class, BloodsSwarm.class,
+				GhoulPlus.class, WarlockHead.class
+		);
 
 		RLPT.addEntities(
 				KagenoNusujin.class,

@@ -119,4 +119,9 @@ public class Gold extends Item {
 		return item;
 	}
 
+
+	public int random_4X() {
+		return quantity = (Random.IntRange( 30 + Dungeon.depth * 10, 60 + Dungeon.depth * 20 ) )*4;
+	}
+
 }
