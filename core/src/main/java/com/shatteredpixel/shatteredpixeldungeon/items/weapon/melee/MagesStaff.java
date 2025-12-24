@@ -258,7 +258,7 @@ public class MagesStaff extends MeleeWeapon {
 		int reach = super.reachFactor(owner);
 		if (owner instanceof Hero
 				&& wand instanceof WandOfDisintegration
-				&& ((Hero)owner).subClass == HeroSubClass.BATTLEMAGE){
+				&& ((Hero)owner).subClass == HeroSubClass.BATTLEMAGE && Dungeon.hero.hasTalent(Talent.EMPOWERED_STRIKE)){
 			reach += Math.round(Wand.procChanceMultiplier(owner));
 		}
 		return reach;
