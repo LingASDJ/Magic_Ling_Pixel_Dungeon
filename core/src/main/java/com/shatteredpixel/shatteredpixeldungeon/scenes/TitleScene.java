@@ -91,6 +91,10 @@ public class TitleScene extends PixelScene {
 			Music.playModeBGM(Assets.Music.THEME, true);
 		}
 
+		if(DeviceCompat.isDebug()){
+			SPDSettings.unlockItem("avatars_mage_4");
+		}
+
 		Badges.loadGlobal();
 		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
 
