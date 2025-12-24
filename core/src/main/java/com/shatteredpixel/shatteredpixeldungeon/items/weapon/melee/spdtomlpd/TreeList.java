@@ -29,6 +29,7 @@ public class TreeList extends MeleeWeapon {
     {
         image = ItemSpriteSheet.TREE_LIST;
         tier = 2;
+        defaultAction = AC_BARRIER;
     }
 
 
