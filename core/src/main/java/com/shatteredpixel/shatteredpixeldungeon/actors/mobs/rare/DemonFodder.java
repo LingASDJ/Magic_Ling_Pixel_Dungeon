@@ -1,0 +1,324 @@
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FodderSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.GameMath;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
+
+public class DemonFodder extends Mob {
+
+    {
+        spriteClass = FodderSprite.class;
+
+        HP = HT = 50;
+        defenseSkill = 15;
+        viewDistance = Light.DISTANCE;
+
+        EXP = 9;
+        maxLvl = -2;
+
+        HUNTING = new Hunting();
+
+        baseSpeed = 0.5f;
+
+        properties.add(Property.DEMONIC);
+        properties.add(Property.UNDEAD);
+    }
+
+    @Override
+    public boolean attack(Char enemy) {
+        // 只能攻击英雄
+        if (enemy == Dungeon.hero) {
+            return super.attack(enemy);
+        }
+        return false;
+    }
+
+    @Override
+    public void die(Object cause) {
+        if (cause instanceof Mob) {
+            if(((Mob) cause).alignment == Alignment.ENEMY){
+                Mob killer = (Mob) cause;
+                killer.HP = killer.HT;
+                Buff.affect(killer, Barrier.class).setShield(killer.HT / 2);
+                if(Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)){
+                    ChampionEnemy.rollForChampion(killer);
+                    ChampionEnemy.rollForStateLing(killer);
+                } else {
+                    AikeLaier aikeLaier = new AikeLaier();
+                    aikeLaier.activate(killer);
+                }
+            }
+        }
+        super.die(cause);
+    }
+
+    @Override
+    public float spawningWeight() {
+        return 0;
+    }
+
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 10, 20 );
+    }
+
+    @Override
+    public int attackSkill( Char target ) {
+        return 30;
+    }
+
+    @Override
+    public float attackDelay() {
+        return super.attackDelay()*0.5f;
+    }
+
+    @Override
+    public int drRoll() {
+        return super.drRoll() + Random.NormalIntRange(0, 4);
+    }
+
+    private static final String LAST_ENEMY_POS = "last_enemy_pos";
+    private static final String LEAP_POS = "leap_pos";
+    private static final String LEAP_CD = "leap_cd";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(LAST_ENEMY_POS, lastEnemyPos);
+        bundle.put(LEAP_POS, leapPos);
+        bundle.put(LEAP_CD, leapCooldown);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        lastEnemyPos = bundle.getInt(LAST_ENEMY_POS);
+        leapPos = bundle.getInt(LEAP_POS);
+        leapCooldown = bundle.getFloat(LEAP_CD);
+    }
+
+    private int lastEnemyPos = -1;
+
+    @Override
+    protected boolean act() {
+        if (state == WANDERING){
+            leapPos = -1;
+        }
+
+        // 确保只以英雄为敌人
+        if (enemy != Dungeon.hero) {
+            enemy = Dungeon.hero;
+        }
+
+        AiState lastState = state;
+        boolean result = super.act();
+        if (paralysed <= 0) leapCooldown--;
+
+        //if state changed from wandering to hunting, we haven't acted yet, don't update.
+        if (!(lastState == WANDERING && state == HUNTING)) {
+            if (enemy != null) {
+                lastEnemyPos = enemy.pos;
+            }
+        }
+
+        return result;
+    }
+
+    private int leapPos = -1;
+    private float leapCooldown = 0;
+
+    public class Hunting extends Mob.Hunting {
+
+        @Override
+        public boolean act( boolean enemyInFOV, boolean justAlerted ) {
+            // 修改敌人选择逻辑，只以英雄为目标
+            if (enemyInFOV && enemy == Dungeon.hero) {
+                enemySeen = true;
+            } else {
+                enemySeen = false;
+                // 看不见英雄时切换到WANDERING状态进行随机游荡
+                if (!Dungeon.level.heroFOV[pos]) {
+                    state = WANDERING;
+                    // 设置一个随机的目标位置
+                    target = Dungeon.level.randomDestination(DemonFodder.this);
+                    // 执行一次WANDERING的行为
+                    spend(TICK);
+                    if (getCloser(target)) {
+                        spend(1 / speed());
+                        return moveSprite(pos, target);
+                    }
+                    return true;
+                }
+            }
+
+            if (leapPos != -1){
+
+                leapCooldown = Random.NormalIntRange(2, 4);
+
+                if (rooted){
+                    leapPos = -1;
+                    return true;
+                }
+
+                Ballistica b = new Ballistica(pos, leapPos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
+                leapPos = b.collisionPos;
+
+                final Char leapVictim = Actor.findChar(leapPos);
+                final int endPos;
+
+                //ensure there is somewhere to land after leaping
+                if (leapVictim != null){
+                    int bouncepos = -1;
+                    //attempt to bounce in free passable space
+                    for (int i : PathFinder.NEIGHBOURS8){
+                        if ((bouncepos == -1 || Dungeon.level.trueDistance(pos, leapPos+i) < Dungeon.level.trueDistance(pos, bouncepos))
+                                && Actor.findChar(leapPos+i) == null && Dungeon.level.passable[leapPos+i]){
+                            bouncepos = leapPos+i;
+                        }
+                    }
+                    //try again, allowing a bounce into any non-solid terrain
+                    if (bouncepos == -1){
+                        for (int i : PathFinder.NEIGHBOURS8){
+                            if ((bouncepos == -1 || Dungeon.level.trueDistance(pos, leapPos+i) < Dungeon.level.trueDistance(pos, bouncepos))
+                                    && Actor.findChar(leapPos+i) == null && !Dungeon.level.solid[leapPos+i]){
+                                bouncepos = leapPos+i;
+                            }
+                        }
+                    }
+                    //if no valid position, cancel the leap
+                    if (bouncepos == -1) {
+                        leapPos = -1;
+                        return true;
+                    } else {
+                        endPos = bouncepos;
+                    }
+                } else {
+                    endPos = leapPos;
+                }
+
+                //do leap
+                sprite.visible = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos] || Dungeon.level.heroFOV[endPos];
+                sprite.jump(pos, leapPos, new Callback() {
+                    @Override
+                    public void call() {
+
+                        if (leapVictim != null && alignment != leapVictim.alignment){
+                            if (hit(DemonFodder.this, leapVictim, Char.INFINITE_ACCURACY, false)) {
+                                Buff.affect(leapVictim, Bleeding.class).set(0.75f * damageRoll());
+                                leapVictim.sprite.flash();
+                                Sample.INSTANCE.play(Assets.Sounds.HIT);
+                            } else {
+                                leapVictim.sprite.showStatus( CharSprite.NEUTRAL, leapVictim.defenseVerb() );
+                                Sample.INSTANCE.play(Assets.Sounds.MISS);
+                            }
+                        }
+
+                        if (endPos != leapPos){
+                            Actor.add(new Pushing(DemonFodder.this, leapPos, endPos));
+                        }
+
+                        pos = endPos;
+                        leapPos = -1;
+                        sprite.idle();
+                        Dungeon.level.occupyCell(DemonFodder.this);
+                        next();
+                    }
+                });
+                return false;
+            }
+
+            enemySeen = enemyInFOV;
+            if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
+
+                return doAttack( enemy );
+
+            } else {
+
+                if (enemyInFOV) {
+                    target = enemy.pos;
+                } else if (enemy == null) {
+                    enemy = Dungeon.hero;
+                    target = Dungeon.hero.pos;
+                    return true;
+                }
+
+                if (leapCooldown <= 0 && enemyInFOV && !rooted
+                        && Dungeon.level.distance(pos, enemy.pos) >= 3) {
+
+                    int targetPos = enemy.pos;
+                    if (lastEnemyPos != enemy.pos){
+                        int closestIdx = 0;
+                        for (int i = 1; i < PathFinder.CIRCLE8.length; i++){
+                            if (Dungeon.level.trueDistance(lastEnemyPos, enemy.pos+PathFinder.CIRCLE8[i])
+                                    < Dungeon.level.trueDistance(lastEnemyPos, enemy.pos+PathFinder.CIRCLE8[closestIdx])){
+                                closestIdx = i;
+                            }
+                        }
+                        targetPos = enemy.pos + PathFinder.CIRCLE8[(closestIdx+4)%8];
+                    }
+
+                    Ballistica b = new Ballistica(pos, targetPos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
+                    //try aiming directly at hero if aiming near them doesn't work
+                    if (b.collisionPos != targetPos && targetPos != enemy.pos){
+                        targetPos = enemy.pos;
+                        b = new Ballistica(pos, targetPos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
+                    }
+                    if (b.collisionPos == targetPos){
+                        //get ready to leap
+                        leapPos = targetPos;
+                        //don't want to overly punish players with slow move or attack speed
+                        spend(GameMath.gate(attackDelay(), (int)Math.ceil(enemy.cooldown()), 3*attackDelay()));
+                        if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos]){
+                            GLog.w(Messages.get(DemonFodder.this, "leap"));
+                            sprite.parent.addToBack(new TargetedCell(leapPos, 0xFF0000));
+                            ((FodderSprite)sprite).leapPrep( leapPos );
+                            Dungeon.hero.interrupt();
+                        }
+                        return true;
+                    }
+                }
+
+                int oldPos = pos;
+                if (target != -1 && getCloser( target )) {
+
+                    spend( 1 / speed() );
+                    return moveSprite( oldPos,  pos );
+
+                } else {
+                    spend( TICK );
+                    if (!enemyInFOV) {
+                        // 看不见英雄时切换到WANDERING状态
+                        state = WANDERING;
+                        target = Dungeon.level.randomDestination(DemonFodder.this);
+                    }
+                    return true;
+                }
+            }
+        }
+
+    }
+
+}
+

@@ -71,6 +71,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Morphs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.GhostTemplate;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.SpawnEvil;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.DragonBluePlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
@@ -1698,6 +1699,12 @@ public class GameScene extends PixelScene {
 				if (spawnersAbove > 0 && Dungeon.depth <= 25) {
 					for (Mob m : Dungeon.level.mobs) {
 						if (m instanceof DemonSpawner && ((DemonSpawner) m).spawnRecorded) {
+							spawnersAbove--;
+						}
+					}
+
+					for (Mob m : Dungeon.level.mobs) {
+						if (m instanceof SpawnEvil && ((SpawnEvil) m).spawnRecorded) {
 							spawnersAbove--;
 						}
 					}

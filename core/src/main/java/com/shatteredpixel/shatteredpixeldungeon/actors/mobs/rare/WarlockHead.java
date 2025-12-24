@@ -15,7 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -38,8 +38,8 @@ public class WarlockHead extends Mob implements Callback {
         EXP = 11;
         maxLvl = 21;
 
-        loot = Generator.Category.POTION;
-        lootChance = 0.5f;
+        loot = new PotionOfExperience();
+        lootChance =1f;
 
         properties.add(Property.UNDEAD);
     }
