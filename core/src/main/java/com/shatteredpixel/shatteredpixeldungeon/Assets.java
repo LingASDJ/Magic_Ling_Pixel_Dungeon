@@ -844,7 +844,7 @@ public class Assets {
 
 		public static final String VERYCOLDRAT = "sprites/rat_ice.png";
 
-
+		public static final String WARLOCKHEAD = "sprites/warlock_chief.png";
 		public static final String AOREADY	= "sprites/aodragon.png";
 
 		public static final String HEALRIGH	= "sprites/healfire.png";
@@ -894,6 +894,7 @@ public class Assets {
 
 		public static final String RAT		= "sprites/rat.png";
 
+		public static final String EVIL_SPAWN		= "sprites/swarm_red.png";
 		public static final String BLOOD_SWARM		= "sprites/swarm_red.png";
 
 		public static final String GHOUL_HILL		= "sprites/ghoul_hill.png";
