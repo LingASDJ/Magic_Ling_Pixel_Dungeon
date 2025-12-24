@@ -148,6 +148,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.Sothot
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Nyarlathotep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -2069,6 +2070,11 @@ public class Hero extends Char {
 		damage = super.attackProc( enemy, damage );
 
 		MagesStaff staff = belongings.getItem(MagesStaff.class);
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+			if (mob instanceof MageHand) {
+				staff = ((MageHand) mob).magesStaff;
+			}
+		}
 		if (staff != null && hero.subClass == HeroSubClass.BATTLEMAGE) {
 			int battleMageLevel = hero.pointsInTalent(Talent.EMPOWERED_STRIKE);
 			float triggerChance = Math.min(1.0f, battleMageLevel * 0.33f);
