@@ -232,6 +232,7 @@ public abstract class RegularLevel extends Level {
 		ZQJ, //中秋节
 		GQJ, //国庆节
 		CYJ, //重阳节
+		MEJ,//战法特别委托
 	}
 
 	private boolean anCityQuestProgress = Random.NormalIntRange(1, 100)<=15;
