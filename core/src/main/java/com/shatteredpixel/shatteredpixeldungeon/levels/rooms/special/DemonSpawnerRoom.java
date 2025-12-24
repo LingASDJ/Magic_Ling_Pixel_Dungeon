@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.SpawnEvil;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -47,9 +48,17 @@ public class DemonSpawnerRoom extends SpecialRoom {
 		Door door = entrance();
 		door.set(Door.Type.UNLOCKED);
 
-		DemonSpawner spawner = new DemonSpawner();
-		spawner.pos = cx + cy * level.width();
-		level.mobs.add( spawner );
+
+		if(1== 1){
+			SpawnEvil spawner = new SpawnEvil();
+			spawner.pos = cx + cy * level.width();
+			level.mobs.add( spawner );
+		} else {
+			DemonSpawner spawner = new DemonSpawner();
+			spawner.pos = cx + cy * level.width();
+			level.mobs.add( spawner );
+		}
+
 
 		CustomFloor vis = new CustomFloor();
 		vis.setRect(left+1, top+1, width()-2, height()-2);
@@ -96,7 +105,7 @@ public class DemonSpawnerRoom extends SpecialRoom {
 					cell = tileX + (tileY + i / tileW) * Dungeon.level.width();
 				}
 
-				if (Dungeon.level.findMob(cell) instanceof DemonSpawner){
+				if (Dungeon.level.findMob(cell) instanceof DemonSpawner || Dungeon.level.findMob(cell) instanceof SpawnEvil){
 					data[i-1] = 5 + 4*8;
 					data[i] = 6 + 4*8;
 					data[i+1] = 7 + 4*8;

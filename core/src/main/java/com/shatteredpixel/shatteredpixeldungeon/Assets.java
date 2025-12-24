@@ -894,7 +894,9 @@ public class Assets {
 
 		public static final String RAT		= "sprites/rat.png";
 
-		public static final String EVIL_SPAWN		= "sprites/swarm_red.png";
+		public static final String EVIL_SPAWN		= "sprites/spawne_evil.png";
+
+		public static final String EVIL		= "sprites/demon_fodder.png";
 		public static final String BLOOD_SWARM		= "sprites/swarm_red.png";
 
 		public static final String GHOUL_HILL		= "sprites/ghoul_hill.png";

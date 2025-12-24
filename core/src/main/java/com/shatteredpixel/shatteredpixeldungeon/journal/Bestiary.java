@@ -108,6 +108,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.BloodsSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DM111;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DemonFodder;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GhoulPlus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GiantFlowerSlime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GuardCapital;
@@ -427,7 +428,8 @@ public enum Bestiary {
 				GiantFlowerSlime.class, NewBornCrab.class,
 				DM111.class, GuardCapital.class,
 				VeryColdRat.class, BloodsSwarm.class,
-				GhoulPlus.class, WarlockHead.class
+				GhoulPlus.class, WarlockHead.class,
+				DemonFodder.class
 		);
 
 		RLPT.addEntities(

@@ -67,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.MyCore
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DemonFodder;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
@@ -650,6 +651,22 @@ public abstract class Mob extends Char {
 
                 //if we are an enemy...
             } else if (alignment == Alignment.ENEMY) {
+				for (Mob mob : Dungeon.level.mobs)
+					if (mob instanceof DemonFodder && fieldOfView[mob.pos] && mob.invisible <= 0)
+						enemies.add(mob);
+
+				//如果没有找到DemonFodder，再寻找其他目标
+				if (enemies.isEmpty()) {
+					//look for ally mobs to attack
+					for (Mob mob : Dungeon.level.mobs)
+						if (mob.alignment == Alignment.ALLY && fieldOfView[mob.pos] && mob.invisible <= 0)
+							enemies.add(mob);
+
+					//and look for the hero
+					if (fieldOfView[hero.pos] && hero.invisible <= 0) {
+						enemies.add(hero);
+					}
+				}
 				//look for ally mobs to attack
 				for (Mob mob : Dungeon.level.mobs)
 					if (mob.alignment == Alignment.ALLY && fieldOfView[mob.pos] && mob.invisible <= 0)
