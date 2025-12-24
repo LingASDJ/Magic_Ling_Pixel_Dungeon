@@ -59,6 +59,7 @@ public class Gregorian {
         //checkChongYang(lunarDate);
         checkFukePQJ(gregorianMonth, gregorianDay);
         checkChinaBirthday(gregorianMonth, gregorianDay);
+        checkMageSkin(gregorianMonth, gregorianDay);
     }
 
     /**
@@ -117,6 +118,15 @@ public class Gregorian {
             if(day >= 1 &&  day < 6){
                 chinaHoliday = RegularLevel.ChinaHoliday.GQJ;
                 eventEndTime = calculateSolarEventEndTime(2025, 10, 6);
+            }
+        }
+    }
+
+    private static void checkMageSkin(int month, int day) {
+        if (month == 12) {
+            if(day >= 24 &&  day < 32){
+                chinaHoliday = RegularLevel.ChinaHoliday.MEJ;
+                eventEndTime = calculateSolarEventEndTime(2025, 12, 32);
             }
         }
     }

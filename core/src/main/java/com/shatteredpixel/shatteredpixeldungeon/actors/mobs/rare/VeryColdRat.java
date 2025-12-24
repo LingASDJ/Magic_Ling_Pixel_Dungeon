@@ -9,16 +9,20 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.FrostBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VeryColdRatSprite;
 import com.watabou.utils.BArray;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class VeryColdRat extends Mob {
+
+    private boolean trueDied = false;
+    private int deathCount = 0;
 
     {
         spriteClass = VeryColdRatSprite.class;
@@ -42,17 +46,49 @@ public class VeryColdRat extends Mob {
     @Override
     protected boolean act() {
         int stolenLife = (int) Math.min(HT - HP, HT*0.05f);
-        if(state != HUNTING){
+        if(state != HUNTING && !trueDied){
             HP += stolenLife;
         }
+        if(deathCount != 0){
+            sprite.showStatus(CharSprite.NEGATIVE, String.valueOf(deathCount));
+            deathCount--;
+        } else if(HP == 0){
+            PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.solid, null ), 2 );
+            for (int i = 0; i < PathFinder.distance.length; i++) {
+                if (PathFinder.distance[i] < Integer.MAX_VALUE) {
+                    GameScene.add(Blob.seed(i, 10, Freezing.class));
+                    Char ch = Actor.findChar(i);
+                    if (ch != null){
+                        Buff.affect(ch, Frost.class, 2f);
+                    }
+                }
+            }
+        }
+        if(deathCount == 0 && HP == 0 && trueDied){
+            die(true);
+        }
         return super.act();
+    }
+
+    @Override
+    public boolean isAlive() {
+       if(trueDied){
+           return super.isAlive();
+       } else if(deathCount == 0 && HP == 0) {
+           HP = 0;
+           deathCount = 5;
+           state = PASSIVE;
+           trueDied = true;
+           return true;
+       }
+       return true;
     }
 
 
     @Override
     public int defenseProc( Char enemy, int damage ) {
 
-        PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.solid, null ), 2 );
+        PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.solid, null ), 1 );
         for (int i = 0; i < PathFinder.distance.length; i++) {
             if (PathFinder.distance[i] < Integer.MAX_VALUE) {
                 GameScene.add(Blob.seed(i, 20, Freezing.class));
@@ -66,10 +102,6 @@ public class VeryColdRat extends Mob {
     public void die( Object cause ) {
         super.die( cause );
         FrostBomb bomb = new FrostBomb();
-        Bomb.Fuse fuse = new Bomb.Fuse();
-        fuse.bomb = bomb;
-        bomb.fuse = fuse;
-        Actor.add(fuse, Actor.now);
         Dungeon.level.drop(bomb, pos).sprite.drop();
     }
 
@@ -82,7 +114,7 @@ public class VeryColdRat extends Mob {
                 buff.detach();
             }
         }
-        HP -= (int) (HT*0.05f);
+        damage((int) (HT*0.05f),this, DamageType.REAL);
         return super.attackProc(enemy, damage);
     }
 
@@ -100,5 +132,20 @@ public class VeryColdRat extends Mob {
     public int drRoll() {
         return super.drRoll() + Random.NormalIntRange(0, 3);
     }
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put("deathCount", deathCount);
+        bundle.put("trueDied", trueDied);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        deathCount = bundle.getInt("deathCount");
+        trueDied = bundle.getBoolean("trueDied");
+    }
+
 }
 
