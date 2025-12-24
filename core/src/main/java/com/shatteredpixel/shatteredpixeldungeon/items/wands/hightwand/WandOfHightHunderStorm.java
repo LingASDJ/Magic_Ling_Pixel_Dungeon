@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WorstStormCloud;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.StormCloudDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
@@ -148,6 +149,7 @@ public class WandOfHightHunderStorm extends DamageWand {
     @Override
     public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
         //acts like shocking enchantment
+        Buff.affect(attacker, Barrier.class).setShield(damage/4);
         new LightningOnHit().proc(staff, attacker, defender, damage);
     }
 
