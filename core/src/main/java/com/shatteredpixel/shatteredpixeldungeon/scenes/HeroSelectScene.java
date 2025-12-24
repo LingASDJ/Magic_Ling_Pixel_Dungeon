@@ -129,6 +129,9 @@ public class HeroSelectScene extends PixelScene {
 	private IconButton challengeButton;
 
 	private StyledButton holidayButton;
+
+	private static GrassPatch patch;
+
 	private IconButton btnExit;
 	private ArrayList<StyledButton> buttons;
 	@Override
@@ -192,19 +195,21 @@ public class HeroSelectScene extends PixelScene {
 		int nPatches = (int)(sky.width() / GrassPatch.WIDTH + 1);
 
 		for (int i=0; i < nPatches * 4; i++) {
-			GrassPatch patch = new GrassPatch( (i - 0.75f) * GrassPatch.WIDTH / 4, SKY_HEIGHT + 1, dayTime );
+			patch = new GrassPatch( (i - 0.75f) * GrassPatch.WIDTH / 4, SKY_HEIGHT + 1, dayTime,heroClass() );
 			patch.brightness( dayTime ? 0.7f : 0.4f );
 			window.add( patch );
 		}
 
-		a = new Avatar( heroClass() );
+
+		a = new Avatar(heroClass());
 		// Removing semitransparent contour
 		a.am = 2; a.aa = -1;
 		a.x = (SKY_WIDTH - a.width) / 2;
 		a.y = SKY_HEIGHT - a.height;
 		align(a);
+		window.add(a);
 
-		window.add( a );
+
 
 		//		TODO Large Skin
 		//		Image image = new Image( "splashes/giftskin_mage.png" );
@@ -223,7 +228,7 @@ public class HeroSelectScene extends PixelScene {
 		} );
 
 		for (int i=0; i < nPatches; i++) {
-			GrassPatch patch = new GrassPatch( (i - 0.5f) * GrassPatch.WIDTH, SKY_HEIGHT, dayTime );
+			patch = new GrassPatch( (i - 0.5f) * GrassPatch.WIDTH, SKY_HEIGHT, dayTime,heroClass() );
 			patch.brightness( dayTime ? 1.0f : 0.8f );
 			window.add( patch );
 		}
@@ -740,17 +745,36 @@ public class HeroSelectScene extends PixelScene {
 
 	private static class Avatar extends Image {
 
-		private static final int WIDTH	= 64;
-		private static final int HEIGHT	= 64;
+		private static final int WIDTH = 64;
+		private static final int HEIGHT = 64;
 
-		public Avatar( HeroClass cl ) {
-			super( cl.GetSkinAssest() );
-			frame( new TextureFilm( texture, WIDTH, HEIGHT ).get( cl.GetSkin() ) );
+		public Avatar(HeroClass cl) {
+			super();
+			updateAvatar(cl);
 		}
 
-		public void  heroClass( HeroClass cl ) {
-			texture(cl.GetSkinAssest());
-			frame( new TextureFilm( texture, WIDTH, HEIGHT ).get( cl.GetSkin() ) );
+		public void heroClass(HeroClass cl) {
+			updateAvatar(cl);
+		}
+
+		private void updateAvatar(HeroClass cl) {
+			// 特殊处理MAGE的第4个皮肤
+			if (cl == HeroClass.MAGE && cl.GetSkin() == 4) {
+				texture(TextureCache.get("splashes/giftskin_mage.png"));
+				// 不使用frame裁切，直接显示完整图片
+				frame(0, 0, 88, 120);
+				setPos(
+						0,
+						0
+				);
+				patch.setPos(0,1000);
+			} else {
+				// 其他皮肤使用原有的处理方式
+				texture(cl.GetSkinAssest());
+				frame(new TextureFilm(texture, WIDTH, HEIGHT).get(cl.GetSkin()));
+				x = (SKY_WIDTH - width) / 2;
+				y = SKY_HEIGHT - height;
+			}
 		}
 	}
 
@@ -767,7 +791,7 @@ public class HeroSelectScene extends PixelScene {
 
 		private boolean forward;
 
-		public GrassPatch( float tx, float ty, boolean forward ) {
+		public GrassPatch( float tx, float ty, boolean forward,HeroClass heroClass) {
 
 			super( Assets.Interfaces.SURFACE );
 
@@ -785,13 +809,13 @@ public class HeroSelectScene extends PixelScene {
 			a += Random.Float( Game.elapsed * 5 );
 			angle = (2 + Math.cos( a )) * (forward ? +0.2 : -0.2);
 
-
-
 			scale.y = (float)Math.cos( angle );
 
 			x = tx + (float)Math.tan( angle ) * width;
 			y = ty - scale.y * height;
 		}
+
+
 
 		@Override
 		protected void updateMatrix() {
