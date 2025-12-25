@@ -117,7 +117,7 @@ public class Morphs extends Boss {
 
             yell(Messages.get(this, "four_tone_active"));
             phase++;
-        } else if(phase >= 2.7 && phase < 3) {
+        } else if(phase >= 2.7 && phase <= 3) {
             Buff.detach(hero, MindVision.class);
             Dungeon.level.unseal();
 

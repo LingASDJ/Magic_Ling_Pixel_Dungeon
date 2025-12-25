@@ -222,16 +222,16 @@ public class VirtualControls extends Group {
         reloadButton.icon(Icons.get(Icons.CHANGES));
         add(reloadButton);
 
-        StyledButton skip = new StyledButton(Chrome.Type.WINDOW_SILVER, Messages.get(VirtualControls.class, "skip"), 6) {
-            @Override
-            protected void onClick() {
-                MoveBoxHollowActorLevel level = (Dungeon.level instanceof MoveBoxHollowActorLevel) ? (MoveBoxHollowActorLevel) Dungeon.level : null;
-                level.SkipGame = true;
-            }
-        };
-        skip.setRect(0, reloadButton.y + reloadButton.height(), 50, 20);
-        skip.icon(Icons.get(Icons.SKIP));
-        add(skip);
+//        StyledButton skip = new StyledButton(Chrome.Type.WINDOW_SILVER, Messages.get(VirtualControls.class, "skip"), 6) {
+//            @Override
+//            protected void onClick() {
+//                MoveBoxHollowActorLevel level = (Dungeon.level instanceof MoveBoxHollowActorLevel) ? (MoveBoxHollowActorLevel) Dungeon.level : null;
+//                level.SkipGame = true;
+//            }
+//        };
+//        skip.setRect(0, reloadButton.y + reloadButton.height(), 50, 20);
+//        skip.icon(Icons.get(Icons.SKIP));
+//        add(skip);
     }
 
 

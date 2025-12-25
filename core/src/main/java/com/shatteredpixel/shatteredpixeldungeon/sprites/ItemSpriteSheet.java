@@ -1278,6 +1278,8 @@ public class ItemSpriteSheet {
     public static final int SOUL_CRACK_D        = PROJECTILES + 4;
     public static final int SOUL_CRACK_E        = PROJECTILES + 5;
 
+    public static final int STAR_CRYSTAL       = PROJECTILES + 6;
+
     public static final int SCROLL_GOLEM        = PROJECTILES + 7;
 
 
@@ -1303,6 +1305,8 @@ public class ItemSpriteSheet {
 
         assignItemRect(SZJ_REBACK,            15, 15);
         assignItemRect(DEATHRONG_BOAT,            15, 15);
+
+        assignItemRect(STAR_CRYSTAL,                    9,16);
 
         assignItemRect(MAGNETIC_CROWN,            14, 13);
     }
