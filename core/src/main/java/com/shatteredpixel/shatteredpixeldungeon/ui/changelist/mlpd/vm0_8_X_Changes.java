@@ -112,6 +112,18 @@ public class vm0_8_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.STAR_CRYSTAL), ("新物品：星空水晶"),
                 ("完成古堡真结局后，卡戎商店将会有此商品，进入猩红剧院线的31层，将立刻前往最终决战。")));
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAGNETIC_CROWN), ("新神器：引力王冠"),
+                ("戴上这顶王冠时，你感受到了空间中微弱的磁力，这种力量也许能把你和其他生物拖向某一地点……\n" +
+                        "\n" +
+                        "使用消耗1点充能，点击任意视野内的地格，将距离那个地格最近的单位拖拽至此处，在一次使用中最多因此法位移3+等级*0.5格。\n" +
+                        "（如果有相同距离判定则优先拉敌人）\n" +
+                        "\n" +
+                        "当视野内的一次性陷阱被触发时获得10经验，每获得50+7*等级点经验神器升一级。\n" +
+                        "初始充能3，最大充能10，每升级一级获得一点最大充能。每50-等级回合恢复一点充能。\n" +
+                        "\n" +
+                        "神器充能效果为每回合恢复0.3点充能。\n" +
+                        "诅咒效果为无法使用。")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RITUAL_SWORD), ("新武器：仪式短剑"),
                 ("二阶，力量需求12\n" +
                         "\n" +
@@ -217,12 +229,14 @@ public class vm0_8_X_Changes {
                         "固定掉落一瓶经验，掉落11经验，最大经验等级为21级")));
 
         changes.addButton(new ChangeButton(new Image(new SpawnereEvilSprite()), ("新怪物：恶孽血巢"),
-                ("矮人术士是矮人中的掌权者，而这位更是术士的领导者，他对黑暗魔法的掌握远超其他术士，可以对目标造成更加严重的影响\n" +
-                        "85血，18-23攻击\n" +
-                        "防御为0-10，闪避为18，精准为28\n" +
-                        "远程攻击有2/3的概率让目标降级40回合，1/3概率让目标流血5-8，1/3概率让目标幻惑30回合，1/5的概率让目标失明12回合，如果触发了，每一种buff，就额外施加5回合虚弱\n" +
-                        "近战时，获得10-20的奥术护盾\n" +
-                        "固定掉落一瓶经验，掉落11经验，最大经验等级为21级")));
+                ("这一团矮人血肉比其他血巢更加活跃，浓厚的血气和死气正是恶魔们最好的食粮。\n" +
+                        "\n" +
+                        "血量上限140，防御0-12\n" +
+                        "每隔50/40/35/30回合召唤一只“恶魔盛宴”\n" +
+                        "大幅减少超过14的伤害\n" +
+                        "每受到1伤害减少1回合召唤cd\n" +
+                        "必定掉落治疗药水*1，大饼*1\n" +
+                        "掉落等级同血巢")));
 
         changes.addButton(new ChangeButton(new Image(new FodderSprite()), ("新怪物：'恶魔盛宴'"),
                 ("恶魔世界中非原生的存在，天生比正常的恶魔弱小。通过被其他的恶魔蚕食，它会成为强大恶魔的一部分。\n" +
@@ -241,6 +255,9 @@ public class vm0_8_X_Changes {
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战调整"),
                 ("变幻莫测：新增稀有怪全局生成概率提升10%")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.WARNING), ("错误报告历史记录"),
+                ("现在游戏崩溃后，错误报告将会记录在本地存储中，方便给开发者提供更多数据，以追查问题。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项调整"),
                 ("_-_ 新闻界面调整，现在可滚动（手机端用户请用新闻卡片缝隙处进行滑动，此UI将会在092继续调整）\n" +
