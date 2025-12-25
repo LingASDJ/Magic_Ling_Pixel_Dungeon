@@ -210,14 +210,4 @@ public class YogSoul extends Boss {
         super.damage(dmg, src, type);
     }
 
-    @Override
-    public void die( Object cause ) {
-        super.die(cause);
-        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-            if(mob instanceof Morphs){
-                ((Morphs) mob).phase+=0.40f;
-            }
-        }
-    }
-
 }
