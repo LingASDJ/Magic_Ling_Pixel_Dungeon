@@ -278,13 +278,20 @@ public class MageHand extends DirectableAlly {
         if (magesStaff != null) {
             Wand mwand = magesStaff.wand;
             if (mwand != null && wandCooldown == 0) {
-                // 如果有充能，使用法术攻击
                 if (mwand.curCharges > 0) {
                     return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
-                }
-                // 如果没有充能，检查是否可以近战攻击
-                else {
-                    return Dungeon.level.adjacent(pos, enemy.pos);
+                } else {
+                    // 检查法师之手天赋
+                    if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
+                        // 检查是否有其他可用法杖的充能
+                        for (Wand w : wands) {
+                            if (w.curCharges >= chargeNeeded) {
+                                return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
+                            } else {
+                                return Dungeon.level.adjacent(pos, enemy.pos);
+                            }
+                        }
+                    }
                 }
             }
         } else if (equippedWand != null && wandCooldown == 0) {
@@ -373,13 +380,6 @@ public class MageHand extends DirectableAlly {
                         return true;
                     }
                 } else {
-                    // 没有充能时进行近战攻击
-                    if (Dungeon.level.adjacent(pos, enemy.pos)) {
-                        if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                            sprite.attack(enemy.pos);
-                        }
-                        return false;
-                    }
                     // 检查法师之手天赋
                     if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
                         if (tryMysticalCharge()) {
@@ -392,6 +392,11 @@ public class MageHand extends DirectableAlly {
                             }
                         }
                     }
+                    // 没有充能时进行近战攻击
+                    if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                        sprite.attack(enemy.pos);
+                    }
+                    return false;
                 }
             }
         } else {
@@ -691,6 +696,6 @@ public class MageHand extends DirectableAlly {
             return level;
         }
     }
-    
-    
+
+
 }
