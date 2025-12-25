@@ -21,11 +21,16 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.SpawnEvil;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -33,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 
 public class DemonSpawnerRoom extends SpecialRoom {
 	@Override
@@ -48,8 +54,11 @@ public class DemonSpawnerRoom extends SpecialRoom {
 		Door door = entrance();
 		door.set(Door.Type.UNLOCKED);
 
+		float altChance = 1/50f * RatSkull.exoticChanceMultiplier();
+		float lanterChance = Dungeon.isChallenged(DHXD) && hero.lanterfire < 30 ? 0.35f : 0f;
+		float moreChance = Dungeon.isChallenged(MOREROOM) ? 0.1f : 0f;
 
-		if(1== 1){
+		if(Random.Float() < altChance + lanterChance + moreChance){
 			SpawnEvil spawner = new SpawnEvil();
 			spawner.pos = cx + cy * level.width();
 			level.mobs.add( spawner );
