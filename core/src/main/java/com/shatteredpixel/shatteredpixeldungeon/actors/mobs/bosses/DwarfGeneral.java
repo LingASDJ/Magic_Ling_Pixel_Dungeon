@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -1077,8 +1078,10 @@ public class DwarfGeneral extends Boss {
         PaswordBadges.UNLOCK_KING();
 
         if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.MEJ){
-            SPDSettings.unlockItem("avatars_mage_4");
-            GLog.p(Messages.get(DwarfGeneral.class, "mej") );
+            if(hero.subClass == HeroSubClass.BATTLEMAGE){
+                SPDSettings.unlockItem("avatars_mage_4");
+                GLog.p(Messages.get(DwarfGeneral.class, "mej") );
+            }
         }
 
         if(!SPDSettings.KillDwarf() && !Statistics.bossRushMode) {
