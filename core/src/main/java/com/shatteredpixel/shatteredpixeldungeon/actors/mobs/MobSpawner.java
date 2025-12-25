@@ -21,11 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CHAMPION_ENEMIES;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -59,6 +57,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Ghost_Hallowe
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.PumkingBomber;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Pumking_Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.allsearch.ShadowHunstman;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.BloodsSwarm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DM111;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DeadEye;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GhoulPlus;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GiantFlowerSlime;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.GuardCapital;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.NewBornCrab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.VeryColdRat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.WarlockHead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.GunHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
@@ -240,17 +247,17 @@ public class MobSpawner extends Actor {
 						//5x elemental, 5x warlock, 1x monk, 2x silvercrab
 						return new ArrayList<>(Arrays.asList(
 								Monk.class,
-								Shaman.random(), Artillerist.class));
+								Ghoul.class, Artillerist.class));
 					case 17:
 						//2x elemental, 2x warlock, 2x monk, 1x silvercrab
 						return new ArrayList<>(Arrays.asList(
-								Elemental.random(),
+								Ghoul.class,
 								Monk.class,FireGhost.class, Artillerist.class));
 					case 18:
 						//1x elemental, 1x warlock, 2x monk, 3x golem
 						return new ArrayList<>(Arrays.asList(
-								Elemental.random(),
-								Random.NormalFloat(1,6)>=3 ? BruteBot.class : Warlock.class,
+								Ghoul.class,
+								Random.NormalFloat(1,10)>=3 ? BruteBot.class : Warlock.class,
 								Monk.class, RoyalGuard.class,
 								Golem.class,FireGhost.class, Artillerist.class));
 					case 19:
@@ -258,12 +265,12 @@ public class MobSpawner extends Actor {
 						return new ArrayList<>(Arrays.asList(
 								Monk.class,RoyalGuard.class,RoyalGuard.class,
 								Golem.class, Warlock.class,ShieldHuntsman.class,
-								Random.NormalFloat(1,6)>3 ? BruteBot.class : Warlock.class, Artillerist.class));
+								Random.NormalFloat(1,10)>3 ? BruteBot.class : Warlock.class, Artillerist.class));
 					case 20:
 						//1x elemental, 1x warlock, 2x monk, 3x golem
 						return new ArrayList<>(Arrays.asList(
 								Elemental.random(),
-								Random.NormalFloat(1,6)>3 ? BruteBot.class : Warlock.class,
+								Random.NormalFloat(1,10)>3 ? BruteBot.class : Warlock.class,
 								Monk.class,
 								Golem.class, Golem.class,Ice_Scorpio.class, Fire_Scorpio.class));
 
@@ -406,17 +413,17 @@ public class MobSpawner extends Actor {
 						//5x elemental, 5x warlock, 1x monk, 2x silvercrab
 						return new ArrayList<>(Arrays.asList(
 								Monk.class,
-								Shaman.random()));
+								Ghoul.class));
 					case 17:
 						//2x elemental, 2x warlock, 2x monk, 1x silvercrab
 						return new ArrayList<>(Arrays.asList(
 								Elemental.random(),
-								Monk.class,FireGhost.class));
+								Monk.class,Ghoul.class));
 					case 18:
 						//1x elemental, 1x warlock, 2x monk, 3x golem
 						return new ArrayList<>(Arrays.asList(
 								Elemental.random(),
-								Random.NormalFloat(1,6)>=3 ? BruteBot.class : Warlock.class,
+								Random.NormalFloat(1,10)>=3 ? BruteBot.class : Warlock.class,
 								Monk.class,
 								Golem.class,FireGhost.class));
 					case 19:
@@ -424,12 +431,12 @@ public class MobSpawner extends Actor {
 						return new ArrayList<>(Arrays.asList(
 								Monk.class,
 								Golem.class, Warlock.class,ShieldHuntsman.class,
-								Random.NormalFloat(1,6)>3 ? BruteBot.class : Warlock.class));
+								Random.NormalFloat(1,10)>3 ? BruteBot.class : Warlock.class));
 					case 20:
 						//1x elemental, 1x warlock, 2x monk, 3x golem
 						return new ArrayList<>(Arrays.asList(
 								Elemental.random(),
-								Random.NormalFloat(1,6)>3 ? BruteBot.class : Warlock.class,
+								Random.NormalFloat(1,10)>3 ? BruteBot.class : Warlock.class,
 								Monk.class,
 								Golem.class, Golem.class,Ice_Scorpio.class));
 
@@ -739,20 +746,24 @@ public class MobSpawner extends Actor {
 
 	//switches out regular mobs for their alt versions when appropriate
 	private static void swapMobAlts(ArrayList<Class<?extends Mob>> rotation){
-		float altChance = 1/50f * RatSkull.exoticChanceMultiplier();
 
-		//寂灭灯火1.0
-		float lanterChance = Dungeon.isChallenged(DHXD) && hero.lanterfire < 30 ? 0.35f : -1;
+		float altChance = 1/50f * RatSkull.exoticChanceMultiplier();
+		float lanterChance = Dungeon.isChallenged(DHXD) && hero.lanterfire < 30 ? 0.35f : 0f;
+		float moreChance = Dungeon.isChallenged(MOREROOM) ? 0.1f : 0f;
 
 		for (int i = 0; i < rotation.size(); i++){
-			if (Random.Float() < altChance || Dungeon.isChallenged(CS) && (!Dungeon.isChallenged(SBSG) || !Dungeon.isChallenged(CHAMPION_ENEMIES)) && Random.Float() < altChance || Random.Float() < lanterChance ) {
+			if (Random.Float() < lanterChance + altChance + moreChance ) {
 				Class<? extends Mob> cl = rotation.get(i);
-				if (cl == FlowerSlime.class) {
+				if (cl == Rat.class) {
 					cl = Albino.class;
+				} else if (cl == FlowerSlime.class) {
+					cl = GiantFlowerSlime.class;
 				} else if (cl == Katydid.class) {
 					cl = Salamander.class;
+				} else if (cl == Crab.class) {
+					cl = NewBornCrab.class;
 				} else if (cl == Guard.class) {
-					cl = SRPDHBLR.class;
+					cl = GuardCapital.class;
 				} else if (cl == Thief.class) {
 					cl = Bandit.class;
 				} else if (cl == Necromancer.class) {
@@ -761,10 +772,18 @@ public class MobSpawner extends Actor {
 					cl = NewBlackHost.class;
 				} else if (cl == Brute.class) {
 					cl = ArmoredBrute.class;
+				} else if (cl == DM100.class) {
+					cl = DM111.class;
 				} else if (cl == DM200.class) {
 					cl = DM201.class;
+				} else if (cl == ColdMagicRat.class) {
+					cl = VeryColdRat.class;
 				} else if (cl == Monk.class) {
 					cl = Senior.class;
+				} else if (cl == Warlock.class) {
+					cl = WarlockHead.class;
+				} else if (cl == Ghoul.class) {
+					cl = GhoulPlus.class;
 				} else if (cl == Golem.class) {
 					cl = IceGolem.class;
 				} else if (cl == Scorpio.class) {
@@ -772,7 +791,7 @@ public class MobSpawner extends Actor {
 				} else if (cl == Spinner.class) {
 					cl = GnollShiled.class;
 				} else if (cl == RedSwarm.class) {
-					cl = RedNecromancer.class;
+					cl = BloodsSwarm.class;
 				} else if (cl == Elemental.class && Dungeon.isChallenged(RLPT)) {
 					cl = RandomBlueFireDE.class;
 				} else if (cl == FireGhost.class && Dungeon.isChallenged(RLPT)) {
@@ -783,6 +802,8 @@ public class MobSpawner extends Actor {
 					cl = MolotovHuntsman.class;
 				} else if (cl == MobsUtilsRoom.DM275RPG_SP.class) {
 					cl = MobsUtilsRoom.DM275X.class;
+				} else if (cl == Eye.class) {
+					cl = DeadEye.class;
 				}
 				rotation.set(i, cl);
 			}
