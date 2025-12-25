@@ -34,12 +34,14 @@ public class GhoulPlus extends Mob {
     }
 
     public void gainBuffFromGhoulDeath() {
-        HP = Math.min(HP + 50, HT);
+        HP += 50;
+        if (HP > HT) {
+            HP = HT;
+        }
         permanentHPBonus += 30;
         permanentAttackBonus += 10;
         permanentDefenseBonus += 5;
         HT = 100 + permanentHPBonus;
-        HP = Math.min(HP, HT);
     }
 
     @Override
