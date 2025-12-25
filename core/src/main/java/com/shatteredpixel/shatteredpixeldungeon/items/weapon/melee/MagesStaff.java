@@ -734,7 +734,7 @@ public class MagesStaff extends MeleeWeapon {
         public static final String AC_DIRECT = "DIRECT";
 
         {
-            defaultAction = AC_HAND;
+            defaultAction = AC_DIRECT;
             image = ItemSpriteSheet.WAND_HAND_CONTROL;
         }
 

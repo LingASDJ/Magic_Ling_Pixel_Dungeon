@@ -59,7 +59,7 @@ public class WandOfMagicMissile extends DamageWand {
 	
 	@Override
 	public void onZap(Ballistica bolt) {
-				
+		if (curUser == null) return;
 		Char ch = Actor.findChar( bolt.collisionPos );
 		if (ch != null) {
 
