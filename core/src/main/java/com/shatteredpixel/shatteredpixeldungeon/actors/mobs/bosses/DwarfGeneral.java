@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.KingAxe;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -1074,6 +1075,11 @@ public class DwarfGeneral extends Boss {
         Badges.validateBossSlain();
 
         PaswordBadges.UNLOCK_KING();
+
+        if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.MEJ){
+            SPDSettings.unlockItem("avatars_mage_4");
+            GLog.p(Messages.get(DwarfGeneral.class, "mej") );
+        }
 
         if(!SPDSettings.KillDwarf() && !Statistics.bossRushMode) {
             DwarfGeneralNTNPC boss = new DwarfGeneralNTNPC();
