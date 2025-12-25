@@ -47,6 +47,7 @@ public class Gift implements Bundlable {
 
             "TkZZSUcsMTc1NDU4MjQwMCxmYWxzZQ==",
             "QVJNWURBWSwxNzU0NTgyNDAwLGZhbHNl",
+            "TWVycnlDaHJpc3RtYXMsMTc2NzE5NjgwMCxmYWxzZQ==",
 
             //GQJ 国庆节
             "Q2hpbmFCaXJ0aERheSwxNzU5ODU2NDQ5LGZhbHNl"
@@ -124,6 +125,14 @@ public class Gift implements Bundlable {
         code10.put( "com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems", 1 );
         code10.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.ZakoSoup", 1 );
         tempMap.put("SEVMTE8tTUxQRC1WMC45",code10);
+
+        LinkedHashMap<String, Integer> code11 = new LinkedHashMap<>();
+        code11.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 720 );
+        code11.put( "com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade", 2 );
+        code11.put( "com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems", 2 );
+        code11.put( "com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.Break", 1 );
+        code11.put( "com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace$AnkhAlt", 1 );
+        tempMap.put("TWVycnlDaHJpc3RtYXM=",code11);
 
 
         GIFT_ITEM = new HashMap<>( Collections.unmodifiableMap( tempMap ) );

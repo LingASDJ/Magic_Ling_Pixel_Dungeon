@@ -74,7 +74,7 @@ public class VeryColdRat extends Mob {
            return super.isAlive();
        } else if(deathCount == 0 && HP == 0) {
            HP = 0;
-           deathCount = 5;
+           deathCount = 4;
            state = PASSIVE;
            trueDied = true;
            if (Dungeon.hero.lvl > maxLvl + 2) {

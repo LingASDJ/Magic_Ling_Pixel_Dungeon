@@ -23,7 +23,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShubNiggurathSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -102,7 +101,6 @@ public class ShubNiggurath extends Boss {
                             maxReHeal++;
                             Buff.prolong(hero, MindVision.class, 50000);
                         }
-                        GLog.n(String.valueOf(maxReHeal));
                         if(maxReHeal>=9){
                             die(true);
                             if (mob instanceof ShubNiggurathClone){
@@ -362,12 +360,6 @@ public class ShubNiggurath extends Boss {
         if(getClass() == ShubNiggurath.class) {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 isShubCloneAlive = mob instanceof ShubNiggurathClone;
-            }
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if(mob instanceof Morphs && !isShubCloneAlive && !notFirst){
-                    ((Morphs) mob).phase += 0.30f;
-                    break;
-                }
             }
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (mob instanceof ShubNiggurathClone) {

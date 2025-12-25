@@ -68,16 +68,6 @@ public class Nyarlathotep extends Boss {
     }
 
     @Override
-    public void die( Object cause ) {
-        super.die(cause);
-        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-            if(mob instanceof Morphs){
-                ((Morphs) mob).phase+=0.30f;
-            }
-        }
-    }
-
-    @Override
     public int damageRoll() {
         return Random.NormalIntRange( 10, 25 );
     }

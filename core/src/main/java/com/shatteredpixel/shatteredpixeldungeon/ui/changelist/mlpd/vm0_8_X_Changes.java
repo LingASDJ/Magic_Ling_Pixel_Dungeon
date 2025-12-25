@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.ArtilleristSprite;
@@ -14,16 +15,25 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ApprenticeWitchSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BloodsSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ButcherSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CrabSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusStarFruitsSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM111Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadDogCerberusSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadEyeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DreamSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireDragonSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FodderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FrankensteinSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostHalloweenSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulPlusSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GiantFlowerSlimeSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GuardCapitalSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteSprite;
@@ -33,10 +43,14 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.PumkingGhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.QliphothSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.QuestionSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShieldHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShubNiggurathSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SkyDeadSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SpawnereEvilSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.VeryColdRatSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WarlockHeadSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSoulSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
@@ -54,6 +68,7 @@ public class vm0_8_X_Changes {
 
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0910_Changes(changeInfos);
         add_V0900_Changes(changeInfos);
         add_V0880_Changes(changeInfos);
         add_V0874_Changes(changeInfos);
@@ -75,6 +90,182 @@ public class vm0_8_X_Changes {
         add_V0805_Changes(changeInfos);
         add_V0801_Changes(changeInfos);
         add_V0800M1_Changes(changeInfos);
+    }
+
+    public static void add_V0910_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.9.1.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.MAGE, 13), "新皮肤：晚宴邀请",
+                "2025.12.25-2026.1.1 0点前，完成特别委托任务，获得此皮肤。\n\n" +
+                        "未在活动期间完成委托的，将在0.9.2更新后以 _1500_钴币在时装商人处购买\n\n" +
+                        "             --Art Design By:戈壁滩-Seagull"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：MerryChristmas"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期至：2026年1月1日0：00前。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.STAR_CRYSTAL), ("新物品：星空水晶"),
+                ("完成古堡真结局后，卡戎商店将会有此商品，进入猩红剧院线的31层，将立刻前往最终决战。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RITUAL_SWORD), ("新武器：仪式短剑"),
+                ("二阶，力量需求12\n" +
+                        "\n" +
+                        "初始3-15，成长1-3\n" +
+                        "\n" +
+                        "这把武器不会被诅咒，并且使献祭仪式更加高效（只需要杀一个怪）。\n" +
+                        "\n" +
+                        "曾被主教用于主持多场宗教仪式。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREE_LIST), ("新武器：树痕"),
+                ("二阶，力量需求13\n" +
+                        "\n" +
+                        "初始3-14，成长1-3\n" +
+                        "\n" +
+                        "初始护甲0-3，成长0-1\n" +
+                        "\n" +
+                        "这把武器会吸收自然损失的护盾值，上限为25+15*区域数\n" +
+                        "\n" +
+                        "10*等级，攻击也会积攒2+0.2*等级点护盾。可以花费1回合将这些护盾释放出来。\n" +
+                        "\n" +
+                        "能够吸收空气中魔力生长的植物。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SAD_MAGIC_BOOK), ("新武器：悲情法典"),
+                ("三阶，力量需求14\n" +
+                        "\n" +
+                        "初始2-20，成长2-2\n" +
+                        "\n" +
+                        "使用这把武器击杀敌人后，有（10+3*等级）%的概率鉴定背包内的一件随机物品。\n" +
+                        "\n" +
+                        "这本书上记载着一些称得上悲惨的内容，包括无饭可吃而被迫食用简单处理的怪物肉、被逐渐石化致死，甚至包括变形为非知性体，金属制品的过程。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SHEPHERD_FLUTE), ("新武器：牧笛"),
+                ("三阶，力量需求14\n" +
+                        "\n" +
+                        "初始2-9，成长1-2，攻击距离10\n" +
+                        "\n" +
+                        "目标距离你每有1距离，对其造成的攻击伤害减少10%，攻击无视物理防御并造成法术伤害。\n" +
+                        "\n" +
+                        "城郊牧笛声落在那座野村，缘分落地生根是我们。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BREAK), ("新武器：破军"),
+                ("五阶，力量需求18\n" +
+                        "\n" +
+                        "初始6-28，成长1-6\n" +
+                        "\n" +
+                        "当你装备着这把武器时，对生命值低于50%的敌人造成的伤害提升（30+3*等级）%，若使用这把武器攻击，则效果提升至（100+10*等级）%\n" +
+                        "\n" +
+                        "孩子们，等我……")));
+
+        Image gf = new Image(new GiantFlowerSlimeSprites());
+        gf.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(gf, ("新怪物：巨型繁花史莱姆"),
+                ("相对来说比较稀有的繁花史莱姆，因为体型更大导致粘上了更多的植物和种子，并因此导致攻击可能会产生植物的效果\n" +
+                        "14血，2闪，1速，8命中，2经验，最高5等级获取经验\n" +
+                        "攻击时有1/3的概率施加2回合火焰，1/3概率施加3回合冻伤，1/3概率施加5回合缠绕，1/5概率5回合植物疗养或者2回合时空气泡\n" +
+                        "掉落俩种子。")));
+
+        changes.addButton(new ChangeButton(new Image(new CrabSprite.NewBornCrabSprite()), ("新怪物：新生螃蟹"),
+                ("丛林螃蟹的青年体，甲壳还未发育成熟，因此防御会更脆弱，但是速度会更快，动作会更灵活\n" +
+                        "12血，1-7攻击，0-3防御，移动速度为2.5闪避为6，命中为12，掉落等级和螃蟹一样\n" +
+                        "掉落奇怪的肉一块")));
+
+        changes.addButton(new ChangeButton(new Image(new DM111Sprite()), ("新怪物：DM-111"),
+                ("dm100的加强版本，其实是第一版加强，但是第二版已经叫dm200了，拥有更强的火力，更厚重的装甲，并且可以蓄力放电制服犯人，但是引擎没有跟上，所以移动速度会更慢\n" +
+                        "35血，4-10攻击，远程5-13，防御为0-6，可以蓄力俩回合造成5-15伤害的远程攻击，并施加3回合麻痹，蓄力攻击会被水传导，不传导麻痹效果，只传导伤害，移动速度0.5蓄力攻击后2-8回合不能攻击\n" +
+                        "掉落一张充能卷轴，7经验，最高13等级")));
+
+        changes.addButton(new ChangeButton(new Image(new GuardCapitalSprite()), ("新怪物：狱卒小队长"),
+                ("作为狱卒的小头领，相比其他狱卒更加强壮，但不使用锁链将犯人拉近而是更习惯将犯人击退或配合其他狱卒远程攻击\n" +
+                        "50血 6-16攻击 防御0-7 闪避12 命中12，远程攻击伤害6-12\n" +
+                        "玩家靠近时将玩家击退3格，不会掉入悬崖，优先寻找其他狱卒一起行动，单独行动时遇到玩家会保持距离，在其他狱卒附近会保持攻击玩家，击退玩家有20回合冷却，7经验14等级\n" +
+                        "掉落随机护甲武器")));
+
+        changes.addButton(new ChangeButton(new Image(new VeryColdRatSprite()), ("新怪物：极寒冰鼠"),
+                ("长期的寒冷环境与冰系魔力导致其体内魔力狂暴而又非常不稳定\n" +
+                        "70血，攻击15-25，5闪避，20精准，1.5速，0-3防\n" +
+                        "周身一直散发冰寒气体(类似腐鼠)，\n" +
+                        "攻击会对冻伤回合数>8的单位冻结\n" +
+                        "战斗状态下每回合损失5%最大生命值，没有目标时每回合回复5%最大生命值\n" +
+                        "死亡前必定掉落一个冰霜炸弹，并且自身_4回合后_会产生一次爆炸，范围与效果等同寒霜炸弹\n" +
+                        "8经验，最高16等级")));
+
+        changes.addButton(new ChangeButton(new Image(new BloodsSwarmSprite()), ("新怪物：血红蝇群"),
+                ("因为过于寒冷导致血红苍蝇依靠挤一起取暖，一起行动，攻击会导致他们分裂开，非常危险\n" +
+                        "被攻击扣20%血当前血量分裂出一只火苍蝇，分裂出来的火苍蝇会和蝇群一起行动，和火苍蝇一样，会远程攻击\n" +
+                        "80血，攻击5-10，防御0-2，闪避15，命中20，掉落等级和火苍蝇一样，必定掉落一瓶磷火")));
+
+        Image js = new Image(new GhoulPlusSprite());
+        js.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(js, ("新怪物：矮人尸山"),
+                ("矮人尸群拥有可以源源不断战斗的能力，但是魔法总是不那么可靠，所以他们在恢复的时候粘到一起了，并且在不停的吸收其他的尸群\n" +
+                        "会主动和其他尸群一起行动，如果旁边有尸群存在则会削弱他们并加强自身\n" +
+                        "生成时代替一组尸群，不再生成俩只尸群而是只生成一只尸山，尸山会优先向其他尸群移动并和其他尸群一起行动\n" +
+                        "尸山5x5范围内每有一只尸群尸山获得15%减伤和15%的攻击加成，尸山附近的尸群受到的伤害增加30%，附近的尸群死亡会直接死亡，并让尸山回复50点血量并增加30血上限和10点攻击力和5点防御\n" +
+                        "初始100血，15-20攻击，0-3防御，闪避10，命中25，必定掉落4倍矮人尸群的金币，经验，经验等级同尸群")));
+
+        changes.addButton(new ChangeButton(new Image(new WarlockHeadSprite()), ("新怪物：矮人首席术士"),
+                ("矮人术士是矮人中的掌权者，而这位更是术士的领导者，他对黑暗魔法的掌握远超其他术士，可以对目标造成更加严重的影响\n" +
+                        "85血，18-23攻击\n" +
+                        "防御为0-10，闪避为18，精准为28\n" +
+                        "远程攻击有2/3的概率让目标降级40回合，1/3概率让目标流血5-8，1/3概率让目标幻惑30回合，1/5的概率让目标失明12回合，如果触发了，每一种buff，就额外施加5回合虚弱\n" +
+                        "近战时，获得10-20的奥术护盾\n" +
+                        "固定掉落一瓶经验，掉落11经验，最大经验等级为21级")));
+
+        changes.addButton(new ChangeButton(new Image(new SpawnereEvilSprite()), ("新怪物：恶孽血巢"),
+                ("矮人术士是矮人中的掌权者，而这位更是术士的领导者，他对黑暗魔法的掌握远超其他术士，可以对目标造成更加严重的影响\n" +
+                        "85血，18-23攻击\n" +
+                        "防御为0-10，闪避为18，精准为28\n" +
+                        "远程攻击有2/3的概率让目标降级40回合，1/3概率让目标流血5-8，1/3概率让目标幻惑30回合，1/5的概率让目标失明12回合，如果触发了，每一种buff，就额外施加5回合虚弱\n" +
+                        "近战时，获得10-20的奥术护盾\n" +
+                        "固定掉落一瓶经验，掉落11经验，最大经验等级为21级")));
+
+        changes.addButton(new ChangeButton(new Image(new FodderSprite()), ("新怪物：'恶魔盛宴'"),
+                ("恶魔世界中非原生的存在，天生比正常的恶魔弱小。通过被其他的恶魔蚕食，它会成为强大恶魔的一部分。\n" +
+                        "同恶魔撕裂者，但只有一半移速。会成为其他任何一种敌怪的攻击目标，被其他敌怪击杀时，完全治疗那个敌怪后赋予其等于最大生命一半的奥术护盾，并赋予其随机精英/突变双词条。生命上限50，攻击为10-20，命中为30，防御为0，攻击延迟0.5，闪避为15，不会攻击其他怪物，被其他怪物攻击时必中，不掉落东西，不获得经验")));
+
+        Image vs = new Image(new DeadEyeSprite());
+        vs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(vs, ("新怪物：毁灭魔眼"),
+                ("魔眼是一种邪眼的变体，拥有和邪眼一样的能力，但是比邪眼更容易发现敌人，其的死亡凝视比邪眼更具破坏性，也许你不应该和他硬碰硬\n" +
+                        "110血，攻击为22-35，防御0-10，闪避20，命中30，视野距离8\n" +
+                        "蓄力2回合射出死亡凝视，攻击30-50，蓄力期间免伤3/4，解离被死亡凝视命中的玩家背包中的除贵重物品和武甲背包以外的物品2-3件，掉落复仇一张，掉落13经验，26获取等级")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战调整"),
+                ("变幻莫测：新增稀有怪全局生成概率提升10%")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项调整"),
+                ("_-_ 新闻界面调整，现在可滚动（手机端用户请用新闻卡片缝隙处进行滑动，此UI将会在092继续调整）\n" +
+                        "_-_ 新闻界面现在可以读取置顶卡片，链接需求卡片\n" +
+                        "_-_ 皮肤系统底层升级\n" +
+                        "_-_ 部分素材优化迭代")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了上个版本的诸多问题。"));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new RedNecromancerSprite(), ("豺狼祭司"),
+                ("此怪物在生成中移除，但仍然保留在开发者模式和图鉴中。")));
+
+        changes.addButton(new ChangeButton(new SRPDHBLRTT(), ("火把猎人"),
+                ("此怪物在生成中移除，仅能在特殊房间中生成，但仍然保留在开发者模式和图鉴中。")));
+
+        Image ss =new ShubNiggurathSprite();
+        ss.scale.set(PixelScene.align(0.4f));
+        changes.addButton(new ChangeButton(ss, ("莎布·尼古拉丝"),
+                ("分裂个体至多为9个，超过这个后不再自动分裂，攻击也无法自动分裂")));
     }
 
     public static void add_V0900_Changes(ArrayList<ChangeInfo> changeInfos ) {

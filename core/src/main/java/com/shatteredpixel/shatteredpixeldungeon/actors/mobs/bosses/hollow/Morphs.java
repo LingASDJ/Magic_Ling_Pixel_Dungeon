@@ -43,6 +43,8 @@ public class Morphs extends Boss {
 
     public boolean FourToneActive = false;
 
+    public boolean ThreePhaseActive = false;
+
     public float phase;
 
     public boolean EndStory = false;
@@ -117,42 +119,55 @@ public class Morphs extends Boss {
 
             yell(Messages.get(this, "four_tone_active"));
             phase++;
-        } else if(phase >= 2.7 && phase <= 3) {
-            Buff.detach(hero, MindVision.class);
-            Dungeon.level.unseal();
+        } else if(phase >= 1 && !ThreePhaseActive) {
+            // 检查三个boss是否都死亡
+            boolean allDead = true;
+            for (Char ch : Actor.chars()) {
+                if ((ch instanceof ShubNiggurath || ch instanceof Nyarlathotep || ch instanceof YogSoul) && ch.isAlive()) {
+                    allDead = false;
+                    break;
+                }
+            }
 
-            yell(Messages.get(this, "phase_tone_active"));
+            // 如果三个boss都已死亡，则进入第三阶段
+            if (allDead) {
+                Buff.detach(hero, MindVision.class);
+                Dungeon.level.unseal();
 
-            MyCoreHeart myCoreHeart = new MyCoreHeart();
-            myCoreHeart.pos = 312;
-            GameScene.add(myCoreHeart);
-            BossHealthBar.assignBoss(myCoreHeart);
+                yell(Messages.get(this, "phase_tone_active"));
 
-            Buff.detach(hero, SliceDeadBless.class);
+                MyCoreHeart myCoreHeart = new MyCoreHeart();
+                myCoreHeart.pos = 312;
+                GameScene.add(myCoreHeart);
+                BossHealthBar.assignBoss(myCoreHeart);
 
-            TowerGodsBad towerGodsBad = new TowerGodsBad();
-            towerGodsBad.pos = 304;
-            GameScene.add(towerGodsBad);
+                Buff.detach(hero, SliceDeadBless.class);
 
-            TowerTimeBad towerTimeBad = new TowerTimeBad();
-            towerTimeBad.pos = 512;
-            GameScene.add(towerTimeBad);
+                TowerGodsBad towerGodsBad = new TowerGodsBad();
+                towerGodsBad.pos = 304;
+                GameScene.add(towerGodsBad);
 
-            TowerMachineBad towerMachineBad = new TowerMachineBad();
-            towerMachineBad.pos = 112;
-            GameScene.add(towerMachineBad);
+                TowerTimeBad towerTimeBad = new TowerTimeBad();
+                towerTimeBad.pos = 512;
+                GameScene.add(towerTimeBad);
 
-            TowerMindBad towerMindBad = new TowerMindBad();
-            towerMindBad.pos = 320;
-            GameScene.add(towerMindBad );
+                TowerMachineBad towerMachineBad = new TowerMachineBad();
+                towerMachineBad.pos = 112;
+                GameScene.add(towerMachineBad);
 
-            ScrollOfTeleportation.appear(this,562);
+                TowerMindBad towerMindBad = new TowerMindBad();
+                towerMindBad.pos = 320;
+                GameScene.add(towerMindBad);
 
-            phase++;
+                ScrollOfTeleportation.appear(this,562);
+                ThreePhaseActive = true;
+                phase = 2;
+            }
         }
 
         return super.act();
     }
+
 
     @Override
     public void notice() {
@@ -195,6 +210,7 @@ public class Morphs extends Boss {
         bundle.put(FTAV, FourToneActive);
         bundle.put("phase", phase);
         bundle.put(XDFR, EndStory);
+        bundle.put("ThreePhaseActive", ThreePhaseActive);
     }
 
     @Override
@@ -203,6 +219,7 @@ public class Morphs extends Boss {
         FourToneActive = bundle.getBoolean(FTAV);
         phase = bundle.getFloat("phase");
         EndStory = bundle.getBoolean(XDFR);
+        ThreePhaseActive = bundle.getBoolean("ThreePhaseActive");
     }
 
     public void activate(){
