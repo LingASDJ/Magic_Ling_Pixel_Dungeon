@@ -200,7 +200,6 @@ public class HeroSelectScene extends PixelScene {
 			window.add( patch );
 		}
 
-
 		a = new Avatar(heroClass());
 		// Removing semitransparent contour
 		a.am = 2; a.aa = -1;
@@ -208,15 +207,6 @@ public class HeroSelectScene extends PixelScene {
 		a.y = SKY_HEIGHT - a.height;
 		align(a);
 		window.add(a);
-
-
-
-		//		TODO Large Skin
-		//		Image image = new Image( "splashes/giftskin_mage.png" );
-		//		image.x = (SKY_WIDTH - image.width) / 2;
-		//		image.y = SKY_HEIGHT - image.height;
-		//		align(image);
-		//		window.addToFront( image );
 
 		window.add( new PointerArea( a ) {
 			protected void onClick( PointerEvent event ) {
@@ -228,9 +218,14 @@ public class HeroSelectScene extends PixelScene {
 		} );
 
 		for (int i=0; i < nPatches; i++) {
-			patch = new GrassPatch( (i - 0.5f) * GrassPatch.WIDTH, SKY_HEIGHT, dayTime,heroClass() );
-			patch.brightness( dayTime ? 1.0f : 0.8f );
-			window.add( patch );
+			if (!(heroClass() == HeroClass.MAGE && heroClass().GetSkin() == 4)) {
+				patch = new GrassPatch( (i - 0.5f) * GrassPatch.WIDTH, SKY_HEIGHT, dayTime,heroClass() );
+				patch.brightness( dayTime ? 1.0f : 0.8f );
+				window.add(patch);
+			} else {
+				patch.visible = false;
+				window.visible = false;
+			}
 		}
 
 		frame = new Image( SPDSettings.ClassUI() ? Assets.Interfaces.NEW_MENU : Assets.Interfaces.NEW_MENU_DARK );
@@ -806,13 +801,18 @@ public class HeroSelectScene extends PixelScene {
 		@Override
 		public void update() {
 			super.update();
-			a += Random.Float( Game.elapsed * 5 );
-			angle = (2 + Math.cos( a )) * (forward ? +0.2 : -0.2);
+			if ((heroClass() == HeroClass.MAGE && heroClass().GetSkin() == 4)) {
+				visible = false;
+			} else {
+				a += Random.Float( Game.elapsed * 5 );
+				angle = (2 + Math.cos( a )) * (forward ? +0.2 : -0.2);
 
-			scale.y = (float)Math.cos( angle );
+				scale.y = (float)Math.cos( angle );
 
-			x = tx + (float)Math.tan( angle ) * width;
-			y = ty - scale.y * height;
+				x = tx + (float)Math.tan( angle ) * width;
+				y = ty - scale.y * height;
+				visible = true;
+			}
 		}
 
 

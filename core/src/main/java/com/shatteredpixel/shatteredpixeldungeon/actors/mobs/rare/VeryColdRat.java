@@ -9,11 +9,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.FrostBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VeryColdRatSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -52,20 +55,15 @@ public class VeryColdRat extends Mob {
         if(deathCount != 0){
             sprite.showStatus(CharSprite.NEGATIVE, String.valueOf(deathCount));
             deathCount--;
-        } else if(HP == 0){
-            PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.solid, null ), 2 );
-            for (int i = 0; i < PathFinder.distance.length; i++) {
-                if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-                    GameScene.add(Blob.seed(i, 10, Freezing.class));
-                    Char ch = Actor.findChar(i);
-                    if (ch != null){
-                        Buff.affect(ch, Frost.class, 2f);
-                    }
-                }
-            }
         }
         if(deathCount == 0 && HP == 0 && trueDied){
             die(true);
+            FrostBomb bomb = new FrostBomb();
+            Bomb.Fuse fuse = new Bomb.Fuse();
+            fuse.bomb = bomb;
+            bomb.fuse = fuse;
+            Actor.add(fuse, Actor.now);
+            Dungeon.level.drop(bomb, pos).sprite.drop();
         }
         return super.act();
     }
@@ -79,6 +77,11 @@ public class VeryColdRat extends Mob {
            deathCount = 5;
            state = PASSIVE;
            trueDied = true;
+           if (Dungeon.hero.lvl > maxLvl + 2) {
+               FrostBomb bomb = new FrostBomb();
+               Dungeon.level.drop(bomb, enemy != null ? enemy.pos : Dungeon.hero.pos).sprite.drop();
+           }
+           GLog.n(Messages.get(this, "bomb"));
            return true;
        }
        return true;
@@ -96,13 +99,6 @@ public class VeryColdRat extends Mob {
         }
 
         return super.defenseProc(enemy, damage);
-    }
-
-    @Override
-    public void die( Object cause ) {
-        super.die( cause );
-        FrostBomb bomb = new FrostBomb();
-        Dungeon.level.drop(bomb, pos).sprite.drop();
     }
 
     @Override
