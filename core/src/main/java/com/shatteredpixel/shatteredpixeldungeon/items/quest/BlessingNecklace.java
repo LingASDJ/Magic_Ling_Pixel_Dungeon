@@ -18,6 +18,7 @@ public class BlessingNecklace extends Ankh {
         blessed = true;
         cursedKnown = levelKnown = true;
         bones = false;
+        AnkhAlt ankhAlt = new AnkhAlt();
     }
 
     public String desc() {
