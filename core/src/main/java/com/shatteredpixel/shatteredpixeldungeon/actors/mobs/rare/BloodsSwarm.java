@@ -33,8 +33,6 @@ public class BloodsSwarm extends Mob {
         properties.add(Property.UNDEAD);
     }
 
-
-
     @Override
     public int damageRoll() {
         return Random.NormalIntRange( 5, 10 );
@@ -61,13 +59,15 @@ public class BloodsSwarm extends Mob {
             clone.spawnBloods = true;
             clone.state = clone.HUNTING;
             clone.maxLvl = -1;
+
             GameScene.add( clone, clone.SPLIT_DELAY );
 
-            clone.HP = (int) ((HP - damage) * 0.35f);
+            int splitHP = Math.max(10, (int) ((HP - damage) * 0.35f));
+            clone.HP = splitHP;
             Actor.add( new Pushing( clone, pos, clone.pos ) );
 
             Dungeon.level.occupyCell(clone);
-            HP -= clone.HP;
+            HP = Math.max(1, HP - splitHP);
         }
         super.damage(damage,src,type);
     }
