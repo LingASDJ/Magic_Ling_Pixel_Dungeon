@@ -1,17 +1,26 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.GodNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.MorphsEndTheaterPlot;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.MorphsGodEndTheaterPlot;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.MorphsNPCPlot;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.minigame.MorphsAllEndPlot;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.LingBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.StarCrystal;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Game;
@@ -44,10 +53,34 @@ public class MorphsNPC extends GodNPC {
     }
 
     @Override
+    public boolean act() {
+
+        StarCrystal starCrystal = Dungeon.hero.belongings.getItem(StarCrystal.class);
+        if(starCrystal != null){
+            die(true);
+            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.curTransition = new LevelTransition();
+            InterlevelScene.curTransition.destDepth = 33;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
+            InterlevelScene.curTransition.destBranch = 0;
+            InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+            InterlevelScene.curTransition.centerCell  = -1;
+            Game.switchScene( InterlevelScene.class );
+            Buff.detach( hero, LostInventory.class);
+            starCrystal.detach( hero.belongings.backpack );
+        }
+
+        return super.act();
+    }
+
+    @Override
     public boolean interact(Char c) {
 
         sprite.turnTo(pos, Dungeon.hero.pos);
-
 
         if(Dungeon.depth == 31 && Statistics.deepestFloor == 31){
             LingBag lingBag = Dungeon.hero.belongings.getItem(LingBag.class);

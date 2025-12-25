@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -40,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.*;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.StarCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
@@ -223,6 +225,10 @@ public class DearthRongShopRoom extends SpecialRoom {
                 itemsToSpawn.add(new OilPotion());
                 itemsToSpawn.add(new OilPotion());
             }
+        }
+
+        if(Badges.isUnlocked(Badges.Badge.KILL_MORES)){
+            itemsToSpawn.add(new StarCrystal());
         }
 
         // 添加通用物品
