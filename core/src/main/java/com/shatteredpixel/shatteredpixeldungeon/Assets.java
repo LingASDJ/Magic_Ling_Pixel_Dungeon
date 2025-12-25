@@ -871,6 +871,8 @@ public class Assets {
 
 		public static final String TOMB		= "sprites/npc/tomb.png";
 
+		public static final String DEADEYE		= "sprites/eye_doom.png";
+
 		public static final String MOONC		= "sprites/npc/mooncat.png";
 
 		public static final String SMALLEAF		= "sprites/npc/smallleaf.png";

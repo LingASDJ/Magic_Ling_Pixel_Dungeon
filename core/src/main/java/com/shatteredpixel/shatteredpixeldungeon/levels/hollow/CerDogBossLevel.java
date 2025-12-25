@@ -698,7 +698,7 @@ public class CerDogBossLevel extends Level {
     UnsignedInvitationLetter unsignedInvitationLetter = Dungeon.hero.belongings.getItem(UnsignedInvitationLetter.class);
 
     if(transition.type == LevelTransition.Type.REGULAR_ENTRANCE && unsignedInvitationLetter!=null){
-        if((Dungeon.isDLC(Conducts.Conduct.DEV))) {
+        if(!(Dungeon.isDLC(Conducts.Conduct.DEV))) {
             GLog.w(Messages.get(UnsignedInvitationLetter.class, "hollow_city_1", hero.name()));
             Badges.CITY_END();
             GameScene.scene.add(new Delayer(3f) {
