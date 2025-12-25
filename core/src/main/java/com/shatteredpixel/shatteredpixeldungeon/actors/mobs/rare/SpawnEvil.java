@@ -116,6 +116,12 @@ public class SpawnEvil extends Mob {
     }
 
     @Override
+    public void rollToDropLoot(){
+        super.rollToDropLoot();
+        Dungeon.level.drop(new MeatPie(), pos-1);
+    }
+
+    @Override
     public void damage(int dmg, Object src, DamageType type) {
         if (dmg >= 20){
             dmg = 19 + (int)(Math.sqrt(8*(dmg - 19) + 1) - 1)/2;
@@ -136,9 +142,6 @@ public class SpawnEvil extends Mob {
             Notes.remove(landmark());
         }
         GLog.h(Messages.get(this, "on_death"));
-        if (Dungeon.hero.lvl > maxLvl + 2) {
-            Dungeon.level.drop(new MeatPie(), pos);
-        }
         super.die(cause);
     }
 
