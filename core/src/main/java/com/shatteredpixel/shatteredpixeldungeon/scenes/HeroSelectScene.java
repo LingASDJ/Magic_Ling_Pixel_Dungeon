@@ -218,14 +218,9 @@ public class HeroSelectScene extends PixelScene {
 		} );
 
 		for (int i=0; i < nPatches; i++) {
-			if (!(heroClass() == HeroClass.MAGE && heroClass().GetSkin() == 4)) {
-				patch = new GrassPatch( (i - 0.5f) * GrassPatch.WIDTH, SKY_HEIGHT, dayTime,heroClass() );
-				patch.brightness( dayTime ? 1.0f : 0.8f );
-				window.add(patch);
-			} else {
-				patch.visible = false;
-				window.visible = false;
-			}
+			patch = new GrassPatch( (i - 0.5f) * GrassPatch.WIDTH, SKY_HEIGHT, dayTime,heroClass() );
+			patch.brightness( dayTime ? 1.0f : 0.8f );
+			window.add(patch);
 		}
 
 		frame = new Image( SPDSettings.ClassUI() ? Assets.Interfaces.NEW_MENU : Assets.Interfaces.NEW_MENU_DARK );
@@ -762,7 +757,6 @@ public class HeroSelectScene extends PixelScene {
 						0,
 						0
 				);
-				patch.setPos(0,1000);
 			} else {
 				// 其他皮肤使用原有的处理方式
 				texture(cl.GetSkinAssest());
@@ -801,18 +795,14 @@ public class HeroSelectScene extends PixelScene {
 		@Override
 		public void update() {
 			super.update();
-			if ((heroClass() == HeroClass.MAGE && heroClass().GetSkin() == 4)) {
-				visible = false;
-			} else {
-				a += Random.Float( Game.elapsed * 5 );
-				angle = (2 + Math.cos( a )) * (forward ? +0.2 : -0.2);
+			a += Random.Float( Game.elapsed * 5 );
+			angle = (2 + Math.cos( a )) * (forward ? +0.2 : -0.2);
 
-				scale.y = (float)Math.cos( angle );
+			scale.y = (float)Math.cos( angle );
 
-				x = tx + (float)Math.tan( angle ) * width;
-				y = ty - scale.y * height;
-				visible = true;
-			}
+			x = tx + (float)Math.tan( angle ) * width;
+			y = ty - scale.y * height;
+			visible = true;
 		}
 
 
