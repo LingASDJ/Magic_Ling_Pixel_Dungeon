@@ -35,7 +35,7 @@ public class DemonFodder extends Mob {
         defenseSkill = 15;
         viewDistance = Light.DISTANCE;
 
-        EXP = 9;
+        EXP = 9; //for corrupting
         maxLvl = -2;
 
         HUNTING = new Hunting();
@@ -47,31 +47,8 @@ public class DemonFodder extends Mob {
     }
 
     @Override
-    public boolean attack(Char enemy) {
-        // 只能攻击英雄
-        if (enemy == Dungeon.hero) {
-            return super.attack(enemy);
-        }
-        return false;
-    }
-
-    @Override
-    public void die(Object cause) {
-        if (cause instanceof Mob) {
-            if(((Mob) cause).alignment == Alignment.ENEMY){
-                Mob killer = (Mob) cause;
-                killer.HP = killer.HT;
-                Buff.affect(killer, Barrier.class).setShield(killer.HT / 2);
-                if(Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)){
-                    ChampionEnemy.rollForChampion(killer);
-                    ChampionEnemy.rollForStateLing(killer);
-                } else {
-                    AikeLaier aikeLaier = new AikeLaier();
-                    aikeLaier.activate(killer);
-                }
-            }
-        }
-        super.die(cause);
+    protected Char chooseEnemy() {
+        return Dungeon.hero;
     }
 
     @Override
@@ -92,6 +69,38 @@ public class DemonFodder extends Mob {
     @Override
     public float attackDelay() {
         return super.attackDelay()*0.5f;
+    }
+
+    @Override
+    public void die(Object cause) {
+        if (cause instanceof Mob) {
+            if (((Mob) cause).alignment == Alignment.ENEMY) {
+                Mob killer = (Mob) cause;
+                killer.HP = killer.HT;
+                Buff.affect(killer, Barrier.class).setShield(killer.HT / 2);
+
+                boolean ce = false;
+                boolean rf = false;
+
+                if (Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)) {
+                    ChampionEnemy.rollForChampion(killer);
+                } else {
+                    ce = true;
+                }
+
+                if(Dungeon.isChallenged(Challenges.SBSG)) {
+                    ChampionEnemy.rollForStateLing(killer);
+                } else {
+                    rf = true;
+                }
+
+                if (ce && rf) {
+                    AikeLaier aikeLaier = new AikeLaier();
+                    aikeLaier.activate(killer);
+                }
+            }
+        }
+        super.die(cause);
     }
 
     @Override
@@ -127,19 +136,16 @@ public class DemonFodder extends Mob {
             leapPos = -1;
         }
 
-        // 确保只以英雄为敌人
-        if (enemy != Dungeon.hero) {
-            enemy = Dungeon.hero;
-        }
-
         AiState lastState = state;
         boolean result = super.act();
-        if (paralysed <= 0) leapCooldown--;
+        if (paralysed <= 0) leapCooldown --;
 
         //if state changed from wandering to hunting, we haven't acted yet, don't update.
         if (!(lastState == WANDERING && state == HUNTING)) {
             if (enemy != null) {
                 lastEnemyPos = enemy.pos;
+            } else {
+                lastEnemyPos = Dungeon.hero.pos;
             }
         }
 
@@ -153,25 +159,6 @@ public class DemonFodder extends Mob {
 
         @Override
         public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-            // 修改敌人选择逻辑，只以英雄为目标
-            if (enemyInFOV && enemy == Dungeon.hero) {
-                enemySeen = true;
-            } else {
-                enemySeen = false;
-                // 看不见英雄时切换到WANDERING状态进行随机游荡
-                if (!Dungeon.level.heroFOV[pos]) {
-                    state = WANDERING;
-                    // 设置一个随机的目标位置
-                    target = Dungeon.level.randomDestination(DemonFodder.this);
-                    // 执行一次WANDERING的行为
-                    spend(TICK);
-                    if (getCloser(target)) {
-                        spend(1 / speed());
-                        return moveSprite(pos, target);
-                    }
-                    return true;
-                }
-            }
 
             if (leapPos != -1){
 
@@ -259,8 +246,8 @@ public class DemonFodder extends Mob {
                 if (enemyInFOV) {
                     target = enemy.pos;
                 } else if (enemy == null) {
-                    enemy = Dungeon.hero;
-                    target = Dungeon.hero.pos;
+                    state = WANDERING;
+                    target = Dungeon.level.randomDestination( DemonFodder.this );
                     return true;
                 }
 
@@ -309,9 +296,9 @@ public class DemonFodder extends Mob {
                 } else {
                     spend( TICK );
                     if (!enemyInFOV) {
-                        // 看不见英雄时切换到WANDERING状态
+                        sprite.showLost();
                         state = WANDERING;
-                        target = Dungeon.level.randomDestination(DemonFodder.this);
+                        target = Dungeon.level.randomDestination( DemonFodder.this );
                     }
                     return true;
                 }
@@ -321,4 +308,3 @@ public class DemonFodder extends Mob {
     }
 
 }
-
