@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShubNiggurathSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -48,6 +49,7 @@ public class ShubNiggurath extends Boss {
         noDropIceCoin = true;
     }
     int generation	= 0;
+
 
     private static final float SPLIT_DELAY	= 1f;
     @Override
@@ -95,12 +97,20 @@ public class ShubNiggurath extends Boss {
                 for (Mob mob : mobsCopy) {
                     if(mob instanceof ShubNiggurathClone ||
                             (mob instanceof ShubNiggurath && ((ShubNiggurath) mob).notFirst)){
-                        if(HP <= 0 && maxReHeal<9){
+                        if(HP <= 0){
                             HP = 500;
                             maxReHeal++;
                             Buff.prolong(hero, MindVision.class, 50000);
-                        } else {
+                        }
+                        GLog.n(String.valueOf(maxReHeal));
+                        if(maxReHeal>=9){
                             die(true);
+                            if (mob instanceof ShubNiggurathClone){
+                                if(level.distance(pos,mob.pos)<1) {
+                                    mob.die(null);
+                                    break;
+                                }
+                            }
                         }
                         return true;
                     }
@@ -356,6 +366,12 @@ public class ShubNiggurath extends Boss {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if(mob instanceof Morphs && !isShubCloneAlive && !notFirst){
                     ((Morphs) mob).phase += 0.30f;
+                    break;
+                }
+            }
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                if (mob instanceof ShubNiggurathClone) {
+                    mob.die( cause );
                 }
             }
         }

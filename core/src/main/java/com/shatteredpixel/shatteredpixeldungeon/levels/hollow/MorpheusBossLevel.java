@@ -55,7 +55,7 @@ public class MorpheusBossLevel extends Level {
 
     @Override
     public void playLevelMusic(){
-        Music.playModeBGM(Assets.Music.HOLLOW_CITY_HARD, true);
+        Music.playModeBGM(Assets.Music.MORP_BOSS, true);
     }
 
     @Override

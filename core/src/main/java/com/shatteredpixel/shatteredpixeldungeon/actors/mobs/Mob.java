@@ -64,6 +64,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.MyCoreHeart;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerGodsBad;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMachineBad;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMindBad;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerTimeBad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
@@ -641,7 +645,9 @@ public abstract class Mob extends Char {
             } else if ( alignment == Alignment.ALLY ) {
                 //look for hostile mobs to attack
                 for (Mob mob : Dungeon.level.mobs)
-                    if (mob.alignment == Alignment.ENEMY && fieldOfView[mob.pos]
+                    if (mob.alignment == Alignment.ENEMY &&
+							!(mob instanceof TowerMachineBad || mob instanceof TowerGodsBad || mob instanceof TowerTimeBad || mob instanceof TowerMindBad)
+							&& fieldOfView[mob.pos]
                             && mob.invisible <= 0 && !mob.isInvulnerable(getClass()))
                         //intelligent allies do not target mobs which are passive, wandering, or asleep
                         if (!intelligentAlly ||

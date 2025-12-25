@@ -233,6 +233,10 @@ public class SakaFishBoss extends Boss {
         boolean result = super.act();
         if (paralysed <= 0) leapCooldown --;
 
+        if(HP == 0){
+            die(true);
+        }
+
         //if state changed from wandering to hunting, we haven't acted yet, don't update.
         if (!(lastState == WANDERING && state == HUNTING)) {
             if (enemy != null) {
