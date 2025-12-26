@@ -105,8 +105,8 @@ public class VeryColdRat extends Mob {
     public int attackProc(Char enemy, int damage) {
         if (enemy != null) {
             Chill buff = enemy.buff(Chill.class);
-            if(buff != null && buff.time>=8f){
-                Buff.affect(enemy, Frost.class,buff.time);
+            if(buff != null){
+                Buff.affect(enemy, Frost.class,1f);
                 buff.detach();
             }
         }

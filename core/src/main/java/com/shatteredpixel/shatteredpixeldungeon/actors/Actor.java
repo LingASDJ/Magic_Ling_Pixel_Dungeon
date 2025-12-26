@@ -42,7 +42,7 @@ public abstract class Actor implements Bundlable {
     protected Bundle upgrades;
 	protected Bundle crafted;
 
-	public float time;
+	private float time;
 
 	private int id = 0;
 
