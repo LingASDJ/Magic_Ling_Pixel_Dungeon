@@ -399,7 +399,7 @@ public class MobSpawner extends Actor {
 						return new ArrayList<>(Arrays.asList(
 								Bat.class,
 								Spinner.class,
-								DM200.class,RedNecromancer.class,Shaman.random()));
+								DM200.class,Shaman.random()));
 					case 15:
 						//1x bat, 1x brute, 2x shaman, 2x spinner, 2x DM-300
 						return new ArrayList<>(Arrays.asList(

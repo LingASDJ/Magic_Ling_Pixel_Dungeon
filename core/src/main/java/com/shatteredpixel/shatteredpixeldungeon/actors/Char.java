@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -299,20 +300,28 @@ public abstract class Char extends Actor {
 		if (hasProp(this, Property.IMMOVABLE) || hasProp(c, Property.IMMOVABLE)){
 			return true;
 		}
-
+		Char ch = this;
 		//warp instantly with allies in this case
 		if (c == hero && hero.hasTalent(Talent.ALLY_WARP)){
 			PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
-			Char ch = this;
-			if (PathFinder.distance[pos] == Integer.MAX_VALUE || ch instanceof MageHand){
+			if (PathFinder.distance[pos] == Integer.MAX_VALUE){
 				return true;
 			}
-			pos = newPos;
-			c.pos = oldPos;
-			ScrollOfTeleportation.appear(this, newPos);
-			ScrollOfTeleportation.appear(c, oldPos);
-			Dungeon.observe();
-			GameScene.updateFog();
+			if(ch instanceof MageHand && level.distance(ch.pos,c.pos) <= 1){
+				pos = newPos;
+				c.pos = oldPos;
+				ScrollOfTeleportation.appear(this, newPos);
+				ScrollOfTeleportation.appear(c, oldPos);
+				Dungeon.observe();
+				GameScene.updateFog();
+			} else if(!(ch instanceof MageHand)) {
+				pos = newPos;
+				c.pos = oldPos;
+				ScrollOfTeleportation.appear(this, newPos);
+				ScrollOfTeleportation.appear(c, oldPos);
+				Dungeon.observe();
+				GameScene.updateFog();
+			}
 			return true;
 		}
 
