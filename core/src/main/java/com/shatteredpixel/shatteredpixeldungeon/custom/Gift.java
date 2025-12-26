@@ -49,6 +49,8 @@ public class Gift implements Bundlable {
             "QVJNWURBWSwxNzU0NTgyNDAwLGZhbHNl",
             "TWVycnlDaHJpc3RtYXMsMTc2NzE5NjgwMCxmYWxzZQ==",
 
+            "WUFNZXJyeUNocmlzdG1hcywxNzY3MTk2ODAwLGZhbHNl",
+
             //GQJ 国庆节
             "Q2hpbmFCaXJ0aERheSwxNzU5ODU2NDQ5LGZhbHNl"
     };
@@ -134,6 +136,10 @@ public class Gift implements Bundlable {
         code11.put( "com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace$AnkhAlt", 1 );
         tempMap.put("TWVycnlDaHJpc3RtYXM=",code11);
 
+        LinkedHashMap<String, Integer> code12 = new LinkedHashMap<>();
+        code12.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 400 );
+        code12.put( "com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade", 1 );
+        tempMap.put("WUFNZXJyeUNocmlzdG1hcw==",code12);
 
         GIFT_ITEM = new HashMap<>( Collections.unmodifiableMap( tempMap ) );
     }
