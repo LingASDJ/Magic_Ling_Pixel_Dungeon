@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MageHandSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PeachGodStateSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PumkingGhostSprite;
@@ -93,7 +94,7 @@ public class vm0_8_X_Changes {
     }
 
     public static void add_V0910_Changes(ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.9.1.0", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.9.1.0-1", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -201,7 +202,7 @@ public class vm0_8_X_Changes {
                 ("长期的寒冷环境与冰系魔力导致其体内魔力狂暴而又非常不稳定\n" +
                         "70血，攻击15-25，5闪避，20精准，1.5速，0-3防\n" +
                         "周身一直散发冰寒气体(类似腐鼠)，\n" +
-                        "攻击会对冻伤回合数>8的单位冻结\n" +
+                        "攻击有25%概率造成冻结\n" +
                         "战斗状态下每回合损失5%最大生命值，没有目标时每回合回复5%最大生命值\n" +
                         "死亡前必定掉落一个冰霜炸弹，并且自身_4回合后_会产生一次爆炸，范围与效果等同寒霜炸弹\n" +
                         "8经验，最高16等级")));
@@ -253,6 +254,17 @@ public class vm0_8_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new Image(new MageHandSprite()), ("法师之手AI初步优化"),
+                ("_-_ 添加如果英雄在弹道上，先到英雄的弹道不可抵达处来，但对于范围伤害法杖仍然可能误伤英雄\n\n" +
+                        "_-_ 对于怪物威胁度，添加优先级：正在攻击英雄的怪物 > 精英Buff怪物  > (血量+伤害)(从高到低) 怪物 > 随机选择\n\n" +
+                        "_-_ 智能评估自身站位，以更好的援助自己的主人")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.NEWSTEM), ("初生树枝"),
+                ("一截发芽的枯枝，渴盼着再长出来的一天。\n\n在非严重饥饿状态下，自然回复时额外获得_+1生命值_")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CONfUSEDMIEMIETALISMAN), ("咩咩护符"),
+                ("也许制作者的本意是使用魔法绵羊来保护自己，但很显然，他手艺不精。\n\n你<#F00>每回合有2%<RGB>的概率触发绵羊符石效果\n触发后有<#F00>10回合<RGB>的预警时间\n效果触发后的_75回合_内不会再次触发。")));
+
         changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战调整"),
                 ("变幻莫测：新增稀有怪全局生成概率提升10%")));
 
@@ -267,7 +279,6 @@ public class vm0_8_X_Changes {
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 "修复了上个版本的诸多问题。"));
-
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changes.hardlight(Window.R_COLOR);

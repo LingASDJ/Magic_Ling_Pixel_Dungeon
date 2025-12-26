@@ -783,7 +783,7 @@ public class MageHand extends DirectableAlly {
 
         // 检查敌人是否正在攻击英雄（通过检查敌人的目标是否是英雄）
         if (enemy.enemy() == Dungeon.hero) {
-            threat *= 1.5f;
+            threat *= 100f;
         }
 
         // 如果敌人有特殊状态（如精英敌人），威胁值更高
