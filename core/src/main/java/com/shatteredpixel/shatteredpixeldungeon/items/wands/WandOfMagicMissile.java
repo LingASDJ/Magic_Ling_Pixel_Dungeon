@@ -59,7 +59,7 @@ public class WandOfMagicMissile extends DamageWand {
 	
 	@Override
 	public void onZap(Ballistica bolt) {
-		if (curUser == null) return;
+		curUser = Dungeon.hero;
 		Char ch = Actor.findChar( bolt.collisionPos );
 		if (ch != null) {
 
@@ -75,6 +75,7 @@ public class WandOfMagicMissile extends DamageWand {
 			ch.sprite.burst(0xFFFFFFFF, buffedLvl() / 2 + 2);
 
 			//apply the magic charge buff if we have another wand in inventory of a lower level, or already have the buff
+
 			for (Wand.Charger wandCharger : curUser.buffs(Wand.Charger.class)){
 				if (wandCharger.wand().buffedLvl() < buffedLvl() || curUser.buff(MagicCharge.class) != null){
 					Buff.prolong(curUser, MagicCharge.class, MagicCharge.DURATION).setup(this);

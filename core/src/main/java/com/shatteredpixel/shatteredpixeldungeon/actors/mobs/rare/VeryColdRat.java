@@ -6,7 +6,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
@@ -103,12 +102,8 @@ public class VeryColdRat extends Mob {
 
     @Override
     public int attackProc(Char enemy, int damage) {
-        if (enemy != null) {
-            Chill buff = enemy.buff(Chill.class);
-            if(buff != null){
-                Buff.affect(enemy, Frost.class,1f);
-                buff.detach();
-            }
+        if(Random.Float()<=0.25f){
+            Buff.affect(enemy, Frost.class,6f);
         }
         damage((int) (HT*0.05f),this, DamageType.REAL);
         return super.attackProc(enemy, damage);

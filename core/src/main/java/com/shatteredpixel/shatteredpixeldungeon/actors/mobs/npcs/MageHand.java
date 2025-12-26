@@ -9,9 +9,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -48,6 +50,7 @@ public class MageHand extends DirectableAlly {
         immunities.add(Blob.class);
         immunities.add(Buff.class);
         viewDistance =10;
+        invisible = 1;
     }
 
     @Override
@@ -274,18 +277,33 @@ public class MageHand extends DirectableAlly {
 
     @Override
     protected boolean canAttack(Char enemy) {
+        if (enemy == null) {
+            enemy = chooseEnemy();
+            if (enemy == null) {
+                return false;
+            }
+        }
         if (magesStaff != null) {
             Wand mwand = magesStaff.wand;
             if (mwand != null && wandCooldown == 0) {
                 if (mwand.curCharges > 0) {
-                    return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
+                    Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                    // 检查英雄是否在攻击路径上
+                    if (isHeroInAttackPath(attack)) {
+                        return false; // 英雄在路径上，不能直接攻击
+                    }
+                    return attack.collisionPos == enemy.pos;
                 } else {
                     // 检查法师之手天赋
                     if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
                         // 检查是否有其他可用法杖的充能
                         for (Wand w : wands) {
                             if (w.curCharges >= chargeNeeded) {
-                                return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
+                                Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                                if (isHeroInAttackPath(attack)) {
+                                    return false;
+                                }
+                                return attack.collisionPos == enemy.pos;
                             } else {
                                 return Dungeon.level.adjacent(pos, enemy.pos);
                             }
@@ -295,18 +313,120 @@ public class MageHand extends DirectableAlly {
             }
         } else if (equippedWand != null && wandCooldown == 0) {
             if (equippedWand.curCharges > 0) {
-                return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
+                Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                if (isHeroInAttackPath(attack)) {
+                    return false;
+                }
+                return attack.collisionPos == enemy.pos;
             } else {
                 // 检查法师之手天赋
                 if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
                     // 检查是否有其他可用法杖的充能
                     for (Wand w : wands) {
                         if (w.curCharges >= chargeNeeded) {
-                            return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
+                            Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                            if (isHeroInAttackPath(attack)) {
+                                return false;
+                            }
+                            return attack.collisionPos == enemy.pos;
                         }
                     }
                 }
                 return false;
+            }
+        }
+        return false;
+    }
+
+    protected boolean doAttack(Char enemy) {
+        if (magesStaff != null) {
+            Wand mwand = magesStaff.wand;
+            if (mwand != null && wandCooldown == 0) {
+                if (mwand.curCharges > 0) {
+                    Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                    if (isHeroInAttackPath(attack)) {
+                        // 英雄在路径上，尝试移动到更好的位置
+                        return tryMoveToBetterPosition(enemy);
+                    }
+                    if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                        sprite.zap(enemy.pos);
+                        return false;
+                    } else {
+                        zap();
+                        return true;
+                    }
+                } else {
+                    // 检查法师之手天赋
+                    if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
+                        if (tryMysticalCharge()) {
+                            Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                            if (isHeroInAttackPath(attack)) {
+                                return tryMoveToBetterPosition(enemy);
+                            }
+                            if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                                sprite.zap(enemy.pos);
+                                return false;
+                            } else {
+                                zap();
+                                return true;
+                            }
+                        }
+                    }
+                    // 没有充能时进行近战攻击
+                    if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                        sprite.attack(enemy.pos);
+                    }
+                    return false;
+                }
+            }
+        } else {
+            if (equippedWand != null && wandCooldown == 0) {
+                if (equippedWand.curCharges > 0) {
+                    Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                    if (isHeroInAttackPath(attack)) {
+                        return tryMoveToBetterPosition(enemy);
+                    }
+                    if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                        sprite.zap(enemy.pos);
+                        return false;
+                    } else {
+                        zap();
+                        return true;
+                    }
+                } else {
+                    // 检查法师之手天赋
+                    if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
+                        for (Wand w : wands) {
+                            if (w.curCharges >= chargeNeeded) {
+                                Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                                if (isHeroInAttackPath(attack)) {
+                                    return tryMoveToBetterPosition(enemy);
+                                }
+                                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                                    sprite.zap(enemy.pos);
+                                    return false;
+                                } else {
+                                    zap();
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    // 检查英雄是否在攻击路径上
+    private boolean isHeroInAttackPath(Ballistica attack) {
+        for (int i = 0; i < attack.path.size(); i++) {
+            int p = attack.path.get(i);
+            if (p == Dungeon.hero.pos) {
+                return true;
             }
         }
         return false;
@@ -337,11 +457,16 @@ public class MageHand extends DirectableAlly {
         if (wandCooldown > 0) {
             wandCooldown--;
         }
-        if(equippedWand != null){
-            invisible = 0;
-        } else {
-            invisible = 1;
+//        if(equippedWand != null){
+//            invisible = 0;
+//        } else {
+//            invisible = 1;
+//        }
+
+        if (enemy == null || !enemy.isAlive()) {
+            enemy = chooseEnemy();
         }
+
         return super.act();
     }
 
@@ -358,79 +483,6 @@ public class MageHand extends DirectableAlly {
                 equippedWand.curCharges = equippedWand.maxCharges;
             }
         }
-    }
-
-    protected boolean doAttack(Char enemy) {
-        if (magesStaff != null) {
-            Wand mwand = magesStaff.wand;
-//            if(mwand instanceof WandOfWarding){
-//                // 近战攻击
-//                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-//                    sprite.attack(enemy.pos);
-//                }
-//                return false;
-//            } else
-            if (mwand != null && wandCooldown == 0) {
-                if (mwand.curCharges > 0) {
-                    if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                        sprite.zap(enemy.pos);
-                        return false;
-                    } else {
-                        zap();
-                        return true;
-                    }
-                } else {
-                    // 检查法师之手天赋
-                    if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                        if (tryMysticalCharge()) {
-                            if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                                sprite.zap(enemy.pos);
-                                return false;
-                            } else {
-                                zap();
-                                return true;
-                            }
-                        }
-                    }
-                    // 没有充能时进行近战攻击
-                    if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                        sprite.attack(enemy.pos);
-                    }
-                    return false;
-                }
-            }
-        } else {
-            if (equippedWand != null && wandCooldown == 0) {
-                if (equippedWand.curCharges > 0) {
-                    if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                        sprite.zap(enemy.pos);
-                        return false;
-                    } else {
-                        zap();
-                        return true;
-                    }
-                } else {
-                    // 检查法师之手天赋
-                    if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                        for (Wand w : wands) {
-                            if (w.curCharges >= chargeNeeded) {
-                                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                                    sprite.zap(enemy.pos);
-                                    return false;
-                                } else {
-                                    zap();
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-        return false;
     }
 
 
@@ -569,7 +621,7 @@ public class MageHand extends DirectableAlly {
     private void finalizeWandUse(Wand wand) {
         wandCooldown = 3;
         spend(1f);
-        GLog.i(Messages.get(this, "wand_used", wand.name()));
+        //GLog.i(Messages.get(this, "wand_used", wand.name()));
     }
 
 
@@ -695,6 +747,167 @@ public class MageHand extends DirectableAlly {
             }
             return level;
         }
+    }
+
+    @Override
+    public Char chooseEnemy() {
+        Char bestEnemy = null;
+        float highestThreat = 0;
+
+        // 获取视野内的所有敌人
+        for (Char ch : Actor.chars()) {
+            if (ch instanceof Mob && ch.alignment == Alignment.ENEMY && fieldOfView[ch.pos]) {
+                Mob mob = (Mob) ch;
+                // 计算威胁值
+                float threat = calculateThreat(mob);
+
+                // 如果威胁值更高，则选择这个敌人
+                if (threat > highestThreat) {
+                    highestThreat = threat;
+                    bestEnemy = mob;
+                }
+            }
+        }
+
+        return bestEnemy;
+    }
+
+    // 计算敌人对英雄的威胁值
+    private float calculateThreat(Mob enemy) {
+        // 基础威胁值基于敌人的生命值和攻击力
+        float threat = enemy.HP * 0.5f + enemy.damageRoll() * 2;
+
+        // 距离英雄越近，威胁值越高
+        float distance = Dungeon.level.distance(enemy.pos, Dungeon.hero.pos);
+        threat += 100 / (distance + 1);
+
+        // 检查敌人是否正在攻击英雄（通过检查敌人的目标是否是英雄）
+        if (enemy.enemy() == Dungeon.hero) {
+            threat *= 1.5f;
+        }
+
+        // 如果敌人有特殊状态（如精英敌人），威胁值更高
+        if (enemy.buff(ChampionEnemy.class) != null) {
+            threat *= 5f;
+        }
+
+        return threat;
+    }
+
+    // 尝试移动到更好的位置以避免误伤英雄并攻击敌人
+    private boolean tryMoveToBetterPosition(Char enemy) {
+        // 寻找可以攻击敌人且不经过英雄的位置
+        ArrayList<Integer> candidates = new ArrayList<>();
+
+        // 检查周围8个方向
+        int[] neighbors = new int[]{
+                pos - 1, pos + 1,
+                pos - Dungeon.level.width(), pos + Dungeon.level.width(),
+                pos - Dungeon.level.width() - 1, pos - Dungeon.level.width() + 1,
+                pos + Dungeon.level.width() - 1, pos + Dungeon.level.width() + 1
+        };
+
+        // 计算每个候选位置的评分
+        ArrayList<Integer> bestCandidates = new ArrayList<>();
+        float bestScore = Float.NEGATIVE_INFINITY;
+
+        for (int i : neighbors) {
+            if (Dungeon.level.passable[i] && Actor.findChar(i) == null) {
+                Ballistica attack = new Ballistica(i, enemy.pos, MagicMissile.WARD);
+                if (!isHeroInAttackPath(attack) && attack.collisionPos == enemy.pos) {
+                    // 计算这个位置的评分
+                    float score = evaluatePosition(i, enemy);
+
+                    // 如果评分更高，则清空之前的最佳候选
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestCandidates.clear();
+                        bestCandidates.add(i);
+                    }
+                    // 如果评分相同，则添加到候选列表
+                    else if (score == bestScore) {
+                        bestCandidates.add(i);
+                    }
+                }
+            }
+        }
+
+        // 如果找到了合适的位置，移动过去
+        if (!bestCandidates.isEmpty()) {
+            int newPos = Random.element(bestCandidates);
+            move(newPos);
+            spend(1 / speed());
+            return true;
+        }
+
+        // 如果找不到合适的位置，就移动到英雄附近但不挡住英雄
+        ArrayList<Integer> heroNeighbors = new ArrayList<>();
+        int heroPos = Dungeon.hero.pos;
+        int[] heroNeighborOffsets = new int[]{
+                -1, +1,
+                -Dungeon.level.width(), +Dungeon.level.width(),
+                -Dungeon.level.width() - 1, -Dungeon.level.width() + 1,
+                +Dungeon.level.width() - 1, +Dungeon.level.width() + 1
+        };
+
+        for (int offset : heroNeighborOffsets) {
+            int i = heroPos + offset;
+            if (Dungeon.level.passable[i] && Actor.findChar(i) == null && i != pos) {
+                heroNeighbors.add(i);
+            }
+        }
+
+        if (!heroNeighbors.isEmpty()) {
+            int newPos = Random.element(heroNeighbors);
+            move(newPos);
+            spend(1 / speed());
+            return true;
+        }
+
+        return false;
+    }
+
+    // 评估位置的优劣
+    private float evaluatePosition(int position, Char enemy) {
+        float score = 0;
+
+        // 距离英雄的距离（不要太远也不要太近）
+        float distanceToHero = Dungeon.level.distance(position, Dungeon.hero.pos);
+        if (distanceToHero < 3) {
+            score += 10; // 离英雄近一点好
+        } else if (distanceToHero > 6) {
+            score -= 5; // 离英雄太远不好
+        }
+
+        // 距离敌人的距离
+        float distanceToEnemy = Dungeon.level.distance(position, enemy.pos);
+        score -= distanceToEnemy; // 距离敌人越近越好
+
+        // 检查这个位置是否能攻击到多个敌人
+        int enemiesInRange = 0;
+        for (Char ch : Actor.chars()) {
+            if (ch.alignment == Alignment.ENEMY && fieldOfView[ch.pos]) {
+                Ballistica attack = new Ballistica(position, ch.pos, MagicMissile.WARD);
+                if (!isHeroInAttackPath(attack) && attack.collisionPos == ch.pos) {
+                    enemiesInRange++;
+                }
+            }
+        }
+        score += enemiesInRange * 5; // 能攻击到多个敌人加分
+
+        // 检查这个位置是否安全（不容易被攻击）
+        int enemiesThreateningPosition = 0;
+        for (Char ch : Actor.chars()) {
+            if (ch.alignment == Alignment.ENEMY && fieldOfView[ch.pos]) {
+                Ballistica attack = new Ballistica(ch.pos, position, Ballistica.PROJECTILE);
+                if (attack.collisionPos == position) {
+                    enemiesThreateningPosition++;
+                }
+            }
+        }
+        score -= enemiesThreateningPosition * 3; // 容易被攻击的位置减分
+
+        return score;
     }
 
 
