@@ -6,7 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class BlessingNecklace extends Ankh {
 
-    public static class AnkhAlt extends Ankh{
+    public static class AnkhAlt extends Ankh {
         {
             image = ItemSpriteSheet.ANKH;
             blessed = true;
@@ -18,7 +18,6 @@ public class BlessingNecklace extends Ankh {
         blessed = true;
         cursedKnown = levelKnown = true;
         bones = false;
-        AnkhAlt ankhAlt = new AnkhAlt();
     }
 
     public String desc() {
