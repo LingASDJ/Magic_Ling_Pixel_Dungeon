@@ -681,6 +681,7 @@ public class MagesStaff extends MeleeWeapon {
 							public void onSelect(Item item) {
 								if (!(item instanceof Wand) && !(item instanceof MagesStaff)) {
 									// 窗口取消时不做任何操作
+
 								} else if (item.isEquipped(hero)) {
 									GLog.w( Messages.get(WndMageHand.class, "cant_equip") );
 									hide();
@@ -688,13 +689,20 @@ public class MagesStaff extends MeleeWeapon {
 									GLog.w( Messages.get(WndMageHand.class, "cant_unidentified"));
 									hide();
 								} else {
-									item.detach(hero.belongings.backpack);
 									if(item instanceof MagesStaff){
-										hand.equipMageStaff((MagesStaff) item);
-										item(hand.getEquippedMageStaff());
+										Wand w = ((MagesStaff) item).wand;
+										if(w instanceof WandOfWarding){
+											GLog.w( Messages.get(WndMageHand.class, "cant_equip_ward_tmp") );
+											hide();
+										} else {
+											hand.equipMageStaff((MagesStaff) item);
+											item(hand.getEquippedMageStaff());
+											item.detach(hero.belongings.backpack);
+										}
 									} else {
 										hand.equipWand((Wand) item);
 										item(hand.getEquippedWand());
+										item.detach(hero.belongings.backpack);
 									}
 								}
 							}

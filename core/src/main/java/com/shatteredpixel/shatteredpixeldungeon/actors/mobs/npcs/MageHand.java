@@ -20,7 +20,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -364,13 +363,14 @@ public class MageHand extends DirectableAlly {
     protected boolean doAttack(Char enemy) {
         if (magesStaff != null) {
             Wand mwand = magesStaff.wand;
-            if(mwand instanceof WandOfWarding){
-                // 近战攻击
-                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                    sprite.attack(enemy.pos);
-                }
-                return false;
-            } else if (mwand != null && wandCooldown == 0) {
+//            if(mwand instanceof WandOfWarding){
+//                // 近战攻击
+//                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+//                    sprite.attack(enemy.pos);
+//                }
+//                return false;
+//            } else
+            if (mwand != null && wandCooldown == 0) {
                 if (mwand.curCharges > 0) {
                     if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
                         sprite.zap(enemy.pos);
