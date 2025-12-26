@@ -303,7 +303,8 @@ public abstract class Char extends Actor {
 		//warp instantly with allies in this case
 		if (c == hero && hero.hasTalent(Talent.ALLY_WARP)){
 			PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
-			if (PathFinder.distance[pos] == Integer.MAX_VALUE){
+			Char ch = this;
+			if (PathFinder.distance[pos] == Integer.MAX_VALUE || ch instanceof MageHand){
 				return true;
 			}
 			pos = newPos;
