@@ -463,7 +463,7 @@ public class MageHand extends DirectableAlly {
 //            invisible = 1;
 //        }
 
-        if (enemy == null || !enemy.isAlive()) {
+        if (enemy != null) {
             enemy = chooseEnemy();
         }
 
