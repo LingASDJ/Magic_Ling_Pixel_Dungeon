@@ -43,6 +43,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Ghoul extends Mob {
 
@@ -215,7 +216,8 @@ public class Ghoul extends Mob {
 	public boolean isAlive() {
 		// 检查附近是否有尸山
 		boolean nearGhoulPlus = false;
-		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+		List<Mob> mobs = new ArrayList<>(Dungeon.level.mobs);
+		for (Mob mob : mobs) {
 			if (mob instanceof GhoulPlus) {
 				int distance = Dungeon.level.distance(pos, mob.pos);
 				if (distance <= 2) { // 5x5范围
