@@ -21,7 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
@@ -50,12 +51,17 @@ public abstract class ShieldBuff extends Buff {
 	public int shielding(){
 		return shielding;
 	}
-	
+
 	public void setShield( int shield ) {
 		if (this.shielding <= shield) this.shielding = shield;
-		if (target != null) target.needsShieldUpdate = true;
-		if(Dungeon.hero.hasTalent(Talent.EXCESS_CHARGE)){
-			Buff.affect(target, MageHand.HandShield.class).set(shield,Dungeon.hero.pointsInTalent(Talent.EXCESS_CHARGE)*3+1);
+		if (target != null) {
+			target.needsShieldUpdate = true;
+
+			if(hero.hasTalent(Talent.EXCESS_CHARGE)){
+				if(target == hero){
+					Buff.affect(target, MageHand.HandShield.class).set(shield, hero.pointsInTalent(Talent.EXCESS_CHARGE)*3+1);
+				}
+			}
 		}
 	}
 	
