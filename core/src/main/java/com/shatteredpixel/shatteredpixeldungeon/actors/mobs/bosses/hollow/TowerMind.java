@@ -426,14 +426,16 @@ public class TowerMind extends Boss {
         @Override
         public boolean isAlive() {
             boolean isAlive = false;
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            ArrayList<Mob> mobsCopy = new ArrayList<>(Dungeon.level.mobs);
+            for (Mob mob : mobsCopy){
                 if (mob instanceof TowerMind) {
                     isAlive = true;
                     break;
                 }
             }
-          return isAlive;
+            return isAlive;
         }
+
 
         private static final String ITEMS	= "items";
         private static final String ITEMS_DROPPED	= "items_dropped";
