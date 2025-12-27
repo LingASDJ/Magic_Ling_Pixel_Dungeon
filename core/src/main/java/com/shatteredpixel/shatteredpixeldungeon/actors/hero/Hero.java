@@ -3293,8 +3293,8 @@ public class Hero extends Char {
 
 	@Override
 	public boolean isAlive() {
-		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
 		if(belongings != null && HP>0){
+			MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
 			if(getHeal != null) {
 				return true;
 			}
@@ -3813,26 +3813,29 @@ public class Hero extends Char {
 					protected void onSelect(int index){
 						super.onSelect(index);
 						if( index == 0 ){
-							switch(pointsInTalent(Talent.PAIN_SCAR)){
-								case 1:
-									HT -= 20;
-									buff(Berserk.class).reducePower(0.2f);
-									GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
-									resistHealth +=20;
-									return;
-								case 2:
-									HT -= 15;
-									buff(Berserk.class).reducePower(0.15f);
-									GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
-									resistHealth += 15;
-									return;
-								case 3:
-									HT -= 10;
-									buff(Berserk.class).reducePower(0.1f);
-									GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
-									resistHealth += 10;
-									return;
-                            }
+							Buff buff = buff(Berserk.class);
+							if(buff != null){
+								switch(pointsInTalent(Talent.PAIN_SCAR)){
+									case 1:
+										HT -= 20;
+										buff(Berserk.class).reducePower(0.2f);
+										GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+										resistHealth +=20;
+										return;
+									case 2:
+										HT -= 15;
+										buff(Berserk.class).reducePower(0.15f);
+										GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+										resistHealth += 15;
+										return;
+									case 3:
+										HT -= 10;
+										buff(Berserk.class).reducePower(0.1f);
+										GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+										resistHealth += 10;
+										return;
+								}
+							}
 						}else if(index == 1 ){
 							die(false);
 						}

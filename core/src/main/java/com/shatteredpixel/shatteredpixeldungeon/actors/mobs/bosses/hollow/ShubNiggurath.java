@@ -27,7 +27,6 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ShubNiggurath extends Boss {
 
@@ -90,28 +89,34 @@ public class ShubNiggurath extends Boss {
 
     @Override
     public boolean isAlive() {
-        if(getClass() == ShubNiggurath.class) {
-            if(!notFirst){
-                List<Mob> mobsCopy = new ArrayList<>(Dungeon.level.mobs);
-                for (Mob mob : mobsCopy) {
-                    if(mob instanceof ShubNiggurathClone ||
-                            (mob instanceof ShubNiggurath && ((ShubNiggurath) mob).notFirst)){
-                        if(HP <= 0){
-                            HP = 500;
-                            maxReHeal++;
-                            Buff.prolong(hero, MindVision.class, 50000);
-                        }
-                        if(maxReHeal>=9){
-                            die(true);
-                            if (mob instanceof ShubNiggurathClone){
-                                if(level.distance(pos,mob.pos)<1) {
-                                    mob.die(null);
-                                    break;
-                                }
+        if(getClass() == ShubNiggurath.class && !notFirst) {
+            // 使用 toArray() 创建快照，避免并发修改异常
+            // 这种方式比 new ArrayList<>(...) 更安全，因为它直接获取底层元素
+            Object[] mobsArray = Dungeon.level.mobs.toArray();
+
+            //遍历快照数组
+            for (Object obj : mobsArray) {
+                Mob mob = (Mob) obj;
+
+                if (mob instanceof ShubNiggurathClone ||
+                        (mob instanceof ShubNiggurath && ((ShubNiggurath) mob).notFirst)) {
+
+                    if (HP <= 0) {
+                        HP = 500;
+                        maxReHeal++;
+                        Buff.prolong(hero, MindVision.class, 50000);
+                    }
+
+                    if (maxReHeal >= 9) {
+                        die(true);
+                        if (mob instanceof ShubNiggurathClone) {
+                            if (level.distance(pos, mob.pos) < 1) {
+                                mob.die(null);
+                                break;
                             }
                         }
-                        return true;
                     }
+                    return true;
                 }
             }
         }

@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -43,6 +44,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Ghoul extends Mob {
 
@@ -213,24 +215,26 @@ public class Ghoul extends Mob {
 
 	@Override
 	public boolean isAlive() {
-		// 检查附近是否有尸山
 		boolean nearGhoulPlus = false;
-		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-			if (mob instanceof GhoulPlus) {
-				int distance = Dungeon.level.distance(pos, mob.pos);
-				if (distance <= 2) { // 5x5范围
-					nearGhoulPlus = true;
-					break;
+		Level level = Dungeon.level;
+		synchronized (level) {
+			List<Mob> mobs = new ArrayList<>(level.mobs);
+
+			for (Mob mob : mobs) {
+				if (mob instanceof GhoulPlus) {
+					int distance = level.distance(pos, mob.pos);
+					if (distance <= 2) { // 5x5范围
+						nearGhoulPlus = true;
+						break;
+					}
 				}
 			}
 		}
 
-		// 如果在尸山附近，直接返回基础存活状态
 		if (nearGhoulPlus) {
 			return super.isAlive();
 		}
 
-		// 否则保持原来的逻辑
 		return super.isAlive() || beingLifeLinked;
 	}
 

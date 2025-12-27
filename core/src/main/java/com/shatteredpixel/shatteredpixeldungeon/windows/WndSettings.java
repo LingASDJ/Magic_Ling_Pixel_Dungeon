@@ -1120,7 +1120,7 @@ public class WndSettings extends WndTabbed {
 				}
 			};
 			hide_screen.checked(SPDSettings.HideScreen());
-			add(hide_screen);
+			//add(hide_screen);
 		}
 
 		@Override

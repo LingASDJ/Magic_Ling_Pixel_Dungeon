@@ -77,20 +77,26 @@ public class WardSprite extends MobSprite {
 	public void turnTo(int from, int to) {
 		//do nothing
 	}
-	
+
 	@Override
 	public void die() {
 		super.die();
 		//cancels die animation and fades out immediately
 		play(idle, true);
 		emitter().burst(MagicMissile.WardParticle.UP, 10);
-		parent.add( new AlphaTweener( this, 0, 2f ) {
-			@Override
-			protected void onComplete() {
-				WardSprite.this.killAndErase();
-				parent.erase( this );
-			}
-		} );
+
+		// 添加 null 检查
+		if (parent != null) {
+			parent.add( new AlphaTweener( this, 0, 2f ) {
+				@Override
+				protected void onComplete() {
+					WardSprite.this.killAndErase();
+					parent.erase( this );
+				}
+			} );
+		} else {
+			killAndErase();
+		}
 	}
 
 	@Override

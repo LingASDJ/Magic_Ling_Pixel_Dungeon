@@ -149,7 +149,6 @@ public class LaveCavesBossLevel extends Level{
             GameScene.updateMap( 854 );
         }
 
-        Dungeon.observe();
         Game.runOnRenderThread(new Callback() {
             @Override
             public void call() {

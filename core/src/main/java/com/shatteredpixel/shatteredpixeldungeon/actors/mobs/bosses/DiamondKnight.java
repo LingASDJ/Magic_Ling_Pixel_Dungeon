@@ -489,7 +489,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
             enemy.damage( dmg, new ColdMagicRat.DarkBolt() );
             if(Random.Float()<0.45f){
                 if(Dungeon.isChallenged(STRONGER_BOSSES)){
-                    Buff.affect( enemy, Bleeding.class ).set( 9*Statistics.dimandchestmazeCollected*1.4f );
+                    Buff.affect( enemy, Bleeding.class ).set( 9 + Statistics.dimandchestmazeCollected*1.4f );
                 } else {
                     Buff.affect( enemy, Bleeding.class ).set( 9 );
                 }
