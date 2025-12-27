@@ -405,11 +405,11 @@ public class SPDSettings extends GameSettings {
 	}
 
 	public static void HideScreen( boolean value ) {
-		put( KEY_HIDESCREEN, value );
+		put( KEY_HIDESCREEN, false );
 	}
 
 	public static boolean HideScreen() {
-		return getBoolean(KEY_HIDESCREEN, false);
+		return false;
 	}
 
 	public static void lastClass(int value) {
