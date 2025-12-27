@@ -3293,8 +3293,8 @@ public class Hero extends Char {
 
 	@Override
 	public boolean isAlive() {
-		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
 		if(belongings != null && HP>0){
+			MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
 			if(getHeal != null) {
 				return true;
 			}
