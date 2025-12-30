@@ -119,7 +119,7 @@ public class GhoulPlus extends Mob {
                 int nearestPos = -1;
 
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if (mob instanceof Ghoul && mob != GhoulPlus.this) { // 确保不是自己
+                    if (mob instanceof Ghoul) { // 确保不是自己
                         int distance = Dungeon.level.distance(pos, mob.pos);
                         if (distance < minDistance) {
                             minDistance = distance;

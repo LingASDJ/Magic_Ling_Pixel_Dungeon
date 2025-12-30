@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.SPELLSWORD;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Icons.RENAME_OFF;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -88,8 +89,8 @@ public class HeroSelectScene extends PixelScene {
 			HeroClass.MAGE,
 			HeroClass.ROGUE,
 			HeroClass.HUNTRESS,
-
-			HeroClass.DUELIST
+			HeroClass.DUELIST,
+			SPELLSWORD
 	};
 	private static int heroClassIndex = 0;
 	private static void addHeroClassIndex(int add) {
@@ -748,6 +749,11 @@ public class HeroSelectScene extends PixelScene {
 		}
 
 		private void updateAvatar(HeroClass cl) {
+			if(cl == SPELLSWORD){
+				hardlight(0x222222);
+			} else {
+				resetColor();
+			}
 			// 特殊处理MAGE的第4个皮肤
 			if (cl == HeroClass.MAGE && cl.GetSkin() == 4) {
 				texture(TextureCache.get("splashes/giftskin_mage.png"));
