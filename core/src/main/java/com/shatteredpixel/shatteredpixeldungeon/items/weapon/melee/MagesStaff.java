@@ -743,6 +743,7 @@ public class MagesStaff extends MeleeWeapon {
 
         {
             defaultAction = AC_DIRECT;
+			unique = true;
             image = ItemSpriteSheet.WAND_HAND_CONTROL;
         }
 

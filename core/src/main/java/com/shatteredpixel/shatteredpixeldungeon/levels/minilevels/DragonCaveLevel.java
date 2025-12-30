@@ -43,12 +43,11 @@ public class DragonCaveLevel extends RegularLevel {
 
     @Override
     protected void createItems() {
-        super.createItems();
-        addItemToSpawn(Generator.random(Generator.Category.FOOD));
-        addItemToSpawn(Generator.random(Generator.Category.STONE));
-        addItemToSpawn(Generator.random(Generator.Category.SCROLL));
-        addItemToSpawn(Generator.random(Generator.Category.SCROLL));
-        addItemToSpawn(Generator.random(Generator.Category.POTION));
+        drop(Generator.random(Generator.Category.FOOD),  randomDestination(Dungeon.hero));
+        drop(Generator.random(Generator.Category.STONE), randomDestination(Dungeon.hero));
+        drop(Generator.random(Generator.Category.SCROLL),randomDestination(Dungeon.hero));
+        drop(Generator.random(Generator.Category.SCROLL),randomDestination(Dungeon.hero));
+        drop(Generator.random(Generator.Category.POTION),randomDestination(Dungeon.hero));
     }
 
     @Override

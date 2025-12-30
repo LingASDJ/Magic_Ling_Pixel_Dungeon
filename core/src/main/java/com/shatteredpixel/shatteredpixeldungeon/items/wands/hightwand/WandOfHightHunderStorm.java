@@ -78,6 +78,7 @@ public class WandOfHightHunderStorm extends DamageWand {
 
     public ArrayList<Lightning.Arc> arcs = new ArrayList<>();
 
+
     public int min(int lvl){
         return 4+lvl;
     }
@@ -86,11 +87,82 @@ public class WandOfHightHunderStorm extends DamageWand {
         return 4+6*lvl;
     }
     public ConeAOE cone;
+
+
     @Override
     public void onZap(Ballistica bolt) {
 
         ArrayList<Char> affectedChars = new ArrayList<>();
         for( int cell : cone.cells ){
+
+            //ignore caster cell
+            if (cell == bolt.sourcePos){
+                continue;
+            }
+
+            //only ignite cells directly near caster if they are flammable
+            if (!Dungeon.level.adjacent(bolt.collisionPos, cell) || Dungeon.level.flamable[cell]){
+                GameScene.add( Blob.seed( cell, 6+chargesPerCast(), StormCloud.class ) );
+            }
+
+            Char ch = Actor.findChar( cell );
+            if (ch != null) {
+                affectedChars.add(ch);
+            }
+        }
+
+        //lightning deals less damage per-target, the more targets that are hit.
+        float multipler = 0.4f + (0.75f/affected.size());
+        //if the main target is in water, all affected take full damage
+        if (Dungeon.level.water[bolt.collisionPos]){
+            if(Random.Int(10)==1){
+                Buff.affect(hero, StormCloudDied.class).set(3f);
+            }
+            multipler = 1f;
+        }
+
+        for (Char ch : affected){
+            if (ch == hero) Camera.main.shake( 2, 0.3f );
+            ch.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
+            ch.sprite.flash();
+
+            if (ch != curUser && ch.alignment == curUser.alignment && ch.pos != bolt.collisionPos){
+                continue;
+            }
+            wandProc(ch, chargesPerCast());
+            if (ch == curUser) {
+                ch.damage(Math.round(damageRoll() * multipler * 0.25f), this , Char.DamageType.Element);
+            } else {
+                ch.damage(Math.round(damageRoll() * multipler), this , Char.DamageType.Element);
+            }
+
+            if(ch.isAlive() && ch != curUser){
+                Buff.affect(ch, Vertigo.class,6+level());
+                for(int i:PathFinder.NEIGHBOURS8)
+                    GameScene.add(Blob.seed(ch.pos+i,10, WorstStormCloud.class));
+            }
+        }
+
+        if (!curUser.isAlive()) {
+            Dungeon.fail( getClass() );
+            GLog.n(Messages.get(this, "ondeath"));
+        }
+    }
+
+    @Override
+    public void onAIZap(Ballistica bolt) {
+        ConeAOE conex;
+        ArrayList<Char> affectedChars = new ArrayList<>();
+
+        int maxDist = (1 + 2*chargesPerCast())*level/5+2;
+        int dist = Math.min(bolt.dist, maxDist);
+
+        conex = new ConeAOE( bolt,
+                maxDist,
+                30 + 40*chargesPerCast(),
+                collisionProperties | Ballistica.STOP_TARGET);
+
+        for( int cell : conex.cells ){
 
             //ignore caster cell
             if (cell == bolt.sourcePos){

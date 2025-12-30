@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.isDLC;
 
@@ -141,7 +140,7 @@ abstract public class Boss extends Mob {
 
         boolean holiday = RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.PQJ || RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY;
 
-            if(!Statistics.bossRushMode && depth != 5 && !noDropIceCoin){
+            if(!Statistics.bossRushMode && !noDropIceCoin){
                 int normal = ((hero.lvl + Dungeon.depth)/5) * (Math.max(Challenges.activeChallenges(), 5));
                 int count = holiday ? 2 : 1;
                 Dungeon.level.drop(new IceCyanBlueSquareCoin(normal * count),pos);

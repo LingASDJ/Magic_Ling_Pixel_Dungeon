@@ -79,6 +79,9 @@ public class WandOfTransfusion extends DamageWand {
 
 		int cell = beam.collisionPos;
 
+		//TODO 始终获取curUser为英雄自身
+		curUser = Dungeon.hero;
+
 		Char ch = Actor.findChar(cell);
 
 		if (ch instanceof Mob){

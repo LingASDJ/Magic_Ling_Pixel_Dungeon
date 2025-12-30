@@ -220,6 +220,10 @@ public class WandOfCorruption extends Wand {
 	}
 	
 	private void corruptEnemy( Mob enemy ){
+
+		//TODO 始终获取curUser为英雄自身
+		curUser = Dungeon.hero;
+
 		//cannot re-corrupt or doom an enemy, so give them a major debuff instead
 		if(enemy.buff(Corruption.class) != null || enemy.buff(Doom.class) != null){
 			GLog.w( Messages.get(this, "already_corrupted") );

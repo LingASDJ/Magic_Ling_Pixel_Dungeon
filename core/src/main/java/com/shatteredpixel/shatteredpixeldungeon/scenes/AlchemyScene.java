@@ -1008,11 +1008,13 @@ public class AlchemyScene extends PixelScene {
 					return false;
 				}
 
+				// 位于 AlchemyScene 类内部的 InputButton 类中
 				@Override
-				//only the first empty button accepts key input
 				public GameAction keyAction() {
-					for (InputButton i : inputs){
-						if (i.item == null || i.item instanceof WndBag.Placeholder) {
+					// 遍历 inputs 数组
+					for (InputButton i : inputs) {
+						// 修复点：增加对 i 的非空检查
+						if (i != null && (i.item == null || i.item instanceof WndBag.Placeholder)) {
 							if (i == InputButton.this) {
 								return SPDAction.INVENTORY;
 							} else {

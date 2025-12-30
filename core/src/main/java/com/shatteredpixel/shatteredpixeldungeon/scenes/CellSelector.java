@@ -97,8 +97,8 @@ public class CellSelector extends ScrollArea {
 				}
 			}
 
-			Mob[] mobs = Dungeon.level.mobs.toArray(new Mob[0]);
-			for (Char mob : mobs) {
+			//then mobs
+			for (Char mob : Dungeon.level.mobs.toArray(new Mob[0])){
 				if (mob.sprite != null && mob.sprite.overlapsPoint( p.x, p.y )){
 					PointF c = DungeonTilemap.tileCenterToWorld(mob.pos);
 					if (Math.abs(p.x - c.x) <= 12 && Math.abs(p.y - c.y) <= 12) {
@@ -107,16 +107,6 @@ public class CellSelector extends ScrollArea {
 					}
 				}
 			}
-			//then mobs
-//			for (Char mob : Dungeon.level.mobs.toArray(new Mob[0])){
-//				if (mob.sprite != null && mob.sprite.overlapsPoint( p.x, p.y )){
-//					PointF c = DungeonTilemap.tileCenterToWorld(mob.pos);
-//					if (Math.abs(p.x - c.x) <= 12 && Math.abs(p.y - c.y) <= 12) {
-//						select(mob.pos, event.button);
-//						return;
-//					}
-//				}
-//			}
 
 			//then heaps
 			for (Heap heap : Dungeon.level.heaps.valueList()){

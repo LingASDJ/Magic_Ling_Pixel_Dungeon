@@ -1184,10 +1184,12 @@ public abstract class Char extends Actor {
 
 	public void die( Object src ) {
 		destroy();
-		if (src != Chasm.class) {
-			sprite.die();
-			if (flying && Dungeon.level != null && sprite instanceof MobSprite && Dungeon.level.map[pos] == Terrain.CHASM){
-				((MobSprite) sprite).fall();
+		if(sprite != null){
+			if (src != Chasm.class) {
+				sprite.die();
+				if (flying && Dungeon.level != null && sprite instanceof MobSprite && Dungeon.level.map[pos] == Terrain.CHASM){
+					((MobSprite) sprite).fall();
+				}
 			}
 		}
 	}

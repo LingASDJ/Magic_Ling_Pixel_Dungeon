@@ -368,7 +368,7 @@ public class ShubNiggurath extends Boss {
             }
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (mob instanceof ShubNiggurathClone) {
-                    mob.die( cause );
+                    mob.die( true );
                 }
             }
         }
