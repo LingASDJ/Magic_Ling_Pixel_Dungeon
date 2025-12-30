@@ -43,6 +43,10 @@ public class MageHand extends DirectableAlly {
 
     private int chargeNeeded = 2;
 
+    // 添加指定敌人攻击和优先攻击的变量
+    private Char targetEnemy = null;
+    private boolean priorityAttack = false;
+
     {
         spriteClass = MageHandSprite.class;
         flying = true;
@@ -248,6 +252,30 @@ public class MageHand extends DirectableAlly {
         }
     }
 
+    // 设置指定敌人
+    public void setTargetEnemy(Char enemy) {
+        this.targetEnemy = enemy;
+        this.priorityAttack = false; // 设置指定敌人时，关闭优先攻击模式
+        this.state = HUNTING;
+    }
+
+    // 设置优先攻击模式
+    public void setPriorityAttack(boolean priority) {
+        this.priorityAttack = priority;
+        if (priority) {
+            this.targetEnemy = null; // 开启优先攻击模式时，清除指定敌人
+        }
+    }
+
+    // 获取当前目标敌人
+    public Char getTargetEnemy() {
+        return targetEnemy;
+    }
+
+    // 检查是否处于优先攻击模式
+    public boolean isPriorityAttack() {
+        return priorityAttack;
+    }
 
     // 修改equipWand方法
     public void equipWand(Wand wand) {
@@ -381,22 +409,6 @@ public class MageHand extends DirectableAlly {
                 } else {
                     // 检查法师之手天赋
                     if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                        /* 近战攻击暂时存在问题，改为统一使用魔力补偿方式 */
-//                        for (Wand w : wands) {
-//                            if (w.curCharges >= chargeNeeded) {
-//                                Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-//                                if (isHeroInAttackPath(attack)) {
-//                                    return tryMoveToBetterPosition(enemy);
-//                                }
-//                                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-//                                    sprite.zap(enemy.pos);
-//                                    return false;
-//                                } else {
-//                                    zap();
-//                                    return true;
-//                                }
-//                            }
-//                        }
                         return tryMysticalCharge();
                     }
                     return false;
@@ -637,6 +649,8 @@ public class MageHand extends DirectableAlly {
 
     private static final String WAND =        "wand";
     private static final String MAGE_STAFF = "mage_staff";
+    private static final String TARGET_ENEMY = "target_enemy";
+    private static final String PRIORITY_ATTACK = "priority_attack";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
@@ -644,6 +658,8 @@ public class MageHand extends DirectableAlly {
 
         if (equippedWand != null)  bundle.put( WAND,equippedWand );
         if(magesStaff != null) bundle.put( MAGE_STAFF, magesStaff );
+        bundle.put(TARGET_ENEMY, targetEnemy);
+        bundle.put(PRIORITY_ATTACK, priorityAttack);
     }
 
     @Override
@@ -654,6 +670,9 @@ public class MageHand extends DirectableAlly {
             equippedWand = (Wand) bundle.get( WAND );
         if (bundle.contains(MAGE_STAFF))
             magesStaff = (MagesStaff) bundle.get( MAGE_STAFF );
+        if (bundle.contains(TARGET_ENEMY))
+            targetEnemy = (Char) bundle.get(TARGET_ENEMY);
+        priorityAttack = bundle.getBoolean(PRIORITY_ATTACK);
     }
 
     public static class HandShield extends FlavourBuff {
@@ -724,6 +743,32 @@ public class MageHand extends DirectableAlly {
 
     @Override
     public Char chooseEnemy() {
+        // 优先级1: 如果有指定的目标敌人，优先攻击该敌人
+        if (targetEnemy != null && targetEnemy.isAlive()) {
+            return targetEnemy;
+        }
+
+        // 优先级2: 如果启用了优先攻击模式，优先攻击最近的敌人
+        if (priorityAttack) {
+            Char nearestEnemy = null;
+            float nearestDistance = Float.MAX_VALUE;
+
+            for (Char ch : Actor.chars()) {
+                if (ch instanceof Mob && ((Mob) ch).alignment == Alignment.ENEMY && fieldOfView[ch.pos]) {
+                    float distance = Dungeon.level.distance(pos, ch.pos);
+                    if (distance < nearestDistance) {
+                        nearestDistance = distance;
+                        nearestEnemy = ch;
+                    }
+                }
+            }
+
+            if (nearestEnemy != null) {
+                return nearestEnemy;
+            }
+        }
+
+        // 优先级3: 默认的威胁值评估逻辑
         Char bestEnemy = null;
         float highestThreat = 0;
 
@@ -882,6 +927,4 @@ public class MageHand extends DirectableAlly {
 
         return score;
     }
-
-
 }
