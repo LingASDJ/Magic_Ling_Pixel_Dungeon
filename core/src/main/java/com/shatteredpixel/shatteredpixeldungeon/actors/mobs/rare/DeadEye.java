@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
@@ -138,20 +139,13 @@ public class DeadEye extends Mob {
 
                 // 如果是英雄，解离背包物品
                 if (ch == Dungeon.hero) {
-                    // 随机解离2-3件物品
+                    // 增加解离物品数量，根据难度调整
                     int itemsToDisintegrate = Random.IntRange(2, 3);
                     ArrayList<Item> toDisintegrate = new ArrayList<>();
-                    ArrayList<String> destroyedItems = new ArrayList<>();  // 记录被摧毁的物品名称
+                    ArrayList<String> destroyedItems = new ArrayList<>();
 
-                    // 收集可解离的物品（排除贵重物品和武甲）
-                    for (Item item : Dungeon.hero.belongings.backpack.items) {
-                        if (item != null &&
-                                !item.unique &&
-                                !(item instanceof Dewdrop) &&
-                                !(item instanceof KingBag)) {
-                            toDisintegrate.add(item);
-                        }
-                    }
+                    // 收集所有可解离的物品，包括背包和容器中的物品
+                    collectDisintegratableItems(Dungeon.hero.belongings.backpack, toDisintegrate);
 
                     // 随机选择物品解离
                     for (int i = 0; i < itemsToDisintegrate && !toDisintegrate.isEmpty(); i++) {
@@ -193,6 +187,31 @@ public class DeadEye extends Mob {
 
         beam = null;
         beamTarget = -1;
+    }
+
+    // 收集所有可解离的物品，包括背包和容器中的物品
+    private void collectDisintegratableItems(Item container, ArrayList<Item> toDisintegrate) {
+        if (container == null) return;
+
+        // 如果是容器，递归收集其中的物品
+        if (container instanceof Bag) {
+            Bag bag = (Bag) container;
+            for (Item item : bag.items) {
+                collectDisintegratableItems(item, toDisintegrate);
+            }
+        } else {
+            // 检查物品是否符合解离条件
+            if (isDisintegratable(container)) {
+                toDisintegrate.add(container);
+            }
+        }
+    }
+
+    // 检查物品是否符合解离条件
+    private boolean isDisintegratable(Item item) {
+        if (item == null || item.unique || item.isEquipped(Dungeon.hero))
+            return false;
+        return !(item instanceof Dewdrop) && !(item instanceof KingBag);
     }
 
     @Override
@@ -287,4 +306,3 @@ public class DeadEye extends Mob {
         }
     }
 }
-
