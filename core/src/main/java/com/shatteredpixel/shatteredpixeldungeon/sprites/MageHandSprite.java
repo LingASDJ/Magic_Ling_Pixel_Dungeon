@@ -67,11 +67,7 @@ public class MageHandSprite extends MobSprite {
         MageHand mageHand = (MageHand) ch;
         Wand equippedWand = ((MageHand) ch).magesStaff != null ? mageHand.getEquippedMageStaffWand() : mageHand.getEquippedWand();
 
-        int missileType = getWandMissileType(mageHand.equippedWand);
-
-        if (equippedWand != null) {
-            missileType = getWandMissileType(equippedWand);
-        }
+        int missileType;
 
         Char handuser = null;
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
@@ -79,85 +75,100 @@ public class MageHandSprite extends MobSprite {
                 handuser = mob;
             }
         }
+        if (equippedWand != null) {
+            if(!equippedWand.cursed){
+                missileType = getWandMissileType(equippedWand);
+                if (equippedWand instanceof WandOfPrismaticLight || equippedWand instanceof WandOfSun){
+                    if(equippedWand instanceof WandOfSun){
+                        equippedWand.tryToZap(Dungeon.hero, cell);
+                    }
+                    mageHand.sprite.parent.add(
+                            new Beam.LightRay(mageHand.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
+                    mageHand.onZapComplete();
+                } else if(equippedWand instanceof WandOfTransfusion) {
+                    mageHand.sprite.parent.add(
+                            new Beam.HealthRay(mageHand.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
+                    mageHand.onZapComplete();
+                } else if(equippedWand instanceof WandOfHightHunderStorm){
+                    ((WandOfHightHunderStorm) equippedWand).affected.clear();
+                    ((WandOfHightHunderStorm) equippedWand).arcs.clear();
 
-        if (equippedWand instanceof WandOfPrismaticLight || equippedWand instanceof WandOfSun){
-            if(equippedWand instanceof WandOfSun){
-                equippedWand.tryToZap(Dungeon.hero, cell);
-            }
-            mageHand.sprite.parent.add(
-                    new Beam.LightRay(mageHand.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
-            mageHand.onZapComplete();
-        } else if(equippedWand instanceof WandOfTransfusion) {
-            mageHand.sprite.parent.add(
-                    new Beam.HealthRay(mageHand.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
-            mageHand.onZapComplete();
-        } else if(equippedWand instanceof WandOfHightHunderStorm){
-            ((WandOfHightHunderStorm) equippedWand).affected.clear();
-            ((WandOfHightHunderStorm) equippedWand).arcs.clear();
+                    // 4/6/8 distance
+                    int maxDist = (1 + 2*equippedWand.chargesPerCast())* equippedWand.level/5+2;
 
-            // 4/6/8 distance
-            int maxDist = (1 + 2*equippedWand.chargesPerCast())* equippedWand.level/5+2;
+                    ((WandOfHightHunderStorm) equippedWand).cone = new ConeAOE( new Ballistica(ch.pos, cell,Ballistica.STOP_TARGET),
+                            maxDist,
+                            30 + 40*((WandOfHightHunderStorm) equippedWand).chargesPerCast(),
+                            ((WandOfHightHunderStorm) equippedWand).collisionProperties | Ballistica.STOP_TARGET);
 
-            ((WandOfHightHunderStorm) equippedWand).cone = new ConeAOE( new Ballistica(ch.pos, cell,Ballistica.STOP_TARGET),
-                    maxDist,
-                    30 + 40*((WandOfHightHunderStorm) equippedWand).chargesPerCast(),
-                    ((WandOfHightHunderStorm) equippedWand).collisionProperties | Ballistica.STOP_TARGET);
+                    //cast to cells at the tip, rather than all cells, better performance.
+                    for (Ballistica ray : ((WandOfHightHunderStorm) equippedWand).cone.rays){
+                        ((MagicMissile)handuser.sprite.parent.recycle( MagicMissile.class )).reset(
+                                MagicMissile.ELMO,
+                                handuser.sprite,
+                                ray.path.get(ray.dist),
+                                null
+                        );
+                    }
 
-            //cast to cells at the tip, rather than all cells, better performance.
-            for (Ballistica ray : ((WandOfHightHunderStorm) equippedWand).cone.rays){
-                ((MagicMissile)handuser.sprite.parent.recycle( MagicMissile.class )).reset(
-                        MagicMissile.ELMO,
-                        handuser.sprite,
-                        ray.path.get(ray.dist),
-                        null
-                );
-            }
+                    Char ch = Actor.findChar( cell );
+                    if (ch != null) {
+                        ((WandOfHightHunderStorm) equippedWand).affected.add( ch );
+                        ((WandOfHightHunderStorm) equippedWand).arcs.add( new Lightning.Arc(handuser.sprite.center(), ch.sprite.center()));
+                        ((WandOfHightHunderStorm) equippedWand).arc(ch);
+                    } else {
+                        ((WandOfHightHunderStorm) equippedWand).arcs.add( new Lightning.Arc(handuser.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
+                        CellEmitter.center( cell ).burst( SparkParticle.FACTORY, 3 );
+                    }
 
-            Char ch = Actor.findChar( cell );
-            if (ch != null) {
-                ((WandOfHightHunderStorm) equippedWand).affected.add( ch );
-                ((WandOfHightHunderStorm) equippedWand).arcs.add( new Lightning.Arc(handuser.sprite.center(), ch.sprite.center()));
-                ((WandOfHightHunderStorm) equippedWand).arc(ch);
-            } else {
-                ((WandOfHightHunderStorm) equippedWand).arcs.add( new Lightning.Arc(handuser.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
-                CellEmitter.center( cell ).burst( SparkParticle.FACTORY, 3 );
-            }
-
-            handuser.sprite.parent.addToFront( new Lightning( ((WandOfHightHunderStorm) equippedWand).arcs, null ) );
-            mageHand.onZapComplete();
-        } else if(equippedWand instanceof WandOfLightning){
-            ((WandOfLightning) equippedWand).affected.clear();
-            ((WandOfLightning) equippedWand).arcs.clear();
-            Char ch = Actor.findChar( cell );
-            if (ch != null) {
-                if (ch instanceof DwarfKing){
-                    Statistics.qualifiedForBossChallengeBadge = false;
-                }
-                  ((WandOfLightning) equippedWand).affected.add( ch );
-                  ((WandOfLightning) equippedWand).arcs.add( new Lightning.Arc(mageHand.sprite.center(), ch.sprite.center()));
-                  ((WandOfLightning) equippedWand).arc(ch);
-            } else {
-                ((WandOfLightning) equippedWand).arcs.add( new Lightning.Arc(mageHand.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
-                CellEmitter.center( cell ).burst( SparkParticle.FACTORY, 3 );
-            }
-            mageHand.sprite.parent.addToFront( new Lightning(((WandOfLightning) equippedWand).arcs, null ) );
-            Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
-            mageHand.onZapComplete();
-        } else if(equippedWand instanceof WandOfDisintegration){
-            mageHand.sprite.parent.add(new Beam.DeathRay(mageHand.sprite.center(), DungeonTilemap.raisedTileCenterToWorld( cell )));
-            mageHand.onZapComplete();
-        } else {
-            MagicMissile.boltFromChar( parent,
-                    missileType,
-                    this,
-                    cell,
-                    new Callback() {
-                        @Override
-                        public void call() {
-                            mageHand.onZapComplete();
+                    handuser.sprite.parent.addToFront( new Lightning( ((WandOfHightHunderStorm) equippedWand).arcs, null ) );
+                    mageHand.onZapComplete();
+                } else if(equippedWand instanceof WandOfLightning){
+                    ((WandOfLightning) equippedWand).affected.clear();
+                    ((WandOfLightning) equippedWand).arcs.clear();
+                    Char ch = Actor.findChar( cell );
+                    if (ch != null) {
+                        if (ch instanceof DwarfKing){
+                            Statistics.qualifiedForBossChallengeBadge = false;
                         }
-                    } );
+                        ((WandOfLightning) equippedWand).affected.add( ch );
+                        ((WandOfLightning) equippedWand).arcs.add( new Lightning.Arc(mageHand.sprite.center(), ch.sprite.center()));
+                        ((WandOfLightning) equippedWand).arc(ch);
+                    } else {
+                        ((WandOfLightning) equippedWand).arcs.add( new Lightning.Arc(mageHand.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
+                        CellEmitter.center( cell ).burst( SparkParticle.FACTORY, 3 );
+                    }
+                    mageHand.sprite.parent.addToFront( new Lightning(((WandOfLightning) equippedWand).arcs, null ) );
+                    Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
+                    mageHand.onZapComplete();
+                } else if(equippedWand instanceof WandOfDisintegration){
+                    mageHand.sprite.parent.add(new Beam.DeathRay(mageHand.sprite.center(), DungeonTilemap.raisedTileCenterToWorld( cell )));
+                    mageHand.onZapComplete();
+                } else {
+                    MagicMissile.boltFromChar( parent,
+                            missileType,
+                            this,
+                            cell,
+                            new Callback() {
+                                @Override
+                                public void call() {
+                                    mageHand.onZapComplete();
+                                }
+                            } );
+                }
+            } else {
+                MagicMissile.boltFromChar( parent,
+                        MagicMissile.RAINBOW_CONE,
+                        this,
+                        cell,
+                        new Callback() {
+                            @Override
+                            public void call() {
+                                mageHand.onZapComplete();
+                            }
+                        } );
+            }
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-        Sample.INSTANCE.play( Assets.Sounds.ZAP );
     }
 }

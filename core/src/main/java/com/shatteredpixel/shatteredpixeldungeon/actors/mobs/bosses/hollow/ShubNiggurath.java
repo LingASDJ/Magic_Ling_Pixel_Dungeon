@@ -36,6 +36,12 @@ public class ShubNiggurath extends Boss {
 
     public int maxReHeal = 0;
 
+    // 最大分裂次数
+    private static final int MAX_SPLIT_COUNT = 9;
+
+    // 最大恢复血量次数
+    private static final int MAX_REHEAL_COUNT = 5;
+
     {
         initBaseStatus(0, 0, 0, 0, 3200, 0, 0);
         initStatus(20);
@@ -50,6 +56,7 @@ public class ShubNiggurath extends Boss {
 
 
     private static final float SPLIT_DELAY	= 1f;
+
     @Override
     public int defenseProc(Char enemy, int damage ) {
 
@@ -66,21 +73,33 @@ public class ShubNiggurath extends Boss {
                 }
             }
 
+            // 检查是否已经达到最大分裂次数
             if (!candidates.isEmpty() && !hasTooManyShubs()) {
 
-                ShubNiggurath clone = split();
-                clone.notFirst = true;
-                clone.state = clone.HUNTING;
-                GameScene.add( clone, SPLIT_DELAY ); //we add before assigning HP due to ascension
+                // 检查当前分裂数量是否已经达到最大值
+                int currentSplitCount = 0;
+                for (Mob mob : Dungeon.level.mobs) {
+                    if (mob instanceof ShubNiggurath) {
+                        currentSplitCount++;
+                    }
+                }
 
-                clone.HP = (HP - damage) / 2;
-                Dungeon.level.randomDestination(clone);
-                clone.pos = Dungeon.level.randomDestination(clone);
-                Actor.add( new Pushing( clone, pos, clone.pos ) );
+                // 只有在分裂数量未达到最大值时才进行分裂
+                if (currentSplitCount < MAX_SPLIT_COUNT) {
+                    ShubNiggurath clone = split();
+                    clone.notFirst = true;
+                    clone.state = clone.HUNTING;
+                    GameScene.add( clone, SPLIT_DELAY ); //we add before assigning HP due to ascension
 
-                Dungeon.level.occupyCell(clone);
+                    clone.HP = (HP - damage) / 2;
+                    Dungeon.level.randomDestination(clone);
+                    clone.pos = Dungeon.level.randomDestination(clone);
+                    Actor.add( new Pushing( clone, pos, clone.pos ) );
 
-                HP -= clone.HP;
+                    Dungeon.level.occupyCell(clone);
+
+                    HP -= clone.HP;
+                }
             }
         }
 
@@ -94,21 +113,34 @@ public class ShubNiggurath extends Boss {
             // 这种方式比 new ArrayList<>(...) 更安全，因为它直接获取底层元素
             Object[] mobsArray = Dungeon.level.mobs.toArray();
 
-            //遍历快照数组
+            // 首先检查是否有分身存在
+            boolean hasClone = false;
             for (Object obj : mobsArray) {
                 Mob mob = (Mob) obj;
-
                 if (mob instanceof ShubNiggurathClone ||
                         (mob instanceof ShubNiggurath && ((ShubNiggurath) mob).notFirst)) {
+                    hasClone = true;
+                    break;
+                }
+            }
 
-                    if (HP <= 0) {
-                        HP = 500;
-                        maxReHeal++;
-                        Buff.prolong(hero, MindVision.class, 50000);
-                    }
+            // 如果血量降为0
+            if (HP <= 0) {
+                // 如果没有分身存在，直接死亡
+                if (!hasClone) {
+                    return super.isAlive();
+                }
 
-                    if (maxReHeal >= 9) {
-                        die(true);
+                // 如果有分身存在，检查是否已经达到最大恢复血量次数
+                if (maxReHeal < MAX_REHEAL_COUNT) {
+                    HP = 1000;
+                    maxReHeal++;
+                    Buff.prolong(hero, MindVision.class, 50000);
+                } else {
+                    // 达到最大恢复血量次数后，本体和所有分身死亡
+                    die(true);
+                    for (Object obj : mobsArray) {
+                        Mob mob = (Mob) obj;
                         if (mob instanceof ShubNiggurathClone) {
                             if (level.distance(pos, mob.pos) < 1) {
                                 mob.die(null);
@@ -116,13 +148,12 @@ public class ShubNiggurath extends Boss {
                             }
                         }
                     }
-                    return true;
                 }
+                return true;
             }
         }
         return super.isAlive();
     }
-
 
     private ShubNiggurath split() {
         ShubNiggurath clone = new ShubNiggurath();
@@ -181,7 +212,7 @@ public class ShubNiggurath extends Boss {
                     for (Buff buff : enemy.buffs()) {
                         if(buff instanceof ScaryDamageBuff || buff instanceof ScaryImmunitiesBuff){
                             if (isNyzAlive) {
-                                int heartDamage = (int) (16 * Random.NormalFloat(0.5f, 1)); 
+                                int heartDamage = (int) (16 * Random.NormalFloat(0.5f, 1));
                                 enemy.damage(heartDamage, new DM100.LightningBolt());
                                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                     mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
@@ -190,10 +221,10 @@ public class ShubNiggurath extends Boss {
                         } else if (buff instanceof ScaryBuff) {
                             hasScaryBuff = true;
                             if (isNyzAlive) {
-                                int heartDamage = (int) (16 * Random.NormalFloat(0.5f, 1)); 
+                                int heartDamage = (int) (16 * Random.NormalFloat(0.5f, 1));
                                 enemy.damage(heartDamage, new DM100.LightningBolt());
                                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-                                   mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
+                                    mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
                                 }
                             }
                             ((ScaryBuff) buff).damgeScary(8 * (isNyzAlive ? 2 : 1));
@@ -235,7 +266,8 @@ public class ShubNiggurath extends Boss {
             }
         }
 
-        tooManyShubs = shubCount >= 9;
+        // 检查是否已经达到最大分裂次数
+        tooManyShubs = shubCount >= MAX_SPLIT_COUNT;
 
         if(buff(YogSoul.AttackDamageMagic.class)!=null && Dungeon.level.distance(pos, hero.pos) <= 7 && !hasTooManyShubs()){
             if (enemy != null && enemy == hero && enemySeen) {
@@ -275,6 +307,7 @@ public class ShubNiggurath extends Boss {
             }
         }
 
+        // 只有在未达到最大分裂次数时才生成新的分身
         if (buff(HeartMagicDamage.class) == null && (getClass() == ShubNiggurath.class) && !hasTooManyShubs() && notDamage >=8) {
             Buff.affect(this, HeartMagicDamage.class, 10f);
             ShubNiggurathClone clone = new ShubNiggurathClone();
@@ -303,7 +336,7 @@ public class ShubNiggurath extends Boss {
                     for (Buff buff : enemy.buffs()) {
                         if(buff instanceof ScaryDamageBuff || buff instanceof ScaryImmunitiesBuff){
                             if (isNyzAlive) {
-                                int heartDamage = (int) (16 * Random.NormalFloat(0.5f, 1)); 
+                                int heartDamage = (int) (16 * Random.NormalFloat(0.5f, 1));
                                 enemy.damage(heartDamage, new DM100.LightningBolt());
                                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                     mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
@@ -312,7 +345,7 @@ public class ShubNiggurath extends Boss {
                         } else if (buff instanceof ScaryBuff) {
                             hasScaryBuff = true;
                             if (isNyzAlive) {
-                                int heartDamage = (int) (16 * Random.NormalFloat(0.5f, 1)); 
+                                int heartDamage = (int) (16 * Random.NormalFloat(0.5f, 1));
                                 enemy.damage(heartDamage, new DM100.LightningBolt());
                                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                                     mob.HP += Math.min(heartDamage, mob.HT - mob.HP);
