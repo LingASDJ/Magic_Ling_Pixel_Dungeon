@@ -175,6 +175,12 @@ public class TowerMachine extends Boss {
                         if(Dungeon.hero.pos == cell + c){
                             Dungeon.hero.damage(dmg,new Bomb());
                         }
+                        if(enemy != null){
+                            if (!enemy.isAlive() && enemy == Dungeon.hero) {
+                                Dungeon.fail(getClass());
+                                GLog.n(Messages.get(this, "bomb_party_kill"));
+                            }
+                        }
                     }
                 }
             }).start();
@@ -195,15 +201,17 @@ public class TowerMachine extends Boss {
                         if(Dungeon.hero.pos == cell){
                             Dungeon.hero.damage(dmg,new Bomb());
                         }
+                        if(enemy != null){
+                            if (!enemy.isAlive() && enemy == Dungeon.hero) {
+                                Dungeon.fail(getClass());
+                                GLog.n(Messages.get(this, "bomb_party_kill"));
+                            }
+                        }
                     }
                 }
             }).start();
         }
 
-        if (!enemy.isAlive() && enemy == Dungeon.hero) {
-            Dungeon.fail(getClass());
-            GLog.n(Messages.get(this, "bomb_party_kill"));
-        }
         isZapping = false;
     }
 
