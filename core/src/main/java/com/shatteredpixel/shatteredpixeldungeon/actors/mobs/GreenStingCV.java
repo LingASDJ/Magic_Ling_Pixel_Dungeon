@@ -53,6 +53,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class GreenStingCV extends Boss {
+
+    private boolean teleportingThisTurn = false;
+
     {
         spriteClass = GreenSltingSprite.class;
         initProperty();
@@ -105,6 +108,7 @@ public class GreenStingCV extends Boss {
         bundle.put( ABILITY_CD, abilityCooldown );
         bundle.put( LAST_ABILITY, lastAbility );
         bundle.put("wavePhase2", wave);
+        bundle.put(TARGETED_CELLS, teleportingThisTurn);
     }
 
     @Override
@@ -116,6 +120,7 @@ public class GreenStingCV extends Boss {
         abilityCooldown = bundle.getFloat( ABILITY_CD );
         lastAbility = bundle.getInt( LAST_ABILITY );
         wave = bundle.getInt("wavePhase2");
+        teleportingThisTurn = bundle.getBoolean(TARGETED_CELLS);
 
         if (this.state != this.SLEEPING) BossHealthBar.assignBoss(this);
 
@@ -147,6 +152,9 @@ public class GreenStingCV extends Boss {
 
     @Override
     protected boolean act() {
+
+        teleportingThisTurn = false;
+
         if (phase == 1) {
 
             if (summonCooldown <= 0 && summonSubject(3)){
@@ -441,7 +449,13 @@ public class GreenStingCV extends Boss {
             if (HP <= 200) {
                 HP = 200;
                 sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
-                ScrollOfTeleportation.appear(this, GreenStlingBossLevel.throne);
+
+                // 修改开始：添加标志位检查，防止递归
+                if (!teleportingThisTurn) {
+                    teleportingThisTurn = true;
+                    ScrollOfTeleportation.appear(this, GreenStlingBossLevel.throne);
+                }
+
                 properties.add(Property.IMMOVABLE);
                 phase = 2;
                 summonsMade = 0;
