@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -615,7 +616,7 @@ public class MageHand extends DirectableAlly {
         return wand instanceof WandOfFireblast ||
                 wand instanceof WandOfBlueFuck ||
                 wand instanceof WandOfScale ||
-                wand instanceof WandOfRegrowth;
+                wand instanceof WandOfRegrowth || wand instanceof WandOfHightHunderStorm;
     }
 
     private void finalizeWandUse(Wand wand) {
