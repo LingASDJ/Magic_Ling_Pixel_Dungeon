@@ -98,6 +98,9 @@ public class WandOfLightning extends DamageWand {
 		//if the main target is in water, all affected take full damage
 		if (Dungeon.level.water[bolt.collisionPos]) multiplier = 1f;
 
+		//TODO 始终获取curUser为英雄自身
+		curUser = Dungeon.hero;
+
 		for (Char ch : affected){
 			if (ch == Dungeon.hero) PixelScene.shake( 2, 0.3f );
 			ch.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
