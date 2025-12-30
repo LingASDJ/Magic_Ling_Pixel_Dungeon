@@ -48,9 +48,9 @@ public class SkyShield extends MeleeWeapon {
     @Override
     public String statsInfo(){
         if (isIdentified()){
-            return Messages.get(this, "stats_desc", 12+3*buffedLvl());
+            return Messages.get(this, "stats_desc", 6*buffedLvl());
         } else {
-            return Messages.get(this, "typical_stats_desc", 9);
+            return Messages.get(this, "typical_stats_desc", 6);
         }
     }
 
