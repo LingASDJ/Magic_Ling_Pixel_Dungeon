@@ -127,38 +127,25 @@ public class GhoulPlus extends Mob {
                         }
                     }
                 }
-
-                // 如果没有找到附近的Ghoul，随机选择一个方向
+                
                 if (nearestPos == -1) {
-                    int newPos = Dungeon.level.randomDestination(GhoulPlus.this);
-                    if (newPos != -1) {
-                        target = newPos;
-                    } else {
-                        // 如果无法找到有效位置，就留在原地
-                        spend(TICK);
-                        return true;
-                    }
+                    return super.act(false, justAlerted);
                 } else {
                     target = nearestPos;
-                }
 
-                // 确保目标位置是有效的
-                if (target >= 0 && target < Dungeon.level.length() &&
-                        Dungeon.level.passable[target] && !Dungeon.level.solid[target]) {
                     if (getCloser(target)) {
                         spend(1 / speed());
                         return moveSprite(oldPos, pos);
+                    } else {
+                        // 如果无法移动到目标位置（例如被阻挡），停留一回合
+                        spend(TICK);
                     }
                 }
-
-                // 如果无法移动到目标位置，随机移动或留在原地
-                spend(TICK);
             }
 
             return true;
         }
     }
-
 
     private static final String PERMANENT_HP_BONUS = "permanent_hp_bonus";
     private static final String PERMANENT_ATTACK_BONUS = "permanent_attack_bonus";
