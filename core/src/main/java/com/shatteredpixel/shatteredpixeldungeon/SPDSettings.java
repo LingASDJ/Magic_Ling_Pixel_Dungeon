@@ -800,21 +800,57 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_ICECOIN, 0);
 	}
 
-	//TODO: 使用新接口替换皮肤解锁的旧方法
-	public static void setHeroSkin(int hero,int skinIndex) {
-		StringBuilder items = new StringBuilder( getSkin() );
-		int index= hero * 2;
-		items.replace( index, index + 1 , String.valueOf(skinIndex));
-		put(KEY_CURRENTHEROSKIN, items.toString());
-	}
-
-	public static int getHeroSkin(int hero){
-		String[] itemArray = getSkin().split( ";" );
-		return Integer.parseInt(itemArray[hero]);
-	}
-
+	// 1. 更新默认值，增加第 6 个英雄的数据 (0;0;0;0;0;0)
 	public static String getSkin(){
-		return getString( KEY_CURRENTHEROSKIN, "0;0;0;0;0;");
+		// 注意：这里建议不要以分号结尾，避免 split 的陷阱，或者配合 split(";", -1) 使用
+		// 这里改为 6 个 0，对应 6 个英雄
+		return getString( KEY_CURRENTHEROSKIN, "0;0;0;0;0;0");
+	}
+
+	// 2. 修复获取皮肤的逻辑，增加安全检查
+	public static int getHeroSkin(int hero){
+		String[] itemArray = getSkin().split( ";", -1 ); // 使用 -1 防止末尾空字符串丢失
+
+		// 安全检查：如果索引越界（旧存档数据不足），返回默认皮肤 0
+		if (hero < 0 || hero >= itemArray.length) {
+			return 0;
+		}
+
+		try {
+			return Integer.parseInt(itemArray[hero]);
+		} catch (NumberFormatException e) {
+			return 0; // 防止数据损坏导致解析失败
+		}
+	}
+
+	// 3. 重写设置皮肤的逻辑，不再使用字符位置计算，而是使用数组操作
+	public static void setHeroSkin(int hero, int skinIndex) {
+		String[] currentSkins = getSkin().split(";", -1);
+
+		// 动态扩容：如果当前数组长度不够（例如旧存档只有5个，现在要设置第6个），扩容数组
+		if (hero >= currentSkins.length) {
+			String[] newArray = new String[hero + 1];
+			System.arraycopy(currentSkins, 0, newArray, 0, currentSkins.length);
+			// 将新增的位置填充为默认值 "0"
+			for (int i = currentSkins.length; i < newArray.length; i++) {
+				newArray[i] = "0";
+			}
+			currentSkins = newArray;
+		}
+
+		// 更新指定英雄的皮肤
+		currentSkins[hero] = String.valueOf(skinIndex);
+
+		// 重新组合成字符串
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < currentSkins.length; i++) {
+			sb.append(currentSkins[i]);
+			if (i < currentSkins.length - 1) {
+				sb.append(";");
+			}
+		}
+
+		put(KEY_CURRENTHEROSKIN, sb.toString());
 	}
 
 

@@ -127,7 +127,8 @@ public enum HeroClass {
 	MAGE( HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ),
 	ROGUE( HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ),
 	HUNTRESS( HeroSubClass.SNIPER, HeroSubClass.WARDEN ),
-	DUELIST( HeroSubClass.CHAMPION, HeroSubClass.MONK );
+	DUELIST( HeroSubClass.CHAMPION, HeroSubClass.MONK ),
+	SPELLSWORD(HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR);
 
 	private HeroSubClass[] subClasses;
 
@@ -449,6 +450,10 @@ public enum HeroClass {
 
 	public boolean isUnlocked(){
 		//always unlock on debug builds
+		if(this == SPELLSWORD){
+			return false;
+		}
+
 		if (DeviceCompat.isDebug()) return true;
 
 		switch (this){
@@ -460,8 +465,8 @@ public enum HeroClass {
 				return Badges.isUnlocked(Badges.Badge.UNLOCK_ROGUE);
 			case HUNTRESS:
 				return Badges.isUnlocked(Badges.Badge.UNLOCK_HUNTRESS);
-//			case DUELIST:
-//				return Badges.isUnlocked(Badges.Badge.UNLOCK_DUELIST);
+			case SPELLSWORD:
+				return Badges.isUnlocked(Badges.Badge.UNLOCK_SPELLSWORD);
 		}
 	}
 	
@@ -481,6 +486,8 @@ public enum HeroClass {
 				return Assets.Sprites.AVATARS_HUNTRESS;
 			case DUELIST:
 				return Assets.Sprites.AVATARS_DUELIST;
+			case SPELLSWORD:
+				return Assets.Sprites.AVATARS_SPELLSWORD;
 		}
 	}
 
@@ -512,6 +519,9 @@ public enum HeroClass {
 					case DUELIST:
 						isSkinUnlock = SPDSettings.isItemUnlock("avatars_duelist_" + skinIndex);
 						break;
+					case SPELLSWORD:
+						isSkinUnlock = SPDSettings.isItemUnlock("avatars_spellsword_" + skinIndex);
+							break;
 				}
 				if(!isSkinUnlock){
 					skinIndex++;

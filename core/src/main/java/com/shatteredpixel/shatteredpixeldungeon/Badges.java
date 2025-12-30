@@ -1177,6 +1177,11 @@ public class Badges {
 
 		//决斗家
 		UNLOCK_DUELIST              ,
+
+		//魔剑士
+		UNLOCK_SPELLSWORD,
+
+
 		BAG_BOUGHT_SEED_POUCH,
 		BAG_BOUGHT_SCROLL_HOLDER,
 		BAG_BOUGHT_POTION_BANDOLIER,
