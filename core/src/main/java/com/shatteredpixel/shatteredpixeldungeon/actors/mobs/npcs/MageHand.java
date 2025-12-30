@@ -359,23 +359,7 @@ public class MageHand extends DirectableAlly {
                 } else {
                     // 检查法师之手天赋
                     if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                        if (tryMysticalCharge()) {
-                            Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                            if (isHeroInAttackPath(attack)) {
-                                return tryMoveToBetterPosition(enemy);
-                            }
-                            if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                                sprite.zap(enemy.pos);
-                                return false;
-                            } else {
-                                zap();
-                                return true;
-                            }
-                        }
-                    }
-                    // 没有充能时进行近战攻击
-                    if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                        sprite.attack(enemy.pos);
+                        return tryMysticalCharge();
                     }
                     return false;
                 }
@@ -397,21 +381,23 @@ public class MageHand extends DirectableAlly {
                 } else {
                     // 检查法师之手天赋
                     if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                        for (Wand w : wands) {
-                            if (w.curCharges >= chargeNeeded) {
-                                Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                                if (isHeroInAttackPath(attack)) {
-                                    return tryMoveToBetterPosition(enemy);
-                                }
-                                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                                    sprite.zap(enemy.pos);
-                                    return false;
-                                } else {
-                                    zap();
-                                    return true;
-                                }
-                            }
-                        }
+                        /* 近战攻击暂时存在问题，改为统一使用魔力补偿方式 */
+//                        for (Wand w : wands) {
+//                            if (w.curCharges >= chargeNeeded) {
+//                                Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+//                                if (isHeroInAttackPath(attack)) {
+//                                    return tryMoveToBetterPosition(enemy);
+//                                }
+//                                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+//                                    sprite.zap(enemy.pos);
+//                                    return false;
+//                                } else {
+//                                    zap();
+//                                    return true;
+//                                }
+//                            }
+//                        }
+                        return tryMysticalCharge();
                     }
                     return false;
                 }
@@ -458,12 +444,6 @@ public class MageHand extends DirectableAlly {
         if (wandCooldown > 0) {
             wandCooldown--;
         }
-//        if(equippedWand != null){
-//            invisible = 0;
-//        } else {
-//            invisible = 1;
-//        }
-
         if (enemy != null) {
             enemy = chooseEnemy();
         }
@@ -514,21 +494,13 @@ public class MageHand extends DirectableAlly {
             return false;
         }
 
-        // 获取背包中的所有法杖
+        // 修复1: 允许使用当前装备法杖的充能
         ArrayList<Wand> availableWands = new ArrayList<>();
         for (Item item : hero.belongings) {
             if (item instanceof Wand) {
                 Wand wand = (Wand) item;
-                // 排除老魔杖和当前装备的法杖
-                if(magesStaff != null){
-                    if (wand != magesStaff.wand && wand.curCharges >= chargeNeeded) {
-                        availableWands.add(wand);
-                    }
-                }
-                if(equippedWand != null){
-                    if (wand != equippedWand && wand.curCharges >= chargeNeeded) {
-                        availableWands.add(wand);
-                    }
+                if (wand.curCharges >= chargeNeeded) {
+                    availableWands.add(wand);
                 }
             }
         }
