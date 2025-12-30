@@ -381,21 +381,23 @@ public class MageHand extends DirectableAlly {
                 } else {
                     // 检查法师之手天赋
                     if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                        for (Wand w : wands) {
-                            if (w.curCharges >= chargeNeeded) {
-                                Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                                if (isHeroInAttackPath(attack)) {
-                                    return tryMoveToBetterPosition(enemy);
-                                }
-                                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                                    sprite.zap(enemy.pos);
-                                    return false;
-                                } else {
-                                    zap();
-                                    return true;
-                                }
-                            }
-                        }
+                        /* 近战攻击暂时存在问题，改为统一使用魔力补偿方式 */
+//                        for (Wand w : wands) {
+//                            if (w.curCharges >= chargeNeeded) {
+//                                Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+//                                if (isHeroInAttackPath(attack)) {
+//                                    return tryMoveToBetterPosition(enemy);
+//                                }
+//                                if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+//                                    sprite.zap(enemy.pos);
+//                                    return false;
+//                                } else {
+//                                    zap();
+//                                    return true;
+//                                }
+//                            }
+//                        }
+                        return tryMysticalCharge();
                     }
                     return false;
                 }
