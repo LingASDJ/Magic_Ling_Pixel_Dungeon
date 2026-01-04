@@ -90,7 +90,7 @@ public class HeroSelectScene extends PixelScene {
 			HeroClass.ROGUE,
 			HeroClass.HUNTRESS,
 			HeroClass.DUELIST,
-			SPELLSWORD
+			HeroClass.SPELLSWORD
 	};
 	private static int heroClassIndex = 0;
 	private static void addHeroClassIndex(int add) {
