@@ -379,6 +379,7 @@ public class MageHand extends DirectableAlly {
                     }
                     if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
                         sprite.zap(enemy.pos);
+                        zap();
                         return false;
                     } else {
                         zap();
@@ -401,6 +402,7 @@ public class MageHand extends DirectableAlly {
                     }
                     if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
                         sprite.zap(enemy.pos);
+                        zap();
                         return false;
                     } else {
                         zap();
@@ -813,38 +815,47 @@ public class MageHand extends DirectableAlly {
     }
 
     // 尝试移动到更好的位置以避免误伤英雄并攻击敌人
+    // 尝试移动到更好的位置以避免误伤英雄并攻击敌人
     private boolean tryMoveToBetterPosition(Char enemy) {
         // 寻找可以攻击敌人且不经过英雄的位置
         ArrayList<Integer> candidates = new ArrayList<>();
 
-        // 检查周围8个方向
-        int[] neighbors = new int[]{
-                pos - 1, pos + 1,
-                pos - Dungeon.level.width(), pos + Dungeon.level.width(),
-                pos - Dungeon.level.width() - 1, pos - Dungeon.level.width() + 1,
-                pos + Dungeon.level.width() - 1, pos + Dungeon.level.width() + 1
+        // 检查周围8个方向，并添加边界检查
+        int[] neighborOffsets = new int[]{
+                -1, +1,
+                -Dungeon.level.width(), +Dungeon.level.width(),
+                -Dungeon.level.width() - 1, -Dungeon.level.width() + 1,
+                +Dungeon.level.width() - 1, +Dungeon.level.width() + 1
         };
 
         // 计算每个候选位置的评分
         ArrayList<Integer> bestCandidates = new ArrayList<>();
         float bestScore = Float.NEGATIVE_INFINITY;
 
-        for (int i : neighbors) {
-            if (Dungeon.level.passable[i] && Actor.findChar(i) == null) {
-                Ballistica attack = new Ballistica(i, enemy.pos, MagicMissile.WARD);
+        for (int offset : neighborOffsets) {
+            int newPos = pos + offset;
+
+            // 添加边界检查，确保 newPos 在有效范围内
+            if (newPos < 0 || newPos >= Dungeon.level.length()) {
+                continue;
+            }
+
+            // 检查位置是否可通行且没有其他角色
+            if (Dungeon.level.passable[newPos] && Actor.findChar(newPos) == null) {
+                Ballistica attack = new Ballistica(newPos, enemy.pos, MagicMissile.WARD);
                 if (!isHeroInAttackPath(attack) && attack.collisionPos == enemy.pos) {
                     // 计算这个位置的评分
-                    float score = evaluatePosition(i, enemy);
+                    float score = evaluatePosition(newPos, enemy);
 
                     // 如果评分更高，则清空之前的最佳候选
                     if (score > bestScore) {
                         bestScore = score;
                         bestCandidates.clear();
-                        bestCandidates.add(i);
+                        bestCandidates.add(newPos);
                     }
                     // 如果评分相同，则添加到候选列表
                     else if (score == bestScore) {
-                        bestCandidates.add(i);
+                        bestCandidates.add(newPos);
                     }
                 }
             }
@@ -861,17 +872,18 @@ public class MageHand extends DirectableAlly {
         // 如果找不到合适的位置，就移动到英雄附近但不挡住英雄
         ArrayList<Integer> heroNeighbors = new ArrayList<>();
         int heroPos = Dungeon.hero.pos;
-        int[] heroNeighborOffsets = new int[]{
-                -1, +1,
-                -Dungeon.level.width(), +Dungeon.level.width(),
-                -Dungeon.level.width() - 1, -Dungeon.level.width() + 1,
-                +Dungeon.level.width() - 1, +Dungeon.level.width() + 1
-        };
 
-        for (int offset : heroNeighborOffsets) {
-            int i = heroPos + offset;
-            if (Dungeon.level.passable[i] && Actor.findChar(i) == null && i != pos) {
-                heroNeighbors.add(i);
+        // 同样添加边界检查
+        for (int offset : neighborOffsets) {
+            int newPos = heroPos + offset;
+
+            // 添加边界检查，确保 newPos 在有效范围内
+            if (newPos < 0 || newPos >= Dungeon.level.length()) {
+                continue;
+            }
+
+            if (Dungeon.level.passable[newPos] && Actor.findChar(newPos) == null && newPos != pos) {
+                heroNeighbors.add(newPos);
             }
         }
 
