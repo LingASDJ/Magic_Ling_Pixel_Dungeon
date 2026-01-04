@@ -3296,7 +3296,7 @@ public class Hero extends Char {
 	public boolean isAlive() {
 		if (HP <= 0){
 			if(goldFive == null) {
-				goldFive = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
+				goldFive = belongings.getItem(MIME.GOLD_FIVE.class);
 				return goldFive != null;
 			} else {
 				if (berserk == null) berserk = buff(Berserk.class);
