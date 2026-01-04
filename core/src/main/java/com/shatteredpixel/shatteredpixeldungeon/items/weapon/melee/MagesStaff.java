@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -672,13 +671,13 @@ public class MagesStaff extends MeleeWeapon {
 							}
 
 							@Override
-							public Class<?extends Bag> preferredBag(){
-								return Belongings.Backpack.class;
+							public boolean itemSelectable(Item item) {
+								return item instanceof Wand && !(item instanceof WandOfWarding) || item instanceof MagesStaff;
 							}
 
 							@Override
-							public boolean itemSelectable(Item item) {
-								return item instanceof Wand && !(item instanceof WandOfWarding) || item instanceof MagesStaff;
+							public Class<?extends Bag> preferredBag(){
+								return MagicalHolster.class;
 							}
 
 							@Override
@@ -743,9 +742,9 @@ public class MagesStaff extends MeleeWeapon {
 	public static class MageHandControl extends Item {
 		public static final String AC_HAND = "HAND";
 		public static final String AC_DIRECT = "DIRECT";
-		public static final String AC_PRIORITY_ATTACK = "PRIORITY_ATTACK"; // 优先攻击
-		public static final String AC_SUMMON_HAND = "SUMMON_HAND"; // 召唤法师之手
-		public static final String AC_TARGET_ENEMY = "TARGET_ENEMY"; // 指定敌人攻击
+		public static final String AC_PRIORITY_ATTACK = "PRIORITY_ATTACK";
+		public static final String AC_SUMMON_HAND = "SUMMON_HAND";
+		public static final String AC_TARGET_ENEMY = "TARGET_ENEMY";
 
 		{
 			defaultAction = AC_DIRECT;
@@ -759,6 +758,23 @@ public class MagesStaff extends MeleeWeapon {
 		}
 
 		@Override
+		public String status() {
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+				if (mob instanceof MageHand) {
+					MageHand hand = (MageHand) mob;
+					if (hand.magesStaff != null && hand.magesStaff.wand != null) {
+						return hand.magesStaff.wand.curCharges + "/" + hand.magesStaff.wand.maxCharges;
+					} else if (hand.equippedWand != null) {
+						return hand.equippedWand.curCharges + "/" + hand.equippedWand.maxCharges;
+					}
+				}
+			}
+			return "";
+		}
+
+
+
+		@Override
 		public boolean isIdentified() {
 			return true;
 		}
@@ -768,7 +784,6 @@ public class MagesStaff extends MeleeWeapon {
 			ArrayList<String> actions = super.actions(hero);
 			actions.add(AC_HAND);
 			actions.add(AC_DIRECT);
-			//actions.add(AC_PRIORITY_ATTACK);
 			actions.add(AC_SUMMON_HAND);
 			actions.add(AC_TARGET_ENEMY);
 			return actions;
@@ -777,6 +792,7 @@ public class MagesStaff extends MeleeWeapon {
 		@Override
 		public void execute(Hero hero, String action) {
 			super.execute(hero, action);
+
             switch (action) {
                 case AC_HAND:
                     for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
@@ -793,7 +809,6 @@ public class MagesStaff extends MeleeWeapon {
                     }
                     break;
                 case AC_PRIORITY_ATTACK:
-                    // 设置法师之手优先攻击最近的敌人
                     for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                         if (mob instanceof MageHand) {
                             ((MageHand) mob).setPriorityAttack(true);
@@ -802,7 +817,6 @@ public class MagesStaff extends MeleeWeapon {
                     }
                     break;
                 case AC_SUMMON_HAND:
-                    // 检查是否已经存在法师之手
                     boolean hasMageHand = false;
                     for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                         if (mob instanceof MageHand) {

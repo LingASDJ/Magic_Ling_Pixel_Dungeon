@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.MageHandControlBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -41,16 +42,14 @@ public class MageHand extends DirectableAlly {
 
     private ArrayList<Wand> wands = hero.belongings.getAllItems(Wand.class);
 
-    private int chargeNeeded = 2;
+    private final int chargeNeeded = 2;
 
-    // 添加指定敌人攻击和优先攻击的变量
     private Char targetEnemy = null;
     private boolean priorityAttack = false;
 
     {
         spriteClass = MageHandSprite.class;
         flying = true;
-        state = HUNTING;
         properties.add(Property.UNKNOWN);
         immunities.add(Blob.class);
         immunities.add(Buff.class);
@@ -267,16 +266,6 @@ public class MageHand extends DirectableAlly {
         }
     }
 
-    // 获取当前目标敌人
-    public Char getTargetEnemy() {
-        return targetEnemy;
-    }
-
-    // 检查是否处于优先攻击模式
-    public boolean isPriorityAttack() {
-        return priorityAttack;
-    }
-
     // 修改equipWand方法
     public void equipWand(Wand wand) {
         this.equippedWand = wand;
@@ -379,11 +368,7 @@ public class MageHand extends DirectableAlly {
                     }
                     if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
                         sprite.zap(enemy.pos);
-                        zap();
                         return false;
-                    } else {
-                        zap();
-                        return true;
                     }
                 } else {
                     // 检查法师之手天赋
@@ -402,11 +387,7 @@ public class MageHand extends DirectableAlly {
                     }
                     if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
                         sprite.zap(enemy.pos);
-                        zap();
                         return false;
-                    } else {
-                        zap();
-                        return true;
                     }
                 } else {
                     // 检查法师之手天赋
@@ -460,6 +441,12 @@ public class MageHand extends DirectableAlly {
         }
         if (enemy != null) {
             enemy = chooseEnemy();
+        }
+
+        // 获取或创建 Buff
+        MageHandControlBuff buff = hero.buff(MageHandControlBuff.class);
+        if (buff == null) {
+            Buff.affect(hero, MageHandControlBuff.class);
         }
 
         return super.act();
@@ -531,7 +518,7 @@ public class MageHand extends DirectableAlly {
 
         consumeWandCharges(lowestLevelWand, chargeNeeded);
         executeWandEffect(magesStaff != null ? magesStaff.wand : equippedWand);
-        finalizeWandUse(magesStaff != null ? magesStaff.wand : equippedWand);
+        finalizeWandUse();
         return true;
     }
 
@@ -574,13 +561,13 @@ public class MageHand extends DirectableAlly {
         Wand mwand = magesStaff.wand;
         executeWandEffect(mwand);
         mwand.curCharges -= Math.max(1, mwand.chargesPerCast());
-        finalizeWandUse(mwand);
+        finalizeWandUse();
     }
 
     private void zapWithEquippedWand() {
         executeWandEffect(equippedWand);
         equippedWand.curCharges -= Math.max(1, equippedWand.chargesPerCast());
-        finalizeWandUse(equippedWand);
+        finalizeWandUse();
     }
 
     private void executeWandEffect(Wand wand) {
@@ -605,10 +592,9 @@ public class MageHand extends DirectableAlly {
                 wand instanceof WandOfRegrowth || wand instanceof WandOfHightHunderStorm;
     }
 
-    private void finalizeWandUse(Wand wand) {
+    private void finalizeWandUse() {
         wandCooldown = 3;
         spend(1f);
-        //GLog.i(Messages.get(this, "wand_used", wand.name()));
     }
 
 
@@ -746,28 +732,8 @@ public class MageHand extends DirectableAlly {
     @Override
     public Char chooseEnemy() {
         // 优先级1: 如果有指定的目标敌人，优先攻击该敌人
-        if (targetEnemy != null && targetEnemy.isAlive()) {
+        if (targetEnemy != null && targetEnemy.isAlive() ) {
             return targetEnemy;
-        }
-
-        // 优先级2: 如果启用了优先攻击模式，优先攻击最近的敌人
-        if (priorityAttack) {
-            Char nearestEnemy = null;
-            float nearestDistance = Float.MAX_VALUE;
-
-            for (Char ch : Actor.chars()) {
-                if (ch instanceof Mob && ((Mob) ch).alignment == Alignment.ENEMY && fieldOfView[ch.pos]) {
-                    float distance = Dungeon.level.distance(pos, ch.pos);
-                    if (distance < nearestDistance) {
-                        nearestDistance = distance;
-                        nearestEnemy = ch;
-                    }
-                }
-            }
-
-            if (nearestEnemy != null) {
-                return nearestEnemy;
-            }
         }
 
         // 优先级3: 默认的威胁值评估逻辑
@@ -778,9 +744,7 @@ public class MageHand extends DirectableAlly {
         for (Char ch : Actor.chars()) {
             if (ch instanceof Mob && ch.alignment == Alignment.ENEMY && fieldOfView[ch.pos]) {
                 Mob mob = (Mob) ch;
-                // 计算威胁值
                 float threat = calculateThreat(mob);
-
                 // 如果威胁值更高，则选择这个敌人
                 if (threat > highestThreat) {
                     highestThreat = threat;
@@ -815,17 +779,16 @@ public class MageHand extends DirectableAlly {
     }
 
     // 尝试移动到更好的位置以避免误伤英雄并攻击敌人
-    // 尝试移动到更好的位置以避免误伤英雄并攻击敌人
     private boolean tryMoveToBetterPosition(Char enemy) {
         // 寻找可以攻击敌人且不经过英雄的位置
         ArrayList<Integer> candidates = new ArrayList<>();
 
         // 检查周围8个方向，并添加边界检查
         int[] neighborOffsets = new int[]{
-                -1, +1,
-                -Dungeon.level.width(), +Dungeon.level.width(),
+                -1, 1,
+                -Dungeon.level.width(), Dungeon.level.width(),
                 -Dungeon.level.width() - 1, -Dungeon.level.width() + 1,
-                +Dungeon.level.width() - 1, +Dungeon.level.width() + 1
+                Dungeon.level.width() - 1, Dungeon.level.width() + 1
         };
 
         // 计算每个候选位置的评分
@@ -939,4 +902,18 @@ public class MageHand extends DirectableAlly {
 
         return score;
     }
+
+    @Override
+    public void die( Object cause ) {
+
+        super.die(cause);
+        if(magesStaff != null){
+            Dungeon.level.drop(magesStaff, pos).sprite.drop();
+        }
+        if(equippedWand != null){
+            Dungeon.level.drop(equippedWand, pos).sprite.drop();
+        }
+        Buff.detach(hero,MageHandControlBuff.class);
+    }
+
 }
