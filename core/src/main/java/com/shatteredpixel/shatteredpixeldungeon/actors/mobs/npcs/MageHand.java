@@ -18,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
@@ -54,7 +55,6 @@ public class MageHand extends DirectableAlly {
         immunities.add(Blob.class);
         immunities.add(Buff.class);
         viewDistance =10;
-        invisible = 1;
     }
 
     @Override
@@ -301,6 +301,8 @@ public class MageHand extends DirectableAlly {
                 return false;
             }
         }
+
+        // 如果装备了法师杖，检查是否可以攻击
         if (magesStaff != null) {
             Wand mwand = magesStaff.wand;
             if (mwand != null && wandCooldown == 0) {
@@ -322,11 +324,11 @@ public class MageHand extends DirectableAlly {
                                     return false;
                                 }
                                 return attack.collisionPos == enemy.pos;
-                            } else {
-                                return Dungeon.level.adjacent(pos, enemy.pos);
                             }
                         }
                     }
+                    // 新增：如果法师杖没有充能且没有天赋可用，检查是否可以进行近战攻击
+                    return Dungeon.level.adjacent(pos, enemy.pos);
                 }
             }
         } else if (equippedWand != null && wandCooldown == 0) {
@@ -374,6 +376,10 @@ public class MageHand extends DirectableAlly {
                     // 检查法师之手天赋
                     if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
                         return tryMysticalCharge();
+                    }
+                    // 新增：如果法师杖没有充能且没有天赋可用，进行近战攻击
+                    if (Dungeon.level.adjacent(pos, enemy.pos)) {
+                        return super.doAttack(enemy);
                     }
                     return false;
                 }
@@ -622,6 +628,9 @@ public class MageHand extends DirectableAlly {
         damage = super.attackProc(enemy, damage);
         if (magesStaff != null) {
             damage = magesStaff.proc(this, enemy, damage);
+            if(magesStaff.wand.curCharges <= 0){
+                Buff.prolong(hero, StoneOfAggression.Aggression.class, 1f);
+            }
         } else if (equippedWand != null) {
             damage += equippedWand.level();
         }
@@ -908,10 +917,10 @@ public class MageHand extends DirectableAlly {
 
         super.die(cause);
         if(magesStaff != null){
-            Dungeon.level.drop(magesStaff, pos).sprite.drop();
+            Dungeon.level.drop(magesStaff, hero.pos).sprite.drop();
         }
         if(equippedWand != null){
-            Dungeon.level.drop(equippedWand, pos).sprite.drop();
+            Dungeon.level.drop(equippedWand, hero.pos).sprite.drop();
         }
         Buff.detach(hero,MageHandControlBuff.class);
     }
