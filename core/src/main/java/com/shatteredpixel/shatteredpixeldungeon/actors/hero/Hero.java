@@ -463,6 +463,7 @@ public class Hero extends Char {
 	//This is relevant because we call isAlive during drawing, which has both performance
 	//and thread coordination implications if that method calls buff(...) frequently
 	private Berserk berserk;
+	private MIME.GOLD_FIVE goldFive;
 
 	public Hero() {
 		super();
@@ -3293,20 +3294,20 @@ public class Hero extends Char {
 
 	@Override
 	public boolean isAlive() {
-		if(belongings != null && HP>0){
-			MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
-			if(getHeal != null) {
-				return true;
+		if (HP <= 0){
+			if(goldFive == null) {
+				goldFive = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
+				return goldFive != null;
+			} else {
+				if (berserk == null) berserk = buff(Berserk.class);
+				return berserk != null && berserk.berserking();
 			}
-		} else if (HP <= 0) {
-			if (berserk == null) berserk = buff(Berserk.class);
-			return berserk != null && berserk.berserking();
 		} else {
 			berserk = null;
+			goldFive = null;
 			return super.isAlive();
 		}
-        return super.isAlive();
-    }
+	}
 
 	@Override
 	public void move(int step, boolean travelling) {
