@@ -651,7 +651,7 @@ public enum Icons {
 
 	public static Image get( HeroClass cl ) {
 		switch (cl) {
-			case WARRIOR:
+			case WARRIOR:case SPELLSWORD:
 				return get( WARRIOR );
 			case MAGE:
 				return get( MAGE );

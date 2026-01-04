@@ -151,6 +151,9 @@ public class WandOfHightHunderStorm extends DamageWand {
 
     @Override
     public void onAIZap(Ballistica bolt) {
+        if (curUser == null) {
+            return;
+        }
         ConeAOE conex;
         ArrayList<Char> affectedChars = new ArrayList<>();
 
@@ -195,7 +198,7 @@ public class WandOfHightHunderStorm extends DamageWand {
             ch.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
             ch.sprite.flash();
 
-            if (ch != curUser && ch.alignment == curUser.alignment && ch.pos != bolt.collisionPos){
+            if (curUser != null && ch != curUser && ch.alignment == curUser.alignment && ch.pos != bolt.collisionPos){
                 continue;
             }
             wandProc(ch, chargesPerCast());
