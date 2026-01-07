@@ -289,7 +289,6 @@ public class AttributeViewer extends TestItem{
 
         private RenderedTextBlock name;
         private HealthBar health;
-        private BuffIndicator buffs;
 
         public CharTitle(Char ch) {
 
@@ -300,9 +299,6 @@ public class AttributeViewer extends TestItem{
             health = new HealthBar();
             health.level(ch);
             add(health);
-
-            buffs = new BuffIndicator(ch, false);
-            add(buffs);
         }
 
         @Override
@@ -312,11 +308,6 @@ public class AttributeViewer extends TestItem{
             name.setPos( GAP, GAP);
 
             health.setRect( GAP, name.bottom() + GAP, width - GAP * 2, health.height());
-
-            buffs.setPos(
-                    name.right() + GAP - 1,
-                    name.bottom() - BuffIndicator.SIZE_SMALL - 2
-            );
 
             height = health.bottom();
         }
