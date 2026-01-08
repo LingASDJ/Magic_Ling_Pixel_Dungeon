@@ -62,6 +62,10 @@ public class ShatteredPixelDungeon extends Game {
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword" );
 
 		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand.MageHandControl.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff$MageHandControl" );
+
+		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TreeList.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff" );
 
