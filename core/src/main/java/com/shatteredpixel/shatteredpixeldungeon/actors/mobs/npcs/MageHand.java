@@ -181,6 +181,7 @@ public class MageHand extends DirectableAlly {
     @Override
     public void spend(float time) {
         super.spend(time);
+        wands = hero.belongings.getAllItems(Wand.class);
         // 在每回合结束时处理充能
         if (equippedWand != null) {
             chargeWand(equippedWand);
