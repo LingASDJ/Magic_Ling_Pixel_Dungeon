@@ -41,12 +41,11 @@ import java.util.ArrayList;
 
 public class MageHand extends DirectableAlly {
 
-    private ArrayList<Wand> wands = hero.belongings.getAllItems(Wand.class);
+    private ArrayList<Wand> wands;
 
     private final int chargeNeeded = 2;
 
     private Char targetEnemy = null;
-    private boolean priorityAttack = false;
 
     {
         spriteClass = MageHandSprite.class;
@@ -255,16 +254,7 @@ public class MageHand extends DirectableAlly {
     // 设置指定敌人
     public void setTargetEnemy(Char enemy) {
         this.targetEnemy = enemy;
-        this.priorityAttack = false; // 设置指定敌人时，关闭优先攻击模式
         this.state = HUNTING;
-    }
-
-    // 设置优先攻击模式
-    public void setPriorityAttack(boolean priority) {
-        this.priorityAttack = priority;
-        if (priority) {
-            this.targetEnemy = null; // 开启优先攻击模式时，清除指定敌人
-        }
     }
 
     // 修改equipWand方法
@@ -296,22 +286,48 @@ public class MageHand extends DirectableAlly {
 
     @Override
     protected boolean canAttack(Char enemy) {
-        if (enemy == null) {
-            enemy = chooseEnemy();
+        if (Dungeon.hero != null){
             if (enemy == null) {
-                return false;
+                enemy = chooseEnemy();
+                if (enemy == null) {
+                    return false;
+                }
             }
-        }
 
-        // 如果装备了法师杖，检查是否可以攻击
-        if (magesStaff != null) {
-            Wand mwand = magesStaff.wand;
-            if (mwand != null && wandCooldown == 0) {
-                if (mwand.curCharges > 0) {
+            // 如果装备了法师杖，检查是否可以攻击
+            if (magesStaff != null) {
+                Wand mwand = magesStaff.wand;
+                if (mwand != null && wandCooldown == 0) {
+                    if (mwand.curCharges > 0) {
+                        Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                        // 检查英雄是否在攻击路径上
+                        if (isHeroInAttackPath(attack)) {
+                            return false; // 英雄在路径上，不能直接攻击
+                        }
+                        return attack.collisionPos == enemy.pos;
+                    } else {
+                        // 检查法师之手天赋
+                        if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
+                            // 检查是否有其他可用法杖的充能
+                            for (Wand w : wands) {
+                                if (w.curCharges >= chargeNeeded) {
+                                    Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                                    if (isHeroInAttackPath(attack)) {
+                                        return false;
+                                    }
+                                    return attack.collisionPos == enemy.pos;
+                                }
+                            }
+                        }
+                        // 新增：如果法师杖没有充能且没有天赋可用，检查是否可以进行近战攻击
+                        return Dungeon.level.adjacent(pos, enemy.pos);
+                    }
+                }
+            } else if (equippedWand != null && wandCooldown == 0) {
+                if (equippedWand.curCharges > 0) {
                     Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                    // 检查英雄是否在攻击路径上
                     if (isHeroInAttackPath(attack)) {
-                        return false; // 英雄在路径上，不能直接攻击
+                        return false;
                     }
                     return attack.collisionPos == enemy.pos;
                 } else {
@@ -328,89 +344,57 @@ public class MageHand extends DirectableAlly {
                             }
                         }
                     }
-                    // 新增：如果法师杖没有充能且没有天赋可用，检查是否可以进行近战攻击
-                    return Dungeon.level.adjacent(pos, enemy.pos);
-                }
-            }
-        } else if (equippedWand != null && wandCooldown == 0) {
-            if (equippedWand.curCharges > 0) {
-                Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                if (isHeroInAttackPath(attack)) {
                     return false;
                 }
-                return attack.collisionPos == enemy.pos;
-            } else {
-                // 检查法师之手天赋
-                if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                    // 检查是否有其他可用法杖的充能
-                    for (Wand w : wands) {
-                        if (w.curCharges >= chargeNeeded) {
-                            Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                            if (isHeroInAttackPath(attack)) {
-                                return false;
-                            }
-                            return attack.collisionPos == enemy.pos;
-                        }
-                    }
-                }
-                return false;
             }
         }
         return false;
     }
 
     protected boolean doAttack(Char enemy) {
-        if (magesStaff != null) {
-            Wand mwand = magesStaff.wand;
-            if (mwand != null && wandCooldown == 0) {
-                if (mwand.curCharges > 0) {
-                    Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                    if (isHeroInAttackPath(attack)) {
-                        // 英雄在路径上，尝试移动到更好的位置
-                        return tryMoveToBetterPosition(enemy);
+        if(hero != null){
+            /** @老法杖判定区 */
+            if (magesStaff != null) {
+                Wand mwand = magesStaff.wand;
+                if (mwand != null && wandCooldown == 0) {
+                    if (mwand.curCharges > 0) {
+                        Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                        if (isHeroInAttackPath(attack)) {
+                            return tryMoveToBetterPosition(enemy);
+                        }
+                        if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                            sprite.zap(enemy.pos);
+                            return false;
+                        }
+                    } else {
+                        if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE) && tryMysticalCharge()) {
+                            return true;
+                        } else if (Dungeon.level.adjacent(pos, enemy.pos)) {
+                            return super.doAttack(enemy);
+                        }
                     }
-                    if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                        sprite.zap(enemy.pos);
-                        return false;
-                    }
-                } else {
-                    // 检查法师之手天赋
-                    if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                        return tryMysticalCharge();
-                    }
-                    // 新增：如果法师杖没有充能且没有天赋可用，进行近战攻击
-                    if (Dungeon.level.adjacent(pos, enemy.pos)) {
-                        return super.doAttack(enemy);
-                    }
-                    return false;
                 }
-            }
-        } else {
-            if (equippedWand != null && wandCooldown == 0) {
-                if (equippedWand.curCharges > 0) {
-                    Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                    if (isHeroInAttackPath(attack)) {
-                        return tryMoveToBetterPosition(enemy);
-                    }
-                    if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                        sprite.zap(enemy.pos);
-                        return false;
-                    }
-                } else {
-                    // 检查法师之手天赋
-                    if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                        return tryMysticalCharge();
-                    }
-                    return false;
-                }
+                /** @法杖判定区 */
             } else {
-                return false;
+                if (equippedWand != null && wandCooldown == 0) {
+                    if (equippedWand.curCharges > 0) {
+                        Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                        if (isHeroInAttackPath(attack)) {
+                            return tryMoveToBetterPosition(enemy);
+                        }
+                        if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                            sprite.zap(enemy.pos);
+                            return false;
+                        }
+                    } else {
+                        return Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE) && tryMysticalCharge();
+                    }
+                }
             }
         }
         return false;
     }
 
-    // 检查英雄是否在攻击路径上
     private boolean isHeroInAttackPath(Ballistica attack) {
         for (int i = 0; i < attack.path.size(); i++) {
             int p = attack.path.get(i);
@@ -450,7 +434,6 @@ public class MageHand extends DirectableAlly {
             enemy = chooseEnemy();
         }
 
-        // 获取或创建 Buff
         MageHandControlBuff buff = hero.buff(MageHandControlBuff.class);
         if (buff == null) {
             Buff.affect(hero, MageHandControlBuff.class);
@@ -459,7 +442,6 @@ public class MageHand extends DirectableAlly {
         return super.act();
     }
 
-    // 添加快速充能方法
     public void gainCharge(float charge) {
         if (equippedWand != null && equippedWand.curCharges < equippedWand.maxCharges) {
             equippedWand.partialCharge += charge;
@@ -656,8 +638,6 @@ public class MageHand extends DirectableAlly {
 
         if (equippedWand != null)  bundle.put( WAND,equippedWand );
         if(magesStaff != null) bundle.put( MAGE_STAFF, magesStaff );
-        bundle.put(TARGET_ENEMY, targetEnemy);
-        bundle.put(PRIORITY_ATTACK, priorityAttack);
     }
 
     @Override
@@ -668,9 +648,6 @@ public class MageHand extends DirectableAlly {
             equippedWand = (Wand) bundle.get( WAND );
         if (bundle.contains(MAGE_STAFF))
             magesStaff = (MagesStaff) bundle.get( MAGE_STAFF );
-        if (bundle.contains(TARGET_ENEMY))
-            targetEnemy = (Char) bundle.get(TARGET_ENEMY);
-        priorityAttack = bundle.getBoolean(PRIORITY_ATTACK);
     }
 
     public static class HandShield extends FlavourBuff {
