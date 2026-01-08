@@ -9,7 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.watabou.utils.Bundle;
 
 public class MageHandControlBuff extends Buff implements ActionIndicator.Action {
-    public MagesStaff.MageHandControl magesStaffcontrol = Dungeon.hero.belongings.getItem(MagesStaff.MageHandControl.class);;
+    public MagesStaff.MageHandControl magesStaffcontrol;
     {
         type = buffType.POSITIVE;
     }
@@ -23,7 +23,9 @@ public class MageHandControlBuff extends Buff implements ActionIndicator.Action 
     @Override
     public boolean act() {
 
-        if(magesStaffcontrol != null) {
+        if(magesStaffcontrol ==  null){
+             magesStaffcontrol = Dungeon.hero.belongings.getItem(MagesStaff.MageHandControl.class);
+        } else {
             magesStaffcontrol.updateQuickslot();
         }
 

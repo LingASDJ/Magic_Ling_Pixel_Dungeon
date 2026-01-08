@@ -59,6 +59,7 @@ public class WndChooseSubclass extends Window {
 		float pos = message.bottom() + 3*GAP;
 
 		for (HeroSubClass subCls : hero.heroClass.subClasses()){
+			if(subCls == HeroSubClass.OLDBATTLEMAGE) continue;
 			RedButton btnCls = new RedButton( subCls.shortDesc(), 6 ) {
 				@Override
 				protected void onClick() {

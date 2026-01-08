@@ -742,7 +742,6 @@ public class MagesStaff extends MeleeWeapon {
 	public static class MageHandControl extends Item {
 		public static final String AC_HAND = "HAND";
 		public static final String AC_DIRECT = "DIRECT";
-		public static final String AC_PRIORITY_ATTACK = "PRIORITY_ATTACK";
 		public static final String AC_SUMMON_HAND = "SUMMON_HAND";
 		public static final String AC_TARGET_ENEMY = "TARGET_ENEMY";
 
@@ -805,14 +804,6 @@ public class MagesStaff extends MeleeWeapon {
                     for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                         if (mob instanceof MageHand) {
                             GameScene.selectCell(handDirector);
-                        }
-                    }
-                    break;
-                case AC_PRIORITY_ATTACK:
-                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                        if (mob instanceof MageHand) {
-                            ((MageHand) mob).setPriorityAttack(true);
-                            GLog.i(Messages.get(MageHand.class, "priority_attack_enabled"));
                         }
                     }
                     break;
