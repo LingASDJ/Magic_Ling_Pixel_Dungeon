@@ -9,32 +9,53 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.MageHandControlBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MageHandSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ItemButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -42,10 +63,7 @@ import java.util.ArrayList;
 public class MageHand extends DirectableAlly {
 
     private ArrayList<Wand> wands;
-
     private final int chargeNeeded = 2;
-
-    private Char targetEnemy = null;
 
     {
         spriteClass = MageHandSprite.class;
@@ -251,13 +269,6 @@ public class MageHand extends DirectableAlly {
         }
     }
 
-    // 设置指定敌人
-    public void setTargetEnemy(Char enemy) {
-        this.targetEnemy = enemy;
-        this.state = HUNTING;
-    }
-
-    // 修改equipWand方法
     public void equipWand(Wand wand) {
         this.equippedWand = wand;
         wand.partialCharge = 0f;
@@ -287,12 +298,12 @@ public class MageHand extends DirectableAlly {
     @Override
     protected boolean canAttack(Char enemy) {
         if (Dungeon.hero != null){
-            if (enemy == null) {
-                enemy = chooseEnemy();
-                if (enemy == null) {
-                    return false;
-                }
-            }
+//            if (enemy == null) {
+//                enemy = chooseEnemy();
+//                if (enemy == null) {
+//                    return false;
+//                }
+//            }
 
             // 如果装备了法师杖，检查是否可以攻击
             if (magesStaff != null) {
@@ -308,14 +319,16 @@ public class MageHand extends DirectableAlly {
                     } else {
                         // 检查法师之手天赋
                         if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                            // 检查是否有其他可用法杖的充能
-                            for (Wand w : wands) {
-                                if (w.curCharges >= chargeNeeded) {
-                                    Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                                    if (isHeroInAttackPath(attack)) {
-                                        return false;
+                            if(wands != null){
+                                // 检查是否有其他可用法杖的充能
+                                for (Wand w : wands) {
+                                    if (w.curCharges >= chargeNeeded) {
+                                        Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                                        if (isHeroInAttackPath(attack)) {
+                                            return false;
+                                        }
+                                        return attack.collisionPos == enemy.pos;
                                     }
-                                    return attack.collisionPos == enemy.pos;
                                 }
                             }
                         }
@@ -333,16 +346,17 @@ public class MageHand extends DirectableAlly {
                 } else {
                     // 检查法师之手天赋
                     if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                        // 检查是否有其他可用法杖的充能
-                        for (Wand w : wands) {
-                            if (w.curCharges >= chargeNeeded) {
-                                Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                                if (isHeroInAttackPath(attack)) {
-                                    return false;
-                                }
-                                return attack.collisionPos == enemy.pos;
-                            }
-                        }
+                       if(wands != null){
+                           for (Wand w : wands) {
+                               if (w.curCharges >= chargeNeeded) {
+                                   Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                                   if (isHeroInAttackPath(attack)) {
+                                       return false;
+                                   }
+                                   return attack.collisionPos == enemy.pos;
+                               }
+                           }
+                       }
                     }
                     return false;
                 }
@@ -430,9 +444,16 @@ public class MageHand extends DirectableAlly {
         if (wandCooldown > 0) {
             wandCooldown--;
         }
-        if (enemy != null) {
-            enemy = chooseEnemy();
-        }
+//        if (enemy != null) {
+//            // 优先级1: 如果有指定的目标敌人，优先攻击该敌人
+//            if (targetEnemy != null && targetEnemy.isAlive() ) {
+//                enemy = targetEnemy;
+//            } else if(targetEnemy == null){
+//                enemy = chooseEnemy();
+//            }
+//        }
+
+
 
         MageHandControlBuff buff = hero.buff(MageHandControlBuff.class);
         if (buff == null) {
@@ -467,14 +488,10 @@ public class MageHand extends DirectableAlly {
         if (magesStaff != null && enemy != null) {
             if (magesStaff.wand.curCharges > 0) {
                 zapWithMagesStaff();
-            } else if (tryMysticalCharge()) {
-                return;
             }
         } else if (equippedWand != null && enemy != null) {
             if (equippedWand.curCharges > 0) {
                 zapWithEquippedWand();
-            } else if (tryMysticalCharge()) {
-                return;
             }
         }
     }
@@ -506,7 +523,7 @@ public class MageHand extends DirectableAlly {
         }
 
         consumeWandCharges(lowestLevelWand, chargeNeeded);
-        executeWandEffect(magesStaff != null ? magesStaff.wand : equippedWand);
+        zap();
         finalizeWandUse();
         return true;
     }
@@ -716,55 +733,6 @@ public class MageHand extends DirectableAlly {
         }
     }
 
-    @Override
-    public Char chooseEnemy() {
-        // 优先级1: 如果有指定的目标敌人，优先攻击该敌人
-        if (targetEnemy != null && targetEnemy.isAlive() ) {
-            return targetEnemy;
-        }
-
-        // 优先级3: 默认的威胁值评估逻辑
-        Char bestEnemy = null;
-        float highestThreat = 0;
-
-        // 获取视野内的所有敌人
-        for (Char ch : Actor.chars()) {
-            if (ch instanceof Mob && ch.alignment == Alignment.ENEMY && fieldOfView[ch.pos]) {
-                Mob mob = (Mob) ch;
-                float threat = calculateThreat(mob);
-                // 如果威胁值更高，则选择这个敌人
-                if (threat > highestThreat) {
-                    highestThreat = threat;
-                    bestEnemy = mob;
-                }
-            }
-        }
-
-        return bestEnemy;
-    }
-
-    // 计算敌人对英雄的威胁值
-    private float calculateThreat(Mob enemy) {
-        // 基础威胁值基于敌人的生命值和攻击力
-        float threat = enemy.HP * 0.5f + enemy.damageRoll() * 2;
-
-        // 距离英雄越近，威胁值越高
-        float distance = Dungeon.level.distance(enemy.pos, Dungeon.hero.pos);
-        threat += 100 / (distance + 1);
-
-        // 检查敌人是否正在攻击英雄（通过检查敌人的目标是否是英雄）
-        if (enemy.enemy() == Dungeon.hero) {
-            threat *= 100f;
-        }
-
-        // 如果敌人有特殊状态（如精英敌人），威胁值更高
-        if (enemy.buff(ChampionEnemy.class) != null) {
-            threat *= 5f;
-        }
-
-        return threat;
-    }
-
     // 尝试移动到更好的位置以避免误伤英雄并攻击敌人
     private boolean tryMoveToBetterPosition(Char enemy) {
         // 寻找可以攻击敌人且不经过英雄的位置
@@ -901,6 +869,334 @@ public class MageHand extends DirectableAlly {
             Dungeon.level.drop(equippedWand, hero.pos).sprite.drop();
         }
         Buff.detach(hero,MageHandControlBuff.class);
+    }
+
+    private static class WndMageHand extends Window {
+
+        private static final int BTN_SIZE  = 32;
+        private static final float GAP     = 2;
+        private static final float BTN_GAP = 12;
+        private static final int WIDTH     = 116;
+
+        private ItemButton btnWand;
+
+        WndMageHand(final MageHand hand){
+
+            IconTitle titlebar = new IconTitle();
+            titlebar.icon( new ItemSprite(ItemSpriteSheet.MAGES_STAFF) );
+            titlebar.label( Messages.get(this, "title") );
+            titlebar.setRect( 0, 0, WIDTH, 0 );
+            add( titlebar );
+
+            RenderedTextBlock message =
+                    PixelScene.renderTextBlock(Messages.get(this, "desc"), 6);
+            message.maxWidth( WIDTH );
+            message.setPos(0, titlebar.bottom() + GAP);
+            add( message );
+
+            btnWand = new ItemButton(){
+                @Override
+                protected void onClick() {
+                    if (hand.hasMageStaff()){
+                        MagesStaff currentStaff = hand.getEquippedMageStaff();
+                        item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
+                        if (!currentStaff.doPickUp(hero)){
+                            Dungeon.level.drop(currentStaff, hero.pos);
+                        }
+                        hand.unequipMageStaff();
+                    } else if (hand.hasWand()){
+                        Wand currentWand = hand.getEquippedWand();
+                        item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
+                        if (!currentWand.doPickUp(hero)){
+                            Dungeon.level.drop(currentWand, hero.pos);
+                        }
+                        hand.unequipWand();
+                    } else {
+                        GameScene.selectItem(new WndBag.ItemSelector() {
+                            @Override
+                            public String textPrompt() {
+                                return Messages.get(WndMageHand.class, "wand_prompt");
+                            }
+
+                            @Override
+                            public boolean itemSelectable(Item item) {
+                                return item instanceof Wand && !(item instanceof WandOfWarding) || item instanceof MagesStaff;
+                            }
+
+                            @Override
+                            public Class<?extends Bag> preferredBag(){
+                                return MagicalHolster.class;
+                            }
+
+                            @Override
+                            public void onSelect(Item item) {
+                                if (!(item instanceof Wand) && !(item instanceof MagesStaff)) {
+                                    // 窗口取消时不做任何操作
+
+                                } else if (item.isEquipped(hero)) {
+                                    GLog.w( Messages.get(WndMageHand.class, "cant_equip") );
+                                    hide();
+                                } else if (!item.isIdentified()) {
+                                    GLog.w( Messages.get(WndMageHand.class, "cant_unidentified"));
+                                    hide();
+                                } else {
+                                    if(item instanceof MagesStaff){
+                                        Wand w = ((MagesStaff) item).wand;
+                                        if(w instanceof WandOfWarding){
+                                            GLog.w( Messages.get(WndMageHand.class, "cant_equip_ward_tmp") );
+                                            hide();
+                                        } else {
+                                            hand.equipMageStaff((MagesStaff) item);
+                                            item(hand.getEquippedMageStaff());
+                                            item.detach(hero.belongings.backpack);
+                                        }
+                                    } else {
+                                        hand.equipWand((Wand) item);
+                                        item(hand.getEquippedWand());
+                                        item.detach(hero.belongings.backpack);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                protected boolean onLongClick() {
+                    if (item() != null && item().name() != null){
+                        GameScene.show(new WndInfoItem(item()));
+                        return true;
+                    }
+                    return false;
+                }
+            };
+
+            btnWand.setRect( (WIDTH - BTN_SIZE) / 2f, message.top() + message.height() + GAP, BTN_SIZE, BTN_SIZE );
+
+            if(hand.hasMageStaff()){
+                btnWand.item(hand.getEquippedMageStaff());
+            } else if (hand.hasWand()) {
+                btnWand.item(hand.getEquippedWand());
+            } else {
+                btnWand.item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
+            }
+
+            add( btnWand );
+
+            resize(WIDTH, (int)(btnWand.bottom() + GAP));
+        }
+    }
+
+    public static class MageHandControl extends Item {
+        public static final String AC_HAND = "HAND";
+        public static final String AC_DIRECT = "DIRECT";
+        public static final String AC_SUMMON_HAND = "SUMMON_HAND";
+        public static final String AC_TARGET_ENEMY = "TARGET_ENEMY";
+
+        {
+            defaultAction = AC_DIRECT;
+            unique = true;
+            image = ItemSpriteSheet.WAND_HAND_CONTROL;
+        }
+
+        @Override
+        public String defaultAction(){
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if (mob instanceof MageHand) {
+                    return AC_DIRECT;
+                }
+            }
+            return AC_SUMMON_HAND;
+        }
+
+        @Override
+        public ItemSprite.Glowing glowing() {
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if (mob instanceof MageHand) {
+                    return null;
+                }
+            }
+            return new ItemSprite.Glowing(0x880000, 1f);
+        }
+
+        @Override
+        public boolean isUpgradable() {
+            return false;
+        }
+
+        @Override
+        public String status() {
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if (mob instanceof MageHand) {
+                    MageHand hand = (MageHand) mob;
+                    if (hand.magesStaff != null && hand.magesStaff.wand != null) {
+                        return hand.magesStaff.wand.curCharges + "/" + hand.magesStaff.wand.maxCharges;
+                    } else if (hand.equippedWand != null) {
+                        return hand.equippedWand.curCharges + "/" + hand.equippedWand.maxCharges;
+                    }
+                }
+            }
+            return "";
+        }
+
+
+
+        @Override
+        public boolean isIdentified() {
+            return true;
+        }
+
+        @Override
+        public ArrayList<String> actions(Hero hero) {
+            ArrayList<String> actions = super.actions(hero);
+            actions.add(AC_HAND);
+            actions.add(AC_DIRECT);
+            actions.add(AC_SUMMON_HAND);
+            actions.add(AC_TARGET_ENEMY);
+            return actions;
+        }
+
+        @Override
+        public void execute(Hero hero, String action) {
+            super.execute(hero, action);
+
+            switch (action) {
+                case AC_HAND:
+                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                        if (mob instanceof MageHand) {
+                            GameScene.show(new WndMageHand((MageHand) mob));
+                        }
+                    }
+                    break;
+                case AC_DIRECT:
+                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                        if (mob instanceof MageHand) {
+                            GameScene.selectCell(handDirector);
+                        }
+                    }
+                    break;
+                case AC_SUMMON_HAND:
+                    boolean hasMageHand = false;
+
+
+                    ArrayList<Integer> spawnPoints = new ArrayList<>();
+                    for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+                        int p = hero.pos + PathFinder.NEIGHBOURS8[i];
+                        if (Actor.findChar(p) == null
+                                && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])
+                                && !(PathFinder.distance[p] == Integer.MAX_VALUE)) {
+                            spawnPoints.add(p);
+                        }
+                    }
+
+                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                        if (mob instanceof MageHand) {
+                            hasMageHand = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasMageHand) {
+
+                        if (spawnPoints.size() > 0) {
+                            MageHand mageHand = new MageHand();
+                            mageHand.pos = Random.element(spawnPoints);
+                            GameScene.add(mageHand, 1f);
+                            Dungeon.level.occupyCell(mageHand);
+
+                            CellEmitter.get(mageHand.pos).start(ShaftParticle.FACTORY, 0.3f, 4);
+                            CellEmitter.get(mageHand.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+
+                            hero.spend(1f);
+                            hero.busy();
+                            hero.sprite.operate(hero.pos);
+
+                            if (mageHand.equippedWand != null) {
+                                mageHand.equipWand(mageHand.equippedWand);
+                                mageHand.yell(Messages.get(MageHand.class, "appear"));
+                                Sample.INSTANCE.play(Assets.Sounds.MASTERY);
+                                mageHand.sayAppeared();
+                            }
+
+                            Invisibility.dispel(hero);
+                            Talent.onArtifactUsed(hero);
+                            updateQuickslot();
+                        }
+                    } else {
+                        GLog.w(Messages.get(MageHand.class, "already_exists"));
+                    }
+                    break;
+                case AC_TARGET_ENEMY:
+                    // 选择敌人进行攻击
+                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                        if (mob instanceof MageHand) {
+                            GameScene.selectCell(enemySelector);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        public CellSelector.Listener handDirector = new CellSelector.Listener() {
+            @Override
+            public void onSelect(Integer cell) {
+                if (cell == null) return;
+
+                // 检查目标位置是否在可视区域内（已探索区域或灵视范围内）
+                boolean isVisible = Dungeon.level.heroFOV[cell];
+
+                if (isVisible) {
+                    boolean isInBounds = cell < Dungeon.level.length();
+                    Char enemy = Actor.findChar(cell);
+
+                    if ((Dungeon.level.map[cell] == Terrain.CHASM || Dungeon.level.passable[cell]) && isInBounds && enemy == null) {
+                        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                            if (mob instanceof MageHand) {
+                                ScrollOfTeleportation.appear(mob, cell);
+                            }
+                        }
+                        curUser.spend(Actor.TICK);
+                        curUser.busy();
+                        curUser.sprite.operate(curUser.pos);
+                        Sample.INSTANCE.play(Assets.Sounds.READ);
+                        Emitter e = curUser.sprite.centerEmitter();
+                        e.pos(e.x - 2, e.y - 6, 4, 4);
+                        e.start(Speck.factory(Speck.STAR), 0.05f, 20);
+                    } else {
+                        GLog.w(Messages.get(MageHand.class, "invalid_target"));
+                    }
+                } else {
+                    GLog.w(Messages.get(MageHand.class, "out_of_range"));
+                }
+            }
+
+            @Override
+            public String prompt() {
+                return "\"" + Messages.get(DriedRose.GhostHero.class, "direct_prompt") + "\"";
+            }
+        };
+
+        public CellSelector.Listener enemySelector = new CellSelector.Listener(){
+
+            @Override
+            public void onSelect(Integer cell) {
+                if (cell == null) return;
+
+                Sample.INSTANCE.play( Assets.Sounds.GHOST );
+
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (mob instanceof MageHand) {
+                        ((MageHand) mob).directTocell(cell);
+                    }
+                }
+
+            }
+
+            @Override
+            public String prompt() {
+                return  "\"" + Messages.get(DriedRose.GhostHero.class, "direct_prompt") + "\"";
+            }
+        };
     }
 
 }

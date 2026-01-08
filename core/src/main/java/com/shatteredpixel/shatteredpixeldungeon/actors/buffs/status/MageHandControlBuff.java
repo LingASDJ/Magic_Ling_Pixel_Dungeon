@@ -2,14 +2,14 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.watabou.utils.Bundle;
 
 public class MageHandControlBuff extends Buff implements ActionIndicator.Action {
-    public MagesStaff.MageHandControl magesStaffcontrol;
+    public MageHand.MageHandControl magesStaffcontrol;
     {
         type = buffType.POSITIVE;
     }
@@ -17,14 +17,14 @@ public class MageHandControlBuff extends Buff implements ActionIndicator.Action 
 
     @Override
     public String actionName() {
-        return Messages.get(MagesStaff.MageHandControl.class,MagesStaff.MageHandControl.AC_HAND);
+        return Messages.get(MageHand.MageHandControl.class,MageHand.MageHandControl.AC_HAND);
     }
 
     @Override
     public boolean act() {
 
         if(magesStaffcontrol ==  null){
-             magesStaffcontrol = Dungeon.hero.belongings.getItem(MagesStaff.MageHandControl.class);
+             magesStaffcontrol = Dungeon.hero.belongings.getItem(MageHand.MageHandControl.class);
         } else {
             magesStaffcontrol.updateQuickslot();
         }
@@ -59,7 +59,7 @@ public class MageHandControlBuff extends Buff implements ActionIndicator.Action 
     @Override
     public void doAction() {
         if(magesStaffcontrol != null) {
-            magesStaffcontrol.execute(Dungeon.hero, MagesStaff.MageHandControl.AC_HAND);
+            magesStaffcontrol.execute(Dungeon.hero, MageHand.MageHandControl.AC_HAND);
         }
     }
 }
