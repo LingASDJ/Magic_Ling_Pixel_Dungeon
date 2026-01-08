@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -875,18 +876,25 @@ public class MagesStaff extends MeleeWeapon {
 				boolean isVisible = Dungeon.level.heroFOV[cell];
 
 				if (isVisible) {
-					for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-						if (mob instanceof MageHand) {
-							ScrollOfTeleportation.appear(mob, cell);
+					boolean isInBounds = cell < Dungeon.level.length();
+					Char enemy = Actor.findChar(cell);
+
+					if ((Dungeon.level.map[cell] == Terrain.CHASM || Dungeon.level.passable[cell]) && isInBounds && enemy == null) {
+						for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+							if (mob instanceof MageHand) {
+								ScrollOfTeleportation.appear(mob, cell);
+							}
 						}
+						curUser.spend(Actor.TICK);
+						curUser.busy();
+						curUser.sprite.operate(curUser.pos);
+						Sample.INSTANCE.play(Assets.Sounds.READ);
+						Emitter e = curUser.sprite.centerEmitter();
+						e.pos(e.x - 2, e.y - 6, 4, 4);
+						e.start(Speck.factory(Speck.STAR), 0.05f, 20);
+					} else {
+						GLog.w(Messages.get(MageHand.class, "invalid_target"));
 					}
-					curUser.spend(Actor.TICK);
-					curUser.busy();
-					curUser.sprite.operate(curUser.pos);
-					Sample.INSTANCE.play(Assets.Sounds.READ);
-					Emitter e = curUser.sprite.centerEmitter();
-					e.pos(e.x - 2, e.y - 6, 4, 4);
-					e.start(Speck.factory(Speck.STAR), 0.05f, 20);
 				} else {
 					GLog.w(Messages.get(MageHand.class, "out_of_range"));
 				}
