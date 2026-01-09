@@ -295,6 +295,10 @@ public class WndHeroInfo extends WndTabbed {
 						Game.scene().addToFront(new WndInfoSubclass(cls, subClasses[finalI]));
 					}
 				};
+				
+				if(subClasses[i] == HeroSubClass.OLDBATTLEMAGE){
+					continue;
+				}
 				add(subClsDescs[i]);
 				add(subClsInfos[i]);
 			}

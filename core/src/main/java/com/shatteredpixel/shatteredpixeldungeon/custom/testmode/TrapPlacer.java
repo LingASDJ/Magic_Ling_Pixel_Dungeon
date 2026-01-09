@@ -59,7 +59,7 @@ import java.util.Set;
 
 public class TrapPlacer extends TestItem{
     {
-        image = ItemSpriteSheet.RECLAIM_TRAP;
+        image = ItemSpriteSheet.DEV_4;
         defaultAction = AC_PLACE;
     }
 

@@ -60,7 +60,7 @@ import java.util.ArrayList;
 
 public class LevelTeleporter extends TestItem {
     {
-        image = ItemSpriteSheet.DG12;
+        image = ItemSpriteSheet.DEV_7;
         defaultAction = AC_DESCEND;
         changeDefAct = true;
     }

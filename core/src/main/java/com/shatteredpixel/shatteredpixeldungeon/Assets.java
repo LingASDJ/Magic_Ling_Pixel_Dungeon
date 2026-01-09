@@ -854,6 +854,7 @@ public class Assets {
 
 		public static final String REDSWARM				= "sprites/RedSearm.png";
 		public static final String REN					= "sprites/npc/ren.png";
+		public static final String HIRO					= "sprites/npc/hiro.png";
 		public static final String DragonBlueGirl		= "sprites/npc/smallblue.png";
 		public static final String DKGirl				= "sprites/npc/DKGirl.png";
 

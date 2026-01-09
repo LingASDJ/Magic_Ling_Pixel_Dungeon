@@ -11,7 +11,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 
 public class AttributeViewer extends TestItem{
     {
-        image = ItemSpriteSheet.WAND_MAGIC_MISSILE;
+        image = ItemSpriteSheet.DEV_2;
         defaultAction = AC_INSPECT;
     }
 
