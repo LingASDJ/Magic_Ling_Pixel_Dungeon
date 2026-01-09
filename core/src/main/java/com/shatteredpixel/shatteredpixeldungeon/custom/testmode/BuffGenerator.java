@@ -58,7 +58,7 @@ import java.util.Map;
 
 public class BuffGenerator extends TestItem{
     {
-        image = ItemSpriteSheet.WAND_MAGIC_MISSILE;
+        image = ItemSpriteSheet.DEV_3;
         defaultAction = AC_BUFF_TARGET;
     }
 

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class CustomPlayer extends TestItem{
     {
-        image = ItemSpriteSheet.KIT;
+        image = ItemSpriteSheet.DEV_1;
         defaultAction = AC_SETTING;
     }
 

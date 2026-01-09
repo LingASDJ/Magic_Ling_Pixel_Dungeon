@@ -43,7 +43,7 @@ import java.util.Set;
 
 public class MobPlacer extends TestItem{
     {
-        image = ItemSpriteSheet.CANDLE;
+        image = ItemSpriteSheet.DEV_5;
         defaultAction = AC_PLACE;
     }
 

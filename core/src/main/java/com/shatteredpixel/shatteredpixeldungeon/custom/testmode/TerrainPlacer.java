@@ -23,7 +23,7 @@ import java.util.Arrays;
 
 public class TerrainPlacer extends TestItem {
     {
-        image = ItemSpriteSheet.PICKAXE;
+        image = ItemSpriteSheet.DEV_6;
         defaultAction = AC_PLACE;
     }
 

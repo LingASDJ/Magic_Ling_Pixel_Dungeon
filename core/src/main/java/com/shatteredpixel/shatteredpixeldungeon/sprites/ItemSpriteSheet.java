@@ -62,12 +62,12 @@ public class ItemSpriteSheet {
     public static final int SPELL_HOLDER    = PLACEHOLDERS+15;
     static{
         assignItemRect(SOMETHING,       8,  13);
-        assignItemRect(WEAPON_HOLDER,   14, 14);
+        assignItemRect(WEAPON_HOLDER,   13, 13);
         assignItemRect(ARMOR_HOLDER,    14, 12);
-        assignItemRect(MISSILE_HOLDER,  15, 15);
+        assignItemRect(MISSILE_HOLDER,  14, 14);
         assignItemRect(WAND_HOLDER,     14, 14);
         assignItemRect(RING_HOLDER,     8,  10);
-        assignItemRect(ARTIFACT_HOLDER, 15, 15);
+        assignItemRect(ARTIFACT_HOLDER, 14, 14);
         assignItemRect(FOOD_HOLDER,     15, 11);
         assignItemRect(BOMB_HOLDER,     10, 13);
         assignItemRect(POTION_HOLDER,   12, 14);
@@ -765,11 +765,11 @@ public class ItemSpriteSheet {
     public static final int SWTR =       FOOD+15;
 
     static{
-        assignItemRect(MEAT,        15, 11);
-        assignItemRect(STEAK,       15, 11);
-        assignItemRect(STEWED,      15, 11);
+        assignItemRect(MEAT,        14, 13);
+        assignItemRect(STEAK,       14, 13);
+        assignItemRect(STEWED,      14, 12);
         assignItemRect(OVERPRICED,  14, 11);
-        assignItemRect(CARPACCIO,   15, 11);
+        assignItemRect(CARPACCIO,   14, 13);
         assignItemRect(RATION,      16, 12);
         assignItemRect(PASTY,       16, 11);
         assignItemRect(PUMPKIN_PIE, 16, 12);
@@ -876,7 +876,7 @@ public class ItemSpriteSheet {
     static {
         assignItemRect(DIEDCROSSBOW, 16, 16);
         assignItemRect(FIVEREN, 16, 13);
-        assignItemRect(SHADOWMEAT,15,11);
+        assignItemRect(SHADOWMEAT,16,14);
         assignItemRect(CLEARPRO,    15,15);
     }
 
@@ -1171,9 +1171,28 @@ public class ItemSpriteSheet {
 
     public static final int HIGHTWAND_6  = + HIGHTWAND+5;
     public static final int HIGHTWAND_7  = + HIGHTWAND+6;
+
+    public static final int DEV_1        = + HIGHTWAND+8;
+    public static final int DEV_2        = + HIGHTWAND+9;
+    public static final int DEV_3        = + HIGHTWAND+10;
+    public static final int DEV_4        = + HIGHTWAND+11;
+    public static final int DEV_5        = + HIGHTWAND+12;
+    public static final int DEV_6        = + HIGHTWAND+13;
+    public static final int DEV_7        = + HIGHTWAND+14;
+    public static final int DEV_8        = + HIGHTWAND+15;
+
     static {
-        for (int i =HIGHTWAND; i < HIGHTWAND+15; i++)
+        for (int i =HIGHTWAND; i < HIGHTWAND+6; i++)
             assignItemRect(i, 14, 14);
+
+        assignItemRect(DEV_1,  14, 16);
+        assignItemRect(DEV_2,  16, 15);
+        assignItemRect(DEV_3,  15, 16);
+        assignItemRect(DEV_4,  16, 16);
+        assignItemRect(DEV_5,  16, 16);
+        assignItemRect(DEV_6,  15, 16);
+        assignItemRect(DEV_7,  14, 15);
+        assignItemRect(DEV_8,  16, 14);
     }
 
     private static final int SKIN  =                                   xy(1, 52);  //16 slots
@@ -1319,12 +1338,15 @@ public class ItemSpriteSheet {
 
     public static final int BREAK                                               = RITUAL_SWORD + 6;
 
+    public static final int OLDSUNSHADOW                                        = RITUAL_SWORD + 8;
+
     static{
         assignItemRect(RITUAL_SWORD,       13, 13);
         assignItemRect(TREE_LIST,          14, 13);
         assignItemRect(SAD_MAGIC_BOOK,     14, 13);
         assignItemRect(SHEPHERD_FLUTE,     11, 16);
 
+        assignItemRect(OLDSUNSHADOW,       14, 14);
     }
 
     private static final int PROP1  = xy(9,46);

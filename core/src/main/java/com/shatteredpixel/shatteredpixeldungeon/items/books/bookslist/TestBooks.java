@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class TestBooks extends Item {
     private static final String Read	= "Read";
     {
-        image = ItemSpriteSheet.BLACKBOOK;
+        image = ItemSpriteSheet.DEV_8;
         unique= true;
         defaultAction = Read;
     }
