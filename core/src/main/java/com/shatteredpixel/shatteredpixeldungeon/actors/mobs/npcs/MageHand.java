@@ -293,39 +293,47 @@ public class MageHand extends DirectableAlly {
 
     @Override
     protected boolean canAttack(Char enemy) {
-        if (Dungeon.hero != null){
+        if (Dungeon.hero != null) {
+            // 如果装备了法师之杖，优先检查近战攻击
             if (magesStaff != null) {
+                // 检查是否可以近战攻击
+                if (Dungeon.level.adjacent(pos, enemy.pos)) {
+                    return true;
+                }
+                // 如果不能近战攻击，再检查法杖攻击
                 Wand mwand = magesStaff.wand;
                 if (mwand != null && wandCooldown == 0) {
                     if (mwand.curCharges > 0) {
                         Ballistica attack = new Ballistica(pos, enemy.pos, mwand.collisionProperties);
-                        /** @英雄在路径上，不能直接攻击 */
-                        if (isHeroInAttackPath(attack)) {
-                            return false;
+                        if (!isHeroInAttackPath(attack)) {
+                            return attack.collisionPos == enemy.pos;
                         }
-                        return attack.collisionPos == enemy.pos;
-                    } else {
-                        return Dungeon.level.adjacent(pos, enemy.pos);
                     }
                 }
-            } else if (equippedWand != null && wandCooldown == 0) {
+            }
+            // 如果没有装备法师之杖，检查普通法杖
+            else if (equippedWand != null && wandCooldown == 0) {
                 if (equippedWand.curCharges > 0) {
                     Ballistica attack = new Ballistica(pos, enemy.pos, equippedWand.collisionProperties);
-                    /** @英雄在路径上，不能直接攻击 */
-                    if (isHeroInAttackPath(attack)) {
-                        return false;
+                    if (!isHeroInAttackPath(attack)) {
+                        return attack.collisionPos == enemy.pos;
                     }
-                    return attack.collisionPos == enemy.pos;
                 }
             }
         }
         return false;
     }
 
+    @Override
     protected boolean doAttack(Char enemy) {
-        if(hero != null){
-            /** @老法杖判定区 */
+        if (hero != null) {
+            // 如果装备了法师之杖，优先进行近战攻击
             if (magesStaff != null) {
+                // 如果是近战攻击
+                if (Dungeon.level.adjacent(pos, enemy.pos)) {
+                    return super.doAttack(enemy);
+                }
+                // 如果不是近战攻击，检查法杖攻击
                 Wand mwand = magesStaff.wand;
                 if (mwand != null && wandCooldown == 0) {
                     if (mwand.curCharges > 0) {
@@ -334,31 +342,28 @@ public class MageHand extends DirectableAlly {
                             return tryMoveToBetterPosition(enemy);
                         }
                         if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
-                            sprite.zap( enemy.pos );
+                            sprite.zap(enemy.pos);
                             return false;
                         } else {
                             zap();
                             return true;
                         }
-                    } else if (Dungeon.level.adjacent(pos, enemy.pos)) {
-                        return super.doAttack(enemy);
                     }
                 }
-                /** @法杖判定区 */
-            } else {
-                if (equippedWand != null && wandCooldown == 0) {
-                    if (equippedWand.curCharges > 0) {
-                        Ballistica attack = new Ballistica(pos, enemy.pos,equippedWand.collisionProperties);
-                        if (isHeroInAttackPath(attack)) {
-                            return tryMoveToBetterPosition(enemy);
-                        }
-                        if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
-                            sprite.zap( enemy.pos );
-                            return false;
-                        } else {
-                            zap();
-                            return true;
-                        }
+            }
+            // 如果没有装备法师之杖，使用普通法杖攻击
+            else if (equippedWand != null && wandCooldown == 0) {
+                if (equippedWand.curCharges > 0) {
+                    Ballistica attack = new Ballistica(pos, enemy.pos, equippedWand.collisionProperties);
+                    if (isHeroInAttackPath(attack)) {
+                        return tryMoveToBetterPosition(enemy);
+                    }
+                    if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
+                        sprite.zap(enemy.pos);
+                        return false;
+                    } else {
+                        zap();
+                        return true;
                     }
                 }
             }

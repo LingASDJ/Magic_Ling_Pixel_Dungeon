@@ -115,6 +115,10 @@ public enum Talent {
 	DESPERATE_POWER(41, 3), ALLY_WARP(42, 3),
 	//Battlemage T3
 	EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3),
+	//Battlemage T3-Old
+	REPOWER_ATTACK(220,3),CHARGE_MAGIC(221,3),
+	SHIELDING_BLOCK(222,3),
+
 	//Warlock T3
 	SOUL_EATER(46, 3), SOUL_SIPHON(47, 3), NECROMANCERS_MINIONS(48, 3),
 	//Elemental Blast T4
@@ -958,6 +962,9 @@ public enum Talent {
 				break;
 			case BATTLEMAGE:
 				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE);
+				break;
+			case OLDBATTLEMAGE:
+				Collections.addAll(tierTalents,REPOWER_ATTACK,CHARGE_MAGIC,SHIELDING_BLOCK);
 				break;
 			case WARLOCK:
 				Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS);

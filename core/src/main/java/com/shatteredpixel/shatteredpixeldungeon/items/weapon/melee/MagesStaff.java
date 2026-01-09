@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -38,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
@@ -210,20 +212,23 @@ public class MagesStaff extends MeleeWeapon {
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
 
-		//充能秘术 老版战法天赋
-//		if (attacker instanceof Hero && ((Hero) attacker).hasTalent(Talent.MYSTICAL_CHARGE)){
-//			Hero hero = (Hero) attacker;
-//			ArtifactRecharge.chargeArtifacts(hero, hero.pointsInTalent(Talent.MYSTICAL_CHARGE)/2f);
-//		}
+		if (attacker instanceof Hero && ((Hero) attacker).hasTalent(Talent.CHARGE_MAGIC)){
+			Hero hero = (Hero) attacker;
+			ArtifactRecharge.chargeArtifacts(hero, hero.pointsInTalent(Talent.CHARGE_MAGIC)/2f);
+		}
 
 		Talent.EmpoweredStrikeTracker empoweredStrike = attacker.buff(Talent.EmpoweredStrikeTracker.class);
+		if (empoweredStrike != null){
+			damage = Math.round( damage * (1f + Dungeon.hero.pointsInTalent(Talent.REPOWER_ATTACK)/6f));
+		}
 
-		//			if (wand.curCharges < wand.maxCharges){
-		//				wand.partialCharge += 0.5f;
-		//			}
-		//			ScrollOfRecharging.charge(attacker);
+		if (wand != null &&
+				attacker instanceof Hero && ((Hero)attacker).subClass == HeroSubClass.OLDBATTLEMAGE) {
+			if (wand.curCharges < wand.maxCharges) wand.partialCharge += 0.5f;
+			ScrollOfRecharging.charge((Hero)attacker);
+			wand.onHit(this, attacker, defender, damage);
+		}
 
-		//NEW 新天赋 多样打击----替换蓄能打击
 		if (wand != null && hero.subClass == HeroSubClass.BATTLEMAGE) {
 			int battleMageLevel = hero.pointsInTalent(Talent.EMPOWERED_STRIKE);
 			float triggerChance = Math.min(1.0f, battleMageLevel * 0.33f);
