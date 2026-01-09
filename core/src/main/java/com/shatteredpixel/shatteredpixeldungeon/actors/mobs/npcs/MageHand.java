@@ -62,16 +62,13 @@ import java.util.ArrayList;
 
 public class MageHand extends DirectableAlly {
 
-    private ArrayList<Wand> wands;
-    private final int chargeNeeded = 2;
-
     {
         spriteClass = MageHandSprite.class;
         flying = true;
         properties.add(Property.UNKNOWN);
         immunities.add(Blob.class);
         immunities.add(Buff.class);
-        viewDistance =10;
+        viewDistance = 10;
     }
 
     @Override
@@ -198,8 +195,7 @@ public class MageHand extends DirectableAlly {
     @Override
     public void spend(float time) {
         super.spend(time);
-        wands = hero.belongings.getAllItems(Wand.class);
-        // 在每回合结束时处理充能
+
         if (equippedWand != null) {
             chargeWand(equippedWand);
         }
@@ -297,111 +293,77 @@ public class MageHand extends DirectableAlly {
 
     @Override
     protected boolean canAttack(Char enemy) {
-        if (Dungeon.hero != null){
-//            if (enemy == null) {
-//                enemy = chooseEnemy();
-//                if (enemy == null) {
-//                    return false;
-//                }
-//            }
-
-            // 如果装备了法师杖，检查是否可以攻击
+        if (Dungeon.hero != null) {
+            // 如果装备了法师之杖，优先检查近战攻击
             if (magesStaff != null) {
+                // 检查是否可以近战攻击
+                if (Dungeon.level.adjacent(pos, enemy.pos)) {
+                    return true;
+                }
+                // 如果不能近战攻击，再检查法杖攻击
                 Wand mwand = magesStaff.wand;
                 if (mwand != null && wandCooldown == 0) {
                     if (mwand.curCharges > 0) {
-                        Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                        // 检查英雄是否在攻击路径上
-                        if (isHeroInAttackPath(attack)) {
-                            return false; // 英雄在路径上，不能直接攻击
+                        Ballistica attack = new Ballistica(pos, enemy.pos, mwand.collisionProperties);
+                        if (!isHeroInAttackPath(attack)) {
+                            return attack.collisionPos == enemy.pos;
                         }
-                        return attack.collisionPos == enemy.pos;
-                    } else {
-                        // 检查法师之手天赋
-                        if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                            if(wands != null){
-                                // 检查是否有其他可用法杖的充能
-                                for (Wand w : wands) {
-                                    if (w.curCharges >= chargeNeeded) {
-                                        Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                                        if (isHeroInAttackPath(attack)) {
-                                            return false;
-                                        }
-                                        return attack.collisionPos == enemy.pos;
-                                    }
-                                }
-                            }
-                        }
-                        // 新增：如果法师杖没有充能且没有天赋可用，检查是否可以进行近战攻击
-                        return Dungeon.level.adjacent(pos, enemy.pos);
                     }
                 }
-            } else if (equippedWand != null && wandCooldown == 0) {
+            }
+            // 如果没有装备法师之杖，检查普通法杖
+            else if (equippedWand != null && wandCooldown == 0) {
                 if (equippedWand.curCharges > 0) {
-                    Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                    if (isHeroInAttackPath(attack)) {
-                        return false;
+                    Ballistica attack = new Ballistica(pos, enemy.pos, equippedWand.collisionProperties);
+                    if (!isHeroInAttackPath(attack)) {
+                        return attack.collisionPos == enemy.pos;
                     }
-                    return attack.collisionPos == enemy.pos;
-                } else {
-                    // 检查法师之手天赋
-                    if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-                       if(wands != null){
-                           for (Wand w : wands) {
-                               if (w.curCharges >= chargeNeeded) {
-                                   Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                                   if (isHeroInAttackPath(attack)) {
-                                       return false;
-                                   }
-                                   return attack.collisionPos == enemy.pos;
-                               }
-                           }
-                       }
-                    }
-                    return false;
                 }
             }
         }
         return false;
     }
 
+    @Override
     protected boolean doAttack(Char enemy) {
-        if(hero != null){
-            /** @老法杖判定区 */
+        if (hero != null) {
+            // 如果装备了法师之杖，优先进行近战攻击
             if (magesStaff != null) {
+                // 如果是近战攻击
+                if (Dungeon.level.adjacent(pos, enemy.pos)) {
+                    return super.doAttack(enemy);
+                }
+                // 如果不是近战攻击，检查法杖攻击
                 Wand mwand = magesStaff.wand;
                 if (mwand != null && wandCooldown == 0) {
                     if (mwand.curCharges > 0) {
-                        Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
+                        Ballistica attack = new Ballistica(pos, enemy.pos, mwand.collisionProperties);
                         if (isHeroInAttackPath(attack)) {
                             return tryMoveToBetterPosition(enemy);
                         }
-                        if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
+                        if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
                             sprite.zap(enemy.pos);
                             return false;
-                        }
-                    } else {
-                        if (Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE) && tryMysticalCharge()) {
+                        } else {
+                            zap();
                             return true;
-                        } else if (Dungeon.level.adjacent(pos, enemy.pos)) {
-                            return super.doAttack(enemy);
                         }
                     }
                 }
-                /** @法杖判定区 */
-            } else {
-                if (equippedWand != null && wandCooldown == 0) {
-                    if (equippedWand.curCharges > 0) {
-                        Ballistica attack = new Ballistica(pos, enemy.pos, MagicMissile.WARD);
-                        if (isHeroInAttackPath(attack)) {
-                            return tryMoveToBetterPosition(enemy);
-                        }
-                        if (fieldOfView[pos] || fieldOfView[enemy.pos]) {
-                            sprite.zap(enemy.pos);
-                            return false;
-                        }
+            }
+            // 如果没有装备法师之杖，使用普通法杖攻击
+            else if (equippedWand != null && wandCooldown == 0) {
+                if (equippedWand.curCharges > 0) {
+                    Ballistica attack = new Ballistica(pos, enemy.pos, equippedWand.collisionProperties);
+                    if (isHeroInAttackPath(attack)) {
+                        return tryMoveToBetterPosition(enemy);
+                    }
+                    if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
+                        sprite.zap(enemy.pos);
+                        return false;
                     } else {
-                        return Dungeon.hero.hasTalent(Talent.MYSTICAL_CHARGE) && tryMysticalCharge();
+                        zap();
+                        return true;
                     }
                 }
             }
@@ -444,16 +406,6 @@ public class MageHand extends DirectableAlly {
         if (wandCooldown > 0) {
             wandCooldown--;
         }
-//        if (enemy != null) {
-//            // 优先级1: 如果有指定的目标敌人，优先攻击该敌人
-//            if (targetEnemy != null && targetEnemy.isAlive() ) {
-//                enemy = targetEnemy;
-//            } else if(targetEnemy == null){
-//                enemy = chooseEnemy();
-//            }
-//        }
-
-
 
         MageHandControlBuff buff = hero.buff(MageHandControlBuff.class);
         if (buff == null) {
@@ -494,73 +446,6 @@ public class MageHand extends DirectableAlly {
                 zapWithEquippedWand();
             }
         }
-    }
-
-    private boolean tryMysticalCharge() {
-        if (!hero.hasTalent(Talent.MYSTICAL_CHARGE)) {
-            return false;
-        }
-
-        // 修复1: 允许使用当前装备法杖的充能
-        ArrayList<Wand> availableWands = new ArrayList<>();
-        for (Item item : hero.belongings) {
-            if (item instanceof Wand) {
-                Wand wand = (Wand) item;
-                if (wand.curCharges >= chargeNeeded) {
-                    availableWands.add(wand);
-                }
-            }
-        }
-
-        if (availableWands.isEmpty()) {
-            return false;
-        }
-
-        // 找到等级最低的法杖
-        Wand lowestLevelWand = findLowestLevelWand(availableWands);
-        if (lowestLevelWand == null) {
-            return false;
-        }
-
-        consumeWandCharges(lowestLevelWand, chargeNeeded);
-        zap();
-        finalizeWandUse();
-        return true;
-    }
-
-    private Wand findLowestLevelWand(ArrayList<Wand> wands) {
-        Wand lowestLevelWand = null;
-        for (Wand w : wands) {
-            if (lowestLevelWand == null || w.level < lowestLevelWand.level) {
-                lowestLevelWand = w;
-            }
-        }
-        return lowestLevelWand;
-    }
-
-    private void consumeWandCharges(Wand wand, int chargeNeeded) {
-        wand.curCharges -= chargeNeeded;
-
-        // 计算内部充能返还
-        float internalChargeReturn = 0f;
-        switch (hero.pointsInTalent(Talent.MYSTICAL_CHARGE)) {
-            case 1: internalChargeReturn = 0f; break;
-            case 2: internalChargeReturn = 0.25f; break;
-            case 3: internalChargeReturn = 0.5f; break;
-        }
-
-        // 使用法杖自身的altPartialCharge属性存储内部充能
-        wand.altPartialCharge += internalChargeReturn;
-
-        // 检查是否可以返还真实充能
-        if (wand.altPartialCharge >= 1f) {
-            int realChargesToAdd = (int) wand.altPartialCharge;
-            wand.curCharges += realChargesToAdd;
-            wand.altPartialCharge -= realChargesToAdd;
-        }
-
-        // 更新快捷栏显示
-        Item.updateQuickslot();
     }
 
     private void zapWithMagesStaff() {

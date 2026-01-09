@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.utils.DeviceCompat;
 
 public class WndChooseSubclass extends Window {
 	
@@ -59,7 +60,7 @@ public class WndChooseSubclass extends Window {
 		float pos = message.bottom() + 3*GAP;
 
 		for (HeroSubClass subCls : hero.heroClass.subClasses()){
-			if(subCls == HeroSubClass.OLDBATTLEMAGE) continue;
+			if(subCls == HeroSubClass.OLDBATTLEMAGE && !(DeviceCompat.isDebug())) continue;
 			RedButton btnCls = new RedButton( subCls.shortDesc(), 6 ) {
 				@Override
 				protected void onClick() {

@@ -79,6 +79,7 @@ public abstract class Wand extends Item {
 	}
 	public static final String AC_ZAP	= "ZAP";
 
+
 	private static final float TIME_TO_ZAP	= 1f;
 	
 	public int maxCharges = initialCharges();
@@ -170,6 +171,9 @@ public abstract class Wand extends Item {
 
 	//not affected by enchantment proc chance changers
 	public static float procChanceMultiplier( Char attacker ){
+		if (attacker.buff(Talent.EmpoweredStrikeTracker.class) != null){
+			return 1f + ((Hero)attacker).pointsInTalent(Talent.REPOWER_ATTACK)/2f;
+		}
 		return 1f;
 	}
 
@@ -308,6 +312,10 @@ public abstract class Wand extends Item {
 			if (Dungeon.hero.hasTalent(Talent.EMPOWERED_STRIKE)) {
 				desc += "\n\n" + Messages.get(this, "bmage_desc");
 			}
+		}
+
+		if (Dungeon.hero != null && Dungeon.hero.subClass == HeroSubClass.OLDBATTLEMAGE){
+			desc += "\n\n" + Messages.get(this, "bmage_desc");
 		}
 
 		return desc;
@@ -487,14 +495,14 @@ public abstract class Wand extends Item {
 		}
 
 		//inside staff
-//		if (charger != null && charger.target == Dungeon.hero && !Dungeon.hero.belongings.contains(this)){
-//			if (Dungeon.hero.hasTalent(Talent.EXCESS_CHARGE) && curCharges >= maxCharges){
-//				int shieldToGive = Math.round(buffedLvl()*0.67f*Dungeon.hero.pointsInTalent(Talent.EXCESS_CHARGE));
-//				Buff.affect(Dungeon.hero, Barrier.class).setShield(shieldToGive);
-//				Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
-//			}
-//		}
-		
+		if (charger != null && charger.target == Dungeon.hero && !Dungeon.hero.belongings.contains(this)){
+			if (Dungeon.hero.hasTalent(Talent.SHIELDING_BLOCK) && curCharges >= maxCharges){
+				int shieldToGive = Math.round(buffedLvl()*0.67f*Dungeon.hero.pointsInTalent(Talent.SHIELDING_BLOCK));
+				Buff.affect(Dungeon.hero, Barrier.class).setShield(shieldToGive);
+				Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
+			}
+		}
+
 		curCharges -= cursed ? 1 : chargesPerCast();
 
 		//remove magic charge at a higher priority, if we are benefiting from it are and not the
@@ -512,11 +520,12 @@ public abstract class Wand extends Item {
 			}
 		}
 
-//		if (Dungeon.hero.hasTalent(Talent.LINGERING_MAGIC)
-//				&& charger != null && charger.target == Dungeon.hero){
-//
-//			Buff.prolong(Dungeon.hero, Talent.LingeringMagicTracker.class, 5f);
-//		}
+		if (Dungeon.hero.hasTalent(Talent.REPOWER_ATTACK)
+				&& charger != null && charger.target == Dungeon.hero
+				&& !Dungeon.hero.belongings.contains(this)){
+
+			Buff.prolong(Dungeon.hero, Talent.EmpoweredStrikeTracker.class, 10f);
+		}
 
 		Invisibility.dispel();
 		updateQuickslot();
