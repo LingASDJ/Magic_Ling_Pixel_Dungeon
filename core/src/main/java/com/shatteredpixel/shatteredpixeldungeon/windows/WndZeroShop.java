@@ -48,6 +48,8 @@ public class WndZeroShop extends Window {
         ZeroDreamShop.shop9 =  SPDSettings.isItemUnlock("avatars_huntress_2") ? null :new SKINITEM.SKIN_HB();
         ZeroDreamShop.shop10 = SPDSettings.isItemUnlock("avatars_duelist_2")  ? null :new SKINITEM.SKIN_DB();
 
+        ZeroDreamShop.shop11 =  SPDSettings.isItemUnlock("avatars_mage_4")  ? null :new SKINITEM.SKIN_MC();
+
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
         titlebar.icon(new ZeroDreamSprite());
@@ -100,7 +102,11 @@ public class WndZeroShop extends Window {
         bomb5.setRect( bomb4.right()+ BTN_GAP , bomb4.top(), BTN_SIZE, BTN_SIZE );
         add(bomb5);
 
-        resize(WIDTH, (int) bomb5.bottom());
+        RewardButton skin1 = new RewardButton( ZeroDreamShop.shop11 );
+        skin1.setRect( bomb1.right()+BTN_GAP , bomb1.bottom(), BTN_SIZE, BTN_SIZE );
+        add(skin1);
+
+        resize(WIDTH, (int) skin1.bottom());
     }
 
     public static WndBag sell() {

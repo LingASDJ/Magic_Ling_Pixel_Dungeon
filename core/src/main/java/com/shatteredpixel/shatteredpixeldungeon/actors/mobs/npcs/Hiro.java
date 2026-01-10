@@ -5,12 +5,14 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.OldSunShadow;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HiroSprites;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
@@ -170,4 +172,15 @@ public class Hiro extends NTNPC {
         kd = bundle.getBoolean(KD);
         td = bundle.getBoolean(TD);
     }
+
+    private String def_verb(){
+        FloatingText.show(sprite.x, sprite.y, pos, Messages.get(this, "def_verb_3"), CharSprite.NEGATIVE);
+        return Messages.get(this, "def_verb");
+    }
+
+    @Override
+    public String defenseVerb() {
+        return def_verb();
+    }
+
 }

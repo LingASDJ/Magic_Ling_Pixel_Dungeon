@@ -433,6 +433,7 @@ public class ZeroCityLevel extends Level {
             npc3.pos = 382;
             mobs.add(npc3);
 
+            //TODO 9层完善后移除
             Hiro npc6 = new Hiro();
             npc6.pos = 3757;
             mobs.add(npc6);

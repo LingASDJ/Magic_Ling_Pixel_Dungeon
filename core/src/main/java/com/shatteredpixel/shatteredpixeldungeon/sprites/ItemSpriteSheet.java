@@ -979,6 +979,7 @@ public class ItemSpriteSheet {
         assignItemRect(PROB, 12, 11);
         assignItemRect(WRALIPS, 14, 12);
         assignItemRect(SDBlade, 15, 15);
+        assignItemRect(DASlade, 15, 14);
     }
 
     private static final int MAINBOOKINDEX    	 = xy(1, 37);  //16 slots
@@ -1206,6 +1207,8 @@ public class ItemSpriteSheet {
     public static final int SKIN_8  = + SKIN+7;
     public static final int SKIN_9  = + SKIN+8;
     public static final int SKIN_10  = + SKIN+9;
+
+    public static final int SKIN_11  = + SKIN+10;
 
     public static final int RGJT_1  = + SKIN+11;
     public static final int RGJT_2  = + SKIN+12;
