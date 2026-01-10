@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -21,12 +22,13 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class CommRelay extends Artifact {
+public class CommRelay extends Artifact implements Item.AnimationItem {
 
     {
         image = ItemSpriteSheet.DM100RELEY;
@@ -42,11 +44,11 @@ public class CommRelay extends Artifact {
         TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
         MovieClip.Animation idle = new MovieClip.Animation(15, true);
         idle.frames( frames,0,1,1,2,2,2,3,3,4,4,5,5);
-//        if(animationToidle){
-//
-//        } else {
-//            idle.frames( frames,3);
-//        }
+        if(animationToidle){
+            idle.frames( frames,3,3,4,4,5,5);
+        } else {
+            idle.frames( frames,3);
+        }
 
         itemSprite.play(idle);
     }
@@ -150,7 +152,7 @@ public class CommRelay extends Artifact {
                 public void onSelect(boolean check, String text) {
                     if (text.matches("^[1-9]\\d*$")) {
                         callNumber = Integer.parseInt(text);
-                        if (callNumber == Statistics.commonrelaycall) {
+                        if (callNumber == Statistics.commonrelaycall || DeviceCompat.isDebug()) {
                             GLog.n(Messages.get(CommRelay.class, "call_success"));
                             animationToidle = true;
                             updateQuickslot();
