@@ -45,45 +45,45 @@ public class TalentsPane extends ScrollPane {
 	ColorBlock blocker;
 	RenderedTextBlock blockText;
 
-	public TalentsPane( TalentButton.Mode mode ) {
-		this( mode, Dungeon.hero.talents );
+	public TalentsPane(TalentButton.Mode mode) {
+		this(mode, Dungeon.hero.talents);
 	}
 
-	public TalentsPane( TalentButton.Mode mode, ArrayList<LinkedHashMap<Talent, Integer>> talents ) {
+	public TalentsPane(TalentButton.Mode mode, ArrayList<LinkedHashMap<Talent, Integer>> talents) {
 		super(new Component());
 
 		Ratmogrify.useRatroicEnergy = Dungeon.hero != null && Dungeon.hero.armorAbility instanceof Ratmogrify;
 
 		int tiersAvailable = 1;
 
-		if (mode == TalentButton.Mode.INFO){
-			if (!Badges.isUnlocked(Badges.Badge.LEVEL_REACHED_1)){
+		if (mode == TalentButton.Mode.INFO) {
+			if (!Badges.isUnlocked(Badges.Badge.LEVEL_REACHED_1)) {
 				tiersAvailable = 1;
-			} else if (!Badges.isUnlocked(Badges.Badge.LEVEL_REACHED_2) || !Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_2)){
+			} else if (!Badges.isUnlocked(Badges.Badge.LEVEL_REACHED_2) || !Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_2)) {
 				tiersAvailable = 2;
-			} else if (!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_4)){
+			} else if (!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_4)) {
 				tiersAvailable = 3;
 			} else {
 				tiersAvailable = Talent.MAX_TALENT_TIERS;
 			}
 		} else {
 			while (tiersAvailable < Talent.MAX_TALENT_TIERS
-					&& Dungeon.hero.lvl+1 >= Talent.tierLevelThresholds[tiersAvailable+1]){
+					&& Dungeon.hero.lvl + 1 >= Talent.tierLevelThresholds[tiersAvailable + 1]) {
 				tiersAvailable++;
 			}
-			if (tiersAvailable > 2 && Dungeon.hero.subClass == HeroSubClass.NONE){
+			if (tiersAvailable > 2 && Dungeon.hero.subClass == HeroSubClass.NONE) {
 				tiersAvailable = 2;
-			} else if (tiersAvailable > 3 && Dungeon.hero.armorAbility == null){
+			} else if (tiersAvailable > 3 && Dungeon.hero.armorAbility == null) {
 				tiersAvailable = 3;
 			}
 		}
 
 		tiersAvailable = Math.min(tiersAvailable, talents.size());
 
-		for (int i = 0; i < Math.min(tiersAvailable, talents.size()); i++){
+		for (int i = 0; i < Math.min(tiersAvailable, talents.size()); i++) {
 			if (talents.get(i).isEmpty()) continue;
 
-			TalentTierPane pane = new TalentTierPane(talents.get(i), i+1, mode);
+			TalentTierPane pane = new TalentTierPane(talents.get(i), i + 1, mode);
 			panes.add(pane);
 			content.add(pane);
 
@@ -111,7 +111,7 @@ public class TalentsPane extends ScrollPane {
 			blockText = null;
 		}
 
-		for (int i = panes.size()-1; i >= 0; i--){
+		for (int i = panes.size() - 1; i >= 0; i--) {
 			content.bringToFront(panes.get(i));
 		}
 	}
@@ -121,7 +121,7 @@ public class TalentsPane extends ScrollPane {
 		super.layout();
 
 		float top = 0;
-		for (int i = 0; i < panes.size(); i++){
+		for (int i = 0; i < panes.size(); i++) {
 			top += 2;
 			panes.get(i).setRect(x, top, width, 0);
 			top = panes.get(i).bottom();
@@ -163,7 +163,7 @@ public class TalentsPane extends ScrollPane {
 
 		ArrayList<Image> stars = new ArrayList<>();
 
-		public TalentTierPane(LinkedHashMap<Talent, Integer> talents, int tier, TalentButton.Mode mode){
+		public TalentTierPane(LinkedHashMap<Talent, Integer> talents, int tier, TalentButton.Mode mode) {
 			super();
 
 			this.tier = tier;
@@ -175,8 +175,8 @@ public class TalentsPane extends ScrollPane {
 			if (mode == TalentButton.Mode.UPGRADE) setupStars();
 
 			buttons = new ArrayList<>();
-			for (Talent talent : talents.keySet()){
-				TalentButton btn = new TalentButton(tier, talent, talents.get(talent), mode){
+			for (Talent talent : talents.keySet()) {
+				TalentButton btn = new TalentButton(tier, talent, talents.get(talent), mode) {
 					@Override
 					public void upgradeTalent() {
 						super.upgradeTalent();
@@ -192,24 +192,24 @@ public class TalentsPane extends ScrollPane {
 
 		}
 
-		private void setupStars(){
-			if (!stars.isEmpty()){
-				for (Image im : stars){
+		private void setupStars() {
+			if (!stars.isEmpty()) {
+				for (Image im : stars) {
 					im.killAndErase();
 				}
 				stars.clear();
 			}
 
-			int totStars = Talent.tierLevelThresholds[tier+1] - Talent.tierLevelThresholds[tier] + Dungeon.hero.bonusTalentPoints(tier);
+			int totStars = Talent.tierLevelThresholds[tier + 1] - Talent.tierLevelThresholds[tier] + Dungeon.hero.bonusTalentPoints(tier);
 			int openStars = Dungeon.hero.talentPointsAvailable(tier);
 			int usedStars = Dungeon.hero.talentPointsSpent(tier);
-			for (int i = 0; i < totStars; i++){
+			for (int i = 0; i < totStars; i++) {
 				Image im = new Speck().image(Speck.STAR);
 				stars.add(im);
 				add(im);
-				if (i >= openStars && i < (openStars + usedStars)){
+				if (i >= openStars && i < (openStars + usedStars)) {
 					im.tint(0.75f, 0.75f, 0.75f, 0.9f);
-				} else if (i >= (openStars + usedStars)){
+				} else if (i >= (openStars + usedStars)) {
 					im.tint(0f, 0f, 0f, 0.9f);
 				}
 			}
@@ -242,16 +242,31 @@ public class TalentsPane extends ScrollPane {
 				}
 			}
 
-			float gap = (width - buttons.size()*TalentButton.WIDTH)/(buttons.size()+1);
-			left = x + gap;
-			for (TalentButton btn : buttons){
-				btn.setPos(left, title.bottom() + 4);
-				PixelScene.align(btn);
-				left += btn.width() + gap;
+			float btnTop = title.bottom() + 4;
+			int buttonsPerRow = (tier >= 3  && buttons.size() > 5) ? 3 : buttons.size();
+			int rows = (int) Math.ceil((float) buttons.size() / buttonsPerRow);
+
+			float totalWidth = buttonsPerRow * TalentButton.WIDTH;
+			float gap = Math.max(2, (width - totalWidth) / (buttonsPerRow + 1));
+
+			for (int i = 0; i < buttons.size(); i++) {
+				int row = i / buttonsPerRow;
+				int col = i % buttonsPerRow;
+
+				float btnX = x + gap + col * (TalentButton.WIDTH + gap);
+				float btnY = btnTop + row * (TalentButton.HEIGHT + 2);
+
+				buttons.get(i).setPos(btnX, btnY);
+				PixelScene.align(buttons.get(i));
 			}
 
-			height = buttons.get(0).bottom() - y;
+			float lastRowBottom = 0;
+			int firstInLastRow = (rows - 1) * buttonsPerRow;
+			for (int i = firstInLastRow; i < buttons.size(); i++) {
+				lastRowBottom = Math.max(lastRowBottom, buttons.get(i).bottom());
+			}
 
+			height = lastRowBottom - y;
 		}
 
 	}
