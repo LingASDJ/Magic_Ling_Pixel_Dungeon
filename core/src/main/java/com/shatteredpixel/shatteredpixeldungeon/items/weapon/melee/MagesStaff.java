@@ -254,6 +254,13 @@ public class MagesStaff extends MeleeWeapon {
 				&& ((Hero)owner).subClass == HeroSubClass.BATTLEMAGE && Dungeon.hero.hasTalent(Talent.EMPOWERED_STRIKE)){
 			reach += Math.round(Wand.procChanceMultiplier(owner));
 		}
+
+		if (owner instanceof Hero
+				&& wand instanceof WandOfDisintegration
+				&& ((Hero)owner).subClass == HeroSubClass.OLDBATTLEMAGE){
+			reach += Math.round(Wand.procChanceMultiplier(owner));
+		}
+
 		return reach;
 	}
 
@@ -403,7 +410,7 @@ public class MagesStaff extends MeleeWeapon {
 			if ((!cursed && !hasCurseEnchant()) || !cursedKnown)    info += " " + wand.statsDesc();
 			else                                                    info += " " + Messages.get(this, "cursed_wand");
 
-			if (hero.subClass == HeroSubClass.BATTLEMAGE){
+			if (hero.subClass == HeroSubClass.BATTLEMAGE || hero.subClass == HeroSubClass.OLDBATTLEMAGE){
 				info += "\n\n" + Messages.get(wand, "bmage_desc");
 			}
 		}
