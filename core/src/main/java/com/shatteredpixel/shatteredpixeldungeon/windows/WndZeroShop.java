@@ -42,6 +42,7 @@ public class WndZeroShop extends Window {
         ZeroDreamShop.shop4 = SPDSettings.isItemUnlock("avatars_huntress_1") ? null : new SKINITEM.SKIN_HA();
         ZeroDreamShop.shop5 = SPDSettings.isItemUnlock("avatars_duelist_1")  ? null : new SKINITEM.SKIN_DA();
 
+        //
         ZeroDreamShop.shop6 =  SPDSettings.isItemUnlock("avatars_warrior_2")  ? null :new SKINITEM.SKIN_WB();
         ZeroDreamShop.shop7 =  SPDSettings.isItemUnlock("avatars_mage_2")     ? null :new SKINITEM.SKIN_MB();
         ZeroDreamShop.shop8 =  SPDSettings.isItemUnlock("avatars_rogue_2")    ? null :new SKINITEM.SKIN_RB();
