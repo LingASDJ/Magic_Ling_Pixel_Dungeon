@@ -4,7 +4,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -49,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
@@ -63,6 +63,24 @@ import java.util.ArrayList;
 
 public class MageHand extends DirectableAlly {
 
+    public boolean inPatrolMode = false;
+
+    public static class HandWareness extends FlavourBuff {
+        public int distance = 2;
+        {
+            type = buffType.POSITIVE;
+        }
+
+        public static final float DURATION = 123456789f;
+
+        @Override
+        public void detach() {
+            super.detach();
+            Dungeon.observe();
+            GameScene.updateFog();
+        }
+    }
+
     {
         spriteClass = MageHandSprite.class;
         flying = true;
@@ -70,14 +88,100 @@ public class MageHand extends DirectableAlly {
         immunities.add(Blob.class);
         immunities.add(Buff.class);
         viewDistance = 10;
+        WANDERING = new Wandering();
+    }
+
+    private class Wandering extends Mob.Wandering {
+
+        @Override
+        public boolean act(boolean enemyInFOV, boolean justAlerted) {
+
+            if(inPatrolMode){
+                if (enemyInFOV) {
+                    return noticeEnemy();
+                } else {
+                    return continueWandering();
+                }
+            } else {
+                if ( enemyInFOV
+                        && attacksAutomatically
+                        && !movingToDefendPos
+                        && (defendingPos == -1
+                        || !Dungeon.level.heroFOV[defendingPos]
+                        || canAttack(enemy))) {
+
+                    enemySeen = true;
+
+                    notice();
+                    alerted = true;
+                    state = HUNTING;
+                    target = enemy.pos;
+
+                } else {
+
+                    enemySeen = false;
+
+                    int oldPos = pos;
+                    target = defendingPos != -1 ? defendingPos : hero.pos;
+
+                    // 检查目标位置是否有效
+                    if (target < 0 || target >= Dungeon.level.length()) {
+                        // 如果目标位置无效，重置目标位置
+                        target = hero.pos;
+                        if (target < 0 || target >= Dungeon.level.length()) {
+                            // 如果英雄位置也无效，就不移动
+                            spend(TICK);
+                            return true;
+                        }
+                    }
+
+                    //always move towards the hero when wandering
+                    if (getCloser(target)) {
+                        spend(1 / speed());
+                        if (pos == defendingPos) movingToDefendPos = false;
+                        return moveSprite(oldPos, pos);
+                    } else {
+                        //if it can't move closer to defending pos, then give up and defend current position
+                        if (movingToDefendPos){
+                            defendingPos = pos;
+                            movingToDefendPos = false;
+                        }
+                        spend(TICK);
+                    }
+                }
+            }
+            return true;
+        }
+
+        @Override
+        protected boolean noticeEnemy() {
+            spend(TICK);
+            return super.noticeEnemy();
+        }
+    }
+
+    @Override
+    protected Char chooseEnemy() {
+        Char enemy = super.chooseEnemy();
+
+        int targetPos = pos;
+        int distance = 10;
+
+        //will never attack something far from their target
+        if (enemy != null
+                && Dungeon.level.mobs.contains(enemy)
+                && (Dungeon.level.distance(enemy.pos, targetPos) <= distance)){
+            ((Mob)enemy).aggro(this);
+            return enemy;
+        }
+
+        return null;
     }
 
     @Override
     public void aggro(Char ch) {
         enemy = ch;
-        if (!movingToDefendPos && alignment != Alignment.ALLY && state != PASSIVE){
-            state = HUNTING;
-        }
+        state = HUNTING;
     }
 
     @Override
@@ -85,16 +189,46 @@ public class MageHand extends DirectableAlly {
         // 先执行伤害逻辑
         super.damage(0, src, type);
 
-        // 尝试传送到英雄周围5x5区域
-        if (!teleportNearHero()) {
-            // 如果失败，尝试传送到全图随机位置
-            teleportToRandomLocation();
+        if(!inPatrolMode){
+            if (!teleportNearHero()) {
+                teleportToRandomLocation();
+            }
+        } else {
+            if (!teleportNear()) {
+                teleportToRandomLocation();
+            }
         }
     }
 
     // 尝试传送到英雄周围5x5区域
     private boolean teleportNearHero() {
-        int heroPos = Dungeon.hero.pos;
+        int heroPos = hero.pos;
+        ArrayList<Integer> validPositions = new ArrayList<>();
+
+        // 获取5x5区域内的有效位置
+        for (int i = -2; i <= 2; i++) {
+            for (int j = -2; j <= 2; j++) {
+                int newPos = heroPos + i + j * Dungeon.level.width();
+
+                // 检查位置是否有效
+                if (isValidTeleportPosition(newPos)) {
+                    validPositions.add(newPos);
+                }
+            }
+        }
+
+        // 如果找到有效位置，随机选择一个传送
+        if (!validPositions.isEmpty()) {
+            int targetPos = Random.element(validPositions);
+            teleportTo(targetPos);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean teleportNear() {
+        int heroPos = pos;
         ArrayList<Integer> validPositions = new ArrayList<>();
 
         // 获取5x5区域内的有效位置
@@ -139,12 +273,60 @@ public class MageHand extends DirectableAlly {
     }
 
     // 检查位置是否适合传送
+    // 检查位置是否适合传送
     private boolean isValidTeleportPosition(int pos) {
-        return pos >= 0
-                && pos < Dungeon.level.length()
-                && !Dungeon.level.solid[pos]
-                && !Dungeon.level.pit[pos]
-                && Actor.findChar(pos) == null;
+        // 基础位置检查
+        if (pos < 0 || pos >= Dungeon.level.length()) {
+            return false;
+        }
+
+        // 检查是否是固体或陷阱
+        if (Dungeon.level.solid[pos] || Dungeon.level.pit[pos]) {
+            return false;
+        }
+
+        // 检查是否有其他角色
+        if (Actor.findChar(pos) != null) {
+            return false;
+        }
+
+        // 检查是否是特殊类型的门
+        if (Dungeon.level.map[pos] == Terrain.LOCKED_DOOR ||
+                Dungeon.level.map[pos] == Terrain.CRYSTAL_DOOR ||
+                Dungeon.level.map[pos] == Terrain.SECRET_DOOR) {
+            return false;
+        }
+
+        // 检查是否在封闭空间内（参考锁链代码）
+        boolean solidFound = false;
+        boolean passableFound = false;
+
+        // 检查周围8个方向
+        for (int i : PathFinder.NEIGHBOURS8) {
+            int neighbourPos = pos + i;
+            if (neighbourPos >= 0 && neighbourPos < Dungeon.level.length()) {
+                if (Dungeon.level.solid[neighbourPos]) {
+                    solidFound = true;
+                } else if (!Dungeon.level.solid[neighbourPos] &&
+                        Actor.findChar(neighbourPos) == null) {
+                    passableFound = true;
+                }
+            }
+        }
+
+        // 如果没有找到固体块或者没有找到可通行的相邻位置，则不适合传送
+        if (!solidFound || !passableFound) {
+            return false;
+        }
+
+        // 检查是否可以通过路径到达（参考锁链代码）
+        PathFinder.buildDistanceMap(pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+        if (PathFinder.distance[pos] == Integer.MAX_VALUE) {
+            return false;
+        }
+
+        // 所有检查都通过，适合传送
+        return true;
     }
 
     // 执行传送
@@ -294,7 +476,7 @@ public class MageHand extends DirectableAlly {
 
     @Override
     protected boolean canAttack(Char enemy) {
-        if (Dungeon.hero != null) {
+        if (hero != null) {
             // 如果装备了法师之杖，优先检查近战攻击
             if (magesStaff != null) {
                 // 检查是否可以近战攻击
@@ -305,7 +487,7 @@ public class MageHand extends DirectableAlly {
                 Wand mwand = magesStaff.wand;
                 if (mwand != null && wandCooldown == 0) {
                     if (mwand.curCharges > 0) {
-                        Ballistica attack = new Ballistica(pos, enemy.pos, mwand.collisionProperties);
+                        Ballistica attack = new Ballistica(pos, enemy.pos, 10);
                         if (!isHeroInAttackPath(attack)) {
                             return attack.collisionPos == enemy.pos;
                         }
@@ -315,7 +497,7 @@ public class MageHand extends DirectableAlly {
             // 如果没有装备法师之杖，检查普通法杖
             else if (equippedWand != null && wandCooldown == 0) {
                 if (equippedWand.curCharges > 0) {
-                    Ballistica attack = new Ballistica(pos, enemy.pos, equippedWand.collisionProperties);
+                    Ballistica attack = new Ballistica(pos, enemy.pos, 10);
                     if (!isHeroInAttackPath(attack)) {
                         return attack.collisionPos == enemy.pos;
                     }
@@ -338,7 +520,7 @@ public class MageHand extends DirectableAlly {
                 Wand mwand = magesStaff.wand;
                 if (mwand != null && wandCooldown == 0) {
                     if (mwand.curCharges > 0) {
-                        Ballistica attack = new Ballistica(pos, enemy.pos, mwand.collisionProperties);
+                        Ballistica attack = new Ballistica(pos, enemy.pos, 10);
                         if (isHeroInAttackPath(attack)) {
                             return tryMoveToBetterPosition(enemy);
                         }
@@ -355,7 +537,7 @@ public class MageHand extends DirectableAlly {
             // 如果没有装备法师之杖，使用普通法杖攻击
             else if (equippedWand != null && wandCooldown == 0) {
                 if (equippedWand.curCharges > 0) {
-                    Ballistica attack = new Ballistica(pos, enemy.pos, equippedWand.collisionProperties);
+                    Ballistica attack = new Ballistica(pos, enemy.pos, 10);
                     if (isHeroInAttackPath(attack)) {
                         return tryMoveToBetterPosition(enemy);
                     }
@@ -375,7 +557,7 @@ public class MageHand extends DirectableAlly {
     private boolean isHeroInAttackPath(Ballistica attack) {
         for (int i = 0; i < attack.path.size(); i++) {
             int p = attack.path.get(i);
-            if (p == Dungeon.hero.pos) {
+            if (p == hero.pos) {
                 return true;
             }
         }
@@ -408,9 +590,40 @@ public class MageHand extends DirectableAlly {
             wandCooldown--;
         }
 
+        boolean hasEnemy = false;
+        for (Char ch : Actor.chars()) {
+            if (ch.alignment == Alignment.ENEMY && fieldOfView[ch.pos]) {
+                hasEnemy = true;
+                break;
+            }
+        }
+
+        if (!hasEnemy) {
+            for (Char ch : Actor.chars()) {
+                if (ch instanceof WandOfWarding.Ward) {
+                    if(((WandOfWarding.Ward) ch).handSummon){
+                        ch.die(null);
+                    }
+                }
+            }
+        }
+
         MageHandControlBuff buff = hero.buff(MageHandControlBuff.class);
         if (buff == null) {
             Buff.affect(hero, MageHandControlBuff.class);
+        }
+
+        if(inPatrolMode){
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if (Dungeon.level.distance(pos, mob.pos) <= 5 && mob.state != mob.HUNTING) {
+                    mob.beckon( target );
+                }
+            }
+        }
+
+        MageHand.HandWareness mageHandWareness = hero.buff(MageHand.HandWareness.class);
+        if(mageHandWareness == null){
+            Buff.affect(hero, MageHand.HandWareness.class);
         }
 
         return super.act();
@@ -463,7 +676,78 @@ public class MageHand extends DirectableAlly {
     }
 
     private void executeWandEffect(Wand wand) {
-        if (wand.cursed) {
+        if (wand instanceof WandOfWarding && enemy != null) {
+            // 获取敌人周围半径2的所有位置
+            ArrayList<Integer> validPositions = new ArrayList<>();
+            int radius = 3;
+
+            // 遍历敌人周围8个方向的所有点
+            for (int dx = -radius; dx <= radius; dx++) {
+                for (int dy = -radius; dy <= radius; dy++) {
+                    // 跳过中心点和距离不是2的点
+                    if (dx == 0 && dy == 0) continue;
+                    if (Math.abs(dx) + Math.abs(dy) != radius) continue;
+
+                    int cell = enemy.pos + dx + dy * Dungeon.level.width();
+
+                    // 检查位置是否有效
+                    if (cell >= 0 && cell < Dungeon.level.length() &&
+                            Dungeon.level.passable[cell] &&
+                            Actor.findChar(cell) == null) {
+
+                        // 检查是否是封闭位置
+                        boolean solidFound = false;
+                        boolean passableFound = false;
+
+                        // 检查周围8个方向
+                        for (int i : PathFinder.NEIGHBOURS8) {
+                            int neighbourPos = cell + i;
+                            if (neighbourPos >= 0 && neighbourPos < Dungeon.level.length()) {
+                                if (Dungeon.level.solid[neighbourPos]) {
+                                    solidFound = true;
+                                } else if (!Dungeon.level.solid[neighbourPos] &&
+                                        Actor.findChar(neighbourPos) == null) {
+                                    passableFound = true;
+                                }
+                            }
+                        }
+
+                        // 只有当位置不是封闭的时才添加到有效位置列表
+                        if (solidFound && passableFound) {
+                            validPositions.add(cell);
+                        }
+                    }
+                }
+            }
+
+            if (!validPositions.isEmpty()) {
+                // 随机选择一个位置
+                int targetPos = Random.element(validPositions);
+
+                // 创建法术轨迹
+                Ballistica attack = new Ballistica(pos, targetPos, Ballistica.STOP_TARGET);
+
+                // 检查是否需要创建新的哨位
+                Char existingWard = Actor.findChar(targetPos);
+                if (existingWard instanceof WandOfWarding.Ward) {
+                    // 如果已存在哨位，直接施法
+                    if (wand.cursed) {
+                        CursedWand.cursedZap(wand, this, attack, this::next);
+                    } else {
+                        wand.onZap(attack);
+                    }
+                } else {
+                    // 如果不存在哨位，创建新的并设置handSummon
+                    WandOfWarding.Ward ward = new WandOfWarding.Ward();
+                    ward.pos = targetPos;
+                    ward.wandLevel = wand.level();
+                    ward.handSummon = true;  // 设置handSummon为true
+                    GameScene.add(ward, 1f);
+                    Dungeon.level.occupyCell(ward);
+                    ward.sprite.emitter().burst(MagicMissile.WardParticle.UP, ward.tier);
+                }
+            }
+        } else if (wand.cursed) {
             CursedWand.cursedZap(
                     wand == equippedWand ? wand : null,
                     this,
@@ -476,6 +760,8 @@ public class MageHand extends DirectableAlly {
             wand.onZap(new Ballistica(pos, enemy.pos, wand.collisionProperties));
         }
     }
+
+
 
     private boolean isSpecialWand(Wand wand) {
         return wand instanceof WandOfFireblast ||
@@ -514,9 +800,7 @@ public class MageHand extends DirectableAlly {
         damage = super.attackProc(enemy, damage);
         if (magesStaff != null) {
             damage = magesStaff.proc(this, enemy, damage);
-            if(magesStaff.wand.curCharges <= 0){
-                Buff.prolong(hero, StoneOfAggression.Aggression.class, 1f);
-            }
+            Buff.prolong(hero, StoneOfAggression.Aggression.class, 1f);
             if(hero.hasTalent(Talent.MAGIC_ABSORB)){
                 MagicAbsorb buff = hero.buff(MagicAbsorb.class);
                 if(buff != null){
@@ -531,14 +815,10 @@ public class MageHand extends DirectableAlly {
 
     public void sayAppeared(){
         yell(Messages.get(this, "appear"));
-        if (ShatteredPixelDungeon.scene() instanceof GameScene) {
-            Sample.INSTANCE.play(Assets.Sounds.GHOST);
-        }
     }
 
     private static final String WAND =        "wand";
     private static final String MAGE_STAFF = "mage_staff";
-    private static final String TARGET_ENEMY = "target_enemy";
     private static final String PRIORITY_ATTACK = "priority_attack";
 
     @Override
@@ -547,6 +827,7 @@ public class MageHand extends DirectableAlly {
 
         if (equippedWand != null)  bundle.put( WAND,equippedWand );
         if(magesStaff != null) bundle.put( MAGE_STAFF, magesStaff );
+        bundle.put( PRIORITY_ATTACK, inPatrolMode );
     }
 
     @Override
@@ -557,6 +838,7 @@ public class MageHand extends DirectableAlly {
             equippedWand = (Wand) bundle.get( WAND );
         if (bundle.contains(MAGE_STAFF))
             magesStaff = (MagesStaff) bundle.get( MAGE_STAFF );
+        inPatrolMode = bundle.getBoolean( PRIORITY_ATTACK );
     }
 
     public static class HandShield extends FlavourBuff {
@@ -681,7 +963,7 @@ public class MageHand extends DirectableAlly {
 
         // 如果找不到合适的位置，就移动到英雄附近但不挡住英雄
         ArrayList<Integer> heroNeighbors = new ArrayList<>();
-        int heroPos = Dungeon.hero.pos;
+        int heroPos = hero.pos;
 
         // 同样添加边界检查
         for (int offset : neighborOffsets) {
@@ -712,7 +994,7 @@ public class MageHand extends DirectableAlly {
         float score = 0;
 
         // 距离英雄的距离（不要太远也不要太近）
-        float distanceToHero = Dungeon.level.distance(position, Dungeon.hero.pos);
+        float distanceToHero = Dungeon.level.distance(position, hero.pos);
         if (distanceToHero < 3) {
             score += 10; // 离英雄近一点好
         } else if (distanceToHero > 6) {
@@ -812,7 +1094,7 @@ public class MageHand extends DirectableAlly {
 
                             @Override
                             public boolean itemSelectable(Item item) {
-                                return item instanceof Wand && !(item instanceof WandOfWarding) || item instanceof MagesStaff;
+                                return item instanceof Wand || item instanceof MagesStaff;
                             }
 
                             @Override
@@ -834,14 +1116,9 @@ public class MageHand extends DirectableAlly {
                                 } else {
                                     if(item instanceof MagesStaff){
                                         Wand w = ((MagesStaff) item).wand;
-                                        if(w instanceof WandOfWarding){
-                                            GLog.w( Messages.get(WndMageHand.class, "cant_equip_ward_tmp") );
-                                            hide();
-                                        } else {
-                                            hand.equipMageStaff((MagesStaff) item);
-                                            item(hand.getEquippedMageStaff());
-                                            item.detach(hero.belongings.backpack);
-                                        }
+                                        hand.equipMageStaff((MagesStaff) item);
+                                        item(hand.getEquippedMageStaff());
+                                        item.detach(hero.belongings.backpack);
                                     } else {
                                         hand.equipWand((Wand) item);
                                         item(hand.getEquippedWand());
@@ -884,6 +1161,8 @@ public class MageHand extends DirectableAlly {
         public static final String AC_DIRECT = "DIRECT";
         public static final String AC_SUMMON_HAND = "SUMMON_HAND";
         public static final String AC_TARGET_ENEMY = "TARGET_ENEMY";
+
+        public static final String AC_TOGGLE_PATROL = "TOGGLE_PATROL";
 
         {
             defaultAction = AC_DIRECT;
@@ -945,6 +1224,7 @@ public class MageHand extends DirectableAlly {
             actions.add(AC_DIRECT);
             actions.add(AC_SUMMON_HAND);
             actions.add(AC_TARGET_ENEMY);
+            actions.add(AC_TOGGLE_PATROL);
             return actions;
         }
 
@@ -1026,6 +1306,19 @@ public class MageHand extends DirectableAlly {
                         }
                     }
                     break;
+                case AC_TOGGLE_PATROL:
+                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                        if (mob instanceof MageHand) {
+                            if(!((MageHand) mob).inPatrolMode){
+                                ((MageHand) mob).inPatrolMode = true;
+                                GLog.i(Messages.get(this, "patrol_start"));
+                            }else{
+                                ((MageHand) mob).inPatrolMode = false;
+                                GLog.i(Messages.get(this, "patrol_stop"));
+                            }
+                        }
+                    }
+                    break;
             }
         }
 
@@ -1035,7 +1328,15 @@ public class MageHand extends DirectableAlly {
                 if (cell == null) return;
 
                 // 检查目标位置是否在可视区域内（已探索区域或灵视范围内）
-                boolean isVisible = Dungeon.level.heroFOV[cell];
+
+                Mob mh = null;
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (mob instanceof MageHand) {
+                       mh = mob;
+                    }
+                }
+
+                boolean isVisible = Dungeon.level.heroFOV[cell] || mh.fieldOfView[cell];
 
                 if (isVisible) {
                     boolean isInBounds = cell < Dungeon.level.length();

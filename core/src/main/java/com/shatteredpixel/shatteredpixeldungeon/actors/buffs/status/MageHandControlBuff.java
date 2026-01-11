@@ -6,7 +6,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
-import com.watabou.utils.Bundle;
 
 public class MageHandControlBuff extends Buff implements ActionIndicator.Action {
     public MageHand.MageHandControl magesStaffcontrol;
@@ -32,12 +31,6 @@ public class MageHandControlBuff extends Buff implements ActionIndicator.Action 
         spend(TICK);
         ActionIndicator.setAction(this);
         return true;
-    }
-
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        ActionIndicator.setAction(this);
     }
 
     @Override

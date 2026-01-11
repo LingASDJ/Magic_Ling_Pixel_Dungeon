@@ -1395,7 +1395,7 @@ public class Hero extends Char {
 
 		if (!ready) {
 			//do a full observe (including fog update) if not resting.
-			if (!resting || buff(MindVision.class) != null || buff(Awareness.class) != null || buff(SmallLightHeader.SAwareness.class)!=null) {
+			if (!resting || buff(MindVision.class) != null || buff(Awareness.class) != null || buff(SmallLightHeader.SAwareness.class)!=null || buff(MageHand.HandWareness.class)!=null){
 				Dungeon.observe();
 			} else {
 				//otherwise just directly re-calculate FOV

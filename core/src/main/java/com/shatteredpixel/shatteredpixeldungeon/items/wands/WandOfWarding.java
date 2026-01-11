@@ -225,6 +225,8 @@ public class WandOfWarding extends Wand {
 
 		public int totalZaps = 0;
 
+		public boolean handSummon = false;
+
 		{
 			spriteClass = WardSprite.class;
 
@@ -478,12 +480,15 @@ public class WandOfWarding extends Wand {
 		private static final String WAND_LEVEL = "wand_level";
 		private static final String TOTAL_ZAPS = "total_zaps";
 
+		private static final String HAND_SUMMON = "hand_summon";
+
 		@Override
 		public void storeInBundle(Bundle bundle) {
 			super.storeInBundle(bundle);
 			bundle.put(TIER, tier);
 			bundle.put(WAND_LEVEL, wandLevel);
 			bundle.put(TOTAL_ZAPS, totalZaps);
+			bundle.put(HAND_SUMMON, handSummon);
 		}
 
 		@Override
@@ -493,6 +498,7 @@ public class WandOfWarding extends Wand {
 			viewDistance = 3 + tier;
 			wandLevel = bundle.getInt(WAND_LEVEL);
 			totalZaps = bundle.getInt(TOTAL_ZAPS);
+			handSummon = bundle.getBoolean(HAND_SUMMON);
 		}
 	}
 }
