@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -31,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.MagicAbsorb;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -72,8 +75,8 @@ public class MeleeWeapon extends Weapon {
 	@SuppressWarnings("CheckResult")
     @Override
 	public String defaultAction() {
-		if (Dungeon.hero != null && (Dungeon.hero.heroClass == HeroClass.DUELIST
-			|| Dungeon.hero.hasTalent(Talent.SWIFT_EQUIP))){
+		if (hero != null && (hero.heroClass == HeroClass.DUELIST
+			|| hero.hasTalent(Talent.SWIFT_EQUIP))){
 			//如果继承的类没有duelistAbility方法，则代表近战武器武技还未制作完成。为此不返回技能
 			//Ling
 			try {
@@ -238,6 +241,17 @@ public class MeleeWeapon extends Weapon {
 		updateQuickslot();
 	}
 
+	@Override
+	public int proc( Char attacker, Char defender, int damage ) {
+		if(hero.hasTalent(Talent.MAGIC_ABSORB)){
+			MagicAbsorb buff = hero.buff(MagicAbsorb.class);
+			if(buff != null){
+				buff.downAbsord(hero.pointsInTalent(Talent.MAGIC_ABSORB));
+			}
+		}
+		return super.proc( attacker, defender, damage );
+	}
+
 	public void afterAbilityUsed(Hero hero){
 		hero.belongings.abilityWeapon = null;
 		if (hero.hasTalent(Talent.PRECISE_ASSAULT)){
@@ -310,10 +324,10 @@ public class MeleeWeapon extends Weapon {
 	private static boolean evaluatingTwinUpgrades = false;
 	@Override
 	public int buffedLvl() {
-		if (!evaluatingTwinUpgrades && Dungeon.hero != null && isEquipped(Dungeon.hero) && Dungeon.hero.hasTalent(Talent.TWIN_UPGRADES)){
+		if (!evaluatingTwinUpgrades && hero != null && isEquipped(hero) && hero.hasTalent(Talent.TWIN_UPGRADES)){
 			KindOfWeapon other = null;
-			if (Dungeon.hero.belongings.weapon() != this) other = Dungeon.hero.belongings.weapon();
-			if (Dungeon.hero.belongings.secondWep() != this) other = Dungeon.hero.belongings.secondWep();
+			if (hero.belongings.weapon() != this) other = hero.belongings.weapon();
+			if (hero.belongings.secondWep() != this) other = hero.belongings.secondWep();
 
 			if (other instanceof MeleeWeapon) {
 				evaluatingTwinUpgrades = true;
@@ -321,7 +335,7 @@ public class MeleeWeapon extends Weapon {
 				evaluatingTwinUpgrades = false;
 
 				//weaker weapon needs to be 2/1/0 tiers lower, based on talent level
-				if ((tier + (3 - Dungeon.hero.pointsInTalent(Talent.TWIN_UPGRADES))) <= ((MeleeWeapon) other).tier
+				if ((tier + (3 - hero.pointsInTalent(Talent.TWIN_UPGRADES))) <= ((MeleeWeapon) other).tier
 						&& otherLevel > super.buffedLvl()) {
 					return otherLevel;
 				}
@@ -353,16 +367,16 @@ public class MeleeWeapon extends Weapon {
 
 		if (levelKnown) {
 			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
-			if (Dungeon.hero != null) {
-				if (STRReq() > Dungeon.hero.STR()) {
+			if (hero != null) {
+				if (STRReq() > hero.STR()) {
 					info += " " + Messages.get(Weapon.class, "too_heavy");
-				} else if (Dungeon.hero.STR() > STRReq()) {
-					info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+				} else if (hero.STR() > STRReq()) {
+					info += " " + Messages.get(Weapon.class, "excess_str", hero.STR() - STRReq());
 				}
 			}
 		} else {
 			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
-			if (Dungeon.hero != null && STRReq(0) > Dungeon.hero.STR()) {
+			if (hero != null && STRReq(0) > hero.STR()) {
 				info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
 			}
 		}
@@ -388,7 +402,7 @@ public class MeleeWeapon extends Weapon {
 			info += "\n\n" + Messages.get(Weapon.class, "hardened_no_enchant");
 		}
 
-		if (cursed && isEquipped( Dungeon.hero )) {
+		if (cursed && isEquipped( hero )) {
 			info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
 		} else if (cursedKnown && cursed) {
 			info += "\n\n" + Messages.get(Weapon.class, "cursed");
@@ -402,7 +416,7 @@ public class MeleeWeapon extends Weapon {
 
 
 
-		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.DUELIST && !(this instanceof MagesStaff)){
+		if (hero != null && hero.heroClass == HeroClass.DUELIST && !(this instanceof MagesStaff)){
 			//如果继承的类没有duelistAbility方法，则代表武技还未制作完成。返回文本告诉玩家
 			try {
 				this.getClass().getDeclaredMethod("duelistAbility", Hero.class, Integer.class);
@@ -430,10 +444,10 @@ public class MeleeWeapon extends Weapon {
 
 	@Override
 	public String status() {
-		if (Dungeon.hero != null && isEquipped(Dungeon.hero)
-				&& Dungeon.hero.buff(Charger.class) != null) {
-			Charger buff = Dungeon.hero.buff(Charger.class);
-			if (Dungeon.hero.belongings.weapon == this) {
+		if (hero != null && isEquipped(hero)
+				&& hero.buff(Charger.class) != null) {
+			Charger buff = hero.buff(Charger.class);
+			if (hero.belongings.weapon == this) {
 				return buff.charges + "/" + buff.chargeCap();
 			} else {
 				return buff.secondCharges + "/" + buff.secondChargeCap();
@@ -484,12 +498,12 @@ public class MeleeWeapon extends Weapon {
 					float chargeToGain = 1/(60f-1.5f*(chargeCap()-charges));
 
 					//40 to 30 turns per charge for champion
-					if (Dungeon.hero.subClass == HeroSubClass.CHAMPION){
+					if (hero.subClass == HeroSubClass.CHAMPION){
 						chargeToGain *= 1.5f;
 					}
 
 					//50% slower charge gain with brawler's stance enabled, even if buff is inactive
-					if (Dungeon.hero.buff(RingOfForce.BrawlersStance.class) != null){
+					if (hero.buff(RingOfForce.BrawlersStance.class) != null){
 						chargeToGain *= 0.50f;
 					}
 
@@ -511,7 +525,7 @@ public class MeleeWeapon extends Weapon {
 				partialCharge = 0;
 			}
 
-			if (Dungeon.hero.subClass == HeroSubClass.CHAMPION
+			if (hero.subClass == HeroSubClass.CHAMPION
 					&& secondCharges < secondChargeCap()) {
 				if (Regeneration.regenOn()) {
 					// 80 to 60 turns per charge without talent
@@ -529,7 +543,7 @@ public class MeleeWeapon extends Weapon {
 				secondPartialCharge = 0;
 			}
 
-			if (ActionIndicator.action != this && Dungeon.hero.subClass == HeroSubClass.CHAMPION) {
+			if (ActionIndicator.action != this && hero.subClass == HeroSubClass.CHAMPION) {
 				ActionIndicator.setAction(this);
 			}
 
@@ -539,7 +553,7 @@ public class MeleeWeapon extends Weapon {
 
 		@Override
 		public void fx(boolean on) {
-			if (on && Dungeon.hero.subClass == HeroSubClass.CHAMPION) {
+			if (on && hero.subClass == HeroSubClass.CHAMPION) {
 				ActionIndicator.setAction(this);
 			}
 		}
@@ -551,7 +565,7 @@ public class MeleeWeapon extends Weapon {
 		}
 
 		public int chargeCap(){
-			return Math.min(10, 3 + (Dungeon.hero.lvl-1)/3);
+			return Math.min(10, 3 + (hero.lvl-1)/3);
 		}
 
 		public int secondChargeCap(){
@@ -560,7 +574,7 @@ public class MeleeWeapon extends Weapon {
 
 		public float secondChargeMultiplier(){
 			//50% - 75%, depending on talent
-			return 0.5f + 0.0834f*Dungeon.hero.pointsInTalent(Talent.SECONDARY_CHARGE);
+			return 0.5f + 0.0834f* hero.pointsInTalent(Talent.SECONDARY_CHARGE);
 		}
 
 		public void gainCharge( float charge ){
@@ -612,10 +626,10 @@ public class MeleeWeapon extends Weapon {
 		@Override
 		public Visual primaryVisual() {
 			Image ico;
-			if (Dungeon.hero.belongings.weapon == null){
+			if (hero.belongings.weapon == null){
 				ico = new HeroIcon(this);
  			} else {
-				ico = new ItemSprite(Dungeon.hero.belongings.weapon);
+				ico = new ItemSprite(hero.belongings.weapon);
 			}
 			ico.width += 4; //shift slightly to the left to separate from smaller icon
 			return ico;
@@ -624,10 +638,10 @@ public class MeleeWeapon extends Weapon {
 		@Override
 		public Visual secondaryVisual() {
 			Image ico;
-			if (Dungeon.hero.belongings.secondWep == null){
+			if (hero.belongings.secondWep == null){
 				ico = new HeroIcon(this);
 			} else {
-				ico = new ItemSprite(Dungeon.hero.belongings.secondWep);
+				ico = new ItemSprite(hero.belongings.secondWep);
 			}
 			ico.scale.set(PixelScene.align(0.51f));
 			ico.brightness(0.6f);
@@ -641,20 +655,20 @@ public class MeleeWeapon extends Weapon {
 
 		@Override
 		public void doAction() {
-			if (Dungeon.hero.subClass != HeroSubClass.CHAMPION){
+			if (hero.subClass != HeroSubClass.CHAMPION){
 				return;
 			}
 
-			if (Dungeon.hero.belongings.secondWep == null && Dungeon.hero.belongings.backpack.items.size() >= Dungeon.hero.belongings.backpack.capacity()){
+			if (hero.belongings.secondWep == null && hero.belongings.backpack.items.size() >= hero.belongings.backpack.capacity()){
 				GLog.w(Messages.get(MeleeWeapon.class, "swap_full"));
 				return;
 			}
 
-			KindOfWeapon temp = Dungeon.hero.belongings.weapon;
-			Dungeon.hero.belongings.weapon = Dungeon.hero.belongings.secondWep;
-			Dungeon.hero.belongings.secondWep = temp;
+			KindOfWeapon temp = hero.belongings.weapon;
+			hero.belongings.weapon = hero.belongings.secondWep;
+			hero.belongings.secondWep = temp;
 
-			Dungeon.hero.sprite.operate(Dungeon.hero.pos);
+			hero.sprite.operate(hero.pos);
 			Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
 
 			ActionIndicator.setAction(this);
