@@ -1523,19 +1523,30 @@ public abstract class Mob extends Char {
 			enemySeen = false;
 
 			int oldPos = pos;
-			if (target != -1 && getCloser( target )) {
-				spend( 1 / speed() );
-				return moveSprite( oldPos, pos );
+			// 添加target有效性检查
+			if (target != -1 && target < Dungeon.level.length() &&
+					getCloser(target)) {
+				spend(1 / speed());
+				return moveSprite(oldPos, pos);
 			} else {
 				target = Dungeon.level.randomDestination(Mob.this);
-				spend( TICK );
+				// 添加target边界检查
+				if (target != -1 && target < Dungeon.level.length()) {
+					spend(TICK);
+				} else {
+					// 如果目标位置无效，花费时间但不移动
+					spend(TICK);
+					return true;
+				}
 			}
 
 			return true;
 		}
 
-		protected int randomDestination(){
-			return Dungeon.level.randomDestination( Mob.this );
+		protected int randomDestination() {
+			// 确保返回的目标位置在有效范围内
+			int dest = Dungeon.level.randomDestination(Mob.this);
+			return (dest != -1 && dest < Dungeon.level.length()) ? dest : pos;
 		}
 	}
 
