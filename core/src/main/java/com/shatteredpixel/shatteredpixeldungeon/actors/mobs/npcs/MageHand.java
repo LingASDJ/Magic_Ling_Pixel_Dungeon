@@ -592,7 +592,7 @@ public class MageHand extends DirectableAlly {
 
         boolean hasEnemy = false;
         for (Char ch : Actor.chars()) {
-            if (ch.alignment == Alignment.ENEMY && fieldOfView[ch.pos]) {
+            if (ch != null && ch.alignment == Alignment.ENEMY && fieldOfView != null && fieldOfView.length > ch.pos && fieldOfView[ch.pos]) {
                 hasEnemy = true;
                 break;
             }

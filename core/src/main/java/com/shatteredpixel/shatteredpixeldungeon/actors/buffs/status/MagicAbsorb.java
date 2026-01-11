@@ -79,6 +79,7 @@ public class MagicAbsorb extends Buff {
                             break;
                         }
                     }
+                    Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(2f);
                     hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "msg"));
                 } else {
                     if(heroMagesStaff != null){
