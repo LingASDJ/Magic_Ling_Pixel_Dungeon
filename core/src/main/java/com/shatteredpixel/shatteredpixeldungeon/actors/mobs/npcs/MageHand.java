@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.MageHandControlBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.MagicAbsorb;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -515,6 +516,12 @@ public class MageHand extends DirectableAlly {
             damage = magesStaff.proc(this, enemy, damage);
             if(magesStaff.wand.curCharges <= 0){
                 Buff.prolong(hero, StoneOfAggression.Aggression.class, 1f);
+            }
+            if(hero.hasTalent(Talent.MAGIC_ABSORB)){
+                MagicAbsorb buff = hero.buff(MagicAbsorb.class);
+                if(buff != null){
+                    buff.downAbsord(hero.pointsInTalent(Talent.MAGIC_ABSORB));
+                }
             }
         } else if (equippedWand != null) {
             damage += equippedWand.level();

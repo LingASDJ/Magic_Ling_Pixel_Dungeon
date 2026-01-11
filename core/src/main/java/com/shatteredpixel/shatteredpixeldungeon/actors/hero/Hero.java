@@ -125,6 +125,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WaterSoulX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BloodLoss;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.MagicAbsorb;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.OozeStatueDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.QuestGold;
@@ -1189,6 +1190,12 @@ public class Hero extends Char {
 			Buff.affect(this, TreeList.TreeBarrier.class);
 		}
 
+		if(hasTalent(Talent.MAGIC_ABSORB)){
+			if(buff(MagicAbsorb.class) == null){
+				Buff.affect(hero, MagicAbsorb.class).set(100, 1);
+			}
+		}
+
 		//水中祝福 但在BR不生效
 		if((branch == 0 || branch == 10) && !bossRushMode){
 			MoveWater();
@@ -2089,6 +2096,13 @@ public class Hero extends Char {
 			wep = null;
 		} else {
 			wep = belongings.attackingWeapon();
+		}
+
+		if(wep == null && hasTalent(Talent.MAGIC_ABSORB)){
+			MagicAbsorb buff = hero.buff(MagicAbsorb.class);
+			if(buff != null){
+				buff.downAbsord(hero.pointsInTalent(Talent.MAGIC_ABSORB));
+			}
 		}
 
 		if (hero.belongings.weapon() instanceof Break) {
