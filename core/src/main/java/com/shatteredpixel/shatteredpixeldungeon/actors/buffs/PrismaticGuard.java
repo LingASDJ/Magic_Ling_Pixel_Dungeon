@@ -103,7 +103,12 @@ public class PrismaticGuard extends Buff {
 	}
 	
 	public static int maxHP( Hero hero ){
-		return 10 + (int)Math.floor(hero.lvl * 2.5f); //half of hero's HP
+		if(hero != null){
+			return 10 + (int)Math.floor(hero.lvl * 2.5f); //half of hero's HP
+		} else {
+			return 10 + (int)Math.floor(2.5f); //half of hero's HP
+		}
+
 	}
 	
 	@Override
