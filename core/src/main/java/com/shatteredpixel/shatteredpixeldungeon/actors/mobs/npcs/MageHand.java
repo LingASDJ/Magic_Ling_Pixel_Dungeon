@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -44,9 +45,11 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MageHandSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -190,13 +193,9 @@ public class MageHand extends DirectableAlly {
         super.damage(0, src, type);
 
         if(!inPatrolMode){
-            if (!teleportNearHero()) {
-                teleportToRandomLocation();
-            }
+            teleportNearHero();
         } else {
-            if (!teleportNear()) {
-                teleportToRandomLocation();
-            }
+            teleportNear();
         }
     }
 
@@ -253,26 +252,6 @@ public class MageHand extends DirectableAlly {
         return false;
     }
 
-    // 传送到全图随机位置
-    private void teleportToRandomLocation() {
-        ArrayList<Integer> validPositions = new ArrayList<>();
-
-        // 遍历整个地图寻找有效位置
-        for (int i = 0; i < Dungeon.level.length(); i++) {
-            if (isValidTeleportPosition(i)) {
-                validPositions.add(i);
-            }
-        }
-
-        // 如果找到有效位置，随机选择一个传送
-        if (!validPositions.isEmpty()) {
-            int targetPos = Random.element(validPositions);
-            teleportTo(targetPos);
-        }
-
-    }
-
-    // 检查位置是否适合传送
     // 检查位置是否适合传送
     private boolean isValidTeleportPosition(int pos) {
         // 基础位置检查
@@ -512,26 +491,24 @@ public class MageHand extends DirectableAlly {
         if (hero != null) {
             // 如果装备了法师之杖，优先进行近战攻击
             if (magesStaff != null) {
-                // 如果是近战攻击
-                if (Dungeon.level.adjacent(pos, enemy.pos)) {
-                    return super.doAttack(enemy);
-                }
-                // 如果不是近战攻击，检查法杖攻击
                 Wand mwand = magesStaff.wand;
-                if (mwand != null && wandCooldown == 0) {
-                    if (mwand.curCharges > 0) {
-                        Ballistica attack = new Ballistica(pos, enemy.pos, 10);
-                        if (isHeroInAttackPath(attack)) {
-                            return tryMoveToBetterPosition(enemy);
-                        }
-                        if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
-                            sprite.zap(enemy.pos);
-                            return false;
-                        } else {
-                            zap();
-                            return true;
-                        }
+                // 如果法杖有充能且不在冷却中，优先远程攻击
+                if (mwand != null && wandCooldown == 0 && mwand.curCharges > 0) {
+                    Ballistica attack = new Ballistica(pos, enemy.pos, 10);
+                    if (isHeroInAttackPath(attack)) {
+                        return tryMoveToBetterPosition(enemy);
                     }
+                    if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
+                        sprite.zap(enemy.pos);
+                        return false;
+                    } else {
+                        zap();
+                        return true;
+                    }
+                }
+                // 如果法杖没有充能或处于冷却中，且在近战范围内，进行近战攻击
+                else if (Dungeon.level.adjacent(pos, enemy.pos)) {
+                    return super.doAttack(enemy);
                 }
             }
             // 如果没有装备法师之杖，使用普通法杖攻击
@@ -1048,14 +1025,16 @@ public class MageHand extends DirectableAlly {
     private static class WndMageHand extends Window {
 
         private static final int BTN_SIZE  = 32;
-        private static final float GAP     = 2;
+        private static final float GAP     = 5;
         private static final float BTN_GAP = 12;
         private static final int WIDTH     = 116;
 
         private ItemButton btnWand;
-
+        private StyledButton btnAction1;
+        private StyledButton btnAction2;
+        public MageHand.MageHandControl magesStaffcontrol;
         WndMageHand(final MageHand hand){
-
+            magesStaffcontrol = Dungeon.hero.belongings.getItem(MageHand.MageHandControl.class);
             IconTitle titlebar = new IconTitle();
             titlebar.icon( new ItemSprite(ItemSpriteSheet.MAGES_STAFF) );
             titlebar.label( Messages.get(this, "title") );
@@ -1068,6 +1047,7 @@ public class MageHand extends DirectableAlly {
             message.setPos(0, titlebar.bottom() + GAP);
             add( message );
 
+            // 法杖按钮居中显示
             btnWand = new ItemButton(){
                 @Override
                 protected void onClick() {
@@ -1140,7 +1120,40 @@ public class MageHand extends DirectableAlly {
                 }
             };
 
-            btnWand.setRect( (WIDTH - BTN_SIZE) / 2f, message.top() + message.height() + GAP, BTN_SIZE, BTN_SIZE );
+            // 计算法杖按钮的居中位置
+            float wandX = (WIDTH - BTN_SIZE) / 2f;
+            btnWand.setRect( wandX, message.top() + message.height() + GAP, BTN_SIZE, BTN_SIZE );
+
+            // 左侧按钮
+            btnAction1 = new StyledButton(Chrome.Type.TOAST,Messages.get(this,"attack"),7) {
+                @Override
+                protected void onClick() {
+                    if(magesStaffcontrol != null){
+                        magesStaffcontrol.execute(Dungeon.hero, MageHandControl.AC_TARGET_ENEMY);
+                    }
+                    hide();
+                }
+            };
+            btnAction1.textBelowIcon = true;
+            btnAction1.icon(new BuffIcon(BuffIndicator.CHALLENGE,true));
+            btnAction1.setRect(BTN_GAP-5, message.top() + message.height() + GAP, BTN_SIZE, BTN_SIZE);
+
+            // 右侧按钮
+            btnAction2 = new StyledButton(Chrome.Type.TOAST,
+                    hand.inPatrolMode ?
+                    Messages.get(this,"heropath") : Messages.get(this,"warning")
+                    ,7) {
+                @Override
+                protected void onClick() {
+                    if(magesStaffcontrol != null){
+                        magesStaffcontrol.execute(Dungeon.hero, MageHandControl.AC_TOGGLE_PATROL);
+                    }
+                    hide();
+                }
+            };
+            btnAction2.textBelowIcon = true;
+            btnAction2.icon(hand.inPatrolMode ? new BuffIcon(BuffIndicator.BLINDNESS,true) : new BuffIcon(BuffIndicator.MIND_VISION,true));
+            btnAction2.setRect(WIDTH - BTN_SIZE - BTN_GAP+5, message.top() + message.height() + GAP, BTN_SIZE, BTN_SIZE);
 
             if(hand.hasMageStaff()){
                 btnWand.item(hand.getEquippedMageStaff());
@@ -1151,8 +1164,10 @@ public class MageHand extends DirectableAlly {
             }
 
             add( btnWand );
+            add( btnAction1 );
+            add( btnAction2 );
 
-            resize(WIDTH, (int)(btnWand.bottom() + GAP));
+            resize(WIDTH, (int)(btnWand.bottom() + 2));
         }
     }
 
@@ -1182,9 +1197,11 @@ public class MageHand extends DirectableAlly {
 
         @Override
         public ItemSprite.Glowing glowing() {
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if (mob instanceof MageHand) {
-                    return null;
+            if(Dungeon.level != null){
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (mob instanceof MageHand) {
+                        return null;
+                    }
                 }
             }
             return new ItemSprite.Glowing(0x880000, 1f);
@@ -1197,13 +1214,15 @@ public class MageHand extends DirectableAlly {
 
         @Override
         public String status() {
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if (mob instanceof MageHand) {
-                    MageHand hand = (MageHand) mob;
-                    if (hand.magesStaff != null && hand.magesStaff.wand != null) {
-                        return hand.magesStaff.wand.curCharges + "/" + hand.magesStaff.wand.maxCharges;
-                    } else if (hand.equippedWand != null) {
-                        return hand.equippedWand.curCharges + "/" + hand.equippedWand.maxCharges;
+            if(Dungeon.level != null){
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (mob instanceof MageHand) {
+                        MageHand hand = (MageHand) mob;
+                        if (hand.magesStaff != null && hand.magesStaff.wand != null) {
+                            return hand.magesStaff.wand.curCharges + "/" + hand.magesStaff.wand.maxCharges;
+                        } else if (hand.equippedWand != null) {
+                            return hand.equippedWand.curCharges + "/" + hand.equippedWand.maxCharges;
+                        }
                     }
                 }
             }

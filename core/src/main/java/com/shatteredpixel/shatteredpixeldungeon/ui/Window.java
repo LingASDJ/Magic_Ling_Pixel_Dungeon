@@ -73,6 +73,23 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 	public static final int BLUE_COLOR = 0x0000FF;
 	public static final int CBLACK = 0x808080;
 
+	public static final int[] TEXT_WIN	= {0xFFFF88, 0xB2B25F};
+	public static final int[] TEXT_WIN2	= {0xCF6E28, 0xC66c28};
+	public static final int[] TEXT_WIN3	= {0x6ECF28, 0xC6286c};
+
+	public static final int[] TEXT_WIN4	= {Window.Pink_COLOR, Window.DeepPK_COLOR};
+
+	public static final int[] TEXT_WIN5	= {Window.SKYBULE_COLOR, Window.WATA_COLOR};
+
+	public static final int[] TEXT_WIN6	= {Window.RED_COLOR, Window.GDX_COLOR};
+
+	public static final int[] TEXT_WIN7	= {Window.DeepPK_COLOR, Window.Pink_COLOR};
+
+	public static final int[] TEXT_LOSE= {0xDDDDDD, 0x888888};
+	public static final int FLARE_WIN	= 0x888866;
+	public static final int FLARE_LOSE	= 0x666666;
+
+
 	public final void setHeight(int height) { resize(width, height); }
 	public Window() {
 		this( 0, 0, Chrome.get( Chrome.Type.WINDOW ) );
