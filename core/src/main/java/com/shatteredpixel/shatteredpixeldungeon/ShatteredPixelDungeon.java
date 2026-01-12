@@ -165,13 +165,6 @@ public class ShatteredPixelDungeon extends Game {
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.plants.Mageroyal.Seed.class,
 				"com.shatteredpixel.shatteredpixeldungeon.plants.Dreamfoil$Seed" );
-
-		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Dazzling.class,
-				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Exhausting" );
-		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive.class,
-				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Fragile" );
 	}
 	
 	@Override
