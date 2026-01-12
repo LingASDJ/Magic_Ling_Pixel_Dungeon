@@ -42,6 +42,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -503,7 +505,26 @@ public abstract class Wand extends Item {
 			}
 		}
 
-		curCharges -= cursed ? 1 : chargesPerCast();
+		int chargesUse = cursed ? 1 : chargesPerCast();
+		curCharges -= chargesUse;
+		Dungeon.hero.chargesUsed += chargesUse;
+
+		if ( Dungeon.hero.hasTalent( Talent.MYSTICAL_CHARGE )
+				&& charger != null && charger.target == Dungeon.hero
+				&& !Dungeon.hero.belongings.contains( this ) ){
+			for ( Mob mob : Dungeon.level.mobs.toArray( new Mob[0] ) ){
+				if ( mob instanceof MageHand ) {
+					MageHand mageHand = ( MageHand ) mob;
+					Wand wand = mageHand.magesStaff != null ? mageHand.magesStaff.wand : mageHand.equippedWand;
+					int talentPoint = 5 - Dungeon.hero.pointsInTalent( Talent.MYSTICAL_CHARGE );
+
+					while ( wand.curCharges < wand.maxCharges && Dungeon.hero.chargesUsed >= talentPoint ){
+						Dungeon.hero.chargesUsed -= talentPoint;
+						wand.curCharges += 1;
+					}
+				}
+			}
+		}
 
 		//remove magic charge at a higher priority, if we are benefiting from it are and not the
 		//wand that just applied it
@@ -539,7 +560,7 @@ public abstract class Wand extends Item {
 
 
 	}
-	
+
 	@Override
 	public Item random() {
 		//+0: 66.67% (2/3)
