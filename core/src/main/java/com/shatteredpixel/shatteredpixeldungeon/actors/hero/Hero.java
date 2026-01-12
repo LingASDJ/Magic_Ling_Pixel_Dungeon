@@ -371,6 +371,7 @@ public class Hero extends Char {
 	private int originalHT = 20;
 
 	public int lvl = 1;
+	public int chargesUsed = 0;
 	private static final String ATTACK = "attackSkill";
 	private static final String DEFENSE = "defenseSkill";
 	private static final String STRENGTH = "STR";
@@ -380,6 +381,7 @@ public class Hero extends Char {
 	private static final String LANTERFTR = "lanterfire";
 	private static final String ICEHP = "icehp";
 	private static final String RESIST = "resistHealth";
+	private static final String CHARGES = "chargesUsed";
 
 	public void updateHT( boolean boostHP ){
 		int curHT = HT;
@@ -2902,6 +2904,7 @@ public class Hero extends Char {
 		bundle.put(LANTERFTR, lanterfire);
 
 		bundle.put(CAKEUSED, CakeUsed);
+		bundle.put(CHARGES,chargesUsed);
 
 		if (!this.name.equals("")) {
 			bundle.put("name", this.name);
@@ -2936,6 +2939,7 @@ public class Hero extends Char {
 		icehp = bundle.getInt(ICEHP);
 
 		CakeUsed = bundle.getInt(CAKEUSED);
+		chargesUsed = bundle.getInt(CHARGES);
 
 		String name;
 		if (bundle.contains("name")) {
