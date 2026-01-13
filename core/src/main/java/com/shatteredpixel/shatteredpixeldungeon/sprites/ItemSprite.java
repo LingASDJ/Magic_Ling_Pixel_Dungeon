@@ -201,25 +201,36 @@ public class ItemSprite extends MovieClip {
 		return view(item,false);
 	}
 
-	public ItemSprite view( Item item,boolean b){
-		view(item.image(), item.glowing());
-		Emitter emitter = item.emitter();
+	public ItemSprite view( Item item, boolean b){
+		if (this.emitter != null) {
+			this.emitter.killAndErase();
+			this.emitter = null;
+		}
 
+		/** @直接切断动画引用 */
+		this.curAnim = null;
+
+		/** @彻底重置ItemSprites状态 */
+		resetColor();
+		scale.set(1);
+		angle = 0;
+		texture(Assets.Sprites.ITEMS);
+		view(item.image(), item.glowing());
+
+		Emitter emitter = item.emitter();
 		if (emitter != null && parent != null) {
 			emitter.pos( this );
 			parent.add( emitter );
 			this.emitter = emitter;
 		}
 
-		//有布尔且必须是继承的AnimationItem才有动画
-		//避免与其他Item的view冲突
 		if (!b && item.animation && item instanceof Item.AnimationItem && parent != null) {
 			item.frames(this);
 		}
 
 		return this;
 	}
-	
+
 	public ItemSprite view( Heap heap ){
 		if (heap.size() <= 0 || heap.items == null){
 			return view( 0, null );
@@ -227,7 +238,7 @@ public class ItemSprite extends MovieClip {
 		
 		switch (heap.type) {
 			case HEAP: case FOR_SALE:case FOR_ICE:case FOR_RUSH:
-				return view( heap.peek(),true );
+				return view( heap.peek(),false );
 			case CHEST:
 				return view( ItemSpriteSheet.CHEST, null );
 			case LOCKED_CHEST:
