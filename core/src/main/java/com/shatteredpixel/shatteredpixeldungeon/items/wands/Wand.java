@@ -510,8 +510,7 @@ public abstract class Wand extends Item {
 		Dungeon.hero.chargesUsed += chargesUse;
 
 		if ( Dungeon.hero.hasTalent( Talent.MYSTICAL_CHARGE )
-				&& charger != null && charger.target == Dungeon.hero
-				&& !Dungeon.hero.belongings.contains( this ) ){
+				&& charger != null && charger.target == Dungeon.hero){
 			for ( Mob mob : Dungeon.level.mobs.toArray( new Mob[0] ) ){
 				if ( mob instanceof MageHand ) {
 					MageHand mageHand = ( MageHand ) mob;
