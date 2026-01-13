@@ -50,8 +50,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.watabou.noosa.MovieClip;
-import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundlable;
@@ -162,15 +160,7 @@ public class Item implements Bundlable {
 	 * @param itemSprite
 	 */
     public void frames(ItemSprite itemSprite){
-		if(animation && this instanceof Item.AnimationItem) {
-			itemSprite.texture(animationTotalFrame);
-			TextureFilm frames = new TextureFilm(itemSprite.texture, animationWidth, animationHeight);
-			MovieClip.Animation idle = new MovieClip.Animation(animationSpeed, true);
-			idle.frames(frames, 0);
-			itemSprite.play(idle);
-		} else {
-			itemSprite.view(image(),glowing());
-		}
+
 	}
 	
 	public static final Comparator<Item> itemComparator = new Comparator<Item>() {
