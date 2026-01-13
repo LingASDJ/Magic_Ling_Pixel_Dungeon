@@ -65,7 +65,6 @@ public class MagicAbsorb extends Buff {
                     if (mob instanceof MageHand) {
                         isMageHand = true;
                         mageHand = (MageHand) mob;
-                        break;
                     }
                 }
 
@@ -76,7 +75,6 @@ public class MagicAbsorb extends Buff {
                     for (Wand w : wands.toArray(new Wand[0])){
                         if(w.curCharges < w.maxCharges) {
                             w.curCharges++;
-                            break;
                         }
                     }
                     Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(2f);
@@ -88,7 +86,6 @@ public class MagicAbsorb extends Buff {
                             for (Wand w : wands.toArray(new Wand[0])){
                                 if(w.curCharges < w.maxCharges){
                                     w.curCharges++;
-                                    break;
                                 }
                             }
                             Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(2f);
