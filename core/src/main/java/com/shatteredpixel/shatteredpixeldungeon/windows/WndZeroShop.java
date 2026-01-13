@@ -166,6 +166,9 @@ public class WndZeroShop extends Window {
         if(item instanceof SKINITEM.SKIN_DB){
             SPDSettings.unlockItem("avatars_duelist_2");
         }
+        if(item instanceof SKINITEM.SKIN_MC){
+            SPDSettings.unlockItem("avatars_mage_4");
+        }
     }
 
 
