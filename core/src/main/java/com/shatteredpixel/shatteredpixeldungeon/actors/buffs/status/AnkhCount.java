@@ -9,6 +9,12 @@ import com.watabou.utils.Bundle;
 
 public class AnkhCount extends Buff {
 
+    public static class AnkhCountStats extends AnkhCount{
+        {
+            type = buffType.NEGATIVE;
+        }
+    }
+
     {
         type = Buff.buffType.POSITIVE;
     }

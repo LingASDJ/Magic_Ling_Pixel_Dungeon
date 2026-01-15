@@ -165,6 +165,11 @@ public abstract class Mob extends Char {
 		return enemy;
 	}
 
+	public Char Selectenemy(){
+		Mob ch = (Mob) enemy;
+		return ch;
+	}
+
 	public void enemyReset(){
 		enemy = null;
 	}
@@ -273,7 +278,6 @@ public abstract class Mob extends Char {
 				((DirectableAlly) mob).clearDefensingPos();
 				level.mobs.remove(mob);
 				heldAllies.add(mob);
-
 			} else if(mob instanceof Pets){
 				((Pets) mob).clearDefensingPos();
 				level.mobs.remove(mob);

@@ -401,7 +401,7 @@ public abstract class ChampionEnemy extends Buff {
 	public static class Bomber extends ChampionEnemy {
 
 		{
-			color = 0x00FF00;
+			color = 0x005826;
 			Mcolor = color;
 		}
 		@Override
@@ -428,7 +428,7 @@ public abstract class ChampionEnemy extends Buff {
 	public static class Middle extends ChampionEnemy {
 
 		{
-			color = 0xFFFF00;
+			color = 0xFF8000;
 			Mcolor = color;
 		}
 
@@ -459,7 +459,7 @@ public abstract class ChampionEnemy extends Buff {
 	public static class Big extends ChampionEnemy {
 
 		{
-			color = 0xFF0000;
+			color = 0xE61739;
 			Mcolor = color;
 		}
 		@Override

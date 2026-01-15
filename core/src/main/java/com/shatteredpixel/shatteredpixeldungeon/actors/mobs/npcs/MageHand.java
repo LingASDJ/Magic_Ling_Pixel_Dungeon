@@ -164,24 +164,6 @@ public class MageHand extends DirectableAlly {
     }
 
     @Override
-    protected Char chooseEnemy() {
-        Char enemy = super.chooseEnemy();
-
-        int targetPos = pos;
-        int distance = 10;
-
-        //will never attack something far from their target
-        if (enemy != null
-                && Dungeon.level.mobs.contains(enemy)
-                && (Dungeon.level.distance(enemy.pos, targetPos) <= distance)){
-            ((Mob)enemy).aggro(this);
-            return enemy;
-        }
-
-        return null;
-    }
-
-    @Override
     public void aggro(Char ch) {
         enemy = ch;
         state = HUNTING;
@@ -583,6 +565,7 @@ public class MageHand extends DirectableAlly {
                     }
                 }
             }
+            clearDefensingPos();
         }
 
         MageHandControlBuff buff = hero.buff(MageHandControlBuff.class);
@@ -1345,8 +1328,6 @@ public class MageHand extends DirectableAlly {
             @Override
             public void onSelect(Integer cell) {
                 if (cell == null) return;
-
-                // 检查目标位置是否在可视区域内（已探索区域或灵视范围内）
 
                 Mob mh = null;
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {

@@ -94,7 +94,14 @@ public class ElixirOfMight extends Elixir {
 		}
 		
 		public int boost(){
-			return Math.round(left*boost(15 + 5*((Hero)target).lvl)/5f);
+			if(target != null){
+				return Math.round(left*boost(15 + 5*((Hero)target).lvl)/5f);
+			} else if(Dungeon.hero != null) {
+				return Math.round(left*boost(15 + 5*Dungeon.hero.lvl)/5f);
+			} else {
+				return Math.round(left*boost(15)/5f);
+			}
+
 		}
 		
 		public static int boost(int HT){

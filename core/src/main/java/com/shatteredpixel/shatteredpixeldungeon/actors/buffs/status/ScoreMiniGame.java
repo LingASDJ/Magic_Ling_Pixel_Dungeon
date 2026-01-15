@@ -11,7 +11,7 @@ import com.watabou.utils.Bundle;
 public class ScoreMiniGame extends Buff {
 
     {
-        type = buffType.POSITIVE;
+        type = buffType.NEUTRAL;
     }
 
     private int level = 0;

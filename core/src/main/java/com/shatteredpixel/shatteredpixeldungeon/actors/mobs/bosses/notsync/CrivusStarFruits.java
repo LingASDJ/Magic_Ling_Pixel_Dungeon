@@ -409,6 +409,9 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
 
         @Override
         public int icon () {
+            if(target == null){
+                return BuffIndicator.HEX;
+            }
             return target.HP >= 93 ? BuffIndicator.CORRUPT : BuffIndicator.HEX;
         }
 

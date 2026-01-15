@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WhiteBlastSword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -69,7 +70,7 @@ public class WhiteBlastSwordStatus extends Buff {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", 2 + (hero.belongings.weapon != null ? hero.belongings.weapon.level() : 4));
+        return Messages.get(this, "desc", 2 + (Dungeon.hero == null ? 4 : hero.belongings.weapon != null ? hero.belongings.weapon.level() : 4));
     }
 
     private static final String LEVEL	    = "level";

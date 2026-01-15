@@ -11,6 +11,12 @@ import com.watabou.utils.Bundle;
 
 public class OozeStatueDead extends Buff {
 
+    public static class OozeStatueDeadStats extends OozeStatueDead {
+        {
+            type = buffType.NEGATIVE;
+        }
+    }
+
     private int interval = 0;
     public int level = 1;
 
