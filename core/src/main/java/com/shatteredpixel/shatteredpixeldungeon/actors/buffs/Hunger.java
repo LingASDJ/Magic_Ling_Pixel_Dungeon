@@ -94,12 +94,6 @@ public class Hunger extends Buff implements Hero.Doom {
 			return true;
 		}
 
-//		//TODO 高于90% +2 血量
-//		if(hero.buff(BlessGoRead.class) != null && level >= 405f && hero.HP != hero.HT){
-//			Buff.affect(hero, HealingXP.class).setHeal((int) (2), 0, 0);
-//			spend(2f);
-//		}
-
 		if (target.isAlive() && target instanceof Hero) {
 
 			Hero hero = (Hero)target;
@@ -273,5 +267,21 @@ public class Hunger extends Buff implements Hero.Doom {
 
 		Dungeon.fail( getClass() );
 		GLog.n( Messages.get(this, "ondeath") );
+	}
+
+	public static class HungerStats extends Buff {
+
+		@Override
+		public int icon() {
+			return BuffIndicator.HUNGER;
+		}
+	}
+
+	public static class StarvingStats extends Buff {
+
+		@Override
+		public int icon() {
+			return BuffIndicator.STARVATION;
+		}
 	}
 }

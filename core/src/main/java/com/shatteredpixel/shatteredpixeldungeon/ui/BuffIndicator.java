@@ -154,6 +154,8 @@ public class BuffIndicator extends Component {
 	public static final int SNOW_RAIN     	  = 93;
 	public static final int SNOW_EYE          = 94;
 
+	public static final int TERR_LIST          = 95;
+
 
 	//ELEMENTS
 	public static final int SCARY        = 112;
