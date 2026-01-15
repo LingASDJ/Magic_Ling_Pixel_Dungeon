@@ -15,7 +15,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -116,20 +115,15 @@ public class TreeList extends MeleeWeapon {
             accumulatedShield = Math.min(accumulatedShield + gained, maxShield);
         }
 
-        // 获取当前累积的护盾值
         public int getAccumulatedShield() {
             return accumulatedShield;
         }
 
         @Override
         public int icon() {
-            return BuffIndicator.BARKSKIN;
+            return BuffIndicator.TERR_LIST;
         }
 
-        @Override
-        public void tintIcon(Image icon) {
-            icon.hardlight(0.5f, 1f, 2f);
-        }
 
         @Override
         public String iconTextDisplay() {

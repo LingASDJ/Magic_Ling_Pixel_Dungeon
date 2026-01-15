@@ -306,7 +306,8 @@ public class BuffScanner {
         buffClasses.add(WhiteBlastSwordStatus.class);
 
         buffClasses.add(WorstBlizzard.class);
-        buffClasses.add(Hunger.class);
+        buffClasses.add(Hunger.HungerStats.class);
+        buffClasses.add(Hunger.StarvingStats.class);
 
         buffClasses.add(Momentum.class);
         buffClasses.add(ToxicImbue.class);

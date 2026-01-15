@@ -12,7 +12,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
@@ -130,11 +129,6 @@ public class MagicAbsorb extends Buff {
             interval = time;
             spend(time - cooldown() - 1);
         }
-    }
-
-    @Override
-    public int icon() {
-        return BuffIndicator.BARKSKIN;
     }
 
     @Override
