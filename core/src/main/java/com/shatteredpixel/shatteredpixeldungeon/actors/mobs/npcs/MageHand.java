@@ -543,6 +543,24 @@ public class MageHand extends DirectableAlly {
         return magesStaff.wand;
     }
 
+//    @Override
+//    protected Char chooseEnemy() {
+//        Char enemy = super.chooseEnemy();
+//
+//        int targetPos = pos;
+//        int distance = 10;
+//
+//        //will never attack something far from their target
+//        if (enemy != null
+//                && Dungeon.level.mobs.contains(enemy)
+//                && (Dungeon.level.distance(enemy.pos, targetPos) <= distance)){
+//            ((Mob)enemy).aggro(this);
+//            return enemy;
+//        }
+//
+//        return null;
+//    }
+
     @Override
     protected boolean act() {
         if (wandCooldown > 0) {
