@@ -25,7 +25,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
@@ -307,19 +306,19 @@ public class Speck extends Image {
 			case MUTATION_3:
 				speed.set(0, -20);
 				lifespan = 1f;
-				hardlight(0x00ff00);
+				hardlight(0x005826);
 				//alpha(0.8f);
 				break;
 			case MUTATION_4:
 				speed.set(0, -20);
 				lifespan = 1f;
-				hardlight(Window.CYELLOW);
+				hardlight(0xFF8000);
 				//alpha(0.8f);
 				break;
 			case MUTATION_5:
 				speed.set(0, -20);
 				lifespan = 1f;
-				hardlight(Window.RED_COLOR);
+				hardlight(0xE61739);
 				//alpha(0.8f);
 				break;
 			case MUTATION_6:

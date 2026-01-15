@@ -66,20 +66,18 @@ public class BlessGoRead extends ClearLanterBuff {
     }
 
     @Override
-    public String toString() {
-            return Messages.get(this, "name");
+    public String desc() {
+        if (hero != null) {
+            if(hero.lanterfire<(Dungeon.isChallenged(Challenges.DHXD)? 59 :90)
+                    && !Statistics.noGoReadHungry){
+                return Messages.get(this, "desc_lanter");
+            } else if (Statistics.noGoReadHungry) {
+                return Messages.get(this, "desc_rest");
+            }
+        }
+        return Messages.get(this, "desc");
     }
 
-    @Override
-    public String desc() {
-        if(hero.lanterfire<(Dungeon.isChallenged(Challenges.DHXD)? 59 :90)  && !Statistics.noGoReadHungry){
-            return Messages.get(this, "desc_lanter");
-        } else if (Statistics.noGoReadHungry) {
-            return Messages.get(this, "desc_rest");
-        } else
-            return Messages.get(this, "desc");
-
-        }
 
     private static final String LEVEL	    = "level";
     private static final String INTERVAL    = "interval";
@@ -100,24 +98,37 @@ public class BlessGoRead extends ClearLanterBuff {
 
     @Override
     public void tintIcon(Image icon) {
-
-        if(hero.lanterfire< (Dungeon.isChallenged(Challenges.DHXD)? 59 :90) && !Statistics.noGoReadHungry){
-            icon.hardlight(Window.CYELLOW);
-        } else if (Statistics.noGoReadHungry) {
-            icon.hardlight(0x993333);
-        } else
+        if(hero != null){
+            if(hero.lanterfire< (Dungeon.isChallenged(Challenges.DHXD)? 59 :90) && !Statistics.noGoReadHungry){
+                icon.hardlight(Window.CYELLOW);
+            } else if (Statistics.noGoReadHungry) {
+                icon.hardlight(0x993333);
+            } else
+                icon.hardlight(0xFF1493);
+        } else {
             icon.hardlight(0xFF1493);
+        }
     }
 
     @Override
     public int icon() {
-
-        if(hero.lanterfire<(Dungeon.isChallenged(Challenges.DHXD)? 59 :90)  && !Statistics.noGoReadHungry){
-            return BuffIndicator.DEBUFF_DOWN;
-        } else if (Statistics.noGoReadHungry) {
-            return BuffIndicator.DEBUFF_DOWN;
-        } else
+        if(hero != null) {
+            if (hero.lanterfire < (Dungeon.isChallenged(Challenges.DHXD) ? 59 : 90) && !Statistics.noGoReadHungry) {
+                return BuffIndicator.DEBUFF_DOWN;
+            } else if (Statistics.noGoReadHungry) {
+                return BuffIndicator.DEBUFF_DOWN;
+            } else
+                return BuffIndicator.GOBUFF_UPRD;
+        } else {
             return BuffIndicator.GOBUFF_UPRD;
+        }
+    }
+
+    public static class BlessGoReadStats extends BlessGoRead{
+        @Override
+        public int icon() {
+            return BuffIndicator.GOBUFF_UPRD;
+        }
     }
 
 

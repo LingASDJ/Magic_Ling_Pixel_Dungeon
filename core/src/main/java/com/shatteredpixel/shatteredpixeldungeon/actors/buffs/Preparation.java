@@ -84,7 +84,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		};
 
 		public float KOThreshold(){
-			return KOThresholds[ordinal()][Dungeon.hero.pointsInTalent(Talent.ENHANCED_LETHALITY)];
+			return Dungeon.hero != null ? KOThresholds[ordinal()][Dungeon.hero.pointsInTalent(Talent.ENHANCED_LETHALITY)] : KOThresholds[ordinal()][0];
 		}
 
 		//1st index is prep level, 2nd is talent level
@@ -96,7 +96,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		};
 
 		public int blinkDistance(){
-			return blinkRanges[ordinal()][Dungeon.hero.pointsInTalent(Talent.ASSASSINS_REACH)];
+			return Dungeon.hero != null ? blinkRanges[ordinal()][Dungeon.hero.pointsInTalent(Talent.ASSASSINS_REACH)] : blinkRanges[ordinal()][0];
 		}
 		
 		public boolean canKO(Char defender){

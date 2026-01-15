@@ -168,6 +168,13 @@ public class Sai extends MeleeWeapon {
 		});
 	}
 
+	public static class ComboStrikeTrackerStats extends ComboStrikeTracker {
+		@Override
+		public int icon() {
+			return BuffIndicator.DUEL_COMBO;
+		}
+	}
+
 	public static class ComboStrikeTracker extends Buff {
 
 		{

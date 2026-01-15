@@ -17,7 +17,7 @@ public class ScaryBuff extends ElementalBuff {
 
     {
         elementalIcon = BuffIndicator.SCARY;
-        type = buffType.NEGATIVE;
+        type = buffType.NEUTRAL;
     }
 
     @Override

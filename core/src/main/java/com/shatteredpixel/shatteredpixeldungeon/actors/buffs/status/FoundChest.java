@@ -9,7 +9,7 @@ import com.watabou.utils.Bundle;
 public class FoundChest extends Buff {
     public int distance = 2;
     {
-        type = buffType.POSITIVE;
+        type = buffType.NEUTRAL;
     }
 
     private int level = 0;

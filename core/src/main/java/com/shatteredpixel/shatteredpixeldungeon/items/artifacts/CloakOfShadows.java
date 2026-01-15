@@ -317,6 +317,23 @@ public class CloakOfShadows extends Artifact {
 
 	}
 
+	public static class cloakStealthStats extends Buff {
+
+		{
+			type = buffType.POSITIVE;
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.INVISIBLE;
+		}
+		@Override
+		public void tintIcon(Image icon) {
+			icon.brightness(0.6f);
+		}
+
+	}
+
 	public class cloakStealth extends ArtifactBuff{
 		
 		{

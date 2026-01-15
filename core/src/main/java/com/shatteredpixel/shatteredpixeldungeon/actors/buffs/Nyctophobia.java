@@ -172,19 +172,24 @@ public class Nyctophobia extends Buff implements Hero.Doom {
     @Override
     public String desc() {
         String result;
-        if (hero.lanterfire >= 90 && hero.lanterfire <= 100) {
-            result =  Messages.get(this, "desc");
-        } else if (hero.lanterfire >= 80 && hero.lanterfire <= 89) {
-            result = Messages.get(this, "desc2");
-        } else if (hero.lanterfire >= 60 && hero.lanterfire <= 79) {
-            result = Messages.get(this, "desc3");
-        } else if (hero.lanterfire >= 35 && hero.lanterfire <= 59) {
-            result = Messages.get(this, "desc4");
-        } else if (hero.lanterfire >= 1 && hero.lanterfire <= 34) {
-            result = Messages.get(this, "desc5");
+        if(hero != null){
+            if (hero.lanterfire >= 90 && hero.lanterfire <= 100) {
+                result =  Messages.get(this, "desc");
+            } else if (hero.lanterfire >= 80 && hero.lanterfire <= 89) {
+                result = Messages.get(this, "desc2");
+            } else if (hero.lanterfire >= 60 && hero.lanterfire <= 79) {
+                result = Messages.get(this, "desc3");
+            } else if (hero.lanterfire >= 35 && hero.lanterfire <= 59) {
+                result = Messages.get(this, "desc4");
+            } else if (hero.lanterfire >= 1 && hero.lanterfire <= 34) {
+                result = Messages.get(this, "desc5");
+            } else {
+                result = Messages.get(this, "desc6");
+            }
         } else {
-            result = Messages.get(this, "desc6");
+            result = Messages.get(this, "desc");
         }
+
         return result;
     }
 
@@ -215,18 +220,22 @@ public class Nyctophobia extends Buff implements Hero.Doom {
 
     @Override
     public String name() {
-        if (hero.lanterfire >= 90 && hero.lanterfire <= 100) {
-            return Messages.get(this, "name");
-        } else if (hero.lanterfire >= 80 && hero.lanterfire <= 89) {
-            return Messages.get(this, "name2");
-        } else if (hero.lanterfire >= 60 && hero.lanterfire <= 79) {
-            return Messages.get(this, "name3");
-        } else if (hero.lanterfire >= 35 && hero.lanterfire <= 59) {
-            return Messages.get(this, "name4");
-        } else if (hero.lanterfire >= 1 && hero.lanterfire <= 34) {
-            return Messages.get(this, "name5");
+        if (hero != null) {
+            if (hero.lanterfire >= 90 && hero.lanterfire <= 100) {
+                return Messages.get(this, "name");
+            } else if (hero.lanterfire >= 80 && hero.lanterfire <= 89) {
+                return Messages.get(this, "name2");
+            } else if (hero.lanterfire >= 60 && hero.lanterfire <= 79) {
+                return Messages.get(this, "name3");
+            } else if (hero.lanterfire >= 35 && hero.lanterfire <= 59) {
+                return Messages.get(this, "name4");
+            } else if (hero.lanterfire >= 1 && hero.lanterfire <= 34) {
+                return Messages.get(this, "name5");
+            } else {
+                return Messages.get(this, "name6");
+            }
         } else {
-            return Messages.get(this, "name6");
+            return Messages.get(this, "name");
         }
     }
 }

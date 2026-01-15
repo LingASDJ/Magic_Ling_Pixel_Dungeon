@@ -32,12 +32,12 @@ public class BlessBossRushLow extends ChampionHero {
 
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(0xD2691E);
+        icon.hardlight(0xFF5370);
     }
 
     @Override
     public int icon() {
-        return BuffIndicator.BLESS;
+        return BuffIndicator.GOBUFF_UPRD;
     }
 
 

@@ -289,6 +289,13 @@ public class RingOfForce extends Ring {
 		return false;
 	}
 
+	public static class BrawlersStanceStats extends BrawlersStance {
+		@Override
+		public int icon() {
+			return BuffIndicator.DUEL_BRAWL;
+		}
+	}
+
 	public static class BrawlersStance extends Buff {
 
 		{

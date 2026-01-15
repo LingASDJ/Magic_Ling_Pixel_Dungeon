@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -77,6 +78,16 @@ public class CapeOfThorns extends Artifact {
 		}
 
 		return desc;
+	}
+
+	public static class ThornsStats extends Buff {
+		{
+			type = buffType.POSITIVE;
+		}
+		@Override
+		public int icon() {
+			return BuffIndicator.THORNS;
+		}
 	}
 
 	public class Thorns extends ArtifactBuff{

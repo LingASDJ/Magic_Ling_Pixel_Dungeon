@@ -131,7 +131,7 @@ public class StormCloudDied extends Buff {
 
     @Override
     public String desc() {
-        int totalDamage = 3+Dungeon.hero.lvl/5+Dungeon.depth/5;
+        int totalDamage = hero != null ? 3+Dungeon.hero.lvl/5+Dungeon.depth/5 : 3+Dungeon.depth/5;
         return Messages.get(this, "desc",totalDamage,dispTurns(left),(int)(totalDamage*left));
     }
 

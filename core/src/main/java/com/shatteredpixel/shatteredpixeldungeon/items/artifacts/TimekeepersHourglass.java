@@ -335,7 +335,26 @@ public class TimekeepersHourglass extends Artifact {
 		}
 	}
 
+	public static class timeFreezeStats extends Buff {
+		{
+			type = buffType.POSITIVE;
+		}
+		@Override
+		public int icon() {
+			return BuffIndicator.TIME;
+		}
+
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(1f, 0.5f, 0);
+		}
+	}
+
 	public class timeFreeze extends ArtifactBuff {
+
+		public timeFreeze() {
+			super();
+		}
 		
 		{
 			type = buffType.POSITIVE;

@@ -263,6 +263,16 @@ public class TalismanOfForesight extends Artifact {
 	}
 	
 	private boolean warn = false;
+
+	public static class ForesightStats extends Buff{
+		{
+			type = buffType.POSITIVE;
+		}
+		@Override
+		public int icon() {
+			return BuffIndicator.FORESIGHT;
+		}
+	}
 	
 	public class Foresight extends ArtifactBuff{
 

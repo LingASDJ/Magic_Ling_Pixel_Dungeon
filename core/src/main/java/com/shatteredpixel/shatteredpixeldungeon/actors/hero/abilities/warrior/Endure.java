@@ -68,6 +68,13 @@ public class Endure extends ArmorAbility {
 		hero.spendAndNext(3f);
 	}
 
+	public static class EndureTrackerStats extends EndureTracker {
+		@Override
+		public int icon() {
+			return BuffIndicator.ARMOR;
+		}
+	}
+
 	public static class EndureTracker extends FlavourBuff {
 
 		{

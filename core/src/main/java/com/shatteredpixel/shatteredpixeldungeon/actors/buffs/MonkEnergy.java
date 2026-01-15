@@ -293,11 +293,16 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 		}
 
 		public String desc(){
-			if (Buff.affect(Dungeon.hero, MonkEnergy.class).abilitiesEmpowered(Dungeon.hero)){
-				return Messages.get(this, "empower_desc");
+			if(Dungeon.hero != null){
+				if (Buff.affect(Dungeon.hero, MonkEnergy.class).abilitiesEmpowered(Dungeon.hero)){
+					return Messages.get(this, "empower_desc");
+				} else {
+					return Messages.get(this, "desc");
+				}
 			} else {
 				return Messages.get(this, "desc");
 			}
+
 		}
 
 		public abstract int energyCost();
