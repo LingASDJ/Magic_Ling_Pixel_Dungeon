@@ -516,10 +516,11 @@ public abstract class Wand extends Item {
 					MageHand mageHand = ( MageHand ) mob;
 					Wand wand = mageHand.magesStaff != null ? mageHand.magesStaff.wand : mageHand.equippedWand;
 					int talentPoint = 5 - Dungeon.hero.pointsInTalent( Talent.MYSTICAL_CHARGE );
-
-					while ( wand.curCharges < wand.maxCharges && Dungeon.hero.chargesUsed >= talentPoint ){
-						Dungeon.hero.chargesUsed -= talentPoint;
-						wand.curCharges += 1;
+					if(wand != null){
+						while ( wand.curCharges < wand.maxCharges && Dungeon.hero.chargesUsed >= talentPoint ){
+							Dungeon.hero.chargesUsed -= talentPoint;
+							wand.curCharges += 1;
+						}
 					}
 				}
 			}
