@@ -13,6 +13,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Flashbang;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.FrostBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.HolyBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Noisemaker;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShockBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShrapnelBomb;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -32,25 +35,28 @@ import java.util.ArrayList;
 
 public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
 
-    public BoomSword() {
-        super();
+    public static final String AC_ZAP = "ZAP";
+
+    public int ammo = 0;
+
+    private Bomb nextBomb = null;
+
+    {
         image = ItemSpriteSheet.BOMB_SWORD;
         tier = 5;
         animation = true;
-        usesTargeting = true;  // 启用目标选择
+        usesTargeting = true;
     }
 
-    // 定义技能动作
-    public static final String AC_ZAP = "ZAP";
-
-    // 弹药状态
-    public boolean hasAmmo = false;
+    public int maxAmmo() {
+        return 1 + level() / 2;
+    }
 
     @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
 
-        if (hasAmmo){
+        if (ammo > 0){
             actions.add(AC_ZAP);
         } else {
             actions.remove(AC_ZAP);
@@ -61,14 +67,14 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
 
     @Override
     public String defaultAction() {
-        return AC_ZAP;
+        return ammo > 0 ? AC_ZAP : null;
     }
 
     @Override
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
         if (action.equals(AC_ZAP)) {
-            if (hasAmmo) {
+            if (ammo > 0) {
                 GameScene.selectCell(zapper);
             } else {
                 GLog.n(Messages.get(this, "no_ammo"));
@@ -76,7 +82,6 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
         }
     }
 
-    // 目标选择器
     protected CellSelector.Listener zapper = new CellSelector.Listener() {
         @Override
         public void onSelect(Integer target) {
@@ -86,25 +91,25 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
                     return;
                 }
 
-                // 消耗弹药
-                hasAmmo = false;
+                ammo--;
                 updateQuickslot();
 
-                // 播放投掷动画和音效
                 curUser.sprite.zap(target);
                 Sample.INSTANCE.play(Assets.Sounds.MISS);
 
-                // 创建炸弹逻辑
-                hero.busy();
-                final Bomb bomb = getBomb();
-                bomb.isLit = true; // 设置为已点燃
+                final Bomb bomb = nextBomb;
+                if (ammo > 0) {
+                    nextBomb = generateBomb();
+                } else {
+                    nextBomb = null;
+                }
 
-                // 使用投掷物效果将炸弹送到目标点
+                bomb.isLit = true;
+
                 ((MissileSprite) hero.sprite.parent.recycle(MissileSprite.class)).
                         reset(hero.sprite, target, bomb, new Callback() {
                             @Override
                             public void call() {
-                                // 炸弹到达目标点后立即引爆
                                 bomb.explode(target);
                                 Invisibility.dispel();
                                 hero.spendAndNext(1f);
@@ -119,11 +124,11 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
         }
     };
 
-    // 获取一个随机炸弹
-    private Bomb getBomb() {
-        Bomb bomb = new Firebomb(); // 默认
-        if (level() >= 4) {
-            switch (Random.Int(5)) {
+
+    private Bomb generateBomb() {
+        Bomb bomb = new Bomb();
+        if (level() >= 2) {
+            switch (Random.Int(8)) {
                 case 0:
                     bomb = new ArcaneBomb();
                     break;
@@ -139,6 +144,15 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
                 case 4:
                     bomb = new ShrapnelBomb();
                     break;
+                case 5:
+                    bomb = new ShockBomb();
+                    break;
+                case 6:
+                    bomb = new Noisemaker();
+                    break;
+                case 7:
+                    bomb = new HolyBomb();
+                    break;
             }
         }
         return bomb;
@@ -147,11 +161,18 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         // 击败敌人时填充弹药
-        if (defender.HP <= damage && Random.Float() <0.25f + level()*0.05f) {
-            if (!hasAmmo) {
-                hasAmmo = true;
-                GLog.p(Messages.get(this, "ammo_ready"));
-                // 可以在这里添加一个视觉提示，比如武器发光
+        if (defender.HP <= damage && Random.Float() < 0.25f + level() * 0.05f) {
+            if (ammo < maxAmmo()) {
+                ammo++;
+                // 如果这是第一发弹药，或者刚刚用掉了上一发，生成新的炸弹
+                if (nextBomb == null) {
+                    nextBomb = generateBomb();
+                    String bombName = Messages.get(nextBomb.getClass(), "name");
+                    GLog.p(Messages.get(this, "ammo_ready", bombName));
+                } else {
+                    GLog.p(Messages.get(this, "ammo_added"));
+                }
+
                 if (attacker instanceof Hero) {
                     attacker.sprite.showStatus(CharSprite.POSITIVE, "AMMO!");
                 }
@@ -164,11 +185,14 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
     @Override
     public String info() {
         String info = super.info();
-        if (hasAmmo) {
-            info += "\n\n" + Messages.get(this, "has_ammo");
+
+        if (ammo > 0) {
+            String bombName = Messages.get(nextBomb.getClass(), "name");
+            info += "\n\n" + Messages.get(this, "has_ammo", ammo, maxAmmo(), bombName);
         } else {
             info += "\n\n" + Messages.get(this, "needs_ammo");
         }
+
         return info;
     }
 
@@ -182,7 +206,6 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
         return 15 + lvl * 6;
     }
 
-    // 动画相关
     @Override
     public void frames(ItemSprite itemSprite) {
         if (animation) {
@@ -196,4 +219,19 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
         }
     }
 
+    @Override
+    public void storeInBundle(com.watabou.utils.Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put("ammo", ammo);
+        bundle.put("bomb",nextBomb);
+    }
+
+    @Override
+    public void restoreFromBundle(com.watabou.utils.Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        ammo = bundle.getInt("ammo");
+        if (ammo > 0) {
+            nextBomb = generateBomb();
+        }
+    }
 }

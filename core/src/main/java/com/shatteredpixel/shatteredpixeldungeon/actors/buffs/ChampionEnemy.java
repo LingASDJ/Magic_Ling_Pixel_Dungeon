@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.seed;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -128,10 +127,6 @@ public abstract class ChampionEnemy extends Buff {
 		return 1f;
 	}
 
-	public float speedFactor(float speed){
-		return seed;
-	}
-
 	public static void rollForStateLing(Mob m){
 		if (Dungeon.mobsToStateLing <= 0) Dungeon.mobsToStateLing = 8;
 
@@ -218,8 +213,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public boolean canAttackWithExtraReach(Char enemy) {
-			//attack range of 2
-			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 1;
+			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 2;
 		}
 
 
@@ -361,11 +355,6 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
-		public float speedFactor(float s) {
-			return  0.3f;
-		}
-
-		@Override
 		public float meleeDamageFactor() {
 			return 0.65f;
 		}
@@ -414,11 +403,6 @@ public abstract class ChampionEnemy extends Buff {
 			return 0.7f;
 		}
 
-		@Override
-		public float speedFactor(float s) {
-			return 0.5f;
-		}
-
 		public void detach() {
 			new Bomb().explodeMobs(target.pos);
 			super.detach();
@@ -441,11 +425,6 @@ public abstract class ChampionEnemy extends Buff {
 			if (on) {target.sprite.add(CharSprite.State.MUTATION_4);
 			} else target.sprite.remove(CharSprite.State.MUTATION_4);
 		}
-		@Override
-		public float speedFactor(float s) {
-			s = (int) target.baseSpeed;
-			return 0.5f;
-		}
 
 		@Override
 		public float damageTakenFactor() {
@@ -453,7 +432,6 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 	}
-
 
 
 	public static class Big extends ChampionEnemy {

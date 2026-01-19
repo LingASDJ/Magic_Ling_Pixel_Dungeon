@@ -796,9 +796,6 @@ public abstract class Char extends Actor {
 	public float speed() {
 		float speed = baseSpeed;
 
-
-
-		//创世神
 		if ( buff( Invulnerability.GodDied.class ) != null ) speed *= 2f;
 
 		ScaryBuff scaryBuff = Dungeon.hero.buff(ScaryBuff.class);
@@ -809,12 +806,15 @@ public abstract class Char extends Actor {
 		}
 
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
-			if(buff instanceof ChampionEnemy.Small){
-				speed = baseSpeed * 1.3f;
-			} else if(buff instanceof ChampionEnemy.Bomber){
-				speed = 0.5f;
-			} else if(buff instanceof ChampionEnemy.Middle){
-				speed = baseSpeed * 1.5f;
+			if(buff instanceof ChampionEnemy.Bomber){
+				speed *= 0.5f;
+			} else {
+				if(buff instanceof ChampionEnemy.Small){
+					speed *= 1.3f;
+				}
+				if(buff instanceof ChampionEnemy.Middle){
+					speed *= 1.5f;
+				}
 			}
 		}
 

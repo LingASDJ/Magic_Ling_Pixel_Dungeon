@@ -70,7 +70,7 @@ public class ElixirOfFeatherFall extends Elixir {
 
 		@Override
 		public void tintIcon(Image icon) {
-			icon.hardlight(1f, 2f, 1.25f);
+			icon.hardlight(2f, 5f, 2f);
 		}
 
 		@Override
