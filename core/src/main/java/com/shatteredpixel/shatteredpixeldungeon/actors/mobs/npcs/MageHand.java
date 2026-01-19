@@ -212,19 +212,15 @@ public class MageHand extends DirectableAlly {
         int heroPos = pos;
         ArrayList<Integer> validPositions = new ArrayList<>();
 
-        // 获取5x5区域内的有效位置
         for (int i = -2; i <= 2; i++) {
             for (int j = -2; j <= 2; j++) {
                 int newPos = heroPos + i + j * Dungeon.level.width();
-
-                // 检查位置是否有效
                 if (isValidTeleportPosition(newPos)) {
                     validPositions.add(newPos);
                 }
             }
         }
 
-        // 如果找到有效位置，随机选择一个传送
         if (!validPositions.isEmpty()) {
             int targetPos = Random.element(validPositions);
             teleportTo(targetPos);
@@ -234,24 +230,19 @@ public class MageHand extends DirectableAlly {
         return false;
     }
 
-    // 检查位置是否适合传送
     private boolean isValidTeleportPosition(int pos) {
-        // 基础位置检查
         if (pos < 0 || pos >= Dungeon.level.length()) {
             return false;
         }
 
-        // 检查是否是固体或陷阱
         if (Dungeon.level.solid[pos] || Dungeon.level.pit[pos]) {
             return false;
         }
 
-        // 检查是否有其他角色
         if (Actor.findChar(pos) != null) {
             return false;
         }
 
-        // 检查是否是特殊类型的门
         if (Dungeon.level.map[pos] == Terrain.LOCKED_DOOR ||
                 Dungeon.level.map[pos] == Terrain.CRYSTAL_DOOR ||
                 Dungeon.level.map[pos] == Terrain.SECRET_DOOR) {
