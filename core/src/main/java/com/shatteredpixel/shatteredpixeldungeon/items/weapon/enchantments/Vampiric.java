@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -42,8 +43,10 @@ public class Vampiric extends Weapon.Enchantment {
 		float healChance = 0.05f + .25f*missingPercent;
 
 		healChance *= procChanceMultiplier(attacker);
-		
-		if (Random.Float() < healChance){
+
+		if (Random.Float() < healChance
+				&& attacker.alignment != defender.alignment
+				&& (defender.alignment != Char.Alignment.NEUTRAL || defender instanceof Mimic)){
 
 			float powerMulti = Math.max(1f, healChance);
 			
