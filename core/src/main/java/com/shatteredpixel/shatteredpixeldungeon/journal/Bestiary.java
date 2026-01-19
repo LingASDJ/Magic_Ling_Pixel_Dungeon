@@ -397,7 +397,8 @@ public enum Bestiary {
 				MobsUtilsRoom.RedTorchHuntsman.class,
 				MobsUtilsRoom.RedMagicShieldMan.class,
 				MobsUtilsRoom.RedShaman.class,
-				MobsUtilsRoom.RedSpider.class
+				MobsUtilsRoom.RedSpider.class,
+				DM275.class
 		);
 
 		ANCIENT_CITY_BOSS.addEntities(

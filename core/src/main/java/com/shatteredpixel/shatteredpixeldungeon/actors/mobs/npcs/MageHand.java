@@ -192,7 +192,7 @@ public class MageHand extends DirectableAlly {
                 int newPos = heroPos + i + j * Dungeon.level.width();
 
                 // 检查位置是否有效
-                if (isValidTeleportPosition(newPos)) {
+                if (isHeroValidTeleportPosition(newPos)) {
                     validPositions.add(newPos);
                 }
             }
@@ -230,6 +230,14 @@ public class MageHand extends DirectableAlly {
         return false;
     }
 
+    private boolean isHeroValidTeleportPosition(int pos) {
+        return pos >= 0
+                && pos < Dungeon.level.length()
+                && !Dungeon.level.solid[pos]
+                && !Dungeon.level.pit[pos]
+                && Actor.findChar(pos) == null;
+    }
+
     private boolean isValidTeleportPosition(int pos) {
         if (pos < 0 || pos >= Dungeon.level.length()) {
             return false;
@@ -249,7 +257,7 @@ public class MageHand extends DirectableAlly {
             return false;
         }
 
-        // 检查是否在封闭空间内（参考锁链代码）
+
         boolean solidFound = false;
         boolean passableFound = false;
 
@@ -273,12 +281,9 @@ public class MageHand extends DirectableAlly {
 
         // 检查是否可以通过路径到达（参考锁链代码）
         PathFinder.buildDistanceMap(pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
-        if (PathFinder.distance[pos] == Integer.MAX_VALUE) {
-            return false;
-        }
+        return PathFinder.distance[pos] != Integer.MAX_VALUE;
 
         // 所有检查都通过，适合传送
-        return true;
     }
 
     // 执行传送
@@ -593,6 +598,12 @@ public class MageHand extends DirectableAlly {
         MageHand.HandWareness mageHandWareness = hero.buff(MageHand.HandWareness.class);
         if(mageHandWareness == null){
             Buff.affect(hero, MageHand.HandWareness.class);
+        }
+
+        if(equippedWand != null || magesStaff != null){
+            invisible = 0;
+        } else {
+            invisible = 1;
         }
 
         return super.act();
