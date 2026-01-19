@@ -74,8 +74,7 @@ import java.util.Iterator;
 public class SkyGoo extends Boss implements Callback {
 
 	{
-		HT = 140 * Dungeon.depth/5;
-		HP = 140 * Dungeon.depth/5;
+		HP = HT = Dungeon.branch == 12 ? 140 : 140 * Dungeon.depth/5;
 		EXP = 30;
 		defenseSkill = 15;
 		spriteClass = GooSprite.class;

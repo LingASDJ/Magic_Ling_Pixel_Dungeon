@@ -53,7 +53,6 @@ public class SlimeKing extends Boss {
 
     private int combo = 0;
     private static final float TIME_TO_ZAP	= 0.5f;
-
     private boolean PartCold = false;
 
 
@@ -103,8 +102,7 @@ public class SlimeKing extends Boss {
     }
 
     {
-        HP =190 * Dungeon.depth/5;
-        HT= 190 * Dungeon.depth/5;
+        HP = HT = Dungeon.branch == 12 ? 190 : 190 * Dungeon.depth/5;
 
         EXP = 20;
         defenseSkill = 12;

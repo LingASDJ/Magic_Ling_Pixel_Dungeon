@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.AttributeViewer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.BuffGenerator;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.DebugBossWorld;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.MobPlacer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnArmor;
@@ -260,6 +261,7 @@ public enum HeroClass {
 
 			new CrystalLing().quantity(1).identify().collect();
 			new TerrainPlacer().quantity(1).identify().collect();
+			new DebugBossWorld().quantity(1).identify().collect();
 
 			new MobPlacer().quantity(1).identify().collect();
 			new Pickaxe().quantity(1).identify().collect();

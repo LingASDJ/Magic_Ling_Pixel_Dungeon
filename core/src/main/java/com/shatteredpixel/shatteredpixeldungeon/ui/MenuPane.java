@@ -98,8 +98,11 @@ public class MenuPane extends Component {
 				break;
 				case 5: abcd = "E";
 				break;
-				case 6: case 7: case 10:
+				case 6: case 7: case 10: case 11:
 				abcd = "?";
+				break;
+				case 12:
+				abcd = "L";
 				break;
 		}
 
