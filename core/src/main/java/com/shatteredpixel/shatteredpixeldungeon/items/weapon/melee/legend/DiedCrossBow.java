@@ -106,7 +106,7 @@ public class DiedCrossBow extends LegendWeapon {
         super.execute( hero, action );
         if (action.equals( AC_KING )) {
 
-            if (!isEquipped(hero)){
+            if (!isEquipped(hero) || hero.belongings.secondWep() == this){
                 GLog.i( Messages.get(this, "no_equip") );
             } else if(cooldown == 0) {
                 GameScene.selectCell(bomb);

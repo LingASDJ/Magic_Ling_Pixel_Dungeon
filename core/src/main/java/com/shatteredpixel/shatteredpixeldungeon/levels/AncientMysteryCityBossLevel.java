@@ -75,15 +75,21 @@ public class AncientMysteryCityBossLevel extends Level{
         FALL_BOSS
     }
 
+    SakaFishBoss boss = new SakaFishBoss();
+
     public void progress() {
         switch (pro) {
             case ONE_BOSS:
                 Statistics.qualifiedForBossChallengeBadge = true;
                 seal();
                 int doorPos =  WIDTH*4+13;
+                boss.pos = 418;
+                boss.state = boss.HUNTING;
+                GameScene.add(boss);
                 Mob.holdAllies(this, doorPos);
                 Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
                 pro = TWO_BOSS;
+                boss.notice();
                 break;
             case TWO_BOSS:
                 //血量低于240后且在TWO_BOSS枚举中
@@ -462,9 +468,7 @@ public class AncientMysteryCityBossLevel extends Level{
      */
     @Override
     protected void createMobs() {
-        SakaFishBoss boss = new SakaFishBoss();
-        boss.pos = 175;
-        mobs.add(boss);
+
     }
 
     /**
