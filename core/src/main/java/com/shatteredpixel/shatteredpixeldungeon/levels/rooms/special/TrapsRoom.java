@@ -68,7 +68,7 @@ public class TrapsRoom extends SpecialRoom {
         }
 
 		if (trapClass == null){
-			Painter.fill(level, this, 1, Terrain.CHASM);
+			Painter.fill(level, this, 1, Dungeon.branch == 0 ? Terrain.CHASM : Terrain.EMPTY);
 		} else {
 			Painter.fill(level, this, 1, Terrain.TRAP);
 		}
@@ -164,6 +164,8 @@ public class TrapsRoom extends SpecialRoom {
 			//city
 			{WarpingTrap.class, FlashingTrap.class, DisintegrationTrap.class},
 			//halls, muahahahaha
-			{GrimTrap.class}
+			{GrimTrap.class},
+			//halls, muahahahaha
+			{GrimTrap.class,FlashingTrap.class, DisintegrationTrap.class}
 	};
 }
