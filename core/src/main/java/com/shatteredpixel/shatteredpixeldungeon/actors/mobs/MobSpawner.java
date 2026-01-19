@@ -633,7 +633,7 @@ public class MobSpawner extends Actor {
 				//5x elemental, 5x warlock, 1x monk, 2x silvercrab
 				return new ArrayList<>(Arrays.asList(
 						Monk.class,
-						Shaman.random()));
+						Ghoul.class));
 			case 17:
 				//2x elemental, 2x warlock, 2x monk, 1x silvercrab
 				return new ArrayList<>(Arrays.asList(
@@ -645,22 +645,21 @@ public class MobSpawner extends Actor {
 					case 2:
 						return new ArrayList<>(Arrays.asList(
 								Scorpio.class,Monk.class,
-								Golem.class));
+								Ghoul.class));
 					case 3:
 						return new ArrayList<>(Arrays.asList(
 								Fire_Scorpio.class,Monk.class,
 								Golem.class));
-					default:
-					case 4:
-						return new ArrayList<>(Arrays.asList(
-								ShieldHuntsman.class,
-								Monk.class,
-								Golem.class,Warlock.class));
 					case 5:
 						return new ArrayList<>(Arrays.asList(
 								Eye.class, Eye.class,
 								Scorpio.class, Eye.class,Succubus.class,Monk.class,
 								Golem.class));
+					default:
+						return new ArrayList<>(Arrays.asList(
+								ShieldHuntsman.class,
+								Monk.class,
+								Golem.class,Ghoul.class));
 				}
 
 			case 21: case 22:
@@ -706,9 +705,6 @@ public class MobSpawner extends Actor {
 
 			default:
 				return new ArrayList<>(Arrays.asList(FlowerSlime.class, FlowerSlime.class,
-						FlowerSlime.class,
-						FlowerSlime.class, FlowerSlime.class, FlowerSlime.class,
-						FlowerSlime.class, FlowerSlime.class, FlowerSlime.class,
 						FlowerSlime.class));
 		}
 
