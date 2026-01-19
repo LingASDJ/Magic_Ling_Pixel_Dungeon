@@ -329,6 +329,12 @@ public class SakaFishBoss extends Boss {
 
             Dungeon.level.drop( new SakaFishSketon(), pos ).sprite.drop();
             Dungeon.level.drop( new WaterSoul(), pos ).sprite.drop();
+
+            for (Blob blob: Dungeon.level.blobs.values()){
+                if(blob instanceof FrostFire) {
+                    blob.fullyClear();
+                }
+            }
             
             PaswordBadges.KILLSAKA();
 
@@ -337,7 +343,6 @@ public class SakaFishBoss extends Boss {
 
     @Override
     public void notice() {
-        super.notice();
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             //Dungeon.level.seal();
