@@ -1,8 +1,0 @@
-{
-Color: {
-	black: { a: 1, b: 0, g: 0, r: 0 },
-},
-TextFieldStyle: {
-	default: { selection: selection, fontColor: black, cursor: cursor }
-}
-}
