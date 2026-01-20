@@ -1,0 +1,20 @@
+apply plugin: 'java-library'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+sourceCompatibility = targetCompatibility = appJavaCompatibility
+
+dependencies {
+    api project(':SPD-classes')
+    implementation project(':services')
+
+    implementation 'cn.6tail:lunar:1.7.4'
+    // https://mvnrepository.com/artifact/net.iharder/base64
+    implementation 'net.iharder:base64:2.3.9'
+
+    // https://mvnrepository.com/artifact/org.luaj/luaj-jse
+    implementation 'org.luaj:luaj-jse:3.0'
+
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.14.3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.3'
+}
+

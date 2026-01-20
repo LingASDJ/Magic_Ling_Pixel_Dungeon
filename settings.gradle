@@ -1,0 +1,11 @@
+//core game code modules
+include ':SPD-classes'
+include ':core'
+
+//platform modules
+include ':desktop'
+//service modules
+include ':services'
+
+//news
+include ':services:news:shatteredNews'

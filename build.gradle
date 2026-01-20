@@ -1,0 +1,48 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        google()
+        maven {
+            url = uri("https://storage.googleapis.com/r8-releases/raw")
+        }
+    }
+    dependencies {
+        classpath 'com.android.tools:r8:8.7.18'
+        //noinspection AndroidGradlePluginVersion
+        classpath 'com.android.tools.build:gradle:8.7.2'
+        classpath 'com.google.gms:google-services:4.4.2'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.3'
+    }
+}
+
+allprojects {
+
+    //电脑端 使用 gradlew desktop:debug release
+    ext {
+        appName = 'Magic Ling Pixel Dungeon'
+        appPackageName = 'com.ansdomagiclingpixeldungeon.ling'
+
+        appVersionCode = 2025123100
+        appVersionName = '0.9.1.5'
+
+        appJavaCompatibility = JavaVersion.VERSION_1_8
+
+        appAndroidCompileSDK = 34
+        appAndroidMinSDK = 19
+        appAndroidTargetSDK = 33
+
+        gdxVersion = '1.11.0'
+        gdxControllersVersion = '2.2.4'
+    }
+
+    version = appVersionName
+
+    repositories {
+        mavenCentral()
+        maven {
+            url = uri("https://jitpack.io")
+        }
+        maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
+    }
+
+}
