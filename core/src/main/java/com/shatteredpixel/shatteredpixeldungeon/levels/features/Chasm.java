@@ -143,7 +143,7 @@ public class Chasm implements Hero.Doom {
 					break;
 				}
 			}
-		} else if(Dungeon.depth == 5 && Dungeon.branch == 0 && Statistics.ExFruit || Dungeon.depth == 7 && Statistics.bossRushMode) {
+		} else if(Dungeon.depth == 5 && Dungeon.branch == 0 && Statistics.ExFruit || Dungeon.depth == 7 && Statistics.bossRushMode || Dungeon.depth == 1 && branch == 12) {
 			int SafePos = 0;
 			switch (Random.NormalIntRange(0, 4)) {
 				case 0:

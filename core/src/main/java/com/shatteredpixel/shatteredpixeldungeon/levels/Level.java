@@ -971,7 +971,7 @@ public abstract class Level implements Bundlable {
 
 			if(SPDSettings.visualBuddle()){
 				if(!Statistics.bossRushMode || !Dungeon.isChallenged(CS)){
-					if(depth == 0 && Dungeon.branch == 0 || depth >=1 && depth <= 5 && Dungeon.branch == 0){
+					if(depth == 0 && Dungeon.branch == 0 || depth >=1 && depth <= 10 && Dungeon.branch == 0 || branch == 5 && depth == 0){
 						visuals.add( new ColdSnowParticles.Snow(i));
 					}
 				}

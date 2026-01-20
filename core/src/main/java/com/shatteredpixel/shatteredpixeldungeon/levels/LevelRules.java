@@ -374,6 +374,8 @@ public class LevelRules {
                 switch (depth) {
                     case 17:
                         return new GardenLevel();
+                    case 0:
+                        return new HiroFlowerLevel();
                     default:
                         return new DeadEndLevel();
                 }
@@ -477,6 +479,61 @@ public class LevelRules {
                         return new GalaxyKeyBossLevel();
                     case 25:
                         return new ZeroHallsBossLevel();
+                }
+
+            case 12:
+                switch (depth) {
+                    default:
+                        Statistics.deepestFloor--;
+                        return new DeadEndLevel();
+                    case 0:
+                        return new SewerBossLevel();
+                    case 1:
+                        return new ForestPoisonBossLevel();
+                    case 2:
+                        return new ForestHardBossLevel();
+                    case 3:
+                        return new LaveCavesBossLevel();
+                    case 4:
+                        return new PrisonBossLevel();
+                    case 5:
+                        return new DeepShadowLevel();
+                    case 6:
+                        return new ColdChestBossLevel();
+                    case 7:
+                        return new CavesBossLevel();
+                    case 8:
+                        return new CaveTwoBossLevel();
+                    case 9:
+                        return new CavesGirlDeadLevel();
+                    case 10:
+                        return new DwarfGeneralBossLevel();
+                    case 11:
+                        return new DwarfMasterBossLevel();
+                    case 12:
+                        return new NewCityBossLevel();
+                    case 13:
+                        return new DragonFestivalMiniLevel();
+                    case 14:
+                        return new AncientMysteryCityBossLevel();
+                    case 15:
+                        return new HallsBossLevel();
+                    case 16:
+                        return new YogGodHardBossLevel();
+                    case 17:
+                        return new ShopBossLevel();
+                    case 18:
+                        return new CerDogBossLevel();
+                    case 19:
+                        return new MorpheusBossLevel();
+                    case 20:
+                        return new SkyGooBossLevel();
+                    case 21:
+                        return new GreenStlingBossLevel();
+                    case 22:
+                        return new MiniSkyShadowBossLevel();
+                    case 23:
+                        return new SLMKingLevel();
                 }
         }
     }
