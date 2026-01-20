@@ -1,9 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL_DECO;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -14,17 +10,17 @@ import com.watabou.noosa.audio.Music;
 
 public class HiroFlowerLevel extends Level {
 
-    private static final int S = CHASM;
-    private static final int B = WALL_DECO;
+    private static final int S = Terrain.CHASM;
+    private static final int B = Terrain.BOOKSHELF;
     private static final int W = Terrain.HIGH_GRASS;
     private static final int G = Terrain.EMBERS;
-    private static final int R = WATER;
+    private static final int R = Terrain.WATER;
     private static final int F = Terrain.FURROWED_GRASS;
     private static final int X = Terrain.PEDESTAL;
     private static final int D = Terrain.EMPTY_SP;
     private static final int K = Terrain.EMPTY_DECO;
     private static final int M = Terrain.DOOR;
-    private static final int V = Terrain.WELL;
+    private static final int V = Terrain.ENTRANCE;
     private static final int Y = Terrain.GRASS;
 
     private static final int WIDTH = 25;
@@ -81,7 +77,7 @@ public class HiroFlowerLevel extends Level {
     {
         color1 = 5459774;
         color2 = 12179041;
-        viewDistance = 999999;
+        viewDistance = 100;
     }
 
     protected boolean build() {
