@@ -79,7 +79,6 @@ public class CerDogBossLevel extends Level {
     private static final int T= Terrain.HIGH_GRASS;
     private static final int M =Terrain.WATER;
     private static final int D= Terrain.DOOR;
-
     private static final int X= Terrain.WALL_DECO;
     private static final int N =Terrain.STATUE;
 
@@ -122,10 +121,7 @@ public class CerDogBossLevel extends Level {
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
         if (map[getBossDoor] == Terrain.OPEN_DOOR && isTrue ||map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
             seal();
-
         }
-
-
     }
 
     @Override
