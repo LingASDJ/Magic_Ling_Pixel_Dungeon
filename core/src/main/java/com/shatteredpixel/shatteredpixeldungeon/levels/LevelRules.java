@@ -374,6 +374,8 @@ public class LevelRules {
                 switch (depth) {
                     case 17:
                         return new GardenLevel();
+                    case 0:
+                        return new HiroFlowerLevel();
                     default:
                         return new DeadEndLevel();
                 }

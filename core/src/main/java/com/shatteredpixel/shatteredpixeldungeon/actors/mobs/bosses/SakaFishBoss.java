@@ -405,7 +405,7 @@ public class SakaFishBoss extends Boss {
     public boolean isAlive() {
         if (Dungeon.level instanceof AncientMysteryCityBossLevel) {
             AncientMysteryCityBossLevel level = (AncientMysteryCityBossLevel) Dungeon.level;
-            
+
             AncientMysteryCityBossLevel.State state = level.pro();
 
             if (state != null) {
