@@ -193,6 +193,7 @@ public class Assets {
 		public static final String BLACK_RECT  = "interfaces/black_rect.png";
 		public static final String WHITE_RECT  = "interfaces/white_rect.png";
 
+		public static final String CHALLENGES_BARS   = "interfaces/challgesbar.png";
 
 		//Boss 贴图
 		public static final String QliPhothEX_Title  = "interfaces/bosslogo/qliphoth-title-ex.png";

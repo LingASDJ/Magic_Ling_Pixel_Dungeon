@@ -81,6 +81,9 @@ public class TitleScene extends PixelScene {
 	@Override
 	public void create() {
 		super.create();
+
+		TexturePackScene.loadCustomTexture();
+
 		Calendar calendar = Calendar.getInstance();
 		int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
 		Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
@@ -187,11 +190,7 @@ public class TitleScene extends PixelScene {
 				this.x = - this.width + curTime/ time * (Camera.main.width / 2f + this.width / 2f);
 				this.angle = 90 - curTime/ time *225;
 				am = curTime*curTime*curTime/(time * time * time);
-				if (SPDSettings.ClassUI()) {
-					asset = Assets.Interfaces.STATUS;
-				} else {
-					asset =  Assets.Interfaces.STATUS_DARK;
-				}
+				asset = Assets.Interfaces.STATUS;
 				float preTime = 0.6f;
 				if (preCurTime < preTime) {
 					preCurTime += Game.elapsed;
@@ -443,7 +442,7 @@ public class TitleScene extends PixelScene {
 		StyledButton btnAbout = new StyledButton(GREY_TR, Messages.get(this, "about")){
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.switchNoFade( AboutSelectScene.class );
+				ShatteredPixelDungeon.switchNoFade( TexturePackScene.class );
 			}
 		};
 		btnAbout.icon(new Image(Icons.get(Icons.SHPX)));
