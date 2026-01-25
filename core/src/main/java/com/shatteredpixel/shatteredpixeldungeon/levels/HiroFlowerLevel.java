@@ -11,7 +11,7 @@ import com.watabou.noosa.audio.Music;
 public class HiroFlowerLevel extends Level {
 
     private static final int S = Terrain.CHASM;
-    private static final int B = Terrain.BOOKSHELF;
+    private static final int B = Terrain.WALL_DECO;
     private static final int W = Terrain.HIGH_GRASS;
     private static final int G = Terrain.EMBERS;
     private static final int R = Terrain.WATER;
@@ -75,8 +75,8 @@ public class HiroFlowerLevel extends Level {
     };
 
     {
-        color1 = 5459774;
-        color2 = 12179041;
+        color1 = 0xcc5445;
+        color2 = 0xdd5445;
         viewDistance = 100;
     }
 
