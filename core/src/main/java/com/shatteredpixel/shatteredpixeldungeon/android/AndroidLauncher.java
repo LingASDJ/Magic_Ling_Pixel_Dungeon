@@ -22,6 +22,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.TexturePackScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
 import com.shatteredpixel.shatteredpixeldungeon.update.UpdateImpl;
@@ -121,6 +122,16 @@ public class AndroidLauncher extends AndroidApplication {
         support.updateSystemUI();
 
         initialize(new ShatteredPixelDungeon(support), config);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == TexturePackScene.REQUEST_CODE_IMPORT_PACK) {
+            TexturePackScene.handleActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

@@ -32,6 +32,14 @@ public class TextureCache {
 	
 	private static HashMap<Object,SmartTexture> all = new HashMap<>();
 
+	public synchronized static void add( Object src ,SmartTexture smartTexture ) {
+		if (all.containsKey( src )) {
+			remove(src);
+		}
+
+		all.put( src, smartTexture );
+	}
+
 	public synchronized static SmartTexture createSolid( int color ) {
 		final String key = "1x1:" + color;
 		
