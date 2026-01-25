@@ -2,7 +2,9 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -12,8 +14,11 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.watabou.gltextures.SmartTexture;
+import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
@@ -185,6 +190,21 @@ public class TexturePackScene extends PixelScene {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    public void replaceAssets(String targetTexturePath,String modFilePath){
+        try {
+            FileHandle fileHandle = Gdx.files.external(modFilePath);
+            SmartTexture smartTexture = new SmartTexture(new Pixmap(fileHandle));
+            TextureCache.add(targetTexturePath,smartTexture);
+            TextureCache.reload();
+            //InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            //Game.switchScene( InterlevelScene.class );
+            //GLog.i("DELETE?");
+        } catch (Exception e) {
+            ShatteredPixelDungeon.reportException(e);
+        }
+
     }
 
     private static class TexturePackItem extends Component {

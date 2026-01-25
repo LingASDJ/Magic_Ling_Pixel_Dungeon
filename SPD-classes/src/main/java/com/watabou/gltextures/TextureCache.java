@@ -126,6 +126,14 @@ public class TextureCache {
 		}
 		
 	}
+
+	public synchronized static void add( Object src ,SmartTexture smartTexture ) {
+		if (all.containsKey( src )) {
+			remove(src);
+		}
+
+		all.put( src, smartTexture );
+	}
 	
 	public synchronized static void clear() {
 		
