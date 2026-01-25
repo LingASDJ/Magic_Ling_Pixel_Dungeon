@@ -69,6 +69,13 @@ jobs:
             cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/CrashHandler.java" /tmp/android_backup/crashhandler/
             echo "CrashHandler.java backed up"
           fi
+          
+           # 备份 TexturePackScene.java
+          if [ -f "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TexturePackScene.java" ]; then
+            mkdir -p /tmp/android_backup/texturepackscene
+            cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TexturePackScene.java" /tmp/android_backup/texturepackscene/
+            echo "TexturePackScene.java backed up"
+          fi
 
       - name: Merge folder from 2025-Desktop to 2025-Android
         if: steps.check_commit.outputs.skip_sync == 'false'
@@ -95,6 +102,13 @@ jobs:
             mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/"
             cp /tmp/android_backup/crashhandler/CrashHandler.java "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/"
             echo "CrashHandler.java restored"
+          fi
+          
+          # 恢复 TexturePackScene.java
+          if [ -f "/tmp/android_backup/crashhandler/TexturePackScene.java" ]; then
+            mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/"
+            cp /tmp/android_backup/crashhandler/TexturePackScene.java "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/"
+            echo "TexturePackScene.java restored"
           fi
 
       - name: Commit and push changes
