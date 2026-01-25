@@ -1,6 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.JsonReader;
@@ -30,19 +35,14 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Component;
-import com.watabou.utils.DeviceCompat;
 
-import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.nio.channels.FileChannel;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,15 +52,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 public class TexturePackScene extends PixelScene {
 
-    private static final String TEXTURE_PACKS_DIR = "texture_packs";
+    public static final int REQUEST_CODE_IMPORT_PACK = 1001;
+
+    private static final String TEXTURE_PACKS_DIR = "mlpd_packages";
     private static final String ASSET_PACKS_DIR = "texture_load";
 
     private static final ArrayList<String> PRESET_PACKS = new ArrayList<>();
+
     static {
         PRESET_PACKS.add("shpd.mlpack");
         PRESET_PACKS.add("classic.mlpack");
@@ -81,6 +81,8 @@ public class TexturePackScene extends PixelScene {
     private StyledButton btnImport;
 
     private static Map<String, String> assetPaths = new HashMap<>();
+
+    private static TexturePackScene instance;
 
     static {
         scanAssetPaths();
@@ -113,12 +115,65 @@ public class TexturePackScene extends PixelScene {
                                 assetPaths.put(key, path);
                             }
                         }
-                    } catch (IllegalAccessException ignored) {}
+                    } catch (IllegalAccessException ignored) {
+                    }
                 }
             }
         } catch (Exception e) {
             ShatteredPixelDungeon.reportException(e);
         }
+    }
+
+    public static void handleActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_IMPORT_PACK && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+            Uri uri = data.getData();
+            if (instance != null) {
+                instance.importPackFromUri(uri);
+            }
+        } else if (requestCode == REQUEST_CODE_IMPORT_PACK) {
+            if (instance != null) {
+                instance.isImporting = false;
+            }
+        }
+    }
+
+    private static FileHandle getTexturePacksDir() {
+        FileHandle texturePacksDir = Gdx.files.external(TEXTURE_PACKS_DIR);
+
+        if (!texturePacksDir.exists()) {
+            texturePacksDir.mkdirs();
+        }
+
+        return texturePacksDir;
+    }
+
+    private static String getFileNameFromUri(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            try {
+                AndroidApplication androidApp = (AndroidApplication) Gdx.app;
+                Activity activity = (Activity) androidApp.getContext();
+
+                android.database.Cursor cursor = activity.getContentResolver().query(uri, null, null, null, null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME);
+                    if (index != -1) {
+                        result = cursor.getString(index);
+                    }
+                    cursor.close();
+                }
+            } catch (Exception e) {
+                String path = uri.getPath();
+                int cut = path.lastIndexOf('/');
+                if (cut != -1) {
+                    result = path.substring(cut + 1);
+                }
+            }
+        } else if (uri.getScheme().equals("file")) {
+            result = uri.getLastPathSegment();
+        }
+
+        return result;
     }
 
     public static void loadCustomTexture() {
@@ -143,6 +198,8 @@ public class TexturePackScene extends PixelScene {
     @Override
     public void create() {
         super.create();
+
+        instance = this;
 
         PixelScene.uiCamera.visible = false;
 
@@ -194,12 +251,9 @@ public class TexturePackScene extends PixelScene {
         posY = nextPosY = packInfo.bottom() + GAP;
         second = false;
 
-        File dir = new File(Gdx.files.getLocalStoragePath() + TEXTURE_PACKS_DIR);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
+        FileHandle dir = getTexturePacksDir();
 
-        File[] localFiles = dir.listFiles((d, name) -> {
+        FileHandle[] localFiles = dir.list((d, name) -> {
             for (String ext : ALLOWED_EXTENSIONS) {
                 if (name.toLowerCase().endsWith(ext)) {
                     return true;
@@ -216,18 +270,15 @@ public class TexturePackScene extends PixelScene {
             }
         }
 
-        // --- 修改开始：获取当前启用的材质包路径 ---
         String activePath = SPDSettings.customTexturePack();
-        // --- 修改结束 ---
 
         boolean hasPacks = false;
 
         if (localFiles != null && localFiles.length > 0) {
             hasPacks = true;
-            for (File file : localFiles) {
-                // 传递 activePath 以便判断
-                TexturePackItem item = new TexturePackItem(file, activePath);
-                addItemToContent(item, columns, panel, posY, second);
+            for (FileHandle file : localFiles) {
+                TexturePackItem item = new TexturePackItem(file, activePath, false);
+                addItemToContent(item, columns, panel, posY, nextPosY, second);
                 if (columns == 1) {
                     posY = nextPosY = item.bottom() + GAP;
                 } else {
@@ -241,9 +292,8 @@ public class TexturePackScene extends PixelScene {
         if (!assetFiles.isEmpty()) {
             hasPacks = true;
             for (FileHandle handle : assetFiles) {
-                // 传递 activePath 以便判断
-                TexturePackItem item = new TexturePackItem(handle, activePath);
-                addItemToContent(item, columns, panel, posY, second);
+                TexturePackItem item = new TexturePackItem(handle, activePath, true);
+                addItemToContent(item, columns, panel, posY, nextPosY, second);
                 if (columns == 1) {
                     posY = nextPosY = item.bottom() + GAP;
                 } else {
@@ -264,12 +314,7 @@ public class TexturePackScene extends PixelScene {
         }
 
         content.setSize(panel.innerWidth(), (int) Math.ceil(posY));
-        list.setRect(
-                panel.x,
-                panel.y,
-                panel.width(),
-                panel.height()
-        );
+        list.setRect(panel.x, panel.y, panel.width(), panel.height());
 
         float btnWidth = (panel.width() - GAP);
         float btnY = Camera.main.height - 35;
@@ -289,7 +334,7 @@ public class TexturePackScene extends PixelScene {
         fadeIn();
     }
 
-    private void addItemToContent(TexturePackItem item, int columns, NinePatch panel, float posY, boolean second) {
+    private void addItemToContent(TexturePackItem item, int columns, NinePatch panel, float posY, float nextPosY, boolean second) {
         item.multiline = true;
         if (columns == 1) {
             item.setRect(0, posY, panel.innerWidth(), BTN_HEIGHT);
@@ -317,65 +362,83 @@ public class TexturePackScene extends PixelScene {
     }
 
     private void importTexturePack() {
-        if (DeviceCompat.isDesktop()) {
-            importTexturePackDesktop();
-        } else if (DeviceCompat.isAndroid()) {
-            //importTexturePackAndroid();
+        if (Gdx.app.getType() == com.badlogic.gdx.Application.ApplicationType.Android) {
+            importTexturePackAndroid();
         } else {
             add(new WndError(Messages.get(this, "unsupported_platform")));
         }
     }
 
-    private void importTexturePackDesktop() {
+    private void importTexturePackAndroid() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        AndroidApplication androidApp = (AndroidApplication) Gdx.app;
+        Activity activity = (Activity) androidApp.getContext();
+        activity.startActivityForResult(intent, REQUEST_CODE_IMPORT_PACK);
+    }
+
+    private void importPackFromUri(final Uri uri) {
         isImporting = true;
 
         new Thread(() -> {
             try {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setDialogTitle(Messages.get(this, "import_texture_pack"));
-                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-                fileChooser.setPreferredSize(new Dimension(800, 600));
+                AndroidApplication androidApp = (AndroidApplication) Gdx.app;
+                Activity activity = (Activity) androidApp.getContext();
+                InputStream inputStream = activity.getContentResolver().openInputStream(uri);
 
-                FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                        "(*.zip, *.mlpack)", "zip", "mlpack");
-                fileChooser.setFileFilter(filter);
-
-                int returnValue = fileChooser.showOpenDialog(null);
-
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    final File selectedFile = fileChooser.getSelectedFile();
-
-                    Gdx.app.postRunnable(() -> {
-                        try {
-                            if (!isValidTexturePack(selectedFile)) {
-                                add(new WndError(Messages.get(this, "invalid_pack")));
-                                return;
-                            }
-
-                            File destDir = new File(Gdx.files.getLocalStoragePath() + TEXTURE_PACKS_DIR);
-                            if (!destDir.exists()) {
-                                destDir.mkdirs();
-                            }
-
-                            File destFile = new File(destDir, selectedFile.getName());
-
-                            try (FileInputStream fis = new FileInputStream(selectedFile);
-                                 FileOutputStream fos = new FileOutputStream(destFile);
-                                 FileChannel sourceChannel = fis.getChannel();
-                                 FileChannel destChannel = fos.getChannel()) {
-                                destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
-                            }
-
-                            ShatteredPixelDungeon.seamlessResetScene();
-                        } catch (Exception e) {
-                            add(new WndError(Messages.get(this, "import_failed") + "\n" + e.getMessage()));
-                        } finally {
-                            isImporting = false;
-                        }
-                    });
-                } else {
-                    Gdx.app.postRunnable(() -> isImporting = false);
+                String displayName = getFileNameFromUri(uri);
+                if (displayName == null || displayName.isEmpty()) {
+                    displayName = "temp_pack.zip";
                 }
+
+                boolean isValid = false;
+                for (String ext : ALLOWED_EXTENSIONS) {
+                    if (displayName.toLowerCase().endsWith(ext)) {
+                        isValid = true;
+                        break;
+                    }
+                }
+
+                if (!isValid) {
+                    Gdx.app.postRunnable(() -> {
+                        add(new WndError(Messages.get(this, "invalid_pack")));
+                        isImporting = false;
+                    });
+                    return;
+                }
+
+                FileHandle tempFileHandle = Gdx.files.local("temp_validate_pack_" + System.currentTimeMillis());
+
+                try (FileOutputStream fos = new FileOutputStream(tempFileHandle.file())) {
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = inputStream.read(buffer)) > 0) {
+                        fos.write(buffer, 0, length);
+                    }
+                }
+                inputStream.close();
+
+                if (!isValidTexturePack(tempFileHandle.file())) {
+                    Gdx.app.postRunnable(() -> {
+                        add(new WndError(Messages.get(this, "invalid_pack")));
+                        isImporting = false;
+                    });
+                    return;
+                }
+
+                FileHandle destDir = getTexturePacksDir();
+                FileHandle destFile = destDir.child(displayName);
+
+                byte[] bytes = tempFileHandle.readBytes();
+
+                destFile.writeBytes(bytes, false);
+
+                Gdx.app.postRunnable(() -> {
+                    ShatteredPixelDungeon.seamlessResetScene();
+                    isImporting = false;
+                });
+
             } catch (Exception e) {
                 Gdx.app.postRunnable(() -> {
                     add(new WndError(Messages.get(this, "import_failed") + "\n" + e.getMessage()));
@@ -410,10 +473,9 @@ public class TexturePackScene extends PixelScene {
 
             if (isAsset) {
                 FileHandle handle = (FileHandle) source;
-                File tempFile = File.createTempFile("texture_pack_", ".tmp");
-                tempFile.deleteOnExit();
-                handle.copyTo(new FileHandle(tempFile));
-                zipFile = new ZipFile(tempFile);
+                FileHandle tempFile = Gdx.files.local("temp_texture_pack_" + System.currentTimeMillis());
+                handle.copyTo(tempFile);
+                zipFile = new ZipFile(tempFile.file());
             } else {
                 zipFile = new ZipFile((File) source);
             }
@@ -450,9 +512,7 @@ public class TexturePackScene extends PixelScene {
             }
             TextureCache.reload();
 
-            if (isAsset) {
-                zipFile.close();
-            }
+            zipFile.close();
         } catch (Exception e) {
             ShatteredPixelDungeon.reportException(e);
         }
@@ -503,45 +563,32 @@ public class TexturePackScene extends PixelScene {
     }
 
     private static class TexturePackItem extends StyledButton {
-        private final File file;
+        private final FileHandle file;
         private final FileHandle assetHandle;
+        private final boolean isAsset;
         private Image cachedIcon;
 
-        // 构造函数1：用于本地文件
-        public TexturePackItem(File file, String activePath) {
-            super(Chrome.Type.GREY_BUTTON_TR, getPackDisplayName(file, activePath), 6);
+        public TexturePackItem(FileHandle file, String activePath, boolean isAsset) {
+            super(Chrome.Type.GREY_BUTTON_TR, getPackDisplayName(file, activePath, isAsset), 6);
             this.file = file;
             this.assetHandle = null;
+            this.isAsset = isAsset;
             cachedIcon = getPackIcon();
             icon(cachedIcon);
         }
 
-        // 构造函数2：用于 Assets 文件
-        public TexturePackItem(FileHandle assetHandle, String activePath) {
-            super(Chrome.Type.GREY_BUTTON_TR, getPackDisplayName(assetHandle, activePath), 6);
-            this.file = null;
-            this.assetHandle = assetHandle;
-            cachedIcon = getPackIcon();
-            icon(cachedIcon);
-        }
+        private static String getPackDisplayName(FileHandle file, String activePath, boolean isAsset) {
+            String name = getPackName(file);
 
-        // 新增辅助方法：获取显示名称（包含“已启用”标记）
-        private static String getPackDisplayName(Object source, String activePath) {
-            String name = getPackName(source);
-
-            // 判断是否是当前启用的包
             boolean isActive = false;
             if (activePath != null && !activePath.isEmpty()) {
                 String currentPath;
-                if (source instanceof File) {
-                    currentPath = ((File) source).getAbsolutePath();
-                } else if (source instanceof FileHandle) {
-                    currentPath = ASSET_PACKS_DIR + "/" + ((FileHandle) source).name();
+                if (!isAsset) {
+                    currentPath = file.path();
                 } else {
-                    currentPath = "";
+                    currentPath = ASSET_PACKS_DIR + "/" + file.name();
                 }
 
-                // 比较路径是否一致
                 if (activePath.equals(currentPath)) {
                     isActive = true;
                 }
@@ -550,8 +597,8 @@ public class TexturePackScene extends PixelScene {
             return isActive ? (name + " " + Messages.get(TexturePackScene.class, "enabled")) : name;
         }
 
-        private static String getPackName(Object source) {
-            try (ZipInputStream zis = new ZipInputStream(getInputStream(source))) {
+        private static String getPackName(FileHandle file) {
+            try (ZipInputStream zis = new ZipInputStream(file.read())) {
                 ZipEntry entry;
                 while ((entry = zis.getNextEntry()) != null) {
                     if (entry.getName().equals("manifest.json")) {
@@ -571,32 +618,14 @@ public class TexturePackScene extends PixelScene {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Failed to read manifest for name: " + getFileName(source));
+                System.out.println("Failed to read manifest for name: " + file.name());
             }
-            return getFileName(source);
-        }
-
-        private static String getFileName(Object source) {
-            if (source instanceof File) {
-                return ((File) source).getName();
-            } else if (source instanceof FileHandle) {
-                return ((FileHandle) source).name();
-            }
-            return "Unknown";
-        }
-
-        private static InputStream getInputStream(Object source) throws IOException {
-            if (source instanceof File) {
-                return Files.newInputStream(((File) source).toPath());
-            } else if (source instanceof FileHandle) {
-                return ((FileHandle) source).read();
-            }
-            throw new IOException("Unknown source type");
+            return file.name();
         }
 
         private Image getPackIcon() {
             try {
-                ZipInputStream zis = new ZipInputStream(getInputStream(getSource()));
+                ZipInputStream zis = new ZipInputStream(getSource().read());
                 ZipEntry entry;
                 while ((entry = zis.getNextEntry()) != null) {
                     if (entry.getName().equals("icons.png")) {
@@ -610,18 +639,19 @@ public class TexturePackScene extends PixelScene {
                         return new Image(new SmartTexture(pixmap));
                     }
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             return new ItemSprite(ItemSpriteSheet.CAVES_PAGE);
         }
 
-        private Object getSource() {
+        private FileHandle getSource() {
             return file != null ? file : assetHandle;
         }
 
         @Override
         protected void onClick() {
             try {
-                ZipInputStream zis = new ZipInputStream(getInputStream(getSource()));
+                ZipInputStream zis = new ZipInputStream(getSource().read());
                 ZipEntry manifestEntry = null;
                 ZipEntry entry;
 
@@ -648,14 +678,14 @@ public class TexturePackScene extends PixelScene {
                 JsonReader jsonReader = new JsonReader();
                 JsonValue manifest = jsonReader.parse(manifestJson);
 
-                String name = manifest.has("name") ? manifest.getString("name") : getFileName(getSource());
+                String name = manifest.has("name") ? manifest.getString("name") : getSource().name();
                 String version = manifest.has("version") ? manifest.getString("version") : Messages.get(TexturePackScene.class, "unknown");
                 String author = manifest.has("author") ? manifest.getString("author") : Messages.get(TexturePackScene.class, "unknown");
                 String description = manifest.has("description") ? manifest.getString("description") : Messages.get(TexturePackScene.class, "no_description");
 
                 List<String> replacedTextures = new ArrayList<>();
 
-                try (ZipInputStream zis2 = new ZipInputStream(getInputStream(getSource()))) {
+                try (ZipInputStream zis2 = new ZipInputStream(getSource().read())) {
                     while ((entry = zis2.getNextEntry()) != null) {
                         if (!entry.isDirectory() && entry.getName().endsWith(".png")) {
                             String texturePath = entry.getName();
@@ -675,7 +705,12 @@ public class TexturePackScene extends PixelScene {
                         description;
 
                 Image iconToShow = getPackIcon();
-                ShatteredPixelDungeon.scene().add(new WndPackInfo(iconToShow, getSource(), name, infoText));
+                if(!isAsset){
+                    ShatteredPixelDungeon.scene().add(new WndEXPackInfo(iconToShow, getSource(), name, infoText));
+                } else {
+                    ShatteredPixelDungeon.scene().add(new WndPackInfo(iconToShow, getSource(), name, infoText));
+                }
+
             } catch (Exception e) {
                 ShatteredPixelDungeon.reportException(e);
                 applyTexturePack();
@@ -686,10 +721,10 @@ public class TexturePackScene extends PixelScene {
             replaceAssets(getSource());
 
             String pathToSave = "";
-            if (getSource() instanceof File) {
-                pathToSave = ((File) getSource()).getAbsolutePath();
-            } else if (getSource() != null) {
-                pathToSave = ASSET_PACKS_DIR + "/" + ((FileHandle) getSource()).name();
+            if (!isAsset) {
+                pathToSave = getSource().path();
+            } else {
+                pathToSave = ASSET_PACKS_DIR + "/" + getSource().name();
             }
             SPDSettings.customTexturePack(pathToSave);
 
@@ -699,9 +734,9 @@ public class TexturePackScene extends PixelScene {
 
     private static class WndPackInfo extends WndOptions {
 
-        private final Object source;
+        private final FileHandle source;
 
-        public WndPackInfo(Image icon, Object source, String title, String message) {
+        public WndPackInfo(Image icon, FileHandle source, String title, String message) {
             super(icon, title, message, Messages.get(TexturePackScene.class, "apply"), Messages.get(TexturePackScene.class, "cancel"));
             this.source = source;
         }
@@ -715,10 +750,10 @@ public class TexturePackScene extends PixelScene {
                     TexturePackScene.replaceAssets(source);
 
                     String pathToSave = "";
-                    if (source instanceof File) {
-                        pathToSave = ((File) source).getAbsolutePath();
-                    } else if (source instanceof FileHandle) {
-                        pathToSave = ASSET_PACKS_DIR + "/" + ((FileHandle) source).name();
+                    if (source.path().contains(ASSET_PACKS_DIR)) {
+                        pathToSave = ASSET_PACKS_DIR + "/" + source.name();
+                    } else {
+                        pathToSave = source.path();
                     }
                     SPDSettings.customTexturePack(pathToSave);
 
@@ -728,4 +763,74 @@ public class TexturePackScene extends PixelScene {
             }
         }
     }
+
+    private static class WndEXPackInfo extends WndOptions {
+
+        private final FileHandle source;
+
+        public WndEXPackInfo(Image icon, FileHandle source, String title, String message) {
+            super(icon, title, message,
+                    Messages.get(TexturePackScene.class, "apply"),
+                    Messages.get(TexturePackScene.class, "delete"));
+            this.source = source;
+        }
+
+        @Override
+        protected void onSelect(int index) {
+            if (index == 0) {
+                ShatteredPixelDungeon.scene().add(new WndMessage(Messages.get(TexturePackScene.class, "applying_pack")));
+
+                Gdx.app.postRunnable(() -> {
+                    TexturePackScene.replaceAssets(source);
+
+                    String pathToSave = "";
+                    if (source.path().contains(ASSET_PACKS_DIR)) {
+                        pathToSave = ASSET_PACKS_DIR + "/" + source.name();
+                    } else {
+                        pathToSave = source.path();
+                    }
+                    SPDSettings.customTexturePack(pathToSave);
+
+                    hide();
+                    ShatteredPixelDungeon.seamlessResetScene();
+                });
+            } else if (index == 1) {
+                ShatteredPixelDungeon.scene().add(new WndOptions(
+                        Messages.get(TexturePackScene.class, "delete_title"),
+                        Messages.get(TexturePackScene.class, "delete_confirm"),
+                        Messages.get(TexturePackScene.class, "yes"),
+                        Messages.get(TexturePackScene.class, "no")) {
+                    @Override
+                    protected void onSelect(int index) {
+                        if (index == 0) {
+
+                            try {
+
+                                String activePath = SPDSettings.customTexturePack();
+                                boolean isActivePack = activePath != null && activePath.equals(source.path());
+
+                                source.delete();
+
+                                if (isActivePack) {
+                                    SPDSettings.customTexturePack("");
+                                    TextureCache.clear();
+                                    TexturePackScene.loadCustomTexture();
+                                }
+
+                                WndEXPackInfo.this.hide();
+                                hide();
+
+                                ShatteredPixelDungeon.seamlessResetScene();
+                            } catch (Exception e) {
+                                ShatteredPixelDungeon.reportException(e);
+
+                                ShatteredPixelDungeon.scene().add(new WndError(Messages.get(TexturePackScene.class, "delete_failed")));
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    }
+
 }
