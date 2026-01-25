@@ -69,11 +69,11 @@ jobs:
             cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/CrashHandler.java" /tmp/android_backup/crashhandler/
             echo "CrashHandler.java backed up"
           fi
-          
-           # 备份 TexturePackScene.java
+
+          # 新增：备份 TexturePackScene.java
           if [ -f "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TexturePackScene.java" ]; then
-            mkdir -p /tmp/android_backup/texturepackscene
-            cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TexturePackScene.java" /tmp/android_backup/texturepackscene/
+            mkdir -p /tmp/android_backup/scenes
+            cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TexturePackScene.java" /tmp/android_backup/scenes/
             echo "TexturePackScene.java backed up"
           fi
 
@@ -103,11 +103,11 @@ jobs:
             cp /tmp/android_backup/crashhandler/CrashHandler.java "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/"
             echo "CrashHandler.java restored"
           fi
-          
-          # 恢复 TexturePackScene.java
-          if [ -f "/tmp/android_backup/crashhandler/TexturePackScene.java" ]; then
+
+          # 新增：恢复 TexturePackScene.java
+          if [ -f "/tmp/android_backup/scenes/TexturePackScene.java" ]; then
             mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/"
-            cp /tmp/android_backup/crashhandler/TexturePackScene.java "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/"
+            cp /tmp/android_backup/scenes/TexturePackScene.java "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/"
             echo "TexturePackScene.java restored"
           fi
 
