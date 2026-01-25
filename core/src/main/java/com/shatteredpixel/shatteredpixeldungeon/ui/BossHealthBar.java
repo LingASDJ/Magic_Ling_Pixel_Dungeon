@@ -161,7 +161,7 @@ public class BossHealthBar extends Component {
 		super.update();
 
 
-		asset = SPDSettings.ClassUI() ? Assets.Interfaces.BOSSHP : Assets.Interfaces.BOSSHP_DARK;
+		asset = Assets.Interfaces.BOSSHP;
 
 
 		if (boss != null){

@@ -690,11 +690,12 @@ public class ToobarV extends Component {
         @Override
         public void update() {
             super.update();
-            if (SPDSettings.ClassUI()) {
-                base.texture = TextureCache.get(Assets.Interfaces.TOOLBAR);
-            } else {
-                base.texture = TextureCache.get(Assets.Interfaces.TOOLBARDRAK);
-            }
+            base.texture = TextureCache.get(Assets.Interfaces.TOOLBAR);
+//            if (SPDSettings.ClassUI()) {
+//
+//            } else {
+//                base.texture = TextureCache.get(Assets.Interfaces.TOOLBARDRAK);
+//            }
         }
 
         public Tool( int x, int y, int width, int height ) {

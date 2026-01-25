@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassUI;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -156,7 +154,7 @@ public class WndChallenges extends Window {
 		add( btnPrev );
 		pos = 120;
 
-		Image bg = new Image(ClassUI() ? "interfaces/challgesbar_mlpd.png" : "interfaces/challgesbar.png"){
+		Image bg = new Image(Assets.Interfaces.CHALLENGES_BARS){
 			@Override
 			public synchronized void update() {
 				super.update();
@@ -166,7 +164,7 @@ public class WndChallenges extends Window {
 		add(bg);
 		btnPrev.setRect(0, pos+3, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
 
-		Image download = new Image(ClassUI() ? Assets.Interfaces.STATUS : Assets.Interfaces.STATUS_DARK, 0, 54, 54, 5){
+		Image download = new Image(Assets.Interfaces.STATUS, 0, 54, 54, 5){
 			@Override
 			public synchronized void update() {
 				super.update();

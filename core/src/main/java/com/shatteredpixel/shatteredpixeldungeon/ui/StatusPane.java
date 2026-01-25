@@ -145,11 +145,12 @@ public class StatusPane extends Component {
 
 		this.large = large;
 
-		if (ClassUI()) {
-			asset = Assets.Interfaces.STATUS;
-		} else {
-			asset =  Assets.Interfaces.STATUS_DARK;
-		}
+		asset = Assets.Interfaces.STATUS;
+//		if (ClassUI()) {
+//
+//		} else {
+//			asset =  Assets.Interfaces.STATUS_DARK;
+//		}
 
 		if (large)  bg = new NinePatch( asset, 0, 64, 41, 39, 33, 0, 4, 0 );
 		else        bg = new NinePatch( asset, 0, 0, 128, 36, 85, 0, 45, 0 );
@@ -428,12 +429,12 @@ public class StatusPane extends Component {
 	@Override
 	public void update() {
 		super.update();
-
-		if (ClassUI()) {
-			asset = Assets.Interfaces.STATUS;
-		} else {
-			asset =  Assets.Interfaces.STATUS_DARK;
-		}
+		asset = Assets.Interfaces.STATUS;
+//		if (ClassUI()) {
+//
+//		} else {
+//			asset =  Assets.Interfaces.STATUS_DARK;
+//		}
 
 
 
@@ -512,11 +513,13 @@ public class StatusPane extends Component {
 		int shield = hero.shielding();
 		int max = hero.HT;
 
-		if (ClassUI()) {
-			bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
-		} else {
-			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
-		}
+		bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
+
+//		if (ClassUI()) {
+//
+//		} else {
+//			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
+//		}
 
 		if(SPDSettings.TimeLimit()) {
 			if (hero.buff(LockedFloor.class) != null) {

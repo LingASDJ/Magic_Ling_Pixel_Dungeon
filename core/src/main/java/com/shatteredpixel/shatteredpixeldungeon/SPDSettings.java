@@ -40,6 +40,19 @@ import java.util.Locale;
 
 public class SPDSettings extends GameSettings {
 
+
+	//Texure System
+	public static final String KEY_CUSTOM_TEXTURE = "custom_texture";
+
+	public static String customTexturePack() {
+		return getString(KEY_CUSTOM_TEXTURE, null);
+	}
+
+	public static void customTexturePack(String value) {
+		put(KEY_CUSTOM_TEXTURE, value);
+	}
+
+
 	//Version info
 
 	public static final String KEY_VERSION      = "version";
