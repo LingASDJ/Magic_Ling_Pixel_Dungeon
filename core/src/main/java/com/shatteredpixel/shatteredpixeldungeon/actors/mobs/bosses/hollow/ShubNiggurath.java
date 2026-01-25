@@ -109,11 +109,8 @@ public class ShubNiggurath extends Boss {
     @Override
     public boolean isAlive() {
         if(getClass() == ShubNiggurath.class && !notFirst) {
-            // 使用 toArray() 创建快照，避免并发修改异常
-            // 这种方式比 new ArrayList<>(...) 更安全，因为它直接获取底层元素
             Object[] mobsArray = Dungeon.level.mobs.toArray();
 
-            // 首先检查是否有分身存在
             boolean hasClone = false;
             for (Object obj : mobsArray) {
                 Mob mob = (Mob) obj;
@@ -124,30 +121,17 @@ public class ShubNiggurath extends Boss {
                 }
             }
 
-            // 如果血量降为0
             if (HP <= 0) {
-                // 如果没有分身存在，直接死亡
+
                 if (!hasClone) {
                     return super.isAlive();
                 }
-
-                // 如果有分身存在，检查是否已经达到最大恢复血量次数
                 if (maxReHeal < MAX_REHEAL_COUNT) {
                     HP = 1000;
                     maxReHeal++;
                     Buff.prolong(hero, MindVision.class, 50000);
                 } else {
-                    // 达到最大恢复血量次数后，本体和所有分身死亡
                     die(true);
-                    for (Object obj : mobsArray) {
-                        Mob mob = (Mob) obj;
-                        if (mob instanceof ShubNiggurathClone) {
-                            if (level.distance(pos, mob.pos) < 1) {
-                                mob.die(null);
-                                break;
-                            }
-                        }
-                    }
                 }
                 return true;
             }
