@@ -174,7 +174,7 @@ public class Hiro extends NTNPC {
     }
 
     private String def_verb(){
-        FloatingText.show(sprite.x, sprite.y, pos, Messages.get(this, "def_verb_3"), CharSprite.NEGATIVE);
+        FloatingText.show(sprite.x+10, sprite.y, pos, Messages.get(this, "def_verb_3"), CharSprite.NEGATIVE);
         return Messages.get(this, "def_verb");
     }
 
