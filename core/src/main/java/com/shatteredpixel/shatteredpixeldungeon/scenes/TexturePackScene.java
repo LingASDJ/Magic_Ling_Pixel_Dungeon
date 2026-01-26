@@ -38,18 +38,17 @@ import com.watabou.noosa.ui.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class TexturePackScene extends PixelScene {
@@ -408,18 +407,8 @@ public class TexturePackScene extends PixelScene {
                     return;
                 }
 
-                FileHandle tempFileHandle = Gdx.files.local("temp_validate_pack_" + System.currentTimeMillis());
-
-                try (FileOutputStream fos = new FileOutputStream(tempFileHandle.file())) {
-                    byte[] buffer = new byte[1024];
-                    int length;
-                    while ((length = inputStream.read(buffer)) > 0) {
-                        fos.write(buffer, 0, length);
-                    }
-                }
-                inputStream.close();
-
-                if (!isValidTexturePack(tempFileHandle.file())) {
+                // 直接使用 ZipInputStream 验证，不创建临时文件
+                if (!isValidTexturePack(inputStream)) {
                     Gdx.app.postRunnable(() -> {
                         add(new WndError(Messages.get(this, "invalid_pack")));
                         isImporting = false;
@@ -430,9 +419,15 @@ public class TexturePackScene extends PixelScene {
                 FileHandle destDir = getTexturePacksDir();
                 FileHandle destFile = destDir.child(displayName);
 
-                byte[] bytes = tempFileHandle.readBytes();
-
-                destFile.writeBytes(bytes, false);
+                // 直接从输入流写入目标文件
+                try (FileOutputStream fos = new FileOutputStream(destFile.file())) {
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = inputStream.read(buffer)) > 0) {
+                        fos.write(buffer, 0, length);
+                    }
+                }
+                inputStream.close();
 
                 Gdx.app.postRunnable(() -> {
                     ShatteredPixelDungeon.seamlessResetScene();
@@ -448,15 +443,22 @@ public class TexturePackScene extends PixelScene {
         }).start();
     }
 
-    private boolean isValidTexturePack(File file) {
-        try (ZipFile zipFile = new ZipFile(file)) {
-            boolean hasManifest = zipFile.getEntry("manifest.json") != null;
+    private boolean isValidTexturePack(InputStream inputStream) {
+        try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
+            boolean hasManifest = false;
             boolean hasTextures = false;
 
-            for (ZipEntry entry : Collections.list(zipFile.entries())) {
+            ZipEntry entry;
+            while ((entry = zipInputStream.getNextEntry()) != null) {
+                if (entry.getName().equals("manifest.json")) {
+                    hasManifest = true;
+                }
                 if (!entry.isDirectory() && entry.getName().endsWith(".png")) {
                     hasTextures = true;
-                    break;
+                }
+
+                if (hasManifest && hasTextures) {
+                    return true;
                 }
             }
 
@@ -468,19 +470,17 @@ public class TexturePackScene extends PixelScene {
 
     public static void replaceAssets(Object source) {
         try {
-            ZipFile zipFile;
-            boolean isAsset = source instanceof FileHandle;
+            ZipInputStream zipInputStream;
 
-            if (isAsset) {
+            if (source instanceof FileHandle) {
                 FileHandle handle = (FileHandle) source;
-                FileHandle tempFile = Gdx.files.local("temp_texture_pack_" + System.currentTimeMillis());
-                handle.copyTo(tempFile);
-                zipFile = new ZipFile(tempFile.file());
+                zipInputStream = new ZipInputStream(handle.read());
             } else {
-                zipFile = new ZipFile((File) source);
+                zipInputStream = new ZipInputStream(new FileInputStream((File) source));
             }
 
-            for (ZipEntry entry : Collections.list(zipFile.entries())) {
+            ZipEntry entry;
+            while ((entry = zipInputStream.getNextEntry()) != null) {
                 if (!entry.isDirectory() && entry.getName().endsWith(".png")) {
                     String texturePath = entry.getName();
                     String matchedPath = null;
@@ -496,11 +496,10 @@ public class TexturePackScene extends PixelScene {
                         continue;
                     }
 
-                    try (InputStream is = zipFile.getInputStream(entry);
-                         ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                         byte[] buffer = new byte[1024];
                         int len;
-                        while ((len = is.read(buffer)) > 0) {
+                        while ((len = zipInputStream.read(buffer)) > 0) {
                             baos.write(buffer, 0, len);
                         }
 
@@ -509,10 +508,11 @@ public class TexturePackScene extends PixelScene {
                         TextureCache.add(matchedPath, smartTexture);
                     }
                 }
+                zipInputStream.closeEntry();
             }
-            TextureCache.reload();
+            zipInputStream.close();
 
-            zipFile.close();
+            TextureCache.reload();
         } catch (Exception e) {
             ShatteredPixelDungeon.reportException(e);
         }
@@ -838,5 +838,70 @@ public class TexturePackScene extends PixelScene {
             }
         }
     }
+
+    /**
+     * 清理所有临时文件（包括无后缀的旧文件）
+     * @return 清理的文件数量
+     */
+    public static int cleanOldTempFiles() {
+        int cleanedCount = 0;
+
+        try {
+            // 1. 清理本地存储目录
+            FileHandle localDir = Gdx.files.local("");
+            cleanedCount += cleanTempFilesInDir(localDir);
+
+            // 2. 清理外部存储目录
+            FileHandle externalDir = Gdx.files.external("");
+            cleanedCount += cleanTempFilesInDir(externalDir);
+
+            // 3. 清理材质包目录中的临时文件
+            FileHandle texturePacksDir = getTexturePacksDir();
+            if (texturePacksDir.exists()) {
+                cleanedCount += cleanTempFilesInDir(texturePacksDir);
+            }
+
+        } catch (Exception e) {
+            Gdx.app.error("TexturePackScene", "Error while cleaning temp files", e);
+        }
+
+        return cleanedCount;
+    }
+
+    /**
+     * 清理指定目录中的临时文件
+     * @param dir 要清理的目录
+     * @return 清理的文件数量
+     */
+    private static int cleanTempFilesInDir(FileHandle dir) {
+        int cleanedCount = 0;
+
+        try {
+            // 列出所有以 "temp_" 开头的文件（不再检查后缀）
+            FileHandle[] tempFiles = dir.list((dir1, name) ->
+                    name.startsWith("temp_")
+            );
+
+            if (tempFiles != null) {
+                for (FileHandle file : tempFiles) {
+                    try {
+                        if (file.exists()) {
+                            file.delete();
+                            cleanedCount++;
+                            Gdx.app.debug("TexturePackScene", "Deleted temp file: " + file.path());
+                        }
+                    } catch (Exception e) {
+                        Gdx.app.error("TexturePackScene", "Failed to delete temp file: " + file.path(), e);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Gdx.app.error("TexturePackScene", "Error while cleaning temp files in directory: " + dir.path(), e);
+        }
+
+        return cleanedCount;
+    }
+
+
 
 }
