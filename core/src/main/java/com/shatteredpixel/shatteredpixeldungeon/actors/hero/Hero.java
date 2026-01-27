@@ -776,7 +776,8 @@ public class Hero extends Char {
 						case 2:
 							accuracy *= 5; break;
 						case 3:
-							accuracy *= Float.POSITIVE_INFINITY; break;
+							accuracy *= Float.POSITIVE_INFINITY;
+							break;
 					}
 					buff(Talent.PreciseAssaultTracker.class).detach();
 				} else if (buff(Talent.LiquidAgilACCTracker.class) != null){
