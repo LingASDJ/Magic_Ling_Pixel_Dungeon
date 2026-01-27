@@ -250,7 +250,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
 
     @Override
     protected boolean act() {
-
+        BossHealthBar.assignBoss(this);
         String[] TXT_RANDOM = {
                 Messages.get(CrivusStarFruits.class, "goodbye_1"),
                 Messages.get(CrivusStarFruits.class, "goodbye_2"),
@@ -450,7 +450,6 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
             RollCS();
         }
 
-        BossHealthBar.assignBoss(this);
         GLog.n(Messages.get(this, "notice"));
         GameScene.flash(0x8000cc00);
         Camera.main.shake(1f,3f);
