@@ -39,10 +39,6 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class TowerMachine extends Boss {
 
     private int attackCooldown = 0;
@@ -88,7 +84,7 @@ public class TowerMachine extends Boss {
 
     @Override
     public int damageRoll() {
-        return  HP*2 <= HT ? 130 : 90;
+        return 0;
     }
 
     private boolean targeting = false;
@@ -99,7 +95,6 @@ public class TowerMachine extends Boss {
     private static final String TARGETING = "targeting";
     private static final String SHOT = "shot";
     private static final String CELL_TO_FIRE = "cell_to_fire";
-    private static final String SUMMONED_MOBS = "summoned_mobs";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -148,68 +143,43 @@ public class TowerMachine extends Boss {
 
     private void zap(int cell) {
         if (isZapping) return;
-        boolean LastHP = HP <= HT/2;
-        
+        boolean LastHP = HP <= HT / 2;
+
         spend(1f);
         Invisibility.dispel(this);
-        int dmg = damageRoll();
+        int dmg = HP*2 <= HT ? 130 : 90;
 
         CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 4);
 
-        if(LastHP){
-            new Thread(() -> {
-                for(int c: PathFinder.NEIGHBOURS49){
-                    if (c == 0) continue;
-                    int targetCell = cell + c;
-                    CellEmitter.get(cell+c).burst(RainbowParticle.BURST, 8);
-                    // 复制怪物列表避免同步修改
-                    List<Mob> mobs = Collections.synchronizedList(new ArrayList<>(Dungeon.level.mobs));
-                    for (Mob mob : mobs) {
-                        if (mob.pos == targetCell && !(mob instanceof TowerMachine || mob instanceof Morphs || mob instanceof TowerMind.MindCore)) {
-                            damage((int) (mob.HT * 0.2f), new DeadBoat());
-                            mob.HP = mob.HT;
-                            Buff.affect(mob, DeadAlive.class).set((5), 1);
-                        }
-                    }
-                    if(Dungeon.hero != null){
-                        if(Dungeon.hero.pos == cell + c){
-                            Dungeon.hero.damage(dmg,new Bomb());
-                        }
-                        if(enemy != null){
-                            if (!enemy.isAlive() && enemy == Dungeon.hero) {
-                                Dungeon.fail(getClass());
-                                GLog.n(Messages.get(this, "bomb_party_kill"));
-                            }
-                        }
-                    }
+        int[] area = LastHP ? PathFinder.NEIGHBOURS49 : PathFinder.NEIGHBOURS13_4;
+
+        for (int c : area) {
+            if (c == 0) continue;
+
+            int targetCell = cell + c;
+
+            CellEmitter.get(targetCell).burst(LastHP ? RainbowParticle.BURST : MagicFireParticle.FACTORY, 8);
+
+            for (Mob mob : Dungeon.level.mobs) {
+                if (mob.pos == targetCell && !(mob instanceof TowerMachine || mob instanceof Morphs || mob instanceof TowerMind.MindCore)) {
+                    int mobDmg = (int) (mob.HT * 0.2f);
+                    mob.damage(mobDmg, new DeadBoat());
+                    mob.HP = mob.HT;
+                    Buff.affect(mob, DeadAlive.class).set(5, 1);
                 }
-            }).start();
-        } else {
-            new Thread(() -> {
-                for(int c: PathFinder.NEIGHBOURS13_4){
-                    int targetCell = cell + c;
-                    CellEmitter.get(cell+c).burst(MagicFireParticle.FACTORY, 8);
-                    List<Mob> mobs = Collections.synchronizedList(new ArrayList<>(Dungeon.level.mobs));
-                    for (Mob mob : mobs) {
-                        if (mob.pos == targetCell && !(mob instanceof TowerMachine || mob instanceof Morphs || mob instanceof TowerMind.MindCore)) {
-                            damage((int) (mob.HT * 0.2f), new DeadBoat());
-                            mob.HP = mob.HT;
-                            Buff.affect(mob, DeadAlive.class).set((5), 1);
-                        }
-                    }
-                    if(Dungeon.hero != null){
-                        if(Dungeon.hero.pos == cell){
-                            Dungeon.hero.damage(dmg,new Bomb());
-                        }
-                        if(enemy != null){
-                            if (!enemy.isAlive() && enemy == Dungeon.hero) {
-                                Dungeon.fail(getClass());
-                                GLog.n(Messages.get(this, "bomb_party_kill"));
-                            }
-                        }
-                    }
+            }
+
+            if (Dungeon.hero != null) {
+                if (Dungeon.hero.pos == targetCell) {
+                    Dungeon.hero.damage(dmg, new Bomb());
                 }
-            }).start();
+
+                if (enemy != null && !enemy.isAlive() && enemy == Dungeon.hero) {
+                    Dungeon.fail(getClass());
+                    GLog.n(Messages.get(TowerMachine.class, "starcanon_kill"));
+                    break;
+                }
+            }
         }
 
         isZapping = false;
@@ -229,7 +199,7 @@ public class TowerMachine extends Boss {
     }
 
     public TowerParalysis towerParalysis = buff(TowerParalysis.class);
-    // 修改doAttack方法
+
     protected boolean doAttack(Char enemy) {
         boolean LastHP = HP <= HT/2;
         if (Dungeon.level.adjacent(pos, enemy.pos) && towerParalysis == null ) {
@@ -238,19 +208,17 @@ public class TowerMachine extends Boss {
             targeting = false;
             return super.doAttack(enemy);
         } else if (shot && towerParalysis == null) {
-            // 进入瞄准阶段
             targeting = true;
             shot = false;
             cellToFire = enemy.pos;
             attackCooldown = 5;
-            // 显示瞄准效果
             sprite.parent.add(new ColorTargetedCell(cellToFire,LastHP  ? Window.DeepPK_COLOR : Window.TITLE_COLOR));
             if (LastHP) {
                 for (int c : PathFinder.NEIGHBOURS49) {
                     sprite.parent.add(new ColorTargetedCell(cellToFire + c, Window.DeepPK_COLOR));
                 }
             } else {
-                for (int c : PathFinder.NEIGHBOURS13) {
+                for (int c : PathFinder.NEIGHBOURS13_4) {
                     sprite.parent.add(new ColorTargetedCell(cellToFire + c,Window.TITLE_COLOR));
                 }
             }
@@ -259,12 +227,10 @@ public class TowerMachine extends Boss {
             return true;
 
         } else if (attackCooldown > 0 && towerParalysis == null) {
-            // 冷却倒计时
             spend(TICK);
             attackCooldown--;
             return true;
         } else {
-            // 冷却结束执行攻击
             shot = true;
             if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
                 sprite.zap(cellToFire);

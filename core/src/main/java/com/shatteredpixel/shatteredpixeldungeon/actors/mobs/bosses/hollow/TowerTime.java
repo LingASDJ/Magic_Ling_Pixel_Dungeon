@@ -96,7 +96,7 @@ public class TowerTime extends Boss {
 
     @Override
     public int damageRoll() {
-        return LastHP ? 85 : 40;
+        return 0;
     }
 
     public void TryGetSummonedMobs() {
@@ -468,7 +468,7 @@ public class TowerTime extends Boss {
         if(!paralysedAttackChane && !LastHP && Random.Int(2) == 0){
             paralysedAttackChane = true;
         }
-        ch.damage(damageRoll(), new Eye.DeathGaze());
+        ch.damage(LastHP ? 85 : 40, new Eye.DeathGaze());
     }
 
     private static final String ABILITY_CD = "ability_cd";

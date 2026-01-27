@@ -72,7 +72,7 @@ public class WndTextNumberInput extends Window {
         }
 
         int textSize = (int)PixelScene.uiCamera.zoom * (multiLine ? 6 : 9);
-        textBox = new TextInput(Chrome.get(Chrome.Type.TOAST_WHITE), multiLine, textSize){
+        textBox = new TextInput(Chrome.get(Chrome.Type.SCROLL), multiLine, textSize){
             @Override
             public void enterPressed() {
                 //triggers positive action on enter pressed, only with non-multiline though.
@@ -222,11 +222,6 @@ public class WndTextNumberInput extends Window {
 
         // 更新pos变量，确保按钮区域在确认按钮上方
         pos += numberAreaHeight + MARGIN;
-
-//        // 设置确认按钮的位置
-//        positiveBtn.setRect(MARGIN, pos, width - MARGIN * 2, BUTTON_HEIGHT);
-//        add(positiveBtn);
-
 
         final RedButton negativeBtn;
         // 如果有取消按钮，创建取消按钮并设置位置

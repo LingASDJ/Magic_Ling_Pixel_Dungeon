@@ -53,7 +53,7 @@ public class PageIndicatorB extends Button {
 
         super.createChildren();
 
-        bg = Chrome.get(Chrome.Type.SCROLL);
+        bg = Chrome.get(Chrome.Type.BLANK);
         add(bg);
 
         add(slot = new Toolbar.Tool(0, 52, 24, 12) {
