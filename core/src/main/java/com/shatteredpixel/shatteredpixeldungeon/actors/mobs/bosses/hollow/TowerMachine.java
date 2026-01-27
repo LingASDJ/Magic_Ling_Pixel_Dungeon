@@ -176,7 +176,7 @@ public class TowerMachine extends Boss {
 
                 if (enemy != null && !enemy.isAlive() && enemy == Dungeon.hero) {
                     Dungeon.fail(getClass());
-                    GLog.n(Messages.get(this, "bomb_party_kill"));
+                    GLog.n(Messages.get(TowerMachine.class, "starcanon_kill"));
                     break;
                 }
             }
