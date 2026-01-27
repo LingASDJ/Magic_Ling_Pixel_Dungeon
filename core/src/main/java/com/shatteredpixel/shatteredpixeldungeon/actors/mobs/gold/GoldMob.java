@@ -18,7 +18,7 @@ public abstract class GoldMob extends Mob {
     public void die( Object cause ) {
         super.die( cause );
         if(Statistics.RandomQuest == 2){
-            if(Statistics.GoldMobDead>=15 && Statistics.GoldMobLimit < 4){
+            if(Statistics.GoldMobDead>=15 && Statistics.GoldMobLimit < 1){
                 Statistics.goldRefogreCount++;
                 Statistics.GoldMobDead = 0;
                 Statistics.GoldMobLimit++;

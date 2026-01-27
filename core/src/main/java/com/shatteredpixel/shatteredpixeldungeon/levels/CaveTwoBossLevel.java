@@ -885,8 +885,21 @@ public class CaveTwoBossLevel extends Level {
 
     public static class PylonEnergy extends Blob {
 
+        // 新增：显式保存 Boss 的引用
+        private static NewDM720 bossInstance = null;
+
         @Override
         protected void evolve() {
+            // 每次更新时，尝试获取 Boss 实例
+            if (bossInstance == null || !bossInstance.isAlive()) {
+                for (Char ch : Actor.chars()) {
+                    if (ch instanceof NewDM720) {
+                        bossInstance = (NewDM720) ch;
+                        break;
+                    }
+                }
+            }
+
             for (int cell = 0; cell < Dungeon.level.length(); cell++) {
                 if (Dungeon.level.insideMap(cell)) {
                     off[cell] = cur[cell];
@@ -925,6 +938,8 @@ public class CaveTwoBossLevel extends Level {
         public void fullyClear() {
             super.fullyClear();
             energySourceSprite = null;
+            // 清除 Boss 引用
+            bossInstance = null;
         }
 
         private static CharSprite energySourceSprite = null;
@@ -932,27 +947,44 @@ public class CaveTwoBossLevel extends Level {
         private static Emitter.Factory DIRECTED_SPARKS = new Emitter.Factory() {
             @Override
             public void emit(Emitter emitter, int index, float x, float y) {
-                if (energySourceSprite == null){
-                    for (Char c : Actor.chars()){
-                        if (c instanceof PylonCS && c.alignment != Char.Alignment.NEUTRAL){
-                            energySourceSprite = c.sprite;
-                            break;
-                        } else if (c instanceof NewDM720){
-                            energySourceSprite = c.sprite;
+                // 【修改逻辑】优先使用显式的 Boss 引用
+                CharSprite targetSprite = null;
+
+                // 1. 优先寻找已激活的电桩作为源头
+                for (Char c : Actor.chars()){
+                    if (c instanceof PylonCS && c.alignment != Char.Alignment.NEUTRAL){
+                        targetSprite = c.sprite;
+                        break;
+                    }
+                }
+
+                // 2. 如果没有找到已激活电桩，或者处于特定阶段，确保电流指向 Boss
+                if (targetSprite == null) {
+                    if (bossInstance != null && bossInstance.sprite != null) {
+                        targetSprite = bossInstance.sprite;
+                    } else {
+                        // 兜底：如果 Boss 没了，随便找个电桩
+                        for (Char c : Actor.chars()){
+                            if (c instanceof PylonCS){
+                                targetSprite = c.sprite;
+                                break;
+                            }
                         }
                     }
-                    if (energySourceSprite == null){
-                        return;
-                    }
+                }
+
+                if (targetSprite == null){
+                    return;
                 }
 
                 SparkParticle s = ((SparkParticle) emitter.recycle(SparkParticle.class));
                 s.resetStatic(x, y);
-                s.speed.set((energySourceSprite.x + energySourceSprite.width/2f) - x,
-                        (energySourceSprite.y + energySourceSprite.height/2f) - y);
+                // 计算从电桩指向 Boss 的向量
+                s.speed.set((targetSprite.x + targetSprite.width/2f) - x,
+                        (targetSprite.y + targetSprite.height/2f) - y);
                 s.speed.normalize().scale(DungeonTilemap.SIZE*2f);
 
-                //offset the particles slightly so they don't go too far outside of the cell
+                //offset particles slightly so they don't go too far outside of cell
                 s.x -= s.speed.x/8f;
                 s.y -= s.speed.y/8f;
             }
@@ -974,6 +1006,5 @@ public class CaveTwoBossLevel extends Level {
             energySourceSprite = null;
             emitter.pour(DIRECTED_SPARKS, 0.125f);
         }
-
     }
 }
