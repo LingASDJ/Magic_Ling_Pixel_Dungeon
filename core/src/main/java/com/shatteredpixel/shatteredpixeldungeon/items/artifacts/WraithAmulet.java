@@ -25,7 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -133,6 +132,9 @@ public class WraithAmulet extends Artifact {
         public boolean act() {
             LockedFloor lock = target.buff(LockedFloor.class);
 
+            if(!isCursed()){
+                Buff.detach(hero,CursedAmulet.class);
+            }
 
             if (charge < chargeCap && !cursed && useableBasic() && (lock == null || lock.regenOn())) {
                 partialCharge += 1 / (150f - (chargeCap - charge) * 15f);
@@ -334,18 +336,6 @@ public class WraithAmulet extends Artifact {
             interval = bundle.getInt( INTERVAL );
             level = bundle.getInt( LEVEL );
         }
-
-//    @Override
-//    public void tintIcon(Image icon) {
-//        icon.hardlight(0x990000);
-//    }
-
-        @Override
-        public int icon() {
-            return BuffIndicator.NONE;
-        }
-
-
     }
 
 }
