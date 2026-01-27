@@ -18,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class AttributeViewer extends TestItem{
     {
@@ -126,7 +127,79 @@ public class AttributeViewer extends TestItem{
             desc += "\n";
         }
 
+        desc += getImmunitiesText(ch);
+
         return desc;
+    }
+
+    private String getImmunitiesText(Char ch) {
+        // 1. 创建一个集合来存放所有的免疫 Class
+        HashSet<Class> allImmunities = new HashSet<>();
+
+        // 2. 添加角色自身的免疫
+        if (ch.immunities != null) {
+            allImmunities.addAll(ch.immunities);
+        }
+
+        // 3. 遍历角色的所有属性，添加属性自带的免疫
+        for (Char.Property p : ch.properties()) {
+            if (p != null && p.immunities() != null) {
+                allImmunities.addAll(p.immunities());
+            }
+        }
+
+        // 4. 如果没有免疫，返回空字符串
+        if (allImmunities.isEmpty()) {
+            return "";
+        }
+
+        // 5. 生成文本
+        String immuneText = "";
+        for (Class c : allImmunities) {
+            immuneText += getImmunityName(c);
+            immuneText += ", ";
+        }
+
+        // 移除末尾的 ", "
+        if (!immuneText.isEmpty()) {
+            immuneText = immuneText.substring(0, immuneText.length() - 2);
+        }
+
+        // 6. 添加标签
+        return "\n" + Messages.get(AttributeViewer.class, "immunities", immuneText);
+    }
+
+    // 【完善方法】将 Class 或 Property 转换为可读的名称
+    private String getImmunityName(Object obj) {
+        if (obj == null) return "Unknown";
+
+        // 如果是 Char.Property 枚举
+        if (obj instanceof Char.Property) {
+            Char.Property property = (Char.Property) obj;
+            // 复用之前的 getMobProperties 逻辑来获取属性名称
+            return Messages.get(AttributeViewer.class, getMobProperties(property));
+        }
+
+        // 如果是 Class 对象
+        if (obj instanceof Class) {
+            Class c = (Class) obj;
+
+            // 特殊处理：如果 Class 是 Char.Property 的子类（虽然通常 Enum 不会这样传，但为了健壮性）
+            if (Char.Property.class.isAssignableFrom(c)) {
+                // 这里不太可能走到，因为 Enum 是单例，通常传的是枚举实例
+                return c.getSimpleName();
+            }
+
+            // 尝试使用 Messages 获取本地化名称
+            String name = Messages.get(c, "name");
+            // 如果获取失败（例如返回的是类名），则使用简单类名
+            if (name == null || name.isEmpty() || name.equals(c.getSimpleName())) {
+                return c.getSimpleName();
+            }
+            return name;
+        }
+
+        return obj.toString();
     }
 
     private String heroAttribute( Char ch ){

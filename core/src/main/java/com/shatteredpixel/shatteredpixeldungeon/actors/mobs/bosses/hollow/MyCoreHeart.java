@@ -156,6 +156,18 @@ public class MyCoreHeart extends Boss {
             sprite.killAndErase();
         }
 
+        boolean hasOldDayMob = false;
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob.isAlive() && mob.isOldDay) {
+                hasOldDayMob = true;
+                break;
+            }
+        }
+
+        if(!hasOldDayMob){
+            Buff.detach(this,SummonColdDown.class);
+        }
+
         TryGetSummonedMobs();
 
         return super.act();

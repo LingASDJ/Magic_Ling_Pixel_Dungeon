@@ -78,6 +78,8 @@ public class Statistics {
 	public static int RandomQuest;
 	public static int GoldMobDead;
 
+	public static int GoldMobLimit;
+
 	public static int upgradeGold;
 
 	public static boolean snow = false;
@@ -603,6 +605,7 @@ public class Statistics {
 		RandomQuest = Random.NormalIntRange(1,3);
 		GoldMobDead = 0;
 		goldRefogreCount = 0;
+		GoldMobLimit = 0;
 
 		NoTime = false;
 		dm720Fight = false;
@@ -839,6 +842,7 @@ public class Statistics {
 
 		bundle.put("RDXD",RandomQuest);
 		bundle.put("GDXD",GoldMobDead);
+		bundle.put("GDM2",GoldMobLimit);
 
 		bundle.put("XXXXXXX",upgradeGold);
 
@@ -1078,6 +1082,7 @@ public class Statistics {
 
 		RandomQuest = bundle.getInt("RDXD");
 		GoldMobDead = bundle.getInt("GDXD");
+		GoldMobLimit = bundle.getInt("GDM2");
 
 		upgradeGold = bundle.getInt("XXXXXXX");
 

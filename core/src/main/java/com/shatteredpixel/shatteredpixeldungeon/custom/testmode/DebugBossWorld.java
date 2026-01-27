@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
@@ -13,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SlimeKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DMZERO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfMaster;
@@ -35,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusStarFruitsSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300SpiderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadDogCerberusSprite;
@@ -134,7 +137,7 @@ public class DebugBossWorld extends TestItem {
             int x;
             int y;
 
-            for (int i = 0;i < 24;i++) {
+            for (int i = 0;i < 25;i++) {
                 DebugBossButton = new DebugBossButton(i);
                 x = i % 5 * 22 + 2;
                 y = i / 5 * 22 + 2;
@@ -172,7 +175,7 @@ public class DebugBossWorld extends TestItem {
     private String depthname() {
         switch (chosen){
             case 1:
-                return Messages.get(Qliphoth.class,"name");
+                return Messages.get(Goo.class,"name");
             case 2:
                 return Messages.get(CrivusStarFruits.class,"name");
             case 3:
@@ -217,8 +220,10 @@ public class DebugBossWorld extends TestItem {
                 return Messages.get(SkyDead.class,"name");
             case 23:
                 return Messages.get(SlimeKing.class,"name");
+            case 24:
+                return Messages.get(DMZERO.class,"name");
             default:
-                return Messages.get(Goo.class,"name");
+                return Messages.get(Qliphoth.class,"name");
         }
     }
 
@@ -239,6 +244,7 @@ public class DebugBossWorld extends TestItem {
             InterlevelScene.curTransition.destDepth = chosen;
             InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_ENTRANCE;
             InterlevelScene.curTransition.destBranch = 12;
+            Statistics.deepestFloor = chosen;
             InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_ENTRANCE;
             InterlevelScene.curTransition.centerCell  = -1;
             Game.switchScene( InterlevelScene.class );
@@ -252,10 +258,10 @@ public class DebugBossWorld extends TestItem {
         public DebugBossButton(int DebugBoss) {
             this.DebugBoss = DebugBoss;
             switch (DebugBoss) {
-                case 0: case 20:
+                case 1: case 20:
                     icon(new Image(new GooSprite()));
                     break;
-                case 1:
+                case 0:
                     icon(new Image(new QliphothSprite()));
                     icon.scale.set(0.75f);
                     break;
@@ -335,6 +341,10 @@ public class DebugBossWorld extends TestItem {
                     break;
                 case 23:
                     icon(new Image(new SlimeKingMobSprites()));
+                    break;
+                case 24:
+                    icon(new Image(new DM300SpiderSprite()));
+                    icon.scale.set(0.75f);
                     break;
             }
         }

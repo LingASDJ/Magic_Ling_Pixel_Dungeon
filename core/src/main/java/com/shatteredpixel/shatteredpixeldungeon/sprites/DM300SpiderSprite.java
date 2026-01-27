@@ -7,13 +7,9 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OldDM300;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
@@ -33,6 +29,9 @@ public class DM300SpiderSprite extends MobSprite
         attack.frames(texturefilm,4,5,6);
         die = new Animation(20, false);
         die.frames(texturefilm, 0,7,0,7,0,7,0,7,0,7,0,7,8);
+
+        zap = attack.clone();
+
         play(idle);
     }
 
@@ -76,11 +75,9 @@ public class DM300SpiderSprite extends MobSprite
                     @Override
                     public void call() {
                         Sample.INSTANCE.play( Assets.Sounds.GAS );
-                        ((DM200)ch).onZapComplete();
                     }
                 } );
         Sample.INSTANCE.play( Assets.Sounds.MISS, 1f, 1.5f );
-        GLog.w(Messages.get(OldDM300.class, "vent"));
     }
 
     @Override

@@ -68,7 +68,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Morphs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.GhostTemplate;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.SpawnEvil;
@@ -96,11 +95,25 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DwarfGeneralBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ForestPoisonBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.LaveCavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.YogGodHardBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.CerDogBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.TheatreLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.SkyGooBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.spical.GalaxyKeyBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -1899,138 +1912,73 @@ public class GameScene extends PixelScene {
 		if (Dungeon.hero.isAlive()) {
 			Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
 
-			if(Statistics.bossRushMode){
-				switch (Dungeon.depth){
-					case 3:
-						bossSlain.texture(Assets.Interfaces.Goo_Title);
-						bossSlain.show(Window.CBLACK, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-						break;
-					case 5:
-						bossSlain.texture(Assets.Interfaces.QliPhoth_Title);
-						bossSlain.show(Window.G_COLOR, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-						break;
-					case 7:
-						bossSlain.texture(Assets.Interfaces.QliPhothEX_Title);
-						bossSlain.show(Window.G_COLOR, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-						break;
-					case 9:
-						bossSlain.texture(Assets.Interfaces.Tengu_Title);
-						bossSlain.show(Window.CBLACK, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-						break;
-					case 11:
-						bossSlain.texture(Assets.Interfaces.DIZF_Title);
-						bossSlain.show(Window.RED_COLOR, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-						break;
-					case 15:
-						bossSlain.texture(Assets.Interfaces.SGoo_Title);
-						bossSlain.show(Window.WATA_COLOR, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-						break;
-					case 33:
-						bossSlain.texture(Assets.Interfaces.General_Title);
-						bossSlain.show(Window.ANSDO_COLOR, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-						break;
-					case 37:
-						bossSlain.texture(Assets.Interfaces.Cerdog_Title);
-						bossSlain.show(Window.CYELLOW, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-					case 42:
-						bossSlain.texture(Assets.Interfaces.YogZot_Title);
-						bossSlain.show(Window.R_COLOR, 0.3f, 5f);
-						GameScene.flash(Window.GDX_COLOR);
-						scene.showBanner(bossSlain);
-						break;
-				}
-			} else {
-				//Boss开始后的处理Logo,不在Switch中就是默认的Logo。
-				switch (Dungeon.depth) {
-					case 5:
-						if (Dungeon.branch == 3) {
-							bossSlain.texture(Assets.Interfaces.DIZF_Title);
-							bossSlain.show(Window.R_COLOR, 0.4f, 6f);
-							scene.showBanner(bossSlain);
-						} else {
-							bossSlain.texture(Statistics.ExFruit ? Assets.Interfaces.QliPhothEX_Title : Assets.Interfaces.QliPhoth_Title);
-							bossSlain.show(Window.CYELLOW, 0.3f, 5f);
-							scene.showBanner(bossSlain);
-						}
-						break;
-					case 10:
-						if (((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {
-							bossSlain.texture(Assets.Interfaces.D_Title);
-							bossSlain.show(Window.TITLE_COLOR, 0.3f, 4f);
-							scene.showBanner(bossSlain);
-						} else {
-							bossSlain.texture(Assets.Interfaces.Tengu_Title);
-							bossSlain.show(Window.R_COLOR, 0.3f, 4f);
-							scene.showBanner(bossSlain);
-						}
-
-						break;
-					case 14:
-						bossSlain.texture(Assets.Interfaces.DMOR_Title);
-						bossSlain.show(Window.CBLACK, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-						break;
-					case 17:
-					case 18:
-						if (Dungeon.branch == 3) {
-							bossSlain.texture(Assets.Interfaces.SakaBJY_Title);
-							bossSlain.show(Window.CYELLOW, 0.3f, 5f);
-							scene.showBanner(bossSlain);
-						}
-						break;
-					case 20:
-						if (Dungeon.branch == 1) {
-							bossSlain.texture(Assets.Interfaces.General_Title);
-							bossSlain.show(Window.ANSDO_COLOR, 0.3f, 5f);
-							scene.showBanner(bossSlain);
-						}
-						break;
-					case 25:
-						if (Dungeon.isChallenged(CS)) {
-							bossSlain.texture(Assets.Interfaces.YogZot_Title);
-							bossSlain.show(Window.R_COLOR, 0.3f, 5f);
-							GameScene.flash(Window.GDX_COLOR);
-							scene.showBanner(bossSlain);
-						}
-						break;
-					case 26:
-						bossSlain.texture(Assets.Interfaces.Tawi_Title);
-						bossSlain.show(0x800080, 0.3f, 5f);
-						scene.showBanner(bossSlain);
-						break;
-					case 31:
-						if(Dungeon.hero.buff(SliceDeadBless.class) !=null || Statistics.AbyssCityRules == 2 ){
-							bossSlain.texture(Assets.Interfaces.Morpheus_Title);
-							bossSlain.show(Window.DeepPK_COLOR, 0.3f, 5f);
-							scene.showBanner(bossSlain);
-						} else {
-							bossSlain.texture(Assets.Interfaces.Cerdog_Title);
-							bossSlain.show(Window.CYELLOW, 0.3f, 5f);
-							scene.showBanner(bossSlain);
-						}
-						break;
-					case 33:
-						for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-							if(mob instanceof Morphs){
-								if(((Morphs) mob).phase == 0){
-									bossSlain.texture(Assets.Interfaces.Morpheus_Title);
-									bossSlain.show(Window.DeepPK_COLOR, 0.3f, 5f);
-									scene.showBanner(bossSlain);
-								}
-							}
-						}
-						break;
-				}
-
+			if(level instanceof MiniBossLevel){
+				bossSlain.texture(Assets.Interfaces.Goo_Title);
+				bossSlain.show(Window.CBLACK, 0.3f, 5f);
+				scene.showBanner(bossSlain);
 			}
+			if(level instanceof ForestPoisonBossLevel) {
+				bossSlain.texture(Assets.Interfaces.QliPhoth_Title);
+				bossSlain.show(Window.G_COLOR, 0.3f, 5f);
+				scene.showBanner(bossSlain);
+			}
+			if(level instanceof ForestHardBossLevel) {
+				bossSlain.texture(Assets.Interfaces.QliPhothEX_Title);
+				bossSlain.show(Window.R_COLOR, 0.3f, 5f);
+				scene.showBanner(bossSlain);
+			}
+			if(level instanceof PrisonBossLevel) {
+				bossSlain.texture(Assets.Interfaces.Tengu_Title);
+				bossSlain.show(Window.CBLACK, 0.3f, 5f);
+				scene.showBanner(bossSlain);
+			}
+			if(level instanceof LaveCavesBossLevel) {
+				bossSlain.texture(Assets.Interfaces.DIZF_Title);
+				bossSlain.show(Window.RED_COLOR, 0.3f, 5f);
+				scene.showBanner(bossSlain);
+			}
+			if(level instanceof SkyGooBossLevel) {
+				bossSlain.texture(Assets.Interfaces.SGoo_Title);
+				bossSlain.show(Window.WATA_COLOR, 0.3f, 5f);
+				scene.showBanner(bossSlain);
+			}
+			if(level instanceof DwarfGeneralBossLevel) {
+				bossSlain.texture(Assets.Interfaces.General_Title);
+				bossSlain.show(Window.ANSDO_COLOR, 0.3f, 5f);
+				scene.showBanner(bossSlain);
+			}
+			if(level instanceof CerDogBossLevel) {
+				bossSlain.texture(Assets.Interfaces.Cerdog_Title);
+				bossSlain.show(Window.CYELLOW, 0.3f, 5f);
+				scene.showBanner(bossSlain);
+			}
+			if(level instanceof YogGodHardBossLevel) {
+				bossSlain.texture(Assets.Interfaces.YogZot_Title);
+				bossSlain.show(Window.R_COLOR, 0.3f, 5f);
+				GameScene.flash(Window.GDX_COLOR);
+				scene.showBanner(bossSlain);
+			}
+			if(level instanceof ColdChestBossLevel) {
+				bossSlain.texture(Assets.Interfaces.D_Title);
+				bossSlain.show(Window.TITLE_COLOR, 0.3f, 4f);
+				scene.showBanner(bossSlain);
+			}
+			if(level instanceof AncientMysteryCityBossLevel) {
+				bossSlain.texture(Assets.Interfaces.SakaBJY_Title);
+				bossSlain.show(Window.CYELLOW, 0.3f, 5f);
+				scene.showBanner(bossSlain);
+			}
+			if(level instanceof TheatreLevel || level instanceof MorpheusBossLevel) {
+				bossSlain.texture(Assets.Interfaces.Morpheus_Title);
+				bossSlain.show(Window.DeepPK_COLOR, 0.3f, 5f);
+				scene.showBanner(bossSlain);
+			}
+			if(level instanceof GalaxyKeyBossLevel) {
+				bossSlain.texture(Assets.Interfaces.Tawi_Title);
+				bossSlain.show(0x800080, 0.3f, 5f);
+				scene.showBanner(bossSlain);
+			}
+
 
 			if (Dungeon.hero.buff(LockedFloor.class) == null) {
 				level.playLevelMusic();
@@ -2187,6 +2135,10 @@ public class GameScene extends PixelScene {
 				}
 
 				Statistics.upgradeGold = Random.NormalIntRange(9,18);
+
+				if(Statistics.RandomQuest == 2){
+					Statistics.GoldMobLimit = 0;
+				}
 
 				if(Statistics.RandomQuest == 3){
 					switch (Dungeon.depth){
