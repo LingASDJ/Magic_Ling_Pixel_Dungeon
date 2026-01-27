@@ -405,20 +405,17 @@ public class TexturePackScene extends PixelScene {
 
     public static void replaceAssets(Object source) {
         try {
-            ZipFile zipFile;
-            boolean isAsset = source instanceof FileHandle;
+            ZipInputStream zipInputStream;
 
-            if (isAsset) {
+            if (source instanceof FileHandle) {
                 FileHandle handle = (FileHandle) source;
-                File tempFile = File.createTempFile("texture_pack_", ".tmp");
-                tempFile.deleteOnExit();
-                handle.copyTo(new FileHandle(tempFile));
-                zipFile = new ZipFile(tempFile);
+                zipInputStream = new ZipInputStream(handle.read());
             } else {
-                zipFile = new ZipFile((File) source);
+                zipInputStream = new ZipInputStream(new FileInputStream((File) source));
             }
 
-            for (ZipEntry entry : Collections.list(zipFile.entries())) {
+            ZipEntry entry;
+            while ((entry = zipInputStream.getNextEntry()) != null) {
                 if (!entry.isDirectory() && entry.getName().endsWith(".png")) {
                     String texturePath = entry.getName();
                     String matchedPath = null;
@@ -434,11 +431,10 @@ public class TexturePackScene extends PixelScene {
                         continue;
                     }
 
-                    try (InputStream is = zipFile.getInputStream(entry);
-                         ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                         byte[] buffer = new byte[1024];
                         int len;
-                        while ((len = is.read(buffer)) > 0) {
+                        while ((len = zipInputStream.read(buffer)) > 0) {
                             baos.write(buffer, 0, len);
                         }
 
@@ -447,12 +443,11 @@ public class TexturePackScene extends PixelScene {
                         TextureCache.add(matchedPath, smartTexture);
                     }
                 }
+                zipInputStream.closeEntry();
             }
-            TextureCache.reload();
+            zipInputStream.close();
 
-            if (isAsset) {
-                zipFile.close();
-            }
+            TextureCache.reload();
         } catch (Exception e) {
             ShatteredPixelDungeon.reportException(e);
         }
