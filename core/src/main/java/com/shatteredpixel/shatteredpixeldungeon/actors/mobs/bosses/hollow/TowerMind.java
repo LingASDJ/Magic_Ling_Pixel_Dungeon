@@ -396,28 +396,41 @@ public class TowerMind extends Boss {
                     }
                 }
 
+
                 ArrayList<Item> toDrop = new ArrayList<>(items);
-                for (Item item : toDrop) {
+                for (int i = 0; i < toDrop.size(); i++) {
+
+                    Item item = toDrop.get(i);
+
+
+                    float delay = i * 0.2f;
+
                     MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
                     msc.reset(
                             sprite,
-                            hero.pos,
-                            items.get(0),
+                            387,
+                            item,
                             0.6f,
-                            1.25f + Random.Float(0,1)*0.1f,
+                            1.25f + delay,
                             new Callback() {
+                                final Item finalItem = item;
+
                                 @Override
                                 public void call() {
-                                    Dungeon.level.drop(item, hero.pos);
-                                    items= new ArrayList<>();
+                                    Dungeon.level.drop(finalItem, hero.pos);
                                 }
                             }
                     );
-                    for(Buff buff : buffs()){
-                        buff.detach();
-                    }
-                    dropped = true;
                 }
+
+                if (!toDrop.isEmpty()) {
+                    items.clear();
+                }
+
+                for(Buff buff : buffs()){
+                    buff.detach();
+                }
+                dropped = true;
             }
 
             return super.act();
@@ -466,7 +479,12 @@ public class TowerMind extends Boss {
         public String description() {
             String desc = super.description();
             if (items != null && !items.isEmpty()) {
-                desc += "\n\n" + Messages.get(this, "desc_items",items.get(0).name());
+                StringBuilder itemNames = new StringBuilder();
+                for (int i = 0; i < items.size(); i++) {
+                    if (i > 0) itemNames.append(", ");
+                    itemNames.append(items.get(i).name());
+                }
+                desc += "\n\n" + Messages.get(this, "desc_items", itemNames.toString());
             }
             return desc;
         }
@@ -483,20 +501,35 @@ public class TowerMind extends Boss {
                 if(items.isEmpty()){
                     items.add(new Gold(1));
                 }
-                MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
-                msc.reset(
-                        sprite,
-                        hero.pos,
-                        items.get(0),
-                        0.6f,
-                        1.25f + Random.Float(0,1)*0.1f, // 添加序列延迟
-                        new Callback() {
-                            @Override
-                            public void call() {
-                                Dungeon.level.drop(items.get(0), pos);
+
+                ArrayList<Item> toDrop = new ArrayList<>(items);
+
+                for (int i = 0; i < toDrop.size(); i++) {
+                    Item item = toDrop.get(i);
+                    float delay = i * 0.2f;
+
+                    MissileSpriteCustom msc = (MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class);
+                    msc.reset(
+                            sprite,
+                            387,
+                            item,
+                            0.6f,
+                            1.25f + delay,
+                            new Callback() {
+                                final Item finalItem = item;
+
+                                @Override
+                                public void call() {
+                                    Dungeon.level.drop(finalItem, pos);
+                                }
                             }
-                        }
-                );
+                    );
+                }
+
+                if (!toDrop.isEmpty()) {
+                    items.clear();
+                }
+
                 for(Buff buff : buffs()){
                     buff.detach();
                 }
