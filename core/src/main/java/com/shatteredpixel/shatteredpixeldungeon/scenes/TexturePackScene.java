@@ -841,21 +841,15 @@ public class TexturePackScene extends PixelScene {
 
     /**
      * 清理所有临时文件（包括无后缀的旧文件）
-     * @return 清理的文件数量
      */
-    public static int cleanOldTempFiles() {
+    public static void cleanOldTempFiles() {
         int cleanedCount = 0;
 
         try {
-            // 1. 清理本地存储目录
             FileHandle localDir = Gdx.files.local("");
             cleanedCount += cleanTempFilesInDir(localDir);
-
-            // 2. 清理外部存储目录
             FileHandle externalDir = Gdx.files.external("");
             cleanedCount += cleanTempFilesInDir(externalDir);
-
-            // 3. 清理材质包目录中的临时文件
             FileHandle texturePacksDir = getTexturePacksDir();
             if (texturePacksDir.exists()) {
                 cleanedCount += cleanTempFilesInDir(texturePacksDir);
@@ -865,7 +859,6 @@ public class TexturePackScene extends PixelScene {
             Gdx.app.error("TexturePackScene", "Error while cleaning temp files", e);
         }
 
-        return cleanedCount;
     }
 
     /**
@@ -877,7 +870,6 @@ public class TexturePackScene extends PixelScene {
         int cleanedCount = 0;
 
         try {
-            // 列出所有以 "temp_" 开头的文件（不再检查后缀）
             FileHandle[] tempFiles = dir.list((dir1, name) ->
                     name.startsWith("temp_")
             );
@@ -898,10 +890,7 @@ public class TexturePackScene extends PixelScene {
         } catch (Exception e) {
             Gdx.app.error("TexturePackScene", "Error while cleaning temp files in directory: " + dir.path(), e);
         }
-
         return cleanedCount;
     }
-
-
 
 }
