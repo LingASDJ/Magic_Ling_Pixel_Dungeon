@@ -151,7 +151,7 @@ public class TowerMachine extends Boss {
 
         CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 4);
 
-        int[] area = LastHP ? PathFinder.NEIGHBOURS49 : PathFinder.NEIGHBOURS13;
+        int[] area = LastHP ? PathFinder.NEIGHBOURS49 : PathFinder.NEIGHBOURS13_4;
 
         for (int c : area) {
             if (c == 0) continue;
@@ -218,7 +218,7 @@ public class TowerMachine extends Boss {
                     sprite.parent.add(new ColorTargetedCell(cellToFire + c, Window.DeepPK_COLOR));
                 }
             } else {
-                for (int c : PathFinder.NEIGHBOURS13) {
+                for (int c : PathFinder.NEIGHBOURS13_4) {
                     sprite.parent.add(new ColorTargetedCell(cellToFire + c,Window.TITLE_COLOR));
                 }
             }
