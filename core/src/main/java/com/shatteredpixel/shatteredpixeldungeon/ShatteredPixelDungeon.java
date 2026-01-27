@@ -26,7 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.EulaScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GoScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.TexturePackScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
@@ -175,8 +174,6 @@ public class ShatteredPixelDungeon extends Game {
 		updateSystemUI();
 		SPDAction.loadBindings();
 
-		TexturePackScene.cleanOldTempFiles();
-
 		Gift.GiftTime();
 
 		Music.INSTANCE.enable( SPDSettings.music() );
@@ -185,7 +182,7 @@ public class ShatteredPixelDungeon extends Game {
 		Sample.INSTANCE.volume( SPDSettings.SFXVol()*SPDSettings.SFXVol()/100f );
 
 		Sample.INSTANCE.load( Assets.Sounds.all );
-		TexturePackScene.cleanOldTempFiles();
+		
 	}
 
 	@Override
