@@ -355,7 +355,7 @@ public class TowerGods extends Boss {
             lock.addTime(dmg*multiple);
         }
         BossHealthBar.assignBoss(this);
-        // 神选之人：计算有效增益Buff数量
+
         int buffCount = 0;
         for (Buff b : Dungeon.hero.buffs()) {
             if (b.type == Buff.buffType.POSITIVE) {
@@ -363,11 +363,9 @@ public class TowerGods extends Boss {
             }
         }
 
-        // 至多加成50%（10层）
         float buffMultiplier = 1 + Math.min(buffCount * 0.05f, 0.5f);
         dmg = (int)(dmg * buffMultiplier);
 
-        // 元素抗性检测开始
         Class<?> srcClass = src.getClass();
         HashSet<Class> resists = new HashSet<>(RingOfElements.RESISTS);
         boolean flag = false;
@@ -379,17 +377,15 @@ public class TowerGods extends Boss {
         }
 
         if (flag) {
-            if(enemy != null){
-                if (Dungeon.level.distance(pos,enemy.pos)>=5) {
-                    dmg *= (int) 0.25f;
-                }
+            if (enemy != null && Dungeon.level.distance(pos, enemy.pos) >= 5) {
+                dmg = (int) (dmg * 0.25f);
             } else {
-                float rate = ((float) magicDefence / 100);
-                dmg *= (int) rate;
+                float rate = magicDefence / 100f;
+                dmg = (int) (dmg * rate);
             }
         } else if (!(src instanceof Buff)) {
-            float rate = ((float) physicDefence / 100);
-            dmg *= rate;
+            float rate = physicDefence / 100f;
+            dmg = (int) (dmg * rate);
         }
 
         super.damage(dmg, src, type);
