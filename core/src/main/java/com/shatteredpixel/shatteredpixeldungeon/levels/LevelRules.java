@@ -487,9 +487,9 @@ public class LevelRules {
                         Statistics.deepestFloor--;
                         return new DeadEndLevel();
                     case 0:
-                        return new SewerBossLevel();
-                    case 1:
                         return new ForestPoisonBossLevel();
+                    case 1:
+                        return new SewerBossLevel();
                     case 2:
                         return new ForestHardBossLevel();
                     case 3:
@@ -534,6 +534,8 @@ public class LevelRules {
                         return new MiniSkyShadowBossLevel();
                     case 23:
                         return new SLMKingLevel();
+                    case 24:
+                        return new DM920BossLevel();
                 }
         }
     }
