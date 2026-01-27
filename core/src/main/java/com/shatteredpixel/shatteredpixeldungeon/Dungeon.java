@@ -523,10 +523,6 @@ public class Dungeon {
 		return depth == 7 || depth == 17 || depth == 21 || depth == 29 || depth == 33 || depth == 37;
 	}
 
-	public static boolean bossLevel() {
-		return bossLevel( depth );
-	}
-
 	// 判断是否是Boss层
 	public static boolean RushBossLevel(int depth) {
 		int[] bossLevels = {1, 3, 5, 7, 9, 11, 13,15, 17,19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 42};
@@ -537,6 +533,10 @@ public class Dungeon {
 			}
 		}
 		return false; // 不是Boss层，返回false可以生成卷轴
+	}
+
+	public static boolean bossLevel() {
+		return bossLevel( depth );
 	}
 
 
