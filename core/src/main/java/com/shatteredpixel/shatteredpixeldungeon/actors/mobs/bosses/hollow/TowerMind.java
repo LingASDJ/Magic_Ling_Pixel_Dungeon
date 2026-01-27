@@ -112,7 +112,7 @@ public class TowerMind extends Boss {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 10, 45 );
+        return 0;
     }
 
     // 生成散射角度的方法

@@ -94,6 +94,11 @@ public class TowerGods extends Boss {
         summonedMobs  = bundle.getInt(SUMMONED_MOBS);
     }
 
+    @Override
+    public int damageRoll() {
+        return 0;
+    }
+
     public static class DreamEye extends Eye {
 
         {
@@ -267,11 +272,6 @@ public class TowerGods extends Boss {
         }
 
         return super.act();
-    }
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange( 15, 20 );
     }
 
     public static class GetAllyBuffs extends FlavourBuff {
