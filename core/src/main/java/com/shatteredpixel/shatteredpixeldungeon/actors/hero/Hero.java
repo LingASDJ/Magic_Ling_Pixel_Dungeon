@@ -2079,20 +2079,6 @@ public class Hero extends Char {
 
 		damage = super.attackProc( enemy, damage );
 
-		MagesStaff staff = belongings.getItem(MagesStaff.class);
-		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-			if (mob instanceof MageHand) {
-				staff = ((MageHand) mob).magesStaff;
-			}
-		}
-		if (staff != null && hero.subClass == HeroSubClass.BATTLEMAGE) {
-			int battleMageLevel = hero.pointsInTalent(Talent.EMPOWERED_STRIKE);
-			float triggerChance = Math.min(1.0f, battleMageLevel * 0.33f);
-			if (Random.Float() < triggerChance) {
-				staff.wand.onHit(staff, hero, enemy, damage);
-			}
-		}
-
 		KindOfWeapon wep;
 		if (RingOfForce.fightingUnarmed(this) && !RingOfForce.unarmedGetsWeaponEnchantment(this)){
 			wep = null;
@@ -2100,10 +2086,27 @@ public class Hero extends Char {
 			wep = belongings.attackingWeapon();
 		}
 
-		if(wep == null && hasTalent(Talent.MAGIC_ABSORB)){
-			MagicAbsorb buff = hero.buff(MagicAbsorb.class);
-			if(buff != null){
-				buff.downAbsord(hero.pointsInTalent(Talent.MAGIC_ABSORB));
+		if(wep == null){
+			if(hasTalent(Talent.MAGIC_ABSORB)){
+				MagicAbsorb buff = hero.buff(MagicAbsorb.class);
+				if(buff != null){
+					buff.downAbsord(hero.pointsInTalent(Talent.MAGIC_ABSORB));
+				}
+			}
+			if(hasTalent(Talent.EMPOWERED_STRIKE)){
+				MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
+				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+					if (mob instanceof MageHand) {
+						staff = ((MageHand) mob).magesStaff;
+					}
+				}
+				if (staff != null && hero.subClass == HeroSubClass.BATTLEMAGE) {
+					int battleMageLevel = hero.pointsInTalent(Talent.EMPOWERED_STRIKE);
+					float triggerChance = Math.min(1.0f, battleMageLevel * 0.33f);
+					if (Random.Float() < triggerChance) {
+						staff.wand.onHit(staff, hero, enemy, damage);
+					}
+				}
 			}
 		}
 

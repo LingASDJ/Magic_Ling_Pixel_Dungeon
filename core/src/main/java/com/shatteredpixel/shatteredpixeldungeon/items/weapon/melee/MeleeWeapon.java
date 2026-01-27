@@ -38,6 +38,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
@@ -57,6 +59,7 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -249,6 +252,21 @@ public class MeleeWeapon extends Weapon {
 				buff.downAbsord(hero.pointsInTalent(Talent.MAGIC_ABSORB));
 			}
 		}
+
+		MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+			if (mob instanceof MageHand) {
+				staff = ((MageHand) mob).magesStaff;
+			}
+		}
+		if (staff != null && hero.subClass == HeroSubClass.BATTLEMAGE) {
+			int battleMageLevel = hero.pointsInTalent(Talent.EMPOWERED_STRIKE);
+			float triggerChance = Math.min(1.0f, battleMageLevel * 0.33f);
+			if (Random.Float() < triggerChance) {
+				staff.wand.onHit(staff, hero, defender, damage);
+			}
+		}
+
 		return super.proc( attacker, defender, damage );
 	}
 
