@@ -64,7 +64,7 @@ public class BossSelectIndicator extends Button {
 
         super.createChildren();
 
-        bg = Chrome.get(Chrome.Type.SCROLL);
+        bg = Chrome.get(Chrome.Type.BLANK);
         bg.hardlight(0x00ffff);
         add(bg);
 
