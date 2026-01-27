@@ -180,14 +180,10 @@ public class Burning extends Buff implements Hero.Doom {
 	public void reignite( Char ch ) {
 		reignite( ch, DURATION );
 	}
-	
+
 	public void reignite( Char ch, float duration ) {
 		if (ch.isImmune(Burning.class)){
-			//TODO this only works for the hero, not others who can have brimstone+arcana effect
-			// e.g. prismatic image, shadow clone
-			if (ch instanceof Hero
-					&& ((Hero) ch).belongings.armor() != null
-					&& ((Hero) ch).belongings.armor().hasGlyph(Brimstone.class, ch)){
+			if (ch.glyphLevel(Brimstone.class) >= 0){
 				//generate avg of 1 shield per turn per 50% boost, to a max of 4x boost
 				float shieldChance = 2*(Armor.Glyph.genericProcChanceMultiplier(ch) - 1f);
 				int shieldCap = Math.round(shieldChance*4f);
@@ -196,12 +192,12 @@ public class Burning extends Buff implements Hero.Doom {
 				if (shieldCap > 0 && shieldGain > 0){
 					Barrier barrier = Buff.affect(ch, Barrier.class);
 					if (barrier.shielding() < shieldCap){
-						barrier.incShield(1);
+						barrier.incShield(Math.min(shieldGain, shieldCap - barrier.shielding()));
 					}
 				}
 			}
 		}
-		left = duration;
+		if (left < duration) left = duration;
 		acted = false;
 	}
 	
