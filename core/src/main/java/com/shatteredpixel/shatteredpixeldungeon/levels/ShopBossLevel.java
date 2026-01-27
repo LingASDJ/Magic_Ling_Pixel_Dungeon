@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
@@ -263,7 +264,7 @@ public class ShopBossLevel extends Level {
         setSize(WIDTH, HEIGHT);
         map = code_map.clone();
 
-        int entrance = WIDTH*25 + 17;
+        int entrance = 892;
         exit = 0;
 
         LevelTransition ecne = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
@@ -274,7 +275,7 @@ public class ShopBossLevel extends Level {
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if(Statistics.bossRushMode || Statistics.RandMode){
+        if((Statistics.bossRushMode || Statistics.RandMode) && branch == 0){
             return super.activateTransition(hero, transition);
         }
         return false;
