@@ -2307,7 +2307,7 @@ public class Hero extends Char {
 			int RH = resistHealth;
 
 			if(ankh != null && canResist){
-				WarriorDead(src);
+				WarriorDead();
 				return;
 			} else if (canResist) {
 				WarriorHPLimit();
@@ -3819,19 +3819,28 @@ public class Hero extends Char {
 		return super.talentProc();
 	}
 
-	private void WarriorDead(Object src){
+	private boolean warriorDeathWindowShown = false;
+
+	private void WarriorDead() {
+		if (warriorDeathWindowShown) {
+			return;
+		}
+
 		Game.runOnRenderThread(new Callback() {
 			@Override
 			public void call() {
+				if (warriorDeathWindowShown) {
+					return;
+				}
+
 				GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.ANKH),
 						Messages.get(Talent.PAIN_SCAR,"title"),
 						Messages.get(Talent.PAIN_SCAR,"desc"),
 						Messages.get(Talent.PAIN_SCAR,"prompt"),
 						Messages.get(Talent.PAIN_SCAR,"cancel")){
 					@Override
-					public void onBackPressed() {
-						//阻止玩家逃课
-					}
+					public void onBackPressed() {}
+
 					@Override
 					protected void onSelect(int index){
 						super.onSelect(index);
@@ -3844,26 +3853,28 @@ public class Hero extends Char {
 										buff(Berserk.class).reducePower(0.2f);
 										GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
 										resistHealth +=20;
-										return;
+										break;
 									case 2:
 										HT -= 15;
 										buff(Berserk.class).reducePower(0.15f);
 										GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
 										resistHealth += 15;
-										return;
+										break;
 									case 3:
 										HT -= 10;
 										buff(Berserk.class).reducePower(0.1f);
 										GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
 										resistHealth += 10;
-										return;
+										break;
 								}
 							}
-						}else if(index == 1 ){
+						} else if(index == 1 ){
 							die(false);
 						}
+						warriorDeathWindowShown = false;
 					}
 				});
+				warriorDeathWindowShown = true;
 			}
 		});
 	}
