@@ -423,14 +423,13 @@ public class TexturePackScene extends PixelScene {
                         try {
                             inputStream.close();
                         } catch (IOException e) {
-                            add(new WndError("Error closing input stream" + "\n" + e.getMessage()));
+
                         }
                     }
                 }
 
                 if (!isValidTexturePack(tempFileHandle.file())) {
                     Gdx.app.postRunnable(() -> {
-                        add(new WndError(Messages.get(this, "invalid_pack")));
                         isImporting = false;
                     });
                     return;
@@ -453,16 +452,13 @@ public class TexturePackScene extends PixelScene {
 
             } catch (Exception e) {
                 Gdx.app.postRunnable(() -> {
-                    add(new WndError(Messages.get(this, "import_failed") + "\n" + e.getMessage()));
                     isImporting = false;
                 });
             } finally {
                 if (tempFileHandle != null && tempFileHandle.exists()) {
                     try {
                         tempFileHandle.delete();
-                        add(new WndError("TexturePackScene"+"\n"+"Deleted temp file in finally block: " + tempFileHandle.name()));
                     } catch (Exception e) {
-                        add(new WndError("TexturePackScene"+"\n"+"Failed to delete temp file:  " + tempFileHandle.name()+e.getMessage()));
                     }
                 }
             }
@@ -891,16 +887,11 @@ public class TexturePackScene extends PixelScene {
                         if (file.exists()) {
                             file.delete();
                             cleanedCount++;
-                            Gdx.app.debug("TexturePackScene", "Deleted temp file: " + file.path());
                         }
-                    } catch (Exception e) {
-                        Gdx.app.error("TexturePackScene", "Failed to delete temp file: " + file.path(), e);
-                    }
+                    } catch (Exception ignored) {}
                 }
             }
-        } catch (Exception e) {
-            Gdx.app.error("TexturePackScene", "Error while cleaning temp files in directory: " + dir.path(), e);
-        }
+        } catch (Exception ignored) {}
         return cleanedCount;
     }
 
