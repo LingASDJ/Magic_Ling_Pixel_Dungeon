@@ -140,6 +140,10 @@ public class TexturePackScene extends PixelScene {
         }
     }
 
+    public static void cleanOldTempFiles() {
+        //The Android Used,Desktop Not used
+    }
+
     @Override
     public void create() {
         super.create();
