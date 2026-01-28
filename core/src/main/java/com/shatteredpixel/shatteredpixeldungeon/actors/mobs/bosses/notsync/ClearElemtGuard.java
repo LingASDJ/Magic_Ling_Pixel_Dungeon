@@ -81,7 +81,7 @@ public class ClearElemtGuard extends Statue {
             Music.INSTANCE.play(Assets.Music.PRISON_TENSE, true);
         }
 
-        if (clearCount>=2 || Dungeon.isDLC(Conducts.Conduct.DEV)) {
+        if (clearCount>=2) {
             state = HUNTING;
         } else {
             state = PASSIVE;
