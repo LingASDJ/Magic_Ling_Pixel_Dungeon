@@ -85,11 +85,23 @@ public class DiamondKnight extends Boss implements Hero.Doom {
             viewDistance = 24;
         }
 
+        flying = true;
+
         spriteClass = DimandKingSprite.class;
 
         properties.add(Property.BOSS);
         properties.add(Property.DEMONIC);
         properties.add(Property.ACIDIC);
+    }
+
+    @Override
+    public boolean act() {
+
+        if(level.map[pos] == Terrain.CHASM){
+            ScrollOfTeleportation.appear(this, 682);
+        }
+
+        return super.act();
     }
 
     public String info(){
