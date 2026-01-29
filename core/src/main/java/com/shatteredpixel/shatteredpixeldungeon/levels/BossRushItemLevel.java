@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
@@ -214,6 +215,12 @@ public class BossRushItemLevel extends RegularLevel {
                //TODO 【BossRush4.0 死灵与幽冥之地 内容扩展（3）敬请期待  】
                //TODO 【商人领主&莲娜：我们已经收集足够多的能量，现在让我们平息BR宇宙的灾难吧！ 】
        }
+
+
+       if(depth == 10){
+           drop(new TengusMask(),entrance()-1);
+       }
+
         super.createItems();
     }
 

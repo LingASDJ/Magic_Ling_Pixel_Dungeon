@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
@@ -126,7 +127,8 @@ abstract public class Boss extends Mob {
                 }
             }
 
-            if(Statistics.RandMode && Dungeon.depth == 10){
+            if(!Statistics.RandMode && !Statistics.bossRushMode &&
+                    Dungeon.depth == 10 && Dungeon.hero.subClass == HeroSubClass.NONE){
                 Dungeon.level.drop(new TengusMask(),pos);
             }
 
