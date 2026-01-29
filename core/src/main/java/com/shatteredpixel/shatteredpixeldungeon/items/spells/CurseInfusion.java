@@ -56,7 +56,7 @@ public class CurseInfusion extends InventorySpell {
 
 	@Override
 	protected boolean usableOnItem(Item item) {
-		return ((item instanceof EquipableItem && !(item instanceof MissileWeapon || item instanceof BloodthirstyThorn || item instanceof RitualSword)) || item instanceof Wand || (item instanceof BrokenSeal && Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE)));
+		return ((item instanceof EquipableItem && !(item instanceof MissileWeapon || item instanceof BloodthirstyThorn || item instanceof RitualSword)) || item instanceof Wand || (item instanceof BrokenSeal && Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE) && !item.curseInfusionBonus && item.level() == 0));
 	}
 
 	@Override
@@ -91,6 +91,9 @@ public class CurseInfusion extends InventorySpell {
 			} else {
 				a.inscribe(Armor.Glyph.randomCurse());
 			}
+			a.curseInfusionBonus = true;
+		} else if (item instanceof BrokenSeal){
+			BrokenSeal a = (BrokenSeal) item;
 			a.curseInfusionBonus = true;
 		} else if (item instanceof Wand){
 			((Wand) item).curseInfusionBonus = true;

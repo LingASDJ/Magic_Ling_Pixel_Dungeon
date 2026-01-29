@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
@@ -54,6 +55,11 @@ public class PotionOfMastery extends ExoticPotion {
 	@Override
 	//need to override drink so that time isn't spent right away
     public void drink(final Hero hero) {
+
+		if(hero.buff( WraithAmulet.CursedAmulet.class ) != null ){
+			GLog.w(Messages.get(WraithAmulet.class, "drink_cursed"));
+			return;
+		}
 
 		if (!isKnown()) {
 			identify();

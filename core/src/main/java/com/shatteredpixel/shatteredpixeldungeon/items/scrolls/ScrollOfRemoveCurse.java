@@ -27,13 +27,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TormentedSpirit;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -110,8 +113,10 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 			return true;
 		} else if (item instanceof Weapon){
 			return ((Weapon)item).hasCurseEnchant();
-		} else if (item instanceof Armor){
-			return ((Armor)item).hasCurseGlyph();
+		} else if (item instanceof Armor) {
+			return ((Armor) item).hasCurseGlyph();
+		} else if(item instanceof BrokenSeal && Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE)){
+			return true;
 		} else {
 			return false;
 		}
@@ -146,6 +151,11 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 					item.cursed = false;
 				}
 			}
+			if(item instanceof WraithAmulet){
+				if(hero.buff(WraithAmulet.CursedAmulet.class) != null){
+					hero.buff(WraithAmulet.CursedAmulet.class).detach();
+				}
+			}
 			if (item instanceof Weapon){
 				Weapon w = (Weapon) item;
 				if (w.hasCurseEnchant()){
@@ -164,6 +174,7 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 				((Wand) item).updateLevel();
 			}
 		}
+
 		
 		if (procced && hero != null) {
 			hero.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10 );
