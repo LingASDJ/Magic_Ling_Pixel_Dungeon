@@ -75,6 +75,11 @@ public class WarpBeacon extends ArmorAbility {
 			return;
 		}
 
+		if(Dungeon.level.locked){
+			GLog.w(Messages.get(this, "locked_floor"));
+			return;
+		}
+
 		if (hero.buff(WarpBeaconTracker.class) != null){
 			final WarpBeaconTracker tracker = hero.buff(WarpBeaconTracker.class);
 
