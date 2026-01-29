@@ -46,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -70,11 +69,7 @@ public class HallsBossLevel extends Level {
 
 	@Override
 	public void playBossMusic(){
-		if (BossHealthBar.isBleeding()){
-			Music.playModeBGM(Assets.Music.HALLS_BOSS_FINALE, true);
-		} else {
-			Music.playModeBGM(Assets.Music.HALLS_TENSE, true);
-		}
+		Music.playModeBGM(Assets.Music.HALLS_BOSS, true);
 	}
 
 	@Override
