@@ -14,18 +14,21 @@ public abstract class GoldMob extends Mob {
         return desc;
     }
 
-    @Override
-    public void die( Object cause ) {
-        super.die( cause );
+    protected static void GetSearch(){
         if(Statistics.RandomQuest == 2){
             if(Statistics.GoldMobDead>=15 && Statistics.GoldMobLimit < 1){
                 Statistics.goldRefogreCount++;
                 Statistics.GoldMobDead = 0;
                 Statistics.GoldMobLimit++;
-            } else {
+            } else if(Statistics.GoldMobLimit == 0){
                 Statistics.GoldMobDead++;
             }
         }
+    }
 
+    @Override
+    public void die( Object cause ) {
+        super.die( cause );
+        GetSearch();
     }
 }

@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold;
 
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -31,15 +30,7 @@ public class GnollTwilight extends Gnoll {
     @Override
     public void die( Object cause ) {
         super.die( cause );
-        if(Statistics.RandomQuest == 2){
-            if(Statistics.GoldMobDead>=15){
-                Statistics.goldRefogreCount++;
-                Statistics.GoldMobDead = 0;
-            } else {
-                Statistics.GoldMobDead++;
-            }
-        }
-        
+        GoldMob.GetSearch();
     }
 
     public int fleeingTime;
