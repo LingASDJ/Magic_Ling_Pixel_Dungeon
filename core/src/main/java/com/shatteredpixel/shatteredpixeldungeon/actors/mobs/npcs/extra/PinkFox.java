@@ -91,7 +91,7 @@ public class PinkFox extends NTNPC {
             t2 = Generator.random(Generator.Category.TRINKET);
             t2.identify();
             if (t2.doPickUp(Dungeon.hero)){
-                GLog.p( Messages.capitalize(Messages.get(Hero.class, "you_now_have", t1.name())) );
+                GLog.p( Messages.capitalize(Messages.get(Hero.class, "you_now_have", t2.name())) );
             } else {
                 Dungeon.level.drop(t2,pos-1);
             }

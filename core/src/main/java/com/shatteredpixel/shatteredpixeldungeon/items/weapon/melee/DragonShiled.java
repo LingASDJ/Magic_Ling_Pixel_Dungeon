@@ -18,11 +18,10 @@ public class DragonShiled extends MeleeWeapon {
     @Override
     public int proc(Char attacker, Char defender, int damage ) {
         switch (Random.Int(6)) {
-            case 0:case 1:case 2:case 3:
-            default:
-                return super.proc( attacker, defender, damage );
             case 4: case 5:
                 Buff.affect(defender, Burning.class).reignite(defender);
+                return super.proc( attacker, defender, damage );
+            default:
                 return super.proc( attacker, defender, damage );
         }
     }
@@ -43,13 +42,8 @@ public class DragonShiled extends MeleeWeapon {
         if (isIdentified()){
             return Messages.get(this, "stats_desc", 1+4*buffedLvl());
         } else {
-            return Messages.get(this, "typical_stats_desc", 6);
+            return Messages.get(this, "typical_stats_desc", 1);
         }
     }
-
-//    @Override
-//    protected void duelistAbility(Hero hero, Integer target) {
-//        RoundShield.guardAbility(hero, 2, this);
-//    }
 
 }
