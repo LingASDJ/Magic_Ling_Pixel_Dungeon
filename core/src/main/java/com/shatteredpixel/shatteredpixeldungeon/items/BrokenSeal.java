@@ -140,6 +140,13 @@ public class BrokenSeal extends Item {
 	}
 
 	@Override
+	public int level() {
+		int level = super.level();
+		if (curseInfusionBonus) level += 1 + level/6;
+		return level;
+	}
+
+	@Override
 	//scroll of upgrade can be used directly once, same as upgrading armor the seal is affixed to then removing it.
 	public boolean isUpgradable() {
 		return level() == 0;
@@ -185,17 +192,20 @@ public class BrokenSeal extends Item {
 	};
 
 	private static final String GLYPH = "glyph";
+	private static final String CURSE_INFUSION_BONUS = "curse_infusion_bonus";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(GLYPH, glyph);
+		bundle.put(CURSE_INFUSION_BONUS, curseInfusionBonus);
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		glyph = (Armor.Glyph)bundle.get(GLYPH);
+		curseInfusionBonus = bundle.getBoolean( CURSE_INFUSION_BONUS );
 	}
 
 	public static class WarriorShield extends ShieldBuff {
