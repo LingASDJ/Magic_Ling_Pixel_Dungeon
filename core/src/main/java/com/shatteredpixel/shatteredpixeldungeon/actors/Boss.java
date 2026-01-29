@@ -157,15 +157,6 @@ abstract public class Boss extends Mob {
         return super.act();
     }
 
-    @Override
-    public float attackDelay() {
-        if (Statistics.gameNight) {
-            return 0.75f;
-        } else {
-            return 1f;
-        }
-    }
-
         protected void initStatus(int exp) {
             defenseSkill = Math.round(baseEva); //闪避率
             EXP = exp; //经验值
