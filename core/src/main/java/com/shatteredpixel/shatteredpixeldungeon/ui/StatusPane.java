@@ -483,18 +483,18 @@ public class StatusPane extends Component {
 
 		//时间紊乱
 		if(Statistics.NoTime){
-			if(Dungeon.isChallenged(CS) && gameNight){
-				if(gameTime>0){
-					gameNight = false;
-				} else {
-					gameTime++;
-				}
+			if(Dungeon.isChallenged(CS) && gameNight && gameTime < 400){
+				gameTime++;
 			} else if(gameTime>400 && gameTime<600) {
 				gameTime++;
-				gameNight = true;
+				if(!gameNight){
+					gameNight = true;
+				}
 			} else if(gameTime>599){
 				gameTime = 0;
-				gameNight = false;
+				if(gameNight){
+					gameNight = false;
+				}
 				gameDay++;
 			} else {
 				gameTime++;

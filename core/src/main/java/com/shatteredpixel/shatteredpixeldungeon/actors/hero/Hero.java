@@ -1051,7 +1051,7 @@ public class Hero extends Char {
 
 		if(Dungeon.isChallenged(CS) && !gameNight){
 			speed *= 1.10f;
-		} else if(gameTime>350 && gameTime<400) {
+		} else if(gameNight) {
 			speed *= 1.05f;
 		}
 
@@ -2080,6 +2080,12 @@ public class Hero extends Char {
 
 		damage = super.attackProc( enemy, damage );
 
+		if(Dungeon.isChallenged(CS) && !gameNight) {
+			damage *= 1.1f;
+		} else if(gameTime>350 && gameTime<400) {
+			damage *=1.05f;
+		}
+
 		KindOfWeapon wep;
 		if (RingOfForce.fightingUnarmed(this) && !RingOfForce.unarmedGetsWeaponEnchantment(this)){
 			wep = null;
@@ -2187,6 +2193,11 @@ public class Hero extends Char {
 			return;
 		}
 
+		if(Dungeon.isChallenged(CS) && !gameNight) {
+			dmg = (int) Math.ceil(dmg * 0.92);
+		} else if(gameTime>350 && gameTime<400) {
+			dmg = (int) Math.ceil(dmg * 0.96);
+		}
 
 		if(hero.belongings.getItem(EmotionalAggregationB.class)!=null && !(src instanceof Buff) && !(src instanceof Blob)){
 			dmg += (int) getZone()*2 -1;

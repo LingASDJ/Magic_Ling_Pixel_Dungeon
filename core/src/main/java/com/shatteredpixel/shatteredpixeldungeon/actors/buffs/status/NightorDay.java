@@ -4,12 +4,17 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameDay;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
+import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.scene;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Banner;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.utils.Bundle;
 
 public class NightorDay extends Buff {
@@ -23,6 +28,7 @@ public class NightorDay extends Buff {
 
     @Override
     public boolean act() {
+        Banner mapnameSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
         if (target.isAlive()) {
 
             spend(interval);
@@ -34,18 +40,28 @@ public class NightorDay extends Buff {
 
             //昼夜更替
 
-            if(Dungeon.isChallenged(CS) && gameNight){
-                if(gameTime>0){
-                    gameNight = false;
-                } else {
-                    gameTime++;
-                }
+            if(Dungeon.isChallenged(CS) && gameNight && gameTime < 400){
+                gameTime++;
             } else if(gameTime>400 && gameTime<600) {
                 gameTime++;
-                gameNight = true;
+               if(!gameNight){
+                   gameNight = true;
+                   if(!Statistics.NoTime) {
+                       mapnameSlain.texture("interfaces/mapname/alonenight.png");
+                       mapnameSlain.show(Window.DeepPK_COLOR, 0.6f, 3f);
+                       scene.showLogo(mapnameSlain);
+                   }
+               }
             } else if(gameTime>599){
                 gameTime = 0;
-                gameNight = false;
+                if(gameNight){
+                    gameNight = false;
+                    if(!Statistics.NoTime) {
+                        mapnameSlain.texture("interfaces/mapname/alonesun.png");
+                        mapnameSlain.show(Window.TITLE_COLOR, 0.6f, 3f);
+                        scene.showLogo(mapnameSlain);
+                    }
+                }
                 gameDay++;
             } else {
                 gameTime++;

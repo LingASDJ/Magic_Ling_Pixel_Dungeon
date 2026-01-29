@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
@@ -52,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SmokeAlly;
@@ -164,11 +166,6 @@ public abstract class Mob extends Char {
 		return enemy;
 	}
 
-	public Char Selectenemy(){
-		Mob ch = (Mob) enemy;
-		return ch;
-	}
-
 	public void enemyReset(){
 		enemy = null;
 	}
@@ -185,6 +182,28 @@ public abstract class Mob extends Char {
 		if(Dungeon.isChallenged(DHXD)||lanterfireactive){
 			damageAttackProcLanterMob();
 		}
+
+		if(Dungeon.isChallenged(CS)){
+			if(properties.contains(Property.UNDEAD)){
+				if(Statistics.gameNight){
+					if(Random.Float() > 0.5f){
+						Buff.affect( enemy, Poison.class). set(damage/3f);
+					} else {
+						Buff.affect( enemy, Bleeding.class).set(damage/3f);
+					}
+				}
+			}
+			if(properties.contains(Property.DEMONIC)){
+				if(Statistics.gameNight){
+					if(buff(Barrier.class)==null){
+						if(Random.NormalFloat(0f,2f) < 0.50f){
+							Buff.affect(this, Barrier.class).setShield(7 + Dungeon.depth / 5);
+						}
+					}
+				}
+			}
+		}
+
 
 		return super.attackProc(enemy, damage);
 	}
@@ -977,7 +996,13 @@ public abstract class Mob extends Char {
 			delay = 4.0f;
 		}
 
-
+		if(Dungeon.isChallenged(CS)){
+			if(properties.contains(Property.BOSS) || properties.contains(Property.MINIBOSS)){
+				if(Statistics.gameNight){
+					delay /= 1.25f;
+				}
+			}
+		}
 
 		return delay;
 	}
