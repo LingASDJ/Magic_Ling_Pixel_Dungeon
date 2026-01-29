@@ -1,7 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -12,8 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Trash;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -125,161 +121,178 @@ public class SmallLeafHardDungeon extends NPC {
 
     public static class WndChangeProp extends Window {
 
-        private static final int WIDTH		= 60;
-
-        private static final int BTN_SIZE	= 32;
-        private static final float GAP		= 2;
+        private static final int WIDTH = 60;
+        private static final int BTN_SIZE = 32;
+        private static final float GAP = 2;
         public int mode;
 
         private ItemButton btnPressed;
-
         private ItemButton btnItem;
         private RedButton btnChange;
 
-        public WndChangeProp( SmallLeafHardDungeon smallLeaf, Window wndParent,int mo) {
+        public WndChangeProp(SmallLeafHardDungeon smallLeaf, Window wndParent, int mo) {
             super();
 
             mode = mo;
 
             IconTitle titlebar = new IconTitle();
-            titlebar.icon( new SmallLeaf().sprite() );
-            titlebar.label( Messages.titleCase( smallLeaf.name() ) );
-            titlebar.setRect( 0, 0, WIDTH, 0 );
-            add( titlebar );
+            titlebar.icon(new SmallLeaf().sprite());
+            titlebar.label(Messages.titleCase(smallLeaf.name()));
+            titlebar.setRect(0, 0, WIDTH, 0);
+            add(titlebar);
 
-            RenderedTextBlock message = PixelScene.renderTextBlock( Messages.get(this, "message"), 6 );
-            message.maxWidth( WIDTH);
+            RenderedTextBlock message = PixelScene.renderTextBlock(Messages.get(this, "message"), 6);
+            message.maxWidth(WIDTH);
             message.setPos(0, titlebar.bottom() + GAP);
-            add( message );
+            add(message);
 
             btnItem = new ItemButton() {
                 @Override
                 protected void onClick() {
                     btnPressed = btnItem;
-                    GameScene.selectItem( itemSelector );
+                    GameScene.selectItem(itemSelector);
                 }
             };
-            btnItem.setRect( WIDTH - (BTN_SIZE * 1.4f), message.top() + message.height() , BTN_SIZE, BTN_SIZE );
-            add( btnItem );
+            btnItem.setRect(WIDTH - (BTN_SIZE * 1.4f), message.top() + message.height(), BTN_SIZE, BTN_SIZE);
+            add(btnItem);
 
-            btnChange = new RedButton( Messages.get(this, "change") ) {
+            btnChange = new RedButton(Messages.get(this, "change")) {
                 @Override
                 protected void onClick() {
-                    if(btnItem.item() instanceof Prop){
-                        if(mode == 0) {
-
-                            switch (((Prop) btnItem.item()).kind) {
-                                case 0:
-                                    Prop p = Prop.randomPropA(( (Prop) btnItem.item()).rareness);
-                                    p.collect();
-                                    GLog.i(Messages.get(hero, "you_now_have", p.name()));
-
-                                    Statistics.add((Prop)btnItem.item());
-
-                                    btnItem.item().detach(Dungeon.hero.belongings.backpack);
-                                    break;
-
-                                case 1:
-                                    p = Prop.randomPropB(( (Prop) btnItem.item()).rareness);
-                                    p.collect();
-                                    GLog.i(Messages.get(hero, "you_now_have", p.name()));
-
-                                    Statistics.add((Prop)btnItem.item());
-
-                                    btnItem.item().detach(Dungeon.hero.belongings.backpack);
-                                    break;
-                            }
-                        } else{
-                            if(Random.Float()>0.66f){
-                                switch (((Prop) btnItem.item()).kind) {
-                                    case 0:
-                                        Prop p1 = Prop.randomPropA(( (Prop) btnItem.item()).rareness+1);
-                                        p1.collect();
-                                        GLog.i(Messages.get(hero, "you_now_have", p1.name()));
-
-                                        Prop p2 = Prop.randomPropA(( (Prop) btnItem.item()).rareness);
-                                        p2.collect();
-                                        GLog.i(Messages.get(hero, "you_now_have", p2.name()));
-
-                                        Statistics.add((Prop)btnItem.item());
-                                        btnItem.item().detach(Dungeon.hero.belongings.backpack);
-                                        break;
-                                    case 1:
-                                        Prop p = Prop.randomPropA(( (Prop) btnItem.item()).rareness);
-                                        p.collect();
-                                        GLog.i(Messages.get(hero, "you_now_have", p.name()));
-
-                                        Statistics.add((Prop)btnItem.item());
-                                        btnItem.item().detach(Dungeon.hero.belongings.backpack);
-                                        break;
-                                }
-                            }else{
-                                switch (((Prop) btnItem.item()).kind) {
-                                    case 0:
-                                        Prop p = Prop.randomPropB(( (Prop) btnItem.item()).rareness);
-                                        p.collect();
-                                        GLog.i(Messages.get(hero, "you_now_have", p.name()));
-                                        if(btnItem.item() instanceof TerrorDollB){
-                                            Statistics.add(new TerrorDoll());
-                                        }else{
-                                            Statistics.add((Prop)(btnItem.item()));
-                                        }
-                                        btnItem.item().detach(Dungeon.hero.belongings.backpack);
-                                        break;
-                                    case 1:
-                                        Prop p1 = Prop.randomPropB(( (Prop) btnItem.item()).rareness+1);
-                                        p1.collect();
-                                        GLog.i(Messages.get(hero, "you_now_have", p1.name()));
-
-                                        Prop p2 = Prop.randomPropB(( (Prop) btnItem.item()).rareness);
-                                        p2.collect();
-                                        GLog.i(Messages.get(hero, "you_now_have", p2.name()));
-
-                                        if(btnItem.item() instanceof TerrorDollB){
-                                            Statistics.add(new TerrorDoll());
-                                        }else{
-                                            Statistics.add((Prop)(btnItem.item()));
-                                        }
-                                        btnItem.item().detach(Dungeon.hero.belongings.backpack);
-                                        break;
-                                }
-                            }
+                    if (btnItem.item() instanceof Prop) {
+                        if (mode == 0) {
+                            handleNormalTransformation();
+                        } else {
+                            handleDistortedTransformation();
                         }
                     }
 
-                    if(Dungeon.hero.belongings.getItem(Trash.class)!= null){
-                        for(Trash t : Dungeon.hero.belongings.getAllItems(Trash.class)){
-                            t.detach(Dungeon.hero.belongings.backpack);
-                        }
-                        GLog.b(Messages.get(Trash.class,"trash"));
-                    }
+                    // 清理垃圾物品
+                    cleanTrashItems();
 
                     hide();
-                    if (wndParent != null){
+                    if (wndParent != null) {
                         wndParent.hide();
                     }
-                    GLog.b(Messages.get(SmallLeafHardDungeon.class,"changed"));
+                    GLog.b(Messages.get(SmallLeafHardDungeon.class, "changed"));
                     smallLeaf.die(smallLeaf);
                     smallLeaf.destroy();
                 }
             };
-            btnChange.enable( false );
-            btnChange.setRect( 0, btnItem.bottom(), WIDTH, 20 );
+            btnChange.enable(false);
+            btnChange.setRect(0, btnItem.bottom(), WIDTH, 20);
             add(btnChange);
 
+            resize(WIDTH, (int) btnChange.bottom());
+        }
 
-            resize( WIDTH, (int) btnChange.bottom() );
+        private void handleNormalTransformation() {
+            Prop currentProp = (Prop) btnItem.item();
+            Prop newProp;
+
+            // 确保能获取到藏品
+            do {
+                switch (currentProp.kind) {
+                    case 0:
+                        newProp = Prop.randomPropA(currentProp.rareness);
+                        break;
+                    case 1:
+                        newProp = Prop.randomPropB(currentProp.rareness);
+                        break;
+                    default:
+                        newProp = null;
+                        break;
+                }
+            } while (newProp == null || newProp.getClass() == currentProp.getClass());
+
+            newProp.collect();
+            GLog.i(Messages.get(Dungeon.hero, "you_now_have", newProp.name()));
+            Statistics.add(currentProp);
+            btnItem.item().detach(Dungeon.hero.belongings.backpack);
+        }
+
+        private void handleDistortedTransformation() {
+            Prop currentProp = (Prop) btnItem.item();
+            Prop newProp1;
+            Prop newProp2;
+
+            if (Random.Float() > 0.66f) {
+                do {
+                    switch (currentProp.kind) {
+                        case 0:
+                            newProp1 = Prop.randomPropA(currentProp.rareness + 1);
+                            newProp2 = Prop.randomPropA(currentProp.rareness);
+                            break;
+                        case 1:
+                            newProp1 = Prop.randomPropA(currentProp.rareness);
+                            newProp2 = null;
+                            break;
+                        default:
+                            newProp1 = null;
+                            newProp2 = null;
+                            break;
+                    }
+                } while ((newProp1 == null || newProp1.getClass() == currentProp.getClass()) ||
+                        (newProp2 != null && newProp2.getClass() == currentProp.getClass()));
+
+                if (newProp1 != null) {
+                    newProp1.collect();
+                    GLog.i(Messages.get(Dungeon.hero, "you_now_have", newProp1.name()));
+                }
+                if (newProp2 != null) {
+                    newProp2.collect();
+                    GLog.i(Messages.get(Dungeon.hero, "you_now_have", newProp2.name()));
+                }
+            } else {
+                do {
+                    switch (currentProp.kind) {
+                        case 0:
+                            newProp1 = Prop.randomPropB(currentProp.rareness);
+                            newProp2 = null;
+                            break;
+                        case 1:
+                            newProp1 = Prop.randomPropB(currentProp.rareness + 1);
+                            newProp2 = Prop.randomPropB(currentProp.rareness);
+                            break;
+                        default:
+                            newProp1 = null;
+                            newProp2 = null;
+                            break;
+                    }
+                } while ((newProp1 == null || newProp1.getClass() == currentProp.getClass()) ||
+                        (newProp2 != null && newProp2.getClass() == currentProp.getClass()));
+
+                if (newProp1 != null) {
+                    newProp1.collect();
+                    GLog.i(Messages.get(Dungeon.hero, "you_now_have", newProp1.name()));
+                }
+                if (newProp2 != null) {
+                    newProp2.collect();
+                    GLog.i(Messages.get(Dungeon.hero, "you_now_have", newProp2.name()));
+                }
+            }
+
+            Statistics.add(currentProp);
+            btnItem.item().detach(Dungeon.hero.belongings.backpack);
+        }
+
+        private void cleanTrashItems() {
+            if (Dungeon.hero.belongings.getItem(Trash.class) != null) {
+                for (Trash t : Dungeon.hero.belongings.getAllItems(Trash.class)) {
+                    t.detach(Dungeon.hero.belongings.backpack);
+                }
+                GLog.b(Messages.get(Trash.class, "trash"));
+            }
         }
 
         protected WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
-
             @Override
             public String textPrompt() {
                 return Messages.get(this, "select");
             }
 
             @Override
-            public Class<?extends Bag> preferredBag(){
+            public Class<? extends Bag> preferredBag() {
                 return PropBag.class;
             }
 
@@ -289,13 +302,12 @@ public class SmallLeafHardDungeon extends NPC {
             }
 
             @Override
-            public void onSelect( Item item ) {
+            public void onSelect(Item item) {
                 if (item != null && btnPressed.parent != null) {
                     btnPressed.item(item);
                     btnChange.enable(true);
                 }
             }
         };
-
     }
 }

@@ -26,7 +26,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -387,7 +386,6 @@ public class YogDzewa extends Boss {
 								haloFist.pos = pos+3;
 								GameScene.add(haloFist);
 							}
-							Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
 						}
 					});
 				}
@@ -594,12 +592,6 @@ public class YogDzewa extends Boss {
 						((DriedRose.GhostHero) ch).sayBoss();
 					}
 				}
-				Game.runOnRenderThread(new Callback() {
-					@Override
-					public void call() {
-						Music.INSTANCE.play(Assets.Music.HALLS_TENSE, true);
-					}
-				});
 				if (phase == 0) {
 					phase = 1;
 					summonCooldown = Random.NormalFloat(MIN_SUMMON_CD, MAX_SUMMON_CD);

@@ -35,13 +35,9 @@ public class Assets {
 	public static class Map_Luas {
 		public static final String LockedOneRoom_MapLua      = "lua/iron/iron_key1.lua";
 		public static final String LockedTwoRoom_MapLua      = "lua/iron/iron_key2.lua";
-		public static final String LockedThreeRoom_MapLua      = "lua/iron/iron_key3.lua";
 		public static final String LockedFourRoom_MapLua      = "lua/iron/iron_key4.lua";
 		public static final String LockedFiveRoom_MapLua      = "lua/iron/iron_key5.lua";
-		public static final String LockedSixRoom_MapLua      = "lua/iron/iron_key6.lua";
 		public static final String LockedSevenRoom_MapLua      = "lua/iron/iron_key7.lua";
-		public static final String LockedEightRoom_MapLua      = "lua/iron/iron_key8.lua";
-		public static final String LockedNineRoom_MapLua      = "lua/iron/iron_key9.lua";
 
 		public static final String GoldOneRoom_MapLua       = "lua/gold/gold_key1.lua";
 		public static final String GoldTwoRoom_MapLua       = "lua/gold/gold_key2.lua";
@@ -356,9 +352,6 @@ public class Assets {
 		public static final String SHOP      = "music/shop.ogg";
 		public static final String THEME_1      = "music/theme.ogg";
 		public static final String THEME_2      = "music/theme_sky.ogg";
-
-		//关卡音乐
-		public static final String CLOUND_CITY = "music/Level0.ogg";
 		public static final String JUNGLE_FOREST = "music/Level1.ogg";
 
 		public static final String BGM_1A = "music/forestflower.ogg";
@@ -375,19 +368,11 @@ public class Assets {
 
 		public static final String CHRAMSS     = "music/chrimas.ogg";
 		public static final String SEWERS_BOSS  = "music/Boss1.ogg";
-
-		public static final String PRISON_1     = "music/Level2.ogg";
-		public static final String PRISON_2     = "music/Level2.ogg";
 		public static final String PRISON_BOSS  = "music/Tengu.ogg";
-		public static final String CAVES_BOSS   = "music/caves_tense.ogg";
-
 		public static final String CITY_BOSS    = "music/Boss4.ogg";
         public static final String HALLS_BOSS = "music/Boss5.ogg";
         public static final String NBPL = "music/nbpl.ogg";
         public static final String THEME_FINALE = "music/theme_finale.ogg";
-
-		public static final String RESET_FINALE = "music/reset_finale.ogg";
-
         public static final String PRISON_TENSE = "music/prison_tense.ogg";
         public static final String CAVES_TENSE = "music/caves_tense.ogg";
         public static final String CAVES_BOSS_FINALE = "music/caves_boss_finale.ogg";
@@ -405,9 +390,6 @@ public class Assets {
 		public static final String DIAMAND_KING_INTRO = "music/boss/Diamd_Boss.ogg";
 		public static final String DRAGON_LING  = "music/boss/Dragon.ogg";
 
-
-		public static final String SNOWCYON	= "music/SnowCyon.ogg";
-
 		public static final String NIGHT	= "music/DwarfGeneral.ogg";
 
 		public static final String YOGALXY	= "music/rgjt/galaxy.ogg";
@@ -418,10 +400,7 @@ public class Assets {
 
 		public static final String TOWN 		= "music/town.ogg";
 		public static final String BGM_BOSSA 	= "music/Boss1.ogg";
-		public static final String BGM_BOSSA3 	= "music/Boss1.ogg";
 		public static final String BGM_YOU 		= "music/boss/you.ogg";
-		public static final String BGM_BOSSB 	= "music/Boss2.ogg";
-		public static final String BGM_BOSSB2 	= "music/Tengu.ogg";
 		public static final String BGM_BOSSC 	= "music/Boss3.ogg";
 		public static final String BGM_BOSSD 	= "music/Boss4.ogg";
 		public static final String BGM_BOSSD2 	= "music/DwarfGeneral.ogg";
@@ -429,11 +408,8 @@ public class Assets {
 
 		public static final String BGM_SHOP 	= "music/Shop.ogg";
 		public static final String BGM_BOSSE4 	= "music/YogTime.ogg";
-		public static final String BGM_FRBOSS 	= "music/SnowLing.ogg";
 		public static final String HOLLOW_CITY 	= "music/hollow/Mischief_Managed-Easy.ogg";
 		public static final String HOLLOW_CITY_HARD 	= "music/hollow/Mischief_Managed.ogg";
-
-		public static final String FL_CITY 		= "music/forestflower.ogg";
 		public static final String BOSSDOG 		= "music/boss/dogboss.ogg";
 		public static final String MORP_BOSS 	= "music/hollow/morpheus.ogg";
 	}
