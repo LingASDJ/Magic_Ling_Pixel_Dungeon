@@ -109,7 +109,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -1462,13 +1461,6 @@ public abstract class Mob extends Char {
 
     public void notice() {
 		sprite.showAlert();
-		if (!BossHealthBar.isAssigned()) {
-			if (Dungeon.level.locked) {
-				level.playBossMusic();
-			} else {
-				level.playLevelMusic();
-			}
-		}
 	}
 
 	protected class Passive implements AiState {

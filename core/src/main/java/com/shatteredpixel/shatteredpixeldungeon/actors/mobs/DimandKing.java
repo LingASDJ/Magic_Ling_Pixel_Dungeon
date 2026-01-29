@@ -17,7 +17,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -29,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFla
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
@@ -473,16 +471,9 @@ public class DimandKing extends Boss {
 
     @Override
     public void die(Object cause) {
-//      if(Statistics.happyMode){
-//
-//            GetBossLoot(pos);
-//        }
         GameScene.bossSlain();
         Statistics.bossScores[1] += 1000;
         super.die( cause );
-        if (Dungeon.hero.subClass == HeroSubClass.NONE) {
-            Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
-        }
         int dropPos = this.pos;
        for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (	mob instanceof DKMonk||

@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Gudazi;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
@@ -103,6 +104,11 @@ public class CavesLevel extends RegularLevel {
 			npc20.pos = entrance()-1;
 			mobs.add(npc20);
 		}
+
+		if(Dungeon.depth == 11 && Statistics.RandMode){
+			drop(new TengusMask(), entrance()-1);
+		}
+
 		super.createMobs();
 	}
 

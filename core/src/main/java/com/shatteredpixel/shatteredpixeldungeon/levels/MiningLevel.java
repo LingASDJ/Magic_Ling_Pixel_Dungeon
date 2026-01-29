@@ -91,6 +91,11 @@ public class MiningLevel extends CavesLevel {
 	}
 
 	@Override
+	public void playBossMusic() {
+		Music.INSTANCE.play(Assets.Music.CAVES_BOSS_FINALE, true);
+	}
+
+	@Override
 	public int randomRespawnCell( Char ch ) {
 		int pos = entrance();
 		int cell;

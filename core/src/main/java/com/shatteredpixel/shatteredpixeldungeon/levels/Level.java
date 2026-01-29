@@ -915,6 +915,7 @@ public abstract class Level implements Bundlable {
 		if (!locked) {
 			locked = true;
 			Buff.affect(hero, LockedFloor.class);
+			playBossMusic();
 		}
 	}
 

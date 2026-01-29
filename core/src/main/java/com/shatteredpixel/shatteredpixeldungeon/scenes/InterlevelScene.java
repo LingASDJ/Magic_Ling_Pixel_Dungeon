@@ -503,7 +503,7 @@ public class InterlevelScene extends PixelScene {
 		Mob.holdAllies( Dungeon.level );
 
 		Level level;
-		if (Dungeon.level.locked) {
+		if (Dungeon.level.locked || branch != 0) {
 			ArrayList<Item> preservedItems = Dungeon.level.getItemsToPreserveFromSealedResurrect();
 
 			hero.resurrect();

@@ -41,12 +41,8 @@ public class IceCyanBlueSquareCoin extends Item {
         if(Dungeon.isDLC(Conducts.Conduct.DEV) || Statistics.bossRushMode)
         {
             GLog.n(Messages.get(this,"no"));
-            return false;
-        }
-
-
-        if(SPDSettings.Cheating()){
-            //盗版蓝币只有正版的十分之一
+            SPDSettings.iceCoin(0);
+        } else if(SPDSettings.Cheating()){
             SPDSettings.iceCoin(quantity/10);
         } else {
             SPDSettings.iceCoin(quantity);
