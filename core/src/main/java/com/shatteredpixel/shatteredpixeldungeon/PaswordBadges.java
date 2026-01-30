@@ -72,7 +72,7 @@ public class PaswordBadges {
     public static void ALLCS(int challenges){
         PaswordBadges.Badge badge = null;
 
-        boolean isNoSeedMode =SPDSettings.customSeed().isEmpty();
+        boolean isNoSeedMode = !Statistics.seedCustom;
 
         if (challenges == 0 || !isNoSeedMode) return;
         boolean isNoChampion = Statistics.bossRushMode || Statistics.RandMode;

@@ -417,7 +417,7 @@ public class TowerMind extends Boss {
 
                                 @Override
                                 public void call() {
-                                    Dungeon.level.drop(finalItem, hero.pos);
+                                    Dungeon.level.drop(finalItem, 387);
                                 }
                             }
                     );
@@ -520,7 +520,7 @@ public class TowerMind extends Boss {
 
                                 @Override
                                 public void call() {
-                                    Dungeon.level.drop(finalItem, pos);
+                                    Dungeon.level.drop(finalItem, 387);
                                 }
                             }
                     );

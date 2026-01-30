@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -55,11 +57,14 @@ public class WndInfoBuff extends Window {
 
 
 		if(buff.skills){
-			RedButton redButton = new RedButton(Messages.get(this,"active_skills")){
+			RedButton redButton = new RedButton(Messages.get(buff,"active_skills")){
 				@Override
 				protected void onClick() {
 					super.onClick();
-					buff.detach();
+					Buff.detach(buff.target, buff.getClass());
+					Dungeon.hero.spend( Actor.TICK );
+					Dungeon.hero.busy();
+					Dungeon.hero.sprite.operate( Dungeon.hero.pos );
 					hide();
 				}
 			};

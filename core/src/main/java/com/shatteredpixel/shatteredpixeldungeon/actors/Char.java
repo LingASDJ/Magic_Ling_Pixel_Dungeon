@@ -115,7 +115,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
@@ -1522,18 +1521,6 @@ public abstract class Char extends Actor {
 
 	public static boolean hasProp( Char ch, Property p){
 		return (ch != null && ch.properties().contains(p));
-	}
-
-	//Returns the level a glyph is at for a char, or -1 if they are not benefitting from that glyph
-	//This function is needed as (unlike enchantments) many glyphs trigger in a variety of cases
-	public int glyphLevel(Class<? extends Armor.Glyph> cls){
-		if (Dungeon.hero != null && Dungeon.level != null
-				&& this != Dungeon.hero && Dungeon.hero.alignment == alignment
-				&& (Dungeon.level.distance(pos, Dungeon.hero.pos) <= 2 )) {
-			return Dungeon.hero.glyphLevel(cls);
-		} else {
-			return -1;
-		}
 	}
 
 	public float talentProc(){//for RUNIC_TRANSFERENCE

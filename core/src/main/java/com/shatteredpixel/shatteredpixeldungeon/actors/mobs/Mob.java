@@ -477,12 +477,6 @@ public abstract class Mob extends Char {
 			}
 		}
 
-		if(isOldDay){
-			if(buff(Corruption.class)!=null){
-				die(true);
-			}
-		}
-
 		//相位体
 		if (!Dungeon.level.heroFOV[pos] && HP < HT && buff(ChampionEnemy.HealRight.class) != null) {
 			HP += Math.min(1, HT);

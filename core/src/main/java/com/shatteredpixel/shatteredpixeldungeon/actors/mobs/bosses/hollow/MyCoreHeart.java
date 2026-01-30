@@ -1,10 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.To
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMindBad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerTimeBad;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.GalaxyHeartDeadEndPlot;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -100,22 +102,22 @@ public class MyCoreHeart extends Boss {
     public boolean isAlive() {
         return true;
     }
+
     boolean talk = false;
     public boolean act() {
         alerted = false;
         state = PASSIVE;
         if(HP == 0 && !talk){
-            if(!(Dungeon.isDLC(Conducts.Conduct.DEV))) {
-                GalaxyHeartDeadEndPlot plot = new GalaxyHeartDeadEndPlot();
-                Game.runOnRenderThread(new Callback() {
-                    @Override
-                    public void call() {
-                        GameScene.show(new WndDialog(plot, false));
-                    }
-                });
-                talk = true;
-            }
+            GalaxyHeartDeadEndPlot plot = new GalaxyHeartDeadEndPlot();
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(plot, false));
+                }
+            });
+            talk = true;
         }
+
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if(mob instanceof TowerGodsBad && ((TowerGodsBad) mob).repiaer && !one && mob.buff(RepaierDown.class) == null){
@@ -156,17 +158,7 @@ public class MyCoreHeart extends Boss {
             sprite.killAndErase();
         }
 
-        boolean hasOldDayMob = false;
-        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-            if (mob.isAlive() && mob.isOldDay) {
-                hasOldDayMob = true;
-                break;
-            }
-        }
-
-        if(!hasOldDayMob){
-            Buff.detach(this,SummonColdDown.class);
-        }
+        onZapComplete();
 
         TryGetSummonedMobs();
 
@@ -177,6 +169,26 @@ public class MyCoreHeart extends Boss {
     public static int[] safePos = new int[] {
         301,587,323,37
     };
+
+
+    public void onZapComplete(){
+        for (Mob enemy : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if(enemy.isOldDay){
+                for (Buff b : enemy.buffs(AllyBuff.class)){
+                    if(b != null){
+                        if (sprite.visible || enemy.sprite.visible) {
+                            sprite.parent.add(new Beam.DeathRayS(sprite.center(), enemy.sprite.center()));
+                        }
+                        enemy.damage(10000,this,DamageType.REAL);
+                        if (enemy.sprite.visible)
+                            enemy.sprite.emitter().burst( Speck.factory( Speck.STAR ), 1 );
+                    }
+                }
+            }
+            next();
+        }
+
+    }
 
     public void TryGetSummonedMobs() {
         int spawnCount = 0;
@@ -275,6 +287,7 @@ public class MyCoreHeart extends Boss {
 
         {
             type = buffType.POSITIVE;
+            skills = true;
         }
 
         public static final float DURATION	= 30f;
@@ -386,10 +399,12 @@ public class MyCoreHeart extends Boss {
         }
 
         if(enemy != null && enemy instanceof Mob){
-            dmg =  1;
-            enemy.damage(HT,this);
-            Buff.affect(enemy, Bleeding.class).set(1000f);
-            brokenCount++;
+            if(Dungeon.level.distance(pos,enemy.pos)<=1){
+                dmg =  1;
+                enemy.damage(HT,this);
+                Buff.affect(enemy, Bleeding.class).set(1000f);
+                brokenCount++;
+            }
         } else {
             return;
         }
