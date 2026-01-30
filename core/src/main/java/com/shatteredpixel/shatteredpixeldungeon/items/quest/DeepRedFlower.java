@@ -18,6 +18,7 @@ public class DeepRedFlower extends Item {
     {
         image = ItemSpriteSheet.FLOWERS;
         cursed = false;
+        defaultAction = AC_ACTIVE;
     }
 
     @Override
@@ -38,6 +39,7 @@ public class DeepRedFlower extends Item {
                         Hiro hiro = (Hiro) mob;
                         if(Dungeon.level.distance(hiro.pos, hero.pos) <= 1 && !hiro.flower){
                             hiro.flower = true;
+                            detach(hero.belongings.backpack);
                             GLog.p(Messages.get(this,"used"));
                         } else {
                             GLog.w(Messages.get(this,"not_used"));

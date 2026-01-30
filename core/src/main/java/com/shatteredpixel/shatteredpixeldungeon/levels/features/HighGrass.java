@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.features;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.HIGH_GRASS;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -79,29 +81,41 @@ public class HighGrass {
 				for (Mob mob : level.mobs.toArray(new Mob[0])){
 					if (mob instanceof Hiro) {
 						Hiro hiro = (Hiro) mob;
+						// 添加额外的检查，确保花只生成一次
 						if(!hiro.getFlower){
 							int highGrassCount = 0;
 							for (int j : level.map) {
-								if (j == Terrain.HIGH_GRASS) {
+								if (j == HIGH_GRASS) {
 									highGrassCount++;
 								}
 							}
+
+							// 使用一个标志变量确保只生成一次
+							boolean flowerGenerated = false;
+
 							if (highGrassCount <= 5) {
 								if (highGrassCount == 1) {
 									level.drop(new DeepRedFlower(), Dungeon.hero.pos);
 									hiro.getFlower = true;
+									flowerGenerated = true;
 								} else if (Random.Int(100) < 60) {
 									level.drop(new DeepRedFlower(), Dungeon.hero.pos);
 									hiro.getFlower = true;
+									flowerGenerated = true;
 								}
 							} else if (Random.Int(100) < 20) {
-								level.drop(new DeepRedFlower(),Dungeon.hero.pos);
+								level.drop(new DeepRedFlower(), Dungeon.hero.pos);
 								hiro.getFlower = true;
+								flowerGenerated = true;
+							}
+
+							// 如果生成了花，立即返回或跳出
+							if (flowerGenerated) {
+								return; // 或者 break
 							}
 						}
 						break;
 					}
-
 				}
 				Level.set(pos, Terrain.GRASS);
 			}
