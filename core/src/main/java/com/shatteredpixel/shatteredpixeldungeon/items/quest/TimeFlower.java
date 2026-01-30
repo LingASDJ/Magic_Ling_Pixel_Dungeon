@@ -26,6 +26,7 @@ public class TimeFlower extends Item {
     {
         image = ItemSpriteSheet.FLOWERS;
         cursed = false;
+        defaultAction = AC_ACTIVE;
     }
 
     @Override
@@ -45,7 +46,7 @@ public class TimeFlower extends Item {
                     Buff.affect(hero, Swiftthistle.TimeBubble.class).setLeft(powerFlower ? 10 * (7- (float) Dungeon.depth /5) : 6f);
                     GLog.p(Messages.get(this,"used"));
                 }
-                if(used > 3){
+                if(used >= 3){
                     detach(hero.belongings.backpack);
                     Dungeon.level.drop(new DeepRedFlower(), hero.pos).sprite.drop(hero.pos);
                 }

@@ -332,11 +332,9 @@ public class PrisonLevel extends RegularLevel {
 					Statistics.enterHiro = true;
 					return false;
 				} else {
-					GLog.w(String.valueOf(1));
 					return super.activateTransition(hero,transition);
 				}
             } else {
-				GLog.w(String.valueOf(2));
                 return super.activateTransition(hero,transition);
 			}
 		} else {

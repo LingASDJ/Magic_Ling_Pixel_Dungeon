@@ -33,11 +33,14 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulPlusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GiantFlowerSlimeSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GuardCapitalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HiroSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MageHandSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MyCoreHeartSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.NyarlathotepSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PeachGodStateSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PumkingGhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.QliphothSprite;
@@ -48,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ShieldHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShubNiggurathSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SkyDeadSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpawnereEvilSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TowerMachineSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VeryColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WarlockHeadSprite;
@@ -103,63 +107,124 @@ public class vm0_8_X_Changes {
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：Pre-5YearsOld"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：2026-2-12 22:00前")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKIN_11), ("新皮肤：晚宴邀请"),
+                ("已可在时装商人处购买，售价1500钴币")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.OLDSUNSHADOW), ("新道具:往日投影"),
+                ("水晶上面映射出各种可能性，你能否找到属于你的位面？")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("材质包系统1.0"),
+                ("材质包系统正式登场，目前预置了5个材质包，你也可以自行定制材质包。\n\n" +
+                        "如要定制材质包，请查阅游戏新闻材质包置顶使用说明。")));
+
+        changes.addButton(new ChangeButton(new HiroSprites(), ("新NPC:久住"),
+                ("在时间静止的区域，她在那里静静的等待毁灭的降临。\n\n" +
+                        "在9层下楼携带一种特殊的信物将有概率前往")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOMB_SWORD), ("新武器：炸弹匕首"),
+                ("炸弹匕首重做归来，并实装了动画效果！\n\n这件武器会在击杀敌人时有概率获取一枚弹药，通过升级该武器可以提高概率，和解锁更加强大的炸弹。" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_HAND_CONTROL), ("新战法相关调整"),
+                ("新增以下功能\n\n" +
+                        "1.针对于部分特殊地图（异果，小游戏地图）将自动死亡并掉落物品在英雄脚下\n" +
+                        "2.现在装配法杖的充能数看得见了\n" +
+                        "3.装配法杖现在有右侧快捷键了\n" +
+                        "4.当老魔杖耗尽时，将自动转为近战攻击，每次攻击都会给予英雄1回合敌意效果\n" +
+                        "5.现在法师之手控制器检测到法师之手不存在时，贴图持续闪红光且快捷键直接变成【召唤】\n" +
+                        "6.现在法师之手不会再寻找不存在的敌人\n" +
+                        "7.现在法师之手装配老法杖时，近远智能使用，而不是冷却期间发呆\n" +
+                        "8.魔力补偿天赋废弃\n" +
+                        "9.魔力汲取天赋实装\n" +
+                        "10.实现哨位适配，法师之手巡查AI，视野共享\n" +
+                        "11.多样打击现在只需要英雄背包有老魔杖或法师之手有老魔杖即可触发")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.STORYBOOKS), ("新开发者工具:思维之书"),
+                ("进入各种领袖的思维，去回忆那些和它们的决战。")));
 
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_HAND_CONTROL), ("法师之手控制器"),
-                ("新增以下功能\n\n" +
-                        "1.可以指定敌人，法师之手将优先攻击此敌人\n\n" +
-                        "2.如果在召唤过程中失败，可在这里进行再次召唤")));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEAL), ("精巧纹章天赋调整"),
+                ("精巧纹章天赋生效时，可对纹章使用驱邪卷轴；诅咒菱晶现在也可以对诅咒纹章提供一次永久升级。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD), ("金蝶模式调整"),
+                ("1.金蝶任务2：每大层至多因为猎杀金蝶怪物获得额外1次嬗变，五区累计总计5次嬗变\n" +
+                        "2.修复抢劫可上楼导致的严重bug")));
+
+
+
+        changes.addButton(new ChangeButton(new NyarlathotepSprite(), ("古堡奈亚调整"),
+                ("奈亚子生成陷阱现在不包含塌方陷阱")));
+
+        Image sss =new MyCoreHeartSprite();
+        sss.scale.set(PixelScene.align(0.4f));
+        changes.addButton(new ChangeButton(sss, ("古堡宇宙之心调整"),
+                ("宇宙之心对于友方阵营将进行自动处决")));
+
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
-                ("1.修复有形之手天赋造成的崩溃\n" +
-                        "2.隐藏控件暂时删除\n" +
-                        "3.修复矮人尸群因为多线程导致的检查崩溃\n" +
-                        "4.修复创世神之心的判定优先级问题导致的崩溃\n" +
-                        "5.修复并发检查带来的崩溃\n" +
-                        "6.修复苦痛刻痕判定优先级问题带来的崩溃异常\n" +
-                        "7.修复熔岩火龙视野判定导致的崩溃异常\n" +
-                        "8.修复绝命头目-拟态之王 流血公式计算异常\n"),
-                ("9.修复思维之柱的判定优先级的崩溃异常\n" +
-                        "10.修复哨位素材无法读取时，则直接摧毁素材实体\n" +
-                        "11.修复矮人尸山的越界判定异常\n" +
-                        "12.修复灵壤，雷霆，注魂，腐化的使用者始终为英雄，即便在法师之手上\n" +
-                        "13.修复BossRush-绿野精灵国王 的伤害重复调用传送，可能导致栈溢出的异常\n" +
-                        "14.修复因上次2.5破碎底层的迁移导致的各种异常残留\n" +
-                        "15.修复机械之柱的敌人判定的一些异常\n" +
-                        "16.修复法师之手没有贵重物品标签\n" ),
+                ("1.修复部分素材的渲染异常崩溃\n" +
+                        "2.修复英雄存活读取的优先级异常崩溃\n" +
+                        "3.修复风暴雷霆法杖的一些异常崩溃\n" +
+                        "4.修复法师之手的传送异常崩溃，无限卡死修复\n" +
+                        "5.修复法师之手瞬间指向异常"),
+                ("6.修复法师之手无法充能\n" +
+                        "7.修复属性查看器会导致英雄buff显示异常问题\n" +
+                        "8.修复激流陷阱越界异常\n" +
+                        "9.升降器现在至多降到5子层\n" +
+                        "10.修复解离战法的攻击距离增加效果异常" ),
 
-                ("17.修复幽寂错误的对话逻辑导致的崩溃\n" +
-                        "18.修复了魔力补偿的相关异常崩溃\n" +
-                        "19.修复了纯晶护卫长火墙描述文本缺失\n" +
-                        "20.部分文案优化和错误修正")));
+                ("11.修复老魔杖没有说明战法效果的文本\n" +
+                        "12.少量文案错误修正\n" +
+                        "13.血饮附魔异常修复，现在不能对中立与友方生物生效\n" +
+                        "14.修复烟雾体索敌距离异常\n" +
+                        "15.修复狱火附魔受奥术加成的一些异常"),
 
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
-        changes.hardlight(Window.R_COLOR);
-        changeInfos.add(changes);
+                ("16.修复拟态之王坠楼导致死档\n" +
+                        "17.修复空间信标未判定锁定楼层的异常\n" +
+                        "18.现在子层死亡的遗物背包均会在死亡地点生成\n" +
+                        "19.修复龙血鳞片一般显示的文案数值异常\n" +
+                        "20.修复夏渔雾溟对话时给予的饰品获取文本与实际获取的不相符"),
 
-        changes.addButton(new ChangeButton(new DeadEyeSprite(), ("毁灭魔眼"),
-                ("现在可解离背包内的物品，增大了解离的物品池子（包括容器内的物品，但仍会排除贵重物品、露水、国王袋等特殊物品）")));
+                ("21.修复破损纹章携带的部分附魔未正常生效的异常\n" +
+                        "22.修复暗金宝石护符诅咒特效失效\n" +
+                        "23.修复普通古神战中，孤城情况下，拳头在古神附近应有的无敌效果失效\n" +
+                        "24.修复弩炮显示法伤的异常\n" +
+                        "25.定身期间现在无敌 & 树痕护盾为0时，快捷栏按钮不会生效")
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("熔岩洞穴"),
-                ("现在只会固定生成随机2卷轴，1符石，1食物，1药剂")));
+        ));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项调整"),
+                ("1.Mob更安全的边界检查\n" +
+                        "2.萨卡班甲鱼现在进入场地才会生成，且死亡时清除所有地图上的霜火粒子效果\n" +
+                        "3.在子层系统中，陷阱房间将不再存在裂缝\n" +
+                        "4.萨卡班甲鱼存活判定变得更加细致\n" +
+                        "5.开发者模式状态查看器可查阅免疫状态\n" +
+                        "6.DM720电塔激活时，将指向电塔\n" +
+                        "7.三井层在探险笔记中会同时显示三个井，使用其中一个这三个都会在探险笔记中被移除\n" +
+                        "8.特殊模式Boss不再掉落天狗面具，金蝶到11层，BR到10层的楼层入口自行领取\n" +
+                        "9.钴币开发者模式可以获取，但无效果")));
+
 
         Image ss =new ShubNiggurathSprite();
         ss.scale.set(PixelScene.align(0.4f));
         changes.addButton(new ChangeButton(ss, ("莎布·尼古拉丝"),
-                "_-_ 分身分裂上限：最多分裂9个黑山羊分身\n" +
-                        "_-_ 血量恢复机制：本体在分身存在时可恢复1000点生命值，但仅限5次\n" +
-                        "_-_ 死亡条件：第6次尝试恢复生命值时，本体与所有分身将直接死亡 或 黑山羊无任何分身时可直接死亡"));
+                "1.如果与墨菲厄斯在同一个格子 直接死亡\n" +
+                        "2.召唤上限调整至18"));
 
-        changes = new ChangeInfo("预载", false, null);
-        changes.hardlight(Window.CBLACK);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("1.0.0-MLPD"),
-                ("1.0.0相关资源预载")));
+        Image st =new TowerMachineSprite();
+        st.scale.set(PixelScene.align(0.4f));
+        changes.addButton(new ChangeButton(st, ("古堡四柱调整"),
+                "1.修复机械之柱范围伤害异常\n" +
+                        "2.四柱近战伤害都为0\n" +
+                        "3.思维模块相关Bug修复\n" +
+                        "4.修复机械之柱的炮弹击杀会多次弹出死亡文本\n" +
+                        "5.修复神明之柱的元素抗性异常，现在半血前50%，半血后75%"));
     }
 
     public static void add_V0915_Changes(ArrayList<ChangeInfo> changeInfos ) {
