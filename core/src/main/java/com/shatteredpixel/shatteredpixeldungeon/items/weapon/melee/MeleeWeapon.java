@@ -306,7 +306,7 @@ public class MeleeWeapon extends Weapon {
 	}
 
 	protected int baseChargeUse(Hero hero, Char target){
-		return 1; //abilities use 1 charge by default
+		return 1;
 	}
 
 	public final float abilityChargeUse(Hero hero, Char target){
