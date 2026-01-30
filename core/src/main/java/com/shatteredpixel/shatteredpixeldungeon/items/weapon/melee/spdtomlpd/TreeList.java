@@ -28,9 +28,22 @@ public class TreeList extends MeleeWeapon {
     {
         image = ItemSpriteSheet.TREE_LIST;
         tier = 2;
-        defaultAction = AC_BARRIER;
     }
 
+
+    public String defaultAction(){
+        if(Dungeon.hero.buff(TreeBarrier.class)!=null ){
+            TreeBarrier tb = Dungeon.hero.buff(TreeBarrier.class);
+            if(tb.accumulatedShield != 0){
+                defaultAction = AC_BARRIER;
+            } else {
+                defaultAction = null;
+            }
+        } else {
+            defaultAction = null;
+        }
+        return defaultAction;
+    }
 
     @Override
     public ArrayList<String> actions(Hero hero ) {
@@ -217,6 +230,11 @@ public class TreeList extends MeleeWeapon {
 
     public int DRMax(int lvl){
         return 3 + lvl;
+    }
+
+    @Override
+    protected int baseChargeUse(Hero hero, Char target){
+        return 2;
     }
 
 
