@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.utils.DeviceCompat;
 
 public class SKINITEM extends Item {
 
@@ -122,7 +121,7 @@ public class SKINITEM extends Item {
         }
         @Override
         public int iceCoinValue() {
-            return DeviceCompat.isDebug() ? 1 : 1500;
+            return 1500;
         }
     }
 

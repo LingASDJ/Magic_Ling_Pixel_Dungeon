@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Gudazi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SkyDead;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -312,6 +313,32 @@ public class PrisonLevel extends RegularLevel {
 					}
 				});
 			return false;
+		} else if (transition.type == LevelTransition.Type.REGULAR_EXIT && Dungeon.depth == 9) {
+			if(Random.Float() <=0.1f && !Statistics.enterHiro){
+				TengusMask tengusMask = Dungeon.hero.belongings.getItem(TengusMask.class);
+				if(tengusMask != null){
+					TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+					if (timeFreeze != null) timeFreeze.disarmPresses();
+					Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+					if (timeBubble != null) timeBubble.disarmPresses();
+					InterlevelScene.mode = InterlevelScene.Mode.HIRO;
+					InterlevelScene.curTransition = new LevelTransition();
+					InterlevelScene.curTransition.destDepth = 0;
+					InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
+					InterlevelScene.curTransition.destBranch = 5;
+					InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_ENTRANCE;
+					InterlevelScene.curTransition.centerCell = -1;
+					Game.switchScene(InterlevelScene.class);
+					Statistics.enterHiro = true;
+					return false;
+				} else {
+					GLog.w(String.valueOf(1));
+					return super.activateTransition(hero,transition);
+				}
+            } else {
+				GLog.w(String.valueOf(2));
+                return super.activateTransition(hero,transition);
+			}
 		} else {
 			return super.activateTransition(hero,transition);
 		}

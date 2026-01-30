@@ -1529,6 +1529,7 @@ public class GameScene extends PixelScene {
 			case AMULET:
 			case GARDEN:
 			case REDSTART:
+			case HIRO:
 			case YOG:
 				if(!Statistics.bossRushMode && !Statistics.RandMode){
 					switch (Dungeon.depth) {
@@ -1664,6 +1665,7 @@ public class GameScene extends PixelScene {
 			case AMULET:
 			case GARDEN:
 			case REDSTART:
+			case HIRO:
 			case YOG:
 				Camera.main.snapTo(hero.center().x,
 						hero.center().y - DungeonTilemap.SIZE * (defaultZoom / Camera.main.zoom));

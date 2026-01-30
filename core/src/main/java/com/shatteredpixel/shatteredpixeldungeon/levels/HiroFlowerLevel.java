@@ -1,12 +1,17 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Hiro;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 
 public class HiroFlowerLevel extends Level {
@@ -34,7 +39,7 @@ public class HiroFlowerLevel extends Level {
 
     @Override
     public void playLevelMusic(){
-        Music.playModeBGM(Assets.Music.BGM_4,true);
+        Music.playModeBGM(Assets.Music.HIRO,true);
     }
 
     private static final int[] code_map = {
@@ -81,6 +86,25 @@ public class HiroFlowerLevel extends Level {
         viewDistance = 100;
     }
 
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE) {
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+            InterlevelScene.curTransition = new LevelTransition();
+            InterlevelScene.curTransition.destDepth = 9;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+            InterlevelScene.curTransition.destBranch = 0;
+            InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+            InterlevelScene.curTransition.centerCell = -1;
+            Game.switchScene(InterlevelScene.class);
+            return false;
+        } else {
+            return super.activateTransition(hero, transition);
+        }
+    }
 
 
     protected boolean build() {
@@ -94,11 +118,6 @@ public class HiroFlowerLevel extends Level {
         transitions.add(ecne);
 
         return true;
-    }
-
-    @Override
-    public boolean activateTransition(Hero hero, LevelTransition transition) {
-        return super.activateTransition(hero, transition);
     }
 
 

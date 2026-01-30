@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 
@@ -39,12 +40,12 @@ public class TimeFlower extends Item {
         super.execute( hero, action );
         if(action.equals(AC_ACTIVE)){
             if(!(Dungeon.level instanceof HiroFlowerLevel)){
-                if(used < 6){
+                if(used < 3){
                     Buff.detach(hero, Slow.class);
-                    Buff.affect(hero, Swiftthistle.TimeBubble.class).setLeft(6f);
+                    Buff.affect(hero, Swiftthistle.TimeBubble.class).setLeft(powerFlower ? 10 * (7- (float) Dungeon.depth /5) : 6f);
                     GLog.p(Messages.get(this,"used"));
                 }
-                if(used > 6){
+                if(used > 3){
                     detach(hero.belongings.backpack);
                     Dungeon.level.drop(new DeepRedFlower(), hero.pos).sprite.drop(hero.pos);
                 }
@@ -65,6 +66,20 @@ public class TimeFlower extends Item {
     @Override
     public ItemSprite.Glowing glowing() {
         return powerFlower ? WHITE : null;
+    }
+
+    private static final String BLESSED = "blessed";
+
+    @Override
+    public void storeInBundle( Bundle bundle ) {
+        super.storeInBundle( bundle );
+        bundle.put( BLESSED, powerFlower );
+    }
+
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle( bundle );
+        powerFlower	= bundle.getBoolean( BLESSED );
     }
 
     @Override

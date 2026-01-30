@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -145,6 +146,7 @@ public class Hiro extends NTNPC {
             if(timeFlower!=null){
                 timeFlower.powerFlower = true;
                 Item.updateQuickslot();
+                PaswordBadges.HIRO();
             }
             sd = false;
         } else if(kd && hero.heroClass == HeroClass.MAGE){
