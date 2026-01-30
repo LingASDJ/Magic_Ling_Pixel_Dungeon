@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.ready;
 
@@ -1437,7 +1438,7 @@ public abstract class Level implements Bundlable {
 		}
 
 		//we have to get this far as grass placement has RNG implications in levelgen
-		if (Dungeon.isChallenged(Challenges.NO_HERBALISM)){
+		if (Dungeon.isChallenged(Challenges.NO_HERBALISM) || level instanceof HiroFlowerLevel){
 			return null;
 		}
 		

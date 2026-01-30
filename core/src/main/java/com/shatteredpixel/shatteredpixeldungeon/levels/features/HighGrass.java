@@ -30,7 +30,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredStatue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Hiro;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
@@ -39,7 +41,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Camouflage;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DeepRedFlower;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HiroFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -67,10 +71,37 @@ public class HighGrass {
 			}
 			
 		} else {
+
 			if (ch instanceof Hero && ((Hero) ch).heroClass == HeroClass.HUNTRESS){
 				Level.set(pos, Terrain.FURROWED_GRASS);
 				freezeTrample = true;
 			} else {
+				for (Mob mob : level.mobs.toArray(new Mob[0])){
+					if (mob instanceof Hiro) {
+						Hiro hiro = (Hiro) mob;
+						if(!hiro.getFlower){
+							int highGrassCount = 0;
+							for (int j : level.map) {
+								if (j == Terrain.HIGH_GRASS) {
+									highGrassCount++;
+								}
+							}
+							if (highGrassCount <= 5) {
+								if (highGrassCount == 1) {
+									level.drop(new DeepRedFlower(), Dungeon.hero.pos);
+									hiro.getFlower = true;
+								} else if (Random.Int(100) < 60) {
+									level.drop(new DeepRedFlower(), Dungeon.hero.pos);
+									hiro.getFlower = true;
+								}
+							} else if (Random.Int(100) < 20) {
+								level.drop(new DeepRedFlower(),Dungeon.hero.pos);
+								hiro.getFlower = true;
+							}
+						}
+					}
+					break;
+				}
 				Level.set(pos, Terrain.GRASS);
 			}
 			
@@ -132,7 +163,9 @@ public class HighGrass {
 					if (Random.Float() < PetrifiedSeed.stoneInsteadOfSeedChance()) {
 						level.drop(Generator.randomUsingDefaults(Generator.Category.STONE), pos).sprite.drop();
 					} else {
-						level.drop(Generator.random(Generator.Category.SEED), pos).sprite.drop();
+						if(!(level instanceof HiroFlowerLevel)){
+							level.drop(Generator.random(Generator.Category.SEED), pos).sprite.drop();
+						}
 					}
 				}
 				

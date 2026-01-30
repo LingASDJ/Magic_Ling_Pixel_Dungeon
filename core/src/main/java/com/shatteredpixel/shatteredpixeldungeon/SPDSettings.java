@@ -1312,4 +1312,28 @@ public class SPDSettings extends GameSettings {
 	public static void blood( boolean value ) {
 		put(KEY_BLOOD, value );
 	}
+
+
+	public static final String KEY_HIROS = "hiros";
+
+    public static boolean HiroFirstDialog() {
+		return getBoolean(KEY_HIROS, false);
+    }
+
+	public static void HiroFirstDialog( boolean value ) {
+		put(KEY_HIROS, value );
+	}
+
+	public static final String KEY_HIROS_SEE = "SEE_HIROS";
+
+	public static void seeHiros(int value) {
+		int currentSee = see_Hiros();
+		int newSee = currentSee + value;
+		put( KEY_HIROS_SEE, newSee);
+	}
+
+	public static int see_Hiros(){
+		return getInt( KEY_HIROS_SEE, 1);
+	}
+
 }

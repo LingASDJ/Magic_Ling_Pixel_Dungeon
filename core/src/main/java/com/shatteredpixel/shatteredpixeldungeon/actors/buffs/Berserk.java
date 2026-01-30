@@ -84,12 +84,12 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 		if(Dungeon.hero.hasTalent(Talent.FANATICISM_MAGIC)){
 			switch (Dungeon.hero.pointsInTalent(Talent.FANATICISM_MAGIC)){
 				case 2:
-					for(float i = power;i>0.75f;i-=0.75f){
+					for(float i = power;i>=0.75f;i-=0.75f){
 						lvl++;
 					}
 					break;
 				case 3:
-					for(float i = power;i>0.5f;i-=0.5f){
+					for(float i = power;i>=0.5f;i-=0.5f){
 						lvl++;
 					}
 					break;

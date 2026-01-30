@@ -45,7 +45,6 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Hiro;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BzmdrLand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
@@ -201,11 +200,6 @@ public class ZeroLevel extends Level {
         BzmdrLand god2= new BzmdrLand();
         god2.pos = 669;
         mobs.add(god2);
-
-        //TODO 9层完善后移除
-        Hiro npc6 = new Hiro();
-        npc6.pos = 700;
-        mobs.add(npc6);
 
         YetYog npc3 = new YetYog();
         npc3.pos = 493;

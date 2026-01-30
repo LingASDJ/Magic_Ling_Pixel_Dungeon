@@ -37,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.FayiNa;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Hiro;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
@@ -432,11 +431,6 @@ public class ZeroCityLevel extends Level {
             NxhyNpc npc3 = new NxhyNpc();
             npc3.pos = 382;
             mobs.add(npc3);
-
-            //TODO 9层完善后移除
-            Hiro npc6 = new Hiro();
-            npc6.pos = 3757;
-            mobs.add(npc6);
 
             LanFire npc7 = new LanFire();
             npc7.pos = 3020;
