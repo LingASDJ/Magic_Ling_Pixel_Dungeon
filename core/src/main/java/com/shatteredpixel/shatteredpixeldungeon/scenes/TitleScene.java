@@ -23,11 +23,13 @@ import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GudaziSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.EndButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.update.MLChangesButton;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats;
 import com.watabou.glwrap.Blending;
@@ -442,7 +444,7 @@ public class TitleScene extends PixelScene {
 		StyledButton btnAbout = new StyledButton(GREY_TR, Messages.get(this, "about")){
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.switchNoFade( TexturePackScene.class );
+				ShatteredPixelDungeon.switchNoFade( AboutSelectScene.class );
 			}
 		};
 		btnAbout.icon(new Image(Icons.get(Icons.SHPX)));
@@ -456,8 +458,8 @@ public class TitleScene extends PixelScene {
 		btnNews.icon(new Image(Icons.get(Icons.NEWS)));
 		add(btnNews);
 
-		StyledButton btnErrors = new ErrorsButton(GREY_TR, Messages.get(this, "errors"));
-		btnErrors.icon(new Image(Icons.get(Icons.WARNING)));
+		StyledButton btnErrors = new TexturesButton(GREY_TR, Messages.get(this, "texture"));
+		btnErrors.icon(new Image(Icons.get(Icons.DISPLAY)));
 		add(btnErrors);
 
 		final int BTN_HEIGHT = 20;
@@ -509,6 +511,10 @@ public class TitleScene extends PixelScene {
 			btnExit.setPos( w - btnExit.width(), 0 );
 			add( btnExit );
 		}
+
+		ErrorsButton btnError = new  ErrorsButton();
+		btnError.setPos( w-25, version.y-20 );
+		add(btnError);
 
 		Badges.loadGlobal();
 		if (Badges.isUnlocked(Badges.Badge.VICTORY) && !SPDSettings.victoryNagged()) {
@@ -566,16 +572,16 @@ public class TitleScene extends PixelScene {
 		}
 	}
 
-	private static class ErrorsButton extends StyledButton {
+	private static class TexturesButton extends StyledButton {
 
-		public ErrorsButton( Chrome.Type type, String label ){
+		public TexturesButton( Chrome.Type type, String label ){
 			super(type, label);
 		}
 
 		@Override
 		protected void onClick() {
 			super.onClick();
-			ShatteredPixelDungeon.switchNoFade( CrashReportScene.class );
+			ShatteredPixelDungeon.switchNoFade( TexturePackScene.class );
 		}
 	}
 
@@ -642,6 +648,26 @@ public class TitleScene extends PixelScene {
 		@Override
 		protected void onClick() {
 			ShatteredPixelDungeon.switchNoFade(ThanksScene.class);
+		}
+	}
+
+	public static class ErrorsButton extends IconButton {
+
+		public  ErrorsButton() {
+			super(Icons.WARNING.get());
+
+			width = 20;
+			height = 20;
+		}
+
+		@Override
+		protected void onClick() {
+			ShatteredPixelDungeon.switchNoFade( CrashReportScene.class );
+		}
+
+		@Override
+		protected String hoverText() {
+			return Messages.titleCase(Messages.get(WndKeyBindings.class, "error"));
 		}
 	}
 

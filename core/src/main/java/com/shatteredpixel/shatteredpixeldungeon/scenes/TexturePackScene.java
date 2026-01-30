@@ -724,6 +724,12 @@ public class TexturePackScene extends PixelScene {
                     hide();
                     ShatteredPixelDungeon.seamlessResetScene();
                 });
+            } else if(index == 1){
+                SPDSettings.customTexturePack("");
+                TextureCache.clear();
+                TexturePackScene.loadCustomTexture();
+                hide();
+                ShatteredPixelDungeon.seamlessResetScene();
             }
         }
     }
