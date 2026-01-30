@@ -22,6 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.GameMath;
@@ -32,34 +37,45 @@ public class Stone extends Armor.Glyph {
 
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
-		
-		testing = true;
-		float evasion = defender.defenseSkill(attacker);
+
 		float accuracy = attacker.attackSkill(defender);
-		testing = false;
+		float evasion = defender.defenseSkill(attacker);
+
+		//FIXME this is duplicated here because these apply in hit(), not in attack/defenseskill
+		// the true solution is probably to refactor accuracy/evasion code a little bit
+		if (attacker.buff(Bless.class) != null) accuracy *= 1.25f;
+		if (attacker.buff(  Hex.class) != null) accuracy *= 0.8f;
+		if (attacker.buff( Daze.class) != null) accuracy *= 0.5f;
+		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
+			accuracy *= buff.evasionAndAccuracyFactor();
+		}
+		accuracy *= AscensionChallenge.statModifier(attacker);
+
+		if (defender.buff(Bless.class) != null) evasion *= 1.25f;
+		if (defender.buff(  Hex.class) != null) evasion *= 0.8f;
+		if (defender.buff( Daze.class) != null) evasion *= 0.5f;
+		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
+			evasion *= buff.evasionAndAccuracyFactor();
+		}
+		evasion *= AscensionChallenge.statModifier(defender);
+		// end of copy-pasta
 
 		evasion *= genericProcChanceMultiplier(defender);
-		
+
 		float hitChance;
 		if (evasion >= accuracy){
 			hitChance = (accuracy/evasion)/2f;
 		} else {
 			hitChance = 1f - (evasion/accuracy)/2f;
 		}
-		
+
 		//75% of dodge chance is applied as damage reduction
 		// we clamp in case accuracy or evasion were negative
 		hitChance = GameMath.gate(0.25f, (1f + 3f*hitChance)/4f, 1f);
-		
+
 		damage = (int)Math.ceil(damage * hitChance);
-		
+
 		return damage;
-	}
-	
-	private boolean testing = false;
-	
-	public boolean testingEvasion(){
-		return testing;
 	}
 
 	@Override
