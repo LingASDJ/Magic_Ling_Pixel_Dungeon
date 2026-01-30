@@ -143,7 +143,7 @@ public abstract class YogFist extends Mob {
 
 	protected boolean isNearYog(){
         int yogPos;
-        if(Dungeon.isChallenged(Challenges.CS)){
+        if(Dungeon.level instanceof YogGodHardBossLevel){
             yogPos = YogGodHardBossLevel.CENTER;
         } else {
             yogPos = Dungeon.level.exit() + 3 * Dungeon.level.width();

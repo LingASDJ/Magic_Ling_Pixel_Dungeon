@@ -50,7 +50,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
-import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
@@ -370,10 +369,6 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         
         Dungeon.level.unseal();
         Statistics.bossScores[1] += 2500;
-
-        if(!Statistics.bossRushMode){
-            Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
-        }
 
         int dropPos = this.pos;
         for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {

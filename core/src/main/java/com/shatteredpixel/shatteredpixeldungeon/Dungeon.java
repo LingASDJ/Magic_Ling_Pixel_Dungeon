@@ -529,10 +529,13 @@ public class Dungeon {
 		for (int level : bossLevels) {
 			if (depth == level) {
 				return true;
-				// 是Boss层，返回true表示不生成卷轴
 			}
 		}
-		return false; // 不是Boss层，返回false可以生成卷轴
+		return false;
+	}
+
+	public static boolean RushBossLevel() {
+		return RushBossLevel( depth );
 	}
 
 	public static boolean bossLevel() {
