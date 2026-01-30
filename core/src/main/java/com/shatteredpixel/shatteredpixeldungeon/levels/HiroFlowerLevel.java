@@ -1,8 +1,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Hiro;
@@ -40,6 +45,12 @@ public class HiroFlowerLevel extends Level {
     @Override
     public void playLevelMusic(){
         Music.playModeBGM(Assets.Music.HIRO,true);
+    }
+
+    @Override
+    public void occupyCell(Char ch) {
+        super.occupyCell(ch);
+        Buff.affect(hero, MagicalSight.class, 100f);
     }
 
     private static final int[] code_map = {
@@ -100,6 +111,7 @@ public class HiroFlowerLevel extends Level {
             InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
             InterlevelScene.curTransition.centerCell = -1;
             Game.switchScene(InterlevelScene.class);
+            Buff.detach(hero, MagicalSight.class);
             return false;
         } else {
             return super.activateTransition(hero, transition);
