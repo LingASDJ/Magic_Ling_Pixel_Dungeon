@@ -167,7 +167,7 @@ public class vm0_8_X_Changes {
         Image sss =new MyCoreHeartSprite();
         sss.scale.set(PixelScene.align(0.4f));
         changes.addButton(new ChangeButton(sss, ("古堡宇宙之心调整"),
-                ("宇宙之心对于友方阵营将进行自动处决")));
+                ("_往昔的幻影_若转化为友方阵营将会被宇宙之心处决")));
 
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
