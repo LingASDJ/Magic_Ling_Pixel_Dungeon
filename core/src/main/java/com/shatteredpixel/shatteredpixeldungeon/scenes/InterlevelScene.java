@@ -193,7 +193,7 @@ public class InterlevelScene extends PixelScene {
 		//场景过渡速度
 		//本地调试+桌面
 		if (DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
-			fadeTime = 0.91f;
+			fadeTime = 0.1f;
 		} else {
 			//打包后的环境
 			fadeTime = 0.75f;

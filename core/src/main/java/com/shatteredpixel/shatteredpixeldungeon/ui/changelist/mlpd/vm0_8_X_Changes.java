@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardDead;
@@ -69,6 +68,7 @@ public class vm0_8_X_Changes {
 
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0920_Changes(changeInfos);
         add_V0915_Changes(changeInfos);
         add_V0910_Changes(changeInfos);
         add_V0900_Changes(changeInfos);
@@ -92,6 +92,74 @@ public class vm0_8_X_Changes {
         add_V0805_Changes(changeInfos);
         add_V0801_Changes(changeInfos);
         add_V0800M1_Changes(changeInfos);
+    }
+
+    public static void add_V0920_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.9.2.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_HAND_CONTROL), ("法师之手控制器"),
+                ("新增以下功能\n\n" +
+                        "1.可以指定敌人，法师之手将优先攻击此敌人\n\n" +
+                        "2.如果在召唤过程中失败，可在这里进行再次召唤")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                ("1.修复有形之手天赋造成的崩溃\n" +
+                        "2.隐藏控件暂时删除\n" +
+                        "3.修复矮人尸群因为多线程导致的检查崩溃\n" +
+                        "4.修复创世神之心的判定优先级问题导致的崩溃\n" +
+                        "5.修复并发检查带来的崩溃\n" +
+                        "6.修复苦痛刻痕判定优先级问题带来的崩溃异常\n" +
+                        "7.修复熔岩火龙视野判定导致的崩溃异常\n" +
+                        "8.修复绝命头目-拟态之王 流血公式计算异常\n"),
+                ("9.修复思维之柱的判定优先级的崩溃异常\n" +
+                        "10.修复哨位素材无法读取时，则直接摧毁素材实体\n" +
+                        "11.修复矮人尸山的越界判定异常\n" +
+                        "12.修复灵壤，雷霆，注魂，腐化的使用者始终为英雄，即便在法师之手上\n" +
+                        "13.修复BossRush-绿野精灵国王 的伤害重复调用传送，可能导致栈溢出的异常\n" +
+                        "14.修复因上次2.5破碎底层的迁移导致的各种异常残留\n" +
+                        "15.修复机械之柱的敌人判定的一些异常\n" +
+                        "16.修复法师之手没有贵重物品标签\n" ),
+
+                ("17.修复幽寂错误的对话逻辑导致的崩溃\n" +
+                        "18.修复了魔力补偿的相关异常崩溃\n" +
+                        "19.修复了纯晶护卫长火墙描述文本缺失\n" +
+                        "20.部分文案优化和错误修正")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new DeadEyeSprite(), ("毁灭魔眼"),
+                ("现在可解离背包内的物品，增大了解离的物品池子（包括容器内的物品，但仍会排除贵重物品、露水、国王袋等特殊物品）")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("熔岩洞穴"),
+                ("现在只会固定生成随机2卷轴，1符石，1食物，1药剂")));
+
+        Image ss =new ShubNiggurathSprite();
+        ss.scale.set(PixelScene.align(0.4f));
+        changes.addButton(new ChangeButton(ss, ("莎布·尼古拉丝"),
+                "_-_ 分身分裂上限：最多分裂9个黑山羊分身\n" +
+                        "_-_ 血量恢复机制：本体在分身存在时可恢复1000点生命值，但仅限5次\n" +
+                        "_-_ 死亡条件：第6次尝试恢复生命值时，本体与所有分身将直接死亡 或 黑山羊无任何分身时可直接死亡"));
+
+        changes = new ChangeInfo("预载", false, null);
+        changes.hardlight(Window.CBLACK);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("1.0.0-MLPD"),
+                ("1.0.0相关资源预载")));
     }
 
     public static void add_V0915_Changes(ArrayList<ChangeInfo> changeInfos ) {
@@ -1056,7 +1124,7 @@ public class vm0_8_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("新全局系统：自定义横幅"),
                 ("在额外设置中，可以定义游戏内带的横幅主题，新增端午节主题")));
 
-        Image xsx =new Image(SPDSettings.ClassUI() ? Assets.Interfaces.TOOLBAR : Assets.Interfaces.TOOLBARDRAK, 0, 26, 24, 26);
+        Image xsx =new Image(Assets.Interfaces.TOOLBAR, 0, 26, 24, 26);
         xsx.scale.set(PixelScene.align(0.8f));
         changes.addButton( new ChangeButton(xsx, "新全局系统：魔绫活动板块",
                 "通过活动板块，可以查看各类活动信息，并参加活动，获得奖励。\n\n" +

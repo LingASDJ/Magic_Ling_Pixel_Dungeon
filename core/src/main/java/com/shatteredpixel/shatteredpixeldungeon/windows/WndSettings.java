@@ -772,7 +772,6 @@ public class WndSettings extends WndTabbed {
 		RenderedTextBlock title;
 
 		ColorBlock sep1;
-		CheckBox ClassUI;
 		OptionSlider optSplashScreen;
 
 		CheckBox optFPSLimit;
@@ -789,16 +788,6 @@ public class WndSettings extends WndTabbed {
 
 			sep1 = new ColorBlock(1, 1, 0xFF000000);
 			add(sep1);
-
-			ClassUI = new CheckBox( Messages.get(this, "dark_ui") ) {
-				@Override
-				protected void onClick() {
-					super.onClick();
-					SPDSettings.ClassUI(checked());
-				}
-			};
-			ClassUI.checked(SPDSettings.ClassUI());
-			add(ClassUI);
 
 			optSplashScreen = new OptionSlider(Messages.get(this, "splash_screen"),
 					Messages.get(this, "disable" ),
@@ -894,15 +883,13 @@ public class WndSettings extends WndTabbed {
 			bottom = sep1.y + 1;
 
 			if (width > 200){
-				ClassUI.setRect(0, bottom, width, SLIDER_HEIGHT);
-				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
+				optSplashScreen.setRect(0, bottom, width, SLIDER_HEIGHT);
 				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				optIcon.setRect(optFPSLimit.right(), optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				customBanner.setRect(0, optIcon.bottom() + GAP, width/2, 16);
 				CustomBannerSettings.setRect(customBanner.right(), customBanner.top(), width/2, 16);
 			} else {
-				ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
-				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
+				optSplashScreen.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
 				optIcon.setRect(0, optFPSLimit.bottom() + GAP, width, SLIDER_HEIGHT);
 				customBanner.setRect(0, optIcon.bottom() + GAP, width, 16);

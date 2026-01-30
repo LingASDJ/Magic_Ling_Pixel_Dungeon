@@ -224,7 +224,7 @@ public class HeroSelectScene extends PixelScene {
 			window.add(patch);
 		}
 
-		frame = new Image( SPDSettings.ClassUI() ? Assets.Interfaces.NEW_MENU : Assets.Interfaces.NEW_MENU_DARK );
+		frame = new Image( Assets.Interfaces.NEW_MENU );
 
 		frame.frame( FRAME_WIDTH + GrassPatch.WIDTH*4, 0, FRAME_WIDTH, FRAME_HEIGHT );
 		frame.x = vx - FRAME_MARGIN_X;

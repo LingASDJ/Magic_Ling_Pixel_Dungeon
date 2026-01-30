@@ -25,7 +25,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassPage;
-import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassUI;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameDay;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
@@ -211,7 +210,7 @@ public class StatusPane extends Component {
 
 		add(lanterFireEnergy);
 
-		lanterfirevae = ClassUI() ? new Image(Assets.Interfaces.LANTERLING) : new Image(Assets.Interfaces.LANTERLING_N);
+		lanterfirevae = new Image(Assets.Interfaces.LANTERLING);
 		add(lanterfirevae);
 
 		hpText = new BitmapText(PixelScene.pixelFont);
@@ -536,11 +535,7 @@ public class StatusPane extends Component {
 			lanterfirevae.visible = true;
 			lanterfirevae.x= 1.0f;
 			lanterText.visible = true;
-			if(ClassUI()){
-				lanterfirevae.y= 31.0f;
-			} else {
-				lanterfirevae.y= 30.0f;
-			}
+			lanterfirevae.y= 31.0f;
 			float r =  0.53f+0.57f*Math.max(0f, (float)Math.sin( time - 10/Math.PI/3 ));
 			float g =  0.03f+0.57f*Math.max(0f, (float)Math.sin( time + 4/Math.PI/2 ));
 			float b =  0.93f+0.57f*Math.max(0f, (float)Math.sin( time));
