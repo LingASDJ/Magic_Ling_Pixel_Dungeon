@@ -32,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -657,7 +656,7 @@ public class WndHero extends WndTabbed {
 
 
 			RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(WndHero.class,"elist"), 9);
-			title.hardlight(SPDSettings.ClassUI() ? 0x8f8f8f : Window.R_COLOR);
+			title.hardlight(Window.R_COLOR);
 			title.maxWidth( (int)width() - 2 );
 			title.setPos( (width() - title.width())/2f, pos + 1 + ((18) - title.height())/2f);
 			PixelScene.align(title);
@@ -769,7 +768,7 @@ public class WndHero extends WndTabbed {
 			Component content = buffList.content();
 
 			RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(WndHero.class,"gdlist"), 9);
-			title.hardlight(SPDSettings.ClassUI() ? Window.CPINK : Window.CYELLOW);
+			title.hardlight(Window.CYELLOW);
 			title.maxWidth( (int)width() - 2 );
 			title.setPos( (width() - title.width())/2f, pos + 1 + ((18) - title.height())/2f);
 			PixelScene.align(title);

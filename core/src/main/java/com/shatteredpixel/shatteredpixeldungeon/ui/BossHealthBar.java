@@ -26,7 +26,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.TITLE_COLOR;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -56,7 +55,7 @@ public class BossHealthBar extends Component {
 	private Image skull;
 	private Emitter blood;
 
-	private static String asset = SPDSettings.ClassUI() ?  Assets.Interfaces.BOSSHP : Assets.Interfaces.BOSSHP_DARK;
+	private static String asset = Assets.Interfaces.BOSSHP;
 
 	private static BossHealthBar instance;
 	private static boolean bleeding;

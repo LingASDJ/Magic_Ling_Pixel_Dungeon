@@ -25,7 +25,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ATBSettings;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenDiamndMimic;
@@ -361,7 +360,7 @@ public class WndInfoMob extends WndTitledMessage {
 		public void createChildren() {
 			super.createChildren();
 
-			colorBlock = new ColorBlock(1,1, SPDSettings.ClassUI() ? 0xFF462d00 : 0xFF555555);
+			colorBlock = new ColorBlock(1,1,  0xFF555555);
 			add(colorBlock);
 
 			image1 = new BuffIcon(126, false);

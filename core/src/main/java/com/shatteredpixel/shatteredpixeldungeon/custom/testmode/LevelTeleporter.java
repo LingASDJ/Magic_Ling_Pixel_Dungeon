@@ -11,7 +11,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitsle
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -405,7 +404,7 @@ public class LevelTeleporter extends TestItem {
     public static class DepthButton extends StyledButton{
         private int depth;
         public DepthButton(int depth){
-            super(SPDSettings.ClassUI() ? Chrome.Type.WINDOW : Chrome.Type.GEM, String.valueOf(depth), 8);
+            super(Chrome.Type.GEM, String.valueOf(depth), 8);
             this.depth = depth;
         }
 
