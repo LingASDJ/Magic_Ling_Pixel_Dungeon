@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Hiro;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.audio.Music;
 
 public class HiroFlowerLevel extends Level {
@@ -64,13 +65,13 @@ public class HiroFlowerLevel extends Level {
             S,S,S,S,S,S,S,S,S,S,S,B,D,B,S,S,S,S,S,S,S,S,S,S,S,
             S,S,S,S,S,S,S,S,S,S,S,B,D,B,S,S,S,S,S,S,S,S,S,S,S,
             S,S,S,S,B,B,B,B,B,B,S,B,D,B,S,B,B,B,B,B,B,S,S,S,S,
-            S,S,S,S,B,W,W,W,W,B,B,B,D,B,B,B,W,W,W,W,B,S,S,S,S,
-            S,S,S,S,B,W,W,R,R,W,B,B,D,B,B,W,R,R,W,W,B,S,S,S,S,
-            S,S,S,S,B,W,R,W,R,R,W,B,D,B,W,R,R,W,R,W,B,S,S,S,S,
-            S,S,S,S,B,W,R,R,W,R,R,W,D,W,R,R,W,R,R,W,B,S,S,S,S,
-            S,S,S,S,B,B,W,R,R,W,R,W,D,W,R,W,R,R,W,B,B,S,S,S,S,
-            S,S,S,S,S,B,B,W,R,R,W,W,V,W,W,R,R,W,B,B,S,S,S,S,S,
-            S,S,S,S,S,S,B,B,W,W,W,W,D,W,W,W,W,B,B,S,S,S,S,S,S,
+            S,S,S,S,B,F,F,F,F,B,B,B,D,B,B,B,F,F,F,F,B,S,S,S,S,
+            S,S,S,S,B,F,F,R,R,F,B,B,D,B,B,F,R,R,F,F,B,S,S,S,S,
+            S,S,S,S,B,F,R,F,R,R,F,B,D,B,F,R,R,F,R,F,B,S,S,S,S,
+            S,S,S,S,B,F,R,R,F,R,R,F,D,F,R,R,F,R,R,F,B,S,S,S,S,
+            S,S,S,S,B,B,F,R,R,F,R,F,D,F,R,F,R,R,F,B,B,S,S,S,S,
+            S,S,S,S,S,B,B,F,R,R,F,F,V,F,F,R,R,F,B,B,S,S,S,S,S,
+            S,S,S,S,S,S,B,B,F,F,F,F,D,F,F,F,F,B,B,S,S,S,S,S,S,
             S,S,S,S,S,S,S,B,B,B,B,B,B,B,B,B,B,B,S,S,S,S,S,S,S,
     };
 
@@ -79,6 +80,8 @@ public class HiroFlowerLevel extends Level {
         color2 = 0xdd5445;
         viewDistance = 100;
     }
+
+
 
     protected boolean build() {
         setSize(WIDTH, HEIGHT);
@@ -124,6 +127,30 @@ public class HiroFlowerLevel extends Level {
 
     public String waterTex() {
         return Assets.Environment.WATER_CITY;
+    }
+
+    @Override
+    public String tileName( int tile ) {
+        switch (tile) {
+            case Terrain.HIGH_GRASS:
+                return Messages.get(HiroFlowerLevel.class, "highgrass_name");
+            case Terrain.WATER:
+                return Messages.get(HiroFlowerLevel.class, "water_name");
+            default:
+                return super.tileName( tile );
+        }
+    }
+
+    @Override
+    public String tileDesc(int tile) {
+        switch (tile) {
+            case Terrain.HIGH_GRASS:
+                return Messages.get(HiroFlowerLevel.class, "highgrass_desc");
+            case Terrain.WATER:
+                return Messages.get(HiroFlowerLevel.class, "water_desc");
+            default:
+                return super.tileDesc( tile );
+        }
     }
 
 }

@@ -21,9 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HiroFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 
 public class Challenges {
@@ -79,7 +82,7 @@ public class Challenges {
 			}
 		}
 
-		if (Dungeon.isChallenged(NO_HERBALISM)) {
+		if (Dungeon.isChallenged(NO_HERBALISM) || level instanceof HiroFlowerLevel) {
 			return item instanceof Dewdrop ;
 		}
 

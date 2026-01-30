@@ -1343,6 +1343,8 @@ public class ItemSpriteSheet {
 
     public static final int OLDSUNSHADOW                                        = RITUAL_SWORD + 8;
 
+    public static final int FLOWERS                                             = RITUAL_SWORD + 9;
+
     static{
         assignItemRect(RITUAL_SWORD,       13, 13);
         assignItemRect(TREE_LIST,          14, 13);
