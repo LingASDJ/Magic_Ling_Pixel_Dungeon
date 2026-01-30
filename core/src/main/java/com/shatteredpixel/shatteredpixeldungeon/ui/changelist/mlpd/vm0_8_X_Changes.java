@@ -110,6 +110,9 @@ public class vm0_8_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：Pre-5YearsOld"),
                 ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：2026-2-12 22:00前")));
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.CATALOG), ("新系统：效果百科"),
+                ("在图鉴中新增效果百科，目前尚不完善，后续版本会陆续完善。")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKIN_11), ("新皮肤：晚宴邀请"),
                 ("已可在时装商人处购买，售价1500钴币")));
 
