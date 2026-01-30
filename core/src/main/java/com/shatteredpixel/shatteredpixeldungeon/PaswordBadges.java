@@ -141,6 +141,10 @@ public class PaswordBadges {
         displayBadge(Badge.HELL_BACK);
     }
 
+    public static void HIRO() {
+        displayBadge(Badge.TIME_CIRCLE);
+    }
+
     public static void GHOST_HUNTER() {
         displayBadge(Badge.GHOST_HUNTER);
     }
@@ -210,7 +214,9 @@ public class PaswordBadges {
 
         GHOST_HUNTER(35,true),
 
-        HELL_BACK					(36);
+        HELL_BACK					(36),
+
+        TIME_CIRCLE     (37,true);
 
         public boolean meta;
 

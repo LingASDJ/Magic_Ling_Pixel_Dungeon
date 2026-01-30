@@ -58,8 +58,7 @@ public class PassWordBadgesScene extends PixelScene {
         add(title);
 
 
-
-        int blankBadges = 32;
+        int blankBadges = 33;
         blankBadges -= badges.size();
         blankBadges = Math.max(0, blankBadges);
 

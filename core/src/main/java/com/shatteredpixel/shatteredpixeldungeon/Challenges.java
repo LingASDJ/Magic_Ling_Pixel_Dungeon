@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DeepRedFlower;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HiroFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 
@@ -86,9 +87,10 @@ public class Challenges {
 			return item instanceof Dewdrop ;
 		}
 
-//		if (Dungeon.isChallenged(BLOOD_DIED)) {
-//			return item instanceof ChaliceOfBlood || item instanceof Sungrass.Seed;
-//		}
+		DeepRedFlower ds = Dungeon.hero.belongings.getItem(DeepRedFlower.class);
+		if(ds != null){
+			return item instanceof DeepRedFlower;
+		}
 
 		return false;
 

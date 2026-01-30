@@ -303,6 +303,8 @@ public class Statistics {
 
 	public static boolean godGirl = false;
 
+	public static boolean enterHiro = false;
+
 	private static final String ICECLAN ="iceCyanBlueSquareCoin";
 
 	private static final String GAMETIME = "gameTime";
@@ -748,6 +750,8 @@ public class Statistics {
 		PacManScore = 0;
 
 		miniGamesTotalLevel = 0;
+
+		enterHiro = false;
 	}
 
 	public static boolean hasAllRarenessProp(int rare,int kind){
@@ -1038,9 +1042,14 @@ public class Statistics {
 
 		//自选
 		bundle.put("AbyssRules",AbyssCityRules);
+
+		bundle.put("EnterHiro",enterHiro);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+
+
+		enterHiro = bundle.getBoolean("EnterHiro");
 
 		AbyssCityRules = bundle.getInt("AbyssRules");
 

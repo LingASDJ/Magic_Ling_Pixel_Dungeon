@@ -77,7 +77,7 @@ public class InterlevelScene extends PixelScene {
 	public enum Mode {
 		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET,
 		NONE,EXBOSS,GOBACK,FRGIRLBOSS,ANCITYBOSS,DR,GARDEN,AMULET,YOG,
-
+		HIRO,
 		REDSTART,
 	}
 	public static Mode mode;
@@ -193,7 +193,7 @@ public class InterlevelScene extends PixelScene {
 		//场景过渡速度
 		//本地调试+桌面
 		if (DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
-			fadeTime = 0.1f;
+			fadeTime = 0.91f;
 		} else {
 			//打包后的环境
 			fadeTime = 0.75f;
@@ -270,6 +270,7 @@ public class InterlevelScene extends PixelScene {
 							case AMULET:
 							case GARDEN:
 							case REDSTART:
+							case HIRO:
 							case YOG:
 								descend();
 								break;

@@ -99,8 +99,9 @@ public class HighGrass {
 								hiro.getFlower = true;
 							}
 						}
+						break;
 					}
-					break;
+
 				}
 				Level.set(pos, Terrain.GRASS);
 			}

@@ -370,6 +370,9 @@ public class Assets {
 		public static final String SEWERS_BOSS  = "music/Boss1.ogg";
 		public static final String PRISON_BOSS  = "music/Tengu.ogg";
 		public static final String CITY_BOSS    = "music/Boss4.ogg";
+
+		public static final String HIRO    = "music/hiro.ogg";
+
         public static final String HALLS_BOSS = "music/Boss5.ogg";
         public static final String NBPL = "music/nbpl.ogg";
         public static final String THEME_FINALE = "music/theme_finale.ogg";
