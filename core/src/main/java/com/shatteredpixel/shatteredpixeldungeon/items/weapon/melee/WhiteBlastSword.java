@@ -22,6 +22,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 
@@ -84,10 +85,13 @@ public class WhiteBlastSword extends MeleeWeapon {
     };
 
     public void whiteBlast_Sword() {
+        int mapLength = Dungeon.level.length();
+
         for (int i : PathFinder.NEIGHBOURS13) {
             int targetingPos = hero.pos + i;
-            if (!Dungeon.level.solid[targetingPos]) {
-                CellEmitter.get(targetingPos).burst(ElmoParticle.FACTORY, 5);
+            if (targetingPos >= 0 && targetingPos < mapLength && !Dungeon.level.solid[targetingPos]) {
+                Emitter emitter = CellEmitter.get(targetingPos);
+                emitter.burst(ElmoParticle.FACTORY, 5);
                 GameScene.add(Blob.seed(targetingPos, 1, LastBlobs.class));
             }
         }
@@ -99,6 +103,7 @@ public class WhiteBlastSword extends MeleeWeapon {
         BuffIndicator.refreshHero();
         attack_Teleology = 0;
     }
+
 
     public static class LastBlobs extends Blob implements Hero.Doom {
         private static ArrayList<Class> affectedBlobs;

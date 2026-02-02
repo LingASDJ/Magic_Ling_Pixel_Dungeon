@@ -401,9 +401,11 @@ public class MyCoreHeart extends Boss {
         if(enemy != null && enemy instanceof Mob){
             if(Dungeon.level.distance(pos,enemy.pos)<=1){
                 dmg =  1;
-                enemy.damage(HT,this);
+                enemy.damage(HT,this, DamageType.REAL);
                 Buff.affect(enemy, Bleeding.class).set(1000f);
                 brokenCount++;
+            } else {
+                return;
             }
         } else {
             return;

@@ -81,7 +81,7 @@ public class WandOfLivingEarth extends DamageWand {
 			}
 		}
 
-		//TODO 始终获取curUser为英雄自身
+		
 		curUser = Dungeon.hero;
 
 		RockArmor buff = curUser.buff(RockArmor.class);

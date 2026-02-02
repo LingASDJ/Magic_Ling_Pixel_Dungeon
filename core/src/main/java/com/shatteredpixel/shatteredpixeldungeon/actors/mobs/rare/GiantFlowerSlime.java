@@ -1,29 +1,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.FlowerSlimeSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GiantFlowerSlimeSprites;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -67,13 +53,18 @@ public class GiantFlowerSlime extends Mob {
         super.rollToDropLoot();
 
         int ofs;
+        int attempts = 0;
         do {
             ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
-        } while (Dungeon.level.solid[pos + ofs] && !Dungeon.level.passable[pos + ofs]);
+            attempts++;
+        } while (Dungeon.level.solid[pos + ofs] && !Dungeon.level.passable[pos + ofs] && attempts < 8);
 
-        Dungeon.level.drop(Generator.randomUsingDefaults( Generator.Category.SEED ), pos + ofs ).sprite.drop( pos );
-        Dungeon.level.drop(Generator.randomUsingDefaults( Generator.Category.SEED ), pos + ofs ).sprite.drop( pos );
+        int dropPos = (Dungeon.level.solid[pos + ofs] || !Dungeon.level.passable[pos + ofs]) ? pos : pos + ofs;
+
+        Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.SEED), dropPos).sprite.drop(pos);
+        Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.SEED), dropPos).sprite.drop(pos);
     }
+
 
     @Override
     public int damageRoll() {

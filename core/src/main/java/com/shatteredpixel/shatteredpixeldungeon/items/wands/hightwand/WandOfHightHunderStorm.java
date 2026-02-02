@@ -193,10 +193,12 @@ public class WandOfHightHunderStorm extends DamageWand {
             multipler = 1f;
         }
 
-        for (Char ch : affected){
+        for (Char ch : affectedChars){
             if (ch == hero) Camera.main.shake( 2, 0.3f );
-            ch.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
-            ch.sprite.flash();
+            if (ch.sprite != null) {
+                ch.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
+                ch.sprite.flash();
+            }
 
             if (curUser != null && ch != curUser && ch.alignment == curUser.alignment && ch.pos != bolt.collisionPos){
                 continue;

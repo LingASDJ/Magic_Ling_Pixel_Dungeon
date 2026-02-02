@@ -86,9 +86,9 @@ public class ClearSword extends MeleeWeapon implements Item.LengedsItem {
     public String targetingPrompt() {
         return Messages.get(this, "prompt");
     }
+    
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-
         if (target == null || !Dungeon.level.heroFOV[target]) {
             GLog.w(Messages.get(this, "ability_no_target"));
             return;
@@ -105,9 +105,12 @@ public class ClearSword extends MeleeWeapon implements Item.LengedsItem {
         try {
             int magicDamage = (int) (1.25f * Random.NormalIntRange(min(), max()));
             ArrayList<Char> targets = new ArrayList<>();
+
+            int mapLength = Dungeon.level.length();
+
             for (int i : PathFinder.CIRCLE7) {
                 int pos = target + i;
-                if (Dungeon.level.heroFOV[pos]) {
+                if (pos >= 0 && pos < mapLength && Dungeon.level.heroFOV[pos]) {
                     Char enemy = Actor.findChar(pos);
                     if (enemy != null
                             && enemy != hero
@@ -117,6 +120,7 @@ public class ClearSword extends MeleeWeapon implements Item.LengedsItem {
                     }
                 }
             }
+
             if (targets.isEmpty()) {
                 GLog.w(Messages.get(this, "ability_no_target"));
                 return;
@@ -131,8 +135,7 @@ public class ClearSword extends MeleeWeapon implements Item.LengedsItem {
                     new Callback() {
                         @Override
                         public void call() {
-                            // 在此执行原伤害逻辑
-                            Sample.INSTANCE.play(Assets.Sounds.HIT_MAGIC); // 音效移动到回调中
+                            Sample.INSTANCE.play(Assets.Sounds.HIT_MAGIC);
                             for (Char enemy : targets) {
                                 enemy.damage(magicDamage, Char.DamageType.MAGIC);
                                 Buff.prolong(enemy, Vulnerable.class, 9f);
@@ -143,8 +146,6 @@ public class ClearSword extends MeleeWeapon implements Item.LengedsItem {
                             beforeAbilityUsed(hero, xenemy);
                         }
                     });
-
-// 移除原有的for循环攻击逻辑
 
         } finally {
             hero.belongings.abilityWeapon = null;

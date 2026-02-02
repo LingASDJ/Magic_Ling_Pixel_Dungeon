@@ -120,7 +120,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.OozeStatueDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.QuestGold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.ScoreMiniGame;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.WhiteBlastSwordStatus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
@@ -279,7 +278,9 @@ public class BuffScanner {
 
         buffClasses.add(Shadows.class);
 
-        buffClasses.add(SliceDeadBless.class);
+        //TODO
+        //buffClasses.add(SliceDeadBless.class);
+
         buffClasses.add(Slow.class);
         buffClasses.add(SmokeAlly.class);
 

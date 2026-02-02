@@ -160,7 +160,7 @@ public class TowerMachine extends Boss {
 
             CellEmitter.get(targetCell).burst(LastHP ? RainbowParticle.BURST : MagicFireParticle.FACTORY, 8);
 
-            for (Mob mob : Dungeon.level.mobs) {
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (mob.pos == targetCell && !(mob instanceof TowerMachine || mob instanceof Morphs || mob instanceof TowerMind.MindCore)) {
                     int mobDmg = (int) (mob.HT * 0.2f);
                     mob.damage(mobDmg, new DeadBoat());
