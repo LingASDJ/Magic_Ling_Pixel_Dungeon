@@ -45,16 +45,14 @@ public class DreamLezi extends NTNPC {
     public boolean interact(Char c) {
         if (c != hero) return true;
 
-        //TODO 赶时间 潘多拉别鲨我
         if(first){
             Dungeon.gold -= 720;
-
             yell(Messages.get(this,"no_gold"));
             first = false;
         } else if(secnod){
            secnod = false;
            yell(Messages.get(this,"tr_sx"));
-            Dungeon.level.drop(new ScrollOfTeleTation(), hero.pos);
+           Dungeon.level.drop(new ScrollOfTeleTation(), hero.pos);
         }
 
 
