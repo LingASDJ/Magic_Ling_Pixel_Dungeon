@@ -103,7 +103,6 @@ public class ShubNiggurath extends Boss {
     @Override
     public boolean isAlive() {
         if(getClass() == ShubNiggurath.class && !notFirst) {
-            Object[] mobsArray = Dungeon.level.mobs.toArray();
 
             boolean hasClone = false;
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
@@ -123,7 +122,7 @@ public class ShubNiggurath extends Boss {
                     maxReHeal++;
                     Buff.prolong(hero, MindVision.class, 50000);
                 } else {
-                    die(true);
+                    return super.isAlive();
                 }
                 return true;
             }

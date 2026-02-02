@@ -182,13 +182,17 @@ public class Golem extends Mob {
 
 	private boolean canTele(int target){
 		if (enemyTeleCooldown > 0) return false;
-		PathFinder.buildDistanceMap(target, BArray.not(Dungeon.level.solid, null), Dungeon.level.distance(pos, target)+1);
-		//zaps can go around blocking terrain, but not through it
-		if (PathFinder.distance[pos] == Integer.MAX_VALUE){
+
+		if (target < 0 || target >= Dungeon.level.length()) {
 			return false;
 		}
-		return true;
-	}
+
+		int maxDistance = Math.min(Dungeon.level.distance(pos, target) + 1, Dungeon.level.width());
+		PathFinder.buildDistanceMap(target, BArray.not(Dungeon.level.solid, null), maxDistance);
+
+        return PathFinder.distance[pos] != Integer.MAX_VALUE;
+    }
+
 
 	private class Wandering extends Mob.Wandering{
 

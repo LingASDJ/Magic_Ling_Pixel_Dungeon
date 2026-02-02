@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.DragonWall;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.DiedClearElemet;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
@@ -166,6 +167,7 @@ public class FireDragon extends Boss implements Callback {
         return speed;
     }
 
+    private Mob checkMob;
     private void pullEnemy( Char enemy, int pullPos ){
         if (enemy == null) {
             return;
@@ -183,9 +185,11 @@ public class FireDragon extends Boss implements Callback {
         } else {
             Buff.prolong(this,BleedingEffect.class, BleedingEffect.DURATION);
         }
-        if(enemy != hero){
+
+        if(enemy != hero && enemy != checkMob){
             enemy.die(enemy);
         }
+
         Buff.detach( hero, DragonWall.class);
     }
 
@@ -269,6 +273,12 @@ public class FireDragon extends Boss implements Callback {
     public boolean act() {
         if (fireAttackCooldown<21) {
             fireAttackCooldown++;
+        }
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+           if(mob instanceof MageHand){
+               checkMob = mob;
+           }
         }
 
         if(HP<=0 && !noAlive){

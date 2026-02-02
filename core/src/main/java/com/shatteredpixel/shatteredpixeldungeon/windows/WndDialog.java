@@ -2,15 +2,8 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRong;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Choice;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.ChoiceButton;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Script;
@@ -193,13 +186,15 @@ public class WndDialog extends Window {
             @Override
             protected void onClick(PointerEvent event) {
                 if(readed) {
-                    if (settedPlot.end()) {
-                        hide();
-                    } else {
-                        timeLeft = 0.02f;
-                        times = 0;
-                        readed = false;
-                        settedPlot.process();
+                    if(settedPlot !=null ){
+                        if (settedPlot.end()) {
+                            hide();
+                        } else {
+                            timeLeft = 0.02f;
+                            times = 0;
+                            readed = false;
+                            settedPlot.process();
+                        }
                     }
                 }
                 else skipWait();

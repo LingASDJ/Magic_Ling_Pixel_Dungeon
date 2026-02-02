@@ -73,7 +73,9 @@ public class WandOfPrismaticLight extends DamageWand {
 	@Override
 	public void onZap(Ballistica beam) {
 		affectMap(beam);
-		
+
+		curUser = Dungeon.hero;
+
 		if (Dungeon.level.viewDistance < 6 ){
 			if(Dungeon.isChallenged(Challenges.DHXD) && hero.buff(Talent.LanterCooldown.class) == null || Statistics.lanterfireactive && hero.buff(Talent.LanterCooldown.class) == null){
 				hero.healLantern(5);

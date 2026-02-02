@@ -210,7 +210,7 @@ public class ElementalBlast extends ArmorAbility {
 		((MagicMissile)hero.sprite.parent.recycle( MagicMissile.class )).reset(
 				effectTypes.get(wandCls),
 				hero.sprite,
-				aim.path.get(aoeSize / 2),
+				aim.path.get(Math.min(aoeSize / 2, aim.path.size()-1)),
 				new Callback() {
 					@Override
 					public void call() {
