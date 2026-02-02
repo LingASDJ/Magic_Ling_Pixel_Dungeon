@@ -56,6 +56,18 @@ public class WraithAmulet extends Artifact {
         }
     }
 
+    @Override
+    public boolean doUnequip(Hero hero, boolean collect, boolean single) {
+        if (super.doUnequip(hero, collect, single)){
+            if (hero.buff(CursedAmulet.class) != null){
+                hero.buff(CursedAmulet.class).detach();
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private static final String AC_GHOST = "ghost";
     private static final String AC_ASSASSINATE = "darkkill";
 

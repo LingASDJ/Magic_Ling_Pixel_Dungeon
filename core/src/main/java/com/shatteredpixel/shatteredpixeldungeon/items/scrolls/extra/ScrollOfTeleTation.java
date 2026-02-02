@@ -146,8 +146,15 @@ public class ScrollOfTeleTation extends InventoryScroll {
                 }
             }
 
-            result.upgrade();
-            result.cursed = true;
+            if(result instanceof Artifact){
+                if(result.level() < 10){
+                    result.upgrade();
+                    result.cursed = true;
+                }
+            } else {
+                result.upgrade();
+                result.cursed = true;
+            }
 
             if (result.isIdentified()){
                 Catalog.setSeen(result.getClass());
