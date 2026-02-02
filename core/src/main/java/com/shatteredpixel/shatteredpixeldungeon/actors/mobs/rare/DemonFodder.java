@@ -136,11 +136,14 @@ public class DemonFodder extends Mob {
             leapPos = -1;
         }
 
+        if(alignment == Alignment.ALLY){
+            die(true);
+        }
+
         AiState lastState = state;
         boolean result = super.act();
         if (paralysed <= 0) leapCooldown --;
 
-        //if state changed from wandering to hunting, we haven't acted yet, don't update.
         if (!(lastState == WANDERING && state == HUNTING)) {
             if (enemy != null) {
                 lastEnemyPos = enemy.pos;
