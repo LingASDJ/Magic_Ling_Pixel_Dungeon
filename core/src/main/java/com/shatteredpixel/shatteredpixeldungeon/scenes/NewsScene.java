@@ -26,7 +26,6 @@ import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +35,7 @@ public class NewsScene extends PixelScene {
 
 	private static final int BTN_HEIGHT = 22;
 	private static final int GAP = 2;
-	private static final int SCROLL_MARGIN = 20; // 滚动条边距
+	private static final int SCROLL_MARGIN = 20;
 
 	@Override
 	public void create() {
@@ -48,12 +47,10 @@ public class NewsScene extends PixelScene {
 		int h = Camera.main.height;
 		boolean landscape = PixelScene.landscape();
 
-		// 背景装饰
 		Archs archs = new Archs();
 		archs.setSize(w, h);
 		addToBack(archs);
 
-		// 标题
 		IconTitle title = new IconTitle(Icons.NEWS.get(), Messages.get(this, "title"));
 		title.setSize(200, 0);
 		title.setPos(
@@ -63,15 +60,13 @@ public class NewsScene extends PixelScene {
 		align(title);
 		add(title);
 
-		// 退出按钮
 		ExitButton btnExit = new ExitButton();
 		btnExit.setPos(w - btnExit.width(), 0);
 		add(btnExit);
 
-		// 主面板
 		NinePatch panel = Chrome.get(Chrome.Type.BLANK);
-		int pw = w - SCROLL_MARGIN * 2; // 增加边距
-		int ph = h - 36 - BTN_HEIGHT - GAP; // 为底部的"阅读更多"按钮留出空间
+		int pw = w - SCROLL_MARGIN * 2;
+		int ph = h - 36 - BTN_HEIGHT - GAP;
 		panel.size(pw, ph);
 		panel.x = (w - pw) / 2f;
 		panel.y = title.bottom() + 5;
@@ -79,9 +74,17 @@ public class NewsScene extends PixelScene {
 		add(panel);
 
 		displayingNoArticles = !News.articlesAvailable();
+		ArrayList<NewsItem> items = new ArrayList<>();
 
-		// 创建滚动列表
-		ScrollPane list = new ScrollPane(new Component());
+		ScrollPane list = new ScrollPane(new Component()) {
+			@Override
+			public void onClick(float x, float y) {
+				for (NewsItem item : items) {
+					if (item.onClick(x, y))
+						break;
+				}
+			}
+		};
 		add(list);
 
 		Component content = list.content();
@@ -90,9 +93,8 @@ public class NewsScene extends PixelScene {
 		float posY = 0;
 		float nextPosY = 0;
 		boolean second = false;
-		int columns = landscape ? 2 : 1; // 根据屏幕方向决定列数
+		int columns = landscape ? 2 : 1;
 
-		// 显示信息提示
 		if (displayingNoArticles || Messages.lang() != Languages.CHINESE) {
 			Component newsInfo = new NewsInfo();
 			newsInfo.setRect(0, posY, panel.innerWidth(), 0);
@@ -101,33 +103,25 @@ public class NewsScene extends PixelScene {
 			second = false;
 		}
 
-		// 显示文章列表
 		if (!displayingNoArticles) {
 			List<NewsArticle> articles = new ArrayList<>(News.articles());
 
-			// 按置顶状态排序
-			Collections.sort(articles, new Comparator<NewsArticle>() {
-				@Override
-				public int compare(NewsArticle a1, NewsArticle a2) {
-					boolean isTop1 = "true".equals(a1.top);
-					boolean isTop2 = "true".equals(a2.top);
-					if (isTop1 && !isTop2) return -1;
-					if (!isTop1 && isTop2) return 1;
-					return a2.date.compareTo(a1.date);
-				}
-			});
+			Collections.sort(articles, (a1, a2) -> {
+                boolean isTop1 = "true".equals(a1.top);
+                boolean isTop2 = "true".equals(a2.top);
+                if (isTop1 && !isTop2) return -1;
+                if (!isTop1 && isTop2) return 1;
+                return a2.date.compareTo(a1.date);
+            });
 
-			// 添加文章按钮
 			for (NewsArticle article : articles) {
 				StyledButton b = new ArticleButton(article);
 				b.multiline = true;
 
 				if (columns == 1) {
-					// 竖屏单列布局
 					b.setRect(0, posY, panel.innerWidth(), BTN_HEIGHT);
 					posY = nextPosY = b.bottom() + GAP;
 				} else {
-					// 横屏两列布局
 					if (!second) {
 						b.setRect(0, posY, panel.innerWidth()/2f - GAP/2, BTN_HEIGHT);
 						second = true;
@@ -143,16 +137,14 @@ public class NewsScene extends PixelScene {
 			}
 		}
 
-		// 设置内容大小和滚动区域
 		content.setSize(panel.innerWidth(), (int)Math.ceil(posY));
 		list.setRect(
 				panel.x,
 				panel.y,
-				panel.width(),
+				w,
 				panel.height()
 		);
 
-		// 添加"阅读更多"按钮（独立在底部）
 		StyledButton btnSite = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "read_more")){
 			@Override
 			protected void onClick() {
@@ -180,6 +172,69 @@ public class NewsScene extends PixelScene {
 			ShatteredPixelDungeon.seamlessResetScene();
 		}
 		super.update();
+	}
+
+	private static class NewsItem extends Component {
+		private NewsArticle article;
+		private RenderedTextBlock title;
+		private BitmapText date;
+		private BitmapText topTag;
+
+		public NewsItem(NewsArticle article) {
+			this.article = article;
+		}
+
+		@Override
+		protected void createChildren() {
+			title = PixelScene.renderTextBlock(6);
+			title.text(article.title);
+			add(title);
+
+			date = new BitmapText(News.parseArticleDate(article), pixelFont);
+			date.scale.set(PixelScene.align(0.5f));
+			date.hardlight(0x888888);
+			date.measure();
+
+			if ("true".equals(article.top)) {
+				topTag = new BitmapText(Messages.get(NewsScene.class, "top_tag"), pixelFont);
+				topTag.hardlight(Window.Pink_COLOR);
+				topTag.scale.set(PixelScene.align(0.75f));
+				topTag.measure();
+				add(topTag);
+			}
+		}
+
+		@Override
+		protected void layout() {
+			title.maxWidth((int)(width - 8));
+			title.setPos(4, y + 1 + (height() - 1 - title.height()) / 2);
+			PixelScene.align(title);
+
+			date.x = width - date.width() - 2;
+			date.y = y + height() - date.height() - 2;
+			PixelScene.align(date);
+
+			if (topTag != null) {
+				topTag.x = date.x - topTag.width() - 4;
+				topTag.y = date.y;
+				PixelScene.align(topTag);
+			}
+		}
+
+		protected boolean onClick(float x, float y) {
+			if (inside(x, y)) {
+				onClick();
+				return true;
+			}
+			return false;
+		}
+
+		protected void onClick() {
+			if (article.date.getTime() > SPDSettings.newsLastRead()){
+				SPDSettings.newsLastRead(article.date.getTime());
+			}
+			ShatteredPixelDungeon.scene().addToFront(new WndArticle(article));
+		}
 	}
 
 	private static class NewsInfo extends Component {
@@ -287,7 +342,6 @@ public class NewsScene extends PixelScene {
 			date.hardlight(0x888888);
 			date.measure();
 
-			// 添加置顶标签
 			if ("true".equals(article.top)) {
 				topTag = new BitmapText(Messages.get(NewsScene.class, "top_tag"), pixelFont);
 				topTag.hardlight(Window.Pink_COLOR);
