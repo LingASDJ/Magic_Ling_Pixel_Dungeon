@@ -21,40 +21,20 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.features;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
 
-public class Door implements Bundlable {
+public class Door {
 
 	public static boolean visible = false;
 
 	public static void enter( int pos ) {
 		Level.set( pos, Terrain.OPEN_DOOR );
 		GameScene.updateMap( pos );
-
-		if (Dungeon.level.heroFOV[pos]) {
-			Dungeon.observe();
-			Sample.INSTANCE.play( Assets.Sounds.OPEN );
-			if(Dungeon.branch == 0 && Dungeon.depth == 0 && !Statistics.snow){
-				Statistics.snow = true;
-			} else if(Statistics.snow && Dungeon.branch == 0 && Dungeon.depth == 0 ){
-				Statistics.snow = false;
-			}
-		}
-
-	}
-
-	public static void reset() {
-		Statistics.snow = false;
 	}
 
 	public static void leave( int pos ) {
@@ -71,15 +51,5 @@ public class Door implements Bundlable {
 			if (Dungeon.level.heroFOV[pos])
 				Dungeon.observe();
 		}
-	}
-
-	@Override
-	public void restoreFromBundle(Bundle bundle) {
-		visible = bundle.getBoolean("KEY_VISIBLE");
-	}
-
-	@Override
-	public void storeInBundle(Bundle bundle) {
-		bundle.put("KEY_VISIBLE",visible);
 	}
 }

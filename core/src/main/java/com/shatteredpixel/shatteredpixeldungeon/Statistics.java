@@ -570,7 +570,7 @@ public class Statistics {
 		DwarfMasterKing = false;
 
 		ARLing = false;
-
+		snow = false;
 		dwarfKill = false;
 
 		CatFirst = false;
