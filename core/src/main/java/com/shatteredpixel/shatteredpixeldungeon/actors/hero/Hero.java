@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossRushMode;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
@@ -253,6 +254,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.NewZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -1198,6 +1200,11 @@ public class Hero extends Char {
 				Buff.affect(hero, MagicAbsorb.class).set(100, 1);
 			}
 		}
+
+		if(level instanceof NewZeroFiveLevel){
+            Statistics.snow = level.distance(pos, 961) > 13;
+		}
+
 
 		//水中祝福 但在BR不生效
 		if((branch == 0 || branch == 10) && !bossRushMode){

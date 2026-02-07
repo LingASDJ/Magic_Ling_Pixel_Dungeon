@@ -98,6 +98,8 @@ public class Assets {
 		public static final String ICE_PO  = "environment/custom_tiles/ice.png";
 		public static final String ICE_POX  = "environment/custom_tiles/ice_above.png";
 
+		public static final String ZERO_BACK  = "environment/custom_tiles/zero_spring.png";
+
 		public static final String GHOST_HOUSE  = "environment/custom_tiles/ghost_house.png";
 
 		public static final String PEACH_PO  =  "environment/custom_tiles/peach_forest_above.png";
@@ -142,6 +144,8 @@ public class Assets {
 
 		public static final String TILES_CAVES_GNOLL    = "environment/tiles_cold_gnoll.png";
 
+		public static final String TILES_ZERO_SPRING    = "environment/tiles_zero_spring.png";
+
 		public static final String WATER_SEWERS = "environment/water0.png";
 		public static final String WATER_PRISON = "environment/water1.png";
 		public static final String WATER_CAVES  = "environment/water2.png";
@@ -153,6 +157,8 @@ public class Assets {
 		public static final String WATER_HOLLOW  = "environment/water7.png";
 
 		public static final String WATER_GHOST  = "environment/water8.png";
+
+		public static final String WATER_ZERO  = "environment/water_zero.png";
 
 		public static final String WEAK_FLOOR       = "environment/custom_tiles/weak_floor.png";
 		public static final String SEWER_BOSS       = "environment/custom_tiles/sewer_boss.png";

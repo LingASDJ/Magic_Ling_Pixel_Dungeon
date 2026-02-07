@@ -148,7 +148,7 @@ public class LevelRules {
                         if(Dungeon.isChallenged(CS)){
                             return new ZeroLevel();
                         } else {
-                            return new ZeroCityLevel();
+                            return new NewZeroFiveLevel();
                         }
                     case 1:
                     case 2:
