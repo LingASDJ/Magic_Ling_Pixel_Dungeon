@@ -21,7 +21,6 @@ public class MintCat extends NTNPC {
 
     {
         spriteClass = MintSprite.class;
-        properties.add(Property.IMMOVABLE);
         properties.add(Property.UNKNOWN);
         maxLvl = -1;
     }

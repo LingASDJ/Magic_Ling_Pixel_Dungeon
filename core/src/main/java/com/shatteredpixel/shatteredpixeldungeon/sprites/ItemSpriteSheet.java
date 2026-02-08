@@ -135,6 +135,8 @@ public class ItemSpriteSheet {
     public static final int SHPD_CHEST     = CONTAINERS+9;
     public static final int SHPD_KEY     = CONTAINERS+10;
 
+    public static final int RICE_LIQUOR     = CONTAINERS+11;
+
     static{
         assignItemRect(BONES,           14, 11);
         assignItemRect(REMAINS,         14, 11);
@@ -146,6 +148,8 @@ public class ItemSpriteSheet {
         assignItemRect(EBONY_CHEST,     16, 14);
         assignItemRect(SHPD_CHEST,       16,14);
         assignItemRect(SHPD_KEY,         8, 14);
+
+        assignItemRect(RICE_LIQUOR,      15,16);
     }
 
     private static final int MISC_CONSUMABLE =                              xy(1, 4);   //16 slots
@@ -1335,6 +1339,8 @@ public class ItemSpriteSheet {
         assignItemRect(STAR_CRYSTAL,                    9,16);
 
         assignItemRect(MAGNETIC_CROWN,            14, 13);
+
+
     }
 
     public static final int RITUAL_SWORD        =                               xy(1, 60);
@@ -1349,6 +1355,8 @@ public class ItemSpriteSheet {
 
     public static final int FLOWERS                                             = RITUAL_SWORD + 9;
 
+    public static final int LAN_FIRE_ROAD                                       = RITUAL_SWORD + 11;
+
     static{
         assignItemRect(RITUAL_SWORD,       13, 13);
         assignItemRect(TREE_LIST,          14, 13);
@@ -1356,6 +1364,7 @@ public class ItemSpriteSheet {
         assignItemRect(SHEPHERD_FLUTE,     11, 16);
 
         assignItemRect(OLDSUNSHADOW,       14, 14);
+        assignItemRect(LAN_FIRE_ROAD,               14,16);
     }
 
     private static final int PROP1  = xy(9,46);

@@ -408,6 +408,8 @@ public class Assets {
 		public static final String SKBJY		= "music/Boss-Saka.ogg";
 
 		public static final String TOWN 		= "music/town.ogg";
+
+		public static final String TOWN_YEARS 		= "music/years.ogg";
 		public static final String BGM_BOSSA 	= "music/Boss1.ogg";
 		public static final String BGM_YOU 		= "music/boss/you.ogg";
 		public static final String BGM_BOSSC 	= "music/Boss3.ogg";
@@ -541,6 +543,8 @@ public class Assets {
 		public static final String SMLF = "splashes/smallleaf_portraits.png";
 		public static final String SMLS = "splashes/card_smallleaf_portraits.png";
 
+		public static final String BLUECJ = "splashes/blue_cj.png";
+
 		public static final String XMS_GDZ= "splashes/Xmas_gdz_portraits.png";
 		public static final String GDZ= "splashes/gdz_portraits.png";
 		public static final String YSGDZ= "splashes/gdz_yeas.png";
@@ -583,6 +587,8 @@ public class Assets {
 		public static final String JIT = "splashes/JIT_portraits.png";
 
 		public static final String MOON = "splashes/moon_portraits.png";
+
+		public static final String GDZPLS = "splashes/gdz_goldplus.png";
 
 		public static final String COON = "splashes/⑨.png";
 
@@ -661,6 +667,8 @@ public class Assets {
 
 		public static final String HF_GUDAZI	= "sprites/npc/gdz2.png";
 
+		public static final String GS_GUDAZI	= "sprites/npc/gdz_gold.png";
+
 		public static final String GQ_GUDAZI	= "sprites/npc/gdzgq.png";
 
 		public static final String GUDAZI	= "sprites/npc/gdz.png";
@@ -673,6 +681,11 @@ public class Assets {
 
 		public static final String PIA	= "sprites/npc/PianoLe.png";
 		public static final String JIT	= "sprites/npc/JIT.png";
+
+		public static final String FIREGIRL_NPC	= "sprites/npc/firemagicgirl.png";
+		public static final String ICEGIRL_NPC	= "sprites/npc/icemagicgirl.png";
+
+
 		public static final String WFS	    = "sprites/items/wf.png";
 		//ANCITY
 		public static final String TURTLE= "sprites/ancity/cltb.png";
@@ -871,6 +884,7 @@ public class Assets {
 
 		public static final String LXF		= "sprites/npc/lostwhite.png";
 
+		public static final String LXFCJ    = "sprites/npc/lostwhitecj.png";
 
 		public static final String WOLF		= "sprites/npc/wolf.png";
 

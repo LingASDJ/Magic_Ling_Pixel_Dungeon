@@ -94,6 +94,10 @@ public class DeviceCompat {
 	public static boolean isMidTest() {
 		return Game.version.contains("MDTEST");
 	}
+
+	public static boolean isMDP(){
+		return Game.version.contains("MDP");
+	}
 	
 	public static void log( String tag, String message ){
 		Gdx.app.log( tag, message );
