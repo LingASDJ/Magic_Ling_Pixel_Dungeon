@@ -19,16 +19,44 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GameRules;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.JIT;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.KongFu;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.DeepSeaNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.DreamLeziNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.FireMagicGirlNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.GudaziNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.IceMagicGirlNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.LuoWhiteNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MengDongXYNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MintCat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MoRuoSNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MoonCatNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.NyzNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ObSirNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.PinkLingNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.QinLiNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SDragonBlue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SheepNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SlylNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SmallLeafNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.YuYeNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ZakoFlowerNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
+import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -45,6 +73,9 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
+import com.watabou.utils.DeviceCompat;
+
+import java.util.List;
 
 public class NewZeroFiveLevel extends Level {
 
@@ -117,13 +148,16 @@ public class NewZeroFiveLevel extends Level {
     protected boolean build() {
         setSize(WIDTH, HEIGHT);
 
-        int exitCell = 62;
+        int exitCell = 37;
         LevelTransition exit = new LevelTransition(this, exitCell, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(exit);
 
-        int exitCellX = 419;
+        int exitCellX = 595;
         LevelTransition exitX = new LevelTransition(this, exitCellX, LevelTransition.Type.DOUBLE_ENTRANCE);
         transitions.add(exitX);
+
+        LevelTransition bexits = new LevelTransition(this, 419, LevelTransition.Type.BRANCH_ENTRANCE);
+        transitions.add(bexits);
 
         int enterCell = 961;
         LevelTransition enter = new LevelTransition(this, enterCell, LevelTransition.Type.SURFACE);
@@ -162,7 +196,9 @@ public class NewZeroFiveLevel extends Level {
     }
 
     protected void createItems() {
-
+        if ((!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO) || SPDSettings.intro() )){
+            drop( new Guidebook(),  888);
+        }
     }
 
     public Mob createMob() {
@@ -173,6 +209,115 @@ public class NewZeroFiveLevel extends Level {
 
     protected void createMobs() {
 
+        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+
+        LanFire lanFire = new LanFire();
+        lanFire.pos = 807;
+        mobs.add(lanFire);
+
+        JIT jit = new JIT();
+        jit.pos = 781;
+        mobs.add(jit);
+
+        KongFu kf = new KongFu();
+        kf.pos = 869;
+        mobs.add(kf);
+
+        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)
+                || DeviceCompat.isDebug() && DeviceCompat.isDesktop()) {
+            WaloKe shopking = new WaloKe();
+            shopking.pos = 545;
+            mobs.add(shopking);
+        }
+
+        MintCat mint = new MintCat();
+        mint.pos = 537;
+        mobs.add(mint);
+
+        //DESKTOP GROUP
+        SmallLeafNewYears  leafNewYears = new SmallLeafNewYears();
+        leafNewYears.pos = 460;
+        mobs.add(leafNewYears);
+
+        QinLiNewYears pale = new QinLiNewYears();
+        pale.pos = 459;
+        mobs.add(pale);
+
+        SDragonBlue sDragonBlue = new SDragonBlue();
+        sDragonBlue.pos = 413;
+        mobs.add(sDragonBlue);
+
+        DreamLeziNewYears dlns = new DreamLeziNewYears();
+        dlns.pos = 433;
+        mobs.add(dlns);
+
+        MengDongXYNewYears mdxy = new MengDongXYNewYears();
+        mdxy.pos = 366;
+        mobs.add(mdxy);
+
+        DeepSeaNewYears deepSeaNewYears = new DeepSeaNewYears();
+        deepSeaNewYears.pos = 441;
+        mobs.add(deepSeaNewYears);
+
+        YuYeNewYears yyny = new YuYeNewYears();
+        yyny.pos = 411;
+        mobs.add(yyny);
+
+        MoonCatNewYears mmct = new MoonCatNewYears();
+        mmct.pos = 384;
+        mobs.add(mmct);
+
+        ZakoFlowerNewYears zknk = new ZakoFlowerNewYears();
+        zknk.pos = 385;
+        mobs.add(zknk);
+
+        GudaziNewYears gudaziNewYears = new GudaziNewYears();
+        gudaziNewYears.pos = 390;
+        mobs.add(gudaziNewYears);
+
+        SheepNewYears sny = new SheepNewYears();
+        sny.pos = 358;
+        mobs.add(sny);
+
+        //FOUR HUGE DOOR GODS
+        SlylNewYears slylNewYears = new SlylNewYears();
+        slylNewYears.pos = 63;
+        mobs.add(slylNewYears);
+
+        ObSirNewYears osny = new ObSirNewYears();
+        osny.pos = 85;
+        mobs.add(osny);
+
+        PinkLingNewYears plnk = new PinkLingNewYears();
+        plnk.pos = 61;
+        mobs.add(plnk);
+
+        //SPCT
+        LuoWhiteNewYears luoWhiteNewYears = new LuoWhiteNewYears();
+        luoWhiteNewYears.pos = 453;
+        mobs.add(luoWhiteNewYears);
+
+        NyzNewYears nyzNewYears = new NyzNewYears();
+        nyzNewYears.pos = 303;
+        mobs.add(nyzNewYears);
+
+        ZeroDreamShop shtick = new ZeroDreamShop();
+        shtick.pos = 295;
+        mobs.add(shtick);
+
+        //SISTER GROUP
+        FireMagicGirlNewYears fmny = new FireMagicGirlNewYears();
+        fmny.pos = 693;
+        mobs.add(fmny);
+
+        IceMagicGirlNewYears icny = new IceMagicGirlNewYears();
+        icny.pos = 717;
+        mobs.add(icny);
+
+        //HEAD HOTEL
+        MoRuoSNewYears moRuoSNewYears = new MoRuoSNewYears();
+        moRuoSNewYears.pos = 258;
+        mobs.add(moRuoSNewYears);
     }
 
     @Override
@@ -194,7 +339,12 @@ public class NewZeroFiveLevel extends Level {
         } else if (transition.type == LevelTransition.Type.SURFACE){
 
             if (hero.belongings.getItem( Amulet.class ) == null) {
-                Game.runOnRenderThread(() -> GameScene.show( new WndMessage( Messages.get(hero, "leave") ) ));
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show( new WndMessage( Messages.get(hero, "leave") ) );
+                    }
+                });
                 return false;
             } else {
                 Statistics.ascended = true;
@@ -211,11 +361,16 @@ public class NewZeroFiveLevel extends Level {
 
             if (hero.belongings.getItem( DLCItem.class ) == null) {
 
-                Game.runOnRenderThread(() -> GameScene.show( new WndHardNotification(new ItemSprite(ItemSpriteSheet.DLCBOOKS),
-                        Messages.get(hero, "dlc_name"),
-                        Messages.get(hero, "leave_more_dead"),
-                        "OK",
-                        0)));
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show( new WndHardNotification(new ItemSprite(ItemSpriteSheet.DLCBOOKS),
+                                Messages.get(hero, "dlc_name"),
+                                Messages.get(hero, "leave_more_dead"),
+                                "OK",
+                                0));
+                    }
+                });
                 return false;
             } else if(hero.belongings.getItem( BossRushBloodGold.class ) != null && Statistics.deepestFloor == 0) {
                 GameRules.BossRush();
@@ -233,13 +388,6 @@ public class NewZeroFiveLevel extends Level {
                 return false;
             }
 
-        } else if (transition.type == LevelTransition.Type.REGULAR_EXIT) {
-            if(!tipsgodungeon) {
-                talkToHero();
-            } else {
-                return super.activateTransition(hero, transition);
-            }
-            return false;
         } else {
             return super.activateTransition(hero, transition);
         }
@@ -272,6 +420,6 @@ public class NewZeroFiveLevel extends Level {
 
     @Override
     public void playLevelMusic() {
-        Music.playModeBGM(Assets.Music.TOWN, true);
+        Music.playModeBGM(Assets.Music.TOWN_YEARS, true);
     }
 }

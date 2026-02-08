@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears;
 
 /*
  * Pixel Dungeon
@@ -24,35 +24,28 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.FiveYearsNPC;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.fiveyears.FiveYearsPlot;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YuyeSprite;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.noosa.Game;
 
-public class YuYe extends NTNPC {
+public class YuYeNewYears extends FiveYearsNPC {
 
     {
         spriteClass = YuyeSprite.class;
+        plot1 = new FiveYearsPlot.YuYeFiveYearsPlot();
     }
 
     @Override
     public boolean interact(Char c) {
-        if (c != hero) return true;
-
-        GameScene.show( new WndQuest( YuYe.this, Messages.get(YuYe.class, "hello") ) );
-        Dungeon.level.drop(new StoneOfBlink(), hero.pos).sprite.drop();
-        Dungeon.gold -= 500;
-        destroy();
-        CellEmitter.get( pos ).burst( Speck.factory( Speck.WOOL ), 10 );
-
+        sprite.turnTo( pos, c.pos );
+        if(first){
+            Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot1,false)));
+            first = false;
+        }
         return true;
     }
 }

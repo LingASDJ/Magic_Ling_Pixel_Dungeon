@@ -26,9 +26,6 @@ public class SmallLeafSprite extends MobSprite {
         starStorm = new Animation( 8, false );
         starStorm.frames( textureFilm, 1,1,2,2,3,3,4,4,5,5,6,6 );
 
-        // 使用Arrays.asList将Integer数组转换为List<Object>，
-        // 因为可变长参数本质上是数组，但这里需要的是Object类型的数组。
-        // 然后使用toArray方法将List转换回数组，因为frames方法接受的是Object...类型的参数。
         idle.frames(textureFilm, Arrays.asList(frameSequence).toArray());
 
         die = new Animation(4, false);

@@ -11,8 +11,9 @@ public class MoRuoSSprite extends MobSprite {
 
             TextureFilm ren = new TextureFilm(this.texture, 16, 16);
 
-            idle = new Animation(2, true);
-            idle.frames(ren, 0, 0,1, 1);
+            idle = new Animation(12, true);
+            idle.frames(ren, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,2,2,2,1
+            );
 
             run = new Animation(10, true);
             run.frames(ren, 0);

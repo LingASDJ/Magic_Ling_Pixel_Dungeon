@@ -287,6 +287,8 @@ public class LevelTeleporter extends TestItem {
                 Statistics.TrueYogNoDied   = false;
             }
 
+            Statistics.zeroItemLevel = 0;
+
             FoundChest foundChest = Dungeon.hero.buff(FoundChest.class);
             if(foundChest != null){
                 foundChest.NoLoot = 0;

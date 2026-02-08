@@ -206,6 +206,22 @@ public class Pasty extends Food {
 
 	}
 
+	public static class RiceLiquor extends Food {
+		{
+			image = ItemSpriteSheet.RICE_LIQUOR;
+			energy = Hunger.HUNGRY;
+		}
+
+		@Override
+		protected void satisfy(Hero hero) {
+			super.satisfy(hero);
+			hero.HP = Math.min(hero.HP + hero.HT/10, hero.HT);
+			hero.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
+			Buff.affect( hero, Recharging.class, 2f );
+			ScrollOfRecharging.charge( hero );
+		}
+	}
+
 	@Override
 	public int value() {
 		return 20 * quantity;
