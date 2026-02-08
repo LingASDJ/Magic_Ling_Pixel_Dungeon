@@ -63,6 +63,16 @@ public class Chill extends FlavourBuff {
 		else target.sprite.remove(CharSprite.State.CHILLED);
 	}
 
+    @Override
+    protected void spend(float time){
+        if(target.buff(WorstBlizzard.class)!=null){
+            spendConstant( time * 1.5f );
+        }else{
+            spendConstant( time );
+        }
+
+    }
+
 	@Override
 	public String desc() {
 		return Messages.get(this, "desc", dispTurns(), Messages.decimalFormat("#.##", (1f-speedFactor())*100f));
