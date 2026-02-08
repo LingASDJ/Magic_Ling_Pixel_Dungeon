@@ -2817,7 +2817,6 @@ public class Hero extends Char {
 
             chargeAnmy = false;
 
-            GLog.n(chargeAnmy+"升级判定");
 			Item.updateQuickslot();
 			BloodBat.updateHP();
 			Badges.validateLevelReached();
