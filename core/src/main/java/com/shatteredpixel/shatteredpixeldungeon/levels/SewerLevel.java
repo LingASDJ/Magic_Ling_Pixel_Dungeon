@@ -24,13 +24,11 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.AoReadyDragon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.DiedClearElemet;
@@ -171,15 +169,15 @@ public class SewerLevel extends RegularLevel {
 	protected void createMobs() {
 		Ghost.Quest.spawn( this,roomExit );
 		super.createMobs();
-		if(depth == 4 && Badges.isUnlocked(Badges.Badge.KILL_FIRE_DRAGON)){
-			for (int i = 0; i < 2; i++) {
-				Mob testActor = Clearly();
-				mobs.add(testActor);
-			}
-			AoReadyDragon aoReadyDragon = new AoReadyDragon();
-			aoReadyDragon.pos = exit();
-			mobs.add(aoReadyDragon);
-		}
+//		if(depth == 4 && Badges.isUnlocked(Badges.Badge.KILL_FIRE_DRAGON)){
+//			for (int i = 0; i < 2; i++) {
+//				Mob testActor = Clearly();
+//				mobs.add(testActor);
+//			}
+//			AoReadyDragon aoReadyDragon = new AoReadyDragon();
+//			aoReadyDragon.pos = exit();
+//			mobs.add(aoReadyDragon);
+//		}
 
 		if(Dungeon.depth == 4 && Dungeon.branch == 0 && Statistics.gdzHelpDungeon == 1){
 			Gudazi npc20 = new Gudazi();

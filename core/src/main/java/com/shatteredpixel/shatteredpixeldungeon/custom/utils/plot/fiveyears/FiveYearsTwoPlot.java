@@ -1,0 +1,527 @@
+package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.fiveyears;
+
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MoRuoSNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ObSirNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.PinkLingNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.QinLiNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ZakoFlowerNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.noosa.Image;
+import com.watabou.utils.Random;
+
+public class FiveYearsTwoPlot {
+    public static class FlowerFiveYearsPlot extends Plot {
+        private final static int maxprocess = 2;
+
+        {
+            process = 1;
+        }
+
+        protected String getPlotName() {
+            return SEWER_NAME;
+        }
+
+        @Override
+        public void reachProcess(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            while (this.process < needed_process) {
+                this.process();
+            }
+        }
+
+        @Override
+        public void process() {
+            if (diagulewindow != null) {
+                switch (process) {
+                    case 1:
+                        process_to_1();
+                        break;
+                    case 2:
+                        process_to_2();
+                        break;
+                }
+                diagulewindow.update();
+                process++;
+            }
+        }
+
+        @Override
+        public void initial(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            process = 2;
+            process_to_1();
+        }
+
+        @Override
+        public boolean end() {
+            return process > maxprocess;
+        }
+
+        @Override
+        public void skip() {
+            diagulewindow.cancel();
+            WndDialog.settedPlot = null;
+            if(!skipGetItems){
+                DropRules();
+            }
+        }
+
+        private void process_to_1() {
+            diagulewindow.hideAll();
+            hero.interrupt();
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.COON));
+            diagulewindow.setLeftName(Messages.get(ZakoFlowerNewYears.class, "name"));
+            diagulewindow.changeText(Messages.get(ZakoFlowerNewYears.class, "messages1"));
+        }
+
+        private void process_to_2() {
+            diagulewindow.changeText(Messages.get(ZakoFlowerNewYears.class, "messages2"));
+            DropRules();
+            skipGetItems = true;
+        }
+
+        private void DropRules(){
+            if(Statistics.zeroItemLevel < 4){
+                Dungeon.level.drop(new MeatPie(), hero.pos);
+                Statistics.zeroItemLevel++;
+            } else {
+                Dungeon.level.drop(new Gold(10), hero.pos);
+            }
+        }
+
+    }
+
+    public static class FlowerFiveYearsEndPlot extends Plot {
+        private final static int maxprocess = 1;
+
+        {
+            process = 1;
+        }
+
+        protected String getPlotName() {
+            return SEWER_NAME;
+        }
+
+        @Override
+        public void reachProcess(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            while (this.process < needed_process) {
+                this.process();
+            }
+        }
+
+        @Override
+        public void process() {
+            if (diagulewindow != null) {
+                switch (process) {
+                    case 1:
+                        process_to_1();
+                        break;
+                }
+                diagulewindow.update();
+                process++;
+            }
+        }
+
+        @Override
+        public void initial(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            process = 2;
+            process_to_1();
+        }
+
+        @Override
+        public boolean end() {
+            return process > maxprocess;
+        }
+
+        @Override
+        public void skip() {
+            diagulewindow.cancel();
+            WndDialog.settedPlot = null;
+        }
+
+        private void process_to_1() {
+            diagulewindow.hideAll();
+            hero.interrupt();
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.COON));
+            diagulewindow.setLeftName(Messages.get(ZakoFlowerNewYears.class, "name"));
+            diagulewindow.changeText(Messages.get(ZakoFlowerNewYears.class, "messages3"));
+        }
+
+    }
+
+
+    public static class PianoLeFiveYearsPlot extends Plot {
+        private final static int maxprocess = 2;
+
+        {
+            process = 1;
+        }
+
+        protected String getPlotName() {
+            return SEWER_NAME;
+        }
+
+        @Override
+        public void reachProcess(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            while (this.process < needed_process) {
+                this.process();
+            }
+        }
+
+        @Override
+        public void process() {
+            if (diagulewindow != null) {
+                switch (process) {
+                    case 1:
+                        process_to_1();
+                        break;
+                    case 2:
+                        process_to_2();
+                        break;
+                }
+                diagulewindow.update();
+                process++;
+            }
+        }
+
+        @Override
+        public void initial(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            process = 2;
+            process_to_1();
+        }
+
+        @Override
+        public boolean end() {
+            return process > maxprocess;
+        }
+
+        @Override
+        public void skip() {
+            diagulewindow.cancel();
+            WndDialog.settedPlot = null;
+            if(!skipGetItems){
+                DropRules();
+            }
+        }
+
+        private void process_to_1() {
+            diagulewindow.hideAll();
+            hero.interrupt();
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.PIANO));
+            diagulewindow.setLeftName(Messages.get(QinLiNewYears.class, "name"));
+            diagulewindow.changeText(Messages.get(QinLiNewYears.class, "messages1"));
+        }
+
+        private void process_to_2() {
+            diagulewindow.changeText(Messages.get(QinLiNewYears.class, "messages2"));
+            DropRules();
+            skipGetItems = true;
+        }
+
+        private void DropRules(){
+            if(Statistics.zeroItemLevel < 4){
+                Dungeon.level.drop(
+                        Random.Float() < 0.5f ?
+                                Generator.random(Generator.Category.WEP_T2) :
+                                Generator.random(Generator.Category.WEP_T3), hero.pos);
+                Statistics.zeroItemLevel++;
+            } else {
+                Dungeon.level.drop(new Gold(10), hero.pos);
+            }
+        }
+
+    }
+
+    public static class MoRoseFiveYearsPlot extends Plot {
+        private final static int maxprocess = 5;
+
+        {
+            process = 1;
+        }
+
+        protected String getPlotName() {
+            return SEWER_NAME;
+        }
+
+        @Override
+        public void reachProcess(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            while (this.process < needed_process) {
+                this.process();
+            }
+        }
+
+        @Override
+        public void process() {
+            if (diagulewindow != null) {
+                switch (process) {
+                    case 1:
+                        process_to_1();
+                        break;
+                    case 2:
+                        process_to_2();
+                        break;
+                    case 3:
+                        process_to_3();
+                        break;
+                    case 4:
+                        process_to_4();
+                        break;
+                    case 5:
+                        process_to_5();
+                        break;
+                }
+                diagulewindow.update();
+                process++;
+            }
+        }
+
+        @Override
+        public void initial(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            process = 2;
+            process_to_1();
+        }
+
+        @Override
+        public boolean end() {
+            return process > maxprocess;
+        }
+
+        @Override
+        public void skip() {
+            diagulewindow.cancel();
+            WndDialog.settedPlot = null;
+            if(!skipGetItems){
+                DropRules();
+            }
+        }
+
+        private void process_to_1() {
+            diagulewindow.hideAll();
+            hero.interrupt();
+            diagulewindow.setLeftName(Messages.get(MoRuoSNewYears.class, "name"));
+            diagulewindow.changeText(Messages.get(MoRuoSNewYears.class, "messages1",hero.name()));
+        }
+
+        private void process_to_2() {
+            diagulewindow.changeText(Messages.get(MoRuoSNewYears.class, "messages2"));
+        }
+
+        private void process_to_3() {
+            diagulewindow.changeText(Messages.get(MoRuoSNewYears.class, "messages3"));
+            DropRules();
+            skipGetItems = true;
+        }
+
+        private void process_to_4() {
+            diagulewindow.changeText(Messages.get(MoRuoSNewYears.class, "messages4"));
+        }
+
+        private void process_to_5() {
+            diagulewindow.changeText(Messages.get(MoRuoSNewYears.class, "messages5"));
+        }
+
+        private void DropRules(){
+            Ankh ankh = new Ankh();
+            ankh.blessed = true;
+            Dungeon.level.drop(ankh, hero.pos);
+        }
+
+    }
+
+    public static class ObSirFiveYearsPlot extends Plot {
+        private final static int maxprocess = 3;
+
+        {
+            process = 1;
+        }
+
+        protected String getPlotName() {
+            return SEWER_NAME;
+        }
+
+        @Override
+        public void reachProcess(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            while (this.process < needed_process) {
+                this.process();
+            }
+        }
+
+        @Override
+        public void process() {
+            if (diagulewindow != null) {
+                switch (process) {
+                    case 1:
+                        process_to_1();
+                        break;
+                    case 2:
+                        process_to_2();
+                        break;
+                    case 3:
+                        process_to_3();
+                        break;
+                }
+                diagulewindow.update();
+                process++;
+            }
+        }
+
+        @Override
+        public void initial(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            process = 2;
+            process_to_1();
+        }
+
+        @Override
+        public boolean end() {
+            return process > maxprocess;
+        }
+
+        @Override
+        public void skip() {
+            diagulewindow.cancel();
+            WndDialog.settedPlot = null;
+            if(!skipGetItems){
+                DropRules();
+            }
+        }
+
+        private void process_to_1() {
+            diagulewindow.hideAll();
+            hero.interrupt();
+            diagulewindow.setLeftName(Messages.get(ObSirNewYears.class, "name"));
+            diagulewindow.changeText(Messages.get(ObSirNewYears.class, "messages1"));
+            DropRules();
+            skipGetItems = true;
+        }
+
+        private void process_to_2() {
+            diagulewindow.changeText(Messages.get(ObSirNewYears.class, "messages2"));
+        }
+
+        private void process_to_3() {
+            diagulewindow.changeText(Messages.get(ObSirNewYears.class, "messages3"));
+        }
+
+        private void DropRules(){
+            if(Statistics.zeroItemLevel < 4){
+                Dungeon.level.drop(new ScrollOfPsionicBlast(), hero.pos);
+                Statistics.zeroItemLevel++;
+            } else {
+                Dungeon.level.drop(new Gold(10), hero.pos);
+            }
+        }
+
+    }
+
+    public static class PinkLingFiveYearsPlot extends Plot {
+        private final static int maxprocess = 4;
+
+        {
+            process = 1;
+        }
+
+        protected String getPlotName() {
+            return SEWER_NAME;
+        }
+
+        @Override
+        public void reachProcess(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            while (this.process < needed_process) {
+                this.process();
+            }
+        }
+
+        @Override
+        public void process() {
+            if (diagulewindow != null) {
+                switch (process) {
+                    case 1:
+                        process_to_1();
+                        break;
+                    case 2:
+                        process_to_2();
+                        break;
+                    case 3:
+                        process_to_3();
+                        break;
+                    case 4:
+                        process_to_4();
+                        break;
+                }
+                diagulewindow.update();
+                process++;
+            }
+        }
+
+        @Override
+        public void initial(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            process = 2;
+            process_to_1();
+        }
+
+        @Override
+        public boolean end() {
+            return process > maxprocess;
+        }
+
+        @Override
+        public void skip() {
+            diagulewindow.cancel();
+            WndDialog.settedPlot = null;
+            if(!skipGetItems){
+                DropRules();
+            }
+        }
+
+        private void process_to_1() {
+            diagulewindow.hideAll();
+            hero.interrupt();
+            diagulewindow.setLeftName(Messages.get(PinkLingNewYears.class, "name"));
+            diagulewindow.changeText(Messages.get(PinkLingNewYears.class, "messages1",hero.name()));
+        }
+
+        private void process_to_2() {
+            diagulewindow.changeText(Messages.get(PinkLingNewYears.class, "messages2"));
+        }
+
+        private void process_to_3() {
+            diagulewindow.changeText(Messages.get(PinkLingNewYears.class, "messages3"));
+        }
+
+        private void process_to_4() {
+            diagulewindow.changeText(Messages.get(PinkLingNewYears.class, "messages4"));
+            DropRules();
+            skipGetItems = true;
+        }
+
+        private void DropRules(){
+            Dungeon.level.drop(new PotionOfFrost(), hero.pos);
+        }
+
+    }
+
+
+}
