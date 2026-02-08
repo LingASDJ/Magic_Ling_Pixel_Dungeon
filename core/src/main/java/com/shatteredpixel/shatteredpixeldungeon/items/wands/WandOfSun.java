@@ -39,6 +39,8 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
     int collisionPos;
     //public static final String AC_DISMISS = "DISMISS";
 
+    public int maxAmount = 1;
+
     {
         image = ItemSpriteSheet.HIGHTWAND_7;
     }
@@ -90,8 +92,11 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
     }
 
     public String statsDesc(){
-        if(isIdentified()) return Messages.get(this, "stats_desc",min(),max());
-        else return Messages.get(this, "stats_desc",min(0),max(0));
+
+        maxAmount = (int) (1+(buffedLvl()/5));
+
+        if(isIdentified()) return Messages.get(this, "stats_desc",min(),max(),maxAmount);
+        else return Messages.get(this, "stats_desc",min(0),max(0),1);
     }
 
     @Override
@@ -112,8 +117,15 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
         }
 
         if (!cursed) {
+
+            maxAmount = (int) (1+(buffedLvl()/5));
+            int curAmount = 0;
+
             for (Actor actor : Actor.all()) {
                 if (actor instanceof MiniSun) {
+
+                    curAmount++;
+
                     MiniSun s = (MiniSun) actor;
                     if (s.pos == target) {
                         s.die();
@@ -121,6 +133,12 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
                         return false;
                     }
                 }
+            }
+
+            if(curAmount >= maxAmount){
+
+                GLog.i(Messages.get(WandOfSun.class, "no_more_suns"));
+                return false;
             }
 
             if (!Dungeon.level.solid[target] && curCharges > 0) {
@@ -227,7 +245,7 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
             if(duration == 1 && wand.curCharges >0){
                 wand.curCharges--;
                 updateQuickslot();
-                duration += 3;
+                duration += 2;
             }
 
             spend( TICK );

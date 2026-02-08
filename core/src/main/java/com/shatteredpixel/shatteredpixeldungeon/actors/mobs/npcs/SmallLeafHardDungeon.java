@@ -207,7 +207,7 @@ public class SmallLeafHardDungeon extends NPC {
 
             newProp.collect();
             GLog.i(Messages.get(Dungeon.hero, "you_now_have", newProp.name()));
-            Statistics.add(currentProp);
+            Statistics.removeProp(currentProp);
             btnItem.item().detach(Dungeon.hero.belongings.backpack);
         }
 
@@ -272,7 +272,8 @@ public class SmallLeafHardDungeon extends NPC {
                 }
             }
 
-            Statistics.add(currentProp);
+            Statistics.removeProp(currentProp);
+            //意外的回收会导致藏品重复
             btnItem.item().detach(Dungeon.hero.belongings.backpack);
         }
 

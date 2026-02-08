@@ -371,6 +371,7 @@ public class Hero extends Char {
 
 	private int resistHealth = 0;
 	private int originalHT = 20;
+    private boolean chargeAnmy = false;
 
 	public int lvl = 1;
 	public int chargesUsed = 0;
@@ -2814,10 +2815,18 @@ public class Hero extends Char {
 				}
 			}
 
+            chargeAnmy = false;
+
 			Item.updateQuickslot();
 			BloodBat.updateHP();
 			Badges.validateLevelReached();
-		}
+		}else {
+
+            if (((float) this.exp /maxExp()) >= 0.5f && belongings.getItem(WandOfAnmy.class) != null && !chargeAnmy) {
+                belongings.getItem(WandOfAnmy.class).expCharge(this);
+                chargeAnmy = true;
+            }
+        }
 	}
 
 	public int maxExp() {

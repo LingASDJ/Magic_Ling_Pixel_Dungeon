@@ -18,15 +18,20 @@ import com.watabou.utils.Bundle;
 public class BlessLingJing extends ClearLanterBuff {
     public static int level = 0;
     private int interval = 1;
-
+    public int timerA = 0;
 
     @Override
     public boolean act() {
         if (target.isAlive()) {
 
-            if (Dungeon.hero.buff(BlessLingJing.class) != null && hero.HT == hero.HP && Dungeon.hero.buff(BlessLingJing.LanterBarrier.class) == null) {
-                Buff.affect(hero, BlessLingJing.LanterBarrier.class).setShield(((25)));
-                spend(15f);
+            if (Dungeon.hero.buff(BlessLingJing.class) != null && hero.HT >= hero.HP && Dungeon.hero.buff(BlessLingJing.LanterBarrier.class) == null) {
+                timerA++;
+                spend(1f);
+
+                if(timerA>=75){
+                    timerA=0;
+                    Buff.affect(hero, BlessLingJing.LanterBarrier.class).setShield(((20)));
+                }
             }
 
             spend(interval);
@@ -74,12 +79,14 @@ public class BlessLingJing extends ClearLanterBuff {
 
     private static final String LEVEL = "level";
     private static final String INTERVAL = "interval";
+    private static final String TIMERA = "timera";
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(INTERVAL, interval);
         bundle.put(LEVEL, level);
+        bundle.put(TIMERA,timerA);
     }
 
     @Override
@@ -87,6 +94,7 @@ public class BlessLingJing extends ClearLanterBuff {
         super.restoreFromBundle(bundle);
         interval = bundle.getInt(INTERVAL);
         level = bundle.getInt(LEVEL);
+        timerA = bundle.getInt(TIMERA);
     }
 
     @Override
