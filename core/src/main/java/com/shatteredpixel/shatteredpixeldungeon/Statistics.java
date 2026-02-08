@@ -777,31 +777,31 @@ public class Statistics {
 		return  false;
 	}
 
-	public static void add(Prop prop){
+	public static void removeProp(Prop prop){
 		if( prop.kind == 0){
 			switch (prop.rareness){
 				case 0:
-					propPositive0.add(prop);
+					if(propPositive0.contains(prop)) propPositive0.remove(prop);
 					break;
 				case 1:
-					propPositive1.add(prop);
+                    if(propPositive1.contains(prop)) propPositive1.remove(prop);
 					break;
 				case 2:
-					propPositive2.add(prop);
+                    if(propPositive2.contains(prop)) propPositive2.remove(prop);
 					break;
 			}
 		}else{
 			switch (prop.rareness){
 				case 0:
-					propNegative0.add(prop);
+                    if(propNegative0.contains(prop)) propNegative0.remove(prop);
 					break;
 				case 1:
-					propNegative1.add(prop);
+                    if(propNegative1.contains(prop))propNegative1.remove(prop);
 					break;
 				case 2:
-					propNegative2.add(prop);
-					if(prop instanceof TerrorDoll) propNegative2.add(new TerrorDollB());
-					if(prop instanceof TerrorDollB) propNegative2.add(new TerrorDoll());
+                    if(propNegative2.contains(prop)) propNegative2.remove(prop);
+					if(prop instanceof TerrorDoll) propNegative2.remove(new TerrorDollB());
+					if(prop instanceof TerrorDollB) propNegative2.remove(new TerrorDoll());
 					break;
 			}
 		}

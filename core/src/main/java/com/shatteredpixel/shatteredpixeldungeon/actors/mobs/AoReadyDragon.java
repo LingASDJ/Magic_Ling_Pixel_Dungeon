@@ -32,7 +32,7 @@ import com.watabou.utils.Random;
 
 public class AoReadyDragon extends Mob implements Callback {
 
-    private static final float TIME_TO_ZAP = 4f;
+    private static final float TIME_TO_ZAP = 3f;
 
     {
         spriteClass = AoReadyDragonSprite.class;

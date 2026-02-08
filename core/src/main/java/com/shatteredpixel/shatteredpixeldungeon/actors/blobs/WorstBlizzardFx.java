@@ -89,7 +89,7 @@ public class WorstBlizzardFx extends Blob{
                 if (!Dungeon.level.solid[curr]) {
                     Char charAt= Actor.findChar(curr);
                     if(charAt!=null ){
-                        Buff.affect(charAt, WorstBlizzard.class,1f);
+                        Buff.affect(charAt, WorstBlizzard.class,1f).setWandlevel(wandLevel);
                     }
                 }
             }
@@ -129,7 +129,7 @@ public class WorstBlizzardFx extends Blob{
 
         if (ch != null && !ch.isImmune(WorstBlizzardFx.class)) {
             if(ch.buff(WorstBlizzard.class)==null){
-                Buff.affect(ch, WorstBlizzard.class,1f);
+                Buff.affect(ch, WorstBlizzard.class,1f).setWandlevel(wandLevel);
             }
 
             if(!effectedTargets.contains(ch)) {
