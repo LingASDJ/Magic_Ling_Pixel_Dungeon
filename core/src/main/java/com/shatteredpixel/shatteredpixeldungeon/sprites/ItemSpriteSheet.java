@@ -457,6 +457,8 @@ public class ItemSpriteSheet {
     private static final int RINGS          =                               xy(1, 15);  //16 slots
     public static final int WAND_UNKNOWN   = RINGS+13;
 
+    public static final int KEYS_UNKNOWN   = RINGS+14;
+
     public static final int WAND_HAND_CONTROL   = RINGS+15;
 
     public static final int WAND_HTR    = WANDS+14;
@@ -465,6 +467,8 @@ public class ItemSpriteSheet {
         for (int i = WANDS; i < WANDS+15; i++)
             assignItemRect(i, 14, 14);
         assignItemRect(WAND_UNKNOWN, 14, 14);
+
+        assignItemRect(KEYS_UNKNOWN, 8, 14);
 
         assignItemRect(WAND_HAND_CONTROL, 14, 14);
     }

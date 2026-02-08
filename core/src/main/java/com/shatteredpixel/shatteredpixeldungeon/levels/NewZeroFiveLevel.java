@@ -19,16 +19,24 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GameRules;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.JIT;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.KongFu;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MintCat;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
+import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -45,6 +53,9 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
+import com.watabou.utils.DeviceCompat;
+
+import java.util.List;
 
 public class NewZeroFiveLevel extends Level {
 
@@ -162,7 +173,9 @@ public class NewZeroFiveLevel extends Level {
     }
 
     protected void createItems() {
-
+        if ((!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO) || SPDSettings.intro() )){
+            drop( new Guidebook(),  888);
+        }
     }
 
     public Mob createMob() {
@@ -173,6 +186,30 @@ public class NewZeroFiveLevel extends Level {
 
     protected void createMobs() {
 
+        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+
+        LanFire lanFire = new LanFire();
+        lanFire.pos = 807;
+        mobs.add(lanFire);
+
+        JIT jit = new JIT();
+        jit.pos = 781;
+        mobs.add(jit);
+
+        KongFu kf = new KongFu();
+        kf.pos = 869;
+        mobs.add(kf);
+
+        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)
+                || DeviceCompat.isDebug() && DeviceCompat.isDesktop()) {
+            WaloKe shopking = new WaloKe();
+            shopking.pos = 545;
+            mobs.add(shopking);
+        }
+
+        MintCat mint = new MintCat();
+        mint.pos = 537;
+        mobs.add(mint);
     }
 
     @Override
