@@ -96,7 +96,7 @@ public class DeviceCompat {
 	}
 
 	public static boolean isMDP(){
-		return Game.version.contains("MDP");
+		return Game.version.contains("MDPT");
 	}
 	
 	public static void log( String tag, String message ){
