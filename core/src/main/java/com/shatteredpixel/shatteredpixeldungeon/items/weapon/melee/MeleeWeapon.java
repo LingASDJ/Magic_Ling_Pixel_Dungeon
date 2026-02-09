@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BlessAWP;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.MagicAbsorb;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -358,6 +359,11 @@ public class MeleeWeapon extends Weapon {
 					return otherLevel;
 				}
 
+			}
+		}
+		if(hero != null){
+			if(hero.buff(BlessAWP.WeaponGetReady.class)!=null && hero.belongings.weapon() == this){
+				return super.buffedLvl()+1;
 			}
 		}
 		return super.buffedLvl();

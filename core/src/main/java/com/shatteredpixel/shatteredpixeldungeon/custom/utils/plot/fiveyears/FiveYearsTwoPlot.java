@@ -442,7 +442,7 @@ public class FiveYearsTwoPlot {
     }
 
     public static class PinkLingFiveYearsPlot extends Plot {
-        private final static int maxprocess = 4;
+        private final static int maxprocess = 5;
 
         {
             process = 1;
@@ -475,6 +475,9 @@ public class FiveYearsTwoPlot {
                         break;
                     case 4:
                         process_to_4();
+                        break;
+                    case 5:
+                        process_to_5();
                         break;
                 }
                 diagulewindow.update();
@@ -523,6 +526,11 @@ public class FiveYearsTwoPlot {
             DropRules();
             skipGetItems = true;
         }
+
+        private void process_to_5() {
+            diagulewindow.changeText(Messages.get(PinkLingNewYears.class, "messages5"));
+        }
+
 
         private void DropRules(){
             Dungeon.level.drop(new PotionOfFrost(), hero.pos);

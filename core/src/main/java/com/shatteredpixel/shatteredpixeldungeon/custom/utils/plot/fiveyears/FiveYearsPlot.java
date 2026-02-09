@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.BoneSoup;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfBlessGoTend;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -56,7 +57,7 @@ import com.watabou.utils.Random;
 public class FiveYearsPlot  {
 
     public static class SmallLeafPlot extends Plot {
-        private final static int maxprocess = 1;
+        private final static int maxprocess = 2;
 
         {
             process = 1;
@@ -81,6 +82,9 @@ public class FiveYearsPlot  {
                     case 1:
                         process_to_1();
                         break;
+                    case 2:
+                        process_to_2();
+                        break;
                 }
                 diagulewindow.update();
                 process++;
@@ -103,6 +107,9 @@ public class FiveYearsPlot  {
         public void skip() {
             diagulewindow.cancel();
             WndDialog.settedPlot = null;
+            if(!skipGetItems){
+                DropRules();
+            }
         }
 
         private void process_to_1() {
@@ -110,12 +117,24 @@ public class FiveYearsPlot  {
             hero.interrupt();
             diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
             diagulewindow.setLeftName(Messages.get(SmallLeaf.class, "name"));
-            if(Random.Float()<=0.5f){
-                diagulewindow.changeText(Messages.get(SmallLeafNewYears.class, "message1",hero.name()));
+            diagulewindow.changeText(Messages.get(SmallLeafNewYears.class, "message1",hero.name()));
+        }
+
+        private void process_to_2() {
+            diagulewindow.changeText(Messages.get(SmallLeafNewYears.class, "message2",hero.name()));
+            DropRules();
+            skipGetItems = true;
+        }
+
+        private void DropRules(){
+            if(Statistics.zeroItemLevel < 4){
+                Dungeon.level.drop(new ScrollOfBlessGoTend(), hero.pos);
+                Statistics.zeroItemLevel++;
             } else {
-                diagulewindow.changeText(Messages.get(SmallLeafNewYears.class, "message2",hero.name()));
+                Dungeon.level.drop(new Gold(10), hero.pos);
             }
         }
+
     }
 
     public static class CJBlueFiveYearsPlot extends Plot {
