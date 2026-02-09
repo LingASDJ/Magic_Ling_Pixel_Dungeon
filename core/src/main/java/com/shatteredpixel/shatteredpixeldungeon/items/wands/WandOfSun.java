@@ -122,7 +122,7 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
             int curAmount = 0;
 
             for (Actor actor : Actor.all()) {
-                if (actor instanceof MiniSun) {
+                if (actor instanceof MiniSun &&  ((MiniSun) actor).wand == this) {
 
                     curAmount++;
 
