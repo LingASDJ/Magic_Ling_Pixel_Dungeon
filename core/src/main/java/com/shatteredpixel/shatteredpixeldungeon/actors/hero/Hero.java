@@ -2829,6 +2829,11 @@ public class Hero extends Char {
 				}
 			}
 
+            if (((float) this.exp /maxExp()) >= 0.5f && belongings.getItem(WandOfAnmy.class) != null && !chargeAnmy) {
+                belongings.getItem(WandOfAnmy.class).expCharge(this);
+                chargeAnmy = true;
+            }
+
             chargeAnmy = false;
 
 			Item.updateQuickslot();
