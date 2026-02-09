@@ -43,7 +43,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MoonCatNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.NyzNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ObSirNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.PinkFoxNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.PinkLingNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.QianYueDeepNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.QinLiNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SDragonBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SheepNewYears;
@@ -266,6 +268,10 @@ public class NewZeroFiveLevel extends Level {
         deepSeaNewYears.pos = 441;
         mobs.add(deepSeaNewYears);
 
+        QianYueDeepNewYears qyny = new QianYueDeepNewYears();
+        qyny.pos = 465;
+        mobs.add(qyny);
+
         YuYeNewYears yyny = new YuYeNewYears();
         yyny.pos = 411;
         mobs.add(yyny);
@@ -285,6 +291,10 @@ public class NewZeroFiveLevel extends Level {
         SheepNewYears sny = new SheepNewYears();
         sny.pos = 358;
         mobs.add(sny);
+
+        PinkFoxNewYears plk = new PinkFoxNewYears();
+        plk.pos = 333;
+        mobs.add(plk);
 
         AutoShopBotNewYears astb = new AutoShopBotNewYears();
         astb.pos = 361;
