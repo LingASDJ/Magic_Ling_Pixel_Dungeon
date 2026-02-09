@@ -279,6 +279,8 @@ public class Assets {
 		public static final String Three_YEARS  = "interfaces/Years/3years.png";
 		public static final String Four_YEARS  =  "interfaces/Years/4years.png";
 
+		public static final String FIVE_YEARS  =  "interfaces/Years/5years.png";
+
 		//网络贴图
 		public static final String NETICONS = "interfaces/net_icons.png";
 

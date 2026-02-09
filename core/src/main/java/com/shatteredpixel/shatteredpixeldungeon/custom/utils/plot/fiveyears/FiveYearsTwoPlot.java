@@ -16,12 +16,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.YogSTSNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ZakoFlowerNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDivination;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -103,10 +103,10 @@ public class FiveYearsTwoPlot {
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
                 Dungeon.level.drop(new MeatPie(), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
 
     }
@@ -248,10 +248,10 @@ public class FiveYearsTwoPlot {
                         Random.Float() < 0.5f ?
                                 Generator.random(Generator.Category.WEP_T2) :
                                 Generator.random(Generator.Category.WEP_T3), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
 
     }
@@ -347,9 +347,7 @@ public class FiveYearsTwoPlot {
         }
 
         private void DropRules(){
-            Ankh ankh = new Ankh();
-            ankh.blessed = true;
-            Dungeon.level.drop(ankh, hero.pos);
+            Dungeon.level.drop(new ScrollOfEnchantment(), hero.pos);
         }
 
     }
@@ -433,10 +431,10 @@ public class FiveYearsTwoPlot {
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
                 Dungeon.level.drop(new ScrollOfPsionicBlast(), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
 
     }

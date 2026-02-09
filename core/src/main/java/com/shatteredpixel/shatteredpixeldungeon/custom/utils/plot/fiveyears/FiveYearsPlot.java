@@ -129,10 +129,10 @@ public class FiveYearsPlot  {
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
                 Dungeon.level.drop(new ScrollOfBlessGoTend(), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
 
     }
@@ -217,10 +217,10 @@ public class FiveYearsPlot  {
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
                 Dungeon.level.drop(Generator.random( Generator.Category.FOOD ), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
 
     }
@@ -311,10 +311,10 @@ public class FiveYearsPlot  {
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
                 Dungeon.level.drop(new RingOfWealth().identify(), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
     }
 
@@ -397,10 +397,10 @@ public class FiveYearsPlot  {
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
                 Dungeon.level.drop(new RandomChest(), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
 
     }
@@ -580,10 +580,10 @@ public class FiveYearsPlot  {
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
                 Dungeon.level.drop(new MeatPie(), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
     }
 
@@ -964,10 +964,10 @@ public class FiveYearsPlot  {
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
                 Dungeon.level.drop(new ScrollOfTeleportation(), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
 
     }
@@ -1180,10 +1180,10 @@ public class FiveYearsPlot  {
                 sickle.enchantment = new Wayward();
                 sickle.identify();
                 Dungeon.level.drop(sickle,hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
     }
 
@@ -1274,10 +1274,10 @@ public class FiveYearsPlot  {
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
                 Dungeon.level.drop(new Gold(Random.Int(500,1000)), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
     }
 
@@ -1361,10 +1361,10 @@ public class FiveYearsPlot  {
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
                 Dungeon.level.drop(new WoollyBomb(), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
 
     }

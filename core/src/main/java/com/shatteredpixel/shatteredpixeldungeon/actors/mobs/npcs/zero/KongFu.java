@@ -91,7 +91,7 @@ public class KongFu extends NTNPC {
 
 
             if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
-                Dungeon.level.drop(new Gold(1), hero.pos);
+                Dungeon.level.drop(new Gold(10), hero.pos);
             } else {
                 Dungeon.level.drop( new Pasty(), hero.pos );
             }
