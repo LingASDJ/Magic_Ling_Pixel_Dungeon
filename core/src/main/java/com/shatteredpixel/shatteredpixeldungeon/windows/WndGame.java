@@ -237,7 +237,7 @@ public class WndGame extends Window {
 			addButton(curBtn = new RedButton(Messages.get(this, "restar")) {
 				@Override
 				protected void onClick() {
-					appear( hero, 317 );
+					appear( hero, 37 );
 					Dungeon.level.occupyCell(hero );
 					Dungeon.observe();
 					GameScene.updateFog();
