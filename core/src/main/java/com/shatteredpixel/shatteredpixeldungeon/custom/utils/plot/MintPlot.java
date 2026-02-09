@@ -217,7 +217,7 @@ public class MintPlot extends Plot {
         private void process_to_1() {
             diagulewindow.hideAll();
             hero.interrupt();
-            diagulewindow.setMainAvatar(new Image(Assets.Splashes.MT));
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.MT_CJ));
             diagulewindow.setLeftName(Messages.get(Mint.class, "name"));
             diagulewindow.changeText(Messages.get(Mint.class, "message5",hero.name()));
         }
@@ -291,7 +291,7 @@ public class MintPlot extends Plot {
         private void process_to_1() {
             diagulewindow.hideAll();
             hero.interrupt();
-            diagulewindow.setMainAvatar(new Image(Assets.Splashes.MT));
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.MT_CJ));
             diagulewindow.setLeftName(Messages.get(Mint.class, "name"));
             diagulewindow.changeText(Messages.get(Mint.class, "message1_ny",hero.name()));
         }

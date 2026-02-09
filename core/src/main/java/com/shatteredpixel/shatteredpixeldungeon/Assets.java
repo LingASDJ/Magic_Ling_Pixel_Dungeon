@@ -582,6 +582,7 @@ public class Assets {
 
 		public static final String NYZ = "splashes/nyz_portraits.png";
 		public static final String MT = "splashes/mint_portraits.png";
+		public static final String MT_CJ = "splashes/mint_cj_portraits.png";
 		public static final String LN = "splashes/ln_portraits.png";
 		public static final String WTX = "splashes/yan_portraits.png";
 		public static final String JIT = "splashes/JIT_portraits.png";
@@ -656,7 +657,7 @@ public class Assets {
 		public static final String YETYOG	= "sprites/npc/yetyogyears.png";
 
 		public static final String YUYE	= "sprites/npc/yuye.png";
-		public static final String MINT	= "sprites/npc/mint.png";
+		public static final String MINT	= "sprites/npc/mint_cj.png";
 
 		public static final String PINKFOX	= "sprites/npc/pinkfox.png";
 
