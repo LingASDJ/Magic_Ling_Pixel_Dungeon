@@ -29,6 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.JIT;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.KongFu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.AutoShopBotNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ChocoNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.DeepSeaNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.DreamLeziNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.FireMagicGirlNewYears;
@@ -47,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SheepNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SlylNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SmallLeafNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.YogSTSNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.YuYeNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ZakoFlowerNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
@@ -255,6 +258,10 @@ public class NewZeroFiveLevel extends Level {
         mdxy.pos = 366;
         mobs.add(mdxy);
 
+        ChocoNewYears choco = new ChocoNewYears();
+        choco.pos = 363;
+        mobs.add(choco);
+
         DeepSeaNewYears deepSeaNewYears = new DeepSeaNewYears();
         deepSeaNewYears.pos = 441;
         mobs.add(deepSeaNewYears);
@@ -279,6 +286,10 @@ public class NewZeroFiveLevel extends Level {
         sny.pos = 358;
         mobs.add(sny);
 
+        AutoShopBotNewYears astb = new AutoShopBotNewYears();
+        astb.pos = 361;
+        mobs.add(astb);
+
         //FOUR HUGE DOOR GODS
         SlylNewYears slylNewYears = new SlylNewYears();
         slylNewYears.pos = 63;
@@ -300,6 +311,10 @@ public class NewZeroFiveLevel extends Level {
         NyzNewYears nyzNewYears = new NyzNewYears();
         nyzNewYears.pos = 303;
         mobs.add(nyzNewYears);
+
+        YogSTSNewYears yogSTSNewYears = new YogSTSNewYears();
+        yogSTSNewYears.pos = 255;
+        mobs.add(yogSTSNewYears);
 
         ZeroDreamShop shtick = new ZeroDreamShop();
         shtick.pos = 295;
