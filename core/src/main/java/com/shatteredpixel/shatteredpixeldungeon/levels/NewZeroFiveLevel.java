@@ -335,9 +335,15 @@ public class NewZeroFiveLevel extends Level {
         mobs.add(shtick);
 
         //SISTER GROUP
-        FireMagicGirlNewYears fmny = new FireMagicGirlNewYears();
-        fmny.pos = 693;
-        mobs.add(fmny);
+
+        boolean isGet = Badges.isUnlocked(Badges.Badge.KILL_MG) && passwordbadges.contains(PaswordBadges.Badge.FIREGIRL);
+
+        if(isGet || DeviceCompat.isMDP() || DeviceCompat.isDebug()){
+            FireMagicGirlNewYears fmny = new FireMagicGirlNewYears();
+            fmny.pos = 693;
+            mobs.add(fmny);
+        }
+
 
         IceMagicGirlNewYears icny = new IceMagicGirlNewYears();
         icny.pos = 717;

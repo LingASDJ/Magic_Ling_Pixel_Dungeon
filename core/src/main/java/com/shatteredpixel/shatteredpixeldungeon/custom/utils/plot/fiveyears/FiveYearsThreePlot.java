@@ -99,10 +99,10 @@ public class FiveYearsThreePlot {
             if(Statistics.zeroItemLevel < 4){
                 Dungeon.level.drop(new PotionOfLiquidFlame(), hero.pos);
                 Dungeon.level.drop(new ScrollOfTransmutation(), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
 
     }
@@ -194,10 +194,10 @@ public class FiveYearsThreePlot {
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
                 Dungeon.level.drop(new ElixirOfDragonsBlood(), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
 
     }
@@ -291,10 +291,10 @@ public class FiveYearsThreePlot {
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
                 Dungeon.level.drop(Generator.random( Generator.Category.STONE ), hero.pos);
-                Statistics.zeroItemLevel++;
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
+            Statistics.zeroItemLevel++;
         }
 
     }

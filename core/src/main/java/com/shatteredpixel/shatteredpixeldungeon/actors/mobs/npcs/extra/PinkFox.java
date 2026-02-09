@@ -18,7 +18,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndGoldBurrety;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 
@@ -60,13 +59,8 @@ public class PinkFox extends NTNPC {
         PinkFoxPlot.PinkFoxSPlot plotb = new PinkFoxPlot.PinkFoxSPlot();
         if (first && Dungeon.depth == 1) {
             Statistics.PinkFox = true;
-            ((PinkFoxSprite)sprite).wakeUp();
-            GameScene.scene.add(new Delayer(1f){
-                @Override
-                protected void onComplete() {
-                    ((PinkFoxSprite)sprite).idleS();
-                }
-            });
+            //((PinkFoxSprite)sprite).wakeUp();
+            
             first = false;
             sprite.showStatus(Window.CYELLOW, "!!!");
 

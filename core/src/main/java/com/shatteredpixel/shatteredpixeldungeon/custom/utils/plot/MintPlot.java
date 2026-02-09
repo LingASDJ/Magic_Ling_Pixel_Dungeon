@@ -15,7 +15,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBoo
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.fiveyears.SelectKeys;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfClairvoyance;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
@@ -283,7 +282,8 @@ public class MintPlot extends Plot {
             diagulewindow.cancel();
             WndDialog.settedPlot = null;
             if(!skipGetItems){
-                Dungeon.level.drop(new SelectKeys(), hero.pos).sprite.drop();
+                Dungeon.level.drop(new StoneOfClairvoyance(), hero.pos).sprite.drop();
+                Dungeon.level.drop(new StoneOfClairvoyance(), hero.pos).sprite.drop();
                 GreenStorm(hero);
                 Dungeon.level.drop(RandomBooks(), hero.pos).sprite.drop();
             }

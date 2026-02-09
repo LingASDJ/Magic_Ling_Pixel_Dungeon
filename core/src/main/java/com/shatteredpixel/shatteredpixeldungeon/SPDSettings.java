@@ -803,6 +803,10 @@ public class SPDSettings extends GameSettings {
 		put(KEY_ICECOIN, newCoin);
 	}
 
+	public static void iceTestCoin(int value) {
+		put(KEY_ICECOIN, value);
+	}
+
 	public static void iceDownCoin(int value) {
 		int currentCoin = iceCoin();
 		int newCoin = currentCoin - value;
