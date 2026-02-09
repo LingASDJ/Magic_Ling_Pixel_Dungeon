@@ -9,6 +9,7 @@ abstract public class FiveYearsNPC extends NTNPC {
     public Plot plot1 = null;
     public Plot plot2 = null;
     public Plot plot3 = null;
+    public Plot plot4 = null;
 
     public boolean first=true;
     public boolean secnod=true;

@@ -593,9 +593,15 @@ public class Assets {
 
 		public static final String COON = "splashes/⑨.png";
 
+		public static final String YOGSTS_5 = "splashes/yetsts5.png";
+
 		public static final String PINKFOX = "splashes/pinkfox.png";
 
+		public static final String COMPLEX = "splashes/complex.png";
+
 		public static final String LMOON = "splashes/lowmoon_portraits.png";
+
+		public static final String CHOCO = "splashes/choco_portraits.png";
 
 		public static final String FYNX = "splashes/guard_portraits.png";
 
@@ -655,7 +661,7 @@ public class Assets {
 		//NPCS
 		public static final String KEEPERKING	= "sprites/npc/ShopKing.png";
 		public static final String YETYOG	= "sprites/npc/yetyogyears.png";
-
+		public static final String YETYOG_R2	= "sprites/npc/yetyogyears5.png";
 		public static final String YUYE	= "sprites/npc/yuye.png";
 		public static final String MINT	= "sprites/npc/mint_cj.png";
 
@@ -679,6 +685,8 @@ public class Assets {
 		public static final String BZ	= "sprites/npc/bzmder.png";
 
 		public static final String HK	= "sprites/npc/hk.png";
+
+		public static final String CHOCO	= "sprites/npc/choco.png";
 
 		public static final String PIA	= "sprites/npc/PianoLe.png";
 		public static final String JIT	= "sprites/npc/JIT.png";

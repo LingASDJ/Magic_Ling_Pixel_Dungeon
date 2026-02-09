@@ -453,6 +453,7 @@ public class FiveYearsPlot  {
             hero.interrupt();
             DropRules();
             skipGetItems = true;
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.COMPLEX));
             diagulewindow.setLeftName(Messages.get(SlylNewYears.class, "name"));
             diagulewindow.changeText(Messages.get(SlylNewYears.class, "messages1"));
         }
@@ -645,12 +646,7 @@ public class FiveYearsPlot  {
         }
 
         private void DropRules(){
-            if(Statistics.zeroItemLevel < 4){
-                Dungeon.level.drop(new LuoWhiteNewYears.LFRoad(), hero.pos);
-                Statistics.zeroItemLevel++;
-            } else {
-                Dungeon.level.drop(new Gold(10), hero.pos);
-            }
+            Dungeon.level.drop(new LuoWhiteNewYears.LFRoad(), hero.pos);
         }
     }
 

@@ -1,12 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.gold;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.PinkFox;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
-import com.watabou.noosa.Image;
 
 public class PinkFoxPlot extends Plot {
 
@@ -74,7 +72,7 @@ public class PinkFoxPlot extends Plot {
     private void process_to_1() {
         diagulewindow.hideAll();
         Dungeon.hero.interrupt();
-        diagulewindow.setMainAvatar(new Image(Assets.Splashes.PINKFOX));
+        //diagulewindow.setMainAvatar(new Image(Assets.Splashes.PINKFOX));
         diagulewindow.setLeftName(Messages.get(PinkFox.class, "name"));
         diagulewindow.changeText(Messages.get(PinkFox.class, "message1"));
     }
@@ -149,7 +147,7 @@ public class PinkFoxPlot extends Plot {
         private void process_to_1() {
             diagulewindow.hideAll();
             Dungeon.hero.interrupt();
-            diagulewindow.setMainAvatar(new Image(Assets.Splashes.PINKFOX));
+//            diagulewindow.setMainAvatar(new Image(Assets.Splashes.PINKFOX));
             diagulewindow.setLeftName(Messages.get(PinkFox.class, "name"));
             diagulewindow.changeText(Messages.get(PinkFox.class, "message5"));
         }
