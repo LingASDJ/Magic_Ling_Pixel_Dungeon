@@ -60,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.Mag
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BlessAWP;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -2120,6 +2121,12 @@ public class GameScene extends PixelScene {
 				cure( Dungeon.hero );
 			}
 
+			if(Dungeon.branch == 0 && Dungeon.bossLevel() || Statistics.bossRushMode && Dungeon.sbbossLevel()){
+				Buff.detach(Dungeon.hero,BlessAWP.ArmorGetReady.class);
+				Buff.detach(Dungeon.hero,BlessAWP.WeaponGetReady.class);
+			}
+
+
 			Statistics.soulsSpawn = false;
 
 			Sample.INSTANCE.play( Assets.Sounds.BOSS );
@@ -2166,6 +2173,8 @@ public class GameScene extends PixelScene {
 							break;
 					}
 				}
+
+
 			}
 		}
 	}

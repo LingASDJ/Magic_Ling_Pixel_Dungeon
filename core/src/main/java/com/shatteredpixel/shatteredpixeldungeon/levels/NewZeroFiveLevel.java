@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.DreamLeziNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.FireMagicGirlNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.GudaziNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.HKNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.IceMagicGirlNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.LuoWhiteNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MengDongXYNewYears;
@@ -197,7 +198,6 @@ public class NewZeroFiveLevel extends Level {
             v.map(data, tileW);
             return v;
         }
-
     }
 
     protected void createItems() {
@@ -229,7 +229,7 @@ public class NewZeroFiveLevel extends Level {
         mobs.add(kf);
 
         if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)
-                || DeviceCompat.isDebug() && DeviceCompat.isDesktop()) {
+                || DeviceCompat.isDebug() && DeviceCompat.isDesktop() || DeviceCompat.isMDP()) {
             WaloKe shopking = new WaloKe();
             shopking.pos = 545;
             mobs.add(shopking);
@@ -255,6 +255,10 @@ public class NewZeroFiveLevel extends Level {
         DreamLeziNewYears dlns = new DreamLeziNewYears();
         dlns.pos = 433;
         mobs.add(dlns);
+
+        HKNewYears hkNewYears = new HKNewYears();
+        hkNewYears.pos = 336;
+        mobs.add(hkNewYears);
 
         MengDongXYNewYears mdxy = new MengDongXYNewYears();
         mdxy.pos = 366;

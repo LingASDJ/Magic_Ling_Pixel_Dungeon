@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BlessAWP;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
@@ -468,6 +469,11 @@ public class Armor extends EquipableItem {
 	//other things can equip these, for now we assume only the hero can be affected by levelling debuffs
 	@Override
 	public int buffedLvl() {
+		if(hero != null){
+			if(hero.buff(BlessAWP.ArmorGetReady.class)!=null && hero.belongings.armor() == this){
+				return super.buffedLvl()+1;
+			}
+		}
 		if (isEquipped( hero ) || hero.belongings.contains( this )){
 			return super.buffedLvl();
 		} else {

@@ -99,6 +99,7 @@ public class Assets {
 		public static final String ICE_POX  = "environment/custom_tiles/ice_above.png";
 
 		public static final String ZERO_BACK  = "environment/custom_tiles/zero_spring.png";
+		public static final String HOTEL_BACK  = "environment/custom_tiles/zero2_spring.png";
 
 		public static final String GHOST_HOUSE  = "environment/custom_tiles/ghost_house.png";
 
