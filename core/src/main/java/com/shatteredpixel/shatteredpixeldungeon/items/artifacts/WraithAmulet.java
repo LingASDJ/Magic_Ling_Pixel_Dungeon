@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
@@ -87,6 +88,9 @@ public class WraithAmulet extends Artifact {
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
         if(action.equals(AC_GHOST) && !cursed){
+
+            if (hero.buff(MagicImmune.class) != null) return;
+
             if (cooldown > 0) {
                 GLog.w(Messages.get(this,"cooddown"));
             } else if(useableBasic()) {
@@ -108,6 +112,9 @@ public class WraithAmulet extends Artifact {
                 GLog.n(Messages.get(this,"whoareyou"));
             }
         } else if (action.equals(AC_ASSASSINATE) && !cursed) {
+
+            if (hero.buff(MagicImmune.class) != null) return;
+
             if (cooldown > 0) {
                 GLog.w(Messages.get(this, "cooddown"));
             } else if(this.charge >= 5){
