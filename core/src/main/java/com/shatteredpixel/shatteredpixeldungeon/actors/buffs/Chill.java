@@ -65,12 +65,13 @@ public class Chill extends FlavourBuff {
 
     @Override
     protected void spend(float time){
-        if(target.buff(WorstBlizzard.class)!=null){
-            spendConstant( time * 1.5f );
-        }else{
-            spendConstant( time );
-        }
-
+		if(target != null && target.isAlive()){
+			if(target.buff(WorstBlizzard.class)!=null){
+				spendConstant( time * 1.5f );
+			} else {
+				spendConstant( time );
+			}
+		}
     }
 
 	@Override
