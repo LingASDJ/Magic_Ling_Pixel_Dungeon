@@ -51,7 +51,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ItemButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
@@ -65,8 +64,6 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class MageHand extends DirectableAlly {
-
-    public boolean inPatrolMode = false;
 
     public static class HandWareness extends FlavourBuff {
         public int distance = 2;
@@ -99,58 +96,50 @@ public class MageHand extends DirectableAlly {
         @Override
         public boolean act(boolean enemyInFOV, boolean justAlerted) {
 
-            if(inPatrolMode){
-                if (enemyInFOV) {
-                    return noticeEnemy();
-                } else {
-                    return continueWandering();
-                }
+            if (enemyInFOV
+                    && attacksAutomatically
+                    && !movingToDefendPos
+                    && (defendingPos == -1
+                    || !Dungeon.level.heroFOV[defendingPos]
+                    || canAttack(enemy))) {
+
+                enemySeen = true;
+
+                notice();
+                alerted = true;
+                state = HUNTING;
+                target = enemy.pos;
+
             } else {
-                if ( enemyInFOV
-                        && attacksAutomatically
-                        && !movingToDefendPos
-                        && (defendingPos == -1
-                        || !Dungeon.level.heroFOV[defendingPos]
-                        || canAttack(enemy))) {
 
-                    enemySeen = true;
+                enemySeen = false;
 
-                    notice();
-                    alerted = true;
-                    state = HUNTING;
-                    target = enemy.pos;
+                int oldPos = pos;
+                target = defendingPos != -1 ? defendingPos : hero.pos;
 
-                } else {
-
-                    enemySeen = false;
-
-                    int oldPos = pos;
-                    target = defendingPos != -1 ? defendingPos : hero.pos;
-
-                    // 检查目标位置是否有效
+                // 检查目标位置是否有效
+                if (target < 0 || target >= Dungeon.level.length()) {
+                    // 如果目标位置无效，重置目标位置
+                    target = hero.pos;
                     if (target < 0 || target >= Dungeon.level.length()) {
-                        // 如果目标位置无效，重置目标位置
-                        target = hero.pos;
-                        if (target < 0 || target >= Dungeon.level.length()) {
-                            // 如果英雄位置也无效，就不移动
-                            spend(TICK);
-                            return true;
-                        }
-                    }
-
-                    //always move towards the hero when wandering
-                    if (getCloser(target)) {
-                        spend(1 / speed());
-                        if (pos == defendingPos) movingToDefendPos = false;
-                        return moveSprite(oldPos, pos);
-                    } else {
-                        //if it can't move closer to defending pos, then give up and defend current position
-                        if (movingToDefendPos){
-                            defendingPos = pos;
-                            movingToDefendPos = false;
-                        }
+                        // 如果英雄位置也无效，就不移动
                         spend(TICK);
+                        return true;
                     }
+                }
+
+                //always move towards the hero when wandering
+                if (getCloser(target)) {
+                    spend(1 / speed());
+                    if (pos == defendingPos) movingToDefendPos = false;
+                    return moveSprite(oldPos, pos);
+                } else {
+                    //if it can't move closer to defending pos, then give up and defend current position
+                    if (movingToDefendPos) {
+                        defendingPos = pos;
+                        movingToDefendPos = false;
+                    }
+                    spend(TICK);
                 }
             }
             return true;
@@ -174,15 +163,11 @@ public class MageHand extends DirectableAlly {
         // 先执行伤害逻辑
         super.damage(0, src, type);
 
-        if(!inPatrolMode){
-            teleportNearHero();
-        } else {
-            teleportNear();
-        }
+        teleportNearHero();
     }
 
     // 尝试传送到英雄周围5x5区域
-    private boolean teleportNearHero() {
+    private void teleportNearHero() {
         int heroPos = hero.pos;
         ArrayList<Integer> validPositions = new ArrayList<>();
 
@@ -201,33 +186,9 @@ public class MageHand extends DirectableAlly {
         // 如果找到有效位置，随机选择一个传送
         if (!validPositions.isEmpty()) {
             int targetPos = Random.element(validPositions);
-            teleportTo(targetPos);
-            return true;
+            ScrollOfTeleportation.appear(this,targetPos);
         }
 
-        return false;
-    }
-
-    private boolean teleportNear() {
-        int heroPos = pos;
-        ArrayList<Integer> validPositions = new ArrayList<>();
-
-        for (int i = -2; i <= 2; i++) {
-            for (int j = -2; j <= 2; j++) {
-                int newPos = heroPos + i + j * Dungeon.level.width();
-                if (isValidTeleportPosition(newPos)) {
-                    validPositions.add(newPos);
-                }
-            }
-        }
-
-        if (!validPositions.isEmpty()) {
-            int targetPos = Random.element(validPositions);
-            teleportTo(targetPos);
-            return true;
-        }
-
-        return false;
     }
 
     private boolean isHeroValidTeleportPosition(int pos) {
@@ -237,76 +198,6 @@ public class MageHand extends DirectableAlly {
                 && !Dungeon.level.pit[pos]
                 && Actor.findChar(pos) == null;
     }
-
-    private boolean isValidTeleportPosition(int pos) {
-        if (pos < 0 || pos >= Dungeon.level.length()) {
-            return false;
-        }
-
-        if (Dungeon.level.solid[pos] || Dungeon.level.pit[pos]) {
-            return false;
-        }
-
-        if (Actor.findChar(pos) != null) {
-            return false;
-        }
-
-        if (Dungeon.level.map[pos] == Terrain.LOCKED_DOOR ||
-                Dungeon.level.map[pos] == Terrain.CRYSTAL_DOOR ||
-                Dungeon.level.map[pos] == Terrain.SECRET_DOOR) {
-            return false;
-        }
-
-
-        boolean solidFound = false;
-        boolean passableFound = false;
-
-        // 检查周围8个方向
-        for (int i : PathFinder.NEIGHBOURS8) {
-            int neighbourPos = pos + i;
-            if (neighbourPos >= 0 && neighbourPos < Dungeon.level.length()) {
-                if (Dungeon.level.solid[neighbourPos]) {
-                    solidFound = true;
-                } else if (!Dungeon.level.solid[neighbourPos] &&
-                        Actor.findChar(neighbourPos) == null) {
-                    passableFound = true;
-                }
-            }
-        }
-
-        // 如果没有找到固体块或者没有找到可通行的相邻位置，则不适合传送
-        if (!solidFound || !passableFound) {
-            return false;
-        }
-
-        // 检查是否可以通过路径到达（参考锁链代码）
-        PathFinder.buildDistanceMap(pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
-        return PathFinder.distance[pos] != Integer.MAX_VALUE;
-
-        // 所有检查都通过，适合传送
-    }
-
-    // 执行传送
-    private void teleportTo(int targetPos) {
-        // 添加传送特效
-        sprite.emitter().burst(Speck.factory(Speck.LIGHT), 6);
-
-        // 更新位置
-        pos = targetPos;
-
-        // 更新精灵位置
-        sprite.place(pos);
-
-        // 添加到达特效
-        sprite.emitter().burst(Speck.factory(Speck.LIGHT), 6);
-
-        // 更新视野
-        Dungeon.level.occupyCell(this);
-
-        // 如果需要，可以添加音效
-        Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-    }
-
 
     @Override
     public String description() {
@@ -539,24 +430,6 @@ public class MageHand extends DirectableAlly {
         return magesStaff.wand;
     }
 
-//    @Override
-//    protected Char chooseEnemy() {
-//        Char enemy = super.chooseEnemy();
-//
-//        int targetPos = pos;
-//        int distance = 10;
-//
-//        //will never attack something far from their target
-//        if (enemy != null
-//                && Dungeon.level.mobs.contains(enemy)
-//                && (Dungeon.level.distance(enemy.pos, targetPos) <= distance)){
-//            ((Mob)enemy).aggro(this);
-//            return enemy;
-//        }
-//
-//        return null;
-//    }
-
     @Override
     protected boolean act() {
         if (wandCooldown > 0) {
@@ -565,7 +438,8 @@ public class MageHand extends DirectableAlly {
 
         boolean hasEnemy = false;
         for (Char ch : Actor.chars()) {
-            if (ch != null && ch.alignment == Alignment.ENEMY && fieldOfView != null && fieldOfView.length > ch.pos && fieldOfView[ch.pos]) {
+            if (ch != null && ch.alignment == Alignment.ENEMY && fieldOfView != null
+                    && fieldOfView.length > ch.pos && fieldOfView[ch.pos]) {
                 hasEnemy = true;
                 break;
             }
@@ -585,14 +459,6 @@ public class MageHand extends DirectableAlly {
         MageHandControlBuff buff = hero.buff(MageHandControlBuff.class);
         if (buff == null) {
             Buff.affect(hero, MageHandControlBuff.class);
-        }
-
-        if(inPatrolMode){
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if (Dungeon.level.distance(pos, mob.pos) <= 5 && mob.state != mob.HUNTING) {
-                    mob.beckon( target );
-                }
-            }
         }
 
         MageHand.HandWareness mageHandWareness = hero.buff(MageHand.HandWareness.class);
@@ -807,7 +673,6 @@ public class MageHand extends DirectableAlly {
 
         if (equippedWand != null)  bundle.put( WAND,equippedWand );
         if(magesStaff != null) bundle.put( MAGE_STAFF, magesStaff );
-        bundle.put( PRIORITY_ATTACK, inPatrolMode );
     }
 
     @Override
@@ -818,7 +683,6 @@ public class MageHand extends DirectableAlly {
             equippedWand = (Wand) bundle.get( WAND );
         if (bundle.contains(MAGE_STAFF))
             magesStaff = (MagesStaff) bundle.get( MAGE_STAFF );
-        inPatrolMode = bundle.getBoolean( PRIORITY_ATTACK );
     }
 
     public static class HandShield extends FlavourBuff {
@@ -1034,7 +898,6 @@ public class MageHand extends DirectableAlly {
 
         private ItemButton btnWand;
         private StyledButton btnAction1;
-        private StyledButton btnAction2;
         public MageHand.MageHandControl magesStaffcontrol;
         WndMageHand(final MageHand hand){
             magesStaffcontrol = Dungeon.hero.belongings.getItem(MageHand.MageHandControl.class);
@@ -1124,7 +987,7 @@ public class MageHand extends DirectableAlly {
             };
 
             // 计算法杖按钮的居中位置
-            float wandX = (WIDTH - BTN_SIZE) / 2f;
+            float wandX = 25;
             btnWand.setRect( wandX, message.top() + message.height() + GAP, BTN_SIZE, BTN_SIZE );
 
             // 左侧按钮
@@ -1139,24 +1002,7 @@ public class MageHand extends DirectableAlly {
             };
             btnAction1.textBelowIcon = true;
             btnAction1.icon(new BuffIcon(BuffIndicator.CHALLENGE,true));
-            btnAction1.setRect(BTN_GAP-5, message.top() + message.height() + GAP, BTN_SIZE, BTN_SIZE);
-
-            // 右侧按钮
-            btnAction2 = new StyledButton(Chrome.Type.TOAST,
-                    hand.inPatrolMode ?
-                    Messages.get(this,"heropath") : Messages.get(this,"warning")
-                    ,7) {
-                @Override
-                protected void onClick() {
-                    if(magesStaffcontrol != null){
-                        magesStaffcontrol.execute(Dungeon.hero, MageHandControl.AC_TOGGLE_PATROL);
-                    }
-                    hide();
-                }
-            };
-            btnAction2.textBelowIcon = true;
-            btnAction2.icon(hand.inPatrolMode ? new BuffIcon(BuffIndicator.BLINDNESS,true) : new BuffIcon(BuffIndicator.MIND_VISION,true));
-            btnAction2.setRect(WIDTH - BTN_SIZE - BTN_GAP+5, message.top() + message.height() + GAP, BTN_SIZE, BTN_SIZE);
+            btnAction1.setRect(btnWand.right()+GAP, message.top() + message.height() + GAP, BTN_SIZE, BTN_SIZE);
 
             if(hand.hasMageStaff()){
                 btnWand.item(hand.getEquippedMageStaff());
@@ -1168,7 +1014,7 @@ public class MageHand extends DirectableAlly {
 
             add( btnWand );
             add( btnAction1 );
-            add( btnAction2 );
+            //add( btnAction2 );
 
             resize(WIDTH, (int)(btnWand.bottom() + 2));
         }
@@ -1180,7 +1026,7 @@ public class MageHand extends DirectableAlly {
         public static final String AC_SUMMON_HAND = "SUMMON_HAND";
         public static final String AC_TARGET_ENEMY = "TARGET_ENEMY";
 
-        public static final String AC_TOGGLE_PATROL = "TOGGLE_PATROL";
+        public MageHand mageHand = null;
 
         {
             defaultAction = AC_DIRECT;
@@ -1190,24 +1036,13 @@ public class MageHand extends DirectableAlly {
 
         @Override
         public String defaultAction(){
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if (mob instanceof MageHand) {
-                    return AC_DIRECT;
-                }
-            }
             return AC_SUMMON_HAND;
         }
 
         @Override
         public ItemSprite.Glowing glowing() {
-            if(Dungeon.level != null){
-                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if (mob instanceof MageHand) {
-                        return null;
-                    }
-                }
-            }
-            return new ItemSprite.Glowing(0x880000, 1f);
+
+            return mageHand != null ? null : new ItemSprite.Glowing(0x880000, 1f) ;
         }
 
         @Override
@@ -1217,17 +1052,10 @@ public class MageHand extends DirectableAlly {
 
         @Override
         public String status() {
-            if(Dungeon.level != null){
-                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if (mob instanceof MageHand) {
-                        MageHand hand = (MageHand) mob;
-                        if (hand.magesStaff != null && hand.magesStaff.wand != null) {
-                            return hand.magesStaff.wand.curCharges + "/" + hand.magesStaff.wand.maxCharges;
-                        } else if (hand.equippedWand != null) {
-                            return hand.equippedWand.curCharges + "/" + hand.equippedWand.maxCharges;
-                        }
-                    }
-                }
+            if (mageHand.magesStaff != null && mageHand.magesStaff.wand != null) {
+                return mageHand.magesStaff.wand.curCharges + "/" + mageHand.magesStaff.wand.maxCharges;
+            } else if (mageHand.equippedWand != null) {
+                return mageHand.equippedWand.curCharges + "/" + mageHand.equippedWand.maxCharges;
             }
             return "";
         }
@@ -1246,7 +1074,6 @@ public class MageHand extends DirectableAlly {
             actions.add(AC_DIRECT);
             actions.add(AC_SUMMON_HAND);
             actions.add(AC_TARGET_ENEMY);
-            actions.add(AC_TOGGLE_PATROL);
             return actions;
         }
 
@@ -1256,23 +1083,17 @@ public class MageHand extends DirectableAlly {
 
             switch (action) {
                 case AC_HAND:
-                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                        if (mob instanceof MageHand) {
-                            GameScene.show(new WndMageHand((MageHand) mob));
-                        }
+                    if(mageHand != null){
+                        GameScene.show(new WndMageHand(mageHand));
                     }
                     break;
                 case AC_DIRECT:
-                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                        if (mob instanceof MageHand) {
-                            GameScene.selectCell(handDirector);
-                        }
+                    if(mageHand != null){
+                        GameScene.selectCell(handDirector);
                     }
                     break;
                 case AC_SUMMON_HAND:
                     boolean hasMageHand = false;
-
-
                     ArrayList<Integer> spawnPoints = new ArrayList<>();
                     for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
                         int p = hero.pos + PathFinder.NEIGHBOURS8[i];
@@ -1283,14 +1104,7 @@ public class MageHand extends DirectableAlly {
                         }
                     }
 
-                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                        if (mob instanceof MageHand) {
-                            hasMageHand = true;
-                            break;
-                        }
-                    }
-
-                    if (!hasMageHand) {
+                    if(mageHand == null){
 
                         if (spawnPoints.size() > 0) {
                             MageHand mageHand = new MageHand();
@@ -1321,24 +1135,8 @@ public class MageHand extends DirectableAlly {
                     }
                     break;
                 case AC_TARGET_ENEMY:
-                    // 选择敌人进行攻击
-                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                        if (mob instanceof MageHand) {
+                    if(mageHand != null){
                             GameScene.selectCell(enemySelector);
-                        }
-                    }
-                    break;
-                case AC_TOGGLE_PATROL:
-                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                        if (mob instanceof MageHand) {
-                            if(!((MageHand) mob).inPatrolMode){
-                                ((MageHand) mob).inPatrolMode = true;
-                                GLog.i(Messages.get(this, "patrol_start"));
-                            }else{
-                                ((MageHand) mob).inPatrolMode = false;
-                                GLog.i(Messages.get(this, "patrol_stop"));
-                            }
-                        }
                     }
                     break;
             }

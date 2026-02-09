@@ -399,9 +399,11 @@ public abstract class Wand extends Item {
 	public int buffedLvl() {
 		int lvl = super.buffedLvl();
 
-		if(Dungeon.hero.buff(Berserk.class) != null){
-			lvl += Dungeon.hero.buff(Berserk.class).WandBuffedLvl();
-			updateQuickslot();
+		if(Dungeon.hero != null){
+			if(Dungeon.hero.buff(Berserk.class) != null){
+				lvl += Dungeon.hero.buff(Berserk.class).WandBuffedLvl();
+				updateQuickslot();
+			}
 		}
 
 		if (charger != null && charger.target != null) {

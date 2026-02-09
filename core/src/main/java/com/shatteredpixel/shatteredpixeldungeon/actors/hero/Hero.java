@@ -1196,6 +1196,20 @@ public class Hero extends Char {
 			Buff.affect(this, TreeList.TreeBarrier.class);
 		}
 
+
+
+		MageHand.MageHandControl m = hero.belongings.getItem(MageHand.MageHandControl.class);
+		if(m != null){
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+				if (mob instanceof MageHand) {
+					if(m.mageHand == null){
+						m.mageHand = (MageHand) mob;
+					}
+				}
+			}
+		}
+
+
 		if(hasTalent(Talent.MAGIC_ABSORB)){
 			if(buff(MagicAbsorb.class) == null){
 				Buff.affect(hero, MagicAbsorb.class).set(100, 1);
