@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.TestItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
@@ -78,6 +79,7 @@ public class SelectKeys extends TestItem {
         GameScene.pickUpJournal(keys, hero.pos);
         WndJournal.last_index = 0;
         Notes.add(keys);
+        keys.depth = Dungeon.depth;
         Sample.INSTANCE.play( Assets.Sounds.ITEM );
         hero.spendAndNext( TIME_TO_PICK_UP );
         GameScene.updateKeyDisplay();
