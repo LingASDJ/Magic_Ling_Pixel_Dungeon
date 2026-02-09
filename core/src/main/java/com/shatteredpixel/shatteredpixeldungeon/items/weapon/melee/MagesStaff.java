@@ -101,20 +101,28 @@ public class MagesStaff extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-        if(hero.isSubclass(HeroSubClass.BATTLEMAGE)){
-            return 12+ ( lvl * 3);
-        }else {
-            return 6 + ( lvl * 2);
-        }
+		if(hero != null) {
+			if (hero.isSubclass(HeroSubClass.OLDBATTLEMAGE)) {
+				return 12 + (lvl * 3);
+			} else {
+				return 6 + (lvl * 2);
+			}
+		} else {
+			return 6 + (lvl * 2);
+		}
 	}
 
     @Override
     public int min(int lvl) {
-        if(hero.isSubclass(HeroSubClass.BATTLEMAGE)){
-            return 5 + lvl;
-        }else {
-            return 1 + lvl;
-        }
+		if(hero != null){
+			if(hero.isSubclass(HeroSubClass.OLDBATTLEMAGE)){
+				return 5 + lvl;
+			}else {
+				return 1 + lvl;
+			}
+		} else {
+			return 1 + lvl;
+		}
     }
 
 	public MagesStaff(Wand wand){
