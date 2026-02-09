@@ -9,6 +9,13 @@ android {
 
     sourceSets.main.assets.srcDirs = [new File(project(':core').projectDir, "/src/main/assets")]
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        //安卓8以下需要脱糖
+        coreLibraryDesugaringEnabled true
+    }
+
     defaultConfig {
         manifestPlaceholders = [appName:appName]
         applicationId appPackageName
@@ -124,6 +131,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.luaj/luaj-jse
     implementation 'org.luaj:luaj-jse:3.0'
+
+    //安卓8以下脱糖
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.2'
 }
 
 // called every time gradle gets executed, takes the native dependencies of
