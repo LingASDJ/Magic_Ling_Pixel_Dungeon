@@ -480,6 +480,7 @@ public class Ghost extends NPC {
 				Sample.INSTANCE.play( Assets.Sounds.GHOST );
 				processed = true;
 				Statistics.questScores[0] = 1000;
+				Dungeon.level.playLevelMusic();
 			}
 		}
 
