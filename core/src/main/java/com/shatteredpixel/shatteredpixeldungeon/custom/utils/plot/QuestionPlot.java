@@ -28,7 +28,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Rankings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Question;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -38,7 +38,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -100,16 +99,7 @@ public class QuestionPlot extends Plot {
     {
         diagulewindow.hideAll();
         diagulewindow.setLeftName(Messages.get(Question.class,"name"));
-        if (Random.Int(2)==0 || Rankings.INSTANCE.records.isEmpty()){
-            diagulewindow.changeText(Messages.get(Question.class,"message1_1"));
-        } else {
-            for (Rankings.Record rec : Rankings.INSTANCE.records){
-                if (Rankings.INSTANCE.lastRecord==0){
-                    diagulewindow.changeText(Messages.get(Question.class,rec.win ? "message1_2" : "message1_3"));
-                    break;
-                }
-            }
-        }
+        diagulewindow.changeText(Messages.get(Question.class,"message1_1"));
     }
 
     public static class Plot_1 extends Plot {
@@ -267,14 +257,10 @@ public class QuestionPlot extends Plot {
         {
             diagulewindow.hideAll();
             diagulewindow.setLeftName(Messages.get(Question.class,"name"));
-            ArrayList<Item> items = new ArrayList<>(hero.belongings.backpack.items);
-            boolean win = false;
-            for (Item i : items)
-                if (i instanceof Amulet)
-                    win = true;
+
             if (Dungeon.isDLC(Conducts.Conduct.DEV)){
                 diagulewindow.changeText(Messages.get(Question.class,"message4_1"));
-            } else if (win){
+            } else if (Statistics.amuletObtained){
                 diagulewindow.changeText(Messages.get(Question.class,"message4_2"));
             } else {
                 diagulewindow.changeText(Messages.get(Question.class,"message4_3"));

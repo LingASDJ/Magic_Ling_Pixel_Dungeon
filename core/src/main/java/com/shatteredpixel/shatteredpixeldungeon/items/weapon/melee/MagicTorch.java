@@ -235,7 +235,7 @@ public class MagicTorch extends MeleeWeapon {
     }
 
 
-    private final Emitter.Factory StaffParticleFactory = new Emitter.Factory() {
+    public static final Emitter.Factory StaffParticleFactory = new Emitter.Factory() {
         /**
          * @param emitter 目标来源
          * @param index 特效来源

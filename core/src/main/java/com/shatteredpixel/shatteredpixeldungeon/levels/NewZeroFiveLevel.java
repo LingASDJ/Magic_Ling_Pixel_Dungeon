@@ -26,10 +26,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.JIT;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.KongFu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ATRINewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ArchettoNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.AutoShopBotNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ChocoNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.DeepSeaNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.DreamLeziNewYears;
@@ -37,11 +39,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.GudaziNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.HKNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.IceMagicGirlNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.KongFuNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.LuoWhiteNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MengDongXYNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MintCat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MoRuoSNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MoonCatNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.NxhyFiveYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.NyzNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ObSirNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.PinkFoxNewYears;
@@ -52,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SheepNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SlylNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SmallLeafNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.WhiteYanNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.YogSTSNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.YuYeNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ZakoFlowerNewYears;
@@ -220,20 +225,16 @@ public class NewZeroFiveLevel extends Level {
         lanFire.pos = 807;
         mobs.add(lanFire);
 
-        JIT jit = new JIT();
-        jit.pos = 781;
-        mobs.add(jit);
-
-        KongFu kf = new KongFu();
-        kf.pos = 869;
-        mobs.add(kf);
-
         if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)
                 || DeviceCompat.isDebug() && DeviceCompat.isDesktop() || DeviceCompat.isMDP()) {
             WaloKe shopking = new WaloKe();
             shopking.pos = 545;
             mobs.add(shopking);
         }
+
+        ArchettoNewYears archettoNewYears = new ArchettoNewYears();
+        archettoNewYears.pos = 593;
+        mobs.add(archettoNewYears);
 
         MintCat mint = new MintCat();
         mint.pos = 537;
@@ -268,6 +269,10 @@ public class NewZeroFiveLevel extends Level {
         choco.pos = 363;
         mobs.add(choco);
 
+        BzmdrNewYears bzmdrNewYears = new BzmdrNewYears();
+        bzmdrNewYears.pos = 338;
+        mobs.add(bzmdrNewYears);
+
         DeepSeaNewYears deepSeaNewYears = new DeepSeaNewYears();
         deepSeaNewYears.pos = 441;
         mobs.add(deepSeaNewYears);
@@ -275,6 +280,10 @@ public class NewZeroFiveLevel extends Level {
         QianYueDeepNewYears qyny = new QianYueDeepNewYears();
         qyny.pos = 465;
         mobs.add(qyny);
+
+        WhiteYanNewYears flowergods = new WhiteYanNewYears();
+        flowergods.pos = 438;
+        mobs.add(flowergods);
 
         YuYeNewYears yyny = new YuYeNewYears();
         yyny.pos = 411;
@@ -304,6 +313,18 @@ public class NewZeroFiveLevel extends Level {
         astb.pos = 361;
         mobs.add(astb);
 
+        ATRINewYears atri = new ATRINewYears();
+        atri.pos = 464;
+        mobs.add(atri);
+
+        JIT jit = new JIT();
+        jit.pos = 408;
+        mobs.add(jit);
+
+        KongFuNewYears kf = new KongFuNewYears();
+        kf.pos = 436;
+        mobs.add(kf);
+
         //FOUR HUGE DOOR GODS
         SlylNewYears slylNewYears = new SlylNewYears();
         slylNewYears.pos = 63;
@@ -316,6 +337,10 @@ public class NewZeroFiveLevel extends Level {
         PinkLingNewYears plnk = new PinkLingNewYears();
         plnk.pos = 61;
         mobs.add(plnk);
+
+        NxhyFiveYears nxhyFiveYears = new NxhyFiveYears();
+        nxhyFiveYears.pos = 89;
+        mobs.add(nxhyFiveYears);
 
         //SPCT
         LuoWhiteNewYears luoWhiteNewYears = new LuoWhiteNewYears();
@@ -343,7 +368,6 @@ public class NewZeroFiveLevel extends Level {
             fmny.pos = 693;
             mobs.add(fmny);
         }
-
 
         IceMagicGirlNewYears icny = new IceMagicGirlNewYears();
         icny.pos = 717;

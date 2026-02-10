@@ -52,7 +52,10 @@ public class Gregorian {
         eventEndTime = 0;
 
         checkLanternFestival(lunarDate);
+
         checkSpringFestival(lunarDate);
+        checkFiveFestival(lunarDate);
+
         checkMidAutumnFestival(lunarDate);
         checkDeveloperBirthday(lunarDate);
         checkDragonBoatFestival(lunarDate);
@@ -81,6 +84,15 @@ public class Gregorian {
                 lunar.getDay() >= 1 &&
                 lunar.getDay() <= 1 + SPRING_FESTIVAL_POST_DAYS) {
             chinaHoliday = RegularLevel.ChinaHoliday.CJ;
+        }
+    }
+
+    private static void checkFiveFestival(Lunar lunar) {
+        if (lunar.getMonth() == 12 &&
+                lunar.getDay() >= 1 &&
+                lunar.getDay() <= 1 + 30) {
+            chinaHoliday = RegularLevel.ChinaHoliday.CJ;
+            eventEndTime = calculateSolarEventEndTime(2026, 2, 23);
         }
     }
 
