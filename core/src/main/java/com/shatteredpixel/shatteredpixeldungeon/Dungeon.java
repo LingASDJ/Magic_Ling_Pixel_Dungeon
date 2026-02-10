@@ -1012,7 +1012,7 @@ public class Dungeon {
 
 	//default to recomputing based on max hero vision, in case vision just shrank/grew
 	public static void observe(){
-		int dist = Math.max(Dungeon.hero.viewDistance, 8);
+		int dist = Math.max(Dungeon.hero.viewDistance, 8 + Statistics.BzmdrCJHeroViewDistance);
 		dist *= (int) (1f + 0.25f*Dungeon.hero.pointsInTalent(Talent.FARSIGHT));
 		//TODO 暂时屏蔽笔记效果
 //		if(Dungeon.hero.belongings.getItem(NoteOfBzmdr.class)!=null){

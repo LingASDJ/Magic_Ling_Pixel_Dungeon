@@ -305,6 +305,13 @@ public class Statistics {
 
 	public static boolean enterHiro = false;
 
+	public static float BzmdrCJMobSpeed = 0f;
+	public static float BzmdrCJMobLoot = 0f;
+	public static float BzmdrCJMobAttack = 0f;
+	public static int BzmdrCJMobViewDistance = 0;
+	public static int BzmdrCJHeroSTR = 0;
+	public static int BzmdrCJHeroViewDistance = 0;
+
 	private static final String ICECLAN ="iceCyanBlueSquareCoin";
 
 	private static final String GAMETIME = "gameTime";
@@ -752,6 +759,13 @@ public class Statistics {
 		miniGamesTotalLevel = 0;
 
 		enterHiro = false;
+
+		BzmdrCJMobSpeed = 0f;
+		BzmdrCJMobLoot = 0f;
+		BzmdrCJMobAttack = 0f;
+		BzmdrCJMobViewDistance = 0;
+		BzmdrCJHeroSTR = 0;
+		BzmdrCJHeroViewDistance = 0;
 	}
 
 	public static boolean hasAllRarenessProp(int rare,int kind){
@@ -1044,6 +1058,14 @@ public class Statistics {
 		bundle.put("AbyssRules",AbyssCityRules);
 
 		bundle.put("EnterHiro",enterHiro);
+
+		bundle.put("BZMDRCJMOBSPEED",BzmdrCJMobSpeed);
+		bundle.put("BZMDRCJMOBLOOT", BzmdrCJMobLoot);
+		bundle.put("BZMDRCJMOBATTACK", BzmdrCJMobAttack);
+		bundle.put("BZMDRCJMOBVIEW", BzmdrCJMobViewDistance);
+
+		bundle.put("BZMDRCJHEROSTR",BzmdrCJHeroSTR);
+		bundle.put("BZMDRCJHEROVIEW",BzmdrCJHeroViewDistance);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
@@ -1285,6 +1307,14 @@ public class Statistics {
 		real_seconds =   bundle.getLong("real_seconds_passed");
         turnsPassed = bundle.getFloat("turns_passed");
         qualifiedForBossChallengeBadge = bundle.getBoolean(BOSS_CHALLENGE_QUALIFIED);
+
+		BzmdrCJMobSpeed = bundle.getFloat("BZMDRCJMOBSPEED");
+		BzmdrCJMobAttack = bundle.getFloat("BZMDRCJMOBATTACK");
+		BzmdrCJMobLoot = bundle.getFloat("BZMDRCJMOBLOOT");
+		BzmdrCJMobViewDistance =  bundle.getInt("BZMDRCJMOBVIEW");
+
+		BzmdrCJHeroSTR = bundle.getInt("BZMDRCJHEROSTR");
+		BzmdrCJHeroViewDistance = bundle.getInt("BZMDRCJHEROVIEW");
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ){

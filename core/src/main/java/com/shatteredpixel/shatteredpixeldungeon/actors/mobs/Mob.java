@@ -71,6 +71,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.To
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMindBad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerTimeBad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DemonFodder;
@@ -465,6 +466,14 @@ public abstract class Mob extends Char {
 	protected boolean act() {
 
 		super.act();
+
+		BzmdrNewYears.BzmdrGift bzmdrGift = Dungeon.hero.belongings.getItem(BzmdrNewYears.BzmdrGift.class);
+		if(bzmdrGift != null){
+			viewDistance = 8 + Statistics.BzmdrCJMobViewDistance;
+			if(buff(ChampionEnemy.UnnameBless.class)==null) {
+				Buff.affect(this, ChampionEnemy.UnnameBless.class);
+			}
+		}
 
 		if(hero.buff(ElectricalSmoke.SmokingAlloy.class) == null && buff(SmokeAlly.class) !=null ) {
 			buff(SmokeAlly.class).detach();
@@ -1039,6 +1048,13 @@ public abstract class Mob extends Char {
 
 		float dropBonus = RingOfWealth.dropChanceMultiplier( Dungeon.hero );
 
+		float badDropBonus;
+		if(Statistics.BzmdrCJMobLoot != 0){
+			badDropBonus = Statistics.BzmdrCJMobLoot;
+		} else {
+			badDropBonus = 1;
+		}
+
 		Talent.BountyHunterTracker bhTracker = Dungeon.hero.buff(Talent.BountyHunterTracker.class);
 		if (bhTracker != null){
 			Preparation prep = Dungeon.hero.buff(Preparation.class);
@@ -1053,7 +1069,7 @@ public abstract class Mob extends Char {
 		dropBonus += ShardOfOblivion.lootChanceMultiplier()-1f;
 
 		if(hero.belongings.getItem(BrokenBone.class)!=null) dropBonus *= 0.4f;
-		return lootChance * dropBonus;
+		return lootChance * dropBonus * badDropBonus;
 	}
 
     @Override

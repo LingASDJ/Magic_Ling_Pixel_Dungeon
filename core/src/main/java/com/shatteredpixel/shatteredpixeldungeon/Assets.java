@@ -786,6 +786,8 @@ public class Assets {
 
 		public static final String KEEPERKINGBOT	= "sprites/npc/autoshop.png";
 
+		public static final String ARCHETTO	= "sprites/npc/avrt.png";
+
 		//BOSS
 		public static final String FRDG	= "sprites/boss/fireDragon.png";
 		public static final String DICT		= "sprites/boss/DictFish.png";
@@ -805,7 +807,7 @@ public class Assets {
 		public static final String SATS	 = "sprites/boss/yog_servantavgomon.png";
 		public static final String FSOE	= "sprites/boss/four_stone.png";
 
-		public static final String WHITEYAN = "sprites/boss/white_yan_boss.png";
+		public static final String WHITEYAN = "sprites/npc/whitepinkgirl.png";
 		public static final String DIMK	 = "sprites/boss/DimandKing.png";
 
 		public static final String DIED	= "sprites/items/died.png";
