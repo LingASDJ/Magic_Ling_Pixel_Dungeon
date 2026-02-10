@@ -31,6 +31,10 @@ public class DeviceCompat {
 	public static boolean isMidTest() {
 		return Game.version.contains("MDTEST");
 	}
+
+	public static boolean isMDP(){
+		return Game.version.contains("MDPT");
+	}
 	public static boolean supportsFullScreen(){
 		switch (Gdx.app.getType()){
 			case Android:
