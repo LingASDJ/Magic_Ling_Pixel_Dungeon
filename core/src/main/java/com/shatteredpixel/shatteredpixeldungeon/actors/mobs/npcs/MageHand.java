@@ -1052,10 +1052,12 @@ public class MageHand extends DirectableAlly {
 
         @Override
         public String status() {
-            if (mageHand.magesStaff != null && mageHand.magesStaff.wand != null) {
-                return mageHand.magesStaff.wand.curCharges + "/" + mageHand.magesStaff.wand.maxCharges;
-            } else if (mageHand.equippedWand != null) {
-                return mageHand.equippedWand.curCharges + "/" + mageHand.equippedWand.maxCharges;
+            if(mageHand != null){
+                if (mageHand.magesStaff != null && mageHand.magesStaff.wand != null) {
+                    return mageHand.magesStaff.wand.curCharges + "/" + mageHand.magesStaff.wand.maxCharges;
+                } else if (mageHand.equippedWand != null) {
+                    return mageHand.equippedWand.curCharges + "/" + mageHand.equippedWand.maxCharges;
+                }
             }
             return "";
         }
