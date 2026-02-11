@@ -84,6 +84,7 @@ public class Gregorian {
                 lunar.getDay() >= 1 &&
                 lunar.getDay() <= 1 + SPRING_FESTIVAL_POST_DAYS) {
             chinaHoliday = RegularLevel.ChinaHoliday.CJ;
+            eventEndTime = calculateSolarEventEndTime(2026, 3, 2);
         }
     }
 
@@ -92,7 +93,7 @@ public class Gregorian {
                 lunar.getDay() >= 1 &&
                 lunar.getDay() <= 1 + 30) {
             chinaHoliday = RegularLevel.ChinaHoliday.CJ;
-            eventEndTime = calculateSolarEventEndTime(2026, 2, 23);
+            eventEndTime = calculateSolarEventEndTime(2026, 3, 2);
         }
     }
 

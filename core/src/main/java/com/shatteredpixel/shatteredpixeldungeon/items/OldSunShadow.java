@@ -47,10 +47,14 @@ public class OldSunShadow extends Item {
 
         if (action.equals( AC_WEAR )) {
 
-            curUser = hero;
+            if(hero.subClass == HeroSubClass.NONE){
+                curUser = hero;
 
-            GameScene.show( new WndChooseSubclass.WndOldMageClass( this, hero ) );
-
+                GameScene.show( new WndChooseSubclass.WndOldMageClass( this, hero ) );
+            } else {
+                GLog.w(Messages.get(this,"not_apply"));
+                detach( curUser.belongings.backpack );
+            }
         }
     }
 

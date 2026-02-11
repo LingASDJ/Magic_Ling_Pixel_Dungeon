@@ -542,6 +542,12 @@ public class Assets {
 		public static final String MOSRDX_8 = "splashes/hollow/Morphs/morpheus_portraits(8).png";
 
 
+		public static final String FAYINA_0 = "splashes/firedragon/guard_npc_portraits(0).png";
+		public static final String FAYINA_1 = "splashes/firedragon/guard_npc_portraits(1).png";
+		public static final String FAYINA_2 = "splashes/firedragon/guard_npc_portraits(2).png";
+		public static final String FAYINA_3 = "splashes/firedragon/guard_npc_portraits(3).png";
+
+
 
 		public static final String SMLF = "splashes/smallleaf_portraits.png";
 		public static final String SMLS = "splashes/card_smallleaf_portraits.png";

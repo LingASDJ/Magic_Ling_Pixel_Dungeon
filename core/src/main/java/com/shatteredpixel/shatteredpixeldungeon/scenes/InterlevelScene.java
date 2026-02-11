@@ -107,7 +107,7 @@ public class InterlevelScene extends PixelScene {
 		inGameScene = true;
 	}
 
-	private static final int NUM_TIPS = 60;
+	private static final int NUM_TIPS = 98;
 
 	private static ArrayList<Integer> tipset;
 	private RenderedTextBlock tip;

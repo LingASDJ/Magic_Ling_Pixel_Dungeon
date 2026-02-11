@@ -3,7 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Hiro;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KuzumiNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HiroFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -35,10 +35,10 @@ public class DeepRedFlower extends Item {
         if(action.equals(AC_ACTIVE)){
             if((Dungeon.level instanceof HiroFlowerLevel)) {
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if (mob instanceof Hiro) {
-                        Hiro hiro = (Hiro) mob;
-                        if(Dungeon.level.distance(hiro.pos, hero.pos) <= 1 && !hiro.flower){
-                            hiro.flower = true;
+                    if (mob instanceof KuzumiNewYears) {
+                        KuzumiNewYears kuzumiNewYears = (KuzumiNewYears) mob;
+                        if(Dungeon.level.distance(kuzumiNewYears.pos, hero.pos) <= 1 && !kuzumiNewYears.flower){
+                            kuzumiNewYears.flower = true;
                             detach(hero.belongings.backpack);
                             GLog.p(Messages.get(this,"used"));
                         } else {

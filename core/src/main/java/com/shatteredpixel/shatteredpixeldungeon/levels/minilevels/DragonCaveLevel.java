@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.minilevels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -73,11 +74,20 @@ public class DragonCaveLevel extends RegularLevel {
 
         int rooms;
         SpecialRoom x;
-        rooms = Random.NormalIntRange(1, 2);
-        for (int i = 0; i < rooms; i++){
-            x = new RIPSwordRoom();
-            initRooms.add(x);
+
+        if(RegularLevel.chinaHoliday == ChinaHoliday.CJ) {
+            if (!SPDSettings.FayiNaBerry() && Dungeon.branch == 2) {
+                x = new RIPSwordRoom();
+                initRooms.add(x);
+            }
+        } else {
+            rooms = Random.NormalIntRange(1, 2);
+            for (int i = 0; i < rooms; i++){
+                x = new RIPSwordRoom();
+                initRooms.add(x);
+            }
         }
+
 
         return initRooms;
     }
