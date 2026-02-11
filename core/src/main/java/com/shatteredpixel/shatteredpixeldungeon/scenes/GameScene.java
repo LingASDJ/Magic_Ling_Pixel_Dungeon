@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CHAMPION_ENEMIES;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping.discover;
@@ -60,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.Mag
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BlessAWP;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -1216,6 +1218,32 @@ public class GameScene extends PixelScene {
 		scene.showBannerX(bossSlain);
 	}
 
+	public void BzmdrUnameBless(){
+		if(Dungeon.depth == Statistics.deepestFloor){
+			switch (Random.Int(6)){
+				case 0:
+					Statistics.BzmdrCJMobSpeed += 0.2f;
+					break;
+				case 1:
+					Statistics.BzmdrCJMobLoot -= 0.2f;
+					break;
+				case 2:
+					Statistics.BzmdrCJMobAttack += 0.25f;
+					break;
+				case 3:
+					Statistics.BzmdrCJMobViewDistance += 2;
+					break;
+				case 4:
+					Statistics.BzmdrCJHeroSTR += 2;
+					break;
+				case 5:
+					Statistics.BzmdrCJHeroViewDistance += 2;
+					break;
+			}
+			level.checkID = true;
+		}
+	}
+
 	@Override
 	public void create() {
 
@@ -1531,6 +1559,9 @@ public class GameScene extends PixelScene {
 			case REDSTART:
 			case HIRO:
 			case YOG:
+				if(Dungeon.depth >0 && branch == 0 && !level.checkID){
+					BzmdrUnameBless();
+				}
 				if(!Statistics.bossRushMode && !Statistics.RandMode){
 					switch (Dungeon.depth) {
 						case 0:
@@ -2120,6 +2151,19 @@ public class GameScene extends PixelScene {
 				cure( Dungeon.hero );
 			}
 
+			if(Dungeon.branch == 0 && Dungeon.bossLevel() || Statistics.bossRushMode && Dungeon.sbbossLevel()){
+				Buff.detach(Dungeon.hero,BlessAWP.ArmorGetReady.class);
+				Buff.detach(Dungeon.hero,BlessAWP.WeaponGetReady.class);
+
+				Statistics.BzmdrCJMobSpeed = 0f;
+				Statistics.BzmdrCJMobLoot = 0f;
+				Statistics.BzmdrCJMobAttack = 0f;
+				Statistics.BzmdrCJMobViewDistance = 0;
+				Statistics.BzmdrCJHeroSTR = 0;
+				Statistics.BzmdrCJHeroViewDistance = 0;
+			}
+
+
 			Statistics.soulsSpawn = false;
 
 			Sample.INSTANCE.play( Assets.Sounds.BOSS );
@@ -2166,6 +2210,8 @@ public class GameScene extends PixelScene {
 							break;
 					}
 				}
+
+
 			}
 		}
 	}

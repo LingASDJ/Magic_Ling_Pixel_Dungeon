@@ -154,6 +154,7 @@ abstract public class Boss extends Mob {
         if(Blob.volumeAt(pos, VenomGas.class) == 0 && venodamage!=0) {
             venodamage = 0;
         }
+
         return super.act();
     }
 

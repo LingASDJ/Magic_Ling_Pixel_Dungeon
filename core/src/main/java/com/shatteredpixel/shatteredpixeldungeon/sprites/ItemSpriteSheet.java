@@ -819,6 +819,8 @@ public class ItemSpriteSheet {
     public static final int Qie_Cake   = QUEST+24;
     public static final int Rice_Cake   = QUEST+25;
 
+    public static final int Flower_Cake = QUEST+26;
+
     static{
         assignItemRect(Dragon_Lei,   9, 14);
 
@@ -848,6 +850,7 @@ public class ItemSpriteSheet {
 
         assignItemRect(Qie_Cake,    14, 11);
         assignItemRect(Rice_Cake,    11, 9);
+        assignItemRect(Flower_Cake,  16,15);
     }
 
     //传奇武器
@@ -1357,14 +1360,21 @@ public class ItemSpriteSheet {
 
     public static final int LAN_FIRE_ROAD                                       = RITUAL_SWORD + 11;
 
+    public static final int BZMDR_GIFT                                       = RITUAL_SWORD + 12;
+
+    public static final int MOTO_BREW                                       = RITUAL_SWORD + 13;
+
     static{
         assignItemRect(RITUAL_SWORD,       13, 13);
         assignItemRect(TREE_LIST,          14, 13);
         assignItemRect(SAD_MAGIC_BOOK,     14, 13);
         assignItemRect(SHEPHERD_FLUTE,     11, 16);
 
-        assignItemRect(OLDSUNSHADOW,       14, 14);
-        assignItemRect(LAN_FIRE_ROAD,               14,16);
+        assignItemRect(OLDSUNSHADOW,      14, 14);
+        assignItemRect(LAN_FIRE_ROAD,      14,16);
+
+        assignItemRect(BZMDR_GIFT,          12,15);
+        assignItemRect(MOTO_BREW,          12,16);
     }
 
     private static final int PROP1  = xy(9,46);

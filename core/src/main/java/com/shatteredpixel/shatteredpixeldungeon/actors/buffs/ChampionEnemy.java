@@ -747,6 +747,39 @@ public abstract class ChampionEnemy extends Buff {
 		}
 	}
 
+	public static class UnnameBless extends ChampionEnemy {
+
+		{
+			color = 0xED186E;
+		}
+
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_2);
+			} else target.sprite.remove(CharSprite.State.MUTATION_2);
+		}
+		@Override
+		public boolean act() {
+			spend(3*TICK);
+			return true;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1+Statistics.BzmdrCJMobAttack;
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.TERROR;
+		}
+
+		@Override
+		public String desc() {
+            return Messages.get(this, "desc",Statistics.BzmdrCJMobSpeed*100f,Math.abs(Statistics.BzmdrCJMobLoot*100f),Statistics.BzmdrCJMobAttack*100f,Statistics.BzmdrCJMobViewDistance);
+		}
+	}
+
 	public static class Growing extends ChampionEnemy {
 
 		{

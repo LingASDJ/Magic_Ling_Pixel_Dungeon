@@ -151,6 +151,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDo
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Nyarlathotep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -423,6 +424,11 @@ public class Hero extends Char {
 			strBonus -= 1;
 		} else if(Dungeon.hero.buff(BlessGoodSTR.class) != null) {
 			strBonus += 2;
+		}
+
+		BzmdrNewYears.BzmdrGift bzmdrGift = Dungeon.hero.belongings.getItem(BzmdrNewYears.BzmdrGift.class);
+		if(bzmdrGift != null){
+			strBonus += Statistics.BzmdrCJHeroSTR;
 		}
 
 		if(hero.buff(SliceDeadBless.class)!=null && Dungeon.depth>29){
@@ -1196,7 +1202,10 @@ public class Hero extends Char {
 			Buff.affect(this, TreeList.TreeBarrier.class);
 		}
 
-
+		BzmdrNewYears.BzmdrGift bzmdrGift = Dungeon.hero.belongings.getItem(BzmdrNewYears.BzmdrGift.class);
+		if(bzmdrGift != null){
+			viewDistance = 8 + Statistics.BzmdrCJHeroViewDistance;
+		}
 
 		MageHand.MageHandControl m = hero.belongings.getItem(MageHand.MageHandControl.class);
 		if(m != null){
@@ -1219,7 +1228,6 @@ public class Hero extends Char {
 		if(level instanceof NewZeroFiveLevel){
             Statistics.snow = level.distance(pos, 961) > 13;
 		}
-
 
 		//水中祝福 但在BR不生效
 		if((branch == 0 || branch == 10) && !bossRushMode){

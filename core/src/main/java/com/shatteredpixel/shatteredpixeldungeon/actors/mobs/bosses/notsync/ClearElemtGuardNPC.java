@@ -10,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.RivalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.ClearElemtPlot;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -112,30 +111,6 @@ public class ClearElemtGuardNPC extends NTNPC {
                 });
                 rd = false;
             }
-        } else if(sd) {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndOptions(new ClearGuardSprite.ClearNPCGuardSprite(),
-                            Messages.titleCase(Messages.get(ClearElemtGuard.class, "name")),
-                            Messages.get(ClearElemtGuard.class, "quest_start_prompt2"),
-                            Messages.get(ClearElemtGuard.class, "enter_yes2"),
-                            Messages.get(ClearElemtGuard.class, "enter_no2")) {
-                        @Override
-                        protected void onSelect(int index) {
-                            if (index == 0) {
-                                die(true);
-                                GLog.w(Messages.get(ClearElemtGuard.class, "sad_b"));
-                                Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.ARTIFACT ) ), hero.pos );
-                            } else if(index == 1){
-                                sd = false;
-                                GLog.w(Messages.get(ClearElemtGuard.class, "pro_b"));
-                            }
-                        }
-                    });
-                }
-
-            });
         } else {
             switch (progress){
                 case 1:

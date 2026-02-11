@@ -77,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.SoulCrackEliteSpawner;
@@ -159,6 +160,8 @@ public abstract class Level implements Bundlable {
 	public boolean extraGlass = true;
 
 	public boolean onlyBoxMove = false;
+
+	public boolean checkID = false;
 
 	public void teleportHeroIfHeapEmpty(Char ch, int targetPos,int heappos) {
 		Heap heap = Dungeon.level.heaps.get(heappos);
@@ -656,6 +659,8 @@ public abstract class Level implements Bundlable {
 		buildFlagMaps();
 		cleanWalls();
 
+		checkID = bundle.getBoolean("CHECKID");
+
 	}
 	
 	@Override
@@ -681,7 +686,7 @@ public abstract class Level implements Bundlable {
 		if (diedname != null) {
 			bundle.put("diedname", diedname);
 		}
-
+		bundle.put("CHECKID",checkID);
 	}
 	
 	public int tunnelTile() {
@@ -728,6 +733,11 @@ public abstract class Level implements Bundlable {
 
 			if(Dungeon.isChallenged(CS) && depth>2 && depth<35 && Random.Float()<0.25f){
 				Buff.affect(m, ChampionEnemy.AloneCity.class);
+			}
+
+			BzmdrNewYears.BzmdrGift bzmdrGift = Dungeon.hero.belongings.getItem(BzmdrNewYears.BzmdrGift.class);
+			if(bzmdrGift != null){
+				Buff.affect(m, ChampionEnemy.UnnameBless.class);
 			}
 
 			if(!(Badges.isUnlocked(Badges.Badge.KILL_MORES))){

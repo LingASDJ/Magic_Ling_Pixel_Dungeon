@@ -71,12 +71,12 @@ public class FayiNa extends NTNPC {
 
 
     private static String[] TXT_RANDOM = {
-            Messages.get(FayiNa.class,"roll1"),
+            Messages.get(FayiNa.class,"roll1", Dungeon.hero.name()),
             Messages.get(FayiNa.class,"roll2"),
             Messages.get(FayiNa.class,"roll3"),
             Messages.get(FayiNa.class,"roll4"),
             Messages.get(FayiNa.class,"roll5"),
-            Messages.get(FayiNa.class,"roll6", Dungeon.hero.name()),
+            Messages.get(FayiNa.class,"roll6"),
             Messages.get(FayiNa.class,"roll7"),
             Messages.get(FayiNa.class,"roll8"),
     };
@@ -91,7 +91,7 @@ public class FayiNa extends NTNPC {
         PaswordBadges.loadGlobal();
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-        if (passwordbadges.contains(PaswordBadges.Badge.SWORDDREAM) && Dungeon.depth ==0 ) {
+       if (passwordbadges.contains(PaswordBadges.Badge.SWORDDREAM) && Dungeon.depth ==0 ) {
             //we do a little raw position shuffling here so that the characters are never
             // on the same cell when logic such as occupyCell() is triggered
             int oldPos = pos;

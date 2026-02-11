@@ -158,7 +158,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFear;
 import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
@@ -284,7 +283,6 @@ public class SpawnMisc extends TestItem {
             for (int i = 0; i < Generator.Category.STONE.classes.length; i++) {
                 stoneList.add((Class<? extends Runestone>) Generator.Category.STONE.classes[i]);
             }
-            stoneList.add(StoneOfFear.class);
         }
 
         //Bomb

@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -818,6 +819,10 @@ public abstract class Char extends Actor {
 					speed *= 1.5f;
 				}
 			}
+		}
+
+		if(Statistics.BzmdrCJMobSpeed!=0){
+			speed *= 1+Statistics.BzmdrCJMobSpeed;
 		}
 
 		if ( buff( Cripple.class ) != null ) speed /= 2f;

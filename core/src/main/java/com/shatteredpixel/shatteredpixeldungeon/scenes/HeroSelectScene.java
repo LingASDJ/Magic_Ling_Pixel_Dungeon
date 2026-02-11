@@ -38,7 +38,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.FourYearsAnimation;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
@@ -544,10 +543,12 @@ public class HeroSelectScene extends PixelScene {
 			placeTorch(title.x - 8, title.y + 42);
 			placeTorch(title.x + 132, title.y + 42);
 			add(title);
-
-			FourYearsAnimation fourYearsAnimationSP = new FourYearsAnimation();
-			fourYearsAnimationSP.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 2 - BUTTON_HEIGHT + 100);
-			add(fourYearsAnimationSP);
+			Image fiveYears = new Image(Assets.Interfaces.FIVE_YEARS);
+			fiveYears.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 2 - BUTTON_HEIGHT + 100);
+			add(fiveYears);
+//			FourYearsAnimation fourYearsAnimationSP = new FourYearsAnimation();
+//			fourYearsAnimationSP.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 2 - BUTTON_HEIGHT + 100);
+//			add(fourYearsAnimationSP);
 		} else {
 			Image title = new Image(GameRules.BannersRules(), 0, 0, 126, 32);
 			title.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 8 - BUTTON_HEIGHT - 45);
@@ -555,9 +556,12 @@ public class HeroSelectScene extends PixelScene {
 			placeTorch(title.x + 132, title.y + 42);
 			add(title);
 
-			FourYearsAnimation fourYearsAnimationSP = new FourYearsAnimation();
-			fourYearsAnimationSP.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 4 - BUTTON_HEIGHT - 40);
-			add(fourYearsAnimationSP);
+			Image fiveYears = new Image(Assets.Interfaces.FIVE_YEARS);
+			fiveYears.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 4 - BUTTON_HEIGHT - 40);
+			add(fiveYears);
+//			FourYearsAnimation fourYearsAnimationSP = new FourYearsAnimation();
+//			fourYearsAnimationSP.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 4 - BUTTON_HEIGHT - 40);
+//			add(fourYearsAnimationSP);
 		}
 
 		fadeIn();

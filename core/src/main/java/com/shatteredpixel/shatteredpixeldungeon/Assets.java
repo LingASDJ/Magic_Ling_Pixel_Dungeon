@@ -99,6 +99,7 @@ public class Assets {
 		public static final String ICE_POX  = "environment/custom_tiles/ice_above.png";
 
 		public static final String ZERO_BACK  = "environment/custom_tiles/zero_spring.png";
+		public static final String HOTEL_BACK  = "environment/custom_tiles/zero2_spring.png";
 
 		public static final String GHOST_HOUSE  = "environment/custom_tiles/ghost_house.png";
 
@@ -277,6 +278,8 @@ public class Assets {
 		public static final String TWO_YEARS  	= "interfaces/Years/2years.png";
 		public static final String Three_YEARS  = "interfaces/Years/3years.png";
 		public static final String Four_YEARS  =  "interfaces/Years/4years.png";
+
+		public static final String FIVE_YEARS  =  "interfaces/Years/5years.png";
 
 		//网络贴图
 		public static final String NETICONS = "interfaces/net_icons.png";
@@ -539,6 +542,12 @@ public class Assets {
 		public static final String MOSRDX_8 = "splashes/hollow/Morphs/morpheus_portraits(8).png";
 
 
+		public static final String FAYINA_0 = "splashes/firedragon/guard_npc_portraits(0).png";
+		public static final String FAYINA_1 = "splashes/firedragon/guard_npc_portraits(1).png";
+		public static final String FAYINA_2 = "splashes/firedragon/guard_npc_portraits(2).png";
+		public static final String FAYINA_3 = "splashes/firedragon/guard_npc_portraits(3).png";
+
+
 
 		public static final String SMLF = "splashes/smallleaf_portraits.png";
 		public static final String SMLS = "splashes/card_smallleaf_portraits.png";
@@ -783,6 +792,8 @@ public class Assets {
 
 		public static final String KEEPERKINGBOT	= "sprites/npc/autoshop.png";
 
+		public static final String ARCHETTO	= "sprites/npc/avrt.png";
+
 		//BOSS
 		public static final String FRDG	= "sprites/boss/fireDragon.png";
 		public static final String DICT		= "sprites/boss/DictFish.png";
@@ -802,7 +813,7 @@ public class Assets {
 		public static final String SATS	 = "sprites/boss/yog_servantavgomon.png";
 		public static final String FSOE	= "sprites/boss/four_stone.png";
 
-		public static final String WHITEYAN = "sprites/boss/white_yan_boss.png";
+		public static final String WHITEYAN = "sprites/npc/whitepinkgirl.png";
 		public static final String DIMK	 = "sprites/boss/DimandKing.png";
 
 		public static final String DIED	= "sprites/items/died.png";

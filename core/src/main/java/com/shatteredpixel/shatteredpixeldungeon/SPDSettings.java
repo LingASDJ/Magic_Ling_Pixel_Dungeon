@@ -211,9 +211,7 @@ public class SPDSettings extends GameSettings {
 	private static final String KEY_DRAGON = "DRAGON";
 
 	private static final String KEY_KILLADF = "DWAXF";
-
-
-	private static final String KEY_VSB = "VSB";
+	private static final String KEY_FAYINA = "FAYINA";
 
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
@@ -803,6 +801,10 @@ public class SPDSettings extends GameSettings {
 		put(KEY_ICECOIN, newCoin);
 	}
 
+	public static void iceTestCoin(int value) {
+		put(KEY_ICECOIN, value);
+	}
+
 	public static void iceDownCoin(int value) {
 		int currentCoin = iceCoin();
 		int newCoin = currentCoin - value;
@@ -1033,6 +1035,15 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean KillDragon() {
 		return getBoolean(KEY_DRAGON, false);
+	}
+
+	//法伊娜春节剧情
+	public static void FayiNaBerry(boolean value) {
+		put(KEY_FAYINA, value );
+	}
+
+	public static boolean FayiNaBerry() {
+		return getBoolean(KEY_FAYINA, false);
 	}
 
 

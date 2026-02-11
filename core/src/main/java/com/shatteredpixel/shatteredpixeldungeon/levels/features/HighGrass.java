@@ -34,7 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredStatue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Hiro;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KuzumiNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
@@ -79,10 +79,10 @@ public class HighGrass {
 				freezeTrample = true;
 			} else {
 				for (Mob mob : level.mobs.toArray(new Mob[0])){
-					if (mob instanceof Hiro) {
-						Hiro hiro = (Hiro) mob;
+					if (mob instanceof KuzumiNewYears) {
+						KuzumiNewYears kuzumiNewYears = (KuzumiNewYears) mob;
 						// 添加额外的检查，确保花只生成一次
-						if(!hiro.getFlower){
+						if(!kuzumiNewYears.getFlower){
 							int highGrassCount = 0;
 							for (int j : level.map) {
 								if (j == HIGH_GRASS) {
@@ -96,16 +96,16 @@ public class HighGrass {
 							if (highGrassCount <= 5) {
 								if (highGrassCount == 1) {
 									level.drop(new DeepRedFlower(), Dungeon.hero.pos);
-									hiro.getFlower = true;
+									kuzumiNewYears.getFlower = true;
 									flowerGenerated = true;
 								} else if (Random.Int(100) < 60) {
 									level.drop(new DeepRedFlower(), Dungeon.hero.pos);
-									hiro.getFlower = true;
+									kuzumiNewYears.getFlower = true;
 									flowerGenerated = true;
 								}
 							} else if (Random.Int(100) < 20) {
 								level.drop(new DeepRedFlower(), Dungeon.hero.pos);
-								hiro.getFlower = true;
+								kuzumiNewYears.getFlower = true;
 								flowerGenerated = true;
 							}
 

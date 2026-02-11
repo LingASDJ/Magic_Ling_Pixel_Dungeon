@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ALCHEMY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.DOOR;
@@ -11,10 +10,11 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EXIT;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
-import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.ready;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GameRules;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
@@ -23,24 +23,30 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.FayiNa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.JIT;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.KongFu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroTomb;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ATRINewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ArchettoNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.AutoShopBotNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ChocoNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.DeepSeaNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.DreamLeziNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.FireMagicGirlNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.GudaziNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.HKNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.IceMagicGirlNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.KongFuNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.LuoWhiteNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MengDongXYNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MintCat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MoRuoSNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.MoonCatNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.NxhyFiveYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.NyzNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ObSirNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.PinkFoxNewYears;
@@ -51,15 +57,23 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SheepNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SlylNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.SmallLeafNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.WhiteYanNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.YogSTSNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.YuYeNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ZakoFlowerNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -73,7 +87,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
@@ -176,6 +189,43 @@ public class NewZeroFiveLevel extends Level {
         return true;
     }
 
+    /** 渡口坐标 */
+    public static int[] Ferry_Tiled = new int[]{
+            863,864,865,
+            888,889,890,891,
+            913,914,915,916,
+            938,939,940,941,
+        962,963,964,965,966,
+    };
+
+    /** 小船坐标*/
+    public static int[] Boat_Tiled = new int[]{
+            961,936,937,935
+    };
+
+    /** 金币坐标*/
+    public static int[] Golden_Tiled = new int[]{
+           606,607,608,
+           631,632,633,634,
+           656,657,658,659
+    };
+
+    /** 美食坐标*/
+    public static int[] Food_Tiled = new int[]{
+            334,335,/*|*/339,340,
+            359,360,/*|*/364,365,
+            /*-----------------*/
+            409,410,/*|*/414,415,
+            434,435,/*|*/439,440,
+    };
+
+    /** 魔法阵坐标*/
+    public static int[] Magic_Tiled = new int[]{
+          569,570,571,
+          594,595,596,
+          619,620,621,
+    };
+
     public static class townAbove extends CustomTilemap {
 
         {
@@ -198,12 +248,161 @@ public class NewZeroFiveLevel extends Level {
             return v;
         }
 
+        @Override
+        public String name(int tileX, int tileY) {
+            int checkTiledID = tileY*WIDTH + tileX;
+            for (int i : Ferry_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "ferry_name");
+                }
+            }
+            for (int i : Boat_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "boat_name");
+                }
+            }
+            for (int i : Golden_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "golden_name");
+                }
+            }
+            for (int i : Food_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "food_name");
+                }
+            }
+            for (int i : Magic_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "magic_name");
+                }
+            }
+            if(checkTiledID == 37){
+                return Messages.get(this, "enter_name");
+            }
+            return super.desc(tileX,tileY);
+        }
+
+        @Override
+        public String desc(int tileX, int tileY) {
+            int checkTiledID = tileY*WIDTH + tileX;
+            for (int i : Ferry_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "ferry_desc");
+                }
+            }
+            for (int i : Boat_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "boat_desc");
+                }
+            }
+            for (int i : Golden_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "golden_desc");
+                }
+            }
+            for (int i : Food_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "food_desc");
+                }
+            }
+            for (int i : Magic_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "magic_desc");
+                }
+            }
+            if(checkTiledID == 37){
+                return Messages.get(this, "enter_desc");
+            }
+            return super.desc(tileX,tileY);
+        }
     }
 
+    public static int[] SALEPOS_ONE = new int[]{
+           502,504
+    };
+
+    public static int[] SALEPOS_TWO = new int[]{
+           429,430
+    };
+
+    public static int[] SALEPOS_THREE = new int[]{
+           277,279,327,329
+    };
+
+    public static int[] SALEPOS_FOUR = new int[]{
+           326,276
+    };
+
     protected void createItems() {
+        PaswordBadges.loadGlobal();
+        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+
         if ((!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO) || SPDSettings.intro() )){
             drop( new Guidebook(),  888);
         }
+
+        if(!SPDSettings.isItemUnlock("anyskin1")){
+            AnySkinSelect anySkinSelect = new AnySkinSelect();
+            drop(anySkinSelect,321);
+        }
+
+        if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
+            drop((Generator.random(Generator.Category.RING)), 259);
+        }
+        if (passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {
+            if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
+                drop((Generator.random(Generator.Category.WAND)), 260);
+            } else {
+                drop((Generator.random(Generator.Category.ARMOR)), 260);
+            }
+        }
+        for (int i : SALEPOS_ONE) {
+            drop((Generator.random(Generator.Category.MISSILE)), i).type =
+                    Heap.Type.FOR_SALE;
+        }
+        for (int i : SALEPOS_TWO) {
+            drop((Generator.random(Generator.Category.WEP_T2)), i).type =
+                    Heap.Type.FOR_SALE;
+        }
+        for (int i : SALEPOS_THREE) {
+            drop((Generator.random(Generator.Category.SEED)), i).type =
+                    Heap.Type.FOR_SALE;
+        }
+        for (int i : SALEPOS_FOUR) {
+            drop((Generator.random(Generator.Category.SCROLL)), i).type =
+                    Heap.Type.FOR_SALE;
+        }
+
+
+        drop( new RandomChest(), 426  ).type = Heap.Type.FOR_SALE;
+        drop( new RandomChest(), 451  ).type = Heap.Type.FOR_SALE;
+
+        if (Badges.isUnlocked(Badges.Badge.RLPT) && !Dungeon.LimitedDrops.BOOK_BAG.dropped() && !Dungeon.isDLC(Conducts.Conduct.DEV)) {
+            Item item = new BookBag();
+            drop(item, 304);
+            Dungeon.LimitedDrops.BOOK_BAG.drop();
+        }
+
+        if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ) {
+            if (SPDSettings.FayiNaBerry()) {
+                FayiNa npc222= new FayiNa();
+                npc222.pos = 860;
+                mobs.add(npc222);
+                ZeroTomb npc1s2= new ZeroTomb();
+                npc1s2.pos = 861;
+                mobs.add(npc1s2);
+                drop( new LingJing(),  859);
+            }
+        } else if(SPDSettings.KillDragon()){
+            FayiNa npc222= new FayiNa();
+            npc222.pos = 860;
+            mobs.add(npc222);
+            ZeroTomb npc1s2= new ZeroTomb();
+            npc1s2.pos = 861;
+            mobs.add(npc1s2);
+            drop( new LingJing(),  859);
+        }
+
     }
 
     public Mob createMob() {
@@ -220,20 +419,16 @@ public class NewZeroFiveLevel extends Level {
         lanFire.pos = 807;
         mobs.add(lanFire);
 
-        JIT jit = new JIT();
-        jit.pos = 781;
-        mobs.add(jit);
-
-        KongFu kf = new KongFu();
-        kf.pos = 869;
-        mobs.add(kf);
-
         if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)
-                || DeviceCompat.isDebug() && DeviceCompat.isDesktop()) {
+                || DeviceCompat.isDebug() && DeviceCompat.isDesktop() || DeviceCompat.isMDP()) {
             WaloKe shopking = new WaloKe();
             shopking.pos = 545;
             mobs.add(shopking);
         }
+
+        ArchettoNewYears archettoNewYears = new ArchettoNewYears();
+        archettoNewYears.pos = 593;
+        mobs.add(archettoNewYears);
 
         MintCat mint = new MintCat();
         mint.pos = 537;
@@ -256,6 +451,10 @@ public class NewZeroFiveLevel extends Level {
         dlns.pos = 433;
         mobs.add(dlns);
 
+        HKNewYears hkNewYears = new HKNewYears();
+        hkNewYears.pos = 336;
+        mobs.add(hkNewYears);
+
         MengDongXYNewYears mdxy = new MengDongXYNewYears();
         mdxy.pos = 366;
         mobs.add(mdxy);
@@ -264,6 +463,10 @@ public class NewZeroFiveLevel extends Level {
         choco.pos = 363;
         mobs.add(choco);
 
+        BzmdrNewYears bzmdrNewYears = new BzmdrNewYears();
+        bzmdrNewYears.pos = 338;
+        mobs.add(bzmdrNewYears);
+
         DeepSeaNewYears deepSeaNewYears = new DeepSeaNewYears();
         deepSeaNewYears.pos = 441;
         mobs.add(deepSeaNewYears);
@@ -271,6 +474,10 @@ public class NewZeroFiveLevel extends Level {
         QianYueDeepNewYears qyny = new QianYueDeepNewYears();
         qyny.pos = 465;
         mobs.add(qyny);
+
+        WhiteYanNewYears flowergods = new WhiteYanNewYears();
+        flowergods.pos = 438;
+        mobs.add(flowergods);
 
         YuYeNewYears yyny = new YuYeNewYears();
         yyny.pos = 411;
@@ -300,6 +507,18 @@ public class NewZeroFiveLevel extends Level {
         astb.pos = 361;
         mobs.add(astb);
 
+        ATRINewYears atri = new ATRINewYears();
+        atri.pos = 464;
+        mobs.add(atri);
+
+        JIT jit = new JIT();
+        jit.pos = 408;
+        mobs.add(jit);
+
+        KongFuNewYears kf = new KongFuNewYears();
+        kf.pos = 436;
+        mobs.add(kf);
+
         //FOUR HUGE DOOR GODS
         SlylNewYears slylNewYears = new SlylNewYears();
         slylNewYears.pos = 63;
@@ -312,6 +531,10 @@ public class NewZeroFiveLevel extends Level {
         PinkLingNewYears plnk = new PinkLingNewYears();
         plnk.pos = 61;
         mobs.add(plnk);
+
+        NxhyFiveYears nxhyFiveYears = new NxhyFiveYears();
+        nxhyFiveYears.pos = 89;
+        mobs.add(nxhyFiveYears);
 
         //SPCT
         LuoWhiteNewYears luoWhiteNewYears = new LuoWhiteNewYears();
@@ -331,9 +554,14 @@ public class NewZeroFiveLevel extends Level {
         mobs.add(shtick);
 
         //SISTER GROUP
-        FireMagicGirlNewYears fmny = new FireMagicGirlNewYears();
-        fmny.pos = 693;
-        mobs.add(fmny);
+
+        boolean isGet = Badges.isUnlocked(Badges.Badge.KILL_MG) && passwordbadges.contains(PaswordBadges.Badge.FIREGIRL);
+
+        if(isGet || DeviceCompat.isMDP() || DeviceCompat.isDebug()){
+            FireMagicGirlNewYears fmny = new FireMagicGirlNewYears();
+            fmny.pos = 693;
+            mobs.add(fmny);
+        }
 
         IceMagicGirlNewYears icny = new IceMagicGirlNewYears();
         icny.pos = 717;
@@ -367,7 +595,7 @@ public class NewZeroFiveLevel extends Level {
                 Game.runOnRenderThread(new Callback() {
                     @Override
                     public void call() {
-                        GameScene.show( new WndMessage( Messages.get(hero, "leave") ) );
+                        GameScene.show( new WndMessage( Messages.get(hero, "leave_boat") ) );
                     }
                 });
                 return false;
@@ -428,19 +656,6 @@ public class NewZeroFiveLevel extends Level {
 
     public String waterTex() {
         return Assets.Environment.WATER_ZERO;
-    }
-
-    private void tell(String text) {
-        Game.runOnRenderThread(() -> GameScene.show(new WndQuest(new Nyz(), text))
-        );
-    }
-
-    private void talkToHero(){
-        if(!tipsgodungeon) {
-            Game.runOnRenderThread(() -> tell(Messages.get(Hero.class, "acsx")));
-            ready();
-            tipsgodungeon = true;
-        }
     }
 
     @Override

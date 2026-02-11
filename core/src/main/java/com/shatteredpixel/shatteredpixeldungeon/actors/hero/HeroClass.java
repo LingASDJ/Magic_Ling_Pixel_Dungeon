@@ -280,6 +280,9 @@ public enum HeroClass {
 			hero.lvl = 30;
 			hero.HP=hero.HT=120;
 			hero.exp=-1;
+			if(DeviceCompat.isMidTest() || DeviceCompat.isMDP() || DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
+				SPDSettings.iceTestCoin(20260000);
+			}
 		}
 
 		if(Dungeon.isDLC(Conducts.Conduct.HARD)){

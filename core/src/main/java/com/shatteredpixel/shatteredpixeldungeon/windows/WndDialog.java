@@ -239,7 +239,7 @@ public class WndDialog extends Window {
         return skipIndicator;
     }
 
-    private void removeSkip() {
+    public void removeSkip() {
         skip.destroy();
         skip.killAndErase();
         update();
