@@ -144,7 +144,7 @@ public class FiveYearsFourPlot {
             diagulewindow.hideAll();
             hero.interrupt();
             diagulewindow.setLeftName(Messages.get(KuzumiNewYears.class, "name"));
-            diagulewindow.changeText(Messages.get(KuzumiNewYears.class, "messages3"));
+            diagulewindow.changeText(Messages.get(KuzumiNewYears.class, "messages5"));
         }
 
     }

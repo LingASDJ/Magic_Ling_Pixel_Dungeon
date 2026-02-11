@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -55,9 +56,10 @@ public class KuzumiNewYears extends FiveYearsNPC {
     @Override
     public boolean interact(Char c) {
         sprite.turnTo( pos, c.pos );
-        if(flower) {
+        if(flower && rd) {
             NeedFlowers();
-        } else if(angry) {
+            rd = false;
+        } else if(angry && rd) {
             int dmg = 20;
             GLog.n(Messages.get(KuzumiNewYears.class,"anary"));
             Buff.affect(hero, Bleeding.class).set(5f);
@@ -72,7 +74,7 @@ public class KuzumiNewYears extends FiveYearsNPC {
         } else if(secnod){
             NeedFood();
         } else {
-
+            Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot2,false)));
         }
         return true;
     }
@@ -115,7 +117,10 @@ public class KuzumiNewYears extends FiveYearsNPC {
                                        if (index==0){
                                            GameScene.flash(Window.GDX_COLOR);
                                            hero.HP = 1;
-                                           Dungeon.level.drop(new BloodRedFlower(), hero.pos).sprite.drop();
+                                           BloodRedFlower bf = new BloodRedFlower();
+                                           bf.Charge = hero.HT/2;
+                                           Dungeon.level.drop(bf, hero.pos).sprite.drop();
+                                           PaswordBadges.HIRO();
                                        }
                                    }
                                }
