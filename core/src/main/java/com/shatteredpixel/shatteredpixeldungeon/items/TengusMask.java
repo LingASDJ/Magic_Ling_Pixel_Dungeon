@@ -75,12 +75,17 @@ public class TengusMask extends Item {
 
 		super.execute( hero, action );
 
-		if (action.equals( AC_WEAR )) {
-			
-			curUser = hero;
 
-			GameScene.show( new WndChooseSubclass( this, hero ) );
-			
+
+		if (action.equals( AC_WEAR )) {
+			if(hero.subClass != HeroSubClass.OLDBATTLEMAGE) {
+				curUser = hero;
+
+				GameScene.show( new WndChooseSubclass( this, hero ) );
+			} else {
+					GLog.w(Messages.get(this,"not_apply"));
+					detach( curUser.belongings.backpack );
+			}
 		}
 	}
 	

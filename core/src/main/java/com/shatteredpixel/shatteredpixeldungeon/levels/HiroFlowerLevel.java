@@ -10,7 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Hiro;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KuzumiNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -134,9 +134,12 @@ public class HiroFlowerLevel extends Level {
 
 
     protected void createItems() {
-        Hiro god1= new Hiro();
-        god1.pos = 312;
-        mobs.add(god1);
+//        Hiro god1= new Hiro();
+//        god1.pos = 312;
+//        mobs.add(god1);
+        KuzumiNewYears kny = new KuzumiNewYears();
+        kny.pos = 312;
+        mobs.add(kny);
     }
 
 

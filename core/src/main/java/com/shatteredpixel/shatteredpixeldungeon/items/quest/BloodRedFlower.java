@@ -12,7 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
 
-public class DeepRedFlower extends Item {
+public class BloodRedFlower extends Item {
     private static final String AC_ACTIVE = "active";
 
     {

@@ -1371,7 +1371,7 @@ public class ItemSpriteSheet {
         assignItemRect(SHEPHERD_FLUTE,     11, 16);
 
         assignItemRect(OLDSUNSHADOW,      14, 14);
-        assignItemRect(LAN_FIRE_ROAD,      12,16);
+        assignItemRect(LAN_FIRE_ROAD,      14,16);
 
         assignItemRect(BZMDR_GIFT,          12,15);
         assignItemRect(MOTO_BREW,          12,16);

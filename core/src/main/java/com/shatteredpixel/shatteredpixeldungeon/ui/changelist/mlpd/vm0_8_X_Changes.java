@@ -153,7 +153,7 @@ public class vm0_8_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEAL), ("精巧纹章天赋调整"),
-                ("精巧纹章天赋生效时，可对纹章使用驱邪卷轴；诅咒菱晶现在也可以对诅咒纹章提供一次永久升级。")));
+                ("精巧纹章天赋生效时，可对纹章使用祛邪卷轴；诅咒菱晶现在也可以对诅咒纹章提供一次永久升级。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD), ("金蝶模式调整"),
                 ("1.金蝶任务2：每大层至多因为猎杀金蝶怪物获得额外1次嬗变，五区累计总计5次嬗变\n" +

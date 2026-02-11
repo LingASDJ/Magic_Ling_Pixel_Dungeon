@@ -61,10 +61,6 @@ public class PaswordBadges {
         displayBadge( Badge.KILL_YOGSTS );
     }
 
-    public static void ONE_POUCH() {
-        displayBadge( Badge.ONE_POUCH );
-    }
-
     public static void SWORDDRAGON() {
         displayBadge( Badge.SWORDDREAM );
     }
@@ -199,8 +195,6 @@ public class PaswordBadges {
         UNLOCK_RICESWORD(27),
 
         KILL_YOGSTS(28),
-
-        ONE_POUCH(29,true),
 
         //祈愿
         PRAY_LEGEND (30),
