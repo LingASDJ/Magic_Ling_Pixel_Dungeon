@@ -4,10 +4,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SunFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
@@ -111,6 +113,12 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
 
     @Override
     public boolean tryToZap(Hero owner, int target) {
+
+        if (owner.buff(WildMagic.WildMagicTracker.class) == null && owner.buff(MagicImmune.class) != null){
+            GLog.w( Messages.get(Wand.class, "no_magic") );
+            return false;
+        }
+
         if(curCharges == 0) {
             GLog.i(Messages.get(Wand.class,"fizzles"));
             return false;
@@ -122,7 +130,7 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
             int curAmount = 0;
 
             for (Actor actor : Actor.all()) {
-                if (actor instanceof MiniSun) {
+                if (actor instanceof MiniSun &&  ((MiniSun) actor).wand == this) {
 
                     curAmount++;
 
