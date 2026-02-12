@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CircleArc;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HiroFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -65,6 +66,7 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.GameMath;
+import com.watabou.utils.Random;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -72,6 +74,9 @@ import java.util.Date;
 import java.util.Locale;
 
 public class StatusPane extends Component {
+
+	private int kuzumitime = 0;
+	private long hiroRandomTimeOffset;
 
 	public String name() {
 		if(gameTime>400){
@@ -587,15 +592,47 @@ public class StatusPane extends Component {
 		}
 
 		if (hero != null && hero.isAlive()) {
-			Date date = new Date();
+
+			Date realDate = new Date();
+			Date displayDate;
+
+			if (Dungeon.level instanceof HiroFlowerLevel) {
+                long randomDays =    Random.Int(61) - 30;
+                long randomHours =   Random.Int(47) - 23;
+                long randomMinutes = Random.Int(119) - 59;
+
+				if(gameTime>400 && gameTime<600) {
+					if(!gameNight){
+						gameNight = true;
+					}
+				} else if(gameTime>599){
+					gameTime = 0;
+					if(gameNight){
+						gameNight = false;
+					}
+				}
+				long elapsedMillis = System.currentTimeMillis();
+				long seconds = (elapsedMillis / 1000) % 60;
+				if (seconds % 5 == 0 && seconds != 0) {
+					kuzumitime = Random.Int(500000);
+					gameTime = Random.Int(600);
+					hiroRandomTimeOffset = (randomDays * 86400000L) + (randomHours * 3600000L) + (randomMinutes * 60000L);
+                }
+                displayDate = new Date(realDate.getTime() + hiroRandomTimeOffset);
+            } else {
+				displayDate = realDate;
+			}
+
 			String strDateFormat = "yyyy-MM-dd HH:mm";
 			SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.getDefault());
 
 			Calendar cal = Calendar.getInstance();
-			cal.setTime(date);
+			cal.setTime(displayDate);
 
 			int s = cal.get(Calendar.SECOND);
-			if (s < 20) {
+			if(Dungeon.level instanceof HiroFlowerLevel){
+				timeText.hardlight(Window.GDX_COLOR);
+			} else if (s < 20) {
 				timeText.hardlight(Window.CWHITE);
 			} else if (s < 40) {
 				timeText.hardlight(Window.CYELLOW);
@@ -604,11 +641,11 @@ public class StatusPane extends Component {
 			}
 
 			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(displayDate);
 			Solar solardate = Solar.fromDate(calendar.getTime());
+
 			if(Dungeon.isChallenged(CS)){
-
 				String str = String.valueOf(gameTime);
-
 				String result;
 
 				if (gameTime < 10) {
@@ -618,10 +655,11 @@ public class StatusPane extends Component {
 				}
 				int lastTwoDigits = gameTime % 100;
 
-				timeText.text(sdf.format(date) + " " + Messages.get(this,Integer.toString(solardate.getWeek()))
-						+"\n"+Messages.get(this,"time") + (gameTime < 100 ? 0 : Math.abs(Integer.parseInt(result))) +":"+Math.abs(lastTwoDigits)+"-"+name()+"\n"+Messages.get(this,"day",gameDay));
+				timeText.text(sdf.format(displayDate) + " " + Messages.get(this,Integer.toString(solardate.getWeek()))
+						+"\n"+Messages.get(this,"time") + (gameTime < 100 ? 0 : Math.abs(Integer.parseInt(result))) +":"+Math.abs(lastTwoDigits)+"-"+name()+"\n"+Messages.get(this,"day",
+						Dungeon.level instanceof HiroFlowerLevel ? kuzumitime : gameDay));
 			} else {
-				timeText.text(sdf.format(date) + " " + Messages.get(this,Integer.toString(solardate.getWeek())));
+				timeText.text(sdf.format(displayDate) + " " + Messages.get(this,Integer.toString(solardate.getWeek())));
 			}
 
 		} else {
