@@ -3,6 +3,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -92,6 +94,11 @@ public class BzmdrNewYears extends FiveYearsNPC {
         @Override
         public ArrayList<String> actions(Hero hero) {
             return new ArrayList<>();
+        }
+
+        @Override
+        public String name() {
+            return Dungeon.isChallenged(Challenges.CS) ? Messages.get(this, "name_end") : Messages.get(this, "name");
         }
 
         @Override

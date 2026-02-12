@@ -152,8 +152,10 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 				}
 			}
 			if(item instanceof WraithAmulet){
-				if(hero.buff(WraithAmulet.CursedAmulet.class) != null){
-					hero.buff(WraithAmulet.CursedAmulet.class).detach();
+				if(hero != null){
+					if(hero.buff(WraithAmulet.CursedAmulet.class) != null){
+						hero.buff(WraithAmulet.CursedAmulet.class).detach();
+					}
 				}
 			}
 			if (item instanceof Weapon){

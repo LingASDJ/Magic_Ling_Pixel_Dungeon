@@ -18,12 +18,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDivination;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
@@ -102,7 +100,7 @@ public class FiveYearsTwoPlot {
 
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
-                Dungeon.level.drop(new MeatPie(), hero.pos);
+                Dungeon.level.drop(new Pasty(), hero.pos);
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
@@ -347,7 +345,7 @@ public class FiveYearsTwoPlot {
         }
 
         private void DropRules(){
-            Dungeon.level.drop(new ScrollOfEnchantment(), hero.pos);
+            Dungeon.level.drop(new StoneOfEnchantment(), hero.pos);
         }
 
     }
@@ -430,7 +428,7 @@ public class FiveYearsTwoPlot {
 
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
-                Dungeon.level.drop(new ScrollOfPsionicBlast(), hero.pos);
+                Dungeon.level.drop(( Generator.randomUsingDefaults( Generator.Category.SCROLL )), hero.pos);
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }
@@ -531,7 +529,7 @@ public class FiveYearsTwoPlot {
 
 
         private void DropRules(){
-            Dungeon.level.drop(new PotionOfFrost(), hero.pos);
+            Dungeon.level.drop(( Generator.randomUsingDefaults( Generator.Category.POTION )), hero.pos);
         }
 
     }

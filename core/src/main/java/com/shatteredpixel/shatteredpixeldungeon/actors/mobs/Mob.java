@@ -471,7 +471,9 @@ public abstract class Mob extends Char {
 		if(bzmdrGift != null){
 			viewDistance = 8 + Statistics.BzmdrCJMobViewDistance;
 			if(buff(ChampionEnemy.UnnameBless.class)==null) {
-				Buff.affect(this, ChampionEnemy.UnnameBless.class);
+				if(alignment == Alignment.ENEMY){
+					Buff.affect(this, ChampionEnemy.UnnameBless.class);
+				}
 			}
 		}
 

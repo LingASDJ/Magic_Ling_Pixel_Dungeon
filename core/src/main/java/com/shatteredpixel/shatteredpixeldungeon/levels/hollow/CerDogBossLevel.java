@@ -702,6 +702,7 @@ public class CerDogBossLevel extends Level {
                 protected void onComplete() {
                     Badges.validateVictory();
                     PaswordBadges.ALLCS(Challenges.activeChallenges());
+                    PaswordBadges.HERO_CLRE(Challenges.activeChallenges());
                     Dungeon.win(UnsignedInvitationLetter.class);
                     Game.switchScene(RankingsScene.class);
                     Dungeon.deleteGame(GamesInProgress.curSlot, true);

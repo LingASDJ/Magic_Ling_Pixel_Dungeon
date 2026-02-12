@@ -390,12 +390,22 @@ public class SPDSettings extends GameSettings {
 		return getInt(KEY_SCREEN_SHAKE, 2, 0, 4);
 	}
 
+
+	public static final String KEY_YEARSSELECT = "years_select";
+	public static void YearsSelect(int value) {
+		put(KEY_YEARSSELECT, value);
+	}
+
+	public static int YearsSelect() {
+		return getInt(KEY_YEARSSELECT, 5, 2, 5);
+	}
+
 	public static void interfaceSize(int value) {
 		put(KEY_UI_SIZE, value);
 	}
 
 	public static int interfaceSize() {
-		int size = getInt(KEY_UI_SIZE, DeviceCompat.isDesktop() ? 2 : 0);
+		int size = getInt(KEY_UI_SIZE, DeviceCompat.isDesktop() ? 1 : 0);
 		if (size > 0) {
 			//force mobile UI if there is not enough space for full UI
 			float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;

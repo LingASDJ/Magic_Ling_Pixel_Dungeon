@@ -563,12 +563,21 @@ public class Badges {
 		Badge badge = Badge.HALOFIRE_DIED;
 		local.add( badge );
 		displayBadge( badge );
+		validateYASD();
 	}
 
 	public static void BRUTE_DIED() {
 		Badge badge = Badge.BRUTE_BOT_DIED;
 		local.add( badge );
 		displayBadge( badge );
+		validateYASD();
+	}
+
+	public static void BLOOD_DIED() {
+		Badge badge = Badge.BLOOD_DIED;
+		local.add( badge );
+		displayBadge( badge );
+		validateYASD();
 	}
 
 	private static void validateGOODMAKE() {
@@ -588,7 +597,7 @@ public class Badges {
 				global.contains( Badge.DEATH_FROM_POISON ) &&
 				global.contains( Badge.DEATH_FROM_GAS ) &&
 				global.contains( Badge.DEATH_FROM_HUNGER) &&
-				global.contains( Badge.DEATH_FROM_FALLING) && global.contains( Badge.HALOFIRE_DIED) && global.contains( Badge.BRUTE_BOT_DIED) && global.contains( Badge.DEATH_FROM_FRIENDLY_MAGIC) && global.contains( Badge.DEATH_FROM_SACRIFICE)) {
+				global.contains( Badge.DEATH_FROM_FALLING) && global.contains( Badge.HALOFIRE_DIED) && global.contains( Badge.BRUTE_BOT_DIED) && global.contains( Badge.DEATH_FROM_FRIENDLY_MAGIC) && global.contains( Badge.DEATH_FROM_SACRIFICE)&& global.contains( Badge.BLOOD_DIED)) {
 
 			Badge badge = Badge.YASD;
 			displayBadge( badge );
@@ -1036,6 +1045,8 @@ public class Badges {
 		BRUTE_BOT_DIED				( 25 ),
 
 		ANCITY_ONE					(27),
+
+		BLOOD_DIED					(28),
 
 		//silver
 		NO_MONSTERS_SLAIN           ( 32 ),

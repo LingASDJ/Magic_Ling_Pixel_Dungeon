@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HiroFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniChestMazeLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -45,7 +46,7 @@ public class ScrollOfPassage extends ExoticScroll {
 		identify();
 		readAnimation();
 		
-		if (!Dungeon.interfloorTeleportAllowed() || Dungeon.level instanceof MiniChestMazeLevel) {
+		if (!Dungeon.interfloorTeleportAllowed() || Dungeon.level instanceof MiniChestMazeLevel || Dungeon.level instanceof HiroFlowerLevel) {
 			
 			GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
 			return;
