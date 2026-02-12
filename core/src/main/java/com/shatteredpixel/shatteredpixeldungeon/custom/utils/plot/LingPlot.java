@@ -94,7 +94,7 @@ public class LingPlot extends Plot {
     }
 
     private void process_to_4() {
-        diagulewindow.changeText(Messages.get(WhiteLing.class, "message4"));
+        diagulewindow.changeText(Messages.get(WhiteLing.class, "message4",hero.name()));
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
         if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX)) {
             Wand wand = (Wand) Generator.randomUsingDefaults( Generator.Category.WAND );

@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TreeList;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -132,14 +131,6 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 				int dmg = (int)Math.ceil(target.shielding() * 0.025f);
 				if (buff != null && buff.shielding() > 0) {
 					dmg = buff.absorbDamage(dmg);
-
-					TreeList.TreeBarrier s = Dungeon.hero.buff(TreeList.TreeBarrier.class);
-					if(s!=null){
-						int absorbed = Math.min(1, s.maxShield - s.accumulatedShield);
-						if (absorbed > 0 && target == Dungeon.hero) {
-							s.accumulatedShield += 1;
-						}
-					}
 				}
 
 				if (dmg > 0){

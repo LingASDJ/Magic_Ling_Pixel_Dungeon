@@ -59,7 +59,7 @@ public abstract class ShieldBuff extends Buff {
 
 			if(hero.hasTalent(Talent.EXCESS_CHARGE)){
 				if(target == hero){
-					Buff.affect(target, MageHand.HandShield.class).set(shield, hero.pointsInTalent(Talent.EXCESS_CHARGE)*3+1);
+					Buff.affect(target, MageHand.HandShield.class).set(shield/2, hero.pointsInTalent(Talent.EXCESS_CHARGE)*3+1);
 				}
 			}
 		}

@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TreeList;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -143,14 +142,6 @@ public class BlessLingJing extends ClearLanterBuff {
 
             if (partialLostShield >= 1f) {
                 absorbDamage(1);
-
-                TreeList.TreeBarrier s = Dungeon.hero.buff(TreeList.TreeBarrier.class);
-                if(s!=null){
-                    int absorbed = Math.min(1, s.maxShield - s.accumulatedShield);
-                    if (absorbed > 0 && target == Dungeon.hero) {
-                        s.accumulatedShield += 1;
-                    }
-                }
 
                 partialLostShield = 0;
             }
