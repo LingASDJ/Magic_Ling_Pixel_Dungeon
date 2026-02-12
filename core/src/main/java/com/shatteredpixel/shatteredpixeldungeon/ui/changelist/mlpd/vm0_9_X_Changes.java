@@ -67,7 +67,7 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new WhiteGirlSprites(), ("魔绫5岁啦！"),
                 ("2021-2-12---2026-2-12\n\n感谢所有游玩魔绫像素地牢的玩家，新的一年，我们继续同行！")));
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：5YearsOld"),
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：FiveYearsOld"),
                 ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：2026-3-4 00:00前")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("新系统：周年庆UI"),
