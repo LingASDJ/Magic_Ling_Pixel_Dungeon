@@ -44,7 +44,7 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
     {
         image = ItemSpriteSheet.BOMB_SWORD;
         tier = 5;
-        animation = true;
+        animation = false;
         usesTargeting = true;
     }
 

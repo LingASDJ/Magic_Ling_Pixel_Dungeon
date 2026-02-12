@@ -34,7 +34,7 @@ public class CommRelay extends Artifact implements Item.AnimationItem {
         image = ItemSpriteSheet.DM100RELEY;
         level = 0;
         levelCap = 10;
-        animation = true;
+        animation = false;
         defaultAction=AC_MERC;
     }
 
