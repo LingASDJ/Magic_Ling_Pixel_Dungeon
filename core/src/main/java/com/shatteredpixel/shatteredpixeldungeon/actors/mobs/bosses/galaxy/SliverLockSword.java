@@ -18,7 +18,7 @@ public class SliverLockSword extends MeleeWeapon implements Item.AnimationItem {
         image = ItemSpriteSheet.RGJT_2;
         tier = 6;
         DLY = 1F;
-        animation = true;
+        animation = false;
     }
 
     @Override

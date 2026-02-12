@@ -207,14 +207,14 @@ public class ItemSprite extends MovieClip {
 			this.emitter = null;
 		}
 
-		/** @直接切断动画引用 */
-		this.curAnim = null;
-
-		/** @彻底重置ItemSprites状态 */
-		resetColor();
-		scale.set(1);
-		angle = 0;
-		texture(Assets.Sprites.ITEMS);
+//		/** @直接切断动画引用 */
+//		this.curAnim = null;
+//
+//		/** @彻底重置ItemSprites状态 */
+//		resetColor();
+//		scale.set(1);
+//		angle = 0;
+//		texture(Assets.Sprites.ITEMS);
 		view(item.image(), item.glowing());
 
 		Emitter emitter = item.emitter();

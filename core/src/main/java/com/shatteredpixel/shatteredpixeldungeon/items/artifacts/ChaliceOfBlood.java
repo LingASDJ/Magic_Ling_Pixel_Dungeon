@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
@@ -147,6 +148,7 @@ public class ChaliceOfBlood extends Artifact {
 		if (!hero.isAlive()) {
 			Dungeon.fail( getClass() );
 			GLog.n( Messages.get(this, "ondeath") );
+			Badges.BLOOD_DIED();
 		} else {
 			upgrade();
 			Catalog.countUse(getClass());

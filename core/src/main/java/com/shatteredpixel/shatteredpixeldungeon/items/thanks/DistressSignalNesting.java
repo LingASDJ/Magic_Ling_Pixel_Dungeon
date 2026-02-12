@@ -8,7 +8,7 @@ public class DistressSignalNesting extends Item {
 
     {
         image = ItemSpriteSheet.SOS_0;
-        animation = true;
+        animation = false;
     }
 
     public int image() {
