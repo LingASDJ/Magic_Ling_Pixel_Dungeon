@@ -230,7 +230,7 @@ public class FiveYearsFourPlot {
     }
 
     public static class FayinaSayByePlotTwo extends Plot {
-        private final static int maxprocess = 13;
+        private final static int maxprocess = 12;
 
         {
             process = 1;
@@ -287,9 +287,6 @@ public class FiveYearsFourPlot {
                         break;
                     case 12:
                         process_to_12();
-                        break;
-                    case 13:
-                        process_to_13();
                         break;
                 }
                 diagulewindow.update();
@@ -379,11 +376,6 @@ public class FiveYearsFourPlot {
         private void process_to_12() {
             diagulewindow.setMainAvatar(new Image(Assets.Splashes.FAYINA_3));
             diagulewindow.changeText(Messages.get(FayiNaSayBye.class, "messages15"));
-        }
-        private void process_to_13() {
-            diagulewindow.hideAll();
-            diagulewindow.setLeftName(" ");
-            diagulewindow.changeText(Messages.get(FayiNaSayBye.class, "messages16"));
             SPDSettings.FayiNaBerry(true);
         }
     }
