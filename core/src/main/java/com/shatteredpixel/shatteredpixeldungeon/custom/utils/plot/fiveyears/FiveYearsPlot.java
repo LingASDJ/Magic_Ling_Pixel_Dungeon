@@ -40,7 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.BoneSoup;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
@@ -579,7 +578,7 @@ public class FiveYearsPlot  {
 
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
-                Dungeon.level.drop(new MeatPie(), hero.pos);
+                Dungeon.level.drop(new Pasty(), hero.pos);
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }

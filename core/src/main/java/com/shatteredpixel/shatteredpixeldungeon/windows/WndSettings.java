@@ -460,7 +460,7 @@ public class WndSettings extends WndTabbed {
 						Messages.get(this, "mobile"),
 						Messages.get(this, "full"),
 						0,
-						2
+						1
 				) {
 					@Override
 					protected void onChange() {
@@ -780,6 +780,8 @@ public class WndSettings extends WndTabbed {
 		CheckBox customBanner;
 		RedButton CustomBannerSettings;
 
+		OptionSlider yearsUI;
+
 		@Override
 		protected void createChildren() {
 			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
@@ -823,7 +825,7 @@ public class WndSettings extends WndTabbed {
 			optIcon.checked(SPDSettings.V2IconDamage());
 			add(optIcon);
 
-			customBanner = new CheckBox( Messages.get(this, "custom_banner") ) {
+			customBanner = new CheckBox( Messages.get(this, "custom_banner"),8 ) {
 				@Override
 				protected void onClick() {
 					super.onClick();
@@ -869,6 +871,16 @@ public class WndSettings extends WndTabbed {
 				CustomBannerSettings.alpha(0.5f);
 			}
 			add(CustomBannerSettings);
+
+			yearsUI = new OptionSlider(Messages.get(this, "yearsUI"),
+					"2Years", "5Years", 2, 5) {
+				@Override
+				protected void onChange() {
+					SPDSettings.YearsSelect(getSelectedValue());
+				}
+			};
+			yearsUI.setSelectedValue(SPDSettings.YearsSelect());
+			add(yearsUI);
 		}
 
 		@Override
@@ -886,17 +898,16 @@ public class WndSettings extends WndTabbed {
 				optSplashScreen.setRect(0, bottom, width, SLIDER_HEIGHT);
 				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				optIcon.setRect(optFPSLimit.right(), optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
-				customBanner.setRect(0, optIcon.bottom() + GAP, width/2, 16);
-				CustomBannerSettings.setRect(customBanner.right(), customBanner.top(), width/2, 16);
-			} else {
+            } else {
 				optSplashScreen.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
 				optIcon.setRect(0, optFPSLimit.bottom() + GAP, width, SLIDER_HEIGHT);
-				customBanner.setRect(0, optIcon.bottom() + GAP, width, 16);
-				CustomBannerSettings.setRect(0, customBanner.bottom() + GAP, customBanner.width(), 16);
-			}
+            }
+            customBanner.setRect(0, optIcon.bottom() + GAP, width/2, 16);
+            CustomBannerSettings.setRect(customBanner.right(), customBanner.top(), width/2, 16);
+            yearsUI.setRect(0, CustomBannerSettings.bottom() + GAP, width, 21);
 
-			height = CustomBannerSettings.bottom();
+            height = CustomBannerSettings.bottom();
 		}
 
 	}
