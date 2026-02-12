@@ -49,13 +49,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BzmdrLand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -72,6 +76,9 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Reflection;
+
+import java.util.List;
 
 public class ZeroLevel extends Level {
 
@@ -154,7 +161,13 @@ public class ZeroLevel extends Level {
     }
 
 
-
+    private Potion changePotion(Potion p) {
+        if (p instanceof ExoticPotion) {
+            return Reflection.newInstance(ExoticPotion.exoToReg.get(p.getClass()));
+        } else {
+            return Reflection.newInstance(ExoticPotion.regToExo.get(p.getClass()));
+        }
+    }
 
 
     protected void createItems() {
@@ -166,6 +179,16 @@ public class ZeroLevel extends Level {
             drop( new RandomChest(), 720  ).type = Heap.Type.FOR_ICE;
 
             drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), 722 );
+
+
+            List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+
+            if(passwordbadges.contains(PaswordBadges.Badge.HERO_CLRE)){
+                drop( changePotion((Potion) Generator.randomUsingDefaults( Generator.Category.POTION )), 632 );
+                drop( new Gold(325), 595 );
+                drop( new BzmdrNewYears.BzmdrGift(), 668 );
+            }
+
     }
 
     public Mob createMob() {

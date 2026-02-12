@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -141,6 +142,22 @@ public class PaswordBadges {
         displayBadge(Badge.TIME_CIRCLE);
     }
 
+
+    public static void HERO_CLRE(int challenges) {
+        boolean isNoSeedMode = !Statistics.seedCustom;
+
+        if (challenges == 0 || !isNoSeedMode) return;
+
+        boolean isNoChampion = Statistics.bossRushMode || Statistics.RandMode;
+
+        BzmdrNewYears.BzmdrGift bzmdrGift = Dungeon.hero.belongings.getItem(BzmdrNewYears.BzmdrGift.class);
+        if(bzmdrGift != null){
+            if(challenges >= 10 && !isNoChampion ){
+                displayBadge(Badge.HERO_CLRE);
+            }
+        }
+    }
+
     public static void GHOST_HUNTER() {
         displayBadge(Badge.GHOST_HUNTER);
     }
@@ -210,7 +227,9 @@ public class PaswordBadges {
 
         HELL_BACK					(36),
 
-        TIME_CIRCLE     (37,true);
+        TIME_CIRCLE     (37,true),
+
+        HERO_CLRE       (38,true);
 
         public boolean meta;
 
