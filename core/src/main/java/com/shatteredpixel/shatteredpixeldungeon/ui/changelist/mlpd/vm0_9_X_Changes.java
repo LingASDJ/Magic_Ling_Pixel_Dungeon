@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.AoReadyDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BloodsSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrabSprite;
@@ -32,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.SpawnereEvilSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TowerMachineSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VeryColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WarlockHeadSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSoulSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -62,6 +64,9 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new WhiteGirlSprites(), ("魔绫5岁啦！"),
+                ("2021-2-12---2026-2-12\n\n感谢所有游玩魔绫像素地牢的玩家，新的一年，我们继续同行！")));
+
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：5YearsOld"),
                 ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：2026-3-4 00:00前")));
 
@@ -69,7 +74,65 @@ public class vm0_9_X_Changes {
                 ("现在可以自选周年庆了，默认五周年，从2周年-5周年均可选择。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.UP_DICT), ("0层翻新"),
-                ("0层再次翻新")));
+                ("0层再次翻新，接近30个NPC加入，还要各种各样的新年赠送，欢迎各位游玩！")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BZMDR_GIFT), ("新物品：Bzmdr的新年礼物"),
+                ("想要挑战极限？那就战！！！")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MOTO_BREW), ("新物品：莫洛托夫烈焰特调"),
+                ("一瓶冒着火星的琥珀色烈酒，瓶塞缠裹着浸油火绒。\n\n饮用后可获得治疗、激素涌动、极速与火焰之力加持，但酒性刚烈，饮用后会短暂头晕目眩。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("新-普通徽章 & 隐藏徽章"),
+                ("新的一批普通 & 隐藏徽章现已上线，游玩游戏获得！\n\n" +
+                        "普通徽章：尽竭\n\n" +
+                        "隐藏徽章：勇敢者的印记")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                           ("_-_ 修复部分素材的渲染异常崩溃\n" +
+                            "_-_ 修复低安卓系统，部分新API无法调用导致的崩溃异常\n" +
+                            "_-_ 修复FireBase上面提到的一系列崩溃异常\n" +
+                            "_-_ 修复烈阳&暗金护符在魔法免疫下仍可使用的问题\n" +
+                            "_-_ 修复藏品重复问题")
+
+        ));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREE_LIST), ("树痕调整"),
+                ("二阶，力量需求13\n" +
+                        "\n" +
+                        "初始3-14，成长1-1\n" +
+                        "\n" +
+                        "初始护甲0-3，成长0-1\n" +
+                        "\n" +
+                        "这把武器可以积蓄生命能量以释放生命护盾，上限为30+5*武器等级\n" +
+                        "\n" +
+                        "攻击将积攒2+0.2*等级点护盾。可以花费1回合将这些护盾释放出来。\n" +
+                        "\n" +
+                        "能够吸收空气中魔力生长的植物。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.素材优化迭代\n" +
+                        "2.部分文案优化迭代\n" +
+                        "3.V3对话框已重构，可直接跳过（除部分关键剧情无法跳过）\n" +
+                        "4.火龙剧情优化，撒谎分支路线移除\n" +
+                        "5.游戏新闻界面滑动区域优化，请在右侧区域滑动")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_7), ("法杖调整"),
+                ("_-_ 大冰杖每级额外减速5%\n" +
+                        "_-_ 烈阳每五级可以多召唤一个太阳，初始只能召唤一个太阳，每点充能只能续2回合命\n" +
+                        "_-_ 老魔杖在转职战斗巫女(旧版)的时候大幅度提升基础数值，小幅度调整成长\n" +
+                        "_-_ 共生法杖在获得半级经验时充能")));
+
+        changes.addButton(new ChangeButton(new AoReadyDragonSprite(), ("奥尔祖龙"),
+                ("由于剧情编写组上有一个错误的乌龙，导致此怪诞生。此怪与现有新剧情框架冲突，故而移除。")));
+
     }
 
     public static void add_V0920_Changes(ArrayList<ChangeInfo> changeInfos ) {
@@ -132,8 +195,6 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD), ("金蝶模式调整"),
                 ("1.金蝶任务2：每大层至多因为猎杀金蝶怪物获得额外1次嬗变，五区累计总计5次嬗变\n" +
                         "2.修复抢劫可上楼导致的严重bug")));
-
-
 
         changes.addButton(new ChangeButton(new NyarlathotepSprite(), ("古堡奈亚调整"),
                 ("奈亚子生成陷阱现在不包含塌方陷阱")));
