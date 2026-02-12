@@ -308,7 +308,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 
-		if(depth == 9 && chinaHoliday == ChinaHoliday.PQJ && Challenges.activeChallenges()<=12 && Random.Float()>0.55f) {
+		if(depth == 9 && chinaHoliday == ChinaHoliday.CJ && Challenges.activeChallenges()<=12 && Random.Float()>0.55f) {
 			initRooms.add(new PeachGodBlessRoom());
 		}
 
