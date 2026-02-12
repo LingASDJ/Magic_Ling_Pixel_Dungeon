@@ -213,6 +213,8 @@ public class SPDSettings extends GameSettings {
 	private static final String KEY_KILLADF = "DWAXF";
 	private static final String KEY_FAYINA = "FAYINA";
 
+	private static final String KEY_CAT = "CATS";
+
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
 
@@ -1054,6 +1056,14 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean FayiNaBerry() {
 		return getBoolean(KEY_FAYINA, false);
+	}
+
+	public static void CatSee(boolean value) {
+		put(KEY_CAT, value );
+	}
+
+	public static boolean CatSee() {
+		return getBoolean(KEY_CAT, false);
 	}
 
 

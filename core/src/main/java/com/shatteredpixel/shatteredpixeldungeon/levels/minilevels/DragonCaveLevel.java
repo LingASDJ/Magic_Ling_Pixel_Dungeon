@@ -75,8 +75,8 @@ public class DragonCaveLevel extends RegularLevel {
         int rooms;
         SpecialRoom x;
 
-        if(RegularLevel.chinaHoliday == ChinaHoliday.CJ) {
-            if (!SPDSettings.FayiNaBerry() && Dungeon.branch == 2) {
+        if(RegularLevel.chinaHoliday == ChinaHoliday.CJ && !SPDSettings.FayiNaBerry()) {
+            if (Dungeon.branch == 2) {
                 x = new RIPSwordRoom();
                 initRooms.add(x);
             }

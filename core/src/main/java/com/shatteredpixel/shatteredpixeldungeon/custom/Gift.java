@@ -55,7 +55,9 @@ public class Gift implements Bundlable {
             "Q2hpbmFCaXJ0aERheSwxNzU5ODU2NDQ5LGZhbHNl",
 
             //2026
-            "UHJlLTVZZWFyc09sZCwxNzcwOTA0NzYwLGZhbHNl"
+            "UHJlLTVZZWFyc09sZCwxNzcwOTA0NzYwLGZhbHNl",
+
+            "NVllYXJzT2xkLDE3NzI1NTM2MDAsZmFsc2U="
     };
 
     private static final HashMap<String, LinkedHashMap<String, Integer>> GIFT_ITEM ;
@@ -149,6 +151,12 @@ public class Gift implements Bundlable {
         code13.put( "com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade", 1 );
         code13.put( "com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest", 5 );
         tempMap.put("UHJlLTVZZWFyc09sZA==",code13);
+
+        LinkedHashMap<String, Integer> code14 = new LinkedHashMap<>();
+        code14.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 520 );
+        code14.put( "com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest", 3 );
+        code14.put( "com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun", 1 );
+        tempMap.put("NVllYXJzT2xk",code14);
 
         GIFT_ITEM = new HashMap<>( Collections.unmodifiableMap( tempMap ) );
     }

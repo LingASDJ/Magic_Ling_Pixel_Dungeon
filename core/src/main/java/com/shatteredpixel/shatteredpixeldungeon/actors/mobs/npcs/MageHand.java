@@ -1029,14 +1029,17 @@ public class MageHand extends DirectableAlly {
         public MageHand mageHand = null;
 
         {
-            defaultAction = AC_DIRECT;
             unique = true;
             image = ItemSpriteSheet.WAND_HAND_CONTROL;
         }
 
         @Override
         public String defaultAction(){
-            return AC_SUMMON_HAND;
+            if(mageHand!=null){
+                return AC_DIRECT;
+            } else {
+                return AC_SUMMON_HAND;
+            }
         }
 
         @Override

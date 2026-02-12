@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.DarkBlock;
 import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.GreenHalo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IceBlock;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -97,7 +98,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	public enum State {
 		BURNING, LEVITATING, INVISIBLE,TRUE_INVISIBLE,
 		PARALYSED, FROZEN, ILLUMINATED, CHILLED,CHILLED_2, DARKENED, MARKED, HEALING, SHIELDED,
-		ROSESHIELDED, HALOMETHANEBURNING, FROSTBURNING, BUTTER, SPINVISIBLE, SMOKER, HEARTS,
+		ROSESHIELDED, GREENSHIELDED, HALOMETHANEBURNING, FROSTBURNING, BUTTER, SPINVISIBLE, SMOKER, HEARTS,
 		MUTATION_1,MUTATION_2,MUTATION_3,MUTATION_4,MUTATION_5,MUTATION_6,MUTATION_7,MUTATION_8,MUTATION_9
 	}
 	private int stunStates = 0;
@@ -134,7 +135,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected Emitter mutation6;
 	protected Emitter mutation7;
 	protected Emitter mutation8;
-
+	protected GreenHalo greenShield;
 	protected IceBlock iceBlock;
 	protected DarkBlock darkBlock;
 	protected TorchHalo light;
@@ -514,6 +515,12 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				}
 				GameScene.effect( roseshield = new RoseHalo( this ));
 				break;
+			case GREENSHIELDED:
+				if (greenShield != null) {
+					greenShield.killAndErase();
+				}
+				GameScene.effect( greenShield = new GreenHalo( this ));
+				break;
 			case MUTATION_1:
 				mutation = emitter();
 				mutation.pour(Speck.factory(Speck.MUTATION_1), 0.5f);
@@ -654,6 +661,11 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			case ROSESHIELDED:
 				if(roseshield != null) {
 					roseshield.putOut();
+				}
+				break;
+			case GREENSHIELDED:
+				if(greenShield != null) {
+					greenShield.putOut();
 				}
 				break;
 			case MUTATION_1:

@@ -12,15 +12,11 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -28,9 +24,6 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
-import com.watabou.utils.Random;
-
-import java.util.List;
 
 public class HotelNewYeasLevel extends Level {
 
@@ -138,29 +131,9 @@ public class HotelNewYeasLevel extends Level {
     @Override
     protected void createMobs() {
         int ns = 94;
-        PaswordBadges.loadGlobal();
-        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
-        if(!Statistics.onlyLing){
-            if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX) || RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY) {
-                if (Random.Float() < 0.65f) {
-                    WhiteLing n = new WhiteLing();
-                    n.pos = ns;
-                    mobs.add(n);
-                }
-            } else if (Badges.isUnlocked(Badges.Badge.VICTORY)) {
-                if (Random.Float() < 0.45f) {
-                    WhiteLing n = new WhiteLing();
-                    n.pos = ns;
-                    mobs.add(n);
-                }
-            } else {
-                if (Random.Float() < 0.1f) {
-                    WhiteLing n = new WhiteLing();
-                    n.pos = ns;
-                    mobs.add(n);
-                }
-            }
-        }
+        WhiteLing n = new WhiteLing();
+        n.pos = ns;
+        mobs.add(n);
     }
 
     @Override

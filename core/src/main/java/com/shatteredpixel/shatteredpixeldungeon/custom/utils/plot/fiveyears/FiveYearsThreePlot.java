@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ATRINewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ArchettoNewYears;
@@ -27,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
-import com.watabou.utils.Random;
 
 public class FiveYearsThreePlot {
     public static class PinkFoxFiveYearsPlot extends Plot {
@@ -450,6 +450,7 @@ public class FiveYearsThreePlot {
         public void skip() {
             diagulewindow.cancel();
             WndDialog.settedPlot = null;
+            SPDSettings.CatSee(true);
         }
 
         private void process_to_1() {
@@ -462,6 +463,7 @@ public class FiveYearsThreePlot {
         private void process_to_2() {
             diagulewindow.setLeftName(Messages.get(ArchettoNewYears.class, "name"));
             diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages2"));
+            SPDSettings.CatSee(true);
         }
 
     }
@@ -544,11 +546,8 @@ public class FiveYearsThreePlot {
 
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
-                if(Random.NormalIntRange(1,100)<=50) {
-                    Dungeon.level.drop(new ScrollOfGolems(),hero.pos);
-                } else {
-                    Dungeon.level.drop(new SummonElemental(),hero.pos);
-                }
+                Dungeon.level.drop(new ScrollOfGolems(),hero.pos);
+                Dungeon.level.drop(new SummonElemental(),hero.pos);
             } else {
                 Dungeon.level.drop(new Gold(10), hero.pos);
             }

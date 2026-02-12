@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears;
 
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.FiveYearsNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.fiveyears.FiveYearsThreePlot;
@@ -19,11 +20,18 @@ public class ArchettoNewYears extends FiveYearsNPC {
     }
 
     @Override
+    public String name(){
+        if(!SPDSettings.CatSee()){
+            return "???";
+        }
+        return super.name();
+    }
+
+    @Override
     public boolean interact(Char c) {
         sprite.turnTo( pos, c.pos );
-        if(first){
+        if(!SPDSettings.CatSee()){
             Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot1,false)));
-            first = false;
         } else if(secnod){
             Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot2,false)));
             secnod = false;

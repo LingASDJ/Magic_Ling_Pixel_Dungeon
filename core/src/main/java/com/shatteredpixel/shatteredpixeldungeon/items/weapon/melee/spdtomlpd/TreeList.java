@@ -1,20 +1,25 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -79,7 +84,7 @@ public class TreeList extends MeleeWeapon {
     }
 
     public String desc() {
-        return Messages.get(this, "desc", 25+15*Math.max(Dungeon.depth / 5, 1)+10*level(),2+0.2*level());
+        return Messages.get(this, "desc", 30+5*level(),2+0.2*level());
     }
 
     @Override
@@ -96,6 +101,72 @@ public class TreeList extends MeleeWeapon {
         return super.proc(attacker, defender, damage);
     }
 
+    public static class TreeBarrst extends ShieldBuff {
+
+        {
+            type = buffType.NEUTRAL;
+            announced = true;
+        }
+
+        @Override
+        public boolean act() {
+
+            if (shielding() <= 0){
+                target.die(null);
+            }
+
+
+            TreeList.TreeBarrier s = hero.buff(TreeList.TreeBarrier.class);
+            if(s!=null){
+                int absorbed = Math.min(1, s.maxShield - s.accumulatedShield);
+                if (absorbed > 0 && target == hero) {
+                    s.accumulatedShield += 1;
+                }
+            }
+
+            absorbDamage(1);
+
+            spend( TICK );
+
+            return true;
+        }
+
+        @Override
+        public void fx(boolean on) {
+            if (on) {
+                target.sprite.add(CharSprite.State.GREENSHIELDED);
+            } else if (target.buff(TreeBarrst.class) == null) {
+                target.sprite.remove(CharSprite.State.GREENSHIELDED);
+            }
+        }
+
+        @Override
+        public int icon () {
+            return BuffIndicator.ARMOR;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(Window.SKYBULE_COLOR);
+        }
+
+        @Override
+        public String iconTextDisplay() {
+            return Integer.toString(shielding());
+        }
+
+
+        @Override
+        public String toString () {
+            return Messages.get(this, "name");
+        }
+
+        @Override
+        public String desc() {
+            return Messages.get(this, "desc", shielding());
+        }
+    }
+
     public static class TreeBarrier extends Buff {
 
         {
@@ -105,16 +176,15 @@ public class TreeList extends MeleeWeapon {
         public int accumulatedShield = 0;
         public float partialLostShield = 0f;
         public int maxShield;
-        public int regionCount = Math.max(Dungeon.depth / 5, 1);
 
         @Override
         public boolean act() {
             if (target instanceof Hero) {
                 Item weapon = ((Hero) target).belongings.weapon();
                 if (weapon != null) {
-                    maxShield = 25 + 15 * regionCount + 10 * weapon.level();
+                    maxShield = 30 + 5 * weapon.level();
                 } else {
-                    maxShield = 25 + 15 * regionCount;
+                    maxShield = 30;
                 }
             }
 
@@ -176,13 +246,13 @@ public class TreeList extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return 15 + lvl * 3;
+        return 14 + lvl;
     }
 
     public void releaseShield(Char hero) {
         TreeBarrier barrier = hero.buff(TreeBarrier.class);
         if (barrier != null) {
-            Buff.affect(hero, Barrier.class).setShield( barrier.getAccumulatedShield());
+            Buff.affect(hero, TreeBarrst.class).setShield( barrier.getAccumulatedShield());
             barrier.accumulatedShield = 0;
         }
     }
