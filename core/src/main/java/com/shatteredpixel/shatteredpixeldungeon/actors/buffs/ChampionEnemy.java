@@ -776,7 +776,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public String desc() {
-            return Messages.get(this, "desc",Statistics.BzmdrCJMobSpeed*100f,Math.abs(Statistics.BzmdrCJMobLoot*100f),Statistics.BzmdrCJMobAttack*100f,Statistics.BzmdrCJMobViewDistance);
+            return Messages.get(this, "desc",Statistics.BzmdrCJMobSpeed*100f,Statistics.BzmdrCJMobAttack*100f,Statistics.BzmdrCJMobViewDistance);
 		}
 	}
 

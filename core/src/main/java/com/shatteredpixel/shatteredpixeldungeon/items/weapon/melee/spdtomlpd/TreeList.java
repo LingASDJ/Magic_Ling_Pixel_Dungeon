@@ -35,6 +35,11 @@ public class TreeList extends MeleeWeapon {
         tier = 2;
     }
 
+    @Override
+    public int STRReq(int lvl) {
+        return super.STRReq(lvl) + 1;
+    }
+
 
     public String defaultAction(){
         if(Dungeon.hero.buff(TreeBarrier.class)!=null ){

@@ -43,9 +43,9 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
@@ -61,7 +61,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
@@ -551,9 +550,13 @@ public abstract class Elemental extends Mob {
 	public static class HaloWar extends Elemental {
 
 		{
-			spriteClass = SFire.class;
-			loot = new ScrollOfTransmutation();
+			HP = HT = 35;
+			spriteClass = ElementalSprite.HaloFire.class;
+			loot = new PotionOfDragonKingBreath();
 			lootChance = 1f;
+			properties.add( Property.ELECTRIC );
+			properties.add( Property.FIERY );
+			immunities.add(HalomethaneBurning.class);
 		}
 
 		@Override
@@ -571,28 +574,6 @@ public abstract class Elemental extends Mob {
 				if (enemy.sprite.visible) Splash.at( enemy.sprite.center(), sprite.blood(), 5);
 			}
 		}
-
-		public static class SFire extends ElementalSprite.Chaos {
-
-			public SFire(){
-				super();
-				tint(0, 1, 1, 0.4f);
-			}
-
-			@Override
-			protected Emitter createEmitter() {
-				Emitter emitter = emitter();
-				emitter.pour( HalomethaneFlameParticle.FACTORY, 0.47f );
-				return emitter;
-			}
-
-			@Override
-			public void resetColor() {
-				super.resetColor();
-				tint(0, 9, 9, 0.7f);
-			}
-		}
-
 	}
 	
 	public static class ChaosElemental extends Elemental {
@@ -644,12 +625,16 @@ public abstract class Elemental extends Mob {
 	public static Class<? extends Elemental> random(){
 		float altChance = 1/50f * RatSkull.exoticChanceMultiplier();
 		if (Random.Float() < altChance){
-			return ChaosElemental.class;
+				return ChaosElemental.class;
 		}
 		
 		float roll = Random.Float();
 		if (roll < 0.4f){
-			return FireElemental.class;
+			if(Random.Int(10 ) == 1) {
+				return HaloWar.class;
+			} else {
+				return FireElemental.class;
+			}
 		} else if (roll < 0.8f){
 			return FrostElemental.class;
 		} else {
