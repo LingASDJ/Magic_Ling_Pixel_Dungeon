@@ -85,23 +85,25 @@ public class WhiteBlastSword extends MeleeWeapon {
     };
 
     public void whiteBlast_Sword() {
-        int mapLength = Dungeon.level.length();
+        if(GameScene.scene != null){
+            int mapLength = Dungeon.level.length();
 
-        for (int i : PathFinder.NEIGHBOURS13) {
-            int targetingPos = hero.pos + i;
-            if (targetingPos >= 0 && targetingPos < mapLength && !Dungeon.level.solid[targetingPos]) {
-                Emitter emitter = CellEmitter.get(targetingPos);
-                emitter.burst(ElmoParticle.FACTORY, 5);
-                GameScene.add(Blob.seed(targetingPos, 1, LastBlobs.class));
+            for (int i : PathFinder.NEIGHBOURS13) {
+                int targetingPos = hero.pos + i;
+                if (targetingPos >= 0 && targetingPos < mapLength && !Dungeon.level.solid[targetingPos]) {
+                    Emitter emitter = CellEmitter.get(targetingPos);
+                    emitter.burst(ElmoParticle.FACTORY, 5);
+                    GameScene.add(Blob.seed(targetingPos, 1, LastBlobs.class));
+                }
             }
+            hero.spend( Actor.TICK );
+            hero.busy();
+            curUser = hero;
+            hero.sprite.operate( curUser.pos );
+            Sample.INSTANCE.play( Assets.Sounds.HIT_SLASH );
+            BuffIndicator.refreshHero();
+            attack_Teleology = 0;
         }
-        hero.spend( Actor.TICK );
-        hero.busy();
-        curUser = hero;
-        hero.sprite.operate( curUser.pos );
-        Sample.INSTANCE.play( Assets.Sounds.HIT_SLASH );
-        BuffIndicator.refreshHero();
-        attack_Teleology = 0;
     }
 
 

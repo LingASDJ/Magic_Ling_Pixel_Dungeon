@@ -2,10 +2,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WhiteBlastSword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
@@ -14,7 +14,7 @@ import com.watabou.utils.Random;
 public class WhiteBlastSwordStatus extends Buff {
 
     {
-        type = Buff.buffType.POSITIVE;
+        type = buffType.POSITIVE;
         skills = true;
     }
 
@@ -47,7 +47,9 @@ public class WhiteBlastSwordStatus extends Buff {
         super.detach();
         if(hero != null && hero.belongings.weapon instanceof WhiteBlastSword){
             ((WhiteBlastSword) hero.belongings.weapon).whiteBlast_Sword();
-            hero.sprite.showStatus(CharSprite.NEGATIVE, WhiteBlastSword.TXT_RANDOM[Random.Int(WhiteBlastSword.TXT_RANDOM.length)]);
+            if(GameScene.scene != null) {
+                hero.sprite.showStatus(CharSprite.NEGATIVE, WhiteBlastSword.TXT_RANDOM[Random.Int(WhiteBlastSword.TXT_RANDOM.length)]);
+            }
         }
     }
 
@@ -70,7 +72,7 @@ public class WhiteBlastSwordStatus extends Buff {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", 2 + (Dungeon.hero == null ? 4 : hero.belongings.weapon != null ? hero.belongings.weapon.level() : 4));
+        return Messages.get(this, "desc", 2 + (hero == null ? 4 : hero.belongings.weapon != null ? hero.belongings.weapon.level() : 4));
     }
 
     private static final String LEVEL	    = "level";
