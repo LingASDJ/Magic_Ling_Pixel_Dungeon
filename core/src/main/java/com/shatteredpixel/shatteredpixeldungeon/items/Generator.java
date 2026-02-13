@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SliverLockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
@@ -197,8 +196,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dairikyan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DragonShiled;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FiveRen;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
@@ -209,7 +208,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceLingSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceSan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
@@ -641,11 +639,9 @@ public class Generator {
 					Gauntlet.class,
 					ClearSword.class,
 					ForestBow.class,
-					//超模武器
-					IceSan.class,
 
 					WhiteBlastSword.class,
-
+					FiveRen.class,
 					DeathRongBoat.class
 			};
 
@@ -655,19 +651,18 @@ public class Generator {
 			WEP_T5.probs = new float[]{0, 3, 3, 3, 3, 3, 3, 4, SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName()) ? 1.5f : 0, 2, SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName()) ? 3f : 0, 0, SPDSettings.KillDwarf() ? 3f : 0, 4, passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD) ? 4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName()) ? 4f : 0,
 					SPDSettings.isItemUnlock(ClearSword.class.getSimpleName()) ? 5f : 0,
 					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 0f : 0,
-					Statistics.RandMode ? 5 : 0,
 					5,
+					passwordbadges.contains(PaswordBadges.Badge.ZQJ_GHOST) ? 0.9f : 0,
 					Badges.isUnlocked(Badges.Badge.KILL_DOG) ? 5 : 0,
 			};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
 					BloodthirstyThorn.class,
-					EndingBlade.class,
 					FireFishSword.class,
 					SliverLockSword.class,
 			};
-			WEP_T6.probs = new float[]{1, 0, 0, 1, 0};
+			WEP_T6.probs = new float[]{1, 0, 1, 0};
 
 			//see Generator.randomArmor
 			ARMOR.classes = new Class<?>[]{

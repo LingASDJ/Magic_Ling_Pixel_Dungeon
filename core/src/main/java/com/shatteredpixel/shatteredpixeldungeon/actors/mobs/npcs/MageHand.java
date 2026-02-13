@@ -362,6 +362,9 @@ public class MageHand extends DirectableAlly {
             if (magesStaff != null) {
                 Wand mwand = magesStaff.wand;
                 // 如果法杖有充能且不在冷却中，优先远程攻击
+                if (Dungeon.level.adjacent(pos, enemy.pos)) {
+                    return super.doAttack(enemy);
+                }
                 if (mwand != null && wandCooldown == 0 && mwand.curCharges > 0) {
                     Ballistica attack = new Ballistica(pos, enemy.pos, 10);
                     if (isHeroInAttackPath(attack)) {
@@ -374,10 +377,6 @@ public class MageHand extends DirectableAlly {
                         zap();
                         return true;
                     }
-                }
-                // 如果法杖没有充能或处于冷却中，且在近战范围内，进行近战攻击
-                else if (Dungeon.level.adjacent(pos, enemy.pos)) {
-                    return super.doAttack(enemy);
                 }
             }
             // 如果没有装备法师之杖，使用普通法杖攻击

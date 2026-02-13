@@ -13,7 +13,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -30,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.LaserPython;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
@@ -282,18 +280,6 @@ public class EndingBlade extends MeleeWeapon {
 
         //remove magic charge at a higher priority, if we are benefiting from it are and not the
         //wand that just applied it
-        WandOfMagicMissile.MagicCharge buff = curUser.buff(WandOfMagicMissile.MagicCharge.class);
-        if (buff != null
-                && buff.wandJustAppliedX() != this
-                && buff.level() == buffedLvl()
-                && buffedLvl() > super.buffedLvl()){
-            buff.detach();
-        } else {
-            ScrollEmpower empower = curUser.buff(ScrollEmpower.class);
-            if (empower != null){
-                empower.use();
-            }
-        }
 
         //if the wand is owned by the hero, but not in their inventory, it must be in the staff
         if (charger != null

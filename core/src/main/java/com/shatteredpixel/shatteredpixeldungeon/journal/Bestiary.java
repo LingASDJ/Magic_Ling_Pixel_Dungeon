@@ -310,7 +310,7 @@ public enum Bestiary {
 		CITY.addEntities(
 				Shaman.RedShaman.class, Shaman.BlueShaman.class, Shaman.PurpleShaman.class,
 				Monk.class, Elemental.FrostElemental.class, Elemental.ShockElemental.class,
-				Elemental.FireElemental.class,Ghoul.class,
+				Elemental.FireElemental.class,Elemental.HaloWar.class,Ghoul.class,
 				BruteBot.class, Warlock.class, Golem.class, ShieldHuntsman.class, IceGolem.class);
 
 		CITY_BOSS.addEntities(
@@ -398,7 +398,7 @@ public enum Bestiary {
 				MobsUtilsRoom.RedMagicShieldMan.class,
 				MobsUtilsRoom.RedShaman.class,
 				MobsUtilsRoom.RedSpider.class,
-				DM275.class
+				DM275.class, OldDM300.class
 		);
 
 		ANCIENT_CITY_BOSS.addEntities(
@@ -444,7 +444,7 @@ public enum Bestiary {
 				DrTerror.BombTech.class
 		);
 
-		QUEST.addEntities(FetidRat.class, AoReadyDragon.class, GnollTrickster.class, GreatCrab.class,
+		QUEST.addEntities(FetidRat.class, GnollTrickster.class, GreatCrab.class,
 				Elemental.NewbornFireElemental.class, RotLasher.class, RotHeart.class,
 				CrystalWisp.class, CrystalGuardian.class, CrystalSpire.class, GnollGuard.class, GnollSapper.class, GnollGeomancer.class, Goo.class, SkyDead.class);
 

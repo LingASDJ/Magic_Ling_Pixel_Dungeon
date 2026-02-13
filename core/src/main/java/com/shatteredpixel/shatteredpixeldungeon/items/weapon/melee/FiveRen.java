@@ -2,13 +2,17 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
+
+import java.util.List;
 
 public class FiveRen extends MeleeWeapon {
 
@@ -20,6 +24,12 @@ public class FiveRen extends MeleeWeapon {
         tier = 5;
         DLY = 1.5f; //0.67x speed
         RCH = 2;    //extra reach
+    }
+
+    public String desc() {
+        PaswordBadges.loadGlobal();
+        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+        return passwordbadges.contains(PaswordBadges.Badge.ZQJ_GHOST)?  Messages.get(this, "desc") : Messages.get(this, "desc_alt");
     }
 
     @Override

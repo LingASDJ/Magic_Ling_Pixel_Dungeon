@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AoReadyDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BloodsSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElemtGuardGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrabSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM111Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadEyeSprite;
@@ -56,16 +57,17 @@ public class vm0_9_X_Changes {
     }
 
     public static void add_V0925_Changes(ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.9.2.5", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.9.2.5-6", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.GREEN_COLOR);
+        changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new WhiteGirlSprites(), ("魔绫5岁啦！"),
-                ("2021-2-12---2026-2-12\n\n感谢所有游玩魔绫像素地牢的玩家，新的一年，我们继续同行！")));
+                ("2021-2-12---2026-2-12\n\n五载同行，共赴新程\n" +
+                        "祝所有魔绫地牢玩家心想事成，鸿运当头，马到成功。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：FiveYearsOld"),
                 ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：2026-3-4 00:00前")));
@@ -73,11 +75,20 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("新系统：周年庆UI"),
                 ("现在可以自选周年庆了，默认五周年，从2周年-5周年均可选择。")));
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：繁体中文"),
+                ("来自Sotis提供的繁体中文已经更新。")));
+
         changes.addButton(new ChangeButton(Icons.get(Icons.UP_DICT), ("0层翻新"),
                 ("0层再次翻新，接近30个NPC加入，还要各种各样的新年赠送，欢迎各位游玩！")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BZMDR_GIFT), ("新物品：Bzmdr的新年礼物"),
                 ("想要挑战极限？那就战！！！")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CATALOG), ("上下楼文本更新"),
+                ("五周年更新了全新38个文本，来自众多的玩家投稿。\n\n让你上下楼也会有新的体验！")));
+
+        changes.addButton(new ChangeButton(new ClearElemtGuardGirlSprites(), ("法伊娜后续剧情"),
+                ("火龙事件之后，新年即将到来之际，法伊娜突然离开了小镇，她去了哪里？\n\n前往火龙曾经的巢穴，或许会有情报。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MOTO_BREW), ("新物品：莫洛托夫烈焰特调"),
                 ("一瓶冒着火星的琥珀色烈酒，瓶塞缠裹着浸油火绒。\n\n饮用后可获得治疗、激素涌动、极速与火焰之力加持，但酒性刚烈，饮用后会短暂头晕目眩。")));
@@ -87,12 +98,26 @@ public class vm0_9_X_Changes {
                         "普通徽章：尽竭\n\n" +
                         "隐藏徽章：勇敢者的印记")));
 
+        changes.addButton(new ChangeButton(new HiroSprites(), ("久住新年特别版"),
+                ("新年到来之际，她却只能在无尽轮回中默默等待毁灭降临，如果你能去看看她，说不定会感谢你呢。\n\n" +
+                        "在9层下楼携带一种特殊的信物将有概率前往。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.Flower_Cake), ("新食物：桃花饼"),
+                ("与新年小镇的白宴交谈可获得。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG25), ("新物品：赐福卷轴"),
+                ("与新年小镇的小叶交谈可获得。")));
+
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
-                           ("_-_ 修复部分素材的渲染异常崩溃\n" +
+                            ("_-_ 修复拟态之王的无敌异常\n" +
+                             "_-_ 修复白浪刺剑的部分判定导致的游戏崩溃问题\n" +
+                             "_-_ 修复法师之手极端情况下的卡死问题"),
+
+                            ("_-_ 修复部分素材的渲染异常崩溃\n" +
                             "_-_ 修复低安卓系统，部分新API无法调用导致的崩溃异常\n" +
                             "_-_ 修复FireBase上面提到的一系列崩溃异常\n" +
                             "_-_ 修复烈阳&暗金护符在魔法免疫下仍可使用的问题\n" +
@@ -124,6 +149,9 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.R_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("徽章移除"),
+                ("药水研究员，道具专家，卷轴研究员因无法获取现已移除。")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_7), ("法杖调整"),
                 ("_-_ 大冰杖每级额外减速5%\n" +
                         "_-_ 烈阳每五级可以多召唤一个太阳，初始只能召唤一个太阳，每点充能只能续2回合命\n" +
@@ -132,6 +160,22 @@ public class vm0_9_X_Changes {
 
         changes.addButton(new ChangeButton(new AoReadyDragonSprite(), ("奥尔祖龙"),
                 ("由于剧情编写组上有一个错误的乌龙，导致此怪诞生。此怪与现有新剧情框架冲突，故而移除。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LINGPEA), ("棱晶调整"),
+                ("每75回合生成20回合的丛林守护之盾。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG13), ("寒冰神扇"),
+                ("此武器正式移除。")));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ENDDIED), ("终焉"),
+                ("此武器正式移除。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FIVEREN), ("五仁月饼"),
+                ("完成中秋节事件且获得真结局后，该武器可在游戏内生成。")));
+
 
     }
 

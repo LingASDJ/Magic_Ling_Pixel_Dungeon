@@ -1050,13 +1050,6 @@ public abstract class Mob extends Char {
 
 		float dropBonus = RingOfWealth.dropChanceMultiplier( Dungeon.hero );
 
-		float badDropBonus;
-		if(Statistics.BzmdrCJMobLoot != 0){
-			badDropBonus = Statistics.BzmdrCJMobLoot;
-		} else {
-			badDropBonus = 1;
-		}
-
 		Talent.BountyHunterTracker bhTracker = Dungeon.hero.buff(Talent.BountyHunterTracker.class);
 		if (bhTracker != null){
 			Preparation prep = Dungeon.hero.buff(Preparation.class);
@@ -1071,7 +1064,7 @@ public abstract class Mob extends Char {
 		dropBonus += ShardOfOblivion.lootChanceMultiplier()-1f;
 
 		if(hero.belongings.getItem(BrokenBone.class)!=null) dropBonus *= 0.4f;
-		return lootChance * dropBonus * badDropBonus;
+		return lootChance * dropBonus;
 	}
 
     @Override

@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ArcaneBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
@@ -21,19 +20,16 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.MovieClip;
-import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
+public class BoomSword extends MeleeWeapon {
 
     public static final String AC_ZAP = "ZAP";
 
@@ -206,18 +202,18 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
         return 15 + lvl * 6;
     }
 
-    @Override
-    public void frames(ItemSprite itemSprite) {
-        if (animation) {
-            itemSprite.texture(Assets.Sprites.ANIMATIONS_BOMBSWORD);
-            TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
-            MovieClip.Animation idle = new MovieClip.Animation(14, true);
-            idle.frames(frames, 0, 0, 1, 1, 2, 2, 2, 3, 3);
-            itemSprite.play(idle);
-        } else {
-            itemSprite.view(image(), glowing());
-        }
-    }
+//    @Override
+//    public void frames(ItemSprite itemSprite) {
+//        if (animation) {
+//            itemSprite.texture(Assets.Sprites.ANIMATIONS_BOMBSWORD);
+//            TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
+//            MovieClip.Animation idle = new MovieClip.Animation(14, true);
+//            idle.frames(frames, 0, 0, 1, 1, 2, 2, 2, 3, 3);
+//            itemSprite.play(idle);
+//        } else {
+//            itemSprite.view(image(), glowing());
+//        }
+//    }
 
     @Override
     public void storeInBundle(com.watabou.utils.Bundle bundle) {

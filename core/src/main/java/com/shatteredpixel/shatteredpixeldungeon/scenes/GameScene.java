@@ -1220,23 +1220,20 @@ public class GameScene extends PixelScene {
 
 	public void BzmdrUnameBless(){
 		if(Dungeon.depth == Statistics.deepestFloor){
-			switch (Random.Int(6)){
+			switch (Random.Int(5)){
 				case 0:
 					Statistics.BzmdrCJMobSpeed += 0.2f;
 					break;
 				case 1:
-					Statistics.BzmdrCJMobLoot -= 0.2f;
-					break;
-				case 2:
 					Statistics.BzmdrCJMobAttack += 0.25f;
 					break;
-				case 3:
+				case 2:
 					Statistics.BzmdrCJMobViewDistance += 2;
 					break;
-				case 4:
+				case 3:
 					Statistics.BzmdrCJHeroSTR += 2;
 					break;
-				case 5:
+				case 4:
 					Statistics.BzmdrCJHeroViewDistance += 2;
 					break;
 			}
