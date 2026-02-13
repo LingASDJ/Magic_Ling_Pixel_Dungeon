@@ -1,18 +1,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.noosa.MovieClip;
-import com.watabou.noosa.TextureFilm;
 
-public class SliverLockSword extends MeleeWeapon implements Item.AnimationItem {
+public class SliverLockSword extends MeleeWeapon {
 
     public SliverLockSword() {
         image = ItemSpriteSheet.RGJT_2;
@@ -21,18 +16,18 @@ public class SliverLockSword extends MeleeWeapon implements Item.AnimationItem {
         animation = false;
     }
 
-    @Override
-    public void frames(ItemSprite itemSprite){
-        if(animation) {
-            itemSprite.texture(Assets.Sprites.ANIMATIONS_SXS);
-            TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
-            MovieClip.Animation idle = new MovieClip.Animation(14, true);
-            idle.frames( frames,0,0,1,1,2,2,2,3,3,4,4,5,5,6,6,7,7);
-            itemSprite.play(idle);
-        } else {
-            itemSprite.view(image(),glowing());
-        }
-    }
+//    @Override
+//    public void frames(ItemSprite itemSprite){
+//        if(animation) {
+//            itemSprite.texture(Assets.Sprites.ANIMATIONS_SXS);
+//            TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
+//            MovieClip.Animation idle = new MovieClip.Animation(14, true);
+//            idle.frames( frames,0,0,1,1,2,2,2,3,3,4,4,5,5,6,6,7,7);
+//            itemSprite.play(idle);
+//        } else {
+//            itemSprite.view(image(),glowing());
+//        }
+//    }
 
     @Override
     public int image() {
