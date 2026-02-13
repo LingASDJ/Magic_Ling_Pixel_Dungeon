@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -114,7 +113,6 @@ public class WandOfMagicMissile extends DamageWand {
 
 		private int level = 0;
 		private Wand wandJustApplied; //we don't bundle this as it's only used right as the buff is applied
-		private EndingBlade wandJustAppliedX; //we don't bundle this as it's only used right as the buff is applied
 
 		public void setup(Wand wand){
 			if (level < wand.buffedLvl()){
@@ -137,12 +135,6 @@ public class WandOfMagicMissile extends DamageWand {
 		public Wand wandJustApplied(){
 			Wand result = this.wandJustApplied;
 			this.wandJustApplied = null;
-			return result;
-		}
-
-		public EndingBlade wandJustAppliedX(){
-			EndingBlade result = this.wandJustAppliedX;
-			this.wandJustAppliedX = null;
 			return result;
 		}
 

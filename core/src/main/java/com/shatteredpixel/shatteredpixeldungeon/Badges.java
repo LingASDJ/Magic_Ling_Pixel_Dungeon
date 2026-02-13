@@ -1067,8 +1067,8 @@ public class Badges {
 		ITEMS_CRAFTED_3             ( 47 ),
 		BOSS_SLAIN_2                ( 48 ),
 		BOSS_SLAIN_3                ( 49 ),
-		ALL_POTIONS_IDENTIFIED      ( 50 ),
-		ALL_SCROLLS_IDENTIFIED      ( 51 ),
+		ALL_POTIONS_IDENTIFIED      (  ),
+		ALL_SCROLLS_IDENTIFIED      (  ),
 		BOSS_SLAIN_1_WARRIOR,
 		BOSS_SLAIN_1_MAGE,
 		BOSS_SLAIN_1_ROGUE,
@@ -1133,7 +1133,7 @@ public class Badges {
 
 		//platinum
 		HAPPY_END                   ( 96 ),
-		ALL_ITEMS_IDENTIFIED        ( 97 ),
+		ALL_ITEMS_IDENTIFIED        (  ),
 		VICTORY_WARRIOR,
 		VICTORY_MAGE,
 		VICTORY_ROGUE,

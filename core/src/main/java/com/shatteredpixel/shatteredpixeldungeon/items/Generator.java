@@ -652,7 +652,7 @@ public class Generator {
 					SPDSettings.isItemUnlock(ClearSword.class.getSimpleName()) ? 5f : 0,
 					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 0f : 0,
 					5,
-					passwordbadges.contains(PaswordBadges.Badge.ZQJ_GHOST) ? 5 : 0,
+					passwordbadges.contains(PaswordBadges.Badge.ZQJ_GHOST) ? 0.9f : 0,
 					Badges.isUnlocked(Badges.Badge.KILL_DOG) ? 5 : 0,
 			};
 

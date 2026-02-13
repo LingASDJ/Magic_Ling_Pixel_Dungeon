@@ -149,6 +149,9 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.R_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("徽章移除"),
+                ("药水研究员，道具专家，卷轴研究员因无法获取现已移除。")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_7), ("法杖调整"),
                 ("_-_ 大冰杖每级额外减速5%\n" +
                         "_-_ 烈阳每五级可以多召唤一个太阳，初始只能召唤一个太阳，每点充能只能续2回合命\n" +
@@ -172,6 +175,8 @@ public class vm0_9_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FIVEREN), ("五仁月饼"),
                 ("完成中秋节事件且获得真结局后，该武器可在游戏内生成。")));
+
+
     }
 
     public static void add_V0920_Changes(ArrayList<ChangeInfo> changeInfos ) {
