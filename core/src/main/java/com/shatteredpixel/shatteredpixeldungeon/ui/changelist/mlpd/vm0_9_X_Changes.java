@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElemtGuardGirlSprit
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrabSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM111Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadEyeSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ElementalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FodderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulPlusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GiantFlowerSlimeSprites;
@@ -68,6 +69,15 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new WhiteGirlSprites(), ("魔绫5岁啦！"),
                 ("2021-2-12---2026-2-12\n\n五载同行，共赴新程\n" +
                         "祝所有魔绫地牢玩家心想事成，鸿运当头，马到成功。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.WARNING), ("新系统：突发事件"),
+                ("新系统：突发事件 开始投入测试，它会让你的冒险增加更多随机性。\n\n" +
+                        "_-_ No.1---突发事件-冰与火之歌\n" +
+                        "_-_ 触发说明：与莲娜战斗时，有20% + 挑战数量 x 5%的概率出现。\n" +
+                        "_-_ 事件说明：冰雪魔女-冬铃加入本场战斗，且冬铃的行为发生改变。")));
+
+        changes.addButton(new ChangeButton(new ElementalSprite.HaloFire(), ("新怪物：磷焰精英"),
+                ("火元素生成时有10%的概率变成该怪物，击败必定掉落一瓶龙王祝福合剂。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：FiveYearsOld"),
                 ("进入游戏通过落白商店 或者 游戏菜单 获取奖励！\n\n有效期：2026-3-4 00:00前")));
