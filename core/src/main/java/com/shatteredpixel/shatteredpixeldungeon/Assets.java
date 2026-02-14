@@ -697,6 +697,8 @@ public class Assets {
 
 		public static final String HK	= "sprites/npc/hk.png";
 
+		public static final String YUANXI	= "sprites/npc/yuanxi.png";
+
 		public static final String CHOCO	= "sprites/npc/choco.png";
 
 		public static final String PIA	= "sprites/npc/PianoLe.png";

@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom.YuanXiLook;
+
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -43,5 +45,6 @@ public class RitualEntranceRoom extends RitualRoom {
 	protected void placeloot(Level level, Point p) {
 		Painter.set(level, p, Terrain.ENTRANCE);
 		level.transitions.add(new LevelTransition(level, level.pointToCell(p), LevelTransition.Type.REGULAR_ENTRANCE));
+		YuanXiLook(level,this);
 	}
 }

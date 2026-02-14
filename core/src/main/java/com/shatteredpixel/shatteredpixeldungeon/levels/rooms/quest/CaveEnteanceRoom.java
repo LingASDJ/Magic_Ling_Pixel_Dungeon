@@ -5,7 +5,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 
 public class CaveEnteanceRoom extends EntranceRoom {
@@ -32,6 +31,7 @@ public class CaveEnteanceRoom extends EntranceRoom {
 
     @Override
     public void paint(Level level) {
+        YuanXiLook(level,this);
         Painter.fill( level, this, Terrain.WALL_DECO );
         Painter.fill( level, this, 1, Terrain.WATER );
 

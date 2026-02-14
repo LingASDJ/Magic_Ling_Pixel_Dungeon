@@ -22,9 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.Yuanxi;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
-import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -99,37 +99,41 @@ public class EntranceRoom extends StandardRoom {
 			level.transitions.add(new LevelTransition(level, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
 		}
 
-		//use a separate generator here so meta progression doesn't affect levelgen
-		Random.pushGenerator();
+		placeEarlyGuidePages(level, this);
 
-		//places the first guidebook page on floor 1
-		if (Dungeon.depth == 1 &&
-				(!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO) || SPDSettings.intro() )){
+		YuanXiLook(level,this);
+	}
+
+	public static void YuanXiLook(Level level,Room r){
+		if(Random.Int(100)<=10 && Statistics.YuanXiLimit < 2){
 			int pos;
 			do {
 				//can't be on bottom row of tiles
-				pos = level.pointToCell(new Point( Random.IntRange( left + 1, right - 1 ),
-						Random.IntRange( top + 1, bottom - 2 )));
-			} while (pos == level.entrance() || level.findMob(level.entrance()) != null);
-			level.drop( new Guidebook(), pos );
-			Document.ADVENTURERS_GUIDE.deletePage(Document.GUIDE_INTRO);
+				pos = level.pointToCell(new Point( Random.IntRange( r.left + 2, r.right - 2 ),
+						Random.IntRange( r.top + 2, r.bottom - 2 )));
+			} while (pos == level.entrance() || level.findMob(pos) != null || level.solid[pos]);
+			Yuanxi yx = new Yuanxi();
+			yx.pos = pos;
+			Statistics.YuanXiLimit ++;
+			level.mobs.add(yx);
 		}
+	}
 
+	public static void placeEarlyGuidePages(Level level, Room r){
 		//places the third guidebook page on floor 2
 		if (Dungeon.depth == 2 && !Document.ADVENTURERS_GUIDE.isPageFound(Document.GUIDE_SEARCHING)){
 			int pos;
 			do {
 				//can't be on bottom row of tiles
-				pos = level.pointToCell(new Point( Random.IntRange( left + 1, right - 1 ),
-						Random.IntRange( top + 1, bottom - 2 )));
-			} while (pos == level.entrance() || level.findMob(level.entrance()) != null || level.solid[pos]);
+				pos = level.pointToCell(new Point( Random.IntRange( r.left + 2, r.right - 2 ),
+						Random.IntRange( r.top + 2, r.bottom - 2 )));
+			} while (pos == level.entrance() || level.findMob(pos) != null || level.solid[pos]);
 			GuidePage p = new GuidePage();
 			p.page(Document.GUIDE_SEARCHING);
 			level.drop( p, pos );
 		}
 
 		Random.popGenerator();
-
 	}
 
 	private static ArrayList<Class<?extends StandardRoom>> rooms = new ArrayList<>();
