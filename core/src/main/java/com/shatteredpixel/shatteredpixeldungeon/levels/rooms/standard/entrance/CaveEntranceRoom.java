@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom.YuanXiLook;
+
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -72,7 +74,7 @@ public class CaveEntranceRoom extends CaveRoom {
 
 		level.transitions.add(new LevelTransition(level, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
 
-
+		YuanXiLook(level,this);
 	}
 
 	@Override

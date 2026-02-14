@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom.YuanXiLook;
+
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -65,7 +67,7 @@ public class PillarsEntranceRoom extends PillarsRoom {
 		} while (level.findMob(entrance) != null || level.map[entrance] == Terrain.WALL || !valid);
 		Painter.set( level, entrance, Terrain.ENTRANCE );
 
-
+		YuanXiLook(level,this);
 
 		level.transitions.add(new LevelTransition(level, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
 	}

@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom.YuanXiLook;
+
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -53,6 +55,8 @@ public class WaterBridgeEntranceRoom extends WaterBridgeRoom {
 	@Override
 	public void paint(Level level) {
 		super.paint(level);
+
+		YuanXiLook(level,this);
 
 		int entrance;
 		do {

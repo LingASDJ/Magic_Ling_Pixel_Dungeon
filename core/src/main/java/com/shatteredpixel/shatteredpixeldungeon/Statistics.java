@@ -478,6 +478,7 @@ public class Statistics {
 	public static int miniGamesTotalLevel;
 
 	public static int moveBoxScoreMax;
+	public static int YuanXiLimit;
 
 	static {
 		propPositive0 = new ArrayList<>(Arrays.asList(
@@ -595,6 +596,7 @@ public class Statistics {
 		getMoveBoxScore = 0;
 		getAlLSearchScore = 0;
 		moveBoxScoreMax = 0;
+		YuanXiLimit = 0;
 
 		RepaierTowerCount = 0;
 
@@ -1071,11 +1073,13 @@ public class Statistics {
 
 		bundle.put("BZMDRCJHEROSTR",BzmdrCJHeroSTR);
 		bundle.put("BZMDRCJHEROVIEW",BzmdrCJHeroViewDistance);
+
+		bundle.put("YUANXI",YuanXiLimit);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
 
-
+		YuanXiLimit = bundle.getInt("YUANXI");
 		enterHiro = bundle.getBoolean("EnterHiro");
 
 		AbyssCityRules = bundle.getInt("AbyssRules");
