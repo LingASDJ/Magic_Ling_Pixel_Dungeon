@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -33,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GME;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BeamCustom;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -43,13 +45,21 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.fantong.BoneSoup;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesGirlDeadLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -76,8 +86,10 @@ public class MagicGirlDead extends Boss {
         initProperty();
 
 
-        if(Statistics.bossRushMode){
+        if(Statistics.bossRushMode || Statistics.amuletObtained){
             initBaseStatus(25, 46, 28, 20, 1000, 4, 8);
+        } else if(level instanceof ShopBossLevel) {
+            initBaseStatus(19, 32, 28, 18, 400*((Dungeon.depth/10f) < 1 ? 1 : (Dungeon.depth/10f)), 4, 8);
         } else {
             initBaseStatus(16, 22, 28, 16, 400, 4, 8);
         }
@@ -87,9 +99,7 @@ public class MagicGirlDead extends Boss {
     }
     //the actual affected cells
     private HashSet<Integer> affectedCells;
-    //the cells to trace fire shots to, for visual effects.
-    private HashSet<Integer> visualCells;
-    private int direction = 0;
+
     {
         immunities.add(Sleep.class);
 
@@ -111,14 +121,13 @@ public class MagicGirlDead extends Boss {
         immunities.add(Paralysis.class);
     }
 
-    //0~7 phases. if health < threshold[phase], then go on.
     private static final int[] healthThreshold = new int[]{399, 330, 270, 210, 160, 120, 80, 40, -1000000};
 
     private static final int[] healthThresholdX = new int[]{900, 600, 550, 400, 300, 220, 120, 100, -1000000};
 
     private int phase = 0;
 
-    private float summonCD = 50f;
+    public float summonCD = 50f;
 
     private int lastTargeting = -1;
 
@@ -137,22 +146,35 @@ public class MagicGirlDead extends Boss {
         phase++;
         CellEmitter.center(pos).burst(SnowParticle.FACTORY, 30);
         Sample.INSTANCE.play( Assets.Sounds.CURSED );
+
         if(phase % 2 == 0){
             destroyAll();
             ArrayList<Integer> places = new ArrayList<>();
-            places.add(5*Dungeon.level.width()+4);
-            places.add(6*Dungeon.level.width()-5);
-            places.add(17*Dungeon.level.width()+4);
-            places.add(18*Dungeon.level.width()-5);
-            Random.shuffle(places);
-            for(int i=0;i<Math.min(phase/2, 4);++i){
-                summonCaster(Random.Int(Statistics.bossRushMode? 8 : 4), places.get(i),false);
+            if(level instanceof ShopBossLevel){
+                places.add(10*Dungeon.level.width()+10);
+                places.add(10*Dungeon.level.width()+24);
+                places.add(24*Dungeon.level.width()+10);
+                places.add(864);
+                places.add(927);
+                places.add(621);
+                places.add(603);
+                places.add(297);
+                Random.shuffle(places);
+                for(int i=0;i<Math.min(phase*2/2, 8);++i){
+                    summonCaster(Random.Int(Statistics.bossRushMode? 8 : 4), places.get(i),false);
+                }
+            } else if(HP>50) {
+                places.add(5*Dungeon.level.width()+4);
+                places.add(6*Dungeon.level.width()-5);
+                places.add(17*Dungeon.level.width()+4);
+                places.add(18*Dungeon.level.width()-5);
+                Random.shuffle(places);
+                for(int i=0;i<Math.min(phase/2, 4);++i){
+                    summonCaster(Random.Int(Statistics.bossRushMode? 8 : 4), places.get(i),false);
+                }
             }
-//        }else{
-//            destroyAll();
-//            for(int i=0;i<phase/2+1;++i){
-//                summonCaster(Random.Int(6), findRandomPlaceForCaster(), false);
-//            }
+
+
         }
 
         activateAll();
@@ -188,34 +210,18 @@ public class MagicGirlDead extends Boss {
     protected void fx(Ballistica bolt, Callback callback, Char ch ) {
         //need to perform flame spread logic here so we can determine what cells to put flames in.
         affectedCells = new HashSet<>();
-        visualCells = new HashSet<>();
+        //the cells to trace fire shots to, for visual effects.
+        HashSet<Integer> visualCells = new HashSet<>();
 
         int maxDist = 4 + 4*4;
         int dist = Math.min(bolt.dist, maxDist);
 
         for (int i = 0; i < PathFinder.CIRCLE8.length; i++){
             if (bolt.sourcePos+PathFinder.CIRCLE8[i] == bolt.path.get(1)){
-                direction = i;
                 break;
             }
         }
 
-//        float strength = maxDist;
-//        for (int c : bolt.subPath(1, dist)) {
-//            strength--; //as we start at dist 1, not 0.
-//            affectedCells.add(c);
-//            if (strength > 1) {
-//                spreadFlames(c + PathFinder.CIRCLE8[left(direction)], strength - 1);
-//                spreadFlames(c + PathFinder.CIRCLE8[direction], strength - 1);
-//                spreadFlames(c + PathFinder.CIRCLE8[right(direction)], strength - 1);
-//            } else {
-//                visualCells.add(c);
-//            }
-//        }
-
-        //going to call this one manually
-
-        //this way we only get the cells at the tip, much better performance.
         MagicMissile.boltFromChar( ch.sprite.parent,
                 MagicMissile.FROST,
                 ch.sprite,
@@ -226,28 +232,11 @@ public class MagicGirlDead extends Boss {
         }
     }
 
-
-    //burn... BURNNNNN!.....
-//    private void spreadFlames(int cell, float strength){
-//        if (strength >= 0 && (Dungeon.level.passable[cell] || Dungeon.level.flamable[cell])){
-//            affectedCells.add(cell);
-//            if (strength >= 1.5f) {
-//                visualCells.remove(cell);
-//                spreadFlames(cell + PathFinder.CIRCLE8[left(direction)], strength - 1.5f);
-//                spreadFlames(cell + PathFinder.NEIGHBOURS9[direction], strength - 1.5f);
-//                spreadFlames(cell + PathFinder.CIRCLE8[right(direction)], strength - 1.5f);
-//            } else {
-//                visualCells.add(cell);
-//            }
-//        } else if (!Dungeon.level.passable[cell])
-//            visualCells.add(cell);
-//    }
-
     @Override
     public boolean act(){
 
-        if(HP<=0){
-            die(true);
+        if(level instanceof ShopBossLevel){
+           properties.add(Property.ICY);
         }
 
         if(paralysed>0){
@@ -268,28 +257,26 @@ public class MagicGirlDead extends Boss {
             }
         }
 
-//        if(buff(RageAndFire.class)!=null){
-//            //if target is locked, fire, target = -1
-//            if(lastTargeting != -1){
-//                //no spend, execute next act
-//                    //sprite.attack( enemy.pos );
-//                    spend( attackDelay()*5f );
-//                    if(pos == 0) {
-//                        shoot(this, 1);
-//                    } else {
-//                        shoot(this, enemy.pos);
-//                    }
-//
-//                return true;
-//                //else try to lock target
-//            }else if(findTargetLocation()) {
-//                //if success, spend and ready to fire
-//                return true;
-//            }//else, just act
-//        }
         if(summonCD<0f){
             summonCD += Math.max(60f - phase * 2f, 40f);
-            summonCaster(Random.Int(Statistics.bossRushMode? 8 : 4), findRandomPlaceForCaster(), phase>5);
+            if(level instanceof ShopBossLevel){
+                ArrayList<Integer> places = new ArrayList<>();
+                places.add(611);
+                places.add(613);
+                places.add(577);
+                places.add(647);
+                Random.shuffle(places);
+                boolean valid;
+                for(int i=0;i<Math.min(phase/2, 4);++i){
+                    valid = findChar(i) != null;
+                    if(!valid){
+                        summonCaster(Random.Int(4), places.get(i),false);
+                    }
+                }
+            } else {
+                summonCaster(Random.Int(Statistics.bossRushMode? 8 : 4), findRandomPlaceForCaster(), phase>5);
+            }
+
         }
         summonCD -= 1/speed();
         return super.act();
@@ -298,41 +285,37 @@ public class MagicGirlDead extends Boss {
 
     @Override
     public void move(int step) {
-
         super.move(step);
 
-        Camera.main.shake(  1, 0.25f );
-
-
-        //冰雪魔女踩一次水扣300分
         if (Dungeon.level.map[step] == Terrain.WATER && state == HUNTING) {
-            Statistics.bossScores[2] -= 300;
-            if (Dungeon.level.heroFOV[step]) {
-                if (buff(Haste.class) == null) {
-                    Buff.affect(this, Haste.class, 10f);
-                    Buff.affect(this, Healing.class).setHeal(42, 0f, 6);
-                    new SRPDICLRPRO().spawnAround(pos);
-                    yell( Messages.get(this, "arise") );
-                    GLog.b(Messages.get(this, "shield"));
-                    enemy.sprite.showStatus(0x00ffff, ("！！！"));
+            if (!(level instanceof ShopBossLevel)) {
+                Statistics.bossScores[2] -= 300;
+                if (Dungeon.level.heroFOV[step]) {
+                    if (buff(Haste.class) == null) {
+                        Buff.affect(this, Haste.class, 10f);
+                        Buff.affect(this, Healing.class).setHeal(42, 0f, 6);
+                        new SRPDICLRPRO().spawnAround(pos);
+                        yell(Messages.get(this, "arise"));
+                        GLog.b(Messages.get(this, "shield"));
+                        enemy.sprite.showStatus(0x00ffff, ("！！！"));
+                    }
+                    sprite.emitter().start(SparkParticle.STATIC, 0.05f, 20);
                 }
-                sprite.emitter().start(SparkParticle.STATIC, 0.05f, 20);
+
+
+                if (Dungeon.level.water[pos] && HP < HT) {
+                    if (Dungeon.level.heroFOV[pos]) {
+                        sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
+                    }
+                    if (HP * 2 == HT) {
+                        BossHealthBar.bleed(false);
+                    }
+                    HP++;
+                }
+
+                summonCD -= 24f;
+
             }
-
-
-
-            if (Dungeon.level.water[pos] && HP < HT) {
-                if (Dungeon.level.heroFOV[pos] ){
-                    sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
-                }
-                if (HP*2 == HT) {
-                    BossHealthBar.bleed(false);
-                }
-                HP++;
-            }
-
-            summonCD -= 24f;
-
         }
     }
 
@@ -352,9 +335,12 @@ public class MagicGirlDead extends Boss {
 
     @Override
     public void damage(int damage, Object src, DamageType type){
+
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "notice"));
+        } else if(level instanceof ShopBossLevel){
+            BossHealthBar.assignBoss(this);
         }
         if (damage >= 30){
             damage = 30 + (int)(Math.sqrt(4*(damage - 14) + 1) - 1)/2;
@@ -396,6 +382,15 @@ public class MagicGirlDead extends Boss {
         Statistics.bossScores[2] += 5000;
         super.die(src);
 
+        if(Statistics.attackIFGirl) {
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if (mob instanceof FireMagicDied) {
+                    mob.yell(Messages.get(mob,"sad",hero.name()));
+                    ((FireMagicDied) mob).allDead = true;
+                }
+            }
+        }
+
         Badges.validateBossSlain();
         if (Statistics.qualifiedForBossChallengeBadge){
             Badges.validateBossChallengeCompleted();
@@ -408,16 +403,42 @@ public class MagicGirlDead extends Boss {
             Buff.detach( hero, Doom.class );
         }
 
-        int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
-        for (int i = 0; i < shards; i++){
-            int ofs;
-            do {
-                ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
-            } while (!Dungeon.level.passable[pos + ofs]);
-            Dungeon.level.drop( new MetalShard(), pos + ofs ).sprite.drop( pos );
+        if(level instanceof ShopBossLevel){
+            Dungeon.level.drop(new Gold().quantity(Random.Int(500, 900)),717).sprite.drop();
+            Wand woc = HightWand();
+            woc.level(Random.NormalIntRange(0,2));
+            woc.identify();
+            Dungeon.level.drop(woc, 717).sprite.drop();
+
+            Dungeon.level.drop(new BoneSoup(), 717).sprite.drop();
+
+        } else {
+            int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
+            for (int i = 0; i < shards; i++){
+                int ofs;
+                do {
+                    ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
+                } while (!Dungeon.level.passable[pos + ofs]);
+                Dungeon.level.drop( new MetalShard(), pos + ofs ).sprite.drop( pos );
+            }
+
+            yell(Messages.get(this, "die"));
+
+            Dungeon.level.drop(new SkeletonKey(Dungeon.depth), pos).sprite.drop();
+            GameScene.bossSlain();
+
+            WandOfGodIce woc = new WandOfGodIce();
+            woc.level(Random.NormalIntRange(2,6));
+            woc.identify();
+
+            Dungeon.level.drop(woc, pos).sprite.drop();
+
+            Dungeon.level.drop(new Gold().quantity(Random.Int(1800, 1200)), pos).sprite.drop();
+            Dungeon.level.drop(new PotionOfHealing().quantity(Random.NormalIntRange(1, 2)), pos).sprite.drop();
+            Dungeon.level.drop(new ScrollOfMagicMapping().quantity(1).identify(), pos).sprite.drop();
         }
 
-        yell(Messages.get(this, "die"));
+        Badges.KILLMG();
 
         for(Mob m: Dungeon.level.mobs.toArray(new Mob[0])){
             if(m instanceof SpellCaster){
@@ -426,19 +447,31 @@ public class MagicGirlDead extends Boss {
             }
         }
 
-        Dungeon.level.drop(new SkeletonKey(Dungeon.depth), pos).sprite.drop();
-        GameScene.bossSlain();
-        Badges.KILLMG();
+    }
 
-        WandOfGodIce woc = new WandOfGodIce();
-        woc.level(Random.NormalIntRange(2,6));
-        woc.identify();
-
-        Dungeon.level.drop(woc, pos).sprite.drop();
-
-        Dungeon.level.drop(new Gold().quantity(Random.Int(1800, 1200)), pos).sprite.drop();
-        Dungeon.level.drop(new PotionOfHealing().quantity(Random.NormalIntRange(1, 2)), pos).sprite.drop();
-        Dungeon.level.drop(new ScrollOfMagicMapping().quantity(1).identify(), pos).sprite.drop();
+    private Wand HightWand() {
+        Wand wand = null;
+        switch (Random.Int(6)){
+            default:
+                wand = new WandOfVenom();
+            break;
+            case 1:
+                wand = new WandOfScale();
+            break;
+            case 2:
+                wand = new WandOfBlueFuck();
+            break;
+            case 3:
+                wand = new WandOfGodIce();
+            break;
+            case 4:
+                wand = new WandOfHightHunderStorm();
+            break;
+            case 5:
+                wand = new WandOfSun();
+            break;
+        }
+        return wand;
     }
 
     @Override
@@ -525,13 +558,12 @@ public class MagicGirlDead extends Boss {
         }
     }
 
-    protected int findRandomPlaceForCaster(){
+    protected int findRandomPlaceForCaster() {
 
         int[] ceil = GME.rectBuilder(pos, 4, 4);
 
-        //shuffle
-        for (int i=0; i < ceil.length - 1; i++) {
-            int j = Random.Int( i, ceil.length );
+        for (int i = 0; i < ceil.length - 1; i++) {
+            int j = Random.Int(i, ceil.length);
             if (j != i) {
                 int t = ceil[i];
                 ceil[i] = ceil[j];
@@ -540,17 +572,16 @@ public class MagicGirlDead extends Boss {
         }
 
         boolean valid;
-        for(int i: ceil){
+        for (int i : ceil) {
             valid = true;
-            for(int j: PathFinder.NEIGHBOURS4){
-                if(findChar(j+i)!=null){
-                    valid = false;break;
+            for (int j : PathFinder.NEIGHBOURS4) {
+                if (findChar(j + i) != null) {
+                    valid = false;
+                    break;
                 }
             }
-            if(!valid) continue;
-            if(findChar(i) == null && !Dungeon.level.solid[i] && !(Dungeon.level.map[i]==Terrain.INACTIVE_TRAP)){
-
-                //caster.spriteHardlight();
+            if (!valid) continue;
+            if (findChar(i) == null && !Dungeon.level.solid[i] && !(Dungeon.level.map[i] == Terrain.INACTIVE_TRAP)) {
                 return i;
             }
         }
