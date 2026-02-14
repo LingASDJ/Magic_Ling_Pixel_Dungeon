@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -97,6 +98,13 @@ public class MagicGirlDead extends Boss {
         initStatus(76);
         viewDistance = 18;
     }
+
+
+    @Override
+    public String name() {
+        return Statistics.attackIFGirl ? Messages.get(this,"name_alt") : super.name();
+    }
+
     //the actual affected cells
     private HashSet<Integer> affectedCells;
 
@@ -134,7 +142,7 @@ public class MagicGirlDead extends Boss {
 
     @Override
     public String info(){
-        return Messages.get(this, "desc", phase, HP - (Statistics.bossRushMode? healthThresholdX[phase] : healthThreshold[phase]));
+        return Statistics.attackIFGirl ? Messages.get(this,"desc_alt") : Messages.get(this, "desc", phase, HP - (Statistics.bossRushMode? healthThresholdX[phase] : healthThreshold[phase]));
     }
 
     @Override
@@ -237,6 +245,7 @@ public class MagicGirlDead extends Boss {
 
         if(level instanceof ShopBossLevel){
            properties.add(Property.ICY);
+            Music.playModeBGM(Assets.Music.IFWAR,true);
         }
 
         if(paralysed>0){

@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.P
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.RitualEntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.StatuesEntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.WaterBridgeEntranceRoom;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
@@ -105,7 +106,7 @@ public class EntranceRoom extends StandardRoom {
 	}
 
 	public static void YuanXiLook(Level level,Room r){
-		if(Random.Int(100)<=10 && Statistics.YuanXiLimit < 2){
+		if( Statistics.YuanXiLimit < 2 && InterlevelScene.yxlook){
 			int pos;
 			do {
 				//can't be on bottom row of tiles
@@ -132,8 +133,6 @@ public class EntranceRoom extends StandardRoom {
 			p.page(Document.GUIDE_SEARCHING);
 			level.drop( p, pos );
 		}
-
-		Random.popGenerator();
 	}
 
 	private static ArrayList<Class<?extends StandardRoom>> rooms = new ArrayList<>();
