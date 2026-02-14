@@ -66,7 +66,12 @@ public class ShopBossLevel extends Level {
 
     @Override
     public void playBossMusic(){
-        Music.playModeBGM(Assets.Music.SHOP,true);
+        if(Statistics.attackIFGirl){
+            Music.playModeBGM(Assets.Music.IFWAR,true);
+        } else {
+            Music.playModeBGM(Assets.Music.SHOP,true);
+        }
+
     }
 
     @Override
@@ -81,7 +86,10 @@ public class ShopBossLevel extends Level {
 
         FireMagicDied boss = new FireMagicDied();
         boss.pos = WIDTH*16 + 17;
-        boss.notice();
+        boss.yell( Messages.get(boss, "notice") );
+        if(Statistics.attackIFGirl){
+            GLog.b(Messages.get(boss,"cold"));
+        }
         boss.state = boss.HUNTING;
         GameScene.add(boss);
 
@@ -308,11 +316,11 @@ public class ShopBossLevel extends Level {
     }
 
     public String tilesTex() {
-            return Assets.Environment.TILES_HALLS;
+        return Assets.Environment.TILES_HALLS;
     }
 
     public String waterTex() {
-            return Assets.Environment.WATER_HALLS;
+        return Assets.Environment.WATER_HALLS;
     }
 
 }

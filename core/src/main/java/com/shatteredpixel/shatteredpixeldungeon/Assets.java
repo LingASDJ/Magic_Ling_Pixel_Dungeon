@@ -404,6 +404,8 @@ public class Assets {
 
 		public static final String NIGHT	= "music/DwarfGeneral.ogg";
 
+		public static final String IFWAR	= "music/Ice&Fire.ogg";
+
 		public static final String YOGALXY	= "music/rgjt/galaxy.ogg";
 		public static final String YOGGOD	= "music/rgjt/god.ogg";
 		public static final String STARLXY	= "music/rgjt/star.ogg";
@@ -797,6 +799,8 @@ public class Assets {
 		//BOSS
 		public static final String FRDG	= "sprites/boss/fireDragon.png";
 		public static final String DICT		= "sprites/boss/DictFish.png";
+
+		public static final String MGAS_BIG	= "sprites/boss/IceSlowGirl.png";
 
 		public static final String ROOMSTONE		= "sprites/boss/RoomStone.png";
 

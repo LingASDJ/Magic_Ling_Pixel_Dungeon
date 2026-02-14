@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
 import com.watabou.utils.SparseArray;
 
@@ -304,6 +305,7 @@ public class Statistics {
 	public static boolean godGirl = false;
 
 	public static boolean enterHiro = false;
+	public static boolean attackIFGirl = false;
 
 	public static float BzmdrCJMobSpeed = 0f;
 	public static float BzmdrCJMobLoot = 0f;
@@ -760,6 +762,8 @@ public class Statistics {
 
 		enterHiro = false;
 
+		attackIFGirl = DeviceCompat.isDebug() || Random.Int(100) <= 20 + Challenges.activeChallenges() * 5;
+
 		BzmdrCJMobSpeed = 0f;
 		BzmdrCJMobLoot = 0f;
 		BzmdrCJMobAttack = 0f;
@@ -1058,6 +1062,7 @@ public class Statistics {
 		bundle.put("AbyssRules",AbyssCityRules);
 
 		bundle.put("EnterHiro",enterHiro);
+		bundle.put("ICEFIRE",attackIFGirl);
 
 		bundle.put("BZMDRCJMOBSPEED",BzmdrCJMobSpeed);
 		bundle.put("BZMDRCJMOBLOOT", BzmdrCJMobLoot);
@@ -1315,6 +1320,8 @@ public class Statistics {
 
 		BzmdrCJHeroSTR = bundle.getInt("BZMDRCJHEROSTR");
 		BzmdrCJHeroViewDistance = bundle.getInt("BZMDRCJHEROVIEW");
+
+		attackIFGirl = bundle.getBoolean("ICEFIRE");
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ){

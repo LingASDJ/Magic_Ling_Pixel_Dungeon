@@ -22,12 +22,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MagicGirlDead;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
@@ -44,7 +46,11 @@ public class MagicGirlSprite extends MobSprite {
     public MagicGirlSprite() {
         super();
 
-        texture( Assets.Sprites.MGAS );
+        if(Dungeon.level instanceof ShopBossLevel){
+            texture( Assets.Sprites.MGAS_BIG);
+        } else {
+            texture( Assets.Sprites.MGAS );
+        }
 
         updateChargeState(false);
     }
@@ -53,31 +59,59 @@ public class MagicGirlSprite extends MobSprite {
         if (superchargeSparks != null) superchargeSparks.on = enraged;
 
         int c = 0;
+        TextureFilm frames;
+        if(Dungeon.level instanceof ShopBossLevel) {
+            frames = new TextureFilm(texture, 24, 24);
+        } else {
+            frames = new TextureFilm(texture, 12, 16);
+        }
 
-        TextureFilm frames = new TextureFilm( texture, 12, 16 );
+        if(Dungeon.level instanceof ShopBossLevel) {
+            idle = new Animation(4, true);
+            idle.frames(frames, 0, c + 1);
 
-        idle = new Animation( 4, true );
-        idle.frames( frames, c+0, c+1 );
+            run = new Animation(6, true);
+            run.frames(frames, c+2, c+3,c+4,c+5);
 
-        run = new Animation(  6, true );
-        run.frames( frames, c+0, c+1 );
+            attack = new Animation(10, false);
+            attack.frames(frames, c + 6, c + 7, c + 8);
+        } else {
+            idle = new Animation(4, true);
+            idle.frames(frames, c, c + 1);
 
-        attack = new Animation( 5, false );
-        attack.frames( frames, c+3, c+4 );
+            run = new Animation(6, true);
+            run.frames(frames, c, c + 1);
+
+            attack = new Animation(5, false);
+            attack.frames(frames, c + 3, c + 4);
+        }
 
         //unaffected by enrage state
 
         if (charge == null) {
-            charge = new Animation(4, true);
-            charge.frames(frames, 0, 10);
+            if(Dungeon.level instanceof ShopBossLevel) {
+                charge = new Animation(4, true);
+                charge.frames(frames, 0, 10);
 
-            slam = attack.clone();
+                slam = attack.clone();
 
-            zap = new Animation(15, false);
-            zap.frames(frames, 6, 7, 7, 6);
+                zap = new Animation(15, false);
+                zap.frames(frames, c+2, c+3,c+4,c+5);
 
-            die = new Animation(20, false);
-            die.frames(frames, 3,4);
+                die = new Animation(20, false);
+                die.frames(frames, 9, 10, 11);
+            } else {
+                charge = new Animation(4, true);
+                charge.frames(frames, 0, 10);
+
+                slam = attack.clone();
+
+                zap = new Animation(15, false);
+                zap.frames(frames, 6, 7, 7, 6);
+
+                die = new Animation(20, false);
+                die.frames(frames, 3, 4);
+            }
         }
 
         if (curAnim != charge) play(idle);

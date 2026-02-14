@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MagicGirlDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLRPRO;
@@ -58,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -106,6 +108,8 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     private int pumpedUp = 0;
 
+    public boolean allDead = false;
+
     @Override
     public int damageRoll() {
         int min = 1;
@@ -142,7 +146,39 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private final ArrayList<Integer> targetedCells = new ArrayList<>();
 
     @Override
+    public float speed() {
+        if(allDead){
+            return 2f;
+        }
+        return super.speed();
+    }
+
+    public static void Storm(Char ch){
+        Ballistica aim;
+        aim = new Ballistica(ch.pos, ch.pos - 1, Ballistica.STOP_TARGET);
+        int projectileProps = Ballistica.IGNORE_SOFT_SOLID;
+        int aoeSize = 6;
+        ConeAOE aoe = new ConeAOE(aim, aoeSize, 360, projectileProps);
+        GameScene.flash(0x00dd00);
+        for (Ballistica ray : aoe.outerRays){
+            ((MagicMissile)ch.sprite.parent.recycle( MagicMissile.class )).reset(
+                    MagicMissile.FROST,
+                    ch.sprite,
+                    ray.path.get(ray.dist),
+                    null
+            );
+        }
+    }
+
+    @Override
     public boolean act() {
+
+        if(allDead){
+            immunities.add(Burning.class);
+            immunities.add(HalomethaneBurning.class);
+            immunities.add(FrostBurning.class);
+        }
+
         if (phase == 1) {
             int dmgTaken = preHP - HP;
             abilityCooldown -= dmgTaken/8f;
@@ -162,6 +198,18 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
                 Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
                 sprite.showStatus(0xff0000, Messages.get(this, "dead"));
+
+                if(Statistics.attackIFGirl) {
+                    MagicGirlDead boss = new MagicGirlDead();
+                    boss.state = boss.WANDERING;
+                    boss.pos = 547;
+                    boss.summonCD = 1f;
+                    GameScene.add(boss);
+                    Storm(boss);
+                    GLog.b(Messages.get(this,"wakeup"));
+                    yell(Messages.get(this,"sister",hero.name()));
+                }
+
                 sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
                 Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(HT/2);
                 HP = HT/2;
@@ -235,6 +283,8 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private static final String SUMMON_CD = "summon_cd";
     private static final String TARGETED_CELLS = "targeted_cells";
 
+    private static final String ALL_DEAD = "all_dead";
+
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
@@ -248,6 +298,8 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             bundleArr[i] = targetedCells.get(i);
         }
         bundle.put(TARGETED_CELLS, bundleArr);
+
+        bundle.put(ALL_DEAD,allDead);
     }
 
     @Override
@@ -262,12 +314,15 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         for (int i : bundle.getIntArray(TARGETED_CELLS)){
             targetedCells.add(i);
         }
+
+        allDead = bundle.getBoolean(ALL_DEAD);
     }
 
 
     @Override
     public void damage(int dmg, Object src, DamageType type) {
         super.damage(dmg, src, type);
+        BossHealthBar.assignBoss(this);
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null){
             if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
@@ -489,7 +544,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     public void notice() {
         Dungeon.level.playBossMusic();
         BossHealthBar.assignBoss(this);
-        yell( Messages.get(this, "notice") );
     }
 
     @Override
