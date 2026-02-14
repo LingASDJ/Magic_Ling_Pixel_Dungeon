@@ -358,7 +358,7 @@ public class Assets {
 
 		public static final String THEME      = "music/theme.ogg";
 		public static final String GO      = "music/Open.ogg";
-		public static final String SHOP      = "music/shop.ogg";
+		public static final String SHOP      = "music/Shop.ogg";
 		public static final String THEME_1      = "music/theme.ogg";
 		public static final String THEME_2      = "music/theme_sky.ogg";
 		public static final String JUNGLE_FOREST = "music/Level1.ogg";
