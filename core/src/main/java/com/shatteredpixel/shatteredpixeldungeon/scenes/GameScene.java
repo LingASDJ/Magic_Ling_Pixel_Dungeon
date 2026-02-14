@@ -72,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.GhostTemplate;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.SpawnEvil;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.DragonBluePlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
@@ -1220,22 +1221,25 @@ public class GameScene extends PixelScene {
 
 	public void BzmdrUnameBless(){
 		if(Dungeon.depth == Statistics.deepestFloor){
-			switch (Random.Int(5)){
-				case 0:
-					Statistics.BzmdrCJMobSpeed += 0.2f;
-					break;
-				case 1:
-					Statistics.BzmdrCJMobAttack += 0.25f;
-					break;
-				case 2:
-					Statistics.BzmdrCJMobViewDistance += 2;
-					break;
-				case 3:
-					Statistics.BzmdrCJHeroSTR += 2;
-					break;
-				case 4:
-					Statistics.BzmdrCJHeroViewDistance += 2;
-					break;
+			BzmdrNewYears.BzmdrGift bzmdrGift = Dungeon.hero.belongings.getItem(BzmdrNewYears.BzmdrGift.class);
+			if(bzmdrGift != null) {
+				switch (Random.Int(5)) {
+					case 0:
+						Statistics.BzmdrCJMobSpeed += 0.2f;
+						break;
+					case 1:
+						Statistics.BzmdrCJMobAttack += 0.25f;
+						break;
+					case 2:
+						Statistics.BzmdrCJMobViewDistance += 2;
+						break;
+					case 3:
+						Statistics.BzmdrCJHeroSTR += 2;
+						break;
+					case 4:
+						Statistics.BzmdrCJHeroViewDistance += 2;
+						break;
+				}
 			}
 			level.checkID = true;
 		}
