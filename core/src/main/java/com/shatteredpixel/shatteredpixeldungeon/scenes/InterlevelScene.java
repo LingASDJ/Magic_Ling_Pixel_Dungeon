@@ -119,8 +119,14 @@ public class InterlevelScene extends PixelScene {
 			tipset.add(i);
 	}
 
+	public static boolean yxlook = false;
+
 	public void create() {
 		super.create();
+
+		yxlook = Random.Int(100)<=10 && Dungeon.depth>0 && !Dungeon.sbbossLevel() && !Dungeon.RushBossLevel() && !Dungeon.bossLevel();
+
+		System.out.println(yxlook);
 
 		if(tipset == null || tipset.isEmpty())
 			newTipSet();
@@ -193,7 +199,7 @@ public class InterlevelScene extends PixelScene {
 		//场景过渡速度
 		//本地调试+桌面
 		if (DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
-			fadeTime = 0.1f;
+			fadeTime = 0.51f;
 		} else {
 			//打包后的环境
 			fadeTime = 0.75f;
@@ -236,7 +242,9 @@ public class InterlevelScene extends PixelScene {
 		im.scale.x = Camera.main.height/5f;
 		im.scale.y = Camera.main.width;
 		add(im);
-		String text = Messages.get(Mode.class, mode.name());
+		String text = Messages.get( Mode.class,
+				Statistics.YuanXiLimit == 0 && yxlook ? "ab" :
+						Statistics.YuanXiLimit == 1 && yxlook ? "cd" : mode.name());
 		message = PixelScene.renderTextBlock(text, 9);
 		message.x = (Camera.main.width - message.width()) / 2;
 		message.y = (Camera.main.height - message.height()) / 4;

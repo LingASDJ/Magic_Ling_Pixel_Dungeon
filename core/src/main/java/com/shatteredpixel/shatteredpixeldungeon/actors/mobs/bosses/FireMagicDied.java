@@ -68,8 +68,6 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -144,6 +142,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private float summonCooldown = 0;
     private float abilityCooldown = 6;
     private final ArrayList<Integer> targetedCells = new ArrayList<>();
+
 
     @Override
     public float speed() {
@@ -264,17 +263,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             die(Dungeon.hero);
             Dungeon.hero.interrupt();
             GameScene.flash(0x80FFFFFF);
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    Music.INSTANCE.fadeOut(5f, new Callback() {
-                        @Override
-                        public void call() {
-                            Music.INSTANCE.end();
-                        }
-                    });
-                }
-            });
         }
         return super.act();
     }
@@ -489,7 +477,11 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     public boolean isAlive() {
-        return super.isAlive() || phase >= 4;
+        if(phase>=3){
+            return super.isAlive();
+        } else {
+            return true;
+        }
     }
 
     @Override
@@ -520,7 +512,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.WAND ) ).upgrade(), hero.pos );
             }
         }
-
 
         Dungeon.level.unseal();
 
