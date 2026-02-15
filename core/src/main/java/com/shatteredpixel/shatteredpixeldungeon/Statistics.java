@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
@@ -499,11 +500,12 @@ public class Statistics {
 		));
 
 		propPositive1 = new ArrayList<>(Arrays.asList(
-				new DeliciousRecipe(),
-				new NewStem(),
-				new RapidEarthRoot(),
 				new WenStudyingPaperOne(),
-				new YanStudyingPaperTwo()
+				new Monocular(),
+				new ArmorScalesOfBzmdr(),
+				new DeliciousRecipe(),
+				new YanStudyingPaperTwo(),
+				new KnightStabbingSword()
 		));
 
 		propNegative1 = new ArrayList<>(Arrays.asList(
@@ -550,11 +552,12 @@ public class Statistics {
 		));
 
 		propPositive1 = new ArrayList<>(Arrays.asList(
-				new DeliciousRecipe(),
-				new NewStem(),
-				new RapidEarthRoot(),
 				new WenStudyingPaperOne(),
-				new YanStudyingPaperTwo()
+				new Monocular(),
+				new ArmorScalesOfBzmdr(),
+				new DeliciousRecipe(),
+				new YanStudyingPaperTwo(),
+				new KnightStabbingSword()
 		));
 
 		propNegative1 = new ArrayList<>(Arrays.asList(

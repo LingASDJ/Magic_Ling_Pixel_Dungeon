@@ -4,8 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class ArmorScalesOfBzmdr extends Prop{
     {
-        rareness = 0;
-        //..(摊手)
+        rareness = 1;
         image = ItemSpriteSheet.ARMORSCALESOFBZMDR;
     }
 }
