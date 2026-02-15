@@ -845,8 +845,8 @@ public class Generator {
 					WenStudyingPaperTwo.class,
 					CloakFragmentsOfBzmdr.class,
 					EmotionalAggregationB.class,
-
 					HeartOfCrystalFractal.class,
+
 					NoteOfBzmdr.class,
 			};
 			PROP.defaultProbs = new float[]{

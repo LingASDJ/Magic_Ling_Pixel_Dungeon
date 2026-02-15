@@ -114,7 +114,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKn
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
-import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Image;
@@ -289,10 +288,6 @@ public enum HeroClass {
 			new PropBag().quantity(1).identify().collect();
 			Prop.randomPropA().collect();
 			Prop.randomPropB().collect();
-		}
-
-		if(RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY){
-			Prop.randomPropA().collect();
 		}
 
 		switch (this) {

@@ -30,10 +30,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalism
 import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
@@ -42,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TheGriefOfSpeechless;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Trash;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
@@ -514,21 +517,16 @@ public class Statistics {
 				new YanStudyingPaperOne(),
 				new WenStudyingPaperTwo(),
 				new CloakFragmentsOfBzmdr(),
-				new EmotionalAggregationB()
+				new EmotionalAggregationB(),
+				new HeartOfCrystalFractal()
 		));
 
 		propPositive2 = new ArrayList<>(Arrays.asList(
-				new LuckyGlove(),
-				new EmotionalAggregation(),
-				new Monocular(),
-				new KnightStabbingSword()
+				new Trash()
 		));
 
 		propNegative2 = new ArrayList<>(Arrays.asList(
-				new CloakFragmentsOfBzmdr(),
-				new BrokenBone(),
-				new TerrorDoll(),
-				new YanStudyingPaperOne()
+				new NoteOfBzmdr()
 		));
 	}
 
@@ -566,21 +564,16 @@ public class Statistics {
 				new YanStudyingPaperOne(),
 				new WenStudyingPaperTwo(),
 				new CloakFragmentsOfBzmdr(),
-				new EmotionalAggregationB()
+				new EmotionalAggregationB(),
+				new HeartOfCrystalFractal()
 		));
 
 		propPositive2 = new ArrayList<>(Arrays.asList(
-				new LuckyGlove(),
-				new EmotionalAggregation(),
-				new Monocular(),
-				new KnightStabbingSword()
+				new Trash()
 		));
 
 		propNegative2 = new ArrayList<>(Arrays.asList(
-				new CloakFragmentsOfBzmdr(),
-				new BrokenBone(),
-				new TerrorDoll(),
-				new YanStudyingPaperOne()
+				new NoteOfBzmdr()
 		));
 
 
