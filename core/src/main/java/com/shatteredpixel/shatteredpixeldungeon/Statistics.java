@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
@@ -30,12 +29,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalism
 import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
@@ -510,12 +507,12 @@ public class Statistics {
 		));
 
 		propNegative1 = new ArrayList<>(Arrays.asList(
-				new BottleWraith(),
-				new EmotionalAggregationB(),
-				new HeartOfCrystalFractal(),
-				new NoteOfBzmdr(),
 				new TheGriefOfSpeechless(),
-				new WenStudyingPaperTwo()
+				new TerrorDoll(),
+				new YanStudyingPaperOne(),
+				new WenStudyingPaperTwo(),
+				new CloakFragmentsOfBzmdr(),
+				new EmotionalAggregationB()
 		));
 
 		propPositive2 = new ArrayList<>(Arrays.asList(
@@ -536,15 +533,20 @@ public class Statistics {
     public static void reset() {
 
 		propPositive0 = new ArrayList<>(Arrays.asList(
-				new ArmorScalesOfBzmdr(),
 				new StarSachet(),
-				new PortableWhetstone()
+				new RapidEarthRoot(),
+				new PortableWhetstone(),
+				new NewStem(),
+				new LuckyGlove(),
+				new EmotionalAggregation()
 		));
 
 		propNegative0 = new ArrayList<>(Arrays.asList(
-				new BlockingDrug(),
+				new BrokenBone(),
+				new RustedGoldCoin(),
 				new ConfusedMieMieTalisman(),
-				new RustedGoldCoin()
+				new BottleWraith(),
+				new BlockingDrug()
 		));
 
 		propPositive1 = new ArrayList<>(Arrays.asList(
@@ -556,12 +558,12 @@ public class Statistics {
 		));
 
 		propNegative1 = new ArrayList<>(Arrays.asList(
-				new BottleWraith(),
-				new EmotionalAggregationB(),
-				new HeartOfCrystalFractal(),
-				new NoteOfBzmdr(),
 				new TheGriefOfSpeechless(),
-				new WenStudyingPaperTwo()
+				new TerrorDoll(),
+				new YanStudyingPaperOne(),
+				new WenStudyingPaperTwo(),
+				new CloakFragmentsOfBzmdr(),
+				new EmotionalAggregationB()
 		));
 
 		propPositive2 = new ArrayList<>(Arrays.asList(

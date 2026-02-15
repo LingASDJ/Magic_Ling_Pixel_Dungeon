@@ -4,7 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class TerrorDoll extends Prop{
     {
-        rareness = 2;
+        rareness = 1;
         image = ItemSpriteSheet.TERRORDOLL;
         kind = 1;
     }

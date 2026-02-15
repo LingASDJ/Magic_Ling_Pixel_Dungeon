@@ -829,30 +829,38 @@ public class Generator {
 					BottleWraith.class,
 					BlockingDrug.class,
 
+					//BT2
+					TheGriefOfSpeechless.class,
+					TerrorDoll.class,
+					TerrorDollB.class,
+					YanStudyingPaperOne.class,
+					WenStudyingPaperTwo.class,
+					CloakFragmentsOfBzmdr.class,
+					EmotionalAggregationB.class,
+
 					ArmorScalesOfBzmdr.class,
 
 
-					CloakFragmentsOfBzmdr.class,
+
 
 					DeliciousRecipe.class,
 
-					EmotionalAggregationB.class,
+
 					HeartOfCrystalFractal.class,
 
 
 					NoteOfBzmdr.class,
 
 					WenStudyingPaperOne.class,
-					WenStudyingPaperTwo.class,
-					YanStudyingPaperOne.class,
+
+
 					YanStudyingPaperTwo.class,
 
 					//Active
-					TerrorDoll.class,
-					TerrorDollB.class,
+
 					KnightStabbingSword.class,
 					Monocular.class,
-					TheGriefOfSpeechless.class
+
 			};
 			PROP.defaultProbs = new float[]{
 					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
