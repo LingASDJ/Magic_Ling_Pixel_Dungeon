@@ -831,7 +831,7 @@ public class Hero extends Char {
 	}
 
 	public double getZone(){
-		return Math.floor(Dungeon.scalingDepth()/5 + 1 );
+		return Math.floor((double) Dungeon.scalingDepth() /5 + 1 );
 	}
 
 	@Override
@@ -1019,7 +1019,10 @@ public class Hero extends Char {
 			dmg += (int) (dmg * Math.max((attackDelay()-1f) * ( (0.5f / 3f) * pointsInTalent(Talent.STRONGMAN)),0.5f));
 		}
 
-		if(belongings.getItem(PortableWhetstone.class)!=null)  dmg += (int) (getZone()*2-1);
+		if(belongings.getItem(PortableWhetstone.class)!=null){
+			dmg += StoneDamage();
+		}
+
 		if(belongings.getItem(CloakFragmentsOfBzmdr.class)!=null) {
 			if(getZone() == 1){
 				dmg --;
@@ -1032,6 +1035,15 @@ public class Hero extends Char {
 
 		if (dmg < 0) dmg = 0;
 		return dmg;
+	}
+
+	private int StoneDamage() {
+		int depthSegment = Dungeon.depth / 5;
+		int[] damageMap = {2, 3, 5, 7, 9, 11};
+		if (depthSegment >= damageMap.length) {
+			return damageMap[damageMap.length - 1];
+		}
+		return damageMap[depthSegment];
 	}
 
 	@Override
@@ -2220,7 +2232,7 @@ public class Hero extends Char {
 	@Override
 	public void damage( int dmg, Object src, DamageType type ) {
 
-		if(hero.belongings.getItem(EmotionalAggregation.class)!=null && Math.random()>0.9){
+		if(hero.belongings.getItem(EmotionalAggregation.class)!=null && Random.Float()>0.85){
 			GLog.n(Messages.get(EmotionalAggregation.class,"block"));
 			return;
 		}

@@ -40,6 +40,7 @@ import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class WndKingShop extends Window {
     private static final int WIDTH		= 120;
@@ -200,7 +201,7 @@ public class WndKingShop extends Window {
                             }
                             Buff.prolong(hero, ReloadShopTwo.class, 1f);
 
-                            if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9f){
+                            if(hero.belongings.getItem(LuckyGlove.class)!=null && Random.Float()>0.85f){
                                 GLog.n(Messages.get(LuckyGlove.class,"lucky"));
                             }else{
                                 Dungeon.gold -= 350;
@@ -342,7 +343,7 @@ public class WndKingShop extends Window {
                         }
 
                     } else if(Dungeon.gold >=sellPrice) {
-                        if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9f){
+                        if(hero.belongings.getItem(LuckyGlove.class)!=null && Random.Float()>0.85f){
                             GLog.n(Messages.get(LuckyGlove.class,"lucky"));
                         }else{
                             Dungeon.gold-= RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ ? (int) (sellPrice * 0.5f) : sellPrice;

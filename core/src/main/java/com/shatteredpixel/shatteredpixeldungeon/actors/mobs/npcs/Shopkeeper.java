@@ -61,6 +61,7 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -269,7 +270,7 @@ public class Shopkeeper extends NPC {
 						} else if (index > 1){
 							GLog.i(Messages.get(Shopkeeper.this, "buyback"));
 							Item returned = buybackItems.remove(index-2);
-							if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9) {
+							if(hero.belongings.getItem(LuckyGlove.class)!=null && Random.Float()>0.85) {
 								GLog.n(Messages.get(LuckyGlove.class,"lucky"));
 							}else{
 								Dungeon.gold -= returned.value();

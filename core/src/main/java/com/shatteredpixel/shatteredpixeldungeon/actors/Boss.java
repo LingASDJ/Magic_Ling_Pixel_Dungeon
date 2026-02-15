@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.isDLC;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon.WndChangeProp.cleanTrashItems;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
@@ -108,7 +109,7 @@ abstract public class Boss extends Mob {
                 GameScene.add( smallLeafHardDungeon );
                 Dungeon.level.occupyCell( smallLeafHardDungeon );
 
-                if(Dungeon.depth == 10){
+                if(Dungeon.depth == 5){
                     Prop p1 = Prop.randomPropA();
                     Prop p2 = Prop.randomPropB();
                     p1.collect();
@@ -117,14 +118,33 @@ abstract public class Boss extends Mob {
                     GLog.i(Messages.get(hero, "you_now_have", p2.name()));
                 }
 
-                if(Dungeon.depth == 20){
-                    Prop p1 = Prop.randomPropA(1);
-                    Prop p2 = Prop.randomPropB(1);
+                if(Dungeon.depth == 10){
+                    Prop p1 = Prop.randomPropA(Random.Int(0,2));
+                    Prop p2 = Prop.randomPropB(Random.Int(0,2));
                     p1.collect();
                     p2.collect();
                     GLog.i(Messages.get(hero, "you_now_have", p1.name()));
                     GLog.i(Messages.get(hero, "you_now_have", p2.name()));
                 }
+
+                if(Dungeon.depth == 15){
+                    Prop p1 = Prop.randomPropA(Random.Int(1,3));
+                    Prop p2 = Prop.randomPropB(Random.Int(1,3));
+                    p1.collect();
+                    p2.collect();
+                    GLog.i(Messages.get(hero, "you_now_have", p1.name()));
+                    GLog.i(Messages.get(hero, "you_now_have", p2.name()));
+                }
+
+                if(Dungeon.depth == 20){
+                    Prop p1 = Prop.randomPropA(2);
+                    Prop p2 = Prop.randomPropB(2);
+                    p1.collect();
+                    p2.collect();
+                    GLog.i(Messages.get(hero, "you_now_have", p1.name()));
+                    GLog.i(Messages.get(hero, "you_now_have", p2.name()));
+                }
+                cleanTrashItems();
             }
 
             if(!Statistics.RandMode && !Statistics.bossRushMode &&

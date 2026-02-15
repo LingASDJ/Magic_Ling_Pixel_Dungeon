@@ -116,11 +116,6 @@ public class TreeList extends MeleeWeapon {
         @Override
         public boolean act() {
 
-            if (shielding() <= 0){
-                target.die(null);
-            }
-
-
             TreeList.TreeBarrier s = hero.buff(TreeList.TreeBarrier.class);
             if(s!=null){
                 int absorbed = Math.min(1, s.maxShield - s.accumulatedShield);

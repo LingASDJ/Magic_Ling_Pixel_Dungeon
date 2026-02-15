@@ -485,15 +485,20 @@ public class Statistics {
 
 	static {
 		propPositive0 = new ArrayList<>(Arrays.asList(
-				new ArmorScalesOfBzmdr(),
 				new StarSachet(),
-				new PortableWhetstone()
+				new RapidEarthRoot(),
+				new PortableWhetstone(),
+				new NewStem(),
+				new LuckyGlove(),
+				new EmotionalAggregation()
 		));
 
 		propNegative0 = new ArrayList<>(Arrays.asList(
-				new BlockingDrug(),
+				new BrokenBone(),
+				new RustedGoldCoin(),
 				new ConfusedMieMieTalisman(),
-				new RustedGoldCoin()
+				new BottleWraith(),
+				new BlockingDrug()
 		));
 
 		propPositive1 = new ArrayList<>(Arrays.asList(

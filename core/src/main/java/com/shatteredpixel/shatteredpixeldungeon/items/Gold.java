@@ -79,7 +79,7 @@ public class Gold extends Item {
 			hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "ling",quantity/50));
         } else {
 			if(hero.belongings.getItem(RustedGoldCoin.class)!=null){
-				quantity *= 0.75f;
+				quantity *= 0.85f;
 				Dungeon.gold += quantity == 0 ? 1 : quantity;
 				Statistics.goldCollected += quantity == 0 ? 1 : quantity;
 				Badges.validateGoldCollected();
