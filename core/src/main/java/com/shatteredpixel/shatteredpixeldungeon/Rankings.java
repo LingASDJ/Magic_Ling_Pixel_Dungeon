@@ -78,6 +78,8 @@ public enum Rankings {
     public static final String BADGES = "badges";
     public static final String HANDLERS = "handlers";
     public static final String CHALLENGES = "challenges";
+    public static final String DIFFICULT = "challenges";
+
     public static final String GAME_VERSION = "game_version";
     public static final String SEED = "seed";
     public static final String CUSTOM_SEED = "custom_seed";
@@ -289,11 +291,11 @@ public enum Rankings {
 
     private float DifficultyScore() {
         float DiffcultyScore;
-        if(Dungeon.isDLC(Conducts.Conduct.EASY)){
+        if(Dungeon.dlcs.isConducted(Conducts.Conduct.EASY)){
             DiffcultyScore = 0.5f;
-        } else if(Dungeon.isDLC(Conducts.Conduct.NORMAL)){
+        } else if(Dungeon.dlcs.isConducted(Conducts.Conduct.NORMAL)){
             DiffcultyScore = 1;
-        } else if(Dungeon.isDLC(Conducts.Conduct.HARD)){
+        } else if(Dungeon.dlcs.isConducted(Conducts.Conduct.HARD)){
             DiffcultyScore = 2.5f;
         } else {
             DiffcultyScore = 1;
@@ -361,6 +363,8 @@ public enum Rankings {
         //save challenges
         rec.gameData.put(CHALLENGES, Dungeon.challenges);
 
+        Dungeon.dlcs.storeInBundle(rec.gameData);
+
         rec.gameData.put(GAME_VERSION, Dungeon.initialVersion);
 
         rec.gameData.put(SEED, Dungeon.seed);
@@ -396,6 +400,12 @@ public enum Rankings {
         Statistics.restoreFromBundle(data.getBundle(STATS));
 
         Dungeon.challenges = data.getInt(CHALLENGES);
+
+        Dungeon.dlcs = new Conducts.ConductStorage();
+        Dungeon.dlcs.restoreFromBundle(rec.gameData);
+        if (rec.gameData.getEnum("difficult", Conducts.Conduct.class) != Conducts.Conduct.NULL){
+            Dungeon.dlcs = new Conducts.ConductStorage(rec.gameData.getEnum("difficult", Conducts.Conduct.class));
+        }
 
         Dungeon.initialVersion = data.getInt(GAME_VERSION);
 
