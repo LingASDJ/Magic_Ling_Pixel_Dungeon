@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
@@ -47,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
+import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
@@ -54,6 +56,7 @@ import com.watabou.utils.SparseArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 public class Statistics {
 
@@ -482,15 +485,20 @@ public class Statistics {
 
 	static {
 		propPositive0 = new ArrayList<>(Arrays.asList(
-				new ArmorScalesOfBzmdr(),
 				new StarSachet(),
-				new PortableWhetstone()
+				new RapidEarthRoot(),
+				new PortableWhetstone(),
+				new NewStem(),
+				new LuckyGlove(),
+				new EmotionalAggregation()
 		));
 
 		propNegative0 = new ArrayList<>(Arrays.asList(
-				new BlockingDrug(),
+				new BrokenBone(),
+				new RustedGoldCoin(),
 				new ConfusedMieMieTalisman(),
-				new RustedGoldCoin()
+				new BottleWraith(),
+				new BlockingDrug()
 		));
 
 		propPositive1 = new ArrayList<>(Arrays.asList(
@@ -502,7 +510,7 @@ public class Statistics {
 		));
 
 		propNegative1 = new ArrayList<>(Arrays.asList(
-				//new BottleWraith(),
+				new BottleWraith(),
 				new EmotionalAggregationB(),
 				new HeartOfCrystalFractal(),
 				new NoteOfBzmdr(),
@@ -548,7 +556,7 @@ public class Statistics {
 		));
 
 		propNegative1 = new ArrayList<>(Arrays.asList(
-				//new BottleWraith(),
+				new BottleWraith(),
 				new EmotionalAggregationB(),
 				new HeartOfCrystalFractal(),
 				new NoteOfBzmdr(),
@@ -1075,9 +1083,36 @@ public class Statistics {
 		bundle.put("BZMDRCJHEROVIEW",BzmdrCJHeroViewDistance);
 
 		bundle.put("YUANXI",YuanXiLimit);
+
+		bundle.put("propPositive0", propPositive0);
+		bundle.put("propPositive1", propPositive1);
+		bundle.put("propPositive2", propPositive2);
+		bundle.put("propNegative0", propNegative0);
+		bundle.put("propNegative1", propNegative1);
+		bundle.put("propNegative2", propNegative2);
+	}
+
+	private static ArrayList<Prop> convertToPropList(Collection<Bundlable> bundlableCollection) {
+		ArrayList<Prop> propList = new ArrayList<>();
+		if (bundlableCollection == null) {
+			return propList;
+		}
+		for (Bundlable bundlable : bundlableCollection) {
+			if (bundlable instanceof Prop) {
+				propList.add((Prop) bundlable);
+			}
+		}
+		return propList;
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+
+		propPositive0 = convertToPropList(bundle.getCollection("propPositive0"));
+		propPositive1 = convertToPropList(bundle.getCollection("propPositive1"));
+		propPositive2 = convertToPropList(bundle.getCollection("propPositive2"));
+		propNegative0 = convertToPropList(bundle.getCollection("propNegative0"));
+		propNegative1 = convertToPropList(bundle.getCollection("propNegative1"));
+		propNegative2 = convertToPropList(bundle.getCollection("propNegative2"));
 
 		YuanXiLimit = bundle.getInt("YUANXI");
 		enterHiro = bundle.getBoolean("EnterHiro");

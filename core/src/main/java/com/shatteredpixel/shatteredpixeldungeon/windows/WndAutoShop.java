@@ -29,6 +29,7 @@ import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class WndAutoShop extends Window {
     private static final int WIDTH		= 120;
@@ -152,7 +153,7 @@ public class WndAutoShop extends Window {
                             }
                         }
                     } else if(Dungeon.gold >= gold) {
-                        if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9) {
+                        if(hero.belongings.getItem(LuckyGlove.class)!=null && Random.Float()>0.85) {
                             GLog.n(Messages.get(LuckyGlove.class,"lucky"));
                         }else{
                             Dungeon.gold -= gold;

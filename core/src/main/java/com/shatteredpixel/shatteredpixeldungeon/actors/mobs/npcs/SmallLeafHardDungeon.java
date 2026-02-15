@@ -277,7 +277,7 @@ public class SmallLeafHardDungeon extends NPC {
             btnItem.item().detach(Dungeon.hero.belongings.backpack);
         }
 
-        private void cleanTrashItems() {
+        public static void cleanTrashItems() {
             if (Dungeon.hero.belongings.getItem(Trash.class) != null) {
                 for (Trash t : Dungeon.hero.belongings.getAllItems(Trash.class)) {
                     t.detach(Dungeon.hero.belongings.backpack);

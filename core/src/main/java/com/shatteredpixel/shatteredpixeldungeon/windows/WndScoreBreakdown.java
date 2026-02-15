@@ -86,13 +86,13 @@ public class WndScoreBreakdown extends Window {
         }
 
 
-        if(Dungeon.isDLC(Conducts.Conduct.EASY)){
+        if(Dungeon.dlcs.isConducted(Conducts.Conduct.EASY)){
             pos = statSlot(content, Messages.get(this, "diff_multiplier"), "0.5" + "x", pos, false);
             pos = addInfo(content, Messages.get(this, "hard_desc"), pos);
-        } else if(Dungeon.isDLC(Conducts.Conduct.NORMAL)){
+        } else if(Dungeon.dlcs.isConducted(Conducts.Conduct.NORMAL)){
             pos = statSlot(content, Messages.get(this, "diff_multiplier"), "1" + "x", pos, false);
             pos = addInfo(content, Messages.get(this, "hard_desc"), pos);
-        } else if(Dungeon.isDLC(Conducts.Conduct.HARD)){
+        } else if(Dungeon.dlcs.isConducted(Conducts.Conduct.HARD)){
             pos = statSlot(content, Messages.get(this, "diff_multiplier"), "2.5" + "x", pos, false);
             pos = addInfo(content, Messages.get(this, "hard_desc"), pos);
         }

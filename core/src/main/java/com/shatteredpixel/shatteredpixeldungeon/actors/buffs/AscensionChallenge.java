@@ -287,13 +287,6 @@ public class AscensionChallenge extends Buff {
 
 			}
 		}
-//		if (Statistics.highestAscent < 20){
-//			for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
-//				if (m instanceof Shopkeeper){
-//					((Shopkeeper) m).flee();
-//				}
-//			}
-//		}
 	}
 
 	//messages at boss levels only trigger on first ascent

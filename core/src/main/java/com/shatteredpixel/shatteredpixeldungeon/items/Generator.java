@@ -814,27 +814,39 @@ public class Generator {
 			TRINKET.probs = TRINKET.defaultProbs.clone();
 
 			PROP.classes = new Class<?>[]{
-					ArmorScalesOfBzmdr.class,
-					BlockingDrug.class,
-					BrokenBone.class,
-					CloakFragmentsOfBzmdr.class,
-					ConfusedMieMieTalisman.class,
-					DeliciousRecipe.class,
+					//GT1
+					StarSachet.class,
+					RapidEarthRoot.class,
+					PortableWhetstone.class,
+					NewStem.class,
+					LuckyGlove.class,
 					EmotionalAggregation.class,
+
+					//BT1
+					BrokenBone.class,
+					RustedGoldCoin.class,
+					ConfusedMieMieTalisman.class,
+					BottleWraith.class,
+					BlockingDrug.class,
+
+					ArmorScalesOfBzmdr.class,
+
+
+					CloakFragmentsOfBzmdr.class,
+
+					DeliciousRecipe.class,
+
 					EmotionalAggregationB.class,
 					HeartOfCrystalFractal.class,
-					LuckyGlove.class,
-					NewStem.class,
+
+
 					NoteOfBzmdr.class,
-					PortableWhetstone.class,
-					RapidEarthRoot.class,
-					RustedGoldCoin.class,
-					StarSachet.class,
+
 					WenStudyingPaperOne.class,
 					WenStudyingPaperTwo.class,
 					YanStudyingPaperOne.class,
 					YanStudyingPaperTwo.class,
-					BottleWraith.class,
+
 					//Active
 					TerrorDoll.class,
 					TerrorDollB.class,
@@ -843,7 +855,7 @@ public class Generator {
 					TheGriefOfSpeechless.class
 			};
 			PROP.defaultProbs = new float[]{
-					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 			};
 			PROP.probs = PROP.defaultProbs.clone();
 
