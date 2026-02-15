@@ -31,14 +31,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public enum Music {
-	
+
 	INSTANCE;
-	
+
 	private com.badlogic.gdx.audio.Music player;
-	
+
 	private String lastPlayed;
 	private boolean looping;
-	
+
 	private boolean enabled = true;
 	private float volume = 1f;
 
@@ -51,29 +51,20 @@ public enum Music {
 	private final ArrayList<String> trackQueue = new ArrayList<>();
 	boolean shuffle = false;
 
-	//解决电脑端高质量ogg的线程安全闪退问题
-	public static void playModeBGM(String name, boolean loop) {
-		if(DeviceCompat.isDesktop()){
-			Game.runOnRenderThread(() -> Music.INSTANCE.play(name, loop));
-		} else {
-			Music.INSTANCE.play(name, loop);
-		}
-	}
-	
 	public synchronized void play( String assetName, boolean looping ) {
 
 		//iOS cannot play ogg, so we use an mp3 alternative instead
 		if (assetName != null && DeviceCompat.isiOS()){
 			assetName = assetName.replace(".ogg", ".mp3");
 		}
-		
+
 		if (isPlaying() && lastPlayed != null && lastPlayed.equals( assetName )) {
 			player.setVolume(volumeWithFade());
 			return;
 		}
-		
+
 		stop();
-		
+
 		lastPlayed = assetName;
 		trackList = null;
 
@@ -87,6 +78,16 @@ public enum Music {
 		play(assetName, null);
 	}
 
+	//解决电脑端高质量ogg的线程安全闪退问题
+	public static void playModeBGM(String name, boolean loop) {
+		if(DeviceCompat.isDesktop()){
+			Game.runOnRenderThread(() -> Music.INSTANCE.play(name, loop));
+		} else {
+			Music.INSTANCE.play(name, loop);
+		}
+	}
+
+
 	public synchronized void playTracks( String[] tracks, float[] chances, boolean shuffle){
 
 		if (tracks == null || tracks.length == 0 || tracks.length != chances.length){
@@ -95,7 +96,7 @@ public enum Music {
 		}
 
 		//iOS cannot play ogg, so we use an mp3 alternative instead
-		if (DeviceCompat.isiOS()){
+		if (tracks != null && DeviceCompat.isiOS()){
 			for (int i = 0; i < tracks.length; i ++){
 				tracks[i] = tracks[i].replace(".ogg", ".mp3");
 			}
@@ -181,7 +182,17 @@ public enum Music {
 			//don't play the next track if we're currently in the middle of a fade
 			if (fadeTotal == -1f) {
 				//we do this in a separate thread to avoid graphics hitching while the music is prepared
-				new Thread(() -> playNextTrack(music)).start();
+				if (!DeviceCompat.isDesktop()) {
+					new Thread() {
+						@Override
+						public void run() {
+							playNextTrack(music);
+						}
+					}.start();
+				} else {
+					//don't use a separate thread on desktop, causes errors and makes no performance difference
+					playNextTrack(music);
+				}
 			}
 		}
 	};
@@ -225,7 +236,7 @@ public enum Music {
 			player = null;
 		}
 	}
-	
+
 	public synchronized void end() {
 		lastPlayed = null;
 		trackList = null;
@@ -233,14 +244,18 @@ public enum Music {
 	}
 
 	private boolean paused = false;
-	
+
+	public synchronized boolean paused(){
+		return paused;
+	}
+
 	public synchronized void pause() {
 		paused = true;
 		if (player != null) {
 			player.pause();
 		}
 	}
-	
+
 	public synchronized void resume() {
 		paused = false;
 		if (player != null) {
@@ -255,7 +270,7 @@ public enum Music {
 			player = null;
 		}
 	}
-	
+
 	public synchronized void volume( float value ) {
 		volume = value;
 		if (player != null) {
@@ -270,11 +285,11 @@ public enum Music {
 			return volume;
 		}
 	}
-	
+
 	public synchronized boolean isPlaying() {
 		return player != null && player.isPlaying();
 	}
-	
+
 	public synchronized void enable( boolean value ) {
 		enabled = value;
 		if (isPlaying() && !value) {
@@ -288,9 +303,9 @@ public enum Music {
 			}
 		}
 	}
-	
+
 	public synchronized boolean isEnabled() {
 		return enabled;
 	}
-	
+
 }
