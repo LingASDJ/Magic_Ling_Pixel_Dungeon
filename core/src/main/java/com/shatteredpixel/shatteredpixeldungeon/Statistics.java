@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TheGriefOfSpeechless;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Trash;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
@@ -502,80 +503,77 @@ public class Statistics {
 		));
 
 		propPositive1 = new ArrayList<>(Arrays.asList(
-				new DeliciousRecipe(),
-				new NewStem(),
-				new RapidEarthRoot(),
 				new WenStudyingPaperOne(),
-				new YanStudyingPaperTwo()
-		));
-
-		propNegative1 = new ArrayList<>(Arrays.asList(
-				new BottleWraith(),
-				new EmotionalAggregationB(),
-				new HeartOfCrystalFractal(),
-				new NoteOfBzmdr(),
-				new TheGriefOfSpeechless(),
-				new WenStudyingPaperTwo()
-		));
-
-		propPositive2 = new ArrayList<>(Arrays.asList(
-				new LuckyGlove(),
-				new EmotionalAggregation(),
 				new Monocular(),
+				new ArmorScalesOfBzmdr(),
+				new DeliciousRecipe(),
+				new YanStudyingPaperTwo(),
 				new KnightStabbingSword()
 		));
 
-		propNegative2 = new ArrayList<>(Arrays.asList(
-				new CloakFragmentsOfBzmdr(),
-				new BrokenBone(),
+		propNegative1 = new ArrayList<>(Arrays.asList(
+				new TheGriefOfSpeechless(),
 				new TerrorDoll(),
-				new YanStudyingPaperOne()
+				new YanStudyingPaperOne(),
+				new WenStudyingPaperTwo(),
+				new CloakFragmentsOfBzmdr(),
+				new EmotionalAggregationB(),
+				new HeartOfCrystalFractal()
+		));
+
+		propPositive2 = new ArrayList<>(Arrays.asList(
+				new Trash()
+		));
+
+		propNegative2 = new ArrayList<>(Arrays.asList(
+				new NoteOfBzmdr()
 		));
 	}
 
     public static void reset() {
 
 		propPositive0 = new ArrayList<>(Arrays.asList(
-				new ArmorScalesOfBzmdr(),
 				new StarSachet(),
-				new PortableWhetstone()
+				new RapidEarthRoot(),
+				new PortableWhetstone(),
+				new NewStem(),
+				new LuckyGlove(),
+				new EmotionalAggregation()
 		));
 
 		propNegative0 = new ArrayList<>(Arrays.asList(
-				new BlockingDrug(),
+				new BrokenBone(),
+				new RustedGoldCoin(),
 				new ConfusedMieMieTalisman(),
-				new RustedGoldCoin()
+				new BottleWraith(),
+				new BlockingDrug()
 		));
 
 		propPositive1 = new ArrayList<>(Arrays.asList(
-				new DeliciousRecipe(),
-				new NewStem(),
-				new RapidEarthRoot(),
 				new WenStudyingPaperOne(),
-				new YanStudyingPaperTwo()
-		));
-
-		propNegative1 = new ArrayList<>(Arrays.asList(
-				new BottleWraith(),
-				new EmotionalAggregationB(),
-				new HeartOfCrystalFractal(),
-				new NoteOfBzmdr(),
-				new TheGriefOfSpeechless(),
-				new WenStudyingPaperTwo()
-		));
-
-		propPositive2 = new ArrayList<>(Arrays.asList(
-				new LuckyGlove(),
-				new EmotionalAggregation(),
 				new Monocular(),
+				new ArmorScalesOfBzmdr(),
+				new DeliciousRecipe(),
+				new YanStudyingPaperTwo(),
 				new KnightStabbingSword()
 		));
 
-		propNegative2 = new ArrayList<>(Arrays.asList(
-				new CloakFragmentsOfBzmdr(),
-				new BrokenBone(),
+		propNegative1 = new ArrayList<>(Arrays.asList(
+				new TheGriefOfSpeechless(),
 				new TerrorDoll(),
-				new YanStudyingPaperOne()
+				new YanStudyingPaperOne(),
+				new WenStudyingPaperTwo(),
+				new CloakFragmentsOfBzmdr(),
+				new EmotionalAggregationB(),
+				new HeartOfCrystalFractal()
+		));
+
+		propPositive2 = new ArrayList<>(Arrays.asList(
+				new Trash()
+		));
+
+		propNegative2 = new ArrayList<>(Arrays.asList(
+				new NoteOfBzmdr()
 		));
 
 

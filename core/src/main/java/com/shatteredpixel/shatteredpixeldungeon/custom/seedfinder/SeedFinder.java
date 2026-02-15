@@ -114,11 +114,11 @@ public class SeedFinder {
 					builder.append("- ").append(i.title().toLowerCase());
 
 
-					if(h != null){
-						if (h.type != Type.HEAP) {
-							builder.append(" (").append(h.toString().toLowerCase()).append(")");
-						}
+				if(h != null){
+					if (h.type != Type.HEAP) {
+						builder.append(" (").append(h.toString().toLowerCase()).append(")");
 					}
+				}
 
 
 
@@ -168,7 +168,7 @@ public class SeedFinder {
 	String seedDigits;
 	// 获取已耗时
 	@SuppressWarnings("DefaultLocale")
-    public String getElapsedTime() {
+	public String getElapsedTime() {
 		long elapsedMillis = System.currentTimeMillis() - startTime;
 		long seconds = (elapsedMillis / 1000) % 60;
 		long minutes = (elapsedMillis / (1000 * 60)) % 60;
@@ -202,21 +202,25 @@ public class SeedFinder {
 			}
 
 			final String i1 = seedDigits + i;
-			Gdx.app.postRunnable(() -> {
-				if(!running){
-					startTimer();
+
+			Gdx.app.postRunnable(new Runnable() {
+				@Override
+				public void run() {
+					 if(!running){
+						 startTimer();
+					 }
+					 if (!SeedFindLogScene.thread.isInterrupted()) {
+						 SeedFindLogScene.r.text(
+						Messages.get(SeedFinder.class,"seedfinder")+"\n\n"+
+						Messages.get(SeedFinder.class,"seedfinder_mode")+
+						Options.condition + "\n\n"+Messages.get(SeedFinder.class,"challenges_code") + SPDSettings.challenges() +
+						"\n\n"+Messages.get(SeedFinder.class,"finder_time") + getElapsedTime() +
+						"\n\n"+Messages.get(SeedFinder.class,"seed_code")+
+						i1);
+						 SeedFindLogScene.r.setPos(SeedFindLogScene.uiCamera.width/3f, SeedFindLogScene.uiCamera.height/3f);
+					 }
 				}
-				if (!SeedFindLogScene.thread.isInterrupted()) {
-					SeedFindLogScene.r.text(
-							Messages.get(this,"seedfinder")+"\n\n"+
-							Messages.get(this,"seedfinder_mode")+
-							Options.condition + "\n\n"+Messages.get(this,"challenges_code") + SPDSettings.challenges() +
-							"\n\n"+Messages.get(this,"finder_time") + getElapsedTime() +
-							"\n\n"+Messages.get(this,"seed_code")+
-							i1);
-					SeedFindLogScene.r.setPos(SeedFindLogScene.uiCamera.width/3f, SeedFindLogScene.uiCamera.height/3f);
-				}
-			});
+								 });
 			if (testSeedALL(seedDigits + i, floor)) {
 				result = logSeedItems(seedDigits + i, floor, SPDSettings.challenges());
 				break;

@@ -4,7 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class CloakFragmentsOfBzmdr extends Prop{
     {
-        rareness = 2;
+        rareness = 1;
         image = ItemSpriteSheet.CLOAKFRAGMENTSOFBZMDR;
         kind = 1;
     }

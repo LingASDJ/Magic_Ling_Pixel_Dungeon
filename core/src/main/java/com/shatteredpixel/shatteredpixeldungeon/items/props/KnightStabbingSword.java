@@ -4,7 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class KnightStabbingSword extends Prop{
     {
-        rareness = 3;
+        rareness = 1;
         image = ItemSpriteSheet.KINGHTSTABBINGSWORD;
     }
 }

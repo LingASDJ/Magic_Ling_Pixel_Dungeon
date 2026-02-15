@@ -4,7 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class TheGriefOfSpeechless extends Prop{
     {
-        rareness = 2;
+        rareness = 1;
         image = ItemSpriteSheet.THEGRIEFOFSPEECHLESS;
         kind = 1;
     }
