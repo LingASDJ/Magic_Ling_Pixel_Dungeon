@@ -316,20 +316,18 @@ public class Bones {
 
 
 	public static String generateHeroEpitaph() {
-		// 初始检查，确保必要条件被满足
 		if (depth != 0 || name == null || heroClass == null) {
 			return null;
 		}
 
-		// 根据英雄是否有名字，选择合适的墓志铭开头
 		String epitaphStart = name.isEmpty() ?
 				Messages.get(Bones.class, "here_lies_nameless", heroClass.title()) :
 				Messages.get(Bones.class, "here_lies_named", name, heroClass.title());
 
-		epitaphStart += "\n\n"; // 添加段落分隔
+		epitaphStart += "\n\n";
 
-		String epitaphBody; // 墓志铭的主体部分
-		// 根据英雄的深度和杀敌数，生成墓志铭的主体内容
+		String epitaphBody;
+
 		if (killed == 0) {
 			epitaphBody = Messages.get(Bones.class, "pacifist");
 		} else if (depth < 4) {
@@ -354,7 +352,6 @@ public class Bones {
 					Messages.get(Bones.class, "yog", killed);
 		}
 
-		// 添加关于治疗的备注
 		if (healing == 1) {
 			epitaphBody += "\n\n" + Messages.get(Bones.class, "forgot_waterskin");
 		} else if (healing == 2) {
@@ -365,13 +362,10 @@ public class Bones {
 			epitaphBody += "\n\n" + Messages.get(Bones.class, "forgot_nukecole");
 		}
 
-		// 结尾部分，表示安息
 		String epitaphEnd = "\n\n" + Messages.get(Bones.class, "rest_in_peace");
 
-		// 清除墓志铭相关的属性
 		clearEpitaphProps();
 
-		// 返回完整的墓志铭
 		return epitaphStart + epitaphBody + epitaphEnd;
 	}
 

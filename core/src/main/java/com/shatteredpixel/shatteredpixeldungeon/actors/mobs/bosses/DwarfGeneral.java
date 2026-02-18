@@ -388,12 +388,13 @@ public class DwarfGeneral extends Boss {
             final Char leapVictim = Actor.findChar(targetingPos);
             if (leapVictim != null){
                 if (hit(this, leapVictim, true)) {
-                    enemy.damage(dmg*Random.NormalIntRange(1,3), new DM100.LightningBolt());
-                    Buff.affect(enemy, Chill.class, 10f);
-                    yell(Messages.get(this, "spear_warn"));
+                    if(enemy != null){
+                        enemy.damage(dmg*Random.NormalIntRange(1,3), new DM100.LightningBolt());
+                        Buff.affect(enemy, Chill.class, 10f);
+                        yell(Messages.get(this, "spear_warn"));
+                    }
                 }
             }
-
 
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
         }

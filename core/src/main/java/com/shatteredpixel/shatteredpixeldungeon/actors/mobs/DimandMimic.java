@@ -82,7 +82,7 @@ public class DimandMimic extends Mimic {
     }
 
     @Override
-    public boolean isAlive() {
+    public synchronized boolean isAlive() {
         return true;
     }
 

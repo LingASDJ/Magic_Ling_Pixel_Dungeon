@@ -165,11 +165,10 @@ public class Badges {
 		addReplacedBadges(badges);
 
 		int count = 0;
-		String[] names = new String[badges.size()];
+		String names[] = new String[badges.size()];
 
 		for (Badge badge:badges) {
-			names[count++] = badge.toString();
-
+			names[count++] = badge.name();
 		}
 		bundle.put( BADGES, names );
 	}
@@ -1293,7 +1292,7 @@ public class Badges {
 		Iterator<Badge> iterator = badges.iterator();
 		while (iterator.hasNext()) {
 			Badge badge = iterator.next();
-			if ((!global && badge.meta) || badge.image == -1) {
+			if ((!global && badge.type != BadgeType.LOCAL) || badge.type == BadgeType.HIDDEN) {
 				iterator.remove();
 			}
 		}
@@ -1302,6 +1301,19 @@ public class Badges {
 
 		return filterReplacedBadges(badges);
 
+	}
+
+	public static List<Badge> filterReplacedBadges( List<Badge> badges ) {
+
+		for (Badge[] tierReplace : tierBadgeReplacements){
+			leaveBest( badges, tierReplace );
+		}
+
+		for (Badge[] metaReplace : metaBadgeReplacements){
+			leaveBest( badges, metaReplace );
+		}
+
+		return badges;
 	}
 
 	private static final Badge[][] tierBadgeReplacements = new Badge[][]{
@@ -1334,19 +1346,6 @@ public class Badges {
 			{Badge.DEATH_FROM_FRIENDLY_MAGIC, 	Badge.YASD},
 			{Badge.DEATH_FROM_SACRIFICE, 		Badge.YASD},
 	};
-
-	public static List<Badge> filterReplacedBadges( List<Badge> badges ) {
-
-		for (Badge[] tierReplace : tierBadgeReplacements){
-			leaveBest( badges, tierReplace );
-		}
-
-		for (Badge[] metaReplace : metaBadgeReplacements){
-			leaveBest( badges, metaReplace );
-		}
-
-		return badges;
-	}
 
 	private static void leaveBest( Collection<Badge> list, Badge...badges ) {
 		for (int i=badges.length-1; i > 0; i--) {

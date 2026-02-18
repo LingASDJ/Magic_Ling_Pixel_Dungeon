@@ -218,7 +218,7 @@ public class FireDragon extends Boss implements Callback {
                         Mob element = elementType.getDeclaredConstructor().newInstance();
                         element.state = element.HUNTING;
                         GameScene.add(element);
-                        ScrollOfTeleportation.appear(element, Dungeon.level.randomRespawnCell(element));
+                        ScrollOfTeleportation.teleportToLocation(element, Dungeon.level.randomRespawnCell(element));
 
                         //立刻捕获
                         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
@@ -309,7 +309,7 @@ public class FireDragon extends Boss implements Callback {
             Mob testActor = Clearly();
             testActor.state = testActor.HUNTING;
             GameScene.add(testActor);
-            ScrollOfTeleportation.appear(testActor,334);
+            ScrollOfTeleportation.teleportToLocation(testActor,334);
             Buff.affect(this, SummonColdDown.class, HP < 151 ? 15f : 20f);
             // 更新召唤的元素数量
             summonedElementals++;
@@ -327,7 +327,7 @@ public class FireDragon extends Boss implements Callback {
         }
 
         if(fireAttackCooldown == 20 && Dungeon.level.distance(pos,target)<2){
-            ScrollOfTeleportation.appear(this,334);
+            ScrollOfTeleportation.teleportToLocation(this,334);
             GLog.n(Messages.get(this,"toy"));
         }
 
@@ -460,7 +460,7 @@ public class FireDragon extends Boss implements Callback {
         damage = super.attackProc( enemy, damage );
         if (Random.Int( 2,5 ) > 3) {
             Buff.affect( enemy, Burning.class ).reignite( enemy, 4f );
-            ScrollOfTeleportation.appear(this,334);
+            ScrollOfTeleportation.teleportToLocation(this,334);
         }
 
         if(Random.Int(3,10)>=7 && HP<HT/2){
@@ -678,11 +678,11 @@ public class FireDragon extends Boss implements Callback {
             BossHealthBar.assignBoss(this);
             GameScene.bossReady();
             ////BGMPlayer.playBoss();
-            ScrollOfTeleportation.appear(hero, 845);
+            ScrollOfTeleportation.teleportToLocation(hero, 845);
             Mob testActor = Clearly();
             testActor.state = testActor.HUNTING;
             GameScene.add(testActor);
-            ScrollOfTeleportation.appear(testActor,334);
+            ScrollOfTeleportation.teleportToLocation(testActor,334);
             Mob testActor1 = Clearly();
             testActor1.state = testActor1.HUNTING;
             GameScene.add(testActor1);
@@ -690,7 +690,7 @@ public class FireDragon extends Boss implements Callback {
             summonedElementals++;
             summonedElementals++;
             //DiedStorm(this);
-            ScrollOfTeleportation.appear(testActor1,332);
+            ScrollOfTeleportation.teleportToLocation(testActor1,332);
             GameScene.flash(Window.ANSDO_COLOR);
             Camera.main.shake(1f,3f);
             this.sprite.showStatus(CharSprite.NEGATIVE, "!!!");
@@ -990,7 +990,7 @@ public class FireDragon extends Boss implements Callback {
     public void MysteryRituals(){
         if(Statistics.bossRushMode){
             if(MysteryRitualsCooldown <= 0){
-                ScrollOfTeleportation.appear(FireDragon.this, 334);
+                ScrollOfTeleportation.teleportToLocation(FireDragon.this, 334);
 
                 // 获取所有符合条件的 DiedClearElemet 元素
                 List<Mob> diedClearElements = new ArrayList<>();

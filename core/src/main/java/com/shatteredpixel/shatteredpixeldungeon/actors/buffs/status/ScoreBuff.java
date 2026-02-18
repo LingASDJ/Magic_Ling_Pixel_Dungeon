@@ -124,7 +124,7 @@ public class ScoreBuff extends Buff {
                         score = Math.max(0, score - 100);
                     }
                 }
-                if(score <= 0 || level.SkipGame){
+                if(score == 0 || level.SkipGame){
                     MorphsMoveBoxEndPlot plot = new MorphsMoveBoxEndPlot();
                     Game.runOnRenderThread(new Callback() {
                         @Override

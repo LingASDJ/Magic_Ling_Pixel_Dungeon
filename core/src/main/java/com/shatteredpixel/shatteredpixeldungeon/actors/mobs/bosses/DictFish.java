@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -40,7 +42,9 @@ public class DictFish extends Mob {
     protected boolean act() {
 
         if (Statistics.sakaBackStage >= 2) {
-            ((AncientMysteryCityBossLevel) Dungeon.level).progress();
+            if(level instanceof AncientMysteryCityBossLevel){
+                ((AncientMysteryCityBossLevel) level).progress();
+            }
         }
         return super.act();
     }
@@ -69,9 +73,9 @@ public class DictFish extends Mob {
         Statistics.sakaBackStage++;
         GLog.n(Messages.get( RoomStone.class, "angry" ));
         if (Statistics.sakaBackStage >= 2) {
-            ((AncientMysteryCityBossLevel) Dungeon.level).progress();
+            ((AncientMysteryCityBossLevel) level).progress();
         }
-        for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+        for (Mob boss : level.mobs.toArray(new Mob[0])) {
             if (boss instanceof RoomStone) {
                 boss.properties.add(Property.FIERY);
             }

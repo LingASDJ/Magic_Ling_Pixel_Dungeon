@@ -101,7 +101,7 @@ public class ShubNiggurath extends Boss {
     }
 
     @Override
-    public boolean isAlive() {
+    public synchronized boolean isAlive(){
         if(getClass() == ShubNiggurath.class && !notFirst) {
 
             boolean hasClone = false;
@@ -185,7 +185,6 @@ public class ShubNiggurath extends Boss {
             }
         }
 
-        // 检查是否已经达到最大分裂次数
         tooManyShubs = shubCount >= MAX_SPLIT_COUNT;
 
         if(buff(YogSoul.AttackDamageMagic.class)!=null && Dungeon.level.distance(pos, hero.pos) <= 7 && !hasTooManyShubs()){
@@ -322,12 +321,9 @@ public class ShubNiggurath extends Boss {
                 }
             }
 
-            if (!masterAlive) {
-                die(true);
-            }
-
-            if(pos == 312){
-                die(true);
+            if(pos == 312 || !masterAlive){
+               destroy();
+                sprite.killAndErase();
             }
 
             if (buff(HeartMagicDamage.class) == null) {

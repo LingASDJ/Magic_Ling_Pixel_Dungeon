@@ -11,6 +11,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.WIN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -488,14 +489,14 @@ public class ColdChestBossLevel extends Level {
 
     @Override
     protected void createItems() {
-//        Random.pushGenerator(Random.Long());
-//        ArrayList<Item> bonesItems = Bones.get();
-//        if (bonesItems != null) {
-//            for (Item i : bonesItems) {
-//                drop(i, WIDTH*5+17).setHauntedIfCursed().type = Heap.Type.REMAINS;
-//            }
-//        }
-//        Random.popGenerator();
+        Random.pushGenerator(Random.Long());
+        ArrayList<Item> bonesItems = Bones.get();
+        if (bonesItems != null) {
+            for (Item i : bonesItems) {
+                drop(i, WIDTH*19+17).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            }
+        }
+        Random.popGenerator();
     }
 
 

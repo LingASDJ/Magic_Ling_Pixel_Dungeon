@@ -126,9 +126,11 @@ public class WndGoldBurrety extends Window {
                 // 使用HashMap存储物品按钮与物品的映射
                 Map<ItemButton, Item> buttonToItemMap = new HashMap<>();
                 for (ItemButton button : itemButtons) {
-                    Item item = button.item();
-                    if (item != null) {
-                        buttonToItemMap.put(button, item);
+                    if (button != null) { // 增加空值检查
+                        Item item = button.item();
+                        if (item != null) {
+                            buttonToItemMap.put(button, item);
+                        }
                     }
                 }
 
@@ -236,40 +238,52 @@ public class WndGoldBurrety extends Window {
 
         for (int i = 0; i < items.length; i++) {
             Item item = items[i];
-            Item result = item;
+            Item result = item; // 默认返回原物品，防止null
+
+            if (item == null) { // 增加空值检查，跳过null物品
+                results[i] = null;
+                continue;
+            }
 
             if (item instanceof MeleeWeapon && !(item instanceof MagesStaff)) {
 
                 if (item == hero.belongings.weapon()) {
                     hero.belongings.weapon = changeWeapon((Weapon) hero.belongings.weapon);
-                    Dungeon.hero.belongings.weapon.detachAll(Dungeon.hero.belongings.backpack);
-                    hero.belongings.weapon.identify();
+                    if (hero.belongings.weapon != null) { // 空值检查
+                        Dungeon.hero.belongings.weapon.detachAll(Dungeon.hero.belongings.backpack);
+                        hero.belongings.weapon.identify();
 
-                    // 修复升级条件：只要还有升级次数就升级
-                    if (Statistics.upgradeGold > 0) {
-                        hero.belongings.weapon.upgrade();
-                        hero.belongings.weapon.noUpgrade = true;
-                        Statistics.upgradeGold--; // 移动到这里确保只减一次
+                        // 修复升级条件：只要还有升级次数就升级
+                        if (Statistics.upgradeGold > 0) {
+                            hero.belongings.weapon.upgrade();
+                            hero.belongings.weapon.noUpgrade = true;
+                            Statistics.upgradeGold--; // 移动到这里确保只减一次
+                        }
+                        result = hero.belongings.weapon;
                     }
                 } else {
                     result = changeWeapon((Weapon) item);
-                    result.noUpgrade = true;
+                    if (result != null) { // 空值检查
+                        result.noUpgrade = true;
 
-                    // 修复升级条件
-                    if (Statistics.upgradeGold > 0) {
-                        result.upgrade();
-                        Statistics.upgradeGold--; // 移动到这里确保只减一次
+                        // 修复升级条件
+                        if (Statistics.upgradeGold > 0) {
+                            result.upgrade();
+                            Statistics.upgradeGold--; // 移动到这里确保只减一次
+                        }
+                        result.collect();
                     }
+                    item.detach(Dungeon.hero.belongings.backpack);
                 }
 
-                result.collect();
-                item.detach(Dungeon.hero.belongings.backpack);
             } else if (item instanceof MissileWeapon) {
                 result = changeWeapon((MissileWeapon) item);
-                result.noUpgrade = true;
-                result.upgrade();
-                result.collect();
-                result.quantity(item.quantity);
+                if (result != null) { // 空值检查
+                    result.noUpgrade = true;
+                    result.upgrade();
+                    result.collect();
+                    result.quantity(item.quantity);
+                }
                 item.detachAll(Dungeon.hero.belongings.backpack);
             } else if (item instanceof MagesStaff && hero.belongings.weapon() == item) {
                 if (Statistics.magestaffUpgrade == 0) {
@@ -288,45 +302,55 @@ public class WndGoldBurrety extends Window {
                     item.noUpgrade = true;
                     item.upgrade();
                 }
+                result = item; // 确保返回值不为null
             } else if (item instanceof Scroll && !(item instanceof ScrollOfFlameCursed ||
                     item instanceof ScrollOfRoseShiled || item instanceof ScrollOfGolems)) {
                 result = changeScroll((Scroll) item);
-                result.collect();
-                result.quantity(item.quantity);
+                if (result != null) { // 空值检查
+                    result.collect();
+                    result.quantity(item.quantity);
+                }
                 item.detachAll(Dungeon.hero.belongings.backpack);
             } else if (item instanceof Potion) {
                 result = changePotion((Potion) item);
-                result.collect();
-                result.quantity(item.quantity);
+                if (result != null) { // 空值检查
+                    result.collect();
+                    result.quantity(item.quantity);
+                }
                 item.detachAll(Dungeon.hero.belongings.backpack);
             } else if (item instanceof Wand) {
                 result = changeWand((Wand) item);
-
-                // 修复升级条件
-                if (Statistics.upgradeGold > 0) {
-                    result.upgrade();
-                    result.noUpgrade = true;
-                    ((Wand) result).updateLevel();
-                    Statistics.upgradeGold--;
+                if (result != null) { // 空值检查
+                    // 修复升级条件
+                    if (Statistics.upgradeGold > 0) {
+                        result.upgrade();
+                        result.noUpgrade = true;
+                        ((Wand) result).updateLevel();
+                        Statistics.upgradeGold--;
+                    }
+                    result.collect();
                 }
-
-                result.collect();
                 item.detach(Dungeon.hero.belongings.backpack);
             } else if (item instanceof Plant.Seed) {
                 result = changeSeed((Plant.Seed) item);
                 item.detach(Dungeon.hero.belongings.backpack);
             } else if (item instanceof Trinket) {
-                result = processTrinket(item);
+                result = processTrinket(item); // 已在processTrinket中增加空值检查
             } else if (item instanceof Runestone) {
                 result = changeStone((Runestone) item);
-                result.collect();
-                item.detach(Dungeon.hero.belongings.backpack);
+                if (result != null) { // 空值检查
+                    result.collect();
+                }
+                item.detachAll(Dungeon.hero.belongings.backpack);
             } else if (item instanceof Artifact) {
                 if (item == hero.belongings.artifact()) {
                     hero.belongings.artifact = (Artifact) processArtifact(hero.belongings.artifact);
-                    hero.belongings.artifact.detachAll(Dungeon.hero.belongings.backpack);
+                    if (hero.belongings.artifact != null) { // 空值检查
+                        hero.belongings.artifact.detachAll(Dungeon.hero.belongings.backpack);
+                    }
+                    result = hero.belongings.artifact;
                 } else {
-                    result = processArtifact(item);
+                    result = processArtifact(item); // 已在processArtifact中增加空值检查
                 }
             } else if (item instanceof Ring) {
                 if (item == hero.belongings.ring()) {
@@ -334,37 +358,47 @@ public class WndGoldBurrety extends Window {
                         hero.belongings.ring.buff.detach();
                     }
                     hero.belongings.ring = changeRing(hero.belongings.ring);
-                    hero.belongings.ring.detach(Dungeon.hero.belongings.backpack);
+                    if (hero.belongings.ring != null) { // 空值检查
+                        hero.belongings.ring.detach(Dungeon.hero.belongings.backpack);
 
-                    // 修复升级条件
-                    if (Statistics.upgradeGold > 0) {
-                        hero.belongings.ring.upgrade();
-                        Statistics.upgradeGold--;
-                        hero.belongings.ring.noUpgrade = true;
-                        hero.belongings.ring.activate(hero);
+                        // 修复升级条件
+                        if (Statistics.upgradeGold > 0) {
+                            hero.belongings.ring.upgrade();
+                            Statistics.upgradeGold--;
+                            hero.belongings.ring.noUpgrade = true;
+                            hero.belongings.ring.activate(hero);
+                        }
                     }
+                    result = hero.belongings.ring;
                 } else {
                     result = changeRing((Ring) item);
-                    // 修复升级条件
-                    if (Statistics.upgradeGold > 0) {
-                        result.upgrade();
-                        Statistics.upgradeGold--;
-                        result.noUpgrade = true;
+                    if (result != null) { // 空值检查
+                        // 修复升级条件
+                        if (Statistics.upgradeGold > 0) {
+                            result.upgrade();
+                            Statistics.upgradeGold--;
+                            result.noUpgrade = true;
+                        }
                     }
                 }
             }
 
-            results[i] = result;
+            // 确保最终结果不为null，避免返回null导致后续异常
+            results[i] = result != null ? result : item;
         }
 
         return results;
     }
 
     public static Ring changeRing(Ring r) {
+        if (r == null) return null; // 空值检查
+
         Ring n;
         do {
             n = (Ring) Generator.randomUsingDefaults(Generator.Category.RING);
-        } while (Challenges.isItemBlocked(n) || n.getClass() == r.getClass());
+        } while (n == null || Challenges.isItemBlocked(n) || n.getClass() == r.getClass()); // 增加n的空值检查
+
+        if (n == null) return r; // 兜底返回原物品
 
         n.level(0);
 
@@ -386,38 +420,55 @@ public class WndGoldBurrety extends Window {
     }
 
     public static Runestone changeStone(Runestone r) {
+        if (r == null) return null; // 空值检查
+
         Runestone n;
 
         do {
             n = (Runestone) Generator.randomUsingDefaults(Generator.Category.STONE);
-        } while (n.getClass() == r.getClass());
+        } while (n == null || n.getClass() == r.getClass()); // 增加n的空值检查
 
-        return n;
+        return n != null ? n : r; // 兜底返回原物品
     }
 
     private Potion changePotion(Potion p) {
+        if (p == null) return null; // 空值检查
+
+        Potion result = null;
         if (p instanceof ExoticPotion) {
-            return Reflection.newInstance(ExoticPotion.exoToReg.get(p.getClass()));
+            result = Reflection.newInstance(ExoticPotion.exoToReg.get(p.getClass()));
         } else {
-            return Reflection.newInstance(ExoticPotion.regToExo.get(p.getClass()));
+            result = Reflection.newInstance(ExoticPotion.regToExo.get(p.getClass()));
         }
+
+        return result != null ? result : p; // 兜底返回原物品
     }
 
     private Scroll changeScroll(Scroll s) {
+        if (s == null) return null; // 空值检查
+
+        Scroll result = null;
         if (s instanceof ExoticScroll) {
-            return Reflection.newInstance(ExoticScroll.exoToReg.get(s.getClass()));
+            result = Reflection.newInstance(ExoticScroll.exoToReg.get(s.getClass()));
         } else {
-            return Reflection.newInstance(ExoticScroll.regToExo.get(s.getClass()));
+            result = Reflection.newInstance(ExoticScroll.regToExo.get(s.getClass()));
         }
+
+        return result != null ? result : s; // 兜底返回原物品
     }
 
     public static MagesStaff changeStaff(MagesStaff staff) {
+        if (staff == null) return null; // 空值检查
+
         Class<? extends Wand> wandClass = staff.wandClass();
 
         Wand n;
         do {
             n = (Wand) Generator.randomUsingDefaults(Generator.Category.WAND);
-        } while (Challenges.isItemBlocked(n) || n.getClass() == wandClass);
+        } while (n == null || Challenges.isItemBlocked(n) || n.getClass() == wandClass); // 增加n的空值检查
+
+        if (n == null) return staff; // 兜底返回原物品
+
         n.level(0);
         n.identify();
         staff.imbueWand(n, null);
@@ -428,10 +479,14 @@ public class WndGoldBurrety extends Window {
     private static final Set<Class<? extends Trinket>> generatedTrinkets = new HashSet<>();
 
     public static Trinket changeTrinket(Trinket t) {
+        if (t == null) return null; // 空值检查
+
         Trinket n;
         do {
             n = (Trinket)Generator.random(Generator.Category.TRINKET);
-        } while ((Challenges.isItemBlocked(n) || n.getClass() == t.getClass()) && generatedTrinkets.contains(n.getClass()));
+        } while (n == null || (Challenges.isItemBlocked(n) || n.getClass() == t.getClass()) && generatedTrinkets.contains(n.getClass())); // 增加n的空值检查
+
+        if (n == null) return t; // 兜底返回原物品
 
         generatedTrinkets.add(n.getClass());
 
@@ -444,25 +499,33 @@ public class WndGoldBurrety extends Window {
     }
 
     private Item processTrinket(Item item) {
-        if (item.level() < 6) {
-            Item result = changeTrinket((Trinket) item);
-            if(Statistics.upgradeGold>0){
+        if (item == null || !(item instanceof Trinket)) { // 空值和类型检查
+            return item;
+        }
+
+        Trinket trinket = (Trinket) item;
+        Trinket result = changeTrinket(trinket);
+
+        // 关键修复：增加空值检查，防止调用null的collect()方法
+        if (result != null) {
+            if(Statistics.upgradeGold>0 && trinket.level() < 6){
                 result.upgrade();
                 Statistics.upgradeGold--;
             }
-            result.collect();
+            result.collect(); // 第294行原异常位置，现在有了空值保护
             item.detach(Dungeon.hero.belongings.backpack);
             return result;
         } else {
-            Item result = changeTrinket((Trinket) item);
-            result.collect();
-            item.detach(Dungeon.hero.belongings.backpack);
-            return result;
+            // 如果生成失败，返回原物品
+            return item;
         }
     }
 
     private Artifact changeArtifact(Artifact a) {
+        if (a == null) return null; // 空值检查
+
         Artifact n = Normal();
+        if (n == null) return a; // 兜底返回原物品
 
         if (a instanceof DriedRose) {
             if (((DriedRose) a).ghostWeapon() != null) {
@@ -482,7 +545,7 @@ public class WndGoldBurrety extends Window {
     }
 
     private Artifact Normal() {
-        Artifact artifact;
+        Artifact artifact = null;
 
         switch (Random.NormalIntRange(0, 10)) {
             case 0: artifact = new UnstableSpellbook(); break;
@@ -501,19 +564,23 @@ public class WndGoldBurrety extends Window {
     }
 
     private Item processArtifact(Item item) {
-        return changeArtifact((Artifact) item);
+        if (item == null || !(item instanceof Artifact)) { // 空值和类型检查
+            return item;
+        }
+        Artifact result = changeArtifact((Artifact) item);
+        return result != null ? result : item; // 兜底返回原物品
     }
 
     // 统一的物品计数检查方法
     private boolean areAtLeastTwoItemsSelected() {
         int selectedItemCount = 0;
         for (ItemButton button : itemButtons) {
-            if (button != null && button.item() != null) {
+            if (button != null && button.item() != null) { // 增加空值检查
                 selectedItemCount++;
             }
         }
         // 包含黄金槽位的物品计数
-        if (btnItemGold.item() != null) {
+        if (btnItemGold != null && btnItemGold.item() != null) { // 增加空值检查
             selectedItemCount++;
         }
         return selectedItemCount >= 2;
@@ -538,7 +605,7 @@ public class WndGoldBurrety extends Window {
 
         @Override
         public void onSelect(Item item) {
-            if (item != null && btnPressed.parent != null) {
+            if (item != null && btnPressed != null && btnPressed.parent != null) { // 增加btnPressed空值检查
                 btnPressed.item(item);
             }
             btnReforge.enable(areAtLeastTwoItemsSelected() && (item == null || itemSelectable(item)));
@@ -559,7 +626,7 @@ public class WndGoldBurrety extends Window {
 
         @Override
         public boolean itemSelectable(Item item) {
-            if (item.noUpgrade || item == hero.belongings.misc() || item instanceof ScrollOfTeleTation) {
+            if (item == null || item.noUpgrade || item == hero.belongings.misc() || item instanceof ScrollOfTeleTation) { // 增加item空值检查
                 return false;
             }
             if (item instanceof MeleeWeapon) {
@@ -593,7 +660,7 @@ public class WndGoldBurrety extends Window {
 
         @Override
         public void onSelect(Item item) {
-            if (item != null && btnPressed.parent != null) {
+            if (item != null && btnPressed != null && btnPressed.parent != null) { // 增加btnPressed空值检查
                 if (!isItemAlreadyInSlots(item)) {
                     btnPressed.item(item);
                 } else {
@@ -605,22 +672,26 @@ public class WndGoldBurrety extends Window {
         }
 
         private boolean isItemAlreadyInSlots(Item item) {
+            if (item == null) return false; // 空值检查
+
             for (ItemButton button : itemButtons) {
-                if (button != null && button.item() != null && button.item().equals(item)) {
+                if (button != null && button.item() != null && button.item().equals(item)) { // 增加空值检查
                     return true;
                 }
             }
-            return btnItemGold.item() != null && btnItemGold.item().equals(item);
+            return btnItemGold != null && btnItemGold.item() != null && btnItemGold.item().equals(item); // 增加空值检查
         }
     };
 
     private void clearItemFromSlots(Item item) {
+        if (item == null) return; // 空值检查
+
         for (ItemButton button : itemButtons) {
-            if (button != null && button.item() != null && button.item().equals(item)) {
+            if (button != null && button.item() != null && button.item().equals(item)) { // 增加空值检查
                 button.clear();
             }
         }
-        if (btnItemGold.item() != null && btnItemGold.item().equals(item)) {
+        if (btnItemGold != null && btnItemGold.item() != null && btnItemGold.item().equals(item)) { // 增加空值检查
             btnItemGold.clear();
         }
     }

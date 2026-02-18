@@ -51,7 +51,7 @@ public class PotionOfInvisibility extends Potion {
 			GLog.i( Messages.get(this, "invisible") );
 			Sample.INSTANCE.play( Assets.Sounds.MELD );
 		} else {
-			for (Mob mob : Dungeon.level.mobs) {
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
 				mob.beckon( Dungeon.hero.pos );
 			}
 			GLog.i( Messages.get(this, "notinvisible") );

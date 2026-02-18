@@ -132,7 +132,6 @@ public class Morphs extends Boss {
             // 如果三个boss都已死亡，则进入第三阶段
             if (allDead) {
                 Buff.detach(hero, MindVision.class);
-                Dungeon.level.unseal();
 
                 yell(Messages.get(this, "phase_tone_active"));
 

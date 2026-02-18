@@ -64,7 +64,7 @@ public class Ghost_Junko extends GhostTemplate {  // 蓝鬼
     private static final int MAX_BLINKY_DISTANCE = 6;
 
     @Override
-    public boolean isAlive() {
+    public synchronized boolean isAlive() {
         return true;
     }
 

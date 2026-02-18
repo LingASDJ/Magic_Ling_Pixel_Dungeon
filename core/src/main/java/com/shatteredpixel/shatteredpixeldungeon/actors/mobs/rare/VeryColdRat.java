@@ -68,11 +68,10 @@ public class VeryColdRat extends Mob {
     }
 
     @Override
-    public boolean isAlive() {
+    public synchronized boolean isAlive() {
        if(trueDied){
            return super.isAlive();
        } else if(deathCount == 0 && HP == 0) {
-           HP = 0;
            deathCount = 4;
            state = PASSIVE;
            trueDied = true;

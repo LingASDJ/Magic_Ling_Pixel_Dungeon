@@ -537,7 +537,6 @@ public class GameScene extends PixelScene {
 			}
 		}
 
-
 		if (updateTags){
 			tagAttack = attack.active;
 			tagLoot = loot.visible;

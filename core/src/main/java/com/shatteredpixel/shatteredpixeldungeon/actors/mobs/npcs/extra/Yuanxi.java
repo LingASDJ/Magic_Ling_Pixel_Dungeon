@@ -14,7 +14,7 @@ public class Yuanxi extends NTNPC {
     }
 
     @Override
-    public boolean isAlive() {
+    public synchronized boolean isAlive() {
         return true;
     }
 

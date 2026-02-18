@@ -33,7 +33,7 @@ public class Ghost_Anger extends GhostTemplate {
     }
 
     @Override
-    public boolean isAlive() {
+    public synchronized boolean isAlive() {
         return true;
     }
 

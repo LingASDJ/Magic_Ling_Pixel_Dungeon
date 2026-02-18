@@ -21,12 +21,15 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -58,9 +61,19 @@ public class PhantomPiranha extends Piranha {
 
 	}
 
+
+
 	@Override
 	public void damage(int dmg, Object src, DamageType type) {
 		Char dmgSource = null;
+
+		LockedFloor lock = hero.buff(LockedFloor.class);
+		if (lock != null){
+			if(isOldDay){
+				lock.addTime(dmg*0.5f);
+			}
+		}
+
 		if (src instanceof Char) dmgSource = (Char)src;
 		if (src instanceof Wand) dmgSource = Dungeon.hero;
 

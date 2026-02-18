@@ -6,15 +6,21 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EXIT;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.MorphsNPC;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.LingBag;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
+import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class TheatreLevel extends Level {
     {
@@ -124,9 +130,17 @@ public class TheatreLevel extends Level {
         MorphsNPC boss = new MorphsNPC();
         boss.pos = 136;
         mobs.add(boss);
-        if(Dungeon.depth == 31){
-            new LingBag().collect();
+
+        drop(new LingBag(),157);
+
+        Random.pushGenerator(Random.Long());
+        ArrayList<Item> bonesItems = Bones.get();
+        if (bonesItems != null) {
+            for (Item i : bonesItems) {
+                drop(i, entrance()-width()).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            }
         }
+        Random.popGenerator();
     }
 
     @Override

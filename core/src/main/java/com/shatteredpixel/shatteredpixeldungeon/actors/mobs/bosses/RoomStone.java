@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -106,7 +107,9 @@ public class RoomStone extends Mob {
     protected boolean act() {
 
         if(Statistics.sakaBackStage >= 2){
-            ((AncientMysteryCityBossLevel)Dungeon.level).progress();
+            if(level instanceof AncientMysteryCityBossLevel){
+                ((AncientMysteryCityBossLevel)Dungeon.level).progress();
+            }
         }
 
         AiState lastState = state;
