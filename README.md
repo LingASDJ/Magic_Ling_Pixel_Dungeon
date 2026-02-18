@@ -10,10 +10,7 @@ If you don't, you won't be able to compile the APK and Desktop won't be affected
 [![](https://img.shields.io/badge/join-QQ%20group-brightgreen?style=for-the-badge&logo=tencentqq)](https://jq.qq.com/?_wv=1027&k=R7ZXeEQM)
 
 ## Game Screenshots:
-![](/SCS/list.png)
-![](/SCS/game1.jpg)
-
-
+![](/SCS/5Y.png)
 
 <div align="center"> 
   
