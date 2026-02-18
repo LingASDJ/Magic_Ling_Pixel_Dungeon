@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GoodLuck;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
@@ -1134,7 +1135,12 @@ public abstract class Mob extends Char {
 			state = WANDERING;
 		}
 
-
+		LockedFloor lock = hero.buff(LockedFloor.class);
+		if (lock != null){
+			if(isOldDay){
+				lock.addTime(dmg*0.5f);
+			}
+		}
 
 		if (state != HUNTING && !(src instanceof Corruption)) {
 			alerted = true;

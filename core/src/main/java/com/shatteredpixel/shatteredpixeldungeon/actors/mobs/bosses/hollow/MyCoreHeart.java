@@ -99,7 +99,7 @@ public class MyCoreHeart extends Boss {
     private boolean four = false;
 
     @Override
-    public boolean isAlive() {
+    public synchronized boolean isAlive() {
         return true;
     }
 
@@ -177,7 +177,9 @@ public class MyCoreHeart extends Boss {
                 for (Buff b : enemy.buffs(AllyBuff.class)){
                     if(b != null){
                         if (sprite.visible || enemy.sprite.visible) {
-                            sprite.parent.add(new Beam.DeathRayS(sprite.center(), enemy.sprite.center()));
+                            if(sprite.parent != null){
+                                sprite.parent.add(new Beam.DeathRayS(sprite.center(), enemy.sprite.center()));
+                            }
                         }
                         enemy.damage(10000,this,DamageType.REAL);
                         if (enemy.sprite.visible)

@@ -536,6 +536,8 @@ public class WndDialog extends Window {
 
     public void skipText()
     {
-        settedPlot.skip();
+        if(settedPlot != null){
+            settedPlot.skip();
+        }
     }
 }

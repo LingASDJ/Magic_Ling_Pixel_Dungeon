@@ -1151,14 +1151,7 @@ public class MageHand extends DirectableAlly {
             public void onSelect(Integer cell) {
                 if (cell == null) return;
 
-                Mob mh = null;
-                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if (mob instanceof MageHand) {
-                       mh = mob;
-                    }
-                }
-
-                boolean isVisible = Dungeon.level.heroFOV[cell] || mh.fieldOfView[cell];
+                boolean isVisible = Dungeon.level.heroFOV[cell];
 
                 if (isVisible) {
                     boolean isInBounds = cell < Dungeon.level.length();

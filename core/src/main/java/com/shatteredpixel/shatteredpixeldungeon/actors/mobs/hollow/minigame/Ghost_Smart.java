@@ -34,7 +34,7 @@ public class Ghost_Smart extends GhostTemplate {
     }
 
     @Override
-    public boolean isAlive() {
+    public synchronized boolean isAlive() {
         return true;
     }
 
