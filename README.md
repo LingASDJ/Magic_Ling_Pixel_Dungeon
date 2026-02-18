@@ -21,7 +21,7 @@ If you don't, you won't be able to compile the APK and Desktop won't be affected
 | - 主美：Danicel_Clan | - 数值调整：小叶，萝卜子，bzmder
 | - 美工A组：被子,Complexx,REN            | - 平衡建议：怖，暗光，荨麻心绪               |
 | - 博客&更新服务支持:QinYue             | - 美工B组：Complexx,落白,Om9,奈亚,龙蚊                |
-| - 音乐：Prohonor                   | - 测试协力：所有魔绫的测试人员               |
+| - 音乐：Prohonor，犬罗                   | - 测试协力：所有魔绫的测试人员               |
 
 </div>
 
