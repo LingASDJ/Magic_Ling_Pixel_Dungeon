@@ -471,20 +471,13 @@ public class Statistics {
 
 	private static final String XOL		= "xol";
 
-    //正面
 	public static ArrayList<Prop> propPositive0;
 	public static ArrayList<Prop> propPositive1;
 	public static ArrayList<Prop> propPositive2;
-	//负面
-    public static ArrayList<Prop> propNegative0;
+	public static ArrayList<Prop> propNegative0;
 	public static ArrayList<Prop> propNegative1;
 	public static ArrayList<Prop> propNegative2;
-    //混沌
-    public static ArrayList<Prop> propChaotic0;
-    public static ArrayList<Prop> propChaotic1;
-    public static ArrayList<Prop> propChaotic2;
-
-    public static int PacManScore;
+	public static int PacManScore;
 
 	public static int miniGamesTotalLevel;
 
@@ -535,18 +528,6 @@ public class Statistics {
 		propNegative2 = new ArrayList<>(Arrays.asList(
 				new NoteOfBzmdr()
 		));
-
-        propChaotic0 = new ArrayList<>(Arrays.asList(
-                new Trash()
-        ));
-
-        propChaotic1 = new ArrayList<>(Arrays.asList(
-                new Trash()
-        ));
-
-        propChaotic2 = new ArrayList<>(Arrays.asList(
-                new Trash()
-        ));
 	}
 
     public static void reset() {
@@ -594,18 +575,6 @@ public class Statistics {
 		propNegative2 = new ArrayList<>(Arrays.asList(
 				new NoteOfBzmdr()
 		));
-
-        propChaotic0 = new ArrayList<>(Arrays.asList(
-                new Trash()
-        ));
-
-        propChaotic1 = new ArrayList<>(Arrays.asList(
-                new Trash()
-        ));
-
-        propChaotic2 = new ArrayList<>(Arrays.asList(
-                new Trash()
-        ));
 
 
         boss_enhance = 0;
@@ -815,20 +784,20 @@ public class Statistics {
 		if(kind == 0){
 			switch (rare){
 				case 0:
-					return propPositive0.isEmpty() && propChaotic0.isEmpty();
+					return propPositive0.isEmpty();
 				case 1:
-					return propPositive1.isEmpty() && propChaotic1.isEmpty();
+					return propPositive1.isEmpty();
 				case 2:
-					return propPositive2.isEmpty() && propChaotic2.isEmpty();
+					return propPositive2.isEmpty();
 			}
 		}else{
 			switch (rare){
 				case 0:
-					return propNegative0.isEmpty() && propChaotic0.isEmpty();
+					return propNegative0.isEmpty();
 				case 1:
-					return propNegative1.isEmpty() && propChaotic1.isEmpty();
+					return propNegative1.isEmpty();
 				case 2:
-					return propNegative2.isEmpty() && propChaotic2.isEmpty();
+					return propNegative2.isEmpty();
 			}
 		}
 		return  false;
@@ -847,7 +816,7 @@ public class Statistics {
                     if(propPositive2.contains(prop)) propPositive2.remove(prop);
 					break;
 			}
-		}else if( prop.kind == 1){
+		}else{
 			switch (prop.rareness){
 				case 0:
                     if(propNegative0.contains(prop)) propNegative0.remove(prop);
@@ -861,19 +830,7 @@ public class Statistics {
 					if(prop instanceof TerrorDollB) propNegative2.remove(new TerrorDoll());
 					break;
 			}
-		}else if( prop.kind == 2){
-            switch (prop.rareness){
-                case 0:
-                    if(propChaotic0.contains(prop)) propChaotic0.remove(prop);
-                    break;
-                case 1:
-                    if(propChaotic1.contains(prop)) propChaotic1.remove(prop);
-                    break;
-                case 2:
-                    if(propChaotic2.contains(prop)) propChaotic2.remove(prop);
-                    break;
-            }
-        }
+		}
 	}
 
     public static void storeInBundle(Bundle bundle) {
@@ -1131,9 +1088,6 @@ public class Statistics {
 		bundle.put("propNegative0", propNegative0);
 		bundle.put("propNegative1", propNegative1);
 		bundle.put("propNegative2", propNegative2);
-        bundle.put("propChaotic0", propChaotic0);
-        bundle.put("propChaotic1", propChaotic1);
-        bundle.put("propChaotic2", propChaotic2);
 	}
 
 	private static ArrayList<Prop> convertToPropList(Collection<Bundlable> bundlableCollection) {
@@ -1157,9 +1111,6 @@ public class Statistics {
 		propNegative0 = convertToPropList(bundle.getCollection("propNegative0"));
 		propNegative1 = convertToPropList(bundle.getCollection("propNegative1"));
 		propNegative2 = convertToPropList(bundle.getCollection("propNegative2"));
-        propChaotic0 = convertToPropList(bundle.getCollection("propChaotic0"));
-        propChaotic1 = convertToPropList(bundle.getCollection("propChaotic1"));
-        propChaotic2 = convertToPropList(bundle.getCollection("propChaotic2"));
 
 		YuanXiLimit = bundle.getInt("YUANXI");
 		enterHiro = bundle.getBoolean("EnterHiro");

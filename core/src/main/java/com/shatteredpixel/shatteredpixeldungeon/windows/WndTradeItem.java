@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.shopOnLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -37,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MerchantSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -55,8 +53,6 @@ public class WndTradeItem extends WndInfoItem {
 
 	private boolean selling = false;
 
-    private static float priceMulti = 1f;
-
 	//selling
 	public WndTradeItem( final Item item, WndBag owner ) {
 
@@ -65,12 +61,6 @@ public class WndTradeItem extends WndInfoItem {
 		selling = true;
 
 		this.owner = owner;
-
-        if(Dungeon.hero.belongings.weapon() instanceof MerchantSword){
-            priceMulti = Math.max((1f - (0.10f + 0.05f * hero.belongings.weapon().buffedLvl())),0.1f);
-        }else {
-            priceMulti = 1f;
-        }
 
 		float pos = height;
 		Shopkeeper shop = null;
@@ -83,7 +73,7 @@ public class WndTradeItem extends WndInfoItem {
 		final Shopkeeper finalShop = shop;
 		if (item.quantity() == 1) {
 
-			RedButton btnSell = new RedButton( Messages.get(this, "sell", (int) (item.value() * priceMulti) )) {
+			RedButton btnSell = new RedButton( Messages.get(this, "sell", item.value()) ) {
 				@Override
 				protected void onClick() {
 					sell( item,finalShop );
@@ -99,7 +89,7 @@ public class WndTradeItem extends WndInfoItem {
 
 		} else {
 
-			int priceAll= (int) (item.value() * priceMulti);
+			int priceAll= item.value();
 			RedButton btnSell1 = new RedButton( Messages.get(this, "sell_1", priceAll / item.quantity()) ) {
 				@Override
 				protected void onClick() {
@@ -247,7 +237,7 @@ public class WndTradeItem extends WndInfoItem {
 		//selling items in the sell interface doesn't spend time
 		hero.spend(-hero.cooldown());
 
-		new Gold((int) (item.value() * priceMulti)).doPickUp( hero );
+		new Gold( item.value() ).doPickUp( hero );
 
 		if (shop != null){
 			shop.buybackItems.add(item);
@@ -274,7 +264,7 @@ public class WndTradeItem extends WndInfoItem {
 			//selling items in the sell interface doesn't spend time
 			hero.spend(-hero.cooldown());
 
-			new Gold((int) (item.value() * priceMulti)).doPickUp( hero );
+			new Gold( item.value() ).doPickUp( hero );
 
 			if (shop != null){
 				shop.buybackItems.add(item);

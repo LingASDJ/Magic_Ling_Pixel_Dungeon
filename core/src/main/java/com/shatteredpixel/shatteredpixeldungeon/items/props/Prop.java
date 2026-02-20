@@ -20,7 +20,7 @@ public class Prop extends Item {
 
     public int rareness = 0;
     public int kind = 0;
-    //0积极 1 消极 2混沌;
+    //0积极 1 消极;
 
     @Override
     public ArrayList<String> actions(Hero hero ) {
@@ -61,44 +61,19 @@ public class Prop extends Item {
         switch (rare){
 
             case 1:
-                int index =Random.Int(0,Statistics.propPositive1.size() + Statistics.propChaotic1.size());
-
-                if(index > Statistics.propPositive1.size()){
-
-                    index -= Statistics.propPositive1.size();
-
-                    prop = Statistics.propChaotic1.get(index);
-                    Statistics.propChaotic1.remove(index);
-                }else {
-                    prop = Statistics.propPositive1.get(index);
-                    Statistics.propPositive1.remove(index);
-                }
+                int index =Random.Int(0,Statistics.propPositive1.size());
+                prop = Statistics.propPositive1.get(index);
+                Statistics.propPositive1.remove(index);
                 break;
             case 2:
-                index =Random.Int(0,Statistics.propPositive2.size() + Statistics.propChaotic2.size());
-                if(index > Statistics.propPositive2.size()){
-
-                    index -= Statistics.propPositive2.size();
-
-                    prop = Statistics.propChaotic2.get(index);
-                    Statistics.propChaotic2.remove(index);
-                }else {
-                    prop = Statistics.propPositive2.get(index);
-                    Statistics.propPositive2.remove(index);
-                }
+                index =Random.Int(0,Statistics.propPositive2.size());
+                prop = Statistics.propPositive2.get(index);
+                Statistics.propPositive2.remove(index);
                 break;
             case 0:
-                index =Random.Int(0,Statistics.propPositive0.size() + Statistics.propChaotic0.size());
-                if(index > Statistics.propPositive0.size()){
-
-                    index -= Statistics.propPositive0.size();
-
-                    prop = Statistics.propChaotic0.get(index);
-                    Statistics.propChaotic0.remove(index);
-                }else {
-                    prop = Statistics.propPositive0.get(index);
-                    Statistics.propPositive0.remove(index);
-                }
+                index =Random.Int(0,Statistics.propPositive0.size());
+                prop = Statistics.propPositive0.get(index);
+                Statistics.propPositive0.remove(index);
                 break;
         }
         return prop;
@@ -120,43 +95,19 @@ public class Prop extends Item {
 
         switch (rare){
             case 1:
-                int index =Random.Int(0,Statistics.propNegative1.size() + Statistics.propChaotic1.size());
-                if(index > Statistics.propNegative1.size()){
-
-                    index -= Statistics.propNegative1.size();
-
-                    prop = Statistics.propChaotic1.get(index);
-                    Statistics.propChaotic1.remove(index);
-                }else {
-                    prop = Statistics.propNegative1.get(index);
-                    Statistics.propNegative1.remove(index);
-                }
+                int index =Random.Int(0,Statistics.propNegative1.size());
+                prop = Statistics.propNegative1.get(index);
+                Statistics.propNegative1.remove(index);
                 break;
             case 2:
-                index =Random.Int(0,Statistics.propNegative2.size() + Statistics.propChaotic2.size());
-                if(index > Statistics.propNegative2.size()){
-
-                    index -= Statistics.propNegative2.size();
-
-                    prop = Statistics.propChaotic2.get(index);
-                    Statistics.propChaotic2.remove(index);
-                }else {
-                    prop = Statistics.propNegative2.get(index);
-                    Statistics.propNegative2.remove(index);
-                }
+                index =Random.Int(0,Statistics.propNegative2.size());
+                prop = Statistics.propNegative2.get(index);
+                Statistics.propNegative2.remove(index);
                 break;
             case 0:
-                index =Random.Int(0,Statistics.propNegative0.size() + Statistics.propChaotic0.size());
-                if(index > Statistics.propNegative0.size()){
-
-                    index -= Statistics.propNegative0.size();
-
-                    prop = Statistics.propChaotic0.get(index);
-                    Statistics.propChaotic0.remove(index);
-                }else {
-                    prop = Statistics.propNegative0.get(index);
-                    Statistics.propNegative0.remove(index);
-                }
+                index =Random.Int(0,Statistics.propNegative0.size());
+                prop = Statistics.propNegative0.get(index);
+                Statistics.propNegative0.remove(index);
                 break;
         }
 
