@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinder;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
@@ -920,6 +921,8 @@ public class WndSettings extends WndTabbed {
 		RedButton btnMode;
 		CheckBox PlusSearch;
 
+		CheckBox PlusBranch;
+
 		@Override
 		protected void createChildren() {
 			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
@@ -1025,6 +1028,35 @@ public class WndSettings extends WndTabbed {
 			};
 			PlusSearch.checked(SPDSettings.PlusSearch());
 			add(PlusSearch);
+
+			PlusBranch = new CheckBox( Messages.get(this, "plusbranch_search") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					if (checked()) {
+						checked(!checked());
+						ShatteredPixelDungeon.scene().add(new WndOptions(new Image(Icons.get(Icons.WARNING)),
+								Messages.get(SeedfinderTab.class, "plusbranch"),
+								Messages.get(SeedfinderTab.class, "plusbranch_desc"),
+								Messages.get(DisplayTab.class, "okay"),
+								Messages.get(DisplayTab.class, "cancel")) {
+							@Override
+							protected void onSelect(int index) {
+								if (index == 0) {
+									checked(!checked());
+									SeedFinder.Options.checkBranches = true;
+									SPDSettings.logBranch(checked());
+								}
+							}
+						});
+					} else {
+						SeedFinder.Options.checkBranches = false;
+						SPDSettings.logBranch(checked());
+					}
+				}
+			};
+			PlusBranch.checked(SPDSettings.logBranch());
+			add(PlusBranch);
 		}
 
 		@Override
@@ -1043,6 +1075,7 @@ public class WndSettings extends WndTabbed {
 			btnChallenges.setRect(0, numFloors.bottom() + GAP, width / 2 - 1, BTN_HEIGHT);
 			btnMode.setRect(width/2 + 1, numFloors.bottom() + GAP, width / 2, BTN_HEIGHT);
 			PlusSearch.setRect(0, btnChallenges.bottom() + GAP, width, BTN_HEIGHT);
+			PlusBranch.setRect(0, PlusSearch.bottom() + GAP, width, BTN_HEIGHT);
 		}
 
 	}
