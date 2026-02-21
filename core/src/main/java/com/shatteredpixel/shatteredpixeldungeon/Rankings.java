@@ -403,9 +403,6 @@ public enum Rankings {
 
         Dungeon.dlcs = new Conducts.ConductStorage();
         Dungeon.dlcs.restoreFromBundle(rec.gameData);
-        if (rec.gameData.getEnum("difficult", Conducts.Conduct.class) != Conducts.Conduct.NULL){
-            Dungeon.dlcs = new Conducts.ConductStorage(rec.gameData.getEnum("difficult", Conducts.Conduct.class));
-        }
 
         Dungeon.initialVersion = data.getInt(GAME_VERSION);
 

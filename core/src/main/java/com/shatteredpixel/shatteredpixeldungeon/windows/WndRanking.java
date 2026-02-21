@@ -279,7 +279,7 @@ public class WndRanking extends WndTabbed {
 
 				pos = statSlot(this, Messages.get(this, "enemies"), num.format(Statistics.enemiesSlain), pos);
 				pos = statSlot(this, Messages.get(this, "gold"), num.format(Statistics.goldCollected), pos);
-				pos = statSlot(this, Messages.get(HeroStat.class, "seed_type"), seedType(), pos);
+				pos = statSlot(this, Messages.get(HeroStat.class, "challenges_type"), String.valueOf(Dungeon.challenges), pos);
 				pos = statSlot(this, Messages.get(this, "food"), num.format(Statistics.foodEaten), pos);
 				pos = statSlot(this, Messages.get(this, "alchemy"), num.format(Statistics.itemsCrafted), pos);
 				pos = statSlot( this, Messages.get(this, "mode"), Messages.get(this,mode()), pos );

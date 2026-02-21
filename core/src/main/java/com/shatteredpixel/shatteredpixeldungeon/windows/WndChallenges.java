@@ -81,7 +81,7 @@ public class WndChallenges extends Window {
 	}
 
 	private float time;
-	
+
 	private WndChallenges( int checked, int index, boolean editable, Callback callback ) {
 
 		super();
@@ -100,8 +100,8 @@ public class WndChallenges extends Window {
 		PixelScene.align(title);
 		add( title );
 
-
-
+		final int finalIndex = this.index;
+		final WndChallenges self = this;
 
 		boxes = new ArrayList<>();
 
@@ -238,7 +238,7 @@ public class WndChallenges extends Window {
 				WndChallenges.this.hide();
 			}
 		};
-		btnGoReady.setRect(btnPrev.left(), pos+20, WIDTH-24, BTN_HEIGHT);
+		btnGoReady.setRect(btnPrev.left(), pos+20, !editable && Game.scene().getClass() == GameScene.class ?  (WIDTH-24) : (WIDTH-24)/2f, BTN_HEIGHT);
 		add(btnGoReady);
 
 		IconButton btnGoReadyInfo = new IconButton( Icons.get( Icons.INFO ) ) {
@@ -251,8 +251,62 @@ public class WndChallenges extends Window {
 				);
 			}
 		};
-		btnGoReadyInfo.setRect(btnGoReady.right()+GAP, pos+20, 24, BTN_HEIGHT);
+		btnGoReadyInfo.setRect(btnGoReady.right(), pos+20, 24, BTN_HEIGHT);
 		add(btnGoReadyInfo);
+
+		RedButton btnChallengesType = new RedButton(Messages.get(WndChallenges.class,"ctype"), 7) {
+			@Override
+			protected void onClick() {
+				ShatteredPixelDungeon.scene().addToFront( new WndTextInput(
+						Messages.get(this, "custom_seed_title"),
+						Messages.get(this, "custom_seed_desc"),
+						String.valueOf(SPDSettings.challenges()),
+						6,
+						false,
+						Messages.get(this, "custom_seed_set"),
+						Messages.get(this, "custom_seed_clear")){
+
+					@Override
+					public void onSelect(boolean positive, String text) {
+						if (positive){
+							try {
+								int customValue = Integer.parseInt(text);
+
+								if (!self.isChallengeValueValid(customValue)) {
+
+									ShatteredPixelDungeon.scene().addToFront(
+											new WndTitledMessage(Icons.get(Icons.WARNING),
+													Messages.get(this, "invalid_challenge_title"),
+													Messages.get(this, "invalid_challenge_desc", "0", "65535")));
+									return;
+								}
+
+								customValue = Math.max(0, Math.min(customValue, 65535));
+								SPDSettings.challenges(customValue);
+								self.checked = customValue;
+
+								self.hide();
+								ShatteredPixelDungeon.scene().addToFront(new WndChallenges(
+										customValue, finalIndex, editable, callback));
+							} catch (NumberFormatException e) {
+
+								ShatteredPixelDungeon.scene().addToFront(
+										new WndTitledMessage(Icons.get(Icons.WARNING),
+												Messages.get(this, "error"),
+												Messages.get(this, "invalid_number")));
+							}
+						} else {
+							SPDSettings.challenges(0);
+							self.checked = 0;
+							self.hide();
+						}
+					}
+				});
+			}
+		};
+		btnChallengesType.setRect(btnGoReadyInfo.right(), pos+20, (WIDTH-24)/2f, BTN_HEIGHT);
+		add(btnChallengesType);
+
 		pos += BTN_HEIGHT+20;
 
 		float challenges =(float) Math.pow(1.25, Challenges.activeChallenges());
@@ -264,7 +318,9 @@ public class WndChallenges extends Window {
 				btnGoReady.text(Messages.get(WndChallenges.class, "totalcount",Challenges.activeChallenges(),trueChallenges));
 				btnGoReadyInfo.icon(Icons.get( Icons.CHALLENGE_ON ));
 				btnGoReady.active =false;
+				btnChallengesType.visible = false;
 			}
+			btnChallengesType.enable(false);
 		}
 
 		resize( WIDTH, (int)pos );
@@ -440,6 +496,19 @@ public class WndChallenges extends Window {
 			default:
 				return Icons.get(Icons.PREFS);
 		}
+	}
+
+	private boolean isChallengeValueValid(int value) {
+		if (value < 0 || value > 65535) {
+			return false;
+		}
+		int temp = value;
+		for (int mask : Challenges.MASKS) {
+			if ((temp & mask) == mask) {
+				temp -= mask;
+			}
+		}
+		return temp == 0;
 	}
 
 }
