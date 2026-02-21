@@ -66,7 +66,7 @@ public class SeedFinder {
 		public static int floors;
 		public static Condition condition;
 		public static long seed;
-		public static boolean checkBranches = true;
+		public static boolean checkBranches = SPDSettings.logBranch();
 		public static int[] BRANCH_IDS = {1, 2, 3};
 	}
 

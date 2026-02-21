@@ -1108,7 +1108,7 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_PLUSSEACH = "use_rooms";
 	public static final String KEY_IGNOREBLACKLIST	= "ignore_blacklist";
 
-	public static final String KEY_LOGTRINKETS	= "logging_option_trinkets";
+	public static final String KEY_BRANCHRECORD	= "logging_branchrecord";
 	public static final String KEY_LOGEQUIPMENT	= "logging_option_equipment";
 	public static final String KEY_LOGSCROLLS	= "logging_option_scrolls";
 	public static final String KEY_LOGPOTIONS= "logging_option_potions";
@@ -1169,12 +1169,12 @@ public class SPDSettings extends GameSettings {
 		return getBoolean( KEY_IGNOREBLACKLIST, false );
 	}
 
-	public static void logTrinkets( boolean value ) {
-		put( KEY_LOGTRINKETS, value );
+	public static void logBranch( boolean value ) {
+		put( KEY_BRANCHRECORD, value );
 	}
 
-	public static boolean logTrinkets() {
-		return getBoolean( KEY_LOGTRINKETS, true );
+	public static boolean logBranch() {
+		return getBoolean( KEY_BRANCHRECORD, false );
 	}
 
 	public static void logEquipment( boolean value ) {
