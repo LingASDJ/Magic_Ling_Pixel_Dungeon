@@ -5,7 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ public class Prop extends Item {
         unique = true;
     }
 
+    //稀有度 1 2 3
     public int rareness = 0;
     public int kind = 0;
     //0积极 1 消极 2混沌;
@@ -32,6 +33,24 @@ public class Prop extends Item {
         return new ArrayList<>();
     }
 
+    @Override
+    public String desc() {
+        String c;
+        switch (rareness){
+            case 1:
+                 c = Messages.get(this,"rareness_2",rareness);
+                break;
+            case 2:
+                 c = Messages.get(this,"rareness_3",rareness);
+                break;
+            default:
+                 c = Messages.get(this,"rareness_1",rareness);
+                break;
+        }
+
+        c += "\n\n" + super.desc();
+        return c;
+    }
 
     @Override
     public boolean isUpgradable() {
