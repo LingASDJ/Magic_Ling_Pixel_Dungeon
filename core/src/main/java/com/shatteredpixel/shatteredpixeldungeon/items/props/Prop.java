@@ -33,21 +33,26 @@ public class Prop extends Item {
         return new ArrayList<>();
     }
 
+    private String kindRules(){
+        String string;
+        switch (kind){
+            case 2:
+                string = Messages.get(this,"chaos");
+                break;
+            case 1:
+                string = Messages.get(this,"bad");
+                break;
+            default:
+                string = Messages.get(this,"good");
+                break;
+        }
+        return string;
+    }
+
     @Override
     public String desc() {
         String c;
-        switch (rareness){
-            case 1:
-                 c = Messages.get(this,"rareness_2",rareness);
-                break;
-            case 2:
-                 c = Messages.get(this,"rareness_3",rareness);
-                break;
-            default:
-                 c = Messages.get(this,"rareness_1",rareness);
-                break;
-        }
-
+        c = Messages.get(this,"rareness",rareness+1,kindRules());
         c += "\n\n" + super.desc();
         return c;
     }

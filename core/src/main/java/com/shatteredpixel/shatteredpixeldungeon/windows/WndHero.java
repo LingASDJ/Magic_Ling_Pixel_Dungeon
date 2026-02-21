@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
@@ -32,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -315,7 +315,7 @@ public class WndHero extends WndTabbed {
 			statSlot( Messages.get(HeroStat.class, "seed_dungeon"), DungeonSeed.convertToCode(Dungeon.seed));
 
 
-			statSlot(Messages.get(HeroStat.class, "seed_type"), seedType());
+			statSlot(Messages.get(HeroStat.class, "challenges_type"), SPDSettings.challenges());
 
 
 			Conducts.ConductStorage conductStorage = Dungeon.dlcs;
@@ -385,16 +385,6 @@ public class WndHero extends WndTabbed {
 			add( txt );
 
 			pos += GAP + txt.height();
-		}
-
-		private String seedType(){
-			String seed;
-			if(Dungeon.isChallenged(MOREROOM)){
-				seed = "B";
-			} else {
-				seed = "A";
-			}
-			return seed;
 		}
 
 		private void IcestatSlot( String label, String value ) {

@@ -140,8 +140,7 @@ public class WndGameInProgress extends Window {
 										Messages.get(WndGameInProgress.class,"gamegold") + bundle.getInt("gold") +"\n\n"+
 										Messages.get(WndGameInProgress.class,"gamenayzi") + bundle.getInt("naiyaziCollected")+
 										Messages.get(WndGameInProgress.class,"gamenayzis") +"\n\n"+
-										Messages.get(WndGameInProgress.class,"gamemimic") + bundle.getInt("goldchest") +"\n\n"+
-										Messages.get(WndGameInProgress.class,"gameinof");
+										Messages.get(WndGameInProgress.class,"gamemimic") + bundle.getInt("goldchest");
 						ShatteredPixelDungeon.scene().addToFront(new WndMessage(ing));
 					} catch (IOException ignored) {
 					}
@@ -163,8 +162,7 @@ public class WndGameInProgress extends Window {
 										Messages.get(WndGameInProgress.class,"gamegold") + bundle.getInt("gold") +"\n\n"+
 										Messages.get(WndGameInProgress.class,"gamenayzi") + bundle.getInt("naiyaziCollected")+
 										Messages.get(WndGameInProgress.class,"gamenayzis") +"\n\n"+
-										Messages.get(WndGameInProgress.class,"gamemimic") + bundle.getInt("goldchest") +"\n\n"+
-										Messages.get(WndGameInProgress.class,"gameinof");
+										Messages.get(WndGameInProgress.class,"gamemimic") + bundle.getInt("goldchest");
 						ShatteredPixelDungeon.scene().addToFront(new WndMessage(ing));
 					} catch (IOException ignored) {
 					}
@@ -182,11 +180,9 @@ public class WndGameInProgress extends Window {
 			protected void onClick() {
 				super.onClick();
 
-				boolean seedType = (info.challenges & Challenges.MOREROOM) != 0;
+				clipboard.setContents(M.L(WndGameInProgress.class, "seed_copy",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,info.challenges,ChallengesDesc(info,slot)));
 
-				clipboard.setContents(M.L(WndGameInProgress.class, "seed_copy",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,(seedType ? "B" : "A"),ChallengesDesc(info,slot)));
-
-				Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMessage(M.L(WndGameInProgress.class, "seed_copied",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,(seedType ? "B" : "A"), ChallengesDesc(info,slot)))));
+				Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMessage(M.L(WndGameInProgress.class, "seed_copied",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,info.challenges, ChallengesDesc(info,slot)))));
 			}
 		};
 		add(buttonSeed);
