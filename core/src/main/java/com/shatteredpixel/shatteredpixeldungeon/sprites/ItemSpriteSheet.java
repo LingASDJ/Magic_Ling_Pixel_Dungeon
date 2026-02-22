@@ -1409,6 +1409,33 @@ public class ItemSpriteSheet {
     public static final int YANSTUDYINGPAPERONE = PROP3+7;
     public static final int NOTEOFBZMDR = PROP4+0;
 
+    public static final int PROP5        =                               xy(1, 62);
+
+    public static final int KILL_EYES           = PROP5+0;
+    public static final int PURE_ROUGE          = PROP5+1;
+    public static final int HELL_BUTTERFLY      = PROP5+2;
+    public static final int FAINT_GLIMMER       = PROP5+3;
+    public static final int DIRT_KNIFE_STAND    = PROP5+4;
+    public static final int BROKEN_RING         = PROP5+5;
+    public static final int STAR_DUST           = PROP5+6;
+    public static final int SPACE_DEBRIS        = PROP5+7;
+    public static final int RESOLVE_DIE         = PROP5+8;
+    public static final int CATGIRL_COSPLAY     = PROP5+9;
+    public static final int DREAM_SEED          = PROP5+10;
+
+    static{
+        assignItemRect(KILL_EYES,               14, 14);
+        assignItemRect(PURE_ROUGE,              16, 10);
+        assignItemRect(DIRT_KNIFE_STAND,        13, 13);
+        assignItemRect(BROKEN_RING,             13, 13);
+        assignItemRect(STAR_DUST,                 9, 9);
+        assignItemRect(SPACE_DEBRIS,            11, 14);
+        assignItemRect(RESOLVE_DIE,              9, 13);
+        assignItemRect(SPACE_DEBRIS,            11, 14);
+        assignItemRect(CATGIRL_COSPLAY,         13, 14);
+        assignItemRect(DREAM_SEED,              10, 10);
+    }
+
 
     //for smaller 8x8 icons that often accompany an item sprite
     public static class Icons {
