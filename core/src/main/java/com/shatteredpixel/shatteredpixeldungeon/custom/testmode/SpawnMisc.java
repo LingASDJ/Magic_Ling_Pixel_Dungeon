@@ -95,33 +95,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfNu
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.RustedGoldCoin;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.TheGriefOfSpeechless;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
@@ -411,32 +385,9 @@ public class SpawnMisc extends TestItem {
 
         //Prop
         if(propList.isEmpty()){
-            propList.add(ArmorScalesOfBzmdr.class);
-            propList.add(BlockingDrug.class);
-            propList.add(BrokenBone.class);
-            propList.add(CloakFragmentsOfBzmdr.class);
-            propList.add(ConfusedMieMieTalisman.class);
-            propList.add(DeliciousRecipe.class);
-            propList.add(EmotionalAggregation.class);
-            propList.add(EmotionalAggregationB.class);
-            propList.add(HeartOfCrystalFractal.class);
-            propList.add(KnightStabbingSword.class);
-            propList.add(LuckyGlove.class);
-            propList.add(Monocular.class);
-            propList.add(NewStem.class);
-            propList.add(NoteOfBzmdr.class);
-            propList.add(PortableWhetstone.class);
-            propList.add(RapidEarthRoot.class);
-            propList.add(RustedGoldCoin.class);
-            propList.add(StarSachet.class);
-            propList.add(TerrorDoll.class);
-            propList.add(TerrorDollB.class);
-            propList.add(TheGriefOfSpeechless.class);
-            propList.add(WenStudyingPaperOne.class);
-            propList.add(WenStudyingPaperTwo.class);
-            propList.add(YanStudyingPaperOne.class);
-            propList.add(YanStudyingPaperTwo.class);
-            propList.add(BottleWraith.class);
+            for (int i = 0; i < Generator.Category.PROP.classes.length; i++) {
+                propList.add((Class<? extends Prop>) Generator.Category.PROP.classes[i]);
+            }
         }
 
         //Misc

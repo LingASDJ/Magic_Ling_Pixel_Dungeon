@@ -374,6 +374,7 @@ public class ForestPoisonBossLevel extends Level {
 
     @Override
     protected void createItems() {
+        Random.pushGenerator(Random.Long());
         ArrayList<Item> bonesItems = Bones.get();
         if (bonesItems != null) {
             int pos;
