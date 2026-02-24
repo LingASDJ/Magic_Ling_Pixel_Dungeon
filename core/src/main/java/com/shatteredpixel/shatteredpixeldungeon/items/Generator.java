@@ -98,6 +98,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PureRouge;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.RustedGoldCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
@@ -847,10 +848,14 @@ public class Generator {
 					EmotionalAggregationB.class,
 					HeartOfCrystalFractal.class,
 
+					//GT3
+					PureRouge.class,
+
+					//BT3
 					NoteOfBzmdr.class,
 			};
 			PROP.defaultProbs = new float[]{
-					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			};
 			PROP.probs = PROP.defaultProbs.clone();
 

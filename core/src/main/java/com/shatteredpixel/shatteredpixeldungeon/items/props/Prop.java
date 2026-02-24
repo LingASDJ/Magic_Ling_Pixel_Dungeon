@@ -20,6 +20,7 @@ public class Prop extends Item {
 
     //稀有度 1 2 3
     public int rareness = 0;
+
     public int kind = 0;
     //0积极 1 消极 2混沌;
 
