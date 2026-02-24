@@ -296,12 +296,6 @@ public class Bones {
 
 				ArrayList<Item> result = new ArrayList<>();
 
-//				if (heroClass != null) {
-//					result.add(RemainsItem.get(heroClass));
-//					if (Dungeon.bossLevel()){
-//						Statistics.qualifiedForBossRemainsBadge = true;
-//					}
-//				}
 
 				if (item != null) {
 					result.add(item);
