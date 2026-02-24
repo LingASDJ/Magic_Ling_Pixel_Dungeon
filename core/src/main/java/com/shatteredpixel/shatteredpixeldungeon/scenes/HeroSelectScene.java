@@ -81,6 +81,7 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class HeroSelectScene extends PixelScene {
 
@@ -131,7 +132,7 @@ public class HeroSelectScene extends PixelScene {
 
 	private StyledButton holidayButton;
 
-	private static GrassPatch patch;
+	private static List<GrassPatch> grassPatches = new ArrayList<>();
 
 	private IconButton btnExit;
 	private ArrayList<StyledButton> buttons;
@@ -196,9 +197,10 @@ public class HeroSelectScene extends PixelScene {
 		int nPatches = (int)(sky.width() / GrassPatch.WIDTH + 1);
 
 		for (int i=0; i < nPatches * 4; i++) {
-			patch = new GrassPatch( (i - 0.75f) * GrassPatch.WIDTH / 4, SKY_HEIGHT + 1, dayTime,heroClass() );
+			GrassPatch patch = new GrassPatch( (i - 0.75f) * GrassPatch.WIDTH / 4, SKY_HEIGHT + 1, dayTime,heroClass() );
 			patch.brightness( dayTime ? 0.7f : 0.4f );
 			window.add( patch );
+			grassPatches.add(patch); // 添加到集合
 		}
 
 		a = new Avatar(heroClass());
@@ -219,9 +221,10 @@ public class HeroSelectScene extends PixelScene {
 		} );
 
 		for (int i=0; i < nPatches; i++) {
-			patch = new GrassPatch( (i - 0.5f) * GrassPatch.WIDTH, SKY_HEIGHT, dayTime,heroClass() );
+			GrassPatch patch = new GrassPatch( (i - 0.5f) * GrassPatch.WIDTH, SKY_HEIGHT, dayTime,heroClass() );
 			patch.brightness( dayTime ? 1.0f : 0.8f );
 			window.add(patch);
+			grassPatches.add(patch);
 		}
 
 		frame = new Image( Assets.Interfaces.NEW_MENU );
@@ -259,7 +262,8 @@ public class HeroSelectScene extends PixelScene {
 		startBtn.icon(Icons.get(Icons.ENTER));
 		add( startBtn );
 
-		skin = new StyledButton( Chrome.Type.BLANK,Messages.get(WndKeyBindings.class, "skin") ){
+		skin = new StyledButton( Chrome.Type.BLANK,Messages.get(WndKeyBindings.class, "skin"),6 ){
+			private float time = 0;
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -273,8 +277,9 @@ public class HeroSelectScene extends PixelScene {
 			}
 		};
 		skin.icon(NetIcons.get(NetIcons.GLOBE));
+		skin.icon().scale.set(0.6f);
 		skin.setSize( 60, BUTTON_HEIGHT );
-		skin.setPos(frame.x- 35 + frame.width - 35 + FRAME_MARGIN_X,frame.y+7);
+		skin.setPos(frame.x- 35 + frame.width - 35 + FRAME_MARGIN_X,frame.y);
 		add(skin);
 
 		infoButton = new IconButton(Icons.get(Icons.INFO)){
@@ -605,7 +610,19 @@ public class HeroSelectScene extends PixelScene {
 		fadeIn();
 	}
 
-	private void placeTorch( float x, float y ) {
+
+	@Override
+	public void update() {
+		super.update();
+		boolean shouldShowGrass = heroClass().GetSkin() != 4;
+		for (GrassPatch patch : grassPatches) {
+			if (patch != null) {
+				patch.visible = shouldShowGrass;
+			}
+		}
+	}
+
+	private void placeTorch(float x, float y ) {
 		Fireball fb2 = new Fireball();
 		fb2.setPos( x, y );
 		add( fb2 );
@@ -796,10 +813,16 @@ public class HeroSelectScene extends PixelScene {
 			} else {
 				resetColor();
 			}
-			// 特殊处理MAGE的第4个皮肤
-			if (cl == HeroClass.MAGE && cl.GetSkin() == 4) {
+			// 特殊处理4个皮肤
+			if (cl == HeroClass.ROGUE && cl.GetSkin() == 4) {
+				texture(TextureCache.get("splashes/giftskin_rogue.png"));
+				frame(0, 0, 88, 120);
+				setPos(
+						0,
+						0
+				);
+			} else if (cl == HeroClass.MAGE && cl.GetSkin() == 4) {
 				texture(TextureCache.get("splashes/giftskin_mage.png"));
-				// 不使用frame裁切，直接显示完整图片
 				frame(0, 0, 88, 120);
 				setPos(
 						0,
