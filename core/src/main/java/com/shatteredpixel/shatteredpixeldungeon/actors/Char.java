@@ -105,6 +105,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
@@ -126,6 +127,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KillEye;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
@@ -451,6 +453,14 @@ public abstract class Char extends Actor {
 
 				if (h.buff(MonkEnergy.MonkAbility.UnarmedAbilityTracker.class) != null){
 					dr = 0;
+				}
+
+				if(hero.belongings.getItem(KillEye.class)!=null){
+					if(enemy instanceof Mob){
+						if(((Mob) enemy).surprisedBy(h)){
+							dr = 0;
+						}
+					}
 				}
 
 				if(h.buff(Killer.class)!=null && h.belongings.attackingWeapon() instanceof MeleeWeapon && !(enemy instanceof Boss)){
@@ -942,10 +952,6 @@ public abstract class Char extends Actor {
 			dmg *= 1.5f;
 		}
 
-		for (ChampionHero buff : buffs(ChampionHero.class)){
-			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
-		}
-
 		if (buff(Sickle.HarvestBleedTracker.class) != null){
 			buff(Sickle.HarvestBleedTracker.class).detach();
 
@@ -962,24 +968,10 @@ public abstract class Char extends Actor {
 			}
 		}
 
-		if(! (src instanceof WandOfDisintegration) ){
-			for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
-				dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
-			}
-		}
-
-		Class<?> srcClass = src.getClass();
-		if (isImmune( srcClass )) {
-			dmg = 0;
-		} else {
-			dmg = Math.round( dmg * resist( srcClass ));
-		}
-
-		//TODO improve this when I have proper damage source logic
-		if (AntiMagic.RESISTS.contains(src.getClass()) && buff(ArcaneArmor.class) != null){
-			dmg -= Random.NormalIntRange(0, buff(ArcaneArmor.class).level());
-			if (dmg < 0) dmg = 0;
-		}
+		/*** 伤害减免 ***/
+		Hero attackerHero = (src instanceof Hero) ? (Hero) src : null;
+		dmg = processDamageReduction(dmg, src, attackerHero);
+		/*** 伤害减免 ***/
 
 		if (buff( Paralysis.class ) != null) {
 			buff( Paralysis.class ).processDamage(dmg);
@@ -1144,6 +1136,68 @@ public abstract class Char extends Actor {
 		} else if (HP == 0 && buff(DeathMark.DeathMarkTracker.class) != null){
 			DeathMark.processFearTheReaper(this);
 		}
+	}
+
+	/**
+	 * 处理伤害减免逻辑
+	 * @param dmg 原始伤害值
+	 * @param src 伤害来源
+	 * @param hero 攻击方玩家（外部传入，避免多次获取）
+	 * @return 处理后的伤害值
+	 */
+	private int processDamageReduction(int dmg, Object src, Hero hero) {
+		if (hero == null) {
+			return calculateNormalDamageReduction(dmg, src);
+		}
+
+		boolean hasKillEye = hero.belongings != null && hero.belongings.getItem(KillEye.class) != null;
+		boolean hasWandOfDist = src instanceof WandOfDisintegration;
+		if (hasKillEye) {
+			if (this instanceof Mob) {
+				Mob mobTarget = (Mob) this;
+				boolean isAmbushed = mobTarget.surprisedBy(hero);
+				if (isAmbushed) {
+					return dmg;
+				}
+			}
+		}
+
+		if(hasWandOfDist){
+			return dmg;
+		}
+
+		return calculateNormalDamageReduction(dmg, src);
+	}
+
+	/**
+	 * 计算常规伤害减免
+	 * @param dmg 原始伤害值
+	 * @param src 伤害来源
+	 * @return 减免后的伤害值
+	 */
+	private int calculateNormalDamageReduction(int dmg, Object src) {
+
+		for (ChampionHero buff : buffs(ChampionHero.class)){
+			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+		}
+
+		for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
+			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+		}
+
+		Class<?> srcClass = src.getClass();
+		if (isImmune( srcClass )) {
+			dmg = 0;
+		} else {
+			dmg = Math.round( dmg * resist( srcClass ));
+		}
+
+		if (AntiMagic.RESISTS.contains(src.getClass()) && buff(ArcaneArmor.class) != null){
+			dmg -= Random.NormalIntRange(0, buff(ArcaneArmor.class).level());
+			if (dmg < 0) dmg = 0;
+		}
+
+		return dmg;
 	}
 
 	//these are misc. sources of physical damage which do not apply armor, they get a different icon
