@@ -128,8 +128,6 @@ public class InterlevelScene extends PixelScene {
 
 		yxlook = Random.Int(100)<=10 && Dungeon.depth>0 && !Dungeon.sbbossLevel() && !Dungeon.RushBossLevel() && !Dungeon.bossLevel();
 
-		System.out.println(yxlook);
-
 		if(tipset == null || tipset.isEmpty())
 			newTipSet();
 
