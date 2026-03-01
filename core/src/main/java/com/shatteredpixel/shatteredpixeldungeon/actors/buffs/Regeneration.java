@@ -55,7 +55,7 @@ public class Regeneration extends Buff {
 				return true;
 			}
 
-			if (target.HP < regencap() && !((Hero)target).isStarving()) {
+			if (target.HP < regencap() && !((Hero)target).isStarving() && !((Hero)target).isSmallHunger()) {
 				if (regenOn()) {
 					target.HP += 1;
 					if (target.HP == regencap()) {

@@ -2887,6 +2887,10 @@ public class Hero extends Char {
 		return Buff.affect(this, Hunger.class).isStarving();
 	}
 
+	public boolean isSmallHunger() {
+		return Buff.affect(this, Hunger.class).isSmallHunger();
+	}
+
 	@Override
 	public boolean add( Buff buff ) {
 
