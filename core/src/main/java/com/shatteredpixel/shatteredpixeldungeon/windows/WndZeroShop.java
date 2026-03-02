@@ -50,6 +50,8 @@ public class WndZeroShop extends Window {
         ZeroDreamShop.shop10 = SPDSettings.isItemUnlock("avatars_duelist_2")  ? null :new SKINITEM.SKIN_DB();
 
         ZeroDreamShop.shop11 =  SPDSettings.isItemUnlock("avatars_mage_4")  ? null :new SKINITEM.SKIN_MC();
+        ZeroDreamShop.shop12 =  SPDSettings.isItemUnlock("avatars_rogue_4")  ? null :new SKINITEM.SKIN_RC();
+        ZeroDreamShop.shop13 =  SPDSettings.isItemUnlock("avatars_warrior_4")  ? null :new SKINITEM.SKIN_WC();
 
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
@@ -106,6 +108,14 @@ public class WndZeroShop extends Window {
         RewardButton skin1 = new RewardButton( ZeroDreamShop.shop11 );
         skin1.setRect( bomb1.right()+BTN_GAP , bomb1.bottom(), BTN_SIZE, BTN_SIZE );
         add(skin1);
+
+        RewardButton skin2 = new RewardButton( ZeroDreamShop.shop12 );
+        skin2.setRect( bomb2.right()+BTN_GAP , bomb1.bottom(), BTN_SIZE, BTN_SIZE );
+        add(skin2);
+
+        RewardButton skin3 = new RewardButton( ZeroDreamShop.shop13 );
+        skin3.setRect( bomb1.left() , bomb1.bottom(), BTN_SIZE, BTN_SIZE );
+        add(skin3);
 
         resize(WIDTH, (int) skin1.bottom());
     }
@@ -168,6 +178,12 @@ public class WndZeroShop extends Window {
         }
         if(item instanceof SKINITEM.SKIN_MC){
             SPDSettings.unlockItem("avatars_mage_4");
+        }
+        if(item instanceof SKINITEM.SKIN_WC){
+            SPDSettings.unlockItem("avatars_warrior_4");
+        }
+        if(item instanceof SKINITEM.SKIN_RC){
+            SPDSettings.unlockItem("avatars_rogue_4");
         }
     }
 

@@ -1221,8 +1221,8 @@ public class ItemSpriteSheet {
 
     public static final int SKIN_11  = + SKIN+10;
 
-    public static final int RGJT_1  = + SKIN+11;
-    public static final int RGJT_2  = + SKIN+12;
+    public static final int SKIN_12  = + SKIN+11;
+    public static final int SKIN_13  = + SKIN+12;
     public static final int RGJT_3  = + SKIN+13;
     public static final int RGJT_4  = + SKIN+14;
 
@@ -1230,7 +1230,7 @@ public class ItemSpriteSheet {
         for (int i =SKIN; i < SKIN+10; i++)
             assignItemRect(i, 16, 16);
 
-        assignItemRect(RGJT_1, 13, 16);
+        //assignItemRect(RGJT_1, 13, 16);
     }
 
     private static final int TRINKETS        =                               xy(1, 54);  //24 slots
