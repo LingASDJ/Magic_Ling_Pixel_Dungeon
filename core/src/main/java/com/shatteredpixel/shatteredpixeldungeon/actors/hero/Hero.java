@@ -209,6 +209,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PureRouge;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.StarDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
@@ -1053,6 +1054,7 @@ public class Hero extends Char {
 	@Override
 	public float speed() {
 		float speed = 0;
+		StarDust starDust = Dungeon.hero.belongings.getItem(StarDust.class);
 
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
 			speed += CustomPlayer.baseSpeed;
@@ -1068,6 +1070,11 @@ public class Hero extends Char {
 		MIME.GOLD_THREE getSpeed = Dungeon.hero.belongings.getItem(MIME.GOLD_THREE.class);
 		if (getSpeed!=null) {
 			speed *= 1.2f;
+		}
+
+		if (starDust!=null) {
+			speed *= 0.75f;
+			speed = Math.min(speed,1.5f);
 		}
 
 		if(hero.buff(SliceDeadBless.class)!=null && Dungeon.depth>28){
