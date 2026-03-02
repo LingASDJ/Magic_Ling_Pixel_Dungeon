@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
@@ -202,6 +203,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
@@ -1211,6 +1213,29 @@ public class Hero extends Char {
 
 	@Override
 	public boolean act() {
+
+		PropBuff propBuffbuff = buff(PropBuff.class);
+		if(propBuffbuff != null){
+			if(propBuffbuff.levelA > 0){
+				int count = 0;
+				boolean isNegative = false;
+				for (Buff b : hero.buffs()){
+					if (b.type == Buff.buffType.NEGATIVE
+							&& !(b instanceof AllyBuff)
+							&& !(b instanceof LostInventory)){
+						b.detach();
+						propBuffbuff.levelA--;
+						isNegative = true;
+						count++;
+					}
+				}
+				if(isNegative){
+					GLog.p(Messages.get(FaintGlimmer.class,"light",count));
+				}
+			}
+
+		}
+
 
 		if(belongings.weapon instanceof TreeList){
 			Buff.affect(this, TreeList.TreeBarrier.class);

@@ -43,7 +43,10 @@ public class PureRouge extends Prop {
 
     @Override
     public String desc() {
-        return Messages.get(this,"desc",String.format("%.2f",entrlledchance*100));
+        String s;
+        s = Messages.get(this,"rareness",rareness+1,kindRules());
+        s += "\n\n" + Messages.get(this,"desc",String.format("%.2f",entrlledchance*100));
+        return s;
     }
 
     public boolean CheckEnthralled(){
