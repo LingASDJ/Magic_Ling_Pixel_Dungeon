@@ -201,6 +201,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMi
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeadOrAlive;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
@@ -1026,6 +1027,10 @@ public class Hero extends Char {
 
 		if(belongings.getItem(PortableWhetstone.class)!=null){
 			dmg += StoneDamage();
+		}
+
+		if(hero.belongings.getItem(DeadOrAlive.class)!=null){
+			dmg = (int) (dmg * 1.1f);
 		}
 
 		if(belongings.getItem(CloakFragmentsOfBzmdr.class)!=null) {
@@ -2263,6 +2268,10 @@ public class Hero extends Char {
 					((Mob) enemy).firstAttack = true;
 				}
 			}
+		}
+
+		if(hero.belongings.getItem(DeadOrAlive.class)!=null){
+			damage = (int) (damage * 1.1f);
 		}
 
 
