@@ -167,6 +167,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AlowGlyph.AncityStone;
@@ -200,6 +201,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.DeadOrAlive;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
@@ -1246,6 +1248,18 @@ public class Hero extends Char {
 				}
 			}
 
+		}
+
+		BrokenRing brokenRing = hero.belongings.getItem(BrokenRing.class);
+		if(brokenRing != null){
+			if(belongings.misc() != null){
+				KindofMisc misc = belongings.misc();
+				if(misc.cursed){
+					misc.cursed = false;
+				}
+				misc.doUnequip(this,true);
+				GLog.n(Messages.get(brokenRing,"lock"));
+			}
 		}
 
 
