@@ -117,6 +117,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
@@ -129,12 +131,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCle
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KillEye;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PureRouge;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
@@ -463,6 +468,15 @@ public abstract class Char extends Actor {
 					}
 				}
 
+				if(hero.belongings.getItem(PureRouge.class)!=null) {
+					PureRouge pr = hero.belongings.getItem(PureRouge.class);
+					if(enemy instanceof Mob) {
+						if (((Mob) enemy).surprisedBy(hero)) {
+							pr.PureRougeEffect(enemy,this,false);
+						}
+					}
+				}
+
 				if(h.buff(Killer.class)!=null && h.belongings.attackingWeapon() instanceof MeleeWeapon && !(enemy instanceof Boss)){
 					kill = true;
 				}
@@ -482,6 +496,27 @@ public abstract class Char extends Actor {
 			}
 
 			dmg = dmg*dmgMulti;
+
+			//胭脂判定
+			if(hero.belongings.getItem(PureRouge.class)!=null) {
+				PureRouge pr = hero.belongings.getItem(PureRouge.class);
+				if(enemy instanceof Mob) {
+					if (((Mob) enemy).surprisedBy(hero)) {
+						if(enemy.HT <= dmg){
+							if(pr.CheckEnthralled() && !enemy.isImmune(ScrollOfSirensSong.Enthralled.class)) {
+								Buff.affect(enemy, ScrollOfSirensSong.Enthralled.class);
+								dmg = 0;
+								pr.entrlledchance = 0.05f;
+								Transmuting.show(Dungeon.hero, new RandomChest(), pr);
+								Dungeon.hero.sprite.emitter().start(Speck.factory(Speck.BLIZZARD), 0.2f, 10);
+								GLog.pink(Messages.get(pr,"pure_charm",enemy.name()));
+								Buff.detach(enemy, Hex.class);
+								Buff.detach(enemy, Charm.class);
+							}
+						}
+					}
+				}
+			}
 
 			//flat damage bonus is affected by multipliers
 			dmg += dmgBonus;

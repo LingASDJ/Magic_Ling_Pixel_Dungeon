@@ -206,6 +206,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFracta
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PureRouge;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
@@ -2221,6 +2222,17 @@ public class Hero extends Char {
 		if (rockArmor != null) {
 			damage = rockArmor.absorb(damage);
 		}
+
+		if(enemy instanceof Mob){
+			if(hero.belongings.getItem(PureRouge.class)!=null){
+				if(!((Mob) enemy).firstAttack){
+					PureRouge pr = hero.belongings.getItem(PureRouge.class);
+					pr.PureRougeEffect(enemy,this,true);
+					((Mob) enemy).firstAttack = true;
+				}
+			}
+		}
+
 
 		return super.defenseProc( enemy, damage );
 	}

@@ -165,6 +165,8 @@ public abstract class Mob extends Char {
 
 	public boolean isAnimal = false;
 
+	public boolean firstAttack = false;
+
 	public Char enemy(){
 		return enemy;
 	}
@@ -273,6 +275,8 @@ public abstract class Mob extends Char {
 	private static final String MAX_LVL	= "max_lvl";
 	private static final String ENEMY_ID= "enemy_id";
 	private static final String  OLDDAY	= "oldday";
+
+	private static final String  FIRST_ATTACK	= "first_attack";
 
     protected Object loot = null;
 
@@ -393,6 +397,8 @@ public abstract class Mob extends Char {
 		}
 
 		bundle.put( OLDDAY, isOldDay);
+
+		bundle.put( FIRST_ATTACK, firstAttack);
 	}
 
 	@Override
@@ -426,6 +432,7 @@ public abstract class Mob extends Char {
 		firstAdded = false;
 
 		isOldDay = bundle.getBoolean( OLDDAY );
+		firstAttack = bundle.getBoolean(FIRST_ATTACK);
 	}
 
 	private boolean cellIsPathable( int cell ){
@@ -982,7 +989,7 @@ public abstract class Mob extends Char {
 		int s = Dungeon.depth/5;
 		PropBuff props = hero.buff(PropBuff.class);
 
-		return enemy == hero && (enemy.invisible > 0 || !enemySeen || fieldOfView != null && fieldOfView.length == Dungeon.level.length() && !fieldOfView[enemy.pos]) && (!attacking || enemy.canSurpriseAttack()) || props.timeG >= 13 - s;
+		return enemy == hero && (enemy.invisible > 0 || !enemySeen || fieldOfView != null && fieldOfView.length == Dungeon.level.length() && !fieldOfView[enemy.pos]) && (!attacking || enemy.canSurpriseAttack()) ||props != null && props.timeG >= 13 - s;
 
 
 	}
