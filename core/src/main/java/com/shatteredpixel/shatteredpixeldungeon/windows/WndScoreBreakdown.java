@@ -76,11 +76,6 @@ public class WndScoreBreakdown extends Window {
             pos = statSlot(content, Messages.get(this, "win_multiplier"), Statistics.winMultiplier + "x", pos, false);
         }
 
-        if(Statistics.RandMode){
-            pos = statSlot(content, Messages.get(this, "get_multiplier"), "0" + "x", pos, false);
-            pos = addInfo(content, Messages.get(this, "get_desc"), pos);
-        }
-
         if(Statistics.seedCustom){
             pos = statSlot(content, Messages.get(this, "seed_multiplier"), "0.5" + "x", pos, false);
         }

@@ -22,7 +22,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.RushBossLevel;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.bossLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
@@ -34,11 +37,14 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DreamSeed;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -60,6 +66,7 @@ import com.watabou.noosa.SkinnedBlock;
 import com.watabou.utils.BArray;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -127,8 +134,6 @@ public class InterlevelScene extends PixelScene {
 		super.create();
 
 		yxlook = Random.Int(100)<=10 && Dungeon.depth>0 && !Dungeon.sbbossLevel() && !Dungeon.RushBossLevel() && !Dungeon.bossLevel();
-
-		System.out.println(yxlook);
 
 		if(tipset == null || tipset.isEmpty())
 			newTipSet();
@@ -395,18 +400,32 @@ public class InterlevelScene extends PixelScene {
 		}
 	}
 
-	private void BottleSpawn(Level level){
-		if(hero.belongings.getItem(BottleWraith.class)!=null) {
-			if(!level.checkDown){
-				for (int i = 0; i < Random.Int(1, Dungeon.depth/2); i++) {
+	private void LevelDownSpawn(Level level) {
+		if (!level.checkDown && branch == 0) {
+			if (hero.belongings.getItem(BottleWraith.class) != null) {
+				for (int i = 0; i < Random.Int(1, Dungeon.depth / 2); i++) {
 					Wraith w = new Wraith();
 					w.pos = level.randomRespawnCell(w);
 					level.mobs.add(w);
 				}
-				level.checkDown = true;
 			}
-		}
+			if (hero.belongings.getItem(DreamSeed.class) != null && (!bossLevel() || Statistics.bossRushMode && !RushBossLevel())) {
+				if(Random.NormalIntRange(0,100)>=50){
+					Item randomitem = Generator.random();
+					level.drop(randomitem,level.entrance()+1);
+				} else {
+					Mob w = Reflection.newInstance(MobSpawner.getMobRotation(Math.min(depth+Random.Int(3),24)).get(0));
+					w.pos = level.entrance()+1;
+					level.mobs.add(w);
+				}
+
+			}
+			level.checkDown = true;
+	    }
+
 	}
+
+
 
 	private void descend() throws IOException {
 
@@ -431,7 +450,7 @@ public class InterlevelScene extends PixelScene {
 				level = Dungeon.newLevel();
 			}
 
-			BottleSpawn(level);
+			LevelDownSpawn(level);
 
 			LevelTransition destTransition = level.getTransition(curTransition.destType);
 			curTransition = null;
@@ -460,7 +479,7 @@ public class InterlevelScene extends PixelScene {
 			level = Dungeon.newLevel();
 		}
 
-		BottleSpawn(level);
+		LevelDownSpawn(level);
 
 		Dungeon.switchLevel( level, level.fallCell( fallIntoPit ));
 	}

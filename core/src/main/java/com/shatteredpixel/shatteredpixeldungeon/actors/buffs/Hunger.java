@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Dirt_KnifeStand;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -85,11 +86,12 @@ public class Hunger extends Buff implements Hero.Doom {
 	@Override
 	public boolean act() {
 
+		boolean dirtKnifeStand = hero.belongings.getItem(Dirt_KnifeStand.class)!=null;
+
 		if (Dungeon.level.locked
 				|| target.buff(WellFed.class) != null
 				|| target.buff(ScrollOfChallenge.ChallengeArena.class) != null
-				|| Dungeon.depth == 0
-				|| Dungeon.depth == 31 && (branch == 1 ||branch == 2 || branch == 3) ){
+				|| Dungeon.depth == 0 || Dungeon.depth == 31 && (branch == 1 ||branch == 2 || branch == 3) ){
 			spend(STEP);
 			return true;
 		}
@@ -100,13 +102,23 @@ public class Hunger extends Buff implements Hero.Doom {
 
 			if (isStarving()) {
 
-				partialDamage += STEP * target.HT/1000f;
+				partialDamage += STEP * target.HT / 1000f * (dirtKnifeStand ? 3 : 1);
 
-				if (partialDamage > 1){
-					target.damage( (int)partialDamage, this, Char.DamageType.REAL);
-					partialDamage -= (int)partialDamage;
+				if (partialDamage > 1) {
+					target.damage((int) partialDamage, this, Char.DamageType.REAL);
+					partialDamage -= (int) partialDamage;
 				}
-				
+
+			} else if(isSmallHunger() && dirtKnifeStand && !isStarving()) {
+				partialDamage += STEP * target.HT / 1000f;
+
+				if (partialDamage > 1) {
+					target.damage((int) partialDamage, this, Char.DamageType.REAL);
+					partialDamage -= (int) partialDamage;
+				}
+
+                level = level + STEP;
+
 			} else {
 
 				float newLevel = level + STEP;
@@ -135,12 +147,12 @@ public class Hunger extends Buff implements Hero.Doom {
 
 			}
 
-			float hungerDelay = STEP;
+			float hungerDelay = dirtKnifeStand ? STARVINGR : STEP;
 			if (target.buff(Shadows.class) != null){
 				hungerDelay *= 1.5f;
 			}
 			hungerDelay /= SaltCube.hungerGainMultiplier();
-			
+
 			spend( hungerDelay );
 
 		} else {
@@ -189,6 +201,10 @@ public class Hunger extends Buff implements Hero.Doom {
 
 	public boolean isStarving() {
 		return level >= STARVING;
+	}
+
+	public boolean isSmallHunger() {
+		return level >= STARVING-150;
 	}
 
 	public boolean isDied() {
@@ -248,8 +264,11 @@ public class Hunger extends Buff implements Hero.Doom {
 
 	@Override
 	public String desc() {
+		boolean dirtKnifeStand = hero.belongings.getItem(Dirt_KnifeStand.class)!=null;
 		String result;
-		if (level < STARVING) {
+		if (level < STARVING && dirtKnifeStand) {
+			result = Messages.get(this, "desc_intro_hungry_dirt");
+		} else if(level < STARVING){
 			result = Messages.get(this, "desc_intro_hungry");
 		} else {
 			result = Messages.get(this, "desc_intro_starving");

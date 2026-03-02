@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
@@ -102,6 +103,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LanFireStats;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
@@ -166,6 +168,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AlowGlyph.AncityStone;
@@ -199,13 +202,20 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.CatGirlCosplay;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeadOrAlive;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PureRouge;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.StarDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
@@ -928,6 +938,21 @@ public class Hero extends Char {
 			return Messages.get(Monk.class, "parried");
 		}
 
+		if(belongings.getItem(NoteOfBzmdr.class)!=null ){
+			if(enemy == null){
+				if(Random.Float()>0.5f){
+					if(lanterfireactive){
+						lanterfire--;
+					}
+				} else {
+					Light l = Dungeon.hero.buff(Light.class);
+					if (l != null){
+						Buff.affect(this,Light.class,-2f);
+					}
+				}
+			}
+		}
+
 		return super.defenseVerb();
 	}
 
@@ -1024,6 +1049,10 @@ public class Hero extends Char {
 			dmg += StoneDamage();
 		}
 
+		if(hero.belongings.getItem(DeadOrAlive.class)!=null){
+			dmg = (int) (dmg * 1.1f);
+		}
+
 		if(belongings.getItem(CloakFragmentsOfBzmdr.class)!=null) {
 			if(getZone() == 1){
 				dmg --;
@@ -1050,6 +1079,7 @@ public class Hero extends Char {
 	@Override
 	public float speed() {
 		float speed = 0;
+		StarDust starDust = Dungeon.hero.belongings.getItem(StarDust.class);
 
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
 			speed += CustomPlayer.baseSpeed;
@@ -1065,6 +1095,11 @@ public class Hero extends Char {
 		MIME.GOLD_THREE getSpeed = Dungeon.hero.belongings.getItem(MIME.GOLD_THREE.class);
 		if (getSpeed!=null) {
 			speed *= 1.2f;
+		}
+
+		if (starDust!=null) {
+			speed *= 0.75f;
+			speed = Math.min(speed,1.5f);
 		}
 
 		if(hero.buff(SliceDeadBless.class)!=null && Dungeon.depth>28){
@@ -1210,6 +1245,54 @@ public class Hero extends Char {
 
 	@Override
 	public boolean act() {
+
+		PropBuff propBuffbuff = buff(PropBuff.class);
+		if(propBuffbuff != null){
+			if(propBuffbuff.levelA > 0){
+				int count = 0;
+				boolean isNegative = false;
+				for (Buff b : hero.buffs()){
+					if (b.type == Buff.buffType.NEGATIVE
+							&& !(b instanceof AllyBuff)
+							&& !(b instanceof LostInventory)){
+						b.detach();
+						propBuffbuff.levelA--;
+						isNegative = true;
+						count++;
+					}
+				}
+				if(isNegative){
+					GLog.p(Messages.get(FaintGlimmer.class,"light",count));
+				}
+			}
+
+		}
+
+		BrokenRing brokenRing = hero.belongings.getItem(BrokenRing.class);
+		if(brokenRing != null){
+			if(belongings.misc() != null){
+				KindofMisc misc = belongings.misc();
+				if(misc.cursed){
+					misc.cursed = false;
+				}
+				misc.doUnequip(this,true);
+				GLog.n(Messages.get(brokenRing,"lock"));
+			}
+		}
+
+		CatGirlCosplay catGirlCosplay = hero.belongings.getItem(CatGirlCosplay.class);
+		if(catGirlCosplay != null){
+			if(Random.Float()<=0.12f){
+				int mapLength = Dungeon.level.length();
+				for (int i : PathFinder.CIRCLE7) {
+					int targetingPos = hero.pos + i;
+					if (targetingPos >= 0 && targetingPos < mapLength && !Dungeon.level.solid[targetingPos]) {
+						GameScene.add(Blob.seed(targetingPos, 1, CatGirlCosplay.NoSeenBlobs.class));
+					}
+				}
+			}
+		}
+
 
 		if(belongings.weapon instanceof TreeList){
 			Buff.affect(this, TreeList.TreeBarrier.class);
@@ -2222,6 +2305,21 @@ public class Hero extends Char {
 			damage = rockArmor.absorb(damage);
 		}
 
+		if(enemy instanceof Mob){
+			if(hero.belongings.getItem(PureRouge.class)!=null){
+				if(!((Mob) enemy).firstAttack){
+					PureRouge pr = hero.belongings.getItem(PureRouge.class);
+					pr.PureRougeEffect(enemy,this,true);
+					((Mob) enemy).firstAttack = true;
+				}
+			}
+		}
+
+		if(hero.belongings.getItem(DeadOrAlive.class)!=null){
+			damage = (int) (damage * 1.1f);
+		}
+
+
 		return super.defenseProc( enemy, damage );
 	}
 
@@ -2885,6 +2983,10 @@ public class Hero extends Char {
 
 	public boolean isStarving() {
 		return Buff.affect(this, Hunger.class).isStarving();
+	}
+
+	public boolean isSmallHunger() {
+		return Buff.affect(this, Hunger.class).isSmallHunger();
 	}
 
 	@Override

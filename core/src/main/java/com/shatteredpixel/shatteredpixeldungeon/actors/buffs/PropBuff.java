@@ -9,6 +9,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KillEye;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
@@ -34,7 +36,8 @@ public class PropBuff extends Buff{
         type = buffType.POSITIVE;
     }
 
-    public int timeA = 0,timeB = 0,timeC = 0, timeD = 0, timeE =0, timeF = 0;
+    public int timeA = 0,timeB = 0,timeC = 0, timeD = 0, timeE =0, timeF = 0, timeG = 0, timeH = 0;
+    public int levelA = 0;
 
     public boolean potionLost = false;
     public int warningTime = 0;
@@ -140,6 +143,25 @@ public class PropBuff extends Buff{
                 }
             }
 
+            if(Dungeon.hero.belongings.getItem(KillEye.class)!=null) {
+                timeG++;
+                int s = Dungeon.depth/5;
+                if(timeG >= 13-s){
+                    timeG = 13-s;
+                }
+            }
+
+            if(Dungeon.hero.belongings.getItem(FaintGlimmer.class)!=null) {
+                timeH++;
+                if(timeH >= 5 && levelA <= 9){
+                    levelA++;
+                    timeH = 0;
+                }
+                if(levelA < 0){
+                    levelA = 0;
+                }
+            }
+
         }
 
         if(potionLost){
@@ -161,7 +183,11 @@ public class PropBuff extends Buff{
     private static final String TIMED = "timeD";
     private static final String TIMEE = "timeE";
     private static final String TIMEF = "timeF";
+    private static final String TIMEG = "timeG";
+    private static final String TIMEH = "timeH";
     private static final String WRTME = "wrtme";
+
+    private static final String LEVELA = "levelA";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
@@ -172,7 +198,12 @@ public class PropBuff extends Buff{
         bundle.put( TIMED, timeD );
         bundle.put( TIMEE, timeE );
         bundle.put( TIMEF, timeF );
+        bundle.put( TIMEG, timeG );
+        bundle.put( TIMEH, timeH);
+
         bundle.put( WRTME,warningTime );
+
+        bundle.put( LEVELA,levelA);
     }
 
     @Override
@@ -184,7 +215,12 @@ public class PropBuff extends Buff{
         timeD = bundle.getInt( TIMED );
         timeE = bundle.getInt( TIMEE );
         timeF = bundle.getInt( TIMEF );
+        timeG = bundle.getInt( TIMEG );
+        timeH = bundle.getInt( TIMEH );
+
         warningTime = bundle.getInt( WRTME );
+
+        levelA = bundle.getInt(LEVELA);
     }
 
 }

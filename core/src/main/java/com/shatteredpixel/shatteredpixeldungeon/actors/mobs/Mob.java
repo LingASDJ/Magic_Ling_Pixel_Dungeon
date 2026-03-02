@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PropBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SmokeAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
@@ -163,6 +164,8 @@ public abstract class Mob extends Char {
 	protected boolean alerted = false;
 
 	public boolean isAnimal = false;
+
+	public boolean firstAttack = false;
 
 	public Char enemy(){
 		return enemy;
@@ -272,6 +275,8 @@ public abstract class Mob extends Char {
 	private static final String MAX_LVL	= "max_lvl";
 	private static final String ENEMY_ID= "enemy_id";
 	private static final String  OLDDAY	= "oldday";
+
+	private static final String  FIRST_ATTACK	= "first_attack";
 
     protected Object loot = null;
 
@@ -392,6 +397,8 @@ public abstract class Mob extends Char {
 		}
 
 		bundle.put( OLDDAY, isOldDay);
+
+		bundle.put( FIRST_ATTACK, firstAttack);
 	}
 
 	@Override
@@ -425,6 +432,7 @@ public abstract class Mob extends Char {
 		firstAdded = false;
 
 		isOldDay = bundle.getBoolean( OLDDAY );
+		firstAttack = bundle.getBoolean(FIRST_ATTACK);
 	}
 
 	private boolean cellIsPathable( int cell ){
@@ -977,9 +985,13 @@ public abstract class Mob extends Char {
 	}
 
 	public boolean surprisedBy( Char enemy, boolean attacking ){
-		return enemy == hero
-				&& (enemy.invisible > 0 || !enemySeen || (fieldOfView != null && fieldOfView.length == Dungeon.level.length() && !fieldOfView[enemy.pos]))
-				&& (!attacking || enemy.canSurpriseAttack());
+
+		int s = Dungeon.depth/5;
+		PropBuff props = hero.buff(PropBuff.class);
+
+		return enemy == hero && (enemy.invisible > 0 || !enemySeen || fieldOfView != null && fieldOfView.length == Dungeon.level.length() && !fieldOfView[enemy.pos]) && (!attacking || enemy.canSurpriseAttack()) ||props != null && props.timeG >= 13 - s;
+
+
 	}
 
 	public void aggro( Char ch ) {
@@ -1093,6 +1105,14 @@ public abstract class Mob extends Char {
             } else {
                 Surprise.hit(this);
             }
+
+			int s = Dungeon.depth/5;
+			PropBuff props = hero.buff(PropBuff.class);
+			if(props != null){
+				if(props.timeG >= 13 - s){
+					props.timeG = 0;
+				}
+			}
 		}
 
 		//if attacked by something else than current target, and that thing is closer, switch targets
