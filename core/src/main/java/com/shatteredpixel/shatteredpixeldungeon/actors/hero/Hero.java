@@ -202,6 +202,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMi
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.CatGirlCosplay;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.DeadOrAlive;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
@@ -1259,6 +1260,19 @@ public class Hero extends Char {
 				}
 				misc.doUnequip(this,true);
 				GLog.n(Messages.get(brokenRing,"lock"));
+			}
+		}
+
+		CatGirlCosplay catGirlCosplay = hero.belongings.getItem(CatGirlCosplay.class);
+		if(catGirlCosplay != null){
+			if(Random.Float()<=0.12f){
+				int mapLength = Dungeon.level.length();
+				for (int i : PathFinder.CIRCLE7) {
+					int targetingPos = hero.pos + i;
+					if (targetingPos >= 0 && targetingPos < mapLength && !Dungeon.level.solid[targetingPos]) {
+						GameScene.add(Blob.seed(targetingPos, 1, CatGirlCosplay.NoSeenBlobs.class));
+					}
+				}
 			}
 		}
 
