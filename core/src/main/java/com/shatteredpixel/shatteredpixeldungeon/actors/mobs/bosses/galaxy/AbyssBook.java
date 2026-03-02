@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.Books;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
@@ -17,7 +16,7 @@ public class AbyssBook extends Books {
 
     private static final String Read	= "Read";
     {
-        image = ItemSpriteSheet.RGJT_1;
+        //image = ItemSpriteSheet.RGJT_1;
         unique= true;
     }
 
@@ -35,7 +34,7 @@ public class AbyssBook extends Books {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
-                    GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.RGJT_1),
+                    GameScene.show(new WndOptions(new ItemSprite(),
                             Messages.titleCase(Messages.get(AbyssBook.class, "name")),
                             Messages.get(AbyssBook.class, "book_blessed"),
                            "1","2","3","4","5","6","7","8") {

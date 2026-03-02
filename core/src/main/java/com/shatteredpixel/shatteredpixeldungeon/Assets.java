@@ -147,6 +147,10 @@ public class Assets {
 
 		public static final String TILES_ZERO_SPRING    = "environment/tiles_zero_spring.png";
 
+		public static final String TILES_ZERO    = "environment/custom_tiles/main/tiles_zero.png";
+		public static final String JORCT_ZERO    = "environment/custom_tiles/main/zero.png";
+		public static final String HOTEL_ZERO    = "environment/custom_tiles/main/zero2.png";
+
 		public static final String WATER_SEWERS = "environment/water0.png";
 		public static final String WATER_PRISON = "environment/water1.png";
 		public static final String WATER_CAVES  = "environment/water2.png";

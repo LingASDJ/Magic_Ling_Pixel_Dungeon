@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
+import com.shatteredpixel.shatteredpixeldungeon.items.OldSunShadow;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
@@ -440,6 +441,7 @@ public class SpawnMisc extends TestItem {
             miscList2.add(SoulCrack.PinkSoulCrack.class);
             miscList2.add(UnsignedInvitationLetter.class);
             miscList2.add(LostBackpack.class);
+            miscList2.add(OldSunShadow.class);
         }
     }
 

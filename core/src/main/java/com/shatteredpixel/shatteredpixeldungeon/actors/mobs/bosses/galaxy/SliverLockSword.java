@@ -10,7 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class SliverLockSword extends MeleeWeapon {
 
     public SliverLockSword() {
-        image = ItemSpriteSheet.RGJT_2;
+        image = ItemSpriteSheet.DREAM_SEED+3;
         tier = 6;
         DLY = 1F;
         animation = false;
@@ -29,19 +29,19 @@ public class SliverLockSword extends MeleeWeapon {
 //        }
 //    }
 
-    @Override
-    public int image() {
-        super.image = ItemSpriteSheet.RGJT_2;
-        if (level() >= 6) {
-            super.image = ItemSpriteSheet.RGJT_2;
-            RCH=2;
-            ACC = 2f;
-        } else if (level() >= 3) {
-            ACC = 2f;
-            super.image = ItemSpriteSheet.RGJT_2;
-        }
-        return image;
-    }
+//    @Override
+//    public int image() {
+//        super.image = ItemSpriteSheet.RGJT_2;
+//        if (level() >= 6) {
+//            super.image = ItemSpriteSheet.RGJT_2;
+//            RCH=2;
+//            ACC = 2f;
+//        } else if (level() >= 3) {
+//            ACC = 2f;
+//            super.image = ItemSpriteSheet.RGJT_2;
+//        }
+//        return image;
+//    }
 
 //    public String statsInfo(){
 //        return (Messages.get(this,"stats_info"));

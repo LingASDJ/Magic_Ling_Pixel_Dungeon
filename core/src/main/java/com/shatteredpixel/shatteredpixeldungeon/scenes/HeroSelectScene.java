@@ -814,7 +814,14 @@ public class HeroSelectScene extends PixelScene {
 				resetColor();
 			}
 			// 特殊处理4个皮肤
-			if (cl == HeroClass.ROGUE && cl.GetSkin() == 4) {
+			if (cl == HeroClass.WARRIOR && cl.GetSkin() == 4) {
+				texture(TextureCache.get("splashes/giftskin_warrior.png"));
+				frame(0, 0, 88, 120);
+				setPos(
+						0,
+						0
+				);
+			} else if (cl == HeroClass.ROGUE && cl.GetSkin() == 4) {
 				texture(TextureCache.get("splashes/giftskin_rogue.png"));
 				frame(0, 0, 88, 120);
 				setPos(

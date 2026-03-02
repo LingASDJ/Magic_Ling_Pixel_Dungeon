@@ -54,6 +54,8 @@ public class ZeroDreamShop extends NTNPC {
     public static Item shop9;
     public static Item shop10;
     public static Item shop11;
+    public static Item shop12;
+    public static Item shop13;
 
     @Override
     public boolean interact(Char c) {

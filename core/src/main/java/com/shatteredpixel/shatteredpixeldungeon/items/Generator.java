@@ -85,12 +85,19 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.CatGirlCosplay;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeadOrAlive;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Dirt_KnifeStand;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DreamSeed;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KillEye;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
@@ -101,6 +108,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PureRouge;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.RustedGoldCoin;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.StarDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
@@ -847,12 +855,22 @@ public class Generator {
 					CloakFragmentsOfBzmdr.class,
 					EmotionalAggregationB.class,
 					HeartOfCrystalFractal.class,
+					Dirt_KnifeStand.class,
 
 					//GT3
+					KillEye.class,
 					PureRouge.class,
+					FaintGlimmer.class,
 
 					//BT3
 					NoteOfBzmdr.class,
+					StarDust.class,
+					BrokenRing.class,
+
+					//ChaosT1,
+					DeadOrAlive.class,
+					DreamSeed.class,
+					CatGirlCosplay.class
 			};
 			PROP.defaultProbs = new float[]{
 					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
