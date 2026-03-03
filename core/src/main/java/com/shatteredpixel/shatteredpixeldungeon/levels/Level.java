@@ -76,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
@@ -96,7 +97,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRan
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
@@ -782,7 +782,17 @@ public abstract class Level implements Bundlable {
 
 	//returns true if we immediately transition, false otherwise
 	public boolean activateTransition(Hero hero, LevelTransition transition){
-		if (locked){
+		if (locked || Chasm.isSmallLeaf){
+			if(Chasm.isSmallLeaf){
+				Game.runOnRenderThread(new Callback() {
+										   @Override
+										   public void call() {
+											   GameScene.show(new WndQuest(new SmallLeafHardDungeon(), Messages.get(SmallLeafHardDungeon.class, "must_reload")));
+										   }
+									   }
+				);
+				ready();
+			}
 			return false;
 		}
 
@@ -1726,11 +1736,6 @@ public abstract class Level implements Bundlable {
 			if (c instanceof Hero){
 				viewDist *= 1f + 0.25f*((Hero) c).pointsInTalent(Talent.FARSIGHT);
 				viewDist *= EyeOfNewt.visionRangeMultiplier();
-
-
-				if(((Hero) c).belongings.getItem(NoteOfBzmdr.class)!=null ){
-					viewDist *= 0.25f;
-				}
 			}
 
 

@@ -93,7 +93,6 @@ abstract public class Boss extends Mob {
                 for (IceCyanBlueSquareCoin w : ice.toArray(new IceCyanBlueSquareCoin[0])){
                     w.detachAll(hero.belongings.backpack);
                     if(SPDSettings.Cheating()){
-                        //盗版蓝币只有正版的十分之一
                         SPDSettings.iceCoin(w.quantity/10);
                     } else {
                         SPDSettings.iceCoin(w.quantity);
@@ -102,16 +101,12 @@ abstract public class Boss extends Mob {
                 }
             }
 
-            if((isDLC(Conducts.Conduct.HARD) || isDLC(Conducts.Conduct.DEV)) && (new ArrayList<>(Arrays.asList(5,10,15,20)).contains(Dungeon.depth) && Dungeon.branch ==0 )){
-                SmallLeafHardDungeon smallLeafHardDungeon = new SmallLeafHardDungeon();
-                smallLeafHardDungeon.pos = pos;
-                Dungeon.level.mobs.add(smallLeafHardDungeon);
-                GameScene.add( smallLeafHardDungeon );
-                Dungeon.level.occupyCell( smallLeafHardDungeon );
+            if((isDLC(Conducts.Conduct.HARD) || isDLC(Conducts.Conduct.DEV)) && (new ArrayList<>(Arrays.asList(5,10,15,20,25)).contains(Dungeon.depth) && Dungeon.branch ==0 )){
+
 
                 if(Dungeon.depth == 5){
-                    Prop p1 = Prop.randomPropA();
-                    Prop p2 = Prop.randomPropB();
+                    Prop p1 = Prop.randomPropA(0);
+                    Prop p2 = Prop.randomPropB(0);
                     p1.collect();
                     p2.collect();
                     GLog.i(Messages.get(hero, "you_now_have", p1.name()));
@@ -127,23 +122,14 @@ abstract public class Boss extends Mob {
                     GLog.i(Messages.get(hero, "you_now_have", p2.name()));
                 }
 
-                if(Dungeon.depth == 15){
-                    Prop p1 = Prop.randomPropA(Random.Int(2));
-                    Prop p2 = Prop.randomPropB(Random.Int(2));
-                    p1.collect();
-                    p2.collect();
-                    GLog.i(Messages.get(hero, "you_now_have", p1.name()));
-                    GLog.i(Messages.get(hero, "you_now_have", p2.name()));
+                if(Dungeon.depth == 15 || Dungeon.depth == 20 || Dungeon.depth == 25){
+                    SmallLeafHardDungeon smallLeafHardDungeon = new SmallLeafHardDungeon();
+                    smallLeafHardDungeon.pos = pos;
+                    Dungeon.level.mobs.add(smallLeafHardDungeon);
+                    GameScene.add( smallLeafHardDungeon );
+                    Dungeon.level.occupyCell( smallLeafHardDungeon );
                 }
 
-                if(Dungeon.depth == 20){
-                    Prop p1 = Prop.randomPropA(2);
-                    Prop p2 = Prop.randomPropB(2);
-                    p1.collect();
-                    p2.collect();
-                    GLog.i(Messages.get(hero, "you_now_have", p1.name()));
-                    GLog.i(Messages.get(hero, "you_now_have", p2.name()));
-                }
                 cleanTrashItems();
             }
 

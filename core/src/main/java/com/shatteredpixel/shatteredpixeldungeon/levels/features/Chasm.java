@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrossDiedTower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.SliceGirl;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
@@ -117,7 +118,8 @@ public class Chasm implements Hero.Doom {
 		});
 	}
 
-	static boolean isSliceGirl = false;
+	public static boolean isSliceGirl = false;
+	public static boolean isSmallLeaf = false;
 	public static void heroFall( int pos ) {
 
 		jumpConfirmed = false;
@@ -135,15 +137,20 @@ public class Chasm implements Hero.Doom {
 			}
 		}
 
-		if(isSliceGirl){
-			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+		if(isSliceGirl) {
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 				if (mob instanceof SliceGirl) {
-					ScrollOfTeleportation.appear(hero,mob.pos-1);
+					ScrollOfTeleportation.appear(hero, mob.pos - 1);
 					Dungeon.hero.interrupt();
 					Dungeon.observe();
 					break;
 				}
 			}
+		} else if(isSmallLeaf){
+			GLog.n(Messages.get(SmallLeafHardDungeon.class,"must_reload"));
+			ScrollOfTeleportation.appear(hero, level.entrance());
+			Dungeon.hero.interrupt();
+			Dungeon.observe();
 		} else if(Dungeon.depth == 5 && Dungeon.branch == 0 && Statistics.ExFruit || Dungeon.depth == 7 && Statistics.bossRushMode || Dungeon.depth == 1 && branch == 12) {
 			int SafePos = 0;
 			switch (Random.NormalIntRange(0, 4)) {

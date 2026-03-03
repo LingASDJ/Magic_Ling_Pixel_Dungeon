@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -53,7 +51,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
@@ -510,11 +507,8 @@ public abstract class Wand extends Item {
 			}
 		}
 
-		BrokenRing brokenRing = hero.belongings.getItem(BrokenRing.class);
+
 		int chargesUse = cursed ? 1 : chargesPerCast();
-		if(brokenRing != null && Random.Float()<=0.25f){
-			chargesUse *= 2;
-		}
 
 		curCharges -= chargesUse;
 		Dungeon.hero.chargesUsed += chargesUse;

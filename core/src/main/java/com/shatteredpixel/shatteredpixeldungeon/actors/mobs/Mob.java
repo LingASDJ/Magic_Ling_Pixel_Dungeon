@@ -92,6 +92,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
@@ -475,16 +476,26 @@ public abstract class Mob extends Char {
 	protected boolean act() {
 
 		super.act();
+		NoteOfBzmdr noteOfBzmdr = Dungeon.hero.belongings.getItem(NoteOfBzmdr.class);
+		float exView;
+		if(noteOfBzmdr != null){
+			exView = 1.25f;
+		} else {
+			exView = 1;
+		}
 
 		BzmdrNewYears.BzmdrGift bzmdrGift = Dungeon.hero.belongings.getItem(BzmdrNewYears.BzmdrGift.class);
+		int ex2View = 0;
 		if(bzmdrGift != null){
-			viewDistance = 8 + Statistics.BzmdrCJMobViewDistance;
+			ex2View = Statistics.BzmdrCJHeroViewDistance;
 			if(buff(ChampionEnemy.UnnameBless.class)==null) {
 				if(alignment == Alignment.ENEMY){
 					Buff.affect(this, ChampionEnemy.UnnameBless.class);
 				}
 			}
 		}
+
+		viewDistance = (int) ((8 + ex2View) * exView);
 
 		if(hero.buff(ElectricalSmoke.SmokingAlloy.class) == null && buff(SmokeAlly.class) !=null ) {
 			buff(SmokeAlly.class).detach();

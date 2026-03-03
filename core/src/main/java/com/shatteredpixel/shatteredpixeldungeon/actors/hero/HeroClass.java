@@ -286,8 +286,8 @@ public enum HeroClass {
 
 		if(Dungeon.isDLC(Conducts.Conduct.HARD)){
 			new PropBag().quantity(1).identify().collect();
-			Prop.randomPropA().collect();
-			Prop.randomPropB().collect();
+			Prop.randomPropA(0).collect();
+			Prop.randomPropB(0).collect();
 		}
 
 		switch (this) {

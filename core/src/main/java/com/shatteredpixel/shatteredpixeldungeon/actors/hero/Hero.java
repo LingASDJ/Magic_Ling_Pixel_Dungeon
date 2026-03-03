@@ -176,6 +176,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -231,6 +232,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.PacManQuest;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -938,21 +940,6 @@ public class Hero extends Char {
 			return Messages.get(Monk.class, "parried");
 		}
 
-		if(belongings.getItem(NoteOfBzmdr.class)!=null ){
-			if(enemy == null){
-				if(Random.Float()>0.5f){
-					if(lanterfireactive){
-						lanterfire--;
-					}
-				} else {
-					Light l = Dungeon.hero.buff(Light.class);
-					if (l != null){
-						Buff.affect(this,Light.class,-2f);
-					}
-				}
-			}
-		}
-
 		return super.defenseVerb();
 	}
 
@@ -1245,27 +1232,28 @@ public class Hero extends Char {
 
 	@Override
 	public boolean act() {
-
 		PropBuff propBuffbuff = buff(PropBuff.class);
-		if(propBuffbuff != null){
-			if(propBuffbuff.levelA > 0){
+		if (propBuffbuff != null) {
+			int remainingLevel = Math.max(0, propBuffbuff.levelA);
+			if (remainingLevel > 0) {
 				int count = 0;
 				boolean isNegative = false;
-				for (Buff b : hero.buffs()){
+				for (Buff b : hero.buffs()) {
+					if (remainingLevel <= 0) break;
 					if (b.type == Buff.buffType.NEGATIVE
 							&& !(b instanceof AllyBuff)
-							&& !(b instanceof LostInventory)){
+							&& !(b instanceof LostInventory)) {
 						b.detach();
-						propBuffbuff.levelA--;
+						remainingLevel--;
 						isNegative = true;
 						count++;
 					}
 				}
-				if(isNegative){
-					GLog.p(Messages.get(FaintGlimmer.class,"light",count));
+				propBuffbuff.levelA = remainingLevel;
+				if (isNegative) {
+					GLog.p(Messages.get(FaintGlimmer.class, "light", count,remainingLevel));
 				}
 			}
-
 		}
 
 		BrokenRing brokenRing = hero.belongings.getItem(BrokenRing.class);
@@ -1277,6 +1265,33 @@ public class Hero extends Char {
 				}
 				misc.doUnequip(this,true);
 				GLog.n(Messages.get(brokenRing,"lock"));
+			}
+			if(HT * 0.6f >= HP){
+				if(belongings.artifact() != null) {
+					Artifact artifact = belongings.artifact();
+					if (artifact.cursed) {
+						artifact.cursed = false;
+					}
+					artifact.doUnequip(this, true);
+				}
+			}
+			if(HT * 0.4f >= HP){
+				if(belongings.ring() != null) {
+					Ring ring = belongings.ring();
+					if (ring.cursed) {
+						ring.cursed = false;
+					}
+					ring.doUnequip(this, true);
+				}
+			}
+			if(HT * 0.2f >= HP){
+				if(belongings.armor() != null) {
+					Armor armor = belongings.armor();
+					if (armor.cursed) {
+						armor.cursed = false;
+					}
+					armor.doUnequip(this, true);
+				}
 			}
 		}
 
@@ -2311,6 +2326,15 @@ public class Hero extends Char {
 					PureRouge pr = hero.belongings.getItem(PureRouge.class);
 					pr.PureRougeEffect(enemy,this,true);
 					((Mob) enemy).firstAttack = true;
+				}
+			}
+
+			if(hero.belongings.getItem(NoteOfBzmdr.class)!=null){
+				Light l = Dungeon.hero.buff(Light.class);
+				if (l != null){
+					Buff.affect(this,Light.class,-1f);
+				} else {
+					damage = (int) (damage * 1.25f);
 				}
 			}
 		}

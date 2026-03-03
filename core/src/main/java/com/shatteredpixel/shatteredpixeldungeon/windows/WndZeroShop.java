@@ -51,7 +51,7 @@ public class WndZeroShop extends Window {
 
         ZeroDreamShop.shop11 =  SPDSettings.isItemUnlock("avatars_mage_4")  ? null :new SKINITEM.SKIN_MC();
         ZeroDreamShop.shop12 =  SPDSettings.isItemUnlock("avatars_rogue_4")  ? null :new SKINITEM.SKIN_RC();
-        ZeroDreamShop.shop13 =  SPDSettings.isItemUnlock("avatars_warrior_4")  ? null :new SKINITEM.SKIN_WC();
+        ZeroDreamShop.shop13 =  null;
 
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
