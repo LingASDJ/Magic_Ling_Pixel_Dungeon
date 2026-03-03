@@ -1232,7 +1232,6 @@ public class Hero extends Char {
 
 	@Override
 	public boolean act() {
-
 		PropBuff propBuffbuff = buff(PropBuff.class);
 		if (propBuffbuff != null) {
 			int remainingLevel = Math.max(0, propBuffbuff.levelA);

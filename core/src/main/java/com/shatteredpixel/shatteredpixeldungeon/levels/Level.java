@@ -76,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
@@ -781,7 +782,17 @@ public abstract class Level implements Bundlable {
 
 	//returns true if we immediately transition, false otherwise
 	public boolean activateTransition(Hero hero, LevelTransition transition){
-		if (locked){
+		if (locked || Chasm.isSmallLeaf){
+			if(Chasm.isSmallLeaf){
+				Game.runOnRenderThread(new Callback() {
+										   @Override
+										   public void call() {
+											   GameScene.show(new WndQuest(new SmallLeafHardDungeon(), Messages.get(SmallLeafHardDungeon.class, "must_reload")));
+										   }
+									   }
+				);
+				ready();
+			}
 			return false;
 		}
 

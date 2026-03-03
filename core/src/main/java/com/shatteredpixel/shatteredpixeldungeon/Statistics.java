@@ -25,12 +25,19 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.CatGirlCosplay;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeadOrAlive;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Dirt_KnifeStand;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DreamSeed;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KillEye;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
@@ -38,8 +45,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PureRouge;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.RustedGoldCoin;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.StarDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
@@ -318,6 +327,8 @@ public class Statistics {
 	public static int BzmdrCJHeroSTR = 0;
 	public static int BzmdrCJHeroViewDistance = 0;
 
+	public static boolean MustHardLevel = false;
+
 	private static final String ICECLAN ="iceCyanBlueSquareCoin";
 
 	private static final String GAMETIME = "gameTime";
@@ -525,28 +536,35 @@ public class Statistics {
 				new WenStudyingPaperTwo(),
 				new CloakFragmentsOfBzmdr(),
 				new EmotionalAggregationB(),
-				new HeartOfCrystalFractal()
+				new HeartOfCrystalFractal(),
+				new Dirt_KnifeStand()
 		));
 
 		propPositive2 = new ArrayList<>(Arrays.asList(
-				new Trash()
+				new KillEye(),
+				new PureRouge(),
+				new FaintGlimmer()
 		));
 
 		propNegative2 = new ArrayList<>(Arrays.asList(
-				new NoteOfBzmdr()
+				new NoteOfBzmdr(),
+				new StarDust(),
+				new BrokenRing()
 		));
 
-        propChaotic0 = new ArrayList<>(Arrays.asList(
-                new Trash()
-        ));
+		propChaotic0 = new ArrayList<>(Arrays.asList(
+				new DeadOrAlive(),
+				new DreamSeed(),
+				new CatGirlCosplay()
+		));
 
-        propChaotic1 = new ArrayList<>(Arrays.asList(
-                new Trash()
-        ));
+		propChaotic1 = new ArrayList<>(Arrays.asList(
+				new Trash()
+		));
 
-        propChaotic2 = new ArrayList<>(Arrays.asList(
-                new Trash()
-        ));
+		propChaotic2 = new ArrayList<>(Arrays.asList(
+				new Trash()
+		));
 	}
 
     public static void reset() {
@@ -584,29 +602,37 @@ public class Statistics {
 				new WenStudyingPaperTwo(),
 				new CloakFragmentsOfBzmdr(),
 				new EmotionalAggregationB(),
-				new HeartOfCrystalFractal()
+				new HeartOfCrystalFractal(),
+				new Dirt_KnifeStand()
 		));
 
 		propPositive2 = new ArrayList<>(Arrays.asList(
-				new Trash()
+				new KillEye(),
+				new PureRouge(),
+				new FaintGlimmer()
 		));
 
 		propNegative2 = new ArrayList<>(Arrays.asList(
-				new NoteOfBzmdr()
+				new NoteOfBzmdr(),
+				new StarDust(),
+				new BrokenRing()
 		));
 
-        propChaotic0 = new ArrayList<>(Arrays.asList(
-                new Trash()
-        ));
+		propChaotic0 = new ArrayList<>(Arrays.asList(
+				new DeadOrAlive(),
+				new DreamSeed(),
+				new CatGirlCosplay()
+		));
 
-        propChaotic1 = new ArrayList<>(Arrays.asList(
-                new Trash()
-        ));
+		propChaotic1 = new ArrayList<>(Arrays.asList(
+				new Trash()
+		));
 
-        propChaotic2 = new ArrayList<>(Arrays.asList(
-                new Trash()
-        ));
+		propChaotic2 = new ArrayList<>(Arrays.asList(
+				new Trash()
+		));
 
+		MustHardLevel = false;
 
         boss_enhance = 0;
         ChaicBlood = 0;
@@ -1134,6 +1160,8 @@ public class Statistics {
         bundle.put("propChaotic0", propChaotic0);
         bundle.put("propChaotic1", propChaotic1);
         bundle.put("propChaotic2", propChaotic2);
+
+		bundle.put("MustDFRT",MustHardLevel);
 	}
 
 	private static ArrayList<Prop> convertToPropList(Collection<Bundlable> bundlableCollection) {
@@ -1150,6 +1178,8 @@ public class Statistics {
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+
+		MustHardLevel = bundle.getBoolean("MustDFRT");
 
 		propPositive0 = convertToPropList(bundle.getCollection("propPositive0"));
 		propPositive1 = convertToPropList(bundle.getCollection("propPositive1"));
