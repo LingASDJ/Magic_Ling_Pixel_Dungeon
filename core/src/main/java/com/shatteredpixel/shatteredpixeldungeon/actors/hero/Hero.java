@@ -1247,25 +1247,27 @@ public class Hero extends Char {
 	public boolean act() {
 
 		PropBuff propBuffbuff = buff(PropBuff.class);
-		if(propBuffbuff != null){
-			if(propBuffbuff.levelA > 0){
+		if (propBuffbuff != null) {
+			int remainingLevel = Math.max(0, propBuffbuff.levelA);
+			if (remainingLevel > 0) {
 				int count = 0;
 				boolean isNegative = false;
-				for (Buff b : hero.buffs()){
+				for (Buff b : hero.buffs()) {
+					if (remainingLevel <= 0) break;
 					if (b.type == Buff.buffType.NEGATIVE
 							&& !(b instanceof AllyBuff)
-							&& !(b instanceof LostInventory)){
+							&& !(b instanceof LostInventory)) {
 						b.detach();
-						propBuffbuff.levelA--;
+						remainingLevel--;
 						isNegative = true;
 						count++;
 					}
 				}
-				if(isNegative){
-					GLog.p(Messages.get(FaintGlimmer.class,"light",count));
+				propBuffbuff.levelA = remainingLevel;
+				if (isNegative) {
+					GLog.p(Messages.get(FaintGlimmer.class, "light", count,remainingLevel));
 				}
 			}
-
 		}
 
 		BrokenRing brokenRing = hero.belongings.getItem(BrokenRing.class);
