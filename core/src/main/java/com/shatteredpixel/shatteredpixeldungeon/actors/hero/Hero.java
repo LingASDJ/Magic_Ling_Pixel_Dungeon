@@ -938,21 +938,6 @@ public class Hero extends Char {
 			return Messages.get(Monk.class, "parried");
 		}
 
-		if(belongings.getItem(NoteOfBzmdr.class)!=null ){
-			if(enemy == null){
-				if(Random.Float()>0.5f){
-					if(lanterfireactive){
-						lanterfire--;
-					}
-				} else {
-					Light l = Dungeon.hero.buff(Light.class);
-					if (l != null){
-						Buff.affect(this,Light.class,-2f);
-					}
-				}
-			}
-		}
-
 		return super.defenseVerb();
 	}
 
@@ -2313,6 +2298,15 @@ public class Hero extends Char {
 					PureRouge pr = hero.belongings.getItem(PureRouge.class);
 					pr.PureRougeEffect(enemy,this,true);
 					((Mob) enemy).firstAttack = true;
+				}
+			}
+
+			if(hero.belongings.getItem(NoteOfBzmdr.class)!=null){
+				Light l = Dungeon.hero.buff(Light.class);
+				if (l != null){
+					Buff.affect(this,Light.class,-1f);
+				} else {
+					damage = (int) (damage * 1.25f);
 				}
 			}
 		}
