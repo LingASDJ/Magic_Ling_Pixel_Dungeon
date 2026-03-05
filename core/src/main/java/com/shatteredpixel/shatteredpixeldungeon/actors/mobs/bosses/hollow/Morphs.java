@@ -103,14 +103,17 @@ public class Morphs extends Boss {
 
             ShubNiggurath sn = new ShubNiggurath();
             sn.pos = 358;
+            BossHealthBar.assignBoss(sn);
             GameScene.add(sn);
 
             Nyarlathotep nyarlathotep = new Nyarlathotep();
             nyarlathotep.pos = 367;
+            BossHealthBar.assignBoss(nyarlathotep);
             GameScene.add(nyarlathotep);
 
             YogSoul yogSoul = new YogSoul();
             yogSoul.pos = 187;
+            BossHealthBar.assignBoss(yogSoul);
             GameScene.add(yogSoul);
 
             AlarmTrap alarmTrap = new AlarmTrap();
@@ -172,7 +175,6 @@ public class Morphs extends Boss {
     public void notice() {
 
         if (!BossHealthBar.isAssigned()) {
-            BossHealthBar.assignBoss(this);
             Camera.main.shake(1f,3f);
             GameScene.bossReady();
 

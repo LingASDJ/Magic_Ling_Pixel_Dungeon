@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class BuffIndicator extends Component {
-
+	private static BuffIndicator[] bossInstances = new BuffIndicator[4];
 	//transparent icon
 	public static final int NONE	= 68;
 
@@ -196,7 +196,7 @@ public class BuffIndicator extends Component {
     private static BuffIndicator bossInstance;
 
     private LinkedHashMap<Buff, BuffButton> buffButtons = new LinkedHashMap<>();
-    private boolean needsRefresh;
+    public boolean needsRefresh;
     private Char ch;
 
     private boolean large;
@@ -395,13 +395,50 @@ public class BuffIndicator extends Component {
 		}
 	}
 
+	/**
+	 * 兼容原有方法：刷新第一个Boss的Buff指示器
+	 */
 	public static void refreshBoss(){
-		if (bossInstance != null) {
-			bossInstance.needsRefresh = true;
+		// 刷新第一个Boss
+		if (bossInstances[0] != null) {
+			bossInstances[0].needsRefresh = true;
 		}
 	}
 
+	/**
+	 * 新增方法：刷新所有活跃的Boss Buff指示器
+	 */
+	public static void refreshAllBosses() {
+		for (BuffIndicator instance : bossInstances) {
+			if (instance != null) {
+				instance.needsRefresh = true;
+			}
+		}
+	}
+
+	/**
+	 * 兼容原有方法：设置第一个Boss的Buff实例
+	 */
 	public static void setBossInstance(BuffIndicator boss){
-		bossInstance = boss;
+		bossInstances[0] = boss;
+	}
+
+	/**
+	 * 新增方法：设置指定索引的Boss Buff实例（适配多Boss血条）
+	 */
+	public static void setBossInstance(int index, BuffIndicator boss) {
+		if (index >= 0 && index < bossInstances.length) {
+			bossInstances[index] = boss;
+		}
+	}
+
+	/**
+	 * 新增方法：获取指定索引的Boss Buff实例
+	 */
+	public static BuffIndicator getBossInstance(int index) {
+		if (index >= 0 && index < bossInstances.length) {
+			return bossInstances[index];
+		}
+		return null;
 	}
 }

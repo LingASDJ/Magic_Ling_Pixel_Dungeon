@@ -24,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
@@ -150,21 +151,25 @@ public class MorpheusBossLevel extends Level {
         TowerGods towerGods = new TowerGods();
         towerGods.pos = 304;
         Buff.affect(towerGods, Barrier.class).setShield(100);
+        BossHealthBar.assignBoss(towerGods);
         GameScene.add(towerGods);
 
         TowerTime towerTime = new TowerTime();
         towerTime.pos = 512;
         Buff.affect(towerTime, Barrier.class).setShield(100);
+        BossHealthBar.assignBoss(towerTime);
         GameScene.add(towerTime);
 
         TowerMachine towerMachine = new TowerMachine();
         towerMachine.pos = 112;
         Buff.affect(towerMachine, Barrier.class).setShield(100);
+        BossHealthBar.assignBoss(towerMachine);
         GameScene.add(towerMachine);
 
         TowerMind towerMind = new TowerMind();
         towerMind.pos = 320;
         Buff.affect(towerMind, Barrier.class).setShield(100);
+        BossHealthBar.assignBoss(towerMind);
         GameScene.add(towerMind);
 
         TowerMind.MindCore mindCore = new TowerMind.MindCore();

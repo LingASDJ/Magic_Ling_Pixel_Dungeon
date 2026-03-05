@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLRPRO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaReal;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.timing.VirtualActor;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BeamCustom;
@@ -203,6 +204,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                     boss.state = boss.WANDERING;
                     boss.pos = 547;
                     boss.summonCD = 1f;
+                    BossHealthBar.assignBoss(boss);
                     GameScene.add(boss);
                     Storm(boss);
                     GLog.b(Messages.get(this,"wakeup"));
@@ -488,6 +490,14 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     public void die( Object cause ) {
         if(Statistics.bossRushMode){
             GetBossLoot(pos);
+        }
+
+        if(Statistics.RandMode){
+            SmallLeafHardDungeon smallLeafHardDungeon = new SmallLeafHardDungeon();
+            smallLeafHardDungeon.pos = pos;
+            Dungeon.level.mobs.add(smallLeafHardDungeon);
+            GameScene.add( smallLeafHardDungeon );
+            Dungeon.level.occupyCell( smallLeafHardDungeon );
         }
 
         if(Statistics.amuletObtained|| Statistics.RandMode){

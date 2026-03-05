@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.isDLC;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon.WndChangeProp.cleanTrashItems;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -27,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
@@ -122,7 +124,7 @@ abstract public class Boss extends Mob {
                     GLog.i(Messages.get(hero, "you_now_have", p2.name()));
                 }
 
-                if(Dungeon.depth == 15 || Dungeon.depth == 20 || Dungeon.depth == 25){
+                if(Dungeon.depth == 15 || Dungeon.depth == 20 && !(level instanceof ShopBossLevel) || Dungeon.depth == 25){
                     SmallLeafHardDungeon smallLeafHardDungeon = new SmallLeafHardDungeon();
                     smallLeafHardDungeon.pos = pos;
                     Dungeon.level.mobs.add(smallLeafHardDungeon);
