@@ -2355,7 +2355,7 @@ public class Hero extends Char {
 	@Override
 	public void damage( int dmg, Object src, DamageType type ) {
 
-		if(hero.belongings.getItem(EmotionalAggregation.class)!=null && Random.Float()>0.85){
+		if(hero.belongings.getItem(EmotionalAggregation.class)!=null && Random.NormalIntRange(1,100) <= 10){
 			GLog.n(Messages.get(EmotionalAggregation.class,"block"));
 			return;
 		}
