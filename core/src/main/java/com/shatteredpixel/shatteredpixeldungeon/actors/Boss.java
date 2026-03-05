@@ -105,8 +105,8 @@ abstract public class Boss extends Mob {
 
 
                 if(Dungeon.depth == 5){
-                    Prop p1 = Prop.randomPropA(0);
-                    Prop p2 = Prop.randomPropB(0);
+                    Prop p1 = Prop.randomPropA(0,false);
+                    Prop p2 = Prop.randomPropB(0,false);
                     p1.collect();
                     p2.collect();
                     GLog.i(Messages.get(hero, "you_now_have", p1.name()));
@@ -114,8 +114,8 @@ abstract public class Boss extends Mob {
                 }
 
                 if(Dungeon.depth == 10){
-                    Prop p1 = Prop.randomPropA(1);
-                    Prop p2 = Prop.randomPropB(1);
+                    Prop p1 = Prop.randomPropA(1,true);
+                    Prop p2 = Prop.randomPropB(1,true);
                     p1.collect();
                     p2.collect();
                     GLog.i(Messages.get(hero, "you_now_have", p1.name()));

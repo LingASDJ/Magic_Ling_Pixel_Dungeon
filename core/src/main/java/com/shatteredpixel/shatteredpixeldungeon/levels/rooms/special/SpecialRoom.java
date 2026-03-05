@@ -160,7 +160,7 @@ public abstract class SpecialRoom extends Room {
 	}
 	
 	public static SpecialRoom createRoom(){
-		if (Dungeon.depth == pitNeededDepth){
+		if (Dungeon.depth == pitNeededDepth && Dungeon.branch == 0){
 
 				pitNeededDepth = -1;
 
