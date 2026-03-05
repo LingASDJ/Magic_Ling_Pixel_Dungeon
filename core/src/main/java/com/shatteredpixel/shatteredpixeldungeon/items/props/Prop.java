@@ -17,11 +17,8 @@ public class Prop extends Item {
         unique = true;
     }
 
-    private static long seed;
-    private static java.util.Random random = null;
-
     public int rareness = 0;
-    public int kind = 0; // 0积极 1 消极 2混沌
+    public int kind = 0; // 0积极 1消极 2混沌
 
     @Override
     public ArrayList<String> actions(Hero hero) {
@@ -68,154 +65,174 @@ public class Prop extends Item {
         return true;
     }
 
-    public static void checkSeed() {
-        if (random == null) {
-            seed = Dungeon.seed;
-            random = new java.util.Random(seed);
-        }
+    // 抽积极+混沌藏品（A类）
+    public static Prop randomPropA(boolean noChaotic) {
+        return randomPropA(0, noChaotic);
     }
 
-    public static Prop randomPropA() {
-        return randomPropA(0);
-    }
+    public static Prop randomPropA(int rare, boolean noChaotic) {
+        // 1. 限制稀有度范围（0-2）
+        rare = Math.max(0, Math.min(2, rare));
 
-    public static Prop randomPropA(int rare) {
-        checkSeed();
-
-        // 修正：移除无效的空Prop初始化
-        Prop prop;
-        if (rare > 2) rare = 2;
-
+        // 2. 全局判定：该稀有度积极藏品已拿完 → 降级/返回垃圾
         if (Statistics.hasAllRarenessProp(rare, 0)) {
-            if (rare != 0) {
-                return randomPropA(rare - 1);
-            } else {
-                return new Trash();
-            }
+            return rare != 0 ? randomPropA(rare - 1, noChaotic) : new Trash();
         }
 
+        Prop prop = null;
+        int positiveSize = 0;
+        int chaoticSize = 0;
+
+        // 3. 根据稀有度获取对应池子长度（排除混沌池如果noChaotic=true）
         switch (rare) {
             case 1:
-                // 修复1：使用单参数nextInt，且先判断列表是否为空
-                int total1 = Statistics.propPositive1.size() + Statistics.propChaotic1.size();
-                if (total1 == 0) return new Trash(); // 空列表安全兜底
-                int index1 = random.nextInt(total1);
+                positiveSize = Statistics.propPositive1.size();
+                chaoticSize = noChaotic ? 0 : Statistics.propChaotic1.size();
+                break;
+            case 2:
+                positiveSize = Statistics.propPositive2.size();
+                chaoticSize = noChaotic ? 0 : Statistics.propChaotic2.size();
+                break;
+            case 0:
+            default:
+                positiveSize = Statistics.propPositive0.size();
+                chaoticSize = noChaotic ? 0 : Statistics.propChaotic0.size();
+                break;
+        }
 
-                if (index1 > Statistics.propPositive1.size() - 1) {
-                    index1 -= Statistics.propPositive1.size();
-                    prop = Statistics.propChaotic1.get(index1);
-                    Statistics.propChaotic1.remove(index1);
+        // 4. 兜底：总长度为0 → 返回垃圾（避免越界）
+        int totalSize = positiveSize + chaoticSize;
+        if (totalSize == 0) {
+            return rare != 0 ? randomPropA(rare - 1, noChaotic) : new Trash();
+        }
+
+        // 5. 修正随机数范围：[0, totalSize) 左闭右开，不会越界
+        int index = Random.Int(totalSize);
+
+        // 6. 根据索引选择藏品（先积极池，后混沌池）
+        switch (rare) {
+            case 1:
+                if (index < positiveSize) {
+                    prop = Statistics.propPositive1.get(index);
+                    Statistics.propPositive1.remove(index);
                 } else {
-                    prop = Statistics.propPositive1.get(index1);
-                    Statistics.propPositive1.remove(index1);
+                    index -= positiveSize;
+                    prop = Statistics.propChaotic1.get(index);
+                    Statistics.propChaotic1.remove(index);
                 }
                 break;
             case 2:
-                // 修复2：移除双参数nextInt(0, xxx)，改为单参数
-                int total2 = Statistics.propPositive2.size() + Statistics.propChaotic2.size();
-                if (total2 == 0) return new Trash();
-                int index2 = random.nextInt(total2);
-
-                if (index2 > Statistics.propPositive2.size() - 1) {
-                    index2 -= Statistics.propPositive2.size();
-                    prop = Statistics.propChaotic2.get(index2);
-                    Statistics.propChaotic2.remove(index2);
+                if (index < positiveSize) {
+                    prop = Statistics.propPositive2.get(index);
+                    Statistics.propPositive2.remove(index);
                 } else {
-                    prop = Statistics.propPositive2.get(index2);
-                    Statistics.propPositive2.remove(index2);
+                    index -= positiveSize;
+                    prop = Statistics.propChaotic2.get(index);
+                    Statistics.propChaotic2.remove(index);
                 }
                 break;
             case 0:
             default:
-                // 修复3：统一单参数写法，增加空列表判断
-                int total0 = Statistics.propPositive0.size() + Statistics.propChaotic0.size();
-                if (total0 == 0) return new Trash();
-                int index0 = random.nextInt(total0);
-
-                if (index0 > Statistics.propPositive0.size() - 1) {
-                    index0 -= Statistics.propPositive0.size();
-                    prop = Statistics.propChaotic0.get(index0);
-                    Statistics.propChaotic0.remove(index0);
+                if (index < positiveSize) {
+                    prop = Statistics.propPositive0.get(index);
+                    Statistics.propPositive0.remove(index);
                 } else {
-                    prop = Statistics.propPositive0.get(index0);
-                    Statistics.propPositive0.remove(index0);
+                    index -= positiveSize;
+                    prop = Statistics.propChaotic0.get(index);
+                    Statistics.propChaotic0.remove(index);
                 }
                 break;
         }
-        return prop;
+
+        // 7. 兜底：如果prop仍为null（极端情况）→ 降级/返回垃圾
+        return prop != null ? prop : (rare != 0 ? randomPropA(rare - 1, noChaotic) : new Trash());
     }
 
-    public static Prop randomPropB() {
-        return randomPropB(0);
+    // 抽消极+混沌藏品（B类）
+    public static Prop randomPropB(boolean noChaotic) {
+        return randomPropB(0, noChaotic);
     }
 
-    public static Prop randomPropB(int rare) {
-        checkSeed();
+    public static Prop randomPropB(int rare, boolean noChaotic) {
+        // 1. 限制稀有度范围（0-2）
+        rare = Math.max(0, Math.min(2, rare));
 
-        Prop prop;
-        if (rare > 2) rare = 2;
-
+        // 2. 全局判定：该稀有度消极藏品已拿完 → 降级/返回垃圾
         if (Statistics.hasAllRarenessProp(rare, 1)) {
-            if (rare != 0) {
-                return randomPropB(rare - 1);
-            } else {
-                return new Trash();
-            }
+            return rare != 0 ? randomPropB(rare - 1, noChaotic) : new Trash();
         }
 
+        Prop prop = null;
+        int negativeSize = 0;
+        int chaoticSize = 0;
+
+        // 3. 根据稀有度获取对应池子长度（排除混沌池如果noChaotic=true）
         switch (rare) {
             case 1:
-                // 修复4：单参数nextInt + 空列表判断
-                int total1 = Statistics.propNegative1.size() + Statistics.propChaotic1.size();
-                if (total1 == 0) return new Trash();
-                int index1 = random.nextInt(total1);
+                negativeSize = Statistics.propNegative1.size();
+                chaoticSize = noChaotic ? 0 : Statistics.propChaotic1.size();
+                break;
+            case 2:
+                negativeSize = Statistics.propNegative2.size();
+                chaoticSize = noChaotic ? 0 : Statistics.propChaotic2.size();
+                break;
+            case 0:
+            default:
+                negativeSize = Statistics.propNegative0.size();
+                chaoticSize = noChaotic ? 0 : Statistics.propChaotic0.size();
+                break;
+        }
 
-                if (index1 > Statistics.propNegative1.size() - 1) {
-                    index1 -= Statistics.propNegative1.size();
-                    prop = Statistics.propChaotic1.get(index1);
-                    Statistics.propChaotic1.remove(index1);
+        // 4. 兜底：总长度为0 → 返回垃圾（避免越界）
+        int totalSize = negativeSize + chaoticSize;
+        if (totalSize == 0) {
+            return rare != 0 ? randomPropB(rare - 1, noChaotic) : new Trash();
+        }
+
+        // 5. 修正随机数范围：[0, totalSize) 左闭右开，不会越界
+        int index = Random.Int(totalSize);
+
+        // 6. 根据索引选择藏品（先消极池，后混沌池）
+        switch (rare) {
+            case 1:
+                if (index < negativeSize) {
+                    prop = Statistics.propNegative1.get(index);
+                    Statistics.propNegative1.remove(index);
                 } else {
-                    prop = Statistics.propNegative1.get(index1);
-                    Statistics.propNegative1.remove(index1);
+                    index -= negativeSize;
+                    prop = Statistics.propChaotic1.get(index);
+                    Statistics.propChaotic1.remove(index);
                 }
                 break;
             case 2:
-                // 修复5：移除双参数nextInt
-                int total2 = Statistics.propNegative2.size() + Statistics.propChaotic2.size();
-                if (total2 == 0) return new Trash();
-                int index2 = random.nextInt(total2);
-
-                if (index2 > Statistics.propNegative2.size() - 1) {
-                    index2 -= Statistics.propNegative2.size();
-                    prop = Statistics.propChaotic2.get(index2);
-                    Statistics.propChaotic2.remove(index2);
+                if (index < negativeSize) {
+                    prop = Statistics.propNegative2.get(index); // 原报错行171修复
+                    Statistics.propNegative2.remove(index);
                 } else {
-                    prop = Statistics.propNegative2.get(index2);
-                    Statistics.propNegative2.remove(index2);
+                    index -= negativeSize;
+                    prop = Statistics.propChaotic2.get(index);
+                    Statistics.propChaotic2.remove(index);
                 }
                 break;
             case 0:
             default:
-                // 修复6：统一单参数写法
-                int total0 = Statistics.propNegative0.size() + Statistics.propChaotic0.size();
-                if (total0 == 0) return new Trash();
-                int index0 = random.nextInt(total0);
-
-                if (index0 > Statistics.propNegative0.size() - 1) {
-                    index0 -= Statistics.propNegative0.size();
-                    prop = Statistics.propChaotic0.get(index0);
-                    Statistics.propChaotic0.remove(index0);
+                if (index < negativeSize) {
+                    prop = Statistics.propNegative0.get(index);
+                    Statistics.propNegative0.remove(index);
                 } else {
-                    prop = Statistics.propNegative0.get(index0);
-                    Statistics.propNegative0.remove(index0);
+                    index -= negativeSize;
+                    prop = Statistics.propChaotic0.get(index);
+                    Statistics.propChaotic0.remove(index);
                 }
                 break;
         }
 
-        // TerrorDoll 特殊处理逻辑保留
+        // 7. TerrorDoll 特殊处理（保留原有逻辑）
         if (prop instanceof TerrorDoll && Random.Float() > 0.75f) {
             prop = new TerrorDollB();
         }
-        return prop;
+
+        // 8. 兜底：如果prop仍为null → 降级/返回垃圾
+        return prop != null ? prop : (rare != 0 ? randomPropB(rare - 1, noChaotic) : new Trash());
     }
 }

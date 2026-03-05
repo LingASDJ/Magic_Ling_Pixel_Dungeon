@@ -73,49 +73,49 @@ public class SmallLeafHardDungeon extends NPC {
                             super.onSelect(index);
                             if (index == 0) {
                                 plot.change =true;
-                                Prop p1 = Prop.randomPropA(1);
-                                Prop p2 = Prop.randomPropB(1);
+                                Prop p1 = Prop.randomPropA(1,true);
+                                Prop p2 = Prop.randomPropB(1,true);
                                 p1.collect();
                                 p2.collect();
                                 GLog.i(Messages.get(hero, "you_now_have", p1.name()));
                                 GLog.i(Messages.get(hero, "you_now_have", p2.name()));
                                 cleanTrashItems();
-                                die(this);
-                                destroy();
-                                GLog.b(Messages.get(SmallLeafHardDungeon.class, "pair_changed"));
+                                //die(this);
+                                //destroy();
+                                //GLog.b(Messages.get(SmallLeafHardDungeon.class, "pair_changed"));
                             } else if (index == 1) {
                                 plot.change =true;
-                                Prop p1 = Prop.randomPropA(2);
-                                Prop p2 = Prop.randomPropB(2);
+                                Prop p1 = Prop.randomPropA(2,true);
+                                Prop p2 = Prop.randomPropB(2,true);
                                 p1.collect();
                                 p2.collect();
                                 GLog.i(Messages.get(hero, "you_now_have", p1.name()));
                                 GLog.i(Messages.get(hero, "you_now_have", p2.name()));
                                 cleanTrashItems();
-                                die(this);
-                                destroy();
-                                GLog.b(Messages.get(SmallLeafHardDungeon.class, "pair_changed"));
+                                //die(this);
+                                //destroy();
+                                //GLog.b(Messages.get(SmallLeafHardDungeon.class, "pair_changed"));
                             } else if (index == 2){
                                 if(Random.Float()>=0.5f){
-                                    Prop p1 = Prop.randomPropA(0);
-                                    Prop p2 = Prop.randomPropB(0);
+                                    Prop p1 = Prop.randomPropA(0,false);
+                                    Prop p2 = Prop.randomPropB(0,false);
                                     p1.collect();
                                     p2.collect();
                                     GLog.i(Messages.get(hero, "you_now_have", p1.name()));
                                     GLog.i(Messages.get(hero, "you_now_have", p2.name()));
                                     cleanTrashItems();
                                 } else {
-                                    Prop p1 = Prop.randomPropA(1);
-                                    Prop p2 = Prop.randomPropB(1);
+                                    Prop p1 = Prop.randomPropA(1,true);
+                                    Prop p2 = Prop.randomPropB(1,true);
                                     p1.collect();
                                     p2.collect();
                                     GLog.i(Messages.get(hero, "you_now_have", p1.name()));
                                     GLog.i(Messages.get(hero, "you_now_have", p2.name()));
                                     cleanTrashItems();
                                 }
-                                die(this);
-                                destroy();
-                                GLog.b(Messages.get(SmallLeafHardDungeon.class, "pair_changed"));
+                                //die(this);
+                                //destroy();
+                                //GLog.b(Messages.get(SmallLeafHardDungeon.class, "pair_changed"));
                             } else if (index == 3){
                                 // 打开成对嬗变窗口
                                 GameScene.show(new WndChangeProp(SmallLeafHardDungeon.this, null, 0));
@@ -232,9 +232,8 @@ public class SmallLeafHardDungeon extends NPC {
 
                         if (mode == 0) {
                             handleNormalPairTransformation(positiveProp, negativeProp);
-                        } else {
-                            handleDistortedPairTransformation(positiveProp, negativeProp);
                         }
+
 
                         cleanTrashItems();
 
@@ -269,52 +268,14 @@ public class SmallLeafHardDungeon extends NPC {
         }
 
         /**
-         * 生成不重复的新藏品
-         */
-        private Prop generateUniqueProp(int targetKind, int targetRareness, Class<? extends Prop> excludeClass) {
-            Prop newProp = null;
-            int maxAttempts = 100;
-            int attempts = 0;
-
-            while (attempts < maxAttempts) {
-                if (targetKind == 0) {
-                    newProp = Prop.randomPropA(targetRareness);
-                } else {
-                    newProp = Prop.randomPropB(targetRareness);
-                }
-
-                if (newProp != null
-                        && newProp.getClass() != excludeClass
-                        && !isPropExistsInBackpack(newProp.getClass())) {
-                    break;
-                }
-                attempts++;
-            }
-
-            if (newProp == null || newProp.getClass() == excludeClass) {
-                newProp = targetKind == 0 ? Prop.randomPropA(targetRareness) : Prop.randomPropB(targetRareness);
-                while (newProp != null && newProp.getClass() == excludeClass) {
-                    newProp = targetKind == 0 ? Prop.randomPropA(targetRareness) : Prop.randomPropB(targetRareness);
-                }
-            }
-
-            return newProp;
-        }
-
-        /**
          * 常规成对嬗变（正面+负面同阶）
          */
         private void handleNormalPairTransformation(Prop positiveOld, Prop negativeOld) {
             int rareness = positiveOld.rareness;
 
             // 生成新藏品：正面→负面，负面→正面，且同阶、不重复
-            Prop newNegativeProp = generateUniqueProp(1, rareness, positiveOld.getClass());
-            Prop newPositiveProp = generateUniqueProp(0, rareness, negativeOld.getClass());
-
-            // 避免新藏品之间重复
-            if (newNegativeProp != null && newPositiveProp != null && newNegativeProp.getClass() == newPositiveProp.getClass()) {
-                newPositiveProp = generateUniqueProp(0, rareness, newNegativeProp.getClass());
-            }
+            Prop newNegativeProp = Prop.randomPropA(negativeOld.rareness,true);
+            Prop newPositiveProp = Prop.randomPropB(positiveOld.rareness,true);
 
             // 移除旧藏品
             positiveOld.detach(Dungeon.hero.belongings.backpack);
@@ -323,61 +284,10 @@ public class SmallLeafHardDungeon extends NPC {
             Statistics.removeProp(negativeOld);
 
             // 添加新藏品，使用多语言提示
-            if (newNegativeProp != null) {
-                newNegativeProp.collect();
-                GLog.i(Messages.get(Dungeon.hero, "you_now_have", newNegativeProp.name()));
-            }
-            if (newPositiveProp != null) {
-                newPositiveProp.collect();
-                GLog.i(Messages.get(Dungeon.hero, "you_now_have", newPositiveProp.name()));
-            }
-        }
-
-        /**
-         * 畸变成对嬗变
-         */
-        private void handleDistortedPairTransformation(Prop positiveOld, Prop negativeOld) {
-            int rareness = positiveOld.rareness;
-
-            // 移除旧藏品
-            positiveOld.detach(Dungeon.hero.belongings.backpack);
-            negativeOld.detach(Dungeon.hero.belongings.backpack);
-            Statistics.removeProp(positiveOld);
-            Statistics.removeProp(negativeOld);
-
-            if (Random.Float() > 0.66f) {
-                Prop newPositive1 = generateUniqueProp(0, rareness + 1, positiveOld.getClass());
-                Prop newPositive2 = generateUniqueProp(0, rareness, positiveOld.getClass());
-
-                if (newPositive1 != null && newPositive2 != null && newPositive1.getClass() == newPositive2.getClass()) {
-                    newPositive2 = generateUniqueProp(0, rareness, newPositive1.getClass());
-                }
-
-                if (newPositive1 != null) {
-                    newPositive1.collect();
-                    GLog.i(Messages.get(Dungeon.hero, "you_now_have", newPositive1.name()));
-                }
-                if (newPositive2 != null) {
-                    newPositive2.collect();
-                    GLog.i(Messages.get(Dungeon.hero, "you_now_have", newPositive2.name()));
-                }
-            } else {
-                Prop newNegative1 = generateUniqueProp(1, rareness, negativeOld.getClass());
-                Prop newNegative2 = generateUniqueProp(1, rareness + 1, negativeOld.getClass());
-
-                if (newNegative1 != null && newNegative2 != null && newNegative1.getClass() == newNegative2.getClass()) {
-                    newNegative2 = generateUniqueProp(1, rareness + 1, newNegative1.getClass());
-                }
-
-                if (newNegative1 != null) {
-                    newNegative1.collect();
-                    GLog.i(Messages.get(Dungeon.hero, "you_now_have", newNegative1.name()));
-                }
-                if (newNegative2 != null) {
-                    newNegative2.collect();
-                    GLog.i(Messages.get(Dungeon.hero, "you_now_have", newNegative2.name()));
-                }
-            }
+            newNegativeProp.collect();
+            GLog.i(Messages.get(Dungeon.hero, "you_now_have", newNegativeProp.name()));
+            newPositiveProp.collect();
+            GLog.i(Messages.get(Dungeon.hero, "you_now_have", newPositiveProp.name()));
         }
 
         /**

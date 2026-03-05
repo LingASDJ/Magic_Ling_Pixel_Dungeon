@@ -256,8 +256,6 @@ public abstract class RegularLevel extends Level {
 			standards = (int)Math.ceil(standards * 1.5f);
 		}
 
-
-
 		if(feeling == Feeling.DIEDROOM && !Statistics.bossRushMode){
 			switch (branch){
 				case 0:
@@ -282,13 +280,6 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		boolean one = false;
-		boolean two = false;
-		boolean three = false;
-		boolean four = false;
-		boolean five = false;
-
-		//TODO ANCITY
 		if(!(Statistics.RandMode || Statistics.bossRushMode) ){
 			if (depth == 24) {
 				initRooms.add(new BoilerRoom());
@@ -453,6 +444,8 @@ public abstract class RegularLevel extends Level {
 				initRooms.add(SecretRoom.createRoom());
 			}
 		}
+
+		Random.shuffle(initRooms);
 
 		return initRooms;
 	}
