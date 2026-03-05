@@ -8,6 +8,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCity
 import static com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel.State.FALL_BOSS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel.State.ONE_BOSS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel.State.TWO_BOSS;
+import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.ready;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
@@ -22,10 +23,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DictFish;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.RoomStone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.SakaFishBoss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -35,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -264,7 +268,17 @@ public class AncientMysteryCityBossLevel extends Level{
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if(Statistics.RandMode && transition.type == LevelTransition.Type.BRANCH_EXIT) {
+        if(Chasm.isSmallLeaf){
+            Game.runOnRenderThread(new Callback() {
+                                       @Override
+                                       public void call() {
+                                           GameScene.show(new WndQuest(new SmallLeafHardDungeon(), Messages.get(SmallLeafHardDungeon.class, "must_reload")));
+                                       }
+                                   }
+            );
+            ready();
+            return false;
+        } else if(Statistics.RandMode && transition.type == LevelTransition.Type.BRANCH_EXIT) {
             TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
             if (timeFreeze != null) timeFreeze.disarmPresses();
             Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
@@ -272,9 +286,9 @@ public class AncientMysteryCityBossLevel extends Level{
             InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
             InterlevelScene.curTransition = new LevelTransition();
             InterlevelScene.curTransition.destDepth = depth + 1;
-            InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
             InterlevelScene.curTransition.destBranch = 0;
-            InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+            InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_ENTRANCE;
             InterlevelScene.curTransition.centerCell = -1;
             Game.switchScene(InterlevelScene.class);
             return false;

@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -214,6 +215,7 @@ public class WndGame extends Window {
 					ShatteredPixelDungeon.reportException(e);
 				}
 				Game.switchScene(TitleScene.class);
+				BossHealthBar.clearAllBossData();
 			}
 		});
 		curBtn.icon(Icons.get(Icons.DISPLAY));

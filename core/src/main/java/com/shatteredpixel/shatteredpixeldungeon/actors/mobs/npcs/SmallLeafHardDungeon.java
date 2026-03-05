@@ -80,9 +80,9 @@ public class SmallLeafHardDungeon extends NPC {
                                 GLog.i(Messages.get(hero, "you_now_have", p1.name()));
                                 GLog.i(Messages.get(hero, "you_now_have", p2.name()));
                                 cleanTrashItems();
-                                //die(this);
-                                //destroy();
-                                //GLog.b(Messages.get(SmallLeafHardDungeon.class, "pair_changed"));
+                                die(this);
+                                destroy();
+                                GLog.b(Messages.get(SmallLeafHardDungeon.class, "pair_changed"));
                             } else if (index == 1) {
                                 plot.change =true;
                                 Prop p1 = Prop.randomPropA(2,true);
@@ -92,9 +92,9 @@ public class SmallLeafHardDungeon extends NPC {
                                 GLog.i(Messages.get(hero, "you_now_have", p1.name()));
                                 GLog.i(Messages.get(hero, "you_now_have", p2.name()));
                                 cleanTrashItems();
-                                //die(this);
-                                //destroy();
-                                //GLog.b(Messages.get(SmallLeafHardDungeon.class, "pair_changed"));
+                                die(this);
+                                destroy();
+                                GLog.b(Messages.get(SmallLeafHardDungeon.class, "pair_changed"));
                             } else if (index == 2){
                                 if(Random.Float()>=0.5f){
                                     Prop p1 = Prop.randomPropA(0,false);
@@ -113,9 +113,9 @@ public class SmallLeafHardDungeon extends NPC {
                                     GLog.i(Messages.get(hero, "you_now_have", p2.name()));
                                     cleanTrashItems();
                                 }
-                                //die(this);
-                                //destroy();
-                                //GLog.b(Messages.get(SmallLeafHardDungeon.class, "pair_changed"));
+                                die(this);
+                                destroy();
+                                GLog.b(Messages.get(SmallLeafHardDungeon.class, "pair_changed"));
                             } else if (index == 3){
                                 // 打开成对嬗变窗口
                                 GameScene.show(new WndChangeProp(SmallLeafHardDungeon.this, null, 0));
