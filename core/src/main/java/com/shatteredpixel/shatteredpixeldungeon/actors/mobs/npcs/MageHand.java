@@ -885,6 +885,10 @@ public class MageHand extends DirectableAlly {
         if(equippedWand != null){
             Dungeon.level.drop(equippedWand, hero.pos).sprite.drop();
         }
+        MageHandControl mageHandControl = hero.belongings.getItem(MageHandControl.class);
+        if(mageHandControl != null){
+            mageHandControl.mageHand = null;
+        }
         Buff.detach(hero,MageHandControlBuff.class);
     }
 

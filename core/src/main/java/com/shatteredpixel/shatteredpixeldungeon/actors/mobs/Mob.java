@@ -1087,7 +1087,7 @@ public abstract class Mob extends Char {
 
 		dropBonus += ShardOfOblivion.lootChanceMultiplier()-1f;
 
-		if(hero.belongings.getItem(BrokenBone.class)!=null) dropBonus *= 0.5f;
+		if(hero.belongings.getItem(BrokenBone.class)!=null) dropBonus *= 0.7f;
 		return lootChance * dropBonus;
 	}
 
