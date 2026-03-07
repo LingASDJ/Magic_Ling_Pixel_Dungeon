@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -77,6 +76,11 @@ public class MoonLowPlot extends Plot {
 
     @Override
     public void skip() {
+        diagulewindow.cancel();
+        WndDialog.settedPlot = null;
+        if(!skipGetItems){
+            DropRules();
+        }
     }
 
     private void process_to_1() {
@@ -101,14 +105,21 @@ public class MoonLowPlot extends Plot {
 
     private void process_to_5() {
         diagulewindow.changeText(Messages.get(MoonLow.class, "b_message4"));
+        DropRules();
+        skipGetItems = true;
+    }
+
+
+    private void DropRules(){
         if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
             Dungeon.level.drop(new Gold(1), hero.pos);
         } else {
             Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), hero.pos );
         }
-
-        zeroItemLevel++;
+        Statistics.zeroItemLevel++;
     }
+
+
 
 
 
