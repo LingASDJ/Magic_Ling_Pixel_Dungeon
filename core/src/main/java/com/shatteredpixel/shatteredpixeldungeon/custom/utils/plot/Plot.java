@@ -13,6 +13,7 @@ public abstract class Plot{
     public int needed_process = 0;
 
     public boolean skipGetItems = false;
+    public boolean skipGetItems_ALT = false;
 
     {
         needed_process = 0;
