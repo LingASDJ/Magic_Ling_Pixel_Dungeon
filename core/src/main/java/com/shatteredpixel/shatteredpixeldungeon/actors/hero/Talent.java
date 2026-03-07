@@ -76,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -178,6 +179,9 @@ public enum Talent {
 	ELEMENTAL_REACH(148, 4), STRIKING_FORCE(149, 4), DIRECTED_POWER(150, 4),
 	//Duelist A3 T4
 	FEIGNED_RETREAT(151, 4), EXPOSE_WEAKNESS(152, 4), COUNTER_ABILITY(153, 4),
+
+	//SpellSword T1
+	MAGIC_COMPRESSION(160),GUARDIAN_BLADE(161),ICE_LIBERATION(162),COLD_HARDY_CONSTITUTION(163),MALICIOUS_SPECULATION(164),
 
 	//universal T4
 	HEROIC_ENERGY(26, 4), //See icon() and title() for special logic for this one
@@ -873,6 +877,11 @@ public enum Talent {
 				break;
 			case DUELIST:
 				Collections.addAll(tierTalents, STRENGTHENING_MEAL, ADVENTURERS_INTUITION, PATIENT_STRIKE, AGGRESSIVE_BARRIER);
+				break;
+			case SPELLSWORD:
+				if(DeviceCompat.isDesktop_Dev()){
+					Collections.addAll(tierTalents,	MAGIC_COMPRESSION,GUARDIAN_BLADE,ICE_LIBERATION,COLD_HARDY_CONSTITUTION,MALICIOUS_SPECULATION);
+				}
 				break;
 		}
 		for (Talent talent : tierTalents){

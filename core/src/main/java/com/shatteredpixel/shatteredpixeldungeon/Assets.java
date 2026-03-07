@@ -860,6 +860,8 @@ public class Assets {
 		public static final String MAGE		= "sprites/mage.png";
 		public static final String ROGUE	= "sprites/rogue.png";
 		public static final String HUNTRESS	= "sprites/huntress.png";
+		public static final String DUELIST  = "sprites/duelist.png";
+		public static final String SPELLSWORD      = "sprites/spellsword.png";
 		public static final String COMINGSOON	= "sprites/slimekingch.png";
 		public static final String AVATARS	= "sprites/avatars.png";
 		public static final String AVATARS_WARRIOR	= "sprites/avatars_warrior.png";
@@ -989,8 +991,7 @@ public class Assets {
 		public static final String BAT		= "sprites/bat.png";
 		public static final String BATEX		= "sprites/BrownBat.png";
 
-		public static final String DUELIST  = "sprites/duelist.png";
-		public static final String PET      = "sprites/pet.png";
+
 		public static final String ELEMENTAL= "sprites/elemental.png";
 		public static final String REDDRAGONPET = "sprites/petreddragon.png";
 		public static final String MONK		= "sprites/monk.png";
