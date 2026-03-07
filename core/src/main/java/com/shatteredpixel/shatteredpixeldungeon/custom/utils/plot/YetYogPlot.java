@@ -46,27 +46,6 @@ public class YetYogPlot extends Plot {
                 case 3:
                     process_to_3();
                     break;
-//                case 4:
-//                    process_to_4();
-//                    break;
-//                case 5:
-//                    process_to_5();
-//                    break;
-//                case 6:
-//                    process_to_6();
-//                    break;
-//                case 7:
-//                    process_to_7();
-//                    break;
-//                case 8:
-//                    process_to_8();
-//                    break;
-//                case 9:
-//                    process_to_9();
-//                    break;
-//                case 10:
-//                    process_to_10();
-//                    break;
             }
             diagulewindow.update();
             process++;
@@ -87,6 +66,15 @@ public class YetYogPlot extends Plot {
 
     @Override
     public void skip() {
+        diagulewindow.cancel();
+        WndDialog.settedPlot = null;
+        if(!skipGetItems){
+            DropRules();
+        }
+    }
+
+    private void DropRules() {
+        Dungeon.level.drop( new ScrollOfIdentify(), hero.pos );
     }
 
     private void process_to_1() {
@@ -99,11 +87,12 @@ public class YetYogPlot extends Plot {
 
     private void process_to_2() {
         diagulewindow.changeText(Messages.get(YetYog.class, "message2"));
+        DropRules();
+        skipGetItems = true;
     }
 
     private void process_to_3() {
         diagulewindow.changeText(Messages.get(YetYog.class, "message3"));
-        Dungeon.level.drop( new ScrollOfIdentify(), hero.pos );
     }
 
     public static class EndPlot extends Plot {
