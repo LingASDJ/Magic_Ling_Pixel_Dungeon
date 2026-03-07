@@ -5,7 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class HeartOfCrystalFractal extends Prop{
     {
 
-        rareness = 1;
+        rareness = 0;
         kind =1;
         image = ItemSpriteSheet.HEARTOFCRYSTALFRACTAL;
 
