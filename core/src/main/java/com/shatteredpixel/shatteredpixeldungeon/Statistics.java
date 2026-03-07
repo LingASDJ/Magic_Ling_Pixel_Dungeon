@@ -517,7 +517,8 @@ public class Statistics {
 				new RustedGoldCoin(),
 				new ConfusedMieMieTalisman(),
 				new BottleWraith(),
-				new BlockingDrug()
+				new BlockingDrug(),
+				new HeartOfCrystalFractal()
 		));
 
 		propPositive1 = new ArrayList<>(Arrays.asList(
@@ -536,7 +537,6 @@ public class Statistics {
 				new WenStudyingPaperTwo(),
 				new CloakFragmentsOfBzmdr(),
 				new EmotionalAggregationB(),
-				new HeartOfCrystalFractal(),
 				new Dirt_KnifeStand()
 		));
 
@@ -583,7 +583,8 @@ public class Statistics {
 				new RustedGoldCoin(),
 				new ConfusedMieMieTalisman(),
 				new BottleWraith(),
-				new BlockingDrug()
+				new BlockingDrug(),
+				new HeartOfCrystalFractal()
 		));
 
 		propPositive1 = new ArrayList<>(Arrays.asList(
@@ -602,7 +603,6 @@ public class Statistics {
 				new WenStudyingPaperTwo(),
 				new CloakFragmentsOfBzmdr(),
 				new EmotionalAggregationB(),
-				new HeartOfCrystalFractal(),
 				new Dirt_KnifeStand()
 		));
 
