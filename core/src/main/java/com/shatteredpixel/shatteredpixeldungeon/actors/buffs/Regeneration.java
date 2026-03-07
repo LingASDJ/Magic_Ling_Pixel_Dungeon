@@ -21,10 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Dirt_KnifeStand;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
@@ -55,7 +58,8 @@ public class Regeneration extends Buff {
 				return true;
 			}
 
-			if (target.HP < regencap() && !((Hero)target).isStarving() && !((Hero)target).isSmallHunger()) {
+			boolean dirtKnifeStand = hero.belongings.getItem(Dirt_KnifeStand.class)!=null;
+			if (target.HP < regencap() && !((Hero)target).isStarving() && !((Hero)target).isSmallHunger() && dirtKnifeStand || target.HP < regencap() && !((Hero)target).isStarving() && !dirtKnifeStand ) {
 				if (regenOn()) {
 					target.HP += 1;
 					if (target.HP == regencap()) {
