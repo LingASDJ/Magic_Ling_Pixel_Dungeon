@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.AlchemyScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
@@ -447,9 +448,15 @@ public class Speck extends Image {
 				break;
 
 			case COIN:
-				speed.polar(-PointF.PI * Random.Float(0.3f, 0.7f), Random.Float(48, 96));
-				acc.y = 256;
-				lifespan = -speed.y / acc.y * 2;
+				if(Game.scene().getClass() == AlchemyScene.class){
+					speed.set(0, -15);
+					scale.set(Random.Float(0.8f, 1));
+					lifespan = Random.Float(0.8f, 1.5f);
+				} else {
+					speed.polar(-PointF.PI * Random.Float(0.3f, 0.7f), Random.Float(48, 96));
+					acc.y = 256;
+					lifespan = -speed.y / acc.y * 2;
+				}
 				break;
 		}
 
@@ -575,9 +582,13 @@ public class Speck extends Image {
 					break;
 
 				case COIN:
-					scale.x = (float) Math.cos(left * 5);
-					rm = gm = bm = (Math.abs(scale.x) + 1) * 0.5f;
-					am = p < 0.9f ? 1 : (1 - p) * 10;
+					if(Game.scene().getClass() == AlchemyScene.class){
+						am = p < 0.2f ? p * 5 : 1;
+					} else {
+						scale.x = (float) Math.cos(left * 5);
+						rm = gm = bm = (Math.abs(scale.x) + 1) * 0.5f;
+						am = p < 0.9f ? 1 : (1 - p) * 10;
+					}
 					break;
 			}
 		}
