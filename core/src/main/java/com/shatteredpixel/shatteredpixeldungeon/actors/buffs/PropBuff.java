@@ -19,7 +19,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -59,15 +58,13 @@ public class PropBuff extends Buff{
                 }
             }
             if(Dungeon.hero.belongings.getItem(WenStudyingPaperOne.class)!=null) {
-                timeB ++;
-                if(timeB >= 125){
-                    Buff.affect(hero, Swiftthistle.TimeBubble.class).setLeft(5f);
-                    timeB = 0;
+                if(timeB < 7){
+                    timeB ++;
                 }
             }
             if(Dungeon.hero.belongings.getItem(YanStudyingPaperTwo.class)!=null) {
                 timeC ++;
-                if(timeC >= 125) {
+                if(timeC >= 30) {
                     Buff.affect(hero, Haste.class, 5f);
                     timeC = 0;
                 }

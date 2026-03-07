@@ -220,6 +220,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.StarDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
@@ -282,6 +283,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.AlchemyScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -904,7 +906,7 @@ public class Hero extends Char {
 		};
 
 		if( belongings.getItem(HeartOfCrystalFractal.class)!=null){
-			evasion *= 0.7f;
+			evasion *= 0.85f;
 		}
 
 		return Math.round(evasion);
@@ -990,11 +992,14 @@ public class Hero extends Char {
 			dmg = CustomPlayer.baseDamage;
 		}
 
-		if(belongings.getItem(Monocular.class) != null && wep instanceof MissileWeapon ){
+		if (belongings.getItem(Monocular.class) != null && wep instanceof MissileWeapon) {
+			MissileWeapon missileWep = (MissileWeapon) wep;
+			missileWep.monocularAccBonus = 1.0f;
+			missileWep.distanceAccBonus = 0;
 			int distance = distance(enemy);
-			while(distance >3) {
-				dmg += Random.Int(0, 3);
-				distance -= 4;
+			while (distance > 1) {
+				missileWep.distanceAccBonus += 2;
+				distance -= 1;
 			}
 		}
 
@@ -1057,7 +1062,7 @@ public class Hero extends Char {
 
 	private int StoneDamage() {
 		int depthSegment = Dungeon.depth / 5;
-		int[] damageMap = {2, 3, 5, 7, 9, 11};
+		int[] damageMap = {2, 3, 4, 5, 7, 9};
 		if (depthSegment >= damageMap.length) {
 			return damageMap[damageMap.length - 1];
 		}
@@ -2359,6 +2364,21 @@ public class Hero extends Char {
 		if(hero.belongings.getItem(EmotionalAggregation.class)!=null && Random.Float()>0.90f ){
 			GLog.n(Messages.get(EmotionalAggregation.class,"block"));
 			return;
+		}
+
+		if(Dungeon.hero.belongings.getItem(WenStudyingPaperOne.class)!=null) {
+			PropBuff props = hero.buff(PropBuff.class);
+			if(props != null) {
+				if(props.timeB >=7 && type != DamageType.HG){
+					if (HT / 2 >= HP) {
+						Buff.affect(hero, Swiftthistle.TimeBubble.class).setLeft(5f);
+					} else {
+						Buff.affect(hero, Swiftthistle.TimeBubble.class).setLeft(2f);
+					}
+					props.timeB = 0;
+				}
+			}
+
 		}
 
 		if(Dungeon.isChallenged(CS) && !gameNight) {

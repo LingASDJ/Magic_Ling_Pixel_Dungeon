@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -185,17 +186,33 @@ public class SpiritBow extends Weapon {
 	
 	@Override
 	public int min(int lvl) {
+		int dmgmoon = 0;
+		if (Dungeon.hero.belongings.getItem(Monocular.class) != null) {
+			int distance = Dungeon.hero.distance(Dungeon.hero.enemy());
+			while (distance > 1) {
+				dmgmoon += Random.Int(1, 4);
+				distance -= 1;
+			}
+		}
 		int dmg = 2 + Dungeon.hero.lvl/5
 				+ RingOfSharpshooting.levelDamageBonus(Dungeon.hero)
-				+ (curseInfusionBonus ? 1 + Dungeon.hero.lvl/30 : 0);
+				+ (curseInfusionBonus ? 1 + Dungeon.hero.lvl/30 : 0) + dmgmoon;
 		return Math.max(0, dmg);
 	}
 	
 	@Override
 	public int max(int lvl) {
+		int dmgmoon = 0;
+		if (Dungeon.hero.belongings.getItem(Monocular.class) != null) {
+			int distance = Dungeon.hero.distance(Dungeon.hero.enemy());
+			while (distance > 1) {
+				dmgmoon += Random.Int(1, 4);
+				distance -= 1;
+			}
+		}
 		int dmg = 6 + (int)(Dungeon.hero.lvl/2.5f)
 				+ 2*RingOfSharpshooting.levelDamageBonus(Dungeon.hero)
-				+ (curseInfusionBonus ? 2 + Dungeon.hero.lvl/15 : 0);
+				+ (curseInfusionBonus ? 2 + Dungeon.hero.lvl/15 : 0) + dmgmoon;
 		return Math.max(0, dmg);
 	}
 
@@ -331,10 +348,14 @@ public class SpiritBow extends Weapon {
 		
 		@Override
 		public float accuracyFactor(Char owner, Char target) {
+			float accFactor = super.accuracyFactor(owner, target);
+			float distanceAccMultiplier = 1.0f + (0.1f * distanceAccBonus);
+			accFactor *= monocularAccBonus * distanceAccMultiplier;
+
 			if (sniperSpecial && SpiritBow.this.augment == Augment.DAMAGE){
-				return Float.POSITIVE_INFINITY;
+				return Float.POSITIVE_INFINITY + accFactor;
 			} else {
-				return super.accuracyFactor(owner, target);
+				return super.accuracyFactor(owner, target) + accFactor;
 			}
 		}
 		
