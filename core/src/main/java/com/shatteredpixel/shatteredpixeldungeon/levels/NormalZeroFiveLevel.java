@@ -21,16 +21,22 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BzmdrLand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Gudazi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.JIT;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.KongFu;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.LuoWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.XiaYuan;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ArchettoNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
@@ -51,6 +57,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
 
 import java.util.List;
@@ -170,13 +177,25 @@ public class NormalZeroFiveLevel extends Level {
             656,657,658,659
     };
 
-    /** 美食坐标*/
-    public static int[] Food_Tiled = new int[]{
-            334,335,/*|*/339,340,
-            359,360,/*|*/364,365,
-            /*-----------------*/
-            409,410,/*|*/414,415,
-            434,435,/*|*/439,440,
+    /** 桌子*/
+    public static int[] Desktop1_Tiled = new int[]{
+            334,335,
+            359,360,
+    };
+
+    public static int[] Desktop2_Tiled = new int[]{
+            339,340,
+            364,365,
+    };
+
+    public static int[] Desktop3_Tiled = new int[]{
+            409,410,
+            434,435,
+    };
+
+    public static int[] Desktop4_Tiled = new int[]{
+            414,415,
+            439,440,
     };
 
     /** 魔法阵坐标*/
@@ -226,9 +245,24 @@ public class NormalZeroFiveLevel extends Level {
                     return Messages.get(this, "golden_name");
                 }
             }
-            for (int i : Food_Tiled) {
+            for (int i : Desktop1_Tiled) {
                 if(i == checkTiledID){
-                    return Messages.get(this, "food_name");
+                    return Messages.get(this, "desktop1_name");
+                }
+            }
+            for (int i : Desktop2_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "desktop2_name");
+                }
+            }
+            for (int i : Desktop3_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "desktop3_name");
+                }
+            }
+            for (int i : Desktop4_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "desktop4_name");
                 }
             }
             for (int i : Magic_Tiled) {
@@ -260,9 +294,24 @@ public class NormalZeroFiveLevel extends Level {
                     return Messages.get(this, "golden_desc");
                 }
             }
-            for (int i : Food_Tiled) {
+            for (int i : Desktop1_Tiled) {
                 if(i == checkTiledID){
-                    return Messages.get(this, "food_desc");
+                    return Messages.get(this, "desktop1_desc");
+                }
+            }
+            for (int i : Desktop2_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "desktop2_desc");
+                }
+            }
+            for (int i : Desktop3_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "desktop3_desc");
+                }
+            }
+            for (int i : Desktop4_Tiled) {
+                if(i == checkTiledID){
+                    return Messages.get(this, "desktop4_desc");
                 }
             }
             for (int i : Magic_Tiled) {
@@ -282,7 +331,7 @@ public class NormalZeroFiveLevel extends Level {
     };
 
     public static int[] SALEPOS_TWO = new int[]{
-            429,430
+            252,352
     };
 
     public static int[] SALEPOS_THREE = new int[]{
@@ -350,10 +399,41 @@ public class NormalZeroFiveLevel extends Level {
         moRuoS.pos = 258;
         mobs.add(moRuoS);
 
+        if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP) || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP()){
+            Nyz ny= new Nyz();
+            ny.pos = 303;
+            mobs.add(ny);
+
+            YetYog yty = new YetYog();
+            yty.pos = 255;
+            mobs.add(yty);
+
+            for (int i : SALEPOS_TWO) {
+                drop((Generator.random(Generator.Category.POTION)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
+
+            for (int i : SALEPOS_FOUR) {
+                drop((Generator.random(Generator.Category.SEED)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
+        }
+
+        LuoWhite lw = new LuoWhite();
+        lw.pos = 453;
+        mobs.add(lw);
+
         /** 魔法阵组 **/
         ArchettoNewYears archettoNewYears = new ArchettoNewYears();
         archettoNewYears.pos = 593;
         mobs.add(archettoNewYears);
+
+        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)
+                || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP()) {
+            WaloKe shopking = new WaloKe();
+            shopking.pos = 545;
+            mobs.add(shopking);
+        }
     }
 
     @Override

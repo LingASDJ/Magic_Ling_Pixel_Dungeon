@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -99,7 +100,15 @@ abstract public class MissileWeapon extends Weapon {
 	@Override
 	public int min() {
 		if (Dungeon.hero != null){
-			return Math.max(0, min(buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)));
+			int dmg = 0;
+			if (Dungeon.hero.belongings.getItem(Monocular.class) != null) {
+				int distance = Dungeon.hero.distance(Dungeon.hero.enemy());
+				while (distance > 1) {
+					dmg += Random.Int(1, 4);
+					distance -= 1;
+				}
+			}
+			return Math.max(0, min(buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero) + dmg));
 		} else {
 			return Math.max(0 , min( buffedLvl() ));
 		}
@@ -114,7 +123,15 @@ abstract public class MissileWeapon extends Weapon {
 	@Override
 	public int max() {
 		if (Dungeon.hero != null){
-			return Math.max(0, max( buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero) ));
+			int dmg = 0;
+			if (Dungeon.hero.belongings.getItem(Monocular.class) != null) {
+				int distance = Dungeon.hero.distance(Dungeon.hero.enemy());
+				while (distance > 1) {
+					dmg += Random.Int(1, 4);
+					distance -= 1;
+				}
+			}
+			return Math.max(0, max( buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero) + dmg ));
 		} else {
 			return Math.max(0 , max( buffedLvl() ));
 		}
@@ -212,14 +229,22 @@ abstract public class MissileWeapon extends Weapon {
 		}
 	}
 
+	public float monocularAccBonus = 1.0f;
+	public int distanceAccBonus = 0;
+
 	@Override
 	public float accuracyFactor(Char owner, Char target) {
 		float accFactor = super.accuracyFactor(owner, target);
+
+		// 原有动量加成
 		if (owner instanceof Hero && owner.buff(Momentum.class) != null && owner.buff(Momentum.class).freerunning()){
 			accFactor *= 1f + 0.2f*((Hero) owner).pointsInTalent(Talent.PROJECTILE_MOMENTUM);
 		}
 
 		accFactor *= adjacentAccFactor(owner, target);
+
+		float distanceAccMultiplier = 1.0f + (0.1f * distanceAccBonus);
+		accFactor *= monocularAccBonus * distanceAccMultiplier;
 
 		return accFactor;
 	}

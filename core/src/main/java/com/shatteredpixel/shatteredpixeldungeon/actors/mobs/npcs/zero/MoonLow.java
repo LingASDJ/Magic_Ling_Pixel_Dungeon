@@ -63,7 +63,6 @@ public class MoonLow extends NTNPC {
                     GameScene.show(new WndDialog(plot,false));
                 }
             });
-            //Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), hero.pos );
             first=false;
         } else if(Challenges.activeChallenges()>0) {
             Game.runOnRenderThread(new Callback() {

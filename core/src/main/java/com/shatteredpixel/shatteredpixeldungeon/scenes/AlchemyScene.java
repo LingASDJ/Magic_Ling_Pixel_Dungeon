@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -96,6 +97,8 @@ public class AlchemyScene extends PixelScene {
 
 	private Emitter smokeEmitter;
 	private Emitter bubbleEmitter;
+
+	private Emitter cardEmitter;
 	private Emitter sparkEmitter;
 
 	private Emitter lowerBubbles;
@@ -158,6 +161,9 @@ public class AlchemyScene extends PixelScene {
 
 		bubbleEmitter = new Emitter();
 		add(bubbleEmitter);
+
+		cardEmitter = new Emitter();
+		add(cardEmitter);
 
 		lowerBubbles = new Emitter();
 		add(lowerBubbles);
@@ -410,6 +416,12 @@ public class AlchemyScene extends PixelScene {
 				2*centerW,
 				Camera.main.height);
 		bubbleEmitter.autoKill = false;
+
+		cardEmitter.pos(0,
+				0,
+				2*centerW,
+				Camera.main.height);
+		cardEmitter.autoKill = false;
 
 		lowerBubbles.pos(0,
 				pos,
@@ -689,6 +701,11 @@ public class AlchemyScene extends PixelScene {
 			}
 			Catalog.countUses(EnergyCrystal.class, cost);
 			Dungeon.energy -= cost;
+
+			if(Dungeon.hero.belongings.getItem(DeliciousRecipe.class)!=null) {
+				Dungeon.energy += 2;
+				cardEmitter.start(Speck.factory( Speck.COIN ), 0.01f, 100 );
+			}
 
 			String energyText = Messages.get(AlchemyScene.class, "energy") + " " + Dungeon.energy;
 			if (toolkit != null){

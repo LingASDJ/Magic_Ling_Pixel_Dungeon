@@ -30,7 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteNewYearsSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot;
@@ -171,7 +171,7 @@ public class WndLuoWhite extends Window {
 
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
-        titlebar.icon(new LuoWhiteNewYearsSprite());
+        titlebar.icon(new LuoWhiteSprite());
         titlebar.label(Messages.get(LuoWhite.class,"name"));
         add( titlebar );
         RenderedTextBlock message =

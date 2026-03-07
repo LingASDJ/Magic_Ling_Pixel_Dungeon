@@ -105,7 +105,7 @@ public class Hunger extends Buff implements Hero.Doom {
 				partialDamage += STEP * target.HT / 1000f * (dirtKnifeStand ? 3 : 1);
 
 				if (partialDamage > 1) {
-					target.damage((int) partialDamage, this, Char.DamageType.REAL);
+					target.damage((int) partialDamage, this, Char.DamageType.HG);
 					partialDamage -= (int) partialDamage;
 				}
 
@@ -113,7 +113,7 @@ public class Hunger extends Buff implements Hero.Doom {
 				partialDamage += STEP * target.HT / 2000f;
 
 				if (partialDamage > 1) {
-					target.damage((int) partialDamage, this, Char.DamageType.REAL);
+					target.damage((int) partialDamage, this, Char.DamageType.HG);
 					partialDamage -= (int) partialDamage;
 				}
 
@@ -129,7 +129,7 @@ public class Hunger extends Buff implements Hero.Doom {
 
 					if(!Statistics.noGoReadHungry) Statistics.noGoReadHungry = true;
 
-					hero.damage( 1, this , Char.DamageType.REAL);
+					hero.damage( 1, this , Char.DamageType.HG);
 
 					hero.interrupt();
 
