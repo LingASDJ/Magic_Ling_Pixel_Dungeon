@@ -452,7 +452,7 @@ public enum HeroClass {
 
 	public boolean isUnlocked(){
 		//always unlock on debug builds
-		if(this == SPELLSWORD && !DeviceCompat.isDesktop() && !DeviceCompat.isDebug()){
+		if(this == SPELLSWORD && !(DeviceCompat.isDesktop_Dev())){
 			return false;
 		}
 
