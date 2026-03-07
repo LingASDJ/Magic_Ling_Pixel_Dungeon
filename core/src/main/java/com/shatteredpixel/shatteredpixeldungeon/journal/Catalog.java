@@ -110,6 +110,41 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfNu
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.CatGirlCosplay;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeadOrAlive;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Dirt_KnifeStand;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DreamSeed;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KillEye;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PureRouge;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RustedGoldCoin;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.StarDust;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.TheGriefOfSpeechless;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
@@ -169,7 +204,13 @@ public enum Catalog {
 	EXOTIC_POTIONS,
 	EXOTIC_SCROLLS,
 	BOMBS,
-	PROPS,
+	PROPS_LEVEL1_GOOD,
+	PROPS_LEVEL2_GOOD,
+	PROPS_LEVEL3_GOOD,
+	PROPS_LEVEL1_BAD,
+	PROPS_LEVEL2_BAD,
+	PROPS_LEVEL3_BAD,
+	PROPS_LEVEL1_CHAOS,
 	MINIGAMES,
 	TIPPED_DARTS,
 	BREWS_ELIXIRS,
@@ -244,7 +285,62 @@ public enum Catalog {
 
 		TRINKETS.addItems(Generator.Category.TRINKET.classes);
 
-		PROPS.addItems(Generator.Category.PROP.classes);
+		PROPS_LEVEL1_GOOD.addItems(
+				StarSachet.class,
+				RapidEarthRoot.class,
+				PortableWhetstone.class,
+				NewStem.class,
+				LuckyGlove.class,
+				EmotionalAggregation.class
+		);
+
+		PROPS_LEVEL2_GOOD.addItems(
+				WenStudyingPaperOne.class,
+				Monocular.class,
+				ArmorScalesOfBzmdr.class,
+				DeliciousRecipe.class,
+				YanStudyingPaperTwo.class,
+				KnightStabbingSword.class
+		);
+
+		PROPS_LEVEL3_GOOD.addItems(
+				KillEye.class,
+				PureRouge.class,
+				FaintGlimmer.class
+		);
+
+		PROPS_LEVEL1_BAD.addItems(
+				BrokenBone.class,
+				RustedGoldCoin.class,
+				ConfusedMieMieTalisman.class,
+				BottleWraith.class,
+				BlockingDrug.class
+		);
+
+		PROPS_LEVEL2_BAD.addItems(
+				TheGriefOfSpeechless.class,
+				TerrorDoll.class,
+				TerrorDollB.class,
+				YanStudyingPaperOne.class,
+				WenStudyingPaperTwo.class,
+				CloakFragmentsOfBzmdr.class,
+				EmotionalAggregationB.class,
+				HeartOfCrystalFractal.class,
+				Dirt_KnifeStand.class
+		);
+
+		PROPS_LEVEL3_BAD.addItems(
+				NoteOfBzmdr.class,
+				StarDust.class,
+				BrokenRing.class
+		);
+
+		PROPS_LEVEL1_CHAOS.addItems(
+				DeadOrAlive.class,
+				DreamSeed.class,
+				CatGirlCosplay.class
+		);
+
 
 		BOOKS.addItems(MagicGirlBooks.class, BrokenBooks.class, GrassKingBooks.class, IceCityBooks.class,
 				NoKingMobBooks.class, HollowCityBook.class, DeepBloodBooks.class, DimandBook.class,
@@ -348,7 +444,17 @@ public enum Catalog {
 		equipmentCatalogs.add(WANDS);
 		equipmentCatalogs.add(RINGS);
 		equipmentCatalogs.add(ARTIFACTS);
-		equipmentCatalogs.add(PROPS);
+
+		equipmentCatalogs.add(PROPS_LEVEL1_GOOD);
+		equipmentCatalogs.add(PROPS_LEVEL2_GOOD);
+		equipmentCatalogs.add(PROPS_LEVEL3_GOOD);
+
+		equipmentCatalogs.add(PROPS_LEVEL1_BAD);
+		equipmentCatalogs.add(PROPS_LEVEL2_BAD);
+		equipmentCatalogs.add(PROPS_LEVEL3_BAD);
+
+		equipmentCatalogs.add(PROPS_LEVEL1_CHAOS);
+
 		equipmentCatalogs.add(TRINKETS);
 		equipmentCatalogs.add(BOOKS);
 		equipmentCatalogs.add(MISC_EQUIPMENT);
