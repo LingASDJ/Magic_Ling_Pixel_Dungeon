@@ -420,7 +420,7 @@ public class NewZeroFiveLevel extends Level {
         mobs.add(lanFire);
 
         if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)
-                || DeviceCompat.isDebug() && DeviceCompat.isDesktop() || DeviceCompat.isMDP()) {
+                || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP()) {
             WaloKe shopking = new WaloKe();
             shopking.pos = 545;
             mobs.add(shopking);

@@ -92,6 +92,11 @@ public class GudaziPlot extends Plot {
 
     @Override
     public void skip() {
+        diagulewindow.cancel();
+        WndDialog.settedPlot = null;
+        if(!skipGetItems){
+            DropRules();
+        }
     }
 
     private void process_to_1() {
@@ -111,19 +116,24 @@ public class GudaziPlot extends Plot {
         diagulewindow.changeText(Messages.get(Gudazi.class, "message1"));
     }
 
-    private void process_to_2()
-    {
-        diagulewindow.changeText(Messages.get(Gudazi.class,"message2"));
-    }
-
-    private void process_to_3()
-    {
+    private void DropRules(){
         if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
             Dungeon.level.drop(new Gold(1), hero.pos);
         } else {
             Dungeon.level.drop( new ChargrilledMeat(), hero.pos );
         }
         Statistics.zeroItemLevel++;
+    }
+
+    private void process_to_2()
+    {
+        DropRules();
+        skipGetItems = true;
+        diagulewindow.changeText(Messages.get(Gudazi.class,"message2"));
+    }
+
+    private void process_to_3()
+    {
         diagulewindow.changeText(Messages.get(Gudazi.class,"message3"));
     }
 

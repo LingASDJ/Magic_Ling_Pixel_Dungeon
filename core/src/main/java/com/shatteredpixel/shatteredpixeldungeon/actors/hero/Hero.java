@@ -268,6 +268,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewZeroFiveLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.NormalZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -1336,7 +1337,7 @@ public class Hero extends Char {
 			}
 		}
 
-		if(level instanceof NewZeroFiveLevel){
+		if(level instanceof NewZeroFiveLevel || level instanceof NormalZeroFiveLevel){
             Statistics.snow = level.distance(pos, 961) > 13;
 		}
 

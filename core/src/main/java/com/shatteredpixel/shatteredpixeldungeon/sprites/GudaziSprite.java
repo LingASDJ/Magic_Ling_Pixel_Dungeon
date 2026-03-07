@@ -8,7 +8,7 @@ public class GudaziSprite extends MobSprite {
     private Animation what_up;
     public GudaziSprite() {
         super();
-        texture( Assets.Sprites.GQ_GUDAZI );
+        texture( Assets.Sprites.GUDAZI );
 //        if(chinaHoliday == RegularLevel.ChinaHoliday.GQJ) {
 //            texture( Assets.Sprites.GQ_GUDAZI );
 //        } else if(chinaHoliday == RegularLevel.ChinaHoliday.CJ) {

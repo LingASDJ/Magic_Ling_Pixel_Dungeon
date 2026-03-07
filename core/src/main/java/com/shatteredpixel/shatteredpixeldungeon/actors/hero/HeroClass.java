@@ -279,7 +279,7 @@ public enum HeroClass {
 			hero.lvl = 30;
 			hero.HP=hero.HT=120;
 			hero.exp=-1;
-			if(DeviceCompat.isMidTest() || DeviceCompat.isMDP() || DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
+			if(DeviceCompat.isMidTest() || DeviceCompat.isMDP() || DeviceCompat.isDesktop_Dev()){
 				SPDSettings.iceTestCoin(20260000);
 			}
 		}
@@ -445,12 +445,14 @@ public enum HeroClass {
 				return Assets.Sprites.HUNTRESS;
 			case DUELIST:
 				return Assets.Sprites.DUELIST;
+			case SPELLSWORD:
+				return Assets.Sprites.SPELLSWORD;
 		}
 	}
 
 	public boolean isUnlocked(){
 		//always unlock on debug builds
-		if(this == SPELLSWORD){
+		if(this == SPELLSWORD && !DeviceCompat.isDesktop() && !DeviceCompat.isDebug()){
 			return false;
 		}
 

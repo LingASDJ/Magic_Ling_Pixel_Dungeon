@@ -3,25 +3,20 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.MoRuosPlot;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MoRuoSSprite;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 public class MoRuoS extends NTNPC {
 
     {
         spriteClass = MoRuoSSprite.class;
-        chat = new ArrayList<String>() {
-            {
-                add((Messages.get(MoRuoS.class, "message1")));
-                add((Messages.get(MoRuoS.class, "message2")));
-                add((Messages.get(MoRuoS.class, "message3")));
-            }
-        };
         properties.add(Property.IMMOVABLE);
     }
 
@@ -50,13 +45,20 @@ public class MoRuoS extends NTNPC {
             Messages.get(MoRuoS.class,"roll7"),
             Messages.get(MoRuoS.class,"roll8"),
     };
+
     @Override
     public boolean interact(Char c) {
 
         sprite.turnTo(pos, Dungeon.hero.pos);
 
+        MoRuosPlot plot = new MoRuosPlot();
         if(first){
-            WndQuest.chating(this,chat);
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(plot,false));
+                }
+            });
             first=false;
         }else {
             yell(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);

@@ -145,7 +145,7 @@ public class Messages {
 				return get(c.getSuperclass(), k, baseName, args);
 			} else {
 				//本地调试+桌面
-				if (DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
+				if (DeviceCompat.isDesktop_Dev()){
 					System.out.println("[MissString]: "+baseName);
 				}
 				return "Ms:"+baseName;

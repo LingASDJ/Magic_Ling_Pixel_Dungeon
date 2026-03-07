@@ -188,7 +188,7 @@ public enum Catalog {
 	//should only be used when initializing
 	private void addItems( Class<?>... items){
 		for (Class<?> item : items){
-			seen.put(item, DeviceCompat.isDebug() && DeviceCompat.isDesktop());
+			seen.put(item, DeviceCompat.isDesktop_Dev());
 			useCount.put(item, 0);
 		}
 	}
