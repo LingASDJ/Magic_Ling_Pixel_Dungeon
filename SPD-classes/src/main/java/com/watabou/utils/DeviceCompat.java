@@ -55,9 +55,13 @@ public class DeviceCompat {
 		} else {
 			return Gdx.app.getType() == Application.ApplicationType.Android;
 		}
-
-
+		
 	}
+	
+	public static boolean isDesktop_Dev(){
+		return DeviceCompat.isDesktop() && DeviceCompat.isDebug();
+	}
+	
 	public static boolean isiOS(){
 		if(Gdx.app == null){
 			return SharedLibraryLoader.isIos;

@@ -808,7 +808,7 @@ public class HeroSelectScene extends PixelScene {
 		}
 
 		private void updateAvatar(HeroClass cl) {
-			if(cl == SPELLSWORD){
+			if(cl == SPELLSWORD && !(DeviceCompat.isDesktop_Dev())){
 				hardlight(0x222222);
 			} else {
 				resetColor();
