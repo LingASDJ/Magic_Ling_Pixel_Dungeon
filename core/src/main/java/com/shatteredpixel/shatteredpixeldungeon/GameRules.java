@@ -285,8 +285,10 @@ public class GameRules {
         for (Prop w : AllProps.toArray(new Prop[0])){
             if(w.kind == 0){
                 Statistics.goodMultiplier += 0.2f;
+            } else if(w.kind == 2) {
+                Statistics.badMultiplier += 0.25f;
             } else {
-                Statistics.badMultiplier += 0.4f;
+                Statistics.badMultiplier += 0.5f;
             }
         }
     }

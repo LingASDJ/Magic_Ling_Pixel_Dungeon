@@ -96,16 +96,20 @@ public class WndScoreBreakdown extends Window {
         if (Game.scene().getClass() == GameScene.class) {
             float score = 0;
             float scoreB = 0;
+            float scoreC = 0;
             ArrayList<Prop> AllProps = hero.belongings.getAllItems(Prop.class);
             for (Prop w : AllProps.toArray(new Prop[0])) {
                 if (w.kind == 0) {
                     score += 0.2f;
+                } else if(w.kind == 2) {
+                    scoreC += 0.25f;
                 } else {
                     scoreB += 0.5f;
                 }
             }
             pos = statSlot(content, Messages.get(this, "bad_prop"), String.format("%.1f", scoreB) + "x", pos, false);
             pos = statSlot(content, Messages.get(this, "good_prop"), String.format("%.1f", score) + "x", pos, false);
+            pos = statSlot(content, Messages.get(this, "chaos_prop"), String.format("%.1f", scoreC) + "x", pos, false);
             pos = addInfo(content, Messages.get(this, "prop_desc"), pos);
         } else {
             pos = statSlot(content, Messages.get(this, "total_props"), (Statistics.badMultiplier + Statistics.goodMultiplier) + "x", pos, false);
