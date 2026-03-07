@@ -20,6 +20,16 @@ import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BzmdrLand;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Gudazi;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.JIT;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.KongFu;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.XiaYuan;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ArchettoNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
@@ -41,6 +51,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 import java.util.List;
 
@@ -296,6 +307,53 @@ public class NormalZeroFiveLevel extends Level {
         PaswordBadges.loadGlobal();
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
+
+        MoonLow ml = new MoonLow();
+        ml.pos = Random.Float()>0.5f ? 722 : 720;
+        mobs.add(ml);
+
+        /** 篝火组 **/
+        Gudazi gdz = new Gudazi();
+        gdz.pos = 781;
+        mobs.add(gdz);
+
+        LanFire lf = new LanFire();
+        lf.pos = 807;
+        mobs.add(lf);
+
+        XiaYuan xy = new XiaYuan();
+        xy.pos = 783;
+        mobs.add(xy);
+
+        if(Random.Float()<=0.45f){
+            BzmdrLand bzmdrLand = new BzmdrLand();
+            bzmdrLand.pos = 831;
+            mobs.add(bzmdrLand);
+            Statistics.onlyBzmdr = true;
+        }
+
+        JIT jt = new JIT();
+        jt.pos = 833;
+        mobs.add(jt);
+
+        /** 岸边组 **/
+        KongFu kf = new KongFu();
+        kf.pos = 845;
+        mobs.add(kf);
+
+        /** 商人组 **/
+        ZeroDreamShop zdr = new ZeroDreamShop();
+        zdr.pos = 295;
+        mobs.add(zdr);
+
+        MoRuoS moRuoS = new MoRuoS();
+        moRuoS.pos = 258;
+        mobs.add(moRuoS);
+
+        /** 魔法阵组 **/
+        ArchettoNewYears archettoNewYears = new ArchettoNewYears();
+        archettoNewYears.pos = 593;
+        mobs.add(archettoNewYears);
     }
 
     @Override
@@ -385,7 +443,7 @@ public class NormalZeroFiveLevel extends Level {
 
     @Override
     public void playLevelMusic() {
-        Music.playModeBGM(Assets.Music.TOWN_YEARS, true);
+        Music.playModeBGM(Assets.Music.TOWN, true);
     }
 }
 
