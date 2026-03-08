@@ -287,7 +287,7 @@ public enum Catalog {
 
 		PROPS_LEVEL1_GOOD.addItems(
 				StarSachet.class,
-				RapidEarthRoot.class,
+				ArmorScalesOfBzmdr.class,
 				PortableWhetstone.class,
 				NewStem.class,
 				LuckyGlove.class,
@@ -297,7 +297,7 @@ public enum Catalog {
 		PROPS_LEVEL2_GOOD.addItems(
 				WenStudyingPaperOne.class,
 				Monocular.class,
-				ArmorScalesOfBzmdr.class,
+				RapidEarthRoot.class,
 				DeliciousRecipe.class,
 				YanStudyingPaperTwo.class,
 				KnightStabbingSword.class

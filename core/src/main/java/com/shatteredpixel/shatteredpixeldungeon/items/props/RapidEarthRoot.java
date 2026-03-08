@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class RapidEarthRoot extends Prop{
     {
+        rareness = 1;
         image = ItemSpriteSheet.RAPIDEARTHROOT;
     }
 

@@ -675,8 +675,8 @@ public abstract class Char extends Actor {
 			enemy.sprite.showStatus( CharSprite.NEUTRAL, enemy.defenseVerb() );
 
 			if(enemy instanceof Hero && ((Hero) enemy).belongings.getItem(KnightStabbingSword.class) !=null){
-				if(Random.Float()<=0.45f){
-					enemy.attack(this,1,0,1 , DamageType.PHYSICAL);
+				if(Random.Float()<=0.40f && hero.buff(KnightStabbingSword.NoRoundTracker.class) == null){
+					Buff.affect(Dungeon.hero, KnightStabbingSword.NoRoundTracker.class, 1f);
 					GLog.n(Messages.get(KnightStabbingSword.class,"attack"));
 				}
 			}
