@@ -21,7 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TreeList;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -52,6 +55,14 @@ public class Barrier extends ShieldBuff {
 	public boolean act() {
 
 		partialLostShield += Math.min(1f, shielding()/20f);
+
+		TreeList.TreeBarrier s = hero.buff(TreeList.TreeBarrier.class);
+		if(s!=null){
+			int absorbed = Math.min(1, s.maxShield - s.accumulatedShield);
+			if (absorbed > 0 && target == hero) {
+				s.accumulatedShield += 1;
+			}
+		}
 
 		if (partialLostShield >= 1f) {
 			absorbDamage(1);
