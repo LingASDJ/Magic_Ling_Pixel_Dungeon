@@ -1,7 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -89,7 +87,7 @@ public class TreeList extends MeleeWeapon {
     }
 
     public String desc() {
-        return Messages.get(this, "desc", 30+5*level(),2+0.2*level());
+        return Messages.get(this, "desc", 20+2*level(),2 + level()/5);
     }
 
     @Override
@@ -115,14 +113,6 @@ public class TreeList extends MeleeWeapon {
 
         @Override
         public boolean act() {
-
-            TreeList.TreeBarrier s = hero.buff(TreeList.TreeBarrier.class);
-            if(s!=null){
-                int absorbed = Math.min(1, s.maxShield - s.accumulatedShield);
-                if (absorbed > 0 && target == hero) {
-                    s.accumulatedShield += 1;
-                }
-            }
 
             absorbDamage(1);
 
@@ -182,9 +172,9 @@ public class TreeList extends MeleeWeapon {
             if (target instanceof Hero) {
                 Item weapon = ((Hero) target).belongings.weapon();
                 if (weapon != null) {
-                    maxShield = 30 + 5 * weapon.level();
+                    maxShield = 20 + 2 * weapon.level();
                 } else {
-                    maxShield = 30;
+                    maxShield = 20;
                 }
             }
 
@@ -194,7 +184,7 @@ public class TreeList extends MeleeWeapon {
 
         // 攻击时积攒护盾
         public void accumulateOnAttack(Weapon weaponLevel) {
-            int gained = 2 + (int)(0.2 * weaponLevel.level());
+            int gained = 2 + weaponLevel.level()/5;
             accumulatedShield = Math.min(accumulatedShield + gained, maxShield);
         }
 
