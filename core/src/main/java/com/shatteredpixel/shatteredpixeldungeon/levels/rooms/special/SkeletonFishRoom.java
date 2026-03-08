@@ -136,7 +136,7 @@ public class SkeletonFishRoom extends SpecialRoom {
 
         Point apos = new Point(centerX+5, centerY+1);
         int aPos = left + right - apos.x + apos.y * level.width();
-        level.drop(Generator.random(), aPos).type = Heap.Type.REMAINS;
+        level.drop(Generator.random(), aPos).type = Heap.Type.CHEST;
 
         Point bpos = new Point(centerX+2, centerY+4);
         int bPos = left + right - bpos.x + bpos.y * level.width();

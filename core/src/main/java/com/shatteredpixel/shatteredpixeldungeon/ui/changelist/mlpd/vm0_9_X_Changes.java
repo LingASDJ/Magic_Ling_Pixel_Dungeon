@@ -4,6 +4,25 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.TribemanOldSprite;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.CatGirlCosplay;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeadOrAlive;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Dirt_KnifeStand;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DreamSeed;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KillEye;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PureRouge;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.StarDust;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -50,11 +69,120 @@ import java.util.ArrayList;
 public class vm0_9_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0931_Changes(changeInfos);
         add_V0925_Changes(changeInfos);
         add_V0920_Changes(changeInfos);
         add_V0915_Changes(changeInfos);
         add_V0910_Changes(changeInfos);
         add_V0900_Changes(changeInfos);
+    }
+
+    public static void add_V0931_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.9.3.1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Interfaces.HAICONS, 32, 0, 16, 16), "困难模式-2026",
+                "困难模式重磅回归！欢迎前来测试！\n" +
+                        "详情请参考难度描述中的介绍。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KILL_EYES), "猎杀者之眼-T3-正面",
+                Messages.get(KillEye.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.PURE_ROUGE), "珍贵的胭脂-T3-正面",
+                Messages.get(PureRouge.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FAINT_GLIMMER), "无暇微光-T3-正面",
+                Messages.get(FaintGlimmer.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIRT_KNIFE_STAND), "土刀架-T2-负面",
+                Messages.get(Dirt_KnifeStand.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CATGIRL_COSPLAY), "猫娘cosply手册-UNDEF",
+                Messages.get(CatGirlCosplay.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RESOLVE_DIE), "去往死的决意-UNDEF",
+                Messages.get(DeadOrAlive.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DREAM_SEED), "梦之种-UNDEF",
+                Messages.get(DreamSeed.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.NOTEOFBZMDR), "Bzmdr的笔记-T3-负面",
+                Messages.get(NoteOfBzmdr.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BROKEN_RING), "破碎之环-T3-负面",
+                Messages.get(BrokenRing.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.STAR_DUST), "星尘-T3-负面",
+                Messages.get(StarDust.class,"desc")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_FADELEAF), "种子系统优化",
+                "同一个种子，不同的生成问题由来已久。\n\n" +
+                        "我已经在新版进行了优化，可保证主楼层95%吻合度，子楼层暂时还在思考解决方法。"));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                ("_-_ 修复盗贼角色皮肤未生效的问题\n" +
+                        "_-_ 修复金蝶0分倍率异常\n" +
+                        "_-_ 修复藏品高SDK的异常\n" +
+                        "_-_ 修复土刀架造成的黄饿不回血的异常\n" +
+                        "_-_ 修复古神Boss极端情况下的无敌异常\n" +
+                        "_-_ 修复跳楼房在子层生成异常\n" +
+                        "_-_ 修复猎杀者的独眼的穿甲对猎杀者自身的必定伏击不生效的异常\n" +
+                        "_-_ 修复在小叶处选择获取三阶藏品时有概率获得垃圾(藏品池未空)的异常\n" +
+                        "_-_ 修复部分楼层无视小叶直接下楼的卡死")
+        ));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("显示调整"),
+                ("_-_ 现在支持多Boss血条\n" +
+                        "_-_ 现在特殊皮肤不再显示草")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREE_LIST), ("树痕调整"),
+                ("每下攻击攒2+等级/5 生命护盾量，上限20+等级*2\n" +
+                        "储存盾量只可吸收奥术护盾，不吸收生命护盾")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HEARTOFCRYSTALFRACTAL), "水晶之心的噩梦-T1-负面",
+                Messages.get(HeartOfCrystalFractal.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.PORTABLEWHETSTONE), "携带型砥石-T1-正面",
+                Messages.get(PortableWhetstone.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BROKENBONE), "折断之骨-T1-负面",
+                Messages.get(BrokenBone.class,"desc")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DELICIOUSRECIPE), "惠民食谱-T1-正面",
+                Messages.get(DeliciousRecipe.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MONOCULAR), "单筒望远镜-T2-正面",
+                Messages.get(Monocular.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.YANSTUDYINGPAPERTWO), "言的研究手稿<其二>-T2-正面",
+                Messages.get(YanStudyingPaperTwo.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WENSTUDYINGPAPERONE), "文的研究手稿<其一>-T2-正面",
+                Messages.get(WenStudyingPaperOne.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.YANSTUDYINGPAPERONE), "言的研究手稿<其一>-T2-负面",
+                Messages.get(YanStudyingPaperOne.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGHTSTABBINGSWORD), "迅捷骑士刺剑-T2-正面",
+                Messages.get(KnightStabbingSword.class,"desc")));
+
     }
 
     public static void add_V0925_Changes(ArrayList<ChangeInfo> changeInfos ) {
