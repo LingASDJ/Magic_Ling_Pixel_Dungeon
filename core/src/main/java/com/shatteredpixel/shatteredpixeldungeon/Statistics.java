@@ -505,7 +505,7 @@ public class Statistics {
 	static {
 		propPositive0 = new ArrayList<>(Arrays.asList(
 				new StarSachet(),
-				new RapidEarthRoot(),
+				new ArmorScalesOfBzmdr(),
 				new PortableWhetstone(),
 				new NewStem(),
 				new LuckyGlove(),
@@ -524,7 +524,7 @@ public class Statistics {
 		propPositive1 = new ArrayList<>(Arrays.asList(
 				new WenStudyingPaperOne(),
 				new Monocular(),
-				new ArmorScalesOfBzmdr(),
+				new RapidEarthRoot(),
 				new DeliciousRecipe(),
 				new YanStudyingPaperTwo(),
 				new KnightStabbingSword()
@@ -571,7 +571,7 @@ public class Statistics {
 
 		propPositive0 = new ArrayList<>(Arrays.asList(
 				new StarSachet(),
-				new RapidEarthRoot(),
+				new ArmorScalesOfBzmdr(),
 				new PortableWhetstone(),
 				new NewStem(),
 				new LuckyGlove(),
@@ -589,8 +589,8 @@ public class Statistics {
 
 		propPositive1 = new ArrayList<>(Arrays.asList(
 				new WenStudyingPaperOne(),
+				new RapidEarthRoot(),
 				new Monocular(),
-				new ArmorScalesOfBzmdr(),
 				new DeliciousRecipe(),
 				new YanStudyingPaperTwo(),
 				new KnightStabbingSword()

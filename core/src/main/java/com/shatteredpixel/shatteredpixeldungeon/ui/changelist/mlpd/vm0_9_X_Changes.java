@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.TribemanOldSprite;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CatGirlCosplay;
@@ -19,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PureRouge;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
@@ -157,6 +159,9 @@ public class vm0_9_X_Changes {
                 ("每下攻击攒2+等级/5 生命护盾量，上限20+等级*2\n" +
                         "储存盾量只可吸收奥术护盾，不吸收生命护盾")));
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARMORSCALESOFBZMDR), "Bzmdr的盔甲鳞片-降级到T1",
+                Messages.get(ArmorScalesOfBzmdr.class,"desc")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HEARTOFCRYSTALFRACTAL), "水晶之心的噩梦-T1-负面",
                 Messages.get(HeartOfCrystalFractal.class,"desc")));
 
@@ -187,6 +192,9 @@ public class vm0_9_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGHTSTABBINGSWORD), "迅捷骑士刺剑-T2-正面",
                 Messages.get(KnightStabbingSword.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RAPIDEARTHROOT), "速生地缚根-提升到T2",
+                Messages.get(RapidEarthRoot.class,"desc")));
 
     }
 

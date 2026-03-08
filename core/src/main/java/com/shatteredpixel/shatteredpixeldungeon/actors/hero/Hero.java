@@ -211,6 +211,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
@@ -1179,6 +1180,10 @@ public class Hero extends Char {
 	public float attackDelay() {
 		if (buff(Talent.LethalMomentumTracker.class) != null){
 			buff(Talent.LethalMomentumTracker.class).detach();
+			return 0;
+		}
+
+		if (buff(KnightStabbingSword.NoRoundTracker.class) != null){
 			return 0;
 		}
 
@@ -3594,6 +3599,8 @@ public class Hero extends Char {
 
 		Invisibility.dispel();
 		spend( attackDelay() );
+
+		Buff.detach(this, KnightStabbingSword.NoRoundTracker.class);
 
 		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
 			Buff.affect( this, Combo.class ).hit(enemy);
