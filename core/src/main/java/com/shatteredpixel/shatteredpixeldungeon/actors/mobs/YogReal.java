@@ -717,19 +717,16 @@ public class YogReal extends Boss {
 
     @Override
     public void notice() {
-        if (!BossHealthBar.isAssigned()) {
-            BossHealthBar.assignBoss(this);
-            yell(Messages.get(this, "notice"));
-            for (Char ch : Actor.chars()){
-                if (ch instanceof DriedRose.GhostHero){
-                    ((DriedRose.GhostHero) ch).sayBoss();
-                }
+        BossHealthBar.assignBoss(this);
+        yell(Messages.get(this, "notice"));
+        for (Char ch : Actor.chars()){
+            if (ch instanceof DriedRose.GhostHero){
+                ((DriedRose.GhostHero) ch).sayBoss();
             }
-            GameScene.bossReady();
-            //BGMPlayer.playBoss();
-            if (phase == 0) {
-                phase = 1;
-            }
+        }
+        GameScene.bossReady();
+        if (phase == 0) {
+            phase = 1;
         }
     }
 
