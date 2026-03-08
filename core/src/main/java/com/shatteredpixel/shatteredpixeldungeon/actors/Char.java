@@ -81,6 +81,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PropBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
@@ -461,7 +462,13 @@ public abstract class Char extends Actor {
 					dr = 0;
 				}
 
+				int s = Dungeon.depth/5;
+				PropBuff props = hero.buff(PropBuff.class);
+
 				if(hero.belongings.getItem(KillEye.class)!=null){
+					if(props != null && props.timeG >= 13 - s){
+						dr = 0;
+					}
 					if(enemy instanceof Mob){
 						if(((Mob) enemy).surprisedBy(h)){
 							dr = 0;

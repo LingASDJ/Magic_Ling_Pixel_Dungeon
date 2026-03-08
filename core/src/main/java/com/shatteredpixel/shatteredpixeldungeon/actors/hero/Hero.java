@@ -2345,11 +2345,6 @@ public class Hero extends Char {
 			}
 		}
 
-		if(hero.belongings.getItem(DeadOrAlive.class)!=null){
-			damage = (int) (damage * 1.1f);
-		}
-
-
 		return super.defenseProc( enemy, damage );
 	}
 
@@ -2364,6 +2359,10 @@ public class Hero extends Char {
 		if(hero.belongings.getItem(EmotionalAggregation.class)!=null && Random.Float()>0.90f ){
 			GLog.n(Messages.get(EmotionalAggregation.class,"block"));
 			return;
+		}
+
+		if(hero.belongings.getItem(DeadOrAlive.class)!=null){
+			dmg = (int) (dmg * 1.1f);
 		}
 
 		if(Dungeon.hero.belongings.getItem(WenStudyingPaperOne.class)!=null) {
