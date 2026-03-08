@@ -128,6 +128,11 @@ public class vm0_9_X_Changes {
                 "同一个种子，不同的生成问题由来已久。\n\n" +
                         "我已经在新版进行了优化，可保证主楼层95%吻合度，子楼层暂时还在思考解决方法。"));
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.素材优化迭代\n" +
+                        "2.墓志铭文案修改\n" +
+                        "3.骸骨房间英雄遗骸改为箱子")));
+
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 ("_-_ 修复盗贼角色皮肤未生效的问题\n" +
                         "_-_ 修复金蝶0分倍率异常\n" +
