@@ -1436,6 +1436,16 @@ public class ItemSpriteSheet {
         assignItemRect(DREAM_SEED,              10, 10);
     }
 
+    public static final int SPELLSWORD_ITEM       =                               xy(1, 64);
+
+    public static final int IMPRIA_EXORCISM             = SPELLSWORD_ITEM;
+    public static final int MAGIC_FLY_BLADE           = SPELLSWORD_ITEM+4;
+
+    static
+    {
+        assignItemRect(MAGIC_FLY_BLADE,               11,11);
+    }
+
 
     //for smaller 8x8 icons that often accompany an item sprite
     public static class Icons {
