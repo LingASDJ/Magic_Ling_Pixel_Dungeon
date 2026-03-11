@@ -47,6 +47,7 @@ public enum Icons {
 	ROGUE,
 	HUNTRESS,
 	DUELIST,
+	SPELLSWORD,
 
 	LEFTBUTTON,
 	RIGHTBUTTON,
@@ -272,6 +273,9 @@ public enum Icons {
 				break;
 			case DUELIST:
 				icon.frame( icon.texture.uvRectBySize( 176, 0, 16, 16 ));
+				break;
+			case SPELLSWORD:
+				icon.frame( icon.texture.uvRectBySize( 192, 0, 16, 16 ));
 				break;
 
 			case STAIRS:
@@ -650,7 +654,7 @@ public enum Icons {
 
 	public static Image get( HeroClass cl ) {
 		switch (cl) {
-			case WARRIOR:case SPELLSWORD:
+			case WARRIOR:
 				return get( WARRIOR );
 			case MAGE:
 				return get( MAGE );
@@ -660,6 +664,8 @@ public enum Icons {
 				return get( HUNTRESS );
 			case DUELIST:
 				return get( DUELIST );
+			case SPELLSWORD:
+				return get( SPELLSWORD );
 			default:
 				return null;
 		}
