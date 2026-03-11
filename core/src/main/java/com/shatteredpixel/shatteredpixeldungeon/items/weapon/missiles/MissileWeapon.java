@@ -527,7 +527,7 @@ abstract public class MissileWeapon extends Weapon {
 			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
 		}
 
-		info += "\n\n" + Messages.get(MissileWeapon.class, "distance");
+		info += "\n\n" + Messages.get(this, "distance");
 
 		info += "\n\n" + Messages.get(this, "durability");
 

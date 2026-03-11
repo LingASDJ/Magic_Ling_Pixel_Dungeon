@@ -139,6 +139,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Ch
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
@@ -714,6 +715,11 @@ public class Hero extends Char {
 		//春游模式
 		if(Statistics.difficultyDLCEXLevel == 1){
 			Buff.affect(hero, BlessBossRushLow.class, ChampionHero.DURATION*123456f);
+		}
+
+		/** 魔剑士 **/
+		if(hero.heroClass == HeroClass.SPELLSWORD){
+			Buff.affect(this, MagicPower.class).set(20f,20f);
 		}
 
 	}
