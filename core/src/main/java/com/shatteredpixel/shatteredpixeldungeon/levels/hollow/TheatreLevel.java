@@ -131,7 +131,9 @@ public class TheatreLevel extends Level {
         boss.pos = 136;
         mobs.add(boss);
 
-        drop(new LingBag(),157);
+        if(Dungeon.depth == 31){
+            drop(new LingBag(),157);
+        }
 
         Random.pushGenerator(Random.Long());
         ArrayList<Item> bonesItems = Bones.get();

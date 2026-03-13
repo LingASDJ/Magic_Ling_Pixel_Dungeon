@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlue
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.PacmanHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -76,7 +77,6 @@ public class MageHand extends DirectableAlly {
         @Override
         public void detach() {
             super.detach();
-            Dungeon.observe();
             GameScene.updateFog();
         }
     }
@@ -881,9 +881,15 @@ public class MageHand extends DirectableAlly {
         super.die(cause);
         if(magesStaff != null){
             Dungeon.level.drop(magesStaff, hero.pos).sprite.drop();
+            if(Dungeon.level instanceof PacmanHollowActorLevel){
+                magesStaff.keptThoughLostInvent = true;
+            }
         }
         if(equippedWand != null){
             Dungeon.level.drop(equippedWand, hero.pos).sprite.drop();
+            if(Dungeon.level instanceof PacmanHollowActorLevel){
+               equippedWand.keptThoughLostInvent = true;
+            }
         }
         MageHandControl mageHandControl = hero.belongings.getItem(MageHandControl.class);
         if(mageHandControl != null){
