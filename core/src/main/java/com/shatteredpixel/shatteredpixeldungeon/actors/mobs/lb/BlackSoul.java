@@ -7,13 +7,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc;
-import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor.Glyph;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
@@ -270,8 +269,7 @@ public class BlackSoul extends Mob implements Callback {
     public void die( Object cause ) {
         super.die(cause);
 
-        if (hero.buff(LostInventory.class) != null){
-            Dungeon.level.drop( new LostBackpack(), pos).sprite.drop( pos );
+        if(buff(Dread.class) == null){
             if (gold > 0) {
                 Dungeon.level.drop( new Gold(gold), pos ).sprite.drop();
             }
@@ -283,7 +281,7 @@ public class BlackSoul extends Mob implements Callback {
     @Override
     public void notice() {
         super.notice();
-        if (!BossHealthBar.isAssigned() && !Dungeon.bossLevel()) {
+        if (!BossHealthBar.isAssigned(this) && !Dungeon.bossLevel()) {
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "question"));
         }
@@ -297,6 +295,7 @@ public class BlackSoul extends Mob implements Callback {
         desc += Messages.get(this, "armor", armor.toString() );
         desc += Messages.get(this, "wand", wand.toString() );
         desc += Messages.get(this, "missile", missile.toString() );
+        desc += Messages.get(this, "gold", gold );
 
         return desc;
     }
