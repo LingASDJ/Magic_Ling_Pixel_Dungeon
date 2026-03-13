@@ -78,7 +78,7 @@ public class BlackSoul extends Mob implements Callback {
         do {
             wand = RandomWand();
         } while (wand.cursed);
-        wand.level(Dungeon.depth/5 + Challenges.activeChallenges()/4);
+        wand.level(Dungeon.depth/10 + Challenges.activeChallenges()/5);
         wand.updateLevel();
         wand.curCharges = Math.min( 10, wand.maxCharges );
         wand.identify();
