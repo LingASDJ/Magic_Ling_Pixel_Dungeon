@@ -176,7 +176,6 @@ public class Morphs extends Boss {
 
         if (!BossHealthBar.isAssigned()) {
             Camera.main.shake(1f,3f);
-            GameScene.bossReady();
 
             yell(Messages.get(this, "notice",Dungeon.hero.name()));
 

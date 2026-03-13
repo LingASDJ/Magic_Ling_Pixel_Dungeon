@@ -187,7 +187,7 @@ public class MorpheusBossLevel extends Level {
         AlarmTrap alarmTrap = new AlarmTrap();
         alarmTrap.pos = 312;
         alarmTrap.activate();
-
+        GameScene.bossReady();
         Buff.affect(Dungeon.hero, Invisibility.class, 10f);
     }
 

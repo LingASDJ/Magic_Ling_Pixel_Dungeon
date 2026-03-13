@@ -167,6 +167,16 @@ public class ShubNiggurath extends Boss {
     }
 
     @Override
+    public void die(Object cause) {
+        super.die(cause);
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof ShubNiggurathClone) {
+               mob.die(true);
+            }
+        }
+    }
+
+    @Override
     protected boolean act() {
         alerted = false;
         state = PASSIVE;
@@ -322,7 +332,7 @@ public class ShubNiggurath extends Boss {
             }
 
             if(pos == 312 || !masterAlive){
-               destroy();
+                die(true);
                 sprite.killAndErase();
             }
 
