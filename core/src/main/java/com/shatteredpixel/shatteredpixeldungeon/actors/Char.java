@@ -1623,7 +1623,10 @@ public abstract class Char extends Actor {
 	}
 
 	public static boolean hasProp( Char ch, Property p){
-		return (ch != null && ch.properties().contains(p));
+		if (ch == null) return false;
+		synchronized (ch.properties()) {
+			return ch.properties().contains(p);
+		}
 	}
 
 	public float talentProc(){//for RUNIC_TRANSFERENCE
