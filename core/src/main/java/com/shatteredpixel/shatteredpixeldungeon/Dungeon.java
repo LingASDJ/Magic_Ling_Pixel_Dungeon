@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.S
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
@@ -1077,6 +1078,15 @@ public class Dungeon {
 					BArray.or( level.visited, level.heroFOV, m.pos - 1 + level.width(), 3, level.visited );
 					GameScene.updateFog(m.pos, 2);
 				}
+			}
+		}
+
+		for (Mob m : level.mobs.toArray(new Mob[0])){
+			if (m instanceof BlackSoul) {
+				BArray.or( level.visited, level.heroFOV, m.pos - 1 - level.width(), 3, level.visited );
+				BArray.or( level.visited, level.heroFOV, m.pos - 1, 3, level.visited );
+				BArray.or( level.visited, level.heroFOV, m.pos - 1 + level.width(), 3, level.visited );
+				GameScene.updateFog(m.pos, 2);
 			}
 		}
 

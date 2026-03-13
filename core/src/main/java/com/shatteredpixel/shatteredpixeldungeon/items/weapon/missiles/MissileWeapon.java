@@ -102,10 +102,13 @@ abstract public class MissileWeapon extends Weapon {
 		if (Dungeon.hero != null){
 			int dmg = 0;
 			if (Dungeon.hero.belongings.getItem(Monocular.class) != null) {
-				int distance = Dungeon.hero.distance(Dungeon.hero.enemy());
-				while (distance > 1) {
-					dmg += Random.Int(1, 4);
-					distance -= 1;
+				Char enemy = Dungeon.hero.enemy();
+				if(enemy != null){
+					int distance = Dungeon.hero.distance(enemy);
+					while (distance > 1) {
+						dmg += Random.Int(1, 4);
+						distance -= 1;
+					}
 				}
 			}
 			return Math.max(0, min(buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero) + dmg));
@@ -125,10 +128,13 @@ abstract public class MissileWeapon extends Weapon {
 		if (Dungeon.hero != null){
 			int dmg = 0;
 			if (Dungeon.hero.belongings.getItem(Monocular.class) != null) {
-				int distance = Dungeon.hero.distance(Dungeon.hero.enemy());
-				while (distance > 1) {
-					dmg += Random.Int(1, 4);
-					distance -= 1;
+				Char enemy = Dungeon.hero.enemy();
+				if(enemy != null){
+					int distance = Dungeon.hero.distance(enemy);
+					while (distance > 1) {
+						dmg += Random.Int(1, 4);
+						distance -= 1;
+					}
 				}
 			}
 			return Math.max(0, max( buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero) + dmg ));
