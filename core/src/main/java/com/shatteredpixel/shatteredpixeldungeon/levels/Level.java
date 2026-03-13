@@ -1309,22 +1309,24 @@ public abstract class Level implements Bundlable {
         }
     }
 
-    public Heap drop( Item item, int cell ) {
+	public Heap drop( Item item, int cell ) {
+
+		if (cell < 0 || cell >= heroFOV.length) {
+			Heap dummy = new Heap();
+			dummy.sprite = new ItemSprite();
+			dummy.sprite.link(dummy);
+			return dummy;
+		}
 
 		if (item == null || Challenges.isItemBlocked(item)){
-
-			//create a dummy heap, give it a dummy sprite, don't add it to the game, and return it.
-			//effectively nullifies whatever the logic calling this wants to do, including dropping items.
 			Heap heap = new Heap();
 			ItemSprite sprite = heap.sprite = new ItemSprite();
 			sprite.link(heap);
 			return heap;
-
 		}
 
 		Heap heap = heaps.get( cell );
 		if (heap == null) {
-
 			heap = new Heap();
 			heap.seen = Dungeon.level == this && heroFOV[cell];
 			heap.pos = cell;
@@ -1336,17 +1338,24 @@ public abstract class Level implements Bundlable {
 				heaps.put( cell, heap );
 				GameScene.add( heap );
 			}
-
 			//TODO 搜打撤后续需要优化
 		} else if ((heap.type == Heap.Type.LOCKED_CHEST || heap.type == Heap.Type.CRYSTAL_CHEST )
 				&& (depth != 31 && branch != 3) ) {
 
 			int n;
+			int attempts = 0;
 			do {
 				n = cell + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
-			} while (!passable[n] && !avoid[n]);
-			return drop( item, n );
+				attempts++;
+			} while (attempts < 10 && (n < 0 || n >= passable.length || !passable[n] && !avoid[n]));
 
+
+			if (n < 0 || n >= passable.length) {
+				heap.drop(item);
+				return heap;
+			}
+
+			return drop( item, n );
 		} else {
 			heap.drop(item);
 		}
