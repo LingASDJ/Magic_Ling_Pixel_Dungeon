@@ -105,7 +105,8 @@ public class ShubNiggurath extends Boss {
         if(getClass() == ShubNiggurath.class && !notFirst) {
 
             boolean hasClone = false;
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            ArrayList<Mob> mobsCopy = new ArrayList<>(Dungeon.level.mobs);
+            for (Mob mob : mobsCopy){
                 if (mob instanceof ShubNiggurathClone ||
                         (mob instanceof ShubNiggurath && ((ShubNiggurath) mob).notFirst)) {
                     hasClone = true;
@@ -172,6 +173,13 @@ public class ShubNiggurath extends Boss {
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob instanceof ShubNiggurathClone) {
                mob.die(true);
+            }
+        }
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof ShubNiggurath) {
+                if(((ShubNiggurath) mob).notFirst){
+                    mob.die(true);
+                }
             }
         }
     }
