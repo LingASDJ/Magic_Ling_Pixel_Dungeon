@@ -493,7 +493,6 @@ public class Hero extends Char {
 	//This is relevant because we call isAlive during drawing, which has both performance
 	//and thread coordination implications if that method calls buff(...) frequently
 	private Berserk berserk;
-	private MIME.GOLD_FIVE goldFive;
 
 	public Hero() {
 		super();
@@ -2401,19 +2400,6 @@ public class Hero extends Char {
 			dmg += (int) getZone()*2 -1;
 		}
 
-		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
-		if(getHeal != null && HT/4 > HP){
-			this.HP = HT;
-			interrupt();
-			PotionOfHealing.cure(this);
-			Buff.prolong(this, Invulnerability.GodDied.class, Invulnerability.DURATION*10f);
-			SpellSprite.show(this, SpellSprite.ANKH);
-			GameScene.flash(0x80FFFF40);
-			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-			GLog.w(Messages.get(this, "heartdied"));
-			getHeal.detach(belongings.backpack);
-		}
-
 		if (buff(TimekeepersHourglass.timeStasis.class) != null)
 			return;
 
@@ -3318,19 +3304,6 @@ public class Hero extends Char {
 			Buff.detach(hero, BlessLing.class);
 		}
 
-		MIME.GOLD_FIVE getHeal = hero.belongings.getItem(MIME.GOLD_FIVE.class);
-		if (getHeal != null && HT / 6 > HP) {
-			this.HP = HT;
-			interrupt();
-			PotionOfHealing.cure(this);
-			Buff.prolong(this, Invulnerability.GodDied.class, Invulnerability.DURATION * 10f);
-			SpellSprite.show(this, SpellSprite.ANKH);
-			GameScene.flash(0x80FFFF40);
-			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-			GLog.w(Messages.get(this, "heartdied"));
-			getHeal.detach(belongings.backpack);
-		}
-
 		for (Buff buff : hero.buffs()) {
 			if (HelpSettings() && !(buff instanceof GameTracker)) {
 				Buff.affect(this, GameTracker.class);
@@ -3399,44 +3372,48 @@ public class Hero extends Char {
 
 		Ankh ankh = null;
 
-		//look for ankhs in player inventory, prioritize ones which are blessed.
+		// ============== 重写十字章优先级筛选 ==============
+		// 优先级：MIME.GOLD_FIVE > 祝福十字章 > 普通十字章
 		for (Ankh i : belongings.getAllItems(Ankh.class)) {
+			// 最高优先级：直接选中MIME.GOLD_FIVE
+			if (i instanceof MIME.GOLD_FIVE) {
+				ankh = i;
+				break;
+			}
+			// 次优先级：祝福十字章
 			if (ankh == null || i.isBlessed()) {
 				ankh = i;
 			}
 		}
 
+		// 处理黑魂（保留原逻辑）
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 			if (mob instanceof BlackSoul) {
 				Buff.affect(mob, Dread.class);
 			}
 		}
 
-		if( buff(ElectricalSmoke.SmokingAlloy.class) != null) GLog.n(Messages.get(ElectricalSmoke.class,"die"));
+		if( buff(ElectricalSmoke.SmokingAlloy.class) != null)
+			GLog.n(Messages.get(ElectricalSmoke.class,"die"));
 
-		boolean OnlySummonAlive = false;
-		//灯火值低于40 死亡生成自己的邪恶面，并清空金币，背包也一并带走。（灵感：空洞骑士）
-		for (Ankh i : belongings.getAllItems(Ankh.class)) {
-			if (ankh != null && !(i.isBlessed()) && !OnlySummonAlive) {
-				if (lanterfireactive && hero.lanterfire <= 40 && !i.isBlessed() || hero.buff(LostInventory.class) != null) {
+		if (lanterfireactive && this.lanterfire <= 40 || this.buff(LostInventory.class) != null) {
+			for (Ankh i : belongings.getAllItems(Ankh.class)) {
+				if (!i.isBlessed()) {
 					BlackSoul s = new BlackSoul();
-					if(Statistics.ankhToExit){
-						s.pos = Dungeon.level.entrance();
-					} else {
-						s.pos = Dungeon.hero.pos;
-					}
+					s.pos = Statistics.ankhToExit ? Dungeon.level.entrance() : Dungeon.hero.pos;
 					s.gold = Dungeon.gold;
 					Dungeon.gold = 0;
 					s.state = s.SLEEPING;
 					GameScene.add(s);
 					Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
 					Buff.affect(s, DeadSoul.class);
-					OnlySummonAlive = true;
-					GameScene.flash(0x80FF0000);
+                    GameScene.flash(0x80FF0000);
+					break;
 				}
 			}
 		}
 
+		// 深度31特殊复活（保留原逻辑）
 		if(Dungeon.depth == 31 && (Statistics.Hollow_Holiday || Dungeon.isDLC(Conducts.Conduct.DEV)) && branch != 0){
 			interrupt();
 			resting = false;
@@ -3455,23 +3432,36 @@ public class Hero extends Char {
 				}
 			}
 			return;
-		} else if (ankh != null) {
+		}
+
+		// ============== 十字章复活逻辑（顺序不变：MIME → 祝福 → 普通） ==============
+		else if (ankh != null) {
 			interrupt();
 			resting = false;
 
-			if (ankh.isBlessed()) {
+			// 触发MIME.GOLD_FIVE（现在必定优先触发）
+			if(ankh instanceof MIME.GOLD_FIVE) {
+				this.HP = HT;
+				interrupt();
+				PotionOfHealing.cure(this);
+				Buff.prolong(this, Invulnerability.GodDied.class, Invulnerability.DURATION*10f);
+				SpellSprite.show(this, SpellSprite.ANKH);
+				GameScene.flash(0x80FFFF40);
+				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+				GLog.w(Messages.get(this, "heartdied"));
+				ankh.detach(belongings.backpack);
+			}
+			// 其次：祝福十字章
+			else if (ankh.isBlessed()) {
 				this.HP = HT / 4;
-
 				PotionOfHealing.cure(this);
 				Buff.prolong(this, Invulnerability.class, Invulnerability.DURATION);
-
 				SpellSprite.show(this, SpellSprite.ANKH);
 				GameScene.flash(0x80FFFF40);
 				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 				GLog.w(Messages.get(this, "revive"));
 				Statistics.ankhsUsed++;
 
-				//TODO Chinese
 				if(branch == 10 && Dungeon.depth == 26){
 					GLog.w("索托斯：谨慎一点，再失误一次可就危险了。");
 				}
@@ -3484,20 +3474,12 @@ public class Hero extends Char {
 						return;
 					}
 				}
-			} else {
-
-				//this is hacky, basically we want to declare that a wndResurrect exists before
-				//it actually gets created. This is important so that the game knows to not
-				//delete the run or submit it to rankings, because a WndResurrect is about to exist
-				//this is needed because the actual creation of the window is delayed here
+			}
+			// 最后：普通十字章
+			else {
 				WndResurrect.instance = new Object();
 				Ankh finalAnkh = ankh;
-				Game.runOnRenderThread(new Callback() {
-					@Override
-					public void call() {
-						GameScene.show( new WndResurrect(finalAnkh) );
-					}
-				});
+				Game.runOnRenderThread(() -> GameScene.show( new WndResurrect(finalAnkh) ));
 
 				if (cause instanceof Hero.Doom) {
 					((Hero.Doom)cause).onDeath();
@@ -3507,14 +3489,11 @@ public class Hero extends Char {
 				if (sacMark != null){
 					sacMark.detach();
 				}
-
-
-
-
 			}
 			return;
-
-		} else if(branch == 10 && Dungeon.depth == 26){
+		}
+		// 索托斯特殊关卡复活（保留原逻辑）
+		else if(branch == 10 && Dungeon.depth == 26){
 			this.HP = HT / 4;
 			PotionOfHealing.cure(this);
 			Buff.prolong(this, Invulnerability.class, Invulnerability.DURATION);
@@ -3524,6 +3503,7 @@ public class Hero extends Char {
 			ScrollOfTeleportation.appear(hero, 91);
 			Statistics.TrueYogNoDied = true;
 			GLog.w(Messages.get(Sothoth.class,"dead"));
+
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 				if (mob instanceof Sothoth || mob instanceof SothothEyeDied) {
 					mob.destroy();
@@ -3531,8 +3511,7 @@ public class Hero extends Char {
 			}
 
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-				if (mob instanceof SothothLasher
-						|| mob instanceof ServantAvgomon) {
+				if (mob instanceof SothothLasher || mob instanceof ServantAvgomon) {
 					mob.die(null);
 				}
 			}
@@ -3549,16 +3528,10 @@ public class Hero extends Char {
 	@Override
 	public boolean isAlive() {
 		if (HP <= 0){
-			if(goldFive == null) {
-				goldFive = belongings.getItem(MIME.GOLD_FIVE.class);
-				return goldFive != null;
-			} else {
-				if (berserk == null) berserk = buff(Berserk.class);
-				return berserk != null && berserk.berserking();
-			}
+			if (berserk == null) berserk = buff(Berserk.class);
+			return berserk != null && berserk.berserking();
 		} else {
 			berserk = null;
-			goldFive = null;
 			return super.isAlive();
 		}
 	}
