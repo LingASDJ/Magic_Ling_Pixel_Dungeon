@@ -1254,15 +1254,17 @@ public class Hero extends Char {
 			if (remainingLevel > 0) {
 				int count = 0;
 				boolean isNegative = false;
-				for (Buff b : hero.buffs()) {
-					if (remainingLevel <= 0) break;
-					if (b.type == Buff.buffType.NEGATIVE
-							&& !(b instanceof AllyBuff)
-							&& !(b instanceof LostInventory)) {
-						b.detach();
-						remainingLevel--;
-						isNegative = true;
-						count++;
+				if (isAlive() && this.buffs() != null) {
+					for (Buff b : this.buffs()) {
+						if (remainingLevel <= 0) break;
+						if (b.type == Buff.buffType.NEGATIVE
+								&& !(b instanceof AllyBuff)
+								&& !(b instanceof LostInventory)) {
+							b.detach();
+							remainingLevel--;
+							isNegative = true;
+							count++;
+						}
 					}
 				}
 				propBuffbuff.levelA = remainingLevel;
