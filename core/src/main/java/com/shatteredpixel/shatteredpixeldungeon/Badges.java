@@ -164,10 +164,17 @@ public class Badges {
 	public static void store( Bundle bundle, HashSet<Badge> badges ) {
 		addReplacedBadges(badges);
 
-		int count = 0;
-		String names[] = new String[badges.size()];
+		ArrayList<Badge> validBadges = new ArrayList<>();
+		for (Badge b : badges) {
+			if (b != null) {
+				validBadges.add(b);
+			}
+		}
 
-		for (Badge badge:badges) {
+		int count = 0;
+		String[] names = new String[validBadges.size()];
+
+		for (Badge badge : validBadges) {
 			names[count++] = badge.name();
 		}
 		bundle.put( BADGES, names );
