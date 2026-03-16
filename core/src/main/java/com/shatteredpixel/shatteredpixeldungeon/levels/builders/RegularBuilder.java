@@ -101,7 +101,7 @@ public abstract class RegularBuilder extends Builder {
 				entrance = r;
 			} else if (r.isExit()) {
 				exit = r;
-			} else if (r instanceof ShopRoom || r instanceof DearthRongShopRoom && r.maxConnections(Room.ALL) == 1){
+			} else if ((r instanceof ShopRoom || r instanceof DearthRongShopRoom) && r.maxConnections(Room.ALL) == 1){
 				shop = r;
 			} else if (r.maxConnections(Room.ALL) > 1){
 				multiConnections.add(r);
