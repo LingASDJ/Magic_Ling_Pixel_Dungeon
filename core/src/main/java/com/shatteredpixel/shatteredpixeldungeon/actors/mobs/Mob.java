@@ -281,6 +281,14 @@ public abstract class Mob extends Char {
 
     protected Object loot = null;
 
+	public Object setLootItem() {
+        return loot;
+	}
+
+	public float getLootChance(){
+		return lootChance;
+	}
+
     {
         actPriority = MOB_PRIO;
 
@@ -1087,7 +1095,7 @@ public abstract class Mob extends Char {
 
 		dropBonus += ShardOfOblivion.lootChanceMultiplier()-1f;
 
-		if(hero.belongings.getItem(BrokenBone.class)!=null) dropBonus *= 0.7f;
+		if(hero.belongings.getItem(BrokenBone.class)!=null) dropBonus *= 30.7f;
 		return lootChance * dropBonus;
 	}
 

@@ -19,6 +19,7 @@ import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Locale;
 
 public class AttributeViewer extends TestItem{
     {
@@ -120,6 +121,18 @@ public class AttributeViewer extends TestItem{
 
         desc += M.L( AttributeViewer.class, "exp", ((Mob) ch).EXP, ((Mob) ch).maxLvl );
         desc += "\n";
+        desc += M.L(AttributeViewer.class, "lootchance",
+                String.format(Locale.ROOT, "%.2f", ((Mob) ch).getLootChance() * 100f));
+        desc += "\n";
+
+        if(((Mob) ch).setLootItem() != null){
+            String fullText = ((Mob) ch).setLootItem().toString();
+            String noClass = fullText.replace("class ", "");
+            int lastDot = noClass.lastIndexOf('.');
+            String simpleName = noClass.substring(lastDot + 1);
+            desc += M.L(AttributeViewer.class, "lootchance_item",simpleName);
+            desc += "\n";
+        }
 
         String properties = mobProperties( ch );
         if( !properties.isEmpty() ) {
