@@ -54,6 +54,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.GameSettings;
 
 import java.util.ArrayList;
 
@@ -207,6 +208,7 @@ public class LevelTeleporter extends TestItem {
             InterlevelScene.returnBranch = Dungeon.branch - 1;
             Game.switchScene(InterlevelScene.class);
         } else if(action.equals(AC_VIEW)){
+            GLog.i("Test:" +GameSettings.getArrayElement( "gift_data", "BadLanterFire-Go", 4 ));
             Buff.affect( hero, Awareness.class, Awareness.DURATION );
             Buff.affect( hero, MindVision.class, MindVision.DURATION );
             Dungeon.observe();

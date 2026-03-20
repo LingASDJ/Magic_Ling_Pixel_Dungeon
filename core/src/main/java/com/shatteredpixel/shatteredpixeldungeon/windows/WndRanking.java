@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.custom.CollectRankings;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
@@ -242,6 +243,23 @@ public class WndRanking extends WndTabbed {
 				scoreInfo.setSize(16, 16);
 				scoreInfo.setPos(WIDTH - scoreInfo.width(), pos - 10 - GAP);
 				add(scoreInfo);
+
+				IconButton collectRecord = new IconButton(Icons.get(Icons.TALENT)) {
+					@Override
+					protected void onClick() {
+						super.onClick();
+                        if (CollectRankings.INSTANCE.isRecordCollected(record)) {
+                            CollectRankings.INSTANCE.removeRecord(record);
+                        } else {
+                            CollectRankings.INSTANCE.collectRecord(record);
+                        }
+						icon().alpha( CollectRankings.INSTANCE.isRecordCollected(record) ? 1.0f : 0.3f );
+                    }
+				};
+				collectRecord.setSize(16, 16);
+				collectRecord.setPos(WIDTH - collectRecord.width(), scoreInfo.bottom() + GAP );
+				collectRecord.icon().alpha( CollectRankings.INSTANCE.isRecordCollected(record) ? 1.0f : 0.3f );
+				add(collectRecord);
 
 				pos += GAP;
 
