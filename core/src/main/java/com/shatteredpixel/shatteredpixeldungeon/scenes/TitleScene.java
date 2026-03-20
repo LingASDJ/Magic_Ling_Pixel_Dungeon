@@ -412,6 +412,12 @@ public class TitleScene extends PixelScene {
 			protected void onClick() {
 				ShatteredPixelDungeon.switchNoFade(RankingsScene.class);
 			}
+
+			@Override
+			protected boolean onLongClick() {
+				ShatteredPixelDungeon.switchNoFade(CollectRankingsScene.class);
+                return false;
+            }
 		};
 		btnRankings.icon(new Image(Icons.get(Icons.RANKINGS)));
 		add(btnRankings);

@@ -2,6 +2,9 @@ package com.shatteredpixel.shatteredpixeldungeon.custom;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.Null;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -11,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -18,6 +22,15 @@ import com.watabou.utils.Reflection;
 
 import net.iharder.Base64;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,40 +39,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 public class Gift implements Bundlable {
 
     public static final String KEY_ARRAY	= "TUxQRFpFUk8sSEVMTE9aRVJPRUlHSFQ=";
-    private static final String[] Gift_DATA	= {
-            //【永久兑换码】
-            "QmFkTGFudGVyRmlyZS1Hbyw0MDcwOTUxNzc1LGZhbHNl",
-            "TUhKSCw0MDcwOTUxNzc1LGZhbHNl",
-            "WUxHQiw0MDcwOTUxNzc1LGZhbHNl",
-            "TklORU5JTkVaRVJPT05FLDQwNzA5NTE3NzUsZmFsc2U=",
-            "SEVMTE8tTUxQRC1WMC45LDQwNzA5NTE3NzUsZmFsc2U=",
+    private static final List<String> Gift_DATA = new ArrayList<>();
+    static {
+        //【永久兑换码】
+        Gift_DATA.add("QmFkTGFudGVyRmlyZS1Hbyw0MDcwOTUxNzc1LGZhbHNl");
+        Gift_DATA.add("TUhKSCw0MDcwOTUxNzc1LGZhbHNl");
+        Gift_DATA.add("WUxHQiw0MDcwOTUxNzc1LGZhbHNl");
+        Gift_DATA.add("TklORU5JTkVaRVJPT05FLDQwNzA5NTE3NzUsZmFsc2U=");
+        Gift_DATA.add("SEVMTE8tTUxQRC1WMC45LDQwNzA5NTE3NzUsZmFsc2U=");
 
-            "UHJvcHNGaXhlZCw0MDcwOTUxNzc1LGZhbHNl",
+        Gift_DATA.add("UHJvcHNGaXhlZCw0MDcwOTUxNzc1LGZhbHNl");
 
-            //KPL 永久赌注兑换码
-            "bGl0dGxlIHN1cnByaXNlIG9mIGJ6bWRyLDQwNzA5NTE3NzUsZmFsc2U=",
-            "UmVkRmlzaCBCb21iIEdpZnRzLDQwNzA5NTE3NzUsZmFsc2U=",
+        //KPL 永久赌注兑换码
+        Gift_DATA.add("bGl0dGxlIHN1cnByaXNlIG9mIGJ6bWRyLDQwNzA5NTE3NzUsZmFsc2U=");
+        Gift_DATA.add("UmVkRmlzaCBCb21iIEdpZnRzLDQwNzA5NTE3NzUsZmFsc2U=");
 
-            "U0hQRC1CSVJUSERBWSwxNzU2MTM3NjIwLGZhbHNl",
+        Gift_DATA.add("U0hQRC1CSVJUSERBWSwxNzU2MTM3NjIwLGZhbHNl");
 
-            "TkZZSUcsMTc1NDU4MjQwMCxmYWxzZQ==",
-            "QVJNWURBWSwxNzU0NTgyNDAwLGZhbHNl",
-            "TWVycnlDaHJpc3RtYXMsMTc2NzE5NjgwMCxmYWxzZQ==",
+        Gift_DATA.add("TkZZSUcsMTc1NDU4MjQwMCxmYWxzZQ==");
+        Gift_DATA.add("QVJNWURBWSwxNzU0NTgyNDAwLGZhbHNl");
+        Gift_DATA.add("TWVycnlDaHJpc3RtYXMsMTc2NzE5NjgwMCxmYWxzZQ==");
 
-            "WUFNZXJyeUNocmlzdG1hcywxNzY3MTk2ODAwLGZhbHNl",
+        Gift_DATA.add("WUFNZXJyeUNocmlzdG1hcywxNzY3MTk2ODAwLGZhbHNl");
 
-            //GQJ 国庆节
-            "Q2hpbmFCaXJ0aERheSwxNzU5ODU2NDQ5LGZhbHNl",
+        //GQJ 国庆节
+        Gift_DATA.add("Q2hpbmFCaXJ0aERheSwxNzU5ODU2NDQ5LGZhbHNl");
 
-            //2026
-            "UHJlLTVZZWFyc09sZCwxNzcwOTA0NzYwLGZhbHNl",
+        //2026
+        Gift_DATA.add("UHJlLTVZZWFyc09sZCwxNzcwOTA0NzYwLGZhbHNl");
 
-            "Rml2ZVllYXJzT2xkLDE3NzI1NTM2MDAsZmFsc2U=",
-            "U3BlZWRGaXhlZCwxNzcyNTUzNjAwLGZhbHNl"
-    };
+        Gift_DATA.add("Rml2ZVllYXJzT2xkLDE3NzI1NTM2MDAsZmFsc2U=");
+        Gift_DATA.add("U3BlZWRGaXhlZCwxNzcyNTUzNjAwLGZhbHNl");
+    }
 
     private static final HashMap<String, LinkedHashMap<String, Integer>> GIFT_ITEM ;
     static {
@@ -208,16 +227,45 @@ public class Gift implements Bundlable {
 
     //将兑换码导入本地数据中
     public static void GiftTime() {
+        JsonValue redeemCodes = getNetworkedGift();
+        if ( redeemCodes != null && redeemCodes.notEmpty()) {
+            for (JsonValue codeValue : redeemCodes) {
+                LinkedHashMap<String, Integer> reward = new LinkedHashMap<>();
+                String giftcode = codeValue.getString("giftcode");
+                long timestamp = codeValue.getLong("timestamp");
+                long minVersionCode = codeValue.getLong("min_versionCode");
+
+                if (codeValue.has("rewardItems")) {
+                    for (JsonValue itemValue : codeValue.get("rewardItems")) {
+                        String itemName = itemValue.getString("name");
+                        int quantity = itemValue.getInt("quantity");
+                        reward.put(itemName, quantity);
+                    }
+                }
+
+                if (codeValue.has("rewardBuffs")) {
+                    for (JsonValue itemValue : codeValue.get("rewardItems")) {
+                        String itemName = itemValue.getString("name");
+                        int quantity = itemValue.getInt("duration");
+                        reward.put(itemName, quantity);
+                    }
+                }
+
+                String networkedData = giftcode + "," + timestamp + "," + minVersionCode + ",false";
+                GIFT_ITEM.put(Base64.encodeBytes(giftcode.getBytes()), reward);
+                Gift_DATA.add(Base64.encodeBytes(networkedData.getBytes()));
+            }
+        }
+
         try {
-            int length = Gift_DATA.length;
             String decodedString;
             byte[] decoded;
             List<String> saveData = new ArrayList<>();
             long currentTime = System.currentTimeMillis() / 1000;
             long expirationDate;
 
-            for(int i = 0; i < length; i++) {
-                decoded = Base64.decode( Gift_DATA[i] );
+            for( String data : Gift_DATA ) {
+                decoded = Base64.decode( data );
                 decodedString = new String( decoded) ;
 
                 expirationDate = Long.parseLong( decodedString.split(",")[1] );
@@ -240,6 +288,59 @@ public class Gift implements Bundlable {
         }
     }
 
+    private static JsonValue getNetworkedGift() {
+        if( TitleScene.NTP_NOINTER || TitleScene.NTP_ERROR || TitleScene.NTP_NOINTER_VEFY || TitleScene.NTP_ERROR_VEFY )
+            return null;
+
+        try {
+            TrustManager[] trustAllCerts = new TrustManager[] {
+                    new X509TrustManager() {
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        }
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        }
+                    }
+            };
+
+            // 安装全信任的TrustManager
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+            // 创建不验证主机名的HostnameVerifier
+            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+
+            URL url = new URL("https://gameupdate.insrv.mlpd.spldream.com/MLPD/gift.json");
+            URLConnection conn = url.openConnection();
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+            conn.connect();
+
+            InputStream inputStream = conn.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            String jsonContent = sb.toString();
+            reader.close();
+            inputStream.close();
+
+            JsonReader jsonReader = new JsonReader();
+            JsonValue jsonValue = jsonReader.parse(jsonContent);
+
+            return jsonValue.get("redeem_codes");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     //玩家使用兑换码
     public static int ActivateGift(String key) {
         if( TitleScene.NTP_NOINTER || TitleScene.NTP_ERROR || TitleScene.NTP_NOINTER_VEFY || TitleScene.NTP_ERROR_VEFY )
@@ -257,7 +358,19 @@ public class Gift implements Bundlable {
         if( currentTime > expirationDate )
             return 2;
 
-        boolean keyUsed = Boolean.parseBoolean( SPDSettings.queryGiftPart( key, Gift_Used ) );
+        String part2 = SPDSettings.queryGiftPart( key, 2 );
+        String part3 = SPDSettings.queryGiftPart( key, 3 );
+        boolean keyUsed;
+
+        if( !part2.equals( part3 ) ){
+            if( Game.versionCode < Long.parseLong( part2 ) )
+                return 6;
+
+            keyUsed = Boolean.parseBoolean( part3 );
+        }else {
+            keyUsed = Boolean.parseBoolean( part2 );
+        }
+
         if( keyUsed )
             return 3;
 

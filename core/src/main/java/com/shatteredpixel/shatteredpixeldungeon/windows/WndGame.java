@@ -153,6 +153,13 @@ public class WndGame extends Window {
 													}
 												} );
 												break;
+											case 6:
+												ShatteredPixelDungeon.scene().addToFront( new WndError( Messages.get( WndLuoWhite.class, "key_new_version" ) ) {
+													public void onBackPressed() {
+														super.onBackPressed();
+													}
+												} );
+												break;
 										}
 									}
 								}
