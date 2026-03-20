@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
@@ -24,7 +25,13 @@ public class AbsoluteBlindness extends Buff {
         }
         target.viewDistance = 0;
         left-=1f;
-        if(left<0) detach();
+        if(left<0){
+            detach();
+            if(target instanceof Mob){
+                ((Mob) target).state = ((Mob) target).WANDERING;
+            }
+
+        }
         return true;
     }
 
@@ -82,6 +89,6 @@ public class AbsoluteBlindness extends Buff {
 
     @Override
     public String desc() {
-        return M.L(this, "desc");
+        return M.L(this, "desc",(int)left+1);
     }
 }
