@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelNewYeasLe
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniChestMazeLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniSkyShadowBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.CrabKingBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.DeepShadowLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.SkyGooBossLevel;
@@ -359,6 +360,8 @@ public class LevelRules {
 
             case 4:
                 switch (depth) {
+                    case 5:
+                        return new CrabKingBossLevel();
                     case 25:
                         return new HollowExitLevel();
                     case 17:

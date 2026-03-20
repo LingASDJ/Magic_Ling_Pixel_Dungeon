@@ -8,11 +8,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.custom.buffs.AbsoluteBlindness;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
@@ -62,11 +62,17 @@ public class CatGirlCosplay extends Prop {
                         if (!ch.isImmune(this.getClass())) {
                             if(ch instanceof Mob){
                                 if(Random.Float() <= 0.5f){
-                                    Buff.affect(ch, Adrenaline.class,1f);
-                                } else {
                                     ((Mob) ch).clearEnemy();
+                                    ((Mob) ch).state = ((Mob) ch).FLEEING;
+                                    ((Mob) ch).beckon(Dungeon.level.randomRespawnCell(ch));
                                     if (ch.sprite != null) ch.sprite.showLost();
-                                    Buff.affect(ch, Blindness.class,1f);
+                                    if(ch.buff(Adrenaline.class)!=null){
+                                        Buff.affect(ch, AbsoluteBlindness.class).addLeft(2f);
+                                    } else {
+                                        Buff.affect(ch, AbsoluteBlindness.class).addLeft(1f);
+                                    }
+                                } else {
+                                    Buff.affect(ch, Adrenaline.class,1f);
                                 }
                                 Sample.INSTANCE.play(Assets.Sounds.READ,1f,1.1f);
                             }
