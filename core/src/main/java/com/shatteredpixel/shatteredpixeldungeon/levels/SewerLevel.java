@@ -80,16 +80,12 @@ public class SewerLevel extends RegularLevel {
 
 	@Override
 	public void playLevelMusic(){
-		if (Ghost.Quest.active()){
-			Music.playModeBGM(Assets.Music.BGM_YOU, true);
-		} else {
-			Music.playModeBGM(Assets.Music.JUNGLE_FOREST,true);
-		}
+		Music.playModeBGM(Assets.Music.JUNGLE_FOREST,true);
 	}
 
 	@Override
 	public void playBossMusic(){
-		Music.playModeBGM(Assets.Music.BGM_BOSSA,true);
+		Music.playModeBGM(Assets.Music.SEWERS_BOSS,true);
 	}
 	
 	@Override

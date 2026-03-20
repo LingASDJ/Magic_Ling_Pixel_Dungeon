@@ -138,7 +138,7 @@ public class PrisonLevel extends RegularLevel {
 	@Override
 	public void playLevelMusic() {
 		if (Wandmaker.Quest.active() || Statistics.amuletObtained){
-			Music.playModeBGM(Assets.Music.PRISON_TENSE, true);
+			Music.playModeBGM(Assets.Music.PRISON_BRANCH_BOSS, true);
 		} else {
 			Music.playModeBGM(Assets.Music.BGM_2, true);
 		}

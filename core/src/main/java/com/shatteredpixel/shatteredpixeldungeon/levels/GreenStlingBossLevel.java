@@ -41,7 +41,7 @@ public class GreenStlingBossLevel extends Level {
 
     @Override
     public void playBossMusic(){
-        Music.playModeBGM(Assets.Music.BGM_BOSSD,true);
+        Music.playModeBGM(Assets.Music.CITY_BOSS,true);
     }
 
     private static final int WIDTH = 15;

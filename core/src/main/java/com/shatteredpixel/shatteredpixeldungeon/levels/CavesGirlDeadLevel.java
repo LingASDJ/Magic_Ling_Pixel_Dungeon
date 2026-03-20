@@ -42,7 +42,7 @@ public class CavesGirlDeadLevel extends Level {
 
     @Override
     public void playBossMusic(){
-        Music.playModeBGM(Assets.Music.BGM_BOSSC,true);
+        Music.playModeBGM(Assets.Music.CAVES_BOSS,true);
     }
 
     @Override

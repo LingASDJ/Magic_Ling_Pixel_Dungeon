@@ -173,7 +173,7 @@ public class ForestPoisonBossLevel extends Level {
     @Override
     public void playBossMusic(){
         Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
-        () -> Music.playModeBGM(Assets.Music.BGM_BOSSA,true)));
+        () -> Music.playModeBGM(Assets.Music.SEWERS_BOSS,true)));
     }
 
     private int[] rk_chest= new int[]{

@@ -56,7 +56,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSadGhost;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
@@ -192,20 +191,7 @@ public class Ghost extends NPC {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
-						GameScene.show( new WndQuest( Ghost.this, txt_quest ){
-							@Override
-							public void hide() {
-								super.hide();
-								Music.INSTANCE.fadeOut(1f, new Callback() {
-									@Override
-									public void call() {
-										if (Dungeon.level != null) {
-											Dungeon.level.playLevelMusic();
-										}
-									}
-								});
-							}
-						} );
+						GameScene.show( new WndQuest( Ghost.this, txt_quest ));
 					}
 				});
 			}
