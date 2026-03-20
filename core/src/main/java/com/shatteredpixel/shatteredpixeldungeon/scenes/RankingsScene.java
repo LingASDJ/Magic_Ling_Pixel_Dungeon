@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.Typhon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.CollectRankings;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.BoatPlot;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.GalaxyHeartDeadEndPlot;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.MorphsGodEndTheaterPlot;
@@ -81,6 +82,7 @@ public class RankingsScene extends PixelScene {
 		add( archs );
 		
 		Rankings.INSTANCE.load();
+		CollectRankings.INSTANCE.load();
 
 		IconTitle title = new IconTitle( Icons.RANKINGS.get(), Messages.get(this, "title"));
 		title.setSize(200, 0);
