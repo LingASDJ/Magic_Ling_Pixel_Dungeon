@@ -78,7 +78,7 @@ public class ClearElemtGuard extends Statue {
     protected boolean act() {
 
         if(clearCount>=2){
-            Music.INSTANCE.play(Assets.Music.PRISON_TENSE, true);
+            Music.INSTANCE.play(Assets.Music.PRISON_BRANCH_BOSS, true);
         }
 
         if (clearCount>=2) {
@@ -168,7 +168,7 @@ public class ClearElemtGuard extends Statue {
                 protected void onComplete() {
                     new Flare(6, 32).show(sprite, 2f);
                     state = HUNTING;
-                    Music.INSTANCE.play(Assets.Music.PRISON_TENSE, true);
+                    Music.INSTANCE.play(Assets.Music.PRISON_BRANCH_BOSS, true);
                     yell(Messages.get(ClearElemtGuard.class, "attack"));
                     notice();
                 }

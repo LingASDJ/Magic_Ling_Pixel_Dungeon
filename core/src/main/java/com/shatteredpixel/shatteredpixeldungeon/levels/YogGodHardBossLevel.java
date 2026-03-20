@@ -474,17 +474,11 @@ public class YogGodHardBossLevel extends Level {
 
     @Override
     public void playLevelMusic(){
-        Music.playModeBGM(Assets.Music .BGM_5,true);
+        Music.playModeBGM(Assets.Music.BGM_5,true);
     }
 
     @Override
     public void playBossMusic(){
-        if(Statistics.NoTime) {
-            Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(2f,
-                    () -> Music.playModeBGM(Assets.Music.BGM_BOSSE4,true)));
-        } else {
-            Music.playModeBGM(Assets.Music.BGM_BOSSE3,true);
-        }
-
+        Music.playModeBGM(Assets.Music.BGM_BOSSEND,true);
     }
 }

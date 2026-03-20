@@ -62,7 +62,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
@@ -118,12 +117,7 @@ public class CaveTwoBossLevel extends Level {
 
     @Override
     public void playBossMusic(){
-        if(BossHealthBar.isBleeding()){
-            Music.playModeBGM(Assets.Music.CITY_BOSS_FINALE,true);
-        } else {
-            Music.playModeBGM(Assets.Music.BGM_BOSSC,true);
-        }
-
+        Music.playModeBGM(Assets.Music.CAVES_BOSS,true);
     }
 
     @Override

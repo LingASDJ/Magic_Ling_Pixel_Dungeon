@@ -51,7 +51,7 @@ public class MiniSkyShadowBossLevel extends RegularLevel {
     @Override
     public void playBossMusic(){
         Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
-                () -> Music.playModeBGM(Assets.Music.PRISON_TENSE,true)));
+                () -> Music.playModeBGM(Assets.Music.PRISON_BRANCH_BOSS,true)));
     }
 
     @Override

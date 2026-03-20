@@ -43,7 +43,7 @@ public class MiniBossLevel extends RegularLevel {
 
     @Override
     public void playBossMusic(){
-        Music.playModeBGM(Assets.Music.BGM_BOSSA,true);
+        Music.playModeBGM(Assets.Music.SEWERS_BRANCH_BOSS,true);
     }
 
     @Override

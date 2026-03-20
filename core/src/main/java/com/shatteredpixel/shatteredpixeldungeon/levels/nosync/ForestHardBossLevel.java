@@ -72,7 +72,7 @@ public class ForestHardBossLevel extends Level {
 
     @Override
     public void playBossMusic(){
-        Music.playModeBGM(Assets.Music.BGM_BOSSA,true);
+        Music.playModeBGM(Assets.Music.SEWERS_BOSS,true);
     }
 
     {

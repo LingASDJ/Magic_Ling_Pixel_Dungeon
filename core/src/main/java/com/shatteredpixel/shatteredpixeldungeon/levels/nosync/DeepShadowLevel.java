@@ -61,7 +61,7 @@ public class DeepShadowLevel extends Level {
 
     @Override
     public void playLevelMusic(){
-        Music.playModeBGM(Assets.Music.BGM_BOSSC,true);
+        Music.playModeBGM(Assets.Music.CAVES_BOSS,true);
     }
 
     @Override

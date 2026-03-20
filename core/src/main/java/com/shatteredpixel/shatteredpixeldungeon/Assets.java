@@ -366,9 +366,7 @@ public class Assets {
 		public static final String THEME_1      = "music/theme.ogg";
 		public static final String THEME_2      = "music/theme_sky.ogg";
 		public static final String JUNGLE_FOREST = "music/Level1.ogg";
-
-		public static final String BGM_1A = "music/forestflower.ogg";
-
+		public static final String BGM_1A = "music/Level1_FireCave.ogg";
 		public static final String BGM_2 = "music/Level2.ogg";
 		public static final String BGM_3 = "music/Level3.ogg";
 		public static final String BGM_4 = "music/Level4.ogg";
@@ -376,23 +374,26 @@ public class Assets {
 
 		public static final String PACMAN = "music/hollow/pacman_10yearold_mix.ogg";
 		public static final String MOVEBOX = "music/hollow/movebox.ogg";
-
 		public static final String SEACH = "music/hollow/seach.ogg";
 
-		public static final String CHRAMSS     = "music/chrimas.ogg";
-		public static final String SEWERS_BOSS  = "music/Boss1.ogg";
-		public static final String PRISON_BOSS  = "music/Tengu.ogg";
-		public static final String CITY_BOSS    = "music/Boss4.ogg";
+		public static final String SEWERS_BOSS  = "music/boss/Boss1.ogg";
+		public static final String SEWERS_BRANCH_BOSS  = "music/boss/Boss1-branch.ogg";
+		public static final String PRISON_BOSS  = "music/boss/Boss2.ogg";
+		public static final String PRISON_BRANCH_BOSS = "music/boss/Boss2_branch.ogg";
+		public static final String CAVES_BOSS   = "music/boss/Boss3.ogg";
+		public static final String CITY_BOSS    = "music/boss/Boss4.ogg";
+		public static final String CITY_BOSS_FINALE = "music/boss/Boss4_end.ogg";
+		public static final String HALLS_BOSS   = "music/boss/Boss5.ogg";
 
 		public static final String HIRO    = "music/hiro.ogg";
 
-        public static final String HALLS_BOSS = "music/Boss5.ogg";
+
         public static final String NBPL = "music/nbpl.ogg";
         public static final String THEME_FINALE = "music/theme_finale.ogg";
-        public static final String PRISON_TENSE = "music/prison_tense.ogg";
+
         public static final String CAVES_TENSE = "music/caves_tense.ogg";
         public static final String CAVES_BOSS_FINALE = "music/caves_boss_finale.ogg";
-        public static final String CITY_BOSS_FINALE = "music/city_boss_finale.ogg";
+
 
 		public static final String SAND = "music/Sand.ogg";
 
@@ -404,7 +405,7 @@ public class Assets {
         public static final String HALLS_BOSS_FINALE = "music/halls_boss_finale.ogg";
 
 		public static final String DIAMAND_KING_INTRO = "music/boss/Diamd_Boss.ogg";
-		public static final String DRAGON_LING  = "music/boss/Dragon.ogg";
+		public static final String DRAGON_LING  = "music/boss/Boss-dragon.ogg";
 
 		public static final String NIGHT	= "music/DwarfGeneral.ogg";
 
@@ -419,12 +420,10 @@ public class Assets {
 		public static final String TOWN 		= "music/town.ogg";
 
 		public static final String TOWN_YEARS 		= "music/years.ogg";
-		public static final String BGM_BOSSA 	= "music/Boss1.ogg";
 		public static final String BGM_YOU 		= "music/boss/you.ogg";
-		public static final String BGM_BOSSC 	= "music/Boss3.ogg";
-		public static final String BGM_BOSSD 	= "music/Boss4.ogg";
+
 		public static final String BGM_BOSSD2 	= "music/DwarfGeneral.ogg";
-		public static final String BGM_BOSSE3 	= "music/Yogdead.ogg";
+		public static final String BGM_BOSSEND 	= "music/boss/yogend.ogg";
 
 		public static final String BGM_SHOP 	= "music/Shop.ogg";
 		public static final String BGM_BOSSE4 	= "music/YogTime.ogg";
@@ -977,6 +976,8 @@ public class Assets {
 		public static final String EYE		= "sprites/eye.png";
 		public static final String GNOLL	= "sprites/gnoll.png";
 		public static final String CRAB		= "sprites/crab.png";
+
+		public static final String CRAB_KING		= "sprites/boss/overworld/giantcrab.png";
 
 		public static final String NEWBORN_CRAB		= "sprites/crab_newborn.png";
 		public static final String GOO		= "sprites/goo.png";
