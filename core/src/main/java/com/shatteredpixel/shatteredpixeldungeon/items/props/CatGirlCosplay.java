@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.buffs.AbsoluteBlindness;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -60,7 +61,7 @@ public class CatGirlCosplay extends Prop {
                     cell = i + j*Dungeon.level.width();
                     if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null && ch != hero) {
                         if (!ch.isImmune(this.getClass())) {
-                            if(ch instanceof Mob){
+                            if(ch instanceof Mob && !(ch instanceof NPC)){
                                 if(Random.Float() <= 0.5f){
                                     ((Mob) ch).clearEnemy();
                                     ((Mob) ch).state = ((Mob) ch).FLEEING;
