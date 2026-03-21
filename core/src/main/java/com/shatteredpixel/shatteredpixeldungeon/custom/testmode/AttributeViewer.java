@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -124,13 +125,16 @@ public class AttributeViewer extends TestItem{
         desc += M.L(AttributeViewer.class, "lootchance",
                 String.format(Locale.ROOT, "%.2f", ((Mob) ch).getLootChance() * 100f));
         desc += "\n";
+        desc += M.L(AttributeViewer.class, "total_lootchance",
+                String.format(Locale.ROOT, "%.2f", ((Mob) ch).lootChance() * 100f));
+        desc += "\n";
 
         if(((Mob) ch).setLootItem() != null){
             String fullText = ((Mob) ch).setLootItem().toString();
             String noClass = fullText.replace("class ", "");
             int lastDot = noClass.lastIndexOf('.');
             String simpleName = noClass.substring(lastDot + 1);
-            desc += M.L(AttributeViewer.class, "lootchance_item",simpleName);
+            desc += M.L(AttributeViewer.class, "lootchance_item", isAllUppercaseRegex(simpleName) ? lootDisplayRules(simpleName) : ((Mob) ch).createLoot());
             desc += "\n";
         }
 
@@ -144,6 +148,35 @@ public class AttributeViewer extends TestItem{
 
         return desc;
     }
+
+    public static boolean isAllUppercaseRegex(String str) {
+        return str != null && str.matches("[A-Z]+");
+    }
+
+    private String lootDisplayRules(String text) {
+        switch (text){
+            case "RING":
+                return Messages.get(this,"random_ring");
+            case "POTION":
+                return Messages.get(this,"random_potion");
+            case "WEAPON":
+                return Messages.get(this,"random_weapon");
+            case "ARMOR":
+                return Messages.get(this,"random_armor");
+            case "WAND":
+                return Messages.get(this,"random_wand");
+            case "SEED":
+                return Messages.get(this,"random_seed");
+            case "SCROLL":
+                return Messages.get(this,"random_scroll");
+            case "ARTIFACT":
+                return Messages.get(this,"random_artifact");
+            case "GOLD":
+                return Messages.get(Gold.class,"name");
+        }
+        return text;
+    }
+
 
     private String getImmunitiesText(Char ch) {
         // 1. 创建一个集合来存放所有的免疫 Class
