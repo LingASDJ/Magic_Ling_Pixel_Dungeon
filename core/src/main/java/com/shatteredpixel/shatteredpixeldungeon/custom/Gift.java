@@ -4,7 +4,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.Null;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -23,13 +22,11 @@ import com.watabou.utils.Reflection;
 import net.iharder.Base64;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -337,7 +334,7 @@ public class Gift implements Bundlable {
 
             return jsonValue.get("redeem_codes");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return null;
         }
     }
 

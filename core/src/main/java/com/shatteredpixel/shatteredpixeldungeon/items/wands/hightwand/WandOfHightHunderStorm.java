@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WorstStormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.StormCloudDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -92,6 +93,14 @@ public class WandOfHightHunderStorm extends DamageWand {
     @Override
     public void onZap(Ballistica bolt) {
 
+        for (Char ch : affected.toArray(new Char[0])){
+            if (ch != curUser && ch.alignment == curUser.alignment && ch.pos != bolt.collisionPos){
+                affected.remove(ch);
+            } else if (ch.buff(WandOfLightning.LightningCharge.class) != null){
+                affected.remove(ch);
+            }
+        }
+
         ArrayList<Char> affectedChars = new ArrayList<>();
         for( int cell : cone.cells ){
 
@@ -154,6 +163,15 @@ public class WandOfHightHunderStorm extends DamageWand {
         if (curUser == null) {
             return;
         }
+
+        for (Char ch : affected.toArray(new Char[0])){
+            if (ch != curUser && ch.alignment == curUser.alignment && ch.pos != bolt.collisionPos){
+                affected.remove(ch);
+            } else if (ch.buff(WandOfLightning.LightningCharge.class) != null){
+                affected.remove(ch);
+            }
+        }
+
         ConeAOE conex;
         ArrayList<Char> affectedChars = new ArrayList<>();
 
@@ -225,9 +243,19 @@ public class WandOfHightHunderStorm extends DamageWand {
 
     @Override
     public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
-        //acts like shocking enchantment
-        Buff.affect(attacker, Barrier.class).setShield(damage/4);
-        new LightningOnHit().proc(staff, attacker, defender, damage);
+
+        // lvl 0 - 25%
+        // lvl 1 - 40%
+        // lvl 2 - 50%
+        float procChance = (buffedLvl()+1f)/(buffedLvl()+4f) * procChanceMultiplier(attacker);
+        if (Random.Float() < procChance) {
+            float powerMulti = Math.min(1f, procChance);
+            FlavourBuff.prolong(attacker, WandOfLightning.LightningCharge.class, powerMulti* WandOfLightning.LightningCharge.DURATION);
+            attacker.sprite.centerEmitter().burst( SparkParticle.FACTORY, 10 );
+            attacker.sprite.flash();
+            Buff.affect(attacker, Barrier.class).setShield(damage/4);
+            Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
+        }
     }
 
     public static class LightningOnHit extends Shocking {
@@ -239,14 +267,18 @@ public class WandOfHightHunderStorm extends DamageWand {
 
     public void arc(Char ch) {
 
-        int dist = (Dungeon.level.water[ch.pos] && !ch.flying) ? 2 : 1;
+        int dist = Dungeon.level.water[ch.pos] ? 2 : 1;
+
+        if (curUser.buff(WandOfLightning.LightningCharge.class) != null){
+            dist++;
+        }
 
         ArrayList<Char> hitThisArc = new ArrayList<>();
         PathFinder.buildDistanceMap( ch.pos, BArray.not( Dungeon.level.solid, null ), dist );
         for (int i = 0; i < PathFinder.distance.length; i++) {
             if (PathFinder.distance[i] < Integer.MAX_VALUE){
                 Char n = Actor.findChar( i );
-                if (n == hero && PathFinder.distance[i] > 1)
+                if (n == Dungeon.hero && PathFinder.distance[i] > 1)
                     //the hero is only zapped if they are adjacent
                     continue;
                 else if (n != null && !affected.contains( n )) {
@@ -258,6 +290,7 @@ public class WandOfHightHunderStorm extends DamageWand {
         affected.addAll(hitThisArc);
         for (Char hit : hitThisArc){
             arcs.add(new Lightning.Arc(ch.sprite.center(), hit.sprite.center()));
+
             arc(hit);
         }
     }
