@@ -241,7 +241,7 @@ public class Gift implements Bundlable {
                 }
 
                 if (codeValue.has("rewardBuffs")) {
-                    for (JsonValue itemValue : codeValue.get("rewardItems")) {
+                    for (JsonValue itemValue : codeValue.get("rewardBuffs")) {
                         String itemName = itemValue.getString("name");
                         int quantity = itemValue.getInt("duration");
                         reward.put(itemName, quantity);
@@ -357,9 +357,10 @@ public class Gift implements Bundlable {
 
         String part2 = SPDSettings.queryGiftPart( key, 2 );
         String part3 = SPDSettings.queryGiftPart( key, 3 );
+        boolean isNetworkedCode = !part2.equals( part3 );
         boolean keyUsed;
 
-        if( !part2.equals( part3 ) ){
+        if( isNetworkedCode ){
             if( Game.versionCode < Long.parseLong( part2 ) )
                 return 6;
 
@@ -375,14 +376,14 @@ public class Gift implements Bundlable {
         if( GIFT_ITEM.containsKey( keyCheck ) ){
             LinkedHashMap<String, Integer> items = GIFT_ITEM.get( keyCheck );
             for ( Map.Entry<String, Integer> entry : items.entrySet() ) {
-                if( entry.getKey().contains("GiftBuff") )
+                if( entry.getKey().contains(".buffs") )
                         GiveBuff( entry.getKey(), entry.getValue() );
                 else
                     GiveItem( entry.getKey(), entry.getValue() );
             }
         }
 
-        SPDSettings.modifyGiftPart( key, Gift_Used, String.valueOf(true) );
+        SPDSettings.modifyGiftPart( key, isNetworkedCode ? 3 : Gift_Used, String.valueOf(true) );
         return 1;
     }
 
