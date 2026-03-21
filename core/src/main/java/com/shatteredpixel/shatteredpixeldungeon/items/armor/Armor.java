@@ -437,6 +437,8 @@ public class Armor extends EquipableItem {
 		}
 		if (hasGlyph(Flow.class, owner) && Dungeon.level.water[owner.pos]){
 			speed *= (2f + 0.25f*procLvl()) * RingOfArcana.enchantPowerMultiplier(owner)*owner.talentProc();
+			int particles = 2 + (int) Random.Float(1+level/2f);
+			hero.sprite.emitter().startDelayed(Speck.factory(Speck.BLUE_LIGHT), 0.02f, particles, 0.05f);
 		}
 
 		if (hasGlyph(Bulk.class, owner) &&

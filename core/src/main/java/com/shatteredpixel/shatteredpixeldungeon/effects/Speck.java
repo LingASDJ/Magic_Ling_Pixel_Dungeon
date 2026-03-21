@@ -86,6 +86,8 @@ public class Speck extends Image {
 	//New Blobs
 	public static final int DIED = 120;
 
+	public static final int BLUE_LIGHT  = 121;
+
 	private static final int SIZE = 7;
 
 	private int type;
@@ -130,6 +132,7 @@ public class Speck extends Image {
 		switch (type) {
 			case DISCOVER:
 			case RED_LIGHT:
+			case BLUE_LIGHT:
 				frame(film.get(LIGHT));
 				break;
 			case EVOKE:
@@ -219,6 +222,17 @@ public class Speck extends Image {
 
 			case RED_LIGHT:
 				tint(0xFFCC0000);
+				angle = Random.Float( 360 );
+				angularSpeed = 90;
+				lifespan = 1f;
+				break;
+
+			case BLUE_LIGHT:
+				tint(0xFF00CCFF);
+				angle = Random.Float( 360 );
+				angularSpeed = 90;
+				lifespan = 1f;
+				break;
 
 			case DISCOVER:
 				angle = Random.Float(360);
@@ -499,6 +513,7 @@ public class Speck extends Image {
 					am = (float) Math.sqrt((p < 0.5f ? p : 1 - p) * 1.1f);
 					break;
 
+				case BLUE_LIGHT:
 				case RED_LIGHT:
 				case LIGHT:
 					am = scale.set(p < 0.2f ? p * 5f : (1 - p) * 1.25f).x;
