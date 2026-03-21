@@ -26,8 +26,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
@@ -182,35 +184,22 @@ public class WandOfBlastWave extends DamageWand {
 	}
 
 	public static class Knockback{}
-
+	public static class BWaveOnHitTracker extends FlavourBuff {}
 	@Override
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
 
-		Talent.EmpoweredStrikeTracker tracker = attacker.buff(Talent.EmpoweredStrikeTracker.class);
+		if (defender.buff(Paralysis.class) != null && defender.buff(BWaveOnHitTracker.class) == null){
+			defender.buff(Paralysis.class).detach();
+			int dmg = Hero.heroDamageIntRange(8+2*buffedLvl(), 12+3*buffedLvl());
+			defender.damage(Math.round(procChanceMultiplier(attacker) * dmg), this);
+			BlastWave.blast(defender.pos);
+			Sample.INSTANCE.play( Assets.Sounds.BLAST );
 
-		if (tracker != null){
-			tracker.delayedDetach = true;
+			//brief immunity, to prevent stacking absurd damage with it with things like para gas
+			Buff.prolong(defender, BWaveOnHitTracker.class, 3f);
 		}
-
-		//acts like elastic enchantment
-		//we delay this with an actor to prevent conflicts with regular elastic
-		//so elastic always fully resolves first, then this effect activates
-		Actor.add(new Actor() {
-			{
-				actPriority = VFX_PRIO+9; //act after pushing effects
-			}
-
-			@Override
-			protected boolean act() {
-				Actor.remove(this);
-				if (defender.isAlive()) {
-					new BlastWaveOnHit().proc(staff, attacker, defender, damage);
-				}
-				if (tracker != null) tracker.detach();
-				return true;
-			}
-		});
 	}
+
 
 	private static class BlastWaveOnHit extends Elastic{
 		@Override
