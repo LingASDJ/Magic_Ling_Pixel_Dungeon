@@ -1,12 +1,18 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 
 public class MagicPower extends Buff implements ActionIndicator.Action {
@@ -17,13 +23,40 @@ public class MagicPower extends Buff implements ActionIndicator.Action {
 
     private float magicPower = 0;
 
+    public float getMagic(){
+        return magicPower;
+    }
+
+    public void usedMagic(int value) {
+
+        if (magicPower < 0) {
+            magicPower = 0;
+        }
+        magicPower -= value;
+
+        if(hero.hasTalent(Talent.SHIELD_POWER) && hero.buff(MagicPowerShieldDelay.class) == null){
+            float multiplier = hero.pointsInTalent(Talent.SHIELD_POWER) == 1 ? 1f : 1.5f;
+            Buff.affect(target, Barrier.class).setShield((int)(value * multiplier));
+            Buff.affect(hero, MagicPowerShieldDelay.class,5 * hero.pointsInTalent(Talent.SHIELD_POWER));
+        }
+
+        hero.sprite.showStatus(Window.SKYBULE_COLOR, "-"+ value);
+    }
+
+    public void getCountMagic(int value) {
+        magicPower += value;
+        hero.sprite.showStatus(Window.SKYBULE_COLOR, "+"+ value);
+    }
+
     private float maxMagicPower;
     private int interval = 11;
 
     @Override
     public boolean act() {
         if (target.isAlive()) {
-            if(magicPower > 0){
+            if(target.buff(MagicPowerIceMagic.class) != null){
+                BuffIndicator.refreshHero();
+            } else if(magicPower > 0){
                 ActionIndicator.setAction(this);
             }
             if (Dungeon.hero.pointsInTalent(Talent.MAGIC_COMPRESSION) >= 2 && interval == 11) {
@@ -110,6 +143,16 @@ public class MagicPower extends Buff implements ActionIndicator.Action {
     }
     @Override
     public void doAction() {
-
+        if(magicPower>=5){
+            Buff.affect(hero, MagicPowerIceMagic.class,12f);
+            GLog.p("已激活冰澪附魔");
+            Buff.affect(hero, MagicPowerIceMagicCooldown.class,15f);
+            BuffIndicator.refreshHero();
+            usedMagic(5);
+        }
     }
+
+    public static class MagicPowerShieldDelay extends FlavourBuff { }
+    public static class MagicPowerIceMagic extends FlavourBuff { }
+    public static class MagicPowerIceMagicCooldown extends FlavourBuff { }
 }

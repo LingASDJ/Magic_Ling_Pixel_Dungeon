@@ -5,12 +5,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class MagicFlyBlade extends MissileWeapon {
     boolean circleBackhit = false;
@@ -23,18 +28,98 @@ public class MagicFlyBlade extends MissileWeapon {
 
     @Override
     protected void onThrow( int cell ) {
-        Char enemy = Actor.findChar( cell );
-        if (enemy == null || enemy == curUser) {
-            parent = null;
-            Splash.at( cell, 0xCC99FFFF, 1 );
-        } else {
-            if (!curUser.shoot( enemy, this )) {
-                Splash.at(cell, 0xCC99FFFF, 1);
+
+        MagicPower magicPower = Dungeon.hero.buff(MagicPower.class);
+        if(magicPower != null){
+            if(magicPower.getMagic() >= 1){
+                Char enemy = Actor.findChar( cell );
+                if (enemy == null || enemy == curUser) {
+                    parent = null;
+                    Splash.at( cell, 0xCC99FFFF, 1 );
+                } else {
+                    if (!curUser.shoot( enemy, this )) {
+                        Splash.at(cell, 0xCC99FFFF, 1);
+                    }
+                }
+                Buff.append(Dungeon.hero, MagicPowerReBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth, Dungeon.branch);
+                switch (Dungeon.hero.pointsInTalent(Talent.GUARDIAN_BLADE)){
+                    case 1:
+                        if(Random.Float()<=0.35f){
+                            //EMPTY METHOD
+                        } else {
+                            magicPower.usedMagic(1);
+                        }
+                    break;
+                    case 2:
+                        if(Random.Float()<=0.70f){
+                            //EMPTY METHOD
+                        } else {
+                            magicPower.usedMagic(1);
+                        }
+                    break;
+                    default:
+                        magicPower.usedMagic(1);
+                        break;
+                }
+
+            } else {
+                super.onThrow(cell);
             }
+        } else {
+            super.onThrow(cell);
         }
-        Buff.append(Dungeon.hero, MagicPowerReBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth, Dungeon.branch);
+
     }
 
+    @Override
+    public int level() {
+        int level = Dungeon.hero == null ? 0 : Dungeon.hero.lvl/5;
+        if (curseInfusionBonus) level += 1 + level/6;
+        return level;
+    }
+
+    @Override
+    public int buffedLvl() {
+        //level isn't affected by buffs/debuffs
+        return level();
+    }
+
+
+    @Override
+    public String info() {
+
+        String info = Messages.get(this,"desc");
+
+        info += "\n\n" + Messages.get( this, "stats",
+                Math.round(augment.damageFactor(min())),
+                Math.round(augment.damageFactor(max())),
+                STRReq());
+
+        if (enchantment != null && (cursedKnown || !enchantment.curse())){
+            info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
+            info += " " + Messages.get(enchantment, "desc");
+        }
+
+        if (cursed && isEquipped( Dungeon.hero )) {
+            info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
+        } else if (cursedKnown && cursed) {
+            info += "\n\n" + Messages.get(Weapon.class, "cursed");
+        } else if (!isIdentified() && cursedKnown){
+            info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
+        }
+
+        info += "\n\n" + Messages.get(this, "distance") + "\n\n";
+
+        if (Dungeon.hero != null) {
+            if (STRReq() > Dungeon.hero.STR()) {
+                info += Messages.get(Weapon.class, "too_heavy");
+            } else if (Dungeon.hero.STR() > STRReq()) {
+                info += Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+            }
+        }
+
+        return info;
+    }
 
     @Override
     public int min(int lvl) {

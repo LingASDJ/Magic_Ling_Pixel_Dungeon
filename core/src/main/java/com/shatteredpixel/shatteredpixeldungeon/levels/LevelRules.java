@@ -49,7 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.CrabKingBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.DeepShadowLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.SkyGooBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.spical.GalaxyKeyBossLevel;
 import com.watabou.utils.Random;
 
 //Level Rules Test Android
@@ -149,7 +148,7 @@ public class LevelRules {
                         if(Dungeon.isChallenged(CS)){
                             return new ZeroLevel();
                         } else {
-                            return new NewZeroFiveLevel();
+                            return new NormalZeroFiveLevel();
                         }
                     case 1:
                     case 2:
@@ -394,8 +393,8 @@ public class LevelRules {
                     default:
                         Statistics.deepestFloor--;
                         return new DeadEndLevel();
-                    case 26:
-                        return new GalaxyKeyBossLevel();
+//                    case 26:
+//                        return new GalaxyKeyBossLevel();
                     case 25:
                         return new ZeroHallsBossLevel();
                 }
