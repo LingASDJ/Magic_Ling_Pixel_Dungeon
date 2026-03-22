@@ -152,6 +152,11 @@ public class WandOfLightning extends DamageWand {
 		public void tintIcon(Image icon) {
 			icon.hardlight(1, 1, 0);
 		}
+
+		@Override
+		public String desc() {
+			return Messages.get(this,"desc",Dungeon.hero.className(), dispTurns());
+		}
 	}
 
 	@Override
