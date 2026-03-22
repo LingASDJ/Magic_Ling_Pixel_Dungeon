@@ -491,21 +491,6 @@ public class YogReal extends Boss {
 
             Statistics.NoTime = true;
 
-
-
-
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    Music.INSTANCE.fadeOut(5f, new Callback() {
-                        @Override
-                        public void call() {
-                            //TODO Music.INSTANCE.play(Assets.BGM_BOSSE4, true);
-                        }
-                    });
-                }
-            });
-
             Camera.main.shake(1,3f);
             GameScene.flash(0x808080,true);
             YogFist.HaloFist haloFist = new YogFist.HaloFist();
