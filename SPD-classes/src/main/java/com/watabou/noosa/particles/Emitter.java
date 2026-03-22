@@ -31,42 +31,42 @@ import com.watabou.utils.Random;
 public class Emitter extends Group {
 
 	protected boolean lightMode = false;
-	
+
 	public float x;
 	public float y;
 	public float width;
 	public float height;
-	
+
 	protected Visual target;
 	public boolean fillTarget = true;
-	
+
 	protected float interval;
 	protected int quantity;
-	
+
 	public boolean on = false;
 
 	private boolean started = false;
 	public boolean autoKill = true;
-	
+
 	protected int count;
 	protected float time;
-	
+
 	protected Factory factory;
-	
+
 	public void pos( float x, float y ) {
 		pos( x, y, 0, 0 );
 	}
-	
+
 	public void pos( PointF p ) {
 		pos( p.x, p.y, 0, 0 );
 	}
-	
+
 	public void pos( float x, float y, float width, float height ) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		
+
 		target = null;
 	}
 
@@ -78,26 +78,30 @@ public class Emitter extends Group {
 		pos(x, y, width, height);
 		pos(target);
 	}
-	
+
 	public void burst( Factory factory, int quantity ) {
 		start( factory, 0, quantity );
 	}
-	
+
 	public void pour( Factory factory, float interval ) {
 		start( factory, interval, 0 );
 	}
 
 	public void start( Factory factory, float interval, int quantity ) {
+		//by default the delay is random, up to the interval
+		startDelayed( factory, interval, quantity, Random.Float(interval));
+	}
 
+	public void startDelayed( Factory factory, float interval, int quantity, float delay ) {
 		this.factory = factory;
 		this.lightMode = factory.lightMode();
-		
+
 		this.interval = interval;
 		this.quantity = quantity;
-		
+
 		count = 0;
-		time = Random.Float( interval );
-		
+		time = interval - delay;
+
 		on = true;
 		started = true;
 	}
@@ -107,14 +111,14 @@ public class Emitter extends Group {
 	protected boolean isFrozen(){
 		return Game.timeTotal > 1 && freezeEmitters;
 	}
-	
+
 	@Override
 	public void update() {
 
 		if (isFrozen()){
 			return;
 		}
-		
+
 		if (on) {
 			time += Game.elapsed;
 			while (time > interval) {
@@ -128,7 +132,7 @@ public class Emitter extends Group {
 		} else if (started && autoKill && countLiving() == 0) {
 			kill();
 		}
-		
+
 		super.update();
 	}
 
@@ -145,10 +149,10 @@ public class Emitter extends Group {
 	protected void emit( int index ) {
 		if (target == null) {
 			factory.emit(
-				this,
-				index,
-				x + Random.Float( width ),
-				y + Random.Float( height ) );
+					this,
+					index,
+					x + Random.Float( width ),
+					y + Random.Float( height ) );
 		} else {
 			if (fillTarget) {
 				factory.emit(
@@ -165,7 +169,7 @@ public class Emitter extends Group {
 			}
 		}
 	}
-	
+
 	@Override
 	public void draw() {
 		if (lightMode) {
@@ -176,11 +180,11 @@ public class Emitter extends Group {
 			super.draw();
 		}
 	}
-	
+
 	abstract public static class Factory {
-		
+
 		abstract public void emit( Emitter emitter, int index, float x, float y );
-		
+
 		public boolean lightMode() {
 			return false;
 		}
