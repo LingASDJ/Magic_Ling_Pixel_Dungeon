@@ -1,19 +1,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom;
 
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
 
-import org.luaj.vm2.ast.Str;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public enum CollectRankings {
 
@@ -69,10 +65,10 @@ public enum CollectRankings {
         Bundle bundle = new Bundle();
 
         if (records != null) {
-            for (Rankings.Record record : records.values()) {
-                bundle.put(RECORDS, record);
-            }
+            ArrayList< Rankings.Record > recordArrayList = new ArrayList<>( records.values() );
+            bundle.put(RECORDS, recordArrayList);
         }
+
         bundle.put(LATEST, lastRecord);
         bundle.put(TOTAL, totalNumber);
 
