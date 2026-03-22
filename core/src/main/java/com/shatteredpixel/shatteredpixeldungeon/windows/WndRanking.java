@@ -250,8 +250,10 @@ public class WndRanking extends WndTabbed {
 						super.onClick();
                         if (CollectRankings.INSTANCE.isRecordCollected(record)) {
                             CollectRankings.INSTANCE.removeRecord(record);
+							ShatteredPixelDungeon.scene().add(new WndTitledMessage(Icons.get(Icons.TALENT),Messages.get(this,"no_card"),Messages.get(this,"no_card_desc")));
                         } else {
                             CollectRankings.INSTANCE.collectRecord(record);
+							ShatteredPixelDungeon.scene().add(new WndTitledMessage(Icons.get(Icons.TALENT),Messages.get(this,"get_card"),Messages.get(this,"get_card_desc")));
                         }
 						icon().alpha( CollectRankings.INSTANCE.isRecordCollected(record) ? 1.0f : 0.3f );
                     }
