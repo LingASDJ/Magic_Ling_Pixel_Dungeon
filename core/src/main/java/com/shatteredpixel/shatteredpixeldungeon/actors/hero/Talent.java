@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
@@ -46,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -55,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
@@ -72,7 +75,9 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -183,6 +188,9 @@ public enum Talent {
 	//SpellSword T1
 	MAGIC_COMPRESSION(160),GUARDIAN_BLADE(161),ICE_LIBERATION(162),COLD_HARDY_CONSTITUTION(163),MALICIOUS_SPECULATION(164),
 
+	//SpellSword T2
+	MAGICPOWER_FOOD(165),MAGICDAMAGE_MELEE(166),HIGHMAGIC_ANKH(167),BLOOD_RIVER(168),SHIELD_POWER(169),
+
 	//universal T4
 	HEROIC_ENERGY(26, 4), //See icon() and title() for special logic for this one
 	//Ratmogrify T4
@@ -260,6 +268,21 @@ public enum Talent {
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 20); }
 	};
 	public static class SpiritBladesTracker extends FlavourBuff{};
+
+
+	public static class BloodRiverDealy extends FlavourBuff{
+		@Override
+		public void detach() {
+			super.detach();
+			MagicPower magicPower = Dungeon.hero.buff(MagicPower.class);
+			if(magicPower != null){
+				// 血河：+1=2魔力，+2=23魔力
+				int mp = hero.pointsInTalent(BLOOD_RIVER) == 1 ? 2 : 23;
+				magicPower.getCountMagic(mp);
+			}
+		}
+	};
+
 	public static class PatientStrikeTracker extends Buff {
 		public int pos;
 		{ type = Buff.buffType.POSITIVE; }
@@ -579,6 +602,13 @@ public enum Talent {
 				Buff.affect( hero, PhysicalEmpower.class).set(Math.round(hero.lvl / (4f - hero.pointsInTalent(FOCUSED_MEAL))), 1);
 			}
 		}
+
+		if(hero.hasTalent(MAGICPOWER_FOOD)){
+			MagicPower magicPower = Dungeon.hero.buff(MagicPower.class);
+			if(magicPower != null){
+				magicPower.getCountMagic(2 + 2 * hero.pointsInTalent(MAGICPOWER_FOOD));
+			}
+		}
 	}
 
 	public static class WarriorFoodImmunity extends FlavourBuff{
@@ -614,11 +644,13 @@ public enum Talent {
 		if (item instanceof MeleeWeapon){
 			factor *= 1f + 1.5f*hero.pointsInTalent(ADVENTURERS_INTUITION); //instant at +2 (see onItemEquipped)
 			factor *= 1f + 0.75f*hero.pointsInTalent(VETERANS_INTUITION);
+			factor *= 1f + 0.25f * hero.pointsInTalent(MALICIOUS_SPECULATION);
 		}
 		// Affected by both Warrior(2.5x/inst.) and Duelist(1.75x/2.5x) talents
 		if (item instanceof Armor){
 			factor *= 1f + 0.75f*hero.pointsInTalent(ADVENTURERS_INTUITION);
 			factor *= 1f + hero.pointsInTalent(VETERANS_INTUITION); //instant at +2 (see onItemEquipped)
+			factor *= 1f + 0.25f * hero.pointsInTalent(MALICIOUS_SPECULATION);
 		}
 		// 3x/instant for Mage (see Wand.wandUsed())
 		if (item instanceof Wand){
@@ -740,6 +772,32 @@ public enum Talent {
 		if (identify && !ShardOfOblivion.passiveIDDisabled()){
 			item.identify();
 		}
+
+		if (hero.hasTalent(MALICIOUS_SPECULATION)){
+			if(item.cursed && !item.isIdentified() && Dungeon.hero.pointsInTalent(MALICIOUS_SPECULATION) >= 2){
+				if((item instanceof Ring)){
+					Buff.affect(hero, MagicImmune.class, 1f);
+					((Ring) item).doUnequip(hero,true,true);
+					GameScene.scene.add(new WndTitledMessage(new ItemSprite(item.image),Messages.get(Talent.class,"er_id"),Messages.get(Talent.class,"er_ik", item.name(), null)));
+				} else if((item instanceof Artifact)) {
+					Buff.affect(hero, MagicImmune.class, 1f);
+					((Artifact) item).doUnequip(hero, true, true);
+					GameScene.scene.add(new WndTitledMessage(new ItemSprite(item.image), Messages.get(Talent.class, "er_id"), Messages.get(Talent.class, "er_ik", item.name() , null)));
+				}
+			}
+			if(item.cursed && !item.isIdentified() && Dungeon.hero.pointsInTalent(MALICIOUS_SPECULATION) >= 1){
+				if((item instanceof Weapon)){
+					Buff.affect(hero, MagicImmune.class, 1f);
+					((Weapon) item).doUnequip(hero,true,true);
+					GameScene.scene.add(new WndTitledMessage(new ItemSprite(item.image),Messages.get(Talent.class,"er_id"),Messages.get(Talent.class,"er_ik", item.name(), ((Weapon) item).enchantment.name())));
+				} else if((item instanceof Armor)) {
+					Buff.affect(hero, MagicImmune.class, 1f);
+					((Armor) item).doUnequip(hero, true, true);
+					GameScene.scene.add(new WndTitledMessage(new ItemSprite(item.image), Messages.get(Talent.class, "er_id"), Messages.get(Talent.class, "er_ik", item.name() ,((Armor) item).glyph.name())));
+				}
+			}
+		}
+
 	}
 
 	public static void onItemCollected( Hero hero, Item item ){
@@ -879,8 +937,8 @@ public enum Talent {
 				Collections.addAll(tierTalents, STRENGTHENING_MEAL, ADVENTURERS_INTUITION, PATIENT_STRIKE, AGGRESSIVE_BARRIER);
 				break;
 			case SPELLSWORD:
-				if(DeviceCompat.isDesktop_Dev()){
-					Collections.addAll(tierTalents,	MAGIC_COMPRESSION,GUARDIAN_BLADE,ICE_LIBERATION,COLD_HARDY_CONSTITUTION,MALICIOUS_SPECULATION);
+				if(DeviceCompat.isDebug()){
+					Collections.addAll(tierTalents,	MAGIC_COMPRESSION,MAGICDAMAGE_MELEE,ICE_LIBERATION,COLD_HARDY_CONSTITUTION,MALICIOUS_SPECULATION);
 				}
 				break;
 		}
@@ -908,6 +966,11 @@ public enum Talent {
 				break;
 			case DUELIST:
 				Collections.addAll(tierTalents, FOCUSED_MEAL, LIQUID_AGILITY, WEAPON_RECHARGING, LETHAL_HASTE, SWIFT_EQUIP);
+				break;
+			case SPELLSWORD:
+				if(DeviceCompat.isDebug()){
+					Collections.addAll(tierTalents,	MAGICPOWER_FOOD,GUARDIAN_BLADE,HIGHMAGIC_ANKH,BLOOD_RIVER,SHIELD_POWER);
+				}
 				break;
 		}
 		for (Talent talent : tierTalents){

@@ -255,6 +255,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -835,9 +836,9 @@ public class Hero extends Char {
 			if(star!=null){
 				accuracy += (float) getZone();
 			}
-		};
+		}
 
-		if(belongings.getItem(TerrorDoll.class) != null || belongings.getItem(TerrorDollB.class) != null) accuracy *= 0.75f;
+        if(belongings.getItem(TerrorDoll.class) != null || belongings.getItem(TerrorDollB.class) != null) accuracy *= 0.75f;
 
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ) {
 			return CustomPlayer.baseAccuracy;
@@ -909,9 +910,9 @@ public class Hero extends Char {
 
 		if(belongings.getItem(StarSachet.class)!=null) {
 			evasion += (float) getZone();
-		};
+		}
 
-		if( belongings.getItem(HeartOfCrystalFractal.class)!=null){
+        if( belongings.getItem(HeartOfCrystalFractal.class)!=null){
 			evasion *= 0.85f;
 		}
 
@@ -1272,6 +1273,11 @@ public class Hero extends Char {
 					GLog.p(Messages.get(FaintGlimmer.class, "light", count,remainingLevel));
 				}
 			}
+		}
+
+		// 耐寒体质：2级天赋 → 获得寒冷免疫
+		if (Dungeon.hero.pointsInTalent(Talent.COLD_HARDY_CONSTITUTION) == 2) {
+			immunities.add(Chill.class);
 		}
 
 		BrokenRing brokenRing = hero.belongings.getItem(BrokenRing.class);
@@ -2250,7 +2256,19 @@ public class Hero extends Char {
 			wep = null;
 		} else {
 			wep = belongings.attackingWeapon();
+			if(buff(MagicPower.MagicPowerIceMagic.class) != null){
+				int dmg;
+				dmg = (new Chilling()).proc((Weapon) wep, this, enemy, 0);
+				enemy.damage(dmg,this);
+			}
 		}
+
+		if(hasTalent(Talent.MAGICDAMAGE_MELEE)){
+			// 法尔塔娅：+1=6%，+2=12% 额外魔法伤害
+			enemy.damage((int) (damage * 0.06f * hero.pointsInTalent(Talent.MAGICDAMAGE_MELEE)), this, DamageType.MAGIC);
+		}
+
+
 
 		if(hasTalent(Talent.MAGIC_ABSORB)){
 			MagicAbsorb buff = hero.buff(MagicAbsorb.class);
@@ -2280,7 +2298,7 @@ public class Hero extends Char {
 
 		if (hero.belongings.weapon() instanceof Break) {
 			if (enemy != null && enemy.HP <= enemy.HT * 0.5f) {
-				float damageMultiplier = 1.0f + (0.3f + (0.03f * ((Break) hero.belongings.weapon()).level()));
+				float damageMultiplier = 1.0f + (0.3f + (0.03f * hero.belongings.weapon().level()));
 
 				damage *= Math.round(damageMultiplier);
 
@@ -2371,6 +2389,16 @@ public class Hero extends Char {
 		if(hero.belongings.getItem(EmotionalAggregation.class)!=null && Random.Float()>0.90f ){
 			GLog.n(Messages.get(EmotionalAggregation.class,"block"));
 			return;
+		}
+
+		if(hasTalent(Talent.BLOOD_RIVER)){
+			// 血河天赋：+1=10%最大生命，+2=15%最大生命
+			float threshold = 0.05f + 0.05f * pointsInTalent(Talent.BLOOD_RIVER);
+			if(dmg >= HT * threshold){
+				if(buff(Talent.BloodRiverDealy.class) == null){
+					Buff.affect(hero,Talent.BloodRiverDealy.class,3f);
+				}
+			}
 		}
 
 		if(hero.belongings.getItem(DeadOrAlive.class)!=null){
@@ -4127,8 +4155,7 @@ public class Hero extends Char {
 				buff(Berserk.class).reducePower(0.1f);
 				GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
 				resistHealth += 10;
-				return;
-		}
+        }
 	}
 
 	public interface Doom {

@@ -1083,9 +1083,9 @@ public abstract class Char extends Actor {
 			//defaults to normal damage icon if no other ones apply
 			int                                                         icon = FloatingText.PHYS_DMG;
 
-			if(src == DamageType.PHYSICAL){
+			if(type == DamageType.PHYSICAL){
 				icon = FloatingText.PHYS_DMG;
-			} else if(src == DamageType.MAGIC){
+			} else if(type == DamageType.MAGIC){
 				icon = FloatingText.MAGIC_DMG;
             }
 

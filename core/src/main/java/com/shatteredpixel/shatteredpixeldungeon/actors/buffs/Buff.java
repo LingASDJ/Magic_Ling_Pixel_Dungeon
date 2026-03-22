@@ -24,10 +24,13 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarDust;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
+import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 import java.util.HashSet;
@@ -165,6 +168,14 @@ public class Buff extends Actor {
 		StarDust starDust = Dungeon.hero.belongings.getItem(StarDust.class);
 		if(starDust != null){
 			duration /= 2;
+		}
+
+		if(buff instanceof Chill && target instanceof Hero){
+            if (Dungeon.hero.pointsInTalent(Talent.COLD_HARDY_CONSTITUTION) == 1) {
+                if (Random.Float() <= 0.5f) {
+                    buff.detach();
+                }
+            }
 		}
 
 		buff.spend( duration * target.resist(buffClass) );
