@@ -312,12 +312,12 @@ public abstract class Wand extends Item {
 
 		if (Dungeon.hero != null && Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE){
 			if (Dungeon.hero.hasTalent(Talent.EMPOWERED_STRIKE)) {
-				desc += "\n\n" + Messages.get(this, "bmage_desc");
+				desc += "\n\n" + Messages.get(this, "bmage_desc",Dungeon.hero.className(),Messages.get(MagesStaff.class,"bd_desc"));
 			}
 		}
 
 		if (Dungeon.hero != null && Dungeon.hero.subClass == HeroSubClass.OLDBATTLEMAGE){
-			desc += "\n\n" + Messages.get(this, "bmage_desc");
+			desc += "\n\n" + Messages.get(this, "bmage_desc",Dungeon.hero.className(),Messages.get(MagesStaff.class,"bk_desc"));
 		}
 
 		return desc;
