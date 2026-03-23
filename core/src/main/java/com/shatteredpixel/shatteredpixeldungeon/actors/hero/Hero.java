@@ -1321,7 +1321,7 @@ public class Hero extends Char {
 
 		CatGirlCosplay catGirlCosplay = hero.belongings.getItem(CatGirlCosplay.class);
 		if(catGirlCosplay != null){
-			if(Random.Float()<=0.12f){
+			if(Random.Float()<=0.0325f){
 				int mapLength = level.length();
 				for (int i : PathFinder.CIRCLE7) {
 					int targetingPos = hero.pos + i;
