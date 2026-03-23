@@ -76,7 +76,7 @@ public class WndResurrect extends Window {
 		titlebar.setRect( 0, 0, WIDTH, 0 );
 		add( titlebar );
 
-		RenderedTextBlock message = PixelScene.renderTextBlock(Messages.get(this, "message"), 6 );
+		RenderedTextBlock message = PixelScene.renderTextBlock(Messages.get(this, Statistics.ankhToExit ?  "an_message" : hero.lanterfire < 40 ? "low_message" : "message"), 6 );
 		message.maxWidth(WIDTH);
 		message.setPos(0, titlebar.bottom() + GAP);
 		add( message );

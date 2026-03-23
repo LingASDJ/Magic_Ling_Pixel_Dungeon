@@ -3417,49 +3417,35 @@ public class Hero extends Char {
 		}
 
 		// 处理黑魂（保留原逻辑）
-		BlackSoul firstblacksoul = null;
-		BlackSoul s = new BlackSoul();
-		for (Mob mob : level.mobs.toArray(new Mob[0])) {
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 			if (mob instanceof BlackSoul) {
 				Buff.affect(mob, Dread.class);
-				firstblacksoul = (BlackSoul) mob;
 			}
 		}
 
 		if( buff(ElectricalSmoke.SmokingAlloy.class) != null)
 			GLog.n(Messages.get(ElectricalSmoke.class,"die"));
 
-		if (lanterfireactive && this.lanterfire <= 40 || this.buff(LostInventory.class) != null) {
-			for (Ankh i : belongings.getAllItems(Ankh.class)) {
-				if (!i.isBlessed()) {
-					interrupt();
-					resting = false;
-
-					s.pos = level.randomRespawnCell(s);
-					s.gold = Dungeon.gold;
-
-					if(firstblacksoul != null){
-						s.gold = firstblacksoul.gold;
-						firstblacksoul.die(true);
+		boolean OnlySummonAlive = false;
+		//灯火值低于40 死亡生成自己的邪恶面，并清空金币，背包也一并带走。（灵感：空洞骑士）
+		for (Ankh i : belongings.getAllItems(Ankh.class)) {
+			if (ankh != null && !(i.isBlessed()) && !OnlySummonAlive) {
+				if (lanterfireactive && hero.lanterfire <= 40 && !i.isBlessed() || hero.buff(LostInventory.class) != null) {
+					BlackSoul s = new BlackSoul();
+					if(Statistics.ankhToExit){
+						s.pos = Dungeon.level.entrance();
 					} else {
-						Dungeon.gold = 0;
+						s.pos = Dungeon.hero.pos;
 					}
-
+					s.gold = Dungeon.gold;
+					Dungeon.gold = 0;
 					s.state = s.WANDERING;
 					GameScene.add(s);
 					Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
 					Buff.affect(s, DeadSoul.class);
-					ScrollOfTeleportation.appear(hero,level.entrance());
-                    GameScene.flash(0x80FF0000);
-					PotionOfHealing.cure(this);
-					GameScene.cure( this );
-					Buff.prolong(this, Invisibility.class, 20f);
-					this.HP = (int) (HT * 0.2f);
-					i.detach(hero.belongings.backpack);
-					GLog.n(Messages.get(this,"lanterfire_warning"));
-					return;
+					OnlySummonAlive = true;
+					GameScene.flash(0x80FF0000);
 				}
-				break;
 			}
 		}
 
