@@ -62,20 +62,22 @@ public class CatGirlCosplay extends Prop {
                     if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null && ch != hero) {
                         if (!ch.isImmune(this.getClass())) {
                             if(ch instanceof Mob && !(ch instanceof NPC)){
-                                if(Random.Float() <= 0.5f){
-                                    ((Mob) ch).clearEnemy();
-                                    ((Mob) ch).state = ((Mob) ch).FLEEING;
-                                    ((Mob) ch).beckon(Dungeon.level.randomRespawnCell(ch));
-                                    if (ch.sprite != null) ch.sprite.showLost();
-                                    if(ch.buff(Adrenaline.class)!=null){
-                                        Buff.affect(ch, AbsoluteBlindness.class).addLeft(2f);
+                                if(((Mob) ch).state != ((Mob) ch).PASSIVE){
+                                    if(Random.Float() <= 0.5f){
+                                        ((Mob) ch).clearEnemy();
+                                        ((Mob) ch).state = ((Mob) ch).FLEEING;
+                                        ((Mob) ch).beckon(Dungeon.level.randomRespawnCell(ch));
+                                        if (ch.sprite != null) ch.sprite.showLost();
+                                        if(ch.buff(Adrenaline.class)!=null){
+                                            Buff.affect(ch, AbsoluteBlindness.class).addLeft(2f);
+                                        } else {
+                                            Buff.affect(ch, AbsoluteBlindness.class).addLeft(1f);
+                                        }
                                     } else {
-                                        Buff.affect(ch, AbsoluteBlindness.class).addLeft(1f);
+                                        Buff.affect(ch, Adrenaline.class,1f);
                                     }
-                                } else {
-                                    Buff.affect(ch, Adrenaline.class,1f);
+                                    Sample.INSTANCE.play(Assets.Sounds.READ,1f,1.1f);
                                 }
-                                Sample.INSTANCE.play(Assets.Sounds.READ,1f,1.1f);
                             }
                         }
                     }
