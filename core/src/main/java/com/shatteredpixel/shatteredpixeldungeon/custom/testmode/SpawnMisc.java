@@ -134,23 +134,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MossyClump;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrapMechanism;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
@@ -366,22 +351,9 @@ public class SpawnMisc extends TestItem {
 
         //Trinket
         if(trList.isEmpty()) {
-            trList.add(DimensionalSundial.class);
-            trList.add(ExoticCrystals.class);
-            trList.add(EyeOfNewt.class);
-            trList.add(MimicTooth.class);
-            trList.add(MossyClump.class);
-            trList.add(ParchmentScrap.class);
-            trList.add(PetrifiedSeed.class);
-            trList.add(RatSkull.class);
-            trList.add(ThirteenLeafClover.class);
-            trList.add(TrapMechanism.class);
-            trList.add(WondrousResin.class);
-
-            trList.add(SaltCube.class);
-            trList.add(VialOfBlood.class);
-            trList.add(ShardOfOblivion.class);
-            trList.add(ChaoticCenser.class);
+            for (int i = 0; i < Generator.Category.TRINKET.classes.length; i++) {
+                trList.add((Class<? extends Trinket>) Generator.Category.TRINKET.classes[i]);
+            }
         }
 
         //Prop

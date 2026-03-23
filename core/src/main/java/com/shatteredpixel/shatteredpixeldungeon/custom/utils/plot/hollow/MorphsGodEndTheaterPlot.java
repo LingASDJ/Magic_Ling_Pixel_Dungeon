@@ -201,6 +201,7 @@ public class MorphsGodEndTheaterPlot extends Plot {
         if(!(Dungeon.isDLC(Conducts.Conduct.DEV))) {
             Badges.validateVictory();
             PaswordBadges.ALLCS(Challenges.activeChallenges());
+            Badges.validateChampion(Challenges.activeChallenges());
             PaswordBadges.HERO_CLRE(Challenges.activeChallenges());
             Dungeon.win(Shadow.class);
             Game.switchScene(RankingsScene.class);

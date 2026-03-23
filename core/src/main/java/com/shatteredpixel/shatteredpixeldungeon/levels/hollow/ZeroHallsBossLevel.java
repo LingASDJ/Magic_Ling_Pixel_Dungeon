@@ -237,6 +237,7 @@ public class ZeroHallsBossLevel extends Level {
                     protected void onComplete() {
                         Badges.validateVictory();
                         PaswordBadges.ALLCS(Challenges.activeChallenges());
+                        Badges.validateChampion(Challenges.activeChallenges());
                         PaswordBadges.HERO_CLRE(Challenges.activeChallenges());
                         Dungeon.win( BadDream.class );
                         Game.switchScene( RankingsScene.class );

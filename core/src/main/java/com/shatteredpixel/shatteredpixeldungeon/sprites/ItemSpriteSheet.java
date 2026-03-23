@@ -1252,6 +1252,8 @@ public class ItemSpriteSheet {
     public static final int OBLIVION_SHARD  = TRINKETS+13;
     public static final int CHAOTIC_CENSER  = TRINKETS+14;
 
+    public static final int SPYGLASS        = TRINKETS+16;
+
     static{
         assignItemRect(RAT_SKULL,       15, 11);
         assignItemRect(PARCHMENT_SCRAP, 15, 14);
@@ -1270,6 +1272,8 @@ public class ItemSpriteSheet {
         assignItemRect(BLOOD_VIAL,     13, 11);
         assignItemRect(OBLIVION_SHARD,     14, 14);
         assignItemRect(CHAOTIC_CENSER,     16, 15);
+
+        assignItemRect(SPYGLASS, 16,11);
     }
 
     private static final int MISC        =                               xy(1, 56);  //24 slots
