@@ -8,11 +8,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc;
+import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor.Glyph;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
@@ -90,7 +92,7 @@ public class BlackSoul extends Mob implements Callback {
 
         properties.add(Property.ABYSS);
 
-        HP = HT = (20 + 5*(hero.lvl-1) + hero.HTBoost)/2;
+        HP = HT = (20 + 4*(hero.lvl-1) + hero.HTBoost)/2;
         defenseSkill = (int)(armor.evasionFactor( this, 7 + lvl ));
     }
 
@@ -269,6 +271,9 @@ public class BlackSoul extends Mob implements Callback {
     public void die( Object cause ) {
         super.die(cause);
 
+        if (hero.buff(LostInventory.class) != null) {
+            Dungeon.level.drop(new LostBackpack(), pos).sprite.drop(pos);
+        }
         if(buff(Dread.class) == null){
             if (gold > 0) {
                 Dungeon.level.drop( new Gold(gold), pos ).sprite.drop();
