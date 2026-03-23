@@ -121,6 +121,7 @@ public class GalaxyHeartDeadEndPlot extends Plot {
                                     protected void onComplete() {
                                         Badges.validateVictory();
                                         PaswordBadges.ALLCS(Challenges.activeChallenges());
+                                        Badges.validateChampion(Challenges.activeChallenges());
                                         PaswordBadges.HERO_CLRE(Challenges.activeChallenges());
                                         Dungeon.win(RedEnd.class);
                                         Game.switchScene( RankingsScene.class );

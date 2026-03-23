@@ -235,10 +235,14 @@ public class ItemSprite extends MovieClip {
 		if (heap.size() <= 0 || heap.items == null){
 			return view( 0, null );
 		}
-		
+
 		switch (heap.type) {
 			case HEAP: case FOR_SALE:case FOR_ICE:case FOR_RUSH:
-				return view( heap.peek(),false );
+				// 先获取精灵，再设置透明度，最后返回
+				ItemSprite sprite = view( heap.peek(), false );
+				sprite.alpha( heap.hidden ? 0.15f : 1f ); // 关键：给返回的精灵设置alpha
+				return sprite;
+
 			case CHEST:
 				return view( ItemSpriteSheet.CHEST, null );
 			case LOCKED_CHEST:

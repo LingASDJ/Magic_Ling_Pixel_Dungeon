@@ -127,7 +127,21 @@ public class MeatPie extends Food {
 
 	@Override
 	public String desc() {
-		// 三元一次逻辑运算
-		return Dungeon.isChallenged(EXSG) ? Messages.get(this, "descx") : Messages.get(this, "desc");
+		if (Dungeon.isChallenged(EXSG)) {
+			Hero hero = Dungeon.hero;
+			int region = Math.min(Statistics.deepestFloor / 5, foodLimit.length - 1);
+			int maxStr = foodLimit[region];
+			int currentStr = Statistics.GetFoodLing;
+
+			// 计算当前真实概率
+			float chance = 1f - (0.25f + hero.STR / 50f);
+			chance = Math.max(chance, 0f); // 防止负数
+			int percent = Math.round(chance * 100);
+
+			// 把 3 个参数传给多语言：当前/上限/成功率
+			return Messages.get(this, "descx", percent, currentStr, maxStr);
+		} else {
+			return Messages.get(this, "desc");
+		}
 	}
 }
