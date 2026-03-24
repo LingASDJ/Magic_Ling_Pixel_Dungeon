@@ -142,6 +142,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
@@ -514,6 +515,7 @@ public abstract class Char extends Actor {
 						if(enemy.HT <= dmg){
 							if(pr.CheckEnthralled() && !enemy.isImmune(ScrollOfSirensSong.Enthralled.class)) {
 								Buff.affect(enemy, ScrollOfSirensSong.Enthralled.class);
+								AllyBuff.affectAndLoot((Mob) enemy, hero, ScrollOfSirensSong.Enthralled.class);
 								dmg = 0;
 								pr.entrlledchance = 0.05f;
 								Transmuting.show(Dungeon.hero, new RandomChest(), pr);
@@ -780,6 +782,8 @@ public abstract class Char extends Actor {
 		for (ChampionHero buff : defender.buffs(ChampionHero.class)){
 			defRoll *= buff.evasionAndAccuracyFactor();
 		}
+
+		defRoll *= FerretTuft.evasionMultiplier();
 
 		defRoll *= AscensionChallenge.statModifier(defender);
 

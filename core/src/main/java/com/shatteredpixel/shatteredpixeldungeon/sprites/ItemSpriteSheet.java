@@ -1253,6 +1253,7 @@ public class ItemSpriteSheet {
     public static final int CHAOTIC_CENSER  = TRINKETS+14;
 
     public static final int SPYGLASS        = TRINKETS+16;
+    public static final int FERRET_TUFT     = TRINKETS+17;
 
     static{
         assignItemRect(RAT_SKULL,       15, 11);
@@ -1274,6 +1275,7 @@ public class ItemSpriteSheet {
         assignItemRect(CHAOTIC_CENSER,     16, 15);
 
         assignItemRect(SPYGLASS, 16,11);
+        assignItemRect(FERRET_TUFT, 14,16);
     }
 
     private static final int MISC        =                               xy(1, 56);  //24 slots
