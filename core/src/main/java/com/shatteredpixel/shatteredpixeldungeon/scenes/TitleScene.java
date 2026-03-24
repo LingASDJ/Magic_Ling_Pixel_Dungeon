@@ -90,7 +90,7 @@ public class TitleScene extends PixelScene {
 		int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
 		Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
 
-		Music.playModeBGM(Assets.Music.THEME, true);
+		Music.INSTANCE.play(Assets.Music.THEME, true);
 
 		Badges.loadGlobal();
 		boolean whiteDaymode = currentHour > 7 && currentHour < 22;

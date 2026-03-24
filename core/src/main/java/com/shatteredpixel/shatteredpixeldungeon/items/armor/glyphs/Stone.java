@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.GameMath;
 
@@ -59,7 +60,7 @@ public class Stone extends Armor.Glyph {
 		}
 		evasion *= AscensionChallenge.statModifier(defender);
 		// end of copy-pasta
-
+		evasion *= FerretTuft.evasionMultiplier();
 		evasion *= genericProcChanceMultiplier(defender);
 
 		float hitChance;
