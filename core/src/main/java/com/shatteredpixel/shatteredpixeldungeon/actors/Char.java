@@ -166,6 +166,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GnollRockfallTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -675,12 +676,27 @@ public abstract class Char extends Actor {
 
 		} else {
 
-			enemy.sprite.showStatus( CharSprite.NEUTRAL, enemy.defenseVerb() );
+			//enemy.sprite.showStatus( CharSprite.NEUTRAL, enemy.defenseVerb() );
 
 			if(enemy instanceof Hero && ((Hero) enemy).belongings.getItem(KnightStabbingSword.class) !=null){
 				if(Random.Float()<=0.40f && hero.buff(KnightStabbingSword.NoRoundTracker.class) == null){
 					Buff.affect(Dungeon.hero, KnightStabbingSword.NoRoundTracker.class, 1f);
 					GLog.n(Messages.get(KnightStabbingSword.class,"attack"));
+				}
+			}
+
+			if (enemy.sprite != null){
+				if (hitMissIcon != -1){
+					//dooking is a playful sound Ferrets can make, like low pitched chirping
+					// I doubt this will translate, so it's only in English
+					if (hitMissIcon == FloatingText.MISS_TUFT && Messages.lang() == Languages.ENGLISH && Random.Int(10) == 0) {
+						enemy.sprite.showStatusWithIcon(CharSprite.NEUTRAL, "dooked", hitMissIcon);
+					} else {
+						enemy.sprite.showStatusWithIcon(CharSprite.NEUTRAL, enemy.defenseVerb(), hitMissIcon);
+					}
+					hitMissIcon = -1;
+				} else {
+					enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
 				}
 			}
 
@@ -723,6 +739,8 @@ public abstract class Char extends Actor {
 	final public static boolean hit( Char attacker, Char defender, boolean magic ) {
 		return hit(attacker, defender, magic ? 2f : 1f, magic);
 	}
+
+	private static int hitMissIcon = -1;
 
 	public static boolean hit( Char attacker, Char defender, float accMulti, boolean magic ) {
 		float acuStat = attacker.attackSkill( defender );
@@ -787,7 +805,15 @@ public abstract class Char extends Actor {
 
 		defRoll *= AscensionChallenge.statModifier(defender);
 
-		return (acuRoll * accMulti) >= defRoll;
+
+		if ((acuRoll * accMulti) >= defRoll){
+			return true;
+		} else {
+			hitMissIcon = FloatingText.getMissReasonIcon(attacker, acuRoll, defender, defRoll);
+			return false;
+		}
+
+//		return acuRoll * accMulti) >= defRoll;
 	}
 
 	public int attackSkill( Char target ) {
