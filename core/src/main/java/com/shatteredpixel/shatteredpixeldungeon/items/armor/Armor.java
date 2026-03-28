@@ -397,7 +397,13 @@ public class Armor extends EquipableItem {
 		}
 	}
 
+	//This exists so we can test what a char's base evasion would be without armor affecting it
+	//more ugly static vars yaaay~
+	public static boolean testingNoArmDefSkill = false;
+
 	public float evasionFactor( Char owner, float evasion ){
+
+		if (testingNoArmDefSkill) return evasion;
 
 		if (hasGlyph(Stone.class, owner) ){
 			if((glyph instanceof Stone || (seal != null&&seal.getGlyph()!=null && seal.getGlyph() instanceof Stone)))

@@ -153,7 +153,7 @@ public class AncityArmor extends CustomArmor {
 
     @Override
     public float evasionFactor(Char owner, float evasion ){
-
+        if (testingNoArmDefSkill) return evasion;
         if (hasGlyph(Stone.class, owner)){
             return 0;
         }

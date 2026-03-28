@@ -22,6 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.effects;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.AncityArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -35,6 +40,9 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.SparseArray;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 
 public class FloatingText extends RenderedTextBlock {
 
@@ -74,6 +82,11 @@ public class FloatingText extends RenderedTextBlock {
 	public static int ICECOIN = 31;
 
 	public static int PINKHEAL = 33;
+	public static int MISS_ARM = 54;
+	public static int MISS_TUFT = 55;
+
+	public static int MISS_FISH = 56;
+
 
 	private Image icon;
 	private boolean iconLeft;
@@ -242,4 +255,47 @@ public class FloatingText extends RenderedTextBlock {
 			stack.add(txt);
 		}
 	}
+
+	public static int getMissReasonIcon(Char attacker, float accRoll, Char defender, float defRoll){
+		HashMap<Integer, Float> missReasons = new HashMap<>();
+		Armor arm = null;
+		if (defender instanceof Hero) arm = ((Hero) defender).belongings.armor();
+		if (arm != null && arm.evasionFactor(defender, 100) > 100) {
+			//we express armor's normally flat evasion boost as a %, yes this is very awkward
+			Armor.testingNoArmDefSkill = true;
+			int baseDef = defender.defenseSkill(attacker);
+			Armor.testingNoArmDefSkill = false;
+			if (arm instanceof AncityArmor){
+				//this is cheating a little, as evasion aug gets wrapped into this too
+				missReasons.put(MISS_FISH, defender.defenseSkill(attacker) / (float) baseDef);
+			} else {
+				missReasons.put(MISS_ARM, defender.defenseSkill(attacker) / (float) baseDef);
+			}
+		}
+		if (FerretTuft.evasionMultiplier() > 1)                 missReasons.put(MISS_TUFT, FerretTuft.evasionMultiplier());
+
+		//sort from largest modifier to smallest one
+		ArrayList<Integer> sortedReasons = new ArrayList<>(missReasons.keySet());
+		Collections.sort(sortedReasons, new Comparator<Integer>() {
+			@Override
+			public int compare(Integer a, Integer b) {
+				float a1 = missReasons.get(a) >= 1f ? missReasons.get(a) : 1 / missReasons.get(a);
+				float b1 = missReasons.get(b) >= 1f ? missReasons.get(b) : 1 / missReasons.get(b);
+				return (int)Math.signum(b1 - a1);
+			}
+		});
+
+		for (Integer reason : sortedReasons){
+			if (missReasons.get(reason) >= 1f) {
+				defRoll /= missReasons.get(reason);
+			} else {
+				accRoll /= missReasons.get(reason);
+			}
+			if (defRoll < accRoll){
+				return reason;
+			}
+		}
+		return -1;
+	}
+
 }
