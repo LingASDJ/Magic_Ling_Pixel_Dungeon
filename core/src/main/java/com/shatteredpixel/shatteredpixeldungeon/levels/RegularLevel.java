@@ -387,8 +387,6 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-
-
 		for (int i = 0; i < standards; i++) {
 			StandardRoom s;
 			do {
@@ -417,7 +415,7 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if(hero.buff(SliceDeadBless.class) !=null && depth == 28){
+		if(hero.buff(SliceDeadBless.class) !=null && depth == 28 && !(Badges.isUnlocked(Badges.Badge.KILL_MORES))){
 			initRooms.add(new SliceDeadRoom());
 		}
 

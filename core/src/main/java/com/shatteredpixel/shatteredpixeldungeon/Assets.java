@@ -651,7 +651,12 @@ public class Assets {
 		public static final String Silence_4 = "splashes/hollow/Silence/silence_portraits(4).png";
 
 		public static final String TYPHON = "splashes/hollow/Typhon/typhon_portraits.png";
-
+		public static class Title {
+			public static final String ARCHS         = "splashes/title/archs.png";
+			public static final String BACK_CLUSTERS = "splashes/title/back_clusters.png";
+			public static final String MID_MIXED     = "splashes/title/mid_mixed.png";
+			public static final String FRONT_SMALL   = "splashes/title/front_small.png";
+		}
 	}
 
 	public static class Sprites {

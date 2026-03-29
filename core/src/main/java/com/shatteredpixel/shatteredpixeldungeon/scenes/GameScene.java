@@ -1596,7 +1596,7 @@ public class GameScene extends PixelScene {
 							break;
 						case 10:
 							if(Dungeon.branch == 0){
-								if((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) {
+								if(SPDSettings.isBossEnhanceEnabled(1)  || Statistics.mimicking) {
 									WndStory.showChapter(WndStory.ID_COLDCHESTBOSS);
 								} else {
 									WndStory.showChapter(WndStory.ID_PRISONBOSS);
@@ -2078,7 +2078,7 @@ public class GameScene extends PixelScene {
 						Statistics.GetFoodLing=0;
 						break;
 					case 10:
-						if ( ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {
+						if ( (SPDSettings.isBossEnhanceEnabled(1) || Statistics.mimicking) && !Statistics.mustTengu) {
 							bossSlain.texture(Assets.Interfaces.D_Clear);
 							bossSlain.show( Window.TITLE_COLOR, 0.2f, 5f);
 							scene.showBanner(bossSlain);

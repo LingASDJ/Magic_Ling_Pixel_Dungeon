@@ -102,7 +102,7 @@ public class MagicGirlDead extends Boss {
 
     @Override
     public String name() {
-        return Statistics.attackIFGirl ? Messages.get(this,"name_alt") : super.name();
+        return Statistics.attackIFGirl && level instanceof ShopBossLevel ? Messages.get(this,"name_alt") : super.name();
     }
 
     //the actual affected cells
@@ -142,7 +142,7 @@ public class MagicGirlDead extends Boss {
 
     @Override
     public String info(){
-        return Statistics.attackIFGirl ? Messages.get(this,"desc_alt") : Messages.get(this, "desc", phase, HP - (Statistics.bossRushMode? healthThresholdX[phase] : healthThreshold[phase]));
+        return Statistics.attackIFGirl && level instanceof ShopBossLevel ? Messages.get(this,"desc_alt") : Messages.get(this, "desc", phase, HP - (Statistics.bossRushMode? healthThresholdX[phase] : healthThreshold[phase]));
     }
 
     @Override

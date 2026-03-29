@@ -90,8 +90,6 @@ public class TitleScene extends PixelScene {
 		int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
 		Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
 
-		Music.INSTANCE.play(Assets.Music.THEME, true);
-
 		Badges.loadGlobal();
 		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
 
@@ -160,6 +158,8 @@ public class TitleScene extends PixelScene {
 		}
 
 		uiCamera.visible = false;
+
+		Music.INSTANCE.play(Assets.Music.THEME, true);
 
 		int w = Camera.main.width;
 		int h = Camera.main.height;

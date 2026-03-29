@@ -1367,4 +1367,35 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_HIROS_SEE, 1);
 	}
 
+
+	// ====================== 远拓石碑配置 ======================
+	public static final String KEY_YUANTUO_LAST_READ = "yuantuo_last_read";
+
+	// 远拓石碑最后阅读时间
+	public static long yuantuoLastRead() {
+		return getLong(KEY_YUANTUO_LAST_READ, 0);
+	}
+
+	public static void yuantuoLastRead(long value) {
+		put(KEY_YUANTUO_LAST_READ, value);
+	}
+
+	// ====================== BOSS强化设置 ======================
+	private static final String BOSS_ENHANCE = "boss_enhance";
+
+	// 保存BOSS强化总开关值
+	public static void setBossEnhance(int value) {
+		put(BOSS_ENHANCE, value);
+	}
+
+	// 获取BOSS强化总开关值
+	public static int getBossEnhance() {
+		return getInt(BOSS_ENHANCE, 0);
+	}
+
+	// 判断单个BOSS强化是否启用（对应索引i）
+	public static boolean isBossEnhanceEnabled(int index) {
+		return (getBossEnhance() & (1 << index)) != 0;
+	}
+
 }
