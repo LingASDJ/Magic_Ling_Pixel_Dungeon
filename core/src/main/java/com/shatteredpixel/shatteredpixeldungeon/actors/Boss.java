@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DwarfGeneralBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -103,7 +104,7 @@ abstract public class Boss extends Mob {
                 }
             }
 
-            if((isDLC(Conducts.Conduct.HARD) || isDLC(Conducts.Conduct.DEV)) && (new ArrayList<>(Arrays.asList(5,10,15,20,25)).contains(Dungeon.depth) && Dungeon.branch ==0 )){
+            if((isDLC(Conducts.Conduct.HARD) || isDLC(Conducts.Conduct.DEV)) && (new ArrayList<>(Arrays.asList(5,10,15,20,25)).contains(Dungeon.depth) && Dungeon.branch == 0 ) || level instanceof DwarfGeneralBossLevel){
 
 
                 if(Dungeon.depth == 5){

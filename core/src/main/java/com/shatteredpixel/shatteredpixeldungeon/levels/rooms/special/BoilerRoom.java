@@ -223,7 +223,7 @@ public class BoilerRoom extends SpecialRoom {
                 SoulCrack.PinkSoulCrack purpleSoulCrack = hero.belongings.getItem(SoulCrack.PinkSoulCrack.class);
                 if(purpleSoulCrack != null) five = true;
 
-                if (Badges.isUnlocked(Badges.Badge.KILL_MORES) && Statistics.AbyssCityRules == 0){
+                if (Badges.isUnlocked(Badges.Badge.KILL_MORES) && Statistics.AbyssCityRules == 0 || 1 == 1){
                     Game.runOnRenderThread(new Callback() {
                         @Override
                         public void call() {
@@ -237,13 +237,17 @@ public class BoilerRoom extends SpecialRoom {
                                 protected void onSelect(int index) {
                                     if(index == 1){
                                         Statistics.AbyssCityRules = 2;
+                                        Statistics.Hollow_Holiday = true;
+                                        GameScene.flash(Window.CBLACK, true);
+                                        ((CandleActivePointSprite)sprite).activateidle();
+                                        yell(Messages.get(BoilerRoom.class, "yell"));
                                     } else if (index == 0) {
                                         Statistics.AbyssCityRules = 1;
+                                        Statistics.Hollow_Holiday = true;
+                                        GameScene.flash(Window.CBLACK, true);
+                                        ((CandleActivePointSprite)sprite).activateidle();
+                                        yell(Messages.get(BoilerRoom.class, "yell"));
                                     }
-                                    Statistics.Hollow_Holiday = true;
-                                    GameScene.flash(Window.CBLACK, true);
-                                    ((CandleActivePointSprite)sprite).activateidle();
-                                    yell(Messages.get(BoilerRoom.class, "yell"));
                                 }
                             });
                         }
