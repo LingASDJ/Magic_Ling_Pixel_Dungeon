@@ -227,6 +227,12 @@ public class KuzumiNewYears extends FiveYearsNPC {
                 yell(Messages.get(KuzumiNewYears.class,"thanks"));
                 secnod = false;
 
+//                YuanTaStoneScene.YuanTaStoryManager.unlockStory(
+//                        "story_icetown",
+//                        Messages.get("icetown_title"),
+//                        Messages.get("icetown_content"),
+//                        ItemSpriteSheet.ICEBOOK
+//                );
             } else {
                 angry = true;
                 int dmg = 20;
