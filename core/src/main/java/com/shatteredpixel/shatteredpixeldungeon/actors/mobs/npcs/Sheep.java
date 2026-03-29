@@ -92,6 +92,11 @@ public class Sheep extends NPC {
 		return true;
 	}
 
+	public void initialize(float lifespan){
+		this.lifespan = lifespan;
+		spend( lifespan + Random.Float(-2, 2) );
+	}
+
 	private static final String LIFESPAN = "lifespan";
 
 	@Override
