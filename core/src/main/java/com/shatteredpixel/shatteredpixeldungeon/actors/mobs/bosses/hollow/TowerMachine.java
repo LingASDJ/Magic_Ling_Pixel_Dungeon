@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -172,6 +173,7 @@ public class TowerMachine extends Boss {
             if (Dungeon.hero != null) {
                 if (Dungeon.hero.pos == targetCell) {
                     Dungeon.hero.damage(dmg, new Bomb());
+                    Statistics.bossScores[6] -= 300;
                 }
 
                 if (enemy != null && !enemy.isAlive() && enemy == Dungeon.hero) {

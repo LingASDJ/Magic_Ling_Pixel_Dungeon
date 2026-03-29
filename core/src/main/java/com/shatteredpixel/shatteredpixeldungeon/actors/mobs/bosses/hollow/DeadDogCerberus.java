@@ -46,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -272,6 +271,7 @@ public class DeadDogCerberus extends Boss {
                 () -> {
                     Actor.add(new Pushing(mob, mob.pos, pos,
                             () -> pullEnemy(mob, pos)));
+                    Statistics.bossScores[6] -= 100;
                     next();
                 }));
             }
@@ -288,6 +288,7 @@ public class DeadDogCerberus extends Boss {
                         () -> {
                             Actor.add(new Pushing(mob, mob.pos, pos,
                                     () -> pullEnemy(mob, pos)));
+                            Statistics.bossScores[6] -= 100;
                             next();
                         }));
             }
@@ -742,6 +743,8 @@ public class DeadDogCerberus extends Boss {
                                     leapVictim.sprite.flash();
                                     Sample.INSTANCE.play(Assets.Sounds.HIT);
 
+                                    Statistics.bossScores[6] -= 200;
+
                                     int targetingPos = enemy.pos;
 
                                     if(phase ==  2){
@@ -1155,6 +1158,8 @@ public class DeadDogCerberus extends Boss {
         GameScene.bossSlain();
 
         GameRules.PropsScore();
+
+        Statistics.bossScores[6] += 6000;
 
         Buff.detach(hero, SoulDead.class);
 

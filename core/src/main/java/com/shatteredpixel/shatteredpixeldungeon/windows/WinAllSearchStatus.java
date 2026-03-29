@@ -111,6 +111,9 @@ public class WinAllSearchStatus extends Window {
                 if(buff.score >= 20000 * 0.75f){
                     Badges.MINIGAME_MASTER_THREE();
                 }
+
+                Statistics.bossScores[6] += (int) ((Statistics.getAlLSearchScore + Statistics.getPacManScore + Statistics.getMoveBoxScore) * 0.25f);
+
                 InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
                 TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
                 if (timeFreeze != null) timeFreeze.disarmPresses();
