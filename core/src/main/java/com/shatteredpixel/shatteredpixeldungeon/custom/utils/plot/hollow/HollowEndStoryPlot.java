@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -264,6 +265,8 @@ public class HollowEndStoryPlot extends Plot {
                 }
 
                 Buff.affect( hero, LostInventory.class);
+
+                Statistics.bossScores[6] += 10000;
             }
         });
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.Silence_0));

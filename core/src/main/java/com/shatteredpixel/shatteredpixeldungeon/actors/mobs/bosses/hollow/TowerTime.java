@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -469,6 +470,8 @@ public class TowerTime extends Boss {
             paralysedAttackChane = true;
         }
         ch.damage(LastHP ? 85 : 40, new Eye.DeathGaze());
+
+        Statistics.bossScores[6] -= 400;
     }
 
     private static final String ABILITY_CD = "ability_cd";
