@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
@@ -39,14 +38,7 @@ public class BossSettingWindows extends Window {
 
         for(int i = 0; i<5; ++i) {
             int finalI = i;
-            CheckBox cb = new CheckBox(Messages.get(this, "boss_" + (finalI + 1))) {
-                public void checked(boolean value) {
-                    if (checked != value) {
-                        checked = value;
-                        icon.copy(Icons.get(checked ? Icons.CHECKED : Icons.UNCHECKED));
-                    }
-                }
-            };
+            CheckBox cb = new CheckBox(Messages.get(this, "boss_" + (finalI + 1)));
             cb.setRect(GAP, pos, WIDTH - GAP * 2, BOX_HEIGHT);
 
 
@@ -70,7 +62,8 @@ public class BossSettingWindows extends Window {
                 cb.checked(false);
                 cb.text(Messages.get(this, "boss_unselect_"+i));
             } else {
-                cb.checked((Statistics.boss_enhance & (1<<i)) >0);
+                // ============== 核心修改：读取SPD设置 ==============
+                cb.checked(SPDSettings.isBossEnhanceEnabled(i));
                 cb.enable(Statistics.deepestFloor < (5+i*5));
             }
 
@@ -91,7 +84,7 @@ public class BossSettingWindows extends Window {
             @Override
             protected void onChange() {
                 SPDSettings.level1boss(getSelectedValue());
-             }
+            }
             @Override
             public int getTitleTextSize(){
                 return 6;
@@ -107,16 +100,17 @@ public class BossSettingWindows extends Window {
         resize(WIDTH, HEIGHT);
     }
 
-
-
     @Override
     public void onBackPressed() {
-        Statistics.boss_enhance = 0;
+        // ============== 核心修改：保存到SPD设置 ==============
+        int bossEnhanceValue = 0;
         for(int i=0, len = cbs.size(); i<len; ++i){
             if(cbs.get(i).checked()) {
-                Statistics.boss_enhance += 1<<i;
+                bossEnhanceValue += 1<<i;
             }
         }
+        SPDSettings.setBossEnhance(bossEnhanceValue);
+
         super.onBackPressed();
     }
 

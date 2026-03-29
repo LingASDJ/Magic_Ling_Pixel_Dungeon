@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -555,6 +556,11 @@ public class DriedRose extends Artifact {
 			properties.add(Property.UNDEAD);
 			properties.add(Property.INORGANIC);
 		}
+
+		public Weapon weapon(){
+			if (rose != null)   return rose.weapon;
+			else                return null;
+		}
 		
 		private DriedRose rose = null;
 		
@@ -840,7 +846,7 @@ public class DriedRose extends Artifact {
 					yell( Messages.get( this, "seen_crivuefruit_" + Random.IntRange(1, 3) ));
 					break;
 				case 1:
-					if ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) {
+					if (SPDSettings.isBossEnhanceEnabled(1) || Statistics.mimicking) {
 						yell( Messages.get( this, "seen_mimick_" + Random.IntRange(1, 3) ));
 					} else {
 						yell( Messages.get( this, "seen_tengu_" + Random.IntRange(1, 3) ));
@@ -849,7 +855,7 @@ public class DriedRose extends Artifact {
 				case 2:
 					if(Statistics.dm720Fight){
 						yell( Messages.get( this, "seen_dm720_" + Random.IntRange(1, 3) ));
-					} else if((Statistics.boss_enhance & 0x4) != 0) {
+					} else if(SPDSettings.isBossEnhanceEnabled(2)) {
 						yell( Messages.get( this, "seen_girl_" + Random.IntRange(1, 3) ));
 					} else {
 						yell( Messages.get( this, "seen_dm300_" + Random.IntRange(1, 3) ));

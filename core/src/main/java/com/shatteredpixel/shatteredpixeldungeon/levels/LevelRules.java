@@ -199,23 +199,24 @@ public class LevelRules {
                     case 9:
                         return new PrisonLevel();
                     case 10:
-                       if(Statistics.RandMode){
-                           switch (Random.Int(9)){
-                               case 1: return new DeepShadowLevel();
-                               case 3: return new ColdChestBossLevel();
-                               case 5: return new GreenStlingBossLevel();
-                               case 7: return new CavesBossLevel();
-                               default:
-                                   return new PrisonBossLevel();
+                        if(Statistics.RandMode){
+                            switch (Random.Int(9)){
+                                case 1: return new DeepShadowLevel();
+                                case 3: return new ColdChestBossLevel();
+                                case 5: return new GreenStlingBossLevel();
+                                case 7: return new CavesBossLevel();
+                                default:
+                                    return new PrisonBossLevel();
 
-                           }
+                            }
                         } else if(Statistics.mimicking && !Statistics.mustTengu){
                             return new ColdChestBossLevel();
-                        } else if ((Statistics.boss_enhance & 0x2) != 0 && !Statistics.mustTengu) {
+                            // ========== 替换：Statistics.boss_enhance & 0x2 → 索引1
+                        } else if (SPDSettings.isBossEnhanceEnabled(1) && !Statistics.mustTengu) {
                             return new ColdChestBossLevel();
                         } else {
                             return new PrisonBossLevel();
-                       }
+                        }
                     case 11:
                     case 12:
                     case 13:
@@ -230,7 +231,8 @@ public class LevelRules {
                                 default:
                                     return new AncientMysteryCityBossLevel();
                             }
-                        } else if ((Statistics.boss_enhance & 0x4) != 0) {
+                            // ========== 替换：Statistics.boss_enhance & 0x4 → 索引2
+                        } else if (SPDSettings.isBossEnhanceEnabled(2)) {
                             return new CavesGirlDeadLevel();
                         } else {
                             if(Random.Float() <= 0.4f && !Statistics.dm300Fight || Statistics.dm720Fight){
@@ -251,7 +253,7 @@ public class LevelRules {
                                 case 3: return new DwarfGeneralBossLevel();
                                 case 5: return new NewCityBossLevel();
                                 default:
-                                        return new ShopBossLevel();
+                                    return new ShopBossLevel();
                             }
                         } else {
                             return new NewCityBossLevel();
@@ -262,7 +264,8 @@ public class LevelRules {
                     case 24:
                         return new HallsLevel();
                     case 25:
-                        if ((Statistics.boss_enhance & 0x10) != 0 || Dungeon.isChallenged(CS) || Statistics.RandMode ) {
+                        // ========== 替换：Statistics.boss_enhance & 0x10 → 索引4
+                        if (SPDSettings.isBossEnhanceEnabled(4) || Dungeon.isChallenged(CS) || Statistics.RandMode ) {
                             return new YogGodHardBossLevel();
                         } else {
                             return new HallsBossLevel();

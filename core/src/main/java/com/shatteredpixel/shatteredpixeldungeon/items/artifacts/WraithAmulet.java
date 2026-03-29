@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -232,7 +233,7 @@ public class WraithAmulet extends Artifact {
 
                 QuickSlotButton.target(Actor.findChar(target));
                 Char enemy = Actor.findChar(target);
-                if (!(((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && Dungeon.depth==10)) {
+                if (!((SPDSettings.isBossEnhanceEnabled(1) || Statistics.mimicking) && Dungeon.depth==10)) {
                     if (hero.rooted || Dungeon.level.distance(hero.pos, target) < 3) {
                         if(enemy != null && !(enemy instanceof NPC || enemy instanceof ClearElemtGuard) ){
                             final WraithAmulet amulet = (WraithAmulet) curItem;
@@ -274,7 +275,7 @@ public class WraithAmulet extends Artifact {
                         GLog.w(Messages.get(this, "far"));
                     } else if (hero.rooted) {
                         GLog.n(Messages.get(this, "rooted"));
-                    } else if(((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && Dungeon.depth==10){
+                    } else if((SPDSettings.isBossEnhanceEnabled(1) || Statistics.mimicking) && Dungeon.depth==10){
                         GLog.n(Messages.get(this, "gold"));
                     } else {
                         GLog.w(Messages.get(this, "notthere"));
