@@ -26,7 +26,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCle
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BloodRedFlower;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.YuanTaStoneScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HiroSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
@@ -227,12 +229,12 @@ public class KuzumiNewYears extends FiveYearsNPC {
                 yell(Messages.get(KuzumiNewYears.class,"thanks"));
                 secnod = false;
 
-//                YuanTaStoneScene.YuanTaStoryManager.unlockStory(
-//                        "story_icetown",
-//                        Messages.get("icetown_title"),
-//                        Messages.get("icetown_content"),
-//                        ItemSpriteSheet.ICEBOOK
-//                );
+                YuanTaStoneScene.YuanTaStoryManager.unlockStory(
+                        "story_icetown",
+                        Messages.get("icetown_title"),
+                        Messages.get("icetown_content"),
+                        ItemSpriteSheet.ICEBOOK
+                );
             } else {
                 angry = true;
                 int dmg = 20;
