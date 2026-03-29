@@ -35,8 +35,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.SkullSprite;
@@ -272,9 +272,9 @@ public class WandOfBlueFuck extends DamageWand {
 
         //proc chance is initially 0..
         float procChance = 0;
-        for (int i : PathFinder.CIRCLE8) {
+        for (int i : PathFinder.CIRCLE7) {
 
-            //+25% proc chance per burning char within 3x3 of target
+            //+25% proc chance per burning char within 8x8 of target
             // this includes the attacker and defender
             if (Actor.findChar(defender.pos + i) != null
                     && Actor.findChar(defender.pos + i).buff(Burning.class) != null) {
@@ -308,7 +308,7 @@ public class WandOfBlueFuck extends DamageWand {
             //explode, dealing damage to enemies in 3x3, and clearing all fire
             CellEmitter.center(defender.pos).burst(BlastParticle.FACTORY, 30);
             if (fire != null) {
-                for (int i : PathFinder.CIRCLE8) {
+                for (int i : PathFinder.CIRCLE7) {
                     CellEmitter.get(defender.pos + i).burst(SmokeParticle.FACTORY, 4);
                     if (HalomethaneFire.volumeAt(defender.pos+i, HalomethaneFire.class) > 0){
                         Dungeon.level.destroy(defender.pos + i);
@@ -318,13 +318,13 @@ public class WandOfBlueFuck extends DamageWand {
 
                     Char ch = Actor.findChar(defender.pos + i);
                     if (ch != null) {
-                        if (ch.buff(Burning.class) != null) {
-                            ch.buff(Burning.class).detach();
+                        if (ch.buff(HalomethaneBurning.class) != null) {
+                            ch.buff(HalomethaneBurning.class).detach();
                         }
                         if (ch.alignment == Char.Alignment.ENEMY) {
                             //damage of a 2-charge zap
                             Buff.affect(ch, Blindness.class, 4f);
-                            Buff.affect(ch, Vertigo.class, 4f);
+                            Buff.affect(ch, Hex.class, 4f);
                             ch.damage(Math.round(powerMulti* Hero.heroDamageIntRange(2 + 2*buffedLvl(), 8 + 4*buffedLvl())), this);
                         }
                     }
