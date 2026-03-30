@@ -7,7 +7,6 @@ import com.watabou.utils.Bundle;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-//难度系统
 public class Difficulty {
     public enum DifficultyConduct {
         NULL,
