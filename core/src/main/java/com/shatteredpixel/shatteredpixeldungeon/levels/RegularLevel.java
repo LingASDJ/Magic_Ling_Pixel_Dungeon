@@ -216,6 +216,7 @@ public abstract class RegularLevel extends Level {
 
     public enum WestHoliday {
         NONE,
+		EASTER,
         HWEEN,
         XMAS
     }

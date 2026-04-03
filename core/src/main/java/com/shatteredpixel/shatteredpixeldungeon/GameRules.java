@@ -247,6 +247,8 @@ public class GameRules {
                 }
             } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ) {
                 banners = Assets.Interfaces.BANNERS_CJ;
+            }  else if (RegularLevel.holiday == RegularLevel.WestHoliday.EASTER) {
+                banners = Assets.Interfaces.BANNERS_EA;
             } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.QMJ) {
                 banners = Assets.Interfaces.BANNERS_QM;
             } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.DWJ) {
