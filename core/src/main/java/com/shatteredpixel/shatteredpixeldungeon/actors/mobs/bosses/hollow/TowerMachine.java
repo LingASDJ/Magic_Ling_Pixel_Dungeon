@@ -173,7 +173,7 @@ public class TowerMachine extends Boss {
             if (Dungeon.hero != null) {
                 if (Dungeon.hero.pos == targetCell) {
                     Dungeon.hero.damage(dmg, new Bomb());
-                    Statistics.bossScores[6] -= 300;
+                    Statistics.bossScores[5] -= 300;
                 }
 
                 if (enemy != null && !enemy.isAlive() && enemy == Dungeon.hero) {

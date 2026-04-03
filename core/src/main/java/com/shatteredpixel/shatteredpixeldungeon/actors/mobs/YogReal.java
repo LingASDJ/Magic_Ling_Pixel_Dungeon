@@ -940,7 +940,7 @@ public class YogReal extends Boss {
             if(ch.alignment == Alignment.ENEMY) return 0;
             ch.damage( Random.Int(50, 80), YogReal.class );
             ch.sprite.centerEmitter().burst( PurpleParticle.BURST, Random.IntRange( 5, 10 ) );
-            Statistics.bossScores[5] -= 500;
+            Statistics.bossScores[4] -= 500;
             ch.sprite.flash();
             if(ch == hero){
                 Sample.INSTANCE.play(Assets.Sounds.BLAST, Random.Float(1.1f, 1.5f));

@@ -471,7 +471,7 @@ public class TowerTime extends Boss {
         }
         ch.damage(LastHP ? 85 : 40, new Eye.DeathGaze());
 
-        Statistics.bossScores[6] -= 400;
+        Statistics.bossScores[5] -= 400;
     }
 
     private static final String ABILITY_CD = "ability_cd";
