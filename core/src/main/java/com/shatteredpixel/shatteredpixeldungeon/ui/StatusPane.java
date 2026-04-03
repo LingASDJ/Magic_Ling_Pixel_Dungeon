@@ -47,7 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CircleArc;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.levels.HiroFlowerLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -596,7 +596,7 @@ public class StatusPane extends Component {
 			Date realDate = new Date();
 			Date displayDate;
 
-			if (Dungeon.level instanceof HiroFlowerLevel) {
+			if (Dungeon.level instanceof UnlessEndFlowerLevel) {
                 long randomDays =    Random.Int(61) - 30;
                 long randomHours =   Random.Int(47) - 23;
                 long randomMinutes = Random.Int(119) - 59;
@@ -630,7 +630,7 @@ public class StatusPane extends Component {
 			cal.setTime(displayDate);
 
 			int s = cal.get(Calendar.SECOND);
-			if(Dungeon.level instanceof HiroFlowerLevel){
+			if(Dungeon.level instanceof UnlessEndFlowerLevel){
 				timeText.hardlight(Window.GDX_COLOR);
 			} else if (s < 20) {
 				timeText.hardlight(Window.CWHITE);
@@ -657,7 +657,7 @@ public class StatusPane extends Component {
 
 				timeText.text(sdf.format(displayDate) + " " + Messages.get(this,Integer.toString(solardate.getWeek()))
 						+"\n"+Messages.get(this,"time") + (gameTime < 100 ? 0 : Math.abs(Integer.parseInt(result))) +":"+Math.abs(lastTwoDigits)+"-"+name()+"\n"+Messages.get(this,"day",
-						Dungeon.level instanceof HiroFlowerLevel ? kuzumitime : gameDay));
+						Dungeon.level instanceof UnlessEndFlowerLevel ? kuzumitime : gameDay));
 			} else {
 				timeText.text(sdf.format(displayDate) + " " + Messages.get(this,Integer.toString(solardate.getWeek())));
 			}

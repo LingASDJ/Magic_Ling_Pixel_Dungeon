@@ -10,7 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KuzumiNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.ArchettoWeightLess;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -19,7 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 
-public class HiroFlowerLevel extends Level {
+public class UnlessEndFlowerLevel extends Level {
 
     private static final int S = Terrain.CHASM;
     private static final int B = Terrain.WALL_DECO;
@@ -44,7 +44,7 @@ public class HiroFlowerLevel extends Level {
 
     @Override
     public void playLevelMusic(){
-        Music.playModeBGM(Assets.Music.HIRO,true);
+        Music.playModeBGM(Assets.Music.WEIGHTLESS,true);
     }
 
     @Override
@@ -134,12 +134,9 @@ public class HiroFlowerLevel extends Level {
 
 
     protected void createItems() {
-//        Hiro god1= new Hiro();
-//        god1.pos = 312;
-//        mobs.add(god1);
-        KuzumiNewYears kny = new KuzumiNewYears();
-        kny.pos = 312;
-        mobs.add(kny);
+        ArchettoWeightLess archettoWeightLess = new ArchettoWeightLess();
+        archettoWeightLess.pos = 312;
+        mobs.add(archettoWeightLess);
     }
 
 
@@ -167,9 +164,9 @@ public class HiroFlowerLevel extends Level {
     public String tileName( int tile ) {
         switch (tile) {
             case Terrain.HIGH_GRASS:
-                return Messages.get(HiroFlowerLevel.class, "highgrass_name");
+                return Messages.get(UnlessEndFlowerLevel.class, "highgrass_name");
             case Terrain.WATER:
-                return Messages.get(HiroFlowerLevel.class, "water_name");
+                return Messages.get(UnlessEndFlowerLevel.class, "water_name");
             default:
                 return super.tileName( tile );
         }
@@ -179,9 +176,9 @@ public class HiroFlowerLevel extends Level {
     public String tileDesc(int tile) {
         switch (tile) {
             case Terrain.HIGH_GRASS:
-                return Messages.get(HiroFlowerLevel.class, "highgrass_desc");
+                return Messages.get(UnlessEndFlowerLevel.class, "highgrass_desc");
             case Terrain.WATER:
-                return Messages.get(HiroFlowerLevel.class, "water_desc");
+                return Messages.get(UnlessEndFlowerLevel.class, "water_desc");
             default:
                 return super.tileDesc( tile );
         }

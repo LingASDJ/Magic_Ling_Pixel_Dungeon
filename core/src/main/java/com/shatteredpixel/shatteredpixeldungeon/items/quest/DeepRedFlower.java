@@ -5,7 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KuzumiNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.levels.HiroFlowerLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -33,7 +33,7 @@ public class DeepRedFlower extends Item {
     public void execute( Hero hero, String action ) {
         super.execute( hero, action );
         if(action.equals(AC_ACTIVE)){
-            if((Dungeon.level instanceof HiroFlowerLevel)) {
+            if((Dungeon.level instanceof UnlessEndFlowerLevel)) {
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if (mob instanceof KuzumiNewYears) {
                         KuzumiNewYears kuzumiNewYears = (KuzumiNewYears) mob;

@@ -1431,7 +1431,7 @@ public abstract class Level implements Bundlable {
 		}
 
 		//we have to get this far as grass placement has RNG implications in levelgen
-		if (Dungeon.isChallenged(Challenges.NO_HERBALISM) || level instanceof HiroFlowerLevel){
+		if (Dungeon.isChallenged(Challenges.NO_HERBALISM) || level instanceof UnlessEndFlowerLevel){
 			return null;
 		}
 		

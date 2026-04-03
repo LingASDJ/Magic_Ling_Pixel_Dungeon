@@ -5,7 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.levels.HiroFlowerLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -40,7 +40,7 @@ public class TimeFlower extends Item {
     public void execute( Hero hero, String action ) {
         super.execute( hero, action );
         if(action.equals(AC_ACTIVE)){
-            if(!(Dungeon.level instanceof HiroFlowerLevel)){
+            if(!(Dungeon.level instanceof UnlessEndFlowerLevel)){
                 if(used < 3){
                     Buff.detach(hero, Slow.class);
                     Buff.affect(hero, Swiftthistle.TimeBubble.class).setLeft(powerFlower ? 10 * (7- (float) Dungeon.depth /5) : 6f);
