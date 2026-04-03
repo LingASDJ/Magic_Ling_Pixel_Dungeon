@@ -596,13 +596,13 @@ public class MageHand extends DirectableAlly {
             CursedWand.cursedZap(
                     wand == equippedWand ? wand : null,
                     this,
-                    new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET),
+                    new Ballistica(pos, enemy().pos, Ballistica.STOP_TARGET),
                     this::next
             );
         } else if (isSpecialWand(wand)) {
-            wand.onAIZap(new Ballistica(pos, enemy.pos, wand.collisionProperties));
+            wand.onAIZap(new Ballistica(pos, enemy().pos, wand.collisionProperties));
         } else {
-            wand.onZap(new Ballistica(pos, enemy.pos, wand.collisionProperties));
+            wand.onZap(new Ballistica(pos, enemy().pos, wand.collisionProperties));
         }
     }
 
@@ -664,7 +664,6 @@ public class MageHand extends DirectableAlly {
 
     private static final String WAND =        "wand";
     private static final String MAGE_STAFF = "mage_staff";
-    private static final String PRIORITY_ATTACK = "priority_attack";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
@@ -752,9 +751,6 @@ public class MageHand extends DirectableAlly {
 
     // 尝试移动到更好的位置以避免误伤英雄并攻击敌人
     private boolean tryMoveToBetterPosition(Char enemy) {
-        // 寻找可以攻击敌人且不经过英雄的位置
-        ArrayList<Integer> candidates = new ArrayList<>();
-
         // 检查周围8个方向，并添加边界检查
         int[] neighborOffsets = new int[]{
                 -1, 1,
@@ -902,7 +898,6 @@ public class MageHand extends DirectableAlly {
 
         private static final int BTN_SIZE  = 32;
         private static final float GAP     = 5;
-        private static final float BTN_GAP = 12;
         private static final int WIDTH     = 116;
 
         private ItemButton btnWand;
@@ -970,7 +965,6 @@ public class MageHand extends DirectableAlly {
                                     hide();
                                 } else {
                                     if(item instanceof MagesStaff){
-                                        Wand w = ((MagesStaff) item).wand;
                                         hand.equipMageStaff((MagesStaff) item);
                                         item(hand.getEquippedMageStaff());
                                         item.detach(hero.belongings.backpack);
@@ -1107,7 +1101,6 @@ public class MageHand extends DirectableAlly {
                     }
                     break;
                 case AC_SUMMON_HAND:
-                    boolean hasMageHand = false;
                     ArrayList<Integer> spawnPoints = new ArrayList<>();
                     for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
                         int p = hero.pos + PathFinder.NEIGHBOURS8[i];

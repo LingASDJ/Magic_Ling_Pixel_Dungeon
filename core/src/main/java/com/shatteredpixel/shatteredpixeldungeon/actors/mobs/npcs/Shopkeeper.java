@@ -41,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -61,7 +60,6 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -239,7 +237,6 @@ public class Shopkeeper extends NPC {
 				} else {
 					GameScene.show( new WndTradeItem( item, parentWnd ) );
 				}
-
 			}
 		}
 	};
@@ -270,12 +267,7 @@ public class Shopkeeper extends NPC {
 						} else if (index > 1){
 							GLog.i(Messages.get(Shopkeeper.this, "buyback"));
 							Item returned = buybackItems.remove(index-2);
-							if(hero.belongings.getItem(LuckyGlove.class)!=null && Random.Float()>0.85) {
-								GLog.n(Messages.get(LuckyGlove.class,"lucky"));
-							}else{
-								Dungeon.gold -= returned.value();
-							}
-							Statistics.goldCollected -= returned.value();
+                            Statistics.goldCollected -= returned.value();
 							if (!returned.doPickUp(Dungeon.hero)){
 								Dungeon.level.drop(returned, Dungeon.hero.pos);
 							}

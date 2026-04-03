@@ -206,7 +206,8 @@ public class SPDSettings extends GameSettings {
 
 	private static final String V1TOOL = "v1tool";
 
-	private static final String KEY_SMALLLEAF = "SMALLLEAF";
+	private static final String KEY_SMALLLEAF = "SMALLLEAF_ALR";
+	private static final String KEY_SMALLLEAF_HC = "SMALLLEAF_ALC";
 
 	private static final String KEY_DRAGON = "DRAGON";
 
@@ -1030,13 +1031,22 @@ public class SPDSettings extends GameSettings {
 		put( KEY_UNLOCKITEM, items.toString() );
 	}
 
-	//首次给予钴币 小叶
+	//首次给予钴币 斗地主 常规
 	public static void SmallLeafGetCoin(boolean value) {
 		put(KEY_SMALLLEAF, value );
 	}
 
 	public static boolean SmallLeafGetCoin() {
 		return getBoolean(KEY_SMALLLEAF, false);
+	}
+
+	//首次给予钴币 斗地主 高挑
+	public static void SmallLeafHCGetCoin(boolean value) {
+		put(KEY_SMALLLEAF_HC, value );
+	}
+
+	public static boolean SmallLeafHCGetCoin() {
+		return getBoolean(KEY_SMALLLEAF_HC, false);
 	}
 
 
@@ -1396,6 +1406,18 @@ public class SPDSettings extends GameSettings {
 	// 判断单个BOSS强化是否启用（对应索引i）
 	public static boolean isBossEnhanceEnabled(int index) {
 		return (getBossEnhance() & (1 << index)) != 0;
+	}
+
+	//===============弦
+
+	public static final String KEY_AROT = "arots";
+
+	public static boolean ArchettoSeeFirst() {
+		return getBoolean(KEY_AROT, false);
+	}
+
+	public static void ArchettoSeeFirst( boolean value ) {
+		put(KEY_AROT, value );
 	}
 
 }

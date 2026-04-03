@@ -63,6 +63,8 @@ public class ZakoPlot extends Plot {
 
     @Override
     public void skip() {
+        diagulewindow.cancel();
+        WndDialog.settedPlot = null;
     }
 
     private void process_to_1() {
@@ -129,6 +131,11 @@ public class ZakoPlot extends Plot {
 
         @Override
         public void skip() {
+            diagulewindow.cancel();
+            WndDialog.settedPlot = null;
+            if(!skipGetItems){
+                DropRules();
+            }
         }
 
         private void process_to_1() {
@@ -138,6 +145,11 @@ public class ZakoPlot extends Plot {
             diagulewindow.setLeftName(Messages.get(Zako.class, "name"));
             diagulewindow.changeText(Messages.get(Zako.class, "message2"));
 
+            DropRules();
+            skipGetItems = true;
+        }
+
+        private void DropRules(){
             if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
                 Dungeon.level.drop(new Gold(1), hero.pos);
             } else {
@@ -224,6 +236,8 @@ public class ZakoPlot extends Plot {
 
         @Override
         public void skip() {
+            diagulewindow.cancel();
+            WndDialog.settedPlot = null;
         }
 
         private void process_to_1() {
@@ -303,6 +317,8 @@ public class ZakoPlot extends Plot {
 
         @Override
         public void skip() {
+            diagulewindow.cancel();
+            WndDialog.settedPlot = null;
         }
 
         private void process_to_1() {

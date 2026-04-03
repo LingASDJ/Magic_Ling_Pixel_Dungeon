@@ -60,6 +60,24 @@ public class HollowKnightPlot extends Plot {
 
     @Override
     public void skip() {
+        diagulewindow.cancel();
+        WndDialog.settedPlot = null;
+        if(!skipGetItems){
+            DropRules();
+        }
+    }
+
+    private void DropRules() {
+        if(Statistics.hcDialogLevel == 2){
+            if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
+                Dungeon.level.drop(new Gold(1), hero.pos);
+                diagulewindow.changeText( Messages.get(HollowKnight.class, "message2B"));
+            } else {
+                Dungeon.level.drop( new StoneOfBlink(), hero.pos );
+                Statistics.zeroItemLevel++;
+                diagulewindow.changeText( Messages.get(HollowKnight.class, "message2"));
+            }
+        }
     }
 
     private void process_to_1() {
@@ -75,14 +93,8 @@ public class HollowKnightPlot extends Plot {
                 diagulewindow.changeText( Messages.get(HollowKnight.class, "message1"));
                 break;
             case 2:
-            if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
-                Dungeon.level.drop(new Gold(1), hero.pos);
-                diagulewindow.changeText( Messages.get(HollowKnight.class, "message2B"));
-            } else {
-                Dungeon.level.drop( new StoneOfBlink(), hero.pos );
-                Statistics.zeroItemLevel++;
-                diagulewindow.changeText( Messages.get(HollowKnight.class, "message2"));
-            }
+                DropRules();
+                skipGetItems = true;
                 break;
             case 3:
                 diagulewindow.changeText( Messages.get(HollowKnight.class, "message3"));

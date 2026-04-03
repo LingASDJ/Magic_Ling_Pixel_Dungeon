@@ -72,6 +72,11 @@ public class MoonCatPlot extends Plot {
 
     @Override
     public void skip() {
+        diagulewindow.cancel();
+        WndDialog.settedPlot = null;
+        if(!skipGetItems){
+            DropRules();
+        }
     }
 
     private void process_to_1() {
@@ -86,10 +91,7 @@ public class MoonCatPlot extends Plot {
         diagulewindow.changeText(Messages.get(MoonCat.class, "message2"));
     }
 
-    private void process_to_3() {
-        diagulewindow.changeText(Messages.get(MoonCat.class, "message3"));
-
-
+    private void DropRules(){
         if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
             Dungeon.level.drop(new Gold(1), hero.pos);
         } else {
@@ -101,11 +103,13 @@ public class MoonCatPlot extends Plot {
                 Dungeon.level.drop( new CurseInfusion(), hero.pos );
             }
         }
-
-
         zeroItemLevel++;
+    }
 
-
+    private void process_to_3() {
+        diagulewindow.changeText(Messages.get(MoonCat.class, "message3"));
+        DropRules();
+        skipGetItems = true;
     }
 
     public static class MoonCatPlotGO extends Plot {

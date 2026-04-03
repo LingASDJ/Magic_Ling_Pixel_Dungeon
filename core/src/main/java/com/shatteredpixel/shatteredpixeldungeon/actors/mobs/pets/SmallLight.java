@@ -104,7 +104,7 @@ public class SmallLight extends Mob implements Callback {
     private class Wandering extends Mob.Wandering {
         @Override
         public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-            if( pos == level.exit() ){
+            if( pos == level.exit() || level.locked){
                 die(null);
             }
 
