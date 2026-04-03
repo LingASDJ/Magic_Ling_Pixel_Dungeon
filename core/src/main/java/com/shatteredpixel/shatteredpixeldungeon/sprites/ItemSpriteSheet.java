@@ -1299,10 +1299,10 @@ public class ItemSpriteSheet {
         assignItemRect(MISC_ROLLPOTION,       12, 14);
         assignItemRect(MISC_EXFALLING,       14, 16);
 
-        assignItemRect(SOS_0,       15, 6);
-        assignItemRect(SOS_1,       15, 6);
-        assignItemRect(SOS_2,       15, 6);
-        assignItemRect(SOS_3,       15, 6);
+        assignItemRect(SOS_0,       15, 16);
+        assignItemRect(SOS_1,       15, 16);
+        assignItemRect(SOS_2,       15, 16);
+        assignItemRect(SOS_3,       15, 16);
 
         assignItemRect(FLARE,       14, 15);
     }
@@ -1450,6 +1450,15 @@ public class ItemSpriteSheet {
     static
     {
         assignItemRect(MAGIC_FLY_BLADE,               11,11);
+    }
+
+    public static final int WEAPON_ITEM_T2       =                               xy(10, 64);
+
+    public static final int SHOPKEEPERSWORD             = WEAPON_ITEM_T2;
+
+    static
+    {
+        assignItemRect(SHOPKEEPERSWORD,               14,16);
     }
 
 

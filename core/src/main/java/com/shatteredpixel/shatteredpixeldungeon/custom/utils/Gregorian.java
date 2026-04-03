@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.birthday;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.chinaHoliday;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
 import com.nlf.calendar.Lunar;
 import com.nlf.calendar.Solar;
@@ -63,6 +64,7 @@ public class Gregorian {
         checkFukePQJ(gregorianMonth, gregorianDay);
         checkChinaBirthday(gregorianMonth, gregorianDay);
         checkMageSkin(gregorianMonth, gregorianDay);
+        checkQingMingFestival(gregorianMonth,gregorianDay);
     }
 
     /**
@@ -140,6 +142,16 @@ public class Gregorian {
             if(day >= 24 &&  day < 32){
                 chinaHoliday = RegularLevel.ChinaHoliday.MEJ;
                 eventEndTime = calculateSolarEventEndTime(2025, 12, 32);
+            }
+        }
+    }
+
+    private static void checkQingMingFestival(int month, int day) {
+        if (month == 4) {
+            if(day >= 1 &&  day < 15){
+                chinaHoliday = RegularLevel.ChinaHoliday.QMJ;
+                holiday = RegularLevel.WestHoliday.EASTER;
+                eventEndTime = calculateSolarEventEndTime(2026, 4, 15);
             }
         }
     }

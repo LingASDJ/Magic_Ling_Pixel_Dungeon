@@ -10,8 +10,10 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUseItem;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -41,6 +43,10 @@ public class SmallLightHeader extends Item implements Item.ThanksItem {
         if (action.equals(AC_CHOOSE)){
             GameScene.show(new WndUseItem(null, this) );
         } else if (action.equals(AC_SUMMON)) {
+            if(Dungeon.level.locked){
+                GLog.n(Messages.get(SmallLight.class,"checkboss"));
+                return;
+            }
             detach( hero.belongings.backpack );
             hero.sprite.operate(hero.pos, () -> {
                 Buff.affect( hero, SAwareness.class, SAwareness.DURATION );

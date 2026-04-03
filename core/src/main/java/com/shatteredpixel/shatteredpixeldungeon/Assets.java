@@ -385,7 +385,7 @@ public class Assets {
 		public static final String CITY_BOSS_FINALE = "music/boss/Boss4_end.ogg";
 		public static final String HALLS_BOSS   = "music/boss/Boss5.ogg";
 
-		public static final String HIRO    = "music/hiro.ogg";
+		public static final String WEIGHTLESS    = "music/weightless.ogg";
 
 
         public static final String NBPL = "music/nbpl.ogg";

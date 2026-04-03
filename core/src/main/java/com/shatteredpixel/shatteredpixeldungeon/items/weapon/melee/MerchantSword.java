@@ -6,14 +6,12 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class MerchantSword extends MeleeWeapon{
     {
-        image = ItemSpriteSheet.MACE;
-
+        image = ItemSpriteSheet.SHOPKEEPERSWORD;
 
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
 
         tier = 2;
-
     }
     @Override
     public int max(int lvl) {
@@ -26,6 +24,6 @@ public class MerchantSword extends MeleeWeapon{
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc" , 20 + (buffedLvl() * 5));
+        return Messages.get(this, "desc" , 10 + (buffedLvl() * 5));
     }
 }

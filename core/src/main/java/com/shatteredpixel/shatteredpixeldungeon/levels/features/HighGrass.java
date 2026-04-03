@@ -45,7 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DeepRedFlower;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed;
-import com.shatteredpixel.shatteredpixeldungeon.levels.HiroFlowerLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -178,7 +178,7 @@ public class HighGrass {
 					if (Random.Float() < PetrifiedSeed.stoneInsteadOfSeedChance()) {
 						level.drop(Generator.randomUsingDefaults(Generator.Category.STONE), pos).sprite.drop();
 					} else {
-						if(!(level instanceof HiroFlowerLevel)){
+						if(!(level instanceof UnlessEndFlowerLevel)){
 							level.drop(Generator.random(Generator.Category.SEED), pos).sprite.drop();
 						}
 					}

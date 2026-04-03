@@ -16,12 +16,12 @@ import java.util.List;
 public class MoRuosPlot extends Plot {
     
     private static int maxprocess = 0;
-
+    boolean ischeck;
     {
         PaswordBadges.loadGlobal();
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-        boolean ischeck = (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX) || passwordbadges.contains(PaswordBadges.Badge.GODCHSX));
+        ischeck = (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX) || passwordbadges.contains(PaswordBadges.Badge.GODCHSX));
         
         maxprocess = ischeck ? 5 : 3;
 
@@ -113,11 +113,12 @@ public class MoRuosPlot extends Plot {
     }
 
     private void DropRules(){
-        if(DeviceCompat.isDebug()){
-            Dungeon.level.drop(new PotionOfPurity(), hero.pos);
-        } else {
-            Dungeon.level.drop(new PotionOfCleansing(), hero.pos);
+        if(ischeck){
+            if(DeviceCompat.isDebug()){
+                Dungeon.level.drop(new PotionOfPurity(), hero.pos);
+            } else {
+                Dungeon.level.drop(new PotionOfCleansing(), hero.pos);
+            }
         }
-
     }
 }

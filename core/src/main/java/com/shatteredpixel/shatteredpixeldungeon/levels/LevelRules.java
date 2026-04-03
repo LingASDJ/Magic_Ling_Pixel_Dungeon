@@ -380,7 +380,7 @@ public class LevelRules {
                     case 17:
                         return new GardenLevel();
                     case 0:
-                        return new HiroFlowerLevel();
+                        return new UnlessEndFlowerLevel();
                     default:
                         return new DeadEndLevel();
                 }

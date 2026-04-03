@@ -59,7 +59,7 @@ public class HollowKnight extends NTNPC {
 
         if(died<7)died++;
 
-        //6次攻击后 立刻一个即死陷阱
+        //6次攻击后 立刻死亡
         if(died>=6){
             hero.die(true);
             Dungeon.fail( getClass() );

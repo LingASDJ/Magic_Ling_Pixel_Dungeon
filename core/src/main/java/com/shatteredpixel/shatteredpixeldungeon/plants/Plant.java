@@ -49,7 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
-import com.shatteredpixel.shatteredpixeldungeon.levels.HiroFlowerLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -200,7 +200,7 @@ public abstract class Plant implements Bundlable {
 					|| Dungeon.level.pit[cell]
 					|| Dungeon.level.traps.get(cell) != null
 					|| Dungeon.isChallenged(Challenges.NO_HERBALISM)
-					|| Dungeon.level instanceof HiroFlowerLevel) {
+					|| Dungeon.level instanceof UnlessEndFlowerLevel) {
 				super.onThrow( cell );
 			} else {
 				Catalog.countUse(getClass());

@@ -23,17 +23,24 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BzmdrLand;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.DreamLezi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Gudazi;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.HollowKnight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.JIT;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.KongFu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.LuoWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonCat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.XiaYuan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Zako;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ArchettoNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.MagicSheep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.PinkFox;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.RainNight;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -60,6 +67,10 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 public class NormalZeroFiveLevel extends Level {
@@ -68,6 +79,34 @@ public class NormalZeroFiveLevel extends Level {
         color1 = 5459774;
         color2 = 12179041;
         viewDistance = 100;
+    }
+
+    /**
+     * 随机生成怪物组
+     * @param posArray 位置数组
+     * @param mobArray 怪物Class数组
+     * @param mobs 输出的怪物列表
+     */
+    public void generateRandomMobGroup(int[] posArray, Class<? extends Mob>[] mobArray, HashSet<Mob> mobs) {
+
+        List<Integer> posList = new ArrayList<>();
+        for (int num : posArray) posList.add(num);
+        Collections.shuffle(posList);
+
+
+        List<Class<? extends Mob>> mobList = new ArrayList<>(Arrays.asList(mobArray));
+        Collections.shuffle(mobList);
+
+        try {
+            Mob m1 = mobList.get(0).getDeclaredConstructor().newInstance();
+            m1.pos = posList.get(0);
+            mobs.add(m1);
+
+            Mob m2 = mobList.get(1).getDeclaredConstructor().newInstance();
+            m2.pos = posList.get(1);
+            mobs.add(m2);
+
+        } catch (Exception ignored) {}
     }
 
     private static final int S = SIGN;
@@ -326,10 +365,6 @@ public class NormalZeroFiveLevel extends Level {
         }
     }
 
-    public static int[] SALEPOS_ONE = new int[]{
-            502,504
-    };
-
     public static int[] SALEPOS_TWO = new int[]{
             252,352
     };
@@ -351,11 +386,28 @@ public class NormalZeroFiveLevel extends Level {
         return null;
     }
 
+    /* 第1桌组 */
+    public int[] DESKTOP_ONE = {333,336,383,386};
+
+    public Class<? extends Mob>[] DESKTOP_1_MOBS = new Class[]{
+            RainNight.class,
+            HollowKnight.class,
+            DreamLezi.class
+    };
+
+    /* 第2桌组 */
+    public int[] DESKTOP_TWO = {338,389,366,315};
+
+    public Class<? extends Mob>[] DESKTOP_2_MOBS = new Class[]{
+            MoonCat.class,
+            Zako.class,
+            PinkFox.class,
+            MagicSheep.class
+    };
 
     protected void createMobs() {
         PaswordBadges.loadGlobal();
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
-
 
         MoonLow ml = new MoonLow();
         ml.pos = Random.Float()>0.5f ? 722 : 720;
@@ -434,6 +486,11 @@ public class NormalZeroFiveLevel extends Level {
             shopking.pos = 545;
             mobs.add(shopking);
         }
+
+        /* 4桌组 */
+        generateRandomMobGroup(DESKTOP_ONE, DESKTOP_1_MOBS, mobs);
+        generateRandomMobGroup(DESKTOP_TWO, DESKTOP_2_MOBS, mobs);
+
     }
 
     @Override

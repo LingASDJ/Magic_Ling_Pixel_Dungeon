@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MerchantSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -45,6 +46,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.FireMagicGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Random;
 
 public class WndTradeItem extends WndInfoItem {
 
@@ -55,7 +58,7 @@ public class WndTradeItem extends WndInfoItem {
 
 	private boolean selling = false;
 
-    private static float priceMulti = 1f;
+    private static float priceMulti;
 
 	//selling
 	public WndTradeItem( final Item item, WndBag owner ) {
@@ -135,11 +138,17 @@ public class WndTradeItem extends WndInfoItem {
 
 		selling = false;
 
+		if(Dungeon.hero.belongings.weapon() instanceof MerchantSword){
+			priceMulti = Math.max((1f - (0.10f + 0.05f * hero.belongings.weapon().buffedLvl())),0.1f);
+		}else {
+			priceMulti = 1f;
+		}
+
 		Item item = heap.peek();
 
 		float pos = height;
 
-		final int price = Shopkeeper.sellPrice( item );
+		int price = (int) (Shopkeeper.sellPrice( item ) * priceMulti);
 
 		RedButton btnBuy = new RedButton( Messages.get(this, "buy", price) ) {
 			@Override
@@ -290,8 +299,13 @@ public class WndTradeItem extends WndInfoItem {
 		Item item = heap.pickUp();
 		if (item == null) return;
 		
-		int price = Shopkeeper.sellPrice( item );
-		Dungeon.gold -= price;
+		int price = (int) (Shopkeeper.sellPrice( item ) * priceMulti);
+
+		if(hero.belongings.getItem(LuckyGlove.class)!=null && Random.Float()>0.85f) {
+			GLog.n(Messages.get(LuckyGlove.class,"lucky"));
+		}else{
+			Dungeon.gold -= price;
+		}
 		Catalog.countUses(Gold.class, price);
 		
 		if (!item.doPickUp( Dungeon.hero )) {

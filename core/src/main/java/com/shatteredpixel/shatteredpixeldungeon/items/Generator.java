@@ -226,6 +226,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MerchantSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
@@ -578,9 +579,10 @@ public class Generator {
 					TreeList.class,
 					Dirk.class,
 					Sickle.class,
-					Pickaxe.class
+					Pickaxe.class,
+					MerchantSword.class
 			};
-			WEP_T2.defaultProbs = new float[]{2, 2, 2, 2, 2, 2, 0};
+			WEP_T2.defaultProbs = new float[]{2, 2, 2, 2, 2, 2, 0, 2};
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 
 			WEP_T3.classes = new Class<?>[]{
