@@ -25,12 +25,16 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.audio.Sample;
@@ -44,6 +48,17 @@ public class ShockBomb extends Bomb {
 	
 	{
 		image = ItemSpriteSheet.SHOCK_BOMB;
+	}
+
+	@Override
+	public String desc() {
+		int depth = Dungeon.hero == null ? 1 : Dungeon.scalingDepth();
+		String desc = Messages.get(this, "desc", 8 + depth, 15 + 2*depth);
+		if (fuse == null) {
+			return desc + "\n\n" + Messages.get(Bomb.class, "desc_fuse");
+		} else {
+			return desc + "\n\n" + Messages.get(Bomb.class, "desc_burning");
+		}
 	}
 	
 	@Override
@@ -66,16 +81,24 @@ public class ShockBomb extends Bomb {
 			}
 		}
 
+		PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), explosionRange() );
+		for (int i = 0; i < PathFinder.distance.length; i++) {
+			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
+				GameScene.add(Blob.seed(i, 10, Electricity.class));
+				Char ch = Actor.findChar(i);
+				if (ch != null){
+					affected.add(ch);
+				}
+			}
+		}
+
 		ArrayList<Lightning.Arc> arcs = new ArrayList<>();
 		for (Char ch : affected){
 			int power = 16 - 4*Dungeon.level.distance(ch.pos, cell);
-			if (power > 0){
-				//32% to 8% regular bomb damage
-				int damage = Math.round(Random.NormalIntRange(5 + Dungeon.scalingDepth(), 10 + 2*Dungeon.scalingDepth()) * (power/50f));
-				ch.damage(damage, this);
-				if (ch.isAlive()) Buff.prolong(ch, Paralysis.class, power);
-				arcs.add(new Lightning.Arc(DungeonTilemap.tileCenterToWorld(cell), ch.sprite.center()));
-			}
+			int damage = Random.NormalIntRange(8 + Dungeon.scalingDepth(), 15 + 2*Dungeon.scalingDepth());
+			ch.damage(damage, this);
+			if (ch.isAlive()) Buff.prolong(ch, Paralysis.class, power);
+			arcs.add(new Lightning.Arc(DungeonTilemap.tileCenterToWorld(cell), ch.sprite.center()));
 		}
 
 		CellEmitter.center(cell).burst(SparkParticle.FACTORY, 20);

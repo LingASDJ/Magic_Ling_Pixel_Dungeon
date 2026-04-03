@@ -271,7 +271,7 @@ public class DeadDogCerberus extends Boss {
                 () -> {
                     Actor.add(new Pushing(mob, mob.pos, pos,
                             () -> pullEnemy(mob, pos)));
-                    Statistics.bossScores[6] -= 100;
+                    Statistics.bossScores[5] -= 100;
                     next();
                 }));
             }
@@ -288,7 +288,7 @@ public class DeadDogCerberus extends Boss {
                         () -> {
                             Actor.add(new Pushing(mob, mob.pos, pos,
                                     () -> pullEnemy(mob, pos)));
-                            Statistics.bossScores[6] -= 100;
+                            Statistics.bossScores[5] -= 100;
                             next();
                         }));
             }
@@ -743,7 +743,7 @@ public class DeadDogCerberus extends Boss {
                                     leapVictim.sprite.flash();
                                     Sample.INSTANCE.play(Assets.Sounds.HIT);
 
-                                    Statistics.bossScores[6] -= 200;
+                                    Statistics.bossScores[5] -= 200;
 
                                     int targetingPos = enemy.pos;
 
@@ -1159,7 +1159,7 @@ public class DeadDogCerberus extends Boss {
 
         GameRules.PropsScore();
 
-        Statistics.bossScores[6] += 6000;
+        Statistics.bossScores[5] += 6000;
 
         Buff.detach(hero, SoulDead.class);
 

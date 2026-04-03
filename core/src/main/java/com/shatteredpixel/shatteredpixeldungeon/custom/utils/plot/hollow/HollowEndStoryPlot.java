@@ -266,7 +266,7 @@ public class HollowEndStoryPlot extends Plot {
 
                 Buff.affect( hero, LostInventory.class);
 
-                Statistics.bossScores[6] += 10000;
+                Statistics.bossScores[5] += 10000;
             }
         });
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.Silence_0));

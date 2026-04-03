@@ -828,9 +828,12 @@ public class Hero extends Char {
 			accuracy *= 1.50f;
 		}
 
-		float talentPointBonus = 0.5f * pointsInTalent(Talent.STRONGMAN);
-		if(attackDelay() >1 && hasTalent(Talent.STRONGMAN)){
-			accuracy += accuracy * (attackDelay() - 1) * talentPointBonus;
+		if(attackDelay() > 1 && hasTalent(Talent.STRONGMAN)){
+			int points = pointsInTalent(Talent.STRONGMAN);
+			float excessDelay = attackDelay() - 1f;
+			float accMulti = points * 0.01f;
+			float accBonus = excessDelay * accMulti;
+			accuracy += accuracy * Math.min(accBonus, 0.75f);
 		}
 
 		for(StarSachet star : belongings.getAllItems(StarSachet.class)) {
@@ -1042,9 +1045,12 @@ public class Hero extends Char {
 			dmg = CustomPlayer.baseDamage;
 		}
 
-		if( attackDelay() >1 && hasTalent(Talent.STRONGMAN) && !(wep instanceof SpiritBow)){
-			float pointBonus = 0.5f * pointsInTalent(Talent.STRONGMAN);
-			dmg += (int) (dmg * (attackDelay() - 1) * pointBonus);
+		if( attackDelay() > 1 && hasTalent(Talent.STRONGMAN) && !(wep instanceof SpiritBow)){
+			int points = pointsInTalent(Talent.STRONGMAN);
+			float excessDelay = attackDelay() - 1f;
+			float dmgMulti = points * (0.5f / 3f);
+			float dmgBonus = excessDelay * dmgMulti;
+			dmg += (int) (dmg * Math.min(dmgBonus, 0.5f));
 		}
 
 		if(belongings.getItem(PortableWhetstone.class)!=null){
