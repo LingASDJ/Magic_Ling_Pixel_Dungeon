@@ -39,12 +39,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
@@ -370,12 +372,14 @@ public class Bomb extends Item {
 			validIngredients.put(PotionOfLiquidFlame.class,     Firebomb.class);
 			validIngredients.put(ScrollOfRage.class,            Noisemaker.class);
 
-			validIngredients.put(ScrollOfRecharging.class,      FlashBangBomb.class);
+			validIngredients.put(PotionOfInvisibility.class,       Flashbang.class);
+			validIngredients.put(PotionOfLightningShiledX.class, ShockBomb.class);
 
 			validIngredients.put(PotionOfHealing.class,         RegrowthBomb.class);
 			validIngredients.put(ScrollOfRemoveCurse.class,     HolyBomb.class);
 
-			validIngredients.put(GooBlob.class,                 ArcaneBomb.class);
+			validIngredients.put(PotionOfLiquidFlameX.class,                 ArcaneBomb.class);
+
 			validIngredients.put(MetalShard.class,              ShrapnelBomb.class);
 		}
 
@@ -387,7 +391,8 @@ public class Bomb extends Item {
 			bombCosts.put(Firebomb.class,       1);
 			bombCosts.put(Noisemaker.class,     1);
 
-			bombCosts.put(FlashBangBomb.class,      2);
+			bombCosts.put(Flashbang.class,      2);
+			bombCosts.put(ShockBomb.class,      5);
 
 			bombCosts.put(RegrowthBomb.class,   3);
 			bombCosts.put(HolyBomb.class,       3);
