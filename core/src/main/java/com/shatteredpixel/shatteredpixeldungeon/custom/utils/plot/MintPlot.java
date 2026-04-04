@@ -108,7 +108,7 @@ public class MintPlot extends Plot {
         diagulewindow.changeText(Messages.get(Mint.class, "message1"));
     }
 
-    private static Item RandomBooks() {
+    public static Item RandomBooks() {
         switch (Random.Int(8)){
             case 1: default:
                 return new YellowSunBooks().quantity(1);

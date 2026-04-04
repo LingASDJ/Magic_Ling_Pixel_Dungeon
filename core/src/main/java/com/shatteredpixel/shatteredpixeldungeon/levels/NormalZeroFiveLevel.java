@@ -22,7 +22,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BzmdrLand;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.DeepSea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.DreamLezi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Gudazi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.HollowKnight;
@@ -32,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.LuoWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonCat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.XiaYuan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
@@ -41,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.MagicSheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.PinkFox;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.RainNight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.SmallBlue;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -69,17 +73,19 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 public class NormalZeroFiveLevel extends Level {
 
     {
+        PaswordBadges.loadGlobal();
         color1 = 5459774;
         color2 = 12179041;
         viewDistance = 100;
     }
+
+    public List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
     /**
      * 随机生成怪物组
@@ -91,11 +97,11 @@ public class NormalZeroFiveLevel extends Level {
 
         List<Integer> posList = new ArrayList<>();
         for (int num : posArray) posList.add(num);
-        Collections.shuffle(posList);
+        Random.shuffle(posList);
 
 
         List<Class<? extends Mob>> mobList = new ArrayList<>(Arrays.asList(mobArray));
-        Collections.shuffle(mobList);
+        Random.shuffle(mobList);
 
         try {
             Mob m1 = mobList.get(0).getDeclaredConstructor().newInstance();
@@ -105,7 +111,6 @@ public class NormalZeroFiveLevel extends Level {
             Mob m2 = mobList.get(1).getDeclaredConstructor().newInstance();
             m2.pos = posList.get(1);
             mobs.add(m2);
-
         } catch (Exception ignored) {}
     }
 
@@ -405,13 +410,23 @@ public class NormalZeroFiveLevel extends Level {
             MagicSheep.class
     };
 
-    protected void createMobs() {
-        PaswordBadges.loadGlobal();
-        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+    /* 第3桌组 */
+    public int[] DESKTOP_THREE = {460,459,433,436};
 
-        MoonLow ml = new MoonLow();
-        ml.pos = Random.Float()>0.5f ? 722 : 720;
-        mobs.add(ml);
+    public Class<? extends Mob>[] DESKTOP_3_MOBS = new Class[]{
+            Statistics.moonlowgetAloneRoom ? MoonLow.class : null,
+            DeepSea.class,
+            PinkLing.class,
+            passwordbadges.contains(PaswordBadges.Badge.GOOD_BLUE) ? SmallBlue.class : null
+    };
+
+    protected void createMobs() {
+
+        if(!Statistics.moonlowgetAloneRoom){
+            MoonLow ml = new MoonLow();
+            ml.pos = Random.Float()>0.5f ? 722 : 720;
+            mobs.add(ml);
+        }
 
         /** 篝火组 **/
         Gudazi gdz = new Gudazi();
@@ -490,7 +505,11 @@ public class NormalZeroFiveLevel extends Level {
         /* 4桌组 */
         generateRandomMobGroup(DESKTOP_ONE, DESKTOP_1_MOBS, mobs);
         generateRandomMobGroup(DESKTOP_TWO, DESKTOP_2_MOBS, mobs);
+        generateRandomMobGroup(DESKTOP_THREE, DESKTOP_3_MOBS, mobs);
 
+        SmallLeaf smallLeaf = new SmallLeaf();
+        smallLeaf.pos = 438;
+        mobs.add(smallLeaf);
     }
 
     @Override

@@ -89,7 +89,7 @@ public class JIT extends NTNPC {
             zeroItemLevel++;
 
             if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
-                Dungeon.level.drop(new Gold(10), hero.pos);
+                Dungeon.level.drop(new Gold(1), hero.pos);
             } else {
                 Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), hero.pos );
             }

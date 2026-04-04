@@ -133,7 +133,7 @@ public class InterlevelScene extends PixelScene {
 	public void create() {
 		super.create();
 
-		yxlook = Random.Int(100)<=10 && Dungeon.depth>0 && !Dungeon.sbbossLevel() && !Dungeon.RushBossLevel() && !Dungeon.bossLevel();
+		yxlook = Random.Int(100)<=10 && Dungeon.depth>0 && !Dungeon.sbbossLevel() && !Dungeon.RushBossLevel() && !Dungeon.bossLevel() && mode == Mode.DESCEND && branch == 0;
 
 		if(tipset == null || tipset.isEmpty())
 			newTipSet();

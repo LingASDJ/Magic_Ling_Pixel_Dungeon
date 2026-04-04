@@ -267,6 +267,7 @@ public class SpawnMisc extends TestItem {
             brewList.add(CausticBrew.class);
             brewList.add(InfernalBrew.class);
             brewList.add(ShockingBrew.class);
+
             brewList.add(ElixirOfAquaticRejuvenation.class);
             brewList.add(ElixirOfArcaneArmor.class);
             brewList.add(ElixirOfDragonsBlood.class);
@@ -274,12 +275,13 @@ public class SpawnMisc extends TestItem {
             brewList.add(ElixirOfIcyTouch.class);
             brewList.add(ElixirOfMight.class);
             brewList.add(ElixirOfToxicEssence.class);
+            brewList.add(ElixirOfFeatherFall.class);
 
             brewList.add(WaterSoul.class);
             brewList.add(ElixirOfNukeCole.class);
 
             brewList.add(AquaBrew.class);
-            brewList.add(ElixirOfFeatherFall.class);
+
             brewList.add(UnstableBrew.class);
         }
 
