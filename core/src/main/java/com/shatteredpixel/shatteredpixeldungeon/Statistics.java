@@ -329,6 +329,8 @@ public class Statistics {
 
 	public static boolean MustHardLevel = false;
 
+	public static boolean moonlowgetAloneRoom;
+
 	private static final String ICECLAN ="iceCyanBlueSquareCoin";
 
 	private static final String GAMETIME = "gameTime";
@@ -633,6 +635,8 @@ public class Statistics {
 		));
 
 		MustHardLevel = false;
+
+		moonlowgetAloneRoom = Random.Float() >= 0.38f;
 
         boss_enhance = 0;
         ChaicBlood = 0;
@@ -1162,6 +1166,7 @@ public class Statistics {
         bundle.put("propChaotic2", propChaotic2);
 
 		bundle.put("MustDFRT",MustHardLevel);
+		bundle.put("MJPORALROOM",moonlowgetAloneRoom);
 	}
 
 	private static ArrayList<Prop> convertToPropList(Collection<Bundlable> bundlableCollection) {
@@ -1178,7 +1183,7 @@ public class Statistics {
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
-
+		moonlowgetAloneRoom = bundle.getBoolean("MJPORALROOM");
 		MustHardLevel = bundle.getBoolean("MustDFRT");
 
 		propPositive0 = convertToPropList(bundle.getCollection("propPositive0"));

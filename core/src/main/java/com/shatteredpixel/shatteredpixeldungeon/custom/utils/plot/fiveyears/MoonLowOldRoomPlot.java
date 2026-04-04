@@ -5,17 +5,15 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.PinkFox;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
-import com.watabou.utils.Random;
 
-public class PinkFoxPlot extends Plot {
-    private final static int maxprocess = 3;
+public class MoonLowOldRoomPlot extends Plot {
+    private final static int maxprocess = 4;
 
     {
         process = 1;
@@ -45,6 +43,9 @@ public class PinkFoxPlot extends Plot {
                     break;
                 case 3:
                     process_to_3();
+                    break;
+                case 4:
+                    process_to_4();
                     break;
             }
             diagulewindow.update();
@@ -76,30 +77,32 @@ public class PinkFoxPlot extends Plot {
     private void process_to_1() {
         diagulewindow.hideAll();
         hero.interrupt();
-        diagulewindow.setLeftName(Messages.get(PinkFox.class, "name"));
-        diagulewindow.changeText(Messages.get(PinkFox.class, "messages1"));
+        diagulewindow.setLeftName(Messages.get(MoonLow.class, "name"));
+        diagulewindow.changeText(Messages.get(MoonLow.class, "messages1"));
     }
 
     private void process_to_2() {
-        diagulewindow.changeText(Messages.get(PinkFox.class, "messages2"));
+        diagulewindow.changeText(Messages.get(MoonLow.class, "messages2"));
     }
 
-    Item item;
-
     private void process_to_3() {
-        item = Random.Float()>=0.5f ?  ( Generator.randomUsingDefaults( Generator.Category.SCROLL )) :  ( Generator.randomUsingDefaults( Generator.Category.POTION ));
+        diagulewindow.changeText(Messages.get(MoonLow.class, "messages3"));
+    }
+
+    private void process_to_4() {
+        diagulewindow.changeText(Messages.get(MoonLow.class, "messages4"));
         DropRules();
-        diagulewindow.changeText(Messages.get(PinkFox.class, "messages3",item.name()));
+        skipGetItems = true;
     }
 
     private void DropRules(){
         if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
             Dungeon.level.drop(new Gold(1), hero.pos);
         } else {
-           Dungeon.level.drop(item,hero.pos);
+            Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), hero.pos );
         }
         zeroItemLevel++;
     }
 
-}
 
+}

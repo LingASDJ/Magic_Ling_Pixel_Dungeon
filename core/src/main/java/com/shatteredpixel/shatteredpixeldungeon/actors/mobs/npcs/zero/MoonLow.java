@@ -1,78 +1,41 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.MoonLowPlot;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.fiveyears.MoonLowJuicePlot;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.fiveyears.MoonLowOldRoomPlot;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonLowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Game;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
-public class MoonLow extends NTNPC {
-    private int died;
-
-    private boolean first=true;
-    private boolean secnod=true;
-    private boolean rd=true;
-
-    private static final String FIRST = "first";
-    private static final String SECNOD = "secnod";
-    private static final String RD = "rd";
-
-    private static final String DIED = "died";
-
-    @Override
-    public void storeInBundle(Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(FIRST, first);
-        bundle.put(SECNOD, secnod);
-        bundle.put(RD, rd);
-        bundle.put(DIED,died);
-    }
-
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        first = bundle.getBoolean(FIRST);
-        secnod = bundle.getBoolean(SECNOD);
-        rd = bundle.getBoolean(RD);
-        died = bundle.getInt(DIED);
-    }
+public class MoonLow extends FiveYearsNPC {
 
     {
         spriteClass = MoonLowSprite.class;
+        plot1 = new MoonLowOldRoomPlot();
+        plot2 = new MoonLowJuicePlot();
     }
-
+    private static final String[] TXT_RANDOM = {Messages.get(MoonLow.class,"world1"),Messages.get(MoonLow.class,"world2")};
     @Override
     public boolean interact(Char c) {
-
-        sprite.turnTo(pos, hero.pos);
-        MoonLowPlot plot = new MoonLowPlot();
-        MoonLowPlot.MoonLowPlotGO plot2 = new MoonLowPlot.MoonLowPlotGO();
-        if (first) {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndDialog(plot,false));
-                }
-            });
-            first=false;
-        } else if(Challenges.activeChallenges()>0) {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndDialog(plot2,false));
-                }
-            });
+        sprite.turnTo( pos, c.pos );
+        if(Statistics.moonlowgetAloneRoom){
+            if(first){
+                Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot2,false)));
+                first = false;
+            } else {
+                yell(Messages.get(this,"drink"));
+            }
         } else {
-            yell(Messages.get(this,"not"));
+            if(first){
+                Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot1,false)));
+                first = false;
+            } else {
+                yell(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
+            }
         }
         return true;
     }
@@ -81,16 +44,12 @@ public class MoonLow extends NTNPC {
     public String defenseVerb() {
         return def_verb();
     }
-    private String def_verb(){
 
-        switch (Random.Int(2)){
-            case 0:default:
-                return Messages.get(MoonLow.class, "dx_message1");
-//            case 1:
-//                return Messages.get(MoonLow.class, "dx_message2");
-            case 1:
-                return Messages.get(MoonLow.class, "dx_message3");
+    private String def_verb(){
+        if (Random.Int(2) == 1) {
+            return Messages.get(MoonLow.class, "dx_message3");
         }
+        return Messages.get(MoonLow.class, "dx_message1");
 
     }
 
