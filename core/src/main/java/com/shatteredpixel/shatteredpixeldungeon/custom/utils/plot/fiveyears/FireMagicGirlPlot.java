@@ -1,19 +1,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.fiveyears;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.MagicSheep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.FireMagicGirl;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 
-public class MagicSheepPlot extends Plot {
-    private final static int maxprocess = 3;
+public class FireMagicGirlPlot extends Plot {
+    private final static int maxprocess = 4;
 
     {
         process = 1;
@@ -43,6 +40,9 @@ public class MagicSheepPlot extends Plot {
                     break;
                 case 3:
                     process_to_3();
+                    break;
+                case 4:
+                    process_to_4();
                     break;
             }
             diagulewindow.update();
@@ -74,27 +74,27 @@ public class MagicSheepPlot extends Plot {
     private void process_to_1() {
         diagulewindow.hideAll();
         hero.interrupt();
-        diagulewindow.setLeftName(Messages.get(MagicSheep.class, "name"));
-        diagulewindow.changeText(Messages.get(MagicSheep.class, "messages1"));
+        diagulewindow.setLeftName(Messages.get(FireMagicGirl.class, "name"));
+        diagulewindow.changeText(Messages.get(FireMagicGirl.class, "messages1",hero.name()));
     }
 
     private void process_to_2() {
-        diagulewindow.changeText(Messages.get(MagicSheep.class, "messages2"));
+        diagulewindow.changeText(Messages.get(FireMagicGirl.class, "messages2"));
     }
 
     private void process_to_3() {
-        diagulewindow.changeText(Messages.get(MagicSheep.class, "messages3"));
+        diagulewindow.changeText(Messages.get(FireMagicGirl.class, "messages3",hero.name()));
+    }
+
+    private void process_to_4() {
+        diagulewindow.changeText(Messages.get(FireMagicGirl.class, "messages4"));
         DropRules();
         skipGetItems = true;
     }
 
+
     private void DropRules(){
-        if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
-            Dungeon.level.drop(new Gold(1), hero.pos);
-        } else {
-            Dungeon.level.drop(new WoollyBomb(), hero.pos);
-        }
-        zeroItemLevel++;
+        Dungeon.level.drop(new PotionOfLiquidFlame().identify(), hero.pos).sprite.drop();
     }
 
 }

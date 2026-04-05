@@ -636,7 +636,7 @@ public class Statistics {
 
 		MustHardLevel = false;
 
-		moonlowgetAloneRoom = Random.Float() >= 0.38f;
+		moonlowgetAloneRoom = Random.Float() >= 0.45f;
 
         boss_enhance = 0;
         ChaicBlood = 0;

@@ -63,21 +63,6 @@ public class MintPlot extends Plot {
                 case 4:
                     process_to_4();
                     break;
-//                case 6:
-//                    process_to_6();
-//                    break;
-//                case 7:
-//                    process_to_7();
-//                    break;
-//                case 8:
-//                    process_to_8();
-//                    break;
-//                case 9:
-//                    process_to_9();
-//                    break;
-//                case 10:
-//                    process_to_10();
-//                    break;
             }
             diagulewindow.update();
             process++;
@@ -98,6 +83,16 @@ public class MintPlot extends Plot {
 
     @Override
     public void skip() {
+        diagulewindow.cancel();
+        WndDialog.settedPlot = null;
+        if(!skipGetItems){
+            DropRules();
+        }
+    }
+
+    private void DropRules(){
+        Dungeon.level.drop(RandomBooks(), hero.pos).sprite.drop();
+        GreenStorm(hero);
     }
 
     private void process_to_1() {
@@ -129,18 +124,19 @@ public class MintPlot extends Plot {
 
     private void process_to_2() {
         diagulewindow.changeText(Messages.get(Mint.class, "message2"));
-        //GreenStorm(hero);
     }
 
     private void process_to_3() {
-        Dungeon.level.drop(RandomBooks(), hero.pos).sprite.drop();
         diagulewindow.changeText(Messages.get(Mint.class, "message3"));
-        GreenStorm(hero);
+        DropRules();
+        skipGetItems = true;
     }
 
     private void process_to_4() {
         diagulewindow.changeText(Messages.get(Mint.class, "message4"));
     }
+
+
 
     public static void GreenStorm(Char ch){
         Ballistica aim;
@@ -217,7 +213,7 @@ public class MintPlot extends Plot {
         private void process_to_1() {
             diagulewindow.hideAll();
             hero.interrupt();
-            diagulewindow.setMainAvatar(new Image(Assets.Splashes.MT_CJ));
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.MT));
             diagulewindow.setLeftName(Messages.get(Mint.class, "name"));
             diagulewindow.changeText(Messages.get(Mint.class, "message5",hero.name()));
         }

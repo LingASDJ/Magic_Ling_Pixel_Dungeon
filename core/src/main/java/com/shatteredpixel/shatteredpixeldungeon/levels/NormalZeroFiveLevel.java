@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GameRules;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -31,9 +32,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.HollowKnig
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.JIT;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.KongFu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.LuoWhite;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Mint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonCat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.PianoLe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.XiaYuan;
@@ -41,6 +44,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Zako;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ArchettoNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.Choco;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.DogDogMusic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.MagicSheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.PinkFox;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.RainNight;
@@ -420,6 +425,12 @@ public class NormalZeroFiveLevel extends Level {
             passwordbadges.contains(PaswordBadges.Badge.GOOD_BLUE) ? SmallBlue.class : null
     };
 
+    public int[] CAT_POS = {261,263,561,563,487,412,362};
+
+    public Class<? extends Mob>[] CAT_MOBS = new Class[]{
+            Random.Float() >= 0.7f ? Mint.class : null
+    };
+
     protected void createMobs() {
 
         if(!Statistics.moonlowgetAloneRoom){
@@ -441,12 +452,9 @@ public class NormalZeroFiveLevel extends Level {
         xy.pos = 783;
         mobs.add(xy);
 
-        if(Random.Float()<=0.45f){
-            BzmdrLand bzmdrLand = new BzmdrLand();
-            bzmdrLand.pos = 831;
-            mobs.add(bzmdrLand);
-            Statistics.onlyBzmdr = true;
-        }
+        BzmdrLand bzmdrLand = new BzmdrLand();
+        bzmdrLand.pos = 831;
+        mobs.add(bzmdrLand);
 
         JIT jt = new JIT();
         jt.pos = 833;
@@ -507,9 +515,25 @@ public class NormalZeroFiveLevel extends Level {
         generateRandomMobGroup(DESKTOP_TWO, DESKTOP_2_MOBS, mobs);
         generateRandomMobGroup(DESKTOP_THREE, DESKTOP_3_MOBS, mobs);
 
+        /* 薄绿猫猫 */
+        generateRandomMobGroup(CAT_POS, CAT_MOBS, mobs);
+
+        /* 斗地主 */
         SmallLeaf smallLeaf = new SmallLeaf();
         smallLeaf.pos = 438;
         mobs.add(smallLeaf);
+
+        Choco choco = new Choco();
+        choco.pos = 416;
+        mobs.add(choco);
+
+        PianoLe pianoLe = new PianoLe();
+        pianoLe.pos = 466;
+        mobs.add(pianoLe);
+
+        DogDogMusic dogDogMusic = new DogDogMusic();
+        dogDogMusic.pos = 264;
+        mobs.add(dogDogMusic);
     }
 
     @Override
@@ -599,7 +623,22 @@ public class NormalZeroFiveLevel extends Level {
 
     @Override
     public void playLevelMusic() {
-        Music.playModeBGM(Assets.Music.TOWN, true);
+
+        switch (SPDSettings.currentBGM()){
+            case 0:
+                Music.playModeBGM(Assets.Music.MORP_BOSS, true);
+            break;
+            case 1:
+                Music.playModeBGM(Assets.Music.SAND, true);
+                break;
+            case 2:
+                Music.playModeBGM(Assets.Music.PRACH, true);
+                break;
+            default:
+                Music.playModeBGM(Assets.Music.TOWN, true);
+                break;
+        }
+
     }
 }
 
