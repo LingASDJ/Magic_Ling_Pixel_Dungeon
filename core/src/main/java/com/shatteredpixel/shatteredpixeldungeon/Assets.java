@@ -679,10 +679,13 @@ public class Assets {
 
 		//NPCS
 		public static final String KEEPERKING	= "sprites/npc/ShopKing.png";
+
+		public static final String DOGMUSIC		= "sprites/npc/ken_chan.png";
+
 		public static final String YETYOG	= "sprites/npc/yetyogyears.png";
 		public static final String YETYOG_R2	= "sprites/npc/yetyogyears5.png";
 		public static final String YUYE	= "sprites/npc/yuye.png";
-		public static final String MINT	= "sprites/npc/mint_cj.png";
+		public static final String MINT	= "sprites/npc/mint.png";
 
 		public static final String PINKFOX	= "sprites/npc/pinkfox.png";
 

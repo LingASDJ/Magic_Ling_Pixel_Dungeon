@@ -20,8 +20,13 @@ public class HaloDart extends TippedDart {
     protected void onThrow( int cell ) {
         Char enemy = Actor.findChar( cell );
         if ((enemy == null || enemy == curUser) && Dungeon.level.flamable[cell]) {
-            GameScene.add( Blob.seed( cell, 7, HalomethaneFire.class ) );
-            Dungeon.level.drop(new Dart(), cell).sprite.drop();
+            GameScene.add(Blob.seed(cell, 7, HalomethaneFire.class));
+            decrementDurability();
+            if (durability > 0){
+                super.onThrow(cell);
+            } else {
+                Dungeon.level.drop(new Dart(), cell).sprite.drop();
+            }
         } else{
             super.onThrow(cell);
         }

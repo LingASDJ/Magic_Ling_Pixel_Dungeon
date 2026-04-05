@@ -84,8 +84,6 @@ public class Mint extends NTNPC {
             sprite.showStatus(Window.CYELLOW, "!!!");
             Statistics.CatFirst = true;
         } else if(secnod){
-
-
             MintPlot plot = new MintPlot();
             Game.runOnRenderThread(new Callback() {
                 @Override

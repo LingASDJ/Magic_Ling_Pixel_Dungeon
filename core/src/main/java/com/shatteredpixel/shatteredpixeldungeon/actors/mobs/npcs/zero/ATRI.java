@@ -4,11 +4,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.ATRIPlot;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.RedCrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -73,7 +71,6 @@ public class ATRI extends NTNPC {
                 WandOfBlastWave.throwChar(hero, trajectory, 100, true, true, getClass());
                 Dungeon.hero.interrupt();
                 GameScene.flash(Window.GDX_COLOR);
-                //hero.damage(12,ATRI.class);
                 if (enemy == Dungeon.hero && !enemy.isAlive()) {
                     Dungeon.fail( getClass() );
                     GLog.n( Messages.get(ATRI.class, "ondeath") );
@@ -103,13 +100,7 @@ public class ATRI extends NTNPC {
                     for (Food w : food.toArray(new Food[0])){
                         w.detach(hero.belongings.backpack);
                     }
-                    if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0){
-                        Dungeon.level.drop( new Gold(1), hero.pos );
-                    } else {
-                        Dungeon.level.drop( new RedCrab(), hero.pos );
-                    }
-
-
+                    Dungeon.level.drop( new RedCrab(), hero.pos );
                 }
             });
         } else if(!secnod) {

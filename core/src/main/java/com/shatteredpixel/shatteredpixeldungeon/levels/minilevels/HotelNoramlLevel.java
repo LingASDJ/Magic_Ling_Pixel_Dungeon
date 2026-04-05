@@ -12,10 +12,15 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ATRI;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.FireMagicGirl;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.IceMagicGirl;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -25,6 +30,9 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
+import com.watabou.utils.DeviceCompat;
+
+import java.util.List;
 
 public class HotelNoramlLevel extends Level {
 
@@ -32,7 +40,10 @@ public class HotelNoramlLevel extends Level {
         color1 = 0x801500;
         color2 = 0xa68521;
         viewDistance = 100;
+        PaswordBadges.loadGlobal();
     }
+
+    public List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
     private static final int WIDTH = 14;
     private static final int HEIGHT = 14;
@@ -102,7 +113,22 @@ public class HotelNoramlLevel extends Level {
 
     @Override
     public void playLevelMusic() {
-        Music.playModeBGM(Assets.Music.TOWN, true);
+
+        switch (SPDSettings.currentBGM()){
+            case 0:
+                Music.playModeBGM(Assets.Music.MORP_BOSS, true);
+                break;
+            case 1:
+                Music.playModeBGM(Assets.Music.SAND, true);
+                break;
+            case 2:
+                Music.playModeBGM(Assets.Music.PRACH, true);
+                break;
+            default:
+                Music.playModeBGM(Assets.Music.TOWN, true);
+                break;
+        }
+
     }
 
     public static class townBehind extends CustomTilemap {
@@ -136,8 +162,20 @@ public class HotelNoramlLevel extends Level {
 
         /** 旅馆组 **/
         ATRI atri = new ATRI();
-        atri.pos = 102;
+        atri.pos = 158;
         mobs.add(atri);
+
+        if(Badges.isUnlocked(Badges.Badge.KILL_MG)|| DeviceCompat.isMDP()){
+            IceMagicGirl iceMagicGirl = new IceMagicGirl();
+            iceMagicGirl.pos = 102;
+            mobs.add(iceMagicGirl);
+        }
+
+        if(passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) || DeviceCompat.isMDP()){
+            FireMagicGirl fireMagicGirl = new FireMagicGirl();
+            fireMagicGirl.pos = 46;
+            mobs.add(fireMagicGirl);
+        }
     }
 
     @Override

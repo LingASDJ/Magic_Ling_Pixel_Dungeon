@@ -1420,4 +1420,19 @@ public class SPDSettings extends GameSettings {
 		put(KEY_AROT, value );
 	}
 
+
+	// ====================== 全局BGM音乐配置 ======================
+	public static final String KEY_CURRENT_BGM = "current_bgm";
+
+	// BGM选项索引：0=星空 1=沙漠 2=桃源 3=游戏默认
+	public static void currentBGM(int value) {
+		put(KEY_CURRENT_BGM, value);
+	}
+
+	// 获取当前全局BGM状态（默认返回3=默认音乐）
+	public static int currentBGM() {
+		return getInt(KEY_CURRENT_BGM, 3);
+	}
+
+
 }

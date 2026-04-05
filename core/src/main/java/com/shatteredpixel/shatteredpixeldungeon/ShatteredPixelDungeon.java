@@ -63,6 +63,10 @@ public class ShatteredPixelDungeon extends Game {
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword" );
 
 		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MerchantSword.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe" );
+
+		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.HiroFlowerLevel" );
 

@@ -139,6 +139,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerP
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.YogSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.Gorgon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.DogDogMusic;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
@@ -352,6 +353,7 @@ public class BuffScanner {
 
         //武器组
         buffClasses.add(TreeList.TreeBarrier.class);
+        buffClasses.add(DogDogMusic.CicreStats.class);
         buffClasses.add(Crossbow.ChargedShot.class);
         buffClasses.add(ForestBow.ChargedShot.class);
         buffClasses.add(Flail.SpinAbilityTracker.class);

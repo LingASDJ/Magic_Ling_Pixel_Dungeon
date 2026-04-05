@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SliverLockSword;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.DogDogMusic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
@@ -216,7 +217,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceLingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
@@ -574,15 +574,14 @@ public class Generator {
 
 			WEP_T2.classes = new Class<?>[]{
 					RitualSword.class,
-					HandAxe.class,
+					MerchantSword.class,
 					Spear.class,
 					TreeList.class,
 					Dirk.class,
 					Sickle.class,
 					Pickaxe.class,
-					MerchantSword.class
 			};
-			WEP_T2.defaultProbs = new float[]{2, 2, 2, 2, 2, 2, 0, 2};
+			WEP_T2.defaultProbs = new float[]{2, 2, 2, 2, 2, 2, 0};
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 
 			WEP_T3.classes = new Class<?>[]{
@@ -622,12 +621,15 @@ public class Generator {
 
 					RedBloodMoon.class,
 					MoonDao.class,
-					GoldLongGun.class
+					GoldLongGun.class,
+
+					DogDogMusic.CICREMUSIC.class
 			};
 			WEP_T4.probs = new float[]{6, 5, 5, 4, 4, 4, 2, 3, 7,
 					SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName()) ? 4f : 0,
 					SPDSettings.isItemUnlock(MoonDao.class.getSimpleName()) ? 4f : 0,
 					SPDSettings.isItemUnlock(GoldLongGun.class.getSimpleName()) ? 4f : 0,
+					0
 			};
 
 			WEP_T5.classes = new Class<?>[]{
