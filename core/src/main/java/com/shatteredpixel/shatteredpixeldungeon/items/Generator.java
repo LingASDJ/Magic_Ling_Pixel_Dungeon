@@ -97,7 +97,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.DreamSeed;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FreeCrack;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.HellButterfly;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KillEye;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
@@ -309,7 +311,7 @@ import java.util.List;
 public class Generator {
 
 	//MLPD GS MODE
-	/*
+	/**
 	 * @Breif 将对应category中item的生成率改为overrideProbs
 	 * @Pramas Item,Category,float
 	 * @NativeName: setProbs
@@ -327,7 +329,7 @@ public class Generator {
 		}
 	}
 
-	/*
+	/**
 	 * @Breif 将对应category中item的生成率和默认生成率分别改为overrideProbs和overrideDefaultProbs
 	 * @Pramas Item,Category,float,float
 	 * @NativeName: setProbs
@@ -629,7 +631,7 @@ public class Generator {
 					SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName()) ? 4f : 0,
 					SPDSettings.isItemUnlock(MoonDao.class.getSimpleName()) ? 4f : 0,
 					SPDSettings.isItemUnlock(GoldLongGun.class.getSimpleName()) ? 4f : 0,
-					0
+					SPDSettings.isItemUnlock("DogDogLingDang") ? 4f : 0,
 			};
 
 			WEP_T5.classes = new Class<?>[]{
@@ -869,11 +871,13 @@ public class Generator {
 					KillEye.class,
 					PureRouge.class,
 					FaintGlimmer.class,
+					HellButterfly.class,
 
 					//BT3
 					NoteOfBzmdr.class,
 					StarDust.class,
 					BrokenRing.class,
+					FreeCrack.class,
 
 					//ChaosT1,
 					DeadOrAlive.class,

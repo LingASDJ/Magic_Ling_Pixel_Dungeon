@@ -25,7 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CatGirlCosplay;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
@@ -36,7 +35,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.DreamSeed;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FreeCrack;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.HellButterfly;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KillEye;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
@@ -268,6 +269,8 @@ public class Statistics {
 	public static boolean onlyLing = false;
 
 	public static boolean defalult_deaddog = false;
+
+	public static boolean isSmallLeaf = false;
 
 	public static int LoveMagicGirl = 0;
 
@@ -545,13 +548,14 @@ public class Statistics {
 		propPositive2 = new ArrayList<>(Arrays.asList(
 				new KillEye(),
 				new PureRouge(),
-				new FaintGlimmer()
+				new FaintGlimmer(),
+				new HellButterfly()
 		));
 
 		propNegative2 = new ArrayList<>(Arrays.asList(
 				new NoteOfBzmdr(),
 				new StarDust(),
-				new BrokenRing()
+				new FreeCrack()
 		));
 
 		propChaotic0 = new ArrayList<>(Arrays.asList(
@@ -611,13 +615,14 @@ public class Statistics {
 		propPositive2 = new ArrayList<>(Arrays.asList(
 				new KillEye(),
 				new PureRouge(),
-				new FaintGlimmer()
+				new FaintGlimmer(),
+				new HellButterfly()
 		));
 
 		propNegative2 = new ArrayList<>(Arrays.asList(
 				new NoteOfBzmdr(),
 				new StarDust(),
-				new BrokenRing()
+				new FreeCrack()
 		));
 
 		propChaotic0 = new ArrayList<>(Arrays.asList(
@@ -635,6 +640,8 @@ public class Statistics {
 		));
 
 		MustHardLevel = false;
+
+		isSmallLeaf = false;
 
 		moonlowgetAloneRoom = Random.Float() >= 0.45f;
 
@@ -997,6 +1004,8 @@ public class Statistics {
 
 		bundle.put("defalult_deaddog",defalult_deaddog);
 
+		bundle.put("DASDXEOGBCD",isSmallLeaf);
+
 		bundle.put("lovemagicgirl",LoveMagicGirl);
 
 		bundle.put("NOTIME",NoTime);
@@ -1185,6 +1194,7 @@ public class Statistics {
 	public static void restoreFromBundle( Bundle bundle ) {
 		moonlowgetAloneRoom = bundle.getBoolean("MJPORALROOM");
 		MustHardLevel = bundle.getBoolean("MustDFRT");
+		isSmallLeaf = bundle.getBoolean("DASDXEOGBCD");
 
 		propPositive0 = convertToPropList(bundle.getCollection("propPositive0"));
 		propPositive1 = convertToPropList(bundle.getCollection("propPositive1"));

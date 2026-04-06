@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -34,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FreeCrack;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -179,7 +181,13 @@ public class WarpBeacon extends ArmorAbility {
 							Level.beforeTransition();
 							Invisibility.dispel();
 							InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-							InterlevelScene.returnDepth = tracker.depth;
+
+							int targetDepth = tracker.depth;
+							if (Dungeon.hero.belongings.getItem(FreeCrack.class) != null) {
+								int offset = Random.Int(-3, 4);
+								targetDepth = Math.max(1, Math.min(targetDepth + offset, Statistics.deepestFloor));
+							}
+							InterlevelScene.returnDepth = targetDepth;
 							InterlevelScene.returnBranch = tracker.branch;
 							InterlevelScene.returnPos = tracker.pos;
 							Game.switchScene( InterlevelScene.class );

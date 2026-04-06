@@ -1134,6 +1134,8 @@ public class ItemSpriteSheet {
     public static final int SMALL_POINT     = PUMPKM_LANTERN+13;
     public static final int BIG_POINT       = PUMPKM_LANTERN+14;
 
+    public static final int UNLESSFLOWER       = PUMPKM_LANTERN+15;
+
     static {
         assignItemRect(PUMPKM_LANTERN, 14, 13);
         assignItemRect(CASTLE_AIRPORT, 16, 16);
@@ -1153,6 +1155,8 @@ public class ItemSpriteSheet {
 
         assignItemRect(SMALL_POINT, 6, 6);
         assignItemRect(BIG_POINT,  10, 10);
+
+        assignItemRect(UNLESSFLOWER, 16,13);
     }
 
 
@@ -1437,7 +1441,6 @@ public class ItemSpriteSheet {
         assignItemRect(DIRT_KNIFE_STAND,        13, 13);
         assignItemRect(BROKEN_RING,             13, 13);
         assignItemRect(STAR_DUST,                 9, 9);
-        assignItemRect(SPACE_DEBRIS,            11, 14);
         assignItemRect(RESOLVE_DIE,              9, 13);
         assignItemRect(SPACE_DEBRIS,            11, 14);
         assignItemRect(CATGIRL_COSPLAY,         13, 14);

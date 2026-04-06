@@ -14,7 +14,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Trash;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -42,7 +41,7 @@ public class SmallLeafHardDungeon extends NPC {
 
     @Override
     protected boolean act() {
-        Chasm.isSmallLeaf = true;
+        Statistics.isSmallLeaf = true;
         return super.act();
     }
 
@@ -52,7 +51,7 @@ public class SmallLeafHardDungeon extends NPC {
     @Override
     public void die(Object cause) {
         super.die(cause);
-        Chasm.isSmallLeaf = false;
+        Statistics.isSmallLeaf = false;
     }
 
     @Override

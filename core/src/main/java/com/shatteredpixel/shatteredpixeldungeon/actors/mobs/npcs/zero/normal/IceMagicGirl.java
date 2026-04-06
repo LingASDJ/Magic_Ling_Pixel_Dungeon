@@ -13,6 +13,7 @@ public class IceMagicGirl extends FiveYearsNPC {
     {
         spriteClass = IceMagicGirlNPCSprite.class;
         plot1 = new IceMagicGirlPlot();
+        properties.add(Property.UNLESS);
     }
 
     @Override

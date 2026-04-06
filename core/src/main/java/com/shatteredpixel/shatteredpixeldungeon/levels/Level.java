@@ -783,8 +783,8 @@ public abstract class Level implements Bundlable {
 
 	//returns true if we immediately transition, false otherwise
 	public boolean activateTransition(Hero hero, LevelTransition transition){
-		if (locked || Chasm.isSmallLeaf){
-			if(Chasm.isSmallLeaf){
+		if (locked || Statistics.isSmallLeaf){
+			if(Statistics.isSmallLeaf){
 				Game.runOnRenderThread(new Callback() {
 										   @Override
 										   public void call() {

@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -73,6 +74,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FreeCrack;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -754,22 +756,27 @@ public class CursedWand {
 		public boolean effect(Item origin, Char user, Ballistica bolt, boolean positiveOnly) {
 			if (!positiveOnly && Dungeon.depth > 1 && Dungeon.interfloorTeleportAllowed() && user == Dungeon.hero) {
 
-				//starting from 10 floors up (or floor 1), each floor has 1 more weight
 				float[] depths = new float[Dungeon.depth-1];
 				int start = Math.max(1, Dungeon.depth-10);
 				for (int i = start; i < Dungeon.depth; i++) {
 					depths[i-1] = i-start+1;
 				}
-				int depth = 1+Random.chances(depths);
+				int targetDepth = 1+Random.chances(depths);
+
+				if (Dungeon.hero.belongings.getItem(FreeCrack.class) != null) {
+					int offset = Random.Int(-3, 4);
+					targetDepth += offset;
+					targetDepth = Math.max(1, Math.min(targetDepth, Statistics.deepestFloor));
+				}
 
 				Level.beforeTransition();
 				InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-				InterlevelScene.returnDepth = depth;
+				InterlevelScene.returnDepth = targetDepth;
 				InterlevelScene.returnBranch = 0;
 				InterlevelScene.returnPos = -1;
 				Game.switchScene(InterlevelScene.class);
 
-			//scroll of teleportation if positive only, or inter-floor teleport disallowed
+				//scroll of teleportation if positive only, or inter-floor teleport disallowed
 			} else {
 				ScrollOfTeleportation.teleportChar(user);
 			}

@@ -188,6 +188,10 @@ public class BuffIndicator extends Component {
 
 	public static final int INVISIBLE_ACTION = 146;
 
+	public static final int HELLBURING = 148;
+
+	public static final int UNLESS = 149;
+
 
     public static final int SIZE_SMALL = 7;
     public static final int SIZE_LARGE = 16;

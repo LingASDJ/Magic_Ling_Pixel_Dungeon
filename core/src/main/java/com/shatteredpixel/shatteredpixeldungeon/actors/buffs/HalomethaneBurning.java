@@ -55,7 +55,11 @@ public class HalomethaneBurning extends Buff implements Hero.Doom {
 
     private static final float DURATION = 8f;
 
-    private float left;
+    public float left;
+
+    public float getTime(){
+        return left;
+    }
 
     private static final String LEFT	= "left";
 

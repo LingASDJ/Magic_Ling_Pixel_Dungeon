@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -10,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FreeCrack;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KillEye;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
@@ -18,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -35,7 +38,7 @@ public class PropBuff extends Buff{
         type = buffType.POSITIVE;
     }
 
-    public int timeA = 0,timeB = 0,timeC = 0, timeD = 0, timeE =0, timeF = 0, timeG = 0, timeH = 0;
+    public int timeA = 0,timeB = 0,timeC = 0, timeD = 0, timeE =0, timeF = 0, timeG = 0, timeH = 0, timeI = 0;
     public int levelA = 0;
 
     public boolean potionLost = false;
@@ -67,6 +70,17 @@ public class PropBuff extends Buff{
                 if(timeC >= 30) {
                     Buff.affect(hero, Haste.class, 5f);
                     timeC = 0;
+                }
+            }
+
+            if(Dungeon.hero.belongings.getItem(FreeCrack.class)!=null) {
+                timeI ++;
+                if(timeI >= 50) {
+                    TeleportationTrap t = new TeleportationTrap();
+                    t.pos = hero.pos;
+                    t.activate();
+                    timeI = 0;
+                    target.damage((int) (target.HP*0.1f),this, Char.DamageType.REAL);
                 }
             }
 
@@ -182,6 +196,7 @@ public class PropBuff extends Buff{
     private static final String TIMEF = "timeF";
     private static final String TIMEG = "timeG";
     private static final String TIMEH = "timeH";
+    private static final String TIMEI = "timeI";
     private static final String WRTME = "wrtme";
 
     private static final String LEVELA = "levelA";
@@ -197,6 +212,7 @@ public class PropBuff extends Buff{
         bundle.put( TIMEF, timeF );
         bundle.put( TIMEG, timeG );
         bundle.put( TIMEH, timeH);
+        bundle.put( TIMEI, timeI);
 
         bundle.put( WRTME,warningTime );
 
@@ -214,6 +230,7 @@ public class PropBuff extends Buff{
         timeF = bundle.getInt( TIMEF );
         timeG = bundle.getInt( TIMEG );
         timeH = bundle.getInt( TIMEH );
+        timeI = bundle.getInt( TIMEI );
 
         warningTime = bundle.getInt( WRTME );
 

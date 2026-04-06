@@ -1,9 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.GodNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.LingLandPlot;
@@ -25,7 +22,7 @@ public class WhiteLingLand extends GodNPC {
     {
         spriteClass = WhiteGirlSprites.class;
         maxLvl = -1;
-        properties.add(Property.UNKNOWN);
+        properties.add(Property.GODCRACK);
         baseSpeed = 0;
         properties.add(Property.IMMOVABLE);
 
@@ -102,13 +99,8 @@ public class WhiteLingLand extends GodNPC {
         return true;
     }
 
-
-    private static boolean seenBefore = false;
-
     @Override
     protected boolean act() {
-
-        Statistics.snow = Dungeon.level.distance(pos, hero.pos) <= 3;
 
         throwItem();
 

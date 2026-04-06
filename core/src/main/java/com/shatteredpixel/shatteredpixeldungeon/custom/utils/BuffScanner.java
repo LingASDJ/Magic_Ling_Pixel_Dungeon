@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HaloFireImBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HellBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
@@ -226,6 +227,7 @@ public class BuffScanner {
         buffClasses.add(Fury.class);
         buffClasses.add(GoodLuck.class);
         buffClasses.add(HaloFireImBlue.class);
+        buffClasses.add(HellBurning.class);
         buffClasses.add(HalomethaneBurning.class);
         buffClasses.add(Haste.class);
         buffClasses.add(Healing.class);

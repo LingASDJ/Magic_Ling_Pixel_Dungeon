@@ -125,7 +125,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.DreamSeed;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FreeCrack;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.HellButterfly;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KillEye;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
@@ -306,7 +308,8 @@ public enum Catalog {
 		PROPS_LEVEL3_GOOD.addItems(
 				KillEye.class,
 				PureRouge.class,
-				FaintGlimmer.class
+				FaintGlimmer.class,
+				HellButterfly.class
 		);
 
 		PROPS_LEVEL1_BAD.addItems(
@@ -332,7 +335,8 @@ public enum Catalog {
 		PROPS_LEVEL3_BAD.addItems(
 				NoteOfBzmdr.class,
 				StarDust.class,
-				BrokenRing.class
+				BrokenRing.class,
+				FreeCrack.class
 		);
 
 		PROPS_LEVEL1_CHAOS.addItems(

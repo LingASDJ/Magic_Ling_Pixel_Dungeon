@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ATRI;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLing;
@@ -23,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.Fir
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.IceMagicGirl;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -31,6 +33,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.DeviceCompat;
+import com.watabou.utils.Random;
 
 import java.util.List;
 
@@ -156,22 +159,41 @@ public class HotelNoramlLevel extends Level {
 
     @Override
     protected void createMobs() {
-        WhiteLing wl = new WhiteLing();
-        wl.pos = 94;
-        mobs.add(wl);
+
+        if(!Statistics.onlyLing){
+            if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX) || RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY) {
+                if (Random.Float() < 0.65f) {
+                    WhiteLing n = new WhiteLing();
+                    n.pos= 80;
+                    mobs.add(n);
+                }
+            } else if (Badges.isUnlocked(Badges.Badge.VICTORY)) {
+                if (Random.Float() < 0.45f) {
+                    WhiteLing n = new WhiteLing();
+                    n.pos = 80;
+                    mobs.add(n);
+                }
+            } else {
+                if (Random.Float() < 0.1f) {
+                    WhiteLing n = new WhiteLing();
+                    n.pos = 80;
+                    mobs.add(n);
+                }
+            }
+        }
 
         /** 旅馆组 **/
         ATRI atri = new ATRI();
         atri.pos = 158;
         mobs.add(atri);
 
-        if(Badges.isUnlocked(Badges.Badge.KILL_MG)|| DeviceCompat.isMDP()){
+        if(Badges.isUnlocked(Badges.Badge.KILL_MG) && Random.Float() >= 0.7f|| DeviceCompat.isMDP()){
             IceMagicGirl iceMagicGirl = new IceMagicGirl();
             iceMagicGirl.pos = 102;
             mobs.add(iceMagicGirl);
         }
 
-        if(passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) || DeviceCompat.isMDP()){
+        if(passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) && Random.Float() >= 0.7f || DeviceCompat.isMDP()){
             FireMagicGirl fireMagicGirl = new FireMagicGirl();
             fireMagicGirl.pos = 46;
             mobs.add(fireMagicGirl);

@@ -2,18 +2,17 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.FiveYearsNPC;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.fiveyears.FireMagicGirlPlot;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.fiveyears.SliceGirlPlot;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.FireMagicGirlNPCSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Game;
 
-public class FireMagicGirl extends FiveYearsNPC {
+public class SliceDream extends FiveYearsNPC {
 
     {
-        spriteClass = FireMagicGirlNPCSprite.class;
-        plot1 = new FireMagicGirlPlot();
-        properties.add(Property.UNLESS);
+        spriteClass = SliceGirlSprite.class;
+        plot1 = new SliceGirlPlot();
     }
 
     @Override
