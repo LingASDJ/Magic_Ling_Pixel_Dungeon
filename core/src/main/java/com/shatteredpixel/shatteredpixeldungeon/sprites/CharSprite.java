@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.TorchHalo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FrostFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HellFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
@@ -99,7 +100,8 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		BURNING, LEVITATING, INVISIBLE,TRUE_INVISIBLE,
 		PARALYSED, FROZEN, ILLUMINATED, CHILLED,CHILLED_2, DARKENED, MARKED, HEALING, SHIELDED,
 		ROSESHIELDED, GREENSHIELDED, HALOMETHANEBURNING, FROSTBURNING, BUTTER, SPINVISIBLE, SMOKER, HEARTS,
-		MUTATION_1,MUTATION_2,MUTATION_3,MUTATION_4,MUTATION_5,MUTATION_6,MUTATION_7,MUTATION_8,MUTATION_9
+		MUTATION_1,MUTATION_2,MUTATION_3,MUTATION_4,MUTATION_5,MUTATION_6,MUTATION_7,MUTATION_8,MUTATION_9,
+		HELLBURING
 	}
 	private int stunStates = 0;
 
@@ -123,6 +125,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected Emitter healing;
 	protected Emitter frostburning;
 	protected Emitter haloburning;
+	protected Emitter hellburning;
 	protected Emitter soling;
 	protected RoseHalo roseshield;
 	protected Emitter hearts;
@@ -498,6 +501,13 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					Sample.INSTANCE.play(Assets.Sounds.BURNING);
 				}
 				break;
+			case HELLBURING:
+				hellburning = emitter();
+				hellburning.pour(HellFlameParticle.FACTORY, 0.06f);
+				if (visible) {
+					Sample.INSTANCE.play(Assets.Sounds.BURNING);
+				}
+				break;
 			case FROSTBURNING:
 				frostburning = emitter();
 				frostburning.pour(FrostFlameParticle.FACTORY, 0.06f);
@@ -639,6 +649,14 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					haloburning = null;
 				}
 				break;
+
+			case HELLBURING:
+				if (hellburning != null) {
+					hellburning.on = false;
+					hellburning = null;
+				}
+				break;
+
 			case FROSTBURNING:
 				if (frostburning != null) {
 					frostburning.on = false;

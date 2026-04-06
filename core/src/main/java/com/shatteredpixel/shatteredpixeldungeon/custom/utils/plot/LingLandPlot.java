@@ -16,7 +16,7 @@ import com.watabou.utils.Random;
 public class LingLandPlot extends Plot {
 
 
-    private final static int maxprocess = 4;
+    private final static int maxprocess = 5;
 
     {
         process = 1;
@@ -52,6 +52,9 @@ public class LingLandPlot extends Plot {
                 case 4:
                     process_to_4();
                     break;
+                case 5:
+                    process_to_5();
+                    break;
             }
             diagulewindow.update();
             process++;
@@ -72,7 +75,9 @@ public class LingLandPlot extends Plot {
 
     @Override
     public void skip() {
-
+        diagulewindow.cancel();
+        WndDialog.settedPlot = null;
+        Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.WAND ) ), hero.pos );
     }
 
     private void process_to_1() {
@@ -92,6 +97,10 @@ public class LingLandPlot extends Plot {
 
     private void process_to_4() {
         diagulewindow.changeText(Messages.get(WhiteLingLand.class, "message4"));
+    }
+
+    private void process_to_5() {
+        diagulewindow.changeText(Messages.get(WhiteLingLand.class, "message5",hero.name()));
         Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.WAND ) ), hero.pos );
     }
 

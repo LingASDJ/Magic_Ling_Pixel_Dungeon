@@ -39,25 +39,44 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.PianoLe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLingLand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.XiaYuan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Zako;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ArchettoNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.AG;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.Choco;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.DogDogMusic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.MagicSheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.PinkFox;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.RainNight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.SliceDream;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.SmallBlue;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ClearSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.GoldLongGun;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -499,6 +518,11 @@ public class NormalZeroFiveLevel extends Level {
         mobs.add(lw);
 
         /** 魔法阵组 **/
+
+        AG ag = new AG();
+        ag.pos = 597;
+        mobs.add(ag);
+
         ArchettoNewYears archettoNewYears = new ArchettoNewYears();
         archettoNewYears.pos = 593;
         mobs.add(archettoNewYears);
@@ -508,6 +532,12 @@ public class NormalZeroFiveLevel extends Level {
             WaloKe shopking = new WaloKe();
             shopking.pos = 545;
             mobs.add(shopking);
+        }
+
+        if(Badges.isUnlocked(Badges.Badge.KILL_MORES) || DeviceCompat.isDebug()){
+            SliceDream sliceDream = new SliceDream();
+            sliceDream.pos = 645;
+            mobs.add(sliceDream);
         }
 
         /* 4桌组 */
@@ -534,6 +564,52 @@ public class NormalZeroFiveLevel extends Level {
         DogDogMusic dogDogMusic = new DogDogMusic();
         dogDogMusic.pos = 264;
         mobs.add(dogDogMusic);
+
+        if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX) || passwordbadges.contains(PaswordBadges.Badge.GODCHSX) || DeviceCompat.isDebug()) {
+            if(Random.Int(4) == 0) {
+                WhiteLingLand god = new WhiteLingLand();
+                god.pos = 657;
+                mobs.add(god);
+                Statistics.onlyLing = true;
+
+                MeleeWeapon gods1;
+                gods1 = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
+                gods1.cursed = false;
+                gods1.upgrade();
+                Item i  = gods1;
+                if(i instanceof DiedCrossBow || i instanceof MoonDao
+                        || i instanceof SaiPlus || i instanceof RiceSword
+                        || i instanceof RedBloodMoon || i instanceof GoldLongGun ||
+                        i instanceof ClearSword || i instanceof ForestBow){
+                    drop(gods1,631).type = Heap.Type.FOR_SALE;
+                } else {
+                    drop(gods1,631).type = Heap.Type.FOR_ICE;
+                }
+
+
+                Wand gods2;
+                gods2 = (Wand) Generator.random(Generator.Category.WAND);
+                gods2.cursed = false;
+                gods2.level += Random.Int(1);
+                drop(gods2,633).type = Heap.Type.FOR_ICE;
+
+                Item gods3;
+                switch (Random.Int(6)){
+                    case 2: gods3 = new BlizzardBrew(); break;
+                    case 3: gods3 = new CausticBrew();    break;
+                    case 4: gods3 = new InfernalBrew();   break;
+                    case 5: gods3 = new ShockingBrew();   break;
+                    default:
+                        gods3 = new WaterSoul();   break;
+                }
+                drop(gods3,681).type = Heap.Type.FOR_ICE;
+
+                Item gods4;
+                gods4 = Generator.random(Generator.Category.ARTIFACT);
+                gods4.cursed = false;
+                drop(gods4,683).type = Heap.Type.FOR_ICE;
+            }
+        }
     }
 
     @Override

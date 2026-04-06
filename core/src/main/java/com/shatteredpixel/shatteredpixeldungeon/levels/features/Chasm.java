@@ -119,7 +119,6 @@ public class Chasm implements Hero.Doom {
 	}
 
 	public static boolean isSliceGirl = false;
-	public static boolean isSmallLeaf = false;
 	public static void heroFall( int pos ) {
 
 		jumpConfirmed = false;
@@ -146,7 +145,7 @@ public class Chasm implements Hero.Doom {
 					break;
 				}
 			}
-		} else if(isSmallLeaf){
+		} else if(Statistics.isSmallLeaf){
 			GLog.n(Messages.get(SmallLeafHardDungeon.class,"must_reload"));
 			ScrollOfTeleportation.appear(hero, level.entrance());
 			Dungeon.hero.interrupt();

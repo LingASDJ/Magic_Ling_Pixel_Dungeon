@@ -1,55 +1,23 @@
-/*
- * Pixel Dungeon
- * Copyright (C) 2012-2015 Oleg Dolya
- *
- * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HellBurning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HellFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.HellButterfly;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-/*定义磷火系统*/
-public class HalomethaneFire extends Blob {
+
+public class HellFire extends Blob {
     private boolean isValidCell(int cell) {
         return cell >= 0 && cell < Dungeon.level.length();
     }
     @Override
     protected void evolve() {
-
-        boolean hasHellButterfly = Dungeon.hero != null
-                && Dungeon.hero.belongings.getItem(HellButterfly.class) != null;
-
-        if (hasHellButterfly) {
-            replaceToHellFire();
-            return;
-        }
-
         boolean[] flamable = Dungeon.level.flamable;
         int cell;
         int fire;
@@ -126,34 +94,11 @@ public class HalomethaneFire extends Blob {
         }
     }
 
-    private void replaceToHellFire() {
-        for (int cell = 0; cell < Dungeon.level.length(); cell++) {
-            if (cur[cell] > 0) {
-                GameScene.add(Blob.seed(cell, cur[cell], HellFire.class));
-                Char ch = Actor.findChar(cell);
-                if (ch != null && !ch.isImmune(HellFire.class)) {
-                    Buff.detach(ch, HalomethaneBurning.class);
-                    Buff.affect(ch, HellBurning.class).reignite(ch);
-                }
-                cur[cell] = 0;
-                off[cell] = 0;
-            }
-        }
-        Class<?>[] halo = {HalomethaneFire.class};
-        for (Class<?> halos: halo) {
-            Blob blob = Dungeon.level.blobs.get(halos);
-            if (blob != null) {
-                blob.fullyClear();
-            }
-        }
-        volume = 0;
-    }
-
     //定义燃烧效果和渲染燃烧行动
     public static void burn( int pos ) {
         Char ch = Actor.findChar( pos );
-        if (ch != null && !ch.isImmune(HalomethaneFire.class)) {
-            Buff.affect( ch, HalomethaneBurning.class ).reignite( ch );
+        if (ch != null && !ch.isImmune(HellFire.class)) {
+            Buff.affect( ch, HellBurning.class ).reignite( ch );
         }
 
         Heap heap = Dungeon.level.heaps.get( pos );
@@ -170,8 +115,7 @@ public class HalomethaneFire extends Blob {
     @Override
     public void use( BlobEmitter emitter ) {
         super.use( emitter );
-        emitter.pour( HalomethaneFlameParticle.FACTORY, 0.03f );
-        //定义粒子系统 HalomethaneFlameParticle渲染
+        emitter.pour( HellFlameParticle.FACTORY, 0.03f );
     }
 
     @Override

@@ -93,8 +93,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HellBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -154,6 +156,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDo
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Nyarlathotep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLingLand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.DogDogMusic;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
@@ -213,6 +216,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation
 import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregationB;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.HellButterfly;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
@@ -235,6 +239,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnlessFlower;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.PacManQuest;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
@@ -1341,9 +1346,17 @@ public class Hero extends Char {
 			}
 		}
 
-
 		if(belongings.weapon instanceof TreeList){
 			Buff.affect(this, TreeList.TreeBarrier.class);
+		}
+
+		HellButterfly hellButterfly = Dungeon.hero.belongings.getItem(HellButterfly.class);
+		if(hellButterfly != null){
+			immunities.add(HalomethaneBurning.class);
+			immunities.add(HellBurning.class);
+		} else {
+			immunities.remove(HalomethaneBurning.class);
+			immunities.remove(HellBurning.class);
 		}
 
 		BzmdrNewYears.BzmdrGift bzmdrGift = hero.belongings.getItem(BzmdrNewYears.BzmdrGift.class);
@@ -1370,7 +1383,19 @@ public class Hero extends Char {
 		}
 
 		if(level instanceof NewZeroFiveLevel || level instanceof NormalZeroFiveLevel){
-            Statistics.snow = level.distance(pos, 961) > 13;
+			for (Mob mob : level.mobs.toArray(new Mob[0])) {
+				if(mob instanceof WhiteLingLand){
+					if(Dungeon.level.distance(mob.pos, pos) <= 2){
+						Statistics.snow = true;
+					} else {
+						Statistics.snow = level.distance(pos, 961) > 13;
+					}
+				}
+			}
+		}
+
+		if(!Statistics.onlyLing){
+			Statistics.snow = level.distance(pos, 961) > 13;
 		}
 
 		//水中祝福 但在BR不生效
@@ -3419,21 +3444,20 @@ public class Hero extends Char {
 
 		Ankh ankh = null;
 
-		// ============== 重写十字章优先级筛选 ==============
-		// 优先级：MIME.GOLD_FIVE > 祝福十字章 > 普通十字章
 		for (Ankh i : belongings.getAllItems(Ankh.class)) {
-			// 最高优先级：直接选中MIME.GOLD_FIVE
+			if (i instanceof UnlessFlower) {
+				ankh = i;
+				break;
+			}
 			if (i instanceof MIME.GOLD_FIVE) {
 				ankh = i;
 				break;
 			}
-			// 次优先级：祝福十字章
 			if (ankh == null || i.isBlessed()) {
 				ankh = i;
 			}
 		}
 
-		// 处理黑魂（保留原逻辑）
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 			if (mob instanceof BlackSoul) {
 				Buff.affect(mob, Dread.class);
@@ -3492,8 +3516,16 @@ public class Hero extends Char {
 			interrupt();
 			resting = false;
 
-			// 触发MIME.GOLD_FIVE（现在必定优先触发）
-			if(ankh instanceof MIME.GOLD_FIVE) {
+			if(ankh instanceof UnlessFlower){
+				this.HP = HT;
+				interrupt();
+				PotionOfHealing.cure(this);
+				Buff.affect(this, UnlessFlower.UnlessFlowerTime.class).set(10000, 1 );
+				SpellSprite.show(this, SpellSprite.ANKH);
+				GameScene.flash(0x80FFFF40);
+				GLog.w(Messages.get(this, "heart_god"));
+				ankh.detach(belongings.backpack);
+			} else if(ankh instanceof MIME.GOLD_FIVE) {
 				this.HP = HT;
 				interrupt();
 				PotionOfHealing.cure(this);
@@ -3503,9 +3535,7 @@ public class Hero extends Char {
 				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 				GLog.w(Messages.get(this, "heartdied"));
 				ankh.detach(belongings.backpack);
-			}
-			// 其次：祝福十字章
-			else if (ankh.isBlessed()) {
+			} else if (ankh.isBlessed()) {
 				this.HP = HT / 4;
 				PotionOfHealing.cure(this);
 				Buff.prolong(this, Invulnerability.class, Invulnerability.DURATION);
@@ -3527,9 +3557,7 @@ public class Hero extends Char {
 						return;
 					}
 				}
-			}
-			// 最后：普通十字章
-			else {
+			} else {
 				WndResurrect.instance = new Object();
 				Ankh finalAnkh = ankh;
 				Game.runOnRenderThread(() -> GameScene.show( new WndResurrect(finalAnkh) ));

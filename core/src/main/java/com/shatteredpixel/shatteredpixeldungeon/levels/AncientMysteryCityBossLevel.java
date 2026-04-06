@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -268,7 +267,7 @@ public class AncientMysteryCityBossLevel extends Level{
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if(Chasm.isSmallLeaf){
+        if(Statistics.isSmallLeaf){
             Game.runOnRenderThread(new Callback() {
                                        @Override
                                        public void call() {

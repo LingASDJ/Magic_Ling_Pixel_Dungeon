@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
@@ -39,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.AntiEntropy;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Bulk;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Corrosion;
@@ -372,11 +374,21 @@ public class Armor extends EquipableItem {
 			return 1 + tier + lvl + augment.defenseFactor(lvl);
 		}
 
-		int max = tier * (2 + lvl) + augment.defenseFactor(lvl);
-		if (lvl > max){
-			return ((lvl - max)+1)/2;
+		KindOfWeapon wep = hero.belongings.attackingWeapon();
+		if (Dungeon.hero.buff(BrokenArmor.class) != null) {
+			int max = wep == null ? hero.damageRoll()/3 : wep.max()/4;
+			if (lvl > max){
+				return ((lvl - max)+1)/2;
+			} else {
+				return max;
+			}
 		} else {
-			return max;
+			int max = tier * (2 + lvl) + augment.defenseFactor(lvl);
+			if (lvl > max){
+				return ((lvl - max)+1)/2;
+			} else {
+				return max;
+			}
 		}
 	}
 
@@ -389,11 +401,21 @@ public class Armor extends EquipableItem {
 			return 0;
 		}
 
-		int max = DRMax(lvl);
-		if (lvl >= max){
-			return (lvl - max);
+		KindOfWeapon wep = hero.belongings.attackingWeapon();
+		if (Dungeon.hero.buff(BrokenArmor.class) != null) {
+			int max = wep == null ? 0 : wep.min()/4;
+			if (lvl >= max){
+				return (lvl - max);
+			} else {
+				return lvl;
+			}
 		} else {
-			return lvl;
+			int max = DRMax(lvl);
+			if (lvl >= max){
+				return (lvl - max);
+			} else {
+				return lvl;
+			}
 		}
 	}
 

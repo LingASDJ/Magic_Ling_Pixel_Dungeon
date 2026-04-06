@@ -371,6 +371,10 @@ public class AttributeViewer extends TestItem{
                 return "unknown";
             case STATIC:
                 return "static";
+            case GODCRACK:
+                return "godcrack";
+            case UNLESS:
+                return "booksoucre";
             default:
                 return "";
         }

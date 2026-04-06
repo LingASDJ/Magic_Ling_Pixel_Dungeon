@@ -682,6 +682,8 @@ public class Assets {
 
 		public static final String DOGMUSIC		= "sprites/npc/ken_chan.png";
 
+		public static final String AG		= "sprites/npc/ag.png";
+
 		public static final String YETYOG	= "sprites/npc/yetyogyears.png";
 		public static final String YETYOG_R2	= "sprites/npc/yetyogyears5.png";
 		public static final String YUYE	= "sprites/npc/yuye.png";

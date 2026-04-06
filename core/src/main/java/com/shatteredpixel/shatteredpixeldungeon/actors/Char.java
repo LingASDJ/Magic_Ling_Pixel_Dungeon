@@ -1633,6 +1633,8 @@ public abstract class Char extends Actor {
 		PETS,
 		ABYSS,
 		UNKNOWN,
+		GODCRACK,
+		UNLESS,
 		SEARCH,
 		//A character that acts in an unchanging manner. immune to AI state debuffs or stuns/slows
 		STATIC( new HashSet<Class>(),

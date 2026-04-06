@@ -22,15 +22,18 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FreeCrack;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniChestMazeLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
+import com.watabou.utils.Random;
 
 public class ScrollOfPassage extends ExoticScroll {
 	
@@ -47,7 +50,6 @@ public class ScrollOfPassage extends ExoticScroll {
 		readAnimation();
 		
 		if (!Dungeon.interfloorTeleportAllowed() || Dungeon.level instanceof MiniChestMazeLevel || Dungeon.level instanceof UnlessEndFlowerLevel) {
-			
 			GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
 			return;
 			
@@ -55,7 +57,18 @@ public class ScrollOfPassage extends ExoticScroll {
 
 		Level.beforeTransition();
 		InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-		InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1 - (Dungeon.depth-2)%5));
+
+		int baseDepth = Dungeon.depth;
+		int targetDepth;
+
+		if(Dungeon.hero.belongings.getItem(FreeCrack.class)!=null) {
+			int offset = Random.Int(-3, 4);
+			targetDepth = Math.max(1, Math.min(baseDepth + offset, Statistics.deepestFloor));
+			InterlevelScene.returnDepth = targetDepth;
+		} else {
+			InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1 - (Dungeon.depth-2)%5));
+		}
+
 		InterlevelScene.returnBranch = 0;
 		InterlevelScene.returnPos = -1;
 		Game.switchScene( InterlevelScene.class );

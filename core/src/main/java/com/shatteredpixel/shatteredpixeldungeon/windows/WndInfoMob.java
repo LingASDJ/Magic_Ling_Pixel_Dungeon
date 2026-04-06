@@ -159,7 +159,11 @@ public class WndInfoMob extends WndTitledMessage {
 
 		public static String ProName(Mob mob) {
 			String level;
-			if (mob.properties.contains(Char.Property.BOSS)){
+			if (mob.properties.contains(Char.Property.UNLESS)) {
+				level = Messages.get(WndInfoMob.class, "book");
+			} else if (mob.properties.contains(Char.Property.GODCRACK)) {
+				level = Messages.get(WndInfoMob.class, "godcrack");
+			} else if (mob.properties.contains(Char.Property.BOSS)){
 				level = Messages.get(WndInfoMob.class,"boss");
 			} else if (mob.properties.contains(Char.Property.SEARCH)){
 				level = Messages.get(WndInfoMob.class,"seach");
