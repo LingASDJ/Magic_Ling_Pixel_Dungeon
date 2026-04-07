@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.watabou.utils.Point;
@@ -100,6 +101,11 @@ public class SacrificeRoom extends SpecialRoom {
 		}
 		prize.cursed = prize.cursedKnown = true;
 		level.sacrificialFireItem = prize;
+
+		if(RegularLevel.holiday == RegularLevel.WestHoliday.EASTER){
+			prize.upgrade();
+		}
+
 		return prize;
 	}
 

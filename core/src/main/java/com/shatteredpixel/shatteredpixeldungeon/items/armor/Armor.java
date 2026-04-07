@@ -374,23 +374,32 @@ public class Armor extends EquipableItem {
 			return 1 + tier + lvl + augment.defenseFactor(lvl);
 		}
 
-		KindOfWeapon wep = hero.belongings.attackingWeapon();
-		if (Dungeon.hero.buff(BrokenArmor.class) != null) {
-			int max = wep == null ? hero.damageRoll()/3 : wep.max()/4;
-			if (lvl > max){
-				return ((lvl - max)+1)/2;
+		if(hero != null){
+			if (Dungeon.hero.buff(BrokenArmor.class) != null && hero != null) {
+				KindOfWeapon wep = hero.belongings.attackingWeapon();
+				int max = wep == null ? hero.damageRoll()/3 : wep.max()/4;
+				if (lvl > max){
+					return ((lvl - max)+1)/2;
+				} else {
+					return max;
+				}
 			} else {
-				return max;
-			}
-		} else {
-			int max = tier * (2 + lvl) + augment.defenseFactor(lvl);
-			if (lvl > max){
-				return ((lvl - max)+1)/2;
-			} else {
-				return max;
+				int max = tier * (2 + lvl) + augment.defenseFactor(lvl);
+				if (lvl > max){
+					return ((lvl - max)+1)/2;
+				} else {
+					return max;
+				}
 			}
 		}
-	}
+
+		int max = tier * (2 + lvl) + augment.defenseFactor(lvl);
+		if (lvl > max){
+			return ((lvl - max)+1)/2;
+		} else {
+			return max;
+		}
+    }
 
 	public final int DRMin(){
 		return DRMin(buffedLvl());
@@ -401,13 +410,15 @@ public class Armor extends EquipableItem {
 			return 0;
 		}
 
-		KindOfWeapon wep = hero.belongings.attackingWeapon();
-		if (Dungeon.hero.buff(BrokenArmor.class) != null) {
-			int max = wep == null ? 0 : wep.min()/4;
-			if (lvl >= max){
-				return (lvl - max);
-			} else {
-				return lvl;
+		if(hero != null){
+			if (Dungeon.hero.buff(BrokenArmor.class) != null) {
+				KindOfWeapon wep = hero.belongings.attackingWeapon();
+				int max = wep == null ? 0 : wep.min()/4;
+				if (lvl >= max){
+					return (lvl - max);
+				} else {
+					return lvl;
+				}
 			}
 		} else {
 			int max = DRMax(lvl);
@@ -416,6 +427,13 @@ public class Armor extends EquipableItem {
 			} else {
 				return lvl;
 			}
+		}
+
+		int max = DRMax(lvl);
+		if (lvl >= max){
+			return (lvl - max);
+		} else {
+			return lvl;
 		}
 	}
 

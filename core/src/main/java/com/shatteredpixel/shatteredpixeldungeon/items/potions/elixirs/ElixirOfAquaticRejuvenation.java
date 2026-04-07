@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnlessFlower;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -49,7 +50,7 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 	
 	@Override
 	public void apply(Hero hero) {
-		if (Dungeon.isChallenged(Challenges.NO_HEALING)){
+		if (Dungeon.isChallenged(Challenges.NO_HEALING) || Dungeon.hero.buff(UnlessFlower.UnlessFlowerTime.class) != null){
 			PotionOfHealing.pharmacophobiaProc(hero);
 		} else {
 			Buff.affect(hero, AquaHealing.class).set(Math.round(hero.HT * 1.5f));

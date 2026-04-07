@@ -158,7 +158,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLingLand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.DogDogMusic;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -281,6 +280,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.NewZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NormalZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
@@ -1285,6 +1285,45 @@ public class Hero extends Char {
 				propBuffbuff.levelA = remainingLevel;
 				if (isNegative) {
 					GLog.p(Messages.get(FaintGlimmer.class, "light", count,remainingLevel));
+				}
+			}
+		}
+
+		UnlessEndFlowerLevel.UnlessAbyss unlessAbyss = hero.buff(UnlessEndFlowerLevel.UnlessAbyss.class);
+		if(unlessAbyss != null){
+			if (!unlessAbyss.isCollapsing) {
+				unlessAbyss.Time++;
+				if (unlessAbyss.Time >= 300) {
+					unlessAbyss.isCollapsing = true;
+					Buff.affect(hero, Levitation.class,100f);
+				}
+			} else {
+				unlessAbyss.Time++;
+				if (unlessAbyss.Time % 5 == 0) {
+					Buff.affect(hero, Levitation.class,100f);
+					if(level instanceof UnlessEndFlowerLevel){
+						((UnlessEndFlowerLevel) level).triggerTerrainCollapse();
+					}
+				}
+			}
+		}
+
+
+		if (belongings.getItem(UnlessFlower.class) != null){
+			//No Effect
+		} else if (belongings.getItem(MIME.GOLD_FIVE.class) != null) {
+			if(HT/4 > HP){
+				die(true);
+			}
+		}
+
+		//降神Buff
+		if(buff(UnlessFlower.UnlessFlowerTime.class)!=null){
+			for (Buff b : this.buffs()) {
+				if (b.type == Buff.buffType.NEGATIVE
+						&& !(b instanceof AllyBuff)
+						&& !(b instanceof LostInventory)) {
+					b.detach();
 				}
 			}
 		}
@@ -3388,13 +3427,6 @@ public class Hero extends Char {
 		if (getCloser(action.dst)) {
 			canSelfTrample = false;
 
-			if(belongings.weapon() instanceof DogDogMusic.CICREMUSIC){
-				DogDogMusic.CicreStats cicreStats = buff(DogDogMusic.CicreStats.class);
-				if(cicreStats != null && cicreStats.attackStats !=0){
-					cicreStats.attackStats = 0;
-				}
-			}
-
 			return true;
 
 			//Hero moves in place if there is grass to trample
@@ -3444,19 +3476,23 @@ public class Hero extends Char {
 
 		Ankh ankh = null;
 
-		for (Ankh i : belongings.getAllItems(Ankh.class)) {
-			if (i instanceof UnlessFlower) {
-				ankh = i;
-				break;
-			}
-			if (i instanceof MIME.GOLD_FIVE) {
-				ankh = i;
-				break;
-			}
-			if (ankh == null || i.isBlessed()) {
-				ankh = i;
-			}
+		UnlessFlower unlessFlower = hero.belongings.getItem(UnlessFlower.class);
+
+		if(unlessFlower != null){
+			ankh = unlessFlower;
+		} else {
+			for (Ankh i : belongings.getAllItems(Ankh.class)) {
+					if (i instanceof MIME.GOLD_FIVE) {
+						ankh = i;
+						break;
+					}
+					if (ankh == null || i.isBlessed()) {
+						ankh = i;
+					}
+				}
 		}
+
+
 
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 			if (mob instanceof BlackSoul) {
@@ -3535,6 +3571,7 @@ public class Hero extends Char {
 				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 				GLog.w(Messages.get(this, "heartdied"));
 				ankh.detach(belongings.backpack);
+				Buff.detach(this,UnlessFlower.UnlessFlowerTime.class);
 			} else if (ankh.isBlessed()) {
 				this.HP = HT / 4;
 				PotionOfHealing.cure(this);
@@ -3544,7 +3581,7 @@ public class Hero extends Char {
 				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 				GLog.w(Messages.get(this, "revive"));
 				Statistics.ankhsUsed++;
-
+				Buff.detach(this,UnlessFlower.UnlessFlowerTime.class);
 				if(branch == 10 && Dungeon.depth == 26){
 					GLog.w("索托斯：谨慎一点，再失误一次可就危险了。");
 				}

@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HellBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
@@ -94,6 +95,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         immunities.add(FrostBurning.class);
         immunities.add(HalomethaneBurning.class);
         immunities.add(Terror.class);
+        immunities.add(HellBurning.class);
 
         if(Statistics.bossRushMode){
             immunities.add(Burning.class);

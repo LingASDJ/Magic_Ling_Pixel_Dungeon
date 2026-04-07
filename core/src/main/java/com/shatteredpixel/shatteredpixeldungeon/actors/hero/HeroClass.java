@@ -221,8 +221,6 @@ public enum HeroClass {
 		new ScrollOfIdentify().identify();
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
-
-
 			//TODO LIST WEAPON
 			new RitualSword().identify().collect();
 			new TreeList().identify().collect();

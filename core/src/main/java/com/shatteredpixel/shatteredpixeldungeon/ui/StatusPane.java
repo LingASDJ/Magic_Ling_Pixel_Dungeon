@@ -66,7 +66,6 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.GameMath;
-import com.watabou.utils.Random;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -596,32 +595,7 @@ public class StatusPane extends Component {
 			Date realDate = new Date();
 			Date displayDate;
 
-			if (Dungeon.level instanceof UnlessEndFlowerLevel) {
-                long randomDays =    Random.Int(61) - 30;
-                long randomHours =   Random.Int(47) - 23;
-                long randomMinutes = Random.Int(119) - 59;
-
-				if(gameTime>400 && gameTime<600) {
-					if(!gameNight){
-						gameNight = true;
-					}
-				} else if(gameTime>599){
-					gameTime = 0;
-					if(gameNight){
-						gameNight = false;
-					}
-				}
-				long elapsedMillis = System.currentTimeMillis();
-				long seconds = (elapsedMillis / 1000) % 60;
-				if (seconds % 5 == 0 && seconds != 0) {
-					kuzumitime = Random.Int(500000);
-					gameTime = Random.Int(600);
-					hiroRandomTimeOffset = (randomDays * 86400000L) + (randomHours * 3600000L) + (randomMinutes * 60000L);
-                }
-                displayDate = new Date(realDate.getTime() + hiroRandomTimeOffset);
-            } else {
-				displayDate = realDate;
-			}
+			displayDate = realDate;
 
 			String strDateFormat = "yyyy-MM-dd HH:mm";
 			SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.getDefault());
@@ -630,9 +604,7 @@ public class StatusPane extends Component {
 			cal.setTime(displayDate);
 
 			int s = cal.get(Calendar.SECOND);
-			if(Dungeon.level instanceof UnlessEndFlowerLevel){
-				timeText.hardlight(Window.GDX_COLOR);
-			} else if (s < 20) {
+			if (s < 20) {
 				timeText.hardlight(Window.CWHITE);
 			} else if (s < 40) {
 				timeText.hardlight(Window.CYELLOW);

@@ -1,23 +1,32 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.ArchettoWeightLess;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HellFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
+import com.watabou.utils.BArray;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class UnlessEndFlowerLevel extends Level {
 
@@ -47,10 +56,171 @@ public class UnlessEndFlowerLevel extends Level {
         Music.playModeBGM(Assets.Music.WEIGHTLESS,true);
     }
 
+    public static class UnlessAbyss extends Buff {
+
+        {
+            type = buffType.POSITIVE;
+        }
+
+        private int level = 0;
+        private int interval = 1;
+
+        public int Time = 0;
+
+        @Override
+        public int icon() {
+            return BuffIndicator.DUEL_COMBO;
+        }
+
+        public boolean isCollapsing = false;
+        public boolean isCollapseFinished = false; // ✅ 新增：崩坏完成/停止标记
+
+        @Override
+        public boolean act() {
+            if (target.isAlive()) {
+                spend( interval );
+                if (level <= 0) {
+                    detach();
+                }
+            } else {
+                detach();
+            }
+            return true;
+        }
+
+        public int level() {
+            return level;
+        }
+
+        public void set( int value, int time ) {
+            if (level <= value) {
+                level = value;
+                interval = time;
+                spend(time - cooldown() - 1);
+            }
+        }
+
+        @Override
+        public String iconTextDisplay() {
+            return Integer.toString(level);
+        }
+
+        @Override
+        public String desc() {
+            return Messages.get(this, "desc", Time);
+        }
+
+        private static final String LEVEL	    = "level";
+        private static final String INTERVAL    = "interval";
+        private static final String TIME        = "time";
+        private static final String IS_COLLAPSING = "isCollapsing";
+        private static final String IS_FINISHED = "isCollapseFinished"; // ✅ 存档支持
+
+        @Override
+        public void storeInBundle( Bundle bundle ) {
+            super.storeInBundle( bundle );
+            bundle.put( INTERVAL, interval );
+            bundle.put( LEVEL, level );
+            bundle.put( TIME, Time);
+            bundle.put( IS_COLLAPSING, isCollapsing);
+            bundle.put( IS_FINISHED, isCollapseFinished);
+        }
+
+        @Override
+        public void restoreFromBundle( Bundle bundle ) {
+            super.restoreFromBundle( bundle );
+            interval = bundle.getInt( INTERVAL );
+            level = bundle.getInt( LEVEL );
+            Time = bundle.getInt(TIME);
+            isCollapsing = bundle.getBoolean(IS_COLLAPSING);
+            isCollapseFinished = bundle.getBoolean(IS_FINISHED);
+        }
+    }
+
     @Override
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
+        if (!(ch instanceof Hero)) return;
+        Hero hero = (Hero) ch;
+
         Buff.affect(hero, MagicalSight.class, 100f);
+
+        UnlessAbyss unlessAbyss = hero.buff(UnlessAbyss.class);
+        if (unlessAbyss == null) {
+            Buff.affect(hero, UnlessAbyss.class).set(100000000, 1);
+        }
+    }
+
+    public void triggerTerrainCollapse() {
+        int width = width();
+        int height = height();
+
+        int size = Random.oneOf(3,5,7,9);
+        int half = size / 2;
+
+        int centerX = Random.Int(half, width - half);
+        int centerY = Random.Int(half, height - half);
+
+        ArrayList<Integer> validCells = new ArrayList<>();
+        for (int dx = -half; dx <= half; dx++) {
+            for (int dy = -half; dy <= half; dy++) {
+                int x = centerX + dx;
+                int y = centerY + dy;
+                int cell = x + y * width;
+                int totalCells = width * height;
+
+                int terrain = map[cell];
+
+                if (x < 0 || x >= width || y < 0 || y >= height) {
+                    continue;
+                }
+
+                if (cell >= totalCells) {
+                    continue;
+                }
+
+                if (terrain != Terrain.GALAXY
+                        && terrain != Terrain.ENTRANCE
+                        && terrain != Terrain.EXIT
+                        && terrain != Terrain.ENTRANCE_SP
+                        && terrain != Terrain.PEDESTAL
+                        && terrain != Terrain.WATER) {
+                    validCells.add(cell);
+                }
+            }
+        }
+
+        if (validCells.size() < 2) return;
+
+        int[] temps = new int[validCells.size()];
+        for (int i = 0; i < validCells.size(); i++) {
+            temps[i] = map[validCells.get(i)];
+        }
+        Random.shuffle(validCells);
+        for (int i = 0; i < validCells.size(); i++) {
+            map[validCells.get(i)] = temps[i];
+        }
+
+        for (int cell : validCells) {
+            if (Random.Float() < 0.5f) {
+                map[cell] = Terrain.CHASM;
+                CellEmitter.get(cell).burst(HellFlameParticle.FACTORY, 2);
+            }
+        }
+
+        this.map = map.clone();
+        buildFlagMaps();
+        cleanWalls();
+        BArray.setFalse(visited);
+        BArray.setFalse(mapped);
+
+        for (Blob blob: blobs.values()){
+            blob.fullyClear();
+        }
+
+        GameScene.resetMap();
+        GameScene.updateMap();
+        Dungeon.observe();
     }
 
     private static final int[] code_map = {
@@ -112,6 +282,7 @@ public class UnlessEndFlowerLevel extends Level {
             InterlevelScene.curTransition.centerCell = -1;
             Game.switchScene(InterlevelScene.class);
             Buff.detach(hero, MagicalSight.class);
+            Buff.detach(hero, Levitation.class);
             return false;
         } else {
             return super.activateTransition(hero, transition);

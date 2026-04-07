@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnlessFlower;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -39,7 +40,7 @@ public class LightFood extends Food {
     }
 
     protected void satisfy( Hero hero ){
-        if (Dungeon.isChallenged(Challenges.NO_HEALING)) {
+        if (Dungeon.isChallenged(Challenges.NO_HEALING) || Dungeon.hero.buff(UnlessFlower.UnlessFlowerTime.class) != null) {
             heal( hero );
             Buff.affect(hero, Hunger.class).satisfy(energy/3f);
         } else if (Dungeon.isChallenged(Challenges.NO_FOOD)){

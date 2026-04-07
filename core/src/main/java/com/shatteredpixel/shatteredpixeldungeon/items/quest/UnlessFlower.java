@@ -1,10 +1,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
@@ -20,7 +23,15 @@ public class UnlessFlower extends Ankh {
 
     @Override
     public ArrayList<String> actions(Hero hero) {
+        if (Dungeon.isDLC(Conducts.Conduct.DEV)) {
+            return super.actions(hero);
+        }
         return new ArrayList<>();
+    }
+
+    @Override
+    public ItemSprite.Glowing glowing() {
+        return WHITE;
     }
 
     public static class UnlessFlowerTime extends Buff {

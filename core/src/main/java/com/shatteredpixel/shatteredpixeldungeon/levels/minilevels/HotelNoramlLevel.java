@@ -184,12 +184,12 @@ public class HotelNoramlLevel extends Level {
 
         /** 旅馆组 **/
         ATRI atri = new ATRI();
-        atri.pos = 158;
+        atri.pos = 102;
         mobs.add(atri);
 
         if(Badges.isUnlocked(Badges.Badge.KILL_MG) && Random.Float() >= 0.7f|| DeviceCompat.isMDP()){
             IceMagicGirl iceMagicGirl = new IceMagicGirl();
-            iceMagicGirl.pos = 102;
+            iceMagicGirl.pos = 158;
             mobs.add(iceMagicGirl);
         }
 

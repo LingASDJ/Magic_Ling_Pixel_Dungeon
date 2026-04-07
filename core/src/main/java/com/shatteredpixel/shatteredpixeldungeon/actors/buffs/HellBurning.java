@@ -6,8 +6,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HellFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenStingCV;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfMaster;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -66,7 +69,10 @@ public class HellBurning extends Buff implements Hero.Doom {
             if (target instanceof Boss) {
                 damage = (int) BOSS_DAMAGE;
                 for (Buff buff : target.buffs()) {
-                    if (buff instanceof Barrier) {
+                    if (buff instanceof Barrier
+                        && !(buff instanceof DwarfMaster.DKBarrior ||
+                            buff instanceof DwarfKing.DKBarrior||
+                            buff instanceof GreenStingCV.DKBarrior)) {
                         buff.detach();
                     }
                 }

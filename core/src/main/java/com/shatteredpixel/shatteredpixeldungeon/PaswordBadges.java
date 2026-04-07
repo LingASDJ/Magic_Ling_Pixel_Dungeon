@@ -158,6 +158,10 @@ public class PaswordBadges {
         }
     }
 
+    public static void FlowerHome(int challenges) {
+        displayBadge(Badge.FLOWER_HOME);
+    }
+
     public static void GHOST_HUNTER() {
         displayBadge(Badge.GHOST_HUNTER);
     }
@@ -229,7 +233,9 @@ public class PaswordBadges {
 
         TIME_CIRCLE     (37,true),
 
-        HERO_CLRE       (38,true);
+        HERO_CLRE       (38,true),
+
+        FLOWER_HOME     (39,true,true);
 
         public boolean meta;
 

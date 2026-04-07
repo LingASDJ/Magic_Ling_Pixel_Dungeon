@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.FiveYearsNPC;
@@ -142,15 +143,11 @@ public class DogDogMusic extends FiveYearsNPC {
                         }
                     }
                 }
+            } else if(cicreStats == null) {
+                Buff.affect(attacker, CicreStats.class,1f);
             }
 
             return super.proc(attacker, defender, damage);
-        }
-
-        @Override
-        public boolean doEquip(Hero hero) {
-            Buff.affect(hero, CicreStats.class).set((100), 1);
-            return super.doEquip(hero);
         }
 
         @Override
@@ -170,7 +167,7 @@ public class DogDogMusic extends FiveYearsNPC {
         }
     }
 
-    public static class CicreStats extends Buff {
+    public static class CicreStats extends FlavourBuff {
 
 
         {
@@ -181,18 +178,6 @@ public class DogDogMusic extends FiveYearsNPC {
         private int interval = 1;
 
         public int attackStats = 0;
-
-        @Override
-        public boolean act() {
-            if (target.isAlive()) {
-                spend(interval);
-                if (level <= 0) {
-                    detach();
-                }
-            }
-
-            return true;
-        }
 
         @Override
         public void detach() {
@@ -211,15 +196,6 @@ public class DogDogMusic extends FiveYearsNPC {
                 interval = time;
                 spend(time - cooldown() - 1);
             }
-        }
-
-        @Override
-        public float iconFadePercent() {
-            if (target instanceof Hero){
-                float max = ((Hero) target).lvl;
-                return Math.max(0, (max-level)/max);
-            }
-            return 0;
         }
 
         @Override

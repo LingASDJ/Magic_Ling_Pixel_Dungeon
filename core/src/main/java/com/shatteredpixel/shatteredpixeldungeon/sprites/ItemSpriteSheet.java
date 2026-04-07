@@ -137,6 +137,8 @@ public class ItemSpriteSheet {
 
     public static final int RICE_LIQUOR     = CONTAINERS+11;
 
+    public static final int EASTER_EGG     = CONTAINERS+14;
+
     static{
         assignItemRect(BONES,           14, 11);
         assignItemRect(REMAINS,         14, 11);
@@ -150,6 +152,8 @@ public class ItemSpriteSheet {
         assignItemRect(SHPD_KEY,         8, 14);
 
         assignItemRect(RICE_LIQUOR,      15,16);
+
+        assignItemRect(EASTER_EGG,       12,14);
     }
 
     private static final int MISC_CONSUMABLE =                              xy(1, 4);   //16 slots

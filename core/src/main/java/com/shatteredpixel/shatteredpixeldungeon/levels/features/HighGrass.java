@@ -34,7 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredStatue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KuzumiNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.ArchettoWeightLess;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
@@ -45,10 +45,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DeepRedFlower;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed;
-import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.Random;
 
@@ -79,8 +79,8 @@ public class HighGrass {
 				freezeTrample = true;
 			} else {
 				for (Mob mob : level.mobs.toArray(new Mob[0])){
-					if (mob instanceof KuzumiNewYears) {
-						KuzumiNewYears kuzumiNewYears = (KuzumiNewYears) mob;
+					if (mob instanceof ArchettoWeightLess) {
+						ArchettoWeightLess kuzumiNewYears = (ArchettoWeightLess) mob;
 						// 添加额外的检查，确保花只生成一次
 						if(!kuzumiNewYears.getFlower){
 							int highGrassCount = 0;
