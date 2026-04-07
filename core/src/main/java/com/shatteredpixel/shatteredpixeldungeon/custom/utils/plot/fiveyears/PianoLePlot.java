@@ -10,7 +10,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.PianoLe;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
+import com.shatteredpixel.shatteredpixeldungeon.plants.SkyBlueFireBloom;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Random;
@@ -109,11 +113,29 @@ public class PianoLePlot extends Plot {
         if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
             Dungeon.level.drop(new Gold(1), hero.pos);
         } else {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 2; i++) {
                 Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.SEED ) ), hero.pos ).sprite.drop();
             }
+
+            Dungeon.level.drop( PlusSeedRules(), hero.pos ).sprite.drop();
         }
         zeroItemLevel++;
+    }
+
+    private Item PlusSeedRules() {
+        Item item;
+        switch (Random.Int(3)){
+            case 1:
+                item = new Sungrass.Seed();
+            break;
+            case 2:
+                item = new SkyBlueFireBloom.Seed();
+            break;
+            default:
+                item = new AikeLaier.Seed();
+                break;
+        }
+        return item;
     }
 
 

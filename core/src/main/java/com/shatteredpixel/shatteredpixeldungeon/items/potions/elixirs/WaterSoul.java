@@ -22,6 +22,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnlessFlower;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -39,12 +40,14 @@ public class WaterSoul extends Elixir {
 
     @Override
     public void apply(Hero hero) {
-        if(!Statistics.bossRushMode){
-            Buff.affect(hero, WaterSoulX.class).set( (250), 1 );
+        if (!Statistics.bossRushMode) {
+            Buff.affect(hero, WaterSoulX.class).set((250), 1);
         }
 
-        cure( hero );
-        if(Statistics.bossRushMode && !(Dungeon.isChallenged(Challenges.NO_HEALING))){
+        cure(hero);
+        if (Dungeon.hero.buff(UnlessFlower.UnlessFlowerTime.class) != null){
+            heal(hero);
+        } else if(Statistics.bossRushMode && !(Dungeon.isChallenged(Challenges.NO_HEALING))){
             Buff.affect(hero, Barrier.class).setShield( hero.HT/2 );
         } else if (Dungeon.isChallenged(Challenges.NO_HEALING) && Statistics.HealingIsDied<=2) {
             heal(hero);

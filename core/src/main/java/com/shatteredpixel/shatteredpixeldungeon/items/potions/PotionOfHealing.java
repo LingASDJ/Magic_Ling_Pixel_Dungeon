@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnlessFlower;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -60,7 +61,7 @@ public class PotionOfHealing extends Potion {
 	public static void heal( Char ch ){
 		if (Dungeon.hero.buff(DwarfGeneral.Wither.class) != null) {
 			Buff.detach(ch,DwarfGeneral.Wither.class);
-		} else if (ch == Dungeon.hero && Dungeon.isChallenged(Challenges.NO_HEALING)){
+		} else if (ch == Dungeon.hero && Dungeon.isChallenged(Challenges.NO_HEALING) || Dungeon.hero.buff(UnlessFlower.UnlessFlowerTime.class) != null){
 			pharmacophobiaProc(Dungeon.hero);
 		} else {
 			Healing healing = Buff.affect(ch, Healing.class);

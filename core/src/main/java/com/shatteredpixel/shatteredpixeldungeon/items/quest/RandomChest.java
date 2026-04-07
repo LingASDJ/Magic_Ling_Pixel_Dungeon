@@ -104,7 +104,7 @@ public class RandomChest  extends Item {
         return coin;
     }
 
-    private Item convert(){
+    public static Item convert(){
         Item w = new Food();
         switch (Random.Int(1,23)){
             default:

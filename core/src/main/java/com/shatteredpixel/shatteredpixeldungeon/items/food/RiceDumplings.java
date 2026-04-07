@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnlessFlower;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -71,7 +72,7 @@ public class RiceDumplings extends Food {
         @Override
         protected void satisfy(Hero hero) {
             super.satisfy(hero);
-            if (Dungeon.isChallenged(Challenges.NO_HEALING)){
+            if (Dungeon.isChallenged(Challenges.NO_HEALING) || Dungeon.hero.buff(UnlessFlower.UnlessFlowerTime.class) != null){
                 Buff.affect(hero, Healing.class).setHeal((int) (0.2f * hero.HT + 3), 0.25f, 0);
             } else {
                 Buff.affect(hero, Healing.class).setHeal((int) (0.6f * hero.HT + 14), 0.25f, 0);

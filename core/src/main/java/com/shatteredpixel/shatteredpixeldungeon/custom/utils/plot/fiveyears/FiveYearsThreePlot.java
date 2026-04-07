@@ -22,13 +22,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.RedCrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.TimeFlower;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
-import com.watabou.utils.Random;
 
 public class FiveYearsThreePlot {
     public static class PinkFoxFiveYearsPlot extends Plot {
@@ -537,21 +536,18 @@ public class FiveYearsThreePlot {
 
         private void process_to_2() {
             diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages4"));
-        }
-
-        private void process_to_3() {
-            diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages5"));
             DropRules();
             skipGetItems = true;
         }
 
+        private void process_to_3() {
+            diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages5"));
+        }
+
         private void DropRules(){
             if(Statistics.zeroItemLevel < 4){
-                if(Random.Float() > 0.5f){
-                    Dungeon.level.drop(new ScrollOfGolems(),hero.pos);
-                } else {
-                    Dungeon.level.drop(new SummonElemental(),hero.pos);
-                }
+                Dungeon.level.drop(new SummonElemental(),hero.pos).sprite.drop();
+                Dungeon.level.drop(new TimeFlower(),hero.pos).sprite.drop();
             } else {
                 Dungeon.level.drop(new Gold(1), hero.pos);
             }

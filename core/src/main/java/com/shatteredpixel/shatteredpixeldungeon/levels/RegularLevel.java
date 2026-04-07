@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBle
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.EbonyMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenDiamndMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
@@ -121,6 +122,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
@@ -918,7 +920,36 @@ public abstract class RegularLevel extends Level {
 				losBlocking[cell] = false;
 			}
 			drop( Generator.randomUsingDefaults(), cell).hidden = true;
-			GLog.w("POS："+cell);
+		}
+		Random.popGenerator();
+
+		Random.pushGenerator(Random.Long());
+		if ((Random.Float() < 0.20f || DeviceCompat.isDebug()) && RegularLevel.holiday == WestHoliday.EASTER){
+			ArrayList<Integer> candidateCells = new ArrayList<>();
+			if (Random.Int(2) == 0){
+				for (Heap h : heaps.valueList()){
+					if (h.type == Heap.Type.HEAP
+							&& !(room(h.pos) instanceof SpecialRoom)
+							&& findMob(h.pos) == null){
+						candidateCells.add(h.pos);
+					}
+				}
+			}
+
+			if (candidateCells.isEmpty()) {
+				if (Random.Int(5) == 0 && findMob(exit()) == null) {
+					candidateCells.add(exit());
+				} else {
+					for (int i = 0; i < length(); i++) {
+						if (map[i] == Terrain.DOOR && findMob(i) == null) {
+							candidateCells.add(i);
+						}
+					}
+				}
+			}
+
+			int pos = Random.element(candidateCells);
+			mobs.add(Mimic.spawnAt(pos, GreenDiamndMimic.class, false));
 		}
 		Random.popGenerator();
 	}

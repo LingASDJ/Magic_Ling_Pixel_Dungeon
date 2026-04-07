@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticG
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnlessFlower;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
@@ -82,7 +83,7 @@ public class UnstableBrew extends Brew {
 	@Override
 	public void apply(Hero hero) {
 		//Don't allow this to roll healing in pharma
-		if (Dungeon.isChallenged(Challenges.NO_HEALING)){
+		if (Dungeon.isChallenged(Challenges.NO_HEALING) || Dungeon.hero.buff(UnlessFlower.UnlessFlowerTime.class) != null){
 			potionChances.put(PotionOfHealing.class, 0f);
 		}
 
@@ -96,7 +97,7 @@ public class UnstableBrew extends Brew {
 		p.anonymize();
 		p.apply(hero);
 
-		if (Dungeon.isChallenged(Challenges.NO_HEALING)){
+		if (Dungeon.isChallenged(Challenges.NO_HEALING) || Dungeon.hero.buff(UnlessFlower.UnlessFlowerTime.class) != null){
 			potionChances.put(PotionOfHealing.class, 3f);
 		}
 	}

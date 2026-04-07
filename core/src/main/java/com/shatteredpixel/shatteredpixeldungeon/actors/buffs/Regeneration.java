@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
@@ -53,8 +52,7 @@ public class Regeneration extends Buff {
 			if (ChaoticCenser.averageTurnsUntilGas() != -1){
 				Buff.affect(Dungeon.hero, ChaoticCenser.CenserGasTracker.class);
 			}
-			immunities.add(Buff.class);
-			immunities.add(Blob.class);
+
 			//cancel regenning entirely in thie case
 			if (SaltCube.healthRegenMultiplier() == 0){
 				spend(REGENERATION_DELAY);
@@ -102,13 +100,6 @@ public class Regeneration extends Buff {
 		}
 
 		return true;
-	}
-
-	@Override
-	public void detach() {
-		super.detach();
-		immunities.remove(Buff.class);
-		immunities.remove(Blob.class);
 	}
 
 	public int regencap(){

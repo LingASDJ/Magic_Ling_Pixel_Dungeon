@@ -7,8 +7,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.AG;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
+import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 
@@ -92,7 +92,7 @@ public class AGPlot extends Plot {
         if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
             Dungeon.level.drop(new Gold(1), hero.pos);
         } else {
-            Dungeon.level.drop( new WoollyBomb(), hero.pos ).sprite.drop();
+            Dungeon.level.drop( new ArcaneResin().quantity(2), hero.pos ).sprite.drop();
         }
         zeroItemLevel++;
     }
