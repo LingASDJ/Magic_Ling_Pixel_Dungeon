@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ATRISprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AoReadyDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BloodsSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -35,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElemtGuardGirlSprit
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrabSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM111Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadEyeSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DogDogMusicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ElementalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FodderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulPlusSprite;
@@ -45,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.HiroSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MageHandSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonCatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MyCoreHeartSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyarlathotepSprite;
@@ -52,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.PeachGodStateSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShubNiggurathSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpawnereEvilSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TowerMachineSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VeryColdRatSprite;
@@ -71,12 +75,146 @@ import java.util.ArrayList;
 public class vm0_9_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0940_Changes(changeInfos);
         add_V0931_Changes(changeInfos);
         add_V0925_Changes(changeInfos);
         add_V0920_Changes(changeInfos);
         add_V0915_Changes(changeInfos);
         add_V0910_Changes(changeInfos);
         add_V0900_Changes(changeInfos);
+    }
+
+    public static void add_V0940_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.9.4.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("音乐调整"),
+                ("魔绫像素地牢音乐正在进行原创迭代，因此部分音乐已有调整。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("新-隐藏徽章"),
+                ("新的隐藏徽章现已上线，游玩游戏获得！\n\n" +
+                        "隐藏徽章：与子偕行")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), "在线兑换码系统",
+                "全新在线兑换码系统实装，可通过落白商店或游戏菜单兑换奖励。\n\n" +
+                        "从0.9.4.0开始，兑换码将在游戏新闻，官方群动态更新。"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CATALOG), "排行榜收藏夹系统",
+                "排行榜收藏夹功能上线，可收藏关注心仪的排行榜记录。"));
+
+        changes.addButton(new ChangeButton(new DogDogMusicSprite(),"0层内容更新",
+                "常规0层完善推进，新增大量NPC与交互内容。\n" +
+                        "- 新增0层NPC：犬、A神、幽寂\n" +
+                        "- 薄绿每局30%概率在旅馆出现\n" +
+                        "- 犬罗固定在旅馆出现\n" +
+                        "- 旅馆四组桌子随机NPC组合实装"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CICRE_MUSIC), "新武器：轻音铃铛",
+                "身形移动，便会打断鸣响的连击。\\n攻击奏响「轻音」，连续攻击引动「回音」"));
+
+        changes.addButton(new ChangeButton(new HiroSprites(), "久住事件推进",
+                "久住相关剧情持续更新，全新相关事件等待探索。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HELL_BUTTERFLY), "藏品更新",
+                "炼狱赤蝶，空间残片登场"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.EASTER_EGG), "清明+复活-双节活动",
+                "清明限定复活活动正式开启，参与可获得对应活动奖励。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SHOPKEEPERSWORD), "新武器：商人配剑",
+                "商人配剑正式加入，将自动替换旧版存档中的手斧。\n\n它通常作为商人之间用来互相证明身份的道具，但在应急情况下你也可以把它当做武器。\n\n这把武器目前可以使商人降价 10% ，最高降价90%%。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.UNLESSFLOWER), "新物品：不朽花环",
+                "看上去是用不知名的花朵与坚韧的藤条编织而成的花环。戴在头上时，你几乎感受不到它的重量。\n\n全新十字架类物品，当死亡时，该优先级最高"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new MoonCatSprite(), "0层NPC规则",
+                "老板娘：完成13挑以上后，给予额外净化药剂\n" +
+                        "一号桌子（随机2人）：雨夜、小骑士、晓梦\n" +
+                        "二号桌子（随机2人）：月华、狐狸、魔法绵羊、喵音·椛\n" +
+                        "三号桌子（随机2人）：紫澪、小蓝、深海、浅月深白\n" +
+                        "四号桌子（斗地主常驻）：小叶、琴里、Choco"));
+
+        changes.addButton(new ChangeButton(new ATRISprite(), "2楼NPC刷新",
+                "澪：概率出没，无限制\n" +
+                        "2号房间：萝卜子默认常驻，可兑换口粮换皮\n" +
+                        "1号房间：30%概率出现莲娜（完成抢劫事件），奖励烈焰药剂\n" +
+                        "3号房间：30%概率出现冬铃（击败冰雪魔女），奖励冰霜药剂"));
+
+        changes.addButton(new ChangeButton(new SliceGirlSprite(), "古堡分数系统",
+                "【刻耳柏洛斯】\n" +
+                        "- 恶狗扑食每击中玩家：-200分\n" +
+                        "- 凝血晶体每吸收一次：-100分\n" +
+                        "- 击败Boss：+6000分\n\n" +
+                        "【墨菲厄斯】\n" +
+                        "- 小游戏结束后：获得总分×0.25\n" +
+                        "- 机械之柱抛射体中心命中：-300分\n" +
+                        "- 时间之柱激光命中：-400分\n" +
+                        "- 放逐Boss：+10000分"));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                ("_-_ 修复幸运手套回购Bug\n" +
+                        "_-_ 修复微光向导在Boss层逃课问题\n" +
+                        "_-_ 修复排山倒海加成异常\n" +
+                        "_-_ 修复无用之盾未生效问题\n" +
+                        "_-_ 修复折断之骨幸运降低至70%\n" +
+                        "_-_ 优化慧眼墓碑房间、黑魂事件提示\n" +
+                        "_-_ 药水癔症概率区间显示优化\n" +
+                        "_-_ 部分地牢底层代码优化\n" +
+                        "_-_ 开发者模式状态查看器新增常规/综合掉落率\n" +
+                        "_-_ 优化异果层判定，未锁定楼层可召唤盟友\n" +
+                        "_-_ 绝对失明效果正式启用\n" +
+                        "_-_ 新战法重命名：敕灵天女\n" +
+                        "_-_ 修复吃豆人地图无法拾取有形之手法杖\n" +
+                        "_-_ 灯火低于40+未祝福十字架黑魂事件优化\n" +
+                        "_-_ 修复创世神之心活死人问题\n" +
+                        "_-_ 修复共生、胭脂物品掉落异常\n" +
+                        "_-_ 修复古堡非彩蛋结局无法获得挑战徽章\n" +
+                        "_-_ Boss选择器选中状态常驻\n" +
+                        "_-_ 修复磷焰飞镖部分问题\n" +
+                        "_-_ 修复小叶跨存档阻止下楼问题")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.WARNING), "内容延期",
+                "螃蟹王Boss更新延期，具体上线时间日后再议。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CATGIRL_COSPLAY), "猫娘cosPlay",
+                "触发概率从12%→3.25%"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BROKENBONE), "折断之骨",
+                "幸运掉落从降至30%-->降至70%"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BROKEN_RING), "破碎之环",
+                "正在优化该藏品的手感，本版本暂时移除生成"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOMB), "炸弹加强",
+                "电击炸弹改为雷霆炸弹，奥术改为奥磷炸弹"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.UP_DICT), "破碎间接同步",
+                "_-_ 涌流附魔特效同步\n" +
+                        "_-_ 焰浪、冲击波、雷霆、战法技能同步\n" +
+                        "_-_ 大雷、磷火战法技能与雷霆、焰浪一致迭代\n" +
+                        "_-_ 同步破碎新饰品：雪貂绒束、幻象裂镜\n" +
+                        "_-_ 全面同步破碎炸弹\n" +
+                        "_-_ 全面同步破碎闪避图标，新增鱼甲闪避图标"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_3), "磷焰法杖加强",
+                "现在施法与焰浪法杖差不多，但范围略大。并且可穿透。"));
     }
 
     public static void add_V0931_Changes(ArrayList<ChangeInfo> changeInfos ) {
