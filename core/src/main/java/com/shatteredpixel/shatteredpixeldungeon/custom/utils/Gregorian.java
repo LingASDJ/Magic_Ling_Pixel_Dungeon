@@ -148,10 +148,10 @@ public class Gregorian {
 
     private static void checkQingMingFestival(int month, int day) {
         if (month == 4) {
-            if(day >= 7 &&  day < 21){
+            if(day >= 8 &&  day < 28){
                 chinaHoliday = RegularLevel.ChinaHoliday.QMJ;
                 holiday = RegularLevel.WestHoliday.EASTER;
-                eventEndTime = calculateSolarEventEndTime(2026, 4, 21);
+                eventEndTime = calculateSolarEventEndTime(2026, 4, 28);
             }
         }
     }

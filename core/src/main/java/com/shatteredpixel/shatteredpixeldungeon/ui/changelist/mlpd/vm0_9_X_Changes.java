@@ -2,7 +2,9 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.TribemanOldSprite;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.RivalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
@@ -65,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSoulSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeInfo;
@@ -93,6 +96,9 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：英文"),
+                ("英文翻译更新，本次使用PDTR和英文翻译组初审通过，也许还有诸多问题，不过翻译完善率已达到95%")));
+
         changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("音乐调整"),
                 ("魔绫像素地牢音乐正在进行原创迭代，因此部分音乐已有调整。")));
 
@@ -105,7 +111,7 @@ public class vm0_9_X_Changes {
                         "从0.9.4.0开始，兑换码将在游戏新闻，官方群动态更新。"));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CATALOG), "排行榜收藏夹系统",
-                "排行榜收藏夹功能上线，可收藏关注心仪的排行榜记录。"));
+                "排行榜收藏夹功能上线，可收藏关注心仪的排行榜记录。\n\n至多可记录20份"));
 
         changes.addButton(new ChangeButton(new DogDogMusicSprite(),"0层内容更新",
                 "常规0层完善推进，新增大量NPC与交互内容。\n" +
@@ -115,13 +121,16 @@ public class vm0_9_X_Changes {
                         "- 旅馆四组桌子随机NPC组合实装"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CICRE_MUSIC), "新武器：轻音铃铛",
-                "身形移动，便会打断鸣响的连击。\\n攻击奏响「轻音」，连续攻击引动「回音」"));
+                "身形移动，便会打断鸣响的连击。\n攻击奏响「轻音」，连续攻击引动「回音」"));
 
         changes.addButton(new ChangeButton(new HiroSprites(), "久住事件推进",
                 "久住相关剧情持续更新，全新相关事件等待探索。"));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HELL_BUTTERFLY), "藏品更新",
-                "炼狱赤蝶，空间残片登场"));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HELL_BUTTERFLY), "新藏品：炼狱赤蝶",
+                "你获得<#E5579A>磷火和地狱火<RGB>免疫，在怪物被施加_磷火_时替换为<#E94134>地狱火<RGB>。携带地狱火的怪物每回合受到<#E94134>20%最大生命值<RGB>的魔法伤害，对于没有<#E94134>任何精英或突变词条的怪物，伤害类型变为真实<RGB>。\n\nBoss单位携带地狱火时，效果改为每回合受到<#E94134>20点魔法伤害<RGB>，并清空身上的任何护盾。地狱火可以像磷火一样传播。\n\n“扣1送地狱火”\n\n“骗你的，不扣也送。嘻嘻。”"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SPACE_DEBRIS), "新藏品：空间残片",
+                "某处被强行撕裂开的空间崩裂出的碎片，似乎并不能借助它的力量…\n\n每<#52B9D8>50回合进行一次本层的随机传送（不会传送到被钥匙门封锁的房间里）<RGB>， 如果主动跨层传送将会在原传送位偏移3层(不会进入新楼层)。\n\n持有时，每次使用被残片传送，或使用传送卷轴，或触发传送/虫洞/扭曲陷阱都会<#52B9D8>损失10%当前生命值<RGB>（生命值为1时可致死），如果是残片传送，还能获得<#52B9D8>2回合眩晕<RGB>"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.EASTER_EGG), "清明+复活-双节活动",
                 "清明限定复活活动正式开启，参与可获得对应活动奖励。"));
@@ -163,24 +172,32 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 ("_-_ 修复幸运手套回购Bug\n" +
                         "_-_ 修复微光向导在Boss层逃课问题\n" +
-                        "_-_ 修复排山倒海加成异常\n" +
                         "_-_ 修复无用之盾未生效问题\n" +
-                        "_-_ 修复折断之骨幸运降低至70%\n" +
-                        "_-_ 优化慧眼墓碑房间、黑魂事件提示\n" +
-                        "_-_ 药水癔症概率区间显示优化\n" +
                         "_-_ 部分地牢底层代码优化\n" +
                         "_-_ 开发者模式状态查看器新增常规/综合掉落率\n" +
                         "_-_ 优化异果层判定，未锁定楼层可召唤盟友\n" +
                         "_-_ 绝对失明效果正式启用\n" +
                         "_-_ 新战法重命名：敕灵天女\n" +
                         "_-_ 修复吃豆人地图无法拾取有形之手法杖\n" +
-                        "_-_ 灯火低于40+未祝福十字架黑魂事件优化\n" +
                         "_-_ 修复创世神之心活死人问题\n" +
                         "_-_ 修复共生、胭脂物品掉落异常\n" +
                         "_-_ 修复古堡非彩蛋结局无法获得挑战徽章\n" +
-                        "_-_ Boss选择器选中状态常驻\n" +
                         "_-_ 修复磷焰飞镖部分问题\n" +
                         "_-_ 修复小叶跨存档阻止下楼问题")));
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16
+                , 16), "房间/事件改动",
+                        "优化慧眼墓碑房间、黑魂事件\n\n" +
+                                "现在在触发这两个事件后，将在重生十字架（未祝福）里面有相应的提示"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("药水癔症v0.4"),
+                ("现在全肉大饼可显示激活力量的概率区间。")));
+
+        changes.addButton(new ChangeButton(new RivalSprite(), ("黑魂事件"),
+                ("在灯火低于40+未祝福的十字架会出现黑魂，现在黑魂你可以看见，并且黑魂的描述也有所优化")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), ("染血金币控制终端"),
+                ("现在里面的选中可以常驻，无需每局重新勾选Boss。")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changes.hardlight(Window.R_COLOR);
@@ -188,6 +205,13 @@ public class vm0_9_X_Changes {
 
         changes.addButton(new ChangeButton(Icons.get(Icons.WARNING), "内容延期",
                 "螃蟹王Boss更新延期，具体上线时间日后再议。"));
+
+        changes.addButton(new ChangeButton(new FodderSprite(), "恶魔盛宴",
+                "因为其AI逻辑特殊性，现在胭脂触发沉沦恶魔盛宴时，恶魔盛宴立刻死亡。"));
+
+        changes.addButton( new ChangeButton(new TalentIcon(Talent.STRONGMAN), "天赋调整",
+                        "排山倒海调整：\n" +
+                        "修复排山倒海加成异常，现在不会+1因为Bug就吃到全部精准了。"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CATGIRL_COSPLAY), "猫娘cosPlay",
                 "触发概率从12%→3.25%"));
@@ -214,7 +238,7 @@ public class vm0_9_X_Changes {
                         "_-_ 全面同步破碎闪避图标，新增鱼甲闪避图标"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_3), "磷焰法杖加强",
-                "现在施法与焰浪法杖差不多，但范围略大。并且可穿透。"));
+                "现在施法与焰浪法杖范围一致，但磷焰的火焰持续比焰浪久。并且可穿透。"));
     }
 
     public static void add_V0931_Changes(ArrayList<ChangeInfo> changeInfos ) {
@@ -669,6 +693,8 @@ public class vm0_9_X_Changes {
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
+
+
 
         changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.MAGE, 13), "新皮肤：晚宴邀请",
                 "2025.12.25-2026.1.1 0点前，完成特别委托任务，获得此皮肤。\n\n" +

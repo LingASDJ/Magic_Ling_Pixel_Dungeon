@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -30,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FreeCrack;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -72,7 +75,7 @@ public class ScrollOfTeleportation extends Scroll {
 		if (PathFinder.distance[ch.pos] == Integer.MAX_VALUE
 				|| (!Dungeon.level.passable[pos] && !Dungeon.level.avoid[pos])
 				|| Actor.findChar(pos) != null){
-			if (ch == Dungeon.hero){
+			if (ch == hero){
 				GLog.w( Messages.get(ScrollOfTeleportation.class, "cant_reach") );
 			}
 			return false;
@@ -81,7 +84,7 @@ public class ScrollOfTeleportation extends Scroll {
 		appear( ch, pos );
 		Dungeon.level.occupyCell( ch );
 		Buff.detach(ch, Roots.class);
-		if (ch == Dungeon.hero) {
+		if (ch == hero) {
 			Dungeon.observe();
 			GameScene.updateFog();
 		}
@@ -124,12 +127,16 @@ public class ScrollOfTeleportation extends Scroll {
 			Dungeon.level.occupyCell( ch );
 			Buff.detach(ch, Roots.class);
 
-			if (ch == Dungeon.hero) {
+			if (ch == hero) {
 				GLog.i( Messages.get(ScrollOfTeleportation.class, "tele") );
+
+				if (Dungeon.hero.belongings.getItem(FreeCrack.class) != null) {
+					hero.damage((int) (hero.HP * 0.1f), ScrollOfTeleportation.class, Char.DamageType.REAL);
+				}
 
 				Dungeon.observe();
 				GameScene.updateFog();
-				Dungeon.hero.interrupt();
+				hero.interrupt();
 			}
 			return true;
 
@@ -192,6 +199,11 @@ public class ScrollOfTeleportation extends Scroll {
 				}
 			}
 			GLog.i( Messages.get(ScrollOfTeleportation.class, "tele") );
+
+			if (Dungeon.hero.belongings.getItem(FreeCrack.class) != null) {
+				hero.damage((int) (hero.HP * 0.1f), ScrollOfTeleportation.class, Char.DamageType.REAL);
+			}
+
 			appear( hero, pos );
 			Dungeon.level.occupyCell( hero );
 			Buff.detach(hero, Roots.class);
@@ -262,12 +274,16 @@ public class ScrollOfTeleportation extends Scroll {
 
 		Buff.detach(ch, Roots.class);
 
-		if (ch == Dungeon.hero) {
+		if (ch == hero) {
 			GLog.i( Messages.get(ScrollOfTeleportation.class, "tele") );
+
+			if (Dungeon.hero.belongings.getItem(FreeCrack.class) != null) {
+				hero.damage((int) (hero.HP * 0.1f), ScrollOfTeleportation.class, Char.DamageType.REAL);
+			}
 
 			Dungeon.observe();
 			GameScene.updateFog();
-			Dungeon.hero.interrupt();
+			hero.interrupt();
 		}
 
 		return true;
@@ -293,7 +309,7 @@ public class ScrollOfTeleportation extends Scroll {
 				ch.sprite.parent.add( new AlphaTweener( ch.sprite, 1, 0.4f ) );
 			}
 
-			if (Dungeon.level.heroFOV[pos] || ch == Dungeon.hero ) {
+			if (Dungeon.level.heroFOV[pos] || ch == hero ) {
 				ch.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.2f, 3);
 			}
 		}

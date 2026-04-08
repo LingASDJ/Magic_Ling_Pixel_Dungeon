@@ -13,7 +13,7 @@ public class LanFireSprites extends MobSprite {
 //        } else{
 //            texture( Assets.Sprites.LanFire );
 //        }
-        texture( Assets.Sprites.LanFire_CJ );
+        texture( Assets.Sprites.LanFire );
 
 
         TextureFilm frames = new TextureFilm( texture, 24, 24 );
