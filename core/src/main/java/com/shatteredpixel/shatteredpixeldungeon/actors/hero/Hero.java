@@ -158,6 +158,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLingLand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.DogDogMusic;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -3426,6 +3427,13 @@ public class Hero extends Char {
 
 		if (getCloser(action.dst)) {
 			canSelfTrample = false;
+
+			if(belongings.weapon() instanceof DogDogMusic.CICREMUSIC){
+				DogDogMusic.CicreStats cicreStats = buff(DogDogMusic.CicreStats.class);
+				if(cicreStats != null && cicreStats.attackStats !=0){
+					cicreStats.attackStats = 0;
+				}
+			}
 
 			return true;
 
