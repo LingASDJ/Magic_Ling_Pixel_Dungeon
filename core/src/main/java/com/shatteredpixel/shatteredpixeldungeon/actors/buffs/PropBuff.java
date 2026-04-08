@@ -80,6 +80,7 @@ public class PropBuff extends Buff{
                     t.pos = hero.pos;
                     t.activate();
                     timeI = 0;
+                    Buff.affect(hero,Vertigo.class,2f);
                     target.damage((int) (target.HP*0.1f),this, Char.DamageType.REAL);
                 }
             }

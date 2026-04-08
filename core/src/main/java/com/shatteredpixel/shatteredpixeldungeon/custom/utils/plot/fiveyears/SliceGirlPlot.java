@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.SliceDream;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Script;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
@@ -267,6 +268,7 @@ public class SliceGirlPlot extends Plot {
             diagulewindow.setLeftName(Messages.get(SliceDream.class, "name"));
             diagulewindow.changeText(Messages.get(SliceDream.class, "messages8"));
             PaswordBadges.FlowerHome(Challenges.activeChallenges());
+            SPDSettings.RecordFlowerChallengs(Challenges.activeChallenges());
         }
 
     }

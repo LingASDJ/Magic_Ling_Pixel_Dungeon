@@ -923,8 +923,9 @@ public abstract class RegularLevel extends Level {
 		}
 		Random.popGenerator();
 
-		Random.pushGenerator(Random.Long());
-		if ((Random.Float() < 0.20f || DeviceCompat.isDebug()) && RegularLevel.holiday == WestHoliday.EASTER){
+
+		if ((Random.Float() > 0.75f || DeviceCompat.isDebug()) && RegularLevel.holiday == WestHoliday.EASTER){
+			Random.pushGenerator(Random.Long());
 			ArrayList<Integer> candidateCells = new ArrayList<>();
 			if (Random.Int(2) == 0){
 				for (Heap h : heaps.valueList()){
@@ -950,8 +951,9 @@ public abstract class RegularLevel extends Level {
 
 			int pos = Random.element(candidateCells);
 			mobs.add(Mimic.spawnAt(pos, GreenDiamndMimic.class, false));
+			Random.popGenerator();
 		}
-		Random.popGenerator();
+
 	}
 
 

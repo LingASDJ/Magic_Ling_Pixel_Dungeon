@@ -534,7 +534,7 @@ public class NormalZeroFiveLevel extends Level {
             mobs.add(shopking);
         }
 
-        if(Badges.isUnlocked(Badges.Badge.KILL_MORES) || DeviceCompat.isDebug()){
+        if(Badges.isUnlocked(Badges.Badge.KILL_MORES) && Random.Float() >=0.7f || DeviceCompat.isDebug()){
             SliceDream sliceDream = new SliceDream();
             sliceDream.pos = 645;
             mobs.add(sliceDream);

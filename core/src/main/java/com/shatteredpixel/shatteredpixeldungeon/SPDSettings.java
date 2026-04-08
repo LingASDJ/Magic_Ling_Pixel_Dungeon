@@ -1318,6 +1318,16 @@ public class SPDSettings extends GameSettings {
 		return getInt(KEY_RECORD, 0);
 	}
 
+	public static final String KEY_FLOWER_RECORD	= "flowerrecord";
+
+	public static void RecordFlowerChallengs(int value) {
+		put(KEY_FLOWER_RECORD,value);
+	}
+
+	public static int RecordFlowerChallengs() {
+		return getInt(KEY_FLOWER_RECORD, 0);
+	}
+
 	public static final String KEY_PACMANSOCRE	= "pacman";
 	public static final String KEY_MOVEBOXSCORE = "movebox";
 	public static final String KEY_ALLSEACHSCORE = "allseach";

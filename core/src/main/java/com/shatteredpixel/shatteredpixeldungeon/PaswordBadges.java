@@ -262,7 +262,9 @@ public class PaswordBadges {
         }
 
         public String desc(){
-            if(challenges) {
+            if(image == 39) {
+                return Messages.get(this, name() + ".desc", SPDSettings.RecordFlowerChallengs());
+            } else if(challenges) {
                 return Messages.get(this, name() + ".desc", SPDSettings.RecordChallengs());
             } else {
                 return Messages.get(this, name()+".desc");
