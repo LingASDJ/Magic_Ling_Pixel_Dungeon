@@ -127,7 +127,7 @@ public class MeatPie extends Food {
 
 	@Override
 	public String desc() {
-		if (Dungeon.isChallenged(EXSG)) {
+		if (Dungeon.isChallenged(EXSG) && Dungeon.hero != null) {
 			Hero hero = Dungeon.hero;
 			int region = Math.min(Statistics.deepestFloor / 5, foodLimit.length - 1);
 			int maxStr = foodLimit[region];
