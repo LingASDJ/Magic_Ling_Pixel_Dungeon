@@ -46,7 +46,7 @@ public class WaterSoul extends Elixir {
 
         cure(hero);
         if (Dungeon.hero.buff(UnlessFlower.UnlessFlowerTime.class) != null){
-            heal(hero);
+            Buff.affect( hero, Poison.class).set(4 + hero.lvl/2f);
         } else if(Statistics.bossRushMode && !(Dungeon.isChallenged(Challenges.NO_HEALING))){
             Buff.affect(hero, Barrier.class).setShield( hero.HT/2 );
         } else if (Dungeon.isChallenged(Challenges.NO_HEALING) && Statistics.HealingIsDied<=2) {

@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.RedCrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.TimeFlower;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -611,6 +612,153 @@ public class FiveYearsThreePlot {
             hero.interrupt();
             diagulewindow.setLeftName(Messages.get(ArchettoNewYears.class, "name"));
             diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages6"));
+        }
+
+    }
+
+    public static class ArchettoDFiverYearsPlot extends Plot {
+        private final static int maxprocess = 3;
+
+        {
+            process = 1;
+        }
+
+        protected String getPlotName() {
+            return SEWER_NAME;
+        }
+
+        @Override
+        public void reachProcess(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            while (this.process < needed_process) {
+                this.process();
+            }
+        }
+
+        @Override
+        public void process() {
+            if (diagulewindow != null) {
+                switch (process) {
+                    case 1:
+                        process_to_1();
+                        break;
+                    case 2:
+                        process_to_2();
+                        break;
+                    case 3:
+                        process_to_3();
+                        break;
+                }
+                diagulewindow.update();
+                process++;
+            }
+        }
+
+        @Override
+        public void initial(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            process = 2;
+            process_to_1();
+        }
+
+        @Override
+        public boolean end() {
+            return process > maxprocess;
+        }
+
+        @Override
+        public void skip() {
+            diagulewindow.cancel();
+            WndDialog.settedPlot = null;
+            if(!skipGetItems){
+                DropRules();
+            }
+        }
+
+        private void process_to_1() {
+            diagulewindow.hideAll();
+            hero.interrupt();
+            diagulewindow.setLeftName(Messages.get(ArchettoNewYears.class, "name"));
+            diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages7",hero.name()));
+        }
+
+        private void process_to_2() {
+            diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages8"));
+            DropRules();
+            skipGetItems = true;
+        }
+
+        private void process_to_3() {
+            diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages9"));
+        }
+
+        private void DropRules(){
+            if(Statistics.zeroItemLevel < 4){
+                Dungeon.level.drop(new ScrollOfLullaby(),hero.pos).sprite.drop();
+                Dungeon.level.drop(new TimeFlower(),hero.pos).sprite.drop();
+            } else {
+                Dungeon.level.drop(new Gold(1), hero.pos);
+            }
+            Statistics.zeroItemLevel++;
+        }
+
+    }
+
+    public static class ArchettoEFiverYearsPlot extends Plot {
+        private final static int maxprocess = 1;
+
+        {
+            process = 1;
+        }
+
+        protected String getPlotName() {
+            return SEWER_NAME;
+        }
+
+        @Override
+        public void reachProcess(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            while (this.process < needed_process) {
+                this.process();
+            }
+        }
+
+        @Override
+        public void process() {
+            if (diagulewindow != null) {
+                switch (process) {
+                    case 1:
+                        process_to_1();
+                        break;
+                }
+                diagulewindow.update();
+                process++;
+            }
+        }
+
+        @Override
+        public void initial(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            process = 2;
+            process_to_1();
+        }
+
+        @Override
+        public boolean end() {
+            return process > maxprocess;
+        }
+
+        @Override
+        public void skip() {
+            diagulewindow.cancel();
+            WndDialog.settedPlot = null;
+        }
+
+        private void process_to_1() {
+            diagulewindow.hideAll();
+            hero.interrupt();
+            diagulewindow.setLeftName(Messages.get(ArchettoNewYears.class, "name"));
+            diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages10"));
         }
 
     }

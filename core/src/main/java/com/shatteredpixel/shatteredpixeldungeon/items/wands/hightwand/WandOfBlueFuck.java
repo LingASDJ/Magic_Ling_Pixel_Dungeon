@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HaloFireImBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -325,6 +326,9 @@ public class WandOfBlueFuck extends DamageWand {
                             //damage of a 2-charge zap
                             Buff.affect(ch, Blindness.class, 4f);
                             Buff.affect(ch, Hex.class, 4f);
+
+                            Buff.affect(hero, HaloFireImBlue.class).set( 4f );
+
                             ch.damage(Math.round(powerMulti* Hero.heroDamageIntRange(2 + 2*buffedLvl(), 8 + 4*buffedLvl())), this);
                         }
                     }

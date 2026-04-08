@@ -108,7 +108,13 @@ public class DogDogMusic extends FiveYearsNPC {
 
         @Override
         public String desc() {
-            return Messages.get(this,"desc",Random.IntRange(0, 18 + (level() * 3 )));
+            return Messages.get(this,"desc",1,18 + (level() * 3 ));
+        }
+
+        @Override
+        public boolean doEquip(Hero hero) {
+            Buff.affect(hero, CicreStats.class,12345678f);
+            return super.doEquip(hero);
         }
 
         @Override
@@ -124,7 +130,7 @@ public class DogDogMusic extends FiveYearsNPC {
         public int proc(Char attacker, Char defender, int damage) {
             CicreStats cicreStats = attacker.buff(CicreStats.class);
 
-            int dmg = Random.IntRange(0, 18 + (level() * 3) );
+            int dmg = Random.IntRange(1, 18 + (level() * 3) );
 
             if(cicreStats != null && cicreStats.attackStats < 4 ) {
                 cicreStats.attackStats++;
@@ -143,8 +149,6 @@ public class DogDogMusic extends FiveYearsNPC {
                         }
                     }
                 }
-            } else if(cicreStats == null) {
-                Buff.affect(attacker, CicreStats.class,1f);
             }
 
             return super.proc(attacker, defender, damage);
