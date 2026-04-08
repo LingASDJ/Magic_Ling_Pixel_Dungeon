@@ -101,7 +101,7 @@ public class TitleScene extends PixelScene {
 					switch (SPDSettings.language()){
 						default:
 						case CHINESE:
-							ntpServer = "spldream.com";
+							ntpServer = "www.baidu.com";
 							break;
 						case GREEK:case ENGLISH:case RUSSIAN:case JAPANESE:case HARDCHINESE:
 							ntpServer = "www.bing.com";
