@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DemonFodder;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
@@ -59,8 +60,12 @@ public class PureRouge extends Prop {
 
     public void PureRougeEffect(Char enemy, Char get,boolean defense) {
         if(CheckEnthralled() && defense && !enemy.isImmune(ScrollOfSirensSong.Enthralled.class)){
-            Buff.affect(enemy, ScrollOfSirensSong.Enthralled.class);
-            AllyBuff.affectAndLoot((Mob) enemy, hero, ScrollOfSirensSong.Enthralled.class);
+            if(enemy instanceof DemonFodder){
+                enemy.die(true);
+            } else {
+                Buff.affect(enemy, ScrollOfSirensSong.Enthralled.class);
+                AllyBuff.affectAndLoot((Mob) enemy, hero, ScrollOfSirensSong.Enthralled.class);
+            }
             entrlledchance = 0.05f;
             Transmuting.show(Dungeon.hero, new RandomChest(),this);
             Dungeon.hero.sprite.emitter().start(Speck.factory(Speck.BLIZZARD), 0.2f, 10);
