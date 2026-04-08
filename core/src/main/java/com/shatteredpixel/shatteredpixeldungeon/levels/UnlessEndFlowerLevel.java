@@ -19,7 +19,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.BArray;
@@ -66,11 +65,6 @@ public class UnlessEndFlowerLevel extends Level {
         private int interval = 1;
 
         public int Time = 0;
-
-        @Override
-        public int icon() {
-            return BuffIndicator.DUEL_COMBO;
-        }
 
         public boolean isCollapsing = false;
         public boolean isCollapseFinished = false; // ✅ 新增：崩坏完成/停止标记
@@ -142,8 +136,6 @@ public class UnlessEndFlowerLevel extends Level {
         super.occupyCell(ch);
         if (!(ch instanceof Hero)) return;
         Hero hero = (Hero) ch;
-
-        Buff.affect(hero, MagicalSight.class, 100f);
 
         UnlessAbyss unlessAbyss = hero.buff(UnlessAbyss.class);
         if (unlessAbyss == null) {
@@ -269,6 +261,9 @@ public class UnlessEndFlowerLevel extends Level {
 
     public boolean activateTransition(Hero hero, LevelTransition transition) {
         if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE) {
+            Buff.detach(Dungeon.hero, MagicalSight.class);
+            Buff.detach(Dungeon.hero, Levitation.class);
+            Buff.detach(Dungeon.hero, UnlessEndFlowerLevel.UnlessAbyss.class);
             TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
             if (timeFreeze != null) timeFreeze.disarmPresses();
             Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
@@ -281,8 +276,6 @@ public class UnlessEndFlowerLevel extends Level {
             InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
             InterlevelScene.curTransition.centerCell = -1;
             Game.switchScene(InterlevelScene.class);
-            Buff.detach(hero, MagicalSight.class);
-            Buff.detach(hero, Levitation.class);
             return false;
         } else {
             return super.activateTransition(hero, transition);

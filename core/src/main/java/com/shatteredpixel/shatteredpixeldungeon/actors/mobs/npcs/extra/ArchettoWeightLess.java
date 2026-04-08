@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfAwareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.FiveYearsNPC;
@@ -90,6 +91,12 @@ public class ArchettoWeightLess extends FiveYearsNPC {
         PaswordBadges.loadGlobal();
     }
 
+    @Override
+    protected boolean act() {
+        Buff.affect(hero, MagicalSight.class, 10f);
+        return super.act();
+    }
+
     private void GetGift(){
         Game.runOnRenderThread(new Callback() {
             @Override
@@ -106,6 +113,11 @@ public class ArchettoWeightLess extends FiveYearsNPC {
                                        if (index==0){
                                            GameScene.selectItem(giftSelect);
                                        }
+                                   }
+
+                                   @Override
+                                   public void onBackPressed() {
+
                                    }
                                }
                 );
@@ -135,13 +147,12 @@ public class ArchettoWeightLess extends FiveYearsNPC {
         /**@param 未崩坏前礼物交易对话 */
         } else if(passwordbadges.contains(PaswordBadges.Badge.TIME_CIRCLE) && rd && unlessAbyss != null && unlessAbyss.Time < 300){
             GetGift();
-            rd = false;
         /**@param 未崩坏前与崩坏后循环对话 */
         } else  {
-            if(unlessAbyss != null && unlessAbyss.Time > 300 && sd) {
+            if(unlessAbyss != null && unlessAbyss.Time > 500 && sd) {
                 Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot5, false)));
                 sd = false;
-            } else if((unlessAbyss != null && unlessAbyss.Time > 300)) {
+            } else if((unlessAbyss != null && unlessAbyss.Time > 500)) {
                 Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot6, false)));
             } else {
                 TimeFlower timeFlower = hero.belongings.getItem(TimeFlower.class);
@@ -161,7 +172,7 @@ public class ArchettoWeightLess extends FiveYearsNPC {
 
         @Override
         public String textPrompt() {
-            return Messages.get(KuzumiNewYears.class, "inv_title");
+            return Messages.get(ArchettoWeightLess.class, "inv_title");
         }
 
         @Override
@@ -186,6 +197,7 @@ public class ArchettoWeightLess extends FiveYearsNPC {
                 Dungeon.hero.interrupt();
                 new Flare( 6, 32 ).show( hero.sprite, 2f );
                 yell(Messages.get(ArchettoWeightLess.class,"heal"));
+                rd = false;
             } else if(item instanceof Scroll && !(item instanceof ScrollOfUpgrade) && !(item instanceof ScrollOfEnchantment)) {
                 Sample.INSTANCE.play( Assets.Sounds.DRINK );
                 hero.sprite.emitter().parent.add( new Identification( hero.sprite.center() ) );
@@ -210,6 +222,7 @@ public class ArchettoWeightLess extends FiveYearsNPC {
                 Dungeon.level.drop(new ScrollOfDivination(),hero.pos).sprite.drop();
 
                 yell(Messages.get(ArchettoWeightLess.class,"scroll"));
+                rd = false;
             } else if(item instanceof ScrollOfUpgrade || item instanceof ScrollOfEnchantment){
                 Game.runOnRenderThread(new Callback() {
                     @Override
@@ -226,11 +239,14 @@ public class ArchettoWeightLess extends FiveYearsNPC {
                                            protected void onSelect(int index) {
                                                if (index==0){
                                                    if(Random.Float() > 0.7f){
-                                                       Prop.randomPropA(1,true);
+                                                       Prop p1 = Prop.randomPropA(1,true);
+                                                       Dungeon.level.drop(p1,hero.pos).sprite.drop();
                                                    } else {
-                                                       Prop.randomPropA(2,true);
+                                                       Prop p2 = Prop.randomPropA(2,true);
+                                                       Dungeon.level.drop(p2,hero.pos).sprite.drop();
                                                    }
                                                    yell(Messages.get(ArchettoWeightLess.class,"props"));
+                                                   rd = false;
                                                } else if(index == 1){
                                                    yell("………………");
                                                    int oppositeAdjacent = hero.pos + (hero.pos - pos);
@@ -240,8 +256,10 @@ public class ArchettoWeightLess extends FiveYearsNPC {
                                                    hero.busy();
                                                    hero.sprite.operate( hero.pos );
                                                    Buff.affect(hero,Paralysis.class,100f);
+                                                   rd = false;
                                                } else if(index == 2){
                                                    hide();
+                                                   rd = false;
                                                }
                                            }
                                        }

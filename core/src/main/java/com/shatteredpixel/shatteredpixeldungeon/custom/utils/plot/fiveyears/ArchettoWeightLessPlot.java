@@ -12,8 +12,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BloodRedFlower;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.audio.Sample;
@@ -99,12 +97,7 @@ public class ArchettoWeightLessPlot extends Plot {
 
     private void process_to_3() {
         diagulewindow.changeText(Messages.get(ArchettoWeightLess.class, "messages3"));
-        GameScene.flash(Window.GDX_COLOR);
-        hero.HP = 1;
-        BloodRedFlower bf = new BloodRedFlower();
-        bf.Charge = hero.HT/2;
-        Dungeon.level.drop(bf, hero.pos).sprite.drop();
-        //PaswordBadges.HIRO();
+        Dungeon.level.drop(new BloodRedFlower(), hero.pos).sprite.drop();
     }
 
     private void process_to_4() {
@@ -181,11 +174,7 @@ public class ArchettoWeightLessPlot extends Plot {
 
         private void process_to_2() {
             diagulewindow.changeText(Messages.get(ArchettoWeightLess.class, "messages7"));
-            GameScene.flash(Window.GDX_COLOR);
-            hero.HP = 1;
-            BloodRedFlower bf = new BloodRedFlower();
-            bf.Charge = hero.HT / 2;
-            Dungeon.level.drop(bf, hero.pos).sprite.drop();
+            Dungeon.level.drop(new BloodRedFlower(), hero.pos).sprite.drop();
         }
 
         private void process_to_3() {

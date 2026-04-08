@@ -1293,7 +1293,7 @@ public class Hero extends Char {
 		if(unlessAbyss != null){
 			if (!unlessAbyss.isCollapsing) {
 				unlessAbyss.Time++;
-				if (unlessAbyss.Time >= 300) {
+				if (unlessAbyss.Time >= 500) {
 					unlessAbyss.isCollapsing = true;
 					Buff.affect(hero, Levitation.class,100f);
 				}
