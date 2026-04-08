@@ -13,6 +13,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GameRules;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
@@ -58,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
@@ -66,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -409,6 +413,38 @@ public class NormalZeroFiveLevel extends Level {
     protected void createItems() {
         PaswordBadges.loadGlobal();
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+
+        drop( new RandomChest(), 477  ).type = Heap.Type.FOR_SALE;
+        drop( new RandomChest(), 479  ).type = Heap.Type.FOR_SALE;
+
+        drop((Generator.random(Generator.Category.MISSILE)), 426).type =
+                Heap.Type.FOR_SALE;
+        drop((Generator.random(Generator.Category.MISSILE)), 451).type =
+                Heap.Type.FOR_SALE;
+
+        drop((Generator.random(Generator.Category.WEP_T2)), 455).type =
+                Heap.Type.FOR_SALE;
+        drop((Generator.random(Generator.Category.WEP_T2)), 430).type =
+                Heap.Type.FOR_SALE;
+
+        if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
+            drop((Generator.random(Generator.Category.RING)), 259);
+        }
+
+        if (passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {
+            if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
+                drop((Generator.random(Generator.Category.WAND)), 260);
+            } else {
+                drop((Generator.random(Generator.Category.ARMOR)),260);
+            }
+        }
+
+        if (Badges.isUnlocked(Badges.Badge.RLPT) && !Dungeon.LimitedDrops.BOOK_BAG.dropped() && !Dungeon.isDLC(Conducts.Conduct.DEV)) {
+            Item item = new BookBag();
+            drop(item, 263);
+            Dungeon.LimitedDrops.BOOK_BAG.drop();
+        }
+
     }
 
     public Mob createMob() {

@@ -1438,6 +1438,7 @@ public class Hero extends Char {
 			Statistics.snow = level.distance(pos, 961) > 13;
 		}
 
+
 		//水中祝福 但在BR不生效
 		if((branch == 0 || branch == 10) && !bossRushMode){
 			MoveWater();
