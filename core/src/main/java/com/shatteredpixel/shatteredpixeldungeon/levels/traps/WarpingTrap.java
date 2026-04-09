@@ -21,12 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.FreeCrack;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.BArray;
 
@@ -42,10 +37,6 @@ public class WarpingTrap extends TeleportationTrap {
 		if (Dungeon.level.distance(Dungeon.hero.pos, pos) <= 1){
 			BArray.setFalse(Dungeon.level.visited);
 			BArray.setFalse(Dungeon.level.mapped);
-		}
-
-		if (Dungeon.hero.belongings.getItem(FreeCrack.class) != null) {
-			hero.damage((int) (hero.HP * 0.1f), ScrollOfTeleportation.class, Char.DamageType.REAL);
 		}
 
 		super.activate();

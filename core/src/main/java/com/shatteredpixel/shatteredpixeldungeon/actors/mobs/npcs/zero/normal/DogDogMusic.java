@@ -130,22 +130,26 @@ public class DogDogMusic extends FiveYearsNPC {
         public int proc(Char attacker, Char defender, int damage) {
             CicreStats cicreStats = attacker.buff(CicreStats.class);
 
-            int dmg = Random.IntRange(1, 18 + (level() * 3) );
+            int dmg = Random.IntRange(1, 18 + (level() * 3));
 
-            if(cicreStats != null && cicreStats.attackStats < 4 ) {
+            if (cicreStats != null && cicreStats.attackStats < 4) {
                 cicreStats.attackStats++;
-                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-                    if(mob.isAlive() && Dungeon.hero.fieldOfView[mob.pos]){
-                        mob.damage(dmg,this,DamageType.PHYSICAL);
-                        mob.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 3 );
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (mob.isAlive()
+                            && Dungeon.level.distance(Dungeon.hero.pos, mob.pos) <= 3) {
+                        mob.damage(dmg, this, DamageType.PHYSICAL);
+                        mob.sprite.emitter().burst(Speck.factory(Speck.FORGE), 3);
                     }
                 }
-                Sample.INSTANCE.play( Assets.Sounds.EVOKE );
-                if(cicreStats.attackStats>1){
-                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-                        if(mob.isAlive() && Dungeon.hero.fieldOfView[mob.pos]){
-                            mob.damage(dmg,this,DamageType.PHYSICAL);
-                            mob.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 3 );
+
+                Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+
+                if (cicreStats.attackStats > 1) {
+                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                        if (mob.isAlive()
+                                && Dungeon.level.distance(Dungeon.hero.pos, mob.pos) <= 3) {
+                            mob.damage(dmg, this, DamageType.PHYSICAL);
+                            mob.sprite.emitter().burst(Speck.factory(Speck.FORGE), 3);
                         }
                     }
                 }

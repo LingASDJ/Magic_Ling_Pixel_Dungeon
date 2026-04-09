@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BzmdrLand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.SliceDream;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -76,6 +77,8 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
+import com.watabou.utils.DeviceCompat;
+import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 import java.util.List;
@@ -171,6 +174,12 @@ public class ZeroLevel extends Level {
 
 
     protected void createItems() {
+
+        if(Badges.isUnlocked(Badges.Badge.KILL_MORES) && Random.Float() >=0.7f || DeviceCompat.isDebug()){
+            SliceDream sliceDream = new SliceDream();
+            sliceDream.pos = 534;
+            mobs.add(sliceDream);
+        }
 
             drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), 646 );
 
@@ -338,7 +347,7 @@ public class ZeroLevel extends Level {
     }
 
     public String tilesTex() {
-        return Assets.Environment.RELOAD;
+        return Assets.Environment.TILES_COLD_MINE;
     }
 
     public String waterTex() {

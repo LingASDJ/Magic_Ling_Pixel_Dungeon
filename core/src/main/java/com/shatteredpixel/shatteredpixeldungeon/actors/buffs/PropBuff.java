@@ -29,6 +29,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -81,7 +82,7 @@ public class PropBuff extends Buff{
                     t.activate();
                     timeI = 0;
                     Buff.affect(hero,Vertigo.class,2f);
-                    target.damage((int) (target.HP*0.1f),this, Char.DamageType.REAL);
+                    target.damage(Math.max((int) (target.HP * Random.NormalFloat(0.08f,0.16f)), 1),this, Char.DamageType.REAL);
                 }
             }
 

@@ -88,7 +88,7 @@ public class vm0_9_X_Changes {
     }
 
     public static void add_V0940_Changes(ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.9.4.0", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.9.4.0-1", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -170,6 +170,18 @@ public class vm0_9_X_Changes {
                         "- 放逐Boss：+10000分"));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                (	    "V0.9.4.1：\n\n" +
+                        "_-_ 修复空间残片在1血时传送不致死\n" +
+                        "_-_ 修复0层法伊娜未生成\n" +
+                        "_-_ 修复空间残片传送会触发很多次扣血，导致血量迅速降低\n" +
+                        "_-_ 修复指南书未在0层生成\n" +
+                        "_-_ 修复在商人处回购不消耗金币\n" +
+                        "_-_ 修复炼金指南中部分炼金能量不一致\n" +
+                        "_-_ 修复轻音铃铛武器效果异常问题\n" +
+                        "_-_ 修复0层时装自选凭证未生成的问题\n" +
+                        "_-_ 修复幽寂未在孤城生成的问题")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 ("_-_ 修复幸运手套回购Bug\n" +
                         "_-_ 修复微光向导在Boss层逃课问题\n" +
                         "_-_ 修复无用之盾未生效问题\n" +
@@ -205,6 +217,9 @@ public class vm0_9_X_Changes {
 
         changes.addButton(new ChangeButton(Icons.get(Icons.WARNING), "内容延期",
                 "螃蟹王Boss更新延期，具体上线时间日后再议。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SPACE_DEBRIS), "空间残片",
+                "现在只有主动传送扣血了，且变为区间8~15%"));
 
         changes.addButton(new ChangeButton(new FodderSprite(), "恶魔盛宴",
                 "因为其AI逻辑特殊性，现在胭脂触发沉沦恶魔盛宴时，恶魔盛宴立刻死亡。"));
