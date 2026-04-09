@@ -924,7 +924,7 @@ public abstract class RegularLevel extends Level {
 		Random.popGenerator();
 
 
-		if ((Random.Float() > 0.75f || DeviceCompat.isDebug()) && RegularLevel.holiday == WestHoliday.EASTER){
+		if ((Random.Float() > 0.9f || DeviceCompat.isDebug()) && RegularLevel.holiday == WestHoliday.EASTER){
 			Random.pushGenerator(Random.Long());
 			ArrayList<Integer> candidateCells = new ArrayList<>();
 			if (Random.Int(2) == 0){
@@ -940,12 +940,6 @@ public abstract class RegularLevel extends Level {
 			if (candidateCells.isEmpty()) {
 				if (Random.Int(5) == 0 && findMob(exit()) == null) {
 					candidateCells.add(exit());
-				} else {
-					for (int i = 0; i < length(); i++) {
-						if (map[i] == Terrain.DOOR && findMob(i) == null) {
-							candidateCells.add(i);
-						}
-					}
 				}
 			}
 
