@@ -705,6 +705,12 @@ public abstract class RegularLevel extends Level {
 			case 4:
 				//base mimic chance is 1/20, regular chest is 4/20
 				// so each +1x mimic spawn rate converts to a 25% chance here
+
+				if ((Random.Float() > 0.9f || DeviceCompat.isDebug()) && RegularLevel.holiday == WestHoliday.EASTER){
+					mobs.add(Mimic.spawnAt(cell, GreenDiamndMimic.class, toDrop));
+					continue;
+				}
+
 				if (Random.Float() < (MimicTooth.mimicChanceMultiplier() - 1f)/4f  && findMob(cell) == null){
 					mobs.add(Mimic.spawnAt(cell, toDrop));
 					continue;
@@ -729,7 +735,11 @@ public abstract class RegularLevel extends Level {
 
 				float mimicChance = 1/10f * MimicTooth.mimicChanceMultiplier();
 				if (Dungeon.depth > 1 && Random.Float() < mimicChance && findMob(cell) == null){
-					mobs.add(Mimic.spawnAt(cell, GoldenMimic.class, toDrop));
+					if ((Random.Float() > 0.9f || DeviceCompat.isDebug()) && RegularLevel.holiday == WestHoliday.EASTER){
+						mobs.add(Mimic.spawnAt(cell, GreenDiamndMimic.class, toDrop));
+					} else {
+						mobs.add(Mimic.spawnAt(cell, GoldenMimic.class, toDrop));
+					}
 				} else {
 					Heap dropped = drop(toDrop, cell);
 					if (heaps.get(cell) == dropped) {
@@ -922,31 +932,6 @@ public abstract class RegularLevel extends Level {
 			drop( Generator.randomUsingDefaults(), cell).hidden = true;
 		}
 		Random.popGenerator();
-
-
-		if ((Random.Float() > 0.9f || DeviceCompat.isDebug()) && RegularLevel.holiday == WestHoliday.EASTER){
-			Random.pushGenerator(Random.Long());
-			ArrayList<Integer> candidateCells = new ArrayList<>();
-			if (Random.Int(2) == 0){
-				for (Heap h : heaps.valueList()){
-					if (h.type == Heap.Type.HEAP
-							&& !(room(h.pos) instanceof SpecialRoom)
-							&& findMob(h.pos) == null){
-						candidateCells.add(h.pos);
-					}
-				}
-			}
-
-			if (candidateCells.isEmpty()) {
-				if (Random.Int(5) == 0 && findMob(exit()) == null) {
-					candidateCells.add(exit());
-				}
-			}
-
-			int pos = Random.element(candidateCells);
-			mobs.add(Mimic.spawnAt(pos, GreenDiamndMimic.class, false));
-			Random.popGenerator();
-		}
 
 	}
 
