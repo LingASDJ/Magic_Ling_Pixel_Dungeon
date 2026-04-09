@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.FayiNa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLing;
@@ -46,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.XiaYuan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Zako;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroTomb;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.ArchettoNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.AG;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.Choco;
@@ -64,11 +66,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
+import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -81,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.GoldLo
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -414,6 +420,15 @@ public class NormalZeroFiveLevel extends Level {
         PaswordBadges.loadGlobal();
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
+        if(!SPDSettings.isItemUnlock("anyskin1")){
+            AnySkinSelect anySkinSelect = new AnySkinSelect();
+            drop(anySkinSelect,321);
+        }
+
+        if ((!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO) || SPDSettings.intro() )){
+            drop( new Guidebook(),  888);
+        }
+
         drop( new RandomChest(), 477  ).type = Heap.Type.FOR_SALE;
         drop( new RandomChest(), 479  ).type = Heap.Type.FOR_SALE;
 
@@ -487,6 +502,16 @@ public class NormalZeroFiveLevel extends Level {
     };
 
     protected void createMobs() {
+
+        if(SPDSettings.KillDragon()){
+            FayiNa npc222= new FayiNa();
+            npc222.pos = 860;
+            mobs.add(npc222);
+            ZeroTomb npc1s2= new ZeroTomb();
+            npc1s2.pos = 861;
+            mobs.add(npc1s2);
+            drop( new LingJing(),  859);
+        }
 
         if(!Statistics.moonlowgetAloneRoom){
             MoonLow ml = new MoonLow();

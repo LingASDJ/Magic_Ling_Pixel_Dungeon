@@ -56,7 +56,7 @@ public class WandOfHightHunderStorm extends DamageWand {
             inputs =  new Class[]{PotionOfLightningShiledX.class, WandOfLightning.class, CrivusFruitsFlake.class};
             inQuantity = new int[]{1, 1, 1};
 
-            cost = 15+Dungeon.depth/2;
+            cost = 15;
 
             output = WandOfHightHunderStorm.class;
             outQuantity = 1;

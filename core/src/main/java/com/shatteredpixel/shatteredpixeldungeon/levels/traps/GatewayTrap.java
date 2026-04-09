@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -33,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.FreeCrack;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -146,11 +143,6 @@ public class GatewayTrap extends Trap {
 				}
 			}
 		}
-
-		if (Dungeon.hero.belongings.getItem(FreeCrack.class) != null) {
-			hero.damage((int) (hero.HP * 0.1f), ScrollOfTeleportation.class, Char.DamageType.REAL);
-		}
-
 	}
 
 	private static final String TELE_POS = "tele_pos";

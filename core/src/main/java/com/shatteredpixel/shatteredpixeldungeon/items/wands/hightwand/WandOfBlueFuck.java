@@ -86,7 +86,7 @@ public class WandOfBlueFuck extends DamageWand {
             inputs =  new Class[]{PotionOfLiquidFlameX.class, WandOfFireblast.class, CrivusFruitsFlake.class};
             inQuantity = new int[]{1, 1, 1};
 
-            cost = 15+Dungeon.depth/2;
+            cost = 15;
 
             output = WandOfBlueFuck.class;
             outQuantity = 1;
