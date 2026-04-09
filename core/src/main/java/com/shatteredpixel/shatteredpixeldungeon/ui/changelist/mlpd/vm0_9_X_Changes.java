@@ -146,7 +146,8 @@ public class vm0_9_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new MoonCatSprite(), "0层NPC规则",
-                "老板娘：完成13挑以上后，给予额外净化药剂\n" +
+                "老板娘：完成13挑以上后，给予额外净化药剂\n\n" +
+                        "以下为常规，无需13挑：\n"+
                         "一号桌子（随机2人）：雨夜、小骑士、晓梦\n" +
                         "二号桌子（随机2人）：月华、狐狸、魔法绵羊、喵音·椛\n" +
                         "三号桌子（随机2人）：紫澪、小蓝、深海、浅月深白\n" +
@@ -179,7 +180,8 @@ public class vm0_9_X_Changes {
                         "_-_ 修复炼金指南中部分炼金能量不一致\n" +
                         "_-_ 修复轻音铃铛武器效果异常问题\n" +
                         "_-_ 修复0层时装自选凭证未生成的问题\n" +
-                        "_-_ 修复幽寂未在孤城生成的问题")));
+                        "_-_ 修复幽寂未在孤城生成的问题\n" +
+                        "_-_ 修复矮人将军处小叶错误生成的问题")));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 ("_-_ 修复幸运手套回购Bug\n" +

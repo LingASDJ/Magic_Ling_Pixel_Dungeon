@@ -104,7 +104,7 @@ abstract public class Boss extends Mob {
                 }
             }
 
-            if((isDLC(Conducts.Conduct.HARD) || isDLC(Conducts.Conduct.DEV)) && (new ArrayList<>(Arrays.asList(5,10,15,20,25)).contains(Dungeon.depth) && Dungeon.branch == 0 ) || level instanceof DwarfGeneralBossLevel){
+            if((isDLC(Conducts.Conduct.HARD) || isDLC(Conducts.Conduct.DEV)) && (new ArrayList<>(Arrays.asList(5,10,15,20,25)).contains(Dungeon.depth) && Dungeon.branch == 0 ) || level instanceof DwarfGeneralBossLevel && isDLC(Conducts.Conduct.HARD)){
 
 
                 if(Dungeon.depth == 5){
