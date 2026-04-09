@@ -88,4 +88,10 @@ public class TimeFlower extends Item {
         return true;
     }
 
+    public static class PlusFlower extends TimeFlower {
+        {
+            powerFlower = true;
+        }
+    }
+
 }
