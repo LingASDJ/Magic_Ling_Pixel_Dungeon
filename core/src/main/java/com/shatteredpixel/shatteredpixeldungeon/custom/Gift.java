@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.Null;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -17,6 +18,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Reflection;
 
 import net.iharder.Base64;
@@ -355,20 +357,36 @@ public class Gift implements Bundlable {
         if( currentTime > expirationDate )
             return 2;
 
-        String part2 = SPDSettings.queryGiftPart( key, 2 );
-        String part3 = SPDSettings.queryGiftPart( key, 3 );
-        boolean isNetworkedCode = !part2.equals( part3 );
-        boolean keyUsed;
+        String part2 = SPDSettings.queryGiftPart( key, 2 ); //minVersionCode
+        String part3 = SPDSettings.queryGiftPart( key, 3 ); //shouldDoPickUp
+        String part4 = SPDSettings.queryGiftPart( key, 4 ); //keyUsed
+        String[] parts = {part2, part3,part4};
+        int count = 0;
+        int index = -1;
+        int lastIndex = -1;
+        for (int i = 0;i<parts.length;i++) {
+            if (Boolean.parseBoolean(parts[i])) {
+                if( index < 0 )
+                    index = i;
 
-        if( isNetworkedCode ){
+                lastIndex = i;
+                count++;
+            }
+        }
+
+        boolean isNetworkedCode = ( count >= 1 && count < 3 && part2.matches("-?\\d+") );
+        boolean shouldDoPickUp = ( index >= 0 && count == 2 );
+
+        if( isNetworkedCode )
             if( Game.versionCode < Long.parseLong( part2 ) )
                 return 6;
 
-            keyUsed = Boolean.parseBoolean( part3 );
-        }else {
-            keyUsed = Boolean.parseBoolean( part2 );
+        boolean keyUsed;
+        try {
+            keyUsed = Boolean.parseBoolean(parts[lastIndex]);
+        } catch (Exception e) {
+            keyUsed = true;
         }
-
         if( keyUsed )
             return 3;
 
@@ -376,25 +394,30 @@ public class Gift implements Bundlable {
         if( GIFT_ITEM.containsKey( keyCheck ) ){
             LinkedHashMap<String, Integer> items = GIFT_ITEM.get( keyCheck );
             for ( Map.Entry<String, Integer> entry : items.entrySet() ) {
-                if( entry.getKey().contains(".buffs") )
-                        GiveBuff( entry.getKey(), entry.getValue() );
+                String name = entry.getKey();
+                int value = entry.getValue();
+
+                if( name.contains(".buffs") )
+                    GiveBuff( name, value );
                 else
-                    GiveItem( entry.getKey(), entry.getValue() );
+                    GiveItem( name, value, shouldDoPickUp );
             }
         }
 
-        SPDSettings.modifyGiftPart( key, isNetworkedCode ? 3 : Gift_Used, String.valueOf(true) );
+        if( !DeviceCompat.isDebug() && !DeviceCompat.isMidTest() )
+            SPDSettings.modifyGiftPart( key, isNetworkedCode ? 3 : Gift_Used, String.valueOf(true) );
+
         return 1;
     }
 
     //存储Buff
-    private static void GiveBuff(String buffKey, int buffValue){
+    private static void GiveBuff( String buffKey, int buffValue ){
         GLog.i( Messages.get( Gift.class, "buff", Messages.get( Gift.class, buffKey ) ) );
         giftBuffArray.put( buffKey, buffValue);
     }
 
     //给予物品
-    private static void GiveItem(String itemName,int quantity){
+    private static void GiveItem( String itemName, int quantity, boolean shouldDoPickUp ){
         boolean collect = false;
         Item item = null;
         try {
@@ -404,10 +427,9 @@ public class Gift implements Bundlable {
         }
         if(Challenges.isItemBlocked(item)) return;
         if (item != null) {
-            //若为咕币
-            if(item instanceof IceCyanBlueSquareCoin) {
+            if( shouldDoPickUp ) {
                 GLog.i( Messages.get( Gift.class, "you_now_have", item.name(), quantity ));
-                new IceCyanBlueSquareCoin(quantity).doPickUp(hero);
+                item.quantity(quantity).doPickUp(hero);
                 return;
             }
 
