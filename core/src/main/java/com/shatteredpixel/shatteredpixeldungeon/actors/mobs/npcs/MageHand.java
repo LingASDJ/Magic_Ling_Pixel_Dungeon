@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.PacmanHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -1118,7 +1119,7 @@ public class MageHand extends DirectableAlly {
                             mageHand.pos = Random.element(spawnPoints);
                             GameScene.add(mageHand, 1f);
                             Dungeon.level.occupyCell(mageHand);
-
+                            Bestiary.setSeen(mageHand.getClass());
                             CellEmitter.get(mageHand.pos).start(ShaftParticle.FACTORY, 0.3f, 4);
                             CellEmitter.get(mageHand.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
 

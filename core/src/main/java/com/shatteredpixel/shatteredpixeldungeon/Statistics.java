@@ -101,6 +101,8 @@ public class Statistics {
 
 	public static int gdzHelpDungeon;
 
+	public static int survey_research_points;
+
 	//小叶12挑首次对话
 	public static boolean SmallLeafGet = false;
 	public static boolean noClearKill = false;
@@ -713,6 +715,9 @@ public class Statistics {
 		zeroItemLevel = 0;
 		hcDialogLevel = 0;
 		gdzHelpDungeon = 0;
+
+	    survey_research_points=0;
+
 		youNoItem = false;
 		unLockedFireDargon = false;
 
@@ -980,6 +985,8 @@ public class Statistics {
 
 		bundle.put("GDZ",gdzHelpDungeon);
 
+		bundle.put("SFRCFV",survey_research_points);
+
 		bundle.put("SMALLEAFTGET",SmallLeafGet);
 
 		bundle.put("NOCLEAR",noClearKill);
@@ -1208,6 +1215,8 @@ public class Statistics {
 
 		YuanXiLimit = bundle.getInt("YUANXI");
 		enterHiro = bundle.getBoolean("EnterHiro");
+
+		survey_research_points = bundle.getInt("SFRCFV");
 
 		AbyssCityRules = bundle.getInt("AbyssRules");
 

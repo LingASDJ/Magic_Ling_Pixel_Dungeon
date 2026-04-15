@@ -189,8 +189,10 @@ public class WandOfLightning extends DamageWand {
 
 		int dist = Dungeon.level.water[ch.pos] ? 2 : 1;
 
-		if (curUser.buff(LightningCharge.class) != null){
-			dist++;
+		if(curUser != null){
+			if (curUser.buff(LightningCharge.class) != null){
+				dist++;
+			}
 		}
 
 		ArrayList<Char> hitThisArc = new ArrayList<>();

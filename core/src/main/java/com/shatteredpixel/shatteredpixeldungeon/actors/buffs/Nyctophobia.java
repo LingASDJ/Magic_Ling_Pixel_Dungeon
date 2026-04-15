@@ -147,7 +147,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
             }
             spend(90f);
         } else if(hero.lanterfire<=0) {
-            hero.damage(1 +Challenges.activeChallenges()/3*Dungeon.depth/5, trueDamge.class);
+            hero.damage(1 +Challenges.activeChallenges()/3*Dungeon.depth/5, trueDamge.class, Char.DamageType.REAL);
             GLog.n(Messages.get(this,"dead"));
             cure( Dungeon.hero );
             switch (Random.Int(4)){

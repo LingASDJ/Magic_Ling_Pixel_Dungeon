@@ -2,11 +2,14 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue.Quest.survey_research_points;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.survey_research_points;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.AncientStats;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.DragonBluePlot;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
@@ -136,13 +139,14 @@ public class DragonGirlBlue extends NTNPC{
                 });
                 return false;
             }
-        } else if(DragonGirlBlue.Quest.survey_research_points == 0) {
+        } else if(Statistics.survey_research_points == 0) {
             yell(Messages.get(DragonGirlBlue.class,"no_anymore"));
         } else {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
                     if(survey_research_points>4000) survey_research_points = 4000;
+                    Buff.detach(hero, AncientStats.class);
                     GameScene.show(new WndDragonGirlBlue(DragonGirlBlue.this, Dungeon.hero));
                 }
             });
@@ -173,7 +177,6 @@ public class DragonGirlBlue extends NTNPC{
         }
 
         public static void reset() {
-            survey_research_points = 0;
 
             one_used_points = 0;
 
@@ -248,8 +251,8 @@ public class DragonGirlBlue extends NTNPC{
 
         public static void complete(){
             completed = true;
-            if(survey_research_points>4000){
-                survey_research_points = 4000;
+            if(Statistics.survey_research_points>4000){
+                Statistics.survey_research_points = 4000;
             }
         }
 

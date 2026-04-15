@@ -1832,7 +1832,7 @@ public abstract class Level implements Bundlable {
 				mindVisRange = Math.max(mindVisRange, EyeOfNewt.mindVisionRange());
 
 				if (mindVisRange >= 1) {
-					for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+					for (Mob mob : mobs) {
 						if (mob instanceof Mimic && mob.alignment == Char.Alignment.NEUTRAL&& ((Mimic) mob).stealthy()){
 							continue;
 						}

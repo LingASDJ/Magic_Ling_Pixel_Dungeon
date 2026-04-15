@@ -3,7 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue.Quest.four_used_points;
-import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue.Quest.survey_research_points;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.survey_research_points;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -520,8 +520,8 @@ public class SakaFishBoss extends Boss {
                     @Override
                     public void call() {
                         AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
-                        if (leapVictim != null && alignment != leapVictim.alignment){
-                            enemy.damage( Random.NormalIntRange( 40, 60 ), this );
+                        if (leapVictim != null && alignment != leapVictim.alignment && enemy != null){
+                            enemy.damage( Random.NormalIntRange( 40, 60 ), this , DamageType.MAGIC);
                             if(level == AncientMysteryCityBossLevel.State.FALL_BOSS){
                                 //三阶段 魔法风暴
                                 FishStorm(sprite.ch);

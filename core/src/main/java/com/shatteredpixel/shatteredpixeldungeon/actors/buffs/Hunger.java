@@ -229,13 +229,16 @@ public class Hunger extends Buff implements Hero.Doom {
 	}
 
 	public int hungerNoWEDamage(){
-		int hunger;
-		Hunger hungerBuff = hero.buff(Hunger.class);
-		if(hungerBuff != null){
-			hunger = (int) Math.max(0, STARVING - hunger());
-		} else {
-			hunger = 75;
+		int hunger = 450;
+		if(Dungeon.hero != null){
+			Hunger hungerBuff = hero.buff(Hunger.class);
+			if(hungerBuff != null){
+				hunger = (int) Math.max(0, STARVING - hunger());
+			} else {
+				hunger = 75;
+			}
 		}
+
 		return hunger/75;
 	}
 

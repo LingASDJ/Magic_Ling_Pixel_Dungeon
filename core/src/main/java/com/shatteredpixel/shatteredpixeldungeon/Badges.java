@@ -389,15 +389,15 @@ public class Badges {
 	public static void validateAncityProgress() {
 		Badge badge = null;
 
-		if (!local.contains( Badge.ANCITY_ONE ) && DragonGirlBlue.Quest.survey_research_points >= 1200) {
+		if (!local.contains( Badge.ANCITY_ONE ) && Statistics.survey_research_points >= 1200) {
 			badge = Badge.ANCITY_ONE;
 			local.add( badge );
 		}
-		if (!local.contains( Badge.ANCITY_TWO ) && DragonGirlBlue.Quest.survey_research_points >= 2400) {
+		if (!local.contains( Badge.ANCITY_TWO ) && Statistics.survey_research_points >= 2400) {
 			badge = Badge.ANCITY_TWO;
 			local.add( badge );
 		}
-		if (!local.contains( Badge.ANCITY_THREE ) && DragonGirlBlue.Quest.survey_research_points >= 4000) {
+		if (!local.contains( Badge.ANCITY_THREE ) && Statistics.survey_research_points >= 4000) {
 			badge = Badge.ANCITY_THREE;
 			local.add( badge );
 		}
@@ -1299,6 +1299,14 @@ public class Badges {
 		Iterator<Badge> iterator = badges.iterator();
 		while (iterator.hasNext()) {
 			Badge badge = iterator.next();
+			// ========== 旧存档兼容核心：双重空值判断 ==========
+			// 1. 过滤旧存档生成的 null Badge对象
+			// 2. 过滤旧存档中 type字段为null的Badge对象
+			if (badge == null || badge.type == null) {
+				iterator.remove();
+				continue;
+			}
+			// 原有过滤逻辑
 			if ((!global && badge.type != BadgeType.LOCAL) || badge.type == BadgeType.HIDDEN) {
 				iterator.remove();
 			}
@@ -1307,7 +1315,6 @@ public class Badges {
 		Collections.sort(badges);
 
 		return filterReplacedBadges(badges);
-
 	}
 
 	public static List<Badge> filterReplacedBadges( List<Badge> badges ) {

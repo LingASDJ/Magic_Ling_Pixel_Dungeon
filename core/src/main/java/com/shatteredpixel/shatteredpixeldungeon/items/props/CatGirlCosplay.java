@@ -66,7 +66,6 @@ public class CatGirlCosplay extends Prop {
                                     if(Random.Float() <= 0.5f){
                                         ((Mob) ch).clearEnemy();
                                         ((Mob) ch).state = ((Mob) ch).FLEEING;
-                                        ((Mob) ch).beckon(Dungeon.level.randomRespawnCell(ch));
                                         if (ch.sprite != null) ch.sprite.showLost();
                                         if(ch.buff(Adrenaline.class)!=null){
                                             Buff.affect(ch, AbsoluteBlindness.class).addLeft(2f);

@@ -100,7 +100,9 @@ abstract public class ClassArmor extends Armor {
 		ClassArmor classArmor = null;
 		
 		switch (owner.heroClass) {
+			//TODO This Normal Becaused Completed SpellSword
 			case WARRIOR:
+			default:
 				classArmor = new WarriorArmor();
 				break;
 			case ROGUE:
@@ -116,7 +118,7 @@ abstract public class ClassArmor extends Armor {
 				classArmor = new DuelistArmor();
 				break;
 		}
-		
+
 		classArmor.level(armor.trueLevel());
 		classArmor.tier = armor.tier;
 		classArmor.augment = armor.augment;
