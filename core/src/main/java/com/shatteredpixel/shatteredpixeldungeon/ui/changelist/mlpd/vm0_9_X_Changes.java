@@ -78,6 +78,7 @@ import java.util.ArrayList;
 public class vm0_9_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0942_Changes(changeInfos);
         add_V0940_Changes(changeInfos);
         add_V0931_Changes(changeInfos);
         add_V0925_Changes(changeInfos);
@@ -85,6 +86,48 @@ public class vm0_9_X_Changes {
         add_V0915_Changes(changeInfos);
         add_V0910_Changes(changeInfos);
         add_V0900_Changes(changeInfos);
+    }
+
+    public static void add_V0942_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.9.4.2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：繁体中文"),
+                ("来自Sotis的繁体中文已经更新\n\n当前繁体中文语言包版本：2026/4/16")));
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.ANCIENT_SURVEY, true), "远古遗迹Buff",
+                "现在游玩远古遗迹，可以实时查看自己的调查点数。"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("伤害系统v0.2"),
+                ("修复伤害系统默认为魔法伤害图标的显示，伤害实际来源是没有问题的。\n\n并且现在真实伤害拥有独特图标：绿剑")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                (	    "V0.9.4.2：\n\n" +
+                        "_-_ 修复雷霆法杖ARC效果可能空指针导致的闪退游戏异常\n" +
+                        "_-_ 修复英雄护甲一个潜在的可能导致空指针的问题闪退游戏异常\n" +
+                        "_-_ 修复Boss多血条渲染潜在的一些问题\n" +
+                        "_-_ 修复部分远古存档徽章更新后的闪退，但部分过于老旧版本的徽章可能会直接作废\n" +
+                        "_-_ 修复糯米大剑的一些潜在游戏崩溃问题\n" +
+                        "_-_ 修复因伤害系统改变，远古遗迹怪物部分技能异常\n" +
+                        "_-_ 优化法师之手图鉴显示需求\n" +
+                        "_-_ 优化传送方法底层代码")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new NyarlathotepSprite(), ("古堡奈亚调整"),
+                ("奈亚子生成陷阱现在不包含缴械陷阱")));
     }
 
     public static void add_V0940_Changes(ArrayList<ChangeInfo> changeInfos ) {

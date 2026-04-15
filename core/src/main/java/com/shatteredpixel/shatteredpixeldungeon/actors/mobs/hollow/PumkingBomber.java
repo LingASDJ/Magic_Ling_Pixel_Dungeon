@@ -53,7 +53,7 @@ public class PumkingBomber extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 25,3 );
+        return Random.NormalIntRange( 25,33 );
     }
 
     @Override

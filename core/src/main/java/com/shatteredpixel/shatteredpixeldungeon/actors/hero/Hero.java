@@ -2492,7 +2492,7 @@ public class Hero extends Char {
 		if(hero.belongings.getItem(WenStudyingPaperOne.class)!=null) {
 			PropBuff props = hero.buff(PropBuff.class);
 			if(props != null) {
-				if(props.timeB >=7 && type != DamageType.HG){
+				if(props.timeB >=7 && (type != DamageType.HG)){
 					if (HT / 2 >= HP) {
 						Buff.affect(hero, Swiftthistle.TimeBubble.class).setLeft(5f);
 					} else {
