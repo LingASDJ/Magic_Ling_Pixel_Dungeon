@@ -98,6 +98,9 @@ public class FloatingText extends RenderedTextBlock {
 	public static int ICECOIN = 31;
 
 	public static int PINKHEAL = 33;
+
+	public static int TRUE_DAMAGE = 34;
+
 	public static int MISS_ARM = 54;
 	public static int MISS_TUFT = 55;
 	public static int MISS_FISH = 56;

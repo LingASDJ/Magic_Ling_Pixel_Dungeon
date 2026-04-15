@@ -953,7 +953,7 @@ public abstract class Char extends Actor {
 	}
 
 	public void damage( int dmg, Object src){
-		damage(dmg,src, DamageType.MAGIC);
+		damage(dmg,src, null);
 	}
 
 	public void damage( int dmg, Object src, DamageType type ) {
@@ -1113,7 +1113,9 @@ public abstract class Char extends Actor {
 				icon = FloatingText.PHYS_DMG;
 			} else if(type == DamageType.MAGIC){
 				icon = FloatingText.MAGIC_DMG;
-            }
+            } else if(type == DamageType.REAL){
+				icon = FloatingText.TRUE_DAMAGE;
+			}
 
 			if (NO_ARMOR_PHYSICAL_SOURCES.contains(src.getClass()))     icon = FloatingText.PHYS_DMG_NO_BLOCK;
 			if (AntiMagic.RESISTS.contains(src.getClass()))             icon = FloatingText.MAGIC_DMG;

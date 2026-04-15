@@ -520,8 +520,8 @@ public class SakaFishBoss extends Boss {
                     @Override
                     public void call() {
                         AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
-                        if (leapVictim != null && alignment != leapVictim.alignment){
-                            enemy.damage( Random.NormalIntRange( 40, 60 ), this );
+                        if (leapVictim != null && alignment != leapVictim.alignment && enemy != null){
+                            enemy.damage( Random.NormalIntRange( 40, 60 ), this , DamageType.MAGIC);
                             if(level == AncientMysteryCityBossLevel.State.FALL_BOSS){
                                 //三阶段 魔法风暴
                                 FishStorm(sprite.ch);

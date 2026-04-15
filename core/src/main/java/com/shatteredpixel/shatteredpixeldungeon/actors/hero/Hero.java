@@ -2455,7 +2455,7 @@ public class Hero extends Char {
 
 	@Override
 	public void damage( int dmg, Object src ) {
-		damage(dmg, src , DamageType.MAGIC);
+		damage(dmg, src , null);
 	}
 
 	@Override
