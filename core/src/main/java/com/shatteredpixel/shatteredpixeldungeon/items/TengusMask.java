@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -139,6 +140,8 @@ public class TengusMask extends Item {
 				mageHand.pos = Random.element(spawnPoints);
 				GameScene.add(mageHand, 1f);
 				Dungeon.level.occupyCell(mageHand);
+
+				Bestiary.setSeen(mageHand.getClass());
 
 				CellEmitter.get(mageHand.pos).start(ShaftParticle.FACTORY, 0.3f, 4);
 				CellEmitter.get(mageHand.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);

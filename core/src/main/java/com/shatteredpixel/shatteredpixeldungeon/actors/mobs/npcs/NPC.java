@@ -50,7 +50,8 @@ public abstract class NPC extends Mob {
 	}
 	@Override
 	protected boolean act() {
-		if (Dungeon.level.heroFOV[pos]){
+		NPC npc = this;
+		if (Dungeon.level.heroFOV[pos] && !(npc instanceof MageHand)){
 			Bestiary.setSeen(getClass());
 		}
 
