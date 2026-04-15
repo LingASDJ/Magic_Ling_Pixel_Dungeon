@@ -247,7 +247,7 @@ public class BossHealthBar extends Component {
 					hpTexts[i].text(health + "+" + shield + "/" + max);
 				}
 
-				if (buffs[i] != null) {
+				if (buffs != null && buffs[i] != null) {
 					buffs[i].needsRefresh = true;
 					buffs[i].update();
 					buffs[i].layout();
@@ -285,8 +285,8 @@ public class BossHealthBar extends Component {
 	public static void assignBoss(Mob boss) {
 		for (int i = 0; i < MAX_BOSSES; i++) {
 			if (bosses[i] == boss) {
-				// 如果已存在，强制刷新其Buff
-				if (instance != null && instance.buffs[i] != null) {
+				// 如果已存在，强制刷新其Buff（原有判空保留）
+				if (instance != null && instance.buffs != null && instance.buffs[i] != null) {
 					instance.buffs[i].needsRefresh = true;
 					instance.buffs[i].layout();
 				}
@@ -308,24 +308,27 @@ public class BossHealthBar extends Component {
 			bosses[emptyIndex] = boss;
 			bleeding[emptyIndex] = false;
 
-			if (instance != null) {
+			if (instance != null && instance.buffs != null) {
 				instance.visible = instance.active = true;
 
-				// 更新BuffIndicator
+				// 旧BuffIndicator销毁
 				if (instance.buffs[emptyIndex] != null) {
 					instance.remove(instance.buffs[emptyIndex]);
 					instance.buffs[emptyIndex].destroy();
+					instance.buffs[emptyIndex] = null;
 				}
+				// 创建新的BuffIndicator
 				instance.buffs[emptyIndex] = new BuffIndicator(boss, false);
 				BuffIndicator.setBossInstance(emptyIndex, instance.buffs[emptyIndex]);
 				instance.add(instance.buffs[emptyIndex]);
 
-				instance.buffs[emptyIndex].needsRefresh = true;
-				instance.buffs[emptyIndex].layout();
-				instance.buffs[emptyIndex].update();
+				if (instance.buffs[emptyIndex] != null) {
+					instance.buffs[emptyIndex].needsRefresh = true;
+					instance.buffs[emptyIndex].layout();
+					instance.buffs[emptyIndex].update();
+				}
 
 				instance.layout();
-
 				BuffIndicator.refreshAllBosses();
 			}
 		}
