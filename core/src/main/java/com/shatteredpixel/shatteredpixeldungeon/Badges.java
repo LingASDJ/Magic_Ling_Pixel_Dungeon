@@ -389,15 +389,15 @@ public class Badges {
 	public static void validateAncityProgress() {
 		Badge badge = null;
 
-		if (!local.contains( Badge.ANCITY_ONE ) && DragonGirlBlue.Quest.survey_research_points >= 1200) {
+		if (!local.contains( Badge.ANCITY_ONE ) && Statistics.survey_research_points >= 1200) {
 			badge = Badge.ANCITY_ONE;
 			local.add( badge );
 		}
-		if (!local.contains( Badge.ANCITY_TWO ) && DragonGirlBlue.Quest.survey_research_points >= 2400) {
+		if (!local.contains( Badge.ANCITY_TWO ) && Statistics.survey_research_points >= 2400) {
 			badge = Badge.ANCITY_TWO;
 			local.add( badge );
 		}
-		if (!local.contains( Badge.ANCITY_THREE ) && DragonGirlBlue.Quest.survey_research_points >= 4000) {
+		if (!local.contains( Badge.ANCITY_THREE ) && Statistics.survey_research_points >= 4000) {
 			badge = Badge.ANCITY_THREE;
 			local.add( badge );
 		}

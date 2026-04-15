@@ -129,6 +129,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WaterSoulX;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.AncientStats;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BloodLoss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.MagicAbsorb;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
@@ -275,6 +276,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.Tre
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewZeroFiveLevel;
@@ -1287,6 +1290,12 @@ public class Hero extends Char {
 				if (isNegative) {
 					GLog.p(Messages.get(FaintGlimmer.class, "light", count,remainingLevel));
 				}
+			}
+		}
+
+		if(level instanceof AncientMysteryCityLevel || level instanceof AncientMysteryCityBossLevel){
+			if(buff(AncientStats.class) == null){
+				Buff.affect(this, AncientStats.class).set((100), 1);
 			}
 		}
 

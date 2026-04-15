@@ -1,9 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AnomaloCarisSprite;
 import com.watabou.utils.Bundle;
@@ -40,8 +40,8 @@ public class AnomaloCaris extends Mob {
     }
 
     @Override
-    public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
-        boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti );
+    public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti,DamageType type) {
+        boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti,type );
         if (first) {
             first=false;
         }
@@ -74,7 +74,7 @@ public class AnomaloCaris extends Mob {
     @Override
     public void die( Object cause ) {
         super.die(cause);
-        DragonGirlBlue.Quest.survey_research_points += 110;
+        Statistics.survey_research_points += 110;
         Badges.validateAncityProgress();
     }
 

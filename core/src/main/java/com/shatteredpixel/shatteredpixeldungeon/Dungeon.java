@@ -1317,12 +1317,11 @@ public class Dungeon {
 			Ghost		.Quest.storeInBundle( quests );
 			Wandmaker	.Quest.storeInBundle( quests );
 			Blacksmith	.Quest.storeInBundle( quests );
-
 			DragonGirlBlue .Quest.storeInBundle( quests );
-
 			Imp			.Quest.storeInBundle( quests );
-			bundle.put( QUESTS, quests );
 			RedDragon	.Quest.storeInBundle( quests );
+			bundle.put( QUESTS, quests );
+
 			SpecialRoom.storeRoomsInBundle( bundle );
 			SecretRoom.storeRoomsInBundle( bundle );
 

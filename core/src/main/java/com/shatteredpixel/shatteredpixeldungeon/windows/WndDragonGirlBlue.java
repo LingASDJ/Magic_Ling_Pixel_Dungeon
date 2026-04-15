@@ -61,7 +61,7 @@ public class WndDragonGirlBlue extends Window {
         titlebar.setRect( 0, 0, width, 0 );
         add( titlebar );
 
-        RenderedTextBlock message = PixelScene.renderTextBlock( Messages.get(this, "prompt", DragonGirlBlue.Quest.survey_research_points), 6 );
+        RenderedTextBlock message = PixelScene.renderTextBlock( Messages.get(this, "prompt", Statistics.survey_research_points), 6 );
         message.maxWidth( width );
         message.setPos(0, titlebar.bottom() + GAP);
         add( message );
@@ -75,13 +75,13 @@ public class WndDragonGirlBlue extends Window {
                 @Override
                 protected void onClick() {
                     Dungeon.level.drop(RandomBooks(), Dungeon.hero.pos).sprite.drop();
-                    DragonGirlBlue.Quest.survey_research_points -= T1Point;
+                    Statistics.survey_research_points -= T1Point;
                     GLog.p(Messages.get(WndDragonGirlBlue.class, "random_book_yes"), hero.name());
                     DragonGirlBlue.Quest.one_used_points++;
                     hide();
                 }
             };
-            books.enable(DragonGirlBlue.Quest.one_used_points == 0 && DragonGirlBlue.Quest.survey_research_points >= 400);
+            books.enable(DragonGirlBlue.Quest.one_used_points == 0 && Statistics.survey_research_points >= 400);
             buttons.add(books);
 
             RedButton randomMiss = new RedButton(Messages.get(this, "random_misp", T1Point), 6) {
@@ -94,28 +94,28 @@ public class WndDragonGirlBlue extends Window {
                     w4.cursed = false;
                     w4.identify();
                     Dungeon.level.drop(w4, Dungeon.hero.pos).sprite.drop();
-                    DragonGirlBlue.Quest.survey_research_points -= T1Point;
+                    Statistics.survey_research_points -= T1Point;
                     GLog.p(Messages.get(WndDragonGirlBlue.class, "random_misp_yes"), hero.name());
                     DragonGirlBlue.Quest.one_used_points++;
                     hide();
                 }
             };
 
-            randomMiss.enable(DragonGirlBlue.Quest.one_used_points == 1 && DragonGirlBlue.Quest.survey_research_points >= 400);
+            randomMiss.enable(DragonGirlBlue.Quest.one_used_points == 1 && Statistics.survey_research_points >= 400);
             buttons.add(randomMiss);
 
             RedButton randomMeat = new RedButton(Messages.get(this, "random_meat", T1Point), 6) {
                 @Override
                 protected void onClick() {
                     Dungeon.level.drop(new PhantomMeat().quantity(2), Dungeon.hero.pos).sprite.drop();
-                    DragonGirlBlue.Quest.survey_research_points -= T1Point;
+                    Statistics.survey_research_points -= T1Point;
                     GLog.p(Messages.get(WndDragonGirlBlue.class, "random_meat_yes"), hero.name());
                     DragonGirlBlue.Quest.one_used_points++;
                     hide();
                 }
             };
 
-            randomMeat.enable(DragonGirlBlue.Quest.one_used_points == 2 && DragonGirlBlue.Quest.survey_research_points >= 400);
+            randomMeat.enable(DragonGirlBlue.Quest.one_used_points == 2 && Statistics.survey_research_points >= 400);
             buttons.add(randomMeat);
         }
 
@@ -136,13 +136,13 @@ public class WndDragonGirlBlue extends Window {
 
                     Dungeon.hero.interrupt();
                     new Flare( 6, 32 ).show( hero.sprite, 2f );
-                    DragonGirlBlue.Quest.survey_research_points -= T2Point;
+                    Statistics.survey_research_points -= T2Point;
                     GLog.p(Messages.get(WndDragonGirlBlue.class, "bleesed_yes"), hero.name());
                     DragonGirlBlue.Quest.two_used_points++;
                     hide();
                 }
             };
-            bleesed.enable(DragonGirlBlue.Quest.two_used_points == 0 && DragonGirlBlue.Quest.survey_research_points >= T2Point);
+            bleesed.enable(DragonGirlBlue.Quest.two_used_points == 0 && Statistics.survey_research_points >= T2Point);
             buttons.add(bleesed);
 
             RedButton maxTier = new RedButton(Messages.get(this, "maxtier", T2Point), 6) {
@@ -150,13 +150,13 @@ public class WndDragonGirlBlue extends Window {
                 protected void onClick() {
                     Dungeon.level.drop(new ScrollOfMetamorphosis(), Dungeon.hero.pos).sprite.drop();
                     Dungeon.level.drop(new PotionOfDivineInspiration(), Dungeon.hero.pos).sprite.drop();
-                    DragonGirlBlue.Quest.survey_research_points -= T2Point;
+                    Statistics.survey_research_points -= T2Point;
                     GLog.p(Messages.get(WndDragonGirlBlue.class, "maxtier_yes"), hero.name());
                     DragonGirlBlue.Quest.two_used_points++;
                     hide();
                 }
             };
-            maxTier.enable(DragonGirlBlue.Quest.two_used_points == 1 && DragonGirlBlue.Quest.survey_research_points >= T2Point);
+            maxTier.enable(DragonGirlBlue.Quest.two_used_points == 1 && Statistics.survey_research_points >= T2Point);
             buttons.add(maxTier);
 
             RedButton maxring = new RedButton(Messages.get(this, "maxring", T2Point), 6) {
@@ -170,13 +170,13 @@ public class WndDragonGirlBlue extends Window {
                     reward.identify();
                     reward.cursed = true;
                     Dungeon.level.drop(reward, Dungeon.hero.pos).sprite.drop();
-                    DragonGirlBlue.Quest.survey_research_points -= T2Point;
+                    Statistics.survey_research_points -= T2Point;
                     GLog.p(Messages.get(WndDragonGirlBlue.class, "maxring_yes"), hero.name());
                     DragonGirlBlue.Quest.two_used_points++;
                     hide();
                 }
             };
-            maxring.enable(DragonGirlBlue.Quest.two_used_points == 2 && DragonGirlBlue.Quest.survey_research_points >= T2Point);
+            maxring.enable(DragonGirlBlue.Quest.two_used_points == 2 && Statistics.survey_research_points >= T2Point);
             buttons.add(maxring);
         }
 
@@ -189,12 +189,12 @@ public class WndDragonGirlBlue extends Window {
                 protected void onClick() {
                     hide();
                     Statistics.questScores[2] += 1000;
-                    DragonGirlBlue.Quest.survey_research_points -= OtherPoint;
+                    Statistics.survey_research_points -= OtherPoint;
                     DragonGirlBlue.Quest.three_used_points++;
                     GLog.p(Messages.get(WndDragonGirlBlue.class, "pro_yes"));
                 }
             };
-            pro.enable(DragonGirlBlue.Quest.three_used_points == 0 && DragonGirlBlue.Quest.survey_research_points>=OtherPoint);
+            pro.enable(DragonGirlBlue.Quest.three_used_points == 0 && Statistics.survey_research_points>=OtherPoint);
             buttons.add(pro);
 
             RedButton gold = new RedButton(Messages.get(this, "gold", OtherPoint), 6){
@@ -203,11 +203,11 @@ public class WndDragonGirlBlue extends Window {
                     hide();
                     new Gold(800).doPickUp(Dungeon.hero, Dungeon.hero.pos);
                     DragonGirlBlue.Quest.three_used_points++;
-                    DragonGirlBlue.Quest.survey_research_points -= OtherPoint;
+                    Statistics.survey_research_points -= OtherPoint;
                     GLog.p(Messages.get(WndDragonGirlBlue.class, "gold_yes"));
                 }
             };
-            gold.enable(DragonGirlBlue.Quest.three_used_points == 1 && DragonGirlBlue.Quest.survey_research_points>=OtherPoint);
+            gold.enable(DragonGirlBlue.Quest.three_used_points == 1 && Statistics.survey_research_points>=OtherPoint);
             buttons.add(gold);
 
             RedButton upgrade = new RedButton(Messages.get(this, "up", UpgradePoint), 6){
@@ -220,27 +220,27 @@ public class WndDragonGirlBlue extends Window {
                         GameScene.show(new WndOptions(
                                 new DragonGirlBlueSprite(),
                                 Messages.get(DragonGirlBlue.class, "name" ),
-                                Messages.get(DragonGirlBlue.class, "cashout_verify", DragonGirlBlue.Quest.survey_research_points),
+                                Messages.get(DragonGirlBlue.class, "cashout_verify", Statistics.survey_research_points),
                                 Messages.get(DragonGirlBlue.class, "cashout_yes"),
                                 Messages.get(DragonGirlBlue.class, "cashout_no")
                         ){
                             @Override
                             protected void onSelect(int index) {
                                 if (index == 0){
-                                    new Gold(DragonGirlBlue.Quest.survey_research_points/10).doPickUp(Dungeon.hero, Dungeon.hero.pos);
+                                    new Gold(Statistics.survey_research_points/10).doPickUp(Dungeon.hero, Dungeon.hero.pos);
                                     DragonGirlBlue.Quest.three_used_points++;
-                                    DragonGirlBlue.Quest.survey_research_points = 0;
+                                    Statistics.survey_research_points = 0;
                                     hide();
                                 }
                             }
                         });
-                    } else if(DragonGirlBlue.Quest.survey_research_points == 0) {
+                    } else if(Statistics.survey_research_points == 0) {
                         GLog.n(Messages.get(DragonGirlBlue.class,"no_anymore"));
                     }
 
                 }
             };
-            upgrade.enable( DragonGirlBlue.Quest.survey_research_points>=UpgradePoint && DragonGirlBlue.Quest.three_used_points == 2);
+            upgrade.enable( Statistics.survey_research_points>=UpgradePoint && DragonGirlBlue.Quest.three_used_points == 2);
             buttons.add(upgrade);
 
         }
@@ -281,7 +281,7 @@ public class WndDragonGirlBlue extends Window {
             if (item != null) {
                 item.upgrade(Random.Int(1,2));
                 int upgradeCost = 500;
-                DragonGirlBlue.Quest.survey_research_points -= upgradeCost;
+                Statistics.survey_research_points -= upgradeCost;
                 DragonGirlBlue.Quest.three_used_points++;
 
                 hide();
