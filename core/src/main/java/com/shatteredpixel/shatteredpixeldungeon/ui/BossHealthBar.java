@@ -169,46 +169,44 @@ public class BossHealthBar extends Component {
 	}
 
 	@Override
-	protected void layout() {
-		// 为每个Boss血条布局，垂直排列
+	protected synchronized void layout() {
 		for (int i = 0; i < MAX_BOSSES; i++) {
-			if (bars[i] == null) continue;
+			if (bars[i] == null || hps[i] == null || bossInfos[i] == null) continue;
 
-			// 计算当前血条的Y坐标（垂直排列）
 			float barY = y + (i * BAR_HEIGHT);
 
-			// 血条背景位置
 			bars[i].x = x;
 			bars[i].y = barY;
 
-			// 血条和护盾位置
-			hps[i].x = shieldedHPs[i].x = rawShieldings[i].x = bars[i].x + 15;
-			hps[i].y = shieldedHPs[i].y = rawShieldings[i].y = bars[i].y + 3;
+			if (rawShieldings[i] != null && shieldedHPs[i] != null) {
+				rawShieldings[i].x = shieldedHPs[i].x = hps[i].x = bars[i].x + 15;
+				rawShieldings[i].y = shieldedHPs[i].y = hps[i].y = bars[i].y + 3;
+			}
 
-			// 生命值文本位置
-			hpTexts[i].scale.set(PixelScene.align(0.5f));
-			hpTexts[i].x = hps[i].x + 1;
-			hpTexts[i].y = hps[i].y + (hps[i].height - (hpTexts[i].baseLine() + hpTexts[i].scale.y)) / 2f;
-			hpTexts[i].y -= 0.001f;
-			PixelScene.align(hpTexts[i]);
+			if (hpTexts[i] != null) {
+				hpTexts[i].scale.set(PixelScene.align(0.5f));
+				hpTexts[i].x = hps[i].x + 1;
+				hpTexts[i].y = hps[i].y + (hps[i].height - (hpTexts[i].baseLine() + hpTexts[i].scale.y)) / 2f;
+				hpTexts[i].y -= 0.001f;
+				PixelScene.align(hpTexts[i]);
+			}
 
-			// 信息按钮区域
 			bossInfos[i].setRect(x, barY, bars[i].width, bars[i].height);
 
-			// Buff指示器位置
 			if (buffs[i] != null) {
 				buffs[i].setRect(hps[i].x, hps[i].y + 5, 47, 8);
-				// 新增：确保BuffIndicator可见并刷新
 				buffs[i].visible = true;
 				buffs[i].needsRefresh = true;
 			}
 
-			// 骷髅图标位置
-			skulls[i].x = bars[i].x + 5;
-			skulls[i].y = bars[i].y + 5;
+			if (skulls[i] != null) {
+				skulls[i].x = bars[i].x + 5;
+				skulls[i].y = bars[i].y + 5;
+			}
 
-			// 流血特效位置
-			bloods[i].pos(skulls[i]);
+			if (bloods[i] != null && skulls[i] != null) {
+				bloods[i].pos(skulls[i]);
+			}
 		}
 	}
 
@@ -217,20 +215,15 @@ public class BossHealthBar extends Component {
 		super.update();
 		boolean hasActiveBoss = false;
 
-		// 更新每个Boss的血条状态
 		for (int i = 0; i < MAX_BOSSES; i++) {
 			Mob boss = bosses[i];
 			if (boss != null) {
 				hasActiveBoss = true;
-
-				// 检查Boss是否存活
 				if (!boss.isAlive() || !Dungeon.level.mobs.contains(boss)) {
-					// 移除已死亡的Boss
 					removeBoss(i);
 					continue;
 				}
 
-				// 更新血条数值
 				int health = boss.HP;
 				int shield = boss.shielding();
 				int max = boss.HT;
@@ -239,7 +232,6 @@ public class BossHealthBar extends Component {
 				shieldedHPs[i].scale.x = health / (float) max;
 				rawShieldings[i].scale.x = shield / (float) max;
 
-				// 更新流血特效
 				if (bleeding[i] != bloods[i].on) {
 					if (bleeding[i]) {
 						skulls[i].tint(0xcc0000, 0.6f);
@@ -249,7 +241,6 @@ public class BossHealthBar extends Component {
 					bloods[i].on = bleeding[i];
 				}
 
-				// 更新生命值文本
 				if (shield <= 0) {
 					hpTexts[i].text(health + "/" + max);
 				} else {
@@ -262,17 +253,14 @@ public class BossHealthBar extends Component {
 					buffs[i].layout();
 				}
 
-				// 显示当前血条组件
 				setComponentVisible(i, true);
 			} else {
-				// 隐藏空的血条组件
 				setComponentVisible(i, false);
 			}
 		}
 
 		BuffIndicator.refreshAllBosses();
 
-		// 更新整体可见性
 		visible = active = hasActiveBoss;
 	}
 
@@ -280,24 +268,21 @@ public class BossHealthBar extends Component {
 	 * 设置指定索引的血条组件可见性
 	 */
 	private void setComponentVisible(int index, boolean visible) {
-		bars[index].visible = visible;
-		rawShieldings[index].visible = visible;
-		shieldedHPs[index].visible = visible;
-		hps[index].visible = visible;
-		hpTexts[index].visible = visible;
-		bossInfos[index].visible = visible;
-		skulls[index].visible = visible;
-		bloods[index].visible = visible;
-		if (buffs[index] != null) {
-			buffs[index].visible = visible;
-		}
+		if (bars[index] != null) bars[index].visible = visible;
+		if (rawShieldings[index] != null) rawShieldings[index].visible = visible;
+		if (shieldedHPs[index] != null) shieldedHPs[index].visible = visible;
+		if (hps[index] != null) hps[index].visible = visible;
+		if (hpTexts[index] != null) hpTexts[index].visible = visible;
+		if (bossInfos[index] != null) bossInfos[index].visible = visible;
+		if (skulls[index] != null) skulls[index].visible = visible;
+		if (bloods[index] != null) bloods[index].visible = visible;
+		if (buffs[index] != null) buffs[index].visible = visible;
 	}
 
 	/**
 	 * 分配Boss到第一个空的位置
 	 */
 	public static void assignBoss(Mob boss) {
-		// 检查是否已存在
 		for (int i = 0; i < MAX_BOSSES; i++) {
 			if (bosses[i] == boss) {
 				// 如果已存在，强制刷新其Buff
@@ -336,12 +321,11 @@ public class BossHealthBar extends Component {
 				instance.add(instance.buffs[emptyIndex]);
 
 				instance.buffs[emptyIndex].needsRefresh = true;
-				instance.buffs[emptyIndex].layout();  // 强制布局
-				instance.buffs[emptyIndex].update();  // 强制更新
+				instance.buffs[emptyIndex].layout();
+				instance.buffs[emptyIndex].update();
 
 				instance.layout();
 
-				// 全局刷新所有Boss Buff
 				BuffIndicator.refreshAllBosses();
 			}
 		}
@@ -374,7 +358,6 @@ public class BossHealthBar extends Component {
 				instance.buffs[index] = null;
 			}
 
-			// 移除后刷新剩余Boss的Buff
 			BuffIndicator.refreshAllBosses();
 		}
 	}
