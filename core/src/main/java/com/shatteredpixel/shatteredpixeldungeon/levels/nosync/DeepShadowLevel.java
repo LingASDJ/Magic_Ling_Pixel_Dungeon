@@ -67,7 +67,7 @@ public class DeepShadowLevel extends Level {
     @Override
     public void playBossMusic(){
         Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
-                () -> Music.playModeBGM(Assets.Music.BGM_YOU,true)));
+                () -> Music.playModeBGM(Assets.Music.PRISON_BRANCH_BOSS,true)));
     }
 
     public enum State {
@@ -197,6 +197,7 @@ public class DeepShadowLevel extends Level {
 
     @Override
     protected void createItems() {
+        Random.pushGenerator(Random.Long());
         ArrayList<Item> bonesItems = Bones.get();
         if (bonesItems != null) {
             int pos;

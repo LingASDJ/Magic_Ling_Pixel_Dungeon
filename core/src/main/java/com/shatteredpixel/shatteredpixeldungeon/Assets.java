@@ -415,7 +415,7 @@ public class Assets {
 		public static final String YOGGOD	= "music/rgjt/god.ogg";
 		public static final String STARLXY	= "music/rgjt/star.ogg";
 
-		public static final String SKBJY		= "music/Boss-Saka.ogg";
+		public static final String SKBJY		= "music/boss/Boss-Saka.ogg";
 
 		public static final String TOWN 		= "music/town.ogg";
 
