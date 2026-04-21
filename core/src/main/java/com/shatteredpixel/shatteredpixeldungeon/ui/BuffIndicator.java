@@ -199,7 +199,7 @@ public class BuffIndicator extends Component {
     public static final int SIZE_LARGE = 16;
 
     private static BuffIndicator heroInstance;
-    private static BuffIndicator bossInstance;
+//    private static BuffIndicator bossInstance;
 
     private LinkedHashMap<Buff, BuffButton> buffButtons = new LinkedHashMap<>();
     public boolean needsRefresh;

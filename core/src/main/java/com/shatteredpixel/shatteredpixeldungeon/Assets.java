@@ -422,7 +422,9 @@ public class Assets {
 		public static final String TOWN_YEARS 		= "music/years.ogg";
 		public static final String BGM_YOU 		= "music/boss/you.ogg";
 
-		public static final String BGM_BOSSD2 	= "music/DwarfGeneral.ogg";
+		public static final String BGM_DRBOSS_INTRO 	= "music/boss/ドワーフ将軍_intro.ogg";
+		public static final String BGM_DRBOSS_LOOP 	= "music/boss/ドワーフ将軍_loop.ogg";
+
 		public static final String BGM_BOSSEND 	= "music/boss/yogend.ogg";
 
 		public static final String BGM_SHOP 	= "music/Shop.ogg";
