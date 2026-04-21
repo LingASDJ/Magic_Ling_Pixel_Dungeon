@@ -357,7 +357,7 @@ public class BossHealthBar extends Component {
 			if (instance != null && instance.buffs[index] != null) {
 				BuffIndicator.setBossInstance(index, null);
 				instance.remove(instance.buffs[index]);
-				instance.buffs[index].destroy();
+				//instance.buffs[index].destroy();
 				instance.buffs[index] = null;
 			}
 

@@ -49,7 +49,7 @@ public class DwarfMasterBossLevel extends Level {
 
     @Override
     public void playBossMusic(){
-        Music.playModeBGM(Assets.Music.BGM_BOSSD2,true);
+        Music.playModeBGM(Assets.Music.CITY_BOSS,true);
     }
 
     @Override
