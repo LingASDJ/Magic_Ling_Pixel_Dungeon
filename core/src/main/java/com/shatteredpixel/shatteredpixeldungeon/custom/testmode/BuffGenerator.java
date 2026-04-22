@@ -72,14 +72,14 @@ public class BuffGenerator extends TestItem{
 
     @FunctionalInterface
     private interface Function<T>{
-        void func(Char obj);
+        void func(Char obj, float duration);
     }
 
     private static final Map<Class<?>,Function<?>> functions = new HashMap<>();
 
     //带有自定义回合函数/继承自Buff类的方法应写在这里
     {
-        functions.put( AdrenalineSurge.class, (Char ch ) -> Buff.affect( ch, AdrenalineSurge.class ).reset(1, duration ) );
+        functions.put( AdrenalineSurge.class, (Char ch,float duration) -> Buff.affect( ch, AdrenalineSurge.class ).reset(1, duration ) );
     }
 
     private CellSelector.Listener buff_target_selector = new CellSelector.Listener() {
@@ -88,10 +88,14 @@ public class BuffGenerator extends TestItem{
             if( cell == null ) return;
 
             Char ch = Actor.findChar( cell );
-            if( ch == null )
-                GLog.w( M.L( WndSetBuff.class, "no_char" ) );
-            else
-                AffectBuff(ch);
+            if( ch == null ) {
+                GLog.w(M.L(WndSetBuff.class, "no_char"));
+            }else {
+                for (int i = buffsStatus.nextSetBit(0 ); i >= 0; i = buffsStatus.nextSetBit(i + 1 ) ) {
+                    Class buffClass = allData.get(i);
+                    AffectBuff( ch, buffClass, duration);
+                }
+            }
         }
 
         @Override
@@ -118,7 +122,7 @@ public class BuffGenerator extends TestItem{
         }
     };
 
-    private void CleanBuff( Char ch ){
+    public void CleanBuff( Char ch ){
         for ( Buff b : ch.buffs() ){
             if ( !( b instanceof AllyBuff )
                     && !( b instanceof LostInventory ) ){
@@ -132,17 +136,14 @@ public class BuffGenerator extends TestItem{
     }
 
     @SuppressWarnings("unchecked")
-    private <T> void AffectBuff( Char ch ) {
-        for (int i = buffsStatus.nextSetBit(0 ); i >= 0; i = buffsStatus.nextSetBit(i + 1 ) ) {
-            Class buffClass = allData.get( i );
-            Function<T> function = (Function<T>) functions.get( buffClass );
-            if( function != null ) {
-                function.func( ch );
-            }else if ( FlavourBuff.class.isAssignableFrom( buffClass ) ) {
-                Buff.affect( ch, buffClass, (float) duration );
-            } else {
-                Buff.affect( ch, buffClass );
-            }
+    public  <T> void AffectBuff( Char ch, Class buffClass, float duration ) {
+        Function<T> function = (Function<T>) functions.get( buffClass );
+        if( function != null ) {
+            function.func( ch, duration );
+        }else if ( FlavourBuff.class.isAssignableFrom( buffClass ) ) {
+            Buff.affect( ch, buffClass, duration );
+        } else {
+            Buff.affect( ch, buffClass );
         }
     }
 
