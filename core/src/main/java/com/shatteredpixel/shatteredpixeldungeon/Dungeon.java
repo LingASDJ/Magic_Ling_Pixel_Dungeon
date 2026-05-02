@@ -147,6 +147,7 @@ public class Dungeon {
 		SWARM_HP,
 		NECRO_HP,
 		BAT_HP,
+		WORM_HP,
 		HUNR_HP,
 		WARLOCK_HP,
 		ICERAT_HP,
@@ -183,7 +184,9 @@ public class Dungeon {
 		LORE_PRISON,
 		LORE_CAVES,
 		LORE_CITY,
-		LORE_HALLS, PROP_BAG;
+		LORE_HALLS, PROP_BAG,
+		WISP_PHANTOM_FIRE,
+		NSR;
 
 		public int count = 0;
 

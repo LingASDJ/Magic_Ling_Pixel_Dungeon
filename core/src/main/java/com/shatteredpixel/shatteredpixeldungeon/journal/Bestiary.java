@@ -124,6 +124,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SkyDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SuccubusQueen;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.GraveRat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroScout;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.Wisp;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.Worm;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
@@ -209,6 +213,8 @@ public enum Bestiary {
 	ANCIENT_CITY,
 	MINIGAMES,
 	ANCIENT_CITY_BOSS,
+
+	TUMULUS,
 
 	UNIVERSAL,
 	QUEST,
@@ -410,6 +416,10 @@ public enum Bestiary {
 				TowerGods.class, TowerMind.class, TowerMachine.class, TowerTime.class,
 				MyCoreHeart.class
 				);
+
+		TUMULUS.addEntities(
+				GraveRat.class, Worm.class, Wisp.class, NecroScout.class
+		);
 
 
 

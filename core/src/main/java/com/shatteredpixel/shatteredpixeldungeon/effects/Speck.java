@@ -88,6 +88,8 @@ public class Speck extends Image {
 
 	public static final int BLUE_LIGHT  = 121;
 
+	public static final int ROT = 122;
+
 	private static final int SIZE = 7;
 
 	private int type;
@@ -147,6 +149,7 @@ public class Speck extends Image {
 			case JET:
 			case TOXIC:
 			case DIED:
+			case ROT:
 			case CORROSION:
 			case PARALYSIS:
 			case STENCH:
@@ -398,6 +401,14 @@ public class Speck extends Image {
 				lifespan = Random.Float(1f, 3f);
 				break;
 
+			case ROT:
+				hardlight(0x9400ff);
+
+				angularSpeed = 30;
+				angle = Random.Float(360);
+				lifespan = Random.Float(1f, 3f);
+				break;
+
 			case CORROSION:
 				hardlight(0xAAAAAA);
 				angularSpeed = 30;
@@ -574,6 +585,7 @@ public class Speck extends Image {
 				case TOXIC:
 				case PARALYSIS:
 				case DIED:
+				case ROT:
 				case CONFUSION:
 				case STORM:
 				case BLIZZARD:

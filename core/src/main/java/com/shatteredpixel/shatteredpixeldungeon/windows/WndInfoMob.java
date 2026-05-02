@@ -185,8 +185,10 @@ public class WndInfoMob extends WndTitledMessage {
 				level = "NPC";
 			} else if (mob.properties.contains(Char.Property.PETS)){
 				level = Messages.get(WndInfoMob.class,"pets");
-			} else if (mob.properties.contains(Char.Property.FIERY) || mob.properties.contains(Char.Property.ICY) || mob.properties.contains(Char.Property.ELECTRIC)){
-				level = Messages.get(WndInfoMob.class,"ling");
+			} else if (mob.properties.contains(Char.Property.FIERY) || mob.properties.contains(Char.Property.ICY) || mob.properties.contains(Char.Property.ELECTRIC)) {
+				level = Messages.get(WndInfoMob.class, "ling");
+			} else if (mob.properties.contains(Char.Property.TUMULUS)) {
+				level = Messages.get(WndInfoMob.class, "tumulus");
 			} else {
 				level = Messages.get(WndInfoMob.class,"normal");
 			}

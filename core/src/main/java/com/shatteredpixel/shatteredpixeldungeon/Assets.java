@@ -117,6 +117,11 @@ public class Assets {
 		public static final String TILES_FIRE  = "environment/tiles_fire.png";
 		public static final String Dreamcatcher  = "environment/custom_tiles/blue_quest.png";
 
+
+		public static final String TILES_PLACE = "environment/tiles_palace.png";
+
+		public static final String TILES_TOMB = "environment/tiles_tomb.png";
+
 		public static final String BoilerQuest  = "environment/custom_tiles/candlestick_room.png";
 
 		public static final String Magic_Marker  = "environment/custom_tiles/teleportation_circle.png";
@@ -164,6 +169,9 @@ public class Assets {
 		public static final String WATER_GHOST  = "environment/water8.png";
 
 		public static final String WATER_ZERO  = "environment/water_zero.png";
+
+		public static final String WATER_PLACE  = "environment/water_palace.png";
+		public static final String WATER_TOMB   = "environment/water_tomb..png";
 
 		public static final String WEAK_FLOOR       = "environment/custom_tiles/weak_floor.png";
 		public static final String SEWER_BOSS       = "environment/custom_tiles/sewer_boss.png";
@@ -812,6 +820,12 @@ public class Assets {
 		public static final String KEEPERKINGBOT	= "sprites/npc/autoshop.png";
 
 		public static final String ARCHETTO	= "sprites/npc/avrt.png";
+
+		//TOMB
+		public static final String GRAVERAT	= "sprites/tumulus/rat_graveyard.png";
+		public static final String WORM	= "sprites/tumulus/tomb_worm.png";
+		public static final String WISP	= "sprites/tumulus/wisp.png";
+		public static final String NECRO_SCOUT	= "sprites/tumulus/necro_scout.png";
 
 		//BOSS
 		public static final String FRDG	= "sprites/boss/fireDragon.png";
