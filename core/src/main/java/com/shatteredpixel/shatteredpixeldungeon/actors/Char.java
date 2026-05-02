@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.RotGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.VenomGas;
@@ -1156,7 +1157,7 @@ public abstract class Char extends Actor {
 			if (src instanceof Bleeding || src instanceof BloodLoss) {
 				icon = IconFloatingText.BLEEDING;
 			}
-			if (src instanceof ToxicGas) {
+			if (src instanceof ToxicGas || src instanceof RotGas) {
 				icon = IconFloatingText.TOXIC;
 			}
 			if (src instanceof CrivusFruits.DiedBlobs) {
@@ -1637,6 +1638,7 @@ public abstract class Char extends Actor {
 		UNKNOWN,
 		GODCRACK,
 		UNLESS,
+		TUMULUS,
 		SEARCH,
 		//A character that acts in an unchanging manner. immune to AI state debuffs or stuns/slows
 		STATIC( new HashSet<Class>(),
