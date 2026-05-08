@@ -514,7 +514,6 @@ public class Armor extends EquipableItem {
 	}
 
 	//other things can equip these, for now we assume only the hero can be affected by levelling debuffs
-	//other things can equip these, for now we assume only the hero can be affected by levelling debuffs
 	@Override
 	public int buffedLvl() {
 		if(hero != null){
@@ -522,7 +521,7 @@ public class Armor extends EquipableItem {
 				return super.buffedLvl()+1;
 			}
 		}
-		if (isEquipped( hero ) || hero.belongings.contains( this )){
+		if ((isEquipped( hero ) || hero.belongings.contains( this )) &&  hero != null){
 			return super.buffedLvl();
 		} else {
 			return level();

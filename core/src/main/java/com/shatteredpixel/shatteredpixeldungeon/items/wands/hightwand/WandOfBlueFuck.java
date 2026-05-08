@@ -274,6 +274,11 @@ public class WandOfBlueFuck extends DamageWand {
         //proc chance is initially 0..
         float procChance = 0;
         for (int i : PathFinder.CIRCLE7) {
+            int cell = defender.pos + i;
+
+            if (cell < 0 || cell >= Dungeon.level.length()) {
+                continue;
+            }
 
             //+25% proc chance per burning char within 8x8 of target
             // this includes the attacker and defender

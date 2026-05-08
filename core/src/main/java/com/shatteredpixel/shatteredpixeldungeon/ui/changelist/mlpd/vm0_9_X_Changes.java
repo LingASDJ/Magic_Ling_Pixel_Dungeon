@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.BloodsSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElemtGuardGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrabSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusStarFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM111Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadEyeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DogDogMusicSprite;
@@ -56,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.NyarlathotepSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PeachGodStateSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShubNiggurathSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpawnereEvilSprite;
@@ -78,6 +80,7 @@ import java.util.ArrayList;
 public class vm0_9_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0945_Changes(changeInfos);
         add_V0942_Changes(changeInfos);
         add_V0940_Changes(changeInfos);
         add_V0931_Changes(changeInfos);
@@ -86,6 +89,41 @@ public class vm0_9_X_Changes {
         add_V0915_Changes(changeInfos);
         add_V0910_Changes(changeInfos);
         add_V0900_Changes(changeInfos);
+    }
+
+    public static void add_V0945_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.9.4.5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.MAGE, 1), "大立绘更新",
+                "原皮大立绘进行迭代更新"));
+
+        changes.addButton(new ChangeButton(new ShopkKingSprite(), ("抢劫商店优化"),
+                ("如果拾取回溯之书，则不能前往抢劫。")));
+
+        Image s =new CrivusStarFruitsSprite();
+        s.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(s, ("异果优化"),
+                ("死亡时将产生延时爆炸。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                (	    "V0.9.4.5：\n\n" +
+                        "_-_ 修复大雷霆法杖ARC效果可能空指针导致的闪退游戏异常\n" +
+                        "_-_ 修复解离法杖不能穿透免伤的异常\n" +
+                        "_-_ 修复地狱赤蝶在以下情况的异常\n" +
+                        "_-_ ①磷火飞镖扎幻想结界水晶现在可以上地狱火\n" +
+                        "_-_ ②地狱火现在可以清除异果三阶段的护盾\n" +
+                        "_-_ 修复藏品望远镜导致投掷物打开面板异常\n" +
+                        "_-_ 修复近期的闪退崩溃相关问题")));
     }
 
     public static void add_V0942_Changes(ArrayList<ChangeInfo> changeInfos ) {

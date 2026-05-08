@@ -78,7 +78,6 @@ public class WndGoShop extends Window {
                     Game.switchScene(InterlevelScene.class);
                     Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
 
-                    int ankhCount = 0;
                     ArrayList<Ankh> ankh = hero.belongings.getAllItems(Ankh.class);
                     for (Ankh w : ankh.toArray(new Ankh[0])){
                         Dungeon.level.drop(w, hero.pos).sprite.drop();

@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenStingCV;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfMaster;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -69,10 +70,12 @@ public class HellBurning extends Buff implements Hero.Doom {
             if (target instanceof Boss) {
                 damage = (int) BOSS_DAMAGE;
                 for (Buff buff : target.buffs()) {
-                    if (buff instanceof Barrier
-                        && !(buff instanceof DwarfMaster.DKBarrior ||
-                            buff instanceof DwarfKing.DKBarrior||
-                            buff instanceof GreenStingCV.DKBarrior)) {
+                    boolean isRage = buff instanceof CrivusStarFruits.Rage;
+                    boolean isNormalBarrier = buff instanceof Barrier
+                            && !(buff instanceof DwarfMaster.DKBarrior
+                            || buff instanceof DwarfKing.DKBarrior
+                            || buff instanceof GreenStingCV.DKBarrior);
+                    if (isRage || isNormalBarrier) {
                         buff.detach();
                     }
                 }

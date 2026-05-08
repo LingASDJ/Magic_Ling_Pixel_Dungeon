@@ -100,18 +100,7 @@ abstract public class MissileWeapon extends Weapon {
 	@Override
 	public int min() {
 		if (Dungeon.hero != null){
-			int dmg = 0;
-			if (Dungeon.hero.belongings.getItem(Monocular.class) != null) {
-				Char enemy = Dungeon.hero.enemy();
-				if(enemy != null){
-					int distance = Dungeon.hero.distance(enemy);
-					while (distance > 1) {
-						dmg += Random.Int(1, 4);
-						distance -= 1;
-					}
-				}
-			}
-			return Math.max(0, min(buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero) + dmg));
+			return Math.max(0, min(buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)));
 		} else {
 			return Math.max(0 , min( buffedLvl() ));
 		}
@@ -126,18 +115,7 @@ abstract public class MissileWeapon extends Weapon {
 	@Override
 	public int max() {
 		if (Dungeon.hero != null){
-			int dmg = 0;
-			if (Dungeon.hero.belongings.getItem(Monocular.class) != null) {
-				Char enemy = Dungeon.hero.enemy();
-				if(enemy != null){
-					int distance = Dungeon.hero.distance(enemy);
-					while (distance > 1) {
-						dmg += Random.Int(1, 4);
-						distance -= 1;
-					}
-				}
-			}
-			return Math.max(0, max( buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero) + dmg ));
+			return Math.max(0, max( buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero) ));
 		} else {
 			return Math.max(0 , max( buffedLvl() ));
 		}
@@ -148,6 +126,8 @@ abstract public class MissileWeapon extends Weapon {
 		return  5 * tier +                      //base
 				(tier == 1 ? 2*lvl : tier*lvl); //level scaling
 	}
+
+
 
 	public int STRReq(int lvl){
 		return STRReq(tier, lvl) - 1; //1 less str than normal for their tier
@@ -448,7 +428,22 @@ abstract public class MissileWeapon extends Weapon {
 			if (owner.buff(Momentum.class) != null && owner.buff(Momentum.class).freerunning()) {
 				damage = Math.round(damage * (1f + 0.15f * ((Hero) owner).pointsInTalent(Talent.PROJECTILE_MOMENTUM)));
 			}
+
+			if (((Hero) owner).belongings.getItem(Monocular.class) != null) {
+				Char enemy = ((Hero) owner).enemy();
+				if(enemy != null){
+					int distance = owner.distance(enemy);
+					int bonusDmg = 0;
+					while (distance > 1) {
+						bonusDmg += Random.Int(1, 4);
+						distance -= 1;
+					}
+					damage += bonusDmg;
+				}
+			}
 		}
+
+
 
 		return damage;
 	}
