@@ -185,6 +185,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -417,11 +418,13 @@ public enum Bestiary {
 				MyCoreHeart.class
 				);
 
+		//古墓测试
 		TUMULUS.addEntities(
-				GraveRat.class, Worm.class, Wisp.class, NecroScout.class
+				DeviceCompat.isDebug()
+						? new Class<?>[]{GraveRat.class, Worm.class, Wisp.class, NecroScout.class}
+						: new Class<?>[]{}
 		);
-
-
+		
 
 		UNIVERSAL.addEntities(Wraith.class, Piranha.class, Mimic.class, GoldenMimic.class, EbonyMimic.class,  GreenDiamndMimic.class,Statue.class, GuardianTrap.Guardian.class, SentryRoom.Sentry.class);
 
