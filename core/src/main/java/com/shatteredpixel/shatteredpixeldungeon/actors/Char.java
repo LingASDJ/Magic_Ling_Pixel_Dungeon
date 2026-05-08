@@ -1236,7 +1236,6 @@ public abstract class Char extends Actor {
 		}
 
 		boolean hasKillEye = hero.belongings != null && hero.belongings.getItem(KillEye.class) != null;
-		boolean hasWandOfDist = src instanceof WandOfDisintegration;
 		if (hasKillEye) {
 			if (this instanceof Mob) {
 				Mob mobTarget = (Mob) this;
@@ -1245,10 +1244,6 @@ public abstract class Char extends Actor {
 					return dmg;
 				}
 			}
-		}
-
-		if(hasWandOfDist){
-			return dmg;
 		}
 
 		return calculateNormalDamageReduction(dmg, src);
@@ -1266,8 +1261,10 @@ public abstract class Char extends Actor {
 			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
 		}
 
-		for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
-			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+		if(! (src instanceof WandOfDisintegration) ){
+			for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
+				dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+			}
 		}
 
 		Class<?> srcClass = src.getClass();

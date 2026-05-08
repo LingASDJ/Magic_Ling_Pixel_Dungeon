@@ -24,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SuperNovaTracker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -46,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHo
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -135,27 +137,13 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
     @Override
     public void die(Object cause) {
         super.die(cause);
-        boolean heroKilled = false;
 
         int pos = 577;
 
-        for (int i = 0; i < PathFinder.NEIGHBOURS49.length; i++) {
-            Char ch = findChar( pos + PathFinder.NEIGHBOURS49[i] );
-            if (ch != null && ch.isAlive()) {
-                int damage = Math.round(Random.NormalIntRange(12, 21));
-                damage = Math.round( damage * AscensionChallenge.statModifier(this));
-                //armor is 2x effective against bone explosion
-                damage = Math.max( 0,  damage - (ch.drRoll() + ch.drRoll()) );
-                ch.damage( damage, this );
-                if (ch == Dungeon.hero && !ch.isAlive()) {
-                    heroKilled = true;
-                }
-            }
-        }
-        if (heroKilled) {
-            Dungeon.fail( this );
-            GLog.n( Messages.get(this, "explo_kill") );
-        }
+        SuperNovaTracker nova = Buff.append(Dungeon.hero, SuperNovaTracker.class);
+        nova.pos = pos;
+        GLog.w(Messages.get(CursedWand.class, "supernova"));
+
         if (Dungeon.level.heroFOV[pos]) {
             Sample.INSTANCE.play( Assets.Sounds.BONES );
         }

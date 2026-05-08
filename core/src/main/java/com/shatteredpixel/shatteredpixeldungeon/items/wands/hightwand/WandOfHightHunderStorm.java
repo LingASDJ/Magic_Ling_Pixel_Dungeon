@@ -269,8 +269,10 @@ public class WandOfHightHunderStorm extends DamageWand {
 
         int dist = Dungeon.level.water[ch.pos] ? 2 : 1;
 
-        if (curUser.buff(WandOfLightning.LightningCharge.class) != null){
-            dist++;
+        if(curUser != null){
+            if (curUser.buff(WandOfLightning.LightningCharge.class) != null){
+                dist++;
+            }
         }
 
         ArrayList<Char> hitThisArc = new ArrayList<>();

@@ -213,7 +213,7 @@ public class TyphonPlot extends Plot {
         hero.busy();
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob instanceof MorphsNPC) {
-                mob.destroy();
+                mob.die(true);
             }
         }
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.MOSRDX_3));

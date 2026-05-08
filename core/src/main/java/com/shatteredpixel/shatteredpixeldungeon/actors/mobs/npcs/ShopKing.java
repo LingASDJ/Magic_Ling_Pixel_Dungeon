@@ -1,9 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.BackGoKey;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -11,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ShopKing extends NTNPC {
 
@@ -20,6 +23,18 @@ public class ShopKing extends NTNPC {
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(FIRST, first);
+    }
+
+    @Override
+    protected boolean act() { PaswordBadges.loadGlobal();
+        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)) {
+            die(true);
+        }
+        if(Dungeon.hero.belongings.getItem(BackGoKey.class) != null){
+            die(true);
+        }
+        return super.act();
     }
 
     @Override
