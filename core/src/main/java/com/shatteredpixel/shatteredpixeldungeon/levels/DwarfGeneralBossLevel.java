@@ -57,10 +57,12 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -451,6 +453,12 @@ public class DwarfGeneralBossLevel extends Level {
         } else if(Statistics.bossRushMode || Statistics.RandMode) {
             return super.activateTransition(hero, transition);
         } else {
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndMessage(Messages.get(hero, "leave_no_esc")));
+                }
+            });
             return false;
         }
     }

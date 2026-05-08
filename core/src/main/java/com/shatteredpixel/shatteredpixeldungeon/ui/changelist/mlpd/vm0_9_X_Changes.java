@@ -100,6 +100,9 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("新原创音乐：王宫议事-将军"),
+                ("矮人将军专属音乐，现已正式到来。\n\nBy Tatsro")));
+
         changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.MAGE, 1), "大立绘更新",
                 "原皮大立绘进行迭代更新"));
 
