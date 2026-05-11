@@ -26,7 +26,7 @@ import com.watabou.noosa.TextureFilm;
 
 public class ItemSpriteSheet {
 
-    private static final int WIDTH = 16;
+    private static final int WIDTH = 32;
     public static final int SIZE = 16;
 
     public static TextureFilm film = new TextureFilm( Assets.Sprites.ITEMS, SIZE, SIZE );
@@ -237,13 +237,12 @@ public class ItemSpriteSheet {
 
     //16 free slots
 
-    private static final int WEP_TIER1      =                               xy(1, 7);   //8 slots
+    private static final int WEP_TIER1      =                               xy(18, 1);   //8 slots
     public static final int WORN_SHORTSWORD = WEP_TIER1+0;
-    public static final int CUDGEL          = WEP_TIER1+1;
-    public static final int GLOVES          = WEP_TIER1+2;
-    public static final int RAPIER          = WEP_TIER1+3;
-    public static final int DAGGER          = WEP_TIER1+4;
-    public static final int MAGES_STAFF     = WEP_TIER1+5;
+    public static final int GLOVES          = WEP_TIER1+1;
+    public static final int RAPIER          = WEP_TIER1+2;
+    public static final int DAGGER          = WEP_TIER1+3;
+    public static final int MAGES_STAFF     = WEP_TIER1+4;
 
     public static final int MAGIC_TORCH   = WEP_TIER1+6;
     static{
@@ -255,11 +254,11 @@ public class ItemSpriteSheet {
 
     }
 
-    private static final int WEP_TIER2      =                               xy(9, 7);   //8 slots
-    public static final int SHORTSWORD      = WEP_TIER2+0;
-    public static final int HAND_AXE        = WEP_TIER2+1;
+    private static final int WEP_TIER2      =                               xy(18, 3);   //8 slots
+    public static final int RITUAL_SWORD_M      = WEP_TIER2+0;
+    public static final int SHOP_SWORD        = WEP_TIER2+1;
     public static final int SPEAR           = WEP_TIER2+2;
-    public static final int QUARTERSTAFF    = WEP_TIER2+3;
+    public static final int TREELIST    = WEP_TIER2+3;
     public static final int DIRK            = WEP_TIER2+4;
     public static final int SICKLE          = WEP_TIER2+5;
 
@@ -267,10 +266,10 @@ public class ItemSpriteSheet {
 
     public static final int	ENDDIED			= WEP_TIER2+7;
     static{
-        assignItemRect(SHORTSWORD,      13, 13);
-        assignItemRect(HAND_AXE,        12, 14);
+        assignItemRect(RITUAL_SWORD_M,      13, 13);
+        assignItemRect(SHOP_SWORD,        14, 16);
         assignItemRect(SPEAR,           16, 16);
-        assignItemRect(QUARTERSTAFF,    16, 16);
+        assignItemRect(TREELIST,    14, 13);
         assignItemRect(DIRK,            13, 14);
         assignItemRect(SICKLE,          15, 15);
     }

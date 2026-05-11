@@ -272,7 +272,7 @@ public class v1_X_Changes {
 				"I'm enhancing the value of telekinetic grab a bit for users with multiple thrown weapons:\n\n" +
 				"_-_ Now grabs all items at a location or stuck to an enemy, not just the first one."));
 
-		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SHORTSWORD, new ItemSprite.Glowing( 0x000000 )), "Annoying Curse",
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RITUAL_SWORD_M, new ItemSprite.Glowing( 0x000000 )), "Annoying Curse",
 				"A very critical buff has been given to the annoying curse:\n\n" +
 				"_-_ Added 5 new regular dialogue lines, for 10 total\n" +
 				"_-_ Added 3 additional new lines that trigger rarely"));
@@ -344,7 +344,7 @@ public class v1_X_Changes {
 				"_-_ Four new 'cause of death' badges have also been added, which should be a little trickier than the existing ones.\n\n" +
 				"Several of these badges are on the harder end, in particular the final high score and boss challenge badge should be a real challenge, even for veteran players."));
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SHORTSWORD, new ItemSprite.Glowing(0x000000)), "Curse Redesigns",
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RITUAL_SWORD_M, new ItemSprite.Glowing(0x000000)), "Curse Redesigns",
 				"_Three of the most annoying curses have been replaced or redesigned, and two more have been adjusted._\n\n" +
 				"_- Fragile_ has been replaced by _explosive,_ which builds power and then explodes!\n" +
 				"_- Wayward_ has been redesigned to sometimes apply an accuracy reducing debuff, instead of always reducing accuracy.\n" +

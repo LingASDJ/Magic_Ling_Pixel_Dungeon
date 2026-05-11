@@ -9,7 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class RitualSword extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.RITUAL_SWORD;
+        image = ItemSpriteSheet.RITUAL_SWORD_M;
         tier = 2;
         if (!hasGoodEnchant()){
             enchantment = null;
@@ -23,7 +23,7 @@ public class RitualSword extends MeleeWeapon {
             enchantment = null;
             cursed = false;
         };
-        return ItemSpriteSheet.RITUAL_SWORD;
+        return ItemSpriteSheet.RITUAL_SWORD_M;
     }
 
     @Override
