@@ -40,10 +40,9 @@ public class MoRuoS extends NTNPC {
             Messages.get(MoRuoS.class,"roll2"),
             Messages.get(MoRuoS.class,"roll3"),
             Messages.get(MoRuoS.class,"roll4"),
-            Messages.get(MoRuoS.class,"roll5"),
-            Messages.get(MoRuoS.class,"roll6",Dungeon.hero.name()),
+            Messages.get(MoRuoS.class,"roll5",Dungeon.hero.name()),
+            Messages.get(MoRuoS.class,"roll6"),
             Messages.get(MoRuoS.class,"roll7"),
-            Messages.get(MoRuoS.class,"roll8"),
     };
 
     @Override
