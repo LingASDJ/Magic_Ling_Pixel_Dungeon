@@ -243,15 +243,12 @@ public class ItemSpriteSheet {
     public static final int RAPIER          = WEP_TIER1+2;
     public static final int DAGGER          = WEP_TIER1+3;
     public static final int MAGES_STAFF     = WEP_TIER1+4;
-
-    public static final int MAGIC_TORCH   = WEP_TIER1+6;
     static{
         assignItemRect(WORN_SHORTSWORD, 13, 13);
         assignItemRect(GLOVES,          12, 16);
         assignItemRect(RAPIER,          16, 16);
         assignItemRect(DAGGER,          12, 13);
         assignItemRect(MAGES_STAFF,     15, 16);
-
     }
 
     private static final int WEP_TIER2      =                               xy(18, 3);   //8 slots
@@ -274,20 +271,34 @@ public class ItemSpriteSheet {
         assignItemRect(SICKLE,          15, 15);
     }
 
-    private static final int WEP_TIER3      =                               xy(1, 8);   //8 slots
-    public static final int SWORD           = WEP_TIER3+0;
+    private static final int WEP_TIER3      =                               xy(18, 5);   //8 slots
+
+    public static final int SAD_MAGIC_BOOK  = WEP_TIER3;
+    public static final int SHEPHERD_FLUTE  = WEP_TIER3+1;
     public static final int MACE            = WEP_TIER3+1;
     public static final int SCIMITAR        = WEP_TIER3+2;
     public static final int ROUND_SHIELD    = WEP_TIER3+3;
     public static final int SAI             = WEP_TIER3+4;
     public static final int WHIP            = WEP_TIER3+5;
+    public static final int SKY_SHIELD      = WEP_TIER3+6;
+    public static final int DAIRI_KYAN      = WEP_TIER3+7;
+    public static final int MAGIC_TORCH      = WEP_TIER3+8;
+    public static final int JUNGLE_SWORD      = WEP_TIER3+9;
+    public static final int	SDBlade			    = WEP_TIER3+10;
+    public static final int	HHBlade				= WEP_TIER3+11;
+    public static final int LifeTreeSword       = WEP_TIER3+12;
+
     static{
-        assignItemRect(SWORD,           14, 14);
-        assignItemRect(MACE,            15, 15);
-        assignItemRect(SCIMITAR,        13, 16);
-        assignItemRect(ROUND_SHIELD,    16, 16);
-        assignItemRect(SAI,             16, 16);
-        assignItemRect(WHIP,            14, 14);
+        assignItemRect(SAD_MAGIC_BOOK,     14, 13);
+        assignItemRect(SHEPHERD_FLUTE,     11, 16);
+        assignItemRect(MACE,               15, 15);
+        assignItemRect(SCIMITAR,           13, 16);
+        assignItemRect(ROUND_SHIELD,       16, 16);
+        assignItemRect(SAI,                16, 16);
+        assignItemRect(WHIP,               14, 14);
+        assignItemRect(SKY_SHIELD,         13, 15);
+        assignItemRect(MAGIC_TORCH,        14, 16);
+        assignItemRect(JUNGLE_SWORD,       16, 15);
     }
 
     private static final int WEP_TIER4      =                               xy(9, 8);   //8 slots
@@ -901,7 +912,6 @@ public class ItemSpriteSheet {
     public static final int BANDOLIER   = BAGS+3;
     public static final int HOLSTER     = BAGS+4;
     public static final int MagicBlueSword      = BAGS+5;
-    public static final int LifeTreeSword     = BAGS+6;
     public static final int RedBloodMoon     = BAGS+7;
     public static final int	DG1				= BAGS+8;
     public static final int	DG2				= BAGS+9;
@@ -916,7 +926,6 @@ public class ItemSpriteSheet {
     public static final int	DG11				= BAGS+18;
     public static final int	DG12				= BAGS+19;
     public static final int	DG13				= BAGS+20;
-    public static final int	DG14				= BAGS+21;
     public static final int	DG15				= BAGS+22;
     public static final int	DG16				= BAGS+23;
     public static final int	DG17				= BAGS+24;
@@ -965,8 +974,6 @@ public class ItemSpriteSheet {
     public static final int	WRALIPS				= BAGS+60;
 
     public static final int	DM100RELEY				= BAGS+63;
-    public static final int	SDBlade			= BAGS+74;
-    public static final int	HHBlade				= BAGS+75;
 
     public static final int	PBlade				= BAGS+76;
 
@@ -1362,8 +1369,6 @@ public class ItemSpriteSheet {
     public static final int RITUAL_SWORD        =                               xy(1, 60);
 
     public static final int TREE_LIST                                           = RITUAL_SWORD + 1;
-    public static final int SAD_MAGIC_BOOK                                      = RITUAL_SWORD + 2;
-    public static final int SHEPHERD_FLUTE                                      = RITUAL_SWORD + 3;
 
     public static final int BREAK                                               = RITUAL_SWORD + 6;
 
@@ -1382,8 +1387,6 @@ public class ItemSpriteSheet {
     static{
         assignItemRect(RITUAL_SWORD,       13, 13);
         assignItemRect(TREE_LIST,          14, 13);
-        assignItemRect(SAD_MAGIC_BOOK,     14, 13);
-        assignItemRect(SHEPHERD_FLUTE,     11, 16);
 
         assignItemRect(OLDSUNSHADOW,      14, 14);
         assignItemRect(LAN_FIRE_ROAD,      14,16);

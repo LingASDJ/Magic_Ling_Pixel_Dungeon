@@ -165,7 +165,7 @@ public class v0_6_X_Changes {
 		changes.hardlight( CharSprite.POSITIVE );
 		changeInfos.add(changes);
 		
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SWORD, new Lucky().glowing()), "Lucky Enchantment",
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MACE, new Lucky().glowing()), "Lucky Enchantment",
 				"The Lucky enchant is a nice overall DPS increase, but comes at the cost of consistency. The problem is that with a bit of bad luck it's possible to do 0x damage many times in a row.\n\n" +
 				"Lucky has been adjusted to reign in the extremes of bad luck, and to give a little more strategy to using it.\n\n" +
 				"_-_ Base chance to deal 2x damage reduced to 50% from 60%\n" +

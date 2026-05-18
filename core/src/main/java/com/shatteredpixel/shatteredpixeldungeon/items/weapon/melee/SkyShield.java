@@ -29,7 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class SkyShield extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.DG14;
+        image = ItemSpriteSheet.SKY_SHIELD;
 
         tier = 3;
     }
