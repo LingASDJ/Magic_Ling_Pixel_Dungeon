@@ -33,7 +33,7 @@ public class WashCrime extends MeleeWeapon {
     }
 
     {
-        image = ItemSpriteSheet.DASlade;
+        image = ItemSpriteSheet.WASH_CRIME;
         hitSound = Assets.Sounds.HIT;
         hitSoundPitch = 1.1f;
 

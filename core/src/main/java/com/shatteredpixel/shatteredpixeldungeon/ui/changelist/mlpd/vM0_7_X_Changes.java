@@ -1345,7 +1345,7 @@ public class vM0_7_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ALL_BAG), ("物品调整：武甲背包"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG5), ("物品调整：武甲背包"),
                 ("不能放入投掷武器。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
@@ -1449,7 +1449,7 @@ public class vM0_7_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ALL_BAG), ("新物品：武甲背包"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG5), ("新物品：武甲背包"),
                 ("帮忙收纳你的武器护甲的背包，但在高于14挑时会被小偷认为是珍贵物品(指疯狂和常规，猩红大盗不会偷取)，\n\n" +
                         "如果你的武甲背包被偷，小偷将陷入0.6移速，并给予你6回合灵视\n\n")));
 

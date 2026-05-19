@@ -106,6 +106,8 @@ public class WndJournal extends WndTabbed {
 	private CatalogTab catalogTab;
 	private BadgesTab badgesTab;
 
+	private BooksTab booksTab;
+
 	public static int last_index = 0;
 
 	public WndJournal(){
@@ -138,6 +140,11 @@ public class WndJournal extends WndTabbed {
 		add(badgesTab);
 		badgesTab.setRect(0, 0, width, height);
 		badgesTab.updateList();
+
+		booksTab = new BooksTab();
+		add(booksTab);
+		booksTab.setRect(0, 0, width, height);
+		booksTab.updateList();
 
 		Tab[] tabs = {
 				new IconTab( Icons.JOURNAL.get() ) {
@@ -198,6 +205,18 @@ public class WndJournal extends WndTabbed {
 					@Override
 					protected String hoverText() {
 						return Messages.get(badgesTab, "title");
+					}
+				},
+				new IconTab( new ItemSprite(ItemSpriteSheet.PROPBOOKS) ) {
+					protected void select( boolean value ) {
+						super.select( value );
+						booksTab.active = booksTab.visible = value;
+						if (value) last_index = 5;
+					}
+
+					@Override
+					protected String hoverText() {
+						return Messages.get(BooksTab.class, "title_books");
 					}
 				}
 		};
@@ -575,8 +594,8 @@ public class WndJournal extends WndTabbed {
 		private static final int EQUIP_IDX = 0;
 		private static final int CONSUM_IDX = 1;
 		private static final int BESTIARY_IDX = 2;
-
 		private static final int BUFF_IDX = 3;
+		private static final int BOOK_IDX = 4;
 
 		private ScrollingGridPane grid;
 
@@ -1206,6 +1225,140 @@ public class WndJournal extends WndTabbed {
 			} else {
 				badgesGlobal.visible = badgesGlobal.active = true;
 			}
+		}
+
+	}
+
+	public static class BooksTab extends Component {
+
+		private ScrollingGridPane grid;
+
+		@Override
+		protected void createChildren() {
+			grid = new ScrollingGridPane();
+			add( grid );
+		}
+
+		@Override
+		protected void layout() {
+			super.layout();
+			grid.setRect( x, y, width, height );
+		}
+
+		public void updateList() {
+			grid.clear();
+
+			// 将需要展示的集合按顺序放入数组，方便循环添加标题
+			Collection<?>[] collections = {
+					Catalog.BOOKS.items(),
+					Catalog.PLAYBOOKS.items(),
+					Catalog.PROPS_LEVEL1_GOOD.items(),
+					Catalog.PROPS_LEVEL2_GOOD.items(),
+					Catalog.PROPS_LEVEL3_GOOD.items(),
+					Catalog.PROPS_LEVEL1_BAD.items(),
+					Catalog.PROPS_LEVEL2_BAD.items(),
+					Catalog.PROPS_LEVEL3_BAD.items(),
+					Catalog.PROPS_LEVEL1_CHAOS.items(),
+			};
+
+			String[] headers = {
+					Messages.get(Catalog.class,  "books.title"),
+					Messages.get(Catalog.class,  "playbooks.title"),
+					Messages.get(Catalog.class,  "props_level1_good.title"),
+					Messages.get(Catalog.class,  "props_level2_good.title"),
+					Messages.get(Catalog.class,  "props_level3_good.title"),
+					Messages.get(Catalog.class,  "props_level1_bad.title"),
+					Messages.get(Catalog.class,  "props_level2_bad.title"),
+					Messages.get(Catalog.class,  "props_level3_bad.title"),
+					Messages.get(Catalog.class,  "props_level1_chaos.title"),
+			};
+
+			int totalItems = 0;
+			int foundItems = 0;
+
+			// 先计算总数，用于顶部大标题
+			for (Collection<?> collection : collections) {
+				for (Object cls : collection) {
+					totalItems++;
+					if (Catalog.isSeen((Class<?>) cls)) foundItems++;
+				}
+			}
+
+			grid.addHeader("_" + Messages.get(this, "title_bpoks") + "_ (" + foundItems + "/" + totalItems + ")", 9, true);
+			// 循环遍历每个集合
+			for (int i = 0; i < collections.length; i++) {
+
+				// 为每一个分类添加一个小标题
+				int seenInCat = 0;
+				for (Object cls : collections[i]) {
+					if (Catalog.isSeen((Class<?>) cls)) seenInCat++;
+				}
+				grid.addHeader("_" + headers[i] + "_ (" + seenInCat + "/" + collections[i].size() + "):");
+
+				// 遍历当前集合下的物品
+				for (Object cls : collections[i]) {
+					Class<?> itemClass = (Class<?>) cls;
+					boolean seen = Catalog.isSeen(itemClass);
+					Item item = (Item) Reflection.newInstance(itemClass);
+
+					ItemSprite sprite;
+					String title;
+					String desc;
+
+					if (seen) {
+						sprite = new ItemSprite(item.image, item.glowing());
+						title = Messages.titleCase(item.trueName());
+						desc = item.desc();
+
+						if (Catalog.useCount(itemClass) > 1) {
+							desc += "\n\n" + Messages.get(CatalogTab.class, "use_count", Catalog.useCount(itemClass));
+						}
+					} else {
+						sprite = new ItemSprite(item.image, null);
+						sprite.lightness(0f);
+						title = "???";
+						desc = Messages.get(CatalogTab.class, "not_seen_item");
+					}
+
+					String finalTitle = title;
+					String finalDesc = desc;
+
+					ScrollingGridPane.GridItem gridItem = new ScrollingGridPane.GridItem(sprite) {
+						@Override
+						public boolean onClick(float x, float y) {
+							if (inside(x, y)) {
+								Image spriteCopy = new ItemSprite();
+								spriteCopy.copy(icon);
+
+								if (seen) {
+									if (ShatteredPixelDungeon.scene() instanceof GameScene) {
+										GameScene.show(new WndAutoExpandStory(spriteCopy, finalTitle, finalDesc));
+									} else {
+										ShatteredPixelDungeon.scene().addToFront(new WndAutoExpandStory(spriteCopy, finalTitle, finalDesc));
+									}
+								} else {
+									if (ShatteredPixelDungeon.scene() instanceof GameScene) {
+										GameScene.show(new WndJournalItem(spriteCopy, "???", finalDesc));
+									} else {
+										ShatteredPixelDungeon.scene().addToFront(new WndJournalItem(spriteCopy, "???", finalDesc));
+									}
+								}
+								return true;
+							} else {
+								return false;
+							}
+						}
+					};
+
+					if (!seen) {
+						gridItem.hardLightBG(1f, 1f, 2f);
+					}
+
+					grid.addItem(gridItem);
+				}
+			}
+
+			grid.setRect(x, y, width, height);
 		}
 
 	}

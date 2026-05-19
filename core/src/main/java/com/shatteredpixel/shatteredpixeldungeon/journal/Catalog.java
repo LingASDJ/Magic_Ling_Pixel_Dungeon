@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShrapnelBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DeepBloodBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.ElementYearBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.HellFireBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
@@ -195,6 +196,7 @@ public enum Catalog {
 	ARTIFACTS,
 	TRINKETS,
 	BOOKS,
+	PLAYBOOKS,
 	MISC_EQUIPMENT,
 
 	//CONSUMABLES
@@ -348,8 +350,9 @@ public enum Catalog {
 
 		BOOKS.addItems(MagicGirlBooks.class, BrokenBooks.class, GrassKingBooks.class, IceCityBooks.class,
 				NoKingMobBooks.class, HollowCityBook.class, DeepBloodBooks.class, DimandBook.class,
-				BzmdrBooks.class, DeYiZiBooks.class, MoneyMoreBooks.class, PinkRandomBooks.class,
-				HellFireBooks.class, YellowSunBooks.class);
+				YellowSunBooks.class, ElementYearBooks.class, HellFireBooks.class);
+
+		PLAYBOOKS.addItems(BzmdrBooks.class, DeYiZiBooks.class, MoneyMoreBooks.class, PinkRandomBooks.class);
 
 		MISC_EQUIPMENT.addItems(BrokenSeal.class, SpiritBow.class, Waterskin.class, VelvetPouch.class,
 				PotionBandolier.class, ScrollHolder.class, MagicalHolster.class, Amulet.class);

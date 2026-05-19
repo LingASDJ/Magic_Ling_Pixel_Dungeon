@@ -42,7 +42,7 @@ public class LockSword extends MeleeWeapon {
     public int lvl = 0;
 
     public LockSword() {
-        super.image = ItemSpriteSheet.DG3;
+        super.image = ItemSpriteSheet.LOCK_SWORD_IRON;
         super.tier = 5;
     }
 
@@ -134,11 +134,9 @@ public class LockSword extends MeleeWeapon {
 
     public int image() {
         if (lvl >= 1000) {
-            super.image = ItemSpriteSheet.DG5;
-        } else if (lvl >= 750) {
-            super.image = ItemSpriteSheet.PBlade;
+            super.image = ItemSpriteSheet.LOCK_SWORD_DIAMOND;
         } else if (lvl >= 550) {
-            super.image = ItemSpriteSheet.DG4;
+            super.image = ItemSpriteSheet.LOCK_SWORD_GOLD;
         }
         return image;
     }
@@ -196,14 +194,12 @@ public class LockSword extends MeleeWeapon {
 
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
-        super.image = ItemSpriteSheet.DG3;
+        super.image = ItemSpriteSheet.LOCK_SWORD_IRON;
 
         if (lvl >= 1000) {
-            super.image = ItemSpriteSheet.DG5;
-        } else if (lvl >= 750) {
-            super.image = ItemSpriteSheet.PBlade;
+            super.image = ItemSpriteSheet.LOCK_SWORD_DIAMOND;
         } else if (lvl >= 550) {
-            super.image = ItemSpriteSheet.DG4;
+            super.image = ItemSpriteSheet.LOCK_SWORD_GOLD;
         }
 
         lvl = bundle.getInt("lvl");
@@ -211,14 +207,12 @@ public class LockSword extends MeleeWeapon {
 
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
-        super.image = ItemSpriteSheet.DG3;
+        super.image = ItemSpriteSheet.LOCK_SWORD_IRON;
 
         if (lvl >= 1000) {
-            super.image = ItemSpriteSheet.DG5;
-        } else if (lvl >= 750) {
-            super.image = ItemSpriteSheet.PBlade;
+            super.image = ItemSpriteSheet.LOCK_SWORD_DIAMOND;
         } else if (lvl >= 550) {
-            super.image = ItemSpriteSheet.DG4;
+            super.image = ItemSpriteSheet.LOCK_SWORD_GOLD;
         }
 
         bundle.put("lvl", lvl);

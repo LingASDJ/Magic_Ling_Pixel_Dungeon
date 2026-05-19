@@ -8,10 +8,6 @@ public class PinkRandomBooks extends Books {
     {
         image = ItemSpriteSheet.PINKBOOKS;
         unique = true;
-    }
-
-    @Override
-    public String info() {
-        return desc()+"\n\n"+authorx;
+        playbooks = true;
     }
 }

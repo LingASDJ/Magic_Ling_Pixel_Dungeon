@@ -12,7 +12,5 @@ public class MainBooks extends Item {
     public int value() {
         return 20 * quantity;
     }
-    public String author = Messages.get(this, "desc");
-
-    public String authorx = Messages.get(this, "author");
+    public String author = Messages.get(this, "desc")+"\n\n"+Messages.get(this, "author");
 }
