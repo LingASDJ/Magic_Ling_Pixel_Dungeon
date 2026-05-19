@@ -385,7 +385,7 @@ public class vM0_6_7_X_Changes {
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOOKBAG), ("牛皮书袋"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG6), ("牛皮书袋"),
                 ("现在牛皮书袋奈亚子不再出售，而是英雄初始就能绑定获得。")));
 
         changes.addButton(new ChangeButton(new NyzSprites(), ("奈亚子"),
@@ -603,7 +603,7 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(new IceFireScorpioSprite(), "寒冰巨蝎",
                 "现在攻速调整为3回合一次，火蝎子也是一样的。"));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DASlade), "涤罪",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAR_SCYTHE), "涤罪",
                 "现在攻速随着杀怪数量渐渐追加，最快可达到0.3x"));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), "突变爆炸体",
@@ -857,7 +857,7 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(issxsaxs,("关于宝箱之王？"),
                 ("由于机制较于复杂，且时间不太充足。将在后续更新进行完善，敬请期待。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DASlade), ("新武器：涤罪[捐赠物品]"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WASH_CRIME), ("新武器：涤罪[捐赠物品]"),
                 ("感谢_落白_的投稿，该武器是一个5阶武器，初始19力量，20%生成概率。可以召唤|未安息的亡魂|助战,自身基准攻击力随着杀敌数追加，但有上限。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("寒冷系统0.1测试版"),

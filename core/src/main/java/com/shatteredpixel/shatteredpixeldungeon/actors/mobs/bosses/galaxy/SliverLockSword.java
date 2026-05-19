@@ -10,7 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class SliverLockSword extends MeleeWeapon {
 
     public SliverLockSword() {
-        image = ItemSpriteSheet.DREAM_SEED+3;
+        image = ItemSpriteSheet.SLIVER_LOCK;
         tier = 6;
         DLY = 1F;
         animation = false;

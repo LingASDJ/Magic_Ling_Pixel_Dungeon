@@ -22,7 +22,7 @@ import com.watabou.utils.Random;
 
 public class GreenSword extends MeleeWeapon {
     public GreenSword() {
-        this.image = ItemSpriteSheet.DG9;
+        this.image = ItemSpriteSheet.JUNGLE_SWORD;
         this.tier = 3;
     }
 

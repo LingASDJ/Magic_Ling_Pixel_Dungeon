@@ -165,7 +165,7 @@ public class v0_6_X_Changes {
 		changes.hardlight( CharSprite.POSITIVE );
 		changeInfos.add(changes);
 		
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SWORD, new Lucky().glowing()), "Lucky Enchantment",
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MACE, new Lucky().glowing()), "Lucky Enchantment",
 				"The Lucky enchant is a nice overall DPS increase, but comes at the cost of consistency. The problem is that with a bit of bad luck it's possible to do 0x damage many times in a row.\n\n" +
 				"Lucky has been adjusted to reign in the extremes of bad luck, and to give a little more strategy to using it.\n\n" +
 				"_-_ Base chance to deal 2x damage reduced to 50% from 60%\n" +
@@ -184,7 +184,7 @@ public class v0_6_X_Changes {
 		changes.hardlight( CharSprite.NEGATIVE );
 		changeInfos.add(changes);
 		
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SHORTSWORD, new Wayward().glowing()), "Wayward curse",
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RITUAL_SWORD_M, new Wayward().glowing()), "Wayward curse",
 				"Wayward's accuracy penalty was very extreme, often making it impossible to win fights without doors. Wayward should punish non-guaranteed attacks, but this extent of this has been lessened.\n\n" +
 				"_-_ Reduced wayward accuracy penalty by 50%"));
 		

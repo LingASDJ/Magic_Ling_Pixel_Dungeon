@@ -10,7 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class Break extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.BREAK;
+        image = ItemSpriteSheet.GREATSHIELD;
         tier = 5;
     }
 

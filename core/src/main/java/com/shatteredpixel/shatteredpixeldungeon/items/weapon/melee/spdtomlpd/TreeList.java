@@ -29,7 +29,7 @@ public class TreeList extends MeleeWeapon {
     private static final String AC_BARRIER = "BARRIER";
 
     {
-        image = ItemSpriteSheet.TREE_LIST;
+        image = ItemSpriteSheet.TREELIST;
         tier = 2;
     }
 

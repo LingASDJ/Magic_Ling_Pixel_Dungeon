@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.input.KeyBindings;
 import com.watabou.input.KeyEvent;
@@ -45,7 +46,43 @@ public class WndTabbed extends Window {
 	protected Tab selected;
 
 	private Signal.Listener<KeyEvent> tabListener;
-	
+
+	/**
+	 * 自动展开的二级阅读窗口
+	 * 根据文本内容自动计算高度，支持滚动，确保长文本也能舒适阅读
+	 */
+	public static class WndAutoExpandStory extends Window {
+
+		private static final int WIDTH_P    = 125;
+		private static final int WIDTH_L    = 180;
+		private static final int MARGIN     = 6;
+		private static final int MAX_HEIGHT = 250; // 限制最大高度，防止占满整个屏幕
+
+		private IconTitle title;
+		private ScrollPane sp;
+
+		public WndAutoExpandStory( Image icon, String titleStr, String bodyStr ) {
+
+			int width = PixelScene.landscape() ? WIDTH_L : WIDTH_P;
+
+			title = new IconTitle( icon, titleStr );
+			title.setRect( MARGIN, MARGIN, width, 0 );
+			add( title );
+
+			RenderedTextBlock text = PixelScene.renderTextBlock( 6 );
+			text.text( bodyStr, width - MARGIN * 2 );
+			text.setPos( MARGIN, title.bottom() + MARGIN );
+
+			float calculatedHeight = text.bottom() + MARGIN;
+			float finalHeight = Math.min( calculatedHeight, MAX_HEIGHT );
+
+			add( text );
+			resize( width, (int) finalHeight );
+		}
+
+	}
+
+
 	public WndTabbed() {
 		super( 0, 0, Chrome.get( Chrome.Type.TAB_SET ) );
 

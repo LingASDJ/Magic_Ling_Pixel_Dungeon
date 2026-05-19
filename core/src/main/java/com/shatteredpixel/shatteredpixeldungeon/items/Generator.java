@@ -614,6 +614,7 @@ public class Generator {
 					BattleAxe.class,
 					Flail.class,
 					RunicBlade.class,
+
 					AssassinsBlade.class,
 					Crossbow.class,
 					Katana.class,

@@ -25,10 +25,8 @@ import java.util.ArrayList;
 
 public class PotionOfNoWater extends Item {
 
-    public static final float TIME_TO_LIGHT = 1;
-
     {
-        image = ItemSpriteSheet.DG18;
+        image = ItemSpriteSheet.STDR;
 
         stackable = true;
 
