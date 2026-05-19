@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 public class Books extends MainBooks {
 
+    public boolean playbooks = false;
+
     {
         defaultAction = Read;
         stackable = true;
@@ -44,7 +46,9 @@ public class Books extends MainBooks {
     @Override
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions(hero);
-        actions.add(Read);
+        if(!playbooks){
+            actions.add(Read);
+        }
         return actions;
     }
 

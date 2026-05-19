@@ -571,7 +571,7 @@ public class vM0_5_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG12), (Messages.get(vM0_5_X_Changes.class, "challs2")),
                 Messages.get(vM0_5_X_Changes.class, "challs2logs")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG18), (Messages.get(vM0_5_X_Changes.class, "challs3")),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.STDR), (Messages.get(vM0_5_X_Changes.class, "challs3")),
                 Messages.get(vM0_5_X_Changes.class, "challs3logs")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.WARNING), (Messages.get(vM0_5_X_Changes.class, "crashsx")),
@@ -643,7 +643,7 @@ public class vM0_5_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), (Messages.get(vM0_5_X_Changes.class, "bagsd")),
                 Messages.get(vM0_5_X_Changes.class, "bagsdlogs")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG18), (Messages.get(vM0_5_X_Changes.class, "newitems")),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.STDR), (Messages.get(vM0_5_X_Changes.class, "newitems")),
                 Messages.get(vM0_5_X_Changes.class, "newitemslogs")));
 
         Image isa = new SlimeKingSprite();

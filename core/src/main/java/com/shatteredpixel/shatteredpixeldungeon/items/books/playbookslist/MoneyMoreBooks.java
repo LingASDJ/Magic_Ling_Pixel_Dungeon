@@ -7,10 +7,6 @@ public class MoneyMoreBooks extends Books {
     {
         image = ItemSpriteSheet.MONEYBOOKS;
         unique = true;
-    }
-
-    @Override
-    public String info() {
-        return desc()+"\n\n"+authorx;
+        playbooks = true;
     }
 }

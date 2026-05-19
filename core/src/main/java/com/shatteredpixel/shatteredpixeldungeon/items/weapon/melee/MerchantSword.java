@@ -6,7 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class MerchantSword extends MeleeWeapon{
     {
-        image = ItemSpriteSheet.SHOPKEEPERSWORD;
+        image = ItemSpriteSheet.SHOP_SWORD;
 
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;

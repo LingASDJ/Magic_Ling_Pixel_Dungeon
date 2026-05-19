@@ -8,11 +8,7 @@ public class BzmdrBooks extends Books {
     {
         image = ItemSpriteSheet.BZMDR_BOOKS;
         unique = true;
-    }
-
-    @Override
-    public String info() {
-        return desc()+"\n\n"+authorx;
+        playbooks = true;
     }
 }
 

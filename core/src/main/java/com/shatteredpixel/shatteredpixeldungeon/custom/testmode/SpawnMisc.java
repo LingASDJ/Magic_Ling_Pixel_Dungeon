@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.Books;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DeepBloodBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.ElementYearBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.HellFireBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
@@ -343,8 +344,10 @@ public class SpawnMisc extends TestItem {
             bookList.add(HollowCityBook.class);
             bookList.add(DeepBloodBooks.class);
             bookList.add(DimandBook.class);
-            bookList.add(DeYiZiBooks.class);
+            bookList.add(ElementYearBooks.class);
             bookList.add(MoneyMoreBooks.class);
+
+            bookList.add(DeYiZiBooks.class);
             bookList.add(PinkRandomBooks.class);
             bookList.add(HellFireBooks.class);
             bookList.add(YellowSunBooks.class);

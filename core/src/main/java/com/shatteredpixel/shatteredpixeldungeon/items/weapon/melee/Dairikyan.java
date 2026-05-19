@@ -22,8 +22,8 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public class Dairikyan extends MeleeWeapon {
-    public Dairikyan() {
-        image = ItemSpriteSheet.DG2;
+    {
+        image = ItemSpriteSheet.DAIRI_KYAN;
         tier = 3;
         ACC = 1.24F;
         DLY = 0.4F;

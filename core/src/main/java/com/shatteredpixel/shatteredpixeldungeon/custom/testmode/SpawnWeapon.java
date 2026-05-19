@@ -34,7 +34,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.TimeRe
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicBlueSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -108,7 +107,6 @@ public class SpawnWeapon extends TestItem{
             for (int i = 0; i < Generator.Category.WEP_T3.classes.length; i++) {
                 t3_WeaponList.add((Class<? extends MeleeWeapon>) Generator.Category.WEP_T3.classes[i]);
             }
-            t3_WeaponList.add(MagicBlueSword.class);
         }
 
         if(t4_WeaponList.isEmpty()) {

@@ -8,10 +8,7 @@ public class DeYiZiBooks extends Books {
     {
         image = ItemSpriteSheet.DEBOOKS;
         unique = true;
+        playbooks = true;
     }
 
-    @Override
-    public String info() {
-        return desc()+"\n\n"+authorx;
-    }
 }

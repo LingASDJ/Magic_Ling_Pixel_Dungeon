@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -42,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndJournal;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.NinePatch;
-import com.watabou.noosa.audio.Music;
 import com.watabou.utils.SparseArray;
 
 public class JournalScene extends PixelScene {
@@ -129,7 +127,19 @@ public class JournalScene extends PixelScene {
 						panel.width() - panel.marginHor(),
 						panel.height() - panel.marginVer());
 				break;
+			case 4:
+				WndJournal.BooksTab books = new WndJournal.BooksTab();
+				add(books);
+				books.setRect(panel.x + panel.marginLeft(),
+						panel.y + panel.marginTop(),
+						panel.width() - panel.marginHor(),
+						panel.height() - panel.marginVer());
+				books.updateList();
+				break;
 		}
+
+		// 按钮宽度从 pw/4f 调整为 pw/5f，以容纳5个标签页
+		float btnWidth = pw/5f + 1.5f;
 
 		StyledButton btnBadges =  new StyledButton(Chrome.Type.GREY_BUTTON_TR, ""){
 			@Override
@@ -147,7 +157,7 @@ public class JournalScene extends PixelScene {
 			}
 		};
 		btnBadges.icon(Icons.BADGES.get());
-		btnBadges.setRect(panel.x, panel.y + ph - 3, pw/4f + 1.5f, lastIDX == 0 ? 25 : 20);
+		btnBadges.setRect(panel.x, panel.y + ph - 3, btnWidth, lastIDX == 0 ? 25 : 20);
 		align(btnBadges);
 		if (lastIDX != 0) btnBadges.icon().brightness(0.6f);
 		addToBack(btnBadges);
@@ -167,7 +177,7 @@ public class JournalScene extends PixelScene {
 			}
 		};
 		btnCatalog.icon(Icons.CATALOG.get());
-		btnCatalog.setRect(btnBadges.right()-2, btnBadges.top(), pw/4f + 1.5f, lastIDX == 1 ? 25 : 20);
+		btnCatalog.setRect(btnBadges.right()-2, btnBadges.top(), btnWidth, lastIDX == 1 ? 25 : 20);
 		align(btnCatalog);
 		if (lastIDX != 1) btnCatalog.icon().brightness(0.6f);
 		addToBack(btnCatalog);
@@ -187,7 +197,7 @@ public class JournalScene extends PixelScene {
 			}
 		};
 		btnGuide.icon(new ItemSprite(ItemSpriteSheet.MASTERY));
-		btnGuide.setRect(btnCatalog.right()-2, btnBadges.top(), pw/4f + 1.5f, lastIDX == 2 ? 25 : 20);
+		btnGuide.setRect(btnCatalog.right()-2, btnBadges.top(), btnWidth, lastIDX == 2 ? 25 : 20);
 		align(btnGuide);
 		if (lastIDX != 2) btnGuide.icon().brightness(0.6f);
 		addToBack(btnGuide);
@@ -207,10 +217,31 @@ public class JournalScene extends PixelScene {
 			}
 		};
 		btnAlchemy.icon(Icons.ALCHEMY.get());
-		btnAlchemy.setRect(btnGuide.right()-2, btnBadges.top(), pw/4f + 1.5f, lastIDX == 3 ? 25 : 20);
+		btnAlchemy.setRect(btnGuide.right()-2, btnBadges.top(), btnWidth, lastIDX == 3 ? 25 : 20);
 		align(btnAlchemy);
 		if (lastIDX != 3) btnAlchemy.icon().brightness(0.6f);
 		addToBack(btnAlchemy);
+
+		// 新增：书籍&藏品 按钮
+		StyledButton btnBooks =  new StyledButton(Chrome.Type.GREY_BUTTON_TR, ""){
+			@Override
+			protected void onClick() {
+				if (lastIDX != 4) {
+					lastIDX = 4;
+				}
+				ShatteredPixelDungeon.seamlessResetScene();
+				super.onClick();
+			}
+			@Override
+			protected String hoverText() {
+				return Messages.get(WndJournal.BooksTab.class, "title");
+			}
+		};
+		btnBooks.icon(new ItemSprite(ItemSpriteSheet.PROPBOOKS));
+		btnBooks.setRect(btnAlchemy.right()-2, btnBadges.top(), btnWidth, lastIDX == 4 ? 25 : 20);
+		align(btnBooks);
+		if (lastIDX != 4) btnBooks.icon().brightness(0.6f);
+		addToBack(btnBooks);
 
 		Archs archs = new Archs();
 		archs.setSize( w, h );

@@ -49,7 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
@@ -1073,16 +1072,16 @@ public class Dungeon {
 			}
 		}
 
-		if(hero.buff(MageHand.HandWareness.class) != null){
-			for (Mob m : level.mobs.toArray(new Mob[0])){
-				if (m instanceof MageHand) {
-					BArray.or( level.visited, level.heroFOV, m.pos - 1 - level.width(), 3, level.visited );
-					BArray.or( level.visited, level.heroFOV, m.pos - 1, 3, level.visited );
-					BArray.or( level.visited, level.heroFOV, m.pos - 1 + level.width(), 3, level.visited );
-					GameScene.updateFog(m.pos, 2);
-				}
-			}
-		}
+//		if(hero.buff(MageHand.HandWareness.class) != null){
+//			for (Mob m : level.mobs.toArray(new Mob[0])){
+//				if (m instanceof MageHand) {
+//					BArray.or( level.visited, level.heroFOV, m.pos - 1 - level.width(), 3, level.visited );
+//					BArray.or( level.visited, level.heroFOV, m.pos - 1, 3, level.visited );
+//					BArray.or( level.visited, level.heroFOV, m.pos - 1 + level.width(), 3, level.visited );
+//					GameScene.updateFog(m.pos, 2);
+//				}
+//			}
+//		}
 
 		for (Mob m : level.mobs.toArray(new Mob[0])){
 			if (m instanceof BlackSoul) {

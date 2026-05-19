@@ -39,7 +39,7 @@ import com.watabou.utils.Callback;
 public class RunicBlade extends MeleeWeapon {
 
 	{
-		image = ItemSpriteSheet.RUNIC_BLADE;
+		image = ItemSpriteSheet.KING_SWORD;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1f;
 
