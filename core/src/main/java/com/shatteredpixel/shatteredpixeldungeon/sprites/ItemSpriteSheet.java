@@ -955,6 +955,8 @@ public class ItemSpriteSheet {
 
     public static final int	MOONCAKE				= BAGS+8;
     public static final int SWORD_BAG       = BAGS+12;
+
+    public static final int BOOK_BAG       = BAGS+13;
     public static final int HERB_BAG = BAGS+14;
     public static final int PROP_BAG = BAGS+15;
 
