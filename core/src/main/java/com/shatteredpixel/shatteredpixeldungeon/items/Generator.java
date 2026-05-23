@@ -218,7 +218,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.JunglePoison;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceLingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
@@ -599,15 +599,15 @@ public class Generator {
 
 					Dairikyan.class,
 					MagicTorch.class,
-					GreenSword.class,
+					JunglePoison.class,
 
 					SDBSword.class,
 
 					LifeTreeSword.class,
-
-					//MoonDao.class,
 			};
-			WEP_T3.probs = new float[]{1, 5, 4, 4, 4, 3, 5, 3, 6, 0, 0, 0};
+			WEP_T3.probs = new float[]{1, 5, 4, 4, 4, 3, 5, 3, 6,
+					Badges.isUnlocked(Badges.Badge.KILL_CLSISTER) ? 3 : 0,
+					0, 0};
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
