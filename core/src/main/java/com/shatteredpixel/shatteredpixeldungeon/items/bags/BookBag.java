@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class BookBag extends Bag {
 
     {
-        image = ItemSpriteSheet.HIGHTWAND_3;
+        image = ItemSpriteSheet.BOOK_BAG;
     }
 
     @Override
