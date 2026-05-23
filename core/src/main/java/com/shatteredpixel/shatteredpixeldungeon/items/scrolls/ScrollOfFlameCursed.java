@@ -41,7 +41,7 @@ import com.watabou.utils.Callback;
 public class ScrollOfFlameCursed extends Scroll {
 
     {
-        image = ItemSpriteSheet.DG24;
+        image = ItemSpriteSheet.FLAME_SCROLL;
         unique = true;
     }
 

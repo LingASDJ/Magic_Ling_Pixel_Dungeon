@@ -252,7 +252,7 @@ public class vM0_5_X_Changes {
                 "nxhyshopchanges")),
                 Messages.get(vM0_5_X_Changes.class, "nxhyshopchangeslogs")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG19), (Messages.get(vM0_5_X_Changes.class,
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_FROST), (Messages.get(vM0_5_X_Changes.class,
                 "icewandgod2")),
                 Messages.get(vM0_5_X_Changes.class, "icewandgod2logs")));
 
@@ -341,7 +341,7 @@ public class vM0_5_X_Changes {
         changes.addButton(new ChangeButton(ice, (Messages.get(vM0_5_X_Changes.class, "icescorpio")),
                 Messages.get(vM0_5_X_Changes.class, "icescorpiologs")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG19), (Messages.get(vM0_5_X_Changes.class,
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_FROST), (Messages.get(vM0_5_X_Changes.class,
                 "icewandgod")),
                 Messages.get(vM0_5_X_Changes.class, "icewandgodlogs")));
 
@@ -376,7 +376,7 @@ public class vM0_5_X_Changes {
         changes.addButton(new ChangeButton(new BombGnollTricksterSprites(), (Messages.get(vM0_5_X_Changes.class, "bomb")),
                 Messages.get(vM0_5_X_Changes.class, "bomblogs")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG6), (Messages.get(vM0_5_X_Changes.class, "blues")),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_3), (Messages.get(vM0_5_X_Changes.class, "blues")),
                 Messages.get(vM0_5_X_Changes.class, "blueslogs")));
 
         changes.addButton(new ChangeButton(new SRPDICLRTT(),
@@ -507,7 +507,7 @@ public class vM0_5_X_Changes {
         changes.hardlight(Window.WATA_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.DG1), "炸弹匕首",
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.BOMB_SWORD), "炸弹匕首",
                 "炸弹匕首生成的炸弹将立刻爆炸"));
 
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.ANKH), "十字架改动",
@@ -521,13 +521,13 @@ public class vM0_5_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG26), (Messages.get(vM0_5_X_Changes.class, "dg26")),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ROSE_SCROLL), (Messages.get(vM0_5_X_Changes.class, "dg26")),
                 Messages.get(vM0_5_X_Changes.class, "dg26logs")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG24), (Messages.get(vM0_5_X_Changes.class, "dg24")),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FLAME_SCROLL), (Messages.get(vM0_5_X_Changes.class, "dg24")),
                 Messages.get(vM0_5_X_Changes.class, "dg24logs")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG12), (Messages.get(vM0_5_X_Changes.class, "dg12")),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DEV_7), (Messages.get(vM0_5_X_Changes.class, "dg12")),
                 Messages.get(vM0_5_X_Changes.class, "dg12logs")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
@@ -568,7 +568,7 @@ public class vM0_5_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAR_HAMMER), (Messages.get(vM0_5_X_Changes.class, "newwepaon3")),
                 Messages.get(vM0_5_X_Changes.class, "newwepaon3logs")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG12), (Messages.get(vM0_5_X_Changes.class, "challs2")),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DEV_7), (Messages.get(vM0_5_X_Changes.class, "challs2")),
                 Messages.get(vM0_5_X_Changes.class, "challs2logs")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.STDR), (Messages.get(vM0_5_X_Changes.class, "challs3")),
@@ -656,7 +656,7 @@ public class vM0_5_X_Changes {
         changes.addButton(new ChangeButton(is, (Messages.get(vM0_5_X_Changes.class, "dm7204")),
                 Messages.get(vM0_5_X_Changes.class, "dm7204logs")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG12), (Messages.get(vM0_5_X_Changes.class, "sca")),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DEV_7), (Messages.get(vM0_5_X_Changes.class, "sca")),
                 Messages.get(vM0_5_X_Changes.class, "scalogs")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), (Messages.get(vM0_5_X_Changes.class, "ksx")),
@@ -821,13 +821,13 @@ public class vM0_5_X_Changes {
         changes.addButton(new ChangeButton(new MimicSprite.Dimand(), (Messages.get(vM0_5_X_Changes.class, "newmimic")),
                 Messages.get(vM0_5_X_Changes.class, "newmimiclogs")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG17), (Messages.get(vM0_5_X_Changes.class, "newwand")),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_HOLDER), (Messages.get(vM0_5_X_Changes.class, "newwand")),
                 Messages.get(vM0_5_X_Changes.class, "newwandlogs")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG10), (Messages.get(vM0_5_X_Changes.class, "newfood")),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FOOD_HOLDER), (Messages.get(vM0_5_X_Changes.class, "newfood")),
                 Messages.get(vM0_5_X_Changes.class, "newfoodlogs")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG20), (Messages.get(vM0_5_X_Changes.class, "newstory")),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SHOP_DIED), (Messages.get(vM0_5_X_Changes.class, "newstory")),
                 Messages.get(vM0_5_X_Changes.class, "newstorylogs")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG21), (Messages.get(vM0_5_X_Changes.class, "newitem")),

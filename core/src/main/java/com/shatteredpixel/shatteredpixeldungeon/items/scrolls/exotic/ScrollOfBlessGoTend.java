@@ -17,7 +17,7 @@ import com.watabou.utils.Callback;
 public class ScrollOfBlessGoTend extends Scroll {
 
     {
-        image = ItemSpriteSheet.DG25;
+        image = ItemSpriteSheet.BLESS_SCROLL;
         unique = true;
     }
 

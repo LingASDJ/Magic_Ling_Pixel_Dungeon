@@ -518,7 +518,7 @@ public class vM0_7_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG25), ("开发者模式v0.8"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BLESS_SCROLL), ("开发者模式v0.8"),
                 ("1、追加 自定义属性 物品，可调节英雄属性\n\n" +
                         "2.开发者模式已经搬迁至难度选择，请注意。")));
 
@@ -1345,7 +1345,7 @@ public class vM0_7_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG5), ("物品调整：武甲背包"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SWORD_BAG), ("物品调整：武甲背包"),
                 ("不能放入投掷武器。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
@@ -1449,7 +1449,7 @@ public class vM0_7_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG5), ("新物品：武甲背包"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SWORD_BAG), ("新物品：武甲背包"),
                 ("帮忙收纳你的武器护甲的背包，但在高于14挑时会被小偷认为是珍贵物品(指疯狂和常规，猩红大盗不会偷取)，\n\n" +
                         "如果你的武甲背包被偷，小偷将陷入0.6移速，并给予你6回合灵视\n\n")));
 
@@ -1486,7 +1486,7 @@ public class vM0_7_X_Changes {
         changeInfos.add(changes);
 
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), "归溯钥剑",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LOCK_SWORD_DIAMOND), "归溯钥剑",
                 "整体成长属性削弱，从1-11改为1-6。"));
 
     }

@@ -517,11 +517,8 @@ public class ItemSpriteSheet {
     public static final int WAND_UNKNOWN   = RINGS+13;
 
     public static final int KEYS_UNKNOWN   = RINGS+14;
-
     public static final int WAND_HAND_CONTROL   = RINGS+15;
 
-    public static final int WAND_HTR    = WANDS+14;
-    public static final int WAND_KCX    = WANDS+15;
     static {
         for (int i = WANDS; i < WANDS+15; i++)
             assignItemRect(i, 14, 14);
@@ -956,72 +953,41 @@ public class ItemSpriteSheet {
     public static final int HOLSTER     = BAGS+4;
     public static final int MagicBlueSword      = BAGS+5;
 
-    public static final int	DG1				= BAGS+8;
-    public static final int	DG2				= BAGS+9;
-    public static final int	DG3				= BAGS+10;
-    public static final int	DG4				= BAGS+11;
-    public static final int	DG5				= BAGS+12;
-    public static final int	DG6				= BAGS+13;
-    public static final int	DG7				= BAGS+14;
-    public static final int	DG8				= BAGS+15;
-    public static final int	DG9				= BAGS+16;
-    public static final int	DG10				= BAGS+17;
-    public static final int	DG11				= BAGS+18;
-    public static final int	DG12				= BAGS+19;
+    public static final int	MOONCAKE				= BAGS+8;
+    public static final int SWORD_BAG       = BAGS+12;
+    public static final int HERB_BAG = BAGS+14;
+    public static final int PROP_BAG = BAGS+15;
+
     public static final int	DG13				= BAGS+20;
-    public static final int	DG15				= BAGS+22;
-    public static final int	DG16				= BAGS+23;
-    public static final int	DG17				= BAGS+24;
-    public static final int	DG18				= BAGS+25;
-    public static final int	DG19				= BAGS+26;
-    public static final int	DG20				= BAGS+27;
+
+    public static final int SHOP_DIED           = BAGS+27;
     public static final int	DG21				= BAGS+28;
-    public static final int	DG22				= BAGS+29;
-    public static final int	DG23				= BAGS+30;
-    public static final int	DG24				= BAGS+31;
-    public static final int	DG25				= BAGS+32;
-    public static final int	DG26				= BAGS+33;
-    public static final int	ICEBOOKS				= BAGS+34;
-    public static final int	NOBOOKS				= BAGS+35;
-    public static final int	CLINGSHILED				= BAGS+36;
-    public static final int	GRRENSHILED				= BAGS+37;
-    /*依赖项*/
-    public static final int	NOTAS				= BAGS+38;
-    public static final int	TONASD				= BAGS+39;
-    /*依赖项*/
-    public static final int	BLUEDEVIAL				= BAGS+40;
-    public static final int	PINKDEVIAL				= BAGS+41;
-    public static final int	REDDEVIAL				= BAGS+42;
 
     public static final int	DRAGONKINGHALOFIRE				= BAGS+44;
 
-    public static final int	SKELETONGOLD				= BAGS+47;
+    public static final int BLESS_SCROLL = BAGS+64;
+    public static final int FLAME_SCROLL = BAGS+66;
+    public static final int ROSE_SCROLL  = BAGS+65;
+    public static final int	SKELETONGOLD = BAGS+67;
 
-    public static final int	ICEDVS				= BAGS+48;
-    public static final int	FIREDVS			= BAGS+49;
-    public static final int	DIEDVS				= BAGS+50;
 
 
-    public static final int	ALL_BAG				= BAGS+51;
-    public static final int	BOOKBAG				= BAGS+52;
-    public static final int	BLACKBOOK		= BAGS+53;
-    public static final int	LOSTBAG				= BAGS+54;
-    public static final int	LANTERNA				= BAGS+55;
-    public static final int	LANTERNB				= BAGS+56;
-    public static final int	SKPOTION				= BAGS+57;
-    public static final int	SKNANO				= BAGS+58;
+    //public static final int	ICEDVS				= BAGS+48;
 
-    public static final int	PROB				= BAGS+59;
 
-    public static final int	PBlade				= BAGS+76;
+
+    public static final int	BLACKBOOK		= BAGS+69;
+    public static final int	LOSTBAG			= BAGS+70;
+    public static final int	LANTERNA		= BAGS+71;
+    public static final int	LANTERNB		= BAGS+72;
+    public static final int	SKPOTION		= BAGS+73;
+    public static final int	SKNANO			= BAGS+74;
 
 
 
     static{
         assignItemRect(WATERSKIN,        16, 16);
         assignItemRect(POUCH,       16, 16);
-        assignItemRect(DG17,       14, 14);
-        assignItemRect(DG19,       14, 14);
         assignItemRect(HOLDER,      16, 16);
         assignItemRect(BANDOLIER,   16, 16);
         assignItemRect(HOLSTER,     15, 16);
@@ -1029,10 +995,12 @@ public class ItemSpriteSheet {
         assignItemRect(ANTILIGHT, 15, 16);
         assignItemRect(LANTERNA, 10, 16);
         assignItemRect(LANTERNB, 10, 16);
-        assignItemRect(SKPOTION, 13, 15);
+        assignItemRect(SKPOTION, 9, 15);
         assignItemRect(SKNANO, 15, 14);
-        assignItemRect(DG8, 12, 11);
+        assignItemRect(PROP_BAG, 12, 11);
         assignItemRect(SDBlade, 15, 15);
+
+        assignItemRect(SKELETONGOLD, 16, 15);
     }
 
     private static final int MODE_ICONS    	 = xy(1, 36);  //16 slots
@@ -1122,7 +1090,7 @@ public class ItemSpriteSheet {
 
     public static final int CHALLANEESICON_16=			 CHALLANEESICONINDEX+15;
 
-    public static final int CHALLANEESICON_17=			 CHALLANEESICONINDEX+31;
+    public static final int CHALLANEESICON_17=			 CHALLANEESICONINDEX+16;
     public static final int SCROLL_GOLD   	 		= xy(1, 46);  //16 slots
     public static final int  RANDOM_CHEST			= SCROLL_GOLD+1;
     public static final int  CITY_HOOD			= SCROLL_GOLD+2;

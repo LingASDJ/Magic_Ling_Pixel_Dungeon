@@ -809,7 +809,7 @@ public class vM0_6_6_Changes {
         changes.hardlight( CharSprite.NEGATIVE );
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), ("钥匙剑"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LOCK_SWORD_DIAMOND), ("钥匙剑"),
                 ("钥匙剑现在只能通过钥匙升级，\n且只有以下钥匙加经验：\n\n" +
                         "1.铁钥匙5经验\n" +
                         "2.黄金钥匙15经验\n" +
@@ -906,7 +906,7 @@ public class vM0_6_6_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAR_HAMMER), ("白檩剑"),
                 ("以前的白金真银战锤大剑改为白檩剑，精准度提高，其余不变")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG2), ("蛮人战斧"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DAIRI_KYAN), ("蛮人战斧"),
                 ("武技视觉效果优化和完善武技，自身属性加强")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
@@ -916,7 +916,7 @@ public class vM0_6_6_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.YELLOWBOOKS), ("传说书籍"),
                 ("现在如果存在英雄精英效果的状态下，不能继续阅读其他传说书籍。同时传说书籍在商人售卖处价格上涨。奈亚子终端仍然是720金币。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), ("钥匙剑"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LOCK_SWORD_DIAMOND), ("钥匙剑"),
                 ("钥匙剑现在只能通过钥匙升级，且获得途径仅在常规商人处有概率出现，且商人处可能有等级，但价钱也会上涨")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火前路-V3.3"),
@@ -1028,7 +1028,7 @@ public class vM0_6_6_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_AIKELAIER), ("闪电花"),
                 ("用该物品制作的无味果改名为雷暴果，拥有闪电链式反应效果。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_HTR), ("风暴雷霆法杖"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_5), ("风暴雷霆法杖"),
                 ("使用法杖在水中攻击时，有10%的概率获得3次的闪电链式反应效果")));
 
         changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.CORRUPT, true), ("鬼磷精英"),

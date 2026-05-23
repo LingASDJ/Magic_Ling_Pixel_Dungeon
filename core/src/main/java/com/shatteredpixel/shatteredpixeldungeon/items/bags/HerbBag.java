@@ -28,7 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class HerbBag extends Bag {
 
     {
-        image = ItemSpriteSheet.DG7;
+        image = ItemSpriteSheet.HERB_BAG;
     }
 
     @Override
