@@ -34,7 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class ScrollOfRoseShiled extends Scroll {
 
     {
-        image = ItemSpriteSheet.DG26;
+        image = ItemSpriteSheet.ROSE_SCROLL;
         unique = true;
     }
 

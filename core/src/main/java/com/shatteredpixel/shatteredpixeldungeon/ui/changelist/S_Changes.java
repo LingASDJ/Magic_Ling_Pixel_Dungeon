@@ -376,7 +376,7 @@ public class S_Changes {
                         "_3._两袖清风&负债累累_\n"+
                         "_一个是禁止地牢的_金币生成_，另一个则是_移除金币_"));
 
-        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.DG7), "_食物袋_",
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.HERB_BAG), "_食物袋_",
                 "在_粘咕_那里有几率获得该物品\n\n或者在_商人那里_也可能得到"));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
@@ -386,7 +386,7 @@ public class S_Changes {
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RedBloodMoon), "猩红血月魔剑",
                 "现在它可以召唤血量为_3滴血_的_血月傀儡_，傀儡根据您的武器而自动成长！"));
 
-        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.DG1), "炸弹匕首",
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.BOMB_SWORD), "炸弹匕首",
                 "炸弹匕首现在掉的武器不会_瞬间爆炸_！"));
 
         changes.addButton( new ChangeButton(new MurdererSprite(), "血月小偷",
@@ -426,7 +426,7 @@ public class S_Changes {
         ChangeInfo changeInfo = new ChangeInfo("V0.3.0.8-9 HotFixed 热修复", true, "");
         changeInfo.hardlight(16776960);
         arrayList.add(changeInfo);
-        changeInfo.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG6), "移除", "移除通知：\n\n" +
+        changeInfo.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_3), "移除", "移除通知：\n\n" +
                 "由于此东西BUG百出，我决定暂时移除！以后会回归的，敬请期待！\n\n"));
         changeInfo.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
                 "BUG修复", "0.3.0.7-0.3.0.8合计修复以下问题:\n1._15层_楼层崩溃问题\n2.新NPC可以被_法师的法杖_杀死的问题\n3._DM300_的Act崩溃问题\n4.修复_灵壤法杖_的炸档问题\n5.修复_新NPC_的_帧数_错误切割问题\n\n"));
@@ -493,7 +493,7 @@ public class S_Changes {
         arrayList.add(changeInfo14);
         changeInfo14.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), "BUG修复", "1.修复_酸蚀法杖_崩溃闪退问题\n\n2.修复_钥匙剑_变量问题[修复者:_Ren_]\n\n3.修复楼层_重置闪退_问题，理论上得到解决"));
         changeInfo14.addButton(new ChangeButton(new Image("sprites/snake.png", 0, 0, 14, 16), "新怪物", "_密林巨蛇_\n\n_密林3层开始刷新_"));
-        changeInfo14.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG6), "新法杖", "幻蓝_焰浪_神杖\n\n这根法杖由_蓝磷元素_制成，饰以_魔紫树叶_这使它看起来相当霸气。它的顶端噼啪作响嘶嘶而鸣，渴望着释放其_强大的魔法。_"));
+        changeInfo14.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_3), "新法杖", "幻蓝_焰浪_神杖\n\n这根法杖由_蓝磷元素_制成，饰以_魔紫树叶_这使它看起来相当霸气。它的顶端噼啪作响嘶嘶而鸣，渴望着释放其_强大的魔法。_"));
         ChangeInfo changeInfo15 = new ChangeInfo("V0.2.5-6", true, "");
         changeInfo15.hardlight(65535);
         arrayList.add(changeInfo15);
@@ -508,7 +508,7 @@ public class S_Changes {
         changeInfo16.addButton(new ChangeButton(new Image("sprites/king.png", 0, 0, 13, 16),
                 "怪物更改", "怪物修改了一些问题，具体如下:\n-_矮人国亡\n-_小粘咕-实验体\n-_DM-3000\n-天狗-火冽烽_-_ MLPD\n均在24层刷新"));
         changeInfo16.addButton(new ChangeButton(new Image("sprites/zei.png", 0, 0, 12, 13), "新增怪物", "新增了几个怪物，如下:\n-_红色怨灵\n-_影子盗贼"));
-        changeInfo16.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG2), "新增武器", "新增武器如下:\n-_蛮人战斧\n-_炸弹匕首\n-_钥匙剑"));
+        changeInfo16.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DAIRI_KYAN), "新增武器", "新增武器如下:\n-_蛮人战斧\n-_炸弹匕首\n-_钥匙剑"));
         ChangeInfo changeInfo17 = new ChangeInfo("V0.3.0.0", true, "");
         changeInfo17.hardlight(65535);
         arrayList.add(changeInfo17);

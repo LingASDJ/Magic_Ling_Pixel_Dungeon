@@ -55,7 +55,7 @@ public class Pasty extends Food {
 		if(RegularLevel.chinaHoliday != RegularLevel.ChinaHoliday.NONE){
 			switch (RegularLevel.chinaHoliday){
 				case ZQJ:
-					image = ItemSpriteSheet.DG1;
+					image = ItemSpriteSheet.MOONCAKE;
 					break;
 				case CJ:
 					image = ItemSpriteSheet.Fish_A;

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class BackGoKey extends TestItem {
     {
-        image = ItemSpriteSheet.DG20;
+        image = ItemSpriteSheet.SHOP_DIED;
         changeDefAct = false;
     }
 

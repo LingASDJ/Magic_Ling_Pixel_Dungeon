@@ -346,7 +346,7 @@ public class vm0_8_X_Changes {
                         "2.古堡活动时间延长，第一阶段继续开启")));
 
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), ("归溯钥剑"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LOCK_SWORD_DIAMOND), ("归溯钥剑"),
                 ("现在只能在商店处购买，且移出五阶武器生成池。")));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
@@ -795,7 +795,7 @@ public class vm0_8_X_Changes {
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG18), ("生石灰固体理想合剂"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.STDR), ("生石灰固体理想合剂"),
                 ("现在的蒸发范围为8向2x2的范围")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ELIXIR_AQUA), ("水爆魔药"),
@@ -853,7 +853,7 @@ public class vm0_8_X_Changes {
                                 "_-_ 限时双倍掉落：\n" +
                                 "_-_ 2025.3.7-2025.3.31 钴币全局双倍掉落")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG12), ("开发者模式工具：升降器"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DEV_7), ("开发者模式工具：升降器"),
                 ("现在升降器支持任意楼层传送，且可以传送到0层。")));
 
         Image issxsaxs =new ShopGuardDead.ShopGuardianRedSprite();
@@ -1029,12 +1029,12 @@ public class vm0_8_X_Changes {
                         "_-_ 修复金蝶重复饰品的问题\n" +
                         "_-_ 指南书页异常位置修复")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), "归溯钥剑",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LOCK_SWORD_DIAMOND), "归溯钥剑",
                 "现在获得钥匙的经验相比之前翻倍，并且成长调整为1-5。\n\n" +
                         "并且在16层必定出现钥匙剑在商店,如果完成了_远古开拓者_成就，\n\n" +
                         "则钥匙剑在16层必定出现保底+3,并单独打5折左右。"));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG12), ("开发者模式工具：升降器"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DEV_7), ("开发者模式工具：升降器"),
                 ("现在升降器支持任意楼层传送，且可以传送到0层。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.STAIRS), ("全局房间优化"),

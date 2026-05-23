@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class ShopDiedBook extends Item {
 
     {
-        image = ItemSpriteSheet.DG20;
+        image = ItemSpriteSheet.SHOP_DIED;
 
         cursed = true;
         cursedKnown = true;

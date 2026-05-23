@@ -121,7 +121,7 @@ public class vM0_6_4_P_Changes {
                         "如果通关是1倍，没通关是5倍--(也就是基本无法获得)。" )));
 
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG25), ("开发者模式v0.7"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BLESS_SCROLL), ("开发者模式v0.7"),
                 ("在开发模式中，支离破碎第1层是测试怪组。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BloodDied), "嗜血荆棘",
@@ -141,7 +141,7 @@ public class vM0_6_4_P_Changes {
                 ("现在灯火最大值为100%，且有益BuffRoll的时候最多同时存在一个。\n\n" +
                         "高挑可能会更加困难，但低挑来说正常。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG25), ("开发者模式v0.6"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BLESS_SCROLL), ("开发者模式v0.6"),
                 ("修复了一些Bug")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_16), ("变幻莫测v0.4"),
@@ -171,7 +171,7 @@ public class vM0_6_4_P_Changes {
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG25), ("开发者模式v0.5"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BLESS_SCROLL), ("开发者模式v0.5"),
                 ("新增武器生成秘卷，感谢潘多拉的代码制作和注解版的代码支持。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战：变幻莫测V0.3"),
@@ -402,7 +402,7 @@ public class vM0_6_4_P_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIEDCROSSBOW), ("重型弩炮"),
                 ("修复使用还会扣减飞镖的问题。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_KCX), ("共生法杖"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_REGROWTH), ("共生法杖"),
                 ("修复共生法杖可能能被永续的问题。")));
 
         changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
@@ -539,7 +539,7 @@ public class vM0_6_4_P_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_ODAL), ("升级卷轴"),
                 ("现在修复升级卷轴可能丢失的问题，并且采用平衡算法。例如，你在1区摸到了4个升级，在监狱只有两个。总量不变。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_KCX), ("再生法杖"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_REGROWTH), ("再生法杖"),
                 ("修复一些问题，并且可以持续使用。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_15), ("挑战加成"),
@@ -557,7 +557,7 @@ public class vM0_6_4_P_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI), ("吸血鬼刀-Beta12"),
                 ("优化数值，调整吸血权重。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), ("归溯钥剑"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LOCK_SWORD_DIAMOND), ("归溯钥剑"),
                 ("现在只能在怪物那里获得极少经验，更多经验应该通过装备此武器后拾取钥匙吸收能量。")));
 
         changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),

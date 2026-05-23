@@ -519,7 +519,7 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.Flower_Cake), ("新食物：桃花饼"),
                 ("与新年小镇的白宴交谈可获得。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG25), ("新物品：赐福卷轴"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BLESS_SCROLL), ("新物品：赐福卷轴"),
                 ("与新年小镇的小叶交谈可获得。")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
@@ -578,9 +578,9 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LINGPEA), ("棱晶调整"),
                 ("每75回合生成20回合的丛林守护之盾。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG13), ("寒冰神扇"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER), ("寒冰神扇"),
                 ("此武器正式移除。")));
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ENDDIED), ("终焉"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER), ("终焉"),
                 ("此武器正式移除。")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);

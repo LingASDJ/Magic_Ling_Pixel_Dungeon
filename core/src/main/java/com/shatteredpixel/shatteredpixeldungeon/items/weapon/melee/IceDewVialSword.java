@@ -17,7 +17,8 @@ import com.watabou.utils.Callback;
 public class IceDewVialSword extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.ICEDVS;
+        //s
+        image = ItemSpriteSheet.DRAGONKINGHALOFIRE;
 
         tier = 6;
         DLY = 2f; //4x speed

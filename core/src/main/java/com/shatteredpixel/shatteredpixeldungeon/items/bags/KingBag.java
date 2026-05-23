@@ -31,7 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class KingBag extends Bag {
 
     {
-        image = ItemSpriteSheet.DG5;
+        image = ItemSpriteSheet.SWORD_BAG;
 
         unique = Challenges.activeChallenges() <= 13;
 
