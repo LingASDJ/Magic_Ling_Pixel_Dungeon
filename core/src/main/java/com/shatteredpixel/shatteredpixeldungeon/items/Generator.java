@@ -230,7 +230,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MerchantSword
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
@@ -611,7 +611,7 @@ public class Generator {
 					Longsword.class,
 					BattleAxe.class,
 					Flail.class,
-					RunicBlade.class,
+					KingSword.class,
 
 					AssassinsBlade.class,
 					Crossbow.class,

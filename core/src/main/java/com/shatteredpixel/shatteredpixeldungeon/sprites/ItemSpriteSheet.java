@@ -322,8 +322,6 @@ public class ItemSpriteSheet {
         assignItemRect(BATTLE_AXE,      16, 16);
         assignItemRect(FLAIL,           14, 14);
 
-        assignItemRect(KING_SWORD,           13, 13);
-
         assignItemRect(ASSASSINS_BLADE, 14, 15);
         assignItemRect(CROSSBOW,        15, 15);
         assignItemRect(KATANA,          15, 16);
