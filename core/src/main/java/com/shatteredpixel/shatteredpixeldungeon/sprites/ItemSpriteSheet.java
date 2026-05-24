@@ -1506,6 +1506,9 @@ public class ItemSpriteSheet {
         public static final int RING_SHARPSHOOT = RINGS+9;
         public static final int RING_TENACITY   = RINGS+10;
         public static final int RING_WEALTH     = RINGS+11;
+        public static final int RING_RETEACT    = RINGS+12;
+        public static final int RING_CLASACT     = RINGS+13;
+
         static {
             assignIconRect( RING_ACCURACY,      7, 7 );
             assignIconRect( RING_ARCANA,        7, 7 );
@@ -1519,6 +1522,9 @@ public class ItemSpriteSheet {
             assignIconRect( RING_SHARPSHOOT,    7, 7 );
             assignIconRect( RING_TENACITY,      6, 6 );
             assignIconRect( RING_WEALTH,        7, 6 );
+
+            assignIconRect( RING_RETEACT,         7, 7 );
+            assignIconRect( RING_CLASACT,         7, 7 );
         }
 
         //16 free slots

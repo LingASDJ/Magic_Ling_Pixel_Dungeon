@@ -127,6 +127,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -923,9 +925,9 @@ public abstract class Char extends Actor {
 		if ( buff( Adrenaline.class ) != null) speed *= 2f;
 		if ( buff( Haste.class ) != null) speed *= 3f;
 
-		if ( buff(HasteLing.class) != null) speed *= 3f;
+		if (buff(HasteLing.class) != null) speed *= 3f;
 
-        if(buff(WorstBlizzard.class)!=null) speed *= buff(WorstBlizzard.class).speedFactor();
+		if (buff(WorstBlizzard.class)!=null) speed *= buff(WorstBlizzard.class).speedFactor();
 
 		if ( buff( Dread.class ) != null) speed *= 2f;
 		return speed;
@@ -1055,6 +1057,28 @@ public abstract class Char extends Actor {
 		Hero attackerHero = (src instanceof Hero) ? (Hero) src : null;
 		dmg = processDamageReduction(dmg, src, attackerHero);
 		/*** 伤害减免 ***/
+
+
+
+		CapeOfThorns.ThornsTime thornsTime = buff(CapeOfThorns.ThornsTime.class);
+
+		Artifact artR = hero.belongings.artifact instanceof CapeOfThorns ? hero.belongings.artifact : null;
+		artR = hero.belongings.misc instanceof CapeOfThorns ? (Artifact) hero.belongings.misc : artR;
+		if(artR != null && artR.cursed && src != hero){
+			Buff.affect( hero, Bleeding.class ).set( (float) dmg /5 );
+		} else if(thornsTime != null){
+			Artifact art = thornsTime.getEquippedArtifact();
+			if (art != null) {
+				float drPct = thornsTime.damageReductionPercent();
+				if (drPct > 0) {
+					int reduced = Math.round(dmg * drPct);
+					dmg -= reduced;
+					if (dmg < 0) dmg = 0;
+					sprite.showStatus(CharSprite.POSITIVE, Messages.get(CapeOfThorns.ThornsTime.class, "block", reduced));
+				}
+			}
+		}
+
 
 		if (buff( Paralysis.class ) != null) {
 			buff( Paralysis.class ).processDamage(dmg);

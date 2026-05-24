@@ -3,7 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -38,7 +38,7 @@ public class GrassKingBooks extends Books {
                 case 0:
                 case 1:
                 case 2:
-                    Buff.affect(hero, Barrier.class).setShield(10 + (hero.HP - hero.HT) / 10);
+                    Buff.affect(hero, Barkskin.class).set( Random.Int(0,21), 5 );
                     detach(hero.belongings.backpack);
                     GLog.b(Messages.get(this, "blees"));
                     break;

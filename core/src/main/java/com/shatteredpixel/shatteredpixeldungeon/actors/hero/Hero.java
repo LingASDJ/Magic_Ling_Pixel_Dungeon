@@ -2435,6 +2435,11 @@ public class Hero extends Char {
 			damage = belongings.armor().proc( enemy, this, damage );
 		}
 
+		CapeOfThorns.Thorns recharge = buff(CapeOfThorns.Thorns.class);
+		if (recharge != null) {
+			recharge.onDamageTaken(damage);
+		}
+
 		WandOfLivingEarth.RockArmor rockArmor = buff(WandOfLivingEarth.RockArmor.class);
 		if (rockArmor != null) {
 			damage = rockArmor.absorb(damage);
@@ -2547,7 +2552,7 @@ public class Hero extends Char {
 
 		CapeOfThorns.Thorns thorns = buff( CapeOfThorns.Thorns.class );
 		if (thorns != null) {
-			dmg = thorns.proc(dmg, (src instanceof Char ? (Char)src : null),  this);
+			dmg = thorns.proc(dmg, (src instanceof Char ? (Char)src : null));
 		}
 
 		Talent.WarriorFoodImmunity thornsTalent = buff( Talent.WarriorFoodImmunity.class );

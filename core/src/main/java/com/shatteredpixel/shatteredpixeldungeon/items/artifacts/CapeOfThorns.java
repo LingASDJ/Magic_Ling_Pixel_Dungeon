@@ -24,19 +24,31 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
+
 public class CapeOfThorns extends Artifact {
+
+	public static final String AC_THORNS = "THORNS";
 
 	{
 		image = ItemSpriteSheet.ARTIFACT_CAPE;
@@ -47,14 +59,75 @@ public class CapeOfThorns extends Artifact {
 		chargeCap = 100;
 		cooldown = 0;
 
-		defaultAction = "NONE"; //so it can be quickslotted
+		defaultAction = AC_THORNS;
+	}
+
+	@Override
+	public ItemSprite.Glowing glowing() {
+		int[] color = {0x660000,0x00CC00,0xCCCC00,0xF78C6C,0x89DDFF,0x147DAD,0xC3E88D,0xEE9D22,0xBB50A8,0xFF0000};
+
+		if(charge >= 100){
+			return new ItemSprite.Glowing( 0xFF0000, 0.75f );
+		} else if( charge >= 10){
+			return new ItemSprite.Glowing( color[charge/10], 0.75f );
+		}
+		return super.glowing();
 	}
 
 	@Override
 	protected ArtifactBuff passiveBuff() {
 		return new Thorns();
 	}
-	
+
+	public ArrayList<String> actions(Hero hero ) {
+		ArrayList<String> actions = super.actions(hero);
+		actions.add(AC_THORNS);
+		return actions;
+	}
+
+	@Override
+	public String desc() {
+		String desc = super.desc();
+
+		if (isEquipped (Dungeon.hero)){
+			desc += "\n\n";
+			if (cursed)
+				desc += Messages.get(this, "desc_cursed");
+		}
+		return desc;
+	}
+
+	@Override
+	public void execute( Hero hero, String action ) {
+
+		super.execute(hero, action);
+
+		if (hero.buff(MagicImmune.class) != null) return;
+
+		if (action.equals( AC_THORNS )) {
+			CapeOfThorns.Thorns thorns = hero.buff( CapeOfThorns.Thorns.class );
+			if (thorns != null) {
+				if(cursed){
+					GLog.n(Messages.get(this, "thorns_cursed"));
+				} else if(charge >= 10 && hero.buff(ThornsTime.class) == null){
+					Buff.affect(hero,ThornsTime.class);
+					int[] color = {0x660000,0x00CC00,0xCCCC00,0xF78C6C,0x89DDFF,0x147DAD,0xC3E88D,0xEE9D22,0xBB50A8,0xFF0000};
+					if(charge >= 100){
+						GameScene.flash(0xFF0000,true);
+					} else if( charge >= 10){
+						GameScene.flash(color[charge/10],true);
+					}
+					updateQuickslot();
+					GLog.p(Messages.get(this,"thorns"));
+				} else if(charge < 10) {
+					GLog.w(Messages.get(this, "thorns_wait"));
+				} else {
+					GLog.w(Messages.get(this, "thorns_active"));
+				}
+			}
+		}
+	}
+
 	@Override
 	public void charge(Hero target, float amount) {
 		if (cooldown == 0) {
@@ -62,22 +135,185 @@ public class CapeOfThorns extends Artifact {
 			updateQuickslot();
 		}
 		if (charge >= chargeCap){
-			target.buff(Thorns.class).proc(0, null, null);
+			target.buff(Thorns.class).proc(0, null);
 		}
 	}
-	
-	@Override
-	public String desc() {
-		String desc = Messages.get(this, "desc");
-		if (isEquipped( Dungeon.hero )) {
-			desc += "\n\n";
-			if (cooldown == 0)
-				desc += Messages.get(this, "desc_inactive");
-			else
-				desc += Messages.get(this, "desc_active");
+
+	public static class ThornsTime extends Buff {
+		{
+			type = buffType.POSITIVE;
 		}
 
-		return desc;
+		public Artifact getArtifact = null;
+
+		int turnsToCost = 0;
+
+		public float damageReductionPercent() {
+			Artifact art = getEquippedArtifact();
+			if (art == null) return 0f;
+
+			int LV = art.level();
+			float minPct = (20f + 2f * LV) / 100f;
+			float maxPct = (30f + 4f * LV) / 100f;
+
+			maxPct = Math.min(maxPct, 0.99f);
+			if (minPct > maxPct) minPct = maxPct;
+
+			return Random.Float(minPct, maxPct);
+		}
+
+		// 动态获取当前装备的荆棘斗篷
+		public Artifact getEquippedArtifact(){
+			if (getArtifact != null && getArtifact.isEquipped(Dungeon.hero)) return getArtifact;
+			if (Dungeon.hero != null){
+				Artifact art = Dungeon.hero.belongings.artifact();
+				Artifact misc = (Artifact) Dungeon.hero.belongings.misc();
+				if (art instanceof CapeOfThorns) getArtifact = art;
+				else if (misc instanceof CapeOfThorns) getArtifact = misc;
+				else getArtifact = null;
+			}
+			return getArtifact;
+		}
+
+		@Override
+		public boolean attachTo(Char target) {
+			if (super.attachTo(target)) {
+				applyBleedingToNearby();
+				return true;
+			}
+			return false;
+		}
+
+		private void applyBleedingToNearby() {
+			Artifact art = getEquippedArtifact();
+			if (art == null || target == null) return;
+
+			int LV = art.level();
+			int radius = LV / 2; // 半径(LV/2)向下取整
+
+			if (radius <= 0) return;
+
+			int bleedTurns = (int) Math.floor(1.5f * LV); // 1.5LV向下取整
+			if (bleedTurns <= 0) return;
+
+			int centerPos = target.pos;
+			int width = Dungeon.level.width();
+
+			// 遍历动态半径的方形区域
+			for (int dy = -radius; dy <= radius; dy++) {
+				for (int dx = -radius; dx <= radius; dx++) {
+
+					// 【核心修改】：使用欧几里得距离 (勾股定理) 实现完美圆形判定
+					double distance = Math.sqrt(dx * dx + dy * dy);
+
+					if (distance <= radius) {
+
+						// 参考 PathFinder.CIRCLE4 的偏移算法 {-width, +1, +width, -1}
+						int offset = dy * width + dx;
+						int pos = centerPos + offset;
+
+						// 安全检查
+						if (pos < 0 || pos >= Dungeon.level.length()) continue;
+						if (dx < 0 && (centerPos % width == 0)) continue;
+						if (dx > 0 && ((centerPos + 1) % width == 0)) continue;
+						if (!Dungeon.level.passable[pos] && !Dungeon.level.avoid[pos]) continue;
+
+						Char ch = Actor.findChar(pos);
+						if (ch != null && ch.alignment != Char.Alignment.ALLY && ch.isAlive()) {
+
+							float distanceFactor = (float) (1.0 - distance / radius);
+							int actualBleedTurns = Math.max(1, Math.round(bleedTurns * distanceFactor));
+
+							// 不可叠加，重复获取取最高
+							Bleeding existingBleeding = ch.buff(Bleeding.class);
+							if (existingBleeding != null) {
+								float newCooldown = Math.max(existingBleeding.visualcooldown(), actualBleedTurns);
+								existingBleeding.detach();
+								Buff.affect(ch, Bleeding.class).set(newCooldown);
+							} else {
+								Buff.affect(ch, Bleeding.class).set(actualBleedTurns);
+							}
+							ch.damage(art.level(), this, Char.DamageType.PHYSICAL);
+						}
+						//Game.scene().addToFront(new ColorTargetedCell(pos, Window.SKYBULE_COLOR));
+					}
+				}
+			}
+		}
+
+		@Override
+		public boolean act(){
+			Artifact art = getEquippedArtifact();
+			if(art != null){
+				turnsToCost--;
+
+				if (turnsToCost <= 0){
+					art.charge -= 5;
+					if (art.charge < 1) {
+						art.charge = 0;
+						detach();
+						GLog.w(Messages.get(this, "no_charge"));
+						((Hero) target).interrupt();
+					} else {
+						int lvlDiffFromTarget = ((Hero) target).lvl - (1+art.level()*2);
+						if (art.level() >= 7){
+							lvlDiffFromTarget -= art.level()-6;
+						}
+						if (lvlDiffFromTarget >= 0){
+							art.exp += (int) Math.round(5f * Math.pow(1.1f, lvlDiffFromTarget));
+						} else {
+							art.exp += (int) Math.round(5f * Math.pow(0.75f, -lvlDiffFromTarget));
+						}
+
+						if (art.exp >= (art.level() + 1) * 50 && art.level() < art.levelCap) {
+							art.upgrade();
+							Catalog.countUse(CapeOfThorns.class);
+							art.exp -= art.level() * 50;
+							GLog.p(Messages.get(this, "levelup"));
+						}
+						turnsToCost = 1;
+					}
+					updateQuickslot();
+				}
+			} else {
+				detach();
+			}
+
+			applyBleedingToNearby();
+
+			spend(TICK);
+			return true;
+		}
+
+		@Override
+		public String desc() {
+			Artifact art = getEquippedArtifact();
+			return Messages.get(this, "desc",
+					art != null ? 20+art.level()*2 : 20,
+					art != null ? 30+art.level()*4 : 30,
+					art != null ? art.level()/2 : 0,
+					dispTurns(art != null ? (float) art.charge /5 : 0));
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.THORNS;
+		}
+
+		private static final String TURNSTOCOST = "turnsToCost";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put( TURNSTOCOST , turnsToCost);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			turnsToCost = bundle.getInt( TURNSTOCOST );
+		}
+
 	}
 
 	public static class ThornsStats extends Buff {
@@ -94,45 +330,63 @@ public class CapeOfThorns extends Artifact {
 
 		@Override
 		public boolean act(){
-			if (cooldown > 0) {
-				cooldown--;
-				if (cooldown == 0) {
-					GLog.w( Messages.get(this, "inert") );
+
+            if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null) {
+
+				if (activeBuff == null && Regeneration.regenOn()) {
+					float missing = (chargeCap - charge);
+					if (level() > 7) missing += 5*(level() - 7)/3f;
+					float turnsToCharge = (45 - missing);
+					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
+					float chargeToGain = (1f / turnsToCharge);
+					partialCharge += chargeToGain;
 				}
-				updateQuickslot();
-			}
-			spend(TICK);
+
+                partialCharge += 0.25f;
+                while (partialCharge >= 1) {
+                    charge++;
+                    partialCharge -= 1;
+                    if (charge == chargeCap){
+                        partialCharge = 0;
+                    }
+                }
+            } else {
+                partialCharge = 0;
+            }
+
+            updateQuickslot();
+
+
+            spend(TICK);
 			return true;
 		}
 
-		public int proc(int damage, Char attacker, Char defender){
-			if (cooldown == 0){
-				charge += damage*(0.5+level()*0.05);
-				if (charge >= chargeCap){
-					charge = 0;
-					cooldown = 10+level();
-					GLog.p( Messages.get(this, "radiating") );
+		@Override
+		public void charge(Hero target, float amount) {
+			if (cursed || target.buff(MagicImmune.class) != null) return;
+			if (charge < chargeCap) {
+				partialCharge += amount;
+				while (partialCharge >= 1f){
+					charge+=5;
+					partialCharge--;
+				}
+				if (charge >= chargeCap) {
+					charge = chargeCap;
+					partialCharge = 0;
+				}
+				updateQuickslot();
+			}
+		}
+
+		public int proc(int damage, Char attacker){
+
+			if (!cursed && target.buff(MagicImmune.class) == null) {
+				if (attacker != null) {
+					attacker.damage(damage, this, Char.DamageType.REAL);
+					Buff.affect(attacker, Bleeding.class).set(level());
 				}
 			}
 
-			if (cooldown != 0){
-				int deflected = Random.NormalIntRange(0, damage);
-				damage -= deflected;
-
-				if (attacker != null && Dungeon.level.adjacent(attacker.pos, defender.pos)) {
-					attacker.damage(deflected, this);
-				}
-
-				exp+= deflected;
-
-				if (exp >= (level()+1)*5 && level() < levelCap){
-					exp -= (level()+1)*5;
-					upgrade();
-					Catalog.countUse(CapeOfThorns.class);
-					GLog.p( Messages.get(this, "levelup") );
-				}
-
-			}
 			updateQuickslot();
 			return damage;
 		}
@@ -143,21 +397,31 @@ public class CapeOfThorns extends Artifact {
 		}
 
 		@Override
-		public int icon() {
-			if (cooldown == 0)
-				return BuffIndicator.NONE;
-			else
-				return BuffIndicator.THORNS;
-		}
-
-		@Override
 		public void detach(){
 			cooldown = 0;
 			charge = 0;
 			super.detach();
 		}
 
+		public void onDamageTaken(int damage) {
+			if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null) {
+				float chargeToAdd = damage / 2f;
+				partialCharge += chargeToAdd;
+
+				while (partialCharge >= 1) {
+					charge++;
+					partialCharge -= 1;
+					if (charge == chargeCap){
+						partialCharge = 0;
+					}
+				}
+				updateQuickslot();
+			}
+		}
+
 	}
+
+
 
 	public static class HeroThorns extends FlavourBuff {
 
@@ -168,7 +432,6 @@ public class CapeOfThorns extends Artifact {
 				int deflectedHigh = Math.round(attacker.HT*0.12f);
 
 				if(defender.isAlive()){
-					//钢铁之胃--->荆棘之胃
 					if (hero.pointsInTalent(Talent.IRON_STOMACH) == 1){
 						attacker.damage(deflected, this);
 					} else if(hero.pointsInTalent(Talent.IRON_STOMACH) == 2) {

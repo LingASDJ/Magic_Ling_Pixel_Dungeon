@@ -56,7 +56,7 @@ public class MobPlacer extends TestItem{
 
     private boolean shouldOverride = false;
     private int HT = 1;
-    private int maxPage = 22;
+    private int maxPage = 23;
     private int ST = 1;
     private int elite_op = 0;
 
