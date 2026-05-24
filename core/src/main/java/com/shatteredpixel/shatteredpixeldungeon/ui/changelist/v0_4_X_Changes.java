@@ -25,7 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -151,7 +151,7 @@ public class v0_4_X_Changes {
 				"_-_ Corrupted enemies live longer & no longer attack eachother\n" +
 				"_-_ Wands in the holster now charge faster"));
 		
-		changes.addButton( new ChangeButton(new ItemSprite(new RunicBlade()), "Item Changes pt.2",
+		changes.addButton( new ChangeButton(new ItemSprite(new KingSword()), "Item Changes pt.2",
 				"Ring Balance Changes:\n" +
 				"_-_ Ring of Force weaker at 18+ strength, stronger otherwise\n" +
 				"_-_ Ring of Tenacity reduces more damage\n" +

@@ -69,7 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocki
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.TimeReset;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -490,9 +490,9 @@ abstract public class Weapon extends KindOfWeapon {
 		public static float genericProcChanceMultiplier( Char attacker ){
 			float multi = RingOfArcana.enchantPowerMultiplier(attacker);
 
-			if (attacker.buff(RunicBlade.RunicSlashTracker.class) != null){
-				multi += attacker.buff(RunicBlade.RunicSlashTracker.class).boost;
-				attacker.buff(RunicBlade.RunicSlashTracker.class).detach();
+			if (attacker.buff(KingSword.RunicSlashTracker.class) != null){
+				multi += attacker.buff(KingSword.RunicSlashTracker.class).boost;
+				attacker.buff(KingSword.RunicSlashTracker.class).detach();
 			}
 
 			if (attacker.buff(ElementalStrike.DirectedPowerTracker.class) != null){
