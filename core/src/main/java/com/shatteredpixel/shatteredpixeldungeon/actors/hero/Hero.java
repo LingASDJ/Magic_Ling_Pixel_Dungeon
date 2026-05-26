@@ -2551,8 +2551,13 @@ public class Hero extends Char {
 		}
 
 		CapeOfThorns.Thorns thorns = buff( CapeOfThorns.Thorns.class );
+
+		CapeOfThorns.ThornsTime thornsTime = buff(CapeOfThorns.ThornsTime.class);
+
 		if (thorns != null) {
-			dmg = thorns.proc(dmg, (src instanceof Char ? (Char)src : null));
+			if(thornsTime != null){
+				dmg = thorns.proc(dmg, (src instanceof Char ? (Char)src : null));
+			}
 		}
 
 		Talent.WarriorFoodImmunity thornsTalent = buff( Talent.WarriorFoodImmunity.class );

@@ -1,24 +1,3 @@
-/*
- * Pixel Dungeon
- * Copyright (C) 2012-2015 Oleg Dolya
- *
- * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
@@ -33,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -90,9 +70,8 @@ public class CapeOfThorns extends Artifact {
 		String desc = super.desc();
 
 		if (isEquipped (Dungeon.hero)){
-			desc += "\n\n";
 			if (cursed)
-				desc += Messages.get(this, "desc_cursed");
+				desc +=  "\n\n"+Messages.get(this, "desc_cursed");
 		}
 		return desc;
 	}
@@ -132,10 +111,11 @@ public class CapeOfThorns extends Artifact {
 	public void charge(Hero target, float amount) {
 		if (cooldown == 0) {
 			charge += Math.round(4*amount);
+			if (charge >= chargeCap) {
+				charge = chargeCap;
+				partialCharge = 0;
+			}
 			updateQuickslot();
-		}
-		if (charge >= chargeCap){
-			target.buff(Thorns.class).proc(0, null);
 		}
 	}
 
@@ -167,13 +147,18 @@ public class CapeOfThorns extends Artifact {
 			if (getArtifact != null && getArtifact.isEquipped(Dungeon.hero)) return getArtifact;
 			if (Dungeon.hero != null){
 				Artifact art = Dungeon.hero.belongings.artifact();
-				Artifact misc = (Artifact) Dungeon.hero.belongings.misc();
-				if (art instanceof CapeOfThorns) getArtifact = art;
-				else if (misc instanceof CapeOfThorns) getArtifact = misc;
-				else getArtifact = null;
+				Item miscItem = Dungeon.hero.belongings.misc();
+				if (art instanceof CapeOfThorns) {
+					getArtifact = art;
+				} else if (miscItem instanceof CapeOfThorns) {
+					getArtifact = (Artifact) miscItem;
+				} else {
+					getArtifact = null;
+				}
 			}
 			return getArtifact;
 		}
+
 
 		@Override
 		public boolean attachTo(Char target) {
@@ -235,7 +220,6 @@ public class CapeOfThorns extends Artifact {
 							}
 							ch.damage(art.level(), this, Char.DamageType.PHYSICAL);
 						}
-						//Game.scene().addToFront(new ColorTargetedCell(pos, Window.SKYBULE_COLOR));
 					}
 				}
 			}
@@ -330,34 +314,26 @@ public class CapeOfThorns extends Artifact {
 
 		@Override
 		public boolean act(){
-
-            if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null) {
+			if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null && target.buff(ThornsTime.class) == null) {
 
 				if (activeBuff == null && Regeneration.regenOn()) {
-					float missing = (chargeCap - charge);
-					if (level() > 7) missing += 5*(level() - 7)/3f;
-					float turnsToCharge = (45 - missing);
-					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
-					float chargeToGain = (1f / turnsToCharge);
-					partialCharge += chargeToGain;
+					partialCharge += 0.25f / RingOfEnergy.artifactChargeMultiplier(target);
 				}
 
-                partialCharge += 0.25f;
-                while (partialCharge >= 1) {
-                    charge++;
-                    partialCharge -= 1;
-                    if (charge == chargeCap){
-                        partialCharge = 0;
-                    }
-                }
-            } else {
-                partialCharge = 0;
-            }
+				while (partialCharge >= 1) {
+					charge++;
+					partialCharge -= 1;
+					if (charge == chargeCap){
+						partialCharge = 0;
+					}
+				}
+			} else {
+				partialCharge = 0;
+			}
 
-            updateQuickslot();
+			updateQuickslot();
 
-
-            spend(TICK);
+			spend(TICK);
 			return true;
 		}
 
@@ -367,7 +343,7 @@ public class CapeOfThorns extends Artifact {
 			if (charge < chargeCap) {
 				partialCharge += amount;
 				while (partialCharge >= 1f){
-					charge+=5;
+					charge+=4;
 					partialCharge--;
 				}
 				if (charge >= chargeCap) {
