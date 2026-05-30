@@ -29,6 +29,7 @@ import java.util.ArrayList;
 public class CapeOfThorns extends Artifact {
 
 	public static final String AC_THORNS = "THORNS";
+	public static final String AC_THORNSCANCEL = "THORNS_CANCEL";
 
 	{
 		image = ItemSpriteSheet.ARTIFACT_CAPE;
@@ -61,6 +62,12 @@ public class CapeOfThorns extends Artifact {
 
 	public ArrayList<String> actions(Hero hero ) {
 		ArrayList<String> actions = super.actions(hero);
+		CapeOfThorns.Thorns thorns = hero.buff( CapeOfThorns.Thorns.class );
+		if(thorns != null){
+			actions.add(AC_THORNSCANCEL);
+		} else {
+			actions.remove(AC_THORNSCANCEL);
+		}
 		actions.add(AC_THORNS);
 		return actions;
 	}
@@ -81,10 +88,20 @@ public class CapeOfThorns extends Artifact {
 
 		super.execute(hero, action);
 
+		CapeOfThorns.ThornsTime thornst = hero.buff( CapeOfThorns.ThornsTime.class );
+
 		if (hero.buff(MagicImmune.class) != null) return;
 
+		if(action.equals(AC_THORNSCANCEL)){
+			if(thornst != null){
+				GLog.p(Messages.get(this,"thorns_cancel"));
+				thornst.detach();
+			}
+		}
+
+		CapeOfThorns.Thorns thorns = hero.buff( CapeOfThorns.Thorns.class );
 		if (action.equals( AC_THORNS )) {
-			CapeOfThorns.Thorns thorns = hero.buff( CapeOfThorns.Thorns.class );
+
 			if (thorns != null) {
 				if(cursed){
 					GLog.n(Messages.get(this, "thorns_cursed"));
@@ -174,30 +191,26 @@ public class CapeOfThorns extends Artifact {
 			if (art == null || target == null) return;
 
 			int LV = art.level();
-			int radius = LV / 2; // 半径(LV/2)向下取整
+			int radius = LV / 2;
 
 			if (radius <= 0) return;
 
-			int bleedTurns = (int) Math.floor(1.5f * LV); // 1.5LV向下取整
+			int bleedTurns = (int) Math.floor(1.5f * LV);
 			if (bleedTurns <= 0) return;
 
 			int centerPos = target.pos;
 			int width = Dungeon.level.width();
 
-			// 遍历动态半径的方形区域
 			for (int dy = -radius; dy <= radius; dy++) {
 				for (int dx = -radius; dx <= radius; dx++) {
 
-					// 【核心修改】：使用欧几里得距离 (勾股定理) 实现完美圆形判定
 					double distance = Math.sqrt(dx * dx + dy * dy);
 
 					if (distance <= radius) {
 
-						// 参考 PathFinder.CIRCLE4 的偏移算法 {-width, +1, +width, -1}
 						int offset = dy * width + dx;
 						int pos = centerPos + offset;
 
-						// 安全检查
 						if (pos < 0 || pos >= Dungeon.level.length()) continue;
 						if (dx < 0 && (centerPos % width == 0)) continue;
 						if (dx > 0 && ((centerPos + 1) % width == 0)) continue;
@@ -209,7 +222,6 @@ public class CapeOfThorns extends Artifact {
 							float distanceFactor = (float) (1.0 - distance / radius);
 							int actualBleedTurns = Math.max(1, Math.round(bleedTurns * distanceFactor));
 
-							// 不可叠加，重复获取取最高
 							Bleeding existingBleeding = ch.buff(Bleeding.class);
 							if (existingBleeding != null) {
 								float newCooldown = Math.max(existingBleeding.visualcooldown(), actualBleedTurns);
@@ -317,7 +329,7 @@ public class CapeOfThorns extends Artifact {
 			if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null && target.buff(ThornsTime.class) == null) {
 
 				if (activeBuff == null && Regeneration.regenOn()) {
-					partialCharge += 0.25f / RingOfEnergy.artifactChargeMultiplier(target);
+					partialCharge += 0.25f * RingOfEnergy.artifactChargeMultiplier(target);
 				}
 
 				while (partialCharge >= 1) {
@@ -358,8 +370,8 @@ public class CapeOfThorns extends Artifact {
 
 			if (!cursed && target.buff(MagicImmune.class) == null) {
 				if (attacker != null) {
-					attacker.damage(damage, this, Char.DamageType.REAL);
-					Buff.affect(attacker, Bleeding.class).set(level());
+					attacker.damage(damage, this, Char.DamageType.PHYSICAL);
+					Buff.append(attacker, Bleeding.class).set(level());
 				}
 			}
 

@@ -77,10 +77,6 @@ public abstract class ChampionEnemy extends Buff {
 
 	public static int Mcolor = 0x808080;
 
-	public static int mutationcolor() {
-		return Mcolor;
-	}
-
 	@Override
 	public int icon() {
 		return BuffIndicator.CORRUPT;
