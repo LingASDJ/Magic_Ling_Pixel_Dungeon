@@ -6,16 +6,25 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class WashCrime extends MeleeWeapon {
 
@@ -164,6 +173,70 @@ public class WashCrime extends MeleeWeapon {
             }
 
         }
+    }
+
+    @Override
+    protected void duelistAbility(Hero hero, Integer target) {
+
+        ArrayList<Char> targets = new ArrayList<>();
+        Char closest = null;
+
+        hero.belongings.abilityWeapon = this;
+        for (Char ch : Actor.chars()){
+            if (ch.alignment == Char.Alignment.ENEMY
+                    && !hero.isCharmedBy(ch)
+                    && Dungeon.level.heroFOV[ch.pos]
+                    && hero.canAttack(ch)){
+                targets.add(ch);
+                if (closest == null || Dungeon.level.trueDistance(hero.pos, closest.pos) > Dungeon.level.trueDistance(hero.pos, ch.pos)){
+                    closest = ch;
+                }
+            }
+        }
+        hero.belongings.abilityWeapon = null;
+
+        if (targets.isEmpty()) {
+            GLog.w(Messages.get(this, "ability_no_target"));
+            return;
+        }
+
+        throwSound();
+        Char finalClosest = closest;
+        hero.sprite.attack(hero.pos, new Callback() {
+            @Override
+            public void call() {
+                beforeAbilityUsed(hero, finalClosest);
+                for (Char ch : targets) {
+                    //ability does no extra damage
+                    hero.attack(ch, 1, 0, Char.INFINITE_ACCURACY);
+                    if (!ch.isAlive()){
+                        hero.sprite.parent.add(new Chains(hero.sprite.center(), ch.sprite.destinationCenter(),
+                                Effects.Type.RED_CHAIN,
+                                new Callback() {
+                                    public void call() {
+                                        onAbilityKill(hero, ch);
+                                    }
+                                }));
+                    }
+                }
+                Invisibility.dispel();
+                hero.spendAndNext(hero.attackDelay());
+                afterAbilityUsed(hero);
+            }
+        });
+    }
+
+    @Override
+    public String abilityInfo() {
+        if (levelKnown){
+            return Messages.get(this, "ability_desc", augment.damageFactor(min()), augment.damageFactor(max()));
+        } else {
+            return Messages.get(this, "typical_ability_desc", min(0), max(0));
+        }
+    }
+
+    public String upgradeAbilityStat(int level){
+        return augment.damageFactor(min(level)) + "-" + augment.damageFactor(max(level));
     }
 
 }
