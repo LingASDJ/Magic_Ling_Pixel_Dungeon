@@ -7,12 +7,15 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -33,7 +36,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class DiedCrossBow extends LegendWeapon {
+public class DiedCrossBow extends LegendWeapon implements Item.LengedsItem {
 
     {
         image = ItemSpriteSheet.DIEDCROSSBOW;
@@ -44,6 +47,22 @@ public class DiedCrossBow extends LegendWeapon {
         min = Lmin();
         max = Lmax();
         usesTargeting = cooldown == 0;
+    }
+
+    @Override
+    public String statsInfo() {
+        if (isEquipped(hero)) {
+            if (isIdentified()) {
+                return Messages.get(LegendWeapon.class, "stats_desc", legend, Messages.get(this, "ac_king"), Lmin(),
+                        Lmax());
+            } else {
+                return Messages.get(LegendWeapon.class, "typical_stats_desc",legend, 9,Lmin(),
+                        Lmax());
+            }
+        } else {
+            return "";
+        }
+
     }
 
     @Override
@@ -94,7 +113,7 @@ public class DiedCrossBow extends LegendWeapon {
         if (cooldown != 0){
             return Messages.format("CD:%d", cooldown);
         } else {
-            return null;
+            return super.status();
         }
 
     }
@@ -318,6 +337,34 @@ public class DiedCrossBow extends LegendWeapon {
     @Override
     public int max(int lvl) {
         return 25 + lvl * 6;   //scaling unchanged
+    }
+
+    @Override
+    protected void duelistAbility(Hero hero, Integer target) {
+        if (hero.buff(Crossbow.ChargedShot.class) != null){
+            GLog.w(Messages.get(this, "ability_cant_use"));
+            return;
+        }
+
+        beforeAbilityUsed(hero, null);
+        Buff.affect(hero, Crossbow.ChargedShot.class);
+        hero.sprite.operate(hero.pos);
+        hero.next();
+        afterAbilityUsed(hero);
+    }
+
+    @Override
+    public String abilityInfo() {
+        if (levelKnown){
+            return Messages.get(this, "ability_desc", 3+buffedLvl(), 3+buffedLvl());
+        } else {
+            return Messages.get(this, "typical_ability_desc", 3, 3);
+        }
+    }
+
+    @Override
+    public String upgradeAbilityStat(int level) {
+        return Integer.toString(3 + level);
     }
 
 }
