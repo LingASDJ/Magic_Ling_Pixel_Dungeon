@@ -21,263 +21,229 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
-import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
 public class LifeTreeSword extends MeleeWeapon {
-    private int getFood;
+
     {
         image = ItemSpriteSheet.LifeTreeSword;
-        hitSoundPitch = 1f;
-        ACC = 1.28f; //28% boost to accuracy
         tier = 3;
-        defaultAction=AC_SUMMON;
+        defaultAction = AC_SUMMON;
     }
 
     @Override
-    public ArrayList<String> actions(Hero hero ) {
-        ArrayList<String> actions = super.actions( hero );
+    public boolean doUnequip(Hero hero, boolean collect, boolean single) {
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof LifeTreant) {
+                mob.die(null);
+            }
+        }
+        return super.doUnequip(hero, collect, single);
+    }
+
+    @Override
+    public String status() {
+        return charge+"/"+MAX_CHARGE;
+    }
+
+    private int charge = 0;
+    private final int MAX_CHARGE = 40;
+
+    @Override
+    public ArrayList<String> actions(Hero hero) {
+        ArrayList<String> actions = super.actions(hero);
         actions.add(AC_SUMMON);
         return actions;
     }
 
     @Override
-    public void execute( Hero hero, String action ) {
+    public void execute(Hero hero, String action) {
         super.execute(hero, action);
-        if (action.equals( AC_SUMMON )) {
-
+        if (action.equals(AC_SUMMON)) {
             curUser = hero;
             curItem = this;
-            if (getFood > 74){
-                GameScene.selectCell( summonpos );
+            if (charge >= MAX_CHARGE) {
+                GameScene.selectCell(summoner);
             } else {
-                GLog.w( Messages.get(LifeTreeSword.class, "not_chare") );
+                GLog.w(Messages.get(this, "no_charge"));
             }
         }
     }
 
-    public void teleportToLocation(int pos){
-        if (Dungeon.level.avoid[pos] || !Dungeon.level.passable[pos]
-                || Actor.findChar(pos) != null){
-            GLog.n( Messages.get(LifeTreeSword.class, "badlocation") );
-            return;
-        } else if (Dungeon.level.distance(pos, Dungeon.hero.pos) >= 3) {
-            GLog.n( Messages.get(LifeTreeSword.class, "nolongrange") );
-            return;
-        }
-
-        CrivusFruitsFriend ward = new CrivusFruitsFriend();
-        ward.pos = pos;
-        GameScene.add(ward, 1f);
-        getFood=0;
-        Dungeon.level.occupyCell(ward);
-        ward.HP = ward.HT = 3 + curItem.buffedLvl()/3;
-        ward.defenseSkill = 4 + curItem.buffedLvl()/3;
-        ward.sprite.emitter().burst(MagicMissile.WardParticle.UP,6);
-        Dungeon.level.pressCell(pos);
-        CellEmitter.get(ward.pos).burst(Speck.factory(Speck.EVOKE), 4);
-    }
-
-    protected CellSelector.Listener summonpos = new  CellSelector.Listener() {
-        @Override
-        public void onSelect(Integer target) {
-            if (target != null) {
-                teleportToLocation(target);
-            }
-        }
-
-        @Override
-        public String prompt() {
-            return Messages.get(Wand.class, "summon");
-        }
-    };
-
-    public static final String AC_SUMMON	= "summon";
-
-    public String desc() {
-        return Messages.get(this, "desc")+"_"+getFood+"_";
-    }
-
-    public int proc(Char attacker, Char defender, int damage ) {
-
-        if (defender.HP <= damage) {
-            getFood += 1;
-        }
-
-        return super.proc(attacker, defender, damage);
-    }
-
-
-
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        this.getFood = bundle.getInt("getFood");
-    }
-
-    public void storeInBundle(Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put("getFood", this.getFood);
+    @Override
+    public int min(int lvl) {
+        return 8 + lvl;
     }
 
     @Override
     public int max(int lvl) {
-        return  12+lvl*2;
+        return 18 + lvl * 3;
     }
 
-    public int min(int lvl) {
-        return  9+lvl;
+    @Override
+    public int proc(Char attacker, Char defender, int damage) {
+
+        int heal = Math.min(damage / 3, 3);
+
+        if (heal > 0 && attacker.HP < attacker.HT) {
+            charge+=heal;
+        }
+
+        if (charge > MAX_CHARGE) charge = MAX_CHARGE;
+        updateQuickslot();
+
+        return super.proc(attacker, defender, damage);
     }
 
-    public class CrivusFruitsFriend extends Rat {
-        {
-            spriteClass = CrivusFruitsRedSprites.class;
-            alignment = Alignment.ALLY;
+    private void summon(int pos) {
+        if (Dungeon.level.avoid[pos] || !Dungeon.level.passable[pos] || Actor.findChar(pos) != null) {
+            GLog.n(Messages.get(this, "bad_pos"));
+            return;
+        }
 
+        LifeTreant ally = new LifeTreant();
+        ally.setLevel(this,buffedLvl());
+        ally.pos = pos;
+        GameScene.add(ally);
+        ally.HP = ally.HT;
+        updateQuickslot();
+        CellEmitter.get(pos).burst(Speck.factory(Speck.EVOKE), 6);
+        charge = 0;
+    }
 
-            HT = HP = 10+level();
-
-            state = WANDERING = new Waiting();
-
-            properties.add(Property.IMMOVABLE);
+    private CellSelector.Listener summoner = new CellSelector.Listener() {
+        @Override
+        public void onSelect(Integer target) {
+            if (target != null) summon(target);
         }
 
         @Override
-        protected boolean getCloser(int target) {
-            return true;
+        public String prompt() {
+            return Messages.get(LifeTreeSword.class, "prompt");
+        }
+    };
+
+    public static final String AC_SUMMON = "SUMMON";
+
+    @Override
+    public String desc() {
+        return Messages.get(this, "desc", charge, MAX_CHARGE);
+    }
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put("charge", charge);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        charge = bundle.getInt("charge");
+    }
+
+    public static class LifeTreant extends Mob {
+
+        public MeleeWeapon weapon;
+
+        {
+            alignment = Alignment.ALLY;
+            state = WANDERING;
+            spriteClass = LifeTreantSprite.class;
+
+            immunities.add(ToxicGas.class);
+
+            properties.add(Property.ACIDIC);
+            weapon = (MeleeWeapon) Dungeon.hero.belongings.weapon();
+        }
+
+        public void setLevel(Weapon weapon,int lvl) {
+            weapon.level = lvl;
+            HT = 15 + lvl * 4;
+            defenseSkill = 6 + lvl;
+        }
+
+        @Override
+        public int defenseProc( Char enemy, int damage ) {
+
+            GameScene.add(Blob.seed(pos, 20, ToxicGas.class));
+
+            return super.defenseProc(enemy, damage);
         }
 
         @Override
         public int damageRoll() {
-            return Random.NormalIntRange( 5+level(), 8+level() );
+            return Random.NormalIntRange(4 + weapon.level, 9 + weapon.level);
         }
 
         @Override
-        public int attackSkill( Char target ) {
-            return 6+level();
+        public int attackSkill(Char target) {
+            return 10 + weapon.level * 3;
         }
 
         @Override
         public int drRoll() {
-            return Random.NormalIntRange(0, 4);
-        }
-
-        @Override
-        protected boolean getFurther(int target) {
-            return true;
-        }
-
-
-        private class Waiting extends Mob.Wandering{}
-
-        {
-            immunities.add( ToxicGas.class );
-        }
-
-        @Override
-        public int attackProc(Char enemy, int damage) {
-            damage = super.attackProc( enemy, damage );
-            Buff.affect( enemy, Cripple.class, 2f );
-
-            return super.attackProc(enemy, damage);
+            return Random.NormalIntRange(1, 3 + weapon.level/2);
         }
 
         @Override
         public void damage(int dmg, Object src, DamageType type) {
-            if (dmg >= 0){
-                //限伤1
-                dmg = 1;
-            }
+            dmg = Math.min(dmg, 1);
             super.damage(dmg, src, type);
-        }
-
-        @Override
-        public boolean interact( Char c ) {
-            if (c != Dungeon.hero){
-                return true;
-            }
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndOptions( sprite(),
-                            Messages.get(this, "crivusfruitslasher_title"),
-                            Messages.get(this, "crivusfruitslasher_body"),
-                            Messages.get(this, "crivusfruitslasher_confirm"),
-                            Messages.get(this, "crivusfruitslasher_cancel") ){
-                        @Override
-                        protected void onSelect(int index) {
-                            if (index == 0){
-                                die(null);
-                                getFood=70;
-                            }
-                        }
-                    });
-                }
-            });
-            return true;
         }
 
         @Override
         public void die(Object cause) {
             super.die(cause);
+            CellEmitter.get(pos).burst(Speck.factory(Speck.EVOKE), 3);
         }
     }
 
-    public static class CrivusFruitsRedSprites extends com.shatteredpixel.shatteredpixeldungeon.sprites.RotLasherSprite {
-
-        public CrivusFruitsRedSprites(){
+    public static class LifeTreantSprite extends com.shatteredpixel.shatteredpixeldungeon.sprites.KatydidSprites {
+        public LifeTreantSprite(){
             super();
-            tint(0, 1, 1, 0.4f);
+            tint(0.2f, 0.8f, 0.2f, 0.5f);
         }
 
         @Override
         public void resetColor() {
             super.resetColor();
-            tint(0, 1, 1, 0.4f);
+            tint(0.2f, 0.8f, 0.2f, 0.5f);
         }
     }
 
     public static class PlaceHolder extends LifeTreeSword {
-
         {
             image = ItemSpriteSheet.LifeTreeSword;
         }
 
         @Override
         public boolean isSimilar(Item item) {
-            return item instanceof LifeTreeSword && !item.isEquipped(hero);
+            return item instanceof LifeTreeSword && !item.isEquipped(Dungeon.hero);
         }
-
 
         @Override
         public String info() {
-            return Messages.get(this,"error");
+            return Messages.get(this, "error");
         }
     }
-
 }

@@ -91,7 +91,7 @@ public class CavesLevel extends RegularLevel {
 	@Override
 	public void playLevelMusic() {
 		if(RedDragon.Quest.active()){
-			Music.playModeBGM(Assets.Music.CAVES_TENSE, true);
+			Music.playModeBGM(Assets.Music.PRISON_BRANCH_BOSS, true);
 		} else {
 			Music.playModeBGM(Assets.Music.BGM_3, true);
 		}
