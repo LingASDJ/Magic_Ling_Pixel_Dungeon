@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -55,6 +56,34 @@ public class FiveRen extends MeleeWeapon {
         return  Math.round(6.67f*(tier+1)) +    //20 base, up from 15
                 lvl*Math.round(1.33f*(tier+1)); //+4 per level, up from +3
     }
+
+    @Override
+    public String targetingPrompt() {
+        return Messages.get(this, "prompt");
+    }
+
+    @Override
+    protected void duelistAbility(Hero hero, Integer target) {
+        //+(9+2*lvl) damage, roughly +83% base damage, +80% scaling
+        int dmgBoost = augment.damageFactor(9 + Math.round(2f*buffedLvl()));
+        Spear.spikeAbility(hero, target, 1, dmgBoost, this);
+    }
+
+    @Override
+    public String abilityInfo() {
+        int dmgBoost = levelKnown ? 9 + Math.round(2f*buffedLvl()) : 9;
+        if (levelKnown){
+            return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+        } else {
+            return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
+        }
+    }
+
+    public String upgradeAbilityStat(int level){
+        int dmgBoost = 9 + Math.round(2f*level);
+        return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
+    }
+
 
 }
 
