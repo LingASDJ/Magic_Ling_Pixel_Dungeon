@@ -87,7 +87,7 @@ public class MiningLevel extends CavesLevel {
 
 	@Override
 	public void playLevelMusic() {
-		Music.INSTANCE.play(Assets.Music.CAVES_TENSE, true);
+		Music.INSTANCE.play(Assets.Music.PRISON_BRANCH_BOSS, true);
 	}
 
 	@Override
