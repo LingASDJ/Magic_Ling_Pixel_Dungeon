@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.WhiteBlastSwordStatus;
@@ -17,13 +18,17 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
@@ -161,4 +166,106 @@ public class WhiteBlastSword extends MeleeWeapon {
         public void onDeath() {
         }
     }
+
+    @Override
+    protected int baseChargeUse(Hero hero, Char target) {
+        return 2;
+    }
+
+    @Override
+    public String targetingPrompt() {
+        return Messages.get(this, "prompt");
+    }
+
+    @Override
+    protected void duelistAbility(Hero hero, Integer target) {
+        int dmgBoost =  augment.damageFactor(5 + Math.round(1.5f*buffedLvl()));
+        waveLunge(hero, target, 1, dmgBoost, this);
+    }
+
+    @Override
+    public String abilityInfo() {
+        int dmgBoost = levelKnown ? 5 + Math.round(1.5f*buffedLvl()) : 5;
+        if (levelKnown){
+            return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+        } else {
+            return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
+        }
+    }
+
+    public String upgradeAbilityStat(int level){
+        int dmgBoost = 5 + Math.round(1.5f*level);
+        return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
+    }
+
+    // ====================== 逐浪突刺（复刻解离魔杖 弹道穿透伤害） ======================
+    public static void waveLunge(Hero hero, Integer target, float dmgMulti, int dmgBoost, MeleeWeapon wep){
+        if (target == null) return;
+
+        // 目标校验
+        Char enemy = Actor.findChar(target);
+        if (Dungeon.level.heroFOV[target]) {
+            if (enemy == null || enemy == hero || hero.isCharmedBy(enemy)) {
+                GLog.w(Messages.get(wep, "ability_no_target"));
+                return;
+            }
+        }
+
+        // 核心规则：至多3格，超过禁用
+        final int MAX_RANGE = 3;
+        Ballistica ballistica = new Ballistica(hero.pos, target, Ballistica.PROJECTILE);
+        if (ballistica.dist > MAX_RANGE || hero.rooted) {
+            GLog.w(Messages.get(wep, "ability_target_range"));
+            return;
+        }
+
+        // 突进落点：目标所在格子的相邻位置（安全可站立）
+        int lungeCell = -1;
+        for (int i : PathFinder.NEIGHBOURS8) {
+            int cell = target + i;
+            if (Actor.findChar(cell) == null && (Dungeon.level.passable[cell] || Dungeon.level.avoid[cell] && hero.flying)) {
+                lungeCell = cell;
+                break;
+            }
+        }
+        if (lungeCell == -1) lungeCell = hero.pos; // 无落点则原地
+
+        final int dest = lungeCell;
+
+        hero.busy();
+        Sample.INSTANCE.play(Assets.Sounds.MISS);
+        hero.sprite.jump(hero.pos, dest, 0, 0.15f, new Callback() {
+            @Override
+            public void call() {
+                hero.pos = dest;
+                Dungeon.level.occupyCell(hero);
+                Dungeon.observe();
+
+                hero.belongings.abilityWeapon = wep;
+                // ========== 完全复刻解离魔杖：遍历弹道路径，沿途所有敌人造成伤害 ==========
+                for (int cell : ballistica.subPath(1, ballistica.dist)) {
+                    Char ch = Actor.findChar(cell);
+                    if (ch != null && ch != hero && ch.alignment == Char.Alignment.ENEMY) {
+                        // 必定命中，沿途伤害
+                        hero.attack(ch, dmgMulti, dmgBoost, Char.INFINITE_ACCURACY);
+                        AttackIndicator.target(ch);
+                    }
+                }
+
+                // 主目标必定命中+强打击音效
+                if (enemy != null && hero.canAttack(enemy)) {
+                    wep.beforeAbilityUsed(hero, enemy);
+                    if (hero.attack(enemy, dmgMulti, dmgBoost, Char.INFINITE_ACCURACY)) {
+                        Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+                    }
+                    wep.afterAbilityUsed(hero);
+                }
+
+                Invisibility.dispel();
+                hero.spendAndNext(hero.attackDelay());
+
+            }
+        });
+    }
+
 }

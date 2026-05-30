@@ -18,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TragicCode;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -234,4 +235,40 @@ public class RedBloodMoon extends MeleeWeapon {
             tint(1, 0, 0, 0.4f);
         }
     }
+
+    @Override
+    protected int baseChargeUse(Hero hero, Char target){
+        if (hero.buff(TragicCode.CleaveTracker.class) != null){
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    @Override
+    public String targetingPrompt() {
+        return Messages.get(this, "prompt");
+    }
+
+    @Override
+    protected void duelistAbility(Hero hero, Integer target) {
+        int dmgBoost = augment.damageFactor((int) (2.5f + buffedLvl()));
+        TragicCode.cleaveAbility(hero, target, 1, dmgBoost, this);
+    }
+
+    @Override
+    public String abilityInfo() {
+        int dmgBoost = levelKnown ? (int) (2.5f + buffedLvl()) : 2;
+        if (levelKnown){
+            return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+        } else {
+            return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
+        }
+    }
+
+    public String upgradeAbilityStat(int level){
+        int dmgBoost = (int) (2.5f + level);
+        return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
+    }
+
 }
