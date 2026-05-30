@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TragicCode;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -80,56 +81,6 @@ public class FireFishSword extends MeleeWeapon{
 
     }
 
-    @Override
-    public String info() {
-
-        String info = desc();
-
-        if (levelKnown && Dungeon.hero != null) {
-            info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
-            if (STRReq() > Dungeon.hero.STR()) {
-                info += " " + Messages.get(Weapon.class, "too_heavy");
-            } else if (Dungeon.hero.STR() > STRReq()){
-                info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
-            }
-        } else {
-            info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
-
-            if(Dungeon.hero !=null){
-                if (STRReq(0) > Dungeon.hero.STR()) {
-                    info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
-                }
-            }
-        }
-
-        switch (augment) {
-            case SPEED:
-                info += " " + Messages.get(Weapon.class, "faster");
-                break;
-            case DAMAGE:
-                info += " " + Messages.get(Weapon.class, "stronger");
-                break;
-            case NONE:
-        }
-
-        if (enchantment != null && (cursedKnown || !enchantment.curse())){
-            info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
-            info += " " + Messages.get(enchantment, "desc");
-        }
-
-        if(Dungeon.hero != null){
-            if (cursed && isEquipped( Dungeon.hero ) ) {
-                info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
-            } else if (cursedKnown && cursed) {
-                info += "\n\n" + Messages.get(Weapon.class, "cursed");
-            } else if (!isIdentified() && cursedKnown){
-                info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
-            }
-        }
-
-        return info;
-    }
-
     protected void fx(Ballistica bolt, Callback callback) {
         MagicMissile.boltFromChar( Dungeon.hero.sprite.parent, MagicMissile.FORCE, Dungeon.hero.sprite, bolt.collisionPos,
                 callback);
@@ -144,5 +95,41 @@ public class FireFishSword extends MeleeWeapon{
 
         return super.proc(attacker, defender, damage);
     }
+
+    @Override
+    protected int baseChargeUse(Hero hero, Char target){
+        if (hero.buff(TragicCode.CleaveTracker.class) != null){
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    @Override
+    public String targetingPrompt() {
+        return Messages.get(this, "prompt");
+    }
+
+    @Override
+    protected void duelistAbility(Hero hero, Integer target) {
+        int dmgBoost = augment.damageFactor(7 + buffedLvl());
+        TragicCode.cleaveAbility(hero, target, 1, dmgBoost, this);
+    }
+
+    @Override
+    public String abilityInfo() {
+        int dmgBoost = levelKnown ? (7 + buffedLvl()) : 7;
+        if (levelKnown){
+            return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+        } else {
+            return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
+        }
+    }
+
+    public String upgradeAbilityStat(int level){
+        int dmgBoost = 7 + level;
+        return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
+    }
+
 }
 
