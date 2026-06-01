@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -30,6 +31,7 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -255,11 +257,12 @@ public class WhiteBlastSword extends MeleeWeapon {
                 // 主目标必定命中+强打击音效
                 if (enemy != null && hero.canAttack(enemy)) {
                     wep.beforeAbilityUsed(hero, enemy);
-                    if (hero.attack(enemy, dmgMulti, dmgBoost, Char.INFINITE_ACCURACY)) {
-                        Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-                    }
+                    hero.attack(enemy, dmgMulti, dmgBoost, Char.INFINITE_ACCURACY);
                     wep.afterAbilityUsed(hero);
                 }
+
+                Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+                hero.sprite.showStatus(CharSprite.NEGATIVE, WhiteBlastSword.TXT_RANDOM[Random.Int(WhiteBlastSword.TXT_RANDOM.length)]);
 
                 Invisibility.dispel();
                 hero.spendAndNext(hero.attackDelay());
