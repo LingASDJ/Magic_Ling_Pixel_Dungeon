@@ -651,8 +651,8 @@ public class Generator {
 					SaiPlus.class,
 					DragonShiled.class,
 					KingAxe.class,
-					RiceSword.class,
 					Gauntlet.class,
+					RiceSword.class,
 					ClearSword.class,
 					ForestBow.class,
 
@@ -664,7 +664,15 @@ public class Generator {
 			PaswordBadges.loadGlobal();
 			List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-			WEP_T5.probs = new float[]{0, 3, 3, 3, 3, 3, 3, 4, SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName()) ? 1.5f : 0, 2, SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName()) ? 3f : 0, 0, SPDSettings.KillDwarf() ? 3f : 0, 4, passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD) ? 4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName()) ? 4f : 0,
+			WEP_T5.probs = new float[]{0, 3, 3, 3, 3, 3, 3, 4,
+					SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName()) ? 1.5f : 0,
+					2,
+					SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName()) ? 3f : 0,
+					0,
+					SPDSettings.KillDwarf() ? 3f : 0,
+					4,
+					passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD) ? 4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName()) ? 4f : 0,
+
 					SPDSettings.isItemUnlock(ClearSword.class.getSimpleName()) ? 5f : 0,
 					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 0f : 0,
 					5,

@@ -223,7 +223,7 @@ public class BoilerRoom extends SpecialRoom {
                 SoulCrack.PinkSoulCrack purpleSoulCrack = hero.belongings.getItem(SoulCrack.PinkSoulCrack.class);
                 if(purpleSoulCrack != null) five = true;
 
-                if (Badges.isUnlocked(Badges.Badge.KILL_MORES) && Statistics.AbyssCityRules == 0 || 1 == 1){
+                if (Badges.isUnlocked(Badges.Badge.KILL_MORES) && Statistics.AbyssCityRules == 0){
                     Game.runOnRenderThread(new Callback() {
                         @Override
                         public void call() {
