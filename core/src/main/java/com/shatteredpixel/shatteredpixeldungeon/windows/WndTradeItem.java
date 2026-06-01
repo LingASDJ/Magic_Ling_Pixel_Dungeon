@@ -69,11 +69,7 @@ public class WndTradeItem extends WndInfoItem {
 
 		this.owner = owner;
 
-        if(Dungeon.hero.belongings.weapon() instanceof MerchantSword){
-            priceMulti = Math.max((1f - (0.10f + 0.05f * hero.belongings.weapon().buffedLvl())),0.1f);
-        }else {
-            priceMulti = 1f;
-        }
+		priceMulti = 1f;
 
 		float pos = height;
 		Shopkeeper shop = null;
