@@ -139,14 +139,11 @@ public class Crossbow extends MeleeWeapon {
 
 	public static class ChargedShot extends Buff{
 
-		// 设置为true，表示该buff被宣布
 		{
 			announced = true;
-			// 设置buff类型为正面buff
 			type = buffType.POSITIVE;
 		}
 
-		// 重写icon()方法，返回buff的图标
 		@Override
 		public int icon() {
 			return BuffIndicator.DUEL_XBOW;

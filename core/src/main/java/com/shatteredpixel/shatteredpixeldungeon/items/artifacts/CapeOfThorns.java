@@ -44,6 +44,16 @@ public class CapeOfThorns extends Artifact {
 	}
 
 	@Override
+	public String defaultAction() {
+		CapeOfThorns.ThornsTime thornst = hero.buff( CapeOfThorns.ThornsTime.class );
+		if(thornst != null){
+			return AC_THORNSCANCEL;
+		} else {
+			return AC_THORNS;
+		}
+	}
+
+	@Override
 	public ItemSprite.Glowing glowing() {
 		int[] color = {0x660000,0x00CC00,0xCCCC00,0xF78C6C,0x89DDFF,0x147DAD,0xC3E88D,0xEE9D22,0xBB50A8,0xFF0000};
 
