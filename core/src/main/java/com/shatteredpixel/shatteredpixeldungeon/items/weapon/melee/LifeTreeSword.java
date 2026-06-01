@@ -105,8 +105,10 @@ public class LifeTreeSword extends MeleeWeapon {
 
         int heal = Math.min(damage / 3, 3);
 
-        if (heal > 0 && attacker.HP < attacker.HT) {
+        if (heal > 0) {
             charge+=heal;
+        } else {
+            charge++;
         }
 
         if (charge > MAX_CHARGE) charge = MAX_CHARGE;

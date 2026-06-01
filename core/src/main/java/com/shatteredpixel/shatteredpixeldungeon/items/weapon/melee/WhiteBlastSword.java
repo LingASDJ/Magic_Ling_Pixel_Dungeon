@@ -263,7 +263,7 @@ public class WhiteBlastSword extends MeleeWeapon {
 
                 Invisibility.dispel();
                 hero.spendAndNext(hero.attackDelay());
-
+                hero.belongings.abilityWeapon = null;
             }
         });
     }
