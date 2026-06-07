@@ -47,7 +47,8 @@ public class CrivusStarFruitsLasher extends Mob {
     public void onZapComplete(){
         for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
             if(boss instanceof CrivusStarFruits && Dungeon.level.distance(pos, boss.pos) <= 50 && Statistics.crivusfruitslevel3) {
-                
+
+                //最高加到半血
                 if (boss.HP < 121){
 
                     if (sprite.visible || boss.sprite.visible) {
