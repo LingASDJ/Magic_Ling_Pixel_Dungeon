@@ -72,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LinkLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.NormalZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ZeroCityLevel;
@@ -581,6 +582,7 @@ public class Dungeon {
                 && !(Dungeon.level instanceof MiningLevel)
                 && !(Dungeon.level instanceof TheatreLevel)
 				&& !(Dungeon.level instanceof ZeroLevel)
+				&& !(Dungeon.level instanceof NormalZeroFiveLevel)
 				&& !(Dungeon.level instanceof ZeroCityLevel)
                 && !(Dungeon.level instanceof MorpheusBossLevel)
                 && !(Dungeon.level instanceof PacmanHollowActorLevel)

@@ -219,7 +219,7 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.EASTER_EGG), "清明+复活-双节活动",
                 "清明限定复活活动正式开启，参与可获得对应活动奖励。"));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SHOPKEEPERSWORD), "新武器：商人配剑",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SHOP_SWORD), "新武器：商人配剑",
                 "商人配剑正式加入，将自动替换旧版存档中的手斧。\n\n它通常作为商人之间用来互相证明身份的道具，但在应急情况下你也可以把它当做武器。\n\n这把武器目前可以使商人降价 10% ，最高降价90%%。"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.UNLESSFLOWER), "新物品：不朽花环",
@@ -418,7 +418,7 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.R_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREE_LIST), ("树痕调整"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREELIST), ("树痕调整"),
                 ("每下攻击攒2+等级/5 生命护盾量，上限20+等级*2\n" +
                         "储存盾量只可吸收奥术护盾，不吸收生命护盾")));
 
@@ -539,7 +539,7 @@ public class vm0_9_X_Changes {
 
         ));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREE_LIST), ("树痕调整"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREELIST), ("树痕调整"),
                 ("二阶，力量需求13\n" +
                         "\n" +
                         "初始3-14，成长1-1\n" +
@@ -820,7 +820,7 @@ public class vm0_9_X_Changes {
                         "神器充能效果为每回合恢复0.3点充能。\n" +
                         "诅咒效果为无法使用。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RITUAL_SWORD), ("新武器：仪式短剑"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RITUAL_SWORD_M), ("新武器：仪式短剑"),
                 ("二阶，力量需求12\n" +
                         "\n" +
                         "初始3-15，成长1-3\n" +
@@ -829,7 +829,7 @@ public class vm0_9_X_Changes {
                         "\n" +
                         "曾被主教用于主持多场宗教仪式。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREE_LIST), ("新武器：树痕"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREELIST), ("新武器：树痕"),
                 ("二阶，力量需求13\n" +
                         "\n" +
                         "初始3-14，成长1-3\n" +

@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -76,7 +77,7 @@ public class PropBuff extends Buff{
 
             if(Dungeon.hero.belongings.getItem(FreeCrack.class)!=null) {
                 timeI ++;
-                if(timeI >= 50) {
+                if(timeI >= 50 && Statistics.bossRushMode && Dungeon.depth != 1 || !Statistics.bossRushMode && timeI >= 50) {
                     TeleportationTrap t = new TeleportationTrap();
                     t.pos = hero.pos;
                     t.activate();

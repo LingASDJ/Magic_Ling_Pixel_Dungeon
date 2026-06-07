@@ -18,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
@@ -80,13 +81,21 @@ public class CrivusStarFruitsLasher extends Mob {
 
     @Override
     public void damage(int dmg, Object src, DamageType type) {
-        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-        if (lock != null) lock.addTime(dmg*2+4);
-        if (AntiMagic.RESISTS.contains(src.getClass()) && Statistics.crivusfruitslevel2) {
+
+        if(Statistics.crivusfruitslevel2 && !Statistics.crivusfruitslevel3){
+            Buff.affect(hero, MindVision.class,1f);
             dmg = 0;
-        } else if (src instanceof Burning && !Statistics.crivusfruitslevel2) {
-            Buff.affect( this, HalomethaneBurning.class ).reignite( this, 2f );
+        }  else {
+            LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+            if (lock != null) lock.addTime(dmg*2+4);
+            if (AntiMagic.RESISTS.contains(src.getClass()) && Statistics.crivusfruitslevel2) {
+                dmg = 0;
+            } else if (src instanceof Burning && !Statistics.crivusfruitslevel2) {
+                Buff.affect( this, HalomethaneBurning.class ).reignite( this, 2f );
+            }
         }
+
+
         super.damage(dmg, src, type);
     }
 
@@ -114,6 +123,8 @@ public class CrivusStarFruitsLasher extends Mob {
     }
 
     private boolean chain(int target){
+        int dist = Dungeon.level.distance(pos, enemy.pos);
+        if (dist > 6) return false;
         if (chainsUsed || enemy.properties().contains(Property.IMMOVABLE))
             return false;
 
@@ -187,10 +198,8 @@ public class CrivusStarFruitsLasher extends Mob {
     private final String CHAINSUSED = "chainsused";
 
     private final String CHAINXUSED = "chainxused";
-    @Override
-    public boolean isInvulnerable(Class effect) {
-        return Statistics.crivusfruitslevel2 && !Statistics.crivusfruitslevel3;
-    }
+
+
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);

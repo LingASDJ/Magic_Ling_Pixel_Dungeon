@@ -543,9 +543,9 @@ public class HeroSelectScene extends PixelScene {
 		add( btnExit );
 		btnExit.visible = !SPDSettings.intro() || Rankings.INSTANCE.totalNumber > 0;
 		if (landscape()) {
-			Image title = new Image(GameRules.BannersRules(), 0, 0, 126, 32);
+			Image title = new Image(GameRules.BannersRules(), 0, 0, 126, 90);
 
-			title.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 4 - BUTTON_HEIGHT - 40);
+			title.setPos(50, frame.y + frame.height / 4);
 			placeTorch(title.x - 8, title.y + 42);
 			placeTorch(title.x + 132, title.y + 42);
 			add(title);
@@ -554,22 +554,22 @@ public class HeroSelectScene extends PixelScene {
 			switch (SPDSettings.YearsSelect()){
 				case 2:
 					yearsUI = new Image(Assets.Interfaces.TWO_YEARS);
-					yearsUI.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 2 - BUTTON_HEIGHT + 100);
+					yearsUI.setPos(Camera.main.width-180, frame.y + frame.height / 2 - BUTTON_HEIGHT / 2f);
 					add(yearsUI);
 					break;
 				case 3:
 					yearsUI = new Image(Assets.Interfaces.Three_YEARS);
-					yearsUI.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 2 - BUTTON_HEIGHT + 100);
+					yearsUI.setPos(Camera.main.width-180, frame.y + frame.height / 2 - BUTTON_HEIGHT / 2f);
 					add(yearsUI);
 					break;
 				case 4:
 					FourYearsAnimation fourYearsAnimationSP = new FourYearsAnimation();
-					fourYearsAnimationSP.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 2 - BUTTON_HEIGHT + 100);
+					fourYearsAnimationSP.setPos(Camera.main.width-180, frame.y + frame.height / 2 - BUTTON_HEIGHT / 2f);
 					add(fourYearsAnimationSP);
 					break;
 				case 5: default:
 					yearsUI = new Image(Assets.Interfaces.FIVE_YEARS);
-					yearsUI.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 2 - BUTTON_HEIGHT + 100);
+					yearsUI.setPos(Camera.main.width-180, frame.y + frame.height / 2 - BUTTON_HEIGHT / 2f);
 					add(yearsUI);
 					break;
 			}
