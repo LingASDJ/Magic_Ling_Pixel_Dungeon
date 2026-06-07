@@ -124,6 +124,9 @@ public class CapeOfThorns extends Artifact {
 						GameScene.flash(color[charge/10],true);
 					}
 					updateQuickslot();
+					hero.spend( Actor.TICK );
+					hero.busy();
+					hero.sprite.operate( curUser.pos );
 					GLog.p(Messages.get(this,"thorns"));
 				} else if(charge < 10) {
 					GLog.w(Messages.get(this, "thorns_wait"));

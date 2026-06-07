@@ -2515,7 +2515,7 @@ public class Hero extends Char {
 			dmg = (int) Math.ceil(dmg * 0.96);
 		}
 
-		if(hero.belongings.getItem(EmotionalAggregationB.class)!=null && !(src instanceof Buff) && !(src instanceof Blob)){
+		if(hero.belongings.getItem(EmotionalAggregationB.class)!=null && !(src instanceof Buff) && !(src instanceof Blob) && !(AntiMagic.RESISTS.contains(src.getClass()))){
 			dmg += (int) getZone()*2 -1;
 		}
 

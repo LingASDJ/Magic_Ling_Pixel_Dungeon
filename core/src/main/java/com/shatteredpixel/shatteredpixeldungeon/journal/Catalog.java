@@ -458,21 +458,8 @@ public enum Catalog {
 		equipmentCatalogs.add(WANDS);
 		equipmentCatalogs.add(RINGS);
 		equipmentCatalogs.add(ARTIFACTS);
-
-		equipmentCatalogs.add(PROPS_LEVEL1_GOOD);
-		equipmentCatalogs.add(PROPS_LEVEL2_GOOD);
-		equipmentCatalogs.add(PROPS_LEVEL3_GOOD);
-
-		equipmentCatalogs.add(PROPS_LEVEL1_BAD);
-		equipmentCatalogs.add(PROPS_LEVEL2_BAD);
-		equipmentCatalogs.add(PROPS_LEVEL3_BAD);
-
-		equipmentCatalogs.add(PROPS_LEVEL1_CHAOS);
-
 		equipmentCatalogs.add(TRINKETS);
-		equipmentCatalogs.add(BOOKS);
 		equipmentCatalogs.add(MISC_EQUIPMENT);
-		equipmentCatalogs.add(MINIGAMES);
 	}
 
 	public static ArrayList<Catalog> consumableCatalogs = new ArrayList<>();
