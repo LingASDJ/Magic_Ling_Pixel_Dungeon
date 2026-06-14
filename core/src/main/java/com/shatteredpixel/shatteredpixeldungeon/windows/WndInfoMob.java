@@ -222,9 +222,6 @@ public class WndInfoMob extends WndTitledMessage {
 			health.level(mob);
 			add( health );
 
-			buffs = new BuffIndicator( mob,false );
-			add( buffs );
-
 			mobSixInfo = new MobSixInfo(mob);
 			add(mobSixInfo);
 
@@ -257,6 +254,9 @@ public class WndInfoMob extends WndTitledMessage {
 			add(mobSixInfo.info6);
 			add(mobSixInfo.info7);
 			add(mobSixInfo.info8);
+
+			buffs = new BuffIndicator( mob,false ,true);
+			addToFront( buffs );
 
 			reload = (mob.alignment == Char.Alignment.NEUTRAL) && (mob instanceof GreenDiamndMimic || mob.properties.contains(Char.Property.HOLLOW));
 		}

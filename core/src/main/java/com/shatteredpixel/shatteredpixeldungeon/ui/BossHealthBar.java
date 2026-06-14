@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.TITLE_COLOR;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -38,13 +39,13 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.Callback;
 
 public class BossHealthBar extends Component {
 
 	private Image bar;
 
-	private Image rawShielding;
-	private Image shieldedHP;
+	private Image shieldHP;
 	private Image hp;
 	private BitmapText hpText;
 
@@ -56,10 +57,13 @@ public class BossHealthBar extends Component {
 	private Image skull;
 	private Emitter blood;
 
-	private static String asset = SPDSettings.ClassUI() ?  Assets.Interfaces.BOSSHP : Assets.Interfaces.BOSSHP_DARK;
+	private static String asset = Assets.Interfaces.BOSSHP;
 
 	private static BossHealthBar instance;
 	private static boolean bleeding;
+
+	private boolean large;
+	private float time;
 
 	public BossHealthBar() {
 		super();
@@ -71,24 +75,23 @@ public class BossHealthBar extends Component {
 	public synchronized void destroy() {
 		super.destroy();
 		if (instance == this) instance = null;
+		if (buffs != null) BuffIndicator.setBossInstance(null);
 	}
 
 	@Override
 	protected void createChildren() {
-		bar = new Image(asset, 0, 0, 64, 16);
+		this.large = SPDSettings.interfaceSize() != 0;
+
+		bar = large ? new Image(asset, 0, 16, 128, 30) : new Image(asset, 0, 0, 64, 16);
 		add(bar);
 
 		width = bar.width;
 		height = bar.height;
 
-		rawShielding = new Image(asset, 15, 25, 47, 4);
-		rawShielding.alpha(0.5f);
-		add(rawShielding);
+		shieldHP = large ? new Image(asset, 0, 55, 96, 9) : new Image(asset, 71, 5, 47, 4);
+		add(shieldHP);
 
-		shieldedHP = new Image(asset, 15, 25, 47, 4);
-		add(shieldedHP);
-
-		hp = new Image(asset, 15, 19, 47, 4);
+		hp =  large ? new Image(asset, 0, 46, 96, 9) : new Image(asset, 71, 0, 47, 4);
 		add(hp);
 
 		hpText = new BitmapText(PixelScene.pixelFont);
@@ -115,12 +118,16 @@ public class BossHealthBar extends Component {
 		add(bossInfo);
 
 		if (boss != null) {
-			buffs = new BuffIndicator(boss, false);
+			buffs = new BuffIndicator(boss, large);
 			BuffIndicator.setBossInstance(buffs);
 			add(buffs);
 		}
 
-		skull = new Image(asset, 5, 18,  6,  6);
+		if (boss != null && large) {
+			skull = boss.sprite();
+		} else {
+			skull = new Image(asset, 64, 0, 6, 6);
+		}
 		add(skull);
 
 		blood = new Emitter();
@@ -136,11 +143,11 @@ public class BossHealthBar extends Component {
 		bar.x = x;
 		bar.y = y;
 
-		hp.x = shieldedHP.x = rawShielding.x = bar.x+15;
-		hp.y = shieldedHP.y = rawShielding.y = bar.y+3;
+		hp.x = shieldHP.x = bar.x+(large ? 30 : 15);
+		hp.y = shieldHP.y = bar.y+(large ? 2 : 3);
 
-		hpText.scale.set(PixelScene.align(0.5f));
-		hpText.x = hp.x + 1;
+		if (!large) hpText.scale.set(PixelScene.align(0.5f));
+		hpText.x = hp.x + (large ? (96-hpText.width())/2f : 1);
 		hpText.y = hp.y + (hp.height - (hpText.baseLine()+hpText.scale.y))/2f;
 		hpText.y -= 0.001f; //prefer to be slightly higher
 		PixelScene.align(hpText);
@@ -148,43 +155,67 @@ public class BossHealthBar extends Component {
 		bossInfo.setRect(x, y, bar.width, bar.height);
 
 		if (buffs != null) {
-			buffs.setRect(hp.x, hp.y + 5, 110, 7);
+			if (large) {
+				buffs.maxBuffs = 6;
+				buffs.setRect(hp.x+1, hp.y + 12, 96, 34);
+			} else {
+				buffs.maxBuffs = 8;
+				buffs.setRect(hp.x, hp.y + 5, 47, 16);
+			}
 		}
 
-		skull.x = bar.x+5;
-		skull.y = bar.y+5;
+		int paneSize = large ? 30 : 16;
+		skull.x = bar.x + (paneSize - skull.width())/2f;
+		skull.y = bar.y + (paneSize - skull.height())/2f;
 	}
-	private float time;
+
 	@Override
 	public void update() {
 		super.update();
-
-
-		asset = SPDSettings.ClassUI() ? Assets.Interfaces.BOSSHP : Assets.Interfaces.BOSSHP_DARK;
-
-
 		if (boss != null){
 			if (!boss.isAlive() || !Dungeon.level.mobs.contains(boss)){
 				boss = null;
 				visible = active = false;
+				if (buffs != null) {
+					BuffIndicator.setBossInstance(null);
+					remove(buffs);
+					buffs.destroy();
+					buffs = null;
+				}
 			} else {
 
-				float health = boss.HP;
-				float shield = boss.shielding();
-				float max = boss.HT;
-				hp.scale.x = Math.max( 0, (health-shield)/max);
-				shieldedHP.scale.x = health/max;
-				rawShielding.scale.x = shield/max;
+				int health = boss.HP;
+				int shield = boss.shielding();
+				int max = boss.HT;
 
-				if (hp.scale.x < 0.25f){
-					bleed( true );
+				float healthPercent = health/(float)max;
+				float shieldPercent = shield/(float)max;
+
+				if (healthPercent + shieldPercent > 1f){
+					float excess = healthPercent + shieldPercent;
+					healthPercent /= excess;
+					shieldPercent /= excess;
 				}
 
-				if (shield <= 0){
-					hpText.text(health + "/" + max);
+				if (buffs != null) {
+					if (large) {
+						buffs.maxBuffs = 6;
+						buffs.setRect(hp.x+1, hp.y + 12, 96, 34);
+					} else {
+						buffs.maxBuffs = 8;
+						buffs.setRect(hp.x, hp.y + 5, 47, 16);
+					}
 				}
-				else {
-					hpText.text(health + "+" + shield +  "/" + max);
+
+				hp.scale.x = healthPercent;
+				shieldHP.scale.x = healthPercent + shieldPercent;
+
+				if (bleeding != blood.on){
+					if (bleeding)   skull.tint( 0xcc0000, large ? 0.3f : 0.6f );
+					else            skull.resetColor();
+					bringToFront(blood);
+					blood.pos(skull);
+					blood.on = bleeding;
 				}
 
 				Visual visual = new Visual(0,0,0,0);
@@ -199,15 +230,18 @@ public class BossHealthBar extends Component {
 				} else if (hp.scale.x > 0.35f){
 					hpText.hardlight( CYELLOW );
 				} else {
-					hpText.hardlight( r,g,b );
-					hpText.text(health + "+" + shield +  "/" + max);
+					hpText.hardlight(r, g, b);
+					hpText.text(health + "+" + shield + "/" + max);
 				}
 
-				if (bleeding != blood.on){
-					if (bleeding)   skull.tint( 0xcc0000, 0.5f );
-					else            skull.resetColor();
-					blood.on = bleeding;
+				if (shield <= 0){
+					hpText.text(health + "/" + max);
+				} else {
+					hpText.text(health + "+" + shield +  "/" + max);
 				}
+				hpText.measure();
+				hpText.x = hp.x + (large ? (96-hpText.width())/2f : 1);
+
 			}
 		}
 	}
@@ -219,16 +253,30 @@ public class BossHealthBar extends Component {
 		BossHealthBar.boss = boss;
 		bleed(false);
 		if (instance != null) {
-			instance.visible = instance.active = true;
-			if (boss != null){
-				if (instance.buffs != null){
-					instance.buffs.killAndErase();
+			ShatteredPixelDungeon.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					instance.visible = instance.active = true;
+					if (boss != null){
+						if (instance.large){
+							if (instance.skull != null){
+								instance.remove(instance.skull);
+								instance.skull.destroy();
+							}
+							instance.skull = boss.sprite();
+							instance.add(instance.skull);
+						}
+						if (instance.buffs != null){
+							instance.remove(instance.buffs);
+							instance.buffs.destroy();
+						}
+						instance.buffs = new BuffIndicator(boss, instance.large);
+						BuffIndicator.setBossInstance(instance.buffs);
+						instance.add(instance.buffs);
+						instance.layout();
+					}
 				}
-				instance.buffs = new BuffIndicator(boss, false);
-				BuffIndicator.setBossInstance(instance.buffs);
-				instance.add(instance.buffs);
-				instance.layout();
-			}
+			});
 		}
 	}
 
