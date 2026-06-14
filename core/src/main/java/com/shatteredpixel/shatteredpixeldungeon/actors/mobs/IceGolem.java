@@ -57,7 +57,7 @@ public class IceGolem extends Mob implements Callback {
         loot = PotionOfFrost.class;
         lootChance = 0.3f;
         properties.add(Property.ICY);
-        properties.add(Property.UNDEAD);
+        properties.add(Property.INORGANIC);
     }
 
     @Override

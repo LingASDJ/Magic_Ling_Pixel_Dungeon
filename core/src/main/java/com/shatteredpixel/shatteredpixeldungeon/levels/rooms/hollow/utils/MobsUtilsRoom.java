@@ -581,6 +581,7 @@ public class MobsUtilsRoom extends CustomLuaRoom {
             maxLvl = 45;
             properties.remove(Property.LARGE);
             properties.add(Property.SEARCH);
+            properties.add(Property.INORGANIC);
             immunities.add(Paralysis.class);
         }
 
