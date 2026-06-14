@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite.Glowing;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -35,7 +36,9 @@ import com.watabou.utils.Bundle;
 import java.util.ArrayList;
 
 public class Ankh extends Item {
+
 	public boolean blessed = false;
+
 	public static final String AC_BLESS = "BLESS";
 	public Ankh(){
 		image = ItemSpriteSheet.ANKH;
@@ -62,8 +65,11 @@ public class Ankh extends Item {
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions(hero);
 		Waterskin waterskin = hero.belongings.getItem(Waterskin.class);
-		if (waterskin != null && waterskin.isFull() && !blessed)
-			actions.add( AC_BLESS );
+		if (waterskin != null && waterskin.isFull() && !blessed){
+			if(getClass() != MIME.GOLD_FIVE.class){
+				actions.add( AC_BLESS );
+			}
+		}
 		return actions;
 	}
 
