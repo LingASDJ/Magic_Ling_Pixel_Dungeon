@@ -72,7 +72,7 @@ public class CapeOfThorns extends Artifact {
 
 	public ArrayList<String> actions(Hero hero ) {
 		ArrayList<String> actions = super.actions(hero);
-		CapeOfThorns.Thorns thorns = hero.buff( CapeOfThorns.Thorns.class );
+		CapeOfThorns.ThornsTime thorns = hero.buff( CapeOfThorns.ThornsTime.class );
 		if(thorns != null){
 			actions.add(AC_THORNSCANCEL);
 		} else {
@@ -111,9 +111,11 @@ public class CapeOfThorns extends Artifact {
 
 		CapeOfThorns.Thorns thorns = hero.buff( CapeOfThorns.Thorns.class );
 		if (action.equals( AC_THORNS )) {
-
+			if(!isEquipped(hero)) {
+				GLog.w(Messages.get(this, "thorns_equip"));
+			}
 			if (thorns != null) {
-				if(cursed){
+				if(cursed) {
 					GLog.n(Messages.get(this, "thorns_cursed"));
 				} else if(charge >= 10 && hero.buff(ThornsTime.class) == null){
 					Buff.affect(hero,ThornsTime.class);
