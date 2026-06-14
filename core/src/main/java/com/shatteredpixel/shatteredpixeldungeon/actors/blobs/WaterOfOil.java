@@ -28,8 +28,10 @@ public class WaterOfOil extends WellWater {
             Sample.INSTANCE.play( Assets.Sounds.WATER );
             GLog.w( Messages.get(this, "clear"));
             return item;
+        } else if(item instanceof OilLantern && ((OilLantern)item).isFull()) {
+            GLog.w( Messages.get(this, "cl6"));
         } else {
-            GLog.w( Messages.get(this, "cl7"));
+            GLog.n( Messages.get(this, "cl7"));
         }
         return null;
     }

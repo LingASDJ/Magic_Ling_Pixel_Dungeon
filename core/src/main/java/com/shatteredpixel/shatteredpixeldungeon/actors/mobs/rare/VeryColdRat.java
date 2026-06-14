@@ -7,7 +7,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.FrostBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
@@ -15,16 +18,16 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VeryColdRatSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Image;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class VeryColdRat extends Mob {
-
-    private boolean trueDied = false;
-    private int deathCount = 0;
+    protected boolean hasRaged = false;
 
     {
         spriteClass = VeryColdRatSprite.class;
@@ -46,43 +49,30 @@ public class VeryColdRat extends Mob {
     }
 
     @Override
-    protected boolean act() {
-        int stolenLife = (int) Math.min(HT - HP, HT*0.05f);
-        if(state != HUNTING && !trueDied){
-            HP += stolenLife;
-        }
-        if(deathCount != 0){
-            sprite.showStatus(CharSprite.NEGATIVE, String.valueOf(deathCount));
-            deathCount--;
-        }
-        if(deathCount == 0 && HP == 0 && trueDied){
-            die(true);
-            FrostBomb bomb = new FrostBomb();
-            Bomb.Fuse fuse = new Bomb.Fuse();
-            fuse.bomb = bomb;
-            bomb.fuse = fuse;
-            Actor.add(fuse, Actor.now);
-            Dungeon.level.drop(bomb, pos).sprite.drop();
-        }
-        return super.act();
+    public boolean isInvulnerable(Class effect) {
+        return super.isInvulnerable(effect) || buff(DeadBombTime.class) != null;
     }
 
     @Override
     public synchronized boolean isAlive() {
-       if(trueDied){
-           return super.isAlive();
-       } else if(deathCount == 0 && HP == 0) {
-           deathCount = 4;
-           state = PASSIVE;
-           trueDied = true;
-           if (Dungeon.hero.lvl > maxLvl + 2) {
-               FrostBomb bomb = new FrostBomb();
-               Dungeon.level.drop(bomb, enemy != null ? enemy.pos : Dungeon.hero.pos).sprite.drop();
-           }
-           GLog.n(Messages.get(this, "bomb"));
-           return true;
-       }
-       return true;
+        if (super.isAlive()){
+            return true;
+        } else {
+            if (!hasRaged){
+                triggerEnrage();
+            }
+            return !buffs(DeadBombTime.class).isEmpty();
+        }
+    }
+
+    protected void triggerEnrage(){
+        Buff.affect(this, DeadBombTime.class).setShield(5);
+        sprite.showStatusWithIcon( CharSprite.NEGATIVE, "5", FloatingText.SHIELDING );
+        if (Dungeon.level.heroFOV[pos]) {
+            SpellSprite.show( this, SpellSprite.BERSERK);
+        }
+        spend( TICK );
+        hasRaged = true;
     }
 
 
@@ -123,18 +113,75 @@ public class VeryColdRat extends Mob {
         return super.drRoll() + Random.NormalIntRange(0, 3);
     }
 
+    public static class DeadBombTime extends ShieldBuff {
+
+        {
+            type = buffType.POSITIVE;
+        }
+
+        @Override
+        public boolean act() {
+
+            if(target instanceof VeryColdRat){
+                ((VeryColdRat) target).state = ((VeryColdRat) target).PASSIVE;
+            }
+
+            if (target.HP > 0){
+                detach();
+                return true;
+            }
+
+            absorbDamage( 1 );
+
+            if (shielding() <= 0){
+                target.die(null);
+            }
+
+            spend( TICK );
+
+            return true;
+        }
+
+        @Override
+        public void detach() {
+            super.detach();
+            FrostBomb bomb = new FrostBomb();
+            Bomb.Fuse fuse = new Bomb.Fuse();
+            fuse.bomb = bomb;
+            bomb.fuse = fuse;
+            Actor.add(fuse, Actor.now);
+            Dungeon.level.drop(bomb, target.pos).sprite.drop();
+        }
+
+        @Override
+        public int icon () {
+            return BuffIndicator.FROST;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(Window.BLUE_COLOR);
+        }
+
+        @Override
+        public String desc () {
+            return Messages.get(this, "desc", shielding());
+        }
+
+    }
+
+    private static final String HAS_RAGED = "has_raged";
+
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
-        bundle.put("deathCount", deathCount);
-        bundle.put("trueDied", trueDied);
+        bundle.put(HAS_RAGED, hasRaged);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
-        deathCount = bundle.getInt("deathCount");
-        trueDied = bundle.getBoolean("trueDied");
+        hasRaged = bundle.getBoolean(HAS_RAGED);
     }
 
 }

@@ -87,8 +87,6 @@ abstract public class Boss extends Mob {
     public void die( Object cause ) {
         super.die(cause);
 
-        BossHealthBar.removeBoss(this);
-
         if(Statistics.NightDreamLoop){
             Statistics.NightDreamLoop = false;
         }

@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.ui;
+		package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -42,11 +42,11 @@ import java.util.LinkedHashMap;
 
 public class BuffIndicator extends Component {
 	private static BuffIndicator[] bossInstances = new BuffIndicator[4];
-	//transparent icon
-	public static final int NONE	= 68;
+	private static BuffIndicator heroInstance;
+	private static final int SCROLL_THRESHOLD = 12;
 
-	//FIXME this is becoming a mess, should do a big cleaning pass on all of these
-	//and think about tinting options
+	// 图标常量定义
+	public static final int NONE	= 68;
 	public static final int MIND_VISION	= 0;
 	public static final int LEVITATION	= 1;
 	public static final int FIRE		= 2;
@@ -60,7 +60,7 @@ public class BuffIndicator extends Component {
 	public static final int TERROR		= 10;
 	public static final int ROOTS		= 11;
 	public static final int INVISIBLE	= 12;
-	public static final int SHADOWS		= 13;
+	public static final int SHADOWS	= 13;
 	public static final int WEAKNESS	= 14;
 	public static final int FROST		= 15;
 	public static final int BLINDNESS	= 16;
@@ -100,28 +100,21 @@ public class BuffIndicator extends Component {
 	public static final int UPGRADE     = 50;
 	public static final int MOMENTUM    = 51;
 	public static final int ANKH        = 52;
-
 	public static final int NOINV       = 53;
 	public static final int DISGUISE = 54;
 	public static final int FIREDIED = 55;
 	public static final int  ROSEBARRIER= 56;
 	public static final int HALOMETHANEBURNING    = 57;
-
 	public static final int LANTERFIRE_ONE    = 58;
 	public static final int LANTERFIRE_TWO    = 59;
 	public static final int LANTERFIRE_THREE    = 60;
 	public static final int LANTERFIRE_FOUR    = 61;
 	public static final int LANTERFIRE_FIVE = 62;
 	public static final int LANTERFIRE_SIX = 63;
-
 	public static final int DEBUFF_DOWN = 64;
 	public static final int GOBUFF_UPRD = 65;
-
 	public static final int ICE_SWORDDOWN = 66;
-
 	public static final int LIGHT_DIED = 67;
-
-    //SPD BUFFS
 	public static final int TARGETED    = 68;
 	public static final int IMBUE       = 69;
 	public static final int WAND      = 70;
@@ -139,79 +132,67 @@ public class BuffIndicator extends Component {
 	public static final int MONK_ENERGY = 82;
 	public static final int DUEL_COMBO  = 83;
 	public static final int DAZE        = 84;
-
 	public static final int IMELSAZE        = 85;
-
 	public static final int WHITE_DAY        = 86;
 	public static final int MID_DAY        = 87;
 	public static final int EVEN_DAY        = 88;
 	public static final int NIGHT_DAY        = 89;
 	public static final int NIGHT_CAT        = 90;
-
-	//ICE BUFF
 	public static final int STORM_SNOW        = 91;
 	public static final int SNOW_SHILED       = 92;
 	public static final int SNOW_RAIN     	  = 93;
 	public static final int SNOW_EYE          = 94;
-
 	public static final int TERR_LIST          = 95;
-
-
-	//ELEMENTS
 	public static final int SCARY        = 112;
 	public static final int SCARY_RED        = 113;
 	public static final int SCARY_PINK        = 114;
-
 	public static final int SMOKING        = 115;
-
 	public static final int DK        = 116;
-
 	public static final int QUEST       = 117;
-
 	public static final int KILLER        = 118;
 	public static final int GOODLUCK        = 119;
-
 	public static final int PROP_SHADOW = 120;
 	public static final int WAND_MAGIC = 121;
-
 	public static final int SLICE_BLESS = 122;
-
 	public static final int GHOST_SCARY = 123;
-
 	public static final int PACMAN_GAME = 124;
-
 	public static final int BOX_GAME = 125;
-
 	public static final int ALL_SEARCH = 144;
-
 	public static final int BASE_STATUS = 145;
-
 	public static final int INVISIBLE_ACTION = 146;
-
 	public static final int HELLBURING = 148;
-
 	public static final int UNLESS = 149;
-
 	public static final int ANCIENT_SURVEY = 150;
 
+	public static final int SIZE_SMALL = 7;
+	public static final int SIZE_LARGE = 16;
 
-    public static final int SIZE_SMALL = 7;
-    public static final int SIZE_LARGE = 16;
+	private boolean buffsHidden = false;
+	public int maxBuffs = 14;
+	private LinkedHashMap<Buff, BuffButton> buffButtons = new LinkedHashMap<>();
+	public boolean needsRefresh;
+	private Char ch;
+	private boolean large;
+	private boolean noScroll = false;
 
-    private static BuffIndicator heroInstance;
-//    private static BuffIndicator bossInstance;
-
-    private LinkedHashMap<Buff, BuffButton> buffButtons = new LinkedHashMap<>();
-    public boolean needsRefresh;
-    private Char ch;
-
-    private boolean large;
+	// 滚动容器（仅主界面使用）
+	private ScrollPane scrollPane;
+	private Component scrollContent;
 
 	public BuffIndicator( Char ch, boolean large ) {
 		super();
-
 		this.ch = ch;
 		this.large = large;
+		if (ch == Dungeon.hero) {
+			heroInstance = this;
+		}
+	}
+
+	public BuffIndicator( Char ch, boolean large,boolean noScroll) {
+		super();
+		this.ch = ch;
+		this.large = large;
+		this.noScroll = noScroll;
 		if (ch == Dungeon.hero) {
 			heroInstance = this;
 		}
@@ -220,7 +201,14 @@ public class BuffIndicator extends Component {
 	@Override
 	public void destroy() {
 		super.destroy();
-
+		if (scrollPane != null) {
+			scrollPane.destroy();
+			scrollPane = null;
+		}
+		if (scrollContent != null) {
+			scrollContent.destroy();
+			scrollContent = null;
+		}
 		if (this == heroInstance) {
 			heroInstance = null;
 		}
@@ -229,124 +217,208 @@ public class BuffIndicator extends Component {
 	@Override
 	public synchronized void update() {
 		super.update();
-		if (needsRefresh){
+		if (needsRefresh) {
 			needsRefresh = false;
 			layout();
 		}
 	}
 
 	@Override
-	protected synchronized void layout() {
-
+	protected void layout() {
 		ArrayList<Buff> newBuffs = new ArrayList<>();
 		for (Buff buff : ch.buffs()) {
 			if (buff.icon() != NONE) {
 				newBuffs.add(buff);
 			}
 		}
-
+		int totalBuffCount = newBuffs.size();
 		int size = large ? SIZE_LARGE : SIZE_SMALL;
 
-		//remove any icons no longer present
-		for (Buff buff : buffButtons.keySet().toArray(new Buff[0])){
-			if (!newBuffs.contains(buff)){
+		if (noScroll) {
+			// 销毁滚动容器，彻底禁用滚动
+			if (scrollPane != null) {
+				scrollPane.destroy();
+				scrollPane = null;
+			}
+			if (scrollContent != null) {
+				scrollContent.destroy();
+				scrollContent = null;
+			}
 
+			// 移除已消失buff图标 + 淡出动画
+			for (Buff buff : buffButtons.keySet().toArray(new Buff[0])){
+				if (!newBuffs.contains(buff)){
+					Image icon = buffButtons.get( buff ).icon;
+					icon.originToCenter();
+					icon.alpha(0.6f);
+					add( icon );
+					add( new AlphaTweener( icon, 0, 0.6f ) {
+						@Override
+						protected void updateValues( float progress ) {
+							super.updateValues( progress );
+							image.scale.set( 1 + 5 * progress );
+						}
+						@Override
+						protected void onComplete() {
+							image.killAndErase();
+						}
+					} );
+					buffButtons.get( buff ).destroy();
+					remove(buffButtons.get( buff ));
+					buffButtons.remove( buff );
+				}
+			}
+
+			// 添加新buff图标
+			for (Buff buff : newBuffs) {
+				if (!buffButtons.containsKey(buff)) {
+					BuffButton icon = new BuffButton(buff, large);
+					add(icon);
+					buffButtons.put( buff, icon );
+				}
+			}
+
+			// 怪物窗口布局：每行6个、左对齐平铺
+			int pos = 0;
+			int row = 0;
+			int maxIconsPerRow = 6;
+			int horizontalSpacing = 0;
+			int verticalSpacing = -3;
+			int iconWidth = size + (large ? 1 : 2);
+			int iconHeight = size + (large ? 0 : 5);
+
+			for (BuffButton icon : buffButtons.values()){
+				icon.updateIcon();
+				if (!large && pos % maxIconsPerRow == 0 && pos != 0) {
+					row++;
+					pos = 0;
+				}
+				float posX = x + pos * (iconWidth + horizontalSpacing);
+				float posY = y + row * (iconHeight + verticalSpacing);
+				icon.setRect(posX, posY, size, size);
+				PixelScene.align(icon);
+				pos++;
+			}
+			return;
+		}
+
+		if (scrollPane == null || scrollContent == null) {
+			scrollContent = new Component();
+			scrollPane = new ScrollPane(scrollContent);
+			add(scrollPane);
+		}
+
+		int maxIconsPerRow = large ? 5 : 4;
+		int horizontalSpacing = 0;
+		int verticalSpacing = -3;
+		int iconWidth = size + (large ? 1 : 2);
+		int iconHeight = size + (large ? 4 : 5);
+
+		// 清理消失的buff
+		for (Buff buff : buffButtons.keySet().toArray(new Buff[0])) {
+			if (!newBuffs.contains(buff)) {
 				BuffButton button = buffButtons.get(buff);
 				if (button == null) {
 					buffButtons.remove(buff);
 					continue;
 				}
-
 				Image icon = button.icon;
 				icon.originToCenter();
 				icon.alpha(0.6f);
-				add( icon );
-				add( new AlphaTweener( icon, 0, 0.6f ) {
+				scrollContent.add(icon);
+				scrollContent.add(new AlphaTweener(icon, 0, 0.6f) {
 					@Override
-					protected void updateValues( float progress ) {
-						super.updateValues( progress );
-						image.scale.set( 1 + 5 * progress );
+					protected void updateValues(float progress) {
+						super.updateValues(progress);
+						image.scale.set(1 + 5 * progress);
 					}
-
 					@Override
 					protected void onComplete() {
 						image.killAndErase();
 					}
-				} );
-
+				});
 				button.destroy();
-				remove(button);
-				buffButtons.remove( buff );
+				scrollContent.remove(button);
+				buffButtons.remove(buff);
 			}
 		}
 
-		//add new icons
+		// 添加新buff
 		for (Buff buff : newBuffs) {
 			if (!buffButtons.containsKey(buff)) {
 				BuffButton icon = new BuffButton(buff, large);
-				add(icon);
-				buffButtons.put( buff, icon );
+				scrollContent.add(icon);
+				buffButtons.put(buff, icon);
 			}
 		}
 
-
+		// 图标整体水平居中排布
 		int pos = 0;
 		int row = 0;
-		int maxIconsPerRow = 6;
-		int horizontalSpacing = 0;
-		int verticalSpacing = -3;
-		int iconWidth = size + (large ? 1 : 2);
-		int iconHeight = size + (large ? 0 : 5);
+		float contentW = 0f;
+		float contentH = 0f;
+		float rowTotalWidth = maxIconsPerRow * iconWidth + (maxIconsPerRow - 1) * horizontalSpacing;
+		float centerOffset = (this.width - rowTotalWidth) / 2f;
+		if (centerOffset < 0) centerOffset = 0;
 
-		for (BuffButton icon : buffButtons.values()){
+		for (BuffButton icon : buffButtons.values()) {
 			if (icon == null) continue;
-
 			icon.updateIcon();
-			if (!large && pos % maxIconsPerRow == 0 && pos != 0) {
+
+			if (pos % maxIconsPerRow == 0 && pos != 0) {
 				row++;
 				pos = 0;
 			}
-			float posX = x + pos * (iconWidth + horizontalSpacing);
-			float posY = y + row * (iconHeight + verticalSpacing);
+
+			float posX = centerOffset + pos * (iconWidth + horizontalSpacing);
+			float posY = row * (iconHeight + verticalSpacing);
 			icon.setRect(posX, posY, size, size);
 			PixelScene.align(icon);
+
+			contentW = Math.max(contentW, posX + size);
+			contentH = Math.max(contentH, posY + size);
 			pos++;
 		}
+
+		scrollContent.setWidth(contentW);
+		scrollContent.setHeight(contentH);
+		scrollPane.setRect(x, y, width, height);
+
+		// 滚动开关：超过阈值开启滚动
+		if (totalBuffCount > SCROLL_THRESHOLD) {
+			scrollPane.controller.active = true;
+		} else {
+			scrollPane.controller.active = false;
+			scrollPane.scrollTo(0, 0);
+		}
+		scrollPane.disableThumb();
 	}
 
-
+	// Buff按钮内部类
 	private static class BuffButton extends IconButton {
-
 		private Buff buff;
-
 		private boolean large;
 
-		public Image grey; //only for small
-		public BitmapText text; //only for large
+		public Image grey;
+		public BitmapText text;
 
-		//TODO for large buffs there is room to have text instead of fading
-		public BuffButton( Buff buff, boolean large ){
-			super( new BuffIcon(buff, large));
+		public BuffButton(Buff buff, boolean large) {
+			super(new BuffIcon(buff, large));
 			this.buff = buff;
 			this.large = large;
-
-			bringToFront(grey);
-			bringToFront(text);
 		}
 
 		@Override
 		protected void createChildren() {
 			super.createChildren();
-			grey = new Image( TextureCache.createSolid(0xCC666666));
-			add( grey );
-
+			grey = new Image(TextureCache.createSolid(0xCC666666));
+			add(grey);
 			text = new BitmapText(PixelScene.pixelFont);
-			add( text );
+			add(text);
 		}
 
-		public void updateIcon(){
-			((BuffIcon)icon).refresh(buff);
-			//round up to the nearest pixel if <50% faded, otherwise round down
+		public void updateIcon() {
+			((BuffIcon) icon).refresh(buff);
 			if (!large || buff.iconTextDisplay().isEmpty()) {
 				text.visible = false;
 				float fadeHeight = buff.iconFadePercent() * icon.height();
@@ -358,10 +430,9 @@ public class BuffIndicator extends Component {
 				}
 			} else if (!buff.iconTextDisplay().isEmpty()) {
 				grey.visible = false;
-				if (buff.type == Buff.buffType.POSITIVE)        text.hardlight(CharSprite.POSITIVE);
-				else if (buff.type == Buff.buffType.NEGATIVE)   text.hardlight(CharSprite.NEGATIVE);
+				if (buff.type == Buff.buffType.POSITIVE) text.hardlight(CharSprite.POSITIVE);
+				else if (buff.type == Buff.buffType.NEGATIVE) text.hardlight(CharSprite.NEGATIVE);
 				text.alpha(0.7f);
-
 				text.text(buff.iconTextDisplay());
 				text.measure();
 			}
@@ -370,10 +441,10 @@ public class BuffIndicator extends Component {
 		@Override
 		protected void layout() {
 			super.layout();
-			grey.x = icon.x = this.x + (large ? 0 : 1);
-			grey.y = icon.y = this.y + (large ? 0 : 2);
+			grey.x = icon.x + (0);
+			grey.y = icon.y + (0);
 
-			if (text.width > width()){
+			if (text.width > width()) {
 				text.scale.set(PixelScene.align(0.5f));
 			} else {
 				text.scale.set(1f);
@@ -389,14 +460,11 @@ public class BuffIndicator extends Component {
 
 		@Override
 		protected void onPointerDown() {
-			//don't affect buff color
-			Sample.INSTANCE.play( Assets.Sounds.CLICK );
+			Sample.INSTANCE.play(Assets.Sounds.CLICK);
 		}
 
 		@Override
-		protected void onPointerUp() {
-			//don't affect buff color
-		}
+		protected void onPointerUp() {}
 
 		@Override
 		protected String hoverText() {
@@ -404,25 +472,19 @@ public class BuffIndicator extends Component {
 		}
 	}
 
+	// 静态刷新方法
 	public static void refreshHero() {
 		if (heroInstance != null) {
 			heroInstance.needsRefresh = true;
 		}
 	}
 
-	/**
-	 * 兼容原有方法：刷新第一个Boss的Buff指示器
-	 */
-	public static void refreshBoss(){
-		// 刷新第一个Boss
+	public static void refreshBoss() {
 		if (bossInstances[0] != null) {
 			bossInstances[0].needsRefresh = true;
 		}
 	}
 
-	/**
-	 * 新增方法：刷新所有活跃的Boss Buff指示器
-	 */
 	public static void refreshAllBosses() {
 		for (BuffIndicator instance : bossInstances) {
 			if (instance != null) {
@@ -431,25 +493,16 @@ public class BuffIndicator extends Component {
 		}
 	}
 
-	/**
-	 * 兼容原有方法：设置第一个Boss的Buff实例
-	 */
-	public static void setBossInstance(BuffIndicator boss){
+	public static void setBossInstance(BuffIndicator boss) {
 		bossInstances[0] = boss;
 	}
 
-	/**
-	 * 新增方法：设置指定索引的Boss Buff实例（适配多Boss血条）
-	 */
 	public static void setBossInstance(int index, BuffIndicator boss) {
 		if (index >= 0 && index < bossInstances.length) {
 			bossInstances[index] = boss;
 		}
 	}
 
-	/**
-	 * 新增方法：获取指定索引的Boss Buff实例
-	 */
 	public static BuffIndicator getBossInstance(int index) {
 		if (index >= 0 && index < bossInstances.length) {
 			return bossInstances[index];

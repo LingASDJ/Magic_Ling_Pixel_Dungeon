@@ -262,7 +262,7 @@ public class StatusPane extends Component {
 		level.hardlight( 0xFFFFAA );
 		add( level );
 
-		buffs = new BuffIndicator( hero,large);
+		buffs = new BuffIndicator( hero,large,true);
 		add( buffs );
 
 		busy = new BusyIndicator();
