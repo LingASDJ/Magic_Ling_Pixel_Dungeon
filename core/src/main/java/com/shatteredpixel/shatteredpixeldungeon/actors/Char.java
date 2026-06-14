@@ -1086,7 +1086,7 @@ public abstract class Char extends Actor {
 
 		int shielded = dmg;
 		//FIXME: when I add proper damage properties, should add an IGNORES_SHIELDS property to use here.
-		if (!(src instanceof Hunger)){
+		if (!(src instanceof Hunger) || !(type == DamageType.REAL)){
 			for (ShieldBuff s : buffs(ShieldBuff.class)){
 				dmg = s.absorbDamage(dmg);
 				if (dmg == 0) break;
