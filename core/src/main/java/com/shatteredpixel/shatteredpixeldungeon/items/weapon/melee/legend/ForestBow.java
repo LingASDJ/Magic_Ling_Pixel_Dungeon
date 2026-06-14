@@ -39,7 +39,7 @@ public class ForestBow extends MeleeWeapon implements Item.LengedsItem {
 
     @Override
     public int iceCoinValue() {
-        return 85;
+        return 90;
     }
 
     public int max(int level) {
