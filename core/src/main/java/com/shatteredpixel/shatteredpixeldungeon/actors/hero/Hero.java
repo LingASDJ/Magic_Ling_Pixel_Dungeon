@@ -1657,7 +1657,6 @@ public class Hero extends Char {
 
 		checkVisibleMobs();
 		BuffIndicator.refreshHero();
-		BuffIndicator.refreshBoss();
 
 		if (paralysed > 0) {
 
