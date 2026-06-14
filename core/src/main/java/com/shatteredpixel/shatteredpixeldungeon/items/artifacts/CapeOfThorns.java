@@ -383,7 +383,7 @@ public class CapeOfThorns extends Artifact {
 
 			if (!cursed && target.buff(MagicImmune.class) == null) {
 				if (attacker != null) {
-					attacker.damage(damage, this, Char.DamageType.PHYSICAL);
+					attacker.damage(damage, this, Char.DamageType.REAL);
 					Buff.append(attacker, Bleeding.class).set(level());
 				}
 			}
@@ -434,9 +434,9 @@ public class CapeOfThorns extends Artifact {
 
 				if(defender.isAlive()){
 					if (hero.pointsInTalent(Talent.IRON_STOMACH) == 1){
-						attacker.damage(deflected, this);
+						attacker.damage(deflected, this, Char.DamageType.REAL);
 					} else if(hero.pointsInTalent(Talent.IRON_STOMACH) == 2) {
-						attacker.damage(deflectedHigh, this);
+						attacker.damage(deflectedHigh, this, Char.DamageType.REAL);
 					}
 				}
 			} catch (Exception e) {
