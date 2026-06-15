@@ -58,6 +58,11 @@ public class JunglePoison extends MeleeWeapon {
     }
 
     @Override
+    protected int baseChargeUse(Hero hero, Char target) {
+        return 4;
+    }
+
+    @Override
     protected void duelistAbility(Hero hero, Integer target) {
         ArrayList<Char> targets = new ArrayList<>();
         hero.belongings.abilityWeapon = this;
@@ -65,8 +70,7 @@ public class JunglePoison extends MeleeWeapon {
         for (Char ch : Actor.chars()){
             if (ch.alignment == Char.Alignment.ENEMY
                     && !hero.isCharmedBy(ch)
-                    && Dungeon.level.heroFOV[ch.pos]
-                    && hero.canAttack(ch)){
+                    && Dungeon.level.heroFOV[ch.pos]){
                 targets.add(ch);
             }
         }
@@ -84,7 +88,7 @@ public class JunglePoison extends MeleeWeapon {
                 beforeAbilityUsed(hero, null);
 
                 int duration = level() * 2;
-                int poisonStacks = 2 + level()/2;
+                int poisonStacks = 10+level()*5;
 
                 // 对所有敌人施加控制+中毒
                 for (Char ch : targets) {
@@ -98,7 +102,7 @@ public class JunglePoison extends MeleeWeapon {
                                     public void call() {
                                         Buff.affect(ch, Roots.class, duration);
                                         Buff.affect(ch, Weakness.class, duration);
-                                        Buff.affect(ch, Poison.class).set(poisonStacks+duration);
+                                        Buff.affect(ch, Poison.class).set(poisonStacks);
                                         hero.spendAndNext(hero.attackDelay());
                                     }
                                 }));
