@@ -128,7 +128,7 @@ public class KingSword extends MeleeWeapon {
 				beforeAbilityUsed(hero, enemy);
 				AttackIndicator.target(enemy);
 
-				boolean hit = hero.attack(enemy, 1.5f * level(), 0, Char.INFINITE_ACCURACY);
+				boolean hit = hero.attack(enemy, 1.5f, 0, Char.INFINITE_ACCURACY);
 
 				if (hit) {
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
@@ -172,14 +172,14 @@ public class KingSword extends MeleeWeapon {
 				mob.pos = spawnPos;
 				Dungeon.level.mobs.add(mob);
 				GameScene.add(mob);
+				mob.HT = mob.HP = (int) Math.min(Dungeon.depth /5f*10f == 0 ? 1: Dungeon.depth /5f*10f,mob.HT);
 				mob.sprite.jump(mob.pos, mob.pos, null);
 				if(life){
-					Buff.affect(mob, LifeLink.class,50f).object = hero.id();
+					Buff.affect(mob, LifeLink.class,100f).object = hero.id();
 				}
 				Buff.affect(mob, ScrollOfSirensSong.Enthralled.class);
 			}
-		} catch (Exception e) {
-		}
+		} catch (Exception ignored) {}
 	}
 
 	private static final List<Class<? extends Mob>> UNDEAD_POOL = Arrays.asList(
@@ -198,7 +198,7 @@ public class KingSword extends MeleeWeapon {
 	@Override
 	public String abilityInfo() {
 		if (levelKnown){
-			return Messages.get(this, "typical_ability_desc", 50*buffedLvl(),Math.min(100,25+level*5));
+			return Messages.get(this, "typical_ability_desc", 50,Math.min(100,25+level*5));
 		} else {
 			return Messages.get(this, "ability_desc",50,25);
 		}
