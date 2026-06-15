@@ -545,9 +545,7 @@ public class HeroSelectScene extends PixelScene {
 		if (landscape()) {
 			Image title = new Image(GameRules.BannersRules(), 0, 0, 126, 90);
 
-			title.setPos(50, frame.y + frame.height / 4);
-			placeTorch(title.x - 8, title.y + 42);
-			placeTorch(title.x + 132, title.y + 42);
+			title.setPos(prevBtn.x-140, frame.y + frame.height / 4);
 			add(title);
 
 			Image yearsUI;
@@ -569,7 +567,7 @@ public class HeroSelectScene extends PixelScene {
 					break;
 				case 5: default:
 					yearsUI = new Image(Assets.Interfaces.FIVE_YEARS);
-					yearsUI.setPos(Camera.main.width-180, frame.y + frame.height / 2 - BUTTON_HEIGHT / 2f);
+					yearsUI.setPos(nextBtn.x+20, frame.y + frame.height / 2 - BUTTON_HEIGHT / 2f);
 					add(yearsUI);
 					break;
 			}
