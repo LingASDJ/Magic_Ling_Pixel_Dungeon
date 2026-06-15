@@ -29,15 +29,35 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bandit;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.WarlockHead;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class KingSword extends MeleeWeapon {
 
@@ -86,23 +106,17 @@ public class KingSword extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		if (target == null) {
-			return;
-		}
+		if (target == null) return;
 
 		Char enemy = Actor.findChar(target);
-		if (enemy == null || enemy == hero || hero.isCharmedBy(enemy) || !Dungeon.level.heroFOV[target]) {
+		if (enemy == null || enemy == hero || !Dungeon.level.heroFOV[target]) {
 			GLog.w(Messages.get(this, "ability_no_target"));
 			return;
 		}
 
-		//we apply here because of projecting
-		RunicSlashTracker tracker = Buff.affect(hero, RunicSlashTracker.class);
-		tracker.boost = 5f + 0.50f*buffedLvl();
 		hero.belongings.abilityWeapon = this;
-		if (!hero.canAttack(enemy)){
+		if (!hero.canAttack(enemy)) {
 			GLog.w(Messages.get(this, "ability_target_range"));
-			tracker.detach();
 			hero.belongings.abilityWeapon = null;
 			return;
 		}
@@ -113,13 +127,22 @@ public class KingSword extends MeleeWeapon {
 			public void call() {
 				beforeAbilityUsed(hero, enemy);
 				AttackIndicator.target(enemy);
-				if (hero.attack(enemy, 1f, 0, Char.INFINITE_ACCURACY)){
+
+				boolean hit = hero.attack(enemy, 1.5f, 0, Char.INFINITE_ACCURACY);
+
+				if (hit) {
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-					if (!enemy.isAlive()){
-						onAbilityKill(hero, enemy);
+					if (!enemy.isAlive()) onAbilityKill(hero, enemy);
+
+					// 2. 召唤 1 个普通矮人
+					summonAlly(hero, Monk.class,true);
+
+					// 3. 25% + 0.05% 概率额外召唤随机亡灵
+					if (Random.Float() < Math.min(1f,0.25f+(level()*0.05f))) {
+						summonRandomUndead(hero);
 					}
 				}
-				tracker.detach();
+
 				Invisibility.dispel();
 				hero.spendAndNext(hero.attackDelay());
 				afterAbilityUsed(hero);
@@ -128,24 +151,60 @@ public class KingSword extends MeleeWeapon {
 	}
 
 	@Override
-	public String abilityInfo() {
-		if (levelKnown){
-			return Messages.get(this, "ability_desc", 500+50*buffedLvl());
-		} else {
-			return Messages.get(this, "typical_ability_desc", 500);
-		}
+	protected int baseChargeUse(Hero hero, Char target) {
+		return 2;
+	}
+
+	// ========== 召唤盟友（自动系命/生命链接） ==========
+	private void summonAlly(Hero hero, Class<? extends Mob> clazz,boolean life) {
+		try {
+			Mob mob = clazz.newInstance();
+			int heroPos = hero.pos;
+			ArrayList<Integer> candidates = new ArrayList<>();
+			for (int n : PathFinder.NEIGHBOURS8) {
+				int checkPos = heroPos + n;
+				if (Dungeon.level.passable[checkPos] && Actor.findChar(checkPos) == null) {
+					candidates.add(checkPos);
+				}
+			}
+			if (!candidates.isEmpty()) {
+				int spawnPos = Random.element(candidates);
+				mob.pos = spawnPos;
+				Dungeon.level.mobs.add(mob);
+				GameScene.add(mob);
+				mob.HT = mob.HP = (int) Math.min(Dungeon.depth /5f*10f == 0 ? 1: Dungeon.depth /5f*10f,mob.HT);
+				mob.sprite.jump(mob.pos, mob.pos, null);
+				if(life){
+					Buff.affect(mob, LifeLink.class,100f).object = hero.id();
+				}
+				Buff.affect(mob, ScrollOfSirensSong.Enthralled.class);
+			}
+		} catch (Exception ignored) {}
+	}
+
+	private static final List<Class<? extends Mob>> UNDEAD_POOL = Arrays.asList(
+			Skeleton.class, Thief.class, Bandit.class, Necromancer.class,
+			Guard.class, ColdMagicRat.class, RedSwarm.class,
+			Monk.class, Warlock.class, WarlockHead.class,
+			Wraith.class
+	);
+
+	private void summonRandomUndead(Hero hero) {
+		if (UNDEAD_POOL.isEmpty()) return;
+		Class<? extends Mob> randomUndead = Random.element(UNDEAD_POOL);
+		summonAlly(hero, randomUndead,false);
 	}
 
 	@Override
-	public String upgradeAbilityStat(int level) {
-		return "+" + (300+50*level) + "%";
+	public String abilityInfo() {
+		if (levelKnown){
+			return Messages.get(this, "typical_ability_desc", 50,Math.min(100,25+level*5));
+		} else {
+			return Messages.get(this, "ability_desc",50,25);
+		}
 	}
 
-
-	public static class RunicSlashTracker extends FlavourBuff{
-
-		public float boost = 2f;
-
-	};
-
+	public static class RunicSlashTracker extends FlavourBuff {
+		public float boost = 1.5f;
+	}
 }
