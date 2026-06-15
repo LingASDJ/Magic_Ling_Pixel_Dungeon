@@ -18,7 +18,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.HealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
@@ -421,7 +420,7 @@ public class WndInfoMob extends Window {
             );
 
             height += buffs.height();
-            GLog.i(buffs.height() + "");
+            //GLog.i(buffs.height() + "");
         }
 
     }
