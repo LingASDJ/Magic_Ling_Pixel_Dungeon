@@ -178,6 +178,8 @@ public class BuffIndicator extends Component {
 	private ScrollPane scrollPane;
 	private Component scrollContent;
 
+	public int resizeWidth = 0;
+
 	public BuffIndicator( Char ch, boolean large ) {
 		super();
 
@@ -194,6 +196,17 @@ public class BuffIndicator extends Component {
 		this.ch = ch;
 		this.large = large;
 		this.noScroll = noScroll;
+		if (ch == Dungeon.hero) {
+			heroInstance = this;
+		}
+	}
+
+	public BuffIndicator( Char ch, boolean large,boolean noScroll, int resizeWidth) {
+		super();
+		this.ch = ch;
+		this.large = large;
+		this.noScroll = noScroll;
+		this.resizeWidth = resizeWidth;
 		if (ch == Dungeon.hero) {
 			heroInstance = this;
 		}
@@ -269,15 +282,18 @@ public class BuffIndicator extends Component {
 			// 怪物窗口布局：每行6个、左对齐平铺
 			int pos = 0;
 			int row = 0;
-			int maxIconsPerRow = 6;
+			int maxIconsPerRow = large ? 7 : 6;
 			int horizontalSpacing = 0;
-			int verticalSpacing = -3;
+			int verticalSpacing = large ? 1 : -3;
 			int iconWidth = size + (large ? 1 : 2);
-			int iconHeight = size + (large ? 0 : 5);
+			int iconHeight = size + (large ? 1 : 5);
+			if (resizeWidth != 0) {
+				maxIconsPerRow = resizeWidth / (size + horizontalSpacing);
+			}
 
 			for (BuffButton icon : buffButtons.values()){
 				icon.updateIcon();
-				if (!large && pos % maxIconsPerRow == 0 && pos != 0) {
+				if (pos % maxIconsPerRow == 0 && pos != 0) {
 					row++;
 					pos = 0;
 				}
@@ -287,6 +303,7 @@ public class BuffIndicator extends Component {
 				PixelScene.align(icon);
 				pos++;
 			}
+			height = (row + 1) * (iconHeight + verticalSpacing);
 		} else {
 			if (scrollPane == null || scrollContent == null) {
 				scrollContent = new Component();
