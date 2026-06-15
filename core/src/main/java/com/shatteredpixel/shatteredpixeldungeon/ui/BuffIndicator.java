@@ -166,21 +166,21 @@ public class BuffIndicator extends Component {
 
 	public static final int SIZE_SMALL = 7;
 	public static final int SIZE_LARGE = 16;
+	private static BuffIndicator bossInstance;
 
-	private boolean buffsHidden = false;
-	public int maxBuffs = 14;
 	private LinkedHashMap<Buff, BuffButton> buffButtons = new LinkedHashMap<>();
-	public boolean needsRefresh;
+	private boolean needsRefresh;
 	private Char ch;
+	public int maxBuffs = 14;
 	private boolean large;
-	private boolean noScroll = false;
 
-	// 滚动容器（仅主界面使用）
+	private boolean noScroll = false;
 	private ScrollPane scrollPane;
 	private Component scrollContent;
 
 	public BuffIndicator( Char ch, boolean large ) {
 		super();
+
 		this.ch = ch;
 		this.large = large;
 		if (ch == Dungeon.hero) {
@@ -188,8 +188,9 @@ public class BuffIndicator extends Component {
 		}
 	}
 
-	public BuffIndicator( Char ch, boolean large,boolean noScroll) {
+	public BuffIndicator( Char ch, boolean large ,boolean noScroll) {
 		super();
+
 		this.ch = ch;
 		this.large = large;
 		this.noScroll = noScroll;
@@ -201,14 +202,7 @@ public class BuffIndicator extends Component {
 	@Override
 	public void destroy() {
 		super.destroy();
-		if (scrollPane != null) {
-			scrollPane.destroy();
-			scrollPane = null;
-		}
-		if (scrollContent != null) {
-			scrollContent.destroy();
-			scrollContent = null;
-		}
+
 		if (this == heroInstance) {
 			heroInstance = null;
 		}
@@ -217,7 +211,7 @@ public class BuffIndicator extends Component {
 	@Override
 	public synchronized void update() {
 		super.update();
-		if (needsRefresh) {
+		if (needsRefresh){
 			needsRefresh = false;
 			layout();
 		}
@@ -225,6 +219,7 @@ public class BuffIndicator extends Component {
 
 	@Override
 	protected void layout() {
+
 		ArrayList<Buff> newBuffs = new ArrayList<>();
 		for (Buff buff : ch.buffs()) {
 			if (buff.icon() != NONE) {
@@ -234,18 +229,8 @@ public class BuffIndicator extends Component {
 		int totalBuffCount = newBuffs.size();
 		int size = large ? SIZE_LARGE : SIZE_SMALL;
 
-		if (noScroll) {
-			// 销毁滚动容器，彻底禁用滚动
-			if (scrollPane != null) {
-				scrollPane.destroy();
-				scrollPane = null;
-			}
-			if (scrollContent != null) {
-				scrollContent.destroy();
-				scrollContent = null;
-			}
-
-			// 移除已消失buff图标 + 淡出动画
+		if(noScroll){
+			//remove any icons no longer present
 			for (Buff buff : buffButtons.keySet().toArray(new Buff[0])){
 				if (!newBuffs.contains(buff)){
 					Image icon = buffButtons.get( buff ).icon;
@@ -258,18 +243,20 @@ public class BuffIndicator extends Component {
 							super.updateValues( progress );
 							image.scale.set( 1 + 5 * progress );
 						}
+
 						@Override
 						protected void onComplete() {
 							image.killAndErase();
 						}
 					} );
+
 					buffButtons.get( buff ).destroy();
 					remove(buffButtons.get( buff ));
 					buffButtons.remove( buff );
 				}
 			}
 
-			// 添加新buff图标
+			//add new icons
 			for (Buff buff : newBuffs) {
 				if (!buffButtons.containsKey(buff)) {
 					BuffButton icon = new BuffButton(buff, large);
@@ -278,6 +265,7 @@ public class BuffIndicator extends Component {
 				}
 			}
 
+			//layout
 			// 怪物窗口布局：每行6个、左对齐平铺
 			int pos = 0;
 			int row = 0;
@@ -299,126 +287,133 @@ public class BuffIndicator extends Component {
 				PixelScene.align(icon);
 				pos++;
 			}
-			return;
-		}
-
-		if (scrollPane == null || scrollContent == null) {
-			scrollContent = new Component();
-			scrollPane = new ScrollPane(scrollContent);
-			add(scrollPane);
-		}
-
-		int maxIconsPerRow = large ? 5 : 4;
-		int horizontalSpacing = 0;
-		int verticalSpacing = -3;
-		int iconWidth = size + (large ? 1 : 2);
-		int iconHeight = size + (large ? 4 : 5);
-
-		// 清理消失的buff
-		for (Buff buff : buffButtons.keySet().toArray(new Buff[0])) {
-			if (!newBuffs.contains(buff)) {
-				BuffButton button = buffButtons.get(buff);
-				if (button == null) {
-					buffButtons.remove(buff);
-					continue;
-				}
-				Image icon = button.icon;
-				icon.originToCenter();
-				icon.alpha(0.6f);
-				scrollContent.add(icon);
-				scrollContent.add(new AlphaTweener(icon, 0, 0.6f) {
-					@Override
-					protected void updateValues(float progress) {
-						super.updateValues(progress);
-						image.scale.set(1 + 5 * progress);
-					}
-					@Override
-					protected void onComplete() {
-						image.killAndErase();
-					}
-				});
-				button.destroy();
-				scrollContent.remove(button);
-				buffButtons.remove(buff);
-			}
-		}
-
-		// 添加新buff
-		for (Buff buff : newBuffs) {
-			if (!buffButtons.containsKey(buff)) {
-				BuffButton icon = new BuffButton(buff, large);
-				scrollContent.add(icon);
-				buffButtons.put(buff, icon);
-			}
-		}
-
-		// 图标整体水平居中排布
-		int pos = 0;
-		int row = 0;
-		float contentW = 0f;
-		float contentH = 0f;
-		float rowTotalWidth = maxIconsPerRow * iconWidth + (maxIconsPerRow - 1) * horizontalSpacing;
-		float centerOffset = (this.width - rowTotalWidth) / 2f;
-		if (centerOffset < 0) centerOffset = 0;
-
-		for (BuffButton icon : buffButtons.values()) {
-			if (icon == null) continue;
-			icon.updateIcon();
-
-			if (pos % maxIconsPerRow == 0 && pos != 0) {
-				row++;
-				pos = 0;
-			}
-
-			float posX = centerOffset + pos * (iconWidth + horizontalSpacing);
-			float posY = row * (iconHeight + verticalSpacing);
-			icon.setRect(posX, posY, size, size);
-			PixelScene.align(icon);
-
-			contentW = Math.max(contentW, posX + size);
-			contentH = Math.max(contentH, posY + size);
-			pos++;
-		}
-
-		scrollContent.setWidth(contentW);
-		scrollContent.setHeight(contentH);
-		scrollPane.setRect(x, y, width, height);
-
-		// 滚动开关：超过阈值开启滚动
-		if (totalBuffCount > SCROLL_THRESHOLD) {
-			scrollPane.controller.active = true;
 		} else {
-			scrollPane.controller.active = false;
-			scrollPane.scrollTo(0, 0);
+			if (scrollPane == null || scrollContent == null) {
+				scrollContent = new Component();
+				scrollPane = new ScrollPane(scrollContent);
+				add(scrollPane);
+			}
+
+			int maxIconsPerRow = large ? 5 : 4;
+			int horizontalSpacing = 0;
+			int verticalSpacing = -3;
+			int iconWidth = size + (large ? 1 : 2);
+			int iconHeight = size + (large ? 4 : 5);
+
+			// 清理消失的buff
+			for (Buff buff : buffButtons.keySet().toArray(new Buff[0])) {
+				if (!newBuffs.contains(buff)) {
+					BuffButton button = buffButtons.get(buff);
+					if (button == null) {
+						buffButtons.remove(buff);
+						continue;
+					}
+					Image icon = button.icon;
+					icon.originToCenter();
+					icon.alpha(0.6f);
+					scrollContent.add(icon);
+					scrollContent.add(new AlphaTweener(icon, 0, 0.6f) {
+						@Override
+						protected void updateValues(float progress) {
+							super.updateValues(progress);
+							image.scale.set(1 + 5 * progress);
+						}
+						@Override
+						protected void onComplete() {
+							image.killAndErase();
+						}
+					});
+					button.destroy();
+					scrollContent.remove(button);
+					buffButtons.remove(buff);
+				}
+			}
+
+			// 添加新buff
+			for (Buff buff : newBuffs) {
+				if (!buffButtons.containsKey(buff)) {
+					BuffButton icon = new BuffButton(buff, large);
+					scrollContent.add(icon);
+					buffButtons.put(buff, icon);
+				}
+			}
+
+			// 图标整体水平居中排布
+			int pos = 0;
+			int row = 0;
+			float contentW = 0f;
+			float contentH = 0f;
+			float rowTotalWidth = maxIconsPerRow * iconWidth + (maxIconsPerRow - 1) * horizontalSpacing;
+			float centerOffset = (this.width - rowTotalWidth) / 2f;
+			if (centerOffset < 0) centerOffset = 0;
+
+			for (BuffButton icon : buffButtons.values()) {
+				if (icon == null) continue;
+				icon.updateIcon();
+
+				if (pos % maxIconsPerRow == 0 && pos != 0) {
+					row++;
+					pos = 0;
+				}
+
+				float posX = centerOffset + pos * (iconWidth + horizontalSpacing);
+				float posY = row * (iconHeight + verticalSpacing);
+				icon.setRect(posX, posY, size, size);
+				PixelScene.align(icon);
+
+				contentW = Math.max(contentW, posX + size);
+				contentH = Math.max(contentH, posY + size);
+				pos++;
+			}
+
+			scrollContent.setWidth(contentW);
+			scrollContent.setHeight(contentH);
+			scrollPane.setRect(x, y, width, height);
+
+			// 滚动开关：超过阈值开启滚动
+			if (totalBuffCount > SCROLL_THRESHOLD) {
+				scrollPane.controller.active = true;
+			} else {
+				scrollPane.controller.active = false;
+				scrollPane.scrollTo(0, 0);
+			}
+			scrollPane.disableThumb();
 		}
-		scrollPane.disableThumb();
+
 	}
 
-	// Buff按钮内部类
 	private static class BuffButton extends IconButton {
+
 		private Buff buff;
+
 		private boolean large;
 
-		public Image grey;
-		public BitmapText text;
+		public Image grey; //only for small
+		public BitmapText text; //only for large
 
-		public BuffButton(Buff buff, boolean large) {
-			super(new BuffIcon(buff, large));
+		//TODO for large buffs there is room to have text instead of fading
+		public BuffButton( Buff buff, boolean large ){
+			super( new BuffIcon(buff, large));
 			this.buff = buff;
 			this.large = large;
+
+			bringToFront(grey);
+			bringToFront(text);
 		}
 
 		@Override
 		protected void createChildren() {
 			super.createChildren();
-			grey = new Image(TextureCache.createSolid(0xCC666666));
-			add(grey);
+			grey = new Image( TextureCache.createSolid(0xCC666666));
+			add( grey );
+
 			text = new BitmapText(PixelScene.pixelFont);
-			add(text);
+			add( text );
 		}
 
-		public void updateIcon() {
-			((BuffIcon) icon).refresh(buff);
+		public void updateIcon(){
+			((BuffIcon)icon).refresh(buff);
+			//round up to the nearest pixel if <50% faded, otherwise round down
 			if (!large || buff.iconTextDisplay().isEmpty()) {
 				text.visible = false;
 				float fadeHeight = buff.iconFadePercent() * icon.height();
@@ -430,9 +425,10 @@ public class BuffIndicator extends Component {
 				}
 			} else if (!buff.iconTextDisplay().isEmpty()) {
 				grey.visible = false;
-				if (buff.type == Buff.buffType.POSITIVE) text.hardlight(CharSprite.POSITIVE);
-				else if (buff.type == Buff.buffType.NEGATIVE) text.hardlight(CharSprite.NEGATIVE);
+				if (buff.type == Buff.buffType.POSITIVE)        text.hardlight(CharSprite.POSITIVE);
+				else if (buff.type == Buff.buffType.NEGATIVE)   text.hardlight(CharSprite.NEGATIVE);
 				text.alpha(0.7f);
+
 				text.text(buff.iconTextDisplay());
 				text.measure();
 			}
@@ -441,10 +437,10 @@ public class BuffIndicator extends Component {
 		@Override
 		protected void layout() {
 			super.layout();
-			grey.x = icon.x + (0);
-			grey.y = icon.y + (0);
+			grey.x = icon.x = this.x + (large ? 0 : 1);
+			grey.y = icon.y = this.y + (large ? 0 : 2);
 
-			if (text.width > width()) {
+			if (text.width > width()){
 				text.scale.set(PixelScene.align(0.5f));
 			} else {
 				text.scale.set(1f);
@@ -460,11 +456,14 @@ public class BuffIndicator extends Component {
 
 		@Override
 		protected void onPointerDown() {
-			Sample.INSTANCE.play(Assets.Sounds.CLICK);
+			//don't affect buff color
+			Sample.INSTANCE.play( Assets.Sounds.CLICK );
 		}
 
 		@Override
-		protected void onPointerUp() {}
+		protected void onPointerUp() {
+			//don't affect buff color
+		}
 
 		@Override
 		protected String hoverText() {
@@ -472,41 +471,19 @@ public class BuffIndicator extends Component {
 		}
 	}
 
-	// 静态刷新方法
 	public static void refreshHero() {
 		if (heroInstance != null) {
 			heroInstance.needsRefresh = true;
 		}
 	}
 
-	public static void refreshBoss() {
-		if (bossInstances[0] != null) {
-			bossInstances[0].needsRefresh = true;
+	public static void refreshBoss(){
+		if (bossInstance != null) {
+			bossInstance.needsRefresh = true;
 		}
 	}
 
-	public static void refreshAllBosses() {
-		for (BuffIndicator instance : bossInstances) {
-			if (instance != null) {
-				instance.needsRefresh = true;
-			}
-		}
-	}
-
-	public static void setBossInstance(BuffIndicator boss) {
-		bossInstances[0] = boss;
-	}
-
-	public static void setBossInstance(int index, BuffIndicator boss) {
-		if (index >= 0 && index < bossInstances.length) {
-			bossInstances[index] = boss;
-		}
-	}
-
-	public static BuffIndicator getBossInstance(int index) {
-		if (index >= 0 && index < bossInstances.length) {
-			return bossInstances[index];
-		}
-		return null;
+	public static void setBossInstance(BuffIndicator boss){
+		bossInstance = boss;
 	}
 }
