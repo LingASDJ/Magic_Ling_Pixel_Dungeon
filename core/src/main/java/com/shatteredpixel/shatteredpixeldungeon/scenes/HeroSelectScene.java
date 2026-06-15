@@ -545,24 +545,24 @@ public class HeroSelectScene extends PixelScene {
 		if (landscape()) {
 			Image title = new Image(GameRules.BannersRules(), 0, 0, 126, 90);
 
-			title.setPos(prevBtn.x-140, frame.y + frame.height / 4);
+			title.setPos(prevBtn.x-120, frame.y + frame.height / 4);
 			add(title);
 
 			Image yearsUI;
 			switch (SPDSettings.YearsSelect()){
 				case 2:
 					yearsUI = new Image(Assets.Interfaces.TWO_YEARS);
-					yearsUI.setPos(Camera.main.width-180, frame.y + frame.height / 2 - BUTTON_HEIGHT / 2f);
+					yearsUI.setPos(nextBtn.x+20, frame.y + frame.height / 2 - BUTTON_HEIGHT / 2f);
 					add(yearsUI);
 					break;
 				case 3:
 					yearsUI = new Image(Assets.Interfaces.Three_YEARS);
-					yearsUI.setPos(Camera.main.width-180, frame.y + frame.height / 2 - BUTTON_HEIGHT / 2f);
+					yearsUI.setPos(nextBtn.x+20, frame.y + frame.height / 2 - BUTTON_HEIGHT / 2f);
 					add(yearsUI);
 					break;
 				case 4:
 					FourYearsAnimation fourYearsAnimationSP = new FourYearsAnimation();
-					fourYearsAnimationSP.setPos(Camera.main.width-180, frame.y + frame.height / 2 - BUTTON_HEIGHT / 2f);
+					fourYearsAnimationSP.setPos(nextBtn.x+20, frame.y + frame.height / 2 - BUTTON_HEIGHT / 2f);
 					add(fourYearsAnimationSP);
 					break;
 				case 5: default:
