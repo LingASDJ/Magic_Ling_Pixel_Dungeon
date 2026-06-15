@@ -52,6 +52,38 @@ public class Ballistica {
 
 	public static final int WONT_STOP =     0;
 
+	public static int direction(int from, int to) {
+		int w = Dungeon.level.width();
+		int x0 = from % w;
+		int y0 = from / w;
+		int x1 = to % w;
+		int y1 = to / w;
+
+		int dx = Integer.compare(x1, x0);
+		int dy = Integer.compare(y1, y0);
+
+		return dx + dy * 3;
+	}
+
+	public static int step(int pos, int dir) {
+		int w = Dungeon.level.width();
+		int x = pos % w;
+		int y = pos / w;
+
+		switch (dir) {
+			case 0: x--; break;
+			case 1: x++; break;
+			case 3: y--; break;
+			case 4: y++; break;
+			case -1: x--; y--; break;
+			case 2: x++; y--; break;
+			case -2: x--; y++; break;
+			case 5: x++; y++; break;
+		}
+
+		return x + y * w;
+	}
+
 
 	public Ballistica( int from, int to, int params ){
 		sourcePos = from;
