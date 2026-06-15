@@ -288,7 +288,7 @@ public class BuffIndicator extends Component {
 			int iconWidth = size + (large ? 1 : 2);
 			int iconHeight = size + (large ? 1 : 5);
 			if (resizeWidth != 0) {
-				maxIconsPerRow = resizeWidth / (size + horizontalSpacing);
+				maxIconsPerRow = resizeWidth / (iconWidth);
 			}
 
 			for (BuffButton icon : buffButtons.values()){
