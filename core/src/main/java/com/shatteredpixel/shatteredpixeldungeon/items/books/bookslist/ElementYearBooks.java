@@ -41,7 +41,7 @@ public class ElementYearBooks extends Books {
                     GLog.b( Messages.get(this, "blees") );
                     break;
                 case 3: case 4: case 5:
-                    Buff.affect(hero, ChampionHero.Growing.class, 200f);
+                    Buff.affect(hero, ChampionHero.Element.class, 200f);
                     detach( hero.belongings.backpack );
                     GLog.b( Messages.get(this, "anmazing") );
                     break;

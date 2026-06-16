@@ -219,6 +219,19 @@ public abstract class ChampionHero extends FlavourBuff {
         }
     }
 
+    public static class Element extends ChampionHero {
+
+        {
+            color = 0x702E99;
+        }
+
+        {
+            immunities.add(Char.DamageType.Element.getClass());
+            immunities.addAll(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic.RESISTS);
+            immunities.add(Char.DamageType.MAGIC.getClass());
+        }
+    }
+
     public static class Blessed extends ChampionHero {
 
         {

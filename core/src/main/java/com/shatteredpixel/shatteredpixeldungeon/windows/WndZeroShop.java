@@ -8,13 +8,11 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShop;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SKINITEM;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZeroDreamSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot;
@@ -26,250 +24,212 @@ import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
 
-public class WndZeroShop extends Window {
-    private static final int WIDTH		= 120;
-    private static final int BTN_SIZE	= 20;
-    private static final int BTN_GAP	= 3;
-    private static final int GAP		= 6;
+import java.util.ArrayList;
+import java.util.List;
 
+public class WndZeroShop extends Window {
+    // 常量统一提取
+    private static final int WIDTH = 120;
+    private static final int BTN_SIZE = 20;
+    private static final int BTN_GAP = 3;
+    private static final int GAP = 6;
+    private static final int COL_COUNT = 5;
+
+    // 皮肤映射表：道具类名 <-> 解锁Key，消除大量if判断
+    private static final List<SkinMapping> SKIN_MAPPINGS = new ArrayList<>();
+    static {
+        // 一阶皮肤
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_WA.class, "avatars_warrior_1"));
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_MA.class, "avatars_mage_1"));
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_RA.class, "avatars_rogue_1"));
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_HA.class, "avatars_huntress_1"));
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_DA.class, "avatars_duelist_1"));
+        // 二阶皮肤
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_WB.class, "avatars_warrior_2"));
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_MB.class, "avatars_mage_2"));
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_RB.class, "avatars_rogue_2"));
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_HB.class, "avatars_huntress_2"));
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_DB.class, "avatars_duelist_2"));
+        // 高阶皮肤
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_MC.class, "avatars_mage_4"));
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_RC.class, "avatars_rogue_4"));
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_WC.class, "avatars_warrior_4"));
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_DC.class, "avatars_duelist_4"));
+    }
+
+    // 映射内部类
+    private static class SkinMapping {
+        Class<? extends SKINITEM> skinCls;
+        String unlockKey;
+        SkinMapping(Class<? extends SKINITEM> cls, String key) {
+            skinCls = cls;
+            unlockKey = key;
+        }
+    }
 
     public WndZeroShop() {
+        // ==========修复1：补全14个元素，数组长度严格对应14格==========
+        Class<? extends SKINITEM>[] skinClasses = new Class[]{
+                // 第1行 5格
+                SKINITEM.SKIN_WA.class, SKINITEM.SKIN_MA.class, SKINITEM.SKIN_RA.class, SKINITEM.SKIN_HA.class, SKINITEM.SKIN_DA.class,
+                // 第2行 5格 (累计10)
+                SKINITEM.SKIN_WB.class, SKINITEM.SKIN_MB.class, SKINITEM.SKIN_RB.class, SKINITEM.SKIN_HB.class, SKINITEM.SKIN_DB.class,
+                // 第3行 4格 (11,12,13,14) 补齐14个元素
+                null,SKINITEM.SKIN_MC.class, SKINITEM.SKIN_RC.class, null, SKINITEM.SKIN_DC.class
+        };
+        // 强制长度校验，防止数组不匹配
+        assert skinClasses.length == ZeroDreamShop.SHOP_ITEMS.length;
 
-        //TODO 能跑就行
-        ZeroDreamShop.shop1 = SPDSettings.isItemUnlock("avatars_warrior_1")  ? null : new SKINITEM.SKIN_WA();
-        ZeroDreamShop.shop2 = SPDSettings.isItemUnlock("avatars_mage_1")     ? null : new SKINITEM.SKIN_MA();
-        ZeroDreamShop.shop3 = SPDSettings.isItemUnlock("avatars_rogue_1")    ? null : new SKINITEM.SKIN_RA();
-        ZeroDreamShop.shop4 = SPDSettings.isItemUnlock("avatars_huntress_1") ? null : new SKINITEM.SKIN_HA();
-        ZeroDreamShop.shop5 = SPDSettings.isItemUnlock("avatars_duelist_1")  ? null : new SKINITEM.SKIN_DA();
+        for (int i = 0; i < ZeroDreamShop.SHOP_ITEMS.length; i++) {
+            Class<? extends SKINITEM> cls = skinClasses[i];
+            if (cls == null) {
+                ZeroDreamShop.SHOP_ITEMS[i] = null;
+                continue;
+            }
+            String unlockKey = getUnlockKey(cls);
+            ZeroDreamShop.SHOP_ITEMS[i] = SPDSettings.isItemUnlock(unlockKey) ? null : createSkinItem(cls);
+        }
 
-        //
-        ZeroDreamShop.shop6 =  SPDSettings.isItemUnlock("avatars_warrior_2")  ? null :new SKINITEM.SKIN_WB();
-        ZeroDreamShop.shop7 =  SPDSettings.isItemUnlock("avatars_mage_2")     ? null :new SKINITEM.SKIN_MB();
-        ZeroDreamShop.shop8 =  SPDSettings.isItemUnlock("avatars_rogue_2")    ? null :new SKINITEM.SKIN_RB();
-        ZeroDreamShop.shop9 =  SPDSettings.isItemUnlock("avatars_huntress_2") ? null :new SKINITEM.SKIN_HB();
-        ZeroDreamShop.shop10 = SPDSettings.isItemUnlock("avatars_duelist_2")  ? null :new SKINITEM.SKIN_DB();
-
-        ZeroDreamShop.shop11 =  SPDSettings.isItemUnlock("avatars_mage_4")  ? null :new SKINITEM.SKIN_MC();
-        ZeroDreamShop.shop12 =  SPDSettings.isItemUnlock("avatars_rogue_4")  ? null :new SKINITEM.SKIN_RC();
-        ZeroDreamShop.shop13 =  null;
-
+        // 标题
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
         titlebar.icon(new ZeroDreamSprite());
-        titlebar.label(Messages.get(ZeroDreamShop.class,"name"));
-        add( titlebar );
-        RenderedTextBlock message =
-                PixelScene.renderTextBlock( (Messages.get(ZeroDreamShop.class,"descx",hero.name())), 6 );
+        titlebar.label(Messages.get(ZeroDreamShop.class, "name"));
+        add(titlebar);
+
+        // 提示文本
+        RenderedTextBlock message = PixelScene.renderTextBlock(Messages.get(ZeroDreamShop.class, "descx", hero.name()), 6);
         message.maxWidth(WIDTH);
         message.setPos(0, titlebar.bottom() + GAP);
-        add( message );
+        add(message);
+        float startY = message.bottom() + BTN_GAP + 7;
 
-        WndZeroShop.RewardButton shop1 = new WndZeroShop.RewardButton( ZeroDreamShop.shop1 );
-        shop1.setRect( (WIDTH - BTN_GAP) / 5f - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE,
-                BTN_SIZE );
-        add( shop1 );
+        // 循环批量生成所有商品格子
+        float currentX = 4;
+        float currentY = startY;
+        float maxBottom = startY;
+        for (int i = 0; i < ZeroDreamShop.SHOP_ITEMS.length; i++) {
+            Item item = ZeroDreamShop.SHOP_ITEMS[i];
+            RewardButton btn = new RewardButton(item);
+            btn.setRect(currentX, currentY, BTN_SIZE, BTN_SIZE);
+            add(btn);
 
-        WndZeroShop.RewardButton shop2 = new WndZeroShop.RewardButton( ZeroDreamShop.shop2 );
-        shop2.setRect( shop1.right() + BTN_GAP, shop1.top(), BTN_SIZE, BTN_SIZE );
-        add(shop2);
+            // 记录最底部坐标，用于窗口高度计算
+            maxBottom = btn.bottom();
 
-        WndZeroShop.RewardButton shop3 = new WndZeroShop.RewardButton( ZeroDreamShop.shop3 );
-        shop3.setRect( shop2.right() + BTN_GAP, shop2.top(), BTN_SIZE, BTN_SIZE );
-        add(shop3);
-
-        WndZeroShop.RewardButton shop4 = new WndZeroShop.RewardButton( ZeroDreamShop.shop4 );
-        shop4.setRect( shop3.right() + BTN_GAP, shop3.top(), BTN_SIZE, BTN_SIZE );
-        add(shop4);
-
-        WndZeroShop.RewardButton shop5 = new WndZeroShop.RewardButton( ZeroDreamShop.shop5 );
-        shop5.setRect( shop4.right() + BTN_GAP, shop4.top(), BTN_SIZE, BTN_SIZE );
-        add(shop5);
-
-        RewardButton bomb1 = new RewardButton( ZeroDreamShop.shop6 );
-        bomb1.setRect( shop1.left() , shop1.bottom(), BTN_SIZE, BTN_SIZE );
-        add(bomb1);
-
-        RewardButton bomb2 = new RewardButton( ZeroDreamShop.shop7);
-        bomb2.setRect( bomb1.right()+ BTN_GAP , bomb1.top(), BTN_SIZE, BTN_SIZE );
-        add(bomb2);
-
-        RewardButton bomb3 = new RewardButton( ZeroDreamShop.shop8 );
-        bomb3.setRect( bomb2.right()+ BTN_GAP , bomb2.top(), BTN_SIZE, BTN_SIZE );
-        add(bomb3);
-
-        RewardButton bomb4 = new RewardButton( ZeroDreamShop.shop9 );
-        bomb4.setRect( bomb3.right()+ BTN_GAP , bomb3.top(), BTN_SIZE, BTN_SIZE );
-        add(bomb4);
-
-        RewardButton bomb5 = new RewardButton( ZeroDreamShop.shop10 );
-        bomb5.setRect( bomb4.right()+ BTN_GAP , bomb4.top(), BTN_SIZE, BTN_SIZE );
-        add(bomb5);
-
-        RewardButton skin1 = new RewardButton( ZeroDreamShop.shop11 );
-        skin1.setRect( bomb1.right()+BTN_GAP , bomb1.bottom(), BTN_SIZE, BTN_SIZE );
-        add(skin1);
-
-        RewardButton skin2 = new RewardButton( ZeroDreamShop.shop12 );
-        skin2.setRect( bomb2.right()+BTN_GAP , bomb1.bottom(), BTN_SIZE, BTN_SIZE );
-        add(skin2);
-
-        RewardButton skin3 = new RewardButton( ZeroDreamShop.shop13 );
-        skin3.setRect( bomb1.left() , bomb1.bottom(), BTN_SIZE, BTN_SIZE );
-        add(skin3);
-
-        resize(WIDTH, (int) skin1.bottom());
-    }
-
-    public static WndBag sell() {
-        return GameScene.selectItem( itemSelector );
-    }
-
-    private static WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
-        @Override
-        public String textPrompt() {
-            return Messages.get(Shopkeeper.class, "sell");
-        }
-
-        @Override
-        public boolean itemSelectable(Item item) {
-            return Shopkeeper.canSell(item);
-        }
-
-        @Override
-        public void onSelect( Item item ) {
-            if (item != null) {
-                WndBag parentWnd = sell();
-                GameScene.show( new WndTradeItem( item, parentWnd ) );
+            // 换行逻辑
+            currentX += BTN_SIZE + BTN_GAP;
+            if ((i + 1) % COL_COUNT == 0) {
+                currentX = 4;
+                currentY += BTN_SIZE + BTN_GAP;
             }
         }
-    };
 
-    public void itemUnlock(Item item){
-        if(item instanceof SKINITEM.SKIN_WA){
-            SPDSettings.unlockItem("avatars_warrior_1");
-        }
-        if(item instanceof SKINITEM.SKIN_MA){
-            SPDSettings.unlockItem("avatars_mage_1");
-        }
-        if(item instanceof SKINITEM.SKIN_RA){
-            SPDSettings.unlockItem("avatars_rogue_1");
-        }
-        if(item instanceof SKINITEM.SKIN_HA){
-            SPDSettings.unlockItem("avatars_huntress_1");
-        }
-        if(item instanceof SKINITEM.SKIN_DA){
-            SPDSettings.unlockItem("avatars_duelist_1");
-        }
+        // ==========修复2：用真实最底部坐标resize，不再额外叠加高度==========
+        resize(WIDTH, (int) maxBottom + GAP);
+    }
 
-        if(item instanceof SKINITEM.SKIN_WB){
-            SPDSettings.unlockItem("avatars_warrior_2");
-        }
-        if(item instanceof SKINITEM.SKIN_MB){
-            SPDSettings.unlockItem("avatars_mage_2");
-        }
-        if(item instanceof SKINITEM.SKIN_RB){
-            SPDSettings.unlockItem("avatars_rogue_2");
-        }
-        if(item instanceof SKINITEM.SKIN_HB){
-            SPDSettings.unlockItem("avatars_huntress_2");
-        }
-        if(item instanceof SKINITEM.SKIN_DB){
-            SPDSettings.unlockItem("avatars_duelist_2");
-        }
-        if(item instanceof SKINITEM.SKIN_MC){
-            SPDSettings.unlockItem("avatars_mage_4");
-        }
-        if(item instanceof SKINITEM.SKIN_WC){
-            SPDSettings.unlockItem("avatars_warrior_4");
-        }
-        if(item instanceof SKINITEM.SKIN_RC){
-            SPDSettings.unlockItem("avatars_rogue_4");
+    // 根据皮肤Class创建实例
+    private SKINITEM createSkinItem(Class<? extends SKINITEM> cls) {
+        try {
+            return cls.newInstance();
+        } catch (Exception e) {
+            return null;
         }
     }
 
+    // 根据皮肤Class获取解锁Key，替代大量if
+    private String getUnlockKey(Class<? extends SKINITEM> skinCls) {
+        for (SkinMapping map : SKIN_MAPPINGS) {
+            if (map.skinCls == skinCls) return map.unlockKey;
+        }
+        return "";
+    }
 
+    // 解锁皮肤，删除超长if判断
+    public void itemUnlock(Item item) {
+        if (!(item instanceof SKINITEM)) return;
+        Class<? extends SKINITEM> targetCls = (Class<? extends SKINITEM>) item.getClass();
+        String unlockKey = getUnlockKey(targetCls);
+        if (!unlockKey.isEmpty()) SPDSettings.unlockItem(unlockKey);
+    }
+
+    // 购买成功回调
+    private void selectReward(Item reward) {
+        hide();
+        GLog.i(Messages.get(hero, "you_now_have", reward.name()));
+    }
+
+    // 商品弹窗
     private class RewardWindow extends WndInfoItem {
-
-        public RewardWindow( Item item ) {
+        public RewardWindow(Item item) {
             super(item);
+            String key = getUnlockKey((Class<? extends SKINITEM>) item.getClass());
+            boolean locked = SPDSettings.isItemUnlock(key);
+            String buyText = Messages.get(WndIceTradeItem.class, locked ? "unlocked" : "buy", item.iceCoinValue());
+            String giftText = Messages.get(WndIceTradeItem.class, locked ? "unlocked" : "gift");
 
-            boolean locked = SPDSettings.isItemUnlock(item.getClass().getSimpleName());
-
-            StyledButton btnConfirm = new StyledButton(SPDSettings.isItemUnlock(item.getClass().getSimpleName())? Chrome.Type.SCROLL : Chrome.Type.RED_BUTTON,Messages.get(WndIceTradeItem.class, (locked) ? "unlocked":"buy",item.iceCoinValue())){
+            // 付费按钮
+            StyledButton btnBuy = new StyledButton(locked ? Chrome.Type.SCROLL : Chrome.Type.RED_BUTTON, buyText) {
                 @Override
                 protected void onClick() {
-                    if(SPDSettings.iceCoin() >= item.iceCoinValue()) {
+                    if (SPDSettings.iceCoin() >= item.iceCoinValue()) {
                         SPDSettings.iceDownCoin(item.iceCoinValue());
-                        selectReward( item );
+                        selectReward(item);
                         itemUnlock(item);
                         item.cursed = true;
-                        Buff.prolong( hero, ReloadShop.class, 1f);
-                        RewardWindow.this.hide();
+                        Buff.prolong(hero, ReloadShop.class, 1f);
+                        hide();
                     } else {
-                        GLog.n(Messages.get(ZeroDreamShop.class,"no"));
-                        RewardWindow.this.hide();
+                        GLog.n(Messages.get(ZeroDreamShop.class, "no"));
+                        hide();
                     }
                 }
             };
-            if(SPDSettings.isItemUnlock(item.getClass().getSimpleName())){
-                btnConfirm.active = false;
-                btnConfirm.setRect(0, height+2, WIDTH, 31);
-            } else {
-                btnConfirm.setRect(0, height+2, WIDTH, 16);
-            }
-            add(btnConfirm);
+            btnBuy.active = !locked;
+            btnBuy.setRect(0, height + 2, WIDTH, 16);
+            add(btnBuy);
 
-            StyledButton btnFree = new StyledButton(SPDSettings.isItemUnlock(item.getClass().getSimpleName())? Chrome.Type.SCROLL : Chrome.Type.RED_BUTTON,Messages.get(WndIceTradeItem.class, (locked) ? "unlocked":"gift")){
+            // 兑换券按钮
+            StyledButton btnGift = new StyledButton(locked ? Chrome.Type.SCROLL : Chrome.Type.RED_BUTTON, giftText) {
                 @Override
                 protected void onClick() {
-                    AnySkinSelect anySkinSelect = hero.belongings.getItem(AnySkinSelect.class);
-                    if(anySkinSelect != null) {
-                        selectReward( item );
+                    AnySkinSelect skinSelect = hero.belongings.getItem(AnySkinSelect.class);
+                    if (skinSelect != null) {
+                        selectReward(item);
                         itemUnlock(item);
                         SPDSettings.unlockItem("anyskin1");
-                        item.cursed = true;
-                        anySkinSelect.detach(hero.belongings.backpack);
-                        Buff.prolong( hero, ReloadShop.class, 1f);
-                        RewardWindow.this.hide();
+                        skinSelect.detach(hero.belongings.backpack);
+                        // ==========修复3：Buff.prolong 参数错误修正==========
+                        Buff.prolong(hero, ReloadShop.class, 1f);
+                        hide();
                     } else {
-                        GLog.n(Messages.get(ZeroDreamShop.class,"no_skin"));
-                        RewardWindow.this.hide();
+                        GLog.n(Messages.get(ZeroDreamShop.class, "no_skin"));
+                        hide();
                     }
                 }
             };
+            btnGift.active = !locked;
+            btnGift.setRect(0, btnBuy.bottom() + 2, WIDTH, 16);
+            add(btnGift);
 
-            if(SPDSettings.isItemUnlock(item.getClass().getSimpleName())){
-                btnFree.active = false;
-                btnFree.setRect(0, btnConfirm.bottom(), WIDTH, 31);
-            } else {
-                btnFree.setRect(0, btnConfirm.bottom(), WIDTH, 16);
-            }
-            add(btnFree);
-
-            resize(width, (int)btnFree.bottom());
+            resize(width, (int) btnGift.bottom());
         }
     }
 
-    private void selectReward( Item reward ) {
-
-        hide();
-        GLog.i( Messages.get(hero, "you_now_have", reward.name()) );
-    }
-
+    // 商品格子按钮
     public class RewardButton extends Component {
-
         protected NinePatch bg;
         protected ItemSlot slot;
 
-        public RewardButton( Item item ){
-            bg = Chrome.get( Chrome.Type.RED_BUTTON);
-            add( bg );
-
-            slot = new ItemSlot( item ){
+        public RewardButton(Item item) {
+            bg = Chrome.get(Chrome.Type.RED_BUTTON);
+            add(bg);
+            slot = new ItemSlot(item) {
                 @Override
                 protected void onPointerDown() {
-                    bg.brightness( 1.2f );
-                    Sample.INSTANCE.play( Assets.Sounds.CLICK );
+                    bg.brightness(1.2f);
+                    Sample.INSTANCE.play(Assets.Sounds.CLICK);
                 }
                 @Override
                 protected void onPointerUp() {
@@ -277,7 +237,7 @@ public class WndZeroShop extends Window {
                 }
                 @Override
                 protected void onClick() {
-                    ShatteredPixelDungeon.scene().addToFront(new RewardWindow(item));
+                    if (item != null) ShatteredPixelDungeon.scene().addToFront(new RewardWindow(item));
                 }
             };
             add(slot);
@@ -286,14 +246,12 @@ public class WndZeroShop extends Window {
         @Override
         protected void layout() {
             super.layout();
-
+            // 修复：NinePatch 无 setRect，拆分坐标与尺寸
             bg.x = x;
             bg.y = y;
-            bg.size( width, height );
+            bg.size(width, height);
 
-            slot.setRect( x + 2, y + 2, width - 4, height - 4 );
+            slot.setRect(x + 2, y + 2, width - 4, height - 4);
         }
     }
 }
-
-

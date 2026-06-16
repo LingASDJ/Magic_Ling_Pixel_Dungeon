@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.ElementYearBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -243,7 +244,13 @@ public class NxhyShopRoom extends SpecialRoom {
                 case 3:
                 case 4:
                     itemsToSpawn.add(new YellowSunBooks().quantity(1));
-                    itemsToSpawn.add(new GrassKingBooks().quantity(1));
+
+                    if(Random.Float()<0.5f){
+                        itemsToSpawn.add(new ElementYearBooks().quantity(1));
+                    } else {
+                        itemsToSpawn.add(new GrassKingBooks().quantity(1));
+                    }
+
                     break;
             }
 

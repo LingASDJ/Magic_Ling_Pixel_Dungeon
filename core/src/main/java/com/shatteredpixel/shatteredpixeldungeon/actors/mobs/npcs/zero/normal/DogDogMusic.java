@@ -3,20 +3,28 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.FiveYearsNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.fiveyears.DogDogMusicPlot;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DogDogMusicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
@@ -172,6 +180,153 @@ public class DogDogMusic extends FiveYearsNPC {
         @Override
         public int max(int lvl) {
             return 1;
+        }
+
+        @Override
+        public String targetingPrompt() {
+            return Messages.get(this, "prompt");
+        }
+
+        @Override
+        protected void duelistAbility(Hero hero, Integer target) {
+            if (target == null) return;
+            Char dummyTarget = Actor.findChar(target);
+            if (dummyTarget == hero || !Dungeon.level.heroFOV[target]) {
+                GLog.w(Messages.get(this, "ability_no_target"));
+                return;
+            }
+
+            hero.belongings.abilityWeapon = this;
+            if (!hero.canAttack(dummyTarget)) {
+                GLog.w(Messages.get(this, "ability_target_range"));
+                hero.belongings.abilityWeapon = null;
+                return;
+            }
+            hero.belongings.abilityWeapon = null;
+
+            if(dummyTarget != null){
+                hero.sprite.attack(dummyTarget.pos, new Callback() {
+                    @Override
+                    public void call() {
+                        beforeAbilityUsed(hero, dummyTarget);
+                        AttackIndicator.target(dummyTarget);
+
+                        int baseDmg = damageRoll(hero);
+                        castWideEcho(hero, baseDmg);
+
+                        CellEmitter.center(hero.pos).burst(EnergyParticle.FACTORY, 15);
+                        Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+
+                        Invisibility.dispel();
+                        hero.spendAndNext(hero.attackDelay());
+                        afterAbilityUsed(hero);
+                    }
+                });
+            }
+        }
+
+        private void castWideEcho(Hero hero, int baseDamage) {
+            int normalRange = Math.min(16,5 + (level()/2));
+            boolean bossFloor = Dungeon.bossLevel();
+            if (bossFloor) normalRange = Math.min(8,2 + (level()/2));
+
+            for (Char ch : Actor.chars()) {
+                String charName = ch.getClass().getSimpleName();
+                int charPos = ch.pos;
+
+                if (ch == hero || ch.alignment == Char.Alignment.ALLY || ch.alignment == hero.alignment) {
+                    continue;
+                }
+
+                boolean inFov = Dungeon.level.heroFOV[ch.pos];
+                if (!inFov) {
+                    continue;
+                }
+
+                boolean blockedByDoor = hasDoorBetween(hero.pos, ch.pos);
+                if (blockedByDoor) {
+                    continue;
+                }
+
+                int dist = Dungeon.level.distance(hero.pos, ch.pos);
+                if (dist > normalRange) {
+                    continue;
+                }
+
+                float dmgMult = 1f;
+                int baseStandard = bossFloor ? 2 : 5;
+                if (dist > baseStandard) {
+                    int overRange = dist - baseStandard;
+                    dmgMult = Math.max(0.1f, 1f - (0.15f * overRange));
+                }
+
+                int finalDmg = Math.round(baseDamage * dmgMult);
+
+                if (finalDmg > 0) {
+                    ch.damage(finalDmg, hero);
+                    if (ch.sprite != null) ch.sprite.flash();
+                }
+            }
+        }
+
+        /**
+         * 手动实现射线检测：两点之间路径是否存在关闭的门 Terrain.DOOR
+         * @param from 起点
+         * @param to 终点
+         * @return true=中间有门阻隔，false=无门可穿透
+         */
+        private boolean hasDoorBetween(int from, int to) {
+            Level level = Dungeon.level;
+            int w = level.width();
+
+            int x0 = from % w;
+            int y0 = from / w;
+            int x1 = to % w;
+            int y1 = to / w;
+
+            int dx = Math.abs(x1 - x0);
+            int dy = Math.abs(y1 - y0);
+
+            int sx = x0 < x1 ? 1 : -1;
+            int sy = y0 < y1 ? 1 : -1;
+            int err = dx - dy;
+
+            int x = x0;
+            int y = y0;
+
+            while (true) {
+                int currPos = y * w + x;
+                if (level.map[currPos] == Terrain.DOOR) {
+                    GLog.w("射线检测：坐标" + currPos + "存在关门Terrain.DOOR，阻断声波");
+                    return true;
+                }
+                if (x == x1 && y == y1) break;
+
+                int e2 = 2 * err;
+                if (e2 > -dy) {
+                    err -= dy;
+                    x += sx;
+                }
+                if (e2 < dx) {
+                    err += dx;
+                    y += sy;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        protected int baseChargeUse(Hero hero, Char target) {
+            return 2;
+        }
+
+        @Override
+        public String abilityInfo() {
+            if (levelKnown){
+                return Messages.get(this, "typical_ability_desc",Math.min(16,5 + (level()/2)),Math.min(8,2 + (level()/2)));
+            } else {
+                return Messages.get(this, "ability_desc",5,2);
+            }
         }
     }
 
