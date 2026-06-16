@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
@@ -86,6 +87,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElectricalSmoke;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
@@ -1182,6 +1184,21 @@ public abstract class Mob extends Char {
 
 		if(this.buff(ChampionEnemy.AntiMagic.class) != null && type == DamageType.MAGIC && !(src instanceof WandOfDisintegration)){
 			dmg *= 0.5f;
+		}
+
+		ChampionHero.Element doubleBuff = hero.buff(ChampionHero.Element.class);
+		if (doubleBuff != null) {
+			boolean isMagicDamage = type == DamageType.MAGIC || type == DamageType.Element;
+			Class<?> srcCls = src.getClass();
+			for (Class<?> magicCls : AntiMagic.RESISTS) {
+				if (magicCls.isAssignableFrom(srcCls)) {
+					isMagicDamage = true;
+					break;
+				}
+			}
+			if (isMagicDamage) {
+				dmg *= 2;
+			}
 		}
 
 		if (state == SLEEPING) {
