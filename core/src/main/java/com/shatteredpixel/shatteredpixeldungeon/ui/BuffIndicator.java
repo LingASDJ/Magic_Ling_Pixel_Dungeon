@@ -303,7 +303,9 @@ public class BuffIndicator extends Component {
 				PixelScene.align(icon);
 				pos++;
 			}
-			height = (row + 1) * (iconHeight + verticalSpacing);
+			if (!buffButtons.isEmpty()) {
+				height = (row + 1) * (iconHeight + verticalSpacing);
+			}
 		} else {
 			if (scrollPane == null || scrollContent == null) {
 				scrollContent = new Component();
