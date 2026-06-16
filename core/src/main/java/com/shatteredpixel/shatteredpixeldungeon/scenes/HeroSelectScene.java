@@ -833,6 +833,13 @@ public class HeroSelectScene extends PixelScene {
 						0,
 						0
 				);
+			} else if (cl == HeroClass.DUELIST && cl.GetSkin() == 4) {
+				texture(TextureCache.get("splashes/duelist_kitsunemimi.png"));
+				frame(0, 0, 88, 120);
+				setPos(
+						0,
+						0
+				);
 			} else {
 				// 其他皮肤使用原有的处理方式
 				texture(cl.GetSkinAssest());

@@ -1242,7 +1242,7 @@ public class ItemSpriteSheet {
 
     public static final int SKIN_12  = + SKIN+11;
     public static final int SKIN_13  = + SKIN+12;
-    public static final int RGJT_3  = + SKIN+13;
+    public static final int SKIN_14  = + SKIN+13;
     public static final int RGJT_4  = + SKIN+14;
 
     static {
