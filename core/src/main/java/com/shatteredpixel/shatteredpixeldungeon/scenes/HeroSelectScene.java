@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.SPELLSWORD;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Icons.RENAME_OFF;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -792,9 +791,32 @@ public class HeroSelectScene extends PixelScene {
 	}
 
 	private static class Avatar extends Image {
+		// 常量统一抽取，便于后续修改
+		private static final int FRAME_W = 64;
+		private static final int FRAME_H = 64;
+		private static final int SPECIAL_FRAME_W = 88;
+		private static final int SPECIAL_FRAME_H = 120;
 
-		private static final int WIDTH = 64;
-		private static final int HEIGHT = 64;
+		private static final class SkinConfig {
+			public final HeroClass heroClass;
+			public final int skinId;
+			public final String texPath;
+
+			public SkinConfig(HeroClass heroClass, int skinId, String texPath) {
+				this.heroClass = heroClass;
+				this.skinId = skinId;
+				this.texPath = texPath;
+			}
+		}
+
+		private static final SkinConfig[] SPECIAL_SKINS = {
+				new SkinConfig(HeroClass.WARRIOR,  4, "splashes/skin/giftskin_warrior.png"),
+				new SkinConfig(HeroClass.ROGUE,    4, "splashes/skin/giftskin_rogue.png"),
+				new SkinConfig(HeroClass.MAGE,     4, "splashes/skin/giftskin_mage.png"),
+				new SkinConfig(HeroClass.DUELIST,  4, "splashes/skin/duelist_kitsunemimi.png"),
+
+				new SkinConfig(HeroClass.DUELIST, 5, "splashes/skin/duelist_desertspirit.png"),
+		};
 
 		public Avatar(HeroClass cl) {
 			super();
@@ -806,46 +828,31 @@ public class HeroSelectScene extends PixelScene {
 		}
 
 		private void updateAvatar(HeroClass cl) {
-			if(cl == SPELLSWORD && !(DeviceCompat.isDesktop_Dev())){
+			if (cl == HeroClass.SPELLSWORD && !DeviceCompat.isDesktop_Dev()) {
 				hardlight(0x222222);
 			} else {
 				resetColor();
 			}
-			// 特殊处理4个皮肤
-			if (cl == HeroClass.WARRIOR && cl.GetSkin() == 4) {
-				texture(TextureCache.get("splashes/giftskin_warrior.png"));
-				frame(0, 0, 88, 120);
-				setPos(
-						0,
-						0
-				);
-			} else if (cl == HeroClass.ROGUE && cl.GetSkin() == 4) {
-				texture(TextureCache.get("splashes/giftskin_rogue.png"));
-				frame(0, 0, 88, 120);
-				setPos(
-						0,
-						0
-				);
-			} else if (cl == HeroClass.MAGE && cl.GetSkin() == 4) {
-				texture(TextureCache.get("splashes/giftskin_mage.png"));
-				frame(0, 0, 88, 120);
-				setPos(
-						0,
-						0
-				);
-			} else if (cl == HeroClass.DUELIST && cl.GetSkin() == 4) {
-				texture(TextureCache.get("splashes/duelist_kitsunemimi.png"));
-				frame(0, 0, 88, 120);
-				setPos(
-						0,
-						0
-				);
+
+			int skinId = cl.GetSkin();
+			SkinConfig matchSkin = null;
+			for (SkinConfig cfg : SPECIAL_SKINS) {
+				if (cfg.heroClass == cl && cfg.skinId == skinId) {
+					matchSkin = cfg;
+					break;
+				}
+			}
+
+			if (matchSkin != null) {
+				texture(TextureCache.get(matchSkin.texPath));
+				frame(0, 0, SPECIAL_FRAME_W, SPECIAL_FRAME_H);
+				setPos(0, 0);
 			} else {
-				// 其他皮肤使用原有的处理方式
 				texture(cl.GetSkinAssest());
-				frame(new TextureFilm(texture, WIDTH, HEIGHT).get(cl.GetSkin()));
-				x = (SKY_WIDTH - width) / 2;
-				y = SKY_HEIGHT - height;
+				TextureFilm film = new TextureFilm(texture, FRAME_W, FRAME_H);
+				frame(film.get(skinId));
+				x = (SKY_WIDTH - width()) / 2f;
+				y = SKY_HEIGHT - height();
 			}
 		}
 	}
