@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Nyarlathotep;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MagneticCrown;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -106,6 +107,12 @@ public abstract class Trap implements Bundlable {
 			Bestiary.setSeen(getClass());
 			Bestiary.countEncounter(getClass());
 			activate();
+
+			// Trap 激活完成后，通知磁冕监听Buff
+			MagneticCrown.TrapWatch watch = hero.buff(MagneticCrown.TrapWatch.class);
+			if (watch != null) {
+				watch.onTrapTrigger(pos);
+			}
 
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
 				if (mob instanceof Nyarlathotep) {
