@@ -17,7 +17,7 @@ public class ZeroDreamShop extends NTNPC {
     private static final String KEY_FIRST = "first";
     public boolean firstVisit = true;
 
-    public static final Item[] SHOP_ITEMS = new Item[15];
+    public static final Item[] SHOP_ITEMS = new Item[20];
 
     {
         spriteClass = ZeroDreamSprite.class;

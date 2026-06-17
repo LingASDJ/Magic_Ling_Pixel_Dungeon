@@ -55,6 +55,7 @@ import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Music;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
@@ -438,13 +439,69 @@ public class SurfaceScene extends PixelScene {
 	}
 
 	private static class Avatar extends Image {
-		
-		private static final int WIDTH	= 64;
-		private static final int HEIGHT	= 64;
-		
-		public Avatar( HeroClass cl ) {
-			texture(cl.GetSkinAssest());
-			frame( new TextureFilm( texture, WIDTH, HEIGHT ).get( cl.GetSkin() ) );
+		// 常量统一抽取，便于后续修改
+		private static final int FRAME_W = 64;
+		private static final int FRAME_H = 64;
+		private static final int SPECIAL_FRAME_W = 88;
+		private static final int SPECIAL_FRAME_H = 120;
+
+		private static final class SkinConfig {
+			public final HeroClass heroClass;
+			public final int skinId;
+			public final String texPath;
+
+			public SkinConfig(HeroClass heroClass, int skinId, String texPath) {
+				this.heroClass = heroClass;
+				this.skinId = skinId;
+				this.texPath = texPath;
+			}
+		}
+
+		private static final SkinConfig[] SPECIAL_SKINS = {
+				new SkinConfig(HeroClass.WARRIOR,  4, "splashes/skin/giftskin_warrior.png"),
+				new SkinConfig(HeroClass.ROGUE,    4, "splashes/skin/giftskin_rogue.png"),
+				new SkinConfig(HeroClass.MAGE,     4, "splashes/skin/giftskin_mage.png"),
+				new SkinConfig(HeroClass.DUELIST,  4, "splashes/skin/duelist_kitsunemimi.png"),
+
+				new SkinConfig(HeroClass.DUELIST, 5, "splashes/skin/duelist_desertspirit.png"),
+		};
+
+		public Avatar(HeroClass cl) {
+			super();
+			updateAvatar(cl);
+		}
+
+		public void heroClass(HeroClass cl) {
+			updateAvatar(cl);
+		}
+
+		private void updateAvatar(HeroClass cl) {
+			if (cl == HeroClass.SPELLSWORD && !DeviceCompat.isDesktop_Dev()) {
+				hardlight(0x222222);
+			} else {
+				resetColor();
+			}
+
+			int skinId = cl.GetSkin();
+			SkinConfig matchSkin = null;
+			for (SkinConfig cfg : SPECIAL_SKINS) {
+				if (cfg.heroClass == cl && cfg.skinId == skinId) {
+					matchSkin = cfg;
+					break;
+				}
+			}
+
+			if (matchSkin != null) {
+				texture(TextureCache.get(matchSkin.texPath));
+				frame(0, 0, SPECIAL_FRAME_W, SPECIAL_FRAME_H);
+				setPos(0, 0);
+			} else {
+				texture(cl.GetSkinAssest());
+				TextureFilm film = new TextureFilm(texture, FRAME_W, FRAME_H);
+				frame(film.get(skinId));
+				x = (SKY_WIDTH - width()) / 2f;
+				y = SKY_HEIGHT - height();
+			}
 		}
 	}
 
