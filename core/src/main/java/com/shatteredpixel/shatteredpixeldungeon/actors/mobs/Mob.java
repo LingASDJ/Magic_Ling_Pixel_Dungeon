@@ -101,6 +101,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
@@ -1201,6 +1202,13 @@ public abstract class Mob extends Char {
 			}
 		}
 
+		ScrollOfSoul.UpgradeSoul upgradeSoul = hero.buff(ScrollOfSoul.UpgradeSoul.class);
+		if(upgradeSoul != null){
+			float atkMul = 1f + upgradeSoul.attackDamageMulti / 100f;
+			atkMul = Math.min(1.9f, atkMul);
+			dmg *= atkMul;
+		}
+
 		if (state == SLEEPING) {
 			state = WANDERING;
 		}
@@ -1246,6 +1254,13 @@ public abstract class Mob extends Char {
             if (alignment == Alignment.ENEMY) {
 				Statistics.enemiesSlain++;
 				Badges.validateMonstersSlain();
+
+				ScrollOfSoul.UpgradeSoul upgradeSoul = hero.buff(ScrollOfSoul.UpgradeSoul.class);
+				if(upgradeSoul != null){
+					upgradeSoul.shieldDamageMulti += 2;
+					upgradeSoul.attackDamageMulti += 2;
+				}
+
 				Statistics.qualifiedForNoKilling = false;
 				Bestiary.setSeen(getClass());
 				Bestiary.countEncounter(getClass());

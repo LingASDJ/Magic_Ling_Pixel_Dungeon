@@ -164,6 +164,8 @@ public class BuffIndicator extends Component {
 	public static final int UNLESS = 149;
 	public static final int ANCIENT_SURVEY = 150;
 
+	public static final int UPGRADE_SOUL = 151;
+
 	public static final int SIZE_SMALL = 7;
 	public static final int SIZE_LARGE = 16;
 	private static BuffIndicator bossInstance;
