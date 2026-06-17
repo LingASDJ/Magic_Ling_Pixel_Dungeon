@@ -1383,6 +1383,8 @@ public class ItemSpriteSheet {
 
     public static final int MOTO_BREW                                       = RITUAL_SWORD + 13;
 
+    public static final int SOUL_SCROLL                                     = RITUAL_SWORD + 15;
+
     static{
         assignItemRect(RITUAL_SWORD,       13, 13);
         assignItemRect(TREE_LIST,          14, 13);
@@ -1392,6 +1394,8 @@ public class ItemSpriteSheet {
 
         assignItemRect(BZMDR_GIFT,          12,15);
         assignItemRect(MOTO_BREW,          12,16);
+
+        assignItemRect(SOUL_SCROLL,          16,14);
     }
 
     private static final int PROP1  = xy(9,46);

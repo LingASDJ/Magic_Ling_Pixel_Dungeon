@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BloodRedFlower;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DeepRedFlower;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.TimeFlower;
@@ -39,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDiv
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
@@ -54,7 +54,6 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 import java.util.List;
 
@@ -238,14 +237,9 @@ public class ArchettoWeightLess extends FiveYearsNPC {
                                            @Override
                                            protected void onSelect(int index) {
                                                if (index==0){
-                                                   if(Random.Float() > 0.7f){
-                                                       Prop p1 = Prop.randomPropA(1,true);
-                                                       Dungeon.level.drop(p1,hero.pos).sprite.drop();
-                                                   } else {
-                                                       Prop p2 = Prop.randomPropA(2,true);
-                                                       Dungeon.level.drop(p2,hero.pos).sprite.drop();
-                                                   }
+                                                   Dungeon.level.drop(new ScrollOfSoul(),hero.pos);
                                                    yell(Messages.get(ArchettoWeightLess.class,"props"));
+                                                   item.detach(hero.belongings.backpack);
                                                    rd = false;
                                                } else if(index == 1){
                                                    yell("………………");

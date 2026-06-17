@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfSoul;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 
@@ -60,6 +61,13 @@ public abstract class AllyBuff extends Buff{
 
 			Statistics.enemiesSlain++;
 			Badges.validateMonstersSlain();
+
+			ScrollOfSoul.UpgradeSoul upgradeSoul = hero.buff(ScrollOfSoul.UpgradeSoul.class);
+			if(upgradeSoul != null){
+				upgradeSoul.shieldDamageMulti += 2;
+				upgradeSoul.attackDamageMulti += 2;
+			}
+
 			Statistics.qualifiedForNoKilling = false;
 			Bestiary.setSeen(enemy.getClass());
 			Bestiary.countEncounter(enemy.getClass());

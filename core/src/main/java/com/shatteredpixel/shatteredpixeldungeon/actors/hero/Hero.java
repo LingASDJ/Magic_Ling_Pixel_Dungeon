@@ -254,6 +254,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfTeleTation;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -1103,11 +1104,17 @@ public class Hero extends Char {
 			speed += CustomPlayer.baseSpeed;
 		}
 
+
+
 		speed += super.speed();
 
 		speed *= RingOfHaste.speedMultiplier(this);
 
 		if (buff(BlessQinyue.class) != null) speed *= 1.25f;
+
+		if(buff(ScrollOfSoul.UpgradeSoul.class)!=null){
+			speed *= 2;
+		}
 
 		//提升20%移速
 		MIME.GOLD_THREE getSpeed = hero.belongings.getItem(MIME.GOLD_THREE.class);
@@ -1212,6 +1219,12 @@ public class Hero extends Char {
 		}
 
 		float delay = 1f;
+
+
+		if(buff(ScrollOfSoul.UpgradeSoul.class)!=null){
+			delay /= 2;
+		}
+
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame ){
 			if(!CustomPlayer.shouldOverride)
 				delay = CustomPlayer.baseAttackDelay;
@@ -2547,6 +2560,13 @@ public class Hero extends Char {
 			if (buff(MonkEnergy.MonkAbility.Meditate.MeditateResistance.class) != null){
 				dmg *= 0.2f;
 			}
+		}
+
+		ScrollOfSoul.UpgradeSoul upgradeSoul = hero.buff(ScrollOfSoul.UpgradeSoul.class);
+		if(upgradeSoul != null){
+			float atkMul = 1f + upgradeSoul.shieldDamageMulti / 100f;
+			atkMul = Math.min(0.1f, atkMul);
+			dmg *= atkMul;
 		}
 
 		CapeOfThorns.Thorns thorns = buff( CapeOfThorns.Thorns.class );
