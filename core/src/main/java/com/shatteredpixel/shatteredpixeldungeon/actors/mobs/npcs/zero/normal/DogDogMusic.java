@@ -210,8 +210,7 @@ public class DogDogMusic extends FiveYearsNPC {
                     public void call() {
                         beforeAbilityUsed(hero, dummyTarget);
                         AttackIndicator.target(dummyTarget);
-
-                        int baseDmg = damageRoll(hero);
+                        int baseDmg = Random.IntRange(1, 18 + (level() * 3));
                         castWideEcho(hero, baseDmg);
 
                         CellEmitter.center(hero.pos).burst(EnergyParticle.FACTORY, 15);
@@ -231,9 +230,6 @@ public class DogDogMusic extends FiveYearsNPC {
             if (bossFloor) normalRange = Math.min(8,2 + (level()/2));
 
             for (Char ch : Actor.chars()) {
-                String charName = ch.getClass().getSimpleName();
-                int charPos = ch.pos;
-
                 if (ch == hero || ch.alignment == Char.Alignment.ALLY || ch.alignment == hero.alignment) {
                     continue;
                 }
@@ -297,7 +293,6 @@ public class DogDogMusic extends FiveYearsNPC {
             while (true) {
                 int currPos = y * w + x;
                 if (level.map[currPos] == Terrain.DOOR) {
-                    GLog.w("射线检测：坐标" + currPos + "存在关门Terrain.DOOR，阻断声波");
                     return true;
                 }
                 if (x == x1 && y == y1) break;
