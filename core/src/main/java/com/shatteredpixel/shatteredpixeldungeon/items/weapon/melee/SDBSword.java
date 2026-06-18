@@ -187,8 +187,7 @@ public class SDBSword extends MeleeWeapon {
     @Override
     public String abilityInfo() {
         if (levelKnown) {
-            int charge = baseChargeUse(null, null);
-            return Messages.get(this, "typical_ability_desc", charge, 30, 3);
+            return Messages.get(this, "typical_ability_desc");
         } else {
             return Messages.get(this, "ability_desc");
         }

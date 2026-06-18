@@ -61,7 +61,7 @@ public class ScrollOfSoul extends Scroll {
                 carriedTurns++;
 
                 if (carriedTurns >= DECAY_CYCLE) {
-                    level = Math.max(0, level - 1);
+                    level--;
                     carriedTurns = 0;
                 }
 
