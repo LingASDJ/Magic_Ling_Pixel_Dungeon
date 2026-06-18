@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ATRISprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AoReadyDragonSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ArchettoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BloodsSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElemtGuardGirlSprites;
@@ -65,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.TowerMachineSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VeryColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WarlockHeadSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WispSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSoulSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -80,6 +82,7 @@ import java.util.ArrayList;
 public class vm0_9_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0948_Changes(changeInfos);
         add_V0945_Changes(changeInfos);
         add_V0942_Changes(changeInfos);
         add_V0940_Changes(changeInfos);
@@ -89,6 +92,174 @@ public class vm0_9_X_Changes {
         add_V0915_Changes(changeInfos);
         add_V0910_Changes(changeInfos);
         add_V0900_Changes(changeInfos);
+    }
+
+    public static void add_V0948_Changes(ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("Lost-失落古墓-敬请期待-Tomb", true,"");
+        changes.hardlight(0xCCCCCC);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.SHPX), "开篇寄语",
+                "由衷感谢大家一路陪伴、支持魔绫像素地牢！\n" +
+                        "在前作古堡外传沉淀开发经验后，全新外传篇章企划正式启动——失落古墓。\n\n" +
+                        "这座宏伟的哥特式陵寝曾矗立地表，却因一场浩劫深埋地底。永恒无光的死寂圣堂、布满裂痕的石廊间，亡魂与畸变怪物四处游荡，深埋地下的真相等待冒险者前来发掘。"));
+
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.SPELLSWORD, 1), "新登场英雄：魔剑士",
+                "全新可玩英雄，将随同冒险者一同深入危机四伏的失落古墓，并肩对抗地底亡灵。"));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Environment.TILES_PLACE, 48, 80, 16
+                , 16), "场景美术",
+                "为本篇外传量身打造全套古墓像素美术资源：\n" +
+                        "整体采用冷灰幽蓝的哥特像素画风，极致渲染永不见天日的地底陵寝压抑氛围，敬请期待古墓外传章节。"));
+
+        changes.addButton(new ChangeButton( new WispSprite(), "古墓章节专属怪物",
+                "失落古墓区域将实装若干区域独有的亡灵魔物，以及多个新Boss\n" +
+                        "敬请期待古墓外传章节，更多未知敌人后续逐步披露。"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), "全篇原创配乐",
+                "整个失落古墓篇章配备专属原创背景音乐，由首席作曲犬罗全权创作。烘托地底古墓孤寂阴森的探索氛围。"));
+
+        changes.addButton(new ChangeButton(new Image(Icons.get(Icons.NEWS)), "后续开发预告",
+                "失落古墓外传正在稳步推进开发，更多场景、怪物、专属武器与剧情内容将陆续放出，敬请期待后续版本情报！"));
+
+        changes = new ChangeInfo("v0.9.4.8", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+        changes.addButton(new ChangeButton(new Image("Ling.png", 0, 0, 16, 16), "开发者的话",
+                "v0.9.4.8 — 完成于 2026-06-18 23:45\n\n" +
+                        "距离上次写下这段心里话，已经是2023年10月6日，一晃近三年时光匆匆而过。\n" +
+                        "曾经懵懂的大学生，如今也走过了许多路途——踏过祖国边疆，也穿梭于繁华都市。\n" +
+                        "沿途见识百态，尝过挫折与坎坷，但始终不愿停下脚步，像一株百折不挠的野草稳步前行。\n\n" +
+                        "回首望去，魔绫像素地牢早已从当初不起眼的小型模组，在地牢玩家圈子里拥有了属于自己的一席之地，这份成果让我由衷欣喜。\n" +
+                        "更让我倍感温暖的是，制作组的伙伴们不断汇聚，队伍愈发壮大：\n" +
+                        "Bzmdr、Kuzumi、Sotis、索托斯、手电\n" +
+                        "Daniel Calan、寄神、犬罗、小叶、Archetto等制作组的成员\n\n" +
+                        "还有每一位一路相伴的群友与玩家，你们是支撑魔绫持续走下去的全部动力。若无诸位，便没有如今的魔绫。\n\n" +
+                        "我今年即将年满23岁，或许再过数年，生活琐事会让我无法再像现在这样高频更新、活跃在社区。\n" +
+                        "但那一天尚且遥远，当下仍有无限值得珍惜的时光，愿我们都认真活好每一天。\n\n" +
+                        "本次更新周期偏长，在此向大家致歉，近期现实生活繁杂，挤占了大量开发时间。\n" +
+                        "本次更新内容体量虽不算庞大，但足够各位细细游玩。更新结束后，项目将正式转入「失落古墓」DLC的集中开发周期。\n" +
+                        "期待下次相见时，我们能在古墓版本再度畅谈。最后祝愿所有冒险者游玩愉快！\n\n" +
+                        "—— MLPD 主开发：JDSALing"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ArchettoSprite(), "弦事件调整",
+                "现在给予弦珍贵的东西，将可以获得 _灵魂卷轴_。"));
+
+        changes.addButton (new ChangeButton (HeroSprite.avatar (HeroClass.DUELIST, 13), "新皮肤：女仆红狐",
+                "售价1500钴币\n\n作者：Priestess & 索托斯 & Daniel Clana\n\n炉边煮好了咖啡，主人，要不要来一杯歇歇？"));
+
+        changes.addButton (new ChangeButton (HeroSprite.avatar (HeroClass.HUNTRESS, 13), "新皮肤：虔书圣徒",
+                "售价1500钴币\n\n作者：海鸥\n\n黑袍藏弩，古籍诵咒，以祷言与劲矢一同肃清地牢滋生的邪秽。"));
+
+        changes.addButton (new ChangeButton (HeroSprite.avatar (HeroClass.DUELIST, 14), "新皮肤：埃及艳后",
+                "售价1500钴币\n\n作者：过街的白菜——人人喊吃 & 索托斯 & Daniel Clana\n\n大漠热风裹挟着金饰微光，绿洲的女王在此等候你的到来。"));
+
+        changes.addButton (new ChangeButton (HeroSprite.avatar (HeroClass.DUELIST, 7), "武技实装・第二轮更新",
+                "以下新增武技武器：\n" +
+                        "国王大剑、倒悬的生命树、钻石大剑、丛林毒刺、白浪刺剑、烤鲱鱼、糯米大剑、五仁月饼、\n" +
+                        "红魔巨剑、尚方宝剑、煮熟的尚方宝剑、嗜血荆棘、炸弹匕首、肃杀、重型弩炮、涤罪、卡戎的船桨、寻觅长枪、龙鳞 \n\n" +
+                        "欢迎体验！"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HHBlade), "新Boss专武：钻石大剑",
+                "在未击败拟态之王时，首次击杀必定获得。之后武器加入生成池，拟态之王也有小概率掉落。\n\n" +
+                        "武器数据：\n\n" +
+                        "拟态之王的佩剑，由钻石制成的大剑，漂亮而致命。\n" +
+                        "上面附带了一丝拟态之王的魔力，虽然在一定程度上限制了它，但似乎也带来了不错的效果\n" +
+                        "4阶，5-25，1-6成长，1.5延迟，2距，17力\n" +
+                        "对1距目标造成物理伤害并施加1/5伤害量回合数的中毒\n" +
+                        "对2距目标造成法术伤害并施加1/5伤害量回合数的流血\n" +
+                        "\n" +
+                        "无法增加攻击距离"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KING_SWORD), "新Boss专武：国王大剑",
+                "在矮人国王处未获得‘掣君无刃’成就时，首次完成该成就必定获得。之后武器加入生成池，矮人国王也有小概率掉落。\n\n" +
+                        "武器数据：\n\n" +
+                        "矮人国王的仪式用剑，对于矮人来说是一把十足的重剑，就算如此你挥舞它也需要费一番力气\n" +
+                        "对恶魔和精英敌人伤害增加50%\n" +
+                        "有40%+等级x5的概率对敌人造成5+等级/2回合易伤状态\n" +
+                        " 4阶17力，1-7成长，1.5延迟基础，10-35基础伤害\n" +
+                        "注：该武器为贤者之剑迭代，老存档将会自动同步！"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JUNGLE_SWORD), "新Boss专武：丛林毒刺",
+                "在未击败克璃诺斯-森林意志时，首次击杀必定获得。之后武器加入生成池，克璃诺斯-森林意志也有小概率掉落。\n\n" +
+                        "武器数据：\n\n" +
+                        "从克璃诺斯之果身上拆下的一根强壮枝条，蕴含了极强的毒性以及那些触手的力量。挥舞起来很顺手，不过却不怎么锋利\n" +
+                        "3阶，6-12，1-2成长，0.5延迟\n" +
+                        "1距，14力\n" +
+                        "每次攻击叠加(2LV+3)层中毒\n" +
+                        "当中毒层数叠加至目标最大生命值/3层时，对目标施加缠绕与失明，持续回合数与中毒层数相等\n" +
+                        "注：生命树也进行了重做"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_CAPE), ("神器重做：荆棘斗篷"),
+                ("升级同暗影斗篷(10%充能对应斗篷1充能)，主动使用，可主动关闭，充能百分比式\n" +
+                        "自然充能4t/1%，受到伤害额外加(本次伤害/2)%，神器充能1t/5%\n" +
+                        "\n" +
+                        "使用时1t/5%的消耗\n" +
+                        "\n" +
+                        "使用时(20+2LV)%~(30+4LV)%免伤\n" +
+                        "使用时对半径为(LV/2)的圆形(向下取整)的敌人每回合造成LV点物理伤害并施加1.5LV回合数的流血(不可叠加，重复获取取最高)\n" +
+                        "\n" +
+                        "挨打使攻击目标受到本次原始伤害的反伤，并叠加LV回合数的流血")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FLOWERY), "新书籍：元素编年史",
+                "原有韧性、元素、精准、闪避四枚戒指实战强度偏弱，本次更新将其整合重构，替换为两枚全新戒指：\n\n" +
+                        "大概率提供魔能透视，小概率提供元素祝福。\n" +
+                        "在那些回忆商店有概率出现，出现时，绿林圣境守则书籍将不再该商店生成"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LONGSWORD), "伤害系统v0.3",
+                "现在真实伤害将会破盾，请万般小心！"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), "灯火前路：v3.3",
+                "现在灯火25以下后，常规怪物不再掉落物品。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_DIAMOND), "戒指重构",
+                "原有韧性、元素、精准、闪避四枚戒指实战强度偏弱，本次更新将其整合重构，替换为两枚全新戒指：\n\n" +
+                        "_-_ 庇护之戒：同时提供韧性与元素抗性加成\n" +
+                        "_-_ 集中之戒：同时提升命中精准与闪避能力\n\n" +
+                        "注：旧存档内的对应戒指会自动转换，若出现效果失效问题，取下戒指重新装备即可恢复正常。"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("UI优化"),
+                ("_-_ 现在Buff显示进行了优化，特别感谢Shower-沐沐的帮忙\n" +
+                        "_-_ 现在Boss血条同步了破碎3.3.8，并且追加了血条动画，小血条也同步加入\n" +
+                        "_-_ 部分UI界面进行了优化迭代")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                (	    "V0.9.4.8：\n\n" +
+                        "_-_ 修复异果层自爆会摧毁物品的异常\n" +
+                        "_-_ 修复在br1层触发传送类陷阱/空间残片会导致地上跟着一起传送(3*3范围)的物品消失\n" +
+                        "_-_ 多Boss血条移除，因为这导致了很多崩溃\n" +
+                        "_-_ 修复石油大井部分文案异常\n" +
+                        "_-_ 修复星尘藏品会导致主动效果回合全部减半的异常\n" +
+                        "_-_ 修复商人佩剑倒卖也要打折的异常\n" +
+                        "_-_ 修复新0层可使用返回晶柱的异常\n" +
+                        "_-_ 创世神之心现在不会再被祝福\n" +
+                        "_-_ 修复近期的工单，游戏崩溃等相关问题")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        Image s =new CrivusStarFruitsSprite();
+        s.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(s, ("异果调整"),
+                ("_-_ 现在异果二阶段的触手可以被攻击，攻击会提供给英雄少量灵视，在异果战斗结束后会去除灵视效果（无论你有多少回合）\n" +
+                        "_-_ 异果新增 丛林毒刺 Boss专武")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GREENBOOKS), "绿林圣境守则书籍调整",
+                "绿林圣境守则普通效果更改，改成给予0-20树肤。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_HAND_CONTROL), "法师之手调整",
+                "鉴于目前法师之手轻微超模，将法师之手英雄可见视野移除。"));
+
     }
 
     public static void add_V0945_Changes(ArrayList<ChangeInfo> changeInfos ) {
