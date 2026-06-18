@@ -220,6 +220,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceLingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.JunglePoison;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
@@ -230,7 +231,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MerchantSword
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
@@ -599,19 +599,16 @@ public class Generator {
 					MagicTorch.class,
 					JunglePoison.class,
 
-					SDBSword.class,
-
 					LifeTreeSword.class,
 			};
 			WEP_T3.probs = new float[]{1, 5, 4, 4, 4, 3, 5, 3, 6,
 					Badges.isUnlocked(Badges.Badge.KILL_CLSISTER) ? 3 : 0,
-					0, 0};
+					0};
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
 					BattleAxe.class,
 					Flail.class,
-					KingSword.class,
 
 					AssassinsBlade.class,
 					Crossbow.class,
@@ -624,13 +621,19 @@ public class Generator {
 					MoonDao.class,
 					GoldLongGun.class,
 
-					DogDogMusic.CICREMUSIC.class
+					DogDogMusic.CICREMUSIC.class,
+
+					SDBSword.class,
+					KingSword.class
 			};
-			WEP_T4.probs = new float[]{6, 5, 5, 4, 4, 4, 2, 3, 7,
+			WEP_T4.probs = new float[]{6, 5, 4, 4, 4, 2, 3, 7,
 					SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName()) ? 4f : 0,
 					SPDSettings.isItemUnlock(MoonDao.class.getSimpleName()) ? 4f : 0,
 					SPDSettings.isItemUnlock(GoldLongGun.class.getSimpleName()) ? 4f : 0,
 					SPDSettings.isItemUnlock("DogDogLingDang") ? 4f : 0,
+
+					Badges.isUnlocked(Badges.Badge.KILL_SM) ? 3 : 0,
+					Badges.isUnlocked(Badges.Badge.BOSS_CHALLENGE_4) ? 3 : 0,
 			};
 
 			WEP_T5.classes = new Class<?>[]{
@@ -817,7 +820,9 @@ public class Generator {
 			};
 			ARTIFACT.defaultProbs = new float[]{
 					Badges.isUnlocked(Badges.Badge.KILL_DM720) ? 1:0
-					, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0};
+					, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1,
+					Badges.isUnlocked(Badges.Badge.YASD) ? 1:0
+			};
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();
 
 			//Trinkets are unique like artifacts, but unlike them you can only have one at once
