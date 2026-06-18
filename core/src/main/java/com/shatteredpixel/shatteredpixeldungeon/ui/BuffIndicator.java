@@ -177,6 +177,7 @@ public class BuffIndicator extends Component {
 	private boolean large;
 
 	private boolean noScroll = false;
+	private boolean oneLing = false;
 	private ScrollPane scrollPane;
 	private Component scrollContent;
 
@@ -192,12 +193,13 @@ public class BuffIndicator extends Component {
 		}
 	}
 
-	public BuffIndicator( Char ch, boolean large ,boolean noScroll) {
+	public BuffIndicator( Char ch, boolean large ,boolean noScroll,boolean oneLing) {
 		super();
 
 		this.ch = ch;
 		this.large = large;
 		this.noScroll = noScroll;
+		this.oneLing = oneLing;
 		if (ch == Dungeon.hero) {
 			heroInstance = this;
 		}
@@ -284,7 +286,7 @@ public class BuffIndicator extends Component {
 			// 怪物窗口布局：每行6个、左对齐平铺
 			int pos = 0;
 			int row = 0;
-			int maxIconsPerRow = large ? 7 : 6;
+			int maxIconsPerRow = large && oneLing ? 9 : large ? 7 : 6;
 			int horizontalSpacing = 0;
 			int verticalSpacing = large ? 1 : -3;
 			int iconWidth = size + (large ? 1 : 2);
@@ -389,7 +391,7 @@ public class BuffIndicator extends Component {
 
 			scrollContent.setWidth(contentW);
 			scrollContent.setHeight(contentH);
-			scrollPane.setRect(x, y, width, height);
+			scrollPane.setRect(x, y, width, height+4);
 
 			// 滚动开关：超过阈值开启滚动
 			if (totalBuffCount > SCROLL_THRESHOLD) {
