@@ -70,6 +70,9 @@ public class LanFireStats extends Buff implements Hero.Doom {
             } else {
                 result = Messages.get(Nyctophobia.class, "desc6");
             }
+            if(hero.lanterfire <= 25){
+                result  += "\n\n" +Messages.get(Nyctophobia.class, "no_drop");
+            }
         } else {
             result = Messages.get(Nyctophobia.class, "desc");
         }

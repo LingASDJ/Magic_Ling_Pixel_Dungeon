@@ -348,7 +348,7 @@ public class WndInfoMob extends Window {
             add(mobSixInfo.info7);
             add(mobSixInfo.info8);
 
-            buffs = new BuffIndicator( mob,true ,true);
+            buffs = new BuffIndicator( mob,true ,true,false);
             addToFront( buffs );
 
             reload = (mob.alignment == Char.Alignment.NEUTRAL) && (mob instanceof GreenDiamndMimic || mob.properties.contains(Char.Property.HOLLOW));
