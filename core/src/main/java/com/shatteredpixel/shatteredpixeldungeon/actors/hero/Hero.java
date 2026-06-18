@@ -2494,6 +2494,14 @@ public class Hero extends Char {
 			return;
 		}
 
+		ChampionHero.Element doubleBuff = buff(ChampionHero.Element.class);
+		if (doubleBuff != null) {
+			boolean isMagicDamage = type == DamageType.MAGIC || type == DamageType.Element;
+			if (isMagicDamage) {
+				return;
+			}
+		}
+
 		if(hasTalent(Talent.BLOOD_RIVER)){
 			// 血河天赋：+1=10%最大生命，+2=15%最大生命
 			float threshold = 0.05f + 0.05f * pointsInTalent(Talent.BLOOD_RIVER);
