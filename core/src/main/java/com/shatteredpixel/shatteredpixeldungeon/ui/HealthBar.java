@@ -32,7 +32,7 @@ public class HealthBar extends Component {
 	private static final int COLOR_HP		= 0xFF00EE00;
 	private static final int COLOR_SHLD 	= 0xFFBBEEBB;
 	// 残血暗底色
-	private static final int COLOR_LOST	= 0xAAC7FA;
+	private static final int COLOR_LOST	= 0x77AAC7FA;
 
 	private static final int HEIGHT	= 2;
 	// 残血消退动画速度，越大越快

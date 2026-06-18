@@ -197,7 +197,7 @@ public class SDBSword extends MeleeWeapon {
     // ===================== 原有武器被动完全保留 =====================
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if (Dungeon.level.distance(defender.pos, Dungeon.hero.pos) < 1) {
+        if (Dungeon.level.distance(defender.pos, Dungeon.hero.pos) <= 1) {
             int poisonTurns = damage / 3;
             if (poisonTurns > 0) {
                 Buff.affect(defender, Poison.class).set(poisonTurns);
