@@ -145,6 +145,16 @@ public class SKINITEM extends Item {
         }
     }
 
+    public static class SKIN_HC extends SKINITEM {
+        {
+            image = ItemSpriteSheet.SKIN_16;
+        }
+        @Override
+        public int iceCoinValue() {
+            return 1500;
+        }
+    }
+
     public static class SKIN_DC extends SKINITEM {
         {
             image = ItemSpriteSheet.SKIN_14;

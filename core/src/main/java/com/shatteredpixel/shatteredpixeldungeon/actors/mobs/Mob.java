@@ -1213,6 +1213,10 @@ public abstract class Mob extends Char {
 			state = WANDERING;
 		}
 
+		if(hero.heroClass.GetSkin() == 4 && hero.heroClass == HeroClass.HUNTRESS){
+			dmg *= 2f;
+		}
+
 		LockedFloor lock = hero.buff(LockedFloor.class);
 		if (lock != null){
 			if(isOldDay){
