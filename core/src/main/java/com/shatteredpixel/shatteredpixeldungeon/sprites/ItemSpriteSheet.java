@@ -1245,6 +1245,8 @@ public class ItemSpriteSheet {
     public static final int SKIN_14  = + SKIN+13;
     public static final int SKIN_15  = + SKIN+14;
 
+    public static final int SKIN_16  = + SKIN+15;
+
     static {
         for (int i =SKIN; i < SKIN+10; i++)
             assignItemRect(i, 16, 16);

@@ -54,6 +54,7 @@ public class WndZeroShop extends Window {
         SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_MC.class, "avatars_mage_4"));
         SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_RC.class, "avatars_rogue_4"));
         SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_WC.class, "avatars_warrior_4"));
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_HC.class, "avatars_huntress_4"));
         SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_DC.class, "avatars_duelist_4"));
 
         SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_DD.class, "avatars_duelist_5"));
@@ -70,14 +71,13 @@ public class WndZeroShop extends Window {
     }
 
     public WndZeroShop() {
-        // ==========修复1：补全14个元素，数组长度严格对应14格==========
         Class<? extends SKINITEM>[] skinClasses = new Class[]{
                 // 第1行 5格
                 SKINITEM.SKIN_WA.class, SKINITEM.SKIN_MA.class, SKINITEM.SKIN_RA.class, SKINITEM.SKIN_HA.class, SKINITEM.SKIN_DA.class,
                 // 第2行 5格 (累计10)
                 SKINITEM.SKIN_WB.class, SKINITEM.SKIN_MB.class, SKINITEM.SKIN_RB.class, SKINITEM.SKIN_HB.class, SKINITEM.SKIN_DB.class,
                 // 第3行 4格 (11,12,13,14) 补齐14个元素
-                null,SKINITEM.SKIN_MC.class, SKINITEM.SKIN_RC.class, null, SKINITEM.SKIN_DC.class,
+                null,SKINITEM.SKIN_MC.class, SKINITEM.SKIN_RC.class, SKINITEM.SKIN_HC.class, SKINITEM.SKIN_DC.class,
                 null,null,null,null,SKINITEM.SKIN_DD.class
         };
         // 强制长度校验，防止数组不匹配
