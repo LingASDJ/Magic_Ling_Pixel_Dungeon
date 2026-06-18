@@ -167,7 +167,9 @@ public class Buff extends Actor {
 
 		StarDust starDust = Dungeon.hero.belongings.getItem(StarDust.class);
 		if(starDust != null){
-			duration /= 2;
+			if(buff instanceof Levitation){
+				duration /= 2;
+			}
 		}
 
 		if(buff instanceof Chill && target instanceof Hero){
