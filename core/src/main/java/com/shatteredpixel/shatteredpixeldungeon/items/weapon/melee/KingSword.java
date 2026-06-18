@@ -135,7 +135,7 @@ public class KingSword extends MeleeWeapon {
 					if (!enemy.isAlive()) onAbilityKill(hero, enemy);
 
 					// 2. 召唤 1 个普通矮人
-					summonAlly(hero, Monk.class,true);
+					summonAlly(hero, Random.Float()>0.5f ? Monk.class : Warlock.class,true);
 
 					// 3. 25% + 0.05% 概率额外召唤随机亡灵
 					if (Random.Float() < Math.min(1f,0.25f+(level()*0.05f))) {
