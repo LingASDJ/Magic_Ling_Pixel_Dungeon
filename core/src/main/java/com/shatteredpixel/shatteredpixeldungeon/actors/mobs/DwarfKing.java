@@ -576,6 +576,13 @@ public class DwarfKing extends Boss {
 		Badges.validateBossSlain();
 		if (Statistics.qualifiedForBossChallengeBadge){
 			Badges.validateBossChallengeCompleted();
+			if(Badges.isUnlocked(Badges.Badge.BOSS_CHALLENGE_4)){
+				if(Random.Float() < 0.18f){
+					Dungeon.level.drop(new KingSword(), pos).sprite.drop();
+				}
+			} else {
+				Dungeon.level.drop(new KingSword(), pos).sprite.drop();
+			}
 		}
 		Statistics.bossScores[3] += 4000;
 
@@ -587,13 +594,7 @@ public class DwarfKing extends Boss {
 		}
 
 
-		if(Badges.isUnlocked(Badges.Badge.BOSS_CHALLENGE_4)){
-			if(Random.Float() < 0.18f){
-				Dungeon.level.drop(new KingSword(), pos).sprite.drop();
-			}
-		} else {
-			Dungeon.level.drop(new KingSword(), pos).sprite.drop();
-		}
+
 
 		Bestiary.skipCountingEncounters = false;
 
