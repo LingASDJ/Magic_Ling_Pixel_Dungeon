@@ -36,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoMob;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.Visual;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Callback;
@@ -47,6 +46,10 @@ public class BossHealthBar extends Component {
 
 	private Image shieldHP;
 	private Image hp;
+	// 动画残血条
+	private Image hpLost;
+	private Image shieldLost;
+
 	private BitmapText hpText;
 
 	private Button bossInfo;
@@ -65,10 +68,17 @@ public class BossHealthBar extends Component {
 	private boolean large;
 	private float time;
 
+	// 动画速度，数值越大消退越快
+	private static final float ANIM_SPEED = 1.5f;
+	private float targetHealthScale;
+	private float targetShieldScale;
+
 	public BossHealthBar() {
 		super();
 		visible = active = (boss != null);
 		instance = this;
+		targetHealthScale = 1f;
+		targetShieldScale = 1f;
 	}
 
 	@Override
@@ -82,22 +92,36 @@ public class BossHealthBar extends Component {
 	protected void createChildren() {
 		this.large = SPDSettings.interfaceSize() != 0;
 
+		// 1. 底层背景框（最先添加，层级最低）
 		bar = large ? new Image(asset, 0, 16, 128, 30) : new Image(asset, 0, 0, 64, 16);
 		add(bar);
 
 		width = bar.width;
 		height = bar.height;
 
+		// 2. 残血条（底层血条，在实血下方）
+		hpLost = large ? new Image(asset, 0, 46, 96, 9) : new Image(asset, 71, 0, 47, 4);
+		hpLost.tint(0x000000, 0.5f);
+		add(hpLost);
+
+		shieldLost = large ? new Image(asset, 0, 55, 96, 9) : new Image(asset, 71, 5, 47, 4);
+		shieldLost.tint(0x000000, 0.5f);
+		add(shieldLost);
+
+		// 3. 护盾条
 		shieldHP = large ? new Image(asset, 0, 55, 96, 9) : new Image(asset, 71, 5, 47, 4);
 		add(shieldHP);
 
+		// 4. 血量条
 		hp =  large ? new Image(asset, 0, 46, 96, 9) : new Image(asset, 71, 0, 47, 4);
 		add(hp);
 
+		// 5. 血量文字
 		hpText = new BitmapText(PixelScene.pixelFont);
 		hpText.alpha(0.6f);
 		add(hpText);
 
+		// 全屏点击按钮（透明遮罩）
 		bossInfo = new Button(){
 			@Override
 			protected void onClick() {
@@ -123,6 +147,7 @@ public class BossHealthBar extends Component {
 			add(buffs);
 		}
 
+		// 6. 骷髅图标
 		if (boss != null && large) {
 			skull = boss.sprite();
 		} else {
@@ -130,12 +155,31 @@ public class BossHealthBar extends Component {
 		}
 		add(skull);
 
+		// 7. Buff指示器（顶层UI，血条永远挡不住buff）
+		if (boss != null) {
+			buffs = new BuffIndicator(boss, large);
+			BuffIndicator.setBossInstance(buffs);
+			add(buffs);
+		}
+
+		// 8. 流血粒子（最顶层特效）
 		blood = new Emitter();
 		blood.pos(skull);
 		blood.pour(BloodParticle.FACTORY, 0.3f);
 		blood.autoKill = false;
 		blood.on = false;
 		add( blood );
+
+		// 创建完统一置顶buff，保证buff在所有血条上方
+		forceBuffTopLayer();
+	}
+
+	// 强制BuffIndicator渲染在最上层，解决遮挡
+	private void forceBuffTopLayer(){
+		if (buffs != null){
+			addToFront(buffs);
+		}
+		addToFront(blood);
 	}
 
 	@Override
@@ -143,13 +187,14 @@ public class BossHealthBar extends Component {
 		bar.x = x;
 		bar.y = y;
 
-		hp.x = shieldHP.x = bar.x+(large ? 30 : 15);
-		hp.y = shieldHP.y = bar.y+(large ? 2 : 3);
+		// 所有血条X/Y统一对齐
+		hp.x = shieldHP.x = hpLost.x = shieldLost.x = bar.x+(large ? 30 : 15);
+		hp.y = shieldHP.y = hpLost.y = shieldLost.y = bar.y+(large ? 2 : 3);
 
 		if (!large) hpText.scale.set(PixelScene.align(0.5f));
 		hpText.x = hp.x + (large ? (96-hpText.width())/2f : 1);
 		hpText.y = hp.y + (hp.height - (hpText.baseLine()+hpText.scale.y))/2f;
-		hpText.y -= 0.001f; //prefer to be slightly higher
+		hpText.y -= 0.001f;
 		PixelScene.align(hpText);
 
 		bossInfo.setRect(x, y, bar.width, bar.height);
@@ -167,6 +212,9 @@ public class BossHealthBar extends Component {
 		int paneSize = large ? 30 : 16;
 		skull.x = bar.x + (paneSize - skull.width())/2f;
 		skull.y = bar.y + (paneSize - skull.height())/2f;
+
+		// layout完成再次置顶buff
+		forceBuffTopLayer();
 	}
 
 	@Override
@@ -176,73 +224,97 @@ public class BossHealthBar extends Component {
 			if (!boss.isAlive() || !Dungeon.level.mobs.contains(boss)){
 				boss = null;
 				visible = active = false;
-				if (buffs != null) {
-					BuffIndicator.setBossInstance(null);
-					remove(buffs);
-					buffs.destroy();
-					buffs = null;
+				targetHealthScale = 0;
+				targetShieldScale = 0;
+				if (boss != null) {
+					buffs = new BuffIndicator(boss, large);
+					BuffIndicator.setBossInstance(buffs);
+					add(buffs);
 				}
-			} else {
-
-				int health = boss.HP;
-				int shield = boss.shielding();
-				int max = boss.HT;
-
-				float healthPercent = health/(float)max;
-				float shieldPercent = shield/(float)max;
-
-				if (healthPercent + shieldPercent > 1f){
-					float excess = healthPercent + shieldPercent;
-					healthPercent /= excess;
-					shieldPercent /= excess;
-				}
-
-				if (buffs != null) {
-					if (large) {
-						buffs.maxBuffs = 6;
-						buffs.setRect(hp.x+1, hp.y + 12, 96, 34);
-					} else {
-						buffs.maxBuffs = 8;
-						buffs.setRect(hp.x, hp.y + 5, 47, 16);
-					}
-				}
-
-				hp.scale.x = healthPercent;
-				shieldHP.scale.x = healthPercent + shieldPercent;
-
-				if (bleeding != blood.on){
-					if (bleeding)   skull.tint( 0xcc0000, large ? 0.3f : 0.6f );
-					else            skull.resetColor();
-					bringToFront(blood);
-					blood.pos(skull);
-					blood.on = bleeding;
-				}
-
-				Visual visual = new Visual(0,0,0,0);
-				visual.am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed ));
-				time += Game.elapsed / 3.5f;;
-				float r = 0.93f+0.57f*Math.max(0f, (float)Math.sin( time));
-				float g = 0.53f+0.57f*Math.max(0f, (float)Math.sin( time - 10/Math.PI/5 ));
-				float b = 0.03f+0.57f*Math.max(0f, (float)Math.sin( time + 4/Math.PI/2 ));
-
-				if (hp.scale.x > 0.75f) {
-					hpText.hardlight( TITLE_COLOR );
-				} else if (hp.scale.x > 0.35f){
-					hpText.hardlight( CYELLOW );
-				} else {
-					hpText.hardlight(r, g, b);
-					hpText.text(health + "+" + shield + "/" + max);
-				}
-
-				if (shield <= 0){
-					hpText.text(health + "/" + max);
-				} else {
-					hpText.text(health + "+" + shield +  "/" + max);
-				}
-				hpText.measure();
-				hpText.x = hp.x + (large ? (96-hpText.width())/2f : 1);
-
+				return;
 			}
+
+			int health = boss.HP;
+			int shield = boss.shielding();
+			int max = boss.HT;
+
+			float healthPercent = health/(float)max;
+			float shieldPercent = shield/(float)max;
+
+			if (healthPercent + shieldPercent > 1f){
+				float excess = healthPercent + shieldPercent;
+				healthPercent /= excess;
+				shieldPercent /= excess;
+			}
+
+			// 目标缩放值更新
+			targetHealthScale = healthPercent;
+			targetShieldScale = healthPercent + shieldPercent;
+
+			// 实血条立即更新
+			hp.scale.x = targetHealthScale;
+			shieldHP.scale.x = targetShieldScale;
+
+			if (buffs != null) {
+				if (large) {
+					buffs.maxBuffs = 6;
+					buffs.setRect(hp.x+1, hp.y + 12, 96, 34);
+				} else {
+					buffs.maxBuffs = 8;
+					buffs.setRect(hp.x, hp.y + 5, 47, 16);
+				}
+			}
+
+			// 残血条平滑追赶（仅衰减动画，回血无动画）
+			if (hpLost.scale.x > targetHealthScale) {
+				hpLost.scale.x -= (hpLost.scale.x - targetHealthScale) * ANIM_SPEED * Game.elapsed;
+			} else {
+				hpLost.scale.x = targetHealthScale;
+			}
+
+			if (shieldLost.scale.x > targetShieldScale) {
+				shieldLost.scale.x -= (shieldLost.scale.x - targetShieldScale) * ANIM_SPEED * Game.elapsed;
+			} else {
+				shieldLost.scale.x = targetShieldScale;
+			}
+
+			// 流血特效逻辑
+			if (bleeding != blood.on){
+				if (bleeding)   skull.tint( 0xcc0000, large ? 0.3f : 0.6f );
+				else            skull.resetColor();
+				blood.pos(skull);
+				blood.on = bleeding;
+				forceBuffTopLayer();
+			}
+
+			// 血量文字变色逻辑
+			time += Game.elapsed / 3.5f;
+			float r = 0.93f+0.57f*Math.max(0f, (float)Math.sin( time));
+			float g = 0.53f+0.57f*Math.max(0f, (float)Math.sin( time - 10/Math.PI/5 ));
+			float b = 0.03f+0.57f*Math.max(0f, (float)Math.sin( time + 4/Math.PI/2 ));
+
+			if (hp.scale.x > 0.75f) {
+				hpText.hardlight( TITLE_COLOR );
+			} else if (hp.scale.x > 0.35f){
+				hpText.hardlight( CYELLOW );
+			} else {
+				hpText.hardlight(r, g, b);
+			}
+
+			// 更新文字内容
+			if (shield <= 0){
+				hpText.text(health + "/" + max);
+			} else {
+				hpText.text(health + "+" + shield +  "/" + max);
+			}
+			hpText.measure();
+			hpText.x = hp.x + (large ? (96-hpText.width())/2f : 1);
+
+			// 不在update重复setRect，避免buff位置跳动
+		} else {
+			// 无Boss时重置残条动画
+			hpLost.scale.x = 0;
+			shieldLost.scale.x = 0;
 		}
 	}
 
@@ -257,6 +329,12 @@ public class BossHealthBar extends Component {
 				@Override
 				public void call() {
 					instance.visible = instance.active = true;
+					// 切换Boss重置残条动画
+					instance.targetHealthScale = 1f;
+					instance.targetShieldScale = 1f;
+					instance.hpLost.scale.x = 1f;
+					instance.shieldLost.scale.x = 1f;
+
 					if (boss != null){
 						if (instance.large){
 							if (instance.skull != null){
@@ -266,6 +344,7 @@ public class BossHealthBar extends Component {
 							instance.skull = boss.sprite();
 							instance.add(instance.skull);
 						}
+						// 重建Buff指示器
 						if (instance.buffs != null){
 							instance.remove(instance.buffs);
 							instance.buffs.destroy();
@@ -273,7 +352,10 @@ public class BossHealthBar extends Component {
 						instance.buffs = new BuffIndicator(boss, instance.large);
 						BuffIndicator.setBossInstance(instance.buffs);
 						instance.add(instance.buffs);
+
+						// 重新布局并置顶buff
 						instance.layout();
+						instance.forceBuffTopLayer();
 					}
 				}
 			});
