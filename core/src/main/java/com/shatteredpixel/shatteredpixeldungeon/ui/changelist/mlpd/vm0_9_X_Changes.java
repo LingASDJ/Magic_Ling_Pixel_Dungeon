@@ -150,14 +150,14 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new ArchettoSprite(), "弦事件调整",
                 "现在给予弦珍贵的东西，将可以获得 _灵魂卷轴_。"));
 
-        changes.addButton (new ChangeButton (HeroSprite.avatar (HeroClass.DUELIST, 13), "新皮肤：女仆红狐",
-                "售价1500钴币\n\n作者：Priestess & 索托斯 & Daniel Clana\n\n炉边煮好了咖啡，主人，要不要来一杯歇歇？"));
+        changes.addButton (new ChangeButton (new ItemSprite(ItemSpriteSheet.SKIN_14), "新皮肤：女仆红狐",
+                "售价1500钴币\n\n作者：Priestess & 索托斯 & Daniel Calan\n\n炉边煮好了咖啡，主人，要不要来一杯歇歇？"));
 
         changes.addButton (new ChangeButton (HeroSprite.avatar (HeroClass.HUNTRESS, 13), "新皮肤：虔书圣徒",
                 "售价1500钴币\n\n作者：海鸥\n\n黑袍藏弩，古籍诵咒，以祷言与劲矢一同肃清地牢滋生的邪秽。"));
 
         changes.addButton (new ChangeButton (HeroSprite.avatar (HeroClass.DUELIST, 14), "新皮肤：埃及艳后",
-                "售价1500钴币\n\n作者：过街的白菜——人人喊吃 & 索托斯 & Daniel Clana\n\n大漠热风裹挟着金饰微光，绿洲的女王在此等候你的到来。"));
+                "售价1500钴币\n\n作者：过街的白菜——人人喊吃 & 索托斯 & Daniel Calan\n\n大漠热风裹挟着金饰微光，绿洲的女王在此等候你的到来。"));
 
         changes.addButton (new ChangeButton (HeroSprite.avatar (HeroClass.DUELIST, 7), "武技实装・第二轮更新",
                 "以下新增武技武器：\n" +
@@ -219,7 +219,6 @@ public class vm0_9_X_Changes {
                         "诅咒效果为无法使用。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FLOWERY), "新书籍：元素编年史",
-                "原有韧性、元素、精准、闪避四枚戒指实战强度偏弱，本次更新将其整合重构，替换为两枚全新戒指：\n\n" +
                         "大概率提供魔能透视，小概率提供元素祝福。\n" +
                         "在那些回忆商店有概率出现，出现时，绿林圣境守则书籍将不再该商店生成"));
 
