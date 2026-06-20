@@ -759,7 +759,7 @@ public class Generator {
 			Lunar lunar = date.getLunar();
 
 			boolean isZYJ = lunar.getMonth() == 7 && (lunar.getDay() >= 15 && lunar.getDay() <= 15 + 7);
-			int isDWJ = chinaHoliday == RegularLevel.ChinaHoliday.DWJ ? 3 : 0;
+			float isDWJ = chinaHoliday == RegularLevel.ChinaHoliday.DWJ ? 0.85f : 0;
 
 			int ZYJ = isZYJ ? 1 : 0;
 

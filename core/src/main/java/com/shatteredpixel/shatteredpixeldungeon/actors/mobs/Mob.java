@@ -1213,10 +1213,6 @@ public abstract class Mob extends Char {
 			state = WANDERING;
 		}
 
-		if(hero.heroClass.GetSkin() == 4 && hero.heroClass == HeroClass.HUNTRESS){
-			dmg *= 2f;
-		}
-
 		LockedFloor lock = hero.buff(LockedFloor.class);
 		if (lock != null){
 			if(isOldDay){
@@ -1353,7 +1349,14 @@ public abstract class Mob extends Char {
 	}
 	
 	public void rollToDropLoot(){
-		if (Dungeon.hero.lvl > maxLvl + 2 || hero.lanterfire <= 25) return;
+
+		if (lanterfireactive && hero.lanterfire <= 25) {
+			return;
+		}
+
+		if (Dungeon.hero.lvl > maxLvl + 2) {
+			return;
+		}
 
 		MasterThievesArmband.StolenTracker stolen = buff(MasterThievesArmband.StolenTracker.class);
 		if (stolen == null || !stolen.itemWasStolen()) {

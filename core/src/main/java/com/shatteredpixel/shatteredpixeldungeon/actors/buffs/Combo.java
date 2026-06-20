@@ -343,7 +343,12 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		}
 		@Override
 		public void detach() {
-			if (isFinish) target.buff(Combo.class).detach();
+			if (isFinish) {
+				Combo comboBuff = target.buff(Combo.class);
+				if (comboBuff != null) {
+					comboBuff.detach();
+				}
+			}
 			super.detach();
 		}
 	}
