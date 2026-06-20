@@ -420,9 +420,18 @@ public enum Bestiary {
 
 		//古墓测试
 		TUMULUS.addEntities(
-				DeviceCompat.isDebug()
+				!DeviceCompat.isDebug()
 						? new Class<?>[]{GraveRat.class, Worm.class, Wisp.class, NecroScout.class}
-						: new Class<?>[]{}
+						: new Class<?>[]{Albino.class,
+						Salamander.class,
+						SRPDHBLR.class, NewBlackHost.class,
+						Bandit.class, SpectralNecromancer.class,
+						ArmoredBrute.class, DM201.class, MolotovHuntsman.class,
+						Elemental.ChaosElemental.class, Senior.class,
+						Acidic.class,
+
+						TormentedSpirit.class, PhantomPiranha.class,
+						CrystalMimic.class, ArmoredStatue.class}
 		);
 		
 

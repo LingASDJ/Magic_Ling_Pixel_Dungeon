@@ -20,7 +20,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
@@ -140,7 +139,7 @@ public class MagneticCrown extends Artifact {
             spend(TICK);
             return true;
         }
-
+//
         public void onTrapTrigger(int pos) {
             Hero hero = Dungeon.hero;
             if (!hero.fieldOfView[pos]) return;
@@ -150,16 +149,10 @@ public class MagneticCrown extends Artifact {
                 if(artifact instanceof MagneticCrown){
                     if (artifact.isEquipped(hero) && !artifact.cursed) {
                         ((MagneticCrown) artifact).onTrapTriggered();
-                        GLog.p("DUDS");
                     }
                 }
             }
 
-        }
-
-        @Override
-        public int icon() {
-            return BuffIndicator.COMBO;
         }
     }
 
@@ -279,21 +272,21 @@ public class MagneticCrown extends Artifact {
         public String prompt() {
             range = (int)(3 + level * 0.5f);
             targetChar = Dungeon.hero;
-            // 绘制英雄自身范围圈
             showRange(Dungeon.hero.pos, range, Window.ORAGNECOLOR);
-            // 遍历单位，有敌人就额外绘制红色敌人范围圈
-            for (Char ch : Actor.chars()){
-                if (ch.fieldOfView[ch.pos]
+
+            java.util.Set<Char> charSet = Actor.chars();
+            for (Char ch : charSet) {
+                if (ch == null) continue;
+                if (Dungeon.hero.fieldOfView[ch.pos]
                         && ch.alignment == Char.Alignment.ENEMY
                         && !ch.properties().contains(Char.Property.IMMOVABLE)
-                        && Dungeon.level.distance(Dungeon.hero.pos, ch.pos) <= range){
+                        && Dungeon.level.distance(Dungeon.hero.pos, ch.pos) <= range) {
                     showRange(ch.pos, range, 0xff0000);
                 }
             }
             return Messages.get(MagneticCrown.this, "prompt");
         }
 
-        // 重构：单独坐标+颜色绘制，不再依赖Char判断颜色
         private void showRange(int center, int range, int color) {
             for (int i = 0; i < Dungeon.level.length(); i++) {
                 if (Dungeon.level.distance(center, i) == range) {

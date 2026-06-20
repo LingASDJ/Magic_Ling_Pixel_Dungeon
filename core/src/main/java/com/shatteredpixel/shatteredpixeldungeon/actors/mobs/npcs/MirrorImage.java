@@ -180,18 +180,22 @@ public class MirrorImage extends NPC {
 			return damage;
 		}
 	}
-	
+
 	@Override
 	public CharSprite sprite() {
 		CharSprite s = super.sprite();
-		
-		hero = (Hero)Actor.findById(heroID);
-		if (hero != null) {
+		if (!(s instanceof MirrorSprite)) {
+			return null;
+		}
+		Actor targetActor = Actor.findById(heroID);
+		if (targetActor instanceof Hero) {
+			hero = (Hero) targetActor;
 			armTier = hero.tier();
 		} else {
+			hero = null;
 			armTier = 1;
 		}
-		((MirrorSprite)s).updateArmor( armTier );
+		((MirrorSprite)s).updateArmor(armTier);
 		return s;
 	}
 	

@@ -233,18 +233,22 @@ public class PrismaticImage extends NPC {
 		
 		return super.attackProc( enemy, damage );
 	}
-	
+
 	@Override
 	public CharSprite sprite() {
 		CharSprite s = super.sprite();
-		
-		hero = (Hero)Actor.findById(heroID);
-		if (hero != null) {
+		if (!(s instanceof PrismaticSprite)) {
+			return null;
+		}
+		Actor targetActor = Actor.findById(heroID);
+		if (targetActor instanceof Hero) {
+			hero = (Hero) targetActor;
 			armTier = hero.tier();
 		} else {
+			hero = null;
 			armTier = 1;
 		}
-		((PrismaticSprite)s).updateArmor( armTier );
+		((PrismaticSprite)s).updateArmor(armTier);
 		return s;
 	}
 	

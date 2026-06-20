@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Clipboard;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -36,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.StartScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -227,18 +226,59 @@ public class WndGameInProgress extends Window {
 		}
 		
 		pos += GAP;
-		
+
 		RedButton cont = new RedButton(Messages.get(this, "continue")){
 			@Override
 			protected void onClick() {
 				super.onClick();
-				
-				GamesInProgress.curSlot = slot;
-				
-				hero = null;
-				ActionIndicator.action = null;
-				InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
-				ShatteredPixelDungeon.switchScene(InterlevelScene.class);
+				final GamesInProgress.Info currInfo = info;
+				boolean oldSave = false;
+				final long NEW_BASE_VER = 2026062000L;
+				try {
+					Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(slot));
+					long initVer = bundle.contains("init_ver") ? bundle.getLong("init_ver") : 0;
+					oldSave = initVer < NEW_BASE_VER;
+				} catch (IOException e) {
+					oldSave = true;
+				}
+
+				if (oldSave) {
+					ShatteredPixelDungeon.scene().add(new WndOptions(
+							Icons.get(Icons.WARNING),
+							Messages.get(WndGameInProgress.class, "old_save_title"),
+							Messages.get(WndGameInProgress.class, "old_save_desc"),
+							Messages.get(WndGameInProgress.class, "convert_save"),
+							Messages.get(WndGameInProgress.class, "cancel")
+					) {
+						@Override
+						protected void onSelect(int index) {
+							if (index == 0) {
+								int newSlot = Dungeon.cloneSave(slot);
+								if (newSlot >= 0) {
+									GamesInProgress.curSlot = newSlot;
+									GamesInProgress.Info newInfo = GamesInProgress.check(newSlot);
+									if (newInfo == null) {
+										ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(WndGameInProgress.class, "clone_fail_broken")));
+										return;
+									}
+									GamesInProgress.selectedClass = newInfo.heroClass;
+									ActionIndicator.action = null;
+									ShatteredPixelDungeon.switchScene(TitleScene.class);
+								} else if (newSlot == -1) {
+									ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(WndGameInProgress.class, "no_empty_slot")));
+								} else {
+									ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(WndGameInProgress.class, "clone_fail_io")));
+								}
+							}
+						}
+					});
+				} else {
+					GamesInProgress.curSlot = slot;
+					GamesInProgress.selectedClass = currInfo.heroClass;
+					ActionIndicator.action = null;
+					InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
+					ShatteredPixelDungeon.switchScene(InterlevelScene.class);
+				}
 			}
 		};
 		

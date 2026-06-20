@@ -123,7 +123,7 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new Image(Icons.get(Icons.NEWS)), "后续开发预告",
                 "失落古墓外传正在稳步推进开发，更多场景、怪物、专属武器与剧情内容将陆续放出，敬请期待后续版本情报！"));
 
-        changes = new ChangeInfo("v0.9.4.8", true, "");
+        changes = new ChangeInfo("v0.9.4.8-9", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
         changes.addButton(new ChangeButton(new Image("Ling.png", 0, 0, 16, 16), "开发者的话",
@@ -226,6 +226,9 @@ public class vm0_9_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RANDOM_CHEST), "存档克隆系统",
+                "鉴于0.9.4.8旧存档崩溃过多，特此开发该功能。（实验性）"));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LONGSWORD), "伤害系统v0.3",
                 "现在真实伤害将会破盾，请万般小心！"));
 
@@ -244,6 +247,12 @@ public class vm0_9_X_Changes {
                         "_-_ 部分UI界面进行了优化迭代")));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                ("V0.9.4.9：\n\n" +
+                        "_-_ 修复旧存档兼容性问题导致的各种异常\n" +
+                        "_-_ 修复引力王冠的一些崩溃问题\n" +
+                        "_-_ 修复怪物不掉落东西的异常问题\n" +
+                        "_-_ 修复女猎三皮伤害异常的问题\n" +
+                        "_-_ 粽子的生成概率下调至0.85f，比肉馅饼稍微低了一些，而不是之前的3权重"),
                 (	    "V0.9.4.8：\n\n" +
                         "_-_ 修复异果层自爆会摧毁物品的异常\n" +
                         "_-_ 修复在br1层触发传送类陷阱/空间残片会导致地上跟着一起传送(3*3范围)的物品消失\n" +

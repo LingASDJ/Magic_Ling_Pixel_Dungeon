@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.android.AndroidGameRecord
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBranchLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createStandardLevel;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
@@ -1017,12 +1018,9 @@ public class Dungeon {
 
 	//default to recomputing based on max hero vision, in case vision just shrank/grew
 	public static void observe(){
-		int dist = Math.max(Dungeon.hero.viewDistance, 8 + Statistics.BzmdrCJHeroViewDistance);
+
+		int dist = Math.max(Dungeon.hero.viewDistance, Dungeon.hero.viewDistance + Statistics.BzmdrCJHeroViewDistance);
 		dist *= (int) (1f + 0.25f*Dungeon.hero.pointsInTalent(Talent.FARSIGHT));
-		//TODO 暂时屏蔽笔记效果
-//		if(Dungeon.hero.belongings.getItem(NoteOfBzmdr.class)!=null){
-//			dist *= (int) 0.75;
-//		}
 
 		if (Dungeon.hero.buff(MagicalSight.class) != null){
 			dist = Math.max( dist, MagicalSight.DISTANCE );
@@ -1529,5 +1527,127 @@ public class Dungeon {
 		return dlcs.isConducted(mask);
 	}
 
+	public static int cloneSave(int srcSlot) {
+		int newSlot = GamesInProgress.firstEmpty();
+		if (newSlot == -1) return -1;
 
+		try {
+			// 1. 只读源存档，不改动全局
+			String srcGamePath = GamesInProgress.gameFile(srcSlot);
+			Bundle oldBundle = FileUtils.bundleFromFile(srcGamePath);
+			if (oldBundle == null || oldBundle.isNull()) return -2;
+
+			// 2. 手动构造纯净新版空白Bundle（不碰任何Dungeon静态全局）
+			Bundle newCleanBundle = new Bundle();
+			final long NEW_BASE_VER = 2026062000L;
+			newCleanBundle.put("init_ver", NEW_BASE_VER);
+			newCleanBundle.put(Dungeon.VERSION, Game.versionCode);
+			newCleanBundle.put(DAILY, false);
+			newCleanBundle.put(DAILY_REPLAY, false);
+			newCleanBundle.put(CHALLENGES, 0);
+			newCleanBundle.put(MOBS_TO_CHAMPION, -1);
+			newCleanBundle.put(MOBS_TO_STATELING, -1);
+			newCleanBundle.put(DEPTH, 0);
+			newCleanBundle.put(BRANCH, 0);
+			newCleanBundle.put(GOLD, 0);
+			newCleanBundle.put(RUSHGOLD, 0);
+			newCleanBundle.put(ENERGY, 0);
+			newCleanBundle.put(NCITY, 18);
+			newCleanBundle.put(NCITYPROGESS, false);
+			newCleanBundle.put(NCITYPROGESS2, false);
+			newCleanBundle.put("generated_levels", new int[0]);
+			newCleanBundle.put("chapters", new int[0]);
+			newCleanBundle.put("quickslot", new Bundle());
+			newCleanBundle.put(LIMDROPS, new Bundle());
+			newCleanBundle.put(QUESTS, new Bundle());
+			newCleanBundle.put(BADGES, new Bundle());
+			// 替换原来这一段
+			Bundle zBadgeBundle = new Bundle();
+// 必须存 BADGES 键，空数组
+			zBadgeBundle.put("badges", new String[0]);
+			newCleanBundle.put("ZBADGES", zBadgeBundle);
+			newCleanBundle.put(DLCS, new Bundle());
+			newCleanBundle.put(DIFFICULTY, new Bundle());
+
+			// 3. 安全迁移旧存档基础数值（无风险）
+			migrateSafeSimpleData(oldBundle, newCleanBundle);
+
+			// 4. 单独处理Hero：重建实例，避免旧类引用null
+			migrateHeroData(oldBundle, newCleanBundle);
+
+			// 5. 复制所有depth楼层文件
+			copyAllDepthBinary(srcSlot, newSlot);
+
+			// 6. 同步更新新存档generated_levels，匹配复制的楼层文件
+			syncGeneratedLevels(oldBundle, newCleanBundle);
+
+			// 7. 写入新存档game.dat
+			String dstGamePath = GamesInProgress.gameFile(newSlot);
+			FileUtils.bundleToFile(dstGamePath, newCleanBundle);
+
+			GamesInProgress.setUnknown(newSlot);
+			Thread.sleep(100);
+			return newSlot;
+		} catch (Exception e) {
+			ShatteredPixelDungeon.reportException(e);
+			return -2;
+		}
+	}
+
+	// 只迁移int/long/bool/string基础数值，无Bundlable无风险
+	private static void migrateSafeSimpleData(Bundle old, Bundle newB) {
+		if (old.contains(SEED)) newB.put(SEED, old.getLong(SEED));
+		if (old.contains(CUSTOM_SEED)) newB.put(CUSTOM_SEED, old.getString(CUSTOM_SEED));
+		if (old.contains(CHALLENGES)) newB.put(CHALLENGES, old.getInt(CHALLENGES));
+		if (old.contains(DEPTH)) newB.put(DEPTH, old.getInt(DEPTH));
+		if (old.contains(BRANCH)) newB.put(BRANCH, old.getInt(BRANCH));
+		if (old.contains(GOLD)) newB.put(GOLD, old.getInt(GOLD));
+		if (old.contains(RUSHGOLD)) newB.put(RUSHGOLD, old.getInt(RUSHGOLD));
+		if (old.contains(ENERGY)) newB.put(ENERGY, old.getInt(ENERGY));
+		if (old.contains(MOBS_TO_CHAMPION)) newB.put(MOBS_TO_CHAMPION, old.getInt(MOBS_TO_CHAMPION));
+		if (old.contains(MOBS_TO_STATELING)) newB.put(MOBS_TO_STATELING, old.getInt(MOBS_TO_STATELING));
+		if (old.contains(NCITY)) newB.put(NCITY, old.getInt(NCITY));
+		if (old.contains(NCITYPROGESS)) newB.put(NCITYPROGESS, old.getBoolean(NCITYPROGESS));
+		if (old.contains(NCITYPROGESS2)) newB.put(NCITYPROGESS2, old.getBoolean(NCITYPROGESS2));
+		if (old.contains(LIMDROPS)) newB.put(LIMDROPS, old.getBundle(LIMDROPS));
+		if (old.contains(QUESTS)) newB.put(QUESTS, old.getBundle(QUESTS));
+	}
+
+	// Hero单独迁移，保证实例正常，不会出现data=null
+	private static void migrateHeroData(Bundle old, Bundle newB) {
+		if (!old.contains(HERO)) return;
+		Bundle oldHero = old.getBundle(HERO);
+		newB.put(HERO, oldHero);
+	}
+
+	// 同步楼层记录，解决level.mobs空指针
+	private static void syncGeneratedLevels(Bundle old, Bundle newB) {
+		if (old.contains(GENERATED_LEVELS)) {
+			int[] levels = old.getIntArray(GENERATED_LEVELS);
+			newB.put(GENERATED_LEVELS, levels);
+		}
+	}
+
+	// 二进制复制depth楼层，不解析Bundle
+	private static void copyAllDepthBinary(int srcSlot, int dstSlot) throws IOException {
+		String srcFolder = GamesInProgress.gameFolder(srcSlot);
+		String dstFolder = GamesInProgress.gameFolder(dstSlot);
+		ArrayList<String> fileList = FileUtils.filesInDir(srcFolder);
+		for (String fname : fileList) {
+			if (fname.startsWith("depth")) {
+				String srcDepth = srcFolder + "/" + fname;
+				String dstDepth = dstFolder + "/" + fname;
+				copyBinaryFile(srcDepth, dstDepth);
+			}
+		}
+	}
+
+	// 文件二进制复制（无解析）
+	private static void copyBinaryFile(String srcPath, String dstPath) throws IOException {
+		FileHandle src = FileUtils.getFileHandle(srcPath);
+		FileHandle dst = FileUtils.getFileHandle(dstPath);
+		if (!src.exists()) return;
+		byte[] raw = src.readBytes();
+		dst.writeBytes(raw, false);
+	}
 }
