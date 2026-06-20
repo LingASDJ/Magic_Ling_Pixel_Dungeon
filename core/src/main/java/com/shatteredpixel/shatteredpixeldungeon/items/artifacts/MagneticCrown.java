@@ -139,7 +139,7 @@ public class MagneticCrown extends Artifact {
             spend(TICK);
             return true;
         }
-
+//
         public void onTrapTrigger(int pos) {
             Hero hero = Dungeon.hero;
             if (!hero.fieldOfView[pos]) return;
