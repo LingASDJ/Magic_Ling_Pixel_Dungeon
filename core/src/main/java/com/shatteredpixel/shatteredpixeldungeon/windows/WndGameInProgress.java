@@ -34,7 +34,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.StartScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -232,10 +231,11 @@ public class WndGameInProgress extends Window {
 			protected void onClick() {
 				super.onClick();
 				final GamesInProgress.Info currInfo = info;
-				boolean oldSave = false;
-				final long NEW_BASE_VER = 2026062000L;
+				final int targetSlot = slot;
+				final long NEW_BASE_VER = 2026061900L;
+				boolean oldSave;
 				try {
-					Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(slot));
+					Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(targetSlot));
 					long initVer = bundle.contains("init_ver") ? bundle.getLong("init_ver") : 0;
 					oldSave = initVer < NEW_BASE_VER;
 				} catch (IOException e) {
@@ -248,32 +248,43 @@ public class WndGameInProgress extends Window {
 							Messages.get(WndGameInProgress.class, "old_save_title"),
 							Messages.get(WndGameInProgress.class, "old_save_desc"),
 							Messages.get(WndGameInProgress.class, "convert_save"),
+							Messages.get(WndGameInProgress.class,"enter"),
 							Messages.get(WndGameInProgress.class, "cancel")
 					) {
 						@Override
 						protected void onSelect(int index) {
 							if (index == 0) {
-								int newSlot = Dungeon.cloneSave(slot);
-								if (newSlot >= 0) {
-									GamesInProgress.curSlot = newSlot;
-									GamesInProgress.Info newInfo = GamesInProgress.check(newSlot);
-									if (newInfo == null) {
-										ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(WndGameInProgress.class, "clone_fail_broken")));
-										return;
-									}
-									GamesInProgress.selectedClass = newInfo.heroClass;
-									ActionIndicator.action = null;
-									ShatteredPixelDungeon.switchScene(TitleScene.class);
-								} else if (newSlot == -1) {
-									ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(WndGameInProgress.class, "no_empty_slot")));
+								// 只打包导出，不新建存档槽
+								boolean success = Dungeon.exportSaveToZipOnly(targetSlot);
+								if (success) {
+									ShatteredPixelDungeon.scene().addToFront(new WndOptions(
+											Icons.get(Icons.JOURNAL),
+											Messages.get(WndGameInProgress.class, "extract_success"),
+											Messages.get(WndGameInProgress.class, "extract_success_desc"),
+											Messages.get(WndGameInProgress.class, "confirm")
+									){});
 								} else {
-									ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(WndGameInProgress.class, "clone_fail_io")));
+									ShatteredPixelDungeon.scene().addToFront(new WndOptions(
+											Icons.get(Icons.WARNING),
+											Messages.get(WndGameInProgress.class, "extract_fail"),
+											Messages.get(WndGameInProgress.class, "extract_fail_desc"),
+											Messages.get(WndGameInProgress.class, "confirm")
+									){});
 								}
+							} else if(index == 1){
+								// 仍然进入旧存档
+								GamesInProgress.curSlot = targetSlot;
+								GamesInProgress.selectedClass = currInfo.heroClass;
+								ActionIndicator.action = null;
+								InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
+								ShatteredPixelDungeon.switchScene(InterlevelScene.class);
 							}
+							// index == 2 取消，不执行任何操作
 						}
 					});
 				} else {
-					GamesInProgress.curSlot = slot;
+					// 新版本存档直接正常进入
+					GamesInProgress.curSlot = targetSlot;
 					GamesInProgress.selectedClass = currInfo.heroClass;
 					ActionIndicator.action = null;
 					InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
