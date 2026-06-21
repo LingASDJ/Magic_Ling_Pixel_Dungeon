@@ -420,7 +420,7 @@ public enum Bestiary {
 
 		//古墓测试
 		TUMULUS.addEntities(
-				!DeviceCompat.isDebug()
+				DeviceCompat.isDebug()
 						? new Class<?>[]{GraveRat.class, Worm.class, Wisp.class, NecroScout.class}
 						: new Class<?>[]{Albino.class,
 						Salamander.class,

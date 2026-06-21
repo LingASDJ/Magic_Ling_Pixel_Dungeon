@@ -184,15 +184,11 @@ public class MirrorImage extends NPC {
 	@Override
 	public CharSprite sprite() {
 		CharSprite s = super.sprite();
-		if (!(s instanceof MirrorSprite)) {
-			return null;
-		}
+		hero = (Hero)Actor.findById(heroID);
 		Actor targetActor = Actor.findById(heroID);
-		if (targetActor instanceof Hero) {
-			hero = (Hero) targetActor;
+		if (hero != null) {
 			armTier = hero.tier();
 		} else {
-			hero = null;
 			armTier = 1;
 		}
 		((MirrorSprite)s).updateArmor(armTier);
