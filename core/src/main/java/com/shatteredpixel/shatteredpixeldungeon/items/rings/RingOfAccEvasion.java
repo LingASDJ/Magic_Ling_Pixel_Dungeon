@@ -32,12 +32,12 @@ public class RingOfAccEvasion extends Ring {
 
     public String Acc(int level){
         if (cursed && cursedKnown) level = Math.min(-1, level-3);
-        return Messages.decimalFormat("#.##", 100f * (Math.pow(1.3f, level)-1f));
+        return Messages.decimalFormat("#.##", 100f * (Math.pow(1.3f, level+1)-1f));
     }
 
     public String Eva(int level){
         if (cursed && cursedKnown) level = Math.min(-1, level-3);
-        return Messages.decimalFormat("#.##", 100f * (Math.pow(1.125f, level)-1f));
+        return Messages.decimalFormat("#.##", 100f * (Math.pow(1.125f, level+1)-1f));
     }
 
     // 整合描述数据
@@ -47,14 +47,14 @@ public class RingOfAccEvasion extends Ring {
             int level = soloBuffedBonus();
 
             String info = Messages.get(this, "stats",
-                    Acc(level),
-                    Eva(level));
+                    Acc(cursed && cursedKnown ? level+2 : level-1),
+                    Eva(cursed && cursedKnown ? level+2 : level-1));
 
             if (isEquipped(hero) && level != combinedBuffedBonus(hero)) {
                 int combined = combinedBuffedBonus(hero);
                 info += "\n\n" + Messages.get(this, "combined_stats",
-                        Acc(combined),
-                        Eva(combined));
+                        Acc(cursed && cursedKnown ? combined+2 : combined-1),
+                        Eva(cursed && cursedKnown ? combined+2 : combined-1));
             }
             return info;
         } else {

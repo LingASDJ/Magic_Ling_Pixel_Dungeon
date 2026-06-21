@@ -318,11 +318,6 @@ public class NormalZeroFiveLevel extends Level {
                     return Messages.get(this, "boat_name");
                 }
             }
-            for (int i : Golden_Tiled) {
-                if(i == checkTiledID){
-                    return Messages.get(this, "golden_name");
-                }
-            }
             for (int i : Desktop1_Tiled) {
                 if(i == checkTiledID){
                     return Messages.get(this, "desktop1_name");
@@ -365,11 +360,6 @@ public class NormalZeroFiveLevel extends Level {
             for (int i : Boat_Tiled) {
                 if(i == checkTiledID){
                     return Messages.get(this, "boat_desc");
-                }
-            }
-            for (int i : Golden_Tiled) {
-                if(i == checkTiledID){
-                    return Messages.get(this, "golden_desc");
                 }
             }
             for (int i : Desktop1_Tiled) {

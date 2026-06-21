@@ -198,7 +198,8 @@ public class WndZeroShop extends Window {
                 @Override
                 protected void onClick() {
                     AnySkinSelect skinSelect = hero.belongings.getItem(AnySkinSelect.class);
-                    if (skinSelect != null) {
+                    AnySkinSelect.AnySkinCustomSelect anySkinCustomSelect = hero.belongings.getItem(AnySkinSelect.AnySkinCustomSelect.class);
+                    if (skinSelect != null || anySkinCustomSelect != null) {
                         selectReward(item);
                         itemUnlock(item);
                         SPDSettings.unlockItem("anyskin1");

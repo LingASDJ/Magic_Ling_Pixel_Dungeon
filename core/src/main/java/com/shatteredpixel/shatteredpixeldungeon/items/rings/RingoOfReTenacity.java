@@ -48,14 +48,14 @@ public class RingoOfReTenacity extends Ring {
             int level = soloBuffedBonus();
 
             String info = Messages.get(this, "stats",
-                    Ele(level-1),
-                    Fpr(level-1));
+                    Ele(cursed && cursedKnown ? level+2 : level-1),
+                    Fpr(cursed && cursedKnown ? level+2 : level-1));
 
             if (isEquipped(hero) && level != combinedBuffedBonus(hero)) {
                 int combined = combinedBuffedBonus(hero);
                 info += "\n\n" + Messages.get(this, "combined_stats",
-                        Ele(combined-1),
-                        Fpr(combined-1));
+                        Ele(cursed && cursedKnown ? combined+2 : combined-1),
+                        Fpr(cursed && cursedKnown ? combined+2 : combined-1));
             }
             return info;
         } else {
