@@ -226,8 +226,14 @@ public class vm0_9_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RANDOM_CHEST), "存档克隆系统",
-                "鉴于0.9.4.8旧存档崩溃过多，特此开发该功能。（实验性）"));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_AIKELAIER), ("查种器V3.1"),
+                ("1.移除强力搜查模式\n" +
+                        "2.修复搜索过程中可能卡住的问题\n" +
+                        "3.使用多线程提升查询速度（也是移除强力搜查模式的原因）\n" +
+                        "4.查种结束后显示对应的物品楼层位置")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RANDOM_CHEST), "存档提取系统",
+                "鉴于0.9.4.8旧存档崩溃过多，但是存档克隆问题太多，所以加了这个，如果你真的需要老存档，欢迎自行提取并联系我们人工恢复。"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LONGSWORD), "伤害系统v0.3",
                 "现在真实伤害将会破盾，请万般小心！"));
@@ -252,6 +258,9 @@ public class vm0_9_X_Changes {
                         "_-_ 修复引力王冠的一些崩溃问题\n" +
                         "_-_ 修复怪物不掉落东西的异常问题\n" +
                         "_-_ 修复女猎三皮伤害异常的问题\n" +
+                        "_-_ 修复Bzmdr礼物英雄视野异常的问题\n" +
+                        "_-_ 修复蓄血圣杯可以在荆棘激活时献祭的异常\n" +
+                        "_-_ 修复部分戒指的数值显示异常\n" +
                         "_-_ 粽子的生成概率下调至0.85f，比肉馅饼稍微低了一些，而不是之前的3权重"),
                 (	    "V0.9.4.8：\n\n" +
                         "_-_ 修复异果层自爆会摧毁物品的异常\n" +

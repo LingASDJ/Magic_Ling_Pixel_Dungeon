@@ -7,8 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredStatue;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalMimic;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
@@ -58,9 +56,9 @@ import java.util.List;
 
 public class SeedFinder {
 	enum Condition {ANY, ALL}
-	enum FINDING {STOP,CONTINUE}
+	enum FINDING {STOP, CONTINUE}
 
-	public static FINDING findingStatus = FINDING.STOP;
+	public static volatile FINDING findingStatus = FINDING.STOP;
 
 	public static class Options {
 		public static int floors;
@@ -82,6 +80,500 @@ public class SeedFinder {
 
 	List<Class<? extends Item>> blacklist;
 	ArrayList<String> itemList;
+	private final List<String> matchedFloorInfo = new ArrayList<>();
+
+	private static final int UI_UPDATE_INTERVAL = 1;
+	private long startTime;
+	private volatile boolean running;
+
+	public void startTimer() {
+		startTime = System.currentTimeMillis();
+		running = true;
+	}
+
+	@SuppressWarnings("DefaultLocale")
+	public String getElapsedTime() {
+		if (!running) {
+			return "ElaseTime NoLauncher";
+		}
+		long elapsedMillis = System.currentTimeMillis() - startTime;
+		long seconds = (elapsedMillis / 1000) % 60;
+		long minutes = (elapsedMillis / (1000 * 60)) % 60;
+		long hours = (elapsedMillis / (1000 * 60 * 60)) % 24;
+		return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+	}
+
+	public SeedResult findSeed(String[] wanted, int floor) {
+		itemList = new ArrayList<>(Arrays.asList(wanted));
+		findingStatus = FINDING.CONTINUE;
+		Options.condition = SPDSettings.seedfinderConditionANY() ? Condition.ANY : Condition.ALL;
+		startTimer();
+		matchedFloorInfo.clear();
+
+		SeedResult emptyResult = new SeedResult("NONE", "", new ArrayList<>(), false);
+		long startSeed = Random.Long(DungeonSeed.TOTAL_SEEDS);
+
+		for (long i = 0; i < DungeonSeed.TOTAL_SEEDS && findingStatus == FINDING.CONTINUE; i++) {
+			if (Thread.currentThread().isInterrupted()) {
+				running = false;
+				return emptyResult;
+			}
+
+			long seedValue = (startSeed + i) % DungeonSeed.TOTAL_SEEDS;
+			String seedStr = Long.toString(seedValue);
+
+			if (i % UI_UPDATE_INTERVAL == 0) {
+				final String displaySeed = seedStr;
+				Gdx.app.postRunnable(() -> {
+					if (!SeedFindLogScene.isSceneActive()) return;
+					if (!Thread.interrupted() && SeedFindLogScene.r != null) {
+						SeedFindLogScene.r.text(
+								Messages.get(SeedFinder.class, "seedfinder") + "\n\n" +
+										Messages.get(SeedFinder.class, "seedfinder_mode") +
+										Options.condition + "\n\n" + Messages.get(SeedFinder.class, "challenges_code") + SPDSettings.challenges() +
+										"\n\n" + Messages.get(SeedFinder.class, "finder_time") + getElapsedTime() +
+										"\n\n" + Messages.get(SeedFinder.class, "seed_code") +
+										displaySeed);
+						SeedFindLogScene.r.setPos(SeedFindLogScene.uiCamera.width / 3f, SeedFindLogScene.uiCamera.height / 3f);
+					}
+				});
+			}
+
+			matchedFloorInfo.clear();
+			if (testSeedALL(seedStr, floor)) {
+				String logText = logSeedItems(seedStr, floor, SPDSettings.challenges());
+				SeedResult successResult = new SeedResult(logText, seedStr, new ArrayList<>(matchedFloorInfo), true);
+				running = false;
+				findingStatus = FINDING.STOP;
+				return successResult;
+			}
+		}
+
+		running = false;
+		findingStatus = FINDING.STOP;
+		return emptyResult;
+	}
+
+	private ArrayList<Heap> getMobDrops(Level l) {
+		ArrayList<Heap> heaps = new ArrayList<>();
+		for (Mob m : l.mobs) {
+			if (m instanceof Statue && !(m instanceof ArmoredStatue)) {
+				Heap h = new Heap();
+				h.items = new LinkedList<>();
+				h.items.add(((Statue) m).weapon().identify());
+				h.type = Type.HEAP;
+				heaps.add(h);
+			} else if (m instanceof ArmoredStatue) {
+				Heap h = new Heap();
+				h.items = new LinkedList<>();
+				h.items.add(((ArmoredStatue) m).armor().identify());
+				h.items.add(((ArmoredStatue) m).weapon().identify());
+				h.type = Type.HEAP;
+				heaps.add(h);
+			} else if (m instanceof Mimic) {
+				Heap h = new Heap();
+				h.items = new LinkedList<>();
+				for (Item item : ((Mimic) m).items)
+					h.items.add(item.identify());
+				h.type = Type.HEAP;
+				heaps.add(h);
+			}
+		}
+		return heaps;
+	}
+
+	private boolean checkBranchLevel(int depth, int branch, boolean[] itemsFound) {
+		if (Thread.currentThread().isInterrupted()) return false;
+		try {
+			int originalBranch = Dungeon.branch;
+			int originalDepth = Dungeon.depth;
+
+			Dungeon.branch = branch;
+			Dungeon.depth = depth;
+
+			Level branchLevel = Dungeon.newLevel();
+			if (branchLevel == null || branchLevel instanceof DeadEndLevel) {
+				Dungeon.branch = originalBranch;
+				Dungeon.depth = originalDepth;
+				return false;
+			}
+
+			ArrayList<Heap> branchHeaps = new ArrayList<>(branchLevel.heaps.valueList());
+			branchHeaps.addAll(getMobDrops(branchLevel));
+
+			for (Heap h : branchHeaps) {
+				for (Item item : h.items) {
+					item.identify();
+					String itemName = item.title().toLowerCase();
+
+					for (int j = 0; j < itemList.size(); j++) {
+						if (itemsFound[j]) continue;
+						String wantingItem = itemList.get(j);
+						boolean precise = wantingItem.startsWith("\"") && wantingItem.endsWith("\"");
+						String cleanWant = wantingItem.replaceAll("\"", "");
+
+						boolean match;
+						if (precise) {
+							match = itemName.equals(cleanWant);
+						} else {
+							match = itemName.replaceAll(" ", "").contains(cleanWant.replaceAll(" ", ""));
+						}
+
+						if (match) {
+							itemsFound[j] = true;
+							matchedFloorInfo.add(cleanWant + " → 第" + Dungeon.depth + "层");
+							if (areAllTrue(itemsFound)) {
+								Dungeon.branch = originalBranch;
+								Dungeon.depth = originalDepth;
+								return true;
+							}
+							break;
+						}
+					}
+				}
+			}
+
+			Dungeon.branch = originalBranch;
+			Dungeon.depth = originalDepth;
+			return areAllTrue(itemsFound);
+		} catch (Exception e) {
+			Gdx.app.log("SeedFinder", "Error checking branch " + branch + " depth " + depth + ": " + e.getMessage());
+			return false;
+		}
+	}
+
+	private boolean testSeedALL(String seed, int floors) {
+		if (Thread.currentThread().isInterrupted()) return false;
+		try {
+			Dungeon.isDLC(Conducts.Conduct.SEED);
+			SPDSettings.customSeed(seed);
+			Dungeon.initSeed();
+			GamesInProgress.selectedClass = HeroClass.WARRIOR;
+			Dungeon.init();
+
+			boolean[] itemsFound = new boolean[itemList.size()];
+			Arrays.fill(itemsFound, false);
+
+			for (int i = 0; i < floors; i++) {
+				if (Thread.currentThread().isInterrupted()) return false;
+				int originalBranch = Dungeon.branch;
+				Dungeon.branch = 0;
+
+				Level l = Dungeon.newLevel();
+				if (l == null || l instanceof DeadEndLevel) {
+					Dungeon.branch = originalBranch;
+					Dungeon.depth++;
+					continue;
+				}
+
+				ArrayList<Heap> heaps = new ArrayList<>(l.heaps.valueList());
+				heaps.addAll(getMobDrops(l));
+
+				// Ghost任务装备
+				if (Ghost.Quest.armor != null) {
+					Item target = Ghost.Quest.armor.identify();
+					String targetName = target.title().toLowerCase();
+					for (int j = 0; j < itemList.size(); j++) {
+						if (itemsFound[j]) continue;
+						String want = itemList.get(j);
+						boolean precise = want.startsWith("\"") && want.endsWith("\"");
+						String cleanWant = want.replaceAll("\"", "");
+						boolean match = precise ? targetName.equals(cleanWant) : targetName.replaceAll(" ", "").contains(cleanWant.replaceAll(" ", ""));
+						if (match) {
+							itemsFound[j] = true;
+							matchedFloorInfo.add(cleanWant + " → 第" + Dungeon.depth + "层");
+							break;
+						}
+					}
+				}
+
+				// 制杖师任务
+				if (Wandmaker.Quest.wand1 != null) {
+					Item w1 = Wandmaker.Quest.wand1.identify();
+					Item w2 = Wandmaker.Quest.wand2.identify();
+					String w1Name = w1.title().toLowerCase();
+					String w2Name = w2.title().toLowerCase();
+					String questMat = "";
+					int questType = Wandmaker.Quest.type();
+					if (questType == 1) {
+						questMat = Messages.get(this, "corpsedust");
+					} else if (questType == 2) {
+						questMat = Messages.get(this, "embers");
+					} else if (questType == 3) {
+						questMat = Messages.get(this, "rotberry");
+					}
+
+					for (int j = 0; j < itemList.size(); j++) {
+						if (itemsFound[j]) continue;
+						String want = itemList.get(j);
+						boolean precise = want.startsWith("\"") && want.endsWith("\"");
+						String cleanWant = want.replaceAll("\"", "");
+						String cWant = cleanWant.replaceAll(" ", "");
+						String cW1 = w1Name.replaceAll(" ", "");
+						String cW2 = w2Name.replaceAll(" ", "");
+
+						boolean matchWand = precise
+								? (w1Name.equals(cleanWant) || w2Name.equals(cleanWant))
+								: (cW1.contains(cWant) || cW2.contains(cWant));
+						boolean matchMat = !precise && questMat.replaceAll(" ", "").contains(cWant);
+
+						if (matchWand || matchMat) {
+							itemsFound[j] = true;
+							matchedFloorInfo.add(cleanWant + " → 第" + Dungeon.depth + "层");
+							break;
+						}
+					}
+				}
+
+				// 小恶魔戒指奖励
+				if (Imp.Quest.reward != null) {
+					Item ring = Imp.Quest.reward.identify();
+					String ringName = ring.title().toLowerCase();
+					for (int j = 0; j < itemList.size(); j++) {
+						if (itemsFound[j]) continue;
+						String want = itemList.get(j);
+						boolean precise = want.startsWith("\"") && want.endsWith("\"");
+						String cleanWant = want.replaceAll("\"", "");
+						boolean match = precise ? ringName.equals(cleanWant) : ringName.replaceAll(" ", "").contains(cleanWant.replaceAll(" ", ""));
+						if (match) {
+							itemsFound[j] = true;
+							matchedFloorInfo.add(cleanWant + " → 第" + Dungeon.depth + "层");
+							break;
+						}
+					}
+				}
+
+				// 普通堆物品
+				for (Heap h : heaps) {
+					for (Item item : h.items) {
+						item.identify();
+						String itemName = item.title().toLowerCase();
+						for (int j = 0; j < itemList.size(); j++) {
+							if (itemsFound[j]) continue;
+							String want = itemList.get(j);
+							boolean precise = want.startsWith("\"") && want.endsWith("\"");
+							String cleanWant = want.replaceAll("\"", "");
+							boolean match = precise
+									? itemName.equals(cleanWant)
+									: itemName.replaceAll(" ", "").contains(cleanWant.replaceAll(" ", ""));
+							if (match) {
+								itemsFound[j] = true;
+								matchedFloorInfo.add(cleanWant + " → 第" + Dungeon.depth + "层");
+								break;
+							}
+						}
+					}
+				}
+
+				// 检查分支
+				if (Options.checkBranches && !areAllTrue(itemsFound)) {
+					int curDepth = Dungeon.depth;
+					for (int br : Options.BRANCH_IDS) {
+						if (checkBranchLevel(curDepth, br, itemsFound)) {
+							return true;
+						}
+					}
+				}
+
+				if (areAllTrue(itemsFound)) return true;
+
+				Dungeon.branch = originalBranch;
+				Dungeon.depth++;
+			}
+
+			if (Options.condition == Condition.ANY) {
+				for (boolean b : itemsFound) if (b) return true;
+				return false;
+			} else {
+				return areAllTrue(itemsFound);
+			}
+		} finally {
+			// 清理Dungeon状态，防止内存堆积卡死
+			Dungeon.depth = 0;
+			Dungeon.branch = 0;
+		}
+	}
+
+	private void logBranchItems(int depth, int branch, StringBuilder builder) {
+		try {
+			int originalBranch = Dungeon.branch;
+			int originalDepth = Dungeon.depth;
+			Dungeon.branch = branch;
+			Dungeon.depth = depth;
+
+			Level branchLevel = Dungeon.newLevel();
+			if (branchLevel == null || branchLevel instanceof DeadEndLevel) {
+				Dungeon.branch = originalBranch;
+				Dungeon.depth = originalDepth;
+				return;
+			}
+
+			builder.append("\n----- ").append(depth).append(" ").append(Messages.get(this, "floor"))
+					.append(" (").append(Messages.get(this, "branch_h")).append(branch).append(Messages.get(this, "branch_e")).append(") -----\n\n");
+
+			ArrayList<Heap> branchHeaps = new ArrayList<>(branchLevel.heaps.valueList());
+			branchHeaps.addAll(getMobDrops(branchLevel));
+
+			ArrayList<HeapItem> scrolls = new ArrayList<>();
+			ArrayList<HeapItem> potions = new ArrayList<>();
+			ArrayList<HeapItem> equipment = new ArrayList<>();
+			ArrayList<HeapItem> rings = new ArrayList<>();
+			ArrayList<HeapItem> artifacts = new ArrayList<>();
+			ArrayList<HeapItem> wands = new ArrayList<>();
+			ArrayList<HeapItem> others = new ArrayList<>();
+			ArrayList<HeapItem> forSales = new ArrayList<>();
+
+			for (Heap h : branchHeaps) {
+				for (Item item : h.items) {
+					item.identify();
+					if (h.type == Type.FOR_SALE) {
+						forSales.add(new HeapItem(item, h));
+					} else if (blacklist.contains(item.getClass())) {
+						continue;
+					} else if (item instanceof Scroll) scrolls.add(new HeapItem(item, h));
+					else if (item instanceof Potion) potions.add(new HeapItem(item, h));
+					else if (item instanceof MeleeWeapon || item instanceof Armor) equipment.add(new HeapItem(item, h));
+					else if (item instanceof Ring) rings.add(new HeapItem(item, h));
+					else if (item instanceof Artifact) artifacts.add(new HeapItem(item, h));
+					else if (item instanceof Wand) wands.add(new HeapItem(item, h));
+					else others.add(new HeapItem(item, h));
+				}
+			}
+
+			addTextItems("【 " + Messages.get(this, "scrolls") + " 】", scrolls, builder);
+			addTextItems("【 " + Messages.get(this, "potions") + " 】", potions, builder);
+			addTextItems("【 " + Messages.get(this, "equipment") + " 】", equipment, builder);
+			addTextItems("【 " + Messages.get(this, "rings") + " 】", rings, builder);
+			addTextItems("【 " + Messages.get(this, "artifacts") + " 】", artifacts, builder);
+			addTextItems("【 " + Messages.get(this, "wands") + " 】", wands, builder);
+			addTextItems("【 " + Messages.get(this, "for_sales") + " 】", forSales, builder);
+			addTextItems("【 " + Messages.get(this, "others") + " 】", others, builder);
+
+			Dungeon.branch = originalBranch;
+			Dungeon.depth = originalDepth;
+		} catch (Exception e) {
+			Gdx.app.log("SeedFinder", "Log branch err br:" + branch + " " + e.getMessage());
+		}
+	}
+
+	public String logSeedItems(String seed, int floors, int challenges) {
+		String text = DungeonSeed.formatText(seed);
+		SPDSettings.customSeed(text);
+		GamesInProgress.selectedClass = HeroClass.WARRIOR;
+		SPDSettings.challenges(challenges);
+		Dungeon.init();
+
+		StringBuilder result = new StringBuilder(Messages.get(this, "seed") + DungeonSeed.convertToCode(Dungeon.seed) + " (" + Dungeon.seed + ") " + Messages.get(this, "items") + ":\n\n" + Messages.get(this, "css") + Dungeon.challenges + "\n\n");
+
+		blacklist = Arrays.asList(
+				Gold.class, Dewdrop.class, IronKey.class, GoldenKey.class, CrystalKey.class, EnergyCrystal.class,
+				CorpseDust.class, Embers.class, CeremonialCandle.class, Pickaxe.class
+		);
+
+		for (int i = 0; i < floors; i++) {
+			int originalBranch = Dungeon.branch;
+			Dungeon.branch = 0;
+			Level l = Dungeon.newLevel();
+			if (l == null || l instanceof DeadEndLevel) {
+				Dungeon.branch = originalBranch;
+				Dungeon.depth++;
+				continue;
+			}
+
+			result.append("\n----- ").append(Dungeon.depth).append(" ").append(Messages.get(this, "floor")).append(" -----\n\n");
+			ArrayList<Heap> heaps = new ArrayList<>(l.heaps.valueList());
+			StringBuilder builder = new StringBuilder();
+
+			ArrayList<HeapItem> scrolls = new ArrayList<>();
+			ArrayList<HeapItem> potions = new ArrayList<>();
+			ArrayList<HeapItem> equipment = new ArrayList<>();
+			ArrayList<HeapItem> rings = new ArrayList<>();
+			ArrayList<HeapItem> artifacts = new ArrayList<>();
+			ArrayList<HeapItem> wands = new ArrayList<>();
+			ArrayList<HeapItem> others = new ArrayList<>();
+			ArrayList<HeapItem> forSales = new ArrayList<>();
+
+			// 幽灵任务
+			if (Ghost.Quest.armor != null) {
+				ArrayList<Item> rewards = new ArrayList<>();
+				rewards.add(Ghost.Quest.armor.identify());
+				rewards.add(Ghost.Quest.weapon.identify());
+				Ghost.Quest.complete();
+				addTextQuest("【 " + Messages.get(this, "sad_ghost_reward") + " 】", rewards, builder);
+			}
+
+			// 红龙任务
+			if (RedDragon.Quest.armor != null) {
+				ArrayList<Item> rewards = new ArrayList<>();
+				rewards.add(RedDragon.Quest.weapon.identify());
+				rewards.add(RedDragon.Quest.RingT.identify());
+				rewards.add(RedDragon.Quest.food.identify());
+				rewards.add(RedDragon.Quest.scrolls.identify());
+				RedDragon.Quest.complete();
+				addTextQuest("【 " + Messages.get(this, "red_dragon_reward") + " 】", rewards, builder);
+			}
+
+			// 制杖师
+			if (Wandmaker.Quest.wand1 != null) {
+				ArrayList<Item> rewards = new ArrayList<>();
+				rewards.add(Wandmaker.Quest.wand1.identify());
+				rewards.add(Wandmaker.Quest.wand2.identify());
+				Wandmaker.Quest.complete();
+				builder.append("【 " + Messages.get(this, "wandmaker_need") + " 】:\n ");
+				switch (Wandmaker.Quest.type()) {
+					case 1: default: builder.append(Messages.get(this, "corpsedust")).append("\n\n"); break;
+					case 2: builder.append(Messages.get(this, "embers")).append("\n\n"); break;
+					case 3: builder.append(Messages.get(this, "rotberry")).append("\n\n"); break;
+				}
+				addTextQuest("【 " + Messages.get(this, "wandmaker_reward") + " 】", rewards, builder);
+			}
+
+			// 小恶魔
+			if (Imp.Quest.reward != null) {
+				ArrayList<Item> rewards = new ArrayList<>();
+				rewards.add(Imp.Quest.reward.identify());
+				Imp.Quest.complete();
+				addTextQuest("【 " + Messages.get(this, "imp_reward") + " 】", rewards, builder);
+			}
+
+			heaps.addAll(getMobDrops(l));
+			for (Heap h : heaps) {
+				for (Item item : h.items) {
+					item.identify();
+					if (h.type == Type.FOR_SALE) {
+						forSales.add(new HeapItem(item, h));
+					} else if (blacklist.contains(item.getClass())) {
+						continue;
+					} else if (item instanceof Scroll) scrolls.add(new HeapItem(item, h));
+					else if (item instanceof Potion) potions.add(new HeapItem(item, h));
+					else if (item instanceof MeleeWeapon || item instanceof Armor) equipment.add(new HeapItem(item, h));
+					else if (item instanceof Ring) rings.add(new HeapItem(item, h));
+					else if (item instanceof Artifact) artifacts.add(new HeapItem(item, h));
+					else if (item instanceof Wand) wands.add(new HeapItem(item, h));
+					else others.add(new HeapItem(item, h));
+				}
+			}
+
+			addTextItems("【 " + Messages.get(this, "scrolls") + " 】", scrolls, builder);
+			addTextItems("【 " + Messages.get(this, "potions") + " 】", potions, builder);
+			addTextItems("【 " + Messages.get(this, "equipment") + " 】", equipment, builder);
+			addTextItems("【 " + Messages.get(this, "rings") + " 】", rings, builder);
+			addTextItems("【 " + Messages.get(this, "artifacts") + " 】", artifacts, builder);
+			addTextItems("【 " + Messages.get(this, "wands") + " 】", wands, builder);
+			addTextItems("【 " + Messages.get(this, "for_sales") + " 】", forSales, builder);
+			addTextItems("【 " + Messages.get(this, "others") + " 】", others, builder);
+
+			if (Options.checkBranches) {
+				int curD = Dungeon.depth;
+				for (int br : Options.BRANCH_IDS) logBranchItems(curD, br, builder);
+			}
+
+			result.append("\n").append(builder);
+			Dungeon.branch = originalBranch;
+			Dungeon.depth++;
+		}
+		return result.toString();
+	}
 
 	private void addTextItems(String caption, ArrayList<HeapItem> items, StringBuilder builder) {
 		if (!items.isEmpty()) {
@@ -130,6 +622,7 @@ public class SeedFinder {
 		}
 	}
 
+
 	private void addTextQuest(String caption, ArrayList<Item> items, StringBuilder builder) {
 		if (!items.isEmpty()) {
 			builder.append(caption).append(":\n");
@@ -157,525 +650,8 @@ public class SeedFinder {
 		}
 	}
 
-	private long startTime;
-	private boolean running;
-
-	public void startTimer() {
-		startTime = System.currentTimeMillis();
-		running = true;
-		seedDigits = Integer.toString(Random.Int(500000));
-	}
-
-	String seedDigits;
-
-	@SuppressWarnings("DefaultLocale")
-	public String getElapsedTime() {
-		long elapsedMillis = System.currentTimeMillis() - startTime;
-		long seconds = (elapsedMillis / 1000) % 60;
-		long minutes = (elapsedMillis / (1000 * 60)) % 60;
-		long hours = (elapsedMillis / (1000 * 60 * 60)) % 24;
-		if (!running) {
-			return "ElaseTime NoLauncher";
-		}
-
-		if (seconds % 5 == 0 && seconds != 0 && SPDSettings.PlusSearch()) {
-			seedDigits = Integer.toString(Random.Int(0,2147483647));
-		}
-
-		return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-	}
-
-	public String findSeed(String[] wanted, int floor) {
-		itemList = new ArrayList<>(Arrays.asList(wanted));
-		findingStatus = FINDING.CONTINUE;
-		Options.condition = SPDSettings.seedfinderConditionANY() ? Condition.ANY : Condition.ALL;
-
-		String result="NONE";
-		for (int i = Random.Int(9999999);
-			 i < DungeonSeed.TOTAL_SEEDS && findingStatus == FINDING.CONTINUE ; i++) {
-
-			if (SeedFindLogScene.thread.isInterrupted()) {
-				return "";
-			}
-
-			final String i1 = seedDigits + i;
-
-			Gdx.app.postRunnable(new Runnable() {
-				@Override
-				public void run() {
-					if(!running){
-						startTimer();
-					}
-					if (!SeedFindLogScene.thread.isInterrupted()) {
-						SeedFindLogScene.r.text(
-								Messages.get(SeedFinder.class,"seedfinder")+"\n\n"+
-										Messages.get(SeedFinder.class,"seedfinder_mode")+
-										Options.condition + "\n\n"+Messages.get(SeedFinder.class,"challenges_code") + SPDSettings.challenges() +
-										"\n\n"+Messages.get(SeedFinder.class,"finder_time") + getElapsedTime() +
-										"\n\n"+Messages.get(SeedFinder.class,"seed_code")+
-										i1);
-						SeedFindLogScene.r.setPos(SeedFindLogScene.uiCamera.width/3f, SeedFindLogScene.uiCamera.height/3f);
-					}
-				}
-			});
-
-			if (testSeedALL(seedDigits + i, floor)) {
-				result = logSeedItems(seedDigits + i, floor, SPDSettings.challenges());
-				break;
-			} else {
-				Gdx.app.log("SeedFinder", "Seed " + seedDigits + i + " not found");
-			}
-		}
-		return result;
-	}
-
-	private ArrayList<Heap> getMobDrops(Level l) {
-		ArrayList<Heap> heaps = new ArrayList<>();
-
-		for (Mob m : l.mobs) {
-			if (m instanceof Statue && !(m instanceof ArmoredStatue)) {
-				Heap h = new Heap();
-				h.items = new LinkedList<>();
-				h.items.add(((Statue) m).weapon().identify());
-				h.type = Type.HEAP;
-				heaps.add(h);
-			}
-
-			else if (m instanceof ArmoredStatue) {
-				Heap h = new Heap();
-				h.items = new LinkedList<>();
-				h.items.add(((ArmoredStatue) m).armor().identify());
-				h.items.add(((ArmoredStatue) m).weapon().identify());
-				h.type = Type.HEAP;
-				heaps.add(h);
-			}
-
-			else if (m instanceof Mimic) {
-				Heap h = new Heap();
-				h.items = new LinkedList<>();
-
-				for (Item item : ((Mimic) m).items)
-					h.items.add(item.identify());
-
-				if (m instanceof GoldenMimic) h.type = Type.HEAP;
-				else if (m instanceof CrystalMimic) h.type = Type.HEAP;
-				else h.type = Type.HEAP;
-				heaps.add(h);
-			}
-		}
-
-		return heaps;
-	}
-
-	/**
-	 * 检查指定分支的关卡物品
-	 * @param depth 层数
-	 * @param branch 分支ID
-	 * @param itemsFound 已找到的物品标记数组
-	 * @return 是否找到全部需要的物品
-	 */
-	private boolean checkBranchLevel(int depth, int branch, boolean[] itemsFound) {
-		try {
-			// 保存原始的branch和depth值，避免污染后续查询
-			int originalBranch = Dungeon.branch;
-			int originalDepth = Dungeon.depth;
-
-			// 设置分支和层数
-			Dungeon.branch = branch;
-			Dungeon.depth = depth;
-
-			// 生成分支关卡
-			Level branchLevel = Dungeon.newLevel();
-			if (branchLevel == null || branchLevel instanceof DeadEndLevel) {
-				Dungeon.branch = originalBranch;
-				Dungeon.depth = originalDepth;
-				return false;
-			}
-
-			ArrayList<Heap> branchHeaps = new ArrayList<>(branchLevel.heaps.valueList());
-			branchHeaps.addAll(getMobDrops(branchLevel));
-
-			for (Heap h : branchHeaps) {
-				for (Item item : h.items) {
-					item.identify();
-					String itemName = item.title().toLowerCase();
-
-					for (int j = 0; j < itemList.size(); j++) {
-						if (itemsFound[j]) continue;
-
-						String wantingItem = itemList.get(j);
-						boolean precise = wantingItem.startsWith("\"")&&wantingItem.endsWith("\"");
-
-						if (!precise&&itemName.replaceAll(" ","").contains(wantingItem.replaceAll(" ",""))
-								|| precise&& itemName.equals(wantingItem.replaceAll("\"", ""))) {
-							itemsFound[j] = true;
-							if (areAllTrue(itemsFound)) {
-								Dungeon.branch = originalBranch;
-								Dungeon.depth = originalDepth;
-								return true;
-							}
-							break;
-						}
-					}
-				}
-			}
-
-			// 恢复原始值
-			Dungeon.branch = originalBranch;
-			Dungeon.depth = originalDepth;
-
-			return areAllTrue(itemsFound);
-
-		} catch (Exception e) {
-			Gdx.app.log("SeedFinder", "Error checking branch " + branch + " at depth " + depth + ": " + e.getMessage());
-			return false;
-		}
-	}
-
-	private boolean testSeedALL(String seed, int floors) {
-		Dungeon.isDLC(Conducts.Conduct.SEED);
-		SPDSettings.customSeed(seed);
-		Dungeon.initSeed();
-		GamesInProgress.selectedClass = HeroClass.WARRIOR;
-		Dungeon.init();
-
-		boolean[] itemsFound = new boolean[itemList.size()];
-		Arrays.fill(itemsFound, false);
-
-		for (int i = 0; i < floors; i++) {
-			int originalBranch = Dungeon.branch;
-			Dungeon.branch = 0;
-
-			Level l = Dungeon.newLevel();
-			if (l == null || l instanceof DeadEndLevel) {
-				Dungeon.branch = originalBranch;
-				Dungeon.depth++;
-				continue;
-			}
-
-			ArrayList<Heap> heaps = new ArrayList<>(l.heaps.valueList());
-			heaps.addAll(getMobDrops(l));
-
-			if(Ghost.Quest.armor != null){
-				for (int j = 0; j < itemList.size(); j++) {
-					String wantingItem = itemList.get(j);
-					boolean precise = wantingItem.startsWith("\"")&&wantingItem.endsWith("\"");
-					if(precise){
-						wantingItem = wantingItem.replaceAll(" ", "");
-					}else{
-						wantingItem = wantingItem.replaceAll("\"","");
-					}
-					if (!precise&&Ghost.Quest.armor.identify().title().toLowerCase().replaceAll(" ","").contains(wantingItem) || precise&& Ghost.Quest.armor.identify().title().toLowerCase().equals(wantingItem)) {
-						if (!itemsFound[j]) {
-							itemsFound[j] = true;
-							break;
-						}
-					}
-				}
-			}
-
-			if(Wandmaker.Quest.wand1 != null){
-				for (int j = 0; j < itemList.size(); j++) {
-					String wantingItem = itemList.get(j);
-					String wand1 = Wandmaker.Quest.wand1.identify().title().toLowerCase();
-					String wand2 = Wandmaker.Quest.wand2.identify().title().toLowerCase();
-					boolean precise = wantingItem.startsWith("\"")&&wantingItem.endsWith("\"");
-					if(precise){
-						wantingItem = wantingItem.replaceAll("\"","");
-						if (wand1.equals(wantingItem) || wand2.equals(wantingItem)) {
-							if (!itemsFound[j]) {
-								itemsFound[j] = true;
-								break;
-							}
-						}
-					}else{
-						wantingItem = wantingItem.replaceAll(" ", "");
-						wand1 = wand1.replaceAll(" ","");
-						wand2 = wand2.replaceAll(" ","");
-						if (wand1.contains(wantingItem) || wand2.contains(wantingItem)) {
-							if (!itemsFound[j]) {
-								itemsFound[j] = true;
-								break;
-							}
-						}
-					}
-					if(Wandmaker.Quest.type() == 1 && Messages.get(this, "corpsedust").contains(wantingItem.replaceAll(" ",""))){
-						if (!itemsFound[j]) {
-							itemsFound[j] = true;
-							break;
-						}
-					}else if(Wandmaker.Quest.type() == 2 && Messages.get(this, "embers").contains(wantingItem.replaceAll(" ",""))){
-						if (!itemsFound[j]) {
-							itemsFound[j] = true;
-							break;
-						}
-					}else if(Wandmaker.Quest.type() == 3 && Messages.get(this, "rotberry").contains(wantingItem.replaceAll(" ",""))){
-						if (!itemsFound[j]) {
-							itemsFound[j] = true;
-							break;
-						}
-					}
-				}
-			}
-
-			if(Imp.Quest.reward != null){
-				for (int j = 0; j < itemList.size(); j++) {
-					String wantingItem = itemList.get(j);
-					boolean precise = wantingItem.startsWith("\"")&&wantingItem.endsWith("\"");
-					String ring = Imp.Quest.reward.identify().title().toLowerCase();
-					if (!precise&&ring.replaceAll(" ","").contains(wantingItem.replaceAll(" ",""))
-							|| precise&& ring.equals(wantingItem)) {
-						if (!itemsFound[j]) {
-							itemsFound[j] = true;
-							break;
-						}
-					}
-				}
-			}
-
-			// 检查主层物品堆
-			for (Heap h : heaps) {
-				for (Item item : h.items) {
-					item.identify();
-					String itemName = item.title().toLowerCase();
-
-					for (int j = 0; j < itemList.size(); j++) {
-						String wantingItem = itemList.get(j);
-						boolean precise = wantingItem.startsWith("\"")&&wantingItem.endsWith("\"");
-						if (!precise&&itemName.replaceAll(" ","").contains(wantingItem.replaceAll(" ",""))
-								|| precise&& itemName.equals(wantingItem.replaceAll("\"", ""))) {
-							if (!itemsFound[j]) {
-								itemsFound[j] = true;
-								break;
-							}
-						}
-					}
-				}
-			}
-
-			if (Options.checkBranches && !areAllTrue(itemsFound)) {
-				int currentDepth = Dungeon.depth;
-				for (int branch : Options.BRANCH_IDS) {
-					if (checkBranchLevel(currentDepth, branch, itemsFound)) {
-						return true;
-					}
-				}
-			}
-
-			if(areAllTrue(itemsFound)){
-				return true;
-			}
-
-			Dungeon.branch = originalBranch;
-			Dungeon.depth++;
-		}
-
-		if (Options.condition == Condition.ANY) {
-			for (boolean found : itemsFound) {
-				if (found) return true;
-			}
-			return false;
-		} else {
-			return areAllTrue(itemsFound);
-		}
-	}
-
-	/**
-	 * 记录分支关卡物品到日志
-	 */
-	private void logBranchItems(int depth, int branch, StringBuilder builder) {
-		try {
-			int originalBranch = Dungeon.branch;
-			int originalDepth = Dungeon.depth;
-
-			Dungeon.branch = branch;
-			Dungeon.depth = depth;
-
-			Level branchLevel = Dungeon.newLevel();
-			if (branchLevel == null || branchLevel instanceof DeadEndLevel) {
-				Dungeon.branch = originalBranch;
-				Dungeon.depth = originalDepth;
-				return;
-			}
-
-			builder.append("\n_----- ").append(depth).append(" ").append(Messages.get(this, "floor"))
-					.append(" (").append(Messages.get(this, "branch_h")).append("").append(branch).append(Messages.get(this, "branch_e")).append(") -----_\n\n");
-
-			ArrayList<Heap> branchHeaps = new ArrayList<>(branchLevel.heaps.valueList());
-			branchHeaps.addAll(getMobDrops(branchLevel));
-
-			ArrayList<HeapItem> scrolls = new ArrayList<>();
-			ArrayList<HeapItem> potions = new ArrayList<>();
-			ArrayList<HeapItem> equipment = new ArrayList<>();
-			ArrayList<HeapItem> rings = new ArrayList<>();
-			ArrayList<HeapItem> artifacts = new ArrayList<>();
-			ArrayList<HeapItem> wands = new ArrayList<>();
-			ArrayList<HeapItem> others = new ArrayList<>();
-			ArrayList<HeapItem> forSales = new ArrayList<>();
-
-			for (Heap h : branchHeaps) {
-				for (Item item : h.items) {
-					item.identify();
-
-					if (h.type == Type.FOR_SALE) forSales.add(new HeapItem(item, h));
-					else if (blacklist.contains(item.getClass())) continue;
-					else if (item instanceof Scroll) scrolls.add(new HeapItem(item, h));
-					else if (item instanceof Potion) potions.add(new HeapItem(item, h));
-					else if (item instanceof MeleeWeapon || item instanceof Armor) equipment.add(new HeapItem(item, h));
-					else if (item instanceof Ring) rings.add(new HeapItem(item, h));
-					else if (item instanceof Artifact) artifacts.add(new HeapItem(item, h));
-					else if (item instanceof Wand) wands.add(new HeapItem(item, h));
-					else others.add(new HeapItem(item, h));
-				}
-			}
-
-			addTextItems("【 "+ Messages.get(this, "scrolls") +  " 】", scrolls, builder);
-			addTextItems("【 "+ Messages.get(this, "potions") +  " 】", potions, builder);
-			addTextItems("【 "+ Messages.get(this, "equipment") +" 】", equipment, builder);
-			addTextItems("【 "+ Messages.get(this, "rings") +    " 】", rings, builder);
-			addTextItems("【 "+ Messages.get(this, "artifacts") +" 】", artifacts, builder);
-			addTextItems("【 "+ Messages.get(this, "wands") +    " 】", wands, builder);
-			addTextItems("【 "+ Messages.get(this, "for_sales") +" 】", forSales, builder);
-			addTextItems("【 "+ Messages.get(this, "others") +   " 】", others, builder);
-
-			Dungeon.branch = originalBranch;
-			Dungeon.depth = originalDepth;
-
-		} catch (Exception e) {
-			Gdx.app.log("SeedFinder", "Error logging branch " + branch + ": " + e.getMessage());
-		}
-	}
-
-	private static boolean areAllTrue(boolean[] array)
-	{
-		for(boolean b : array) if(!b) return false;
+	private static boolean areAllTrue(boolean[] array) {
+		for (boolean b : array) if (!b) return false;
 		return true;
 	}
-
-	public String logSeedItems(String seed, int floors,int challenges) {
-		String text = DungeonSeed.formatText(seed);
-		SPDSettings.customSeed(text);
-		GamesInProgress.selectedClass = HeroClass.WARRIOR;
-		SPDSettings.challenges(challenges);
-		Dungeon.init();
-		StringBuilder result = new StringBuilder(Messages.get(this, "seed") + DungeonSeed.convertToCode(Dungeon.seed) + " (" + Dungeon.seed + ") " + Messages.get(this, "items") + ":\n\n"+Messages.get(this, "css")+Dungeon.challenges+"\n\n");
-
-		blacklist = Arrays.asList(Gold.class, Dewdrop.class, IronKey.class, GoldenKey.class, CrystalKey.class, EnergyCrystal.class,
-				CorpseDust.class, Embers.class, CeremonialCandle.class, Pickaxe.class);
-
-		for (int i = 0; i < floors; i++) {
-			int originalBranch = Dungeon.branch;
-			Dungeon.branch = 0;
-
-			Level l = Dungeon.newLevel();
-			if (l == null || l instanceof DeadEndLevel) {
-				Dungeon.branch = originalBranch;
-				Dungeon.depth++;
-				continue;
-			}
-
-			result.append("\n_----- ").append(Long.toString(Dungeon.depth)).append(" ").append(Messages.get(this, "floor") + " -----_\n\n");
-
-			ArrayList<Heap> heaps = new ArrayList<>(l.heaps.valueList());
-			StringBuilder builder = new StringBuilder();
-			ArrayList<HeapItem> scrolls = new ArrayList<>();
-			ArrayList<HeapItem> potions = new ArrayList<>();
-			ArrayList<HeapItem> equipment = new ArrayList<>();
-			ArrayList<HeapItem> rings = new ArrayList<>();
-			ArrayList<HeapItem> artifacts = new ArrayList<>();
-			ArrayList<HeapItem> wands = new ArrayList<>();
-			ArrayList<HeapItem> others = new ArrayList<>();
-			ArrayList<HeapItem> forSales = new ArrayList<>();
-
-			if (Ghost.Quest.armor != null) {
-				ArrayList<Item> rewards = new ArrayList<>();
-				rewards.add(Ghost.Quest.armor.identify());
-				rewards.add(Ghost.Quest.weapon.identify());
-				Ghost.Quest.complete();
-				addTextQuest("【 " + Messages.get(this, "sad_ghost_reward") + " 】", rewards, builder);
-			}
-
-			if (RedDragon.Quest.armor != null) {
-				ArrayList<Item> rewards = new ArrayList<>();
-				rewards.add(RedDragon.Quest.weapon.identify());
-				rewards.add(RedDragon.Quest.RingT.identify());
-				rewards.add(RedDragon.Quest.food.identify());
-				rewards.add(RedDragon.Quest.scrolls.identify());
-				RedDragon.Quest.complete();
-				addTextQuest("【 " + Messages.get(this, "red_dragon_reward") + " 】", rewards, builder);
-			}
-
-			if (Wandmaker.Quest.wand1 != null) {
-				ArrayList<Item> rewards = new ArrayList<>();
-				rewards.add(Wandmaker.Quest.wand1.identify());
-				rewards.add(Wandmaker.Quest.wand2.identify());
-				Wandmaker.Quest.complete();
-
-				builder.append("【 " + Messages.get(this, "wandmaker_need") +" 】:\n ");
-
-				switch (Wandmaker.Quest.type()) {
-					case 1: default:
-						builder.append(Messages.get(this, "corpsedust") + "\n\n");
-						break;
-					case 2:
-						builder.append(Messages.get(this, "embers") + "\n\n");
-						break;
-					case 3:
-						builder.append(Messages.get(this, "rotberry") + "\n\n");
-				}
-
-				addTextQuest("【 "+ Messages.get(this, "wandmaker_reward") +" 】", rewards, builder);
-			}
-
-			if (Imp.Quest.reward != null) {
-				ArrayList<Item> rewards = new ArrayList<>();
-				rewards.add(Imp.Quest.reward.identify());
-				Imp.Quest.complete();
-				addTextQuest("【 "+ Messages.get(this, "imp_reward") +" 】", rewards, builder);
-			}
-
-			heaps.addAll(getMobDrops(l));
-
-			// 记录主层物品
-			for (Heap h : heaps) {
-				for (Item item : h.items) {
-					item.identify();
-
-					if (h.type == Type.FOR_SALE) forSales.add(new HeapItem(item, h));
-					else if (blacklist.contains(item.getClass())) continue;
-					else if (item instanceof Scroll) scrolls.add(new HeapItem(item, h));
-					else if (item instanceof Potion) potions.add(new HeapItem(item, h));
-					else if (item instanceof MeleeWeapon || item instanceof Armor) equipment.add(new HeapItem(item, h));
-					else if (item instanceof Ring) rings.add(new HeapItem(item, h));
-					else if (item instanceof Artifact) artifacts.add(new HeapItem(item, h));
-					else if (item instanceof Wand) wands.add(new HeapItem(item, h));
-					else others.add(new HeapItem(item, h));
-				}
-			}
-
-			addTextItems("【 "+ Messages.get(this, "scrolls") +  " 】", scrolls, builder);
-			addTextItems("【 "+ Messages.get(this, "potions") +  " 】", potions, builder);
-			addTextItems("【 "+ Messages.get(this, "equipment") +" 】", equipment, builder);
-			addTextItems("【 "+ Messages.get(this, "rings") +    " 】", rings, builder);
-			addTextItems("【 "+ Messages.get(this, "artifacts") +" 】", artifacts, builder);
-			addTextItems("【 "+ Messages.get(this, "wands") +    " 】", wands, builder);
-			addTextItems("【 "+ Messages.get(this, "for_sales") +" 】", forSales, builder);
-			addTextItems("【 "+ Messages.get(this, "others") +   " 】", others, builder);
-
-			// ========== 记录分支关卡物品 ==========
-			if (Options.checkBranches) {
-				int currentDepth = Dungeon.depth;
-				for (int branch : Options.BRANCH_IDS) {
-					logBranchItems(currentDepth, branch, builder);
-				}
-			}
-
-			result.append("\n").append(builder);
-
-			Dungeon.branch = originalBranch;
-			Dungeon.depth++;
-		}
-		return result.toString();
-	}
-
 }

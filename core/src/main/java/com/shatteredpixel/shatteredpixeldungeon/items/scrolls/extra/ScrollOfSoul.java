@@ -118,8 +118,8 @@ public class ScrollOfSoul extends Scroll {
         @Override
         public String desc() {
             return Messages.get(this, "desc", level,
-                   attackDamageMulti,
-                    shieldDamageMulti
+                   Math.min(90,attackDamageMulti),
+                    Math.min(90,shieldDamageMulti)
             );
         }
 

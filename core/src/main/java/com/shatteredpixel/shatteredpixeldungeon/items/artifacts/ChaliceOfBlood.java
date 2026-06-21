@@ -79,7 +79,7 @@ public class ChaliceOfBlood extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if (isEquipped( hero ) && level() < levelCap && !cursed && !hero.isInvulnerable(getClass())&& hero.buff(RoseShiled.class) == null)
+		if (isEquipped( hero ) && level() < levelCap && !cursed && !hero.isInvulnerable(getClass()) && hero.buff(RoseShiled.class) == null && hero.buff(CapeOfThorns.ThornsTime.class) == null)
 			actions.add(AC_PRICK);
 		return actions;
 	}

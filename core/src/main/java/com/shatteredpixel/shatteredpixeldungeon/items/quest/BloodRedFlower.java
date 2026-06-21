@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -53,7 +52,7 @@ public class BloodRedFlower extends Item {
             } else if(Charge < hero.HT/2){
                 int count = hero.HP/2;
                 Charge += Math.min(count,hero.HT/2);
-                hero.damage(count,this, Char.DamageType.REAL);
+                hero.HP = Charge;
                 GLog.n(Messages.get(BloodRedFlower.class,"blood"));
                 curUser.spend( Actor.TICK );
                 curUser.busy();

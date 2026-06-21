@@ -17,4 +17,20 @@ public class AnySkinSelect extends Item {
     public boolean isIdentified() {
         return true;
     }
+
+    public static class AnySkinCustomSelect extends Item {
+        {
+            image = ItemSpriteSheet.HALLS_PAGE;
+            unique = true;
+        }
+        @Override
+        public boolean isUpgradable() {
+            return false;
+        }
+
+        @Override
+        public boolean isIdentified() {
+            return true;
+        }
+    }
 }
