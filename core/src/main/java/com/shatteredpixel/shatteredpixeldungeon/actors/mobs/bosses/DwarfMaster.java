@@ -326,7 +326,7 @@ public class DwarfMaster extends Boss {
             super.detach();
             for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (m instanceof DwarfMaster){
-                    m.damage(20, this, DamageType.REAL);
+                    m.damage(20, this);
                 }
             }
         }

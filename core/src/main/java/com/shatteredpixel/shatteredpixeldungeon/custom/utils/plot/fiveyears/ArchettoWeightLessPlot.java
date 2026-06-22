@@ -3,13 +3,11 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.fiveyears;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.ArchettoWeightLess;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.BloodRedFlower;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -97,7 +95,7 @@ public class ArchettoWeightLessPlot extends Plot {
 
     private void process_to_3() {
         diagulewindow.changeText(Messages.get(ArchettoWeightLess.class, "messages3"));
-        Dungeon.level.drop(new BloodRedFlower(), hero.pos).sprite.drop();
+        //Dungeon.level.drop(new BloodRedFlower(), hero.pos).sprite.drop();
     }
 
     private void process_to_4() {
@@ -109,7 +107,7 @@ public class ArchettoWeightLessPlot extends Plot {
     }
 
     public static class TalkOne extends Plot {
-        private final static int maxprocess = 3;
+        private final static int maxprocess = 4;
 
         {
             process = 1;
@@ -139,6 +137,9 @@ public class ArchettoWeightLessPlot extends Plot {
                         break;
                     case 3:
                         process_to_3();
+                        break;
+                    case 4:
+                        process_to_4();
                         break;
                 }
                 diagulewindow.update();
@@ -174,7 +175,7 @@ public class ArchettoWeightLessPlot extends Plot {
 
         private void process_to_2() {
             diagulewindow.changeText(Messages.get(ArchettoWeightLess.class, "messages7"));
-            Dungeon.level.drop(new BloodRedFlower(), hero.pos).sprite.drop();
+            //Dungeon.level.drop(new BloodRedFlower(), hero.pos).sprite.drop();
         }
 
         private void process_to_3() {
@@ -184,6 +185,11 @@ public class ArchettoWeightLessPlot extends Plot {
             hero.sprite.emitter().burst(Speck.factory(Speck.STEAM), 10);
             GLog.w(Messages.get(CursedWand.class, "petrify"));
         }
+
+        private void process_to_4() {
+            diagulewindow.changeText(Messages.get(ArchettoWeightLess.class, "messages10"));
+        }
+
     }
 
     public static class TalkTwo extends Plot {

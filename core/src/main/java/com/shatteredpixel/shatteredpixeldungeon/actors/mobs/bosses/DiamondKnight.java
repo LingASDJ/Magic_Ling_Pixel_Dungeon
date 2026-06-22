@@ -174,7 +174,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
             super.detach();
             for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (m instanceof DiamondKnight){
-                    m.damage(12, this, DamageType.REAL);
+                    m.damage(12, this);
                 }
             }
         }
