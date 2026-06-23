@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -36,7 +37,7 @@ public class PumkingBomber extends Mob {
 
         EXP = 19;
 
-        maxLvl = 35;
+        maxLvl = Dungeon.isDLC(Conducts.Conduct.HARD) ? -1 : 35;
 
         HUNTING = new Hunting();
 
@@ -98,6 +99,10 @@ public class PumkingBomber extends Mob {
         Mob.AiState lastState = state;
         boolean result = super.act();
         if (paralysed <= 0) leapCooldown --;
+
+        if(isAlive() && Dungeon.isDLC(Conducts.Conduct.HARD)){
+            die(null);
+        }
 
         //if state changed from wandering to hunting, we haven't acted yet, don't update.
         if (!(lastState == WANDERING && state == HUNTING)) {

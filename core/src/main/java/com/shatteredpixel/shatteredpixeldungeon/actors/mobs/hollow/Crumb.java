@@ -15,7 +15,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrumbSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -100,10 +99,6 @@ public class Crumb extends Mob {
 
         if (toSteal != null && !toSteal.unique && Random.Float()<=0.45f) {
 
-            PumkingBomber clone = new PumkingBomber();
-            clone.pos = pos;
-            clone.state = clone.HUNTING;
-            GameScene.add( clone, 2f );
             ScrollOfTeleportation.teleportToLocation(this, 0);
             GLog.w( Messages.get(Crumb.class, "stole_food", toSteal.name()) );
             if (!toSteal.stackable) {

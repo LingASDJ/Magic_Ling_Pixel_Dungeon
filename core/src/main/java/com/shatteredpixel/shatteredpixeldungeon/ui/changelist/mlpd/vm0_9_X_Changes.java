@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MyCoreHeartSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyarlathotepSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PeachGodStateSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PumkingBomberSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
@@ -232,6 +233,9 @@ public class vm0_9_X_Changes {
                         "3.使用多线程提升查询速度（也是移除强力搜查模式的原因）\n" +
                         "4.查种结束后显示对应的物品楼层位置")));
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_HORN4), "丰饶之角",
+                "现在贮存食物时，将自动跳转到食物袋！"));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RANDOM_CHEST), "存档提取系统",
                 "鉴于0.9.4.8旧存档崩溃过多，但是存档克隆问题太多，所以加了这个，如果你真的需要老存档，欢迎自行提取并联系我们人工恢复。"));
 
@@ -288,6 +292,9 @@ public class vm0_9_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_HAND_CONTROL), "法师之手调整",
                 "鉴于目前法师之手轻微超模，将法师之手英雄可见视野移除。"));
+
+        changes.addButton(new ChangeButton(new PumkingBomberSprite(), "南瓜姜饼人调整",
+                "鉴于目前与时间气泡有严重卡死冲突且短时间无法解决，在困难模式下将自动死亡，但无经验提供。"));
 
     }
 
