@@ -169,7 +169,7 @@ public class ScoreBuff extends Buff {
 
                //S评估
                if(score >= 4500 && branch == 1 && Dungeon.depth == 31){
-                   Badges.MINIGAME_MASTER_ONE();
+                   Badges.MINIGAME_TOTAL(1);
                }
 
                 Statistics.miniGamesTotalLevel += PacManScoreRules();

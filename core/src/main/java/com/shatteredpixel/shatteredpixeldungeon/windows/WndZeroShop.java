@@ -203,8 +203,11 @@ public class WndZeroShop extends Window {
                         selectReward(item);
                         itemUnlock(item);
                         SPDSettings.unlockItem("anyskin1");
-                        skinSelect.detach(hero.belongings.backpack);
-                        // ==========修复3：Buff.prolong 参数错误修正==========
+                        if(skinSelect != null){
+                            skinSelect.detach(hero.belongings.backpack);
+                        } else {
+                            anySkinCustomSelect.detach(hero.belongings.backpack);
+                        }
                         Buff.prolong(hero, ReloadShop.class, 1f);
                         hide();
                     } else {

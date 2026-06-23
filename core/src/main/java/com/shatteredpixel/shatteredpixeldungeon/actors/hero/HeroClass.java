@@ -221,7 +221,9 @@ public enum HeroClass {
 		new ScrollOfIdentify().identify();
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
-			//TODO LIST WEAPON
+
+			Badges.MINIGAME_TOTAL(3);
+
 			new RitualSword().identify().collect();
 			new TreeList().identify().collect();
 			new TragicCode().identify().collect();

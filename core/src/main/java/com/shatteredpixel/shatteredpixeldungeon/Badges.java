@@ -31,7 +31,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SS_S
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
@@ -793,17 +792,23 @@ public class Badges {
 		displayBadge( Badge.KILL_MORES );
 	}
 
-	public static void MINIGAME_MASTER_ONE() {
-		displayBadge( Badge.MASTER );
-	}
+	public static void MINIGAME_TOTAL(int level) {
+		Badge badge;
+		switch (level) {
+			case 1: default:
+				badge = Badge.MASTER;
+				break;
+			case 2:
+				badge = Badge.MASTER_TWO;
+				break;
+			case 3:
+				badge = Badge.MASTER_THREE;
+				break;
+		}
 
-	public static void MINIGAME_MASTER_TWO() {
-		displayBadge( Badge.MASTER_TWO );
-	}
-
-	public static void  MINIGAME_MASTER_THREE() {
-		displayBadge( Badge.MASTER_THREE );
-	}
+        local.add(badge);
+        displayBadge(badge);
+    }
 
 	public static void KILL_ST() {
 		displayBadge( Badge.KILL_CLSISTER );
@@ -1179,9 +1184,9 @@ public class Badges {
 
 		KILL_DOG					( 152),
 		KILL_MORES					( 153),
-		MASTER						(154,true,true ),
-		MASTER_TWO				(155,true,false ),
-		MASTER_THREE					(156,true,false ),
+		MASTER						(154),
+		MASTER_TWO						(155),
+		MASTER_THREE					(156),
 		HOLLOWCITY					( 157),
 		WOC_MONEY_GIRL				( 158),
 
@@ -1233,12 +1238,6 @@ public class Badges {
 		Badge( int image, BadgeType type ) {
 			this.image = image;
 			this.type = type;
-		}
-
-		Badge( int image, boolean meta,boolean pacman ) {
-			this.image = image;
-			this.meta = meta;
-			this.pacman = pacman;
 		}
 
 

@@ -109,7 +109,7 @@ public class WinAllSearchStatus extends Window {
                     Statistics.miniGamesTotalLevel += levelc;
                 }
                 if(buff.score >= 20000 * 0.75f){
-                    Badges.MINIGAME_MASTER_THREE();
+                    Badges.MINIGAME_TOTAL(3);
                 }
 
                 Statistics.bossScores[5] += (int) ((Statistics.getAlLSearchScore + Statistics.getPacManScore + Statistics.getMoveBoxScore) * 0.25f);

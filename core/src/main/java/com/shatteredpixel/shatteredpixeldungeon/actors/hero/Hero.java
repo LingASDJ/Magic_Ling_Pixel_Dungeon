@@ -4197,8 +4197,23 @@ public class Hero extends Char {
 
 	@Override
 	public float talentProc(){
-		if (hasTalent(Talent.RUNIC_TRANSFERENCE) && (pointsInTalent(Talent.RUNIC_TRANSFERENCE)>1)) return 1.25f;
-		return super.talentProc();
+		int pt = pointsInTalent(Talent.RUNIC_TRANSFERENCE);
+		boolean isWarrior = heroClass == HeroClass.WARRIOR;
+
+		boolean valid = false;
+		if (hasTalent(Talent.RUNIC_TRANSFERENCE)){
+			if (!isWarrior && pt >= 1) valid = true;
+			if (isWarrior && pt > 1) valid = true;
+		}
+
+		if (!valid) return super.talentProc();
+
+		float base = 1.25f;
+		float extra = 0f;
+		if (!isWarrior){
+			if (pt == 1) extra = -0.15f;
+		}
+		return base + extra;
 	}
 
 	private boolean warriorDeathWindowShown = false;
