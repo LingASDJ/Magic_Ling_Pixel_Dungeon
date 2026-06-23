@@ -316,7 +316,7 @@ public class MoveBoxHollowActorLevel extends Level {
                 getRecord = true;
                 ScoreBuff buff = hero.buff(ScoreBuff.class);
                 if (InitScore() * 0.75f >= buff.score) {
-                    Badges.MINIGAME_MASTER_TWO();
+                   Badges.MINIGAME_TOTAL(2);
                 }
 
                 MorphsMoveBoxEndPlot plot = new MorphsMoveBoxEndPlot();
@@ -355,7 +355,7 @@ public class MoveBoxHollowActorLevel extends Level {
                     Statistics.miniGamesTotalLevel += levelc;
                 }
                 if(buff.score >= InitScore() * 0.75f){
-                    Badges.MINIGAME_MASTER_TWO();
+                    Badges.MINIGAME_TOTAL(2);
                 }
             }
         }

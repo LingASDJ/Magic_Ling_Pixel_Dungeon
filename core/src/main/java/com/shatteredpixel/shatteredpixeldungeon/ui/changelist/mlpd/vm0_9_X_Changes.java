@@ -151,6 +151,9 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new ArchettoSprite(), "弦事件调整",
                 "现在给予弦珍贵的东西，将可以获得 _灵魂卷轴_。"));
 
+        changes.addButton (new ChangeButton (new ItemSprite(ItemSpriteSheet.BEACON), "新道具：梦想通讯器",
+                "完全隐藏道具，只能在异度时空获得（兑换码），可以在这里兑换任意一套时装皮肤。"));
+
         changes.addButton (new ChangeButton (new ItemSprite(ItemSpriteSheet.SKIN_14), "新皮肤：女仆红狐",
                 "售价1500钴币\n\n作者：Priestess & 索托斯 & Daniel Calan\n\n炉边煮好了咖啡，主人，要不要来一杯歇歇？"));
 
@@ -219,6 +222,9 @@ public class vm0_9_X_Changes {
                         "神器充能效果为每回合恢复0.3点充能。\n" +
                         "诅咒效果为无法使用。")));
 
+        changes.addButton( new ChangeButton( new TalentIcon(Talent.RUNIC_TRANSFERENCE), Talent.RUNIC_TRANSFERENCE.title(),
+                "现在该天赋新增了其他英雄的嬗变策略，详情可参考该英雄的蜕变描述。"));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FLOWERY), "新书籍：元素编年史",
                         "大概率提供魔能透视，小概率提供元素祝福。\n" +
                         "在那些回忆商店有概率出现，出现时，绿林圣境守则书籍将不再该商店生成"));
@@ -265,6 +271,9 @@ public class vm0_9_X_Changes {
                         "_-_ 修复Bzmdr礼物英雄视野异常的问题\n" +
                         "_-_ 修复蓄血圣杯可以在荆棘激活时献祭的异常\n" +
                         "_-_ 修复部分戒指的数值显示异常\n" +
+                        "_-_ 修复英雄小人素材缺少1px的问题，来自watabou的特性（2014-07-27）在4349天后被处理\n" +
+                        "_-_ 修复部分徽章无法显示的异常\n" +
+                        "_-_ 修复变形天赋文本不显示的问题\n"+
                         "_-_ 粽子的生成概率下调至0.85f，比肉馅饼稍微低了一些，而不是之前的3权重"),
                 (	    "V0.9.4.8：\n\n" +
                         "_-_ 修复异果层自爆会摧毁物品的异常\n" +
