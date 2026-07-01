@@ -8,6 +8,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
@@ -24,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime_Orange;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Succubus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWitch;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Butcher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.Wisp;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
@@ -199,7 +201,7 @@ public class GoldTrapChestRoom extends SpecialRoom {
             } else if(depth >= 15) {
                 n = Random.Float()<=0.05f ? new Senior() : new BruteBot();
             } else if(depth >= 10) {
-                n = Random.Float()<=0.05f ? new MolotovHuntsman() :new DM201();
+                n = Statistics.Tomb_Reach ? new Wisp() : Random.Float()<=0.05f ? new MolotovHuntsman() :new DM201();
             } else if(depth >= 6){
                 n = Random.Float()<=0.05f ? new Necromancer() : new SRPDHBLR();
             }
