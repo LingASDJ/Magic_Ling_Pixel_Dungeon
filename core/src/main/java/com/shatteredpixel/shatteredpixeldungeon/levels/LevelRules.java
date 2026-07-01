@@ -221,7 +221,11 @@ public class LevelRules {
                     case 12:
                     case 13:
                     case 14:
-                        return new CavesLevel();
+                        if(Statistics.Tomb_Reach){
+                            return new TombCirCleLevel();
+                        } else {
+                            return new CavesLevel();
+                        }
                     case 15:
                         if(Statistics.RandMode){
                             switch (Random.Int(5)){
