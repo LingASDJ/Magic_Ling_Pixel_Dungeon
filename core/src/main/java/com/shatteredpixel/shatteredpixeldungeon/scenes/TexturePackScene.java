@@ -68,6 +68,7 @@ public class TexturePackScene extends PixelScene {
         PRESET_PACKS.add("alpha.mlpack");
         PRESET_PACKS.add("mlpd.mlpack");
         PRESET_PACKS.add("ancity.mlpack");
+        PRESET_PACKS.add("tomb.mlpack");
     }
 
     private static final String[] ALLOWED_EXTENSIONS = {".zip", ".mlpack"};
