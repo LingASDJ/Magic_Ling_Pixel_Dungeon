@@ -298,7 +298,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new CerbusSleepRoom());
 		}
 
-		if (depth == 14 && branch == 0) {
+		if (depth == 14 && branch == 0 && !Statistics.Tomb_Reach) {
 			initRooms.add(new NxhyShopRoom());
 		}
 
@@ -350,7 +350,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		if(branch == 0){
-			if(Dungeon.depth<26 && Random.Int(10) == 1) {
+			if(Dungeon.depth<26 && Random.Int(10) == 1 && !Statistics.Tomb_Reach) {
 				initRooms.add(new EyeRoom());
 			} else if(Random.Int(10) == 1 && depth>26 && Statistics.Hollow_Holiday) {
 				initRooms.add(new BigEyeRoom());
@@ -358,7 +358,7 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if(Dungeon.depth<26 && Random.NormalIntRange(1, 100)<=21){
+		if(Dungeon.depth<26 && Random.NormalIntRange(1, 100)<=21 && !Statistics.Tomb_Reach) {
 			initRooms.add(new SkeletonFishRoom());
 			initRooms.add(new BlueAltStoneRoom());
 		}

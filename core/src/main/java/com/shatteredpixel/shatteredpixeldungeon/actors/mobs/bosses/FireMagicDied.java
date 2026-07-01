@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HellBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
@@ -457,6 +458,13 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                     sprite.zap(enemy.pos);
                     spend(3f);
                 }
+            } else {
+                if (pumpedUp >= 2){
+                    ((FireMagicGirlSprite)sprite).triggerEmitters();
+                }
+                attack( enemy );
+                Invisibility.dispel(this);
+                spend( attackDelay() );
             }
 
             return !visible;

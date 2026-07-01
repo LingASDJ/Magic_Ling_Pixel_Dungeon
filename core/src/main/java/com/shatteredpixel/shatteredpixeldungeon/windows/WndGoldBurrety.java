@@ -653,9 +653,9 @@ public class WndGoldBurrety extends Window {
             return item instanceof MissileWeapon && (!(item instanceof Dart) || item instanceof TippedDart) ||
                     item instanceof Potion && !(item instanceof Elixir || item instanceof Brew) ||
                     item instanceof Scroll && (!(item instanceof ScrollOfTransmutation) || item.quantity() > 1) ||
-                    item instanceof Ring || item instanceof Trinket || item instanceof Wand ||
+                    item instanceof Ring && !item.isEquipped(hero) || item instanceof Trinket || item instanceof Wand ||
                     item instanceof Plant.Seed || item instanceof Runestone ||
-                    item instanceof Artifact && !(item instanceof OilLantern);
+                    item instanceof Artifact && !(item instanceof OilLantern) && !item.isEquipped(hero);
         }
 
         @Override

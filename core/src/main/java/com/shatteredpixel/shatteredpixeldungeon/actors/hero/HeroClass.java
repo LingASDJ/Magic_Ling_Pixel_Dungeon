@@ -78,6 +78,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.TombReachBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -222,7 +223,7 @@ public enum HeroClass {
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 
-			Badges.MINIGAME_TOTAL(3);
+			new TombReachBook().identify().collect();
 
 			new RitualSword().identify().collect();
 			new TreeList().identify().collect();

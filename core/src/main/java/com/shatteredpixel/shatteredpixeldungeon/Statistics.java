@@ -318,6 +318,8 @@ public class Statistics {
 	//Holiday Boolean
 	public static boolean Hollow_Holiday = false;
 
+	public static boolean Tomb_Reach = false;
+
 	public static boolean soulsSpawn = false;
 
 	public static boolean godGirl = false;
@@ -830,8 +832,9 @@ public class Statistics {
 		GetFoodLing = 0;
 		CrivusbossTeleporter = 0;
 
-		//节日布尔-临时版本
+
 		Hollow_Holiday = false;
+		Tomb_Reach = false;
 
 		//BossRush2.5
 		LimitLiquidMatal = 0;
@@ -923,6 +926,7 @@ public class Statistics {
 		/**/
 
 		bundle.put("HOLLOW_DAY",Hollow_Holiday);
+		bundle.put("TOMBREACH",Tomb_Reach);
 
 		/**/
 
@@ -1462,6 +1466,8 @@ public class Statistics {
 		BzmdrCJHeroViewDistance = bundle.getInt("BZMDRCJHEROVIEW");
 
 		attackIFGirl = bundle.getBoolean("ICEFIRE");
+
+		Tomb_Reach = bundle.getBoolean("TOMBREACH");
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ){

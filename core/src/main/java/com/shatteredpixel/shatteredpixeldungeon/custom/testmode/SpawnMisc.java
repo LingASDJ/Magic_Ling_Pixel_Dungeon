@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.MoneyM
 import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.PinkRandomBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.DimandBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.HollowCityBook;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.TombReachBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Cake;
@@ -343,9 +344,9 @@ public class SpawnMisc extends TestItem {
             bookList.add(GrassKingBooks.class);
             bookList.add(IceCityBooks.class);
             bookList.add(NoKingMobBooks.class);
-            bookList.add(HollowCityBook.class);
+
             bookList.add(DeepBloodBooks.class);
-            bookList.add(DimandBook.class);
+
             bookList.add(ElementYearBooks.class);
             bookList.add(MoneyMoreBooks.class);
 
@@ -354,6 +355,10 @@ public class SpawnMisc extends TestItem {
             bookList.add(HellFireBooks.class);
             bookList.add(YellowSunBooks.class);
             bookList.add(BzmdrBooks.class);
+
+            bookList.add(HollowCityBook.class);
+            bookList.add(DimandBook.class);
+            bookList.add(TombReachBook.class);
         }
 
         //Trinket

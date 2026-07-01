@@ -1604,7 +1604,11 @@ public class GameScene extends PixelScene {
 							}
 							break;
 						case 11:
-							WndStory.showChapter( WndStory.ID_CAVES );
+							if(Statistics.Tomb_Reach){
+								WndStory.showChapter( WndStory.ID_TOMBOLA );
+							} else {
+								WndStory.showChapter( WndStory.ID_CAVES );
+							}
 							break;
 						case 16:
 							WndStory.showChapter( WndStory.ID_CITY );

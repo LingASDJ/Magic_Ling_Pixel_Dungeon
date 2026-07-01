@@ -165,6 +165,8 @@ public class BuffIndicator extends Component {
 	public static final int ANCIENT_SURVEY = 150;
 
 	public static final int UPGRADE_SOUL = 151;
+	public static final int DEAD_GAS = 152;
+	public static final int LOST_SOUL = 153;
 
 	public static final int SIZE_SMALL = 7;
 	public static final int SIZE_LARGE = 16;

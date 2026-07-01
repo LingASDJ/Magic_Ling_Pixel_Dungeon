@@ -171,7 +171,7 @@ public class Assets {
 		public static final String WATER_ZERO  = "environment/water_zero.png";
 
 		public static final String WATER_PLACE  = "environment/water_palace.png";
-		public static final String WATER_TOMB   = "environment/water_tomb..png";
+		public static final String WATER_TOMB   = "environment/water_tomb.png";
 
 		public static final String WEAK_FLOOR       = "environment/custom_tiles/weak_floor.png";
 		public static final String SEWER_BOSS       = "environment/custom_tiles/sewer_boss.png";
@@ -339,6 +339,8 @@ public class Assets {
 
 		public static final String LOADING_THRATRE   = "interfaces/loading_theatre.png";
 
+		public static final String LOADING_TOMB    = "interfaces/loading_tomb.png";
+
 		public static final String BUFFS_SMALL      = "interfaces/buffs.png";
 		public static final String BUFFS_LARGE      = "interfaces/large_buffs.png";
 
@@ -394,7 +396,7 @@ public class Assets {
 		public static final String HALLS_BOSS   = "music/boss/Boss5.ogg";
 
 		public static final String WEIGHTLESS    = "music/weightless.ogg";
-
+		public static final String TOMB_CACHE = "music/tomb_cache.mp3";
 
         public static final String NBPL = "music/nbpl.ogg";
         public static final String THEME_FINALE = "music/theme_finale.ogg";
@@ -826,6 +828,10 @@ public class Assets {
 		public static final String WORM	= "sprites/tumulus/tomb_worm.png";
 		public static final String WISP	= "sprites/tumulus/wisp.png";
 		public static final String NECRO_SCOUT	= "sprites/tumulus/necro_scout.png";
+		public static final String THIEF_SOUL	= "sprites/tumulus/tomb_robber.png";
+
+		public static final String BONE_BEAST	= "sprites/tumulus/bone_beast.png";
+		public static final String SHARD	= "sprites/tumulus/shard.png";
 
 		//BOSS
 		public static final String FRDG	= "sprites/boss/fireDragon.png";
