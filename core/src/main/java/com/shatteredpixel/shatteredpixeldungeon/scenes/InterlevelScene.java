@@ -196,7 +196,7 @@ public class InterlevelScene extends PixelScene {
 		if (Dungeon.depth == 0)         	loadingAsset = Assets.Interfaces.LOADING_GOLD;
 		else if (loadingDepth <= 5)     loadingAsset = Assets.Interfaces.LOADING_SEWERS;
 		else if (loadingDepth <= 10)    loadingAsset = Assets.Interfaces.LOADING_PRISON;
-		else if (loadingDepth <= 15)    loadingAsset = Assets.Interfaces.LOADING_COLD;
+		else if (loadingDepth <= 15)    loadingAsset = Statistics.Tomb_Reach ? Assets.Interfaces.LOADING_TOMB : Assets.Interfaces.LOADING_COLD;
 		else if (loadingDepth <= 20)    loadingAsset = Assets.Interfaces.LOADING_CITY;
 		else if (loadingDepth <= 25)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
 		else if (loadingDepth <= 30)    loadingAsset = Assets.Interfaces.LOADING_HOLLOW;
