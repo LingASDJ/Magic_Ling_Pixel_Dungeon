@@ -108,6 +108,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
@@ -429,6 +430,13 @@ public class Hero extends Char {
 		if (buff(ElixirOfMight.HTBoost.class) != null){
 			HT += buff(ElixirOfMight.HTBoost.class).boost();
 		}
+
+		int totalLostHP = 0;
+		for (LostSoul soulBuff : buffs(LostSoul.class)){
+			totalLostHP += soulBuff.hpLoss;
+		}
+		HT = Math.max(1, HT - totalLostHP);
+
 
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
