@@ -116,6 +116,8 @@ public class WndStory extends Window {
 
 	public static final int ID_DEAD_CITY_END	= 44;
 
+	public static final int ID_TOMBOLA = 45;
+
 	private static final SparseArray<String> CHAPTERS = new SparseArray<>();
 
 	static {
@@ -166,6 +168,8 @@ public class WndStory extends Window {
 		CHAPTERS.put( ID_ALC, "aic" );
 		CHAPTERS.put( ID_LAVA, "lava" );
 		CHAPTERS.put( ID_LAVABOSS, "lavaboss" );
+
+		CHAPTERS.put( ID_TOMBOLA, "tombpalce");
 	}
 
 
@@ -224,6 +228,8 @@ public class WndStory extends Window {
 	public void hide() {
 		super.hide();
 		Banner mapnameSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
+		GameScene sceneGame = (GameScene) Game.scene();
+		float screenW = Game.width;
 		if(!Statistics.bossRushMode && Game.scene() instanceof GameScene){
 			switch (Dungeon.depth) {
 				case 0:
@@ -251,9 +257,17 @@ public class WndStory extends Window {
 					scene.showLogo( mapnameSlain );
 					break;
 				case 11:
-					mapnameSlain.texture( "interfaces/mapname/caves.png" );
-					mapnameSlain.show( Window.MLPD_COLOR, 0.6f, 3f );
-					scene.showLogo( mapnameSlain );
+					if(Statistics.Tomb_Reach){
+						mapnameSlain.texture( "interfaces/mapname/tomb-ring.png" );
+						mapnameSlain.show( Window.CBLACK, 0.6f, 3f );
+						centerBanner(mapnameSlain, screenW);
+						sceneGame.showLogo( mapnameSlain );
+					} else {
+						mapnameSlain.texture( "interfaces/mapname/caves.png" );
+						mapnameSlain.show( Window.MLPD_COLOR, 0.6f, 3f );
+						scene.showLogo( mapnameSlain );
+					}
+
 					break;
 				case 16:
 					mapnameSlain.texture( "interfaces/mapname/dwarf.png" );
@@ -290,6 +304,12 @@ public class WndStory extends Window {
 		}
 
 
+	}
+
+	/** 横幅水平居中，解决横屏偏移 */
+	private void centerBanner(Banner banner, float screenWidth){
+		float bw = banner.width();
+		banner.x = (screenWidth - bw) / 2f;
 	}
 
 	public static void showChapter( int id ) {
