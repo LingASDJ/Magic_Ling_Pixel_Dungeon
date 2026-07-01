@@ -126,6 +126,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SkyDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SuccubusQueen;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.GraveRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroScout;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.SkeletonDemon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.SmallSkeletonDemon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.ThiefSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.Wisp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.Worm;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -420,8 +423,10 @@ public enum Bestiary {
 
 		//古墓测试
 		TUMULUS.addEntities(
-				DeviceCompat.isDebug()
-						? new Class<?>[]{GraveRat.class, Worm.class, Wisp.class, NecroScout.class}
+				DeviceCompat.isDebug() || DeviceCompat.isMDP()
+						? new Class<?>[]{
+								GraveRat.class, Worm.class, Wisp.class, NecroScout.class,
+						ThiefSoul.class, SkeletonDemon.class, SmallSkeletonDemon.class}
 						: new Class<?>[]{Albino.class,
 						Salamander.class,
 						SRPDHBLR.class, NewBlackHost.class,
