@@ -333,6 +333,10 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe( new StewedMeat.twoMeat() ));
 				result.add(new QuickRecipe( new StewedMeat.threeMeat() ));
 				result.add(null);
+				result.add(new QuickRecipe( new StewedMeat.four() ));
+				result.add(new QuickRecipe( new StewedMeat.five() ));
+				result.add(new QuickRecipe( new StewedMeat.six() ));
+				result.add(null);
 				result.add(new QuickRecipe( new MeatPie.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new Pasty(), new Food(), new MysteryMeat.PlaceHolder())),
 						new MeatPie()));

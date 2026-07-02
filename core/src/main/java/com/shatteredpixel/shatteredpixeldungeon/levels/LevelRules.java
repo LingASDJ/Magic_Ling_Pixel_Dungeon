@@ -235,7 +235,6 @@ public class LevelRules {
                                 default:
                                     return new AncientMysteryCityBossLevel();
                             }
-                            // ========== 替换：Statistics.boss_enhance & 0x4 → 索引2
                         } else if (SPDSettings.isBossEnhanceEnabled(2)) {
                             return new CavesGirlDeadLevel();
                         } else {
@@ -318,6 +317,8 @@ public class LevelRules {
                     case 13:
                     case 14:
                         return new MiningLevel();
+                    case 15:
+                        return new TombHallExitLevel();
                     case 17:
                     case 18:
                         return new AncientMysteryCityLevel();

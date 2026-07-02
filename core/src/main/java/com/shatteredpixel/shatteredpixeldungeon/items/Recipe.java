@@ -198,6 +198,7 @@ public abstract class Recipe {
 			new ArcaneResin.Recipe(),
 			new Alchemize.Recipe(),
 			new StewedMeat.oneMeat(),
+			new StewedMeat.four(),
 
 			new JAmulet.CrystalRecipe(),
 			//SHPD 2.4.2
@@ -233,6 +234,7 @@ public abstract class Recipe {
 			new ReclaimTrap.Recipe(),
 			new WildEnergy.Recipe(),
 			new StewedMeat.twoMeat(),
+			new StewedMeat.four(),
 			new PotionOfNoWater.Recipe(),
 			new UnstableSpell.Recipe(),
 			new Alchemize.Recipe(),
@@ -246,6 +248,7 @@ public abstract class Recipe {
 	private static Recipe[] threeIngredientRecipes = new Recipe[]{
 			new Potion.SeedToPotion(),
 			new StewedMeat.threeMeat(),
+			new StewedMeat.six(),
 			new MeatPie.Recipe(),
 			new ScrollOfFlameCursed.Recipe(),
 			new WandOfBlueFuck.Recipe(),

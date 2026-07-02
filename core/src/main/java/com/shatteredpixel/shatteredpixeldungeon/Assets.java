@@ -87,6 +87,8 @@ public class Assets {
 		public static final String HALL_PO  = "environment/custom_tiles/hall_above.png";
 		public static final String HALL_POX  = "environment/custom_tiles/hall_above_b.png";
 
+		public static final String TOMB_HALL  = "environment/custom_tiles/tombhall_entrance.png";
+
 
 		public static final String CITY_PO  = "environment/custom_tiles/parliament_above.png";
 		public static final String CITY_POX  = "environment/custom_tiles/parliament_before_behind.png";

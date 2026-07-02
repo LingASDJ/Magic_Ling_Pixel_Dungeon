@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.tomb.GraveMeat;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -85,6 +86,43 @@ public class StewedMeat extends Food {
 			outQuantity = 3;
 		}
 	}
+
+	public static class four extends Recipe.SimpleRecipe{
+		{
+			inputs =  new Class[]{GraveMeat.class};
+			inQuantity = new int[]{1};
+
+			cost = 2;
+
+			output = StewedMeat.class;
+			outQuantity = 1;
+		}
+	}
+
+	public static class five extends Recipe.SimpleRecipe{
+		{
+			inputs =  new Class[]{GraveMeat.class};
+			inQuantity = new int[]{2};
+
+			cost = 2;
+
+			output = StewedMeat.class;
+			outQuantity = 2;
+		}
+	}
+
+	public static class six extends Recipe.SimpleRecipe{
+		{
+			inputs =  new Class[]{GraveMeat.class};
+			inQuantity = new int[]{3};
+
+			cost = 2;
+
+			output = StewedMeat.class;
+			outQuantity = 3;
+		}
+	}
+
 	@Override
 	public String desc() {
 		//三元一次逻辑运算

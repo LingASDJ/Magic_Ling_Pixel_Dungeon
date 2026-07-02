@@ -38,6 +38,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.tomb.CookGraveMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.tomb.FrozenGraveMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.tomb.GraveMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.DocumentPage;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
@@ -261,6 +264,9 @@ public class Heap implements Bundlable {
 			} else if (item instanceof IceFishSword) {
 				replace( item, FireFishSword.resetling( (IceFishSword) item ) );
 				evaporated = true;
+			} else if (item instanceof GraveMeat || item instanceof FrozenGraveMeat) {
+				replace( item, CookGraveMeat.cook( item.quantity ) );
+				burnt = true;
 			} else if (item instanceof MysteryMeat || item instanceof FrozenCarpaccio) {
 				replace( item, ChargrilledMeat.cook( item.quantity ) );
 				burnt = true;
@@ -355,7 +361,10 @@ public class Heap implements Bundlable {
 		
 		boolean frozen = false;
 		for (Item item : items.toArray( new Item[0] )) {
-			if (item instanceof MysteryMeat) {
+			if(item instanceof GraveMeat){
+				replace(item, FrozenGraveMeat.cook((GraveMeat) item));
+				frozen = true;
+			} else if (item instanceof MysteryMeat) {
 				replace(item, FrozenCarpaccio.cook((MysteryMeat) item));
 				frozen = true;
 			} else if (item instanceof FireFishSword) {
