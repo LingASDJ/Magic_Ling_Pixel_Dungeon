@@ -1,6 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SmallSkeletonDemonSprite;
 import com.watabou.utils.Random;
@@ -20,7 +22,7 @@ public class SmallSkeletonDemon extends Mob {
     @Override
     protected boolean act() {
         if(HT == 1){
-            damage(325799,this,DamageType.REAL);
+            Buff.affect(this, Bleeding.class).set(2f);
         }
         reduceMaxHp(0.02f);
         return super.act();

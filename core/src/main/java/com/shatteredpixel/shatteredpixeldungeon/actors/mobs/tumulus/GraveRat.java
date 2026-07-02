@@ -6,7 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.RotGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.tomb.GraveMeat;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GraveRatSprite;
@@ -25,8 +25,7 @@ public class GraveRat extends Mob {
         properties.add(Property.TUMULUS);
         lootChance = 0.16f;
 
-        //TODO 腐肉 暂无贴图
-        loot = MysteryMeat.class;
+        loot = GraveMeat.class;
 
         immunities.add(RotGas.class);
     }

@@ -77,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NormalZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TombHallExitLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ZeroCityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ZeroLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -1033,7 +1034,7 @@ public class Dungeon {
 		int dist = Math.max(Dungeon.hero.viewDistance, Dungeon.hero.viewDistance + Statistics.BzmdrCJHeroViewDistance);
 		dist *= (int) (1f + 0.25f*Dungeon.hero.pointsInTalent(Talent.FARSIGHT));
 
-		if (Dungeon.hero.buff(MagicalSight.class) != null){
+		if (Dungeon.hero.buff(MagicalSight.class) != null || level instanceof TombHallExitLevel && hero.pos < 314){
 			dist = Math.max( dist, MagicalSight.DISTANCE );
 		}
 

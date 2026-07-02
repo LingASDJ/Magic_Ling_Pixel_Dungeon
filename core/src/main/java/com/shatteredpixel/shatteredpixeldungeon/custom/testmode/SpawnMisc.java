@@ -75,6 +75,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Gelatin;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar_Block;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.WhiteSugar_B;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.tomb.CookGraveMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.tomb.FrozenGraveMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.tomb.GraveMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
@@ -335,6 +338,10 @@ public class SpawnMisc extends TestItem {
 
             foodList.add(QieCake.class);
             foodList.add(RiceCake.class);
+
+            foodList.add(GraveMeat.class);
+            foodList.add(FrozenGraveMeat.class);
+            foodList.add(CookGraveMeat.class);
         }
 
         //Book

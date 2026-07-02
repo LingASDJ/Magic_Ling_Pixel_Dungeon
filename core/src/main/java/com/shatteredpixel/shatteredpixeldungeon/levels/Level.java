@@ -1761,7 +1761,7 @@ public abstract class Level implements Bundlable {
 				sense = Math.max( ((MindVision)b).distance, sense );
 			}
 			
-			if (c.buff(MagicalSight.class) != null){
+			if (c.buff(MagicalSight.class) != null || level instanceof TombHallExitLevel && hero.pos < 314){
 				sense = Math.max( MagicalSight.DISTANCE, sense );
 			}
 		}
