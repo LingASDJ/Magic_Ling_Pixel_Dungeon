@@ -56,7 +56,7 @@ public class Ring extends KindofMisc {
 
 	@Override
 	public int iceCoinValue() {
-		return (int) (value() * 5);
+		return value() * 5;
 	}
 
 
