@@ -69,6 +69,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.WarlockHead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.GunHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.GraveRat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroAcolyte;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroArcher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroGuard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroScout;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.SkeletonDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.SmallSkeletonDemon;
@@ -723,6 +726,15 @@ public class MobSpawner extends Actor {
 				res = new ArrayList<>(Arrays.asList(
 						GraveRat.class, Worm.class, NecroScout.class, Worm.class, ThiefSoul.class,
 						SmallSkeletonDemon.class, NecroScout.class));
+				break;
+			case 16:
+				res = new ArrayList<>(Arrays.asList(
+						NecroArcher.class, NecroGuard.class, NecroAcolyte.class));
+				break;
+			case 17:
+				res = new ArrayList<>(Arrays.asList(
+						NecroArcher.class, NecroGuard.class
+						, NecroGuard.class, NecroAcolyte.class, NecroAcolyte.class ));
 				break;
 			default:
 				//非Tomb专属深度复用普通池

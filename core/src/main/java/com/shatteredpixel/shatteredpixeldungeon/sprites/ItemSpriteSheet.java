@@ -1362,6 +1362,8 @@ public class ItemSpriteSheet {
 
     public static final int MAGNETIC_CROWN  = PROJECTILES + 15;
 
+    public static final int BULLET  = PROJECTILES + 17;
+
 
     static{
         assignItemRect(PROJECTILES_STAR,       9, 9);
@@ -1377,7 +1379,7 @@ public class ItemSpriteSheet {
 
         assignItemRect(MAGNETIC_CROWN,            14, 13);
 
-
+        assignItemRect(BULLET,            5, 5);
     }
 
     public static final int RITUAL_SWORD        =                               xy(1, 60);

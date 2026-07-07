@@ -23,9 +23,8 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Random;
 
-public class TombCirCleLevel extends RegularLevel {
+public class LostTombLevel extends RegularLevel {
 
-    //红龙的试炼
     @Override
     protected void createItems() {
         //RedDragon.Quest.spawn(this);
@@ -118,13 +117,13 @@ public class TombCirCleLevel extends RegularLevel {
         switch (tile) {
             case Terrain.STATUE:
             case Terrain.STATUE_SP:
-                return Messages.get(TombCirCleLevel.class, "statue_name");
+                return Messages.get(LostTombLevel.class, "statue_name");
             case Terrain.GRASS:
-                return Messages.get(TombCirCleLevel.class, "grass_name");
+                return Messages.get(LostTombLevel.class, "grass_name");
             case Terrain.HIGH_GRASS:
-                return Messages.get(TombCirCleLevel.class, "high_grass_name");
+                return Messages.get(LostTombLevel.class, "high_grass_name");
             case Terrain.WATER:
-                return Messages.get(TombCirCleLevel.class, "water_name");
+                return Messages.get(LostTombLevel.class, "water_name");
             default:
                 return super.tileName( tile );
         }
@@ -135,18 +134,18 @@ public class TombCirCleLevel extends RegularLevel {
         switch (tile) {
             case Terrain.STATUE:
             case Terrain.STATUE_SP:
-                return Messages.get(TombCirCleLevel.class, "statue_desc");
+                return Messages.get(LostTombLevel.class, "statue_desc");
             case Terrain.ENTRANCE:
             case Terrain.ENTRANCE_SP:
-                return Messages.get(TombCirCleLevel.class, "entrance_desc");
+                return Messages.get(LostTombLevel.class, "entrance_desc");
             case Terrain.EXIT:
-                return Messages.get(TombCirCleLevel.class, "exit_desc");
+                return Messages.get(LostTombLevel.class, "exit_desc");
             case Terrain.HIGH_GRASS:
-                return Messages.get(TombCirCleLevel.class, "high_grass_desc");
+                return Messages.get(LostTombLevel.class, "high_grass_desc");
             case Terrain.WALL_DECO:
-                return Messages.get(TombCirCleLevel.class, "wall_deco_desc");
+                return Messages.get(LostTombLevel.class, "wall_deco_desc");
             case Terrain.BOOKSHELF:
-                return Messages.get(TombCirCleLevel.class, "bookshelf_desc");
+                return Messages.get(LostTombLevel.class, "bookshelf_desc");
             default:
                 return super.tileDesc( tile );
         }

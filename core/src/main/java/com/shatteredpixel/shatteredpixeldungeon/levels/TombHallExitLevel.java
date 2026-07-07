@@ -185,7 +185,7 @@ public class TombHallExitLevel extends Level {
     public static class townBehind extends CustomTilemap {
 
         {
-            texture = Assets.Environment.TOMB_HALL;
+            texture = Assets.Environment.TOMB_ENTR;
 
             tileW = 17;
             tileH = 24;
@@ -209,7 +209,7 @@ public class TombHallExitLevel extends Level {
     public static class townAbove extends CustomTilemap {
 
         {
-            texture = Assets.Environment.TOMB_HALL;
+            texture = Assets.Environment.TOMB_ENTR;
 
             tileW = 17;
             tileH = 24;

@@ -117,6 +117,7 @@ public class WndStory extends Window {
 	public static final int ID_DEAD_CITY_END	= 44;
 
 	public static final int ID_TOMBOLA = 45;
+	public static final int ID_TOMBCHURCH = 46;
 
 	private static final SparseArray<String> CHAPTERS = new SparseArray<>();
 
@@ -170,6 +171,7 @@ public class WndStory extends Window {
 		CHAPTERS.put( ID_LAVABOSS, "lavaboss" );
 
 		CHAPTERS.put( ID_TOMBOLA, "tombpalce");
+		CHAPTERS.put( ID_TOMBCHURCH, "tombchurch");
 	}
 
 
@@ -270,9 +272,17 @@ public class WndStory extends Window {
 
 					break;
 				case 16:
-					mapnameSlain.texture( "interfaces/mapname/dwarf.png" );
-					mapnameSlain.show( Window.CBLACK, 0.6f, 3f );
-					scene.showLogo( mapnameSlain );
+					if(Statistics.Tomb_Reach){
+						mapnameSlain.texture( "interfaces/mapname/tomb-church.png" );
+						mapnameSlain.show( Window.DeepPK_COLOR, 0.6f, 3f );
+						centerBanner(mapnameSlain, screenW);
+						sceneGame.showLogo( mapnameSlain );
+					} else {
+						mapnameSlain.texture( "interfaces/mapname/dwarf.png" );
+						mapnameSlain.show( Window.CBLACK, 0.6f, 3f );
+						scene.showLogo( mapnameSlain );
+					}
+
 					break;
 				case 17:case 18:
 					if (Dungeon.branch == 1) {

@@ -87,8 +87,9 @@ public class Assets {
 		public static final String HALL_PO  = "environment/custom_tiles/hall_above.png";
 		public static final String HALL_POX  = "environment/custom_tiles/hall_above_b.png";
 
-		public static final String TOMB_HALL  = "environment/custom_tiles/tombhall_entrance.png";
-
+		public static final String TOMB_ENTR  = "environment/custom_tiles/tombhall_entrance.png";
+		public static final String TOMB_HALL  = "environment/custom_tiles/tomb_hall.png";
+		public static final String TOMB_ROAD  = "environment/custom_tiles/palace_aisle.png";
 
 		public static final String CITY_PO  = "environment/custom_tiles/parliament_above.png";
 		public static final String CITY_POX  = "environment/custom_tiles/parliament_before_behind.png";
@@ -342,6 +343,7 @@ public class Assets {
 		public static final String LOADING_THRATRE   = "interfaces/loading_theatre.png";
 
 		public static final String LOADING_TOMB    = "interfaces/loading_tomb.png";
+		public static final String LOADING_PALACE    = "interfaces/loading_palace.png";
 
 		public static final String BUFFS_SMALL      = "interfaces/buffs.png";
 		public static final String BUFFS_LARGE      = "interfaces/large_buffs.png";
@@ -831,6 +833,11 @@ public class Assets {
 		public static final String WISP	= "sprites/tumulus/wisp.png";
 		public static final String NECRO_SCOUT	= "sprites/tumulus/necro_scout.png";
 		public static final String THIEF_SOUL	= "sprites/tumulus/tomb_robber.png";
+
+		//CHURCH
+		public static final String NECRO_ARCHER	= "sprites/tumulus/necro_arbalester.png";
+		public static final String NECRO_GUARD	= "sprites/tumulus/necro_soldier.png";
+		public static final String NECRO_APPREN	= "sprites/tumulus/nec_acolyte.png";
 
 		public static final String BONE_BEAST	= "sprites/tumulus/bone_beast.png";
 		public static final String SHARD	= "sprites/tumulus/shard.png";
