@@ -88,7 +88,7 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
         }
     }
 
-    private int codeToTerrain(int code){
+    private static int codeToTerrain(int code){
         switch (code){
             case 0:
                 return Terrain.WATER;
@@ -127,7 +127,7 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
         }
     }
 
-    private void set(Level level, int x, int y, int value) {
+    private static void set(Level level, int x, int y, int value) {
         level.map[x + y * level.width()] = value;
     }
 
@@ -160,4 +160,34 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
             door.set( Door.Type.REGULAR );
         }
     }
+
+    public static abstract class FullLuaCustomRoom extends CustomLuaRoom {
+        @Override
+        public void paint(Level level) {
+            if (pre_map == null) {
+                pre_map = loadMapFromLua(map_lua_file);
+            }
+            if (pre_map == null) return;
+
+            int roomW = width;
+            int roomH = height;
+            for (int dx = 0; dx < roomW; dx++) {
+                for (int dy = 0; dy < roomH; dy++) {
+                    int roomX = left + dx;
+                    int roomY = top + dy;
+                    int idx = dy * roomW + dx;
+                    if (idx < pre_map.length) {
+                        int terrainId = codeToTerrain(pre_map[idx]);
+                        CustomLuaRoom.set(level, roomX, roomY, terrainId);
+                    }
+                }
+            }
+
+            for (Door door : connected.values()) {
+                door.set(  Door.Type.REGULAR );
+            }
+
+        }
+    }
+
 }

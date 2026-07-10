@@ -1379,7 +1379,7 @@ public class ItemSpriteSheet {
 
         assignItemRect(MAGNETIC_CROWN,            14, 13);
 
-        assignItemRect(BULLET,            5, 5);
+        assignItemRect(BULLET,            11, 11);
     }
 
     public static final int RITUAL_SWORD        =                               xy(1, 60);
