@@ -59,6 +59,8 @@ public class Assets {
 		public static final String SliceDeadRoom_MapLua 	= "lua/slicetan.lua";
 
 		public static final String FocuRoom_MapLua      = "lua/focu_room.lua";
+
+		public static final String Tomb_DemonRoom_MapLua      = "lua/tomb/demonshoproom.lua";
 	}
 
 	public static class Environment {
@@ -828,6 +830,10 @@ public class Assets {
 		public static final String ARCHETTO	= "sprites/npc/avrt.png";
 
 		//TOMB
+
+		//NPC
+		public static final String GORE	= "sprites/tumulus/npc/gore.png";
+
 		public static final String GRAVERAT	= "sprites/tumulus/rat_graveyard.png";
 		public static final String WORM	= "sprites/tumulus/tomb_worm.png";
 		public static final String WISP	= "sprites/tumulus/wisp.png";
@@ -841,6 +847,7 @@ public class Assets {
 
 		public static final String BONE_BEAST	= "sprites/tumulus/bone_beast.png";
 		public static final String SHARD	= "sprites/tumulus/shard.png";
+		public static final String NECRO_CAVALRY = "sprites/tumulus/necro_cavalry.png";
 
 		//BOSS
 		public static final String FRDG	= "sprites/boss/fireDragon.png";
