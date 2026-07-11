@@ -2,8 +2,10 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.renderTextBlock;
 
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyImpl;
@@ -13,12 +15,14 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.Callback;
 
 import java.util.List;
 
@@ -37,6 +41,7 @@ public class WndLeaderboard extends Window {
     private int pageSize = 0;
     private List<LeaderboardData.Entry> entries = null;
 
+    private IconTitle title;
     private ScrollPane pane;
     private Component content;
     private RenderedTextBlock statusText;
@@ -44,13 +49,15 @@ public class WndLeaderboard extends Window {
     private IconButton prevBtn;
     private IconButton nextBtn;
     private LeaderboardData leaderboardData = null;
+    private StyledButton refreshBtn;
+    private long lastRefreshTime = 0;
 
     public WndLeaderboard(String date) {
         this.date = date;
 
         resize(WIDTH, HEIGHT);
 
-        IconTitle title = new IconTitle(Icons.CALENDAR.get(), Messages.get(this, "title"));
+        title = new IconTitle(Icons.CALENDAR.get(), Messages.get(this, "title", date));
         title.imIcon.hardlight(0x80BFFF);
         title.setRect(0, 0, WIDTH, 0);
         title.setPos(0, 0);
@@ -59,6 +66,22 @@ public class WndLeaderboard extends Window {
         statusText = renderTextBlock(Messages.get(this, "loading"), 7);
         add(statusText);
 
+        refreshBtn = new StyledButton(Chrome.Type.BLANK,Messages.get(this,"refresh")){
+            @Override
+            protected void onClick() {
+                super.onClick();
+
+                if(Game.realTime - lastRefreshTime < 30)
+                    return;
+
+                lastRefreshTime = Game.realTime;
+                loadPage();
+            }
+        };
+        refreshBtn.icon(NetIcons.get(NetIcons.GLOBE));
+        refreshBtn.icon().scale.set(0.6f);
+        add(refreshBtn);
+
         pane = new ScrollPane(new Component());
         add(pane);
 
@@ -66,7 +89,7 @@ public class WndLeaderboard extends Window {
             @Override
             protected void onClick() {
                 currentPage--;
-                loadPage();
+                updateLayout();
             }
         };
         prevBtn.setRect(0, HEIGHT - 14, 14, 14);
@@ -80,7 +103,7 @@ public class WndLeaderboard extends Window {
             @Override
             protected void onClick() {
                 currentPage++;
-                loadPage();
+                updateLayout();
             }
         };
         nextBtn.setRect(WIDTH - 14, HEIGHT - 14, 14, 14);
@@ -95,6 +118,7 @@ public class WndLeaderboard extends Window {
         if (needsLayout) {
             needsLayout = false;
             statusText.setPos(0, 16);
+            refreshBtn.setRect(title.x + title.reqWidth(),title.y,refreshBtn.reqWidth(),refreshBtn.reqHeight());
             pane.setRect(0, 24, WIDTH, HEIGHT - 38);
             prevBtn.setRect(0, HEIGHT - 14, 14, 14);
             pageText.setPos(WIDTH / 2f - pageText.width() / 2f, HEIGHT - 14);
@@ -153,6 +177,9 @@ public class WndLeaderboard extends Window {
     }
 
     private void updateLayout(){
+        if(leaderboardData == null)
+            return;
+
         totalPlayers = leaderboardData.data.totalPlayers;
         myRank = leaderboardData.data.myRank;
         myScore = leaderboardData.data.myScore;
