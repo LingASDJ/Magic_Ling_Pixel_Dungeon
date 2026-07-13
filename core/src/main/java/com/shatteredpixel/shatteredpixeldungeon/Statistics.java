@@ -510,6 +510,8 @@ public class Statistics {
 
 	public static int moveBoxScoreMax;
 	public static int YuanXiLimit;
+	//求救信号套组的生成
+	public static boolean SOSisAlreadySpawn = false;
 
 	static {
 		propPositive0 = new ArrayList<>(Arrays.asList(

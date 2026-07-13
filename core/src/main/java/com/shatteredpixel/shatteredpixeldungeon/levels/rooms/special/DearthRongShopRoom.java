@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -283,6 +284,11 @@ public class DearthRongShopRoom extends SpecialRoom {
         rare.cursedKnown = true;
         itemsToSpawn.add(rare);
 
+        // 求救信号套组
+        if (!Statistics.SOSisAlreadySpawn && Random.Float() < 0.3f){
+            itemsToSpawn.add(new DistressSignalNesting());
+            Statistics.SOSisAlreadySpawn = true;
+        }
         itemsToSpawn.add (new Flashbang().quantity(1));
         itemsToSpawn.add (new Flashbang().quantity(1));
         itemsToSpawn.add (new Noisemaker().quantity(1));
