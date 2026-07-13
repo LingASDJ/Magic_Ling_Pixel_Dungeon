@@ -18,6 +18,7 @@ public class FlareBullet extends Item {
 
         stackable = true;
         unique = true;
+        defaultAction = AC_LOAD;
     }
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

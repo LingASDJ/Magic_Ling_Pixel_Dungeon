@@ -1,23 +1,30 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.thanks;
 
+import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.DamageType.PHYSICAL;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-
-import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.DamageType.PHYSICAL;
 
 public class HuntingCarnival extends Buff {
     private int duration;          // 总持续回合（一般为75回合）
@@ -56,11 +63,18 @@ public class HuntingCarnival extends Buff {
         return true;
     }
 
-    //视野内随机索敌，返回视野内的一个随机敌人
+    //视野内随机索敌，修复空指针、过滤NPC
     private Char chooseRandomEnemy() {
+        if (target.fieldOfView == null) return null;
         ArrayList<Char> enemies = new ArrayList<>();
         for (Char ch : Actor.chars()) {
-            if (ch != target && target.fieldOfView[ch.pos] && ch.alignment != target.alignment) {
+            if (ch != target
+                    && ch.pos >= 0
+                    && ch.pos < target.fieldOfView.length
+                    && target.fieldOfView[ch.pos]
+                    && ch.alignment != target.alignment
+                    && ch instanceof Mob
+                    && !(ch instanceof NPC)) {
                 enemies.add(ch);
             }
         }
@@ -75,51 +89,75 @@ public class HuntingCarnival extends Buff {
         return Math.max(rawDamage - dr, 0);
     }
 
-    private void performShot(int i,Char enemy) {
+    // 改造：生成追踪箭矢动画，参考SniperSupport
+    private void performShot(int typeIdx, Char enemy) {
         int depth = Dungeon.depth;
-        int type = i; // 0:霜冻, 1:电磁, 2:燃烧
-        int damage;
-        switch (type) {
-            default:
-            case 0: // 霜冻阻滞箭
-            {
-                damage = frostDamage(depth);
-                damage = applyArmorReduction(enemy, damage);
-                enemy.damage(damage, this, PHYSICAL);
-                Buff.affect(enemy, Frost.class, 10);
-                int idx = Random.Int(3); // 0,1,2
-                GLog.p(Messages.get(this, "frost_hit_" + idx));
-                break;
-            }
-            case 1: // 电磁震荡箭
-            {
-                damage = shockDamage(depth);
-                damage = applyArmorReduction(enemy, damage);
-                enemy.damage(damage, this, PHYSICAL);
-                Buff.affect(enemy, Paralysis.class, 5);
-                int idx = Random.Int(3);
-                GLog.p(Messages.get(this, "shock_hit_" + idx));
+        Item missileItem;
+        Runnable damageLogic;
 
-                // 在目标周围生成电场
-                for (int offset : PathFinder.NEIGHBOURS9) {
-                    int pos = enemy.pos + offset;
-                    if (Dungeon.level.insideMap(pos) && !Dungeon.level.solid[pos] && Dungeon.level.water[pos]) {
-                        TrackableElectricity field = Blob.seed(pos, 5, TrackableElectricity.class);
-                        GameScene.add(field);
+        switch (typeIdx) {
+            default:
+            case 0: // 0 霜冻阻滞箭
+                missileItem = new SniperSupport.FrostSnipeArrow();
+                damageLogic = () -> {
+                    int damage = frostDamage(depth);
+                    damage = applyArmorReduction(enemy, damage);
+                    enemy.damage(damage, this, PHYSICAL);
+                    Buff.affect(enemy, Frost.class, 10);
+                    int idx = Random.Int(3);
+                    GLog.p(Messages.get(this, "frost_hit_" + idx));
+                    Buff.detach(enemy,Paralysis.class);
+                };
+                break;
+            case 1: // 1 电磁震荡箭
+                missileItem = new SniperSupport.ShockSnipeArrow();
+                damageLogic = () -> {
+                    int damage = shockDamage(depth);
+                    damage = applyArmorReduction(enemy, damage);
+                    enemy.damage(damage, this, PHYSICAL);
+                    Buff.affect(enemy, Paralysis.class, 5);
+                    int idx = Random.Int(3);
+                    GLog.p(Messages.get(this, "shock_hit_" + idx));
+
+                    // 在目标周围生成电场
+                    for (int offset : PathFinder.NEIGHBOURS9) {
+                        int pos = enemy.pos + offset;
+                        if (Dungeon.level.insideMap(pos) && !Dungeon.level.solid[pos] && Dungeon.level.water[pos]) {
+                            TrackableElectricity field = Blob.seed(pos, 5, TrackableElectricity.class);
+                            GameScene.add(field);
+                        }
+                    }
+                    Buff.detach(enemy,Paralysis.class);
+                };
+                break;
+            case 2: // 2 穿甲燃烧箭
+                missileItem = new SniperSupport.BurnSnipeArrow();
+                damageLogic = () -> {
+                    int damage = burnDamage(depth);
+                    enemy.damage(damage, this, PHYSICAL);
+                    Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 10);
+                    int idx = Random.Int(3);
+                    GLog.p(Messages.get(this, "burn_hit_" + idx));
+                    Buff.detach(enemy,Paralysis.class);
+                };
+                break;
+        }
+
+        MissileSprite missile = new MissileSprite();
+        GameScene.scene.add(missile);
+        Buff.affect(enemy,Paralysis.class,100f);
+        missile.reset(
+                0,
+                enemy.sprite,
+                missileItem,
+                new Callback() {
+                    @Override
+                    public void call() {
+                        damageLogic.run();
+                        Dungeon.hero.sprite.idle();
                     }
                 }
-                break;
-            }
-            case 2: // 穿甲燃烧箭
-            {
-                damage = burnDamage(depth);
-                enemy.damage(damage, this, PHYSICAL);
-                Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 10);
-                int idx = Random.Int(3); // 0,1,2
-                GLog.p(Messages.get(this, "burn_hit_" + idx));
-                break;
-            }
-        }
+        );
     }
 
     private int frostDamage(int depth) {
@@ -142,13 +180,16 @@ public class HuntingCarnival extends Buff {
         int max = 10 + depth;
         return Random.NormalIntRange(min, max);
     }
+
     @Override
-    public int icon() {return BuffIndicator.HALOMETHANEBURNING;}
+    public int icon() {
+        return BuffIndicator.HALOMETHANEBURNING;
+    }
 
     @Override
     public float iconFadePercent() {
         if (duration <= 0) return 0f;
-        return Math.max(0, ((float)(duration - left) )/ duration);
+        return Math.max(0, ((float) (duration - left)) / duration);
     }
 
     @Override
@@ -182,7 +223,7 @@ public class HuntingCarnival extends Buff {
         super.restoreFromBundle(bundle);
         duration = bundle.getInt(DURATION);
         timers = bundle.getIntArray(TIMERS);
-        if (timers == null || timers.length != 3) timers = new int[]{0,0,0};
+        if (timers == null || timers.length != 3) timers = new int[]{0, 0, 0};
         left = bundle.getInt(LEFT);
     }
 }

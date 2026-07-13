@@ -57,6 +57,9 @@ public class TrackableElectricity extends Blob {
                             // 伤害公式
                             int damage = Damage(Dungeon.scalingDepth());
                             ch.damage(damage, this, Char.DamageType.Element);
+                            if(ch == Dungeon.hero){
+                                GLog.n(Messages.get(SniperSupport.class, "shock_player_0"));
+                            }
                             // 记录受伤害单位
                             damagedThisTurn.add(ch);
                             if (!ch.isAlive() && ch == Dungeon.hero) {
