@@ -51,7 +51,8 @@ public class HuntingCarnival extends Buff {
             if (timers[i] <= 0) {
                 // 找敌人发射各个类型的箭
                 Char enemy = chooseRandomEnemy();
-                if (enemy != null) {
+                if (enemy != null)
+                    Buff.affect(enemy,Paralysis.class,100f);{
                     performShot(i, enemy);
                     timers[i] = cooldowns[i];
                 }
@@ -145,19 +146,20 @@ public class HuntingCarnival extends Buff {
 
         MissileSprite missile = new MissileSprite();
         GameScene.scene.add(missile);
-        Buff.affect(enemy,Paralysis.class,100f);
-        missile.reset(
-                0,
-                enemy.sprite,
-                missileItem,
-                new Callback() {
-                    @Override
-                    public void call() {
-                        damageLogic.run();
-                        Dungeon.hero.sprite.idle();
+        if(enemy != null){
+            missile.reset(
+                    0,
+                    enemy.sprite,
+                    missileItem,
+                    new Callback() {
+                        @Override
+                        public void call() {
+                            damageLogic.run();
+                        }
                     }
-                }
-        );
+            );
+        }
+
     }
 
     private int frostDamage(int depth) {
@@ -183,7 +185,7 @@ public class HuntingCarnival extends Buff {
 
     @Override
     public int icon() {
-        return BuffIndicator.HALOMETHANEBURNING;
+        return BuffIndicator.ARROW_PARTY;
     }
 
     @Override
