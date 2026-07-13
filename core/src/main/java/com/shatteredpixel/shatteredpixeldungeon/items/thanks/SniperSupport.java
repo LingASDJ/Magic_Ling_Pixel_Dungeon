@@ -75,6 +75,7 @@ public class SniperSupport extends Buff {
         // 延迟为0，尝试执行狙击
         Char enemy = chooseRandomEnemy();
         if (enemy != null) {
+            Buff.affect(enemy,Paralysis.class,100f);
             performSnipe(enemy);
             triggersLeft--;
             delay = interval;
@@ -158,14 +159,12 @@ public class SniperSupport extends Buff {
 
         MissileSprite missile = new MissileSprite();
         GameScene.scene.add(missile);
-        Buff.affect(enemy,Paralysis.class,100f);
         missile.reset(
                 0,
                 enemy.sprite,
                 missileItem,
                 () -> {
                     damageLogic.run();
-                    Dungeon.hero.sprite.idle();
                 }
         );
     }
@@ -202,7 +201,7 @@ public class SniperSupport extends Buff {
         );
     }
     @Override
-    public int icon() {return BuffIndicator.HALOMETHANEBURNING;}
+    public int icon() {return BuffIndicator.ARROW_NORMAL;}
 
     @Override
     public float iconFadePercent() {

@@ -169,6 +169,9 @@ public class BuffIndicator extends Component {
 	public static final int DEAD_GAS = 152;
 	public static final int LOST_SOUL = 153;
 
+	public static final int ARROW_NORMAL = 155;
+	public static final int ARROW_PARTY = 156;
+
 	public static final int SIZE_SMALL = 7;
 	public static final int SIZE_LARGE = 16;
 	private static BuffIndicator bossInstance;

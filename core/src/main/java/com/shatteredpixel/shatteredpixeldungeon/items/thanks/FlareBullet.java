@@ -66,6 +66,7 @@ public class FlareBullet extends Item {
                 quantity(quantity() - 1);
             }
             // 增加套组充能（使用公共方法）
+            Item.updateQuickslot();
             signal.addCharge(1);
             GLog.p(Messages.get(this, "load_success"));
             hero.spend(1f);
