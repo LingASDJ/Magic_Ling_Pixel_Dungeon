@@ -873,6 +873,19 @@ public abstract class Mob extends Char {
 		return false;
 	}
 
+	public boolean canAttack( Char enemy,int d ) {
+		if (Dungeon.level.adjacent( pos, enemy.pos )){
+			return true;
+		}
+
+		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
+			if (buff.canAttackWithExtraReach( enemy )){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	protected boolean getCloser( int target ) {
 
         if (rooted || target == pos) {

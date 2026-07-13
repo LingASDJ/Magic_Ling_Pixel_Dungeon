@@ -123,7 +123,7 @@ public class WandOfBlastWave extends DamageWand {
 
 		if (dist <= 0
 				|| ch.rooted
-				|| ch.properties().contains(Char.Property.IMMOVABLE)) return;
+				|| ch.properties().contains(Char.Property.IMMOVABLE) || ch.properties().contains(Char.Property.NOKOCK)) return;
 
 		//large characters cannot be moved into non-open space
 		if (Char.hasProp(ch, Char.Property.LARGE)) {

@@ -125,6 +125,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SkyDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SuccubusQueen;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.GraveRat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroAcolyte;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroArcher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroCavalry;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroGuard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroScout;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.SkeletonDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.SmallSkeletonDemon;
@@ -219,6 +223,7 @@ public enum Bestiary {
 	ANCIENT_CITY_BOSS,
 
 	TUMULUS,
+	CHURCH,
 
 	UNIVERSAL,
 	QUEST,
@@ -427,6 +432,26 @@ public enum Bestiary {
 						? new Class<?>[]{
 								GraveRat.class, Worm.class, Wisp.class, NecroScout.class,
 						ThiefSoul.class, SkeletonDemon.class, SmallSkeletonDemon.class}
+
+						: new Class<?>[]{Albino.class,
+						Salamander.class,
+						SRPDHBLR.class, NewBlackHost.class,
+						Bandit.class, SpectralNecromancer.class,
+						ArmoredBrute.class, DM201.class, MolotovHuntsman.class,
+						Elemental.ChaosElemental.class, Senior.class,
+						Acidic.class,
+
+						TormentedSpirit.class, PhantomPiranha.class,
+						CrystalMimic.class, ArmoredStatue.class}
+		);
+
+		CHURCH.addEntities(
+				DeviceCompat.isDebug() || DeviceCompat.isMDP()
+						? new Class<?>[]{
+						//T2
+						NecroGuard.class, NecroArcher.class,
+						NecroAcolyte.class, NecroCavalry.class}
+
 						: new Class<?>[]{Albino.class,
 						Salamander.class,
 						SRPDHBLR.class, NewBlackHost.class,

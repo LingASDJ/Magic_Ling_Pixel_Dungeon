@@ -1657,6 +1657,7 @@ public abstract class Char extends Actor {
 		GODCRACK,
 		UNLESS,
 		TUMULUS,
+		NOKOCK,
 		SEARCH,
 		//A character that acts in an unchanging manner. immune to AI state debuffs or stuns/slows
 		STATIC( new HashSet<Class>(),

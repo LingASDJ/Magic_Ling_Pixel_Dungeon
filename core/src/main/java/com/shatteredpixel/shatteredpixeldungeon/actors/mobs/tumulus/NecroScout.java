@@ -1,9 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -15,7 +15,7 @@ import com.watabou.utils.Random;
 public class NecroScout extends Mob {
 
     {
-        HP = HT = 55;
+        HP = HT = 45;
         defenseSkill = 25;
         EXP = 9;
         maxLvl = 17;
@@ -32,10 +32,15 @@ public class NecroScout extends Mob {
 
     @Override
     public int attackProc(Char enemy, int damage) {
-        int oppositeAdjacent = hero.pos + (hero.pos - pos);
-        Ballistica trajectory = new Ballistica(hero.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
+
+        int bleedDmg = Random.NormalIntRange(2, 5);
+        Buff.affect(enemy, Bleeding.class).set(bleedDmg);
+
+        int oppositeAdjacent = enemy.pos + (enemy.pos - pos);
+        Ballistica trajectory = new Ballistica(enemy.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
+
         WandOfBlastWave.throwChar(this, trajectory, 2, false, false, getClass());
-        Dungeon.hero.interrupt();
+
         return super.attackProc(enemy, damage);
     }
 

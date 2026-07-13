@@ -280,11 +280,14 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ChurchLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.LostTombLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NormalZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RogerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -1472,7 +1475,7 @@ public class Hero extends Char {
 
 
 		//水中祝福 但在BR不生效
-		if((branch == 0 || branch == 10) && !bossRushMode){
+		if((branch == 0 || branch == 10) && !bossRushMode && !(level instanceof LostTombLevel || level instanceof RogerBossLevel || level instanceof ChurchLevel)){
 			MoveWater();
 		}
 

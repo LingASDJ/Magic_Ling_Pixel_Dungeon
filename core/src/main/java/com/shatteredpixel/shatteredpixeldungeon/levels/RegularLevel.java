@@ -111,6 +111,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.LoveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.MagicDimandRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.GoldBurretyRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.tomb.DemonShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
@@ -408,7 +409,7 @@ public abstract class RegularLevel extends Level {
         }
 
 		//Normal Shop
-		if (Dungeon.shopOnLevel() && branch == 0 && !Statistics.bossRushMode) {
+		if (Dungeon.shopOnLevel() && branch == 0 && !Statistics.bossRushMode && !(Statistics.Tomb_Reach && depth == 11)) {
 			initRooms.add(new ShopRoom());
 		}
 
@@ -417,6 +418,12 @@ public abstract class RegularLevel extends Level {
 				initRooms.add(new GoldBurretyRoom());
 			}
 		}
+
+		//TEST
+		if(Statistics.Tomb_Reach && depth == 11){
+			initRooms.add(new DemonShopRoom());
+		}
+
 
 		if(hero.buff(SliceDeadBless.class) !=null && depth == 28 && !(Badges.isUnlocked(Badges.Badge.KILL_MORES))){
 			initRooms.add(new SliceDeadRoom());
