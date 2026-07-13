@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -246,30 +247,80 @@ public class Shopkeeper extends NPC {
 		Game.runOnRenderThread(new Callback() {
 			@Override
 			public void call() {
-				String[] options = new String[2+ buybackItems.size()];
+				// 检查是否有可升级的求救信号套组
+				DistressSignalNesting nesting = Dungeon.hero.belongings.getItem(DistressSignalNesting.class);
+				final boolean hasUpgrade = nesting != null && nesting.level() < 3;
+				final int upgradePrice = hasUpgrade ? nesting.getUpgradeCost() : 0;
+
+				// 选项总数：出售、交谈、[升级]、回购列表
+				int optionCount = 2 + (hasUpgrade ? 1 : 0) + buybackItems.size();
+				String[] options = new String[optionCount];
 				int maxLen = PixelScene.landscape() ? 30 : 25;
 				int i = 0;
+
 				options[i++] = Messages.get(Shopkeeper.this, "sell");
 				options[i++] = Messages.get(Shopkeeper.this, "talk");
-				for (Item item : buybackItems){
+
+				if (hasUpgrade) {
+					String levelName;
+					switch (nesting.level()) {
+						case 0: levelName = Messages.get(Shopkeeper.this, "upgrade_name_0"); break;
+						case 1: levelName = Messages.get(Shopkeeper.this, "upgrade_name_1"); break;
+						default: levelName = Messages.get(Shopkeeper.this, "upgrade_name_2"); break;
+					}
+					options[i] = Messages.get(Shopkeeper.this, "upgrade_option", levelName, upgradePrice);
+					if (options[i].length() > maxLen) options[i] = options[i].substring(0, maxLen-3) + "...";
+					i++;
+				}
+
+				for (Item item : buybackItems) {
 					options[i] = Messages.get(Heap.class, "for_sale", item.value(), Messages.titleCase(item.title()));
 					if (options[i].length() > maxLen) options[i] = options[i].substring(0, maxLen-3) + "...";
 					i++;
 				}
-				GameScene.show(new WndOptions(sprite(), Messages.titleCase(name()), description(), options){
+
+				final DistressSignalNesting finalNesting = nesting;
+				GameScene.show(new WndOptions(sprite(), Messages.titleCase(name()), description(), options) {
 					@Override
 					protected void onSelect(int index) {
 						super.onSelect(index);
-						if (index == 0){
+						if (index == 0) {
 							sell();
-						} else if (index == 1){
+						} else if (index == 1) {
 							GameScene.show(new WndTitledMessage(sprite(), Messages.titleCase(name()), chatText()));
-						} else if (index > 1){
+						} else if (hasUpgrade && index == 2) {
+							// 弹出升级确认窗口
+							String confirmMsg;
+							switch (finalNesting.level()) {
+								case 0: confirmMsg = Messages.get(Shopkeeper.this, "upgrade_msg_0"); break;
+								case 1: confirmMsg = Messages.get(Shopkeeper.this, "upgrade_msg_1"); break;
+								default: confirmMsg = Messages.get(Shopkeeper.this, "upgrade_msg_2"); break;
+							}
+							GameScene.show(new WndOptions(
+									sprite(),
+									Messages.titleCase(name()),
+									confirmMsg,
+									Messages.get(Shopkeeper.this, "upgrade_confirm"),
+									Messages.get(Shopkeeper.this, "upgrade_cancel")
+							) {
+								@Override
+								protected void onSelect(int index) {
+									if (index == 0) {
+										Dungeon.gold -= upgradePrice;
+										Statistics.goldCollected -= upgradePrice;
+										finalNesting.upgrade();
+										GLog.p(Messages.get(Shopkeeper.this, "upgrade_done"));
+									}
+								}
+							});
+						} else {
+							// 回购物品（索引需要偏移）
+							int buybackIndex = index - (hasUpgrade ? 3 : 2);
 							GLog.i(Messages.get(Shopkeeper.this, "buyback"));
-							Item returned = buybackItems.remove(index-2);
+							Item returned = buybackItems.remove(buybackIndex);
 							Dungeon.gold -= returned.value();
-                            Statistics.goldCollected -= returned.value();
-							if (!returned.doPickUp(Dungeon.hero)){
+							Statistics.goldCollected -= returned.value();
+							if (!returned.doPickUp(Dungeon.hero)) {
 								Dungeon.level.drop(returned, Dungeon.hero.pos);
 							}
 						}
@@ -277,22 +328,30 @@ public class Shopkeeper extends NPC {
 
 					@Override
 					protected boolean enabled(int index) {
-						if (index > 1){
-							return Dungeon.gold >= buybackItems.get(index-2).value();
+						if (hasUpgrade && index == 2) {
+							return Dungeon.gold >= upgradePrice;
+						} else if (index >= (hasUpgrade ? 3 : 2)) {
+							int buybackIndex = index - (hasUpgrade ? 3 : 2);
+							return Dungeon.gold >= buybackItems.get(buybackIndex).value();
 						} else {
-							return super.enabled(index);
+							return true; // 出售和交谈总是可用
 						}
 					}
 
 					@Override
 					protected boolean hasIcon(int index) {
-						return index > 1;
+						if (hasUpgrade && index == 2) return true;
+						return index >= (hasUpgrade ? 3 : 2);
 					}
 
 					@Override
 					protected Image getIcon(int index) {
-						if (index > 1){
-							return new ItemSprite(buybackItems.get(index-2));
+						if (hasUpgrade && index == 2) {
+							return new ItemSprite(finalNesting);
+						}
+						if (index >= (hasUpgrade ? 3 : 2)) {
+							int buybackIndex = index - (hasUpgrade ? 3 : 2);
+							return new ItemSprite(buybackItems.get(buybackIndex));
 						}
 						return null;
 					}

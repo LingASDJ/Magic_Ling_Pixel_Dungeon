@@ -834,10 +834,12 @@ public class Assets {
 		//NPC
 		public static final String GORE	= "sprites/tumulus/npc/gore.png";
 
+		//TOMB
 		public static final String GRAVERAT	= "sprites/tumulus/rat_graveyard.png";
 		public static final String WORM	= "sprites/tumulus/tomb_worm.png";
 		public static final String WISP	= "sprites/tumulus/wisp.png";
 		public static final String NECRO_SCOUT	= "sprites/tumulus/necro_scout.png";
+		public static final String NECRO_PIONEER	= "sprites/tumulus/nec_striker.png";
 		public static final String THIEF_SOUL	= "sprites/tumulus/tomb_robber.png";
 
 		//CHURCH

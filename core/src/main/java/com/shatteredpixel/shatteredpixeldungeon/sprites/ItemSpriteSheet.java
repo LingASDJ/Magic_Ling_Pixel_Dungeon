@@ -1321,6 +1321,12 @@ public class ItemSpriteSheet {
     public static final int SOS_2       = MISC+10;
     public static final int SOS_3        = MISC+11;
 
+    public static final int FROST_ARROW        = MISC+12;
+    public static final int  SHOCK_ARROW       = MISC+13;
+    public static final int BURN_ARROW       = MISC+14;
+
+
+
     public static final int FLARE        = MISC+15;
 
     static{
@@ -1334,7 +1340,11 @@ public class ItemSpriteSheet {
         assignItemRect(SOS_2,       15, 16);
         assignItemRect(SOS_3,       15, 16);
 
-        assignItemRect(FLARE,       14, 15);
+        assignItemRect(FROST_ARROW,      12, 12);
+        assignItemRect(SHOCK_ARROW,      12, 12);
+        assignItemRect(BURN_ARROW,       12, 12);
+
+        assignItemRect(FLARE,       9, 12);
     }
 
     private static final int PROJECTILES        =                               xy(1, 58);  //24 slots

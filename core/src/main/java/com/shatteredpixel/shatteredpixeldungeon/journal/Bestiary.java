@@ -132,6 +132,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroGuard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroScout;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.SkeletonDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.SmallSkeletonDemon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroPioneer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.ThiefSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.Wisp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.Worm;
@@ -431,7 +432,9 @@ public enum Bestiary {
 				DeviceCompat.isDebug() || DeviceCompat.isMDP()
 						? new Class<?>[]{
 								GraveRat.class, Worm.class, Wisp.class, NecroScout.class,
-						ThiefSoul.class, SkeletonDemon.class, SmallSkeletonDemon.class}
+						ThiefSoul.class, SkeletonDemon.class, SmallSkeletonDemon.class,
+						NecroPioneer.class
+				}
 
 						: new Class<?>[]{Albino.class,
 						Salamander.class,

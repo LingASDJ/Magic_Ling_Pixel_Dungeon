@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
+
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -35,11 +36,21 @@ public class ScrollingGridPane extends ScrollPane {
 	private ArrayList<Component> items = new ArrayList<>();
 	private ArrayList<ColorBlock> separators = new ArrayList<>();
 
-	private static final int ITEM_SIZE	= 17;
+	// 默认格子尺寸，兼容原版逻辑
+	public static final int ITEM_SIZE	= 17;
 	private static final int MIN_GROUP_SIZE = 3*(ITEM_SIZE+1);
+
+	// 新增：自定义单元格宽高
+	private float cellWidth = ITEM_SIZE;
+	private float cellHeight = ITEM_SIZE;
 
 	public ScrollingGridPane(){
 		super(new Component());
+	}
+
+	public void setCellSize(float w, float h){
+		cellWidth = w;
+		cellHeight = h;
 	}
 
 	@Override
@@ -73,33 +84,32 @@ public class ScrollingGridPane extends ScrollPane {
 	}
 
 	@Override
-	protected void layout() {
+	public void layout() {
 
 		float left = 0;
 		float top = 0;
 
 		int sepsUsed = 0;
 
-		//these variables help control logic for laying out multiple grid groups on one line
-		boolean freshRow = true; //whether the previous group is still on its first row
-		boolean lastWasSmallheader = false; //whether the last UI element was a header on its own
-		float widthThisGroup = 0; //how wide the current group is (we use a min of 3 items)
+		boolean freshRow = true;
+		boolean lastWasSmallheader = false;
+		float widthThisGroup = 0;
+		// 使用自定义cell尺寸替代固定ITEM_SIZE
+		float cellW = cellWidth;
+		float cellH = cellHeight;
+		float cellGap = 1;
 
 		for (int i = 0; i < items.size(); i++){
 			Component item = items.get(i);
 			if (item instanceof GridHeader){
-				//we can sometimes get two smaller headers next to each other if a group has no items in it
-				//so we need to treat it as if there were grid items for proper layout
 				if (left > 0 || lastWasSmallheader){
 
-					//this bit of logic exists so that multiple headers can be on one row
-					// if all of their groups have a small number of items, with a min space for 3
 					float spacing = Math.max(0, MIN_GROUP_SIZE - widthThisGroup);
 					float spaceLeft = width() - (left + spacing);
 					int spaceReq = 0;
 					for (int j = i+1; j < items.size(); j++){
 						if (items.get(j) instanceof GridItem){
-							spaceReq += ITEM_SIZE+1;
+							spaceReq += cellW + cellGap;
 						} else {
 							break;
 						}
@@ -117,12 +127,12 @@ public class ScrollingGridPane extends ScrollPane {
 							content.add(sep);
 							sepsUsed++;
 						}
-						sep.size(1, item.height()+1+ITEM_SIZE);
+						sep.size(1, item.height()+1+cellH);
 						sep.x = left-1;
 						sep.y = top;
 					} else {
 						left = 0;
-						top += ITEM_SIZE + 2;
+						top += cellH + 2;
 						freshRow = true;
 					}
 				}
@@ -136,23 +146,25 @@ public class ScrollingGridPane extends ScrollPane {
 					lastWasSmallheader = false;
 				}
 
-			} if (item instanceof GridItem){
-				if (left + ITEM_SIZE > width()) {
+			} else if (item instanceof GridItem){
+				// 超出宽度换行
+				if (left + cellW > width()) {
 					left = 0;
 					widthThisGroup = 0;
-					top += ITEM_SIZE+1;
+					top += cellH + cellGap;
 					freshRow = false;
 				}
-				item.setRect(left, top, ITEM_SIZE, ITEM_SIZE);
-				left += ITEM_SIZE+1;
-				widthThisGroup += ITEM_SIZE+1;
+				// 给GridItem设置自定义宽高
+				item.setRect(left, top, cellW, cellH);
+				left += cellW + cellGap;
+				widthThisGroup += cellW + cellGap;
 				lastWasSmallheader = false;
 			}
 
 		}
 		if (left > 0){
 			left = 0;
-			top += ITEM_SIZE+1;
+			top += cellH + cellGap;
 		}
 
 		while (separators.size() > sepsUsed){
@@ -167,9 +179,7 @@ public class ScrollingGridPane extends ScrollPane {
 	public static class GridItem extends Component {
 
 		protected Image icon;
-
 		protected Visual secondIcon;
-
 		protected ColorBlock bg;
 
 		public GridItem( Image icon ) {
@@ -206,7 +216,6 @@ public class ScrollingGridPane extends ScrollPane {
 
 		@Override
 		protected void layout() {
-
 			bg.x = x;
 			bg.y = y;
 			bg.size(width(), height());
@@ -219,9 +228,7 @@ public class ScrollingGridPane extends ScrollPane {
 				secondIcon.x = x + width()-secondIcon.width();
 				secondIcon.y = y;
 			}
-
 		}
-
 	}
 
 	public static class GridHeader extends Component {
@@ -235,22 +242,14 @@ public class ScrollingGridPane extends ScrollPane {
 
 		public GridHeader( String text, int size, boolean center ){
 			super();
-
 			this.center = center;
 			this.text = PixelScene.renderTextBlock(text, size);
 			add(this.text);
-
-		}
-
-		@Override
-		protected void createChildren() {
-			super.createChildren();
 		}
 
 		@Override
 		protected void layout() {
 			super.layout();
-
 			if (center){
 				text.align(RenderedTextBlock.CENTER_ALIGN);
 				text.maxWidth((int)width());

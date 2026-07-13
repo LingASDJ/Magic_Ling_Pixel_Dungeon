@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class BuffIndicator extends Component {
+	public static int SIZE = 16;
 	private static BuffIndicator[] bossInstances = new BuffIndicator[4];
 	private static BuffIndicator heroInstance;
 	private static final int SCROLL_THRESHOLD = 12;

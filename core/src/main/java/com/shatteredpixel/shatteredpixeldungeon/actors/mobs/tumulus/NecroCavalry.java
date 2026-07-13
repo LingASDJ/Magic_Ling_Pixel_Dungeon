@@ -170,6 +170,28 @@ public class NecroCavalry extends Mob {
                     return true;
                 }
 
+                // 循环过滤掉所有非法坐标（出地图、墙体、悬崖）
+                while (!chargePath.isEmpty()){
+                    int testCell = chargePath.get(0);
+                    // 校验：在地图内 + 可通行 + 不是悬崖
+                    if (Dungeon.level.insideMap(testCell)
+                            && Dungeon.level.passable[testCell]
+                            && Dungeon.level.map[testCell] != Terrain.CHASM){
+                        break;
+                    }else {
+                        chargePath.remove(0);
+                    }
+                }
+
+                // 路径全部非法，终止冲锋
+                if (chargePath.isEmpty()){
+                    chargePath = null;
+                    chargeTargetPos = -1;
+                    chargeCooldown = Random.NormalFloat(2f, 4f);
+                    spend(TICK);
+                    return true;
+                }
+
                 // 取路径下一格移动
                 int nextCell = chargePath.remove(0);
                 int oldPos = pos;
@@ -182,6 +204,7 @@ public class NecroCavalry extends Mob {
                     int[] nineDir = PathFinder.NEIGHBOURS9;
                     for (int d : nineDir) {
                         int checkCell = pos + d;
+                        if (!Dungeon.level.insideMap(checkCell)) continue;
                         Char ch = Actor.findChar(checkCell);
                         if (ch != null && ch.alignment != NecroCavalry.this.alignment) {
                             int dmg = damageRoll() * 2;
@@ -218,30 +241,53 @@ public class NecroCavalry extends Mob {
                     // 原地蓄力1回合
                     spend(GameMath.gate(TICK, TICK, attackDelay()));
 
-                    // 计算完整冲锋路径并修正悬崖落点
+                    // 计算完整冲锋路径并修正悬崖/地图边缘落点
                     Ballistica previewPathBall = new Ballistica(pos, chargeTargetPos, Ballistica.STOP_SOLID | Ballistica.STOP_TARGET);
-                    int endCell = previewPathBall.collisionPos;
-                    if (Dungeon.level.map[endCell] == Terrain.CHASM) {
-                        endCell = previewPathBall.path.get(previewPathBall.path.size() - 2);
+                    List<Integer> rawPath = new ArrayList<>(previewPathBall.path);
+                    int safeEnd = rawPath.get(rawPath.size()-1);
+
+                    // 从末尾倒序寻找第一个合法格子（地图内、可走、非悬崖）
+                    while (!rawPath.isEmpty()){
+                        int last = rawPath.get(rawPath.size()-1);
+                        if (Dungeon.level.insideMap(last)
+                                && Dungeon.level.passable[last]
+                                && Dungeon.level.map[last] != Terrain.CHASM){
+                            safeEnd = last;
+                            break;
+                        }else {
+                            rawPath.remove(rawPath.size()-1);
+                        }
                     }
 
-                    // 绘制落点3x3预警，无路径红线，无锁住玩家代码
-                    if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[chargeTargetPos]) {
+                    // 路径全部非法，放弃冲锋
+                    if (rawPath.isEmpty()) return true;
+
+                    // 绘制落点3x3预警，只绘制地图内格子
+                    if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[safeEnd]) {
                         int[] dirs = PathFinder.NEIGHBOURS9;
                         for (int d : dirs) {
-                            int cell = endCell + d;
-                            int color = cell == endCell ? 0xFF0000 : 0x660000;
+                            int cell = safeEnd + d;
+                            if (!Dungeon.level.insideMap(cell)) continue;
+                            int color = cell == safeEnd ? 0xFF0000 : 0x660000;
                             sprite.parent.addToBack(new ColorTargetedCell(cell, color));
                         }
                     }
 
-                    // 生成修正悬崖后的冲锋路径
-                    Ballistica chargeBall = new Ballistica(pos, chargeTargetPos, Ballistica.STOP_SOLID | Ballistica.STOP_TARGET);
-                    List<Integer> rawPath = chargeBall.path;
-                    if (Dungeon.level.map[chargeBall.collisionPos] == Terrain.CHASM || Dungeon.level.map[chargeBall.collisionPos] == Terrain.WALL ) {
-                        rawPath = rawPath.subList(0, rawPath.size() - 1);
+                    // 重新生成裁剪到安全终点的路径
+                    Ballistica chargeBall = new Ballistica(pos, safeEnd, Ballistica.STOP_SOLID | Ballistica.STOP_TARGET);
+                    List<Integer> finalRawPath = new ArrayList<>(chargeBall.path);
+                    // 再次过滤末尾非法格
+                    while (!finalRawPath.isEmpty()){
+                        int last = finalRawPath.get(finalRawPath.size()-1);
+                        if (Dungeon.level.insideMap(last)
+                                && Dungeon.level.passable[last]
+                                && Dungeon.level.map[last] != Terrain.CHASM){
+                            break;
+                        }
+                        finalRawPath.remove(finalRawPath.size()-1);
                     }
-                    chargePath = new ArrayList<>(rawPath);
+
+                    chargePath = new ArrayList<>(finalRawPath);
                     chargePath.remove(0); // 移除自身当前位置，从下一格开始移动
 
                     return true;

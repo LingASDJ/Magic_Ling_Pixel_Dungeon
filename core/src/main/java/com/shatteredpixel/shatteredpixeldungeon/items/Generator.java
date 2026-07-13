@@ -160,6 +160,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFear;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFlock;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfShock;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CrackedSpyglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
@@ -816,12 +817,14 @@ public class Generator {
 					UnstableSpellbook.class,
 
 					ElectricalSmoke.class,
-					MagneticCrown.class
+					MagneticCrown.class,
+					DistressSignalNesting.class
 			};
 			ARTIFACT.defaultProbs = new float[]{
 					Badges.isUnlocked(Badges.Badge.KILL_DM720) ? 1:0
 					, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1,
 					Badges.isUnlocked(Badges.Badge.YASD) ? 1:0
+					, 0
 			};
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();
 
