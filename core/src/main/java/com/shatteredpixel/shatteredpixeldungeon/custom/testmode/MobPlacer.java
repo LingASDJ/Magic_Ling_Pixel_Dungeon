@@ -1,3 +1,23 @@
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2022 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -203,11 +223,6 @@ public class MobPlacer extends TestItem{
     }
 
     private class WndSetMob extends Window{
-        @Override
-        public void hide() {
-            super.hide();
-            if (parent != null) parent.remove(this);
-        }
 
         // 窗口自适应尺寸，加宽适配大控件
         private static final int WND_WIDTH = 200;
@@ -227,8 +242,8 @@ public class MobPlacer extends TestItem{
 
         // 三个独立网格面板
         private ScrollingGridPane mobGridPane;
-        private ScrollingGridPane eliteGridPane;    // 精英词条独立滚动区
-        private ScrollingGridPane settingGridPane;  // 血量调整独立滚动区
+        private ScrollingGridPane eliteGridPane;
+        private ScrollingGridPane settingGridPane;
 
         private ArrayList<MobGridItem> mobIconItems = new ArrayList<>();
         private ArrayList<EliteCheckItem> eliteCheckItems = new ArrayList<>();
@@ -237,7 +252,7 @@ public class MobPlacer extends TestItem{
 
         // ========== 左侧预览精灵 ==========
         private MobSprite previewSprite;
-        private static final int PREVIEW_SIZE = 42;
+        private static final int PREVIEW_SIZE = 36;
         // 阵营单选框
         private CheckBox cbEnemy, cbNeutral, cbAlly;
 
@@ -255,11 +270,38 @@ public class MobPlacer extends TestItem{
             refreshPreviewSprite();
         }
 
+        private boolean isClosed = false;
+        @Override
+        public void hide() {
+            isClosed = true;
+            super.hide();
+
+            if (parent != null) {
+                parent.remove(this);
+            }
+            destroy();
+        }
+
+        @Override
+        public void destroy() {
+            super.destroy();
+            isClosed = true;
+            mobGridPane = null;
+            eliteGridPane = null;
+            settingGridPane = null;
+            mobIconItems.clear();
+            eliteCheckItems.clear();
+            previewSprite = null;
+            btnPrevPage = btnNextPage = btnModifyHealth = cbInfo = null;
+            cbEnemy = cbNeutral = cbAlly = null;
+        }
+
         // 左侧固定面板
         private void initLeftPanel(){
             btnPrevPage = new RedButton("<", 7){
                 @Override
                 public void onClick(){
+                    if (isClosed) return;
                     mobTier--;
                     if(mobTier < 1) mobTier = maxPage;
                     mobIndex = Math.min(mobIndex, maxMobIndex(mobTier)-1);
@@ -275,7 +317,7 @@ public class MobPlacer extends TestItem{
             txtPageIndicator.hardlight(0xFFFFFF);
             add(txtPageIndicator);
 
-            txtSelectedMobName = PixelScene.renderTextBlock("", 7);
+            txtSelectedMobName = PixelScene.renderTextBlock("", 5);
             txtSelectedMobName.hardlight(0xFFFF44);
             txtSelectedMobName.maxWidth(LEFT_PANEL_WIDTH);
             add(txtSelectedMobName);
@@ -283,6 +325,7 @@ public class MobPlacer extends TestItem{
             btnNextPage = new RedButton(">", 7){
                 @Override
                 public void onClick(){
+                    if (isClosed) return;
                     mobTier++;
                     if(mobTier > maxPage) mobTier = 1;
                     mobIndex = Math.min(mobIndex, maxMobIndex(mobTier)-1);
@@ -297,10 +340,10 @@ public class MobPlacer extends TestItem{
             previewSprite = new RatSprite();
             add(previewSprite);
 
-            // 阵营单选框 先全部实例化（不执行checked赋值）
             cbEnemy = new CheckBox("E"){
                 @Override
                 public void checked(boolean value) {
+                    if (isClosed) return;
                     super.checked(value);
                     if (value) {
                         mobAlign = Char.Alignment.ENEMY;
@@ -317,6 +360,7 @@ public class MobPlacer extends TestItem{
             cbNeutral = new CheckBox("R"){
                 @Override
                 public void checked(boolean value) {
+                    if (isClosed) return;
                     super.checked(value);
                     if (value) {
                         mobAlign = Char.Alignment.NEUTRAL;
@@ -329,6 +373,7 @@ public class MobPlacer extends TestItem{
             cbAlly = new CheckBox("A"){
                 @Override
                 public void checked(boolean value) {
+                    if (isClosed) return;
                     super.checked(value);
                     if (value) {
                         mobAlign = Char.Alignment.ALLY;
@@ -337,7 +382,6 @@ public class MobPlacer extends TestItem{
                     }
                 }
             };
-
 
             add(cbEnemy);
             add(cbNeutral);
@@ -358,6 +402,7 @@ public class MobPlacer extends TestItem{
             cbInfo = new RedButton(Messages.get(MobPlacer.class, "era")) {
                 @Override
                 protected void onClick() {
+                    if (isClosed) return;
                     GameScene.show( new WndMessage( Messages.get(MobPlacer.class, "era_desc") ) ) ;
                 }
             };
@@ -366,7 +411,6 @@ public class MobPlacer extends TestItem{
             updatePageText();
         }
 
-        // 刷新预览怪物精灵
         private void refreshPreviewSprite(){
             remove(previewSprite);
             Mob mobProto = Reflection.newInstance(getMobClass());
@@ -397,7 +441,7 @@ public class MobPlacer extends TestItem{
             eliteGridPane.setCellSize(FUNCTION_GRID_WIDTH, FUNCTION_GRID_HEIGHT);
             add(eliteGridPane);
             eliteGridPane.setRect(
-                    rightX-15,
+                    Game.width > Game.height ? rightX - 10 : rightX-12,
                     WND_HEIGHT * MOB_GRID_RATIO,
                     rightW+20,
                     WND_HEIGHT * ELITE_GRID_RATIO
@@ -470,26 +514,31 @@ public class MobPlacer extends TestItem{
             btnModifyHealth = new RedButton(Messages.get(MobPlacer.class, "modify_health"),8){
                 @Override
                 protected void onClick() {
-                    Game.runOnRenderThread(() -> GameScene.show(new WndTextNumberInput(
-                            Messages.get(MobPlacer.class, "custom_title"),
-                            Messages.get(MobPlacer.class, "health_desc"),
-                            Integer.toString(HT),
-                            6, false, Messages.get(MobPlacer.class, "confirm"),
-                            Messages.get(MobPlacer.class, "cancel"),false) {
-                        @Override
-                        public void onSelect(boolean check, String text) {
-                            if ( check && text.matches("\\d+") ) {
-                                int value = Integer.parseInt( text );
-                                if( value >= 0 ) HT = Math.min( value, 666666 );
+                    if (isClosed) return;
+                    Game.runOnRenderThread(() -> {
+                        if (isClosed) return;
+                        GameScene.show(new WndTextNumberInput(Messages.get(MobPlacer.class, "custom_title"),
+                                Messages.get(MobPlacer.class, "health_desc"),
+                                Integer.toString(HT),
+                                6, false, Messages.get(MobPlacer.class, "confirm"),
+                                Messages.get(MobPlacer.class, "cancel"),false) {
+                            @Override
+                            public void onSelect(boolean check, String text) {
+                                if (isClosed) return;
+                                if ( check && text.matches("\\d+") ) {
+                                    int value = Integer.parseInt( text );
+                                    if( value >= 0 ) HT = Math.min( value, 666666 );
+                                }
                             }
-                        }
-                    }));
+                        });
+                    });
                 }
             };
 
             cbOverrideHP = new CheckBox(Messages.get(MobPlacer.class, "override")){
                 @Override
                 public void checked(boolean value) {
+                    if (isClosed) return;
                     super.checked(value);
                     shouldOverride = value;
                     if (btnModifyHealth != null) {
@@ -532,11 +581,11 @@ public class MobPlacer extends TestItem{
             updatePageText();
             refreshPreviewSprite();
 
-            float baseY = previewSprite.y + previewSprite.height() + 3;
-            cbEnemy.setRect(5, baseY, LEFT_PANEL_WIDTH - 40, 16);
+            float baseY = Game.width > Game.height ? previewSprite.y + previewSprite.height() + 4 : previewSprite.y + previewSprite.height() + 7;
+            cbEnemy.setRect(2, baseY, LEFT_PANEL_WIDTH - 40, 16);
             cbNeutral.setRect(cbEnemy.right()+2, baseY, LEFT_PANEL_WIDTH - 40, 16);
             cbAlly.setRect(cbNeutral.right()+2, baseY, LEFT_PANEL_WIDTH - 40, 16);
-            cbInfo.setRect(5, cbAlly.bottom()+1, LEFT_PANEL_WIDTH-5, 16);
+            cbInfo.setRect(2, cbAlly.bottom()+1, LEFT_PANEL_WIDTH-6, 16);
             PixelScene.align(cbEnemy);
             PixelScene.align(cbNeutral);
             PixelScene.align(cbAlly);
@@ -546,7 +595,7 @@ public class MobPlacer extends TestItem{
             settingGridPane.layout();
         }
 
-        // 怪物格子Item（无改动）
+        // 怪物格子Item（增加窗口可见拦截）
         private class MobGridItem extends ScrollingGridPane.GridItem {
             private Runnable clickCallback;
             private int mobIdx;
@@ -560,11 +609,11 @@ public class MobPlacer extends TestItem{
                 } else {
                     icon.scale.set(16 / maxDim * 0.85f, 16 / maxDim * 0.85f);
                 }
-
             }
 
             @Override
             public boolean onClick(float globalX, float globalY) {
+                if (isClosed) return false;
                 if (globalX >= this.x && globalX <= this.x + width()
                         && globalY >= this.y && globalY <= this.y + height()) {
                     clickCallback.run();
@@ -574,7 +623,7 @@ public class MobPlacer extends TestItem{
             }
         }
 
-        // 精英词条Item（无改动）
+        // 精英词条Item
         private class EliteCheckItem extends ScrollingGridPane.GridItem {
             Image icon;
             IconButton infoBtn;
@@ -605,14 +654,13 @@ public class MobPlacer extends TestItem{
                 infoBtn = new IconButton(Icons.get(Icons.INFO)){
                     @Override
                     protected void onClick() {
-                        // 移除 measure()，直接创建文本后读取宽高
+                        if (isClosed) return;
                         RenderedTextBlock titleTxt = PixelScene.renderTextBlock(buffName, 10);
                         titleTxt.hardlight(buffColor);
 
                         RenderedTextBlock descTxt = PixelScene.renderTextBlock(buffDesc, 6);
                         descTxt.maxWidth(144);
 
-                        // 固定边距常量
                         int paddingTop = 6;
                         int titleGap = 4;
                         int scrollPaddingTop = 2;
@@ -622,28 +670,26 @@ public class MobPlacer extends TestItem{
                         int scrollW = 144;
                         int scrollH = (int)(descTxt.height() + scrollPaddingTop + scrollPaddingBottom);
                         int winH = paddingTop + (int)titleTxt.height() + titleGap + scrollH + bottomBtnHeight;
-                        // 限制窗口最小/最大高度
                         winH = Math.max(110, Math.min(winH, 280));
 
                         Window infoWnd = new Window(winW, winH);
-                        // 标题位置
                         titleTxt.setRect(8, paddingTop, scrollW, titleTxt.height());
                         infoWnd.add(titleTxt);
 
-                        // 滚动容器
                         Component scrollContent = new Component();
                         ScrollPane scrollPane = new ScrollPane(scrollContent);
                         infoWnd.add(scrollPane);
                         scrollPane.setRect(8, titleTxt.bottom() + titleGap, scrollW, scrollH);
 
-
                         descTxt.setPos(0, scrollPaddingTop);
                         scrollContent.add(descTxt);
                         scrollContent.setSize(scrollW, descTxt.height() + scrollPaddingTop + scrollPaddingBottom);
 
-                        // 底部关闭按钮
                         RedButton closeBtn = new RedButton(Messages.get(WndSetMob.class,"close"),8){
-                            @Override protected void onClick(){ infoWnd.hide(); }
+                            @Override protected void onClick(){
+                                infoWnd.hide();
+                                if (infoWnd.parent != null) infoWnd.parent.remove(infoWnd);
+                            }
                         };
                         closeBtn.setRect(10, winH - bottomBtnHeight, winW - 20, 20);
                         infoWnd.add(closeBtn);
@@ -659,6 +705,7 @@ public class MobPlacer extends TestItem{
                 checkBtn = new CheckBox(""){
                     @Override
                     public void checked(boolean value) {
+                        if (isClosed) return;
                         super.checked(value);
                         EliteCheckItem.this.checked = value;
                     }
@@ -683,7 +730,7 @@ public class MobPlacer extends TestItem{
             }
         }
 
-        // 控件包装Item（无改动）
+        // 控件包装Item
         private class ComponentWrapperItem extends ScrollingGridPane.GridItem {
             private Component inner;
             public ComponentWrapperItem(Component comp){

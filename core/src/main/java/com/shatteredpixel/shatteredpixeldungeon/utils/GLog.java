@@ -33,6 +33,7 @@ public class GLog {
 	public static final String POSITIVE		= "++ ";
 	public static final String BLUETEXT		= "$$ ";
 	public static final String PINKTEXT		= "// ";
+	public static final String YELLOWTEXT		= "\\ ";
 	public static final String NEGATIVE		= "-- ";
 	public static final String WARNING		= "** ";
 	public static final String HIGHLIGHT	= "@@ ";
@@ -84,6 +85,10 @@ public class GLog {
 		i( PINKTEXT + text, args );
 	}
 	//粉色文本渲染
+
+	public static void yellow( String text, Object... args ) {
+		i( YELLOWTEXT + text, args );
+	}
 
 	public static void n( String text, Object... args ) {
 		i( NEGATIVE + text, args );

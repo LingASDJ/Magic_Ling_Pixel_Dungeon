@@ -973,8 +973,8 @@ public abstract class Char extends Actor {
 			}
 			if (type == DamageType.Element) GLog.n(str + "受到元素伤害");
 			if (type == DamageType.REAL) GLog.i(str + "受到真实伤害");
-			if (type == DamageType.PHYSICAL) GLog.b(str + "受到物理伤害");
-			if (type == DamageType.MAGIC) GLog.p(str + "受到魔法伤害");
+			if (type == DamageType.PHYSICAL) GLog.w(str + "受到物理伤害");
+			if (type == DamageType.MAGIC) GLog.pink(str + "受到魔法伤害");
 		}
 
 

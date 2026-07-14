@@ -205,5 +205,15 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
             default: return 0;
         }
     }
+
+    @Override
+    public int value() {
+        return 150;
+    }
+
+    public int shopValue() {
+        return 1500;
+    }
+
 }
 

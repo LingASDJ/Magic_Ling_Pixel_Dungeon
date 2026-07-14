@@ -13,6 +13,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -21,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -44,6 +48,14 @@ public class SniperSupport extends Buff {
         {
             image = ItemSpriteSheet.SHOCK_ARROW;
         }
+        @Override
+        public Emitter emitter() {
+            Emitter e = new Emitter();
+            e.pos(5, 5);
+            e.fillTarget = false;
+            e.pour(SparkParticle.FACTORY, 0.02f);
+            return e;
+        }
     }
 
 
@@ -51,12 +63,29 @@ public class SniperSupport extends Buff {
         {
             image = ItemSpriteSheet.FROST_ARROW;
         }
+        @Override
+        public Emitter emitter() {
+            Emitter e = new Emitter();
+            e.pos(5, 5);
+            e.fillTarget = false;
+            e.pour(MagicMissile.MagicParticle.FACTORY, 0.02f);
+            return e;
+        }
     }
 
     public static class BurnSnipeArrow extends MissileWeapon {
         {
             image = ItemSpriteSheet.BURN_ARROW;
         }
+        @Override
+        public Emitter emitter() {
+            Emitter e = new Emitter();
+            e.pos(5, 5);
+            e.fillTarget = false;
+            e.pour(HalomethaneFlameParticle.FACTORY, 0.02f);
+            return e;
+        }
+
     }
 
     @Override
@@ -132,7 +161,7 @@ public class SniperSupport extends Buff {
                     enemy.damage(damage, this, PHYSICAL);
                     Buff.affect(enemy, Paralysis.class, 5);
                     int idx = Random.Int(3);
-                    GLog.p(Messages.get(this, "shock_hit_" + idx));
+                    GLog.yellow(Messages.get(this, "shock_hit_" + idx));
 
                     for (int offset : PathFinder.NEIGHBOURS9) {
                         int pos = enemy.pos + offset;
@@ -151,7 +180,7 @@ public class SniperSupport extends Buff {
                     enemy.damage(damage, this, PHYSICAL);
                     Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 10);
                     int idx = Random.Int(3);
-                    GLog.p(Messages.get(this, "burn_hit_" + idx));
+                    GLog.b(Messages.get(this, "burn_hit_" + idx));
                     Buff.detach(enemy,Paralysis.class);
                 };
                 break;
