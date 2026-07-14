@@ -167,11 +167,17 @@ public class WndLeaderboard extends Window {
 
                     @Override
                     public void onFailure(String error) {
-                        statusText.text(Messages.get(WndLeaderboard.this, "load_failed"));
-                        pane.content().clear();
-                        pane.content().setRect(0, 0, WIDTH, 0);
-                        pageText.text("");
-                        ShatteredPixelDungeon.scene().addToFront(new WndError(error));
+                        Game.runOnRenderThread(new Callback() {
+                                                   @Override
+                            public void call() {
+                                statusText.text(Messages.get(WndLeaderboard.this, "load_failed"));
+                                pane.content().clear();
+                                pane.content().setRect(0, 0, WIDTH, 0);
+                                pageText.text("");
+                                ShatteredPixelDungeon.scene().addToFront(new WndError(error));
+                            }
+                           }
+                        );
                     }
                 });
     }

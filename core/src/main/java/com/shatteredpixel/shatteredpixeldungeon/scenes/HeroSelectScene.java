@@ -81,6 +81,7 @@ import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
 import com.watabou.utils.Point;
@@ -666,7 +667,14 @@ public class HeroSelectScene extends PixelScene {
 
 								@Override
 								public void onFailure(String error) {
-									ShatteredPixelDungeon.scene().addToFront(new WndError(error));
+									Game.runOnRenderThread(new Callback() {
+											@Override
+											public void call() {
+												   ShatteredPixelDungeon.scene().addToFront(new WndError(error));
+											}
+										}
+									);
+
 								}
 							});
 						} else if (index == 1) {
