@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MerchantSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -58,7 +59,7 @@ public class WndTradeItem extends WndInfoItem {
 
 	private boolean selling = false;
 
-    private static float priceMulti;
+	private static float priceMulti;
 
 	//selling
 	public WndTradeItem( final Item item, WndBag owner ) {
@@ -82,14 +83,21 @@ public class WndTradeItem extends WndInfoItem {
 		final Shopkeeper finalShop = shop;
 		if (item.quantity() == 1) {
 
-			RedButton btnSell = new RedButton( Messages.get(this, "sell", (int) (item.value() * priceMulti) )) {
+			int price;
+			if (item instanceof DistressSignalNesting) {
+				price = ((DistressSignalNesting) item).shopValue();
+			} else {
+				int basePrice = Shopkeeper.sellPrice(item);
+				price = (int) (basePrice * priceMulti);
+			}
+
+			RedButton btnSell = new RedButton( Messages.get(this, "sell", price)) {
 				@Override
 				protected void onClick() {
 					sell( item,finalShop );
 					hide();
 				}
 			};
-			//tnSell.setHeight( BTN_HEIGHT );
 			btnSell.setRect( 0, pos + GAP, width, BTN_HEIGHT );
 			btnSell.icon(new ItemSprite(ItemSpriteSheet.GOLD));
 			add( btnSell );
@@ -98,7 +106,13 @@ public class WndTradeItem extends WndInfoItem {
 
 		} else {
 
-			int priceAll= (int) (item.value() * priceMulti);
+			int priceAll;
+			if (item instanceof DistressSignalNesting) {
+				priceAll = ((DistressSignalNesting) item).shopValue();
+			} else {
+				priceAll = (int) (item.value() * priceMulti);
+			}
+
 			RedButton btnSell1 = new RedButton( Messages.get(this, "sell_1", priceAll / item.quantity()) ) {
 				@Override
 				protected void onClick() {
@@ -144,7 +158,14 @@ public class WndTradeItem extends WndInfoItem {
 
 		float pos = height;
 
-		int price = (int) (Shopkeeper.sellPrice( item ) * priceMulti);
+		// ========== 修复：购买按钮显示价格同步固定1500逻辑 ==========
+		int price;
+		if (item instanceof DistressSignalNesting) {
+			price = ((DistressSignalNesting) item).shopValue();
+		} else {
+			int basePrice = Shopkeeper.sellPrice(item);
+			price = (int) (basePrice * priceMulti);
+		}
 
 		RedButton btnBuy = new RedButton( Messages.get(this, "buy", price) ) {
 			@Override
@@ -162,7 +183,7 @@ public class WndTradeItem extends WndInfoItem {
 
 		RedButton btnStole = new RedButton( Statistics.fireGirlnoshopping && !Statistics.deadshoppingdied ?
 				Messages.get(this,
-				"oks"):Messages.get(this, "stole", price) ) {
+						"oks"):Messages.get(this, "stole", price) ) {
 			@Override
 			protected void onClick() {
 				hide();
@@ -228,12 +249,12 @@ public class WndTradeItem extends WndInfoItem {
 
 		resize(width, (int) pos);
 	}
-	
+
 	@Override
 	public void hide() {
-		
+
 		super.hide();
-		
+
 		if (owner != null) {
 			owner.hide();
 		}
@@ -252,7 +273,13 @@ public class WndTradeItem extends WndInfoItem {
 		//selling items in the sell interface doesn't spend time
 		hero.spend(-hero.cooldown());
 
-		new Gold((int) (item.value() * priceMulti)).doPickUp( hero );
+		int sellPrice;
+		if (item instanceof DistressSignalNesting) {
+			sellPrice = ((DistressSignalNesting) item).shopValue();
+		} else {
+			sellPrice = (int) (item.value() * priceMulti);
+		}
+		new Gold(sellPrice).doPickUp( hero );
 
 		if (shop != null){
 			shop.buybackItems.add(item);
@@ -279,7 +306,13 @@ public class WndTradeItem extends WndInfoItem {
 			//selling items in the sell interface doesn't spend time
 			hero.spend(-hero.cooldown());
 
-			new Gold((int) (item.value() * priceMulti)).doPickUp( hero );
+			int sellPrice;
+			if (item instanceof DistressSignalNesting) {
+				sellPrice = ((DistressSignalNesting) item).shopValue();
+			} else {
+				sellPrice = (int) (item.value() * priceMulti);
+			}
+			new Gold(sellPrice).doPickUp( hero );
 
 			if (shop != null){
 				shop.buybackItems.add(item);
@@ -289,13 +322,19 @@ public class WndTradeItem extends WndInfoItem {
 			}
 		}
 	}
-	
+
 	private void buy( Heap heap ) {
-		
+
 		Item item = heap.pickUp();
 		if (item == null) return;
-		
-		int price = (int) (Shopkeeper.sellPrice( item ) * priceMulti);
+
+		int price;
+		if (item instanceof DistressSignalNesting) {
+			price = ((DistressSignalNesting) item).shopValue();
+		} else {
+			int basePrice = Shopkeeper.sellPrice(item);
+			price = (int) (basePrice * priceMulti);
+		}
 
 		if(hero.belongings.getItem(LuckyGlove.class)!=null && Random.Float()>0.85f) {
 			GLog.n(Messages.get(LuckyGlove.class,"lucky"));
@@ -303,7 +342,7 @@ public class WndTradeItem extends WndInfoItem {
 			Dungeon.gold -= price;
 		}
 		Catalog.countUses(Gold.class, price);
-		
+
 		if (!item.doPickUp( Dungeon.hero )) {
 			Dungeon.level.drop( item, heap.pos ).sprite.drop();
 		}

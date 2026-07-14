@@ -90,10 +90,18 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyImpl;
+import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyService;
+import com.shatteredpixel.shatteredpixeldungeon.services.daily.SubmitResultData;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndLeaderboard;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -362,6 +370,8 @@ public class Dungeon {
 	//TODO 备用
 	public static boolean anCityQuest2Progress;
 
+	public static final String TEMP_FILE = "temp.dat";
+
 	public static HashSet<Integer> chapters;
 
 	public static SparseArray<ArrayList<Item>> droppedItems;
@@ -377,13 +387,7 @@ public class Dungeon {
 
 	//we initialize the seed separately so that things like interlevelscene can access it early
 	public static void initSeed(){
-		if (daily) {
-			//Ensures that daily seeds are not in the range of user-enterable seeds
-			seed = SPDSettings.lastDaily() + DungeonSeed.TOTAL_SEEDS;
-			DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
-			format.setTimeZone(TimeZone.getTimeZone("UTC"));
-			customSeedText = format.format(new Date(SPDSettings.lastDaily()));
-		} else if (!SPDSettings.customSeed().isEmpty()){
+		if (!SPDSettings.customSeed().isEmpty()){
 			customSeedText = SPDSettings.customSeed();
 			seed = DungeonSeed.convertFromText(customSeedText);
 		} else {
@@ -1004,6 +1008,7 @@ public class Dungeon {
 			updateLevelExplored();
 			Statistics.gameWon = false;
 			if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
+				takeDailySnapshot( cause, false );
 				Rankings.INSTANCE.submit(false, cause);
 				GameRecordChallenges(false);
 			}
@@ -1017,9 +1022,64 @@ public class Dungeon {
 
 		hero.belongings.identify();
 		if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
+			takeDailySnapshot( cause, true );
 			Rankings.INSTANCE.submit(true, cause);
 			GameRecordChallenges(true);
 		}
+	}
+
+	private static void takeDailySnapshot( Object cause, boolean won) {
+		if (!daily) return;
+
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+		Bundle snapshot = new Bundle();
+		snapshot.put(HERO, hero);
+		Statistics.storeInBundle(snapshot);
+		Dungeon.dlcs.storeInBundle(snapshot);
+		snapshot.put(CHALLENGES, challenges);
+		snapshot.put("date", format.format(new Date(Game.realTime)));
+		snapshot.put("game_version", Dungeon.initialVersion);
+		snapshot.put(SEED, seed);
+		snapshot.put(CUSTOM_SEED, customSeedText);
+		snapshot.put(DEPTH, depth);
+		snapshot.put("cause", cause instanceof Class ? (Class) cause : cause.getClass());
+		snapshot.put("won", won);
+
+		try {
+			FileUtils.bundleToFile(TEMP_FILE, snapshot);
+		} catch (IOException e) {
+			ShatteredPixelDungeon.reportException(e);
+		}
+
+		DailyImpl.getService().submitScore(snapshot, new DailyService.DailyResultCallback<SubmitResultData>() {
+			@Override
+			public void onSuccess(SubmitResultData result) {
+				String title,message;
+				Image image;
+				if(result.isSuccess()){
+					image = Icons.get(Icons.INFO);
+					title = Messages.get( WndLeaderboard.class,"submit_success" );
+					message = Messages.get( WndLeaderboard.class,"submit_result", result.data.rank, result.data.totalPlayers );
+                    FileUtils.overwriteFile(TEMP_FILE, 1);
+                }else {
+					image = Icons.get(Icons.WARNING);
+					title = Messages.get( WndLeaderboard.class,"submit_failed" );
+					message = result.message;
+				}
+
+				ShatteredPixelDungeon.scene().addToFront( new WndTitledMessage( image, title, message ){
+					@Override
+					public void onBackPressed() {
+						super.onBackPressed();
+					}
+				});
+			}
+
+			@Override
+			public void onFailure(String error) {
+				ShatteredPixelDungeon.scene().addToFront( new WndError( error ) );
+			}
+		});
 	}
 
 	public static void updateLevelExplored(){

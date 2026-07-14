@@ -118,7 +118,7 @@ public class HuntingCarnival extends Buff {
                     enemy.damage(damage, this, PHYSICAL);
                     Buff.affect(enemy, Paralysis.class, 5);
                     int idx = Random.Int(3);
-                    GLog.p(Messages.get(this, "shock_hit_" + idx));
+                    GLog.yellow(Messages.get(this, "shock_hit_" + idx));
 
                     // 在目标周围生成电场
                     for (int offset : PathFinder.NEIGHBOURS9) {
@@ -138,7 +138,7 @@ public class HuntingCarnival extends Buff {
                     enemy.damage(damage, this, PHYSICAL);
                     Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 10);
                     int idx = Random.Int(3);
-                    GLog.p(Messages.get(this, "burn_hit_" + idx));
+                    GLog.b(Messages.get(this, "burn_hit_" + idx));
                     Buff.detach(enemy,Paralysis.class);
                 };
                 break;
