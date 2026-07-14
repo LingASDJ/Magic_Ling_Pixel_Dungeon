@@ -37,6 +37,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyImpl;
+import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailySeedData;
+import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyService;
+import com.shatteredpixel.shatteredpixeldungeon.services.daily.SubmitResultData;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FourYearsAnimation;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -51,11 +55,15 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLC;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndLeaderboard;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStartGame;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Matrix;
@@ -72,15 +80,23 @@ import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Music;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.DeviceCompat;
+import com.watabou.utils.FileUtils;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
+import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class HeroSelectScene extends PixelScene {
 
@@ -498,7 +514,213 @@ public class HeroSelectScene extends PixelScene {
 		buttons.add(seedButton);
 		add(seedButton);
 
-		IconButton Rename = new IconButton(Icons.get(Icons.RENAME_OFF)){
+		StyledButton dailyButton = new StyledButton(Chrome.Type.BLANK, Messages.get(HeroSelectScene.class, "daily"), 6){
+
+			private static final long SECOND = 1000;
+			private static final long MINUTE = 60 * SECOND;
+			private static final long HOUR = 60 * MINUTE;
+			private static final long DAY = 24 * HOUR;
+
+			@Override
+			protected void onClick() {
+				super.onClick();
+
+				if (!Badges.isUnlocked(Badges.Badge.VICTORY) && !DeviceCompat.isDebug()){
+					ShatteredPixelDungeon.scene().addToFront( new WndTitledMessage(
+							Icons.get(Icons.CALENDAR),
+							Messages.get(HeroSelectScene.class, "daily"),
+							Messages.get(HeroSelectScene.class, "daily_nowin"))
+					);
+					return;
+				}
+
+				if( TitleScene.NTP_NOINTER || TitleScene.NTP_ERROR || TitleScene.NTP_NOINTER_VEFY || TitleScene.NTP_ERROR_VEFY ) {
+					ShatteredPixelDungeon.scene().addToFront( new WndError(Messages.get(HeroSelectScene.class,"daily_nointernet")) );
+					return;
+				}
+
+				long diff = (SPDSettings.lastDaily() + DAY) - Game.realTime;
+				if (diff > 24*HOUR){
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroSelectScene.class, "daily_unavailable_long", (diff / DAY)+1)));
+					return;
+				}
+
+				for (GamesInProgress.Info game : GamesInProgress.checkAll()){
+					if (game.daily){
+						ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroSelectScene.class, "daily_existing")));
+						return;
+					}
+				}
+
+				if( FileUtils.fileLength(Dungeon.TEMP_FILE) > 1 ){
+					showReuploadContent(diff);
+				}else {
+					showDailyContent(diff);
+				}
+			}
+
+			private void showReuploadContent(long diff){
+				ShatteredPixelDungeon.scene().addToFront(new WndOptions(
+						Messages.get(HeroSelectScene.class,"record_title"),
+						Messages.get(HeroSelectScene.class,"record_desc"),
+						Messages.get(HeroSelectScene.class, "record_confirm"),
+						Messages.get(HeroSelectScene.class,"record_cancel")){
+					@Override
+					protected void onSelect(int index) {
+						super.onSelect(index);
+						if(index == 0){
+							Bundle bundle = new Bundle();
+							try {
+								bundle = FileUtils.bundleFromFile(Dungeon.TEMP_FILE);
+							}catch (IOException e){
+								ShatteredPixelDungeon.reportException(e);
+							}
+
+							DailyImpl.getService().submitScore(bundle, new DailyService.DailyResultCallback<SubmitResultData>() {
+								@Override
+								public void onSuccess(SubmitResultData result) {
+									String title,message;
+									Image image;
+									if(result.isSuccess()){
+										image = Icons.get(Icons.INFO);
+										title = Messages.get( WndLeaderboard.class,"submit_success" );
+										message = Messages.get( WndLeaderboard.class,"submit_result", result.data.rank, result.data.totalPlayers );
+										FileUtils.overwriteFile(Dungeon.TEMP_FILE, 1);
+									}else {
+										image = Icons.get(Icons.WARNING);
+										title = Messages.get( WndLeaderboard.class,"submit_failed" );
+										message = result.message;
+									}
+
+									ShatteredPixelDungeon.scene().addToFront( new WndTitledMessage( image, title, message ){
+										@Override
+										public void onBackPressed() {
+											super.onBackPressed();
+										}
+									});
+								}
+
+								@Override
+								public void onFailure(String error) {
+									ShatteredPixelDungeon.scene().addToFront( new WndError( error ) );
+								}
+							});
+						}else if(index==1){
+							showDailyContent(diff);
+						}
+					}
+
+					@Override
+					public void onBackPressed() {
+						super.onBackPressed();
+						showDailyContent(diff);
+					}
+				});
+			}
+
+			private void showDailyContent(long diff){
+				Image icon = Icons.get(Icons.CALENDAR);
+				if (diff <= 0)  icon.hardlight(0.5f, 1f, 2f);
+				else            icon.hardlight(1f, 0.5f, 2f);
+
+				ShatteredPixelDungeon.scene().addToFront(new WndOptions(
+						icon,
+						Messages.get(HeroSelectScene.class, "daily"),
+						diff > 0 ?
+								Messages.get(HeroSelectScene.class, "daily_repeat") :
+								Messages.get(HeroSelectScene.class, "daily_desc"),
+						Messages.get(HeroSelectScene.class, "daily_yes"),
+						Messages.get(HeroSelectScene.class, "daily_leaderboard"),
+						Messages.get(HeroSelectScene.class, "daily_no")){
+
+
+					@Override
+					protected void onSelect(int index) {
+						if (index == 0){
+							if (diff <= 0) {
+								long time = Game.realTime - (Game.realTime % DAY);
+
+								//earliest possible daily for v3.0.1 is Mar 01 2025
+								//which is 20,148 days days after Jan 1 1970
+								time = Math.max(time, 20_148 * DAY);
+
+								SPDSettings.lastDaily(time);
+								Dungeon.dailyReplay = false;
+							} else {
+								Dungeon.dailyReplay = true;
+							}
+
+							DailyImpl.getService().fetchTodaySeed(new DailyService.DailyResultCallback<DailySeedData>() {
+								@Override
+								public void onSuccess(DailySeedData result) {
+									Dungeon.seed = result.seed;
+									Dungeon.customSeedText = result.date;
+
+									Dungeon.hero = null;
+									Dungeon.daily = true;
+									ActionIndicator.clearAction();
+									InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+
+									Game.switchScene( InterlevelScene.class );
+								}
+
+								@Override
+								public void onFailure(String error) {
+									ShatteredPixelDungeon.scene().addToFront(new WndError(error));
+								}
+							});
+						} else if (index == 1) {
+							DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+							format.setTimeZone(TimeZone.getTimeZone("UTC"));
+							String date = format.format(new Date(Game.realTime));
+							ShatteredPixelDungeon.scene().addToFront(new WndLeaderboard(date));
+						}
+					}
+
+					@Override
+					public void onBackPressed() {
+						super.onBackPressed();
+					}
+				});
+			}
+
+			private long timeToUpdate = 0;
+
+			private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.ROOT);
+			{
+				dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+			}
+
+			@Override
+			public void update() {
+				super.update();
+
+				if (Game.realTime > timeToUpdate && visible){
+					long diff = (SPDSettings.lastDaily() + DAY) - Game.realTime;
+
+					if (diff > 0){
+						if (diff > 30*HOUR){
+							text("30:00:00+");
+						} else {
+							text(dateFormat.format(new Date(diff)));
+						}
+						timeToUpdate = Game.realTime + SECOND;
+					} else {
+						text(Messages.get(HeroSelectScene.class, "daily"));
+						timeToUpdate = Long.MAX_VALUE;
+					}
+				}
+
+			}
+		};
+		dailyButton.leftJustify = true;
+		dailyButton.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
+		dailyButton.setPos(startBtn.x, startBtn.y + BUTTON_HEIGHT);
+		dailyButton.icon(Icons.get(Icons.ENERGY));
+		add(dailyButton);
+		buttons.add(dailyButton);
+
+		IconButton Rename = new IconButton(Icons.get(RENAME_OFF)){
 			@Override
 			protected void onClick() {
 				if (Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)){
