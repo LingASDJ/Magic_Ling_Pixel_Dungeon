@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.CelestialBrush;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
@@ -681,6 +682,11 @@ public class Dungeon {
 			hero.viewDistance = Math.max( MagicTorch.MagicLight.DISTANCE, level.viewDistance );
 		} else {
 			hero.viewDistance = level.viewDistance;
+		}
+
+		// ===== CelestialBrush天界画笔诅咒，视野下降1格 =====
+		if (CelestialBrush.isEquippedAndCursed()) {
+			hero.viewDistance -= 1;
 		}
 
 		hero.curAction = hero.lastAction = null;

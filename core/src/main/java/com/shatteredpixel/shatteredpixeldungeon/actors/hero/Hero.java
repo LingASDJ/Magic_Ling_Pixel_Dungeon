@@ -257,6 +257,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfTeleTation;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.CelestialBrush;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
@@ -4050,6 +4051,11 @@ public class Hero extends Char {
 						//don't want to let the player search though hidden doors in tutorial
 						if (SPDSettings.intro()){
 							chance = 0;
+						}
+
+						// CelestialBrush天界画笔诅咒效果
+						if (CelestialBrush.isEquippedAndCursed()) {
+							chance /= 2f; // 诅咒生效，陷阱感知概率减半
 						}
 
 						if (Random.Float() < chance) {

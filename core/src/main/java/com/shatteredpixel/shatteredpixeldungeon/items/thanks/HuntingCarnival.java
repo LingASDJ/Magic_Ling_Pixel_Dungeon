@@ -6,11 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -19,10 +15,8 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
+import com.watabou.noosa.Game;
+import com.watabou.utils.*;
 
 import java.util.ArrayList;
 
@@ -31,6 +25,16 @@ public class HuntingCarnival extends Buff {
     private int left;              // 剩余回合数
     private final int[] cooldowns = {4, 7, 10}; // 三位狙击手的射击间隔
     private int[] timers = {0, 0, 0};     // 当前剩余冷却（0表示可射击）
+    private int burnDuration = 1;   // 燃烧箭燃烧buff持续时间
+
+    // 由附加buff者设置燃烧箭燃烧buff持续时间
+    public void setBurnDuration(int durate) {
+        if (durate < 0) {
+            burnDuration = 1;
+            return;
+        }
+        burnDuration = durate;
+    }
 
     public void setDuration(int d) {
         duration = d;
@@ -51,10 +55,9 @@ public class HuntingCarnival extends Buff {
             if (timers[i] <= 0) {
                 // 找敌人发射各个类型的箭
                 Char enemy = chooseRandomEnemy();
-                if (enemy != null)
-                    Buff.affect(enemy,Paralysis.class,100f);{
-                    performShot(i, enemy);
-                    timers[i] = cooldowns[i];
+                if (enemy != null) {
+                    performShot(i, enemy);           // 发射箭矢
+                    timers[i] = cooldowns[i];        // 重置冷却（各自间隔不同）
                 }
             } else {
                 timers[i]--;
@@ -96,6 +99,9 @@ public class HuntingCarnival extends Buff {
         Item missileItem;
         Runnable damageLogic;
 
+        PointF screenLeftTop = Game.scene().camera().scroll;  // 狙击点为屏幕左上角
+        PointF startPos = new PointF(screenLeftTop.x - 50, screenLeftTop.y - 50);
+
         switch (typeIdx) {
             default:
             case 0: // 0 霜冻阻滞箭
@@ -104,7 +110,7 @@ public class HuntingCarnival extends Buff {
                     int damage = frostDamage(depth);
                     damage = applyArmorReduction(enemy, damage);
                     enemy.damage(damage, this, PHYSICAL);
-                    Buff.affect(enemy, Frost.class, 10);
+                    Buff.affect(enemy, Chill.class, 10);
                     int idx = Random.Int(3);
                     GLog.p(Messages.get(this, "frost_hit_" + idx));
                     Buff.detach(enemy,Paralysis.class);
@@ -116,7 +122,7 @@ public class HuntingCarnival extends Buff {
                     int damage = shockDamage(depth);
                     damage = applyArmorReduction(enemy, damage);
                     enemy.damage(damage, this, PHYSICAL);
-                    Buff.affect(enemy, Paralysis.class, 5);
+                    Buff.affect(enemy, Paralysis.class, 2);
                     int idx = Random.Int(3);
                     GLog.yellow(Messages.get(this, "shock_hit_" + idx));
 
@@ -125,6 +131,8 @@ public class HuntingCarnival extends Buff {
                         int pos = enemy.pos + offset;
                         if (Dungeon.level.insideMap(pos) && !Dungeon.level.solid[pos] && Dungeon.level.water[pos]) {
                             TrackableElectricity field = Blob.seed(pos, 5, TrackableElectricity.class);
+                            field.setExternalDamage(damage);
+                            field.setAllowParalysis(false);
                             GameScene.add(field);
                         }
                     }
@@ -136,7 +144,7 @@ public class HuntingCarnival extends Buff {
                 damageLogic = () -> {
                     int damage = burnDamage(depth);
                     enemy.damage(damage, this, PHYSICAL);
-                    Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 10);
+                    Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 4 *(burnDuration));
                     int idx = Random.Int(3);
                     GLog.b(Messages.get(this, "burn_hit_" + idx));
                     Buff.detach(enemy,Paralysis.class);
@@ -144,32 +152,15 @@ public class HuntingCarnival extends Buff {
                 break;
         }
 
-        MissileSprite missile = new MissileSprite();
+        ThanksMissileSprite missile = new ThanksMissileSprite();
         GameScene.scene.add(missile);
-        if(enemy != null){
-            missile.reset(
-                    0,
-                    enemy.sprite,
-                    missileItem,
-                    new Callback() {
-                        @Override
-                        public void call() {
-                            damageLogic.run();
-                        }
-                    }
-            );
-        }
+        missile.reset(startPos, enemy, missileItem, () -> damageLogic.run());
 
     }
 
     private int frostDamage(int depth) {
-        int min = depth;
+        int min = 5;
         int max = 10 + depth / 2;
-        if (min > max) {
-            int tmp = min;
-            min = max;
-            max = tmp;
-        }
         return Random.NormalIntRange(min, max);
     }
 
@@ -178,8 +169,8 @@ public class HuntingCarnival extends Buff {
     }
 
     private int burnDamage(int depth) {
-        int min = 5 + depth;
-        int max = 10 + depth;
+        int min = 15;
+        int max = 25 + depth;
         return Random.NormalIntRange(min, max);
     }
 

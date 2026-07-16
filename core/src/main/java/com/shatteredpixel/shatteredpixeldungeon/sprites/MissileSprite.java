@@ -132,9 +132,9 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(Shuriken.class,                  2160);
 		ANGULAR_SPEEDS.put(TenguSprite.TenguShuriken.class, 2160);
 
-		ANGULAR_SPEEDS.put(SniperSupport.FrostSnipeArrow.class, 0);
-		ANGULAR_SPEEDS.put(SniperSupport.ShockSnipeArrow.class, 0);
-		ANGULAR_SPEEDS.put(SniperSupport.BurnSnipeArrow.class,  0);
+		ANGULAR_SPEEDS.put(SniperSupport.FrostSnipeArrow.class, 180);
+		ANGULAR_SPEEDS.put(SniperSupport.ShockSnipeArrow.class, 180);
+		ANGULAR_SPEEDS.put(SniperSupport.BurnSnipeArrow.class,  180);
 	}
 
 	//TODO it might be nice to have a source and destination angle, to improve thrown weapon visuals
