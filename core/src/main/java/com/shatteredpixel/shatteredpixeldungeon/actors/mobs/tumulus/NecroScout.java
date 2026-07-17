@@ -23,7 +23,8 @@ public class NecroScout extends Mob {
         baseSpeed = 1.5f;
 
         spriteClass = NecroScoutSprite.class;
-
+        properties.add(Property.NECRO);
+        properties.add(Property.UNDEAD);
         properties.add(Property.TUMULUS);
 
         loot = Random.Float() < 0.5f ? Generator.randomArmor() : Generator.randomWeapon();

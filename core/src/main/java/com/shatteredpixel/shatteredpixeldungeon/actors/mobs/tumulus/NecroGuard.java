@@ -17,6 +17,7 @@ public class NecroGuard extends Mob {
     {
         spriteClass = NecroGuardSprite.class;
         properties.add(Property.TUMULUS);
+        properties.add(Property.NECRO);
         HP = HT = 60;
         defenseSkill = 20;
         baseSpeed = 1f;

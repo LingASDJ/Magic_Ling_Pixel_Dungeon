@@ -268,6 +268,8 @@ public class WndInfoMob extends Window {
                 level = Messages.get(WndInfoMob.class,"hunter");
             } else if (mob.properties.contains(Char.Property.ABYSS)){
                 level = Messages.get(WndInfoMob.class,"abyss");
+            } else if (mob.properties.contains(Char.Property.NECRO)){
+                level = Messages.get(WndInfoMob.class,"necro");
             } else if (mob.properties.contains(Char.Property.UNDEAD)){
                 level = Messages.get(WndInfoMob.class,"undied");
             } else if (mob.properties.contains(Char.Property.DEMONIC)){

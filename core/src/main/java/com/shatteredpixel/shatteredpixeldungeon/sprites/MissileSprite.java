@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.QliphothLasher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroPioneer;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.thanks.SniperSupport;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -120,7 +121,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(ScorpioSprite.ScorpioShot.class,   0);
 
 		ANGULAR_SPEEDS.put(Bullet.class,         0);
-		//720 is default
+		ANGULAR_SPEEDS.put(NecroPioneer.BoneKnife.class,         0);
 
 		ANGULAR_SPEEDS.put(GnollGeomancer.Boulder.class,   90);
 		
@@ -132,9 +133,9 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(Shuriken.class,                  2160);
 		ANGULAR_SPEEDS.put(TenguSprite.TenguShuriken.class, 2160);
 
-		ANGULAR_SPEEDS.put(SniperSupport.FrostSnipeArrow.class, 0);
-		ANGULAR_SPEEDS.put(SniperSupport.ShockSnipeArrow.class, 0);
-		ANGULAR_SPEEDS.put(SniperSupport.BurnSnipeArrow.class,  0);
+		ANGULAR_SPEEDS.put(SniperSupport.FrostSnipeArrow.class, 180);
+		ANGULAR_SPEEDS.put(SniperSupport.ShockSnipeArrow.class, 180);
+		ANGULAR_SPEEDS.put(SniperSupport.BurnSnipeArrow.class,  180);
 	}
 
 	//TODO it might be nice to have a source and destination angle, to improve thrown weapon visuals

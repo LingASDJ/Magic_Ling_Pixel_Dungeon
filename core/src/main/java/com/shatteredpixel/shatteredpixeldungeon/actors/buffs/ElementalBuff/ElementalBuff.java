@@ -10,6 +10,8 @@ public abstract class ElementalBuff extends Buff {
 
     public int Scary = 1;
 
+    public abstract void onDamageTaken(float percentHP);
+
     public int elementalIcon;
 
     {

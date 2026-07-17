@@ -50,6 +50,8 @@ public abstract class Trap implements Bundlable {
 	public static final int GREY    = 7;
 	public static final int BLACK   = 8;
 
+	public static final int TOMB   = 15;
+
 	//trap shapes
 	public static final int DOTS        = 0;
 	public static final int WAVES       = 1;

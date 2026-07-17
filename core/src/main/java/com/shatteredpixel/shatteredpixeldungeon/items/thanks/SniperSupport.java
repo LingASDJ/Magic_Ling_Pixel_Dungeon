@@ -6,11 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -24,9 +20,12 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Visual;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -34,9 +33,18 @@ import java.util.ArrayList;
 public class SniperSupport extends Buff {
     private int triggers;              // 总触发次数
     private int triggersLeft;          // 剩余触发次数
-    private final int interval = 15;   // 固定间隔（15回合）
-    private int delay = interval;      // cd剩余
-    private int playerTextCooldown = 0;
+    private final int interval = 8;   // 固定间隔（15回合）
+    private int delay = 0;      // cd剩余
+    private int duration = 1;   // 燃烧箭燃烧buff持续时间
+
+    // 由附加buff者设置燃烧箭燃烧buff持续时间
+    public void setBurnDuration(int durate) {
+        if (durate < 0) {
+            duration = 1;
+            return;
+        }
+        duration = durate;
+    }
 
     public void setTriggers(int count) {
         triggers = count;
@@ -104,7 +112,6 @@ public class SniperSupport extends Buff {
         // 延迟为0，尝试执行狙击
         Char enemy = chooseRandomEnemy();
         if (enemy != null) {
-            Buff.affect(enemy,Paralysis.class,100f);
             performSnipe(enemy);
             triggersLeft--;
             delay = interval;
@@ -139,6 +146,9 @@ public class SniperSupport extends Buff {
         Item missileItem;
         Runnable damageLogic;
 
+        PointF screenLeftTop = Game.scene().camera().scroll;  // 狙击点为屏幕左上角
+        PointF startPos = new PointF(screenLeftTop.x - 50, screenLeftTop.y - 50);
+
         switch (type) {
             default:
             case 0: // 霜冻箭
@@ -147,7 +157,7 @@ public class SniperSupport extends Buff {
                     int damage = frostDamage(depth);
                     damage = applyArmorReduction(enemy, damage);
                     enemy.damage(damage, this, PHYSICAL);
-                    Buff.affect(enemy, Frost.class, 10);
+                    Buff.affect(enemy, Chill.class, 10);
                     int idx = Random.Int(3);
                     GLog.p(Messages.get(this, "frost_hit_" + idx));
                     Buff.detach(enemy,Paralysis.class);
@@ -159,7 +169,7 @@ public class SniperSupport extends Buff {
                     int damage = shockDamage(depth);
                     damage = applyArmorReduction(enemy, damage);
                     enemy.damage(damage, this, PHYSICAL);
-                    Buff.affect(enemy, Paralysis.class, 5);
+                    Buff.affect(enemy, Paralysis.class, 2);
                     int idx = Random.Int(3);
                     GLog.yellow(Messages.get(this, "shock_hit_" + idx));
 
@@ -167,6 +177,8 @@ public class SniperSupport extends Buff {
                         int pos = enemy.pos + offset;
                         if (Dungeon.level.insideMap(pos) && !Dungeon.level.solid[pos] && Dungeon.level.water[pos]) {
                             TrackableElectricity field = Blob.seed(pos, 5, TrackableElectricity.class);
+                            field.setExternalDamage(damage);
+                            field.setAllowParalysis(false);
                             GameScene.add(field);
                         }
                     }
@@ -178,7 +190,7 @@ public class SniperSupport extends Buff {
                 damageLogic = () -> {
                     int damage = burnDamage(depth);
                     enemy.damage(damage, this, PHYSICAL);
-                    Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 10);
+                    Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 4 *(duration));
                     int idx = Random.Int(3);
                     GLog.b(Messages.get(this, "burn_hit_" + idx));
                     Buff.detach(enemy,Paralysis.class);
@@ -186,26 +198,14 @@ public class SniperSupport extends Buff {
                 break;
         }
 
-        MissileSprite missile = new MissileSprite();
+        ThanksMissileSprite missile = new ThanksMissileSprite();
         GameScene.scene.add(missile);
-        missile.reset(
-                0,
-                enemy.sprite,
-                missileItem,
-                () -> {
-                    damageLogic.run();
-                }
-        );
+        missile.reset(startPos, enemy, missileItem, () -> damageLogic.run());
     }
 
     private int frostDamage(int depth) {
-        int min = depth;
+        int min = 5;
         int max = 10 + depth / 2;
-        if (min > max) {
-            int tmp = min;
-            min = max;
-            max = tmp;
-        }
         return Random.NormalIntRange(min, max);
     }
 
@@ -214,8 +214,8 @@ public class SniperSupport extends Buff {
     }
 
     private int burnDamage(int depth) {
-        int min = 5 + depth;
-        int max = 10 + depth;
+        int min = 15;
+        int max = 25 + depth;
         return Random.NormalIntRange(min, max);
     }
 

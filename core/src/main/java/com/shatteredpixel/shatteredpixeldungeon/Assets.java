@@ -61,6 +61,8 @@ public class Assets {
 		public static final String FocuRoom_MapLua      = "lua/focu_room.lua";
 
 		public static final String Tomb_DemonRoom_MapLua      = "lua/tomb/demonshoproom.lua";
+
+		public static final String Tomb_DeathTower_MapLua      = "lua/tomb/deadtowerroom.lua";
 	}
 
 	public static class Environment {
@@ -834,16 +836,19 @@ public class Assets {
 		//NPC
 		public static final String GORE	= "sprites/tumulus/npc/gore.png";
 
+		public static final String NECRO_ARCHER	= "sprites/tumulus/necro_arbalester.png";
+
 		//TOMB
 		public static final String GRAVERAT	= "sprites/tumulus/rat_graveyard.png";
 		public static final String WORM	= "sprites/tumulus/tomb_worm.png";
+		public static final String WORM_WHYHUMAN	= "sprites/tumulus/worm_whyhuman.png";
 		public static final String WISP	= "sprites/tumulus/wisp.png";
 		public static final String NECRO_SCOUT	= "sprites/tumulus/necro_scout.png";
 		public static final String NECRO_PIONEER	= "sprites/tumulus/nec_striker.png";
 		public static final String THIEF_SOUL	= "sprites/tumulus/tomb_robber.png";
 
 		//CHURCH
-		public static final String NECRO_ARCHER	= "sprites/tumulus/necro_arbalester.png";
+		public static final String DEATH_SPRITE = "sprites/tumulus/death_spire.png";
 		public static final String NECRO_GUARD	= "sprites/tumulus/necro_soldier.png";
 		public static final String NECRO_APPREN	= "sprites/tumulus/nec_acolyte.png";
 

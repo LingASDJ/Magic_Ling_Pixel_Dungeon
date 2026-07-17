@@ -30,7 +30,7 @@ public class Wisp extends Mob {
         spriteClass = WispSprite.class;
 
         properties.add(Property.TUMULUS);
-        properties.add(Property.DEMONIC);
+        properties.add(Property.NECRO);
 
         loot = PotionOfLiquidFlame.class;
         lootChance = 0.1428f;

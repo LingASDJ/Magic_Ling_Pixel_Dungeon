@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.CelestialBrush;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
@@ -105,6 +106,7 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
 import com.watabou.utils.PathFinder;
@@ -119,7 +121,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -683,6 +684,11 @@ public class Dungeon {
 			hero.viewDistance = level.viewDistance;
 		}
 
+		// ===== CelestialBrush天界画笔诅咒，视野下降1格 =====
+		if (CelestialBrush.isEquippedAndCursed()) {
+			hero.viewDistance -= 1;
+		}
+
 		hero.curAction = hero.lastAction = null;
 		LevelSwitchListener.onLevelSwitch();
 		observe();
@@ -1054,30 +1060,41 @@ public class Dungeon {
 		DailyImpl.getService().submitScore(snapshot, new DailyService.DailyResultCallback<SubmitResultData>() {
 			@Override
 			public void onSuccess(SubmitResultData result) {
-				String title,message;
-				Image image;
-				if(result.isSuccess()){
-					image = Icons.get(Icons.INFO);
-					title = Messages.get( WndLeaderboard.class,"submit_success" );
-					message = Messages.get( WndLeaderboard.class,"submit_result", result.data.rank, result.data.totalPlayers );
-                    FileUtils.overwriteFile(TEMP_FILE, 1);
-                }else {
-					image = Icons.get(Icons.WARNING);
-					title = Messages.get( WndLeaderboard.class,"submit_failed" );
-					message = result.message;
-				}
-
-				ShatteredPixelDungeon.scene().addToFront( new WndTitledMessage( image, title, message ){
+				Game.runOnRenderThread(new Callback() {
 					@Override
-					public void onBackPressed() {
-						super.onBackPressed();
+					public void call() {
+						String title,message;
+						Image image;
+						if(result.isSuccess()){
+							image = Icons.get(Icons.INFO);
+							title = Messages.get( WndLeaderboard.class,"submit_success" );
+							message = Messages.get( WndLeaderboard.class,"submit_result", result.data.rank, result.data.totalPlayers );
+							FileUtils.overwriteFile(TEMP_FILE, 1);
+						}else {
+							image = Icons.get(Icons.WARNING);
+							title = Messages.get( WndLeaderboard.class,"submit_failed" );
+							message = result.message;
+						}
+
+						ShatteredPixelDungeon.scene().addToFront( new WndTitledMessage( image, title, message ){
+							@Override
+							public void onBackPressed() {
+								super.onBackPressed();
+							}
+						});
 					}
 				});
+
 			}
 
 			@Override
 			public void onFailure(String error) {
-				ShatteredPixelDungeon.scene().addToFront( new WndError( error ) );
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						ShatteredPixelDungeon.scene().addToFront( new WndError( error ) );
+					}
+				});
 			}
 		});
 	}

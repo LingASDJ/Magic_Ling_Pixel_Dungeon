@@ -160,6 +160,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFear;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFlock;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfShock;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.CelestialBrush;
 import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CrackedSpyglass;
@@ -818,7 +819,8 @@ public class Generator {
 
 					ElectricalSmoke.class,
 					MagneticCrown.class,
-					DistressSignalNesting.class
+					DistressSignalNesting.class,
+					CelestialBrush.class
 			};
 			ARTIFACT.defaultProbs = new float[]{
 					Badges.isUnlocked(Badges.Badge.KILL_DM720) ? 1:0
