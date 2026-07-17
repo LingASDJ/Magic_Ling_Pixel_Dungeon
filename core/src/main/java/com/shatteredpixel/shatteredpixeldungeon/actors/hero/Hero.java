@@ -231,6 +231,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDoll;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.TerrorDollB;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Empty;
@@ -1318,6 +1319,11 @@ public class Hero extends Char {
 					GLog.p(Messages.get(FaintGlimmer.class, "light", count,remainingLevel));
 				}
 			}
+		}
+
+		ArrayList<CorpseDust.MiniCorpseDust> food = hero.belongings.getAllItems(CorpseDust.MiniCorpseDust.class);
+		for (CorpseDust.MiniCorpseDust w : food.toArray(new CorpseDust.MiniCorpseDust[0])){
+			w.dropLevel--;
 		}
 
 		if(level instanceof AncientMysteryCityLevel || level instanceof AncientMysteryCityBossLevel){
@@ -2505,6 +2511,7 @@ public class Hero extends Char {
 			GLog.n(Messages.get(EmotionalAggregation.class,"block"));
 			return;
 		}
+
 
 		ChampionHero.Element doubleBuff = buff(ChampionHero.Element.class);
 		if (doubleBuff != null) {

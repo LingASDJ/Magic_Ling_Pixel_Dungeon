@@ -68,6 +68,11 @@ public class ScaryBuff extends ElementalBuff {
     }
 
     @Override
+    public void onDamageTaken(float percentHP) {
+
+    }
+
+    @Override
     public boolean act() {
         super.act();
 

@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.DeathBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GoodLuck;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
@@ -193,6 +194,19 @@ public abstract class Mob extends Char {
 
 		if(Dungeon.isChallenged(DHXD)||lanterfireactive){
 			damageAttackProcLanterMob();
+		}
+
+
+		if (enemy != null && enemy == Dungeon.hero) {
+			if (properties.contains(Property.NECRO)) {
+				DeathBuff death = enemy.buff(DeathBuff.class);
+				if (death != null) {
+					float percentLost = damage / (float) enemy.HT * 100;
+					death.onDamageTaken(percentLost);
+				} else {
+					Buff.affect(enemy, DeathBuff.class).set((3), 5);
+				}
+			}
 		}
 
 		if(Dungeon.isChallenged(CS)){

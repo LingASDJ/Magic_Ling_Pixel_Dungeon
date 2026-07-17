@@ -150,18 +150,23 @@ public class WndLeaderboard extends Window {
                 new DailyService.DailyResultCallback<LeaderboardData>() {
                     @Override
                     public void onSuccess(LeaderboardData result) {
-                        if (result.data == null || result.data.entries.isEmpty()) {
-                            statusText.text(Messages.get(this, "empty"));
-                            pane.content().clear();
-                            pane.content().setRect(0, 0, WIDTH, 0);
-                            pageText.text("");
-                            return;
-                        }
+                        Game.runOnRenderThread(new Callback() {
+                            @Override
+                            public void call() {
+                                if (result.data == null || result.data.entries.isEmpty()) {
+                                    statusText.text(Messages.get(this, "empty"));
+                                    pane.content().clear();
+                                    pane.content().setRect(0, 0, WIDTH, 0);
+                                    pageText.text("");
+                                    return;
+                                }
 
-                        leaderboardData = result;
-                        statusText.text("");
-                        Game.runOnRenderThread( () -> {
-                            updateLayout();
+                                leaderboardData = result;
+                                statusText.text("");
+                                Game.runOnRenderThread( () -> {
+                                    updateLayout();
+                                });
+                            }
                         });
                     }
 

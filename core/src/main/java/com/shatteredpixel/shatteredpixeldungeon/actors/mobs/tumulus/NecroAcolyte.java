@@ -50,6 +50,7 @@ public class NecroAcolyte extends Mob {
         HP = HT = 55;
         defenseSkill = 18;
         properties.add(Property.TUMULUS);
+        properties.add(Property.NECRO);
         properties.add(Property.UNDEAD);
         HUNTING = new Hunting();
     }

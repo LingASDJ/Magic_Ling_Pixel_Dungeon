@@ -5,12 +5,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.tomb.DeadTowerRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CorrosionTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FrostTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GatewayTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrippingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GuardianTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PitfallTrap;
@@ -19,9 +17,14 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RockfallTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.StormTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.CorpseDustTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.DeadSoulTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.MobSpawnTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class LostTombLevel extends RegularLevel {
 
@@ -74,6 +77,15 @@ public class LostTombLevel extends RegularLevel {
     }
 
     @Override
+    protected ArrayList<Room> initRooms() {
+        ArrayList<Room> initRooms = super.initRooms();
+
+        initRooms.add(new DeadTowerRoom());
+
+        return initRooms;
+    }
+
+    @Override
     protected Painter painter() {
         return new CavesPainter()
                 .setWater(feeling == Feeling.WATER ? 0.85f : 0.30f, 6)
@@ -99,9 +111,9 @@ public class LostTombLevel extends RegularLevel {
     @Override
     protected Class<?>[] trapClasses() {
         return new Class[]{
-                BurningTrap.class, PoisonDartTrap.class, FrostTrap.class, StormTrap.class, CorrosionTrap.class,
+                BurningTrap.class, PoisonDartTrap.class, MobSpawnTrap.class, StormTrap.class, CorpseDustTrap.class,
                 GrippingTrap.class, RockfallTrap.class,  GuardianTrap.class,
-                ConfusionTrap.class, SummoningTrap.class, WarpingTrap.class, PitfallTrap.class, GatewayTrap.class, GeyserTrap.class };
+                ConfusionTrap.class, SummoningTrap.class, WarpingTrap.class, PitfallTrap.class, DeadSoulTrap.class, DeadSoulTrap.class };
     }
 
     @Override

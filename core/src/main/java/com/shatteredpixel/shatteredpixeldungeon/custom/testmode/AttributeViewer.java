@@ -360,6 +360,8 @@ public class AttributeViewer extends TestItem{
                 return "godcrack";
             case TUMULUS:
                 return "tumulus";
+            case NECRO:
+                return "necro";
             case UNLESS:
                 return "booksoucre";
             default:

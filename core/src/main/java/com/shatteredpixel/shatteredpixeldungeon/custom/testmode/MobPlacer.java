@@ -88,7 +88,6 @@ public class MobPlacer extends TestItem{
     private int maxPage = 24;
     private int ST = 1;
     private int elite_op = 0;
-    // 怪物阵营变量，默认敌人
     private Char.Alignment mobAlign = Char.Alignment.ENEMY;
 
     private final ArrayList<Class<? extends ChampionEnemy>> eliteBuffs = new ArrayList<>();
@@ -133,7 +132,6 @@ public class MobPlacer extends TestItem{
                                 Mob m = Reflection.newInstance(getMobClass());
                                 m.pos = cell;
                                 m.state = m.HUNTING;
-                                // 赋值阵营
                                 m.alignment = mobAlign;
                                 GameScene.add(m);
 
@@ -196,7 +194,6 @@ public class MobPlacer extends TestItem{
         b.put("stTags", ST);
         b.put("elite_ops", elite_op);
         b.put("mob_shouldOverride",shouldOverride);
-        // 保存阵营
         b.put("mobAlign", mobAlign.name());
     }
 
@@ -223,24 +220,32 @@ public class MobPlacer extends TestItem{
     }
 
     private class WndSetMob extends Window{
+        private boolean isClosed = false;
 
-        // 窗口自适应尺寸，加宽适配大控件
-        private static final int WND_WIDTH = 200;
-        private static final int WND_HEIGHT = 180;
-        private static final int LEFT_PANEL_WIDTH = 55;
+        private static final int WND_WIDTH_LANDSCAPE = 200;
+        private static final int WND_WIDTH_PORTRAIT = 140;
+        private static final int WND_HEIGHT_LANDSCAPE = 180;
+        private static final int WND_HEIGHT_PORTRAIT = 190;
+        private static final int LEFT_PANEL_WIDTH_LANDSCAPE = 55;
+        private static final int LEFT_PANEL_WIDTH_PORTRAIT = 40;
 
-        // 三区分割高度比例
-        private static final float MOB_GRID_RATIO = 0.35f;
-        private static final float ELITE_GRID_RATIO = 0.45f;
-        private static final float SETTING_GRID_RATIO = 0.2f;
-        private static final int FUNCTION_GRID_WIDTH = 50;
+        private boolean isLandscape;
+        private int wndWidth, wndHeight, leftPanelWidth;
+
+        private static final float MOB_GRID_RATIO_LANDSCAPE = 0.35f;
+        private static final float MOB_GRID_RATIO_PORTRAIT = 0.30f;
+        private static final float ELITE_GRID_RATIO_LANDSCAPE = 0.45f;
+        private static final float ELITE_GRID_RATIO_PORTRAIT = 0.50f;
+        private static final float SETTING_GRID_RATIO = 0.20f;
+
+        private static final int FUNCTION_GRID_WIDTH_LANDSCAPE = 50;
+        private static final int FUNCTION_GRID_WIDTH_PORTRAIT = 40;
         private static final int FUNCTION_GRID_HEIGHT = 26;
 
         private RedButton btnPrevPage, btnNextPage;
         private RenderedTextBlock txtPageIndicator;
         private RenderedTextBlock txtSelectedMobName;
 
-        // 三个独立网格面板
         private ScrollingGridPane mobGridPane;
         private ScrollingGridPane eliteGridPane;
         private ScrollingGridPane settingGridPane;
@@ -250,19 +255,22 @@ public class MobPlacer extends TestItem{
         private RedButton btnModifyHealth;
         private CheckBox cbOverrideHP;
 
-        // ========== 左侧预览精灵 ==========
         private MobSprite previewSprite;
-        private static final int PREVIEW_SIZE = 36;
-        // 阵营单选框
-        private CheckBox cbEnemy, cbNeutral, cbAlly;
+        private static final int PREVIEW_SIZE_LANDSCAPE = 36;
+        private static final int PREVIEW_SIZE_PORTRAIT = 24;
 
+        private CheckBox cbEnemy, cbNeutral, cbAlly;
         private RedButton cbInfo;
 
         private final Image EMPTY_ICON = new Image(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17+6));
 
         public WndSetMob(){
             super();
-            resize(Game.width > Game.height ? WND_WIDTH : 180, WND_HEIGHT);
+            isLandscape = Game.width > Game.height;
+            wndWidth = isLandscape ? WND_WIDTH_LANDSCAPE : WND_WIDTH_PORTRAIT;
+            wndHeight = isLandscape ? WND_HEIGHT_LANDSCAPE : WND_HEIGHT_PORTRAIT;
+            leftPanelWidth = isLandscape ? LEFT_PANEL_WIDTH_LANDSCAPE : LEFT_PANEL_WIDTH_PORTRAIT;
+            resize(wndWidth, wndHeight);
             initLeftPanel();
             initTripleGridLayout();
             refreshAllGridContent();
@@ -270,34 +278,44 @@ public class MobPlacer extends TestItem{
             refreshPreviewSprite();
         }
 
-        private boolean isClosed = false;
         @Override
         public void hide() {
+            syncEliteFlags();
             isClosed = true;
-            super.hide();
 
-            if (parent != null) {
-                parent.remove(this);
+            if (mobGridPane != null) {
+                mobGridPane.setSize(0, 0);
+                mobGridPane.clear();
             }
-            destroy();
-        }
+            if (eliteGridPane != null) {
+                eliteGridPane.setSize(0, 0);
+                eliteGridPane.clear();
+            }
+            if (settingGridPane != null) {
+                settingGridPane.setSize(0, 0);
+                settingGridPane.clear();
+            }
 
-        @Override
-        public void destroy() {
-            super.destroy();
-            isClosed = true;
-            mobGridPane = null;
-            eliteGridPane = null;
-            settingGridPane = null;
+            if (btnPrevPage != null) btnPrevPage.setSize(0, 0);
+            if (btnNextPage != null) btnNextPage.setSize(0, 0);
+            if (cbEnemy != null) cbEnemy.setSize(0, 0);
+            if (cbNeutral != null) cbNeutral.setSize(0, 0);
+            if (cbAlly != null) cbAlly.setSize(0, 0);
+            if (cbInfo != null) cbInfo.setSize(0, 0);
+            if (cbOverrideHP != null) cbOverrideHP.setSize(0, 0);
+            if (btnModifyHealth != null) btnModifyHealth.setSize(0, 0);
+
             mobIconItems.clear();
             eliteCheckItems.clear();
-            previewSprite = null;
-            btnPrevPage = btnNextPage = btnModifyHealth = cbInfo = null;
-            cbEnemy = cbNeutral = cbAlly = null;
+
+            if (parent != null) parent.remove(this);
+            super.hide();
         }
 
-        // 左侧固定面板
         private void initLeftPanel(){
+            int btnWidth = leftPanelWidth - 10;
+            int btnHeight = isLandscape ? 24 : 18;
+
             btnPrevPage = new RedButton("<", 7){
                 @Override
                 public void onClick(){
@@ -310,16 +328,16 @@ public class MobPlacer extends TestItem{
                     refreshPreviewSprite();
                 }
             };
-            btnPrevPage.setRect(5, 15, LEFT_PANEL_WIDTH-10, 24);
+            btnPrevPage.setRect(5, 10, btnWidth, btnHeight);
             add(btnPrevPage);
 
-            txtPageIndicator = PixelScene.renderTextBlock("", 9);
+            txtPageIndicator = PixelScene.renderTextBlock("", isLandscape ? 9 : 8);
             txtPageIndicator.hardlight(0xFFFFFF);
             add(txtPageIndicator);
 
             txtSelectedMobName = PixelScene.renderTextBlock("", 5);
             txtSelectedMobName.hardlight(0xFFFF44);
-            txtSelectedMobName.maxWidth(LEFT_PANEL_WIDTH);
+            txtSelectedMobName.maxWidth(leftPanelWidth);
             add(txtSelectedMobName);
 
             btnNextPage = new RedButton(">", 7){
@@ -334,11 +352,13 @@ public class MobPlacer extends TestItem{
                     refreshPreviewSprite();
                 }
             };
-            btnNextPage.setRect(5, txtSelectedMobName.bottom()+5, LEFT_PANEL_WIDTH-10, 24);
+            btnNextPage.setRect(5, txtSelectedMobName.bottom()+3, btnWidth, btnHeight);
             add(btnNextPage);
 
             previewSprite = new RatSprite();
             add(previewSprite);
+
+            int cbSize = isLandscape ? 16 : 14;
 
             cbEnemy = new CheckBox("E"){
                 @Override
@@ -347,12 +367,8 @@ public class MobPlacer extends TestItem{
                     super.checked(value);
                     if (value) {
                         mobAlign = Char.Alignment.ENEMY;
-                        if (cbNeutral != null) {
-                            cbNeutral.checked(false);
-                        }
-                        if (cbAlly != null) {
-                            cbAlly.checked(false);
-                        }
+                        if (cbNeutral != null) cbNeutral.checked(false);
+                        if (cbAlly != null) cbAlly.checked(false);
                     }
                 }
             };
@@ -403,7 +419,7 @@ public class MobPlacer extends TestItem{
                 @Override
                 protected void onClick() {
                     if (isClosed) return;
-                    GameScene.show( new WndMessage( Messages.get(MobPlacer.class, "era_desc") ) ) ;
+                    GameScene.show(new WndMessage(Messages.get(MobPlacer.class, "era_desc")));
                 }
             };
             add(cbInfo);
@@ -418,79 +434,79 @@ public class MobPlacer extends TestItem{
             previewSprite.idle();
             add(previewSprite);
 
-            float scale = PREVIEW_SIZE / Math.max(previewSprite.width(), previewSprite.height());
+            int previewSize = isLandscape ? PREVIEW_SIZE_LANDSCAPE : PREVIEW_SIZE_PORTRAIT;
+            float scale = previewSize / Math.max(previewSprite.width(), previewSprite.height());
             previewSprite.scale.set(scale, scale);
-            previewSprite.x = 5;
-            previewSprite.y = btnNextPage.bottom()+5;
+            previewSprite.x = (leftPanelWidth - previewSprite.width() * scale) / 2f;
+            previewSprite.y = btnNextPage.bottom() + (isLandscape ? 5 : 2);
             PixelScene.align(previewSprite);
         }
 
-        // 初始化三区域独立网格（怪物区 / 精英词条区 / 血量设置区）
         private void initTripleGridLayout(){
-            float rightX = LEFT_PANEL_WIDTH;
-            float rightW = 190 - LEFT_PANEL_WIDTH;
+            float rightX = leftPanelWidth + 2;
+            float rightW = wndWidth - rightX - 2;
+            float mobRatio = isLandscape ? MOB_GRID_RATIO_LANDSCAPE : MOB_GRID_RATIO_PORTRAIT;
+            float eliteRatio = isLandscape ? ELITE_GRID_RATIO_LANDSCAPE : ELITE_GRID_RATIO_PORTRAIT;
 
-            // 1. 上方怪物选择网格
             mobGridPane = new ScrollingGridPane();
-            mobGridPane.setCellSize(24,24);
+            mobGridPane.setCellSize(isLandscape ? 24 : 20, isLandscape ? 24 : 20);
             add(mobGridPane);
-            mobGridPane.setRect(rightX, 0, rightW, WND_HEIGHT * MOB_GRID_RATIO);
+            mobGridPane.setRect(rightX, 0, rightW, wndHeight * mobRatio);
 
-            // 2. 中间精英词条独立滚动网格
             eliteGridPane = new ScrollingGridPane();
-            eliteGridPane.setCellSize(FUNCTION_GRID_WIDTH, FUNCTION_GRID_HEIGHT);
+            eliteGridPane.setCellSize(
+                    isLandscape ? FUNCTION_GRID_WIDTH_LANDSCAPE : FUNCTION_GRID_WIDTH_PORTRAIT,
+                    FUNCTION_GRID_HEIGHT
+            );
             add(eliteGridPane);
             eliteGridPane.setRect(
-                    Game.width > Game.height ? rightX - 10 : rightX-12,
-                    WND_HEIGHT * MOB_GRID_RATIO,
-                    rightW+20,
-                    WND_HEIGHT * ELITE_GRID_RATIO
+                    rightX,
+                    wndHeight * mobRatio,
+                    rightW,
+                    wndHeight * eliteRatio
             );
 
-            // 3. 下方血量调整独立滚动网格（第三区域，和精英完全分离）
             settingGridPane = new ScrollingGridPane();
-            settingGridPane.setCellSize(65, FUNCTION_GRID_HEIGHT);
+            settingGridPane.setCellSize(isLandscape ? 65 : 55, FUNCTION_GRID_HEIGHT);
             add(settingGridPane);
             settingGridPane.setRect(
                     rightX,
-                    WND_HEIGHT * (MOB_GRID_RATIO + ELITE_GRID_RATIO),
+                    wndHeight * (mobRatio + eliteRatio),
                     rightW,
-                    WND_HEIGHT * SETTING_GRID_RATIO
+                    wndHeight * SETTING_GRID_RATIO
             );
         }
 
         private void updatePageText(){
             txtPageIndicator.text(mobTier + "/" + maxPage);
             txtPageIndicator.setPos(
-                    LEFT_PANEL_WIDTH/2f - txtPageIndicator.width()/2f,
-                    btnPrevPage.bottom() + 10
+                    leftPanelWidth / 2f - txtPageIndicator.width() / 2f,
+                    btnPrevPage.bottom() + (isLandscape ? 10 : 6)
             );
             PixelScene.align(txtPageIndicator);
 
             txtSelectedMobName.text(M.L(getMobClass(), "name"));
             txtSelectedMobName.setPos(
-                    LEFT_PANEL_WIDTH/2f - txtSelectedMobName.width()/2f,
-                    txtPageIndicator.bottom() + 8
+                    leftPanelWidth / 2f - txtSelectedMobName.width() / 2f,
+                    txtPageIndicator.bottom() + (isLandscape ? 8 : 4)
             );
             PixelScene.align(txtSelectedMobName);
         }
 
         private void refreshAllGridContent(){
-            // 清空全部三个网格
             mobGridPane.clear();
             eliteGridPane.clear();
             settingGridPane.clear();
             mobIconItems.clear();
             eliteCheckItems.clear();
 
-            // 1. 上侧怪物图标网格
-            mobGridPane.addHeader(Messages.get(WndSetMob.class, "mob_list"), 9, false);
+            mobGridPane.addHeader(Messages.get(WndSetMob.class, "mob_list"), isLandscape ? 9 : 7, false);
             int mobCount = maxMobIndex(mobTier);
-            for(int i=0; i<mobCount; i++){
+            for(int i = 0; i < mobCount; i++){
                 Mob mobProto = Reflection.newInstance(getMobClass(i));
                 Image mobSprite = mobProto.sprite();
                 int finalI = i;
-                MobGridItem gridItem = new MobGridItem(mobSprite, i, ()->{
+                MobGridItem gridItem = new MobGridItem(mobSprite, i, () -> {
                     mobIndex = finalI;
                     updatePageText();
                     refreshPreviewSprite();
@@ -499,9 +515,8 @@ public class MobPlacer extends TestItem{
                 mobIconItems.add(gridItem);
             }
 
-            // 2. 中间精英词条网格（独立区域，只放精英）
-            eliteGridPane.addHeader(Messages.get(WndSetMob.class, "elite_modifier"), 9, false);
-            for(int i=0; i<eliteBuffs.size(); i++){
+            eliteGridPane.addHeader(Messages.get(WndSetMob.class, "elite_modifier"), isLandscape ? 9 : 7, false);
+            for(int i = 0; i < eliteBuffs.size(); i++){
                 Class<? extends ChampionEnemy> buffCls = eliteBuffs.get(i);
                 boolean checked = (elite_op & (1 << i)) > 0;
                 EliteCheckItem checkItem = new EliteCheckItem(buffCls, checked, i);
@@ -509,25 +524,27 @@ public class MobPlacer extends TestItem{
                 eliteCheckItems.add(checkItem);
             }
 
-            // 3. 下方血量调整网格（第三独立区域，和精英彻底分开滚动）
-            settingGridPane.addHeader(Messages.get(WndSetMob.class, "health_setting"), 9, false);
-            btnModifyHealth = new RedButton(Messages.get(MobPlacer.class, "modify_health"),8){
+            settingGridPane.addHeader(Messages.get(WndSetMob.class, "health_setting"), isLandscape ? 9 : 7, false);
+            btnModifyHealth = new RedButton(Messages.get(MobPlacer.class, "modify_health"), isLandscape ? 8 : 7){
                 @Override
                 protected void onClick() {
                     if (isClosed) return;
                     Game.runOnRenderThread(() -> {
                         if (isClosed) return;
-                        GameScene.show(new WndTextNumberInput(Messages.get(MobPlacer.class, "custom_title"),
+                        GameScene.show(new WndTextNumberInput(
+                                Messages.get(MobPlacer.class, "custom_title"),
                                 Messages.get(MobPlacer.class, "health_desc"),
                                 Integer.toString(HT),
-                                6, false, Messages.get(MobPlacer.class, "confirm"),
-                                Messages.get(MobPlacer.class, "cancel"),false) {
+                                6, false,
+                                Messages.get(MobPlacer.class, "confirm"),
+                                Messages.get(MobPlacer.class, "cancel"), false
+                        ) {
                             @Override
                             public void onSelect(boolean check, String text) {
                                 if (isClosed) return;
-                                if ( check && text.matches("\\d+") ) {
-                                    int value = Integer.parseInt( text );
-                                    if( value >= 0 ) HT = Math.min( value, 666666 );
+                                if (check && text.matches("\\d+")) {
+                                    int value = Integer.parseInt(text);
+                                    if (value >= 0) HT = Math.min(value, 666666);
                                 }
                             }
                         });
@@ -549,13 +566,11 @@ public class MobPlacer extends TestItem{
             };
             cbOverrideHP.checked(shouldOverride);
 
-            // 血量控件全部添加到 settingGridPane（第三区域）
             settingGridPane.addItem(new ComponentWrapperItem(cbOverrideHP));
             btnModifyHealth.enable(shouldOverride);
             btnModifyHealth.active = shouldOverride;
             settingGridPane.addItem(new ComponentWrapperItem(btnModifyHealth));
 
-            // 三个网格分别布局，互不干扰
             mobGridPane.layout();
             eliteGridPane.layout();
             settingGridPane.layout();
@@ -576,16 +591,17 @@ public class MobPlacer extends TestItem{
         }
 
         private void layout(){
-            btnPrevPage.setY(15);
-            btnNextPage.setY(txtSelectedMobName.bottom()+5);
+            btnPrevPage.setY(10);
+            btnNextPage.setY(txtSelectedMobName.bottom() + 3);
             updatePageText();
             refreshPreviewSprite();
 
-            float baseY = Game.width > Game.height ? previewSprite.y + previewSprite.height() + 4 : previewSprite.y + previewSprite.height() + 7;
-            cbEnemy.setRect(2, baseY, LEFT_PANEL_WIDTH - 40, 16);
-            cbNeutral.setRect(cbEnemy.right()+2, baseY, LEFT_PANEL_WIDTH - 40, 16);
-            cbAlly.setRect(cbNeutral.right()+2, baseY, LEFT_PANEL_WIDTH - 40, 16);
-            cbInfo.setRect(2, cbAlly.bottom()+1, LEFT_PANEL_WIDTH-6, 16);
+            float baseY = previewSprite.y + previewSprite.height() + (isLandscape ? 4 : 2);
+            int cbW = (leftPanelWidth - 8) / 3;
+            cbEnemy.setRect(isLandscape ? 2 : 4, baseY,  isLandscape ? cbW : 32, 16);
+            cbNeutral.setRect(isLandscape ? cbEnemy.right() + 2 : 4, isLandscape ? baseY : baseY + 18,  isLandscape ? cbW : 32, 16);
+            cbAlly.setRect(isLandscape ? cbNeutral.right() + 2 : 4,isLandscape ? baseY : baseY + 36, isLandscape ? cbW : 32, 16);
+            cbInfo.setRect(2, cbAlly.bottom() + 1, leftPanelWidth - 6, 16);
             PixelScene.align(cbEnemy);
             PixelScene.align(cbNeutral);
             PixelScene.align(cbAlly);
@@ -595,7 +611,6 @@ public class MobPlacer extends TestItem{
             settingGridPane.layout();
         }
 
-        // 怪物格子Item（增加窗口可见拦截）
         private class MobGridItem extends ScrollingGridPane.GridItem {
             private Runnable clickCallback;
             private int mobIdx;
@@ -604,11 +619,8 @@ public class MobPlacer extends TestItem{
                 mobIdx = index;
                 clickCallback = onClick;
                 float maxDim = Math.max(icon.width(), icon.height());
-                if(Game.width > Game.height){
-                    icon.scale.set(24 / maxDim * 0.85f, 24 / maxDim * 0.85f);
-                } else {
-                    icon.scale.set(16 / maxDim * 0.85f, 16 / maxDim * 0.85f);
-                }
+                float cellSize = isLandscape ? 24 : 20;
+                icon.scale.set(cellSize / maxDim * 0.85f, cellSize / maxDim * 0.85f);
             }
 
             @Override
@@ -623,11 +635,10 @@ public class MobPlacer extends TestItem{
             }
         }
 
-        // 精英词条Item
         private class EliteCheckItem extends ScrollingGridPane.GridItem {
-            Image icon;
-            IconButton infoBtn;
-            CheckBox checkBtn;
+            private Image icon;
+            private IconButton infoBtn;
+            private CheckBox checkBtn;
 
             public Class<? extends ChampionEnemy> buffClass;
             public boolean checked;
@@ -647,7 +658,7 @@ public class MobPlacer extends TestItem{
                 buffName = buff.toString();
                 buffDesc = buff.desc();
 
-                icon = new BuffIcon(buff.icon(),true);
+                icon = new BuffIcon(buff.icon(), true);
                 buff.tintIcon(icon);
                 add(icon);
 
@@ -655,19 +666,20 @@ public class MobPlacer extends TestItem{
                     @Override
                     protected void onClick() {
                         if (isClosed) return;
-                        RenderedTextBlock titleTxt = PixelScene.renderTextBlock(buffName, 10);
+                        int winW = isLandscape ? 160 : 130;
+                        int scrollW = isLandscape ? 144 : 118;
+
+                        RenderedTextBlock titleTxt = PixelScene.renderTextBlock(buffName, isLandscape ? 10 : 9);
                         titleTxt.hardlight(buffColor);
 
                         RenderedTextBlock descTxt = PixelScene.renderTextBlock(buffDesc, 6);
-                        descTxt.maxWidth(144);
+                        descTxt.maxWidth(scrollW);
 
                         int paddingTop = 6;
                         int titleGap = 4;
                         int scrollPaddingTop = 2;
                         int scrollPaddingBottom = 4;
                         int bottomBtnHeight = 26;
-                        int winW = 160;
-                        int scrollW = 144;
                         int scrollH = (int)(descTxt.height() + scrollPaddingTop + scrollPaddingBottom);
                         int winH = paddingTop + (int)titleTxt.height() + titleGap + scrollH + bottomBtnHeight;
                         winH = Math.max(110, Math.min(winH, 280));
@@ -685,8 +697,9 @@ public class MobPlacer extends TestItem{
                         scrollContent.add(descTxt);
                         scrollContent.setSize(scrollW, descTxt.height() + scrollPaddingTop + scrollPaddingBottom);
 
-                        RedButton closeBtn = new RedButton(Messages.get(WndSetMob.class,"close"),8){
-                            @Override protected void onClick(){
+                        RedButton closeBtn = new RedButton(Messages.get(WndSetMob.class, "close"), 8){
+                            @Override
+                            protected void onClick(){
                                 infoWnd.hide();
                                 if (infoWnd.parent != null) infoWnd.parent.remove(infoWnd);
                             }
@@ -699,9 +712,6 @@ public class MobPlacer extends TestItem{
                 };
                 add(infoBtn);
 
-                checkBtn = new CheckBox("");
-                checkBtn.checked(isChecked);
-                checked = isChecked;
                 checkBtn = new CheckBox(""){
                     @Override
                     public void checked(boolean value) {
@@ -711,26 +721,26 @@ public class MobPlacer extends TestItem{
                     }
                 };
                 checkBtn.checked(isChecked);
+                checked = isChecked;
                 add(checkBtn);
             }
 
             @Override
             protected void layout() {
-                float iconSize = BuffIndicator.SIZE_LARGE;
+                float iconSize = isLandscape ? BuffIndicator.SIZE_LARGE : BuffIndicator.SIZE;
                 icon.x = x + (width() - iconSize) / 4f;
                 icon.y = y + 2;
                 PixelScene.align(icon);
 
                 float iconRight = icon.x + icon.width();
-                infoBtn.setRect(iconRight + 2, icon.y, 16, 16);
+                infoBtn.setRect(iconRight + 2, icon.y, isLandscape ? 16 : 14, isLandscape ? 16 : 14);
                 PixelScene.align(infoBtn);
 
-                checkBtn.setRect(x + (width() - 16)/2f, y + height() - 18, 16, 16);
+                checkBtn.setRect(x + (width() - 16) / 2f, y + height() - 18, 16, 16);
                 PixelScene.align(checkBtn);
             }
         }
 
-        // 控件包装Item
         private class ComponentWrapperItem extends ScrollingGridPane.GridItem {
             private Component inner;
             public ComponentWrapperItem(Component comp){
@@ -748,7 +758,6 @@ public class MobPlacer extends TestItem{
         }
     }
 
-    // 怪物数据池（原样保留）
     private static LinkedHashMap<Integer, List<Class<? extends Mob>>> allData = new LinkedHashMap<>();
     static {
         Set<Bestiary> excludedTypes = EnumSet.of(

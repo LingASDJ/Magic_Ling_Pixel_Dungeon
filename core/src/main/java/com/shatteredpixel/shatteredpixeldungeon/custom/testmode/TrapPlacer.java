@@ -38,6 +38,9 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WeakeningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.CorpseDustTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.DeadSoulTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.MobSpawnTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -131,7 +134,10 @@ public class TrapPlacer extends TestItem{
         trapLib.put(47, WornDartTrap.class);
         trapLib.put(36, GeyserTrap.class);
         trapLib.put(44, GatewayTrap.class);
-        //trapLib.put(56,RedTrap.class);后面要添加的陷阱序号应该以56开始
+
+        trapLib.put(56, CorpseDustTrap.class);
+        trapLib.put(57, MobSpawnTrap.class);
+        trapLib.put(58, DeadSoulTrap.class);
     }
 
     @Override

@@ -29,8 +29,8 @@ public class ThanksMissileSprite extends ItemSprite {
         if (item instanceof SniperSupport.FrostSnipeArrow
                 || item instanceof SniperSupport.ShockSnipeArrow
                 || item instanceof SniperSupport.BurnSnipeArrow) {
-            speed *= 0.5f;
-            max_duration /= 0.5f;
+            speed *= 3f;
+            max_duration /= 3f;
         }
     }
 

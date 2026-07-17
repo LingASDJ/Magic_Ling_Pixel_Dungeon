@@ -248,7 +248,7 @@ public class ItemSpriteSheet {
         assignItemRect(GLOVES,          12, 16);
         assignItemRect(RAPIER,          16, 16);
         assignItemRect(DAGGER,          12, 13);
-        assignItemRect(MAGES_STAFF,     15, 16);
+        assignItemRect(MAGES_STAFF,     15, 15);
     }
 
     private static final int WEP_TIER2      =                               xy(18, 3);   //8 slots
@@ -475,6 +475,8 @@ public class ItemSpriteSheet {
 
 
     public static final int DW_FT     = ARMOR+12;
+
+    public static final int BONE_KNIFE     = ARMOR+13;
 
     static{
         assignItemRect(ARMOR_WARRIOR,   15, 13);
