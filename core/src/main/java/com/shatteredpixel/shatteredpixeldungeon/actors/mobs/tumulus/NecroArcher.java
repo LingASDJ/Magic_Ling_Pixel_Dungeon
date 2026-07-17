@@ -32,6 +32,8 @@ public class NecroArcher extends Mob {
         baseSpeed = 1f;
         EXP = 7;
         maxLvl = 14;
+        properties.add(Property.NECRO);
+        properties.add(Property.UNDEAD);
     }
 
     private int knockbackCooldown = 0;

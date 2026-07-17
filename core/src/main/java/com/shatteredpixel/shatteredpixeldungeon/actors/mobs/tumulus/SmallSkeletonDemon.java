@@ -14,7 +14,8 @@ public class SmallSkeletonDemon extends Mob {
 
         HP = HT = 50;
         defenseSkill = 15;
-
+        properties.add(Property.TUMULUS);
+        properties.add(Property.UNDEAD);
         EXP = 0;
         maxLvl = -1;
     }

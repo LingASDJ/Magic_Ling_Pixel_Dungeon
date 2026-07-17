@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -50,6 +51,63 @@ public class CorpseDust extends Item {
 		cursedKnown = true;
 		
 		unique = true;
+	}
+
+	public static class MiniCorpseDust extends CorpseDust {
+
+		public int dropLevel;
+
+		@Override
+		protected void onThrow(int cell) {
+			super.onThrow(cell);
+			Heap heap = Dungeon.level.drop( this, cell );
+			heap.destroy();
+		}
+
+		@Override
+		public void doDrop(Hero hero) {
+			super.doDrop(hero);
+			Heap heap = Dungeon.level.drop( this, hero.pos );
+			heap.destroy();
+		}
+
+		@Override
+		public boolean doPickUp(Hero hero, int pos) {
+			dropLevel = 44;
+			return super.doPickUp(hero, pos);
+		}
+
+		@Override
+		public ArrayList<String> actions(Hero hero) {
+			ArrayList<String> actions = super.actions(hero);
+			if(dropLevel > 0){
+				actions.remove( AC_DROP );
+				actions.remove( AC_THROW );
+			} else {
+				actions.add( AC_DROP );
+				actions.add( AC_THROW );
+			}
+			return actions;
+		}
+
+		@Override
+		public String desc() {
+			return Messages.get(this,"desc",dropLevel);
+		}
+
+		private static final String DROPLEVEL = "droplevel";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put( DROPLEVEL, dropLevel );
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			dropLevel = bundle.getInt( DROPLEVEL );
+		}
 	}
 
 	@Override

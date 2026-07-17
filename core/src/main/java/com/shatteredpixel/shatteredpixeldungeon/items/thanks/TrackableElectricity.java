@@ -21,6 +21,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrackableElectricity extends Blob {
+    // 使用外部伤害
+    private boolean useExternalDamage = false;
+    // 外部伤害值
+    private int externalDamageValue = 5;
+    // 允许造成麻痹
+    private boolean allowParalysis = true;
+    // 每跳衰减系数（0~1之间），1表示不衰减，乘算
+    private float attenuationFactor = 0.75f;
+    // 基础强度
+    private  int intPower = 5;
+
+
+    // 外部配置函数
+    public void setExternalDamage(int value) {
+        this.externalDamageValue = value;
+        this.useExternalDamage = true;
+    }
+
+    public void setAllowParalysis(boolean allowParalysis) {
+        this.allowParalysis = allowParalysis;
+    }
+
+    public void setAttenuationFactor(float value) {
+        this.attenuationFactor = value;
+    }
+
+    public void setIntPower(int value) {
+        this.intPower = value;
+    }
 
     // 记录本轮受到伤害的单位
     public final List<Char> damagedThisTurn = new ArrayList<>();
@@ -37,7 +66,7 @@ public class TrackableElectricity extends Blob {
             for (int j = area.top - 1; j <= area.bottom; j++) {
                 cell = i + j * Dungeon.level.width();
                 if (cur[cell] > 0) {
-                    spreadFromCell(cell, cur[cell], water);
+                    spreadFromCell(cell, (float)cur[cell], water);
                 }
             }
         }
@@ -49,13 +78,15 @@ public class TrackableElectricity extends Blob {
                 if (cur[cell] > 0) {
                     Char ch = Actor.findChar(cell);
                     if (ch != null && !ch.isImmune(this.getClass())) {
-                        if (ch.buff(Paralysis.class) == null) {
-                            Buff.prolong(ch, Paralysis.class, cur[cell]);
+                        if (allowParalysis) {
+                            if (ch.buff(Paralysis.class) == null) {
+                                Buff.prolong(ch, Paralysis.class, cur[cell]);
+                            }
                         }
                         // 奇数强度造成伤害
                         if (cur[cell] % 2 == 1) {
                             // 伤害公式
-                            int damage = Damage(Dungeon.scalingDepth());
+                            int damage = Damage(Dungeon.scalingDepth() , cur[cell]);
                             ch.damage(damage, this, Char.DamageType.Element);
                             if(ch == Dungeon.hero){
                                 GLog.n(Messages.get(SniperSupport.class, "shock_player_0"));
@@ -90,16 +121,22 @@ public class TrackableElectricity extends Blob {
     }
 
     // 扩散
-    private void spreadFromCell(int cell, int power, boolean[] water) {
+    private void spreadFromCell(int cell, float power, boolean[] water) {
+        int intPower = Math.round(power);
+        if (intPower <= 0) return;
+
         if (cur[cell] == 0) {
             area.union(cell % Dungeon.level.width(), cell / Dungeon.level.width());
         }
-        cur[cell] = Math.max(cur[cell], power);
+        cur[cell] = Math.max(cur[cell], intPower);
+
+        float nextPower = power * attenuationFactor;
+        if (nextPower < 1) return;
 
         for (int c : PathFinder.NEIGHBOURS4) {
             int neighbor = cell + c;
-            if (Dungeon.level.insideMap(neighbor) && water[neighbor] && cur[neighbor] < power) {
-                spreadFromCell(neighbor, power, water);
+            if (Dungeon.level.insideMap(neighbor) && water[neighbor] && cur[neighbor] < Math.round(nextPower)) {
+                spreadFromCell(neighbor, nextPower, water);
             }
         }
     }
@@ -115,14 +152,12 @@ public class TrackableElectricity extends Blob {
         return Messages.get(this, "desc");
     }
 
-    private int Damage(int depth) {
-        int min = depth;
-        int max = 10 + depth / 2;
-        if (min > max) {
-            int tmp = min;
-            min = max;
-            max = tmp;
+    private int Damage(int depth , int cellStrength) {
+
+        int base = Random.NormalIntRange(5 , 10 + depth/2);
+        if (useExternalDamage) {
+            base = externalDamageValue;
         }
-        return Random.NormalIntRange(min, max);
+        return (int)(base * (cellStrength / (float)intPower));
     }
 }

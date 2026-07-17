@@ -134,15 +134,19 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
             }
             // 消耗 1 发
             charge--;
+            updateQuickslot();
             partialCharge = 0;
             // 根据等级决定触发次数
             int triggers;
             switch (level()) {
-                case 0: triggers = 6; break;
+                case 0: triggers = 8; break;
                 case 1: triggers = 11; break;
+                case 2: triggers = 14; break;
                 default: triggers = 17; break;
             }
-            Buff.affect(hero, SniperSupport.class).setTriggers(triggers);
+            SniperSupport sniper = Buff.affect(hero, SniperSupport.class);
+            sniper.setTriggers(triggers);
+            sniper.setBurnDuration(level() +1);
             int idx = Random.Int(3); // 0,1,2
             GLog.p(Messages.get(this, "fire_" + idx));
             hero.sprite.operate(hero.pos);
@@ -159,7 +163,9 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
             // 消耗全部 3 发
             charge = 0;
             partialCharge = 0;
-            Buff.affect(hero, HuntingCarnival.class).setDuration(75);
+            HuntingCarnival hunting = Buff.affect(hero, HuntingCarnival.class);
+            hunting.setDuration(90);
+            hunting.setBurnDuration(level() +1);
             GLog.p(Messages.get(this, "hunt"));
             hero.sprite.operate(hero.pos);
             hero.next();

@@ -593,12 +593,19 @@ public class HeroSelectScene extends PixelScene {
 										message = result.message;
 									}
 
-									ShatteredPixelDungeon.scene().addToFront( new WndTitledMessage( image, title, message ){
+									Game.runOnRenderThread(new Callback() {
 										@Override
-										public void onBackPressed() {
-											super.onBackPressed();
+										public void call() {
+											ShatteredPixelDungeon.scene().addToFront( new WndTitledMessage( image, title, message ){
+												@Override
+												public void onBackPressed() {
+													super.onBackPressed();
+												}
+											});
 										}
 									});
+
+
 								}
 
 								@Override

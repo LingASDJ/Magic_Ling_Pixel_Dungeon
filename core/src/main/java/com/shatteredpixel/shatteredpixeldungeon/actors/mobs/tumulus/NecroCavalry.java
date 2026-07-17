@@ -34,6 +34,8 @@ public class NecroCavalry extends Mob {
         HUNTING = new Hunting();
         immunities.add(Roots.class);
         properties.add(Property.NOKOCK);
+        properties.add(Property.NECRO);
+        properties.add(Property.UNDEAD);
     }
 
     private boolean isLegion2Spawn = false;
