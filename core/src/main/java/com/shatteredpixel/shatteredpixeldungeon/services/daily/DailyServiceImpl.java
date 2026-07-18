@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 
@@ -19,8 +20,7 @@ import javax.net.ssl.X509TrustManager;
 
 public class DailyServiceImpl extends DailyService {
 
-    private static final String API_BASE = "https://gameupdate.insrv.mlpd.spldream.com/MLPD/api/v1/daily";
-
+    private static final String API_BASE = "https://mlpddailybeta.spldream.com/MLPD/api/v1/daily";
 
     private static void setupSSL() {
         try {
@@ -77,7 +77,12 @@ public class DailyServiceImpl extends DailyService {
                     JsonValue data = root.get("data");
                     DailySeedData result = new DailySeedData();
                     result.date = data.getString("date");
-                    result.seed = data.getLong("seed");
+                    // 优先使用 code（9字母编码），回退到 seed（long数值）
+                    if (data.has("code")) {
+                        result.seed = DungeonSeed.convertFromCode(data.getString("code"));
+                    } else {
+                        result.seed = data.getLong("seed");
+                    }
                     callback.onSuccess(result);
                 } catch (Exception e) {
                     callback.onFailure("解析失败: " + e.getMessage());
@@ -94,15 +99,26 @@ public class DailyServiceImpl extends DailyService {
         String url = API_BASE + "/submit";
 
         try {
+            // ============================================
+            // 修复：Bundle.toString() 直接输出标准 JSON
+            // ============================================
             String gameData = bundle.toString();
+
+            // ============================================
+            // 修复：JsonWriter 必须 close() 后才能获取内容
+            // ============================================
             StringWriter stringWriter = new StringWriter();
             JsonWriter jsonWriter = new JsonWriter(stringWriter);
+            jsonWriter.setOutputType(JsonWriter.OutputType.json);
             jsonWriter.object();
-            jsonWriter.set("playerName",bundle.getString("player_name"));
-            jsonWriter.set("gameData",gameData);
+            jsonWriter.set("playerName", bundle.getString("player_name"));
+            jsonWriter.set("gameData", gameData);
             jsonWriter.pop();
+            jsonWriter.close();  // <-- 关键：必须 close()！
 
-            httpPost(url, jsonWriter.toString(), new Net.HttpResponseListener() {
+            String jsonBody = stringWriter.toString();
+
+            httpPost(url, jsonBody, new Net.HttpResponseListener() {
                 @Override
                 public void handleHttpResponse(Net.HttpResponse httpResponse) {
                     try {
@@ -162,7 +178,7 @@ public class DailyServiceImpl extends DailyService {
                         LeaderboardData.Entry e = new LeaderboardData.Entry();
                         e.rank = entry.getInt("rank");
                         e.playerName = entry.getString("playerName");
-                        e.heroClass = HeroClass.valueOf( ( entry.getString("heroClass") ) );
+                        e.heroClass = HeroClass.valueOf((entry.getString("heroClass")));
                         e.score = entry.getInt("score");
                         e.won = entry.getBoolean("won");
                         e.depth = entry.getInt("depth");

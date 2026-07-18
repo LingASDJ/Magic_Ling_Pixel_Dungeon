@@ -1,7 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.renderTextBlock;
-
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -18,7 +16,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.BitmapText;
-import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
@@ -38,7 +35,7 @@ public class WndLeaderboard extends Window {
     private int myRank = 0;
     private int myScore = 0;
     private int totalPage = 1;
-    private int pageSize = 0;
+    private int pageSize = 20;  // 与 API 保持一致
     private List<LeaderboardData.Entry> entries = null;
 
     private IconTitle title;
@@ -63,15 +60,15 @@ public class WndLeaderboard extends Window {
         title.setPos(0, 0);
         add(title);
 
-        statusText = renderTextBlock(Messages.get(this, "loading"), 7);
+        statusText = PixelScene.renderTextBlock(Messages.get(this, "loading"), 7);
         add(statusText);
 
-        refreshBtn = new StyledButton(Chrome.Type.BLANK,Messages.get(this,"refresh")){
+        refreshBtn = new StyledButton(Chrome.Type.BLANK, Messages.get(this, "refresh")) {
             @Override
             protected void onClick() {
                 super.onClick();
 
-                if(Game.realTime - lastRefreshTime < 30)
+                if (Game.realTime - lastRefreshTime < 30)
                     return;
 
                 lastRefreshTime = Game.realTime;
@@ -89,13 +86,13 @@ public class WndLeaderboard extends Window {
             @Override
             protected void onClick() {
                 currentPage--;
-                updateLayout();
+                loadPage();  // 重新加载数据
             }
         };
         prevBtn.setRect(0, HEIGHT - 14, 14, 14);
         add(prevBtn);
 
-        pageText = renderTextBlock("", 6);
+        pageText = PixelScene.renderTextBlock("", 6);
         pageText.setPos(WIDTH / 2f - pageText.width() / 2f, HEIGHT - 14);
         add(pageText);
 
@@ -103,7 +100,7 @@ public class WndLeaderboard extends Window {
             @Override
             protected void onClick() {
                 currentPage++;
-                updateLayout();
+                loadPage();  // 重新加载数据
             }
         };
         nextBtn.setRect(WIDTH - 14, HEIGHT - 14, 14, 14);
@@ -118,7 +115,7 @@ public class WndLeaderboard extends Window {
         if (needsLayout) {
             needsLayout = false;
             statusText.setPos(0, 16);
-            refreshBtn.setRect(title.x + title.reqWidth(),title.y,refreshBtn.reqWidth(),refreshBtn.reqHeight());
+            refreshBtn.setRect(title.x + title.reqWidth(), title.y, refreshBtn.reqWidth(), refreshBtn.reqHeight());
             pane.setRect(0, 24, WIDTH, HEIGHT - 38);
             prevBtn.setRect(0, HEIGHT - 14, 14, 14);
             pageText.setPos(WIDTH / 2f - pageText.width() / 2f, HEIGHT - 14);
@@ -127,24 +124,13 @@ public class WndLeaderboard extends Window {
     }
 
     private void loadPage() {
-        if( leaderboardData == null )
-            statusText.text(Messages.get(this, "loading"));
+        statusText.text(Messages.get(this, "loading"));
 
-        if (currentPage == 1) {
-            prevBtn.visible = false;
-            prevBtn.active = false;
-        }else {
-            prevBtn.visible = true;
-            prevBtn.active = true;
-        }
-
-        if(currentPage == totalPage) {
-            nextBtn.visible = false;
-            nextBtn.active = false;
-        }else {
-            nextBtn.visible = true;
-            nextBtn.active = true;
-        }
+        // 显示/隐藏翻页按钮
+        prevBtn.visible = currentPage > 1;
+        prevBtn.active = currentPage > 1;
+        nextBtn.visible = true;  // 先显示，等数据回来再判断
+        nextBtn.active = true;
 
         DailyImpl.getService().fetchLeaderboard(date,
                 new DailyService.DailyResultCallback<LeaderboardData>() {
@@ -153,17 +139,32 @@ public class WndLeaderboard extends Window {
                         Game.runOnRenderThread(new Callback() {
                             @Override
                             public void call() {
-                                if (result.data == null || result.data.entries.isEmpty()) {
-                                    statusText.text(Messages.get(this, "empty"));
+                                if (result.data == null || result.data.entries == null || result.data.entries.isEmpty()) {
+                                    statusText.text(Messages.get(WndLeaderboard.this, "empty"));
                                     pane.content().clear();
                                     pane.content().setRect(0, 0, WIDTH, 0);
                                     pageText.text("");
+                                    nextBtn.visible = false;
+                                    nextBtn.active = false;
                                     return;
                                 }
 
                                 leaderboardData = result;
                                 statusText.text("");
-                                Game.runOnRenderThread( () -> {
+
+                                // 更新分页信息
+                                totalPlayers = result.data.totalPlayers;
+                                myRank = result.data.myRank;
+                                myScore = result.data.myScore;
+                                pageSize = result.data.pageSize;
+
+                                // 计算总页数
+                                totalPage = (totalPlayers + pageSize - 1) / pageSize;
+                                if (totalPage < 1) totalPage = 1;
+
+                                entries = result.data.entries;
+
+                                Game.runOnRenderThread(() -> {
                                     updateLayout();
                                 });
                             }
@@ -173,7 +174,7 @@ public class WndLeaderboard extends Window {
                     @Override
                     public void onFailure(String error) {
                         Game.runOnRenderThread(new Callback() {
-                                                   @Override
+                            @Override
                             public void call() {
                                 statusText.text(Messages.get(WndLeaderboard.this, "load_failed"));
                                 pane.content().clear();
@@ -181,31 +182,22 @@ public class WndLeaderboard extends Window {
                                 pageText.text("");
                                 ShatteredPixelDungeon.scene().addToFront(new WndError(error));
                             }
-                           }
-                        );
+                        });
                     }
                 });
     }
 
-    private void updateLayout(){
-        if(leaderboardData == null)
+    private void updateLayout() {
+        if (leaderboardData == null || entries == null)
             return;
-
-        totalPlayers = leaderboardData.data.totalPlayers;
-        myRank = leaderboardData.data.myRank;
-        myScore = leaderboardData.data.myScore;
-        totalPage = 1;
-        pageSize = 100;
-        entries = leaderboardData.data.entries;
 
         Component c = pane.content();
         c.clear();
 
         int top = 0;
 
-        int from = (currentPage - 1) * pageSize;
-        int to   = Math.min(from + pageSize, entries.size());
-        for (LeaderboardData.Entry entry : entries.subList(from, to)) {
+        // 渲染排行榜条目
+        for (LeaderboardData.Entry entry : entries) {
             PlayerData playerData = new PlayerData(entry);
             playerData.setPos(0, top);
 
@@ -221,12 +213,19 @@ public class WndLeaderboard extends Window {
 
         c.setRect(0, 0, WIDTH, top);
 
+        // 更新状态栏
         statusText.text(Messages.get(WndLeaderboard.this, "rank") + "  "
                 + Messages.get(WndLeaderboard.this, "player") + "      "
                 + Messages.get(WndLeaderboard.this, "score"));
-        ColorBlock sep = new ColorBlock(WIDTH, 1, 0xFF000000);
-        sep.y = statusText.bottom() - 1;
-        pageText.text( Messages.get(WndLeaderboard.this, "page", currentPage, totalPage ) );
+
+        // 更新分页按钮状态
+        prevBtn.visible = currentPage > 1;
+        prevBtn.active = currentPage > 1;
+        nextBtn.visible = currentPage < totalPage;
+        nextBtn.active = currentPage < totalPage;
+
+        // 更新页码显示
+        pageText.text(Messages.get(WndLeaderboard.this, "page", currentPage, totalPage));
         pageText.setPos(WIDTH / 2f - pageText.width() / 2f, pageText.top());
     }
 
@@ -247,19 +246,17 @@ public class WndLeaderboard extends Window {
         }
 
         public PlayerData(LeaderboardData.Entry entry) {
-
             position.text(Integer.toString(entry.rank));
             position.measure();
 
+            // 使用 playerName（可能包含 #UUID 后缀）
             name.text(entry.playerName);
 
             level.text(Integer.toString(entry.score));
             level.measure();
 
-            classIcon.copy(Icons.get(entry.heroClass));
-            if (entry.heroClass == HeroClass.ROGUE) {
-                classIcon.brightness(2f);
-            }
+            // 根据 heroClass 设置图标
+            classIcon.copy(Icons.get((entry.heroClass)));
 
             depth.text(Integer.toString(entry.depth));
             depth.measure();
@@ -267,12 +264,31 @@ public class WndLeaderboard extends Window {
             setSize(WIDTH, ROW_HEIGHT);
         }
 
+        /**
+         * 将字符串职业名转换为 HeroClass 枚举
+         */
+        private HeroClass getHeroClass(String heroClassStr) {
+            if (heroClassStr == null) return HeroClass.WARRIOR;
+            try {
+                return HeroClass.valueOf(heroClassStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // 中文名称映射回枚举
+                switch (heroClassStr) {
+                    case "法师": return HeroClass.MAGE;
+                    case "盗贼": return HeroClass.ROGUE;
+                    case "女猎手": return HeroClass.HUNTRESS;
+                    case "决斗家": return HeroClass.DUELIST;
+                    default: return HeroClass.WARRIOR;
+                }
+            }
+        }
+
         @Override
         protected void createChildren() {
             position = new BitmapText(PixelScene.pixelFont);
             add(position);
 
-            name = renderTextBlock(6);
+            name = PixelScene.renderTextBlock(6);
             add(name);
 
             depth = new BitmapText(PixelScene.pixelFont);

@@ -82,16 +82,7 @@ public class WndTradeItem extends WndInfoItem {
 		}
 		final Shopkeeper finalShop = shop;
 		if (item.quantity() == 1) {
-
-			int price;
-			if (item instanceof DistressSignalNesting) {
-				price = ((DistressSignalNesting) item).shopValue();
-			} else {
-				int basePrice = Shopkeeper.sellPrice(item);
-				price = (int) (basePrice * priceMulti);
-			}
-
-			RedButton btnSell = new RedButton( Messages.get(this, "sell", price)) {
+			RedButton btnSell = new RedButton( Messages.get(this, "sell", (int) (item.value() * priceMulti) )) {
 				@Override
 				protected void onClick() {
 					sell( item,finalShop );
@@ -106,12 +97,7 @@ public class WndTradeItem extends WndInfoItem {
 
 		} else {
 
-			int priceAll;
-			if (item instanceof DistressSignalNesting) {
-				priceAll = ((DistressSignalNesting) item).shopValue();
-			} else {
-				priceAll = (int) (item.value() * priceMulti);
-			}
+			int priceAll= (int) (item.value() * priceMulti);
 
 			RedButton btnSell1 = new RedButton( Messages.get(this, "sell_1", priceAll / item.quantity()) ) {
 				@Override
