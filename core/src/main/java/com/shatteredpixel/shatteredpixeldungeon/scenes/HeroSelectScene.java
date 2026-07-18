@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -632,7 +633,7 @@ public class HeroSelectScene extends PixelScene {
 				else            icon.hardlight(1f, 0.5f, 2f);
 
 				ShatteredPixelDungeon.scene().addToFront(new WndOptions(
-						icon,
+						new PinkLingSprite(),
 						Messages.get(HeroSelectScene.class, "daily"),
 						diff > 0 ?
 								Messages.get(HeroSelectScene.class, "daily_repeat") :
@@ -731,7 +732,7 @@ public class HeroSelectScene extends PixelScene {
 		dailyButton.leftJustify = true;
 		dailyButton.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
 		dailyButton.setPos(startBtn.x, startBtn.y + BUTTON_HEIGHT);
-		dailyButton.icon(Icons.get(Icons.ENERGY));
+		dailyButton.icon(new Image(new PinkLingSprite()));
 		add(dailyButton);
 		buttons.add(dailyButton);
 

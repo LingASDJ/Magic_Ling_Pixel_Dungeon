@@ -92,6 +92,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyImpl;
+import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailySeedData;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyService;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.SubmitResultData;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -891,9 +892,30 @@ public class Dungeon {
 
 		mobsToChampion = -1;
 		mobsToStateLing = -1;
-		if (!SPDSettings.customSeed().isEmpty()){
+
+
+		if (!SPDSettings.customSeed().isEmpty()) {
 			customSeedText = SPDSettings.customSeed();
 			seed = DungeonSeed.convertFromText(customSeedText);
+		} else if(Dungeon.daily || Dungeon.dailyReplay){
+			DailyImpl.getService().fetchTodaySeed(new DailyService.DailyResultCallback<DailySeedData>() {
+				@Override
+				public void onSuccess(DailySeedData result) {
+					seed = result.seed;
+				}
+
+				@Override
+				public void onFailure(String error) {
+					Game.runOnRenderThread(new Callback() {
+											   @Override
+											   public void call() {
+												   ShatteredPixelDungeon.scene().addToFront(new WndError(error));
+											   }
+										   }
+					);
+
+				}
+			});
 		} else {
 			customSeedText = "";
 			seed = DungeonSeed.randomSeed();
