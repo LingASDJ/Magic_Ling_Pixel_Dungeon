@@ -39,7 +39,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WeakeningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.CorpseDustTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.DeadDoorTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.DeadSoulTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.InjectSoulTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.LegionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.MobSpawnTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -138,6 +141,9 @@ public class TrapPlacer extends TestItem{
         trapLib.put(56, CorpseDustTrap.class);
         trapLib.put(57, MobSpawnTrap.class);
         trapLib.put(58, DeadSoulTrap.class);
+        trapLib.put(59, DeadDoorTrap.class);
+        trapLib.put(60, InjectSoulTrap.class);
+        trapLib.put(61, LegionTrap.class);
     }
 
     @Override

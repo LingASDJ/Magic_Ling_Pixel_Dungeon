@@ -11,23 +11,18 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourg
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CityPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CorrosionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisintegrationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DistortionTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlashingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FrostTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GatewayTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GuardianTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PitfallTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RockfallTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.StormTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WeakeningTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.CorpseDustTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.DeadDoorTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.DeadSoulTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.InjectSoulTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.LegionTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.MobSpawnTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -90,18 +85,58 @@ public class ChurchLevel extends RegularLevel {
     @Override
     protected Class<?>[] trapClasses() {
         return new Class[]{
-                FrostTrap.class, StormTrap.class, CorrosionTrap.class, BlazingTrap.class, DisintegrationTrap.class,
-                RockfallTrap.class, FlashingTrap.class, GuardianTrap.class, WeakeningTrap.class,
-                DisarmingTrap.class, SummoningTrap.class, WarpingTrap.class, CursingTrap.class, PitfallTrap.class, DistortionTrap.class, GatewayTrap.class, GeyserTrap.class };
+                // 高频：古墓核心机制（权重 4-5）
+                InjectSoulTrap.class, InjectSoulTrap.class,    // 灵魂注入
+                CorpseDustTrap.class, CorpseDustTrap.class,    // 尸尘弥漫
+
+                // 中频：亡灵战术（权重 3-4）
+                MobSpawnTrap.class,                              // 尸群苏醒
+                DeadDoorTrap.class,                              // 死亡之门
+                LegionTrap.class, LegionTrap.class,              // 军团集结
+
+                // 中低频：死灵术士的恶意（权重 2）
+                DeadSoulTrap.class, DeadSoulTrap.class,          // 死灵缠绕
+                CursingTrap.class,                               // 诅咒（新/替换混乱）
+                WeakeningTrap.class,                             // 虚弱（契合恶意秘术）
+
+                // 低频：标准危险陷阱（权重 1）
+                SummoningTrap.class,                             // 召唤
+                WarpingTrap.class,                               // 传送
+                PitfallTrap.class,                               // 落穴
+                DistortionTrap.class                         // 解离
+        };
     }
 
     @Override
     protected float[] trapChances() {
         return new float[]{
-                4, 4, 4, 4, 4,
-                2, 2, 2, 2,
-                1, 1, 1, 1, 1, 1, 1, 1 };
+                // InjectSoulTrap x2
+                4, 4,
+                // CorpseDustTrap x2
+                4, 4,
+                // MobSpawnTrap
+                3,
+                // DeadDoorTrap
+                3,
+                // LegionTrap x2
+                3, 3,
+                // DeadSoulTrap x2
+                2, 2,
+                // CursingTrap
+                2,
+                // WeakeningTrap
+                2,
+                // SummoningTrap
+                1,
+                // WarpingTrap
+                1,
+                // PitfallTrap
+                1,
+                // DisintegrationTrap
+                1
+        };
     }
+
 
     @Override
     protected void createMobs() {

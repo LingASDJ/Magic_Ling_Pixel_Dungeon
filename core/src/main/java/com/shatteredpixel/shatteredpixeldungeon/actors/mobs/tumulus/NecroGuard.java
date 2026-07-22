@@ -31,6 +31,12 @@ public class NecroGuard extends Mob {
     private static final String LEGION_SPAWN = "legion_spawn";
     private static final String LEGION_SPAWNED = "legion_spawned";
 
+    public void resetLegion(){
+        isLegionSpawn = false;
+        legionSpawned = false;
+        spawnLegionAlly();
+    }
+
     private int getGuardBonus() {
         int bonus = 0;
         int range = 2;

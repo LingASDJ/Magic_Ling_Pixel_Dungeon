@@ -7,18 +7,13 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.tomb.DeadTowerRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrippingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GuardianTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PitfallTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PoisonDartTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RockfallTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.StormTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.CorpseDustTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.DeadDoorTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.DeadSoulTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.InjectSoulTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.LegionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.tomb.MobSpawnTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.audio.Music;
@@ -111,9 +106,10 @@ public class LostTombLevel extends RegularLevel {
     @Override
     protected Class<?>[] trapClasses() {
         return new Class[]{
-                BurningTrap.class, PoisonDartTrap.class, MobSpawnTrap.class, StormTrap.class, CorpseDustTrap.class,
-                GrippingTrap.class, RockfallTrap.class,  GuardianTrap.class,
-                ConfusionTrap.class, SummoningTrap.class, WarpingTrap.class, PitfallTrap.class, DeadSoulTrap.class, DeadSoulTrap.class };
+                InjectSoulTrap.class, InjectSoulTrap.class, MobSpawnTrap.class,
+                DeadDoorTrap.class, CorpseDustTrap.class,
+                LegionTrap.class, LegionTrap.class,  CorpseDustTrap.class,
+                MobSpawnTrap.class,MobSpawnTrap.class, DisarmingTrap.class, PitfallTrap.class, DeadSoulTrap.class, DeadSoulTrap.class };
     }
 
     @Override

@@ -856,6 +856,9 @@ public class Assets {
 		public static final String SHARD	= "sprites/tumulus/shard.png";
 		public static final String NECRO_CAVALRY = "sprites/tumulus/necro_cavalry.png";
 
+		public static final String AGGREATUS	= "sprites/tumulus/aggregatus_of_grudge.png";
+		public static final String NECRO_WARLOCK	= "sprites/tumulus/necro_warlock.png";
+
 		//BOSS
 		public static final String FRDG	= "sprites/boss/fireDragon.png";
 		public static final String DICT		= "sprites/boss/DictFish.png";
