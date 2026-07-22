@@ -36,6 +36,12 @@ public class NecroArcher extends Mob {
         properties.add(Property.UNDEAD);
     }
 
+    public void resetLegion(){
+        isLegionSpawn = false;
+        legionSpawned = false;
+        spawnLegionAlly();
+    }
+
     private int knockbackCooldown = 0;
 
     private boolean isLegionSpawn = false;
@@ -51,7 +57,7 @@ public class NecroArcher extends Mob {
     private static final String LEGION_SPAWNED = "legion_spawned";
 
     // ---------- 军团生成 ----------
-    private void spawnLegionAlly() {
+    public void spawnLegionAlly() {
         ArrayList<Integer> candidates = new ArrayList<>();
         int[] dirs = PathFinder.NEIGHBOURS8;
         for (int d : dirs) {

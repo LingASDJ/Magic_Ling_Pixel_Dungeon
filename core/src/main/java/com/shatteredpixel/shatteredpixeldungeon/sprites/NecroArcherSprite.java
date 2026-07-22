@@ -2,8 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Bullet;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.Callback;
@@ -43,7 +41,6 @@ public class NecroArcherSprite extends MobSprite {
                         @Override
                         public void call() {
                             ch.onAttackComplete();
-                            CellEmitter.center(cell).burst(BlastParticle.FACTORY, 10);
                         }
                     } );
             play( cast );

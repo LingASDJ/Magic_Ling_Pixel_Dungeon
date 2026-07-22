@@ -689,7 +689,9 @@ public class HeroSelectScene extends PixelScene {
 							DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
 							format.setTimeZone(TimeZone.getTimeZone("UTC"));
 							String date = format.format(new Date(Game.realTime));
-							ShatteredPixelDungeon.scene().addToFront(new WndLeaderboard(date));
+							//ShatteredPixelDungeon.scene().addToFront(new WndLeaderboard(date));
+							ShatteredPixelDungeon.scene().addToFront(new WndError("内部排行榜正在建设，敬请期待，已自动跳转到网页测试端。"));
+							ShatteredPixelDungeon.platform.openURI("https://mlpddailybeta.spldream.com/leaderboard");
 						}
 					}
 

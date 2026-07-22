@@ -1,5 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static java.lang.Math.min;
+
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalBuff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -31,9 +34,14 @@ public class DeathBuff extends ElementalBuff {
         this.decayTimer = decayTimer;
     }
 
+    public void getDeath(int value) {
+        decayTimer = min(decayTimer + value, 100);
+        hero.sprite.showStatus(0x00ff00, String.valueOf(value));
+    }
+
     @Override
     public void onDamageTaken(float percentHP) {
-        if (isLocked) return; // 锁定期间不再增加
+        if (isLocked) return;
 
         int gain = Math.round(percentHP / 3f);
         level = Math.min(CAP, level + gain);
