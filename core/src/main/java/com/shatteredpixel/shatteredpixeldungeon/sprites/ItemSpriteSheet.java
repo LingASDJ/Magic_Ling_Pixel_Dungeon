@@ -520,7 +520,7 @@ public class ItemSpriteSheet {
     public static final int WAND_HAND_CONTROL   = RINGS+15;
 
     static {
-        for (int i = WANDS; i < WANDS+15; i++)
+        for (int i = WANDS; i < WANDS+12; i++)
             assignItemRect(i, 14, 14);
         assignItemRect(WAND_UNKNOWN, 14, 14);
 
