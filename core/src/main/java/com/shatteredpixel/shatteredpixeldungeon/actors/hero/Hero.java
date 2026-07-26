@@ -751,7 +751,7 @@ public class Hero extends Char {
 	public int tier() {
 		Armor armor = belongings.armor();
 
-		//TODO 临时皮肤策略
+		//皮肤策略
 		switch (hero.heroClass.GetSkin()){
 			case 1:
 				return 9;

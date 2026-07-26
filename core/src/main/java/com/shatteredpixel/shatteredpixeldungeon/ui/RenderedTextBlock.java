@@ -37,6 +37,14 @@ public class RenderedTextBlock extends Component {
 	private static final RenderedText SPACE = new RenderedText();
 	private static final RenderedText NEWLINE = new RenderedText();
 
+	public static final int HORIZONTAL = 0;  // 横排（默认）
+	public static final int VERTICAL = 1;    // 竖排
+	private int textDirection = HORIZONTAL;
+	private int maxHeight = Integer.MAX_VALUE;
+	private float verticalLetterSpacing = 2f;       // 竖排字间距（上下字之间）
+	private float verticalColumnSpacing = 4f;       // 竖排列间距（列与列之间）
+
+
 	protected String text;
 	protected String[] tokens = null;
 	protected ArrayList<RenderedText> words = new ArrayList<>();
@@ -69,6 +77,66 @@ public class RenderedTextBlock extends Component {
 
 	private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("^<#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})>$");
 	private static final String COLOR_END_TAG = "<RGB>";
+
+	/**
+	 * 设置文字方向
+	 */
+	public void setTextDirection(int direction) {
+		if (this.textDirection != direction) {
+			this.textDirection = direction;
+			if (tokens != null) build();
+		}
+	}
+
+	/**
+	 * 设置竖排字间距（同一列中上下字符的间距）
+	 * @param spacing 间距像素值，默认 2f
+	 */
+	public void setVerticalLetterSpacing(float spacing) {
+		if (this.verticalLetterSpacing != spacing) {
+			this.verticalLetterSpacing = spacing;
+			if (textDirection == VERTICAL && tokens != null) build();
+		}
+	}
+
+	public float getVerticalLetterSpacing() {
+		return verticalLetterSpacing;
+	}
+
+	/**
+	 * 设置竖排列间距（列与列之间的间距）
+	 * @param spacing 间距像素值，默认 4f
+	 */
+	public void setVerticalColumnSpacing(float spacing) {
+		if (this.verticalColumnSpacing != spacing) {
+			this.verticalColumnSpacing = spacing;
+			if (textDirection == VERTICAL && tokens != null) build();
+		}
+	}
+
+	public float getVerticalColumnSpacing() {
+		return verticalColumnSpacing;
+	}
+
+
+	public int getTextDirection() {
+		return textDirection;
+	}
+
+	/**
+	 * 竖排时的最大高度限制
+	 */
+	public void maxHeight(int maxHeight) {
+		if (this.maxHeight != maxHeight) {
+			this.maxHeight = maxHeight;
+			if (textDirection == VERTICAL && tokens != null) build();
+		}
+	}
+
+	public int maxHeight() {
+		return maxHeight;
+	}
+
 
 	//for manual text block splitting, a space between each word is assumed
 	public void tokens(String... words){
@@ -354,6 +422,104 @@ public class RenderedTextBlock extends Component {
 
 	@Override
 	protected synchronized void layout() {
+		if (textDirection == VERTICAL) {
+			layoutVertical();
+		} else {
+			layoutHorizontal();
+		}
+	}
+
+	/**
+	 * 竖排布局（新增，支持字间距和列间距设置）
+	 *
+	 * 排列规则：
+	 * - 每列从上到下排列文字
+	 * - 列与列从右到左排列
+	 * - 字间距由 verticalLetterSpacing 控制
+	 * - 列间距由 verticalColumnSpacing 控制
+	 * - 当一列高度超过 maxHeight 时，在左边新建一列
+	 */
+	private synchronized void layoutVertical() {
+		float x = this.x;
+		float y = this.y;
+		float colWidth = 0;
+		nLines = 1;
+
+		ArrayList<ArrayList<RenderedText>> columns = new ArrayList<>();
+		ArrayList<RenderedText> curColumn = new ArrayList<>();
+		columns.add(curColumn);
+
+		height = 0;
+		width = 0;
+
+		for (RenderedText word : words) {
+			if (word == SPACE) {
+				y += verticalLetterSpacing;
+			} else if (word == NEWLINE) {
+				x -= colWidth + verticalColumnSpacing;
+				y = this.y;
+				nLines++;
+				curColumn = new ArrayList<>();
+				columns.add(curColumn);
+				colWidth = 0;
+			} else {
+				if (word.width() > colWidth) colWidth = word.width();
+
+				// 检查是否超出最大高度，需要换列
+				if ((y - this.y) + word.height() > maxHeight && !curColumn.isEmpty()) {
+					x -= colWidth + verticalColumnSpacing;
+					y = this.y;
+					nLines++;
+					curColumn = new ArrayList<>();
+					columns.add(curColumn);
+					colWidth = word.width();
+				}
+
+				// 单个字符居中放置
+				word.x = x + (colWidth - word.width()) / 2f;
+				word.y = y;
+				PixelScene.align(word);
+
+				y += word.height() + verticalLetterSpacing;
+				curColumn.add(word);
+
+				if ((y - this.y) > height) height = (y - this.y);
+			}
+		}
+
+		// 计算总宽度
+		for (ArrayList<RenderedText> col : columns) {
+			if (col.isEmpty()) continue;
+			float colW = 0;
+			for (RenderedText text : col) {
+				if (text.width() > colW) colW = text.width();
+			}
+			width += colW + verticalColumnSpacing;
+		}
+		if (width > 0) width -= verticalColumnSpacing;
+
+		// 对齐处理
+		if (alignment != LEFT_ALIGN) {
+			for (ArrayList<RenderedText> col : columns) {
+				if (col.size() == 0) continue;
+				float colHeight = col.get(col.size() - 1).y + col.get(col.size() - 1).height() - this.y;
+
+				if (alignment == CENTER_ALIGN) {
+					for (RenderedText text : col) {
+						text.y += (height() - colHeight) / 2f;
+						PixelScene.align(text);
+					}
+				} else if (alignment == RIGHT_ALIGN) {
+					for (RenderedText text : col) {
+						text.y += height() - colHeight;
+						PixelScene.align(text);
+					}
+				}
+			}
+		}
+	}
+
+	private synchronized void layoutHorizontal() {
 		super.layout();
 		float x = this.x;
 		float y = this.y;

@@ -272,9 +272,27 @@ public class WndHero extends WndTabbed {
 			itemButton.setRect(title.right(), seedButton.bottom()+itemButton.height()+2, 16, 16);
 			add(itemButton);
 
+			IconButton skinButton = new IconButton(Icons.get(Icons.CATALOG)){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					hide();
+					GameScene.show(new WndSelectSkin(Dungeon.hero.heroClass));
+				}
+
+				@Override
+				protected String hoverText() {
+					return Messages.titleCase(Messages.get(HeroStat.class, "skin"));
+				}
+
+			};
+			add(skinButton);
+
 			if(HelpSettings() && Dungeon.isDLC(Conducts.Conduct.DEV)){
 				itemButton.active = true;
+				skinButton.setRect(title.right(), itemButton.bottom()+skinButton.height()+2, 16, 16);
 			} else {
+				skinButton.setRect(title.right(), seedButton.bottom()+skinButton.height()+2, 16, 16);
 				itemButton.active = false;
 				itemButton.visible = false;
 			}
