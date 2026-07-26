@@ -460,7 +460,7 @@ public class SurfaceScene extends PixelScene {
 		private static final SkinConfig[] SPECIAL_SKINS = {
 				new SkinConfig(HeroClass.WARRIOR,  4, "splashes/skin/giftskin_warrior.png"),
 				new SkinConfig(HeroClass.ROGUE,    4, "splashes/skin/giftskin_rogue.png"),
-				new SkinConfig(HeroClass.MAGE,     4, "splashes/skin/giftskin_mage.png"),
+				new SkinConfig(HeroClass.MAGE,     4, "splashes/skin/mage_collagedays.png"),
 				new SkinConfig(HeroClass.DUELIST,  4, "splashes/skin/duelist_kitsunemimi.png"),
 
 				new SkinConfig(HeroClass.DUELIST, 5, "splashes/skin/duelist_desertspirit.png"),

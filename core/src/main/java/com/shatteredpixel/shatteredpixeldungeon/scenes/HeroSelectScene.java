@@ -1052,7 +1052,7 @@ public class HeroSelectScene extends PixelScene {
 		private static final SkinConfig[] SPECIAL_SKINS = {
 				new SkinConfig(HeroClass.WARRIOR,  4, "splashes/skin/giftskin_warrior.png"),
 				new SkinConfig(HeroClass.ROGUE,    4, "splashes/skin/giftskin_rogue.png"),
-				new SkinConfig(HeroClass.MAGE,     4, "splashes/skin/giftskin_mage.png"),
+				new SkinConfig(HeroClass.MAGE,     4, "splashes/skin/mage_collagedays.png"),
 				new SkinConfig(HeroClass.HUNTRESS,  4, "splashes/skin/huntress_godgirl.png"),
 				new SkinConfig(HeroClass.DUELIST,  4, "splashes/skin/duelist_kitsunemimi.png"),
 
@@ -1098,7 +1098,7 @@ public class HeroSelectScene extends PixelScene {
 		}
 	}
 
-	private static class GrassPatch extends Image {
+	public static class GrassPatch extends Image {
 
 		public static final int WIDTH	= 16;
 		public static final int HEIGHT	= 14;
