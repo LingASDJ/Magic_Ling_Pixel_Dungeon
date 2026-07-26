@@ -363,7 +363,6 @@ public class WndSelectSkin extends Window {
                 sky.y = y + (height() - SKY_HEIGHT * bgScale) / 2f + 5;
             }
 
-            // 原有立绘坐标逻辑（完全不变）
             if (skinImage != null) {
                 float scaledW = skinImage.width() * skinImage.scale.x;
                 float scaledH = skinImage.height() * skinImage.scale.y;
