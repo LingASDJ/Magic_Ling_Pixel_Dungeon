@@ -55,7 +55,7 @@ public class WormWhyHuman extends Mob {
 
     @Override
     public String description() {
-        return Messages.get(this,"desc",drRoll,totalDr);
+        return Messages.get(this, "desc", Math.max(drRoll, 0), totalDr);
     }
 
     private static final String DR = "drRoll";
