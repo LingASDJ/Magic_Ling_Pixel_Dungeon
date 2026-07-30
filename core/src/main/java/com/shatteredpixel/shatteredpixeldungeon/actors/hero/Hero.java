@@ -86,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.DeadSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.DeathBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.Immunities.ScaryImmunitiesBuff;
@@ -2619,6 +2620,12 @@ public class Hero extends Char {
 		}
 
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
+
+		DeathBuff deathBuff = buff(DeathBuff.class);
+		if (deathBuff != null){
+			float multiplier = 1f + deathBuff.damageBonus();
+			dmg = (int)Math.ceil(dmg * multiplier);
+		}
 
 		//TODO improve this when I have proper damage source logic
 		if (belongings.armor() != null && belongings.armor().hasGlyph(AntiMagic.class, this)
