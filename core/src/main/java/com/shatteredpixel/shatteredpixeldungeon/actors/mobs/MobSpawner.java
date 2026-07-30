@@ -722,12 +722,12 @@ public class MobSpawner extends Actor {
 			case 13:
 				res = new ArrayList<>(Arrays.asList(
 						GraveRat.class, Worm.class, Wisp.class, Worm.class, ThiefSoul.class,
-						SmallSkeletonDemon.class, NecroScout.class));
+						NecroScout.class));
 				break;
 			case 14:
 				res = new ArrayList<>(Arrays.asList(
 						GraveRat.class, Worm.class, NecroScout.class, Worm.class, ThiefSoul.class,
-						SmallSkeletonDemon.class, NecroScout.class));
+						NecroScout.class));
 				break;
 			case 16:
 				res = new ArrayList<>(Arrays.asList(

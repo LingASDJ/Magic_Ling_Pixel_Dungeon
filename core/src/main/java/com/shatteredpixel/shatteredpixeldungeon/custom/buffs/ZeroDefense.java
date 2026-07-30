@@ -18,7 +18,7 @@ public class ZeroDefense extends FlavourBuff {
 
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(.5f, .5f, .5f);
+        icon.hardlight(.3f, .2f, .5f);
     }
 
     @Override

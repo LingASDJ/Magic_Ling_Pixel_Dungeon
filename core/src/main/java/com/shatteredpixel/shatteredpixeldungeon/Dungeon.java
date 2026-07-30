@@ -157,7 +157,7 @@ public class Dungeon {
 		ENCH_STONE,
 		INT_STONE,
 		LAB_ROOM, //actually a room, but logic is the same
-
+		scrollDropCount,
 
 		//Health potion sources
 		//enemies

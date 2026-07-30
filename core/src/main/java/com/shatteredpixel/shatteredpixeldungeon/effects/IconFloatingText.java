@@ -61,6 +61,8 @@ public class IconFloatingText extends RenderedTextBlock {
 
     public static int ICEFIRE = 32;
 
+    public static int DEATH = 35;
+
     private static final SparseArray<ArrayList<IconFloatingText>> stacks = new SparseArray<>();
 
     public IconFloatingText() {

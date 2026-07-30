@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NecroWarlockSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -246,12 +245,7 @@ public class NecroWarlock extends Mob {
 
         @Override
         public int icon() {
-            return BuffIndicator.CORRUPT;
-        }
-
-        @Override
-        public void tintIcon(Image icon) {
-            icon.hardlight(0x282A36);
+            return BuffIndicator.WICKBONE;
         }
 
         @Override

@@ -27,6 +27,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireacti
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Clipboard;
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
@@ -272,7 +273,7 @@ public class WndHero extends WndTabbed {
 			itemButton.setRect(title.right(), seedButton.bottom()+itemButton.height()+2, 16, 16);
 			add(itemButton);
 
-			IconButton skinButton = new IconButton(Icons.get(Icons.CATALOG)){
+			IconButton skinButton = new IconButton(new Image(Assets.Interfaces.SWSKIN)){
 				@Override
 				protected void onClick() {
 					super.onClick();

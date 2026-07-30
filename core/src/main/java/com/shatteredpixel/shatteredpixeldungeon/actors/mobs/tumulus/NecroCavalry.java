@@ -200,8 +200,6 @@ public class NecroCavalry extends Mob {
         }
     }
 
-    // ========== AI：重甲冲锋 ==========
-
     public class Hunting extends Mob.Hunting {
 
         @Override
@@ -226,7 +224,7 @@ public class NecroCavalry extends Mob {
                     return true;
                 }
 
-                // 过滤非法坐标
+                // 过滤非法坐标：墙壁/深渊/地图外直接终止冲锋
                 while (!chargePath.isEmpty()) {
                     int testCell = chargePath.get(0);
                     if (Dungeon.level.insideMap(testCell)
@@ -235,6 +233,10 @@ public class NecroCavalry extends Mob {
                         break;
                     } else {
                         chargePath.remove(0);
+                        // 下一格无法通行，直接结束冲锋
+                        if (!chargePath.isEmpty()) {
+                            chargePath.clear();
+                        }
                     }
                 }
 
@@ -275,7 +277,7 @@ public class NecroCavalry extends Mob {
 
             // 冷却完毕、未被缠绕，准备冲锋
             if (chargeCooldown <= 0 && !rooted) {
-                Ballistica aim = new Ballistica(pos, enemy.pos, Ballistica.STOP_SOLID | Ballistica.STOP_TARGET);
+                Ballistica aim = new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT);
                 if (aim.collisionPos == enemy.pos) {
                     prepareCharge(enemy.pos);
                     return true;
@@ -298,35 +300,41 @@ public class NecroCavalry extends Mob {
             }
         }
 
-        // 准备冲锋：原地蓄力1回合
+        // 准备冲锋：原地蓄力1回合【核心修复函数】
         private void prepareCharge(int targetPos) {
             chargeTargetPos = targetPos;
             // 原地蓄力1回合
             spend(GameMath.gate(TICK, TICK, attackDelay()));
 
-            // 计算冲锋路径
-            Ballistica previewPath = new Ballistica(pos, chargeTargetPos, Ballistica.STOP_SOLID | Ballistica.STOP_TARGET);
+            Ballistica previewPath = new Ballistica(pos, chargeTargetPos, Ballistica.MAGIC_BOLT);
             List<Integer> rawPath = new ArrayList<>(previewPath.path);
 
-            // 从末尾倒序寻找第一个合法落点
-            int safeEnd = rawPath.get(rawPath.size() - 1);
-            while (!rawPath.isEmpty()) {
-                int last = rawPath.get(rawPath.size() - 1);
-                if (Dungeon.level.insideMap(last)
-                        && Dungeon.level.passable[last]
-                        && Dungeon.level.map[last] != Terrain.CHASM) {
-                    safeEnd = last;
+            // ==========【核心修复1】硬性限制冲锋最多3格 ==========
+            int maxChargeRange = 3;
+            if (rawPath.size() > maxChargeRange + 1) {
+                rawPath = rawPath.subList(0, maxChargeRange + 1);
+            }
+
+            // ==========【核心修复2】沿着路径向前查找第一个阻挡物，提前截断 ==========
+            int validEndIndex = rawPath.size() - 1;
+            for (int i = 1; i < rawPath.size(); i++) {
+                int cell = rawPath.get(i);
+                if (!Dungeon.level.insideMap(cell)
+                        || !Dungeon.level.passable[cell]
+                        || Dungeon.level.map[cell] == Terrain.CHASM) {
+                    validEndIndex = i - 1;
                     break;
-                } else {
-                    rawPath.remove(rawPath.size() - 1);
                 }
             }
 
-            if (rawPath.isEmpty()) {
-                // 路径全部非法，放弃冲锋
+            // 起点之后没有有效格子，放弃冲锋
+            if (validEndIndex < 1) {
                 chargeTargetPos = -1;
                 return;
             }
+
+            List<Integer> finalPath = rawPath.subList(0, validEndIndex + 1);
+            int safeEnd = finalPath.get(finalPath.size() - 1);
 
             // 绘制落点3x3预警
             if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[safeEnd]) {
@@ -338,22 +346,7 @@ public class NecroCavalry extends Mob {
                 }
             }
 
-            // 重新生成到安全终点的路径
-            Ballistica chargeBall = new Ballistica(pos, safeEnd, Ballistica.STOP_SOLID | Ballistica.STOP_TARGET);
-            List<Integer> finalRawPath = new ArrayList<>(chargeBall.path);
-
-            // 再次过滤末尾非法格
-            while (!finalRawPath.isEmpty()) {
-                int last = finalRawPath.get(finalRawPath.size() - 1);
-                if (Dungeon.level.insideMap(last)
-                        && Dungeon.level.passable[last]
-                        && Dungeon.level.map[last] != Terrain.CHASM) {
-                    break;
-                }
-                finalRawPath.remove(finalRawPath.size() - 1);
-            }
-
-            chargePath = new ArrayList<>(finalRawPath);
+            chargePath = new ArrayList<>(finalPath);
             chargePath.remove(0); // 移除自身位置，从下一格开始
 
             // 重置已攻击目标记录
