@@ -176,6 +176,43 @@ public class ScrollingGridPane extends ScrollPane {
 		super.layout();
 	}
 
+	/**
+	 * 滚动到指定索引的GridItem（只计算GridItem，忽略Header）
+	 * @param targetIndex 目标GridItem序号（从0开始）
+	 */
+	public void scrollToCell(int targetIndex) {
+		float cellW = cellWidth;
+		float cellH = cellHeight;
+		float cellGap = 1;
+
+		int gridItemCounter = 0;
+		float topPos = 0;
+		float left = 0;
+
+		// 遍历所有元素，模拟layout布局，找到目标item的Y坐标
+		for (Component item : items) {
+			if (item instanceof GridHeader) {
+				// 标题占用高度
+				topPos += item.height() + 1;
+				left = 0;
+			} else if (item instanceof GridItem) {
+				// 判断是否换行
+				if (left + cellW > width()) {
+					left = 0;
+					topPos += cellH + cellGap;
+				}
+
+				if (gridItemCounter == targetIndex) {
+					// 滚动到目标位置，预留少量上边距
+					scrollTo(0, topPos);
+					return;
+				}
+				left += cellW + cellGap;
+				gridItemCounter++;
+			}
+		}
+	}
+
 	public static class GridItem extends Component {
 
 		protected Image icon;

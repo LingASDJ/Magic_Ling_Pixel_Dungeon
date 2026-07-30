@@ -14,6 +14,8 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollingGridPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
@@ -55,7 +57,7 @@ public class WndSelectSkin extends Window {
     private ScrollingGridPane skinList;
     private SkinPreview preview;
     private SkinInfo info;
-    private SkinNameBar nameBar;
+    public SkinNameBar nameBar;
     private Image frame;
     private int selectedSkin;
 
@@ -92,7 +94,7 @@ public class WndSelectSkin extends Window {
     private Camera viewport;
     public WndSelectSkin(HeroClass heroClass) {
 
-        super(Game.width > Game.height ? WIDTH : 160, HEIGHT, Chrome.get(Chrome.Type.GREY_BUTTON_TR));
+        super(Game.width > Game.height ? WIDTH : 135, HEIGHT, Chrome.get(Chrome.Type.GREY_BUTTON_TR));
 
         int w = Camera.main.width;
         int h = Camera.main.height;
@@ -138,6 +140,8 @@ public class WndSelectSkin extends Window {
 
         refreshSkinList();
         refreshDisplay();
+
+        skinList.scrollToCell(selectedSkin);
     }
 
     private void refreshSkinList() {
@@ -465,11 +469,17 @@ public class WndSelectSkin extends Window {
 
         public SkinInfo() {
             super();
-            titleText = PixelScene.renderTextBlock("", 16);
-            titleText.setTextDirection(RenderedTextBlock.VERTICAL);
-            titleText.maxHeight(100);
-            titleText.setVerticalLetterSpacing(16f);
-            titleText.setVerticalColumnSpacing(6f);
+
+            if(Game.width > Game.height ){
+                titleText = PixelScene.renderTextBlock("", 16);
+                titleText.setTextDirection(RenderedTextBlock.VERTICAL);
+                titleText.maxHeight(100);
+                titleText.setVerticalLetterSpacing(16f);
+                titleText.setVerticalColumnSpacing(6f);
+            } else {
+                titleText = PixelScene.renderTextBlock("", 9);
+                titleText.setWidth(titleText.width());
+            }
             add(titleText);
         }
 
@@ -536,38 +546,71 @@ public class WndSelectSkin extends Window {
         @Override
         protected void layout() {
             super.layout();
-            titleText.maxWidth((int) width());
-            titleText.setPos(x+16, y+12);
+            titleText.setPos(Game.width > Game.height ? x+16 : x-123, Game.width > Game.height ? y+12 : y+130);
         }
     }
 
     private static class SkinNameBar extends Component {
 
         private RenderedTextBlock nameText;
+        private IconButton infoBtn;
+
+        private HeroClass heroClass;
+        private int skinIndex;
 
         public SkinNameBar() {
             super();
             nameText = PixelScene.renderTextBlock("", 8);
             add(nameText);
+
+            // 信息按钮，使用原版info图标
+            infoBtn = new IconButton(Icons.INFO.get()){
+                @Override
+                protected void onClick() {
+                    super.onClick();
+                    showSkinInfo();
+                }
+            };
+            infoBtn.setSize(16,16);
+            add(infoBtn);
         }
 
         public void setSkin(HeroClass heroClass, int skinIndex) {
+            this.heroClass = heroClass;
+            this.skinIndex = skinIndex;
+
             String nameKey = heroClass.name().toLowerCase() + "_skin_" + skinIndex;
             String name = Messages.get(WndSelectSkin.class, nameKey);
             if(skinIndex <= 3){
                 name = Messages.get(WndSelectSkin.class, "default_skin_name");
             }
-            nameText.text(name);
+            nameText.text("Design:"+name);
             layout();
+        }
+
+        // 弹出皮肤信息弹窗
+        private void showSkinInfo(){
+            String infoKey = heroClass.name().toLowerCase() + "_skin_info_" + skinIndex;
+            String infoText = Messages.get(WndSelectSkin.class, infoKey);
+            if (infoText.startsWith("Ms:")) {
+                infoText = Messages.get(WndSelectSkin.class, "default_skin_info");
+            } else {
+                infoText = Messages.get(WndSelectSkin.class, infoKey);
+            }
+
+            Game.scene().addToFront(new WndMessage(infoText));
         }
 
         @Override
         protected void layout() {
             super.layout();
-            nameText.maxWidth((int) width());
-            nameText.align(RenderedTextBlock.CENTER_ALIGN);
-            nameText.setPos(x + (width() - nameText.width()) / 2f-4, y + (height() - nameText.height()) / 2f);
-            align(nameText);
+
+            nameText.maxWidth ((int) width ());
+            nameText.align (RenderedTextBlock.CENTER_ALIGN);
+            nameText.setPos (x + (width () - nameText.width ()) / 2f-4, y + (height () - nameText.height ()) / 2f);
+            align (nameText);
+
+            infoBtn.setPos(nameText.right()+1,nameText.top()-6);
         }
     }
 }

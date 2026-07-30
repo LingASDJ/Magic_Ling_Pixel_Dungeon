@@ -117,6 +117,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.tomb.DeadTowerRoom;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -1324,6 +1325,18 @@ public abstract class Mob extends Char {
 			//50% chance to round up, 50% to round down
 			if (EXP % 2 == 1) EXP += Random.Int(2);
 			EXP /= 2;
+		}
+
+		if (properties.contains(Property.NECRO)) {
+			for (Mob mob : Dungeon.level.mobs) {
+				if (mob instanceof DeadTowerRoom.DeadTower && mob.isAlive()) {
+					DeadTowerRoom.DeadTower tower = (DeadTowerRoom.DeadTower) mob;
+					if (Dungeon.level.distance(this.pos, tower.pos) <= 4) {
+						int reduceDef = Random.NormalIntRange(0, 5);
+						this.defenseSkill = Math.max(0, this.defenseSkill - reduceDef);
+					}
+				}
+			}
 		}
 
 		if(Dungeon.level.feeling == Level.Feeling.SKYCITY && alignment == Alignment.ENEMY){

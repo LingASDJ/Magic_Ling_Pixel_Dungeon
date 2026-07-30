@@ -212,6 +212,7 @@ public class Assets {
 
 	public static class Interfaces {
 
+		public static final String SWSKIN  = "interfaces/sw_skin.png";
 		public static final String BLACK_RECT  = "interfaces/black_rect.png";
 		public static final String WHITE_RECT  = "interfaces/white_rect.png";
 
@@ -848,6 +849,7 @@ public class Assets {
 		public static final String THIEF_SOUL	= "sprites/tumulus/tomb_robber.png";
 
 		//CHURCH
+		public static final String NECRO_TOMB   = "sprites/tumulus/nec_tomb.png";
 		public static final String DEATH_SPRITE = "sprites/tumulus/death_spire.png";
 		public static final String NECRO_GUARD	= "sprites/tumulus/necro_soldier.png";
 		public static final String NECRO_APPREN	= "sprites/tumulus/nec_acolyte.png";

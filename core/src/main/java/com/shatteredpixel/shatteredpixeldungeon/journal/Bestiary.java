@@ -126,6 +126,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SkyDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SuccubusQueen;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.Aggregatus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.GraveRat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.HighNecromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroAcolyte;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroArcher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.NecroCavalry;
@@ -461,7 +462,8 @@ public enum Bestiary {
 						NecroGuard.class, NecroArcher.class,
 						NecroAcolyte.class,
 
-						NecroCavalry.class, Aggregatus.class, NecroWarlock.class}
+						NecroCavalry.class, Aggregatus.class, NecroWarlock.class,
+						HighNecromancer.class}
 
 						: new Class<?>[]{Albino.class,
 						Salamander.class,
