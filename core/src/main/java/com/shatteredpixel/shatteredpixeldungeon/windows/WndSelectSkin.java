@@ -32,6 +32,7 @@ import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
@@ -91,10 +92,15 @@ public class WndSelectSkin extends Window {
     private static final int BUTTON_HEIGHT    = 20;
     private static final int SKY_WIDTH    = 80;
     private static final int SKY_HEIGHT    = 112;
+    private static final int NSTARS		= 100;
+    private static final int NCLOUDS	= 5;
     private Camera viewport;
     public WndSelectSkin(HeroClass heroClass) {
 
         super(Game.width > Game.height ? WIDTH : 135, HEIGHT, Chrome.get(Chrome.Type.GREY_BUTTON_TR));
+
+        boolean dayTime =
+                Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 18 && Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 7;
 
         int w = Camera.main.width;
         int h = Camera.main.height;
@@ -319,6 +325,12 @@ public class WndSelectSkin extends Window {
             sky.scale.set(SKY_WIDTH, SKY_HEIGHT);
             add(sky);
 
+            float range = SKY_HEIGHT * 2 / 3;
+            for (int i=0; i < NCLOUDS; i++) {
+                Cloud cloud = new Cloud( (NCLOUDS - 1 - i) * (range / NCLOUDS) + Random.Float( range / NCLOUDS ), dayTime );
+                add( cloud );
+            }
+
             // 原有立绘逻辑
             SkinConfig special = getSpecialSkinConfig(heroClass, skinIndex);
             isSpecialSkin = (special != null);
@@ -385,7 +397,6 @@ public class WndSelectSkin extends Window {
             }
         }
 
-        // 从 HeroSelectScene 复制 Sky 和 Cloud 类（改为 static）
         private static class Sky extends Visual {
             private static final int[][] gradients = new int[][] {
                     { 0xff012459, 0xff001322 },
@@ -460,6 +471,94 @@ public class WndSelectSkin extends Window {
                 script.lighting(rm, gm, bm, am, ra, ga, ba, aa);
                 script.drawQuad(verticesBuffer);
             }
+        }
+    }
+
+    private static class Cloud extends Image {
+
+        private static int lastIndex = -1;
+        private float alpha = 1f;
+        private static final float ALPHA_SPEED = 0.005f;
+        // 画面90%位置开始触发淡出
+        private static final float FADE_THRESHOLD_RATIO = 0.95f;
+
+        public Cloud( float y, boolean dayTime ) {
+            super( Assets.Interfaces.SURFACE );
+
+            int index;
+            do {
+                index = Random.Int( 3 );
+            } while (index == lastIndex);
+
+            switch (index) {
+                case 0:
+                    frame( 88, 0, 49, 20 );
+                    break;
+                case 1:
+                    frame( 88, 20, 49, 22 );
+                    break;
+                case 2:
+                    frame( 88, 42, 50, 18 );
+                    break;
+            }
+
+            lastIndex = index;
+
+            this.y = y + 5;
+            scale.set( 1 - y / SKY_HEIGHT );
+            x = Random.Int(45,75);
+            speed.x = scale.x * (dayTime ? +4 : -4);
+
+            if (dayTime) {
+                tint( 0xCCEEFF, 1 - scale.y );
+            } else {
+                rm = gm = bm = +3.0f;
+                ra = ga = ba = -2.1f;
+            }
+        }
+
+        @Override
+        public void update() {
+            super.update();
+            float w = Random.Int(45,75);
+            float fadeStartPos = SKY_WIDTH * FADE_THRESHOLD_RATIO;
+
+            if (speed.x > 0) {
+                // 向右移动的云
+                if (x >= fadeStartPos) {
+                    // 进入画面90%区域 → 淡出
+                    alpha -= ALPHA_SPEED;
+                } else {
+                    // 不在边界区域 → 持续淡向完全不透明
+                    alpha += ALPHA_SPEED;
+                }
+            } else {
+                // 向左移动的云，左侧淡出区间
+                float leftFadePos = -w + (SKY_WIDTH * (1f - FADE_THRESHOLD_RATIO));
+                if (x <= leftFadePos) {
+                    alpha -= ALPHA_SPEED;
+                } else {
+                    alpha += ALPHA_SPEED;
+                }
+            }
+
+            // 限制透明度范围 0 ~ 1
+            alpha = Math.max(0f, Math.min(1f, alpha));
+
+            // 边界瞬移重生
+            if (speed.x > 0 && x > SKY_WIDTH) {
+                x = Random.Int(45,75);
+                alpha = 0f; // 重生完全透明，慢慢淡入
+            } else if (speed.x < 0 && x < -w) {
+                x = SKY_WIDTH;
+                alpha = 0f;
+            }
+        }
+
+        @Override
+        public void draw() {
+            alpha(alpha);
+            super.draw();
         }
     }
 
