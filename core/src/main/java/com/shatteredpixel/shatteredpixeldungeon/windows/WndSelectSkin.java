@@ -480,7 +480,7 @@ public class WndSelectSkin extends Window {
         private float alpha = 1f;
         private static final float ALPHA_SPEED = 0.005f;
         // 画面90%位置开始触发淡出
-        private static final float FADE_THRESHOLD_RATIO = 0.95f;
+        private static final float FADE_THRESHOLD_RATIO = 0.91f;
 
         public Cloud( float y, boolean dayTime ) {
             super( Assets.Interfaces.SURFACE );
