@@ -85,7 +85,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private static final float TIME_TO_ZAP = 4f;
 
     {
-        HP = HT = Statistics.bossRushMode && !Statistics.amuletObtained ? 270 * (Dungeon.depth/5) : (Statistics.amuletObtained || Statistics.RandMode) ? 2024 : 270 * (Statistics.deepestFloor/5);
+        HP = HT = Statistics.bossRushMode && !Statistics.amuletObtained ? 270 * (Dungeon.depth/5) : (Statistics.amuletObtained || Statistics.RandMode && Dungeon.depth == 20) ? 2024 : 270 * (Statistics.deepestFloor/5);
         EXP = 80;
         defenseSkill = 4 + (5*Dungeon.depth/5);
         spriteClass = FireMagicGirlSprite.class;
@@ -502,7 +502,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             GetBossLoot(pos);
         }
 
-        if(Statistics.RandMode){
+        if(Statistics.RandMode && Dungeon.depth == 20){
             SmallLeafHardDungeon smallLeafHardDungeon = new SmallLeafHardDungeon();
             smallLeafHardDungeon.pos = pos;
             Dungeon.level.mobs.add(smallLeafHardDungeon);
