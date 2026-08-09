@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -23,6 +24,15 @@ public abstract class Pets extends Mob {
         return baseSpeed;
     }
 
+    @Override
+    protected boolean getFurther( int target ) {
+
+        if (!Dungeon.level.insideMap(target)) {
+            return false;
+        }
+
+        return super.getFurther(target);
+    }
 
     protected int defendingPos = -1;
     protected boolean movingToDefendPos = false;

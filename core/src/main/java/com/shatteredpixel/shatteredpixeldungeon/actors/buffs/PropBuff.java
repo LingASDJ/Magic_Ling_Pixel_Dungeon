@@ -21,6 +21,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.AllSearchHollowActorLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MoveBoxHollowActorLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.PacmanHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -77,13 +80,15 @@ public class PropBuff extends Buff{
 
             if(Dungeon.hero.belongings.getItem(FreeCrack.class)!=null) {
                 timeI ++;
-                if(timeI >= 50 && Statistics.bossRushMode && Dungeon.depth != 1 || !Statistics.bossRushMode && timeI >= 50) {
-                    TeleportationTrap t = new TeleportationTrap();
-                    t.pos = hero.pos;
-                    t.activate();
-                    timeI = 0;
-                    Buff.affect(hero,Vertigo.class,2f);
-                    target.damage(Math.max((int) (target.HP * Random.NormalFloat(0.08f,0.16f)), 1),this, Char.DamageType.REAL);
+                if(!(Dungeon.level instanceof MoveBoxHollowActorLevel || Dungeon.level instanceof PacmanHollowActorLevel || Dungeon.level instanceof AllSearchHollowActorLevel)){
+                    if(timeI >= 50 && Statistics.bossRushMode && Dungeon.depth != 1 || !Statistics.bossRushMode && timeI >= 50) {
+                        TeleportationTrap t = new TeleportationTrap();
+                        t.pos = hero.pos;
+                        t.activate();
+                        timeI = 0;
+                        Buff.affect(hero,Vertigo.class,2f);
+                        target.damage(Math.max((int) (target.HP * Random.NormalFloat(0.08f,0.16f)), 1),this, Char.DamageType.REAL);
+                    }
                 }
             }
 

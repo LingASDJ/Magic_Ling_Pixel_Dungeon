@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardF
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardOneRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardThreeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.guard.GuardTwoRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.FiveLockedRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.FourLockedRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.OneLockedRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.locked.ThreeLockedRoom;
@@ -120,6 +121,7 @@ public class AllSearchHollowActorLevel extends RegularLevel {
         initRooms.add(new TwoLockedRoom());
         initRooms.add(new ThreeLockedRoom());
         initRooms.add(new FourLockedRoom());
+        initRooms.add(new FiveLockedRoom());
 
         initRooms.add(new GoldOneRoom());
         initRooms.add(new GoldTwoRoom());

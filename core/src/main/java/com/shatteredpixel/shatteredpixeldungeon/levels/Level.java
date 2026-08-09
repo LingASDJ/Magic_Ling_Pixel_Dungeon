@@ -161,6 +161,7 @@ public abstract class Level implements Bundlable {
 
 	public boolean checkID = false;
 	public boolean checkDown = false;
+	public boolean checkChanceFlash = false;
 
 	public void teleportHeroIfHeapEmpty(Char ch, int targetPos,int heappos) {
 		Heap heap = Dungeon.level.heaps.get(heappos);
@@ -501,7 +502,6 @@ public abstract class Level implements Bundlable {
 		avoid		= new boolean[length];
 		water		= new boolean[length];
 		pit			= new boolean[length];
-
 		openSpace   = new boolean[length];
 		
 		PathFinder.setMapSize(w, h);
@@ -623,7 +623,7 @@ public abstract class Level implements Bundlable {
 
 		checkID = bundle.getBoolean("CHECKID");
 		checkDown = bundle.getBoolean("CHECKDOWN");
-
+		checkChanceFlash = bundle.getBoolean("CHECKFLASH");
 	}
 	
 	@Override
@@ -651,6 +651,7 @@ public abstract class Level implements Bundlable {
 		}
 		bundle.put("CHECKID",checkID);
 		bundle.put("CHECKDOWN",checkDown);
+		bundle.put("CHECKFLASH",checkChanceFlash);
 	}
 	
 	public int tunnelTile() {

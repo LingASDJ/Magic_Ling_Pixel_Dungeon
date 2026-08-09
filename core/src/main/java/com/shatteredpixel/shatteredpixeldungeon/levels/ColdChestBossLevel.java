@@ -300,8 +300,10 @@ public class ColdChestBossLevel extends Level {
 
                 ArrayList<Ankh> ankh = hero.belongings.getAllItems(Ankh.class);
                 for (Ankh w : ankh.toArray(new Ankh[0])){
-                    GameScene.add(Mimic.spawnAt(1102, CrystalMimic.class,w));
-                    w.detachAll(hero.belongings.backpack);
+                    if(!w.spankh){
+                        GameScene.add(Mimic.spawnAt(1102, CrystalMimic.class,w));
+                        w.detachAll(hero.belongings.backpack);
+                    }
                 }
 
                 set( getBossDoor, Terrain.LOCKED_DOOR );

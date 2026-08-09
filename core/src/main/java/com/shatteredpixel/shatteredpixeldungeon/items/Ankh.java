@@ -38,6 +38,7 @@ import java.util.ArrayList;
 public class Ankh extends Item {
 
 	public boolean blessed = false;
+	public boolean spankh = false;
 
 	public static final String AC_BLESS = "BLESS";
 	public Ankh(){
@@ -118,17 +119,20 @@ public class Ankh extends Item {
 	}
 
 	private static final String BLESSED = "blessed";
+	private static final String SPANKH = "spankh";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( BLESSED, blessed );
+		bundle.put( SPANKH, spankh);
 	}
 
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		blessed	= bundle.getBoolean( BLESSED );
+		spankh  = bundle.getBoolean( SPANKH );
 	}
 	
 	@Override

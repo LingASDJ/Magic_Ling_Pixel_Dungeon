@@ -672,9 +672,13 @@ public class SakaFishBoss extends Boss {
                     Statistics.qualifiedForBossChallengeBadge = false;
                 }
 
-                if(level == AncientMysteryCityBossLevel.State.FALL_BOSS || Dungeon.isChallenged(STRONGER_BOSSES)){
-                    dropRocks(enemy);
-                    GLog.n( Messages.get(this, "king"),Dungeon.hero.name() );
+                Char currentEnemy = this.enemy;
+                if (level == AncientMysteryCityBossLevel.State.FALL_BOSS
+                        || Dungeon.isChallenged(STRONGER_BOSSES)) {
+                    if (currentEnemy != null) {
+                        dropRocks(currentEnemy);
+                    }
+                    GLog.n(Messages.get(this, "king"), Dungeon.hero.name());
                 }
 
                 if (Dungeon.level.heroFOV[pos]) {

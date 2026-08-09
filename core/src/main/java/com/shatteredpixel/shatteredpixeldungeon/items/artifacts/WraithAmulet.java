@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
@@ -103,6 +104,7 @@ public class WraithAmulet extends Artifact {
                         GLog.p(Messages.get(this,"ghost"));
                         cooldown = Math.round(40 - level*1.65f);
                         charge--;
+                        Talent.onArtifactUsed(Dungeon.hero);
                     } else {
                         GLog.i(Messages.get(this,"nochareup"));
                     }
@@ -258,6 +260,7 @@ public class WraithAmulet extends Artifact {
                                 ScrollOfTeleportation.appear(hero, target);
                                 Dungeon.observe();
                                 amulet.cooldown = 150 / (amulet.level() / 2);
+                                Talent.onArtifactUsed(Dungeon.hero);
                             } else {
                                 enemy.die(null);
                                 GLog.i(Messages.get(this, "killmobs"));
@@ -267,6 +270,7 @@ public class WraithAmulet extends Artifact {
                                 hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
                                 amulet.cooldown = 150 / (amulet.level() / 2);
                                 amulet.charge -= 6;
+                                Talent.onArtifactUsed(Dungeon.hero);
                             }
                         } else {
                             GLog.w(Messages.get(this, "notnpc"));

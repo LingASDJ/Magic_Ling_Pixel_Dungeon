@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -151,6 +152,7 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
             GLog.p(Messages.get(this, "fire_" + idx));
             hero.sprite.operate(hero.pos);
             hero.next();
+            Talent.onArtifactUsed(Dungeon.hero);
         } else if (action.equals(AC_HUNT)) {
             if (!isEquipped(hero)) {
                 GLog.w(Messages.get(Artifact.class, "need_to_equip"));
@@ -169,6 +171,7 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
             GLog.p(Messages.get(this, "hunt"));
             hero.sprite.operate(hero.pos);
             hero.next();
+            Talent.onArtifactUsed(Dungeon.hero);
         }
     }
 

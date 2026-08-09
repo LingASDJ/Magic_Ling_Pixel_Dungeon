@@ -814,20 +814,7 @@ public enum Talent {
 	}
 
 	//note that IDing can happen in alchemy scene, so be careful with VFX here
-	public static void onItemIdentified( Hero hero, Item item ){
-//		if (hero.hasTalent(TEST_SUBJECT)){
-//			//heal for 2/3 HP
-//			hero.HP = Math.min(hero.HP + 1 + hero.pointsInTalent(TEST_SUBJECT), hero.HT);
-//			if (hero.sprite != null) {
-//				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(1 + hero.pointsInTalent(TEST_SUBJECT)), FloatingText.HEALING);
-//			}
-//		}
-		if (hero.hasTalent(TESTED_HYPOTHESIS)){
-			//2/3 turns of wand recharging
-			Buff.affect(hero, Recharging.class, 1f + hero.pointsInTalent(TESTED_HYPOTHESIS));
-			ScrollOfRecharging.charge(hero);
-		}
-	}
+	public static void onItemIdentified( Hero hero, Item item ){}
 
 	public static int onAttackProc( Hero hero, Char enemy, int dmg ){
 		if (hero.hasTalent(Talent.SUCKER_PUNCH)

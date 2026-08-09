@@ -693,21 +693,23 @@ public abstract class YogFist extends Mob {
 
 		@Override
 		protected void zap() {
-			spend( 3f );
+			spend(3f);
 
-			if (hit( this, enemy, true )) {
+			Char target = this.enemy;
 
-				enemy.damage( Random.NormalIntRange(10, 20), new LightBeam() );
-				Buff.prolong( enemy, Chill.class, Chill.DURATION/2f );
+			if (target != null) {
+				if (hit(this, target, true)) {
+					target.damage(Random.NormalIntRange(10, 20), new LightBeam());
+					Buff.prolong(target, Chill.class, Chill.DURATION / 2f);
 
-				if (!enemy.isAlive() && enemy == Dungeon.hero) {
-					Dungeon.fail( getClass() );
-					GLog.n( Messages.get(Char.class, "kill", name()) );
+					if (!target.isAlive() && target == Dungeon.hero) {
+						Dungeon.fail(getClass());
+						GLog.n(Messages.get(Char.class, "kill", name()));
+					}
+				} else {
+					target.sprite.showStatus(CharSprite.NEUTRAL, target.defenseVerb());
 				}
-			} else {
-				enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
 			}
-
 		}
 
 	}

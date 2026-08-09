@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -25,9 +26,11 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
@@ -50,12 +53,22 @@ import java.util.ArrayList;
 public class CelestialBrush extends Artifact implements Item.ThanksItem {
 
     {
-        image = ItemSpriteSheet.WAND_TRANSFUSION+1;   // 暂用占位图
+        image = ItemSpriteSheet.SKY_PEN;
         levelCap = 4;
         charge = 3;
         partialCharge = 0;
         chargeCap = 3;
         defaultAction = AC_PAINT;
+    }
+
+    @Override
+    public int image() {
+        if (level() < levelCap) {
+            return super.image = ItemSpriteSheet.SKY_PEN;
+        } else {
+            return super.image = ItemSpriteSheet.SKY_PEN_PLUS;
+        }
+
     }
 
     public static final String AC_PAINT = "PAINT";
@@ -182,6 +195,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
             if (cell == null) return;
             Hero hero = Dungeon.hero;
             flamePaint(hero, cell); // 执行火焰画作
+            Talent.onArtifactUsed(Dungeon.hero);
         }
         @Override
         public String prompt() {
@@ -221,7 +235,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
 
 
         // CellEmitter.get(defender.pos + i).burst(SmokeParticle.FACTORY, 4);
-        GLog.i(Messages.get(this, "flame"));
+        GLog.n(Messages.get(this, "flame"));
         charge--;
         hero.spendAndNext(1f);
     }
@@ -234,6 +248,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
                 return;
             }
             frostPaint(cell);
+            Talent.onArtifactUsed(Dungeon.hero);
         }
         @Override
         public String prompt() {
@@ -279,7 +294,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
                                 Buff.affect(mob, Slow.class, slowTurns);
                             }
                         }
-                        GLog.i(Messages.get(CelestialBrush.this, "frost"));
+                        GLog.b(Messages.get(CelestialBrush.this, "frost"));
                         updateQuickslot();
                     }
                 }
@@ -301,8 +316,9 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
             }
         }
         GameScene.add(Blob.seed(hero.pos, centerVolume, SmokeScreen.class));
-        GLog.i(Messages.get(this, "sky"));
+        GLog.pink(Messages.get(this, "sky"));
         hero.spendAndNext(1f);
+        Talent.onArtifactUsed(Dungeon.hero);
     }
 
     //----------------------------------------------------------
@@ -323,7 +339,15 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
 
         @Override
         public Class<? extends Bag> preferredBag() {
-            return ScrollHolder.class;
+           switch (level){
+               case 0:
+                   return PotionBandolier.class;
+               case 1:
+                   return KingBag.class;
+               case 3: default:
+                   return Bag.class;
+
+           }
         }
 
         @Override
@@ -357,7 +381,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
                 }
                 hero.HT -= 15;
                 if (hero.HP > hero.HT) hero.HP = hero.HT;
-                GLog.i(Messages.get(CelestialBrush.class, "upgrade_hp"));
+                GLog.n(Messages.get(CelestialBrush.class, "upgrade_hp"));
                 doUpgrade(hero);
                 return;
             }
@@ -373,13 +397,13 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
             doUpgrade(hero);
             switch(level()) {
                 case 1:
-                    GLog.i(Messages.get(CelestialBrush.class, "upgrade_1", item.name()));
+                    GLog.w(Messages.get(CelestialBrush.class, "upgrade_1", item.name()));
                     break;
                 case 2:
-                    GLog.i(Messages.get(CelestialBrush.class, "upgrade_2", item.name()));
+                    GLog.b(Messages.get(CelestialBrush.class, "upgrade_2", item.name()));
                     break;
                 case 4:
-                    GLog.i(Messages.get(CelestialBrush.class, "upgrade_4", item.name()));
+                    GLog.yellow(Messages.get(CelestialBrush.class, "upgrade_4", item.name()));
                     break;
             }
         }
@@ -418,6 +442,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
                 float turnCost = 120f - level() * 5f - lost * 8f;
                 if (turnCost <= 0) turnCost = 1f;
                 chargeGain = 1f / turnCost;
+                chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
                 if ( target.buff(ArtifactRecharge.class) != null ) {
                     chargeGain = 0.1f;
                 }
@@ -472,5 +497,6 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
         super.restoreFromBundle(bundle);
         chargeCap = 3 + level();
         if (charge > chargeCap) charge = chargeCap;
+        image();
     }
 }

@@ -2,12 +2,15 @@ package com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -16,9 +19,18 @@ import com.watabou.utils.Bundle;
 
 public class ScrollOfSoul extends Scroll {
 
+    public int soulLimit;
+
     {
         image = ItemSpriteSheet.SOUL_SCROLL;
         unique = true;
+        soulLimit = 300;
+    }
+
+    @Override
+    public boolean collect() {
+        Buff.affect(hero, SoulLess.class).set((soulLimit), 1);
+        return super.doPickUp(hero);
     }
 
     @Override
@@ -35,9 +47,95 @@ public class ScrollOfSoul extends Scroll {
     public void doRead() {
         detach(curUser.belongings.backpack);
         new Flare( 5, 32 ).color( 0x4B9AA1, true ).show( curUser.sprite, 2f );
-        Buff.affect(hero, UpgradeSoul.class).set((301), 1);
+        Buff.affect(hero, UpgradeSoul.class).set((Math.max(50,soulLimit)), 1);
         identify();
         readAnimation();
+        Buff.detach(hero, SoulLess.class);
+    }
+
+    @Override
+    public String desc() {
+        return Messages.get(this,"desc",Math.max(50,soulLimit));
+    }
+
+    public static class SoulLess extends Buff {
+
+        {
+            type = buffType.POSITIVE;
+        }
+
+        private int level = 0;
+        private int interval = 1;
+        private int carriedTurns = 0;
+
+        @Override
+        public boolean act() {
+            if (target.isAlive()) {
+                spend( interval );
+                carriedTurns++;
+
+                ScrollOfSoul scrollOfSoul = Dungeon.hero.belongings.getItem(ScrollOfSoul.class);
+
+                if(scrollOfSoul != null){
+                    if (carriedTurns >= 20) {
+                        scrollOfSoul.soulLimit--;
+                        carriedTurns = 0;
+                    }
+                } else {
+                    for (Heap heap : Dungeon.level.heaps.valueList()) {
+                        for (Item item : heap.items) {
+                            if(item instanceof ScrollOfSoul) {
+                                if (carriedTurns >= 20) {
+                                    ((ScrollOfSoul) item).soulLimit--;
+                                    carriedTurns = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                detach();
+            }
+            return true;
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.WICKBONE;
+        }
+
+        public int level() {
+            return level;
+        }
+
+        public void set( int value, int time ) {
+            if (level <= value) {
+                level = value;
+                interval = time;
+                spend(time - cooldown() - 1);
+                carriedTurns = 0;
+            }
+        }
+
+        private static final String LEVEL	    = "level";
+        private static final String INTERVAL    = "interval";
+        private static final String CARRIED_TURNS = "carriedTurns";
+
+        @Override
+        public void storeInBundle( Bundle bundle ) {
+            super.storeInBundle( bundle );
+            bundle.put( INTERVAL, interval );
+            bundle.put( LEVEL, level );
+            bundle.put(CARRIED_TURNS, carriedTurns);
+        }
+
+        @Override
+        public void restoreFromBundle( Bundle bundle ) {
+            super.restoreFromBundle( bundle );
+            interval = bundle.getInt( INTERVAL );
+            level = bundle.getInt( LEVEL );
+            carriedTurns = bundle.getInt(CARRIED_TURNS);
+        }
     }
 
     public static class UpgradeSoul extends Buff {
@@ -49,7 +147,6 @@ public class ScrollOfSoul extends Scroll {
         private int level = 0;
         private int interval = 1;
         private int carriedTurns = 0;
-        private static final int DECAY_CYCLE = 20;
 
         public int attackDamageMulti;
         public int shieldDamageMulti;
@@ -59,11 +156,6 @@ public class ScrollOfSoul extends Scroll {
             if (target.isAlive()) {
                 spend( interval );
                 carriedTurns++;
-
-                if (carriedTurns >= DECAY_CYCLE) {
-                    level--;
-                    carriedTurns = 0;
-                }
 
                 for (Buff b : target.buffs()) {
                     if (b.type == Buff.buffType.NEGATIVE

@@ -19,6 +19,7 @@ public class UnlessFlower extends Ankh {
     {
         image = ItemSpriteSheet.UNLESSFLOWER;
         unique = true;
+        spankh = true;
     }
 
     @Override

@@ -17,10 +17,6 @@ public class BlessBossRushLow extends ChampionHero {
         return 0.8f;
     }
 
-    {
-        immunities.addAll(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic.RESISTS);
-    }
-
     @Override
     public void fx(boolean on) {
     }

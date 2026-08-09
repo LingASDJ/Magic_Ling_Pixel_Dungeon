@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation.appear;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -32,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.custom.Gift;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.AllSearchHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -250,12 +252,12 @@ public class WndGame extends Window {
 			}
 		}
 
-		if(Dungeon.depth == 0 && Dungeon.branch == 0 && !Dungeon.isChallenged(CS) ) {
+		if(Dungeon.depth == 0 && Dungeon.branch == 0 && !Dungeon.isChallenged(CS) || Dungeon.level instanceof AllSearchHollowActorLevel) {
 			// Debug
 			addButton(curBtn = new RedButton(Messages.get(this, "restar")) {
 				@Override
 				protected void onClick() {
-					appear( hero, 37 );
+					appear( hero, Dungeon.level instanceof AllSearchHollowActorLevel ? level.entrance() : 37 );
 					Dungeon.level.occupyCell(hero );
 					Dungeon.observe();
 					GameScene.updateFog();

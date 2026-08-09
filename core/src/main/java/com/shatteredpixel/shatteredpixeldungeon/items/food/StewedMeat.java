@@ -21,22 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.tomb.GraveMeat;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class StewedMeat extends Food {
-
-
-	@Override
-	protected void satisfy( Hero hero ) {
-		Buff.affect(hero, Hunger.class).satisfy(energy/2f);
-	}
-
 
 	{
 		image = ItemSpriteSheet.STEWED;
