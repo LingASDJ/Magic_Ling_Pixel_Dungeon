@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.ColorTargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
@@ -234,6 +235,7 @@ public class MagneticCrown extends Artifact {
 
             charge--;
             updateQuickslot();
+            Talent.onArtifactUsed(Dungeon.hero);
 
             Ballistica trajectory = new Ballistica(nearest.pos, targetPos, Ballistica.PROJECTILE);
             int newPos = trajectory.collisionPos;

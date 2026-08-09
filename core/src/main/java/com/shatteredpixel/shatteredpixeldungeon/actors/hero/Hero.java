@@ -1448,8 +1448,10 @@ public class Hero extends Char {
 		}
 
 		BzmdrNewYears.BzmdrGift bzmdrGift = hero.belongings.getItem(BzmdrNewYears.BzmdrGift.class);
-		if(bzmdrGift != null){
+		if(bzmdrGift != null && buff(LighS.class) == null){
 			viewDistance = level.viewDistance + Statistics.BzmdrCJHeroViewDistance;
+		} else if (buff(LighS.class) != null){
+			viewDistance = level.viewDistance + Statistics.BzmdrCJHeroViewDistance + LighS.DISTANCE;
 		}
 
 		MageHand.MageHandControl m = hero.belongings.getItem(MageHand.MageHandControl.class);

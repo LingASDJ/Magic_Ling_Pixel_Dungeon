@@ -138,7 +138,7 @@ public class DogDogMusic extends FiveYearsNPC {
         public int proc(Char attacker, Char defender, int damage) {
             CicreStats cicreStats = attacker.buff(CicreStats.class);
 
-            int dmg = Random.IntRange(1, 18 + (level() * 3));
+            int dmg = Random.IntRange(1, 18 + (buffedLvl() * 3));
 
             if (cicreStats != null && cicreStats.attackStats < 4) {
                 cicreStats.attackStats++;
@@ -210,7 +210,7 @@ public class DogDogMusic extends FiveYearsNPC {
                     public void call() {
                         beforeAbilityUsed(hero, dummyTarget);
                         AttackIndicator.target(dummyTarget);
-                        int baseDmg = Random.IntRange(1, 18 + (level() * 3));
+                        int baseDmg = Random.IntRange(1, 18 + (buffedLvl() * 3));
                         castWideEcho(hero, baseDmg);
 
                         CellEmitter.center(hero.pos).burst(EnergyParticle.FACTORY, 15);
@@ -225,9 +225,9 @@ public class DogDogMusic extends FiveYearsNPC {
         }
 
         private void castWideEcho(Hero hero, int baseDamage) {
-            int normalRange = Math.min(16,5 + (level()/2));
+            int normalRange = Math.min(16,5 + (buffedLvl()/2));
             boolean bossFloor = Dungeon.bossLevel();
-            if (bossFloor) normalRange = Math.min(8,2 + (level()/2));
+            if (bossFloor) normalRange = Math.min(8,2 + (buffedLvl()/2));
 
             for (Char ch : Actor.chars()) {
                 if (ch == hero || ch.alignment == Char.Alignment.ALLY || ch.alignment == hero.alignment) {

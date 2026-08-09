@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SmokeAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Smoking;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElectricalSmokeParticle;
@@ -28,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -126,7 +128,7 @@ public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
                     hero.sprite.operate( hero.pos );
                     hero.busy();
                     hero.spend(Actor.TICK);
-
+                    Talent.onArtifactUsed(Dungeon.hero);
                 }else{
                     hero.sprite.operate( hero.pos );
                     hero.buff(Smoking.class).detach();
@@ -221,12 +223,13 @@ public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
                 }
 
                 item.detach(hero.belongings.backpack);
-
+                Talent.onArtifactUsed(Dungeon.hero);
             } else if(item != null){
                 if(level<levelCap) upgrade();
                 hero.sprite.operate( hero.pos );
                 GLog.p(Messages.get(ElectricalSmoke.class, "levelup"));
                 item.detach(hero.belongings.backpack);
+                Talent.onArtifactUsed(Dungeon.hero);
             }
             if(item != null){
                 hero.busy();
@@ -406,7 +409,11 @@ public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
         public void charge(Hero target, float amount) {
             if (cursed || target.buff(MagicImmune.class) != null) return;
             if (charge < chargeCap) {
-                partialCharge += amount;
+
+                float chargeGain = amount;
+                chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
+                partialCharge += chargeGain;
+
                 while (partialCharge >= 1f){
                     charge++;
                     partialCharge--;

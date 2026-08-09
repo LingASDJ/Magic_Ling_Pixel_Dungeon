@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -181,6 +182,17 @@ public class WhiteBlastSword extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
+        if (target == null) return;
+
+        boolean targetIsWall = Dungeon.level.solid[target];
+        PathFinder.buildDistanceMap(target, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+
+        if (targetIsWall ||PathFinder.distance[curUser.pos] == Integer.MAX_VALUE){
+            GLog.w(Messages.get(MeleeWeapon.class, "ability_bad_position"));
+            return;
+        }
+
+        //===== 普通敌人目标，原有逻辑，消耗充能、逐浪突刺，最大3格 =====
         int dmgBoost =  augment.damageFactor(5 + Math.round(1.5f*buffedLvl()));
         waveLunge(hero, target, 1, dmgBoost, this);
     }
@@ -216,7 +228,7 @@ public class WhiteBlastSword extends MeleeWeapon {
         // 核心规则：至多3格，超过禁用
         final int MAX_RANGE = 3;
         Ballistica ballistica = new Ballistica(hero.pos, target, Ballistica.PROJECTILE);
-        if (ballistica.dist > MAX_RANGE || hero.rooted) {
+        if (Dungeon.level.distance(hero.pos,target) > MAX_RANGE || hero.rooted) {
             GLog.w(Messages.get(wep, "ability_target_range"));
             return;
         }

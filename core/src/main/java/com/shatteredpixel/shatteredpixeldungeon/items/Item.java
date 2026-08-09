@@ -529,7 +529,7 @@ public class Item implements Bundlable {
 
 		if (byHero && hero != null && hero.isAlive()){
 			Catalog.setSeen(getClass());
-			if (!isIdentified()) Talent.onItemIdentified(hero, this);
+			//if (!isIdentified()) Talent.onItemIdentified(hero, this);
 		}
 
 		levelKnown = true;

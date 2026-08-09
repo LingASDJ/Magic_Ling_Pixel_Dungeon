@@ -81,6 +81,11 @@ public class DeathBuff extends ElementalBuff {
     }
 
     @Override
+    public String iconTextDisplay() {
+        return String.valueOf(level)+"%";
+    }
+
+    @Override
     public boolean act() {
         if (!target.isAlive()) {
             detach();

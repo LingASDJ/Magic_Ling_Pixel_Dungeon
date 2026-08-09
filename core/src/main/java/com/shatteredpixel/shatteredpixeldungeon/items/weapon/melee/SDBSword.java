@@ -232,11 +232,11 @@ public class SDBSword extends MeleeWeapon {
 
     @Override
     public int min() {
-        return 5 + level();
+        return 5 + buffedLvl();
     }
 
     @Override
     public int max() {
-        return 25 + level() * 6;
+        return 25 + buffedLvl() * 6;
     }
 }

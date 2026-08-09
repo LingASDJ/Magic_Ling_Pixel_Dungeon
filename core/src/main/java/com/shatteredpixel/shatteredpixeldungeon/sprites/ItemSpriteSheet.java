@@ -1327,9 +1327,10 @@ public class ItemSpriteSheet {
     public static final int  SHOCK_ARROW       = MISC+13;
     public static final int BURN_ARROW       = MISC+14;
 
-
-
     public static final int FLARE        = MISC+15;
+
+    public static final int SKY_PEN        = MISC+17;
+    public static final int SKY_PEN_PLUS       = MISC+18;
 
     static{
         assignItemRect(MISC_ROLLBLOCK,       12, 13);

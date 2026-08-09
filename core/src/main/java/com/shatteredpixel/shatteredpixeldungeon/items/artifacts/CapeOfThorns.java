@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -130,6 +131,7 @@ public class CapeOfThorns extends Artifact {
 					hero.busy();
 					hero.sprite.operate( curUser.pos );
 					GLog.p(Messages.get(this,"thorns"));
+					Buff.detach(hero, Invisibility.class);
 				} else if(charge < 10) {
 					GLog.w(Messages.get(this, "thorns_wait"));
 				} else {
@@ -206,7 +208,7 @@ public class CapeOfThorns extends Artifact {
 			if (art == null || target == null) return;
 
 			int LV = art.level();
-			int radius = LV / 2;
+			int radius = Math.round(LV / 4f);
 
 			if (radius <= 0) return;
 
@@ -245,7 +247,7 @@ public class CapeOfThorns extends Artifact {
 							} else {
 								Buff.affect(ch, Bleeding.class).set(actualBleedTurns);
 							}
-							ch.damage(art.level(), this, Char.DamageType.PHYSICAL);
+							ch.damage(Math.round(art.level()/2f), this, Char.DamageType.PHYSICAL);
 						}
 					}
 				}

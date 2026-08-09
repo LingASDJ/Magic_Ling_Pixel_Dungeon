@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.DeathBuff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -456,8 +457,13 @@ public class BuffIndicator extends Component {
 				}
 			} else if (!buff.iconTextDisplay().isEmpty()) {
 				grey.visible = false;
-				if (buff.type == Buff.buffType.POSITIVE)        text.hardlight(CharSprite.POSITIVE);
-				else if (buff.type == Buff.buffType.NEGATIVE)   text.hardlight(CharSprite.NEGATIVE);
+				if(buff instanceof DeathBuff){
+					text.hardlight(Window.ANSDO_COLOR);
+				} else {
+					if (buff.type == Buff.buffType.POSITIVE)        text.hardlight(CharSprite.POSITIVE);
+					else if (buff.type == Buff.buffType.NEGATIVE)   text.hardlight(CharSprite.NEGATIVE);
+				}
+
 				text.alpha(0.7f);
 
 				text.text(buff.iconTextDisplay());

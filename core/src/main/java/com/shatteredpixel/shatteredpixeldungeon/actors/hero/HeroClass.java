@@ -221,7 +221,7 @@ public enum HeroClass {
 		new KingBag().quantity(1).identify().collect();
 		new ScrollOfIdentify().identify();
 
-		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
+		if (1==1){
 
 			new TombReachBook().identify().collect();
 

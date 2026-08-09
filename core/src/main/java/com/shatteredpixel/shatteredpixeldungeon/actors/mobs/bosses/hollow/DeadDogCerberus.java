@@ -672,6 +672,12 @@ public class DeadDogCerberus extends Boss {
         return NormalDr;
     }
 
+    @Override
+    public int defenseProc(Char enemy, int damage) {
+        if (this.enemy == null) return damage;
+        return super.defenseProc(enemy, damage);
+    }
+
     /**
      * 恶狗扑食技能需要重写Hunting
      */
@@ -724,68 +730,66 @@ public class DeadDogCerberus extends Boss {
                 } else {
                     endPos = leapPos;
                 }
-
                 //do leap
                 sprite.visible = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos] || Dungeon.level.heroFOV[endPos];
                 sprite.jump(pos, leapPos, new Callback() {
                     @Override
                     public void call() {
-                        if(enemy != null){
-                            if (leapVictim != null && alignment != leapVictim.alignment){
-                                if (hit( DeadDogCerberus.this, leapVictim, Char.INFINITE_ACCURACY, false)) {
-                                    int dmg = damageRoll();
-                                    dmg *= Random.NormalIntRange(2,3);
-                                    dmg = Math.round(dmg * AscensionChallenge.statModifier(DeadDogCerberus.this));
-                                    dmg = defenseProc(enemy,dmg);
-                                    dmg -= enemy.drRoll();
-                                    enemy.damage(dmg, new Stone());
-                                    Buff.affect(leapVictim, Bleeding.class).set(0.75f * damageRoll());
-                                    leapVictim.sprite.flash();
-                                    Sample.INSTANCE.play(Assets.Sounds.HIT);
+                        Char target = enemy;
+                        if (target != null && leapVictim != null && alignment != leapVictim.alignment) {
+                            if (hit(DeadDogCerberus.this, leapVictim, Char.INFINITE_ACCURACY, false)) {
+                                int dmg = damageRoll();
+                                dmg *= Random.NormalIntRange(2, 3);
+                                dmg = Math.round(dmg * AscensionChallenge.statModifier(DeadDogCerberus.this));
+                                dmg = defenseProc(target, dmg);   // 如果 Mob.defenseProc 内部用 this.enemy，重写的版本会保护
+                                dmg -= target.drRoll();
+                                target.damage(dmg, new Stone());
+                                Buff.affect(leapVictim, Bleeding.class).set(0.75f * damageRoll());
+                                leapVictim.sprite.flash();
+                                Sample.INSTANCE.play(Assets.Sounds.HIT);
 
-                                    Statistics.bossScores[5] -= 200;
+                                Statistics.bossScores[5] -= 200;
 
-                                    int targetingPos = enemy.pos;
+                                int targetingPos = target.pos;
 
-                                    if(phase ==  2){
-                                        for (int i : PathFinder.CIRCLE8) {
-                                            if (!Dungeon.level.solid[targetingPos + i]) {
-                                                CellEmitter.get(targetingPos + i).burst(ElmoParticle.FACTORY, 5);
-                                                GameScene.add(Blob.seed(targetingPos + i, 12, DeadHaloFire.class));
-                                            }
-                                        }
-                                    } else {
-                                        for (int i : PathFinder.NEIGHBOURS8) {
-                                            if (!Dungeon.level.solid[targetingPos + i]) {
-                                                CellEmitter.get(targetingPos + i).burst(ElmoParticle.FACTORY, 5);
-                                                GameScene.add(Blob.seed(targetingPos + i, 12, DeadHaloFire.class));
-                                            }
+                                if (phase == 2) {
+                                    for (int i : PathFinder.CIRCLE8) {
+                                        if (!Dungeon.level.solid[targetingPos + i]) {
+                                            CellEmitter.get(targetingPos + i).burst(ElmoParticle.FACTORY, 5);
+                                            GameScene.add(Blob.seed(targetingPos + i, 12, DeadHaloFire.class));
                                         }
                                     }
                                 } else {
-                                    leapVictim.sprite.showStatus( CharSprite.NEUTRAL, leapVictim.defenseVerb() );
-                                    Sample.INSTANCE.play(Assets.Sounds.MISS);
-                                    int targetingPos = enemy.pos;
-                                    if(phase ==  2){
-                                        for (int i : PathFinder.CIRCLE8) {
-                                            if (!Dungeon.level.solid[targetingPos + i]) {
-                                                CellEmitter.get(targetingPos + i).burst(ElmoParticle.FACTORY, 5);
-                                                GameScene.add(Blob.seed(targetingPos + i, 12, DeadHaloFire.class));
-                                            }
+                                    for (int i : PathFinder.NEIGHBOURS8) {
+                                        if (!Dungeon.level.solid[targetingPos + i]) {
+                                            CellEmitter.get(targetingPos + i).burst(ElmoParticle.FACTORY, 5);
+                                            GameScene.add(Blob.seed(targetingPos + i, 12, DeadHaloFire.class));
+                                        }
+                                    }
+                                }
+                            } else {
+                                leapVictim.sprite.showStatus(CharSprite.NEUTRAL, leapVictim.defenseVerb());
+                                Sample.INSTANCE.play(Assets.Sounds.MISS);
+                                int targetingPos = target.pos;
+                                if (phase == 2) {
+                                    for (int i : PathFinder.CIRCLE8) {
+                                        if (!Dungeon.level.solid[targetingPos + i]) {
+                                            CellEmitter.get(targetingPos + i).burst(ElmoParticle.FACTORY, 5);
+                                            GameScene.add(Blob.seed(targetingPos + i, 12, DeadHaloFire.class));
                                         }
                                     }
                                 }
                             }
                         }
 
-                        if (endPos != leapPos){
-                            Actor.add(new Pushing( DeadDogCerberus.this, leapPos, endPos));
+                        if (endPos != leapPos) {
+                            Actor.add(new Pushing(DeadDogCerberus.this, leapPos, endPos));
                         }
 
                         pos = endPos;
                         leapPos = -1;
                         sprite.idle();
-                        Dungeon.level.occupyCell( DeadDogCerberus.this);
+                        Dungeon.level.occupyCell(DeadDogCerberus.this);
                         next();
                     }
                 });
