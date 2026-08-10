@@ -140,6 +140,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.FlareBullet;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
@@ -406,6 +407,8 @@ public class SpawnMisc extends TestItem {
             miscList.add(MIME.GOLD_THREE.class);
             miscList.add(MIME.GOLD_FOUR.class);
             miscList.add(MIME.GOLD_FIVE.class);
+
+            miscList.add(FlareBullet.class); // 信号弹的杂物生成秘卷生成
         }
 
         if(miscList2.isEmpty()) {

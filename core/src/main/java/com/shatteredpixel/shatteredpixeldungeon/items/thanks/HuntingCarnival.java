@@ -55,7 +55,7 @@ public class HuntingCarnival extends Buff {
             if (timers[i] <= 0) {
                 // 找敌人发射各个类型的箭
                 Char enemy = chooseRandomEnemy();
-                if (enemy != null) {
+                if (enemy != null ) {
                     performShot(i, enemy);           // 发射箭矢
                     timers[i] = cooldowns[i];        // 重置冷却（各自间隔不同）
                 }
@@ -78,7 +78,8 @@ public class HuntingCarnival extends Buff {
                     && target.fieldOfView[ch.pos]
                     && ch.alignment != target.alignment
                     && ch instanceof Mob
-                    && !(ch instanceof NPC)) {
+                    && !(ch instanceof NPC)
+                    && ch.isAlive()) {
                 enemies.add(ch);
             }
         }
@@ -109,26 +110,26 @@ public class HuntingCarnival extends Buff {
                 damageLogic = () -> {
                     int damage = frostDamage(depth);
                     damage = applyArmorReduction(enemy, damage);
-                    enemy.damage(damage, this, PHYSICAL);
-                    Buff.affect(enemy, Chill.class, 10);
+                    if (enemy.isAlive()) enemy.damage(damage, this, PHYSICAL);
+                    if (enemy.isAlive()) Buff.affect(enemy, Chill.class, 10);
                     int idx = Random.Int(3);
                     GLog.p(Messages.get(this, "frost_hit_" + idx));
-                    Buff.detach(enemy,Paralysis.class);
                 };
                 break;
             case 1: // 1 电磁震荡箭
                 missileItem = new SniperSupport.ShockSnipeArrow();
                 damageLogic = () -> {
+                    int enemypos = enemy.pos;
                     int damage = shockDamage(depth);
                     damage = applyArmorReduction(enemy, damage);
-                    enemy.damage(damage, this, PHYSICAL);
-                    Buff.affect(enemy, Paralysis.class, 2);
+                    if (enemy.isAlive()) enemy.damage(damage, this, PHYSICAL);
+                    if (enemy.isAlive()) Buff.affect(enemy, Paralysis.class, 2);
                     int idx = Random.Int(3);
                     GLog.yellow(Messages.get(this, "shock_hit_" + idx));
 
                     // 在目标周围生成电场
                     for (int offset : PathFinder.NEIGHBOURS9) {
-                        int pos = enemy.pos + offset;
+                        int pos = enemypos + offset;
                         if (Dungeon.level.insideMap(pos) && !Dungeon.level.solid[pos] && Dungeon.level.water[pos]) {
                             TrackableElectricity field = Blob.seed(pos, 5, TrackableElectricity.class);
                             field.setExternalDamage(damage);
@@ -143,18 +144,31 @@ public class HuntingCarnival extends Buff {
                 missileItem = new SniperSupport.BurnSnipeArrow();
                 damageLogic = () -> {
                     int damage = burnDamage(depth);
-                    enemy.damage(damage, this, PHYSICAL);
-                    Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 4 *(burnDuration));
+                    if (enemy.isAlive()) enemy.damage(damage, this, PHYSICAL);
+                    if (enemy.isAlive()) Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 4 *(burnDuration));
                     int idx = Random.Int(3);
                     GLog.b(Messages.get(this, "burn_hit_" + idx));
-                    Buff.detach(enemy,Paralysis.class);
                 };
                 break;
         }
 
         ThanksMissileSprite missile = new ThanksMissileSprite();
         GameScene.scene.add(missile);
-        missile.reset(startPos, enemy, missileItem, () -> damageLogic.run());
+        missile.reset(startPos, enemy, missileItem, () -> Actor.add(new Actor() {
+            {
+                actPriority = VFX_PRIO;
+            }
+
+            @Override
+            protected boolean act() {
+                //延迟到 Actor 线程执行伤害逻辑，避免与行动队列并发竞争
+                if (enemy != null && Actor.chars().contains(enemy)) {
+                    damageLogic.run();
+                }
+                Actor.remove(this);
+                return true;
+            }
+        }));
 
     }
 

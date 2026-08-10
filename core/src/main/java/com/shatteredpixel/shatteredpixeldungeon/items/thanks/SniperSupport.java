@@ -124,8 +124,14 @@ public class SniperSupport extends Buff {
         if (target.fieldOfView == null) return null;
         ArrayList<Char> enemies = new ArrayList<>();
         for (Char ch : Actor.chars()) {
-            if (ch != target && target.fieldOfView[ch.pos] && ch.alignment != target.alignment
-                    && ch instanceof Mob && !(ch instanceof NPC)) {
+            if (ch != target
+                    && ch.pos >= 0
+                    && ch.pos < target.fieldOfView.length
+                    && target.fieldOfView[ch.pos]
+                    && ch.alignment != target.alignment
+                    && ch instanceof Mob
+                    && !(ch instanceof NPC)
+                    && ch.isAlive()) {
                 enemies.add(ch);
             }
         }
@@ -156,25 +162,25 @@ public class SniperSupport extends Buff {
                 damageLogic = () -> {
                     int damage = frostDamage(depth);
                     damage = applyArmorReduction(enemy, damage);
-                    enemy.damage(damage, this, PHYSICAL);
-                    Buff.affect(enemy, Chill.class, 10);
+                    if (enemy.isAlive()) enemy.damage(damage, this, PHYSICAL);
+                    if (enemy.isAlive()) Buff.affect(enemy, Chill.class, 10);
                     int idx = Random.Int(3);
                     GLog.p(Messages.get(this, "frost_hit_" + idx));
-                    Buff.detach(enemy,Paralysis.class);
                 };
                 break;
             case 1: // 电磁箭
                 missileItem = new ShockSnipeArrow();
                 damageLogic = () -> {
+                    int enemypos = enemy.pos;
                     int damage = shockDamage(depth);
                     damage = applyArmorReduction(enemy, damage);
-                    enemy.damage(damage, this, PHYSICAL);
-                    Buff.affect(enemy, Paralysis.class, 2);
+                    if (enemy.isAlive()) enemy.damage(damage, this, PHYSICAL);
+                    if (enemy.isAlive()) Buff.affect(enemy, Paralysis.class, 2);
                     int idx = Random.Int(3);
                     GLog.yellow(Messages.get(this, "shock_hit_" + idx));
 
                     for (int offset : PathFinder.NEIGHBOURS9) {
-                        int pos = enemy.pos + offset;
+                        int pos = enemypos + offset;
                         if (Dungeon.level.insideMap(pos) && !Dungeon.level.solid[pos] && Dungeon.level.water[pos]) {
                             TrackableElectricity field = Blob.seed(pos, 5, TrackableElectricity.class);
                             field.setExternalDamage(damage);
@@ -189,18 +195,31 @@ public class SniperSupport extends Buff {
                 missileItem = new BurnSnipeArrow();
                 damageLogic = () -> {
                     int damage = burnDamage(depth);
-                    enemy.damage(damage, this, PHYSICAL);
-                    Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 4 *(duration));
+                    if (enemy.isAlive()) enemy.damage(damage, this, PHYSICAL);
+                    if (enemy.isAlive()) Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 4 *(duration));
                     int idx = Random.Int(3);
                     GLog.b(Messages.get(this, "burn_hit_" + idx));
-                    Buff.detach(enemy,Paralysis.class);
                 };
                 break;
         }
 
         ThanksMissileSprite missile = new ThanksMissileSprite();
         GameScene.scene.add(missile);
-        missile.reset(startPos, enemy, missileItem, () -> damageLogic.run());
+        missile.reset(startPos, enemy, missileItem, () -> Actor.add(new Actor() {
+            {
+                actPriority = VFX_PRIO;
+            }
+
+            @Override
+            protected boolean act() {
+                //延迟到 Actor 线程执行伤害逻辑，避免与行动队列并发竞争
+                if (enemy != null && Actor.chars().contains(enemy)) {
+                    damageLogic.run();
+                }
+                Actor.remove(this);
+                return true;
+            }
+        }));
     }
 
     private int frostDamage(int depth) {

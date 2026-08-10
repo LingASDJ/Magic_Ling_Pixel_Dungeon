@@ -409,6 +409,11 @@ public class Hero extends Char {
 	public float awareness;
 
 	private int resistHealth = 0;
+
+	public void addResistHealth(int value) {
+		this.resistHealth += value;
+	}
+
 	private int originalHT = 20;
     private boolean chargeAnmy = false;
 
