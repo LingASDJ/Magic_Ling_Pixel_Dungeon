@@ -181,14 +181,13 @@ public class SniperSupport extends Buff {
 
                     for (int offset : PathFinder.NEIGHBOURS9) {
                         int pos = enemypos + offset;
-                        if (Dungeon.level.insideMap(pos) && !Dungeon.level.solid[pos] && Dungeon.level.water[pos]) {
+                        if (Dungeon.level.insideMap(pos) && Dungeon.level.passable[pos]) {
                             TrackableElectricity field = Blob.seed(pos, 5, TrackableElectricity.class);
-                            field.setExternalDamage(damage);
+                            field.setExternalDamage(Math.round(damage/2.0f));
                             field.setAllowParalysis(false);
                             GameScene.add(field);
                         }
                     }
-                    Buff.detach(enemy,Paralysis.class);
                 };
                 break;
             case 2: // 燃烧穿甲箭
