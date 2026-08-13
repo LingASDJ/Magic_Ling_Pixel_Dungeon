@@ -26,7 +26,7 @@ allprojects {
         appName = 'Magic Ling Pixel Dungeon'
         appPackageName = 'com.ansdomagiclingpixeldungeon.ling'
 
-        appVersionCode = 2026073100
+        appVersionCode = 2026080900
         appVersionName = '0.9.5.0-C'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
@@ -35,7 +35,7 @@ allprojects {
         appAndroidMinSDK = 21
         appAndroidTargetSDK = 33
 
-        gdxVersion = '1.11.0'
+        gdxVersion = '1.14.0'
         gdxControllersVersion = '2.2.4'
     }
 
