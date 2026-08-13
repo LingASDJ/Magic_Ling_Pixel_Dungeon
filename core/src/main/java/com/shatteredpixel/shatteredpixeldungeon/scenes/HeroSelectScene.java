@@ -735,8 +735,8 @@ public class HeroSelectScene extends PixelScene {
 		dailyButton.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
 		dailyButton.setPos(startBtn.x, startBtn.y + BUTTON_HEIGHT);
 		dailyButton.icon(new Image(new PinkLingSprite()));
-		add(dailyButton);
-		buttons.add(dailyButton);
+		//add(dailyButton);
+		//buttons.add(dailyButton);
 
 		IconButton Rename = new IconButton(Icons.get(RENAME_OFF)){
 			@Override
@@ -1053,7 +1053,6 @@ public class HeroSelectScene extends PixelScene {
 				new SkinConfig(HeroClass.WARRIOR,  4, "splashes/skin/giftskin_warrior.png"),
 				new SkinConfig(HeroClass.ROGUE,    4, "splashes/skin/giftskin_rogue.png"),
 				new SkinConfig(HeroClass.MAGE,     4, "splashes/skin/mage_collagedays.png"),
-				new SkinConfig(HeroClass.HUNTRESS,  4, "splashes/skin/huntress_godgirl.png"),
 				new SkinConfig(HeroClass.DUELIST,  4, "splashes/skin/duelist_kitsunemimi.png"),
 
 				new SkinConfig(HeroClass.DUELIST, 5, "splashes/skin/duelist_desertspirit.png"),

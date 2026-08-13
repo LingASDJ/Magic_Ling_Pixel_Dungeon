@@ -18,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.Kusumi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ATRI;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.FireMagicGirl;
@@ -198,6 +199,13 @@ public class HotelNoramlLevel extends Level {
             fireMagicGirl.pos = 46;
             mobs.add(fireMagicGirl);
         }
+
+        if( Random.Float() <= 0.2f){
+            Kusumi kusumi = new Kusumi();
+            kusumi.pos = 137;
+            mobs.add(kusumi);
+        }
+
     }
 
     @Override

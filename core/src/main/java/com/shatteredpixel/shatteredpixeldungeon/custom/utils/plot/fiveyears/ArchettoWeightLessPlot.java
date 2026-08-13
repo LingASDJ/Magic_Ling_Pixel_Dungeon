@@ -171,6 +171,10 @@ public class ArchettoWeightLessPlot extends Plot {
             hero.interrupt();
             diagulewindow.setLeftName(Messages.get(ArchettoWeightLess.class, "name"));
             diagulewindow.changeText(Messages.get(ArchettoWeightLess.class, "messages6"));
+            Buff.affect(hero, TimeStasis.class, 100f);
+            Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+            hero.sprite.emitter().burst(Speck.factory(Speck.STEAM), 10);
+            GLog.w(Messages.get(CursedWand.class, "petrify"));
         }
 
         private void process_to_2() {
@@ -180,10 +184,6 @@ public class ArchettoWeightLessPlot extends Plot {
 
         private void process_to_3() {
             diagulewindow.changeText(Messages.get(ArchettoWeightLess.class, "messages8"));
-            Buff.affect(hero, TimeStasis.class, 100f);
-            Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-            hero.sprite.emitter().burst(Speck.factory(Speck.STEAM), 10);
-            GLog.w(Messages.get(CursedWand.class, "petrify"));
         }
 
         private void process_to_4() {

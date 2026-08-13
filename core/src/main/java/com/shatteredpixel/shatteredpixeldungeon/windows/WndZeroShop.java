@@ -54,7 +54,7 @@ public class WndZeroShop extends Window {
         SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_MC.class, "avatars_mage_4"));
         SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_RC.class, "avatars_rogue_4"));
         SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_WC.class, "avatars_warrior_4"));
-        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_HC.class, "avatars_huntress_4"));
+
         SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_DC.class, "avatars_duelist_4"));
 
         SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_DD.class, "avatars_duelist_5"));

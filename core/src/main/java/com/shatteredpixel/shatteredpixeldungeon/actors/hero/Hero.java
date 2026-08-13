@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
@@ -110,6 +111,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostSoul;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlDebuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
@@ -159,6 +161,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDo
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Nyarlathotep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLingLand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.DogDogMusic;
@@ -260,7 +263,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfTeleTation;
-import com.shatteredpixel.shatteredpixeldungeon.items.thanks.*;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.BrokenRingArmorBind;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.BrokenRingArtifactBind;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.BrokenRingMiscBind;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.BrokenRingRingBind;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.CelestialBrush;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
@@ -270,6 +277,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
@@ -448,6 +456,15 @@ public class Hero extends Char {
 			totalLostHP += soulBuff.hpLoss;
 		}
 		HT = Math.max(1, HT - totalLostHP);
+
+		if(hero.belongings.weapon instanceof EndingBlade){
+			if(((EndingBlade) hero.belongings.weapon).trialMode){
+				HT = Math.max(1, Math.round(hero.HT * 0.50f));
+				if (HP > hero.HT) {
+					HP = hero.HT;
+				}
+			}
+		}
 
 
 		if (boostHP){
@@ -767,11 +784,15 @@ public class Hero extends Char {
 			case 3:
 				return 10;
 			case 4:
-				return 13;
+				return heroClass == HeroClass.HUNTRESS ? normalSkin(armor) : 13;
 			case 5:
 				return 14;
 		}
 
+        return normalSkin(armor);
+    }
+
+	public int normalSkin(Armor armor){
 		if (armor instanceof ClassArmor){
 			return 7;
 		} else if (armor != null){
@@ -1317,7 +1338,8 @@ public class Hero extends Char {
 						if (remainingLevel <= 0) break;
 						if (b.type == Buff.buffType.NEGATIVE
 								&& !(b instanceof AllyBuff)
-								&& !(b instanceof LostInventory)) {
+								&& !(b instanceof LostInventory)
+								&& !(b instanceof MagicGirlDebuff)) {
 							b.detach();
 							remainingLevel--;
 							isNegative = true;
@@ -1335,6 +1357,14 @@ public class Hero extends Char {
 		ArrayList<CorpseDust.MiniCorpseDust> food = hero.belongings.getAllItems(CorpseDust.MiniCorpseDust.class);
 		for (CorpseDust.MiniCorpseDust w : food.toArray(new CorpseDust.MiniCorpseDust[0])){
 			w.dropLevel--;
+		}
+
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+			if (!(mob instanceof NPC) && !(mob instanceof Boss)) {
+				if(mob.buff(EndingBlade.TrialModeBuff.class) == null){
+					Buff.affect(mob, EndingBlade.TrialModeBuff.class);
+				}
+			}
 		}
 
 		if(level instanceof AncientMysteryCityLevel || level instanceof AncientMysteryCityBossLevel){
@@ -2551,6 +2581,12 @@ public class Hero extends Char {
 
 	@Override
 	public void damage( int dmg, Object src, DamageType type ) {
+
+		if(hero.belongings.weapon instanceof EndingBlade){
+			if(((EndingBlade) hero.belongings.weapon).trialMode) {
+				dmg *= 2;
+			}
+		}
 
 		if(hero.belongings.getItem(EmotionalAggregation.class)!=null && Random.Float()>0.90f ){
 			GLog.n(Messages.get(EmotionalAggregation.class,"block"));

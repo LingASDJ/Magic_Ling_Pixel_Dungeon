@@ -944,6 +944,11 @@ public class Badges {
 		displayBadge( Badge.CLEAR_WATER );
 	}
 
+	public static void ENDBLADE() {
+		displayBadge( Badge.ENDBLADE );
+	}
+
+
 	public static void KILL_SMK() {
 		displayBadge(Badge.KILL_SM);
 	}
@@ -1125,6 +1130,8 @@ public class Badges {
 
 		CLEAR_WATER					( 83 ),
 		GHOSTDAGE					( 84 ),
+
+		ENDBLADE					  (85),
 
 		HIGH_SCORE_3 				( 86 ),
 		BOSS_SLAIN_3_GLADIATOR,

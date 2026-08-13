@@ -172,7 +172,7 @@ public class PropBuff extends Buff{
 
             if(Dungeon.hero.belongings.getItem(FaintGlimmer.class)!=null) {
                 timeH++;
-                if(timeH >= 5 && levelA <= 9){
+                if(timeH >= 5 && levelA <= 2){
                     levelA++;
                     timeH = 0;
                 }

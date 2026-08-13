@@ -78,7 +78,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.TombReachBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -221,10 +220,7 @@ public enum HeroClass {
 		new KingBag().quantity(1).identify().collect();
 		new ScrollOfIdentify().identify();
 
-		if (1==1){
-
-			new TombReachBook().identify().collect();
-
+		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			new RitualSword().identify().collect();
 			new TreeList().identify().collect();
 			new TragicCode().identify().collect();
@@ -502,8 +498,6 @@ public enum HeroClass {
 
 	public String GetSkinAssest(){
 		switch (this) {
-			case WARRIOR: default:
-				return Assets.Sprites.AVATARS_WARRIOR;
 			case MAGE:
 				return Assets.Sprites.AVATARS_MAGE;
 			case ROGUE:
@@ -514,6 +508,8 @@ public enum HeroClass {
 				return Assets.Sprites.AVATARS_DUELIST;
 			case SPELLSWORD:
 				return Assets.Sprites.AVATARS_SPELLSWORD;
+			case WARRIOR: default:
+				return Assets.Sprites.AVATARS_WARRIOR;
 		}
 	}
 

@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.ArchettoWeightLess;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.Yuanxi;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HellFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -301,6 +302,10 @@ public class UnlessEndFlowerLevel extends Level {
         ArchettoWeightLess archettoWeightLess = new ArchettoWeightLess();
         archettoWeightLess.pos = 312;
         mobs.add(archettoWeightLess);
+
+        Yuanxi yuanxi = new Yuanxi();
+        yuanxi.pos = 313;
+        mobs.add(yuanxi);
     }
 
 

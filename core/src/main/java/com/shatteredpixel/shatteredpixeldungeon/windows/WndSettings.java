@@ -711,6 +711,7 @@ public class WndSettings extends WndTabbed {
 			};
 			add(btnSafeInsetToggle);
 
+
 			// 像素值滑块：0-50px
 			optSafeInset = new OptionSlider(Messages.get(this, "safe_inset_px")+"("+SPDSettings.safeInset()+")", "0", "50", 0, 50) {
 				@Override

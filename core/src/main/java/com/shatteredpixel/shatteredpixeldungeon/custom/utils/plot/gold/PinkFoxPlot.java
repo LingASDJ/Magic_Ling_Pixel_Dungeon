@@ -1,15 +1,20 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.gold;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.PinkFox;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 
 public class PinkFoxPlot extends Plot {
 
 
-    private final static int maxprocess = 4;
+    private final static int maxprocess = Statistics.isEndingbald ? 5 : 4;
 
     {
         process = 1;
@@ -45,6 +50,9 @@ public class PinkFoxPlot extends Plot {
                 case 4:
                     process_to_4();
                     break;
+                case 5:
+                    process_to_5();
+                    break;
             }
             diagulewindow.update();
             process++;
@@ -63,10 +71,24 @@ public class PinkFoxPlot extends Plot {
         return process > maxprocess;
     }
 
+    private void DropRules(){
+        Item t1;
+        t1 = new EndingBlade();
+        t1.identify();
+        if (t1.doPickUp(Dungeon.hero)){
+            GLog.p( Messages.capitalize(Messages.get(Hero.class, "you_now_have", t1.name())) );
+        } else {
+            Dungeon.level.drop(t1, Dungeon.hero.pos);
+        }
+    }
+
     @Override
     public void skip() {
         diagulewindow.cancel();
         WndDialog.settedPlot = null;
+        if(!skipGetItems){
+            DropRules();
+        }
     }
 
     private void process_to_1() {
@@ -87,6 +109,21 @@ public class PinkFoxPlot extends Plot {
 
     private void process_to_4() {
         diagulewindow.changeText(Messages.get(PinkFox.class, "message4"));
+    }
+
+    private void process_to_5() {
+        if(Statistics.isEndingbald){
+            diagulewindow.changeText(Messages.get(PinkFox.class, "message6"));
+            skipGetItems = true;
+            Item t1;
+            t1 = new EndingBlade();
+            t1.identify();
+            if (t1.doPickUp(Dungeon.hero)){
+                GLog.p( Messages.capitalize(Messages.get(Hero.class, "you_now_have", t1.name())) );
+            } else {
+                Dungeon.level.drop(t1, Dungeon.hero.pos);
+            }
+        }
     }
 
     public static class PinkFoxSPlot extends Plot {

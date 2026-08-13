@@ -303,7 +303,6 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new NxhyShopRoom());
 		}
 
-
 		if(depth == 9 && chinaHoliday == ChinaHoliday.CJ && Challenges.activeChallenges()<=12 && Random.Float()>0.55f) {
 			initRooms.add(new PeachGodBlessRoom());
 		}

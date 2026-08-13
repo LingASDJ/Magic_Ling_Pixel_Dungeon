@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -159,6 +160,10 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 				}
 			}
 			if (item instanceof Weapon){
+				if(item instanceof EndingBlade){
+					((EndingBlade) item).onAttemptCleanse();
+					return false;
+				}
 				Weapon w = (Weapon) item;
 				if (w.hasCurseEnchant()){
 					w.enchant(null);

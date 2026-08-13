@@ -1515,8 +1515,8 @@ public class GameScene extends PixelScene {
 		boss = new BossHealthBar();
 		boss.camera = uiCamera;
 		boss.setPos(
-				6 + insetLeft,
-				28 + insetTop
+				6 + (PixelScene.uiCamera.width - boss.width())/2,
+				28
 		);
 		add(boss);
 

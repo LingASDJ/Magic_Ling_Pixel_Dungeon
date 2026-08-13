@@ -27,7 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.BloodRedFlower;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.YuanTaStoneScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.HiroSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KusumiSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -49,7 +49,7 @@ public class KuzumiNewYears extends FiveYearsNPC {
     public boolean td = true;
 
     {
-        spriteClass = HiroSprites.class;
+        spriteClass = KusumiSprites.class;
         plot1 = new FiveYearsFourPlot.KuzumiFiveYearsPlot();
         plot2 = new FiveYearsFourPlot.KuzumiFiveYearsBPlot();
         properties.add(Property.UNKNOWN);

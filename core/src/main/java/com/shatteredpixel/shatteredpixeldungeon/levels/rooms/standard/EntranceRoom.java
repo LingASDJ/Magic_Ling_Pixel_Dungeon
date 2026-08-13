@@ -23,7 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.Yuanxi;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KusumiMagicGirl;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -106,14 +106,14 @@ public class EntranceRoom extends StandardRoom {
 	}
 
 	public static void YuanXiLook(Level level,Room r){
-		if( Statistics.YuanXiLimit < 2 && InterlevelScene.yxlook){
+		if( Statistics.YuanXiLimit < 2 && InterlevelScene.yxlook && Dungeon.depth>5){
 			int pos;
 			do {
 				//can't be on bottom row of tiles
 				pos = level.pointToCell(new Point( Random.IntRange( r.left + 2, r.right - 2 ),
 						Random.IntRange( r.top + 2, r.bottom - 2 )));
 			} while (pos == level.entrance() || level.findMob(pos) != null || level.solid[pos]);
-			Yuanxi yx = new Yuanxi();
+			KusumiMagicGirl yx = new KusumiMagicGirl();
 			yx.pos = pos;
 			Statistics.YuanXiLimit ++;
 			level.mobs.add(yx);
