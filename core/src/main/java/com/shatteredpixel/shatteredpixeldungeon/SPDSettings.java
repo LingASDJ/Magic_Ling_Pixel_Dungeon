@@ -1466,10 +1466,6 @@ public class SPDSettings extends GameSettings {
 	 */
 	public static void safeInset(int value) {
 		put(KEY_SAFE_INSET, value);
-		// 刷新到游戏层
-		if (Game.platform instanceof com.shatteredpixel.shatteredpixeldungeon.android.AndroidPlatformSupport) {
-			((com.shatteredpixel.shatteredpixeldungeon.android.AndroidPlatformSupport) Game.platform).refreshSafeInsets();
-		}
 	}
 
 
