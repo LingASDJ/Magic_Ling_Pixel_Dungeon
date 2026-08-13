@@ -64,6 +64,11 @@ public class Game implements ApplicationListener {
 	
 	public static String version;
 	public static int versionCode;
+
+	// 刘海屏/挖孔屏两侧安全区边距（由平台层提供，单位：像素）
+	// 竖屏时应用到上下边，横屏时应用到左右边
+	public static int safeInsetA;
+	public static int safeInsetB;
 	
 	// Current scene
 	protected Scene scene;
