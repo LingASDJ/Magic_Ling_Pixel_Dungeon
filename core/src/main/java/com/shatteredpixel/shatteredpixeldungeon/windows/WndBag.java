@@ -258,16 +258,15 @@ public class WndBag extends WndTabbed {
 		col = 0;
 		row = 0;
 
-		BrokenRing brokenRing = hero.belongings.getItem(BrokenRing.class);
 
 
 		// Equipped items
 		Belongings stuff = Dungeon.hero.belongings;
 		placeItem( stuff.weapon != null ? stuff.weapon : new Placeholder( ItemSpriteSheet.WEAPON_HOLDER ) );
-		placeItem( stuff.armor != null ? stuff.armor : new Placeholder( brokenRing != null && hero.HT *0.2f >= hero.HP ? ItemSpriteSheet.RICE_LIQUOR+1 :  ItemSpriteSheet.ARMOR_HOLDER ) );
-		placeItem( stuff.artifact != null ? stuff.artifact : new Placeholder( brokenRing != null && hero.HT *0.6f >= hero.HP ? ItemSpriteSheet.RICE_LIQUOR+1 :  ItemSpriteSheet.ARTIFACT_HOLDER ) );
-		placeItem( stuff.misc != null ? stuff.misc : new Placeholder(  brokenRing != null ? ItemSpriteSheet.RICE_LIQUOR+1 : ItemSpriteSheet.SOMETHING ) );
-		placeItem( stuff.ring != null ? stuff.ring : new Placeholder( brokenRing != null && hero.HT *0.4f >= hero.HP ? ItemSpriteSheet.RICE_LIQUOR+1 :  ItemSpriteSheet.RING_HOLDER ) );
+		placeItem( stuff.armor != null ? stuff.armor : new Placeholder( ItemSpriteSheet.ARMOR_HOLDER ) );
+		placeItem( stuff.artifact != null ? stuff.artifact : new Placeholder( ItemSpriteSheet.ARTIFACT_HOLDER ) );
+		placeItem( stuff.misc != null ? stuff.misc : new Placeholder( ItemSpriteSheet.SOMETHING ) );
+		placeItem( stuff.ring != null ? stuff.ring : new Placeholder( ItemSpriteSheet.RING_HOLDER ) );
 
 		// 判断是否已经放置了首行的5个物品，如果是，则跳过三个位置
 		if (col == FIRST_ROW_COLS) {

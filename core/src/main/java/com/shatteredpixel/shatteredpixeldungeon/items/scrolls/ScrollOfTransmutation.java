@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.Elixir;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
@@ -76,6 +77,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 
 	@Override
 	protected boolean usableOnItem(Item item) {
+		if (BrokenRing.isBind(item)) return false;
 		if(item instanceof MeleeWeapon) {
 
 			if(item instanceof BloodthirstyThorn){
@@ -173,6 +175,8 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	}
 
 	public Item changeItem(Item item){
+		if (BrokenRing.isBind(item)) return null;
+
 		if(item instanceof LockSword){
 			return null;
 		}
