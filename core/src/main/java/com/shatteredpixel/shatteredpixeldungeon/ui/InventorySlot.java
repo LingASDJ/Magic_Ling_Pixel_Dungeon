@@ -27,6 +27,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.BrokenRingArmorBind;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.BrokenRingArtifactBind;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.BrokenRingMiscBind;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.BrokenRingRingBind;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.ColorBlock;
@@ -36,6 +40,7 @@ public class InventorySlot extends ItemSlot {
 
 	private static final int NORMAL		= 0x9953564D;
 	private static final int EQUIPPED	= 0x9991938C;
+	private static final int BOUND		= 0x99B0803A;
 
 	private ColorBlock bg;
 
@@ -84,17 +89,26 @@ public class InventorySlot extends ItemSlot {
 					item == Dungeon.hero.belongings.ring ||
 					item == Dungeon.hero.belongings.secondWep;
 
-			bg.texture( TextureCache.createSolid( equipped ? EQUIPPED : NORMAL ) );
-			bg.resetColor();
-			if (item.cursed && item.cursedKnown) {
-				bg.ra = +0.3f;
-				bg.ga = -0.15f;
-			} else if (!item.isIdentified()) {
-				if ((item instanceof EquipableItem || item instanceof Wand) && item.cursedKnown){
-					bg.ba = 0.3f;
-				} else {
-					bg.ra = 0.3f;
-					bg.ba = 0.3f;
+			if (item instanceof BrokenRingArmorBind
+				|| item instanceof BrokenRingArtifactBind
+				|| item instanceof BrokenRingRingBind
+				|| item instanceof BrokenRingMiscBind) {
+				// 破碎之环的伴生物：独立警示底色（琥珀色，区别于诅咒的红色）
+				bg.texture( TextureCache.createSolid( BOUND ) );
+				bg.resetColor();
+			} else {
+				bg.texture( TextureCache.createSolid( equipped ? EQUIPPED : NORMAL ) );
+				bg.resetColor();
+				if (item.cursed && item.cursedKnown) {
+					bg.ra = +0.3f;
+					bg.ga = -0.15f;
+				} else if (!item.isIdentified()) {
+					if ((item instanceof EquipableItem || item instanceof Wand) && item.cursedKnown){
+						bg.ba = 0.3f;
+					} else {
+						bg.ra = 0.3f;
+						bg.ba = 0.3f;
+					}
 				}
 			}
 

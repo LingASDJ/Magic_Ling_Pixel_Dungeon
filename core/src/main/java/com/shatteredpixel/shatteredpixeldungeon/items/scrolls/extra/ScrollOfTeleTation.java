@@ -20,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.Elixir;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.InventoryScroll;
@@ -61,6 +62,8 @@ public class ScrollOfTeleTation extends InventoryScroll {
 
     @Override
     protected boolean usableOnItem(Item item) {
+
+        if (BrokenRing.isBind(item)) return false;
 
         if(item instanceof BloodthirstyThorn){
             if(item.level<10){
@@ -167,6 +170,8 @@ public class ScrollOfTeleTation extends InventoryScroll {
     }
 
     public static Item changeItem( Item item ){
+
+        if (BrokenRing.isBind(item)) return null;
 
         if(item instanceof BloodthirstyThorn && item.level() >= 10 && !Statistics.OnlyBloodUpgrade){
             ShatteredPixelDungeon.scene().add(new WndOptions(new ItemSprite(item.image()),
