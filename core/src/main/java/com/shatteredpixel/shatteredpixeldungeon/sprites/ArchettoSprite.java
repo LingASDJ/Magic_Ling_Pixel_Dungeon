@@ -8,10 +8,10 @@ public class ArchettoSprite extends MobSprite {
         super();
 
         texture( Assets.Sprites.ARCHETTO);
-        TextureFilm film = new TextureFilm( texture, 17, 16 );
+        TextureFilm film = new TextureFilm( texture, 20, 16 );
 
         idle = new Animation( 3, true );
-        idle.frames( film, 0,1,1,2,2,3,3,4,5 );
+        idle.frames( film, 0,1,1,2,2,3,3,4,4);
 
         run = idle.clone();
 

@@ -210,6 +210,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dairikyan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DragonShiled;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FiveRen;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
@@ -663,7 +664,8 @@ public class Generator {
 
 					WhiteBlastSword.class,
 					FiveRen.class,
-					DeathRongBoat.class
+					DeathRongBoat.class,
+					EndingBlade.class
 			};
 
 			PaswordBadges.loadGlobal();
@@ -683,6 +685,7 @@ public class Generator {
 					5,
 					passwordbadges.contains(PaswordBadges.Badge.ZQJ_GHOST) ? 4.2f : 0,
 					Badges.isUnlocked(Badges.Badge.KILL_DOG) ? 5 : 0,
+					0
 			};
 
 			WEP_T6.classes = new Class<?>[]{
@@ -826,7 +829,7 @@ public class Generator {
 					Badges.isUnlocked(Badges.Badge.KILL_DM720) ? 1:0
 					, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1,
 					Badges.isUnlocked(Badges.Badge.YASD) ? 1:0
-					, 0
+					, 1
 			};
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();
 

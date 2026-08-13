@@ -830,7 +830,7 @@ public class Assets {
 
 		public static final String KEEPERKINGBOT	= "sprites/npc/autoshop.png";
 
-		public static final String ARCHETTO	= "sprites/npc/avrt.png";
+		public static final String ARCHETTO	= "sprites/npc/avrt_princess.png";
 
 		//TOMB
 
@@ -944,7 +944,8 @@ public class Assets {
 
 		public static final String REDSWARM				= "sprites/RedSearm.png";
 		public static final String REN					= "sprites/npc/ren.png";
-		public static final String HIRO					= "sprites/npc/hiro.png";
+		public static final String KUSUMI					= "sprites/npc/kusumi.png";
+		public static final String KUSUMI_MG					= "sprites/npc/kusumi_mg.png";
 		public static final String DragonBlueGirl		= "sprites/npc/smallblue.png";
 		public static final String DKGirl				= "sprites/npc/DKGirl.png";
 

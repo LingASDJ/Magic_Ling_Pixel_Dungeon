@@ -338,6 +338,8 @@ public class Statistics {
 
 	public static boolean moonlowgetAloneRoom;
 
+	public static boolean isEndingbald=false;
+
 	private static final String ICECLAN ="iceCyanBlueSquareCoin";
 
 	private static final String GAMETIME = "gameTime";
@@ -646,6 +648,8 @@ public class Statistics {
 		));
 
 		MustHardLevel = false;
+
+		isEndingbald = Random.Float() <= 0.2f;
 
 		isSmallLeaf = false;
 
@@ -1189,6 +1193,7 @@ public class Statistics {
 
 		bundle.put("MustDFRT",MustHardLevel);
 		bundle.put("MJPORALROOM",moonlowgetAloneRoom);
+		bundle.put("EDXDFR",isEndingbald);
 	}
 
 	private static ArrayList<Prop> convertToPropList(Collection<Bundlable> bundlableCollection) {
@@ -1371,6 +1376,8 @@ public class Statistics {
 		gameTime = bundle.getInt(GAMETIME);
 
 		gameNight = bundle.getBoolean(GAMENIGHT);
+
+		isEndingbald = bundle.getBoolean("EDXDFR");
 
 		//分数
 		progressScore   = bundle.getInt( PROG_SCORE );

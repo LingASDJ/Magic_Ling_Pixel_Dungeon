@@ -1,16 +1,31 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.YuanxiSprites;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KusumiMagicGirlSprites;
 import com.watabou.utils.Bundle;
 
-public class Yuanxi extends NTNPC {
+public class KusumiMagicGirl extends Mob {
+
+    public boolean first=true;
 
     {
-        spriteClass = YuanxiSprites.class;
-        properties.add(Property.UNKNOWN);
+        HP = HT = 1;
+        spriteClass = KusumiMagicGirlSprites.class;
+        properties.add(Char.Property.UNKNOWN);
+    }
+
+    @Override
+    protected boolean canAttack(Char enemy) {
+        return false;
+    }
+
+    @Override
+    public void move(int step) {
+
     }
 
     @Override
@@ -24,21 +39,32 @@ public class Yuanxi extends NTNPC {
     }
 
     @Override
+    public void damage(int dmg, Object src, DamageType type) {
+        super.damage(dmg, src, type);
+        if(first){
+            enemy.damage(10,this,DamageType.REAL);
+            yell(Messages.get(this,"ha"));
+            first = false;
+        }
+    }
+
+    @Override
     protected boolean act() {
-        if(Dungeon.level.heroFOV[pos] && Dungeon.level.distance(pos,Dungeon.hero.pos)<=3){
+        if(HP == 0){
             sprite.showAlert();
             selfTeleCooldown--;
             if(!teleporting){
-                ((YuanxiSprites) sprite).teleParticles(true);
+                ((KusumiMagicGirlSprites) sprite).teleParticles(true);
                 teleporting = true;
             }
             if(selfTeleCooldown == 0) {
                 ScrollOfTeleportation.appear(this, Dungeon.level.randomRespawnCell(this));
                 destroy();
                 sprite.killAndErase();
+                enemy.damage(10,this,DamageType.REAL);
+                yell(Messages.get(this,"ha2"));
             }
         }
-
 
         return super.act();
     }
@@ -47,6 +73,7 @@ public class Yuanxi extends NTNPC {
     private int selfTeleCooldown = 2;
 
     private static final String TELEPORTING = "teleporting";
+    private static final String FIRST = "first";
     private static final String SELF_COOLDOWN = "self_cooldown";
 
     @Override
@@ -54,6 +81,7 @@ public class Yuanxi extends NTNPC {
         super.storeInBundle(bundle);
         bundle.put(TELEPORTING, teleporting);
         bundle.put(SELF_COOLDOWN, selfTeleCooldown);
+        bundle.put(FIRST, first);
     }
 
     @Override
@@ -61,5 +89,7 @@ public class Yuanxi extends NTNPC {
         super.restoreFromBundle(bundle);
         teleporting = bundle.getBoolean( TELEPORTING );
         selfTeleCooldown = bundle.getInt( SELF_COOLDOWN );
+        first = bundle.getBoolean(FIRST);
     }
 }
+

@@ -258,8 +258,6 @@ public class ItemSpriteSheet {
     public static final int TREELIST    = WEP_TIER2+3;
     public static final int DIRK            = WEP_TIER2+4;
     public static final int SICKLE          = WEP_TIER2+5;
-
-    public static final int	ENDDIED			= WEP_TIER2+7;
     static{
         assignItemRect(RITUAL_SWORD_M,      13, 13);
         assignItemRect(SHOP_SWORD,        14, 16);
@@ -289,7 +287,6 @@ public class ItemSpriteSheet {
     static{
         assignItemRect(SAD_MAGIC_BOOK,     14, 13);
         assignItemRect(SHEPHERD_FLUTE,     11, 16);
-        assignItemRect(MACE,               15, 15);
         assignItemRect(SCIMITAR,           13, 16);
         assignItemRect(ROUND_SHIELD,       16, 16);
         assignItemRect(SAI,                16, 16);
@@ -380,6 +377,8 @@ public class ItemSpriteSheet {
     public static final int	BloodDir				    = WEP_TIER6+2;
     public static final int	BloodDied				    = WEP_TIER6+3;
     public static final int	SLIVER_LOCK				    = WEP_TIER6+4;
+
+    public static final int	ENDDIED			= WEP_TIER6+6;
 
     //8 free slots
 

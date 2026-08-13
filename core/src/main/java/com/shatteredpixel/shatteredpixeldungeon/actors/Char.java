@@ -156,6 +156,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.DeadBo
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CrossReback;
@@ -891,6 +892,10 @@ public abstract class Char extends Actor {
 
 	public float speed() {
 		float speed = baseSpeed;
+
+		if(buff(EndingBlade.TrialModeBuff.class)!=null){
+				speed *= 0.85f;
+		}
 
 		if ( buff( Invulnerability.GodDied.class ) != null ) speed *= 2f;
 

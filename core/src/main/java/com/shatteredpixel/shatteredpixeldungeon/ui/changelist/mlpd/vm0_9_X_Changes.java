@@ -47,7 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulPlusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GiantFlowerSlimeSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GuardCapitalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.HiroSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KusumiSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MageHandSprite;
@@ -423,7 +423,7 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CICRE_MUSIC), "新武器：轻音铃铛",
                 "身形移动，便会打断鸣响的连击。\n攻击奏响「轻音」，连续攻击引动「回音」"));
 
-        changes.addButton(new ChangeButton(new HiroSprites(), "久住事件推进",
+        changes.addButton(new ChangeButton(new KusumiSprites(), "久住事件推进",
                 "久住相关剧情持续更新，全新相关事件等待探索。"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HELL_BUTTERFLY), "新藏品：炼狱赤蝶",
@@ -728,7 +728,7 @@ public class vm0_9_X_Changes {
                         "普通徽章：尽竭\n\n" +
                         "隐藏徽章：勇敢者的印记")));
 
-        changes.addButton(new ChangeButton(new HiroSprites(), ("久住新年特别版"),
+        changes.addButton(new ChangeButton(new KusumiSprites(), ("久住新年特别版"),
                 ("新年到来之际，她却只能在无尽轮回中默默等待毁灭降临，如果你能去看看她，说不定会感谢你呢。\n\n" +
                         "在9层下楼携带一种特殊的信物将有概率前往。")));
 
@@ -834,7 +834,7 @@ public class vm0_9_X_Changes {
                 ("材质包系统正式登场，目前预置了5个材质包，你也可以自行定制材质包。\n\n" +
                         "如要定制材质包，请查阅游戏新闻材质包置顶使用说明。")));
 
-        changes.addButton(new ChangeButton(new HiroSprites(), ("新NPC:久住"),
+        changes.addButton(new ChangeButton(new KusumiSprites(), ("新NPC:久住"),
                 ("在时间静止的区域，她在那里静静的等待毁灭的降临。\n\n" +
                         "在9层下楼携带一种特殊的信物将有概率前往")));
 

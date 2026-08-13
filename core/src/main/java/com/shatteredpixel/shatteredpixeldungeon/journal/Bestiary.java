@@ -443,16 +443,7 @@ public enum Bestiary {
 						NecroPioneer.class, WormWhyHuman.class
 				}
 
-						: new Class<?>[]{Albino.class,
-						Salamander.class,
-						SRPDHBLR.class, NewBlackHost.class,
-						Bandit.class, SpectralNecromancer.class,
-						ArmoredBrute.class, DM201.class, MolotovHuntsman.class,
-						Elemental.ChaosElemental.class, Senior.class,
-						Acidic.class,
-
-						TormentedSpirit.class, PhantomPiranha.class,
-						CrystalMimic.class, ArmoredStatue.class}
+						: new Class<?>[]{Rat.class}
 		);
 
 		CHURCH.addEntities(
@@ -465,16 +456,7 @@ public enum Bestiary {
 						NecroCavalry.class, Aggregatus.class, NecroWarlock.class,
 						HighNecromancer.class}
 
-						: new Class<?>[]{Albino.class,
-						Salamander.class,
-						SRPDHBLR.class, NewBlackHost.class,
-						Bandit.class, SpectralNecromancer.class,
-						ArmoredBrute.class, DM201.class, MolotovHuntsman.class,
-						Elemental.ChaosElemental.class, Senior.class,
-						Acidic.class,
-
-						TormentedSpirit.class, PhantomPiranha.class,
-						CrystalMimic.class, ArmoredStatue.class}
+						: new Class<?>[]{Rat.class}
 		);
 		
 

@@ -44,20 +44,14 @@ public class ShatteredPixelDungeon extends Game {
 	//variable constants for specific older versions of shattered, used for data conversion
 	//versions older than v1.2.3 are no longer supported, and data from them is ignored
 	public static final int v1_2_3  = 628;
-	public static final int v1_3_2  = 648;
 	public static final int v1_4_3  = 668;
 
 	public static final int v2_0_2  = 700;
-	public static final int v2_1_4  = 737; //iOS was 737, other platforms were 736
-	public static final int v2_2_0  = 20231030;
-	public static final int v2_2_1 = 755; //iOS was 755 (also called v2.2.2), other platforms were 754
-	public static final int v2_3_2 = 768;
 	public static final int v2_4_2 = 782;
 	public static final int v2_5_0 = 794;
 	
 	public ShatteredPixelDungeon( PlatformSupport platform ) {
 		super( sceneClass == null ? (!SPDSettings.firebase()) ? EulaScene.class : GoScene.class : sceneClass, platform );
-
 
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword.class,
