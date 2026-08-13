@@ -30,7 +30,7 @@ public class WorstBlizzard extends FlavourBuff{
     }
 
     public float speedFactor(){
-        return 1-(0.2f+0.05f*wandlevel);
+        return Math.max( 0.1f, 1-(0.2f+0.05f*wandlevel) );
     }
 
     @Override

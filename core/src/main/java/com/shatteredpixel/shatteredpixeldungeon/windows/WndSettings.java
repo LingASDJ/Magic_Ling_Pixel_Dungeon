@@ -441,6 +441,10 @@ public class WndSettings extends WndTabbed {
 
 		OptionSlider quickslots;
 
+		// ========== 刘海屏安全区设置 ==========
+		RedButton btnSafeInsetToggle;  // 切换自动/手动
+		OptionSlider optSafeInset;     // 手动模式下的像素值 0-50
+
 		@Override
 		protected void createChildren() {
 			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
@@ -685,6 +689,43 @@ public class WndSettings extends WndTabbed {
 			quickslots.setSelectedValue(SPDSettings.quickslots());
 			add(quickslots);
 
+			// ========== 刘海屏安全区设置 ==========
+			// 切换按钮：自动 / 手动
+			final boolean[] autoMode = {SPDSettings.safeInset() == -1};
+			btnSafeInsetToggle = new RedButton(autoMode[0] ? Messages.get(this, "safe_inset_auto") : Messages.get(this, "safe_inset_manual"), 8) {
+				@Override
+				protected void onClick() {
+					autoMode[0] = !autoMode[0];
+					if (autoMode[0]) {
+						text(Messages.get(WndSettings.UITab.this, "safe_inset_auto"));
+						SPDSettings.safeInset(-1);
+						optSafeInset.active = false;
+						optSafeInset.visible = false;
+					} else {
+						text(Messages.get(WndSettings.UITab.this, "safe_inset_manual"));
+						SPDSettings.safeInset(optSafeInset.getSelectedValue());
+						optSafeInset.active = true;
+						optSafeInset.visible = true;
+					}
+				}
+			};
+			add(btnSafeInsetToggle);
+
+			// 像素值滑块：0-50px
+			optSafeInset = new OptionSlider(Messages.get(this, "safe_inset_px")+"("+SPDSettings.safeInset()+")", "0", "50", 0, 50) {
+				@Override
+				protected void onChange() {
+					if (!autoMode[0]) {
+						SPDSettings.safeInset(getSelectedValue());
+					}
+				}
+			};
+			int storedInset = SPDSettings.safeInset();
+			optSafeInset.setSelectedValue(storedInset == -1 ? 0 : storedInset);
+			optSafeInset.active = !autoMode[0];
+			optSafeInset.visible = !autoMode[0];
+			add(optSafeInset);
+
 			btnKeyBindings = new RedButton(Messages.get(this, "key_bindings")){
 				@Override
 				protected void onClick() {
@@ -754,6 +795,17 @@ public class WndSettings extends WndTabbed {
 
 
 			height = chkFont.bottom();
+
+			// ========== 安全区设置布局 ==========
+			// 按钮和滑块并排，或者上下排列
+			if (width > 200) {
+				btnSafeInsetToggle.setRect(0, height + GAP, width/2 - 1, BTN_HEIGHT);
+				optSafeInset.setRect(width/2 + 1, height + GAP, width/2 - 1, SLIDER_HEIGHT);
+			} else {
+				btnSafeInsetToggle.setRect(0, height + GAP, width, BTN_HEIGHT);
+				optSafeInset.setRect(0, btnSafeInsetToggle.bottom() + GAP, width, SLIDER_HEIGHT);
+			}
+			height = Math.max(btnSafeInsetToggle.bottom(), optSafeInset.bottom());
 
 			if (!isDesktop()) {
 				btnKeyBindings.active = false;

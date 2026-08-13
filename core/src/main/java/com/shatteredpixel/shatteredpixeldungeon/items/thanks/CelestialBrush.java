@@ -166,11 +166,12 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
                 protected void onSelect(int index) {
                     if (index == 0) {
                         Hero hero = Dungeon.hero;
-                        if (hero.HT < 15) {
+                        if (hero.HT <= 15) {
                             GLog.w(Messages.get(CelestialBrush.this, "not_enough_hp"));
                             return;
                         }
-                        hero.HT -= 15;
+                        hero.addResistHealth(15);
+                        hero.updateHT(false);
                         if (hero.HP > hero.HT) hero.HP = hero.HT;
                         GLog.i(Messages.get(CelestialBrush.this, "upgrade_hp"));
                         doUpgrade(hero);

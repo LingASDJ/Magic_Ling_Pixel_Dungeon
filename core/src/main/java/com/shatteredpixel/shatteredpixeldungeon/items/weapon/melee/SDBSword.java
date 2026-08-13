@@ -74,6 +74,17 @@ public class SDBSword extends MeleeWeapon {
                 if (hit && isCloseTarget) {
                     // 构造击退轨迹：沿英雄→敌人方向直线延伸
                     int dir = Ballistica.direction(hero.pos, enemy.pos);
+                    switch (dir) {
+                        case -4: dir = -1; break;   // 左上
+                        case -3: dir = 3;  break;   // 上
+                        case -2: dir = 2;  break;   // 右上
+                        case -1: dir = 0;  break;   // 左
+                        case 1:  dir = 1;  break;   // 右
+                        case 2:  dir = -2; break;   // 左下
+                        case 3:  dir = 4;  break;   // 下
+                        case 4:  dir = 5;  break;   // 右下
+                        default: return;            // 同格，不会发生
+                    }
                     int farPos = enemy.pos;
                     for (int i = 0; i < 20; i++) {
                         int next = Ballistica.step(farPos, dir);
