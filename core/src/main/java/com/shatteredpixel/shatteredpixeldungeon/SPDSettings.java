@@ -1444,5 +1444,34 @@ public class SPDSettings extends GameSettings {
 		return getInt(KEY_CURRENT_BGM, 3);
 	}
 
+// 在 SPDSettings 中添加以下常量和方法
+
+	// ========== 刘海屏安全区设置 ==========
+	private static final String KEY_SAFE_INSET = "safe_inset";
+
+	// -1 表示使用系统默认值
+	private static final int SAFE_INSET_DEFAULT = -1;
+
+	/**
+	 * 获取用户自定义的两侧安全区边距（像素）
+	 * @return >=0 为用户指定值，-1 表示使用系统检测值
+	 */
+	public static int safeInset() {
+		return getInt(KEY_SAFE_INSET, SAFE_INSET_DEFAULT, SAFE_INSET_DEFAULT, 200);
+	}
+
+	/**
+	 * 设置两侧安全区边距
+	 * @param value 边距像素值，-1 表示恢复系统默认值
+	 */
+	public static void safeInset(int value) {
+		put(KEY_SAFE_INSET, value);
+		// 刷新到游戏层
+		if (Game.platform instanceof com.shatteredpixel.shatteredpixeldungeon.android.AndroidPlatformSupport) {
+			((com.shatteredpixel.shatteredpixeldungeon.android.AndroidPlatformSupport) Game.platform).refreshSafeInsets();
+		}
+	}
+
+
 
 }

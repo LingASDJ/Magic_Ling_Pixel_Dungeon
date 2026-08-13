@@ -29,6 +29,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameDay;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
+import static com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.MenuPane.version;
 import static com.shatteredpixel.shatteredpixeldungeon.update.MLChangesButton.downloadSuccess;
 import static com.shatteredpixel.shatteredpixeldungeon.update.MLChangesButton.updateProgress;
@@ -142,6 +143,16 @@ public class StatusPane extends Component {
 	private RenderedTextBlock timeStatusText;
 
 	private VirtualControls virtualControls;
+	private float insetLeft = 0;
+	private float insetRight = 0;
+	private float insetTop = 0;
+	private float insetBottom = 0;
+	public void setInsets(float left, float right, float top, float bottom) {
+		this.insetLeft = left;
+		this.insetRight = right;
+		this.insetTop = top;
+		this.insetBottom = bottom;
+	}
 
 	public StatusPane( boolean large ){
 		super();
@@ -149,11 +160,8 @@ public class StatusPane extends Component {
 		this.large = large;
 
 		asset = Assets.Interfaces.STATUS;
-//		if (ClassUI()) {
-//
-//		} else {
-//			asset =  Assets.Interfaces.STATUS_DARK;
-//		}
+
+
 
 		if (large)  bg = new NinePatch( asset, 0, 64, 41, 39, 33, 0, 4, 0 );
 		else        bg = new NinePatch( asset, 0, 0, 128, 36, 85, 0, 45, 0 );
@@ -379,8 +387,8 @@ public class StatusPane extends Component {
 			hpText.y -= 0.001f; //prefer to be slightly higher
 			PixelScene.align(hpText);
 
-			hg.x = 30.0f;
-			hg.y = 8.0f;
+			hg.x = hp.x;
+			hg.y = hp.y + 5;
 
 			hgText.scale.set(PixelScene.align(0.5f));
 			hgText.x = hg.x + 1;
@@ -426,20 +434,21 @@ public class StatusPane extends Component {
 
 		counter.point(busy.center());
 	}
-	
+
 	private static final int[] warningColors = new int[]{0x660000, 0xCC0000, 0x660000};
 	private float time;
 	@Override
 	public void update() {
 		super.update();
+
 		asset = Assets.Interfaces.STATUS;
-//		if (ClassUI()) {
-//
-//		} else {
-//			asset =  Assets.Interfaces.STATUS_DARK;
-//		}
 
-
+		// 计算安全区（与 GameScene 保持一致）
+		boolean landscape = Game.width > Game.height;
+		float insetA = Game.safeInsetA / uiCamera.zoom;
+		float insetB = Game.safeInsetB / uiCamera.zoom;
+		float insetLeft = landscape ? insetA : 0;
+		float insetRight = landscape ? insetB : 0;
 
 		Visual visual = new Visual(0,0,0,0);
 		visual.am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed ));
@@ -448,29 +457,29 @@ public class StatusPane extends Component {
 		if(downloadSuccess) {
 			version.text("Download,Completed");
 			version.alpha(1f);
-			version.x = x + width - version.width();
+			version.x = x + width - version.width() - insetRight;
 		} else if (!updateProgress.isEmpty()) {
 			version.text("Download:" + updateProgress);
 			version.alpha(1f);
-			version.x = x + width - version.width();
+			version.x = x + width - version.width() - insetRight;
 		} else if(Statistics.bossRushMode) {
 			switch (Statistics.difficultyDLCEXLevel){
 				case 1:
 					version.text("v" + Game.version + "-"+"BossRush-EASY");
-					version.x = x + width - version.width();
-				break;
+					version.x = x + width - version.width() - insetRight;
+					break;
 				case 2:
 					version.text("v" + Game.version + "-"+"BossRush-NORMAL");
-					version.x = x + width - version.width();
-				break;
+					version.x = x + width - version.width() - insetRight;
+					break;
 				case 3:
 					version.text("v" + Game.version + "-"+"BossRush-HARD");
-					version.x = x + width - version.width();
-				break;
+					version.x = x + width - version.width() - insetRight;
+					break;
 				case 4:
 					version.text("v" + Game.version + "-"+"BossRush-HELL");
-					version.x = x + width - version.width();
-				break;
+					version.x = x + width - version.width() - insetRight;
+					break;
 			}
 		} else if(Challenges.activeChallenges()>13 && !Dungeon.isDLC(Conducts.Conduct.DEV)){
 			visual.am = 1f + 0.01f * Math.max(0f, (float) Math.sin(time += Game.elapsed));
@@ -481,7 +490,7 @@ public class StatusPane extends Component {
 			float b = 0.53f+0.57f*Math.max(0f, (float)Math.sin( time + 4*Math.PI/3 ));
 			version.text("v" + Game.version + "-"+"High-Challenges");
 			version.hardlight(r, g, b);
-			version.x = x + width - version.width();
+			version.x = x + width - version.width() - insetRight;
 		}
 
 		//时间紊乱
@@ -518,12 +527,6 @@ public class StatusPane extends Component {
 
 		bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
 
-//		if (ClassUI()) {
-//
-//		} else {
-//			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
-//		}
-
 		if(SPDSettings.TimeLimit()) {
 			if (hero.buff(LockedFloor.class) != null) {
 				timeText.y = version.y + 14;
@@ -533,11 +536,11 @@ public class StatusPane extends Component {
 		}
 
 		if(lanterfireactive && !large){
-			lanter.setPos(0, 30);
+			lanter.setPos(insetLeft, 30);
 			lanter.visible = true;
 			lanter.active  = true;
 			lanterfirevae.visible = true;
-			lanterfirevae.x= 1.0f;
+			lanterfirevae.x= insetLeft + 1.0f;
 			lanterText.visible = true;
 			lanterfirevae.y= 31.0f;
 			float r =  0.53f+0.57f*Math.max(0f, (float)Math.sin( time - 10/Math.PI/3 ));
@@ -547,7 +550,7 @@ public class StatusPane extends Component {
 			float lanter = hero.lanterfire;
 			lanterText.text(lanter+"/"+ (Dungeon.isChallenged(DHXD) ? 64 : 100));
 			lanterText.scale.set(PixelScene.align(0.5f));
-			lanterText.x = 3;
+			lanterText.x = insetLeft + 3;
 			lanterText.y = 25;
 			lanterText.y -= 0.001f; //prefer to be slightly higher
 			PixelScene.align(lanterText);
@@ -579,15 +582,15 @@ public class StatusPane extends Component {
 		}
 
 		if (ClassPage()) {
-			page.setPos(0, 40);
-			pageb.setPos(0, 1000);
-			bossselect.setPos(0, 52);
-			holidayselect.setPos(0,78);
+			page.setPos(insetLeft, 40);
+			pageb.setPos(insetLeft, 1000);
+			bossselect.setPos(insetLeft, 52);
+			holidayselect.setPos(insetLeft,78);
 		} else {
-			page.setPos(0, 1000);
-			pageb.setPos(0, 40);
-			bossselect.setPos(0, 1000);
-			holidayselect.setPos(0,1000);
+			page.setPos(insetLeft, 1000);
+			pageb.setPos(insetLeft, 40);
+			bossselect.setPos(insetLeft, 1000);
+			holidayselect.setPos(insetLeft,1000);
 		}
 
 		if (hero != null && hero.isAlive()) {
