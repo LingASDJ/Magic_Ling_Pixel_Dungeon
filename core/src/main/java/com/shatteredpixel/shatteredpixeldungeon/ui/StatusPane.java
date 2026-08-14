@@ -582,15 +582,15 @@ public class StatusPane extends Component {
 		}
 
 		if (ClassPage()) {
-			page.setPos(insetLeft, 40);
-			pageb.setPos(insetLeft, 1000);
-			bossselect.setPos(insetLeft, 52);
-			holidayselect.setPos(insetLeft,78);
+			page.setPos(0, 40+insetTop);
+			pageb.setPos(0, 1000);
+			bossselect.setPos(0, 52+insetTop);
+			holidayselect.setPos(0,78+insetTop);
 		} else {
-			page.setPos(insetLeft, 1000);
-			pageb.setPos(insetLeft, 40);
-			bossselect.setPos(insetLeft, 1000);
-			holidayselect.setPos(insetLeft,1000);
+			page.setPos(0, 1000);
+			pageb.setPos(0 ,40);
+			bossselect.setPos(0, 1000);
+			holidayselect.setPos(0,1000);
 		}
 
 		if (hero != null && hero.isAlive()) {
