@@ -350,6 +350,9 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		Weapon n;
 		Generator.Category c;
 		if (w instanceof MeleeWeapon) {
+			if(w instanceof EndingBlade){
+				return w;
+			}
 			//针对特殊武器修复：例如终焉的武器阶数是可以成长的
 			c = Generator.wepTiers[ ((MeleeWeapon) w).tier <= 6 ? ((MeleeWeapon) w).tier-1 : 5 ];
 		} else {
@@ -361,7 +364,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 				if(w instanceof MissileWeapon){
 					n = (Weapon)Generator.randomUsingDefaults(c);
 				} else {
-					n = Generator.randomWeapon(true);
+                    n = Generator.randomWeapon(true);
 				}
 			} else {
 				n = (Weapon)Generator.randomUsingDefaults(c);

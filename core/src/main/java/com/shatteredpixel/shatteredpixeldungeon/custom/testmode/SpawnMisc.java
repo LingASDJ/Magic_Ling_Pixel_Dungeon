@@ -158,6 +158,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
@@ -366,7 +367,10 @@ public class SpawnMisc extends TestItem {
 
             bookList.add(HollowCityBook.class);
             bookList.add(DimandBook.class);
-            bookList.add(TombReachBook.class);
+
+            if(DeviceCompat.isDebug()){
+                bookList.add(TombReachBook.class);
+            }
         }
 
         //Trinket

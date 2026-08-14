@@ -110,6 +110,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
@@ -157,6 +158,8 @@ public abstract class Mob extends Char {
 	public AiState state = SLEEPING;
 
 	public boolean isOldDay = false;
+
+	public boolean isEndLess;
 
 	public Class<? extends CharSprite> spriteClass;
 
@@ -300,6 +303,8 @@ public abstract class Mob extends Char {
 
 	private static final String  FIRST_ATTACK	= "first_attack";
 
+	private static final String  ENDLESS	= "endless";
+
     protected Object loot = null;
 
 	public Object setLootItem() {
@@ -428,6 +433,8 @@ public abstract class Mob extends Char {
 
 		bundle.put( OLDDAY, isOldDay);
 
+		bundle.put( ENDLESS, isEndLess);
+
 		bundle.put( FIRST_ATTACK, firstAttack);
 	}
 
@@ -463,6 +470,7 @@ public abstract class Mob extends Char {
 
 		isOldDay = bundle.getBoolean( OLDDAY );
 		firstAttack = bundle.getBoolean(FIRST_ATTACK);
+		isEndLess = bundle.getBoolean(ENDLESS);
 	}
 
 	private boolean cellIsPathable( int cell ){
@@ -1213,6 +1221,14 @@ public abstract class Mob extends Char {
 
 		if(this.buff(ChampionEnemy.AntiMagic.class) != null && type == DamageType.MAGIC && !(src instanceof WandOfDisintegration)){
 			dmg *= 0.5f;
+		}
+
+		if(Dungeon.hero.buff(EndingBlade.SkyRoll.class)!=null){
+			if(Random.Float()<0.15f){
+				int d = (int) (dmg * 0.3f);
+				hero.HP += Math.min(hero.HT, d);
+				sprite.emitter().burst( Speck.factory( Speck.HEALING ),  Math.min(hero.HT, d) );
+			}
 		}
 
 		ChampionHero.Element doubleBuff = hero.buff(ChampionHero.Element.class);

@@ -20,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShieldHuntsmanSprite;
@@ -74,26 +75,29 @@ public class ShieldHuntsman extends Mob {
             switch (Random.Int(3)){
                 case 0:
                     if (weapon != null) {
-                        if (hitsToDisarm == 0) hitsToDisarm = Random.NormalIntRange(5, 7);
+                        if(!(weapon instanceof EndingBlade)){
+                            if (hitsToDisarm == 0) hitsToDisarm = Random.NormalIntRange(5, 7);
 
-                        if (--hitsToDisarm == 0) {
-                            hero.belongings.weapon = null;
-                            Dungeon.quickslot.convertToPlaceholder(weapon);
-                            Item.updateQuickslot();
-                            GLog.n(M.L(this, "disarm", weapon.name()));
+                            if (--hitsToDisarm == 0) {
+                                hero.belongings.weapon = null;
+                                Dungeon.quickslot.convertToPlaceholder(weapon);
+                                Item.updateQuickslot();
+                                GLog.n(M.L(this, "disarm", weapon.name()));
 
-                            BallisticaFloat ba = new BallisticaFloat(hero.pos, GME.angle(pos, hero.pos) + Random.Float(-22.5f, 22.5f), 6, Ballistica.PROJECTILE);
-                            ((MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class)).
-                                    reset(hero.sprite,
-                                            ba.collisionPosI,
-                                            weapon, 0.6f, 1.25f,
-                                            new Callback() {
-                                                @Override
-                                                public void call() {
-                                                    Dungeon.level.drop(weapon, ba.collisionPosI).sprite.drop();
-                                                }
-                                            });
+                                BallisticaFloat ba = new BallisticaFloat(hero.pos, GME.angle(pos, hero.pos) + Random.Float(-22.5f, 22.5f), 6, Ballistica.PROJECTILE);
+                                ((MissileSpriteCustom) hero.sprite.parent.recycle(MissileSpriteCustom.class)).
+                                        reset(hero.sprite,
+                                                ba.collisionPosI,
+                                                weapon, 0.6f, 1.25f,
+                                                new Callback() {
+                                                    @Override
+                                                    public void call() {
+                                                        Dungeon.level.drop(weapon, ba.collisionPosI).sprite.drop();
+                                                    }
+                                                });
+                            }
                         }
+
                     }
                     break;
                     case 1:

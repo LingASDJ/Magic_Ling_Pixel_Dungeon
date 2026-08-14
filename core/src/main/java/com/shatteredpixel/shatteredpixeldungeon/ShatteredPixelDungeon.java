@@ -53,6 +53,13 @@ public class ShatteredPixelDungeon extends Game {
 	public ShatteredPixelDungeon( PlatformSupport platform ) {
 		super( sceneClass == null ? (!SPDSettings.firebase()) ? EulaScene.class : GoScene.class : sceneClass, platform );
 
+		if(SPDSettings.isItemUnlock("avatars_huntress_4")){
+			if(!SPDSettings.isItemUnlock("skin_4_hr")){
+				SPDSettings.iceCoin(500);
+				SPDSettings.unlockItem("skin_4_hr");
+			}
+		}
+
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade" );

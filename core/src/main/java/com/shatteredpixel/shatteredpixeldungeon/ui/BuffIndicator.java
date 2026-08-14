@@ -159,6 +159,8 @@ public class BuffIndicator extends Component {
 	public static final int GHOST_SCARY = 123;
 	public static final int PACMAN_GAME = 124;
 	public static final int BOX_GAME = 125;
+
+
 	public static final int ALL_SEARCH = 144;
 	public static final int BASE_STATUS = 145;
 	public static final int INVISIBLE_ACTION = 146;
@@ -174,6 +176,9 @@ public class BuffIndicator extends Component {
 	public static final int ARROW_PARTY = 156;
 
 	public static final int WICKBONE = 157;
+
+	public static final int FIRE_DEH = 158;
+	public static final int FIRE_DEM = 159;
 
 	public static final int SIZE_SMALL = 7;
 	public static final int SIZE_LARGE = 16;

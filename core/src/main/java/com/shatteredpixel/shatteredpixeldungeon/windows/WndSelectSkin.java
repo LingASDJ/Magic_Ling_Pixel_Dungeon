@@ -339,8 +339,7 @@ public class WndSelectSkin extends Window {
             clouds.clear();
 
             // 创建天空背景
-            boolean dayTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 18
-                    && Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 7;
+            boolean dayTime = false;
 
             sky = new Sky(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
             sky.scale.set(SKY_WIDTH, SKY_HEIGHT);
@@ -376,7 +375,7 @@ public class WndSelectSkin extends Window {
                 protected void onClick() {
                     if(skinIndex != 0){
                         super.onClick();
-                        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMessage(desc)));
+                        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().addToFront(new WndMessage(desc)));
                     }
                 }
             };

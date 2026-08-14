@@ -34,7 +34,7 @@ public class HellBurning extends Buff implements Hero.Doom {
     private static final float DURATION = 8f;
     // 地狱火核心配置
     private static final float BOSS_DAMAGE = 20f; // Boss每回合固定伤害
-    private static final float NORMAL_MOB_DAMAGE_PERCENT = 0.2f; // 普通怪物20%最大生命值伤害
+    private static final float NORMAL_MOB_DAMAGE_PERCENT = 0.15f; // 普通怪物20%最大生命值伤害
 
     private float left;
     private int burnIncrement = 0;

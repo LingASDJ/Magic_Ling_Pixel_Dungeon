@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -594,6 +595,13 @@ public class YogReal extends Boss {
                 mob.die( cause );
             }
         }
+
+       EndingBlade endingBlade = (EndingBlade) hero.belongings.weapon;
+       if(endingBlade != null){
+         if(endingBlade.level() >= 15 && endingBlade.trialMode &&  endingBlade.fireCounter >=720){
+             Badges.ENDBLADE();
+         }
+       }
 
         if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && Statistics.spawnersAlive == 4){
             Badges.validateBossChallengeCompleted();
