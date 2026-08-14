@@ -1359,6 +1359,14 @@ public class Hero extends Char {
 			w.dropLevel--;
 		}
 
+		if(hero.belongings.weapon instanceof EndingBlade){
+			((EndingBlade) hero.belongings.weapon).onTurnUpdate(hero);
+			if(buff(EndingBlade.TrialModeBuff.class) == null){
+				Buff.affect(this, EndingBlade.TrialModeBuff.class);
+				GameScene.fadeToBlack(1f,1f);
+			}
+		}
+
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 			if (!(mob instanceof NPC) && !(mob instanceof Boss)) {
 				if(mob.buff(EndingBlade.TrialModeBuff.class) == null){
@@ -2646,7 +2654,7 @@ public class Hero extends Char {
 
 		//regular damage interrupt, triggers on any damage except specific mild DOT effects
 		// unless the player recently hit 'continue moving', in which case this is ignored
-		if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage || src instanceof BloodLoss) && damageInterrupt ) {
+		if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage || src instanceof BloodLoss || src instanceof UnlessFlower.UnlessFlowerTime) && damageInterrupt ) {
 			interrupt();
 			resting = false;
 		}
@@ -3671,20 +3679,22 @@ public class Hero extends Char {
 		for (Ankh i : belongings.getAllItems(Ankh.class)) {
 			if (ankh != null && !(i.isBlessed()) && !OnlySummonAlive) {
 				if (lanterfireactive && hero.lanterfire <= 40 && !i.isBlessed() || hero.buff(LostInventory.class) != null) {
-					BlackSoul s = new BlackSoul();
-					if(Statistics.ankhToExit){
-						s.pos = Dungeon.level.entrance();
-					} else {
-						s.pos = Dungeon.hero.pos;
+					if(Dungeon.isChallenged(DHXD)){
+						BlackSoul s = new BlackSoul();
+						if(Statistics.ankhToExit){
+							s.pos = Dungeon.level.entrance();
+						} else {
+							s.pos = Dungeon.hero.pos;
+						}
+						s.gold = Dungeon.gold;
+						Dungeon.gold = 0;
+						s.state = s.WANDERING;
+						GameScene.add(s);
+						Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
+						Buff.affect(s, DeadSoul.class);
+						OnlySummonAlive = true;
+						GameScene.flash(0x80FF0000);
 					}
-					s.gold = Dungeon.gold;
-					Dungeon.gold = 0;
-					s.state = s.WANDERING;
-					GameScene.add(s);
-					Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
-					Buff.affect(s, DeadSoul.class);
-					OnlySummonAlive = true;
-					GameScene.flash(0x80FF0000);
 				}
 			}
 		}

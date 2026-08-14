@@ -31,6 +31,10 @@ public class MindVision extends FlavourBuff {
 	
 	public int distance = 2;
 
+	public void setRange(int range) {
+		this.distance = range;
+	}
+
 	{
 		type = buffType.POSITIVE;
 	}

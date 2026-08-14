@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.RollLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
@@ -352,7 +353,7 @@ public class WndStory extends Window {
 		}
 		if (!RollLevel()) return;
 
-		if (hero.lanterfire >= 90) {
+		if (hero.lanterfire >= 90 || Dungeon.isChallenged(DHXD) && hero.lanterfire > 60) {
 			goodLanterFire();
 		} else if (hero.lanterfire >= 80) {
 			applyEffectBasedOnChance(0.85f, 0.05f);

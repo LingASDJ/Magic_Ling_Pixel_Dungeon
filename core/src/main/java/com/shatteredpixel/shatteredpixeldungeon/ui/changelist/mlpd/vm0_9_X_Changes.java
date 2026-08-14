@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.Dirt_KnifeStand;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.DreamSeed;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.HellButterfly;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KillEye;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
@@ -47,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulPlusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GiantFlowerSlimeSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GuardCapitalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KusumiMagicGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KusumiSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -83,6 +85,7 @@ import java.util.ArrayList;
 public class vm0_9_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0950_Changes(changeInfos);
         add_V0948_Changes(changeInfos);
         add_V0945_Changes(changeInfos);
         add_V0942_Changes(changeInfos);
@@ -95,7 +98,7 @@ public class vm0_9_X_Changes {
         add_V0900_Changes(changeInfos);
     }
 
-    public static void add_V0948_Changes(ArrayList<ChangeInfo> changeInfos ) {
+    public static void add_V0950_Changes(ArrayList<ChangeInfo> changeInfos ) {
 
         ChangeInfo changes = new ChangeInfo("Lost-失落古墓-敬请期待-Tomb", true,"");
         changes.hardlight(0xCCCCCC);
@@ -124,7 +127,95 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new Image(Icons.get(Icons.NEWS)), "后续开发预告",
                 "失落古墓外传正在稳步推进开发，更多场景、怪物、专属武器与剧情内容将陆续放出，敬请期待后续版本情报！"));
 
-        changes = new ChangeInfo("v0.9.4.8-9", true, "");
+        changes = new ChangeInfo("v0.9.5.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+        changes.addButton(new ChangeButton(new Image("Ling.png", 0, 0, 16, 16), "开发者的话",
+                "v0.9.5.0 — 完成于 2026-08-14 13:45\n\n" +
+                        "没想到上次更新魔绫已经是两个月前的事了。近期，开发组一直在全力进行古墓内容的制作。\n" +
+                        "不过在路途中，我们结识了新的伙伴，同时，作为一次补充更新，这个版本我们将早期惊鸿杯的优胜创作全部实装，并完成了诸多bug修复与游戏优化。祝大家玩的愉快！\n\n" +
+                        "——MLPD主开发：JDSALing\n" +
+                        "翻译：久住"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new KusumiSprites(), ("新NPC"),
+                ("神秘的少女，来历不详，履历不详……")));
+
+        changes.addButton(new ChangeButton(new KusumiMagicGirlSprites(), ("新NPC"),
+                ("神秘的少女，来历不详，履历不详……")));
+
+        changes.addButton(new ChangeButton(new ArchettoSprite(), "弦事件推进",
+                "弦近期似乎换上了新衣服……？"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("新音乐：Ice Ruins"),
+                ("作者：禊-misogi-\n\n为三区全新音乐，欢迎欣赏。")));
+
+        changes.addButton (new ChangeButton (new ItemSprite(ItemSpriteSheet.SOS_3), "新神器：支援信号套组",
+                "2024惊鸿杯，炼金乐园赛道第一名，现已正式实装。"));
+
+        changes.addButton (new ChangeButton (new ItemSprite(ItemSpriteSheet.SKY_PEN_PLUS), "新神器：天界画笔",
+                "2024惊鸿杯，秘器研究赛道第二名，现已正式实装。"));
+
+        changes.addButton (new ChangeButton (HeroSprite.avatar (HeroClass.MAGE, 13), "新皮肤：学院时光",
+                "售价1500钴币\n\n原稿：Priestess\n\n绘制：Noah-7385 & Daniel-Calan\n\n茉莉就读于法师学院时的制服，在校时，她是数一数二的魔法尖子生。传闻她常独自待在图书馆最深处，研读那些失传已久的古老法术……"));
+
+        changes.addButton( new ChangeButton( new TalentIcon(Talent.TESTED_HYPOTHESIS), Talent.TESTED_HYPOTHESIS.title(),
+                "法师T1天赋，实验假设天赋更换为 灵光一闪"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton (new ChangeButton (new ItemSprite(ItemSpriteSheet.BEACON), "皮肤下架说明",
+                "由于 晚宴邀请 and 虔圣书徒 两款皮肤的画师单方面发狂，现制作组已与其永久解除合作，并永久移除所有与其有关的内容。\n" +
+                        "对喜爱这两款皮肤的玩家深表歉意，但这也是不可抗力的因素，对于此前已拥有晚宴邀请的玩家，将在版本更新后免费赠送新皮肤：学院时光。\n" +
+                        "对于此前已拥有虔圣书徒的玩家，将在更新后启动游戏后，自动发放500钴币。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD), ("金蝶模式V2.5"),
+                (
+                        "金蝶模式-V2.5\n\n" +
+                                "_-_ 优化金蝶神器嬗变，现在只能嬗变未装备的神器\n" +
+                                "_-_ 金蝶中与狐狸对话有概率获得全新特殊武器，开启特殊模式！")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                ("V0.9.5.0：\n\n" +
+                        "_-_ 修复白浪刺剑武技先前可以以墙体为目标使用，无限距离且不消耗充能的严重问题\n" +
+                        "_-_ 优化苍白花环新增特判：不会被拟态之王与浊焰魔女收走，防止利用该特性逃课成就\n" +
+                        "_-_ 修复携带bzm的礼物会导致开灯不增加视野的问题\n" +
+                        "_-_ 修复钻石大剑与轻音铃铛在乾坤宗师的\"伴生强化\"天赋下获取假升级的问题，虚拟等级仅显示，不再错误影响面板与实际效果\n" +
+                        "_-_ 修复魔女的印记——浊燃祝福效果异常的问题，描述为20%全伤减免，此前错误实现了免疫法术伤害，现已修正为正确的20%全伤减免\n" +
+                        "_-_ 修复灵魂卷轴部分设计问题 & 钻石大剑武技的异常问题\n"),
+                (
+                        "_-_ 修复莲娜Boss部分技能有可能卡死玩家的问题\n" +
+                        "_-_ 修复部分极端情况下寻路发生了存档永久崩溃问题，更新该版本进入存档将恢复正常\n" +
+                        "_-_ 修复在古堡全面搜查传送卡死在房间的问题，与0层一样，可以点击卡死固定传送回搜查入口点\n" +
+                        "_-_ 修复空间残片在古堡三大小游戏中生效导致的各种问题\n" +
+                        "_-_ 修复大冰杖在高等级因为移速减至100%卡死的严重问题\n" +
+                        "_-_ 修复艾诺琳娜部分技能可能导致游戏闪退的严重问题\n" +
+                        "_-_ 修复牧笛贴图尺寸对齐不一致的问题\n" +
+                                "_-_ 修复天赋-戒指强化-对部分神器无加成的异常")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_CAPE), "荆棘斗篷",
+                "_-_ 物理直伤由等级削弱至等级/2\n" +
+                          "_-_ 荆棘力场范围由半径等级/2削弱至半径等级/4 _向上取整_\n" +
+                          "_-_ 隐身状态下开启荆棘力场会破除隐身状态"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FAINT_GLIMMER), "无暇微光-T3-削弱",
+                Messages.get(FaintGlimmer.class,"desc")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HELL_BUTTERFLY), "炼狱赤蝶-T3-削弱",
+                Messages.get(HellButterfly.class,"desc")));
+    }
+
+    public static void add_V0948_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.9.4.8-9", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
         changes.addButton(new ChangeButton(new Image("Ling.png", 0, 0, 16, 16), "开发者的话",
@@ -833,10 +924,6 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("材质包系统1.0"),
                 ("材质包系统正式登场，目前预置了5个材质包，你也可以自行定制材质包。\n\n" +
                         "如要定制材质包，请查阅游戏新闻材质包置顶使用说明。")));
-
-        changes.addButton(new ChangeButton(new KusumiSprites(), ("新NPC:久住"),
-                ("在时间静止的区域，她在那里静静的等待毁灭的降临。\n\n" +
-                        "在9层下楼携带一种特殊的信物将有概率前往")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOMB_SWORD), ("新武器：炸弹匕首"),
                 ("炸弹匕首重做归来，并实装了动画效果！\n\n这件武器会在击杀敌人时有概率获取一枚弹药，通过升级该武器可以提高概率，和解锁更加强大的炸弹。" )));

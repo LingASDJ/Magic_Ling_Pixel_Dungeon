@@ -123,7 +123,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
@@ -236,6 +235,7 @@ public abstract class RegularLevel extends Level {
 		ZYJ,//中元节
 		ZQJ, //中秋节
 		GQJ, //国庆节
+		MSJ,
 		CYJ, //重阳节
 		MEJ,//战法特别委托
 	}
@@ -303,7 +303,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new NxhyShopRoom());
 		}
 
-		if(depth == 9 && chinaHoliday == ChinaHoliday.CJ && Challenges.activeChallenges()<=12 && Random.Float()>0.55f) {
+		if(depth == 9 && chinaHoliday == ChinaHoliday.MSJ && Challenges.activeChallenges()<=12 && Random.Float()>0.55f) {
 			initRooms.add(new PeachGodBlessRoom());
 		}
 
@@ -712,7 +712,7 @@ public abstract class RegularLevel extends Level {
 				//base mimic chance is 1/20, regular chest is 4/20
 				// so each +1x mimic spawn rate converts to a 25% chance here
 
-				if ((Random.Float() > 0.9f || DeviceCompat.isDebug()) && RegularLevel.holiday == WestHoliday.EASTER){
+				if (RegularLevel.chinaHoliday == ChinaHoliday.MSJ && Random.Float() > 0.9f){
 					mobs.add(Mimic.spawnAt(cell, GreenDiamndMimic.class, toDrop));
 					continue;
 				}
@@ -741,7 +741,7 @@ public abstract class RegularLevel extends Level {
 
 				float mimicChance = 1/10f * MimicTooth.mimicChanceMultiplier();
 				if (Dungeon.depth > 1 && Random.Float() < mimicChance && findMob(cell) == null){
-					if ((Random.Float() > 0.9f || DeviceCompat.isDebug()) && RegularLevel.holiday == WestHoliday.EASTER){
+					if (RegularLevel.chinaHoliday == ChinaHoliday.MSJ && Random.Float() > 0.9f){
 						mobs.add(Mimic.spawnAt(cell, GreenDiamndMimic.class, toDrop));
 					} else {
 						mobs.add(Mimic.spawnAt(cell, GoldenMimic.class, toDrop));

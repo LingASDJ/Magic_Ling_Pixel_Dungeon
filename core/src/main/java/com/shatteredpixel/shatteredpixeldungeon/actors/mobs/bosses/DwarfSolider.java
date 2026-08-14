@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -85,7 +86,7 @@ public class DwarfSolider extends Mob {
             int hitsToDisarm = Random.Int(0, 100);
             Hero hero = Dungeon.hero;
             KindOfWeapon weapon = hero.belongings.weapon;
-            if (weapon != null && !(weapon instanceof Gauntlet) && !weapon.cursed && hitsToDisarm > 60) {
+            if (weapon != null && !(weapon instanceof Gauntlet) && !(weapon instanceof EndingBlade) && !weapon.cursed && hitsToDisarm > 60) {
                 hero.belongings.weapon = null;
                 Dungeon.quickslot.convertToPlaceholder(weapon);
                 KindOfWeapon.updateQuickslot();

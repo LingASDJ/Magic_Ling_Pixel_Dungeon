@@ -65,6 +65,7 @@ public class Gregorian {
         checkChinaBirthday(gregorianMonth, gregorianDay);
         checkMageSkin(gregorianMonth, gregorianDay);
         checkQingMingFestival(gregorianMonth,gregorianDay);
+        checkMLPDFPBirthday(gregorianMonth,gregorianDay);
     }
 
     /**
@@ -133,6 +134,15 @@ public class Gregorian {
             if(day >= 1 &&  day < 6){
                 chinaHoliday = RegularLevel.ChinaHoliday.GQJ;
                 eventEndTime = calculateSolarEventEndTime(2025, 10, 6);
+            }
+        }
+    }
+
+    private static void checkMLPDFPBirthday(int month, int day) {
+        if (month == 8) {
+            if(day >= 14 &&  day < 31){
+                chinaHoliday = RegularLevel.ChinaHoliday.MSJ;
+                eventEndTime = calculateSolarEventEndTime(2026, 8, 31);
             }
         }
     }

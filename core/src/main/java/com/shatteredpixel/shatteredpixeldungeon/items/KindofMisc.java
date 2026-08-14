@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.BrokenRingMiscBind;  // ← 导入
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -47,6 +48,12 @@ public abstract class KindofMisc extends EquipableItem {
 			if (hero.belongings.misc instanceof Ring && hero.belongings.ring == null){
 				hero.belongings.ring = (Ring) hero.belongings.misc;
 				hero.belongings.misc = null;
+				// ===== 修复1：检查 BrokenRingMiscBind =====
+			} else if (hero.belongings.misc instanceof BrokenRingMiscBind && hero.belongings.ring == null){
+				hero.belongings.ring = (Ring) hero.belongings.misc;  // BrokenRingMiscBind 不能转 Ring！
+				// 实际上这里应该直接 equipFull = true，因为封印物品不能被移动
+				equipFull = true;
+				// ==========================================
 			} else {
 				equipFull = true;
 			}
@@ -58,6 +65,11 @@ public abstract class KindofMisc extends EquipableItem {
 			if (hero.belongings.misc instanceof Artifact && hero.belongings.artifact == null){
 				hero.belongings.artifact = (Artifact) hero.belongings.misc;
 				hero.belongings.misc = null;
+				// ===== 修复2：检查 BrokenRingMiscBind =====
+			} else if (hero.belongings.misc instanceof BrokenRingMiscBind && hero.belongings.artifact == null){
+				// 封印物品不能被移动
+				equipFull = true;
+				// ==========================================
 			} else {
 				equipFull = true;
 			}
@@ -78,8 +90,18 @@ public abstract class KindofMisc extends EquipableItem {
 			//force swapping with the same type of item if 2x of that type is already present
 			if (this instanceof Ring && hero.belongings.misc instanceof Ring){
 				enabled[0] = false; //disable artifact
+				// ===== 修复3：BrokenRingMiscBind 不是 Ring =====
+			} else if (this instanceof Ring && hero.belongings.misc instanceof BrokenRingMiscBind){
+				enabled[0] = false;
+				enabled[1] = false; // 封印物品不能被替换
+				// ================================================
 			} else if (this instanceof Artifact && hero.belongings.misc instanceof Artifact){
 				enabled[2] = false; //disable ring
+				// ===== 修复4：BrokenRingMiscBind 不是 Artifact =====
+			} else if (this instanceof Artifact && hero.belongings.misc instanceof BrokenRingMiscBind){
+				enabled[2] = false;
+				enabled[1] = false; // 封印物品不能被替换
+				// =================================================
 			}
 
 			GameScene.show(
@@ -103,11 +125,25 @@ public abstract class KindofMisc extends EquipableItem {
 							if (equipped.doUnequip(hero, true, false)) {
 								//swap out equip in misc slot if needed
 								if (index == 0 && KindofMisc.this instanceof Ring){
-									hero.belongings.artifact = (Artifact)hero.belongings.misc;
-									hero.belongings.misc = null;
+									// ===== 修复5：核心崩溃点 =====
+									if (hero.belongings.misc instanceof BrokenRingMiscBind) {
+										// 封印物品不能被移动，直接放入背包
+										hero.belongings.misc = null;
+									} else {
+										hero.belongings.artifact = (Artifact)hero.belongings.misc;
+										hero.belongings.misc = null;
+									}
+									// =============================
 								} else if (index == 2 && KindofMisc.this instanceof Artifact){
-									hero.belongings.ring = (Ring) hero.belongings.misc;
-									hero.belongings.misc = null;
+									// ===== 修复6：核心崩溃点 =====
+									if (hero.belongings.misc instanceof BrokenRingMiscBind) {
+										// 封印物品不能被移动，直接放入背包
+										hero.belongings.misc = null;
+									} else {
+										hero.belongings.ring = (Ring) hero.belongings.misc;
+										hero.belongings.misc = null;
+									}
+									// =============================
 								}
 								Dungeon.hero.belongings.backpack.items.add(KindofMisc.this);
 								doEquip(hero);

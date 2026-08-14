@@ -102,7 +102,7 @@ public class SacrificeRoom extends SpecialRoom {
 		prize.cursed = prize.cursedKnown = true;
 		level.sacrificialFireItem = prize;
 
-		if(RegularLevel.holiday == RegularLevel.WestHoliday.EASTER){
+		if(RegularLevel.holiday == RegularLevel.WestHoliday.EASTER || RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.MSJ){
 			prize.upgrade();
 		}
 
