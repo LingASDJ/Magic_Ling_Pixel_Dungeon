@@ -93,9 +93,11 @@ public abstract class PlatformSupport {
 
 	public abstract void setupFontGenerators(int pageSize, boolean systemFont );
 
-	protected abstract FreeTypeFontGenerator getGeneratorForString( String input );
+    protected FreeTypeFontGenerator getGeneratorForString(String input) {
+        return null;
+    }
 
-	public String[] splitforTextBlock(String text, boolean multiline) {
+    public String[] splitforTextBlock(String text, boolean multiline) {
 		if (multiline) {
 			return regularsplitterMultiline.split(text);
 		} else {

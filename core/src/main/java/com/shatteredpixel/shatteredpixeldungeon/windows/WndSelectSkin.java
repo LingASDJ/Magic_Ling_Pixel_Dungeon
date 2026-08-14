@@ -151,6 +151,9 @@ public class WndSelectSkin extends Window {
     }
 
     private int TextureRules() {
+        if(SPDSettings.customTexturePack() == null){
+            return 89;
+        }
         switch (SPDSettings.customTexturePack()){
             case "texture_load/mlpd.mlpack":
                 return 89;
