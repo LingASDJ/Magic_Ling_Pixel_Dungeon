@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CatGirlCosplay;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ConfusedMieMieTalisman;
@@ -563,7 +564,8 @@ public class Statistics {
 		propNegative2 = new ArrayList<>(Arrays.asList(
 				new NoteOfBzmdr(),
 				new StarDust(),
-				new FreeCrack()
+				new FreeCrack(),
+				new BrokenRing()
 		));
 
 		propChaotic0 = new ArrayList<>(Arrays.asList(
@@ -630,7 +632,8 @@ public class Statistics {
 		propNegative2 = new ArrayList<>(Arrays.asList(
 				new NoteOfBzmdr(),
 				new StarDust(),
-				new FreeCrack()
+				new FreeCrack(),
+				new BrokenRing()
 		));
 
 		propChaotic0 = new ArrayList<>(Arrays.asList(
