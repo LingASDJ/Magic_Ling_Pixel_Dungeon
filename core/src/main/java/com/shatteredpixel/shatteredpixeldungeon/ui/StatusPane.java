@@ -588,7 +588,7 @@ public class StatusPane extends Component {
 			holidayselect.setPos(0,78+insetTop);
 		} else {
 			page.setPos(0, 1000);
-			pageb.setPos(0 ,40);
+			pageb.setPos(0 ,40+insetTop);
 			bossselect.setPos(0, 1000);
 			holidayselect.setPos(0,1000);
 		}
