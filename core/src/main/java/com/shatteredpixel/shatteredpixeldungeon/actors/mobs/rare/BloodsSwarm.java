@@ -68,6 +68,7 @@ public class BloodsSwarm extends Mob {
 
             Dungeon.level.occupyCell(clone);
             HP = Math.max(1, HP - splitHP);
+            clone.isEndLess = isEndLess;
         }
         super.damage(damage,src,type);
     }

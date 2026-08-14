@@ -596,12 +596,12 @@ public class YogReal extends Boss {
             }
         }
 
-       EndingBlade endingBlade = (EndingBlade) hero.belongings.weapon;
-       if(endingBlade != null){
-         if(endingBlade.level() >= 15 && endingBlade.trialMode &&  endingBlade.fireCounter >=720){
-             Badges.ENDBLADE();
-         }
-       }
+        if (hero.belongings.weapon instanceof EndingBlade){
+            EndingBlade endingBlade = (EndingBlade) hero.belongings.weapon;
+            if (endingBlade.level() >= 15 && endingBlade.trialMode && endingBlade.fireCounter >= 720){
+                Badges.ENDBLADE();
+            }
+        }
 
         if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && Statistics.spawnersAlive == 4){
             Badges.validateBossChallengeCompleted();

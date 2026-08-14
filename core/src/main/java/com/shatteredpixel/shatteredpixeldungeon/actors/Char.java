@@ -893,10 +893,6 @@ public abstract class Char extends Actor {
 	public float speed() {
 		float speed = baseSpeed;
 
-		if(buff(EndingBlade.TrialModeBuff.class)!=null){
-				speed *= 0.85f;
-		}
-
 		if ( buff( Invulnerability.GodDied.class ) != null ) speed *= 2f;
 
 		ScaryBuff scaryBuff = Dungeon.hero.buff(ScaryBuff.class);

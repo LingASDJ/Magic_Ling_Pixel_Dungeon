@@ -1223,14 +1223,6 @@ public abstract class Mob extends Char {
 			dmg *= 0.5f;
 		}
 
-		if(Dungeon.hero.buff(EndingBlade.SkyRoll.class)!=null){
-			if(Random.Float()<0.15f){
-				int d = (int) (dmg * 0.3f);
-				hero.HP += Math.min(hero.HT, d);
-				sprite.emitter().burst( Speck.factory( Speck.HEALING ),  Math.min(hero.HT, d) );
-			}
-		}
-
 		ChampionHero.Element doubleBuff = hero.buff(ChampionHero.Element.class);
 		if (doubleBuff != null) {
 			boolean isMagicDamage = type == DamageType.MAGIC || type == DamageType.Element;

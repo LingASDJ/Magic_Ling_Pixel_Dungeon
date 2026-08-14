@@ -933,6 +933,7 @@ public class Statistics {
     public static void storeInBundle(Bundle bundle) {
 
 		/**/
+		bundle.put("SOS_SPAWNED", SOSisAlreadySpawn);
 
 		bundle.put("HOLLOW_DAY",Hollow_Holiday);
 		bundle.put("TOMBREACH",Tomb_Reach);
@@ -1213,6 +1214,8 @@ public class Statistics {
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+		SOSisAlreadySpawn = bundle.getBoolean("SOS_SPAWNED");
+
 		moonlowgetAloneRoom = bundle.getBoolean("MJPORALROOM");
 		MustHardLevel = bundle.getBoolean("MustDFRT");
 		isSmallLeaf = bundle.getBoolean("DASDXEOGBCD");

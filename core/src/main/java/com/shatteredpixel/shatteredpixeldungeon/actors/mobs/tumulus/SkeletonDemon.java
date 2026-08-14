@@ -135,6 +135,7 @@ public class SkeletonDemon extends Mob {
                 float hpPercent = Random.Float(0.25f, 0.50f);
                 int summonHP = Math.round((HP - damage) * hpPercent);
                 summonMob.HP = summonMob.HT = summonHP;
+                summonMob.isEndLess = isEndLess;
 
                 generation = this.generation + 1;
                 if (generation > 0) {

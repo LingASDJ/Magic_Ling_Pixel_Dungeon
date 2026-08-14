@@ -162,6 +162,7 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 			if (item instanceof Weapon){
 				if(item instanceof EndingBlade){
 					((EndingBlade) item).onAttemptCleanse();
+					item.cursed = true;
 					return false;
 				}
 				Weapon w = (Weapon) item;
