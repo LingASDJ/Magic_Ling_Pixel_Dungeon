@@ -16,7 +16,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
@@ -34,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -106,9 +106,9 @@ public class EndingBlade extends MeleeWeapon {
     private static final String TRIAL_MODE = "trial_mode";
     private static final String TURN_COUNTER = "turn_counter";
     private static final String LAST_UPGRADE_TURN = "last_upgrade_turn";
-    private static final String TRANSMUTED_THIS_FLOOR = "transmuted_this_floor";
+    private static final String TRANSMUTED_REGIONS = "transmuted_regions";
     private static final String COUNTR = "countr";
-
+    private static final String EB_LEVEL = "eb_level";
     // ==================== 核心属性 ====================
     /** Top1冷却 */
     private int cooldownTop1 = 0;
@@ -123,32 +123,34 @@ public class EndingBlade extends MeleeWeapon {
     public int fireCounter = 0;
     /** 上次升级的回合数 */
     private int lastUpgradeTurn = -9999;
-    /** 本层是否已蝶变升级 */
-    private boolean transmutedThisFloor = false;
+    /** 蝶变升级记录 */
+    private int transmutedRegions = 0;
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
+        bundle.put(EB_LEVEL, level());
         bundle.put(COOLDOWN_TOP1, cooldownTop1);
         bundle.put(COOLDOWN_TOP2, cooldownTop2);
         bundle.put(TOP3_USED, top3Used);
         bundle.put(TRIAL_MODE, trialMode);
         bundle.put(TURN_COUNTER, turnCounter);
         bundle.put(LAST_UPGRADE_TURN, lastUpgradeTurn);
-        bundle.put(TRANSMUTED_THIS_FLOOR, transmutedThisFloor);
+        bundle.put(TRANSMUTED_REGIONS, transmutedRegions);
         bundle.put(COUNTR, fireCounter);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
+        level(bundle.getInt(EB_LEVEL));
         cooldownTop1 = bundle.getInt(COOLDOWN_TOP1);
         cooldownTop2 = bundle.getInt(COOLDOWN_TOP2);
         top3Used = bundle.getBoolean(TOP3_USED);
         trialMode = bundle.getBoolean(TRIAL_MODE);
         turnCounter = bundle.getInt(TURN_COUNTER);
         lastUpgradeTurn = bundle.getInt(LAST_UPGRADE_TURN);
-        transmutedThisFloor = bundle.getBoolean(TRANSMUTED_THIS_FLOOR);
+        transmutedRegions = bundle.getInt(TRANSMUTED_REGIONS);
         fireCounter = bundle.getInt(COUNTR);
     }
 
@@ -180,19 +182,6 @@ public class EndingBlade extends MeleeWeapon {
      * 1. 必须已装备
      * 2. 距离上次升级至少300回合
      */
-    public boolean canUpgrade() {
-        if (!isEquipped(hero)) {
-            GLog.n(Messages.get(this, "not_equipped"));
-            return false;
-        }
-
-        if (hero.buff(Cooldown.class)!=null) {
-            GLog.n(Messages.get(this, "upgrade_cooldown"));
-            return false;
-        }
-        return true;
-    }
-
     public static class Cooldown extends FlavourBuff{
         @Override
         public int icon() {
@@ -209,7 +198,43 @@ public class EndingBlade extends MeleeWeapon {
      */
     @Override
     public boolean isUpgradable() {
-        return canUpgrade();
+        return isEquipped(hero) && hero.buff(Cooldown.class) == null;
+    }
+
+    @Override
+    public Item upgrade() {
+        // 终焉的升级规则：仅装备中、每 300 回合一次
+        if (!isEquipped(hero) || hero.buff(Cooldown.class) != null){
+            return this;                       // 静默拒绝，不弹 GLog
+        }
+        level( level() + 1 );                  // 只加等级，不碰附魔
+        cursed = true;                         // 必定诅咒不因升级改变
+        Buff.affect(hero, Cooldown.class, 300f);  // 冷却规则也集中在这里
+        return this;
+    }
+
+    // 蝶变升级
+
+    private static int transmuteRegion() {
+        return Dungeon.depth / 5;
+    }
+
+    public boolean canTransmuteUpgrade() {
+        return isEquipped(hero)
+                && hero.buff(Cooldown.class) == null
+                && (transmutedRegions & (1 << transmuteRegion())) == 0;
+    }
+
+    public boolean transmuteUpgrade() {
+        if (!canTransmuteUpgrade()) return false;
+        upgrade();                                   // 内部已处理等级+1、诅咒保持、300回合冷却
+        transmutedRegions |= (1 << transmuteRegion());
+        return true;
+    }
+
+    @Override
+    public Item upgrade(boolean enchant) {
+        return upgrade();                      // 终焉不走"强化+附魔"路径
     }
 
     @Override
@@ -220,7 +245,7 @@ public class EndingBlade extends MeleeWeapon {
         int lvl = level();
 
         desc.append("\n\n").append(Messages.get(this, "level_desc", lvl));
-        if (hero.buffs(Cooldown.class)!=null) {
+        if (hero.buff(Cooldown.class)!=null) {
             desc.append("\n").append(Messages.get(this, "upgrade_cooldown"));
         } else {
             desc.append("\n").append(Messages.get(this, "upgrade_ready"));
@@ -299,7 +324,7 @@ public class EndingBlade extends MeleeWeapon {
             int cell = hero.pos + i;
             if (cell >= 0 && cell < Dungeon.level.length()) {
                 Char ch = Actor.findChar(cell);
-                if (ch != null && ch != hero && ch.alignment != Char.Alignment.ALLY) {
+                if (ch != null && ch != hero && !(ch instanceof NPC) && ch.alignment != Char.Alignment.ALLY) {
                     Buff.affect(ch, Terror.class, Terror.DURATION);
                     ch.damage(30, new Eye.DeathGaze());
                 }
@@ -342,6 +367,11 @@ public class EndingBlade extends MeleeWeapon {
         @Override
         public void onSelect(Integer target) {
             if (target == null) return;
+
+            if (!Dungeon.level.insideMap(target) || Dungeon.level.solid[target] || !Dungeon.level.passable[target]) {
+                GLog.n(Messages.get(EndingBlade.this, "invalid_target"));
+                return;
+            }
 
             Hero hero = Dungeon.hero;
             int hpCost = Math.max(1, Math.round(hero.HT * 0.30f));
@@ -399,7 +429,7 @@ public class EndingBlade extends MeleeWeapon {
         Buff.affect(hero, Haste.class, 20f);
 
         // 浊焰攻心（30回合）
-        Buff.affect(hero, TurbulentFlameHeart.class, 30f);
+        Buff.affect(hero, TurbulentFlameHeart.class).set(30f);
 
         hero.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 8);
         CellEmitter.get(hero.pos).start(ShaftParticle.FACTORY, 0.2f, 5);
@@ -502,11 +532,11 @@ public class EndingBlade extends MeleeWeapon {
         int lvl = level();
 
         // 击杀判定
-        if (defender.HP <= damage) {
+        if (defender.HP <= damage && defender.shielding() == 0) {  // 这里没有完全修复,实际上仍然存在问题
             // Level15+：击杀50%概率获得10%最大生命奥术护盾
             if (lvl >= 15 && attacker instanceof Hero && Random.Float() < 0.50f) {
                 int shieldAmount = Math.max(1, Math.round(attacker.HT * 0.10f));
-                Buff.affect(attacker, Barrier.class).setShield(shieldAmount);
+                Buff.affect(attacker, Barrier.class).incShield(shieldAmount);
                 attacker.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 4);
                 GLog.p(Messages.get(this, "arcane_shield_gain", shieldAmount));
             }
@@ -514,7 +544,9 @@ public class EndingBlade extends MeleeWeapon {
 
         // 即死效果
         float instakillChance = getInstakillChance(lvl);
-        if (Random.Float() < instakillChance && defender != attacker && defender.isAlive()) {
+        if (Random.Float() < instakillChance && defender != attacker && defender.isAlive()
+                && !Char.hasProp(defender, Char.Property.BOSS)
+                && !Char.hasProp(defender, Char.Property.MINIBOSS)) {
             defender.die(this);
             GLog.n(Messages.get(this, "instakill", defender.name()));
             CellEmitter.get(defender.pos).burst(Speck.factory(Speck.LIGHT), 6);
@@ -522,13 +554,15 @@ public class EndingBlade extends MeleeWeapon {
 
         // 腐化效果
         float corruptChance = getCorruptChance(lvl);
-        if (Random.Float() < corruptChance && defender != attacker && defender.isAlive() && defender instanceof Mob) {
+        if (Random.Float() < corruptChance && defender != attacker && defender.isAlive() && defender instanceof Mob
+                && !Char.hasProp(defender, Char.Property.BOSS)
+                && !Char.hasProp(defender, Char.Property.MINIBOSS)) {
             AllyBuff.affectAndLoot((Mob) defender, (Hero) attacker, Corruption.class);
             GLog.p(Messages.get(this, "corrupted", defender.name()));
         }
 
         // Level7-9：吞天（15%概率吸血30%）
-        if (lvl >= 7 && lvl <= 9 && Random.Float() < 0.15f && defender != attacker) {
+        if (lvl >= 7 && Random.Float() < 0.15f && defender != attacker) {
             int heal = Math.max(1, Math.round(damage * 0.30f));
             attacker.HP = Math.min(attacker.HT, attacker.HP + heal);
             attacker.sprite.emitter().burst(Speck.factory(Speck.HEALING), 4);
@@ -569,12 +603,12 @@ public class EndingBlade extends MeleeWeapon {
         if(!top3Used){
             int lvl = level();
 
-            // Level4-6：4格灵视
-            if (lvl >= 4 && lvl <= 6) {
+            // Level4-14：4格灵视
+            if (lvl >= 4 && lvl < 15) {
                 Buff.affect(hero, MindVision.class, 12f).setRange(4);
             }
 
-            if(lvl >= 7 && lvl <=9){
+            if(lvl >= 7){
                 Buff.affect(hero, SkyRoll.class, 2f);
             }
 
@@ -584,7 +618,7 @@ public class EndingBlade extends MeleeWeapon {
             }
 
             // Level11-12：虚弱
-            if (lvl >= 11 && lvl <= 12) {
+            if (lvl >= 11) {
                 Buff.affect(hero, Weakness.class, 2f);
             }
 
@@ -606,7 +640,7 @@ public class EndingBlade extends MeleeWeapon {
         Buff.detach(hero, Hex.class);
         Buff.detach(hero, Weakness.class);
         Buff.detach(hero, Vulnerable.class);
-        Buff.detach(hero, Drowsy.class);
+        Buff.detach(hero, Daze.class);
         Buff.detach(hero, Blindness.class);
     }
 
@@ -692,23 +726,44 @@ public class EndingBlade extends MeleeWeapon {
      * 浊焰攻心
      * 每回合失去最大生命值2%，获得80%伤害减免
      */
-    public static class TurbulentFlameHeart extends FlavourBuff {
+    public static class TurbulentFlameHeart extends Buff {
 
-        public static final float DURATION = 30f;
+        private float left;
+        private static final String LEFT = "left";
 
         {
             type = buffType.POSITIVE;
         }
 
+        public void set(float duration) {
+            left = duration;
+        }
+
         @Override
-        public void detach() {
-            super.detach();
-            if (target instanceof Hero) {
+        public boolean act() {
+            if (target instanceof Hero && target.isAlive()) {
                 Hero hero = (Hero) target;
                 int hpLoss = Math.max(1, Math.round(hero.HT * 0.02f));
                 hero.damage(hpLoss, this);
             }
             spend(TICK);
+            left -= TICK;
+            if (left <= 0) {
+                detach();
+            }
+            return true;
+        }
+
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put(LEFT, left);
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+            left = bundle.getFloat(LEFT);
         }
 
         @Override
@@ -726,8 +781,66 @@ public class EndingBlade extends MeleeWeapon {
      * 死亡诅咒
      * 在指定区域持续施加燃烧和中毒
      */
-    public static class DeathCurse extends Buff {
+    public static class DeathCurseTracker extends Buff {
 
+        private float left;
+        private static final String LEFT = "left";
+
+        {
+            actPriority = Actor.VFX_PRIO; // 在伤害结算之后行动
+        }
+
+        public void set(float duration) {
+            left = duration;
+        }
+
+        @Override
+        public boolean attachTo(Char target) {
+            if (super.attachTo(target)){
+                target.deathMarked = true;      // 0 血时不会立刻死亡
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean act() {
+            if (target instanceof Mob && target.HP <= 0 && !(target instanceof NPC)
+                    && target.alignment != Char.Alignment.ALLY){
+                Mob mob = (Mob) target;
+                mob.HP = Math.max(1, mob.HT / 2);              // 复活为盟友
+                AllyBuff.affectAndLoot(mob, hero, Corruption.class);
+                Buff.affect(mob, Adrenaline.class, 20f);        // 豺狼狂暴
+                Buff.affect(mob, Haste.class, 20f);             // 极速
+                detach();
+            } else {
+                spend(TICK);
+                left -= TICK;
+                if (left <= 0) detach();
+            }
+            return true;
+        }
+
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put(LEFT, left);
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+            left = bundle.getFloat(LEFT);
+        }
+
+        @Override
+        public void detach() {
+            super.detach();
+            if (target != null) target.deathMarked = false;
+        }
+    }
+
+    public static class DeathCurse extends Buff {
         private int pos = -1;
         private int duration = 0;
 
@@ -749,14 +862,7 @@ public class EndingBlade extends MeleeWeapon {
                     Buff.affect(ch, Burning.class).reignite(ch, 2.0f);
                     Buff.affect(ch, Poison.class).set(2 + duration);
 
-                    if (ch.HP <= 0 && ch instanceof Mob) {
-                        Mob mob = (Mob) ch;
-                        if (mob.isAlive()) {
-                            AllyBuff.affectAndLoot(mob, hero, Corruption.class);
-                            Buff.affect(mob, Adrenaline.class, 20f);
-                            Buff.affect(mob, Haste.class, 20f);
-                        }
-                    }
+                    Buff.affect(ch, DeathCurseTracker.class).set(duration + 1);
                 }
 
                 CellEmitter.get(pos).start(Speck.factory(Speck.SMOKE), 0.1f, 2);
@@ -771,6 +877,19 @@ public class EndingBlade extends MeleeWeapon {
         @Override
         public String desc() {
             return Messages.get(this, "desc", duration);
+        }
+
+        private static final String POS = "dc_pos";
+        private static final String DURATION = "dc_duration";
+        @Override public void storeInBundle(Bundle bundle){
+            super.storeInBundle(bundle);
+            bundle.put(POS, pos);
+            bundle.put(DURATION, duration);
+        }
+        @Override public void restoreFromBundle(Bundle bundle){
+            super.restoreFromBundle(bundle);
+            pos = bundle.getInt(POS);
+            duration = bundle.getInt(DURATION);
         }
     }
 
@@ -787,7 +906,7 @@ public class EndingBlade extends MeleeWeapon {
                 if(!((Mob) target).isEndLess){
                     Mob mob = (Mob) target;
                     mob.HT = Math.round(mob.HT * 2f);
-                    mob.HP = mob.HT;
+                    mob.HP = Math.round(mob.HP * 2f);
                     mob.baseSpeed *= 0.85f;
                     ((Mob) target).isEndLess = true;
                 }

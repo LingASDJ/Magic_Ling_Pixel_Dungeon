@@ -829,7 +829,7 @@ public class Generator {
 					Badges.isUnlocked(Badges.Badge.KILL_DM720) ? 1:0
 					, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1,
 					Badges.isUnlocked(Badges.Badge.YASD) ? 1:0
-					, 1
+					, 1, 1
 			};
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();
 

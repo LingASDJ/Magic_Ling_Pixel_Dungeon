@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.RitualSword;
@@ -56,7 +57,7 @@ public class CurseInfusion extends InventorySpell {
 
 	@Override
 	protected boolean usableOnItem(Item item) {
-		return ((item instanceof EquipableItem && !(item instanceof MissileWeapon || item instanceof BloodthirstyThorn || item instanceof RitualSword)) || item instanceof Wand || (item instanceof BrokenSeal && Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE) && !item.curseInfusionBonus && item.level() == 0));
+		return !(item instanceof EndingBlade) && ((item instanceof EquipableItem && !(item instanceof MissileWeapon || item instanceof BloodthirstyThorn || item instanceof RitualSword)) || item instanceof Wand || (item instanceof BrokenSeal && Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE) && !item.curseInfusionBonus && item.level() == 0));
 	}
 
 	@Override

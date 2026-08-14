@@ -86,6 +86,7 @@ public class ShubNiggurath extends Boss {
                     GameScene.add( clone, SPLIT_DELAY ); //we add before assigning HP due to ascension
 
                     clone.HP = (HP - damage) / 2;
+                    clone.isEndLess = isEndLess;
                     Dungeon.level.randomDestination(clone);
                     clone.pos = Dungeon.level.randomDestination(clone);
                     Actor.add( new Pushing( clone, pos, clone.pos ) );
@@ -252,6 +253,7 @@ public class ShubNiggurath extends Boss {
                 if (mob instanceof ShubNiggurath) {
                     clone.HT = mob.HP;
                     clone.HP = mob.HP;
+                    clone.isEndLess = mob.isEndLess;
                     clone.notFirst = true;
                 }
             }

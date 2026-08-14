@@ -1360,17 +1360,19 @@ public class Hero extends Char {
 		}
 
 		if(hero.belongings.weapon instanceof EndingBlade){
-			((EndingBlade) hero.belongings.weapon).onTurnUpdate(hero);
-			if(buff(EndingBlade.TrialModeBuff.class) == null){
-				Buff.affect(this, EndingBlade.TrialModeBuff.class);
-				GameScene.fadeToBlack(1f,1f);
-			}
-		}
-
-		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-			if (!(mob instanceof NPC) && !(mob instanceof Boss)) {
-				if(mob.buff(EndingBlade.TrialModeBuff.class) == null){
-					Buff.affect(mob, EndingBlade.TrialModeBuff.class);
+			EndingBlade endingBlade = (EndingBlade) hero.belongings.weapon;
+			endingBlade.onTurnUpdate(hero);
+			if (endingBlade.trialMode){
+				if(buff(EndingBlade.TrialModeBuff.class) == null){
+					Buff.affect(this, EndingBlade.TrialModeBuff.class);
+					GameScene.fadeToBlack(1f,1f);
+				}
+				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+					if (!(mob instanceof NPC)) {
+						if(mob.buff(EndingBlade.TrialModeBuff.class) == null){
+							Buff.affect(mob, EndingBlade.TrialModeBuff.class);
+						}
+					}
 				}
 			}
 		}
@@ -2591,9 +2593,13 @@ public class Hero extends Char {
 	public void damage( int dmg, Object src, DamageType type ) {
 
 		if(hero.belongings.weapon instanceof EndingBlade){
-			if(((EndingBlade) hero.belongings.weapon).trialMode) {
+			if(((EndingBlade) hero.belongings.weapon).trialMode && src instanceof Mob) {
 				dmg *= 2;
 			}
+		}
+
+		if (buff(EndingBlade.TurbulentFlameHeart.class) != null && !(src instanceof EndingBlade.TurbulentFlameHeart)){
+			dmg = Math.round(dmg * 0.2f);
 		}
 
 		if(hero.belongings.getItem(EmotionalAggregation.class)!=null && Random.Float()>0.90f ){

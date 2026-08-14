@@ -82,7 +82,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		if(item instanceof MeleeWeapon) {
 
 			if(item instanceof EndingBlade){
-				return false;
+				return ((EndingBlade) item).canTransmuteUpgrade();
 			}
 
 			if(item instanceof BloodthirstyThorn){
@@ -130,8 +130,11 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	protected void onItemSelected(Item item) {
 		
 		Item result = changeItem(item);
-		
-		if (result == null){
+
+		if (result == item && item instanceof EndingBlade){
+			curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
+			GLog.p(Messages.get(EndingBlade.class, "transmute_upgraded"));
+		} else if (result == null){
 			//This shouldn't ever trigger
 			GLog.n( Messages.get(this, "nothing") );
 			curItem.collect( curUser.belongings.backpack );
@@ -184,6 +187,11 @@ public class ScrollOfTransmutation extends InventoryScroll {
 
 		if(item instanceof LockSword){
 			return null;
+		}
+
+		if(item instanceof EndingBlade){
+			((EndingBlade) item).transmuteUpgrade();
+			return item;
 		}
 
 		if(item instanceof BloodthirstyThorn && item.level() >= 10 && !Statistics.OnlyBloodUpgrade){

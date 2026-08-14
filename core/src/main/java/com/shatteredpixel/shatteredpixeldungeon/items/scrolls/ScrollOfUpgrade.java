@@ -95,10 +95,7 @@ public class ScrollOfUpgrade extends InventoryScroll {
 				} else if (w.cursedKnown && wasCursed && !w.cursed){
 					weakenCurse( hero );
 				}
-			} else {
-				Buff.affect(hero,EndingBlade.Cooldown.class,300f);
 			}
-
 			if (wasHardened && !w.enchantHardened){
 				GLog.w( Messages.get(Weapon.class, "hardening_gone") );
 			} else if (hadGoodEnchant && !w.hasGoodEnchant()){

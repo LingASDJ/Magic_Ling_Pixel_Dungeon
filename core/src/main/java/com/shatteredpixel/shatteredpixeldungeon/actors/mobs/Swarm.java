@@ -108,6 +108,8 @@ public class Swarm extends Mob {
 				Dungeon.level.occupyCell(clone);
 				
 				HP -= clone.HP;
+
+				clone.isEndLess = isEndLess;
 			}
 		}
 		
