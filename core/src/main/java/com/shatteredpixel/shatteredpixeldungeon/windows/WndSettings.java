@@ -768,11 +768,11 @@ public class WndSettings extends WndTabbed {
 			height = chkFont.bottom();
 
 			if (width > 200) {
-				optSafeInset.setRect(width/2 + 1, height + GAP, width/2 - 1, SLIDER_HEIGHT);
+				optSafeInset.setRect(0, chkFont.bottom(), width, SLIDER_HEIGHT);
 			} else {
-				optSafeInset.setRect(0, quickslots.bottom() + GAP, width, SLIDER_HEIGHT);
+				optSafeInset.setRect(0, chkFont.bottom() + GAP, width, SLIDER_HEIGHT);
 			}
-			height = Math.max(quickslots.bottom(), optSafeInset.bottom());
+			height = Math.max(chkFont.bottom(), optSafeInset.bottom());
 
 			if (!isDesktop()) {
 				btnKeyBindings.active = false;
