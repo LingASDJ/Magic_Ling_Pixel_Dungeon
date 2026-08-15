@@ -45,11 +45,15 @@ public class KillSwarm extends Item {
                         mob instanceof BloodsSwarm ||
                         mob instanceof ShubNiggurath) {
                     mob.die( true );
-                } else {
-                    if(!Statistics.RandMode){
-                        Buff.detach(mob, EndingBlade.TrialModeBuff.class);
-                    }
                 }
+            }
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                if(!Statistics.RandMode){
+                    Buff.detach(mob, EndingBlade.TrialModeBuff.class);
+                }
+            }
+            if(!Statistics.RandMode){
+                Buff.detach(hero, EndingBlade.TrialModeBuff.class);
             }
             count++;
             if(count >= 2){
