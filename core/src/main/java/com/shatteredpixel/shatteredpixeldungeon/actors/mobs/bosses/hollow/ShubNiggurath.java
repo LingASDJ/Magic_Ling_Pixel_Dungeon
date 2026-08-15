@@ -37,7 +37,7 @@ public class ShubNiggurath extends Boss {
 
     private static final int MAX_SPLIT_COUNT = 18;
 
-    private static final int MAX_REHEAL_COUNT = 5;
+    private static final int MAX_REHEAL_COUNT = 5;  // 暂且留着
 
     {
         initBaseStatus(0, 0, 0, 0, 3200, 0, 0);
@@ -119,13 +119,9 @@ public class ShubNiggurath extends Boss {
 
             if (HP <= 0) {
                 if (!hasClone) {
-                    return super.isAlive();
-                }
-                if (maxReHeal < MAX_REHEAL_COUNT) {
-                    HP = 1000;
+                    HP = HT;
                     maxReHeal++;
                     Buff.prolong(hero, MindVision.class, 50000);
-                } else {
                     return super.isAlive();
                 }
                 return true;

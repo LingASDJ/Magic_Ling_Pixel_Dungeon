@@ -35,11 +35,14 @@ import java.util.ArrayList;
 public class NullDiedTO extends NTNPC {
 
     private static final String FIRST = "first";
+    private static final String RELOAD_COUNT = "reload_count";
     private boolean first=true;
+    public int reloadCount = 0;
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(FIRST, first);
+        bundle.put(RELOAD_COUNT, reloadCount);
     }
     @Override
     public String name(){
@@ -65,6 +68,7 @@ public class NullDiedTO extends NTNPC {
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         first = bundle.getBoolean(FIRST);
+        reloadCount = bundle.getInt(RELOAD_COUNT);
     }
 
     public void flee() {

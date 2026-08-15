@@ -439,6 +439,7 @@ public class Hero extends Char {
 	private static final String CHARGES = "chargesUsed";
 
 	public void updateHT( boolean boostHP ){
+		if (hero == null) return;
 		int curHT = HT;
 
 		originalHT = 20 + 5*(lvl-1);
@@ -457,11 +458,11 @@ public class Hero extends Char {
 		}
 		HT = Math.max(1, HT - totalLostHP);
 
-		if(hero.belongings.weapon instanceof EndingBlade){
-			if(((EndingBlade) hero.belongings.weapon).trialMode){
-				HT = Math.max(1, Math.round(hero.HT * 0.50f));
-				if (HP > hero.HT) {
-					HP = hero.HT;
+		if(belongings.weapon instanceof EndingBlade){
+			if(((EndingBlade) belongings.weapon).trialMode){
+				HT = Math.max(1, Math.round(HT * 0.50f));
+				if (HP > HT) {
+					HP = HT;
 				}
 			}
 		}
@@ -522,6 +523,7 @@ public class Hero extends Char {
 	}
 	private static final String CAKEUSED = "cakeused";
 	public boolean resting = false;
+	public boolean actedThisTurn = false;
 	public Belongings belongings;
 	public int exp = 0;
 
@@ -1321,12 +1323,14 @@ public class Hero extends Char {
 
 	public void spendAndNext( float time ) {
 		busy();
+		actedThisTurn = true;
 		spend( time );
 		next();
 	}
 
 	@Override
 	public boolean act() {
+		actedThisTurn = false;
 		PropBuff propBuffbuff = buff(PropBuff.class);
 		if (propBuffbuff != null) {
 			int remainingLevel = Math.max(0, propBuffbuff.levelA);
@@ -1797,6 +1801,7 @@ public class Hero extends Char {
 			actResult = false;
 
 		} else {
+			actedThisTurn = true;
 
 			resting = false;
 

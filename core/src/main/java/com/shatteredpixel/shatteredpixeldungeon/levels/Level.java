@@ -452,30 +452,6 @@ public abstract class Level implements Bundlable {
 		createItems();
 
 		diedname = Bones.generateHeroEpitaph();
-
-
-		if(hero.belongings.getItem(YanStudyingPaperOne.class)!=null && Random.Int(1,100)<=25 && depth >0) {
-
-			ArrayList<Potion> potions = new ArrayList<>();
-			if (hero.belongings.getAllItems(Potion.class) != null) {
-				for (Potion p : hero.belongings.getAllItems(Potion.class)) {
-					if (p instanceof PotionOfStrength || p instanceof ElixirOfMight) {
-						continue;
-					} else potions.add(p);
-				}
-			}
-			if(!potions.isEmpty()){
-				int amount = Math.max(Random.Int(1,5), potions.size());
-				while(amount>0){
-					amount--;
-					potions.get(Random.Int(0, potions.size())).detach(hero.belongings.backpack);
-					Item.updateQuickslot();
-					hero.buff(PropBuff.class).potionLost = true;
-				}
-			}
-		}
-
-
 		Random.popGenerator();
 	}
 	

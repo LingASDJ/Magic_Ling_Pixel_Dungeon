@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.DreamSeed;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -446,6 +447,8 @@ public class InterlevelScene extends PixelScene {
 
 	private void descend() throws IOException {
 
+		YanStudyingPaperOne.onDescend();
+
 		if (hero == null) {
 			Mob.clearHeldAllies();
 			Dungeon.init();
@@ -497,7 +500,8 @@ public class InterlevelScene extends PixelScene {
 		}
 
 		LevelDownSpawn(level);
-
+		YanStudyingPaperOne.onDescend();
+		
 		Dungeon.switchLevel( level, level.fallCell( fallIntoPit ));
 	}
 
