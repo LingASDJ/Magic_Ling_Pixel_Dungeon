@@ -65,11 +65,11 @@ public class WhiteBlastSword extends MeleeWeapon {
 
     @Override
     public int min(int lvl) {
-        return 7 + lvl * 3;
+        return 7 + lvl * 2;
     }
     @Override
     public int max(int lvl) {
-        return 20 + lvl * 7;
+        return 20 + lvl * 6;
     }
 
     private static final String INTERVAL    = "acs";

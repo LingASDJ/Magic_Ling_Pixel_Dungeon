@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WorstBlizzard;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
@@ -132,14 +133,16 @@ public class WorstBlizzardFx extends Blob{
                 Buff.affect(ch, WorstBlizzard.class,1f).setWandlevel(wandLevel);
             }
 
+            Chill chill = ch.buff(Chill.class);
+            if (chill != null && chill.cooldown() >= Chill.DURATION
+                    && !ch.isImmune(Frost.class)) {
+                Buff.affect(ch, Frost.class, chill.cooldown());  // 冻结与冻伤相同的回合数
+                Buff.detach(ch, Chill.class);                    // 清除冻伤
+            }
+
             if(!effectedTargets.contains(ch)) {
                 if (ch.buff(Frost.class) != null) {
                     Buff.affect(ch, Frost.class, 2f);
-                } else {
-                    if (Dungeon.level.water[cell] && !ch.isImmune(Frost.class)) {
-                        Buff.affect(ch, Frost.class, Math.min(2 + wandLevel, 14));
-
-                    }
                 }
                 effectedTargets.add(ch);
             }else {

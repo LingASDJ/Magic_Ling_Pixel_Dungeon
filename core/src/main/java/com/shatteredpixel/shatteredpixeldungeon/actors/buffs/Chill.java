@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -66,13 +67,23 @@ public class Chill extends FlavourBuff {
     @Override
     protected void spend(float time){
 		if(target != null && target.isAlive()){
-			if(target.buff(WorstBlizzard.class)!=null){
-				spendConstant( time * 1.5f );
+			if(target.buff(WorstBlizzard.class)!=null && Dungeon.level.water[target.pos]){
+				spendConstant( time * 2f );
 			} else {
 				spendConstant( time );
 			}
 		}
     }
+
+	@Override
+	protected void postpone(float time) {
+		if (target != null && target.isAlive()
+				&& target.buff(WorstBlizzard.class) != null
+				&& Dungeon.level.water[target.pos]) {
+			time *= 2f;
+		}
+		super.postpone(time);
+	}
 
 	@Override
 	public String desc() {

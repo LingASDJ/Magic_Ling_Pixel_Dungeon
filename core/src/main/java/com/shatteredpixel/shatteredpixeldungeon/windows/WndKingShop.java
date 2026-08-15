@@ -192,11 +192,20 @@ public class WndKingShop extends Window {
                 Game.runOnRenderThread(new Callback() {
                     @Override
                     public void call() {
-                        if (Dungeon.gold >= 350) {
+                        int reloadCount = 0;
+                        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                            if (mob instanceof NullDiedTO) {
+                                reloadCount = ((NullDiedTO) mob).reloadCount;
+                                break;
+                            }
+                        }
+                        int reloadPrice = 350 + 250 * reloadCount;
+                        if (Dungeon.gold >= reloadPrice) {
                             hide();
                             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                                 if (mob instanceof NullDiedTO) {
                                     ((NullDiedTO) mob).ReloadShop();
+                                    ((NullDiedTO) mob).reloadCount++;
                                 }
                             }
                             Buff.prolong(hero, ReloadShopTwo.class, 1f);
@@ -204,7 +213,7 @@ public class WndKingShop extends Window {
                             if(hero.belongings.getItem(LuckyGlove.class)!=null && Random.Float()>0.85f){
                                 GLog.n(Messages.get(LuckyGlove.class,"lucky"));
                             }else{
-                                Dungeon.gold -= 350;
+                                Dungeon.gold -= reloadPrice;
                             }
                         } else {
                             GLog.n(Messages.get(WndKingShop.class, "x_gold"));
@@ -314,7 +323,7 @@ public class WndKingShop extends Window {
 
         public RewardWindow( Item item ) {
             super(item);
-            int price = Shopkeeper.sellPrice( item );
+            int price = Shopkeeper.sellPrice( item, Statistics.deepestFloor );
             int sellPrice = (int) (price * 0.6f);
             RedButton btnConfirm = new RedButton(Messages.get(WndKingShop.class, "buy",sellPrice)){
                 @Override
