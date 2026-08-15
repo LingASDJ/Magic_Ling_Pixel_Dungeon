@@ -50,7 +50,6 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
@@ -1365,7 +1364,6 @@ public class Hero extends Char {
 			if (endingBlade.trialMode){
 				if(buff(EndingBlade.TrialModeBuff.class) == null){
 					Buff.affect(this, EndingBlade.TrialModeBuff.class);
-					GameScene.fadeToBlack(1f,1f);
 				}
 				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 					if (!(mob instanceof NPC)) {
