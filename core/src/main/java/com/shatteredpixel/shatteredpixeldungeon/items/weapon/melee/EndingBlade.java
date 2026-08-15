@@ -245,11 +245,16 @@ public class EndingBlade extends MeleeWeapon {
         int lvl = level();
 
         desc.append("\n\n").append(Messages.get(this, "level_desc", lvl));
-        if (hero.buff(Cooldown.class)!=null) {
-            desc.append("\n").append(Messages.get(this, "upgrade_cooldown"));
+        if(hero != null){
+            if (hero.buff(Cooldown.class)!=null) {
+                desc.append("\n").append(Messages.get(this, "upgrade_cooldown"));
+            } else {
+                desc.append("\n").append(Messages.get(this, "upgrade_ready"));
+            }
         } else {
             desc.append("\n").append(Messages.get(this, "upgrade_ready"));
         }
+
 
         if (trialMode) {
             desc.append("\n\n").append(Messages.get(this, "trial_mode_active"));
@@ -713,7 +718,8 @@ public class EndingBlade extends MeleeWeapon {
         info.append("\n\n").append(Messages.get(this, "cannot_unequip_warn"));
         info.append("\n").append(Messages.get(this, "upgrade_rule"));
 
-        if (cursed && isEquipped(hero)) {
+
+        if (cursed && isEquipped(hero) && hero != null) {
             info.append("\n\n").append(Messages.get(Weapon.class, "cursed_worn"));
         }
 

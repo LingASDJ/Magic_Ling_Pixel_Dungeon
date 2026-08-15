@@ -131,6 +131,8 @@ public class SpawnArtifact extends TestItem {
             case 7:
             case 11:
                 return 5;
+            case 18:
+                return 4;
         }
     }
 
