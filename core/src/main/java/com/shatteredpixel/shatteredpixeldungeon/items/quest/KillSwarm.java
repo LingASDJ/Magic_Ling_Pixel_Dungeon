@@ -1,6 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
@@ -8,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.ShubNiggurath;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.BloodsSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Bundle;
 
@@ -22,6 +25,7 @@ public class KillSwarm extends Item {
     {
         image = ItemSpriteSheet.KILL_SWARM;
         stackable = true;
+        defaultAction = AC_KILL;
     }
 
     @Override
@@ -41,6 +45,10 @@ public class KillSwarm extends Item {
                         mob instanceof BloodsSwarm ||
                         mob instanceof ShubNiggurath) {
                     mob.die( true );
+                } else {
+                    if(!Statistics.RandMode){
+                        Buff.detach(mob, EndingBlade.TrialModeBuff.class);
+                    }
                 }
             }
             count++;
