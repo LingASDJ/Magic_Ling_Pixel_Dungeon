@@ -1311,6 +1311,8 @@ public class ItemSpriteSheet {
 
     private static final int MISC        =                               xy(1, 56);  //24 slots
     public static final int MISC_ROLLBLOCK        = MISC+1;
+
+    public static final int KILL_SWARM = MISC+2;
     public static final int MISC_WATERBOMB        = MISC+3;
     public static final int MISC_ROLLPOTION       = MISC+4;
     public static final int MISC_EXFALLING        = MISC+5;
