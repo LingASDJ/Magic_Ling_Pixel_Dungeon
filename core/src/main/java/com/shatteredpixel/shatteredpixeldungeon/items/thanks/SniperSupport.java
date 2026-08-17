@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KusumiMagicGirl;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
@@ -130,8 +131,9 @@ public class SniperSupport extends Buff {
                     && target.fieldOfView[ch.pos]
                     && ch.alignment != target.alignment
                     && ch instanceof Mob
-                    && !(ch instanceof NPC)
-                    && ch.isAlive()) {
+                    && !(ch instanceof NPC || ch instanceof KusumiMagicGirl)
+                    && ch.isAlive()
+                    && !ch.isInvulnerable(getClass())) {
                 enemies.add(ch);
             }
         }
