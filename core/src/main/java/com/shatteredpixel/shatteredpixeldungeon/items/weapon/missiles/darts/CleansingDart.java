@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -49,7 +50,7 @@ public class CleansingDart extends TippedDart {
 		} else {
 			for (Buff b : defender.buffs()){
 				if (!(b instanceof ChampionEnemy)
-						&& !(b instanceof ShieldBuff)
+						&& !(b instanceof ShieldBuff && defender instanceof FireMagicDied)
 						&& b.type == Buff.buffType.POSITIVE
 						&& !(b instanceof Crossbow.ChargedShot)){
 					b.detach();
