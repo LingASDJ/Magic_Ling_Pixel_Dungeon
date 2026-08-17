@@ -203,7 +203,9 @@ public class CapeOfThorns extends Artifact {
 			return false;
 		}
 
-		private void applyBleedingToNearby() {
+		private void applyBleedingToNearby() {applyBleedingToNearby(true);}
+
+		private void applyBleedingToNearby(boolean canBleeding) {
 			Artifact art = getEquippedArtifact();
 			if (art == null || target == null) return;
 
@@ -240,11 +242,11 @@ public class CapeOfThorns extends Artifact {
 							int actualBleedTurns = Math.max(1, Math.round(bleedTurns * distanceFactor));
 
 							Bleeding existingBleeding = ch.buff(Bleeding.class);
-							if (existingBleeding != null) {
+							if (existingBleeding != null && canBleeding) {
 								float newCooldown = Math.max(existingBleeding.visualcooldown(), actualBleedTurns);
 								existingBleeding.detach();
 								Buff.affect(ch, Bleeding.class).set(newCooldown);
-							} else {
+							} else if (canBleeding) {
 								Buff.affect(ch, Bleeding.class).set(actualBleedTurns);
 							}
 							ch.damage(Math.round(art.level()/2f), this, Char.DamageType.PHYSICAL);
@@ -292,7 +294,7 @@ public class CapeOfThorns extends Artifact {
 				detach();
 			}
 
-			applyBleedingToNearby();
+			applyBleedingToNearby(false);
 
 			spend(TICK);
 			return true;
@@ -387,7 +389,7 @@ public class CapeOfThorns extends Artifact {
 
 			if (!cursed && target.buff(MagicImmune.class) == null) {
 				if (attacker != null) {
-					attacker.damage(damage, this, Char.DamageType.REAL);
+					attacker.damage(damage/2, this, Char.DamageType.REAL);
 					Buff.append(attacker, Bleeding.class).set(level());
 				}
 			}

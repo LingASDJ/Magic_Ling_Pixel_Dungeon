@@ -114,6 +114,10 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
                 GLog.i(Messages.get(this, "cursed"));
                 return;
             }
+            if (!isEquipped(hero)) {
+                GLog.i(Messages.get(this, "unequipped"));
+                return;
+            }
 
             // 弹出三种画作选择
             GameScene.show(new WndOptions(
