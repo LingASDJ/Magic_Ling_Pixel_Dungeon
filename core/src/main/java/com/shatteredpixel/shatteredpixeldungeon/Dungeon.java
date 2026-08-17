@@ -537,6 +537,10 @@ public class Dungeon {
 	}
 
 	public static boolean sbbossLevel() {
+		return sbbossLevel( depth );
+	}
+
+	public static boolean sbbossLevel( int depth ) {
 		return depth == 7 || depth == 17 || depth == 21 || depth == 29 || depth == 33 || depth == 37;
 	}
 

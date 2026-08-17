@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KusumiMagicGirlSprites;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 
 public class KusumiMagicGirl extends Mob {
@@ -42,9 +43,14 @@ public class KusumiMagicGirl extends Mob {
     public void damage(int dmg, Object src, DamageType type) {
         super.damage(dmg, src, type);
         if(first){
-            enemy.damage(10,this,DamageType.REAL);
-            yell(Messages.get(this,"ha"));
-            first = false;
+            if (enemy == null && src instanceof Char) {
+                enemy = (Char) src;
+            }
+            if (enemy != null && enemy.isAlive() && enemy != this) {
+                enemy.damage(10,this,DamageType.REAL);
+                GLog.n(Messages.get(this, "ha"));
+                first = false;
+            }
         }
     }
 
@@ -61,8 +67,10 @@ public class KusumiMagicGirl extends Mob {
                 ScrollOfTeleportation.appear(this, Dungeon.level.randomRespawnCell(this));
                 destroy();
                 sprite.killAndErase();
-                enemy.damage(10,this,DamageType.REAL);
-                yell(Messages.get(this,"ha2"));
+                if (enemy != null && enemy.isAlive() && enemy != this) {
+                    enemy.damage(10,this,DamageType.REAL);
+                    GLog.n(Messages.get(this, "ha2"));
+                }
             }
         }
 
