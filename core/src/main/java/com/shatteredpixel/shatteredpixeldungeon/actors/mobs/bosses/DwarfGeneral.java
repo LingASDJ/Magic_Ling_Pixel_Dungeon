@@ -1080,7 +1080,7 @@ public class DwarfGeneral extends Boss {
             DwarfGeneralNTNPC boss = new DwarfGeneralNTNPC();
             boss.pos = 367;
             GameScene.add(boss);
-            yell( Messages.get(this, "defeated") );
+            GLog.n(Messages.get(this, "defeated"));
             Item w = new KingAxe();
             w.level(Random.Int(5));
             Dungeon.level.drop(w, pos).sprite.drop();

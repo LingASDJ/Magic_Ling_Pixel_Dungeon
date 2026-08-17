@@ -139,7 +139,11 @@ public class InterlevelScene extends PixelScene {
 	public void create() {
 		super.create();
 
-		yxlook = Random.Int(100)<=10 && Dungeon.depth>0 && !Dungeon.sbbossLevel() && !Dungeon.RushBossLevel() && !Dungeon.bossLevel() && mode == Mode.DESCEND && branch == 0;
+		int targetDepth = curTransition != null ? curTransition.destDepth : Dungeon.depth;
+		int targetBranch = curTransition != null ? curTransition.destBranch : Dungeon.branch;
+		boolean targetIsBoss = Dungeon.bossLevel(targetDepth)
+				|| (Statistics.bossRushMode && (Dungeon.RushBossLevel(targetDepth) || Dungeon.sbbossLevel(targetDepth)));
+		yxlook = Random.Int(100)<=10 && targetDepth>0 && !targetIsBoss && mode == Mode.DESCEND && targetBranch == 0;
 
 		if(tipset == null || tipset.isEmpty())
 			newTipSet();

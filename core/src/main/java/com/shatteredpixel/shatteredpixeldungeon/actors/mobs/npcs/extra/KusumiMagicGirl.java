@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KusumiMagicGirlSprites;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 
 public class KusumiMagicGirl extends Mob {
@@ -47,7 +48,7 @@ public class KusumiMagicGirl extends Mob {
             }
             if (enemy != null && enemy.isAlive() && enemy != this) {
                 enemy.damage(10,this,DamageType.REAL);
-                yell(Messages.get(this,"ha"));
+                GLog.n(Messages.get(this, "ha"));
                 first = false;
             }
         }
@@ -68,7 +69,7 @@ public class KusumiMagicGirl extends Mob {
                 sprite.killAndErase();
                 if (enemy != null && enemy.isAlive() && enemy != this) {
                     enemy.damage(10,this,DamageType.REAL);
-                    yell(Messages.get(this,"ha2"));
+                    GLog.n(Messages.get(this, "ha2"));
                 }
             }
         }
