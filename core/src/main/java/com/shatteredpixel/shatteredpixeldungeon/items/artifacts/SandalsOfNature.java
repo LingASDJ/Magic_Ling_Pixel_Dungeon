@@ -120,7 +120,7 @@ public class SandalsOfNature extends Artifact {
 		seedChargeReqs.put(Starflower.Seed.class,   40);
 		seedChargeReqs.put(Fadeleaf.Seed.class,     12);
 		seedChargeReqs.put(Blindweed.Seed.class,    12);
-		seedChargeReqs.put(AikeLaier.Seed.class,    10);
+		seedChargeReqs.put(AikeLaier.Seed.class,    35);
 		seedChargeReqs.put(SkyBlueFireBloom.Seed.class,    20);
 	}
 

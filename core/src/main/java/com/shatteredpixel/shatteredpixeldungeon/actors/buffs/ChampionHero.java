@@ -194,6 +194,10 @@ public abstract class ChampionHero extends FlavourBuff {
             return 0.75f;
         }
 
+        public float magicDamageTakenFactor() {
+            return 0.25f;
+        }
+
         {
             immunities.addAll(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic.RESISTS);
         }

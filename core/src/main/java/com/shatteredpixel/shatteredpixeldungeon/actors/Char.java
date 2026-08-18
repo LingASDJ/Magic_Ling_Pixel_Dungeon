@@ -1281,12 +1281,30 @@ public abstract class Char extends Actor {
 	private int calculateNormalDamageReduction(int dmg, Object src) {
 
 		for (ChampionHero buff : buffs(ChampionHero.class)){
-			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+			if (buff instanceof ChampionHero.AntiMagic) {
+				// 单独处理 AntiMagic 精英,对魔法伤害生效额外减伤
+				if (AntiMagic.RESISTS.contains(src.getClass())) {
+					dmg = (int) Math.ceil(dmg * ((ChampionHero.AntiMagic) buff).magicDamageTakenFactor());
+				} else {
+					dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+				}
+			} else {
+				dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+			}
 		}
 
 		if(! (src instanceof WandOfDisintegration) ){
 			for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
-				dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+				if (buff instanceof ChampionEnemy.AntiMagic) {
+					// 单独处理 AntiMagic 精英,对魔法伤害生效额外减伤
+					if (AntiMagic.RESISTS.contains(src.getClass())) {
+						dmg = (int) Math.ceil(dmg * ((ChampionEnemy.AntiMagic) buff).magicDamageTakenFactor());
+					} else {
+						dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+					}
+				} else {
+					dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+				}
 			}
 		}
 
