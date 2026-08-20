@@ -431,85 +431,105 @@ public abstract class Char extends Actor {
 	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti){
 		return attack(enemy, dmgMulti, dmgBonus, accMulti , DamageType.PHYSICAL);
 	}
-
+	// 参数:攻击目标,伤害倍率,伤害加值,命中倍率,伤害类型
 	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti , DamageType type) {
-
+		// 秒杀标记
 		boolean kill = false;
-
+		// 空保护
 		if (enemy == null) return false;
-
+		// 是视野外战斗标记 ,用于动画控制,通过一张布尔表实现pos自然是发起攻击者的位置,enemy.pos是被攻击者的位置,也就是战斗双方有一方处于英雄视野内则播放战斗动画
 		boolean visibleFight = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[enemy.pos];
-
+		//  判断目标对自身这个攻击类型是无敌的
 		if (enemy.isInvulnerable(getClass())) {
-
+			// 判断是视野内战斗
 			if (visibleFight) {
+				// 飘无敌字体
 				enemy.sprite.showStatus( CharSprite.POSITIVE, Messages.get(this, "invulnerable") );
-
+				// 播放格挡音效,第一个参数是音效类型这里是格挡音效,第二个参数是音量倍率,第三个参数是音调,这里取个随机值使得音效不显得机械
 				Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY, 1f, Random.Float(0.96f, 1.05f));
 			}
-
+			// 返回值表示是有效命中
 			return false;
-
-		} else if (hit( this, enemy, accMulti, false )) {
-
+		}
+		// 这里取攻方(this)命中属性,取防方(enemy)闪避属性,accMulti是命中倍率,标记是魔法攻击(魔法攻击具有2倍的命中率),若防方是英雄则打断其当前动作
+		// 隐身偷袭必中,武僧专注必闪,必闪大于必中,
+		// 攻方骰修正:祝福1.25倍,地狱犬祝福1.5倍,心魔损伤大于50的0.7倍,幻惑0.8倍,恍惚0.5倍,精英怪系数修正,水晶诅咒修正
+		// 防方骰修正:祝福1.25倍,幻惑0.8倍,恍惚0.5倍,精英怪/精英英雄系数修正,雪貂护符闪避倍率修正,水晶诅咒修正修正
+		else if (hit( this, enemy, accMulti, false )) {
+			// dr:damage reduction , 护甲减免 , 调用受击方由受击方掷出
 			int dr = Math.round(enemy.drRoll() * AscensionChallenge.statModifier(enemy));
-
+			// 英雄(玩家)专属判定
 			if (this instanceof Hero){
+				// 先把this从char转成hero,因为char不具备belongings字段
 				Hero h = (Hero)this;
+				// 当攻击方(英雄) 攻击武器为远程武器(MissileWeapon) 职业为神射手(SNIPER) 与敌人不相邻 则护甲减免归0
 				if (h.belongings.attackingWeapon() instanceof MissileWeapon
 						&& h.subClass == HeroSubClass.SNIPER
 						&& !Dungeon.level.adjacent(h.pos, enemy.pos)){
 					dr = 0;
 				}
-
+				// 当攻击方(英雄) 处于武僧空手状态 则 受击方 护甲减免归0
 				if (h.buff(MonkEnergy.MonkAbility.UnarmedAbilityTracker.class) != null){
 					dr = 0;
 				}
-
+				// 猎杀者的独眼 的 充能需求降低值
 				int s = Dungeon.depth/5;
+				// 猎杀者的独眼 的 表示当前充能的 辅助buff
 				PropBuff props = hero.buff(PropBuff.class);
-
+				// 当攻击方(英雄) 有猎杀者的独眼
 				if(hero.belongings.getItem(KillEye.class)!=null){
+					// props空保护 当timeG(表示充能量)足够时 则 护甲减免归0
 					if(props != null && props.timeG >= 13 - s){
 						dr = 0;
 					}
+					// 面对怪物时 当处于伏击状态时 则 护甲减免归0
 					if(enemy instanceof Mob){
 						if(((Mob) enemy).surprisedBy(h)){
 							dr = 0;
 						}
 					}
 				}
-
+				// 当攻击方(英雄) 有珍贵的胭脂时
 				if(hero.belongings.getItem(PureRouge.class)!=null) {
+					// 取珍贵的胭脂
 					PureRouge pr = hero.belongings.getItem(PureRouge.class);
+					// 目标为怪物 当处于伏击状态时 触发珍贵的胭脂的效果
 					if(enemy instanceof Mob) {
 						if (((Mob) enemy).surprisedBy(hero)) {
 							pr.PureRougeEffect(enemy,this,false);
 						}
 					}
 				}
-
-				if(h.buff(Killer.class)!=null && h.belongings.attackingWeapon() instanceof MeleeWeapon && !(enemy instanceof Boss)){
+				// 当攻击方(英雄) 有好运不会眷顾傻瓜! 且 武器为近战武器 且 目标不为BOSS 则 秒杀标记置真
+				if(h.buff(Killer.class)!=null
+						&& h.belongings.attackingWeapon() instanceof MeleeWeapon
+						&& !(enemy instanceof Boss)){
 					kill = true;
 				}
 			}
 
-			//we use a float here briefly so that we don't have to constantly round while
-			// potentially applying various multiplier effects
+			// =======================伤害数值计算=======================
+
+			// 建一个浮点数存伤害
 			float dmg;
+
+			// 攻击方 刺客的准备阶段效果
 			Preparation prep = buff(Preparation.class);
 			if (prep != null){
+				// 准备阶段的效果是根据隐身累计回合数投多个骰子取最大值再乘增伤
 				dmg = prep.damageRoll(this);
+				// 赏金猎人天赋为本次攻击挂一个0时长的标记用于结算本次蓄力击杀的额外收益
 				if (this == hero && hero.hasTalent(Talent.BOUNTY_HUNTER)) {
 					Buff.affect(hero, Talent.BountyHunterTracker.class, 0.0f);
 				}
 			} else {
 				dmg = damageRoll();
 			}
-
+			// attack调用处传入伤害倍率
 			dmg = dmg*dmgMulti;
-
-			//胭脂判定
+			// 珍贵的胭脂的判定
+			// 攻击方 有珍贵的胭脂 目标为怪物 本次伤害足以击杀 魅惑转化率骰拼点成功 对方不免疫沉沦
+			// 则 挂沉沦buff 按击杀掉落结算(此处未倒查) 伤害归0 转化概率重置 播放特效与日志 清除幻惑和魅惑
 			if(hero.belongings.getItem(PureRouge.class)!=null) {
 				PureRouge pr = hero.belongings.getItem(PureRouge.class);
 				if(enemy instanceof Mob) {
@@ -531,63 +551,61 @@ public abstract class Char extends Actor {
 				}
 			}
 
-			//flat damage bonus is affected by multipliers
+			// attack调用处传入固定增伤
 			dmg += dmgBonus;
-
+			// 攻击方 处于 狂战领主 狂暴 至多2倍
 			Berserk berserk = buff(Berserk.class);
 			if (berserk != null) dmg = berserk.damageFactor(dmg);
-
-			if (buff( Fury.class ) != null) {
-				dmg *= 1.5f;
-			}
-
-			for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
-				dmg *= buff.meleeDamageFactor();
-			}
-
+			// 攻击方 处于 愤怒 1.5倍
+			if (buff( Fury.class ) != null) dmg *= 1.5f;
+			// 攻击方 精英怪修正系数
+			for (ChampionEnemy buff : buffs(ChampionEnemy.class)) dmg *= buff.meleeDamageFactor();
+			// 攻击方 精英怪对应的生效于玩家的祝福修正系数
+			for (ChampionHero buff : buffs(ChampionHero.class)) dmg *= buff.meleeDamageFactor();
+			// 攻击方 水晶诅咒的怪物伤害修正系数
 			dmg *= AscensionChallenge.statModifier(this);
-
-			//friendly endure
+			// 攻击方 忍耐技能 加值 加上忍耐期间积攒的伤害
 			Endure.EndureTracker endure = buff(Endure.EndureTracker.class);
 			if (endure != null) dmg = endure.damageFactor(dmg);
-
-			//enemy endure
+			// 受击方 忍耐技能 0.2~0.5倍 (初始的50%被转换成积攒的伤害)
 			endure = enemy.buff(Endure.EndureTracker.class);
-			if (endure != null){
-				dmg = endure.adjustDamageTaken(dmg);
-			}
+			if (endure != null) dmg = endure.adjustDamageTaken(dmg);
+			// 受击方 处于 决斗区域 0.67倍 先于护甲结算
+			if (enemy.buff(ScrollOfChallenge.ChallengeArena.class) != null) dmg *= 0.67f;
+			// 受击方 处于 武僧冥想 0.2倍
+			if (enemy.buff(MonkEnergy.MonkAbility.Meditate.MeditateResistance.class) != null) dmg *= 0.2f;
+			// 攻击方 处于 虚弱 0.67倍
+			if (buff(Weakness.class) != null ) dmg *= 0.67f;
+			// 攻击方(英雄) 处于 魔女的低语-审判 近战0.9倍
+			if (buff(MagicGirlSayKill.class) != null
+					&& this instanceof Hero
+					&& (((Hero)this).belongings.attackingWeapon() == null
+					|| ((Hero)this).belongings.attackingWeapon() instanceof MeleeWeapon) ) dmg *= 0.90f;
+			// 攻击方(英雄) 处于 纯洁的祝福-安息 物理1.5倍
+			if (buff(BlessMobDied.class) != null
+					&& type == DamageType.PHYSICAL) dmg *= 1.5f;
 
-			if (enemy.buff(ScrollOfChallenge.ChallengeArena.class) != null){
-				dmg *= 0.67f;
-			}
 
-			if (enemy.buff(MonkEnergy.MonkAbility.Meditate.MeditateResistance.class) != null){
-				dmg *= 0.2f;
-			}
-
-			if ( buff(Weakness.class) != null ){
-				dmg *= 0.67f;
-			}
-
+			// =======================定整=======================
 			int effectiveDamage = Math.round(dmg);
+			// 物理伤害走受击方防御处理逻辑
+			if(type == DamageType.PHYSICAL ) effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
 
-			if(type == DamageType.PHYSICAL )effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
-			//do not trigger on-hit logic if defenseProc returned a negative value
+			// =======================护甲结算=======================
+			// 攻击有效 则伤害值减去护甲值(大于0)
 			if (effectiveDamage >= 0) {
 				effectiveDamage = Math.max(effectiveDamage - dr, 0);
-
+				// 粘滞处理:伤害延时(未查)
 				if (enemy.buff(Viscosity.ViscosityTracker.class) != null) {
 					effectiveDamage = enemy.buff(Viscosity.ViscosityTracker.class).deferDamage(effectiveDamage);
 					enemy.buff(Viscosity.ViscosityTracker.class).detach();
 				}
-
-				//vulnerable specifically applies after armor reductions
-				if (enemy.buff(Vulnerable.class) != null) {
-					effectiveDamage *= 1.33f;
-				}
-
+				// 受击方 处于 易伤 1.33倍
+				if (enemy.buff(Vulnerable.class) != null) effectiveDamage *= 1.33f;
+				// 攻击特效
 				effectiveDamage = attackProc(enemy, effectiveDamage);
 			}
+			// 攻击可视标记 attack的开头定义 这里对音效进行控制
 			if (visibleFight) {
 				if (effectiveDamage > 0 || !enemy.blockSound(Random.Float(0.96f, 1.05f))) {
 					hitSound(Random.Float(0.87f, 1.15f));
@@ -742,76 +760,89 @@ public abstract class Char extends Actor {
 	public static boolean hit( Char attacker, Char defender, float accMulti, boolean magic ) {
 		float acuStat = attacker.attackSkill( defender );
 		float defStat = defender.defenseSkill( attacker );
-
+		// 打断玩家动作
 		if (defender instanceof Hero && ((Hero) defender).damageInterrupt){
 			((Hero) defender).interrupt();
 		}
-
-		//invisible chars always hit (for the hero this is surprise attacking)
+		// "attacker.invisible > 0"表示攻击者处于隐身状态,
+		// "attacker.canSurpriseAttack()"默认为true,
+		// attacker来自英雄时会判断
+		// 当前是(空手/非武器)则返回true
+		// 力量小于当前武器需求(STR() < STRReq())则返回false
+		// 武器是链枷/魔法火把则返回false
 		if (attacker.invisible > 0 && attacker.canSurpriseAttack()){
 			acuStat = INFINITE_ACCURACY;
 		}
-
+		// 判定是有武僧FocusBuff即武僧专注状态
 		if (defender.buff(MonkEnergy.MonkAbility.Focus.FocusBuff.class) != null){
 			defStat = INFINITE_EVASION;
 		}
 
-		//if accuracy or evasion are large enough, treat them as infinite.
-		//note that infinite evasion beats infinite accuracy
+		// 无限闪避大于无限命中
 		if (defStat >= INFINITE_EVASION){
+			// 显示未命中图标
 			hitMissIcon = FloatingText.getMissReasonIcon(attacker, acuStat, defender, INFINITE_EVASION);
 			return false;
 		} else if (acuStat >= INFINITE_ACCURACY){
 			return true;
 		}
 
+		// =====================命中骰子=====================
 		float acuRoll = Random.Float( acuStat );
+		// 祝福buff的1.25倍
 		if (attacker.buff(Bless.class) != null) acuRoll *= 1.25f;
-
-		//狗子追加50%的精准，有这个效果时
-		if (attacker.buff(DeadDogCerberus.CerberusBless.class) != null){
-			acuRoll *= 1.5f;
-		}
-
+		// 地狱犬的祝福buff的1.5倍
+		if (attacker.buff(DeadDogCerberus.CerberusBless.class) != null) acuRoll *= 1.5f;
+		// 幻惑buff的0.8倍
+		if (attacker.buff(  Hex.class) != null) acuRoll *= 0.8f;
+		// 恍惚buff的0.5倍
+		if (attacker.buff( Daze.class) != null) acuRoll *= 0.5f;
+		// 心魔损伤大于50时的0.7倍
 		ScaryBuff scaryBuff = attacker.buff(ScaryBuff.class);
 		if(scaryBuff != null){
 			if(scaryBuff.Scary>50){
 				acuRoll *= 0.7f;
 			}
 		}
-
-		if (attacker.buff(  Hex.class) != null) acuRoll *= 0.8f;
-		if (attacker.buff( Daze.class) != null) acuRoll *= 0.5f;
+		// 精英怪修正系数
 		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
 			acuRoll *= buff.evasionAndAccuracyFactor();
 		}
+		// 精英怪对应的生效于玩家的祝福修正系数
+		for (ChampionHero buff : attacker.buffs(ChampionHero.class)){
+			acuRoll *= buff.evasionAndAccuracyFactor();
+		}
+		// 水晶诅咒修正系数
 		acuRoll *= AscensionChallenge.statModifier(attacker);
 
+		// =====================闪避骰子=====================
 		float defRoll = Random.Float( defStat );
+		// 祝福buff的1.25倍
 		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
+		// 幻惑buff的0.8倍
 		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
+		// 恍惚buff的0.5倍
 		if (defender.buff( Daze.class) != null) defRoll *= 0.5f;
+		// 精英怪修正系数
 		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
 			defRoll *= buff.evasionAndAccuracyFactor();
 		}
-
+		// 精英怪对应的生效于玩家的祝福修正系数
 		for (ChampionHero buff : defender.buffs(ChampionHero.class)){
 			defRoll *= buff.evasionAndAccuracyFactor();
 		}
-
+		// 雪貂绒束修正系数
 		defRoll *= FerretTuft.evasionMultiplier();
-
+		// 水晶诅咒修正系数
 		defRoll *= AscensionChallenge.statModifier(defender);
-
-
+		// 命中倍率下的命中判定
 		if ((acuRoll * accMulti) >= defRoll){
 			return true;
 		} else {
+			// 通过未命中原因分析器计算是谁导致的未命中,并弹出图标
 			hitMissIcon = FloatingText.getMissReasonIcon(attacker, acuRoll, defender, defRoll);
 			return false;
 		}
-
-//		return acuRoll * accMulti) >= defRoll;
 	}
 
 	public int attackSkill( Char target ) {
@@ -842,30 +873,24 @@ public abstract class Char extends Actor {
 	// atm attack is always post-armor and defence is already pre-armor
 
 	public int attackProc( Char enemy, int damage ) {
+		float _damage = (float) damage;
+
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
 			buff.onAttackProc( enemy );
 		}
 
 		for (ChampionHero buff : buffs(ChampionHero.class)){
-			damage *= (int) buff.meleeDamageFactor();
 			buff.onAttackProc( enemy );
 		}
 
-		//削弱10%伤害
-		if ( buff(MagicGirlSayKill.class) != null ){
-			damage *= 0.90f;
-			//安息 x1.5伤害
-		} else if ( buff(BlessMobDied.class) != null ) {
-			damage *= 1.5f;
-		}
-
-		ScaryBuff scaryBuff = Dungeon.hero.buff(ScaryBuff.class);
+		// 心魔损伤大于50时攻击者造成伤害变为0.65倍
+		ScaryBuff scaryBuff = buff(ScaryBuff.class);
 		if(scaryBuff != null){
 			if(scaryBuff.Scary>50){
-				damage *= 0.65f;
+				_damage *= 0.65f;
 			}
 		}
-		return damage;
+		return Math.round(_damage);
 	}
 
 	public int defenseProc( Char enemy, int damage ) {

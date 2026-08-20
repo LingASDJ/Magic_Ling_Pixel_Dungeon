@@ -29,7 +29,7 @@ public class MerchantSword extends MeleeWeapon{
         return Messages.get(this, "desc" , 10 + (buffedLvl() * 5));
     }
 
-
+    // 武技执行相关
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
         beforeAbilityUsed(hero, null);
@@ -39,7 +39,7 @@ public class MerchantSword extends MeleeWeapon{
         hero.next();
         afterAbilityUsed(hero);
     }
-
+    // 武技描述相关
     @Override
     public String abilityInfo() {
         if (levelKnown){
@@ -48,7 +48,7 @@ public class MerchantSword extends MeleeWeapon{
             return Messages.get(this, "typical_ability_desc", 4);
         }
     }
-
+    // 武技随升级变动预览
     @Override
     public String upgradeAbilityStat(int level) {
         return Integer.toString(3+level);

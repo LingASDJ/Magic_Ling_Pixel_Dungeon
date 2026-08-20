@@ -86,29 +86,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 abstract public class Weapon extends KindOfWeapon {
+	// 一个暂时没有用处的开关属性
 	public boolean isShining=false;
+	// 命中率倍率
 	public float    ACC = 1f;	// Accuracy modifier
+	// 攻击间隔倍率
 	public float	DLY	= 1f;	// Speed modifier
+	// 攻击距离
 	public int      RCH = 1;    // Reach modifier (only applies to melee hits)
 
 	@Override
 	public float speedFactor( Char owner ) {
 
+		// 吃力值,表示力量需求超出力量属性多少点,只对玩家生效
 		int encumbrance = 0;
 		if (owner instanceof Hero) {
 			encumbrance = STRReq() - ((Hero)owner).STR();
 		}
-
+		// 攻击间隔修正系数(来自武器强化)
 		float DLY = augment.delayFactor(this.DLY);
-
-		DLY *= RingOfFuror.attackSpeedMultiplier(owner);
-
+		// 狂怒戒指攻速倍率
+		DLY /= RingOfFuror.attackSpeedMultiplier(owner);
+		// 武器吃力负重惩罚,攻击间隔变为1.2^吃力值倍
 		return (encumbrance > 0 ? (float)(DLY * Math.pow( 1.2, encumbrance )) : DLY);
 	}
 
     public enum Augment {
+		// 攻速特化强化
 		SPEED   (0.7f, 2/3f),
+		// 伤害特化强化
 		DAMAGE  (1.5f, 5/3f),
+		// 无强化
 		NONE	(1.0f, 1f);
 
 		private float damageFactor;
