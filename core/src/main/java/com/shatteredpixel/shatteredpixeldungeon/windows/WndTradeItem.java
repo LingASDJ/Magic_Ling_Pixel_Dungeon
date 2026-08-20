@@ -260,11 +260,7 @@ public class WndTradeItem extends WndInfoItem {
 		hero.spend(-hero.cooldown());
 
 		int sellPrice;
-		if (item instanceof DistressSignalNesting) {
-			sellPrice = ((DistressSignalNesting) item).shopValue();
-		} else {
-			sellPrice = (int) (item.value() * priceMulti);
-		}
+		sellPrice = (int) (item.value() * priceMulti);
 		new Gold(sellPrice).doPickUp( hero );
 
 		if (shop != null){
@@ -293,11 +289,7 @@ public class WndTradeItem extends WndInfoItem {
 			hero.spend(-hero.cooldown());
 
 			int sellPrice;
-			if (item instanceof DistressSignalNesting) {
-				sellPrice = ((DistressSignalNesting) item).shopValue();
-			} else {
-				sellPrice = (int) (item.value() * priceMulti);
-			}
+			sellPrice = (int) (item.value() * priceMulti);
 			new Gold(sellPrice).doPickUp( hero );
 
 			if (shop != null){

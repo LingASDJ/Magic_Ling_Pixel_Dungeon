@@ -23,11 +23,11 @@ public class SeedALRLogScene extends PixelScene {
 
     public ScrollPane list;
     public String s;
-    public static CreditsBlock txt;
-    public static RenderedTextBlock r;
+    public CreditsBlock txt;
+    public RenderedTextBlock r;
     public boolean stop;
-    public static Thread thread;
-    public static Component contentx;
+    public Thread thread;
+    public Component contentx;
     public WndTextInput wndTextInput;
 
     @Override
@@ -74,6 +74,7 @@ public class SeedALRLogScene extends PixelScene {
                     thread = new Thread(() -> {
                         s = new SeedFinder().logSeedItems(Long.toString(seed),SPDSettings.seedfinderFloors(),SPDSettings.challenges());
                         Gdx.app.postRunnable(() -> {
+                            if (stop) return;
                             r.destroy();
 
                             txt = new SeedALRLogScene.CreditsBlock(true, Window.TITLE_COLOR,s);
@@ -103,6 +104,7 @@ public class SeedALRLogScene extends PixelScene {
         ExitButton btnExit = new ExitButton() {
             @Override
             protected void onClick() {
+                stop = true;
                 if (thread!= null && thread.isAlive())thread.interrupt();
                 ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
                 System.gc();
@@ -116,7 +118,16 @@ public class SeedALRLogScene extends PixelScene {
 
     @Override
     protected void onBackPressed() {
+        stop = true;
+        if (thread != null && thread.isAlive()) thread.interrupt();
         ShatteredPixelDungeon.switchScene(SeedFinderScene.class);
+    }
+
+    @Override
+    public void destroy() {
+        stop = true;
+        if (thread != null && thread.isAlive()) thread.interrupt();
+        super.destroy();
     }
 
     public static class CreditsBlock extends Component {

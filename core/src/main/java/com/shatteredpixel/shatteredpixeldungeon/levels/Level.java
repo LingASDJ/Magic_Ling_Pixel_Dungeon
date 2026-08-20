@@ -1651,6 +1651,16 @@ public abstract class Level implements Bundlable {
 
 	private static boolean[] modifiableBlocking;
 
+	private boolean cellInBounds(int cell){
+		return cell >= 0 && cell < length();
+	}
+
+	private static void markFov(boolean[] fov, int cell){
+		if (cell >= 0 && cell < fov.length){
+			fov[cell] = true;
+		}
+	}
+
 	public void updateFieldOfView( Char c, boolean[] fieldOfView ) {
 
 		int cx = c.pos % width();
@@ -1771,9 +1781,9 @@ public abstract class Level implements Bundlable {
 			int range = 1+(hero.pointsInTalent(Talent.EAGLE_EYE)-2);
 			for (Mob mob : mobs) {
 				int p = mob.pos;
-				if (!fieldOfView[p] && distance(c.pos, p) <= range) {
+				if (cellInBounds(p) && !fieldOfView[p] && distance(c.pos, p) <= range) {
 					for (int i : PathFinder.NEIGHBOURS9) {
-						fieldOfView[mob.pos + i] = true;
+						markFov(fieldOfView, mob.pos + i);
 					}
 				}
 			}
@@ -1792,11 +1802,15 @@ public abstract class Level implements Bundlable {
 			Dungeon.hero.mindVisionEnemies.clear();
 			if (c.buff( MindVision.class ) != null) {
 				for (Mob mob : mobs) {
+					if (!cellInBounds(mob.pos)){
+						if (SPDSettings.Cheating()) GLog.w(Messages.get(Level.class, "invalid_mob_pos", mob.getClass().getSimpleName(), mob.pos));
+						continue;
+					}
 					if (mob instanceof Mimic && mob.alignment == Char.Alignment.NEUTRAL&& ((Mimic) mob).stealthy()){
 						continue;
 					}
 					for (int i : PathFinder.NEIGHBOURS9) {
-						heroMindFov[mob.pos + i] = true;
+						markFov(heroMindFov, mob.pos + i);
 					}
 				}
 			} else {
@@ -1813,9 +1827,10 @@ public abstract class Level implements Bundlable {
 							continue;
 						}
 						int p = mob.pos;
+						if (!cellInBounds(p)) continue;
 						if (!fieldOfView[p] && distance(c.pos, p) <= mindVisRange) {
 							for (int i : PathFinder.NEIGHBOURS9) {
-								heroMindFov[mob.pos + i] = true;
+								markFov(heroMindFov, mob.pos + i);
 							}
 						}
 					}
@@ -1824,7 +1839,7 @@ public abstract class Level implements Bundlable {
 			if (c.buff( Awareness.class ) != null) {
 				for (Heap heap : heaps.valueList()) {
 					int p = heap.pos;
-					for (int i : PathFinder.NEIGHBOURS9) heroMindFov[p+i] = true;
+					if (cellInBounds(p)) for (int i : PathFinder.NEIGHBOURS9) markFov(heroMindFov, p+i);
 				}
 			}
 
@@ -1834,12 +1849,12 @@ public abstract class Level implements Bundlable {
 					continue;
 				}
 				int p = ch.pos;
-				for (int i : PathFinder.NEIGHBOURS9) heroMindFov[p+i] = true;
+				if (cellInBounds(p)) for (int i : PathFinder.NEIGHBOURS9) markFov(heroMindFov, p+i);
 			}
 
 			for (TalismanOfForesight.HeapAwareness h : c.buffs(TalismanOfForesight.HeapAwareness.class)){
 				if (depth != h.depth || Dungeon.branch != h.branch) continue;
-				for (int i : PathFinder.NEIGHBOURS9) heroMindFov[h.pos+i] = true;
+				if (cellInBounds(h.pos)) for (int i : PathFinder.NEIGHBOURS9) markFov(heroMindFov, h.pos+i);
 			}
 
 			for (Mob m : mobs){
@@ -1860,6 +1875,7 @@ public abstract class Level implements Bundlable {
 			for(Actor actor : Actor.all()){
 				if(actor instanceof WandOfSun.MiniSun){
 					WandOfSun.MiniSun sun = (WandOfSun.MiniSun) actor;
+					if (!cellInBounds(sun.pos)) continue;
 					int[] neighbours7 = {
 							-3,-2,-1,0,1,2,3
 					};
@@ -1882,11 +1898,12 @@ public abstract class Level implements Bundlable {
 
 			for (RevealedArea a : c.buffs(RevealedArea.class)){
 				if (depth != a.depth || Dungeon.branch != a.branch) continue;
-				for (int i : PathFinder.NEIGHBOURS9) heroMindFov[a.pos+i] = true;
+				if (cellInBounds(a.pos)) for (int i : PathFinder.NEIGHBOURS9) markFov(heroMindFov, a.pos+i);
 			}
 
 			//set mind vision chars
 			for (Mob mob : mobs) {
+				if (!cellInBounds(mob.pos)) continue;
 				if (heroMindFov[mob.pos] && !fieldOfView[mob.pos]){
 					hero.mindVisionEnemies.add(mob);
 				}
@@ -1898,7 +1915,7 @@ public abstract class Level implements Bundlable {
 
 		if (c == hero) {
 			for (Heap heap : heaps.valueList())
-				if (!heap.seen && fieldOfView[heap.pos])
+				if (!heap.seen && cellInBounds(heap.pos) && fieldOfView[heap.pos])
 					heap.seen = true;
 		}
 
