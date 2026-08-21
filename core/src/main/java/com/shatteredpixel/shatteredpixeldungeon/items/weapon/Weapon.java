@@ -69,9 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocki
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.TimeReset;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.*;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -305,11 +303,16 @@ abstract public class Weapon extends KindOfWeapon {
 		if(Dungeon.branch == 1 && Dungeon.depth == 31){
 			reach = 1;
 		}
-
 		if (owner instanceof Hero && RingOfForce.fightingUnarmed((Hero) owner)){
 			reach = 1; //brawlers stance benefits from enchantments, but not innate reach
 			if (!RingOfForce.unarmedGetsWeaponEnchantment((Hero) owner)){
 				return reach;
+			}
+		}
+		// 德诺尔的镰刀特判
+		if (this instanceof DenorScythe){
+			if (owner.buff(DenorScythe.ExtendedReach.class) != null){
+				reach+=((DenorScythe)this).extraReach;
 			}
 		}
 		if (hasEnchant(Projecting.class, owner)){

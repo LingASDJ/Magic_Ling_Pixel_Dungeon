@@ -152,7 +152,7 @@ public class HuntingCarnival extends Buff {
                 damageLogic = () -> {
                     int damage = burnDamage(depth);
                     if (enemy.isAlive()) enemy.damage(damage, this, PHYSICAL);
-                    if (enemy.isAlive()) Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 2 + artifactLevel);
+                    if (enemy.isAlive()) Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 4 + artifactLevel * 2);
                     int idx = Random.Int(3);
                     GLog.b(Messages.get(this, "burn_hit_" + idx));
                 };
@@ -180,18 +180,20 @@ public class HuntingCarnival extends Buff {
     }
 
     private int frostDamage(int depth) {
-        int min = 5;
-        int max = 10 + depth / 2;
+        int min = 5 + depth;
+        int max = 10 + (int)(depth * 1.5);
         return Random.NormalIntRange(min, max);
     }
 
     private int shockDamage(int depth) {
-        return frostDamage(depth); // 同霜冻公式
+        int min = 15 + depth;
+        int max = 25 + (int)(depth * 1.3);
+        return Random.NormalIntRange(min, max);
     }
 
     private int burnDamage(int depth) {
-        int min = 15;
-        int max = 25 + depth;
+        int min = 15 + depth;
+        int max = 25 + (int)(depth * 1.8);
         return Random.NormalIntRange(min, max);
     }
 

@@ -49,6 +49,7 @@ public class TheDrip extends MeleeWeapon {
     }
 
     public static boolean createWater(int cell) {
+        // 检测地形为可水化地形
         if (!Dungeon.level.insideMap(cell)) return false;
         if (Dungeon.level.solid[cell])      return false;
         if (Dungeon.level.pit[cell])        return false;

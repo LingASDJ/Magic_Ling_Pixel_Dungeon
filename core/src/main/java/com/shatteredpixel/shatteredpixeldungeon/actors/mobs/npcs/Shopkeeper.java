@@ -310,8 +310,17 @@ public class Shopkeeper extends NPC {
 								@Override
 								protected void onSelect(int index) {
 									if (index == 0) {
-										Dungeon.gold -= upgradePrice;
-										Statistics.goldCollected -= upgradePrice;
+										if (Statistics.bossRushMode) {
+											// BR模式：消耗时空金卷
+											if (Dungeon.rushgold < upgradePrice) {
+												GLog.w(Messages.get(Shopkeeper.this, "no_kinggold"));
+												return;
+											}
+											Dungeon.rushgold -= upgradePrice;
+										} else {
+											Dungeon.gold -= upgradePrice;
+											Statistics.goldCollected -= upgradePrice;
+										}
 										finalNesting.upgrade();
 										GLog.p(Messages.get(Shopkeeper.this, "upgrade_done"));
 									}
@@ -333,7 +342,7 @@ public class Shopkeeper extends NPC {
 					@Override
 					protected boolean enabled(int index) {
 						if (hasUpgrade && index == 2) {
-							return Dungeon.gold >= upgradePrice;
+							return Statistics.bossRushMode ? Dungeon.rushgold >= upgradePrice : Dungeon.gold >= upgradePrice;
 						} else if (index >= (hasUpgrade ? 3 : 2)) {
 							int buybackIndex = index - (hasUpgrade ? 3 : 2);
 							return Dungeon.gold >= buybackItems.get(buybackIndex).value();

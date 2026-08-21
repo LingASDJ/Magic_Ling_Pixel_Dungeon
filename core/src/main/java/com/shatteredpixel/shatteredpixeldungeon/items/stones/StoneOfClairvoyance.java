@@ -66,10 +66,11 @@ public class StoneOfClairvoyance extends Runestone {
 				Dungeon.level.mapped[curr] = true;
 				
 				if (Dungeon.level.secret[curr]) {
+					int oldValue = Dungeon.level.map[curr];  // 揭示前保存旧地形，供贴图动画使用
 					Dungeon.level.discover(curr);
 					
 					if (Dungeon.level.heroFOV[curr]) {
-						GameScene.discoverTile(curr, Dungeon.level.map[curr]);
+						GameScene.discoverTile(curr, oldValue);
 						ScrollOfMagicMapping.discover(curr);
 						noticed = true;
 					}
