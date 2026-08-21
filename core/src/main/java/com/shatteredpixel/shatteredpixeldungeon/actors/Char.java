@@ -156,6 +156,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.DeadBo
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.CursedBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
@@ -583,8 +584,8 @@ public abstract class Char extends Actor {
 					|| ((Hero)this).belongings.attackingWeapon() instanceof MeleeWeapon) ) dmg *= 0.90f;
 			// 攻击方(英雄) 处于 纯洁的祝福-安息 物理1.5倍
 			if (buff(BlessMobDied.class) != null
+					&& this instanceof Hero
 					&& type == DamageType.PHYSICAL) dmg *= 1.5f;
-
 
 			// =======================定整=======================
 			int effectiveDamage = Math.round(dmg);
@@ -612,24 +613,24 @@ public abstract class Char extends Actor {
 				}
 			}
 
-			// If the enemy is already dead, interrupt the attack.
-			// This matters as defence procs can sometimes inflict self-damage, such as armor glyphs.
+			// 受击方防御效果可能致自身死亡,故做一次判定
 			if (!enemy.isAlive()){
 				return true;
 			}
-
+			// 伤害结算
 			enemy.damage( effectiveDamage, this ,type);
-			//enemy.damage(effectiveDamage,this);
-
+			// 即死结算
 			if(kill){
 				enemy.HP = 0;
 				enemy.die(this);
 			}
-
+			// 火焰之力与晶触之力施加效果
 			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy);
 			if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy);
-
-			if (enemy.isAlive() && enemy.alignment != alignment && prep != null && prep.canKO(enemy)){
+			if (enemy.isAlive()
+					&& enemy.alignment != alignment
+					&& prep != null
+					&& prep.canKO(enemy)){
 				enemy.HP = 0;
 				if (!enemy.isAlive()) {
 					enemy.die(this);
@@ -1059,6 +1060,21 @@ public abstract class Char extends Actor {
 			dmg *= 2;
 		} else if(buff(TowerGods.AttackUP_Palf.class) != null){
 			dmg *= 1.5f;
+		}
+
+		// 攻击方 持有诅咒之剑 造成的所有伤害呈 cursedCost 倍
+		if (src instanceof Char) {
+			CursedBlade attackerBlade = CursedBlade.heldBy((Char) src);
+			if (attackerBlade != null) {
+				long multiplied = (long) dmg * attackerBlade.cursedCost();
+				dmg = multiplied > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) multiplied;
+			}
+		}
+		// 受击方 持有诅咒之剑 受到的所有伤害呈 cursedCost 倍
+		CursedBlade cursedBlade = CursedBlade.heldBy(this);
+		if (cursedBlade != null) {
+			long multiplied = (long) dmg * cursedBlade.cursedCost();
+			dmg = multiplied > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) multiplied;
 		}
 
 		if (buff(Sickle.HarvestBleedTracker.class) != null){

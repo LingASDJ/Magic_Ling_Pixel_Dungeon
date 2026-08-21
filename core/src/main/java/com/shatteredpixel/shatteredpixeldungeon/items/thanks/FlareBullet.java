@@ -27,7 +27,7 @@ public class FlareBullet extends Item {
             inputs =  new Class[]{PotionOfLiquidFlame.class, UnstableBrew.class, PotionOfLevitation.class};
             inQuantity = new int[]{1, 1, 1};
 
-            cost = 5;
+            cost = 0;   // 配方不再消耗炼金能量
 
             output = FlareBullet.class;
             outQuantity = 5;
@@ -65,9 +65,9 @@ public class FlareBullet extends Item {
             } else {
                 quantity(quantity() - 1);
             }
-            // 增加套组充能（使用公共方法）
+            // 每次装填恢复至当前充能上限（最终充能不可超过上限）
             Item.updateQuickslot();
-            signal.addCharge(1);
+            signal.addCharge(signal.getChargeCap());
             Item.updateQuickslot();
             GLog.p(Messages.get(this, "load_success"));
             hero.spend(1f);
@@ -85,4 +85,3 @@ public class FlareBullet extends Item {
         return true;
     }
 }
-

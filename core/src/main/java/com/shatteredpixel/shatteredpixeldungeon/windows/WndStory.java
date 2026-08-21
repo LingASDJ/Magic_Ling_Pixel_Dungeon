@@ -230,10 +230,10 @@ public class WndStory extends Window {
 	@Override
 	public void hide() {
 		super.hide();
-		Banner mapnameSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
-		GameScene sceneGame = (GameScene) Game.scene();
-		float screenW = Game.width;
 		if(!Statistics.bossRushMode && Game.scene() instanceof GameScene){
+			Banner mapnameSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
+			GameScene sceneGame = (GameScene) Game.scene();
+			float screenW = Game.width;
 			switch (Dungeon.depth) {
 				case 0:
 					if(!Dungeon.isChallenged(CS)){

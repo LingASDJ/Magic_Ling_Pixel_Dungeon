@@ -201,6 +201,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.QuickSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
@@ -210,6 +211,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dairikyan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DragonShiled;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.CursedBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FiveRen;
@@ -224,6 +226,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceLingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.JunglePoison;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KillKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
@@ -241,6 +244,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Seekingspear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SpikedChakram;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.TheDrip;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WhiteBlastSword;
@@ -582,9 +587,11 @@ public class Generator {
 					TreeList.class,
 					Dirk.class,
 					Sickle.class,
+					KillKing.class,
+					SpikedChakram.class,
 					Pickaxe.class,
 			};
-			WEP_T2.defaultProbs = new float[]{2, 2, 2, 2, 2, 2, 0};
+			WEP_T2.defaultProbs = new float[]{2, 2, 2, 2, 2, 2, 2, 2, 0};
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 
 			WEP_T3.classes = new Class<?>[]{
@@ -603,10 +610,16 @@ public class Generator {
 					JunglePoison.class,
 
 					LifeTreeSword.class,
+					TheDrip.class,
+					QuickSword.class,
+					CursedBlade.class,
 			};
 			WEP_T3.probs = new float[]{1, 5, 4, 4, 4, 3, 5, 3, 6,
 					Badges.isUnlocked(Badges.Badge.KILL_CLSISTER) ? 3 : 0,
-					0};
+					0,
+					3,
+					4,
+					2};
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,

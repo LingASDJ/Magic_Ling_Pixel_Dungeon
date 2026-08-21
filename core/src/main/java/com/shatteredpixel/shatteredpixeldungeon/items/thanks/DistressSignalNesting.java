@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.thanks;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -25,6 +26,20 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
         defaultAction = AC_FIRE;
     }
 
+    // 金币消耗
+    public final int COST = 500;
+
+    // 古堡区域：狙击手无法支援现世以外的地方
+    public static boolean inCastleArea() {
+        return Statistics.Hollow_Holiday && Dungeon.depth >= 26;
+    }
+
+    // 脱下/嬗变套组时，提前结束狙击手的援护与狩猎狂欢
+    private static void removeActiveBuffs(Hero hero) {
+        Buff.detach(hero, SniperSupport.class);
+        Buff.detach(hero, HuntingCarnival.class);
+    }
+
     private class SignalBuff extends ArtifactBuff {
         {
             actPriority = HERO_PRIO;
@@ -39,6 +54,15 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
     @Override
     protected ArtifactBuff passiveBuff() {
         return new SignalBuff();   // 现在使用静态内部类
+    }
+
+    @Override
+    public boolean doUnequip(Hero hero, boolean collect, boolean single) {
+        boolean result = super.doUnequip(hero, collect, single);
+        if (result) {
+            removeActiveBuffs(hero);
+        }
+        return result;
     }
 
     // 提供信号弹
@@ -101,6 +125,7 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
                 desc += "\n\n" + Messages.get(this, "level_3");
                 break;
         }
+        desc += "\n\n" + Messages.get(this, "castle_note");
         return desc;
     }
 
@@ -108,11 +133,11 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
     public static final String AC_FIRE = "FIRE";
     public static final String AC_HUNT = "HUNT";
 
-    // 在被穿戴、不被诅咒、无魔法免疫buff情况下，显示击发信号弹和激活狩猎狂欢（后者仅等级为3时显示）
+    // 在被穿戴、不被诅咒、无魔法免疫buff情况下，显示击发信号弹和激活狩猎狂欢（后者仅等级为3时显示）；古堡区域不可用
     @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
-        if (isEquipped(hero) && !cursed && hero.buff(MagicImmune.class) == null) {
+        if (isEquipped(hero) && !cursed && hero.buff(MagicImmune.class) == null && !inCastleArea()) {
             actions.add(AC_FIRE);
             if (level() == 3)actions.add(AC_HUNT);
         }
@@ -129,25 +154,34 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
                 GLog.w(Messages.get(Artifact.class, "need_to_equip"));
                 return;
             }
+            if (inCastleArea()) {
+                GLog.w(Messages.get(this, "castle_unavailable"));
+                return;
+            }
             if (charge <= 0) {
                 GLog.w(Messages.get(this, "no_charge"));
                 return;
             }
-            // 消耗 1 发
+            if (Dungeon.gold < COST) {
+                GLog.w(Messages.get(this, "no_gold"));
+                return;
+            }
+            // 消耗 500 金币与 1 发充能
+            Dungeon.gold -= COST;
             charge--;
             updateQuickslot();
             partialCharge = 0;
             // 根据等级决定触发次数
             int triggers;
             switch (level()) {
-                case 0: triggers = 8; break;
-                case 1: triggers = 11; break;
-                case 2: triggers = 14; break;
-                default: triggers = 17; break;
+                case 0: triggers = 12; break;
+                case 1: triggers = 24; break;
+                case 2: triggers = 36; break;
+                default: triggers = 48; break;
             }
             SniperSupport sniper = Buff.affect(hero, SniperSupport.class);
             sniper.setTriggers(triggers);
-            sniper.setBurnDuration(level() +1);
+            sniper.setLevel(level());
             int idx = Random.Int(3); // 0,1,2
             GLog.p(Messages.get(this, "fire_" + idx));
             hero.sprite.operate(hero.pos);
@@ -158,16 +192,26 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
                 GLog.w(Messages.get(Artifact.class, "need_to_equip"));
                 return;
             }
-            if (level() < 3 || charge != chargeCap || chargeCap != 3) {
+            if (inCastleArea()) {
+                GLog.w(Messages.get(this, "castle_unavailable"));
+                return;
+            }
+            if (level() < 3 || charge <= 0) {
                 GLog.w(Messages.get(this, "hunt_unavailable"));
                 return;
             }
-            // 消耗全部 3 发
+            if (Dungeon.gold < COST) {
+                GLog.w(Messages.get(this, "no_gold"));
+                return;
+            }
+            // 消耗 500 金币与剩余所有充能，每 1 点充能提供 40 回合狩猎狂欢
+            Dungeon.gold -= COST;
+            int _charge = charge;
             charge = 0;
             partialCharge = 0;
             HuntingCarnival hunting = Buff.affect(hero, HuntingCarnival.class);
-            hunting.setDuration(90);
-            hunting.setBurnDuration(level() +1);
+            hunting.setDuration(40*_charge);
+            hunting.setLevel(level());
             GLog.p(Messages.get(this, "hunt"));
             hero.sprite.operate(hero.pos);
             hero.next();
@@ -197,11 +241,10 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
         if (Dungeon.hero != null) {
             spawnFlare(1);
         }
-        // +3 时充能上限变为 3
-        if (item.level() == 3) {
-            chargeCap = 3;
-            charge = 3;
-        }
+        // 每升级额外提高 1 点充能上限（初始 1 点，满级 4 点），并补满充能
+        chargeCap = 1 + item.level();
+        charge = chargeCap;
+        updateQuickslot();
         return item;
     }
 
@@ -221,8 +264,7 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
     }
 
     public int shopValue() {
-        return 1500;
+        return 500;
     }
 
 }
-
