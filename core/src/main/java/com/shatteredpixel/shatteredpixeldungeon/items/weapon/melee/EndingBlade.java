@@ -562,7 +562,8 @@ public class EndingBlade extends MeleeWeapon {
         if (Random.Float() < corruptChance && defender != attacker && defender.isAlive() && defender instanceof Mob
                 && !Char.hasProp(defender, Char.Property.BOSS)
                 && !Char.hasProp(defender, Char.Property.MINIBOSS)) {
-            AllyBuff.affectAndLoot((Mob) defender, (Hero) attacker, Corruption.class);
+            Hero hero = (attacker instanceof Hero) ? (Hero) attacker : Dungeon.hero;
+            AllyBuff.affectAndLoot((Mob) defender, hero, Corruption.class);
             GLog.p(Messages.get(this, "corrupted", defender.name()));
         }
 

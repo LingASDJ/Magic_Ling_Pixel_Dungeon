@@ -49,11 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
@@ -84,7 +80,9 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			if(item instanceof EndingBlade){
 				return ((EndingBlade) item).canTransmuteUpgrade();
 			}
-
+			if(item instanceof KillKing){
+				return ((KillKing) item).canTransmuteUpgrade();
+			}
 			if(item instanceof BloodthirstyThorn){
 				if(item.level<10){
 					return false;
@@ -131,9 +129,9 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 		Item result = changeItem(item);
 
-		if (result == item && item instanceof EndingBlade){
+		if (result == item && (item instanceof EndingBlade || item instanceof KillKing)){
 			curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
-			GLog.p(Messages.get(EndingBlade.class, "transmute_upgraded"));
+			GLog.p(Messages.get(item.getClass(), "transmute_upgraded"));
 		} else if (result == null){
 			//This shouldn't ever trigger
 			GLog.n( Messages.get(this, "nothing") );
@@ -193,7 +191,10 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			((EndingBlade) item).transmuteUpgrade();
 			return item;
 		}
-
+		if(item instanceof KillKing){
+			((KillKing) item).transmuteUpgrade();
+			return item;
+		}
 		if(item instanceof BloodthirstyThorn && item.level() >= 10 && !Statistics.OnlyBloodUpgrade){
 			ShatteredPixelDungeon.scene().add(new WndOptions(new ItemSprite(item.image()),
                     item.name(),
@@ -359,6 +360,9 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		Generator.Category c;
 		if (w instanceof MeleeWeapon) {
 			if(w instanceof EndingBlade){
+				return w;
+			}
+			if(w instanceof KillKing){
 				return w;
 			}
 			//针对特殊武器修复：例如终焉的武器阶数是可以成长的

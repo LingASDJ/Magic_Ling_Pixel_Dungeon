@@ -33,6 +33,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KillKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -211,6 +213,11 @@ public class ScrollOfTeleTation extends InventoryScroll {
             return null;
         }
 
+        if(item instanceof KillKing) {
+            ((KillKing) item).transmuteUpgrade();
+            return item;
+        }
+
         if (item instanceof MagesStaff) {
             return changeStaff((MagesStaff) item);
         }else if (item instanceof TippedDart){
@@ -287,6 +294,12 @@ public class ScrollOfTeleTation extends InventoryScroll {
         Weapon n;
         Generator.Category c;
         if (w instanceof MeleeWeapon) {
+            if(w instanceof EndingBlade){
+                return w;
+            }
+            if(w instanceof KillKing){
+                return w;
+            }
             //针对特殊武器修复：例如终焉的武器阶数是可以成长的
             c = Generator.wepTiers[ ((MeleeWeapon) w).tier <= 6 ? ((MeleeWeapon) w).tier-1 : 5 ];
         } else {

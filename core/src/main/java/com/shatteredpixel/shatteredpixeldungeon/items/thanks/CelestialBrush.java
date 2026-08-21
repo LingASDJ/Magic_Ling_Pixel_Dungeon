@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -396,6 +397,13 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
             if (!itemSelectable(item)) {
                 GLog.w(Messages.get(CelestialBrush.class, "invalid_item"));
                 return;
+            }
+
+            // 吞噬已装备物品时，先卸下再吞噬
+            if (item.isEquipped(hero)) {
+                if (!(item instanceof EquipableItem) || !((EquipableItem) item).doUnequip(hero, false, false)) {
+                    return;
+                }
             }
 
             item.detach(hero.belongings.backpack);
