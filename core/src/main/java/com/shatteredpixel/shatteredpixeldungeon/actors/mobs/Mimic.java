@@ -73,7 +73,7 @@ public class Mimic extends Mob implements Mob.NoMobSpawn {
 		state = PASSIVE;
 	}
 
-	public ArrayList<Item> items;
+	public ArrayList<Item> items = new ArrayList<>();
 
 	private boolean stealthy = false;
 
@@ -296,21 +296,25 @@ public class Mimic extends Mob implements Mob.NoMobSpawn {
 					items = null;
 				}
 			} else {
+				if (items != null) {
+					for (Item item : items) {
+						if (Dungeon.level.map[pos] == Terrain.CHASM && Dungeon.branch != 0){
+							Dungeon.level.drop(item, Dungeon.level.entrance()).sprite.drop();
+						} else {
+							Dungeon.level.drop(item, pos).sprite.drop();
+						}
+					}
+					items = null;
+				}
+			}
+		} else {
+			if (items != null) {
 				for (Item item : items) {
 					if (Dungeon.level.map[pos] == Terrain.CHASM && Dungeon.branch != 0){
 						Dungeon.level.drop(item, Dungeon.level.entrance()).sprite.drop();
 					} else {
 						Dungeon.level.drop(item, pos).sprite.drop();
 					}
-					items = null;
-				}
-			}
-		} else {
-			for (Item item : items) {
-				if (Dungeon.level.map[pos] == Terrain.CHASM && Dungeon.branch != 0){
-					Dungeon.level.drop(item, Dungeon.level.entrance()).sprite.drop();
-				} else {
-					Dungeon.level.drop(item, pos).sprite.drop();
 				}
 				items = null;
 			}

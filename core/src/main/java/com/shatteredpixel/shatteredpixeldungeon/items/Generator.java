@@ -202,55 +202,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlue
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.QuickSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BoomSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dairikyan;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DragonShiled;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.CursedBlade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FiveRen;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceLingSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.JunglePoison;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KillKing;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MerchantSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Seekingspear;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SpikedChakram;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.TheDrip;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WhiteBlastSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WitheWoodSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.hollow.DeathRongBoat;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ClearSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
@@ -587,11 +539,11 @@ public class Generator {
 					TreeList.class,
 					Dirk.class,
 					Sickle.class,
-					KillKing.class,
-					SpikedChakram.class,
+					KillKing.class,       // 临时加入 弑君
+					SpikedChakram.class,  // 临时加入 尖刺轮盘
 					Pickaxe.class,
 			};
-			WEP_T2.defaultProbs = new float[]{2, 2, 2, 2, 2, 2, 2, 2, 0};
+			WEP_T2.defaultProbs = new float[]{2, 2, 2, 2, 2, 2, 0, 0, 0};
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 
 			WEP_T3.classes = new Class<?>[]{
@@ -610,20 +562,20 @@ public class Generator {
 					JunglePoison.class,
 
 					LifeTreeSword.class,
-					TheDrip.class,
-					QuickSword.class,
-					CursedBlade.class,
+					TheDrip.class,      // 临时加入 滴落者
+					QuickSword.class,   // 临时加入 迅捷剑
+					CursedBlade.class,  // 临时加入 诅咒之刃
 			};
 			WEP_T3.probs = new float[]{1, 5, 4, 4, 4, 3, 5, 3, 6,
 					Badges.isUnlocked(Badges.Badge.KILL_CLSISTER) ? 3 : 0,
 					0,
-					3,
-					4,
-					2};
+					0,
+					0,
+					0};
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
-					BattleAxe.class,
+					ExorcistMaul.class,  // 20260821 0.9.51+ 战斧（BattleAxe）替换为诅咒战锤（ExorcistMaul）
 					Flail.class,
 
 					AssassinsBlade.class,
@@ -640,7 +592,13 @@ public class Generator {
 					DogDogMusic.CICREMUSIC.class,
 
 					SDBSword.class,
-					KingSword.class
+					KingSword.class,
+
+					LifeCutter.class,           // 临时加入 生命切割者
+					StaffofMyriadThings.class,  // 临时加入 万象之杖
+					MorningStar.class,          // 临时加入 晨星
+					SouthPointSword.class,      // 临时加入 指南剑
+					DenorScythe.class,          // 临时加入 德诺尔镰刀
 			};
 			WEP_T4.probs = new float[]{6, 5, 4, 4, 4, 2, 3, 7,
 					SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName()) ? 4f : 0,
@@ -650,6 +608,11 @@ public class Generator {
 
 					Badges.isUnlocked(Badges.Badge.KILL_SM) ? 3 : 0,
 					Badges.isUnlocked(Badges.Badge.BOSS_CHALLENGE_4) ? 3 : 0,
+					0,                  // 临时加入 生命切割者
+					0,                  // 临时加入 万象之杖
+					0,                  // 临时加入 晨星
+					0, 					// 临时加入 指南剑
+					0,                  // 临时加入 德诺尔镰刀
 			};
 
 			WEP_T5.classes = new Class<?>[]{
@@ -678,7 +641,12 @@ public class Generator {
 					WhiteBlastSword.class,
 					FiveRen.class,
 					DeathRongBoat.class,
-					EndingBlade.class
+					EndingBlade.class,
+
+					NailingSpear.class,         // 临时加入 钉入矛
+					DoorPlank.class,            // 临时加入 门板
+					DoomsdayScepter.class,      // 临时加入 末日节杖
+					DeepseaKnightAnchor.class,  // 临时加入 深海骑士的锚
 			};
 
 			PaswordBadges.loadGlobal();
@@ -698,7 +666,11 @@ public class Generator {
 					5,
 					passwordbadges.contains(PaswordBadges.Badge.ZQJ_GHOST) ? 4.2f : 0,
 					Badges.isUnlocked(Badges.Badge.KILL_DOG) ? 5 : 0,
-					0
+					0,
+					0,  // 临时加入 钉入矛
+					0,  // 临时加入 门板
+					0,  // 临时加入 末日节杖
+					0   // 临时加入 深海骑士的锚
 			};
 
 			WEP_T6.classes = new Class<?>[]{

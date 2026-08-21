@@ -29,6 +29,9 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
     // 金币消耗
     public final int COST = 500;
 
+    // BR模式（BossRush）下的使用消耗：2 时空金卷
+    public final int BR_COST = 2;
+
     // 古堡区域：狙击手无法支援现世以外的地方
     public static boolean inCastleArea() {
         return Statistics.Hollow_Holiday && Dungeon.depth >= 26;
@@ -139,7 +142,7 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
         ArrayList<String> actions = super.actions(hero);
         if (isEquipped(hero) && !cursed && hero.buff(MagicImmune.class) == null && !inCastleArea()) {
             actions.add(AC_FIRE);
-            if (level() == 3)actions.add(AC_HUNT);
+            if (level() >= 2) actions.add(AC_HUNT);
         }
         return actions;
     }
@@ -162,21 +165,30 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
                 GLog.w(Messages.get(this, "no_charge"));
                 return;
             }
-            if (Dungeon.gold < COST) {
-                GLog.w(Messages.get(this, "no_gold"));
-                return;
+            if (Statistics.bossRushMode) {
+                // BR模式：消耗2时空金卷
+                if (Dungeon.rushgold < BR_COST) {
+                    GLog.w(Messages.get(this, "no_kinggold"));
+                    return;
+                }
+                Dungeon.rushgold -= BR_COST;
+            } else {
+                if (Dungeon.gold < COST) {
+                    GLog.w(Messages.get(this, "no_gold"));
+                    return;
+                }
+                Dungeon.gold -= COST;
             }
-            // 消耗 500 金币与 1 发充能
-            Dungeon.gold -= COST;
+            // 消耗 1 发充能
             charge--;
             updateQuickslot();
             partialCharge = 0;
             // 根据等级决定触发次数
             int triggers;
             switch (level()) {
-                case 0: triggers = 12; break;
-                case 1: triggers = 24; break;
-                case 2: triggers = 36; break;
+                case 0: triggers = 24; break;
+                case 1: triggers = 32; break;
+                case 2: triggers = 40; break;
                 default: triggers = 48; break;
             }
             SniperSupport sniper = Buff.affect(hero, SniperSupport.class);
@@ -196,16 +208,25 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
                 GLog.w(Messages.get(this, "castle_unavailable"));
                 return;
             }
-            if (level() < 3 || charge <= 0) {
+            if (level() < 2 || charge <= 0) {
                 GLog.w(Messages.get(this, "hunt_unavailable"));
                 return;
             }
-            if (Dungeon.gold < COST) {
-                GLog.w(Messages.get(this, "no_gold"));
-                return;
+            if (Statistics.bossRushMode) {
+                // BR模式：消耗2时空金卷
+                if (Dungeon.rushgold < BR_COST) {
+                    GLog.w(Messages.get(this, "no_kinggold"));
+                    return;
+                }
+                Dungeon.rushgold -= BR_COST;
+            } else {
+                if (Dungeon.gold < COST) {
+                    GLog.w(Messages.get(this, "no_gold"));
+                    return;
+                }
+                Dungeon.gold -= COST;
             }
-            // 消耗 500 金币与剩余所有充能，每 1 点充能提供 40 回合狩猎狂欢
-            Dungeon.gold -= COST;
+            // 消耗剩余所有充能，每 1 点充能提供 40 回合狩猎狂欢
             int _charge = charge;
             charge = 0;
             partialCharge = 0;
@@ -250,6 +271,13 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
 
     // 返回升级花费
     public int getUpgradeCost() {
+        if (Statistics.bossRushMode) {
+            switch (level()) {
+                case 0: return 2;
+                case 1: return 4;
+                default: return 6;
+            }
+        }
         switch (level()) {
             case 0: return 500;
             case 1: return 1000;
@@ -265,6 +293,12 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
 
     public int shopValue() {
         return 500;
+    }
+
+    // BR商店购买价：1 时空金卷
+    @Override
+    public int RushValue() {
+        return 1;
     }
 
 }

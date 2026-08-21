@@ -180,23 +180,29 @@ public abstract class Scroll extends Item {
 		super.execute( hero, action );
 
 		if (action.equals( AC_READ )) {
-			
-			if (hero.buff(MagicImmune.class) != null){
-				GLog.w( Messages.get(this, "no_magic") );
-			} else if (hero.buff( Blindness.class ) != null) {
-				GLog.w( Messages.get(this, "blinded") );
-			} else if (hero.buff(UnstableSpellbook.bookRecharge.class) != null
-					&& hero.buff(UnstableSpellbook.bookRecharge.class).isCursed()
-					&& !(this instanceof ScrollOfRemoveCurse || this instanceof ScrollOfAntiMagic)){
-				GLog.n( Messages.get(this, "cursed") );
-			} else if (hero.belongings.getItem(TheGriefOfSpeechless.class)!=null && Random.Int(1,100)<=15 && this.getClass() != ScrollOfUpgrade.class) {
-				GLog.w(Messages.get(TheGriefOfSpeechless.class,"grief"));
-				detach(curUser.belongings.backpack);
-			} else {
-				doRead();
-			}
-			
+			tryRead( hero );
 		}
+	}
+
+	//Executes the scroll reading flow; returns whether the scroll was actually read.
+	public boolean tryRead( Hero hero ) {
+
+		if (hero.buff(MagicImmune.class) != null){
+			GLog.w( Messages.get(this, "no_magic") );
+		} else if (hero.buff( Blindness.class ) != null) {
+			GLog.w( Messages.get(this, "blinded") );
+		} else if (hero.buff(UnstableSpellbook.bookRecharge.class) != null
+				&& hero.buff(UnstableSpellbook.bookRecharge.class).isCursed()
+				&& !(this instanceof ScrollOfRemoveCurse || this instanceof ScrollOfAntiMagic)){
+			GLog.n( Messages.get(this, "cursed") );
+		} else if (hero.belongings.getItem(TheGriefOfSpeechless.class)!=null && Random.Int(1,100)<=15 && this.getClass() != ScrollOfUpgrade.class) {
+			GLog.w(Messages.get(TheGriefOfSpeechless.class,"grief"));
+			detach(curUser.belongings.backpack);
+		} else {
+			doRead();
+			return true;
+		}
+		return false;
 	}
 	
 	public abstract void doRead();

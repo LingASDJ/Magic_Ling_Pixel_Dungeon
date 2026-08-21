@@ -96,6 +96,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WorstBlizzard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BloodLoss;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -156,10 +157,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.DeadBo
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.CursedBlade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CrossReback;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ShockingDart;
@@ -790,6 +788,11 @@ public abstract class Char extends Actor {
 
 		// =====================命中骰子=====================
 		float acuRoll = Random.Float( acuStat );
+		// 万象之杖特判 加值：每种已击杀敌人 +1 命中（Boss 翻倍）
+		if (attacker instanceof Hero){
+			Belongings b = ((Hero)attacker).belongings;
+			if(b != null && b.weapon instanceof StaffofMyriadThings) acuRoll += ((StaffofMyriadThings) b.weapon).CengShu();
+		}
 		// 祝福buff的1.25倍
 		if (attacker.buff(Bless.class) != null) acuRoll *= 1.25f;
 		// 地狱犬的祝福buff的1.5倍
@@ -815,7 +818,6 @@ public abstract class Char extends Actor {
 		}
 		// 水晶诅咒修正系数
 		acuRoll *= AscensionChallenge.statModifier(attacker);
-
 		// =====================闪避骰子=====================
 		float defRoll = Random.Float( defStat );
 		// 祝福buff的1.25倍
@@ -1124,6 +1126,11 @@ public abstract class Char extends Actor {
 			buff( Paralysis.class ).processDamage(dmg);
 		}
 
+		// 受击方 处于 驱魔重锤 驱魔护盾buff 则 抵免法术攻击并使buff层数-1
+		if (type == DamageType.MAGIC && buff(ExorcistMaul.QuMoHuDun.class) != null){
+			dmg = 0;
+			buff(ExorcistMaul.QuMoHuDun.class).detach();
+		}
 		int shielded = dmg;
 		//FIXME: when I add proper damage properties, should add an IGNORES_SHIELDS property to use here.
 		if (!(src instanceof Hunger) && !(type == DamageType.REAL)){
@@ -1277,6 +1284,12 @@ public abstract class Char extends Actor {
 		}
 
 		if (HP < 0) HP = 0;
+
+		//生命切割者：伤害结算后若目标存活则分裂
+		if (buff(LifeCutter.SplitMark.class) != null){
+			buff(LifeCutter.SplitMark.class).detach();
+			LifeCutter.trySplit(this, src);
+		}
 
 		if (!isAlive()) {
 			die( src );
