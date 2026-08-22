@@ -594,7 +594,7 @@ public class Generator {
 					SDBSword.class,
 					KingSword.class,
 
-					LifeCutter.class,           // 临时加入 生命切割者
+					LifeCutter.class,           // 临时加入 断生者
 					StaffofMyriadThings.class,  // 临时加入 万象之杖
 					MorningStar.class,          // 临时加入 晨星
 					SouthPointSword.class,      // 临时加入 指南剑
@@ -608,7 +608,7 @@ public class Generator {
 
 					Badges.isUnlocked(Badges.Badge.KILL_SM) ? 3 : 0,
 					Badges.isUnlocked(Badges.Badge.BOSS_CHALLENGE_4) ? 3 : 0,
-					0,                  // 临时加入 生命切割者
+					0,                  // 临时加入 断生者
 					0,                  // 临时加入 万象之杖
 					0,                  // 临时加入 晨星
 					0, 					// 临时加入 指南剑

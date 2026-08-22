@@ -1285,7 +1285,7 @@ public abstract class Char extends Actor {
 
 		if (HP < 0) HP = 0;
 
-		//生命切割者：伤害结算后若目标存活则分裂
+		//断生者：伤害结算后若目标存活则分裂
 		if (buff(LifeCutter.SplitMark.class) != null){
 			buff(LifeCutter.SplitMark.class).detach();
 			LifeCutter.trySplit(this, src);

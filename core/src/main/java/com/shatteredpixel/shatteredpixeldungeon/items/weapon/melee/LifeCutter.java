@@ -15,7 +15,7 @@ import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
-//生命切割者
+//断生者
 //四阶，力量需求17
 //初始6-24，成长2-6
 //每次命中都会让敌人一分为二：本体与分身各继承当前生命值与生命上限的一半。
