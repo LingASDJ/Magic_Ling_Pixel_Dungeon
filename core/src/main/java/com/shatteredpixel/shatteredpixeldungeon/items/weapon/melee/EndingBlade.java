@@ -655,6 +655,7 @@ public class EndingBlade extends MeleeWeapon {
         Buff.detach(hero, Vulnerable.class);
         Buff.detach(hero, Daze.class);
         Buff.detach(hero, Blindness.class);
+        Buff.detach(hero, SkyRoll.class);
     }
 
     // ==================== 每回合更新 ====================
