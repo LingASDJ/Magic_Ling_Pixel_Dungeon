@@ -811,10 +811,25 @@ public class Generator {
 					CelestialBrush.class
 			};
 			ARTIFACT.defaultProbs = new float[]{
-					Badges.isUnlocked(Badges.Badge.KILL_DM720) ? 1:0
-					, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1,
-					Badges.isUnlocked(Badges.Badge.YASD) ? 1:0
-					, 1, 1
+					Badges.isUnlocked(Badges.Badge.KILL_DM720) ? 1:0,   // 荆棘斗篷
+					1,  // 蓄血圣杯
+					0,  // 暗影斗篷
+					1,  // 丰饶之角
+					0,  // 神偷袖章
+					1,  // 自然之履
+					1,  // 先见护符
+					1,  // 时光沙漏
+					1,  // 炼金工具箱
+					1,  // 干枯玫瑰
+					0,  // 时空道标
+					1,  // 虚空锁链
+					1,  // 暗金宝石护符
+					0,  // DM-100 通讯器
+					1,  // 无序魔典
+					1,  // 锐科五代
+					Badges.isUnlocked(Badges.Badge.YASD) ? 1:0,  // 引力王冠
+					0,  // 支援信号套组
+					1  // 天界画笔
 			};
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();
 
