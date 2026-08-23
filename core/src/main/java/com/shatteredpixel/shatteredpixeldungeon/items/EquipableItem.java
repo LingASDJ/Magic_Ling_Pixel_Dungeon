@@ -180,5 +180,15 @@ public abstract class EquipableItem extends Item {
 		return doUnequip( hero, collect, true );
 	}
 
+	/**
+	 * 无副作用地判断该装备当前是否允许卸下
+	 * 与 doUnequip 的拦截条件保持一致
+	 */
+	public boolean canUnequip( Hero hero ) {
+		return !(cursed
+				&& hero.buff(MagicImmune.class) == null
+				&& (!hero.belongings.lostInventory() || keptThroughLostInventory()));
+	}
+
 	public void activate( Char ch ){}
 }

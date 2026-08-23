@@ -513,11 +513,18 @@ public class EndingBlade extends MeleeWeapon {
      */
     @Override
     public boolean doUnequip(Hero hero, boolean collect, boolean single) {
-        if(!(Dungeon.isDLC(Conducts.Conduct.DEV))){
+        if(true){
+        // if(!(Dungeon.isDLC(Conducts.Conduct.DEV))){
             GLog.n(Messages.get(this, "cannot_unequip"));
         } else {
             return super.doUnequip(hero,collect,single);
         }
+        return false;
+    }
+
+    @Override
+    public boolean canUnequip(Hero hero) {
+        // 与 doUnequip 保持一致：终焉一律不允许卸下
         return false;
     }
 
@@ -537,7 +544,7 @@ public class EndingBlade extends MeleeWeapon {
         int lvl = level();
 
         // 击杀判定
-        if (defender.HP <= damage && defender.shielding() == 0) {  // 这里没有完全修复,实际上仍然存在问题
+        if (defender.HP <= damage && defender.shielding() == 0) {  // 这里没有完全修复,实际上仍然存在问题，但就用这个吧
             // Level15+：击杀50%概率获得10%最大生命奥术护盾
             if (lvl >= 15 && attacker instanceof Hero && Random.Float() < 0.50f) {
                 int shieldAmount = Math.max(1, Math.round(attacker.HT * 0.10f));
@@ -567,7 +574,7 @@ public class EndingBlade extends MeleeWeapon {
             GLog.p(Messages.get(this, "corrupted", defender.name()));
         }
 
-        // Level7-9：吞天（15%概率吸血30%）
+        // Level7：吞天（15%概率吸血30%）
         if (lvl >= 7 && Random.Float() < 0.15f && defender != attacker) {
             int heal = Math.max(1, Math.round(damage * 0.30f));
             attacker.HP = Math.min(attacker.HT, attacker.HP + heal);
@@ -648,6 +655,7 @@ public class EndingBlade extends MeleeWeapon {
         Buff.detach(hero, Vulnerable.class);
         Buff.detach(hero, Daze.class);
         Buff.detach(hero, Blindness.class);
+        Buff.detach(hero, SkyRoll.class);
     }
 
     // ==================== 每回合更新 ====================

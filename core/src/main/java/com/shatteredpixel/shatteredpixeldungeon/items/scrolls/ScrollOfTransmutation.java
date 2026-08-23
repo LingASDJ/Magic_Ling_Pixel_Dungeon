@@ -77,8 +77,9 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		if (BrokenRing.isBind(item)) return false;
 		if(item instanceof MeleeWeapon) {
 
+			// 终焉不能嬗变
 			if(item instanceof EndingBlade){
-				return ((EndingBlade) item).canTransmuteUpgrade();
+				return false;
 			}
 			if(item instanceof KillKing){
 				return ((KillKing) item).canTransmuteUpgrade();
