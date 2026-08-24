@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -114,6 +115,10 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
                 GLog.i(Messages.get(this, "cursed"));
                 return;
             }
+            if (!isEquipped(hero)) {
+                GLog.i(Messages.get(this, "unequipped"));
+                return;
+            }
 
             // 弹出三种画作选择
             GameScene.show(new WndOptions(
@@ -166,11 +171,11 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
                 protected void onSelect(int index) {
                     if (index == 0) {
                         Hero hero = Dungeon.hero;
-                        if (hero.HT <= 15) {
+                        if (hero.HT <= 20) {
                             GLog.w(Messages.get(CelestialBrush.this, "not_enough_hp"));
                             return;
                         }
-                        hero.addResistHealth(15);
+                        hero.addResistHealth(20);
                         hero.updateHT(false);
                         if (hero.HP > hero.HT) hero.HP = hero.HT;
                         GLog.i(Messages.get(CelestialBrush.this, "upgrade_hp"));
@@ -205,7 +210,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
     };
 
     private void flamePaint(Hero hero, int targetCell) {
-        int dmg = Random.Int(8, 16 * (1 + level()));
+        int dmg = Random.Int(8 + level()*3, 12 * (1 + level()));
         int crippleTurns = 1 + level() / 2;
 
         // 构建弹道（从英雄到目标点）
@@ -289,7 +294,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
                         }
                         Sample.INSTANCE.play(Assets.Sounds.SHATTER);
 
-                        int slowTurns = 2 + level();
+                        int slowTurns = 4 + level()*2;
                         for (Mob mob : Dungeon.level.mobs) {
                             if (Dungeon.level.distance(mob.pos, targetPos) <= 1) {
                                 Buff.affect(mob, Slow.class, slowTurns);
@@ -376,11 +381,11 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
             Hero hero = Dungeon.hero;
 
             if (level() == 2) {
-                if (hero.HT < 15) {
+                if (hero.HT <= 20) {
                     GLog.w(Messages.get(CelestialBrush.class, "not_enough_hp"));
                     return;
                 }
-                hero.HT -= 15;
+                hero.HT -= 20;
                 if (hero.HP > hero.HT) hero.HP = hero.HT;
                 GLog.n(Messages.get(CelestialBrush.class, "upgrade_hp"));
                 doUpgrade(hero);
@@ -392,6 +397,13 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
             if (!itemSelectable(item)) {
                 GLog.w(Messages.get(CelestialBrush.class, "invalid_item"));
                 return;
+            }
+
+            // 吞噬已装备物品时，先卸下再吞噬
+            if (item.isEquipped(hero)) {
+                if (!(item instanceof EquipableItem) || !((EquipableItem) item).doUnequip(hero, false, false)) {
+                    return;
+                }
             }
 
             item.detach(hero.belongings.backpack);
@@ -413,7 +425,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
     // 实际执行升级 + 附加幻惑
     private void doUpgrade(Hero hero) {
         upgrade();
-        chargeCap = 3 + level();
+        chargeCap = 2 + level();
         if (charge > chargeCap) charge = chargeCap;
 
         // 幻惑 50 回合
@@ -440,7 +452,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
                 float chargeGain = 0;
                 int lost = chargeCap - charge;
                 // 公式：每 (120 - 等级*5 - 已损失充能*8) 回合获得 1 点
-                float turnCost = 120f - level() * 5f - lost * 8f;
+                float turnCost = 120f - level() * 5f - lost * 5f;
                 if (turnCost <= 0) turnCost = 1f;
                 chargeGain = 1f / turnCost;
                 chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);

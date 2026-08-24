@@ -76,9 +76,9 @@ public class WashCrime extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage ) {
-        DLY = DLY < 0.3f ? 0.3f : 2-(killmobs/10f)/10f; //Slow Speed
-        if(killmobs > 61 ){
-            killmobs=60;
+        DLY = DLY < 0.3f ? 0.3f : 2.17f - killmobs*0.0067f; //Slow Speed
+        if(killmobs > 100 ){
+            killmobs=100;
         } else if (defender.HP <= damage && killmobs < 61) {
             //目标血量小于实际伤害判定为死亡
             killmobs++;

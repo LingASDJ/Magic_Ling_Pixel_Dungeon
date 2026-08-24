@@ -689,6 +689,12 @@ public class MeleeWeapon extends Weapon {
 			}
 
 			KindOfWeapon temp = hero.belongings.weapon;
+			// 主手武器不允许卸下时（如终焉）禁止切换，避免绕过 doUnequip
+			if (temp != null && !temp.canUnequip(hero)){
+				GLog.w(Messages.get(MeleeWeapon.class, "swap_cannot"));
+				return;
+			}
+
 			hero.belongings.weapon = hero.belongings.secondWep;
 			hero.belongings.secondWep = temp;
 

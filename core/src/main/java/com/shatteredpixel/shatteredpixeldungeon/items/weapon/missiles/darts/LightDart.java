@@ -22,20 +22,28 @@ public class LightDart extends TippedDart {
     public int proc( Char attacker, Char defender, int damage ) {
         if (defender != null) {
             if (defender instanceof Mob) {
+                Class<? extends ChampionEnemy> championClass;
                 switch (Random.Int(7)) {
                     case 0:
                     default:
-                        Buff.affect(defender, ChampionEnemy.Blazing.class);
+                        championClass = ChampionEnemy.Blazing.class;
                         break;
                     case 1:
-                        Buff.affect(defender, ChampionEnemy.Projecting.class);
+                        championClass = ChampionEnemy.Projecting.class;
                         break;
                     case 2:
-                        Buff.affect(defender, ChampionEnemy.Blessed.class);
+                        championClass = ChampionEnemy.Blessed.class;
                         break;
                     case 3:
-                        Buff.affect(defender, ChampionEnemy.Halo.class);
+                        championClass = ChampionEnemy.Halo.class;
                         break;
+                }
+                Buff.affect(defender, championClass);
+
+                //我方(友方)怪物获得的精英强化改为限时效果
+                if (defender.alignment == Char.Alignment.ALLY) {
+                    AikeLaier.ChampionTimeLimit limit = Buff.affect(defender, AikeLaier.ChampionTimeLimit.class, 500);
+                    limit.championClass = championClass;
                 }
             } else if (defender instanceof Hero){
                 GLog.i( Messages.get(AikeLaier.class, "refreshed") );

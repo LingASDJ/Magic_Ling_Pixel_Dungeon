@@ -93,8 +93,8 @@ public class InventorySlot extends ItemSlot {
 				|| item instanceof BrokenRingArtifactBind
 				|| item instanceof BrokenRingRingBind
 				|| item instanceof BrokenRingMiscBind) {
-				// 破碎之环的伴生物：独立警示底色（琥珀色，区别于诅咒的红色）
-				bg.texture( TextureCache.createSolid(item instanceof BrokenRingMiscBind ? 0xFFE14810 : BOUND ) );
+				// 破碎之环的伴生物：统一警示底色（琥珀色，区别于诅咒的红色）
+				bg.texture( TextureCache.createSolid( BOUND ) );
 				bg.resetColor();
 			} else {
 				bg.texture( TextureCache.createSolid( equipped ? EQUIPPED : NORMAL ) );

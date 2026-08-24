@@ -624,6 +624,10 @@ public abstract class ChampionEnemy extends Buff {
 			return 0.75f;
 		}
 
+		public float magicDamageTakenFactor() {
+			return 0.25f;
+		}
+
 	}
 
 	//Also makes target large, see Char.properties()

@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.FrostBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.LightFood;
@@ -35,11 +36,14 @@ import java.util.ArrayList;
 public class NullDiedTO extends NTNPC {
 
     private static final String FIRST = "first";
+    private static final String RELOAD_COUNT = "reload_count";
     private boolean first=true;
+    public int reloadCount = 0;
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(FIRST, first);
+        bundle.put(RELOAD_COUNT, reloadCount);
     }
     @Override
     public String name(){
@@ -65,6 +69,7 @@ public class NullDiedTO extends NTNPC {
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         first = bundle.getBoolean(FIRST);
+        reloadCount = bundle.getInt(RELOAD_COUNT);
     }
 
     public void flee() {
@@ -164,6 +169,7 @@ public class NullDiedTO extends NTNPC {
     public Item shop22;
     public Item shop23;
     public Item shop24;
+    public Item shop25;
 
     @Override
     public boolean interact(Char c) {
@@ -195,6 +201,10 @@ public class NullDiedTO extends NTNPC {
 
     {
         spriteClass = ShopkKingSprite.class;
+
+        // BR商店固定出售：求救信号套组（1 时空金卷）
+        shop25 = new DistressSignalNesting();
+        shop25.windowsBuy = true;
 
         chat = new ArrayList<String>() {
             {

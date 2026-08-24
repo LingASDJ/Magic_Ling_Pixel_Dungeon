@@ -9,10 +9,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KusumiMagicGirl;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
@@ -21,19 +21,15 @@ import com.watabou.utils.*;
 import java.util.ArrayList;
 
 public class HuntingCarnival extends Buff {
-    private int duration;          // 总持续回合（一般为75回合）
+    private int duration;          // 总持续回合
     private int left;              // 剩余回合数
     private final int[] cooldowns = {4, 7, 10}; // 三位狙击手的射击间隔
     private int[] timers = {0, 0, 0};     // 当前剩余冷却（0表示可射击）
-    private int burnDuration = 1;   // 燃烧箭燃烧buff持续时间
+    private int artifactLevel = 0;   // 套组等级，用于计算箭矢附加效果
 
-    // 由附加buff者设置燃烧箭燃烧buff持续时间
-    public void setBurnDuration(int durate) {
-        if (durate < 0) {
-            burnDuration = 1;
-            return;
-        }
-        burnDuration = durate;
+    // 由附加buff者设置套组等级
+    public void setLevel(int level) {
+        artifactLevel = Math.max(0, level);
     }
 
     public void setDuration(int d) {
@@ -49,42 +45,52 @@ public class HuntingCarnival extends Buff {
             detach();
             return true;
         }
+        // 进入古堡区域后，狙击手无法支援现世以外的地方
+        if (DistressSignalNesting.inCastleArea()) {
+            detach();
+            return true;
+        }
 
         left--;
-        for (int i = 0; i < 3; i++) {
-            if (timers[i] <= 0) {
-                // 找敌人发射各个类型的箭
-                Char enemy = chooseRandomEnemy();
-                if (enemy != null ) {
-                    performShot(i, enemy);           // 发射箭矢
-                    timers[i] = cooldowns[i];        // 重置冷却（各自间隔不同）
-                }
-            } else {
+
+        // 本层随机敌人，每个敌人每回合只会被 1 种箭选为目标
+        ArrayList<Char> candidates = allEnemiesOnFloor();
+
+        // 优先级：霜冻(0) > 穿甲燃烧(2) > 电磁震荡(1)，三者冷却同时进行并独立计算
+        int[] priority = {0, 2, 1};
+        for (int i : priority) {
+            if (timers[i] > 0) {
                 timers[i]--;
+                continue;
             }
+            if (candidates.isEmpty()) {
+                continue;   // 没有可用的未选中目标，保持就绪等待下一回合
+            }
+            Char enemy = Random.element(candidates);
+            performShot(i, enemy);           // 发射箭矢
+            timers[i] = cooldowns[i];        // 重置冷却（各自间隔不同）
+            candidates.remove(enemy);        // 该敌人本回合不再被其他箭选中
         }
+
         spend(TICK);
         return true;
     }
 
-    //视野内随机索敌，修复空指针、过滤NPC
-    private Char chooseRandomEnemy() {
-        if (target.fieldOfView == null) return null;
+    //本层随机索敌（无视视野），过滤NPC、无敌目标
+    private ArrayList<Char> allEnemiesOnFloor() {
         ArrayList<Char> enemies = new ArrayList<>();
         for (Char ch : Actor.chars()) {
             if (ch != target
                     && ch.pos >= 0
-                    && ch.pos < target.fieldOfView.length
-                    && target.fieldOfView[ch.pos]
                     && ch.alignment != target.alignment
                     && ch instanceof Mob
-                    && !(ch instanceof NPC)
-                    && ch.isAlive()) {
+                    && !(ch instanceof NPC || ch instanceof KusumiMagicGirl)
+                    && ch.isAlive()
+                    && !ch.isInvulnerable(getClass())) {
                 enemies.add(ch);
             }
         }
-        if (enemies.isEmpty()) return null;
-        return Random.element(enemies);
+        return enemies;
     }
 
     //计算护甲对此伤害的减免
@@ -111,7 +117,7 @@ public class HuntingCarnival extends Buff {
                     int damage = frostDamage(depth);
                     damage = applyArmorReduction(enemy, damage);
                     if (enemy.isAlive()) enemy.damage(damage, this, PHYSICAL);
-                    if (enemy.isAlive()) Buff.affect(enemy, Chill.class, 10);
+                    if (enemy.isAlive()) Buff.affect(enemy, Chill.class, 5);
                     int idx = Random.Int(3);
                     GLog.p(Messages.get(this, "frost_hit_" + idx));
                 };
@@ -127,12 +133,14 @@ public class HuntingCarnival extends Buff {
                     int idx = Random.Int(3);
                     GLog.yellow(Messages.get(this, "shock_hit_" + idx));
 
-                    // 在目标周围生成电场
+                    // 电场持续时间 3+lv 回合，电场持续伤害系数 20/30/40/50%
+                    int fieldDuration = 3 + artifactLevel;
+                    int fieldDamage = Math.round(damage * (0.2f + 0.1f * artifactLevel));
                     for (int offset : PathFinder.NEIGHBOURS9) {
                         int pos = enemypos + offset;
                         if (Dungeon.level.insideMap(pos) && Dungeon.level.passable[pos]) {
-                            TrackableElectricity field = Blob.seed(pos, 5, TrackableElectricity.class);
-                            field.setExternalDamage(Math.round(damage/2.0f));
+                            TrackableElectricity field = Blob.seed(pos, fieldDuration, TrackableElectricity.class);
+                            field.setExternalDamage(fieldDamage);
                             field.setAllowParalysis(false);
                             GameScene.add(field);
                         }
@@ -144,7 +152,7 @@ public class HuntingCarnival extends Buff {
                 damageLogic = () -> {
                     int damage = burnDamage(depth);
                     if (enemy.isAlive()) enemy.damage(damage, this, PHYSICAL);
-                    if (enemy.isAlive()) Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 4 *(burnDuration));
+                    if (enemy.isAlive()) Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 4 + artifactLevel * 2);
                     int idx = Random.Int(3);
                     GLog.b(Messages.get(this, "burn_hit_" + idx));
                 };
@@ -172,18 +180,20 @@ public class HuntingCarnival extends Buff {
     }
 
     private int frostDamage(int depth) {
-        int min = 5;
-        int max = 10 + depth / 2;
+        int min = 5 + depth;
+        int max = 10 + (int)(depth * 1.5);
         return Random.NormalIntRange(min, max);
     }
 
     private int shockDamage(int depth) {
-        return frostDamage(depth); // 同霜冻公式
+        int min = 15 + depth;
+        int max = 25 + (int)(depth * 1.3);
+        return Random.NormalIntRange(min, max);
     }
 
     private int burnDamage(int depth) {
-        int min = 15;
-        int max = 25 + depth;
+        int min = 15 + depth;
+        int max = 25 + (int)(depth * 1.8);
         return Random.NormalIntRange(min, max);
     }
 
@@ -215,6 +225,7 @@ public class HuntingCarnival extends Buff {
     private static final String DURATION = "duration";
     private static final String TIMERS = "timers";
     private static final String LEFT = "left";
+    private static final String LEVEL = "artifactLevel";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -222,6 +233,7 @@ public class HuntingCarnival extends Buff {
         bundle.put(DURATION, duration);
         bundle.put(TIMERS, timers);
         bundle.put(LEFT, left);
+        bundle.put(LEVEL, artifactLevel);
     }
 
     @Override
@@ -231,5 +243,6 @@ public class HuntingCarnival extends Buff {
         timers = bundle.getIntArray(TIMERS);
         if (timers == null || timers.length != 3) timers = new int[]{0, 0, 0};
         left = bundle.getInt(LEFT);
+        artifactLevel = bundle.getInt(LEVEL);
     }
 }

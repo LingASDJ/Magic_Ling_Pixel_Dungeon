@@ -53,6 +53,7 @@ public class WndRushShop extends Window {
         add( message );
         RewardButton2 s1 = null;
         RewardButton2 s6 = null;
+        RewardButton2 kit = null;
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob instanceof NullDiedTO) {
                 RewardButton shop1 = new RewardButton(((NullDiedTO) mob).shop1);
@@ -151,6 +152,11 @@ public class WndRushShop extends Window {
                 s6 = new RewardButton2(((NullDiedTO) mob).shop24);
                 s6.setRect(s5.right() + BTN_GAP, s5.top(), BTN_SIZE, BTN_SIZE);
                 add(s6);
+
+                // 求救信号套组：BR商店固定出售，价格 1 时空金卷
+                kit = new RewardButton2(((NullDiedTO) mob).shop25);
+                kit.setRect(s1.left(), s6.bottom() + BTN_GAP, BTN_SIZE, BTN_SIZE);
+                add(kit);
             }
         }
 
@@ -196,7 +202,7 @@ public class WndRushShop extends Window {
         btnGoBack.textColor(Window.CYELLOW);
         btnGoBack.icon(Icons.get(Icons.DEPTH));
 
-        btnGoBack.setRect(s1.left(), s6.bottom()+5,111,BTN_SIZE );
+        btnGoBack.setRect(s1.left(), kit.bottom()+5,111,BTN_SIZE );
         add(btnGoBack);
 
         resize(WIDTH, (int) btnGoBack.bottom());

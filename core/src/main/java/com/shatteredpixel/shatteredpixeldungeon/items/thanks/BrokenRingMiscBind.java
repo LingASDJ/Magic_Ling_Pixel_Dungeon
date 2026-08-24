@@ -33,12 +33,16 @@ public class BrokenRingMiscBind extends KindofMisc {
         return null;   // 防止被拖进快捷栏
     }
 
-    @Override
-    public ArrayList<String> actions(Hero hero) {
-        ArrayList<String> actions = new ArrayList<>();
-        actions.add(BrokenRing.AC_RELEASE);
-        return actions;
-    }
+	@Override
+	public ArrayList<String> actions(Hero hero) {
+		ArrayList<String> actions = new ArrayList<>();
+		if (isEquipped(hero)) {
+			actions.add(BrokenRing.AC_RELEASE);
+		} else {
+			actions.add(AC_EQUIP);
+		}
+		return actions;
+	}
 
     @Override
     public String actionName(String action, Hero hero) {

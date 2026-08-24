@@ -65,11 +65,11 @@ public class WhiteBlastSword extends MeleeWeapon {
 
     @Override
     public int min(int lvl) {
-        return 7 + lvl * 3;
+        return 7 + lvl * 2;
     }
     @Override
     public int max(int lvl) {
-        return 20 + lvl * 7;
+        return 20 + lvl * 6;
     }
 
     private static final String INTERVAL    = "acs";
@@ -92,6 +92,7 @@ public class WhiteBlastSword extends MeleeWeapon {
             Messages.get(WhiteBlastSword.class,"roll3"),
     };
 
+    /*
     public void whiteBlast_Sword() {
         if(GameScene.scene != null){
             int mapLength = Dungeon.level.length();
@@ -169,6 +170,7 @@ public class WhiteBlastSword extends MeleeWeapon {
         public void onDeath() {
         }
     }
+    */
 
     @Override
     protected int baseChargeUse(Hero hero, Char target) {
@@ -266,10 +268,9 @@ public class WhiteBlastSword extends MeleeWeapon {
                     }
                 }
 
-                // 主目标必定命中+强打击音效
-                if (enemy != null && hero.canAttack(enemy)) {
+                // 主目标已由路径遍历命中，不再重复攻击；此处仅结算充能消耗
+                if (enemy != null) {
                     wep.beforeAbilityUsed(hero, enemy);
-                    hero.attack(enemy, dmgMulti, dmgBoost, Char.INFINITE_ACCURACY);
                     wep.afterAbilityUsed(hero);
                 }
 

@@ -111,13 +111,16 @@ public class RingOfAccEvasion extends Ring {
         // 抽取同步逻辑为独立方法，方便复用
         private void syncVirtualRings() {
             if (virtualAccuracy != null) {
-                int lvl = level();
+                // 注意：这里必须传原始等级 level()（外部戒指的字段）。
+                // 不能用 RingBuff 的 level()——它返回 soloBonus()，已经做过 +1（或诅咒 -2），
+                // 再传给虚拟戒指会让它内部又 +1，导致实际加成比描述高一级（双倍加成）。
+                int lvl = RingOfAccEvasion.this.level();
                 virtualAccuracy.level(lvl);
                 virtualAccuracy.cursed = cursed;
                 virtualAccuracy.cursedKnown = cursedKnown;
             }
             if (virtualEvasion != null) {
-                int lvl = level();
+                int lvl = RingOfAccEvasion.this.level();
                 virtualEvasion.level(lvl);
                 virtualEvasion.cursed = cursed;
                 virtualEvasion.cursedKnown = cursedKnown;

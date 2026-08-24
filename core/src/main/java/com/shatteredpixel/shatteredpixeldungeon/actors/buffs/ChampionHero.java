@@ -194,6 +194,10 @@ public abstract class ChampionHero extends FlavourBuff {
             return 0.75f;
         }
 
+        public float magicDamageTakenFactor() {
+            return 0.25f;
+        }
+
         {
             immunities.addAll(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic.RESISTS);
         }
@@ -250,17 +254,7 @@ public abstract class ChampionHero extends FlavourBuff {
             color = 0xFF0000;
         }
 
-
-
-        private float multiplier = 1.85f;
-
-        @Override
-        public boolean act() {
-            detach();
-            multiplier += 0.5f;
-            spend(3*TICK);
-            return true;
-        }
+        private float multiplier = 2f;
 
         @Override
         public float meleeDamageFactor() {
@@ -273,27 +267,8 @@ public abstract class ChampionHero extends FlavourBuff {
         }
 
         @Override
-        public float evasionAndAccuracyFactor() {
-            return multiplier;
-        }
-
-        @Override
         public String desc() {
             return Messages.get(this, "desc", (int)(100*(multiplier-1)), (int)(100*(1 - 1f/multiplier)))+(int)(Math.abs(1.0f - visualcooldown())+1f);
-        }
-
-        private static final String MULTIPLIER = "multiplier";
-
-        @Override
-        public void storeInBundle(Bundle bundle) {
-            super.storeInBundle(bundle);
-            bundle.put(MULTIPLIER, multiplier);
-        }
-
-        @Override
-        public void restoreFromBundle(Bundle bundle) {
-            super.restoreFromBundle(bundle);
-            multiplier = bundle.getFloat(MULTIPLIER);
         }
     }
 

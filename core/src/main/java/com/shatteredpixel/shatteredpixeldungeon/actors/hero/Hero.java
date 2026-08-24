@@ -438,6 +438,7 @@ public class Hero extends Char {
 	private static final String CHARGES = "chargesUsed";
 
 	public void updateHT( boolean boostHP ){
+		if (hero == null) return;
 		int curHT = HT;
 
 		originalHT = 20 + 5*(lvl-1);
@@ -456,11 +457,11 @@ public class Hero extends Char {
 		}
 		HT = Math.max(1, HT - totalLostHP);
 
-		if(hero.belongings.weapon instanceof EndingBlade){
-			if(((EndingBlade) hero.belongings.weapon).trialMode){
-				HT = Math.max(1, Math.round(hero.HT * 0.50f));
-				if (HP > hero.HT) {
-					HP = hero.HT;
+		if(belongings.weapon instanceof EndingBlade){
+			if(((EndingBlade) belongings.weapon).trialMode){
+				HT = Math.max(1, Math.round(HT * 0.50f));
+				if (HP > HT) {
+					HP = HT;
 				}
 			}
 		}
@@ -521,6 +522,7 @@ public class Hero extends Char {
 	}
 	private static final String CAKEUSED = "cakeused";
 	public boolean resting = false;
+	public boolean actedThisTurn = false;
 	public Belongings belongings;
 	public int exp = 0;
 
@@ -1320,12 +1322,14 @@ public class Hero extends Char {
 
 	public void spendAndNext( float time ) {
 		busy();
+		actedThisTurn = true;
 		spend( time );
 		next();
 	}
 
 	@Override
 	public boolean act() {
+		actedThisTurn = false;
 		PropBuff propBuffbuff = buff(PropBuff.class);
 		if (propBuffbuff != null) {
 			int remainingLevel = Math.max(0, propBuffbuff.levelA);
@@ -1445,8 +1449,8 @@ public class Hero extends Char {
 			if (anyReleased) {
 				GLog.i(Messages.get(brokenRing, "released"));
 			}
-			// 通用栏位：只要不是伴生物就束缚
-			if (belongings.misc() != null && !(belongings.misc() instanceof BrokenRingMiscBind)) {
+			// 通用栏位：只要不是伴生物就束缚（需识别所有伴生物，包括被放进通配栏位的戒指/神器伴生物）
+			if (belongings.misc() != null && !BrokenRing.isBind(belongings.misc())) {
 				KindofMisc misc = belongings.misc();
 				if (misc.cursed) {
 					misc.cursed = false;
@@ -1795,6 +1799,7 @@ public class Hero extends Char {
 			actResult = false;
 
 		} else {
+			actedThisTurn = true;
 
 			resting = false;
 

@@ -69,9 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocki
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.TimeReset;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.*;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -86,29 +84,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 abstract public class Weapon extends KindOfWeapon {
+	// 一个暂时没有用处的开关属性
 	public boolean isShining=false;
+	// 命中率倍率
 	public float    ACC = 1f;	// Accuracy modifier
+	// 攻击间隔倍率
 	public float	DLY	= 1f;	// Speed modifier
+	// 攻击距离
 	public int      RCH = 1;    // Reach modifier (only applies to melee hits)
 
 	@Override
 	public float speedFactor( Char owner ) {
 
+		// 吃力值,表示力量需求超出力量属性多少点,只对玩家生效
 		int encumbrance = 0;
 		if (owner instanceof Hero) {
 			encumbrance = STRReq() - ((Hero)owner).STR();
 		}
-
+		// 攻击间隔修正系数(来自武器强化)
 		float DLY = augment.delayFactor(this.DLY);
-
-		DLY *= RingOfFuror.attackSpeedMultiplier(owner);
-
+		// 狂怒戒指攻速倍率
+		DLY /= RingOfFuror.attackSpeedMultiplier(owner);
+		// 武器吃力负重惩罚,攻击间隔变为1.2^吃力值倍
 		return (encumbrance > 0 ? (float)(DLY * Math.pow( 1.2, encumbrance )) : DLY);
 	}
 
     public enum Augment {
+		// 攻速特化强化
 		SPEED   (0.7f, 2/3f),
+		// 伤害特化强化
 		DAMAGE  (1.5f, 5/3f),
+		// 无强化
 		NONE	(1.0f, 1f);
 
 		private float damageFactor;
@@ -297,11 +303,16 @@ abstract public class Weapon extends KindOfWeapon {
 		if(Dungeon.branch == 1 && Dungeon.depth == 31){
 			reach = 1;
 		}
-
 		if (owner instanceof Hero && RingOfForce.fightingUnarmed((Hero) owner)){
 			reach = 1; //brawlers stance benefits from enchantments, but not innate reach
 			if (!RingOfForce.unarmedGetsWeaponEnchantment((Hero) owner)){
 				return reach;
+			}
+		}
+		// 德诺尔的镰刀特判
+		if (this instanceof DenorScythe){
+			if (owner.buff(DenorScythe.ExtendedReach.class) != null){
+				reach+=((DenorScythe)this).extraReach;
 			}
 		}
 		if (hasEnchant(Projecting.class, owner)){

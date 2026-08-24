@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KusumiMagicGirl;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
@@ -17,7 +18,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWea
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
@@ -33,17 +33,13 @@ import java.util.ArrayList;
 public class SniperSupport extends Buff {
     private int triggers;              // 总触发次数
     private int triggersLeft;          // 剩余触发次数
-    private final int interval = 8;   // 固定间隔（15回合）
-    private int delay = 0;      // cd剩余
-    private int duration = 1;   // 燃烧箭燃烧buff持续时间
+    private final int interval = 4;    // 触发冷却（4回合）
+    private int delay = 0;             // cd剩余
+    private int artifactLevel = 0;     // 套组等级，用于计算箭矢附加效果
 
-    // 由附加buff者设置燃烧箭燃烧buff持续时间
-    public void setBurnDuration(int durate) {
-        if (durate < 0) {
-            duration = 1;
-            return;
-        }
-        duration = durate;
+    // 由附加buff者设置套组等级
+    public void setLevel(int level) {
+        artifactLevel = Math.max(0, level);
     }
 
     public void setTriggers(int count) {
@@ -103,6 +99,11 @@ public class SniperSupport extends Buff {
             detach();
             return true;
         }
+        // 进入古堡区域后，狙击手无法支援现世以外的地方
+        if (DistressSignalNesting.inCastleArea()) {
+            detach();
+            return true;
+        }
         spend(1);
         // 如果尚未就绪，减少延迟并等待
         if (delay > 0) {
@@ -130,8 +131,9 @@ public class SniperSupport extends Buff {
                     && target.fieldOfView[ch.pos]
                     && ch.alignment != target.alignment
                     && ch instanceof Mob
-                    && !(ch instanceof NPC)
-                    && ch.isAlive()) {
+                    && !(ch instanceof NPC || ch instanceof KusumiMagicGirl)
+                    && ch.isAlive()
+                    && !ch.isInvulnerable(getClass())) {
                 enemies.add(ch);
             }
         }
@@ -163,7 +165,7 @@ public class SniperSupport extends Buff {
                     int damage = frostDamage(depth);
                     damage = applyArmorReduction(enemy, damage);
                     if (enemy.isAlive()) enemy.damage(damage, this, PHYSICAL);
-                    if (enemy.isAlive()) Buff.affect(enemy, Chill.class, 10);
+                    if (enemy.isAlive()) Buff.affect(enemy, Chill.class, 5);
                     int idx = Random.Int(3);
                     GLog.p(Messages.get(this, "frost_hit_" + idx));
                 };
@@ -179,11 +181,14 @@ public class SniperSupport extends Buff {
                     int idx = Random.Int(3);
                     GLog.yellow(Messages.get(this, "shock_hit_" + idx));
 
+                    // 电场持续时间 3+lv 回合，电场持续伤害系数 20/30/40/50%
+                    int fieldDuration = 3 + artifactLevel;
+                    int fieldDamage = Math.round(damage * (0.2f + 0.1f * artifactLevel));
                     for (int offset : PathFinder.NEIGHBOURS9) {
                         int pos = enemypos + offset;
                         if (Dungeon.level.insideMap(pos) && Dungeon.level.passable[pos]) {
-                            TrackableElectricity field = Blob.seed(pos, 5, TrackableElectricity.class);
-                            field.setExternalDamage(Math.round(damage/2.0f));
+                            TrackableElectricity field = Blob.seed(pos, fieldDuration, TrackableElectricity.class);
+                            field.setExternalDamage(fieldDamage);
                             field.setAllowParalysis(false);
                             GameScene.add(field);
                         }
@@ -195,7 +200,7 @@ public class SniperSupport extends Buff {
                 damageLogic = () -> {
                     int damage = burnDamage(depth);
                     if (enemy.isAlive()) enemy.damage(damage, this, PHYSICAL);
-                    if (enemy.isAlive()) Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 4 *(duration));
+                    if (enemy.isAlive()) Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy, 4 + artifactLevel * 2);
                     int idx = Random.Int(3);
                     GLog.b(Messages.get(this, "burn_hit_" + idx));
                 };
@@ -222,18 +227,20 @@ public class SniperSupport extends Buff {
     }
 
     private int frostDamage(int depth) {
-        int min = 5;
-        int max = 10 + depth / 2;
+        int min = 5 + depth;
+        int max = 10 + (int)(depth * 1.5);
         return Random.NormalIntRange(min, max);
     }
 
     private int shockDamage(int depth) {
-        return frostDamage(depth); // 同霜冻公式
+        int min = 15 + depth;
+        int max = 25 + (int)(depth * 1.3);
+        return Random.NormalIntRange(min, max);
     }
 
     private int burnDamage(int depth) {
-        int min = 15;
-        int max = 25 + depth;
+        int min = 15 + depth;
+        int max = 25 + (int)(depth * 1.8);
         return Random.NormalIntRange(min, max);
     }
 
@@ -260,6 +267,7 @@ public class SniperSupport extends Buff {
     private static final String TRIGGERS = "triggers";
     private static final String TRIGGERS_LEFT = "triggersLeft";
     private static final String DELAY = "delay";
+    private static final String LEVEL = "artifactLevel";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -267,6 +275,7 @@ public class SniperSupport extends Buff {
         bundle.put(TRIGGERS, triggers);
         bundle.put(TRIGGERS_LEFT, triggersLeft);
         bundle.put(DELAY, delay);
+        bundle.put(LEVEL, artifactLevel);
     }
 
     @Override
@@ -275,5 +284,6 @@ public class SniperSupport extends Buff {
         triggers = bundle.getInt(TRIGGERS);
         triggersLeft = bundle.getInt(TRIGGERS_LEFT);
         delay = bundle.getInt(DELAY);
+        artifactLevel = bundle.getInt(LEVEL);
     }
 }
