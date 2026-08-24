@@ -1449,8 +1449,8 @@ public class Hero extends Char {
 			if (anyReleased) {
 				GLog.i(Messages.get(brokenRing, "released"));
 			}
-			// 通用栏位：只要不是伴生物就束缚
-			if (belongings.misc() != null && !(belongings.misc() instanceof BrokenRingMiscBind)) {
+			// 通用栏位：只要不是伴生物就束缚（需识别所有伴生物，包括被放进通配栏位的戒指/神器伴生物）
+			if (belongings.misc() != null && !BrokenRing.isBind(belongings.misc())) {
 				KindofMisc misc = belongings.misc();
 				if (misc.cursed) {
 					misc.cursed = false;
