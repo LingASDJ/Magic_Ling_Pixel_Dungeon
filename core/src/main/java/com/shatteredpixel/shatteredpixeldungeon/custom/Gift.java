@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -241,46 +243,50 @@ public class Gift implements Bundlable {
 
     //将兑换码导入本地数据中
     public static void GiftTime() {
-        saveJsonGift( getLocalGift() );
-        saveJsonGift( getLocalFileGift() );
-        saveJsonGift( getNetworkedGift() );
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(() -> {
+            saveJsonGift( getLocalGift() );
+            saveJsonGift( getLocalFileGift() );
+            saveJsonGift( getNetworkedGift() );
 
-        try {
-            String decodedString;
-            byte[] decoded;
-            List<String> saveData = new ArrayList<>();
-            long currentTime = System.currentTimeMillis() / 1000;
-            long expirationDate;
-            long minVersionCode;
-            String[] keyStruct;
+            try {
+                String decodedString;
+                byte[] decoded;
+                List<String> saveData = new ArrayList<>();
+                long currentTime = System.currentTimeMillis() / 1000;
+                long expirationDate;
+                long minVersionCode;
+                String[] keyStruct;
 
-            for( String data : Gift_DATA ) {
-                decoded = Base64.decode( data );
-                decodedString = new String( decoded) ;
-                keyStruct = decodedString.split(",");
+                for( String data : Gift_DATA ) {
+                    decoded = Base64.decode( data );
+                    decodedString = new String( decoded) ;
+                    keyStruct = decodedString.split(",");
 
-                minVersionCode = keyStruct.length > 3 ? Long.parseLong( keyStruct[2] ) : 0;
-                if( Game.versionCode < minVersionCode )
-                    continue;
+                    minVersionCode = keyStruct.length > 3 ? Long.parseLong( keyStruct[2] ) : 0;
+                    if( Game.versionCode < minVersionCode )
+                        continue;
 
-                expirationDate = Long.parseLong( keyStruct[1] );
-                if( currentTime > expirationDate )
-                    continue;
+                    expirationDate = Long.parseLong( keyStruct[1] );
+                    if( currentTime > expirationDate )
+                        continue;
 
-                if( SPDSettings.queryGiftExist( keyStruct[0] ) )
-                    continue;
+                    if( SPDSettings.queryGiftExist( keyStruct[0] ) )
+                        continue;
 
-                saveData.add( decodedString );
+                    saveData.add( decodedString );
+                }
+
+                if( !saveData.isEmpty() ){
+                    String[] result = new String[saveData.size()];
+                    SPDSettings.saveGift( saveData.toArray( result ) );
+                }
+
+                SPDSettings.deleteOutdatedGift();
+            } catch (Exception ignored) {
             }
-
-            if( !saveData.isEmpty() ){
-                String[] result = new String[saveData.size()];
-                SPDSettings.saveGift( saveData.toArray( result ) );
-            }
-
-            SPDSettings.deleteOutdatedGift();
-        } catch (Exception ignored) {
-        }
+        });
+        executor.shutdown();
     }
 
     private static JsonValue getLocalFileGift() {
@@ -339,6 +345,8 @@ public class Gift implements Bundlable {
 
             URL url = new URL("https://gameupdate.insrv.mlpd.spldream.com/MLPD/gift.json");
             URLConnection conn = url.openConnection();
+            conn.setConnectTimeout( 4000 );
+            conn.setReadTimeout( 4000 );
             conn.setRequestProperty("User-Agent", "Mozilla/5.0");
 
             conn.connect();
