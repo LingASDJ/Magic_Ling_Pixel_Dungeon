@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
     public static boolean inCastleArea() {
         return Statistics.Hollow_Holiday && Dungeon.depth >= 26;
     }
+
+    // 读档恢复时会调用 upgrade(level) 来重建充能上限，此时不应发放信号弹
+    private boolean restoring = false;
 
     // 脱下/嬗变套组时，提前结束狙击手的援护与狩猎狂欢
     private static void removeActiveBuffs(Hero hero) {
@@ -258,8 +262,8 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
     @Override
     public Item upgrade() {
         Item item = super.upgrade();
-        // 每次升级获得 1 颗信号弹
-        if (Dungeon.hero != null) {
+        // 每次升级获得 1 颗信号弹（读档恢复时除外，避免切层后回层无故刷弹）
+        if (Dungeon.hero != null && !restoring) {
             spawnFlare(1);
         }
         // 每升级额外提高 1 点充能上限（初始 1 点，满级 4 点），并补满充能
@@ -267,6 +271,17 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
         charge = chargeCap;
         updateQuickslot();
         return item;
+    }
+
+    // 切层/读档时 upgrade(level) 仍需要重建 chargeCap，但不能因此发放信号弹
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        restoring = true;
+        try {
+            super.restoreFromBundle(bundle);
+        } finally {
+            restoring = false;
+        }
     }
 
     // 返回升级花费
