@@ -4,4 +4,10 @@
     <string name="no_configuration_found">没有找到配置信息，请手动重启程序吧。</string>
     <string name="copy_error_report">复制错误报告</string>
     <string name="copy_complete">复制完成</string>
+    <string name="crash_dialog_title">问题详情</string>
+    <string name="crash_dialog_copy">复制</string>
+    <string name="crash_dialog_close">关闭</string>
+    <string name="crash_copy_success">已复制到剪贴板</string>
+    <string name="log_saved">错误日志已保存</string>
+    <string name="log_save_failed">保存错误日志失败</string>
 </resources>

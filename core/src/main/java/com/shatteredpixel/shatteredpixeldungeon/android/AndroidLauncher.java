@@ -2,7 +2,10 @@ package com.shatteredpixel.shatteredpixeldungeon.android;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.opengl.GLSurfaceView;
@@ -12,6 +15,8 @@ import android.text.InputType;
 import android.view.ViewConfiguration;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
 
@@ -32,10 +37,13 @@ import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.CrashHandler;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TexturePackScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
@@ -46,6 +54,7 @@ import com.watabou.input.KeyEvent;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
 
+import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
 
 public class AndroidLauncher extends AndroidApplication {
@@ -57,7 +66,7 @@ public class AndroidLauncher extends AndroidApplication {
     public static FirebaseAnalytics mFirebaseAnalyticsRecords;
 
     @RequiresPermission(allOf = {Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.WAKE_LOCK})
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "RestrictedApi"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +77,7 @@ public class AndroidLauncher extends AndroidApplication {
                 .minTimeBetweenCrashesMs(2000) //default: 3000
                 .errorActivity(ErrorActivity.class) //default: null (default error activity)
                 .apply();
-
+        CustomActivityOnCrash.install(this);
 
         FirebaseApp.initializeApp(this);
 
@@ -153,6 +162,7 @@ public class AndroidLauncher extends AndroidApplication {
         Button.longClick = ViewConfiguration.getLongPressTimeout()/1000f;
 
         initialize(new ShatteredPixelDungeon(support), config);
+        CrashHandler.getInstance().startAnrMonitor();
     }
 
 
@@ -231,6 +241,70 @@ public class AndroidLauncher extends AndroidApplication {
             }
         };
     }
+
+    @Override
+    protected void onDestroy() {
+        CrashHandler.getInstance().stopAnrMonitor();
+        super.onDestroy();
+    }
+
+    public static void showNativeCrashDialog(final String crashText) {
+        if (!(instance instanceof AndroidLauncher)) {
+            return;
+        }
+        final AndroidLauncher launcher = (AndroidLauncher) instance;
+
+        launcher.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Context dialogContext = new android.view.ContextThemeWrapper(launcher,
+                        com.google.android.material.R.style.Theme_MaterialComponents_DayNight_Dialog_Alert);
+
+                ScrollView scrollView = new ScrollView(dialogContext);
+                scrollView.setPadding(dp2px(16), dp2px(8), dp2px(16), dp2px(8));
+                scrollView.setFillViewport(true); // 关键：允许内容撑开，支持滚动
+
+                TextView textView = new TextView(dialogContext);
+                textView.setText(crashText);
+                textView.setTextSize(10);
+                textView.setTypeface(android.graphics.Typeface.MONOSPACE);
+                textView.setMaxLines(Integer.MAX_VALUE); // 取消行数限制
+                textView.setVerticalScrollBarEnabled(true);
+
+                scrollView.addView(textView);
+
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(dialogContext);
+                builder.setTitle(dialogContext.getString(R.string.crash_dialog_title));
+                builder.setView(scrollView);
+
+                builder.setPositiveButton(dialogContext.getString(R.string.crash_dialog_copy), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ClipboardManager cm = (ClipboardManager) launcher.getSystemService(Context.CLIPBOARD_SERVICE);
+                        cm.setPrimaryClip(ClipData.newPlainText("crash_log", crashText));
+                        // Snackbar使用Activity根视图，而不是dialog上下文
+                        if (launcher.findViewById(android.R.id.content) != null) {
+                            Snackbar.make(launcher.findViewById(android.R.id.content),
+                                    dialogContext.getString(R.string.crash_copy_success),
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                builder.setNegativeButton(dialogContext.getString(R.string.crash_dialog_close), null);
+                builder.setCancelable(true);
+                builder.show();
+            }
+        });
+    }
+
+    private static int dp2px(int dp){
+        if(instance == null) return dp;
+        float density = instance.getResources().getDisplayMetrics().density;
+        return (int)(dp * density + 0.5f);
+    }
+
+
 
     @Override
     public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {

@@ -1,6 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -28,8 +31,15 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     public static final String CRASH_DIR = "crash_logs";
     /** 崩溃日志文件前缀*/
     private static final String CRASH_FILE_PREFIX = "crash_";
+    /** ANR日志文件前缀 */
+    private static final String ANR_FILE_PREFIX = "anr_";
     /** 崩溃日志文件后缀*/
     public static final String CRASH_FILE_EXTENSION = ".log";
+
+    private static final long ANR_THRESHOLD_MS = 4000L;
+    /** ANR检测轮询间隔 */
+    private static final long ANR_CHECK_INTERVAL_MS = 500L;
+
     /** 系统默认的UncaughtException处理类 */
     private Thread.UncaughtExceptionHandler mDefaultHandler;
     /** CrashHandler实例 */
@@ -39,6 +49,60 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private static final String VERSION_NAME = "versionName";
     private static final String VERSION_CODE = "versionCode";
     private static final String STACK_TRACE = "STACK_TRACE";
+
+    //==================== ANR监控相关 ====================
+    private HandlerThread anrMonitorThread;
+    private Handler anrMonitorHandler;
+    private volatile boolean mainThreadTick;
+    private Thread mainUiThread;
+    private final Runnable anrTickRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mainThreadTick = true;
+        }
+    };
+
+    public boolean isFakeAnrTrace(String stack) {
+        if (stack == null) return true;
+        return stack.contains("SUSPECTED ANR")
+                && stack.contains("nativePollOnce")
+                && !stack.contains(".java:");
+    }
+
+    private final Runnable anrDetectRunnable = new Runnable() {
+        @Override
+        public void run() {
+            while (!Thread.currentThread().isInterrupted()) {
+                //关键修复：Gdx.app为空就终止监控循环，避免NPE
+                if (Gdx.app == null) {
+                    break;
+                }
+
+                boolean tickBefore = mainThreadTick;
+                mainThreadTick = false;
+                //往libgdx主线程post一个空任务
+                Gdx.app.postRunnable(anrTickRunnable);
+
+                try {
+                    Thread.sleep(ANR_THRESHOLD_MS);
+                } catch (InterruptedException e) {
+                    break;
+                }
+
+                if (!mainThreadTick && tickBefore) {
+                    // 主线程在阈值时间没有执行任务 → 疑似ANR
+                    captureSuspectedANR();
+                }
+
+                try {
+                    Thread.sleep(ANR_CHECK_INTERVAL_MS);
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        }
+    };
+
 
     /** 保证只有一个CrashHandler实例 */
     private CrashHandler() {}
@@ -111,10 +175,72 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     /**
      * 初始化,获取系统默认的UncaughtException处理器,
      * 设置该CrashHandler为程序的默认处理器
+     * 同时开启ANR监控
      */
     public void init() {
         mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this);
+        startAnrMonitor();
+    }
+
+    /** 启动ANR卡顿监控 */
+    public void startAnrMonitor(){
+        if(!DeviceCompat.isAndroid()) return;
+        if(anrMonitorThread != null) return;
+        if(Gdx.app == null) return;
+
+        mainUiThread = Looper.getMainLooper().getThread();
+        anrMonitorThread = new HandlerThread("AnrMonitorThread");
+        anrMonitorThread.start();
+        anrMonitorHandler = new Handler(anrMonitorThread.getLooper());
+        anrMonitorHandler.post(anrDetectRunnable);
+    }
+
+    /** 停止ANR监控，销毁时调用 */
+    public void stopAnrMonitor(){
+        if(anrMonitorThread != null){
+            anrMonitorThread.interrupt();
+            anrMonitorThread.quit();
+            anrMonitorThread = null;
+        }
+        if(anrMonitorHandler != null){
+            anrMonitorHandler.removeCallbacks(anrDetectRunnable);
+            anrMonitorHandler = null;
+        }
+    }
+
+    /** 捕获疑似ANR，抓取主线程堆栈，写日志 */
+    private void captureSuspectedANR(){
+        if(Gdx.app == null) return;
+        try {
+            StringBuilder sb = new StringBuilder();
+            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+            sb.append("Time: ").append(timestamp).append("\n");
+            sb.append("===== SUSPECTED ANR (Main thread blocked) =====\n");
+            sb.append("Threshold: ").append(ANR_THRESHOLD_MS).append("ms\n");
+            sb.append("\n--- MAIN THREAD STACK TRACE ---\n");
+
+            //打印主线程堆栈
+            StackTraceElement[] stack = mainUiThread.getStackTrace();
+            for (StackTraceElement element : stack) {
+                sb.append("\tat ").append(element.toString()).append("\n");
+            }
+
+            sb.append("\n");
+            sb.append(getSystemInfo());
+            sb.append("\n===== END SUSPECTED ANR =====\n");
+
+            //保存ANR日志
+            String timeFile = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(new Date());
+            String fileName = ANR_FILE_PREFIX + timeFile + CRASH_FILE_EXTENSION;
+            FileHandle crashFile = Gdx.files.local(CRASH_DIR).child(fileName);
+            crashFile.writeString(sb.toString(), false);
+
+            System.err.println(sb);
+        }catch (Exception e){
+            System.err.println("captureSuspectedANR failed");
+            e.printStackTrace();
+        }
     }
 
     private void ensureCrashDirExists() {

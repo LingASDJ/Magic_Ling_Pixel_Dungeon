@@ -4,4 +4,10 @@
     <string name="no_configuration_found">No configuration information found. Please restart the program manually.</string>
     <string name="copy_error_report">Copy error report</string>
     <string name="copy_complete">Copy complete</string>
+    <string name="crash_dialog_title">Crash / ANR Details</string>
+    <string name="crash_dialog_copy">Copy</string>
+    <string name="crash_dialog_close">Close</string>
+    <string name="crash_copy_success">Copied to clipboard</string>
+    <string name="log_saved">Crash log saved</string>
+    <string name="log_save_failed">Failed to save crash log</string>
 </resources>
