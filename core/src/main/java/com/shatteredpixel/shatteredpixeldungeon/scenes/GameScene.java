@@ -149,7 +149,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.MenuPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ResumeIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RightClickMenu;
-import com.shatteredpixel.shatteredpixeldungeon.ui.SafeInsetDecorator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScoreBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
@@ -197,6 +196,7 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.Point;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+import com.watabou.utils.RectF;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -691,18 +691,15 @@ public class GameScene extends PixelScene {
 		} else {
 			Camera.main.setCenterOffset(0, 0);
 		}
+		//Camera.main.panTo(Dungeon.hero.sprite.center(), 5f);
 
-		// 使用 Game 层的安全区（已根据方向自动映射）
-		boolean landscape = Game.width > Game.height;
-		float insetA = Game.safeInsetA / uiCamera.zoom;
-		float insetB = Game.safeInsetB / uiCamera.zoom;
-		float insetLeft = landscape ? insetA : 0;
-		float insetRight = landscape ? insetB : 0;
-		float insetTop = landscape ? 0 : insetA;
-		float insetBottom = landscape ? 0 : insetB;
+		//primarily for phones displays with notches
+		//TODO Android never draws into notch atm, perhaps allow it for center notches?
+		RectF insets = DeviceCompat.getSafeInsets();
+		insets = insets.scale(1f / uiCamera.zoom);
 
 		boolean tagsOnLeft = SPDSettings.flipTags();
-		float tagWidth = Tag.SIZE + (tagsOnLeft ? insetLeft : insetRight);
+		float tagWidth = Tag.SIZE + (tagsOnLeft ? insets.left : insets.right);
 		float tagLeft = tagsOnLeft ? 0 : uiCamera.width - tagWidth;
 
 		float invWidth = (scene.inventory != null && scene.inventory.visible) ? scene.inventory.width() : 0;
@@ -711,26 +708,11 @@ public class GameScene extends PixelScene {
 				scene.toolbar.top()-2 :
 				scene.status.top()-2;
 		if (tagsOnLeft) {
-			scene.log.setRect(
-					tagWidth,
-					y,
-					uiCamera.width - tagWidth - insetRight - insetLeft - invWidth,
-					0
-			);
+			scene.log.setRect(tagWidth, y, uiCamera.width - tagWidth - insets.right - invWidth, 0);
 		} else if (invWidth > 0) {
-			scene.log.setRect(
-					insetLeft,
-					y,
-					uiCamera.width - invWidth - insetRight,
-					0
-			);
+			scene.log.setRect(insets.left, y, uiCamera.width - invWidth, 0);
 		} else {
-			scene.log.setRect(
-					insetLeft,
-					y,
-					uiCamera.width - tagWidth - insetLeft - insetRight,
-					0
-			);
+			scene.log.setRect(insets.left, y, uiCamera.width - tagWidth - insets.left, 0);
 		}
 
 		float pos = SPDSettings.quickSwapper()?scene.toolbarv1.top():scene.toolbar.top();
@@ -738,7 +720,6 @@ public class GameScene extends PixelScene {
 			pos = scene.status.top();
 		}
 
-		// Tags 应用安全区
 		if (scene.tagAttack){
 			scene.attack.setRect( tagLeft, pos - Tag.SIZE, tagWidth, Tag.SIZE );
 			scene.attack.flip(tagsOnLeft);
@@ -1293,12 +1274,6 @@ public class GameScene extends PixelScene {
 
 		scene = this;
 
-		boolean landscape = Game.width > Game.height;
-		float insetLeft = landscape ? Game.safeInsetA / uiCamera.zoom : 0;
-		float insetRight = landscape ? Game.safeInsetB / uiCamera.zoom : 0;
-		float insetTop = landscape ? 0 : Game.safeInsetA / uiCamera.zoom;
-		float insetBottom = landscape ? 0 : Game.safeInsetB / uiCamera.zoom;
-
 		terrain = new Group();
 		add( terrain );
 
@@ -1490,39 +1465,22 @@ public class GameScene extends PixelScene {
 
 		menu = new MenuPane();
 		menu.camera = uiCamera;
-		menu.setPos(
-				PixelScene.uiCamera.width - MenuPane.WIDTH - insetRight,
-				uiSize > 0 ? insetTop : 1 + insetTop
-		);
+		menu.setPos( PixelScene.uiCamera.width-MenuPane.WIDTH, uiSize > 0 ? 0 : 1);
 		add(menu);
 
 		status = new StatusPane( SPDSettings.interfaceSize() > 0 );
-		status.setInsets(insetLeft, insetRight, insetTop, insetBottom);
 		status.camera = uiCamera;
-
-		float statusTop = uiSize > 0
-				? (PixelScene.uiCamera.height - 39 - insetBottom)
-				: insetTop;
-		status.setRect(
-				insetLeft,
-				statusTop,
-				PixelScene.uiCamera.width - insetLeft - insetRight,
-				0
-		);
-
+		status.setRect(0, uiSize > 0 ? PixelScene.uiCamera.height-39 : 0, PixelScene.uiCamera.width, 0 );
 		add(status);
 
 		boss = new BossHealthBar();
 		boss.camera = uiCamera;
-		boss.setPos(
-				6 + (PixelScene.uiCamera.width - boss.width())/2,
-				28
-		);
+		boss.setPos( 6 + (PixelScene.uiCamera.width - boss.width())/2, 28);
 		add(boss);
 
 		scoreBar = new ScoreBar();
 		scoreBar.camera = uiCamera;
-		scoreBar.setPos( 6 + insetLeft + (PixelScene.uiCamera.width - scoreBar.width() - insetLeft - insetRight)/2, 28 + insetTop);
+		scoreBar.setPos( 6 + (PixelScene.uiCamera.width - scoreBar.width())/2, 28);
 		add(scoreBar);
 
 		attack = new AttackIndicator();
@@ -1551,7 +1509,6 @@ public class GameScene extends PixelScene {
 		}
 
 		/**Toolbar V1+V2 */
-		// Toolbar 应用安全区
 		if(SPDSettings.quickSwapper()) {
 			toolbarv1 = new Toolbar();
 			toolbarv1.camera = uiCamera;
@@ -1563,27 +1520,22 @@ public class GameScene extends PixelScene {
 		}
 
 
-
 		if (uiSize == 2) {
 			inventory = new InventoryPane();
 			inventory.camera = uiCamera;
-			inventory.setPos(PixelScene.uiCamera.width - inventory.width() - insetRight,
-					PixelScene.uiCamera.height - inventory.height() - insetBottom);
+			inventory.setPos(PixelScene.uiCamera.width - inventory.width(), PixelScene.uiCamera.height - inventory.height());
 			add(inventory);
 			if(SPDSettings.quickSwapper()) {
-				toolbarv1.setRect(insetLeft, PixelScene.uiCamera.height - toolbarv1.height() - inventory.height() - insetBottom,
-						PixelScene.uiCamera.width - insetLeft - insetRight, toolbarv1.height());
+				toolbarv1.setRect(0, PixelScene.uiCamera.height - toolbarv1.height() - inventory.height(), PixelScene.uiCamera.width,
+						toolbarv1.height());
 			} else {
-				toolbar.setRect(insetLeft, PixelScene.uiCamera.height - toolbar.height() - inventory.height() - insetBottom,
-						PixelScene.uiCamera.width - insetLeft - insetRight, toolbar.height());
+				toolbar.setRect(0, PixelScene.uiCamera.height - toolbar.height() - inventory.height(), PixelScene.uiCamera.width, toolbar.height());
 			}
 		} else {
 			if(SPDSettings.quickSwapper()) {
-				toolbarv1.setRect(insetLeft, PixelScene.uiCamera.height - toolbarv1.height() - insetBottom,
-						PixelScene.uiCamera.width - insetLeft - insetRight, toolbarv1.height());
+				toolbarv1.setRect(0, PixelScene.uiCamera.height - toolbarv1.height(), PixelScene.uiCamera.width, toolbarv1.height());
 			} else {
-				toolbar.setRect(insetLeft, PixelScene.uiCamera.height - toolbar.height() - insetBottom,
-						PixelScene.uiCamera.width - insetLeft - insetRight, toolbar.height());
+				toolbar.setRect(0, PixelScene.uiCamera.height - toolbar.height(), PixelScene.uiCamera.width, toolbar.height());
 			}
 		}
 
@@ -1975,9 +1927,6 @@ public class GameScene extends PixelScene {
 			}
 		}
 
-		SafeInsetDecorator safeInsetDeco = new SafeInsetDecorator();
-		safeInsetDeco.camera = uiCamera;
-		add(safeInsetDeco);
 	}
 
 	//todo 移除Debuff AND GoodBuff

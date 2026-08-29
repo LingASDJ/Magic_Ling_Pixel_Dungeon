@@ -440,7 +440,6 @@ public class WndSettings extends WndTabbed {
 		CheckBox chkFont;
 
 		OptionSlider quickslots;
-		OptionSlider optSafeInset;     // 手动模式下的像素值 0-50
 
 		@Override
 		protected void createChildren() {
@@ -686,17 +685,6 @@ public class WndSettings extends WndTabbed {
 			quickslots.setSelectedValue(SPDSettings.quickslots());
 			add(quickslots);
 
-			// 像素值滑块：0-50px
-			optSafeInset = new OptionSlider(Messages.get(this, "safe_inset_px")+"("+SPDSettings.safeInset()+")", "0", "80", 0, 80) {
-				@Override
-				protected void onChange() {
-					SPDSettings.safeInset(getSelectedValue());
-				}
-			};
-			int storedInset = SPDSettings.safeInset();
-			optSafeInset.setSelectedValue(storedInset == -1 ? 0 : storedInset);
-			add(optSafeInset);
-
 			btnKeyBindings = new RedButton(Messages.get(this, "key_bindings")){
 				@Override
 				protected void onClick() {
@@ -766,13 +754,6 @@ public class WndSettings extends WndTabbed {
 
 
 			height = chkFont.bottom();
-
-			if (width > 200) {
-				optSafeInset.setRect(0, chkFont.bottom(), width, SLIDER_HEIGHT);
-			} else {
-				optSafeInset.setRect(0, chkFont.bottom() + GAP, width, SLIDER_HEIGHT);
-			}
-			height = Math.max(chkFont.bottom(), optSafeInset.bottom());
 
 			if (!isDesktop()) {
 				btnKeyBindings.active = false;
@@ -916,16 +897,16 @@ public class WndSettings extends WndTabbed {
 				optSplashScreen.setRect(0, bottom, width, SLIDER_HEIGHT);
 				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				optIcon.setRect(optFPSLimit.right(), optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
-            } else {
+			} else {
 				optSplashScreen.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
 				optIcon.setRect(0, optFPSLimit.bottom() + GAP, width, SLIDER_HEIGHT);
-            }
-            customBanner.setRect(0, optIcon.bottom() + GAP, width/2, 16);
-            CustomBannerSettings.setRect(customBanner.right(), customBanner.top(), width/2, 16);
-            yearsUI.setRect(0, CustomBannerSettings.bottom() + GAP, width, 21);
+			}
+			customBanner.setRect(0, optIcon.bottom() + GAP, width/2, 16);
+			CustomBannerSettings.setRect(customBanner.right(), customBanner.top(), width/2, 16);
+			yearsUI.setRect(0, CustomBannerSettings.bottom() + GAP, width, 21);
 
-            height = CustomBannerSettings.bottom();
+			height = CustomBannerSettings.bottom();
 		}
 
 	}
