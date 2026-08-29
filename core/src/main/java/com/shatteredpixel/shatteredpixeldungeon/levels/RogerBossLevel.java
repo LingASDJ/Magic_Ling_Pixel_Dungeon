@@ -15,6 +15,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -120,6 +121,17 @@ public class RogerBossLevel extends Level {
     }
 
     @Override
+    public void playBossMusic() {
+        Music.playModeBGM("music/tomb/royal.ogg", true);
+    }
+
+    @Override
+    public void seal() {
+        super.seal();
+        playBossMusic();
+    }
+
+    @Override
     protected boolean build() {
         feeling = Feeling.NONE;
         setSize(WIDTH, HEIGHT);
@@ -146,7 +158,9 @@ public class RogerBossLevel extends Level {
 
     @Override
     protected void createMobs() {
-
+        Roger roger = new Roger();
+        roger.pos = 180;
+        mobs.add(roger);
     }
 
     @Override

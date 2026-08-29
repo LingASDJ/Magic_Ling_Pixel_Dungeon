@@ -16,7 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class ExorcistMaul extends MeleeWeapon{
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.KILLDEMON_HAMMER;
 
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;

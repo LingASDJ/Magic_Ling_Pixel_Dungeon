@@ -17,7 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class TheDrip extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.WATER_SWORD;
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
         tier = 3;

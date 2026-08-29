@@ -50,6 +50,9 @@ public class SPDAction extends GameAction {
 	public static final GameAction W            = new SPDAction("w");
 	public static final GameAction S            = new SPDAction("s");
 	public static final GameAction E            = new SPDAction("e");
+
+	public static final GameAction YES            = new SPDAction("yes");
+	public static final GameAction NO            = new SPDAction("no");
 	public static final GameAction NW           = new SPDAction("nw");
 	public static final GameAction NE           = new SPDAction("ne");
 	public static final GameAction SW           = new SPDAction("sw");
@@ -117,6 +120,9 @@ public class SPDAction extends GameAction {
 		defaultBindings.put( Input.Keys.NUMPAD_4,       SPDAction.W );
 		defaultBindings.put( Input.Keys.NUMPAD_2,       SPDAction.S );
 		defaultBindings.put( Input.Keys.NUMPAD_6,       SPDAction.E );
+
+		defaultBindings.put(Input.Keys.Y, SPDAction.YES);
+		defaultBindings.put(Input.Keys.N, SPDAction.NO);
 
 		defaultBindings.put( Input.Keys.NUMPAD_7,       SPDAction.NW );
 		defaultBindings.put( Input.Keys.NUMPAD_9,       SPDAction.NE );

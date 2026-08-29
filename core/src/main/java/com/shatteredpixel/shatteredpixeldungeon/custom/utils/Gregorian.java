@@ -60,7 +60,7 @@ public class Gregorian {
         checkMidAutumnFestival(lunarDate);
         checkDeveloperBirthday(lunarDate);
         checkDragonBoatFestival(lunarDate);
-        //checkChongYang(lunarDate);
+        checkZYFestival(lunarDate);
         checkFukePQJ(gregorianMonth, gregorianDay);
         checkChinaBirthday(gregorianMonth, gregorianDay);
         checkMageSkin(gregorianMonth, gregorianDay);
@@ -184,6 +184,15 @@ public class Gregorian {
                         lunar.getDay() <= 5 + DRAGON_BOAT_POST_DAYS)) {
             chinaHoliday = RegularLevel.ChinaHoliday.DWJ;
             eventEndTime = calculateLunarEventEndTime(lunar, 5, 12);
+        }
+    }
+
+    private static void checkZYFestival(Lunar lunar) {
+        if (lunar.getMonth() == 7 &&
+                (lunar.getDay() >= 7 &&
+                        lunar.getDay() <= 15)) {
+            chinaHoliday = RegularLevel.ChinaHoliday.ZYJ;
+            eventEndTime = calculateLunarEventEndTime(lunar, 7, 19);
         }
     }
 

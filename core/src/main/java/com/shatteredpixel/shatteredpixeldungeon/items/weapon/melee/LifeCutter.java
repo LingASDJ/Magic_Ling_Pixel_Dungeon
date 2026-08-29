@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class LifeCutter extends MeleeWeapon{
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.NO_LIVE;
 
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
