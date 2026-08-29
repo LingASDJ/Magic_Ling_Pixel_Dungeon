@@ -31,7 +31,6 @@ import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.view.View;
-import android.view.WindowInsets;
 import android.view.WindowManager;
 
 import androidx.core.content.FileProvider;
@@ -53,10 +52,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AndroidPlatformSupport extends PlatformSupport {
-
-	// 缓存的系统刘海安全区（两侧，单位：像素）
-	// 竖屏时 = 上下边距，横屏时 = 左右边距
-	private int sysSafeInsetA, sysSafeInsetB;
 
 	public void updateDisplaySize(){
 		if (SPDSettings.landscape() != null) {
@@ -144,14 +139,6 @@ public class AndroidPlatformSupport extends PlatformSupport {
 							WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 				}
 
-				// 刘海屏安全区设置 (Display Cutout / Notch Safe Area)
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-					WindowManager.LayoutParams params = AndroidLauncher.instance.getWindow().getAttributes();
-					// 横屏游戏推荐 SHORT_EDGES，让内容延伸到短边刘海区域
-					params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-					AndroidLauncher.instance.getWindow().setAttributes(params);
-				}
-
 				if (SPDSettings.fullscreen()) {
 					AndroidLauncher.instance.getWindow().getDecorView().setSystemUiVisibility(
 							View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -161,79 +148,9 @@ public class AndroidPlatformSupport extends PlatformSupport {
 					AndroidLauncher.instance.getWindow().getDecorView().setSystemUiVisibility(
 							View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 				}
-
-				// 监听 WindowInsets 变化，实时更新系统刘海安全区
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-					final View decorView = AndroidLauncher.instance.getWindow().getDecorView();
-					decorView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-						@Override
-						public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
-							// 读取系统提供的刘海安全区
-							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-								android.view.DisplayCutout cutout = insets.getDisplayCutout();
-								if (cutout != null) {
-									// 根据当前方向判断哪两边是"两侧"
-									boolean isLandscape = Game.dispWidth >= Game.dispHeight;
-									if (isLandscape) {
-										// 横屏：两侧 = 左右
-										sysSafeInsetA = cutout.getSafeInsetLeft();
-										sysSafeInsetB = cutout.getSafeInsetRight();
-									} else {
-										// 竖屏：两侧 = 上下
-										sysSafeInsetA = cutout.getSafeInsetTop();
-										sysSafeInsetB = cutout.getSafeInsetBottom();
-									}
-								} else {
-									sysSafeInsetA = sysSafeInsetB = 0;
-								}
-							}
-
-							// 同步到 Game 层（应用用户自定义偏移后）
-							applySafeInsetsToGame();
-
-							return insets;
-						}
-					});
-					decorView.requestApplyInsets();
-				}
 			}
 		});
 
-	}
-
-	/**
-	 * 将安全区应用到 Game 层
-	 * 优先使用用户在设置中自定义的值，未设置则使用系统检测值
-	 * 竖屏时应用到上下，横屏时应用到左右
-	 */
-	private void applySafeInsetsToGame() {
-		// 用户自定义偏移量（像素，-1 表示使用系统默认值）
-		int userInset = SPDSettings.safeInset();
-
-		if (userInset >= 0) {
-			// 用户强制指定两侧边距
-			Game.safeInsetA = userInset;
-			Game.safeInsetB = userInset;
-		} else {
-			// 使用系统检测值
-			Game.safeInsetA = sysSafeInsetA;
-			Game.safeInsetB = sysSafeInsetB;
-		}
-	}
-
-	/**
-	 * 强制刷新安全区（设置变更后调用）
-	 */
-	public void refreshSafeInsets() {
-		applySafeInsetsToGame();
-	}
-
-	/**
-	 * 获取当前系统检测到的刘海安全区（供设置界面显示参考）
-	 * 返回 int[2] = {sideA, sideB}，根据当前方向对应上下或左右
-	 */
-	public int[] getSystemCutoutInsets() {
-		return new int[]{sysSafeInsetA, sysSafeInsetB};
 	}
 
 	@Override

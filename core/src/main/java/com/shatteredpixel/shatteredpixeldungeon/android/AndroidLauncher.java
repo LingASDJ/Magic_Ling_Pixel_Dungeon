@@ -4,20 +4,34 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.ViewConfiguration;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.RequiresPermission;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationBase;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
+import com.badlogic.gdx.backends.android.AndroidGraphics;
 import com.badlogic.gdx.backends.android.AsynchronousAndroidAudio;
+import com.badlogic.gdx.backends.android.DefaultAndroidInput;
+import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -25,8 +39,10 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TexturePackScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.shatteredpixel.shatteredpixeldungeon.update.UpdateImpl;
 import com.shatteredpixel.shatteredpixeldungeon.update.Updates;
+import com.watabou.input.KeyEvent;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
 
@@ -101,25 +117,40 @@ public class AndroidLauncher extends AndroidApplication {
             instance = this;
         }
 
-        // set desired orientation (if it exists) before initializing the app.
-        if (SPDSettings.landscape() != null) {
-            instance.setRequestedOrientation(SPDSettings.landscape() ?
-                    ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
-                    ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        //Shattered still overrides the back gesture behaviour, but we need to do it in a new way
+        // (API added in Android 13, functionality enforced in Android 16)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            //we post this to a runnable so that it's delayed and overrides
+            // default GDX back handling, which only sends a key down event
+            runnables.add(new Runnable() {
+                @Override
+                public void run() {
+                    getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, new OnBackInvokedCallback() {
+                        @Override
+                        public void onBackInvoked() {
+                            KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, true));
+                            KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, false));
+                        }
+                    });
+                }
+            });
         }
-
-        mFirebaseAnalyticsRecords.setAnalyticsCollectionEnabled(SPDSettings.firebaseRecords());
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.depth = 0;
+
+        //we manage this ourselves
+        config.useImmersiveMode = false;
 
         config.useCompass = false;
         config.useAccelerometer = false;
 
         if (support == null) support = new AndroidPlatformSupport();
-        else support.reloadGenerators();
+        else                 support.reloadGenerators();
 
         support.updateSystemUI();
+
+        Button.longClick = ViewConfiguration.getLongPressTimeout()/1000f;
 
         initialize(new ShatteredPixelDungeon(support), config);
     }
@@ -161,6 +192,44 @@ public class AndroidLauncher extends AndroidApplication {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         support.updateSystemUI();
+    }
+
+    @Override
+    protected AndroidGraphics createGraphics(AndroidApplicationConfiguration config) {
+        return new AndroidGraphics(this, config,
+                config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy) {
+            @Override
+            protected GLSurfaceView20 createGLSurfaceView(AndroidApplicationBase application, ResolutionStrategy resolutionStrategy) {
+                if (!checkGL20()) throw new GdxRuntimeException("libGDX requires OpenGL ES 2.0");
+
+                GLSurfaceView.EGLConfigChooser configChooser = getEglConfigChooser();
+                GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2) {
+                    @Override
+                    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+                        if (outAttrs != null) {
+                            outAttrs.imeOptions = outAttrs.imeOptions | EditorInfo.IME_FLAG_NO_EXTRACT_UI;
+                            if (onscreenKeyboardType == Input.OnscreenKeyboardType.Default) {
+                                // The trick is to omit InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD here
+                                outAttrs.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+                            } else {
+                                outAttrs.inputType = DefaultAndroidInput.getAndroidInputType(onscreenKeyboardType, true);
+                            }
+                        }
+
+                        // Delegate to super class without outAttrs to modify
+                        return super.onCreateInputConnection(null);
+                    }
+                };
+
+                if (configChooser != null)
+                    view.setEGLConfigChooser(configChooser);
+                else
+                    view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+
+                view.setRenderer(this);
+                return view;
+            }
+        };
     }
 
     @Override
