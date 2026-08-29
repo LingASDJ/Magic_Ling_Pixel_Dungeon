@@ -326,9 +326,29 @@ public class CrashReportScene extends PixelScene {
         }
 
         protected void onClick() {
-            ModernCrashReportWindow window = new ModernCrashReportWindow(es);
-            ShatteredPixelDungeon.scene().add(window);
+            if(DeviceCompat.isAndroid()){
+                StringBuilder sb = new StringBuilder();
+                String[] lines = es.stackTrace.split("\n");
+                int startIdx = 0;
+                for (int i = 0; i < lines.length; i++) {
+                    if (!lines[i].startsWith("Crash log from")) {
+                        startIdx = i;
+                        break;
+                    }
+                }
+                for (int i = startIdx; i < lines.length; i++) {
+                    if (lines[i].equals("=== NOTES ===")) break;
+                    sb.append(lines[i]).append("\n");
+                }
+
+                com.shatteredpixel.shatteredpixeldungeon.android.AndroidLauncher.showNativeCrashDialog(sb.toString());
+            } else {
+                ModernCrashReportWindow window = new ModernCrashReportWindow(es);
+                ShatteredPixelDungeon.scene().add(window);
+            }
         }
+
+
 
         @Override
         protected void layout() {
