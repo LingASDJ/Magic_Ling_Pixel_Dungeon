@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -10,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
+import com.watabou.input.GameAction;
 import com.watabou.input.PointerEvent;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
@@ -19,6 +21,11 @@ import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.ui.Component;
 
 public class EulaScene extends PixelScene {
+
+    private ScrollPane list;
+    private CreditsBlock shpx;
+    private RedButton acceptButton;
+    private RedButton rejectButton;
 
     @Override
     public void create() {
@@ -31,26 +38,24 @@ public class EulaScene extends PixelScene {
         int h = Camera.main.height;
 
         Archs archs = new Archs();
-        archs.setSize( w, h );
-        add( archs );
+        archs.setSize(w, h);
+        add(archs);
 
-        //darkens the arches
         add(new ColorBlock(w, h, 0x88000000));
 
-        ScrollPane list = new ScrollPane( new Component() );
-        add( list );
-
+        // 滚动面板：只放EULA文本，按钮不放进content
+        list = new ScrollPane(new Component());
+        add(list);
         Component content = list.content();
         content.clear();
 
-        //*** Shattered Pixel Dungeon Credits ***
-
-        CreditsBlock shpx = new CreditsBlock(false, Window.TITLE_COLOR,
+        shpx = new CreditsBlock(false, Window.TITLE_COLOR,
                 Messages.get(this,"title"),
                 null,
                 Messages.get(this,"desc"),
                 null,
                 null);
+
         if (landscape()){
             shpx.setRect((w - fullWidth)/2f - 6, 10, fullWidth, 0);
         } else {
@@ -58,43 +63,77 @@ public class EulaScene extends PixelScene {
         }
         content.add(shpx);
 
-        RedButton acceptButton = new RedButton(Messages.get(this, "accept")) {
+        // 按钮直接加到scene，不在scroll content内，固定底部
+        acceptButton = new RedButton(Messages.get(this, "accept")) {
             @Override
             protected void onClick() {
                 SPDSettings.firebase(true);
                 SPDSettings.firebaseRecords(true);
                 ShatteredPixelDungeon.switchScene(GoScene.class);
             }
+
+            @Override
+            public GameAction keyAction() {
+                return SPDAction.YES;
+            }
         };
 
-        RedButton rejectButton = new RedButton(Messages.get(this, "reject")) {
+        rejectButton = new RedButton(Messages.get(this, "reject")) {
             @Override
             protected void onClick() {
                 Game.instance.finish();
             }
+            @Override
+            public GameAction keyAction() {
+                return SPDAction.NO;
+            }
         };
+        add(acceptButton);
+        add(rejectButton);
 
-        // 设置按钮位置和大小
+        list.scrollTo(0, 0);
+    }
+
+    @Override
+    public void update() {
+        super.update();
+
+        int w = Camera.main.width;
+        int h = Camera.main.height;
+
+        final float colWidth = 120;
+        final float fullWidth = colWidth * (landscape() ? 2 : 1);
+
+        // 底部预留按钮区域高度
+        float buttonAreaHeight = 26f;
+        float scrollBottomMargin = 8f;
+
+        // ScrollPane：占据屏幕顶部到按钮上方，按钮区域留给底部按钮
+        list.setRect(0, 0, w, h - buttonAreaHeight - scrollBottomMargin);
+
+        Component content = list.content();
+        // 重置CreditsBlock位置宽度
+        if (landscape()){
+            shpx.setRect((w - fullWidth)/2f - 6, 10, fullWidth, 0);
+        } else {
+            shpx.setRect((w - fullWidth)/2f, 6, fullWidth, 0);
+        }
+
+        // content高度 = 文本块真实底部位置，驱动滚动范围
+        float textContentHeight = Math.max(shpx.bottom() + 12, list.height());
+        content.setSize(fullWidth, textContentHeight);
+
+        // 底部按钮布局
         float buttonWidth = 40;
         float buttonHeight = 18;
         float buttonSpacing = 10;
-        float bottomMargin = 10;
 
-        float totalWidth = buttonWidth * 2 + buttonSpacing;
-        float startX = (Camera.main.width - totalWidth) / 2;
-        float startY = shpx.bottom()+10;
+        float totalButtonWidth = buttonWidth * 2 + buttonSpacing;
+        float startX = (w - totalButtonWidth) / 2f;
+        float startY = h - buttonAreaHeight;
 
         acceptButton.setRect(startX, startY, buttonWidth, buttonHeight);
         rejectButton.setRect(startX + buttonWidth + buttonSpacing, startY, buttonWidth, buttonHeight);
-
-        content.add(acceptButton);
-        content.add(rejectButton);
-
-
-        content.setSize( fullWidth, shpx.bottom()+30 );
-
-        list.setRect( 0, 0, w, h );
-        list.scrollTo(0, 0);
     }
 
     @Override
@@ -160,7 +199,6 @@ public class EulaScene extends PixelScene {
                 };
                 add(linkButton);
             }
-
         }
 
         @Override
@@ -168,7 +206,6 @@ public class EulaScene extends PixelScene {
             super.layout();
 
             float topY = top();
-
             if (title != null){
                 title.maxWidth((int)width());
                 title.setPos( x + (width() - title.width())/2f, topY);
@@ -190,9 +227,7 @@ public class EulaScene extends PixelScene {
                 body.maxWidth((int)width());
                 body.setPos( x + (width() - body.width())/2f, topY);
                 topY += body.height() + 2;
-
             } else {
-
                 if (avatar != null){
                     avatar.x = x;
                     body.maxWidth((int)(width() - avatar.width - 1));
@@ -209,14 +244,12 @@ public class EulaScene extends PixelScene {
                         body.setPos( avatar.x + avatar.width() + 1, topY);
                         topY += body.height() + 2;
                     }
-
                 } else {
                     topY += 1;
                     body.maxWidth((int)width());
                     body.setPos( x, topY);
                     topY += body.height()+2;
                 }
-
             }
 
             if (link != null){
@@ -233,13 +266,10 @@ public class EulaScene extends PixelScene {
                 linkUnderline.size(link.width(), PixelScene.align(0.49f));
                 linkUnderline.x = link.left();
                 linkUnderline.y = link.bottom()+1;
-
             }
 
             topY -= 2;
-
             height = Math.max(height, topY - top());
         }
     }
 }
-

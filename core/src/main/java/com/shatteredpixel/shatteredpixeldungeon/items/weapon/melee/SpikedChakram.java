@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -15,7 +14,7 @@ import com.watabou.utils.Random;
 
 public class SpikedChakram extends MeleeWeapon{
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.STICK_CIRCLE;
 
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
@@ -50,12 +49,6 @@ public class SpikedChakram extends MeleeWeapon{
             def += Random.IntRange(1, 3 + buffedLvl());
         }
         return def;
-    }
-
-    // 尖刺轮盘的描述文本
-    @Override
-    public String desc() {
-        return Messages.get(this, "desc");
     }
 
     @Override

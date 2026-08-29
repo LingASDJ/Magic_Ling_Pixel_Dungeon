@@ -12,7 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 //沉重的武器，你似乎可以把全身的力量都倾注入一击之上。
 public class DoorPlank extends MeleeWeapon{
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.DOOR_PLATE;
 
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
