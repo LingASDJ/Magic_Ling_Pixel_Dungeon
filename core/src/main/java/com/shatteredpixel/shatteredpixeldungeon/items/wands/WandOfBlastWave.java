@@ -60,7 +60,18 @@ public class WandOfBlastWave extends DamageWand {
 	}
 
 	public int min(int lvl){
-		return 1+(lvl % 2 == 0 ? 1 : 2)*lvl;
+        int lvlD = lvl;
+        if (lvlD != 0){
+            int minD = 1;
+            do{
+                minD += lvlD % 2 == 0 ? 1 : 2;
+                lvlD--;
+            }while (lvlD >0);
+
+            return minD;
+        }else{
+            return 1;
+        }
 	}
 
 	public int max(int lvl){
