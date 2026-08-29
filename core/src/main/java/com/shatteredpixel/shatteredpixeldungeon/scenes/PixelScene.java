@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
-import com.shatteredpixel.shatteredpixeldungeon.ui.SafeInsetDecorator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Tooltip;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.Holiday;
@@ -146,10 +145,10 @@ public class PixelScene extends Scene {
 
 		// 3x5 (6)
 		pixelFont = Font.colorMarked(
-			TextureCache.get( Assets.Fonts.PIXELFONT), 0x00000000, BitmapText.Font.LATIN_FULL );
+				TextureCache.get( Assets.Fonts.PIXELFONT), 0x00000000, BitmapText.Font.LATIN_FULL );
 		pixelFont.baseLine = 6;
 		pixelFont.tracking = -1;
-		
+
 		//set up the texture size which rendered text will use for any new glyphs.
 		int renderedTextPageSize;
 		if (defaultZoom <= 3){
@@ -171,9 +170,6 @@ public class PixelScene extends Scene {
 
 		Cursor.setCustomCursor(Cursor.Type.DEFAULT, defaultZoom);
 
-		SafeInsetDecorator safeInsetDeco = new SafeInsetDecorator();
-		safeInsetDeco.camera = uiCamera;
-		add(safeInsetDeco);
 	}
 
 	@Override
@@ -282,7 +278,7 @@ public class PixelScene extends Scene {
 	//this system only preserves windows with a public zero-arg constructor
 	private static ArrayList<Class<?extends Window>> savedWindows = new ArrayList<>();
 	private static Class<?extends PixelScene> savedClass = null;
-	
+
 	public synchronized void saveWindows(){
 		if (members == null) return;
 
@@ -294,7 +290,7 @@ public class PixelScene extends Scene {
 			}
 		}
 	}
-	
+
 	public synchronized void restoreWindows(){
 		if (getClass().equals(savedClass)){
 			for (Class<?extends Window> w : savedWindows){
@@ -365,7 +361,7 @@ public class PixelScene extends Scene {
 			fadeIn( 0xFF000000, false );
 		}
 	}
-	
+
 	protected void fadeIn( int color, boolean light ) {
 		add( new Fader( color, light ) );
 	}
@@ -422,29 +418,29 @@ public class PixelScene extends Scene {
 			}
 		});
 	}
-	
+
 	public static void shake( float magnitude, float duration){
 		magnitude *= SPDSettings.screenShake();
 		Camera.main.shake(magnitude, duration);
 	}
-	
+
 	protected static class Fader extends ColorBlock {
-		
+
 		private static float FADE_TIME = 1f;
-		
+
 		private boolean light;
-		
+
 		private float time;
 
 		private static Fader INSTANCE;
-		
+
 		public Fader( int color, boolean light ) {
 			super( uiCamera.width, uiCamera.height, color );
-			
+
 			this.light = light;
-			
+
 			camera = uiCamera;
-			
+
 			alpha( 1f );
 			time = FADE_TIME;
 
@@ -453,12 +449,12 @@ public class PixelScene extends Scene {
 			}
 			INSTANCE = this;
 		}
-		
+
 		@Override
 		public void update() {
-			
+
 			super.update();
-			
+
 			if ((time -= Game.elapsed) <= 0) {
 				alpha( 0f );
 				parent.remove( this );
@@ -470,7 +466,7 @@ public class PixelScene extends Scene {
 				alpha( time / FADE_TIME );
 			}
 		}
-		
+
 		@Override
 		public void draw() {
 			if (light) {
@@ -487,56 +483,11 @@ public class PixelScene extends Scene {
 
 		public PixelCamera( float zoom ) {
 			super(
-					calcX(zoom),
-					calcY(zoom),
-					calcW(zoom),
-					calcH(zoom),
-					zoom );
+					(int)(Game.width - Math.ceil( Game.width / zoom ) * zoom) / 2,
+					(int)(Game.height - Math.ceil( Game.height / zoom ) * zoom) / 2,
+					(int)Math.ceil( Game.width / zoom ),
+					(int)Math.ceil( Game.height / zoom ), zoom );
 			fullScreen = true;
-		}
-
-		private static boolean isLandscape() {
-			return Game.width > Game.height;
-		}
-
-		private static int calcX(float zoom) {
-			boolean landscape = isLandscape();
-			int safeA = Game.safeInsetA;
-			int safeB = Game.safeInsetB;
-
-			int offsetX = landscape ? safeA : 0;
-			int availWidth = landscape ? Game.width - safeA - safeB : Game.width;
-
-			return offsetX + (int)(availWidth - Math.ceil( availWidth / zoom ) * zoom) / 2;
-		}
-
-		private static int calcY(float zoom) {
-			boolean landscape = isLandscape();
-			int safeA = Game.safeInsetA;
-			int safeB = Game.safeInsetB;
-
-			int offsetY = landscape ? 0 : safeA;
-			int availHeight = landscape ? Game.height : Game.height - safeA - safeB;
-
-			return offsetY + (int)(availHeight - Math.ceil( availHeight / zoom ) * zoom) / 2;
-		}
-
-		private static int calcW(float zoom) {
-			boolean landscape = isLandscape();
-			int safeA = Game.safeInsetA;
-			int safeB = Game.safeInsetB;
-
-			int availWidth = landscape ? Game.width - safeA - safeB : Game.width;
-			return (int)Math.ceil( availWidth / zoom );
-		}
-
-		public static int calcH(float zoom) {
-			boolean landscape = isLandscape();
-			int safeA = Game.safeInsetA;
-			int safeB = Game.safeInsetB;
-
-			int availHeight = landscape ? Game.height : Game.height - safeA - safeB;
-			return (int)Math.ceil( availHeight / zoom );
 		}
 
 		@Override

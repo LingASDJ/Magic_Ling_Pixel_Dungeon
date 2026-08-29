@@ -60,10 +60,6 @@ public class ShatteredPixelDungeon extends Game {
 			}
 		}
 
-		if(SPDSettings.safeInset()==-1){
-			SPDSettings.safeInset(0);
-		}
-
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ExorcistMaul.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe" );
