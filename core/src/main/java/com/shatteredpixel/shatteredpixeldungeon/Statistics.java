@@ -196,6 +196,8 @@ public class Statistics {
 	public static int thrownAssists;
 
 	public static int spawnersAlive;
+
+	public static int spawnersTombTownAlive;
 	
 	public static float duration;
 	
@@ -385,6 +387,8 @@ public class Statistics {
 	private static final String THROWN		= "thrownAssists";
 
 	private static final String SPAWNERS	= "spawnersAlive";
+
+	private static final String SPAWNTOWNERS	= "spawnersTownrsAlive";
 	
 	private static final String DURATION	= "duration";
 
@@ -783,6 +787,8 @@ public class Statistics {
 		realdeepestFloor = 0;
 		spawnersAlive   = 0;
 
+		spawnersTombTownAlive = 0;
+
 		duration	= 0;
 
         qualifiedForNoKilling = false;
@@ -1117,6 +1123,7 @@ public class Statistics {
 		bundle.put( THROWN,		thrownAssists );
 
 		bundle.put( SPAWNERS,	spawnersAlive );
+		bundle.put( SPAWNTOWNERS, spawnersTombTownAlive);
 		
 		bundle.put( DURATION,	duration );
 
@@ -1438,6 +1445,7 @@ public class Statistics {
 		thrownAssists   = bundle.getInt( THROWN );
 
 		spawnersAlive   = bundle.getInt( SPAWNERS );
+		spawnersTombTownAlive = bundle.getInt( SPAWNTOWNERS );
 		
 		duration		= bundle.getFloat( DURATION );
 

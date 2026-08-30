@@ -158,6 +158,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.Sothot
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SothothLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.Nyarlathotep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
@@ -345,6 +346,7 @@ import com.watabou.utils.ColorMath;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
+import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -3540,6 +3542,18 @@ public class Hero extends Char {
 		CapeOfThorns.HeroThorns thornsTalent = buff( CapeOfThorns.HeroThorns.class );
 		if(thornsTalent != null){
 			thornsTalent.detach();
+		}
+
+		if(buff(Roger.BreakDamage.class)!=null){
+			Roger.BreakDamage buff = buff(Roger.BreakDamage.class);
+			buff.level--;
+			damage(1,this,DamageType.REAL);
+			Splash.at( sprite.center(), -PointF.PI / 2, PointF.PI / 6,
+					sprite.blood(), Math.min( 10 / HT, 10 ) );
+			if (!isAlive()) {
+				Dungeon.fail( this );
+				GLog.n( Messages.get(this, "ondeath") );
+			}
 		}
 
 		if(!seedCustom && !Dungeon.customSeedText.isEmpty()){
