@@ -180,6 +180,8 @@ public class BuffIndicator extends Component {
 	public static final int FIRE_DEH = 158;
 	public static final int FIRE_DEM = 159;
 
+	public static final int BREAK_DMG = 160;
+
 	public static final int SIZE_SMALL = 7;
 	public static final int SIZE_LARGE = 16;
 	private static BuffIndicator bossInstance;
