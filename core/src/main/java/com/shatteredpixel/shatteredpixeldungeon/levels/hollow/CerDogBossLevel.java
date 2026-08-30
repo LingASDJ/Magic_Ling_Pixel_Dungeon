@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -162,7 +163,10 @@ public class CerDogBossLevel extends Level {
 
     @Override
     public void seal() {
-        super.seal();
+        if (!locked) {
+            locked = true;
+            Buff.affect(hero, LockedFloor.class);
+        }
 
         int doorPos = 449;
 
@@ -228,6 +232,7 @@ public class CerDogBossLevel extends Level {
                                 ncx.state = ncx.WANDERING;
                                 GameScene.add(ncx);
                                 ((DeadDogCerberusSprite)ncx.sprite).Altidle(356);
+                                level.playBossMusic();
                             }
                         }));
 
