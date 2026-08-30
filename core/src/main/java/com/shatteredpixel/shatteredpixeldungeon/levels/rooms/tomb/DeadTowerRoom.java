@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -27,9 +28,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.hollow.CustomLuaRoom;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadTowerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
@@ -46,6 +49,11 @@ public class DeadTowerRoom extends CustomLuaRoom.FullLuaCustomRoom {
     }
 
     public static class DeadTower extends Mob {
+
+        public boolean spawnRecorded = false;
+
+        public static final String SPAWN_RECORDED = "spawn_recorded";
+
         {
             spriteClass = DeadTowerSprite.class;
             HT = HP = 150;
@@ -92,6 +100,11 @@ public class DeadTowerRoom extends CustomLuaRoom.FullLuaCustomRoom {
 
         @Override
         protected boolean act() {
+
+            if (!spawnRecorded){
+                Statistics.spawnersTombTownAlive++;
+                spawnRecorded = true;
+            }
 
             // 光环1：玩家死亡侵蚀最低锁定30%
             DeathBuff buff = hero.buff(DeathBuff.class);
@@ -260,6 +273,12 @@ public class DeadTowerRoom extends CustomLuaRoom.FullLuaCustomRoom {
                 drop = new PotionOfExperience();
             }
             Dungeon.level.drop(drop, pos).sprite.drop();
+
+            if (spawnRecorded){
+                Statistics.spawnersTombTownAlive--;
+                //Notes.remove(landmark());
+            }
+            GLog.h(Messages.get(this, "on_death"));
         }
 
         private int drDroll = Dungeon.depth;
@@ -271,6 +290,7 @@ public class DeadTowerRoom extends CustomLuaRoom.FullLuaCustomRoom {
             bundle.put(TAG_SUMMON_TIMER, summonTimer);
             bundle.put(TAG_FIRST_SUMMON, firstSummon);
             bundle.put(TAG_NEXT_SPAWN, nextSummonPos);
+            bundle.put(SPAWN_RECORDED, spawnRecorded);
         }
 
         @Override
@@ -279,6 +299,7 @@ public class DeadTowerRoom extends CustomLuaRoom.FullLuaCustomRoom {
             summonTimer = bundle.getInt(TAG_SUMMON_TIMER);
             firstSummon = bundle.getBoolean(TAG_FIRST_SUMMON);
             nextSummonPos = bundle.getInt(TAG_NEXT_SPAWN);
+            spawnRecorded = bundle.getBoolean(SPAWN_RECORDED);
         }
 
         public void getDamageDroll(int dr){
@@ -289,7 +310,10 @@ public class DeadTowerRoom extends CustomLuaRoom.FullLuaCustomRoom {
         public int drRoll() {
             return Random.NormalIntRange(0,drDroll-getDamageDroll);
         }
+
+
     }
+
 
     protected void placeDeathSpire( Level level ) {
         int deadPos = (top + 8) * level.width() + left + 8;
