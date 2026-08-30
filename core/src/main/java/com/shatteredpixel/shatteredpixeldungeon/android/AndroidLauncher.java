@@ -12,6 +12,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -21,6 +22,8 @@ import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.RequiresPermission;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Input;
@@ -257,43 +260,50 @@ public class AndroidLauncher extends AndroidApplication {
         launcher.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Context dialogContext = new android.view.ContextThemeWrapper(launcher,
+                final Context dialogContext = new ContextThemeWrapper(launcher,
                         com.google.android.material.R.style.Theme_MaterialComponents_DayNight_Dialog_Alert);
 
                 ScrollView scrollView = new ScrollView(dialogContext);
                 scrollView.setPadding(dp2px(16), dp2px(8), dp2px(16), dp2px(8));
-                scrollView.setFillViewport(true); // 关键：允许内容撑开，支持滚动
+                scrollView.setFillViewport(true);
 
                 TextView textView = new TextView(dialogContext);
                 textView.setText(crashText);
                 textView.setTextSize(10);
                 textView.setTypeface(android.graphics.Typeface.MONOSPACE);
-                textView.setMaxLines(Integer.MAX_VALUE); // 取消行数限制
+                textView.setMaxLines(Integer.MAX_VALUE);
                 textView.setVerticalScrollBarEnabled(true);
-
                 scrollView.addView(textView);
 
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(dialogContext);
                 builder.setTitle(dialogContext.getString(R.string.crash_dialog_title));
                 builder.setView(scrollView);
-
-                builder.setPositiveButton(dialogContext.getString(R.string.crash_dialog_copy), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ClipboardManager cm = (ClipboardManager) launcher.getSystemService(Context.CLIPBOARD_SERVICE);
-                        cm.setPrimaryClip(ClipData.newPlainText("crash_log", crashText));
-                        // Snackbar使用Activity根视图，而不是dialog上下文
-                        if (launcher.findViewById(android.R.id.content) != null) {
-                            Snackbar.make(launcher.findViewById(android.R.id.content),
-                                    dialogContext.getString(R.string.crash_copy_success),
-                                    Snackbar.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-                builder.setNegativeButton(dialogContext.getString(R.string.crash_dialog_close), null);
                 builder.setCancelable(true);
-                builder.show();
+
+                // 先持有dialog引用，onClick可以拿到AlertDialog实例
+                final AlertDialog alertDialog = builder.create();
+
+                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,
+                        dialogContext.getString(R.string.crash_dialog_copy),
+                        (dialog, which) -> {
+                            ClipboardManager cm = (ClipboardManager) launcher.getSystemService(Context.CLIPBOARD_SERVICE);
+                            cm.setPrimaryClip(ClipData.newPlainText("crash_log", crashText));
+                            View decorView = alertDialog.getWindow() != null ? alertDialog.getWindow().getDecorView() : null;
+                            if (decorView != null) {
+                                Snackbar snackbar = Snackbar.make(decorView,
+                                        dialogContext.getString(R.string.crash_copy_success),
+                                        Snackbar.LENGTH_SHORT);
+                                snackbar.setBackgroundTint(0xFF323232);
+                                snackbar.setTextColor(0xFFFFFFFF);
+                                snackbar.show();
+                            }
+                        });
+
+                alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
+                        dialogContext.getString(R.string.crash_dialog_close),
+                        (dialog, which) -> {});
+
+                alertDialog.show();
             }
         });
     }
