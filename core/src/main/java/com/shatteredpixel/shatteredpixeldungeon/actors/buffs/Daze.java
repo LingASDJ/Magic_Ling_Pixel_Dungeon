@@ -32,6 +32,7 @@ public class Daze extends FlavourBuff {
 		announced = true;
 	}
 
+
 	@Override
 	public int icon() {
 		return BuffIndicator.DAZE;

@@ -48,7 +48,7 @@ public class WhiteBlastSword extends MeleeWeapon {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         attack_Teleology++;
-        if(attack_Teleology >= 14 - level()/5){
+        if(attack_Teleology >= 14 - buffedLvl()/5){
             Buff.affect(hero, WhiteBlastSwordStatus.class).set(1,100);
         }
         return super.proc(attacker, defender, damage);

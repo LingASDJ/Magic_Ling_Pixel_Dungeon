@@ -45,7 +45,7 @@ public class ExorcistMaul extends MeleeWeapon{
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         // 持续时间 20+等级*4
-        float duration = 20f + level()*4;
+        float duration = 20f + buffedLvl()*4;
         // affect：没有就创建，有就复用同一个实例
         QuMoHuDun buff = Buff.affect(attacker, QuMoHuDun.class);
         buff.refreshDuration(duration); // 每次命中都重置

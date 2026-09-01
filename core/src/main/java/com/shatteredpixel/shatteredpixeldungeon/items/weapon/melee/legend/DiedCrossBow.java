@@ -154,7 +154,7 @@ public class DiedCrossBow extends LegendWeapon implements Item.LengedsItem {
                 } else {
                     QuickSlotButton.target(Actor.findChar(cell));
                 }
-                cooldown = 60-level()*2;
+                cooldown = 60-buffedLvl()*2;
                 knockArrow().cast(curUser, target);
                 QuickSlotButton.target(Actor.findChar(target));
 

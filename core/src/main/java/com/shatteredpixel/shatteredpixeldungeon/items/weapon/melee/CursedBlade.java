@@ -29,7 +29,7 @@ public class CursedBlade extends MeleeWeapon {
     public int min(int lvl) { return 5 + lvl; }
     // 伤害倍率
     public long cursedCost(){
-        return 1L << Math.min(1 + level()/5, 16);
+        return 1L << Math.min(1 + buffedLvl()/5, 16);
     }
 
     @Override

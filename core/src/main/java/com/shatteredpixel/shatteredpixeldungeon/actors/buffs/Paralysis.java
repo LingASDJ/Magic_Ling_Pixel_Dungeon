@@ -44,7 +44,8 @@ public class Paralysis extends FlavourBuff {
 			immunities.add(Venom.class);
 		}
 	}
-	
+
+
 	@Override
 	public boolean attachTo( Char target ) {
 		if (super.attachTo( target )) {

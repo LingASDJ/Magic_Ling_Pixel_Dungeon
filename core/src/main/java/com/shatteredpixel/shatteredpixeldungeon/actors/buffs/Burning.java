@@ -49,6 +49,8 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class Burning extends Buff implements Hero.Doom {
+
+
 	@Override
 	public String heroMessage() {
 		return Messages.get(this, "heromsg");

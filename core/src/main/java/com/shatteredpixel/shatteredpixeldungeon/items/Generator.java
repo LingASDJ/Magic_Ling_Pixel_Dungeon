@@ -201,7 +201,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.QuickSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.QuickSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.hollow.DeathRongBoat;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ClearSword;

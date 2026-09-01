@@ -32,7 +32,7 @@ public class Break extends MeleeWeapon {
             Hero hero = (Hero)owner;
             Char enemy = hero.enemy();
             if (enemy != null && enemy.HP <= enemy.HT * 0.5f) {
-                float damageMultiplier = 1.0f + (0.1f * level());
+                float damageMultiplier = 1.0f + (0.1f * buffedLvl());
                 int damage;
                 damage = Math.round(dmg * damageMultiplier);
 
@@ -46,8 +46,8 @@ public class Break extends MeleeWeapon {
 
 
     public String statsInfo(){
-        float kdamageMultiplier = 100 + (10f * level());
-        float sdamageMultiplier = 30f + (3f * level());
+        float kdamageMultiplier = 100 + (10f * buffedLvl());
+        float sdamageMultiplier = 30f + (3f * buffedLvl());
         if (isIdentified()){
             return Messages.get(this, "stats_desc", sdamageMultiplier,kdamageMultiplier);
         } else {

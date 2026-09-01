@@ -71,6 +71,7 @@ public class Gorgon extends GoldMob {
             announced = true;
         }
 
+
         private static final String PETRIFICATION_LV = "Petrification_lv";
 
         public float slowRate(){

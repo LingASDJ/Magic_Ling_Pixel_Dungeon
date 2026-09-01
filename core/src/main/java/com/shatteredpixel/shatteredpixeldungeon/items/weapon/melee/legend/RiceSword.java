@@ -42,7 +42,7 @@ public class RiceSword extends MeleeWeapon {
             Hero hero = (Hero) attacker;
             Char enemy = hero.enemy();
             if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
-                Buff.affect(defender, Hex.class, 2+level()/4f);
+                Buff.affect(defender, Hex.class, 2+buffedLvl()/4f);
             }
         }
 

@@ -73,14 +73,14 @@ public class SaiPlus extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        float lifeStealPercentage = (float) (3 + 0.6 * level() + 1) * damage; // 偷袭成功时恢复生命的百分比
+        float lifeStealPercentage = (float) (3 + 0.6 * buffedLvl() + 1) * damage; // 偷袭成功时恢复生命的百分比
 
         int maxChance = 35; // 封顶概率为35%
         int chance = 5; // 初始概率为5%
         int additionalChance = Random.Int(1, 5);
 
         // 根据武器等级计算概率
-        for (int i = 0; i < level(); i++) {
+        for (int i = 0; i < buffedLvl(); i++) {
             chance += additionalChance;
         }
 
@@ -101,7 +101,7 @@ public class SaiPlus extends MeleeWeapon {
             }
         }
 
-        if (Random.Float() < 0.2f && level()>=3) {
+        if (Random.Float() < 0.2f && buffedLvl()>=3) {
             damage = (new Grim()).proc(this, attacker, defender, damage);
         }
 

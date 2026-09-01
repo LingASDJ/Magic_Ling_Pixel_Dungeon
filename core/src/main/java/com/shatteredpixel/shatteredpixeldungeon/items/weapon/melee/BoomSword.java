@@ -52,7 +52,7 @@ public class BoomSword extends MeleeWeapon {
     }
 
     public int maxAmmo() {
-        return 1 + level() / 2;
+        return 1 + buffedLvl()/ 2;
     }
 
     @Override
@@ -130,7 +130,7 @@ public class BoomSword extends MeleeWeapon {
 
     private Bomb generateBomb() {
         Bomb bomb = new Bomb();
-        if (level() >= 2) {
+        if (buffedLvl() >= 2) {
             switch (Random.Int(8)) {
                 case 0:
                     bomb = new ArcaneBomb();
@@ -163,25 +163,40 @@ public class BoomSword extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        // 击败敌人时填充弹药
-        if (defender.HP <= damage && Random.Float() < 0.25f + level() * 0.05f) {
-            if (ammo < maxAmmo()) {
-                ammo++;
-                // 如果这是第一发弹药，或者刚刚用掉了上一发，生成新的炸弹
-                if (nextBomb == null) {
-                    nextBomb = generateBomb();
-                    String bombName = Messages.get(nextBomb.getClass(), "name");
-                    GLog.p(Messages.get(this, "ammo_ready", bombName));
-                } else {
-                    GLog.p(Messages.get(this, "ammo_added"));
-                }
 
-                if (attacker instanceof Hero) {
-                    attacker.sprite.showStatus(CharSprite.POSITIVE, "AMMO!");
-                }
-                updateQuickslot();
+        final Char target = defender;
+        final Char atk = attacker;
+
+        Actor.add(new Actor() {
+            {
+                actPriority = VFX_PRIO;
             }
-        }
+
+            @Override
+            protected boolean act() {
+                // 击败敌人时填充弹药
+                if (!target.isAlive() && Random.Float() < 0.25f + buffedLvl() * 0.05f) {
+                    if (ammo < maxAmmo()) {
+                        ammo++;
+                        // 如果这是第一发弹药，或者刚刚用掉了上一发，生成新的炸弹
+                        if (nextBomb == null) {
+                            nextBomb = generateBomb();
+                            String bombName = Messages.get(nextBomb.getClass(), "name");
+                            GLog.p(Messages.get(BoomSword.this, "ammo_ready", bombName));
+                        } else {
+                            GLog.p(Messages.get(BoomSword.this, "ammo_added"));
+                        }
+
+                        if (atk instanceof Hero) {
+                            atk.sprite.showStatus(CharSprite.POSITIVE, "AMMO!");
+                        }
+                        updateQuickslot();
+                    }
+                }
+                Actor.remove(this);
+                return true;
+            }
+        });
         return super.proc(attacker, defender, damage);
     }
 

@@ -32,6 +32,7 @@ public class Vertigo extends FlavourBuff {
 		announced = true;
 	}
 
+
 	@Override
 	public int icon() {
 		return BuffIndicator.VERTIGO;

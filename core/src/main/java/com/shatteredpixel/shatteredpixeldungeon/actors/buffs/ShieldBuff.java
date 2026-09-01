@@ -29,7 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.watabou.utils.Bundle;
 
 public abstract class ShieldBuff extends Buff {
-	
+
+
 	private int shielding;
 	
 	@Override

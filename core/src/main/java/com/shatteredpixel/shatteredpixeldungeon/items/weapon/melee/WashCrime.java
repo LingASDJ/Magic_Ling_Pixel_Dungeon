@@ -79,10 +79,23 @@ public class WashCrime extends MeleeWeapon {
         DLY = DLY < 0.3f ? 0.3f : 2.17f - killmobs*0.0067f; //Slow Speed
         if(killmobs > 100 ){
             killmobs=100;
-        } else if (defender.HP <= damage && killmobs < 61) {
-            //目标血量小于实际伤害判定为死亡
-            killmobs++;
         }
+        // 击杀判定推迟到结算之后，小有代价：之后的if (killmobs>= 2) 实际上要到第三次击杀才会触发
+        final Char target = defender;
+        Actor.add(new Actor() {
+            {
+                actPriority = VFX_PRIO;
+            }
+
+            @Override
+            protected boolean act() {
+                if (!target.isAlive() && killmobs < 100) {
+                    killmobs++;
+                }
+                Actor.remove(this);
+                return true;
+            }
+        });
 
         if (killmobs>= 2) {
             for (int i : PathFinder.NEIGHBOURS9){

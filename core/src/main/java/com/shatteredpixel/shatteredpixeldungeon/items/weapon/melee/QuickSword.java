@@ -1,9 +1,8 @@
-package com.shatteredpixel.shatteredpixeldungeon.items.weapon;
+package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -29,7 +28,7 @@ public class QuickSword extends MeleeWeapon {
     public int damageRoll(Char owner){
         int damage = super.damageRoll(owner);
         //每1%移速提升→1%伤害提升，最多提升(武器等级+1)*50%
-        float maxMultiplier = 1f + (level() + 1) * 0.5f;
+        float maxMultiplier = 1f + (buffedLvl() + 1) * 0.5f;
         float speedMultiplier = Math.max(1f, owner.speed() / owner.baseSpeed);
         float multiplier = Math.min(speedMultiplier, maxMultiplier);
         return Math.round(damage * multiplier);

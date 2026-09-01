@@ -24,7 +24,7 @@ public class DeadBomb extends Weapon.Enchantment {
             boolean kill = true;
             for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
                 if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos] && kill && (!defender.properties.contains(Char.Property.BOSS) || !defender.properties.contains(Char.Property.MINIBOSS))) {
-                    int dmg = (int) (defender.HT * ((40 + (hero.belongings.weapon != null ? hero.belongings.weapon.level() : 2 * 5) / 100.0)));
+                    int dmg = (int) (defender.HT * ((40 + (hero.belongings.weapon != null ? hero.belongings.weapon.buffedLvl() : 2 * 5) / 100.0)));
                     int maxDamage = (int) (defender.HT * (135) / 100.0);
                     dmg = Math.round(dmg * AscensionChallenge.statModifier(mob));
                     dmg = mob.defenseProc(mob,dmg);
@@ -33,7 +33,7 @@ public class DeadBomb extends Weapon.Enchantment {
                     mob.damage(dmg,this, Char.DamageType.PHYSICAL);
                 }
             }
-        } else if(Random.Int(100)<= 36 + weapon.level() && (!defender.properties.contains(Char.Property.BOSS) || !defender.properties.contains(Char.Property.MINIBOSS)) ) {
+        } else if(Random.Int(100)<= 36 + weapon.buffedLvl() && (!defender.properties.contains(Char.Property.BOSS) || !defender.properties.contains(Char.Property.MINIBOSS)) ) {
             for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
                 if (mob.buff(DeadBomb.TargetDead.class) == null) {
                     Buff.affect(defender, TargetDead.class);
@@ -46,7 +46,7 @@ public class DeadBomb extends Weapon.Enchantment {
     public String desc() {
         int weapon;
         if(hero != null && hero.belongings.weapon != null){
-            weapon = hero.belongings.weapon.level() * 5;
+            weapon = hero.belongings.weapon.buffedLvl() * 5;
         } else {
             weapon = 0;
         }
@@ -67,6 +67,7 @@ public class DeadBomb extends Weapon.Enchantment {
             type = buffType.NEGATIVE;
             announced = true;
         }
+
 
         @Override
         public boolean attachTo(Char target) {

@@ -13,6 +13,7 @@ public class BrokenArmor extends FlavourBuff {
         announced = true;
     }
 
+
     @Override
     public int icon() {
         return BuffIndicator.VULNERABLE;

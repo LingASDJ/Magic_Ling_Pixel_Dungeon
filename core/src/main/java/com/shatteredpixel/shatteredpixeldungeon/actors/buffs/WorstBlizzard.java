@@ -21,6 +21,7 @@ public class WorstBlizzard extends FlavourBuff{
         wandlevel = i;
     }
 
+
     @Override
     public boolean attachTo(Char target) {
         Buff.detach( target, Burning.class );

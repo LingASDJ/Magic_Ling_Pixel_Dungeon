@@ -32,7 +32,8 @@ public class Roots extends FlavourBuff {
 		type = buffType.NEGATIVE;
 		announced = true;
 	}
-	
+
+
 	@Override
 	public boolean attachTo( Char target ) {
 		if (!target.flying && super.attachTo( target )) {

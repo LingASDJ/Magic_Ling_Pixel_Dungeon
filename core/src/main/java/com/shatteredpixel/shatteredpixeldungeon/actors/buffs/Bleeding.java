@@ -42,6 +42,7 @@ public class Bleeding extends Buff {
 		announced = true;
 	}
 
+
 	protected float level;
 
 	//used in specific cases where the source of the bleed is important for death logic

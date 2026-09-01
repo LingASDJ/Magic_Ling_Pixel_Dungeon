@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -37,7 +38,6 @@ public class StaffofMyriadThings extends MeleeWeapon{
     private HashSet<String> killedTypes = new HashSet<>();
     // 其中属于 Boss 的种类（每种额外再计一层）
     private HashSet<String> bossTypes = new HashSet<>();
-
     // 层数：普通敌人每种1层，Boss每种2层
     public int CengShu(){
         return killedTypes.size() + bossTypes.size();
@@ -77,6 +77,7 @@ public class StaffofMyriadThings extends MeleeWeapon{
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
+        // 用集合存击杀敌人的名字
         killedTypes = new HashSet<>();
         bossTypes = new HashSet<>();
         String[] killed = bundle.getStringArray("killed_types");
@@ -94,14 +95,30 @@ public class StaffofMyriadThings extends MeleeWeapon{
 
     @Override
     public int proc(Char attacker, Char defender, int damage ) {
-        if (defender.HP <= damage) {
-            // 记录击杀的敌人种类：同一类只计一次
-            String cls = defender.getClass().getName();
-            if (killedTypes.add(cls) && defender instanceof Boss){
-                // Boss 种类额外再计一层
-                bossTypes.add(cls);
+        final Char def = defender;
+
+        Actor.add(new Actor() {
+            {
+                actPriority = VFX_PRIO;
             }
-        }
+
+            @Override
+            protected boolean act() {
+                if (!def.isAlive()) {
+                    // 记录击杀的敌人种类：同一类只计一次
+                    String cls = def.getClass().getName();
+                    if (killedTypes.add(cls)) {
+                        // Boss 种类额外再计一层
+                        if (def instanceof Boss) {
+                            bossTypes.add(cls);
+                        }
+                    }
+                }
+                Actor.remove(this);
+                return true;
+            }
+        });
+
         return super.proc(attacker, defender, damage);
     }
 }

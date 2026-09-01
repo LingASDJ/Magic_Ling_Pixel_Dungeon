@@ -42,39 +42,47 @@ public class TragicCode extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        int dmg = damage;
-        if(attacker instanceof Hero){
-            for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
-                dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+        final Char def = defender;
+        final Char atk = attacker;
+
+        Actor.add(new Actor(){
+            {
+                actPriority = VFX_PRIO;
             }
-            if (defender.HP <= dmg) {
-                float identifyChance = 0.10f + (0.05f * level());
 
-                if (Random.Float() < identifyChance) {
-                    ArrayList<Item> unidentified = new ArrayList<>();
-                    for (Item item : ((Hero) attacker).belongings) {
-                        if (!item.isIdentified()) {
-                            unidentified.add(item);
+            @Override
+            protected boolean act() {
+                if (!def.isAlive()) {
+                    float identifyChance = 0.10f + (0.05f * buffedLvl());
+
+                    if (Random.Float() < identifyChance) {
+                        ArrayList<Item> unidentified = new ArrayList<>();
+                        for (Item item : ((Hero) atk).belongings) {
+                            if (!item.isIdentified()) {
+                                unidentified.add(item);
+                            }
                         }
-                    }
 
-                    if (!unidentified.isEmpty()) {
-                        Item toIdentify = Random.element(unidentified);
-                        if (toIdentify != null) {
-                            toIdentify.identify();
-                            GLog.pink(Messages.get(this, "identify", toIdentify.name()));
-                            attacker.sprite.emitter().burst(Speck.factory(Speck.QUESTION), 6);
-                            Sample.INSTANCE.play(Assets.Sounds.READ);
+                        if (!unidentified.isEmpty()) {
+                            Item toIdentify = Random.element(unidentified);
+                            if (toIdentify != null) {
+                                toIdentify.identify();
+                                GLog.pink(Messages.get(TragicCode.this, "identify", toIdentify.name()));
+                                atk.sprite.emitter().burst(Speck.factory(Speck.QUESTION), 6);
+                                Sample.INSTANCE.play(Assets.Sounds.READ);
+                            }
                         }
                     }
                 }
+                Actor.remove(this);
+                return true;
             }
-        }
+        });
         return super.proc(attacker, defender, damage);
     }
 
     public String statsInfo(){
-        float identifyChance = 10 + (5 * level());
+        float identifyChance = 10 + (5 * buffedLvl());
         if (isIdentified()){
             return Messages.get(this, "stats_desc", identifyChance);
         } else {

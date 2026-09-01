@@ -97,7 +97,7 @@ public abstract class LegendWeapon extends MeleeWeapon {
         if(level()==0) {
             return baseMin;
         } else {
-            return min * level();
+            return min * buffedLvl();
         }
     }
 
@@ -105,7 +105,7 @@ public abstract class LegendWeapon extends MeleeWeapon {
         if(level()==0){
             return baseMax;
         } else {
-            return  max*level();   //scaling unchanged
+            return max * buffedLvl();   //scaling unchanged
         }
 
     }

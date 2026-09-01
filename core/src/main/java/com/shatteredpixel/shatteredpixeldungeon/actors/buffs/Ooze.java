@@ -42,7 +42,8 @@ public class Ooze extends Buff {
 
 	private static final String LEFT	= "left";
 	private static final String ACTED   = "acted";
-	
+
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );

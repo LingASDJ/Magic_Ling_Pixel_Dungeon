@@ -43,6 +43,13 @@ public class Buff extends Actor {
 		actPriority = BUFF_PRIO; //low priority, towards the end of a turn
 	}
 
+	// ========== 净化相关配置 ==========
+	public int BuffLevel = 999999;
+	// 能够被净化，默认不能，魔绫地牢近600个buff至少五分之四是不可净化的，当净化等级（ClearLevel大于buff等级时可被净化）
+	public boolean CanClear(int ClearLevel) {
+		return ClearLevel >= BuffLevel;
+	}
+
 	//determines how the buff is announced when it is shown.
 	public enum buffType {POSITIVE, NEGATIVE, NEUTRAL}
 	public buffType type = buffType.NEUTRAL;

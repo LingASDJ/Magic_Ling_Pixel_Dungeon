@@ -42,7 +42,7 @@ public class DeepseaKnightAnchor extends MeleeWeapon{
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
         // 激素涌动回合数
-        int duration = 5+level();
+        int duration = 5+buffedLvl();
 
         // 1. 先扣充能：beforeAbilityUsed 会按 baseChargeUse 的返回值扣掉对应充能
         beforeAbilityUsed(hero, null);

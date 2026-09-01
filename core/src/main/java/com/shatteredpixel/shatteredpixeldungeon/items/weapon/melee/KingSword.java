@@ -92,8 +92,8 @@ public class KingSword extends MeleeWeapon {
 			damage = Math.round(damage * 1.5f);
 		}
 
-		if(Random.Float() < 0.4f + level() * 0.05f){
-			Buff.affect(defender, Vulnerable.class, 5+ (float) level() /2);
+		if(Random.Float() < 0.4f + buffedLvl() * 0.05f){
+			Buff.affect(defender, Vulnerable.class, 5+ (float) buffedLvl() /2);
 		}
 
 		return super.proc(attacker, defender, damage);
@@ -138,7 +138,7 @@ public class KingSword extends MeleeWeapon {
 					summonAlly(hero, Random.Float()>0.5f ? Monk.class : Warlock.class,true);
 
 					// 3. 25% + 0.05% 概率额外召唤随机亡灵
-					if (Random.Float() < Math.min(1f,0.25f+(level()*0.05f))) {
+					if (Random.Float() < Math.min(1f,0.25f+(buffedLvl()*0.05f))) {
 						summonRandomUndead(hero);
 					}
 				}

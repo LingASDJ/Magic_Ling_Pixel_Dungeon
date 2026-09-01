@@ -60,19 +60,34 @@ public class ClearSword extends MeleeWeapon implements Item.LengedsItem {
         if (attacker instanceof Hero) {
             Hero hero = (Hero) attacker;
             float lifePercentage = hero.HP / (float) hero.HT;
-            int dmmageMuilt = (int) (damage * (1 - lifePercentage) * 0.33f);
-            damage += dmmageMuilt;
+            int damageMuilt = (int) (damage * (1 - lifePercentage) * 0.33f);
+            damage += damageMuilt;
+
+            final Char def = defender;
+            final Char atk = attacker;
+
+            // 只对非BOSS生效
             if (!defender.properties().contains(Char.Property.BOSS)) {
-                if(damage > defender.HP){
-                    int healAmount = (int) (defender.HT * (2 + 0.5 * level()) / 100);
-                    if(healAmount <= 0){
-                        healAmount = 3;
-                        attacker.sprite.showStatus(Window.Pink_COLOR, "+" + healAmount + " HP");
-                    } else {
-                        hero.HP = Math.min(hero.HT, hero.HP + healAmount);
-                        attacker.sprite.showStatus(CharSprite.POSITIVE, "+" + healAmount + " HP");
+
+                Actor.add(new Actor() {
+                    {
+                        actPriority = VFX_PRIO;
+                    }
+
+                    @Override
+                    protected boolean act() {
+                        if(!def.isAlive()){
+                            // 保底回3血
+                            int healAmount = Math.max(3,(int) (def.HT * (2 + 0.5 * level) / 100));
+                            hero.HP = Math.min(hero.HT, hero.HP + healAmount);
+                            atk.sprite.showStatus(CharSprite.POSITIVE, "+" + healAmount + " HP");
+                        }
+
+                        Actor.remove(this);
+                        return true;
                     }
                 }
+                );
             }
         }
         return super.proc(attacker, defender, damage);

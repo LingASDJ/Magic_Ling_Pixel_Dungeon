@@ -68,6 +68,7 @@ public class HalomethaneBurning extends Buff implements Hero.Doom {
         announced = true;
     }
 
+
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
