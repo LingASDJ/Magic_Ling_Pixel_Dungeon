@@ -13,7 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 //慢慢来？切，开什么玩笑，天下武功当然是唯快不破！
 public class QuickSword extends MeleeWeapon {
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.HASTE_SWORD;
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
         tier = 3;

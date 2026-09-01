@@ -17,7 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 //拿起它的时候，想必你已经知晓了代价。
 public class CursedBlade extends MeleeWeapon {
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.CURSED_SWORD;
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
         tier = 3;

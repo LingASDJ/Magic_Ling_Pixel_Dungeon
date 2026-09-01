@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SouthPointSword;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
@@ -51,14 +52,19 @@ public class Compass extends Image {
 	@Override
 	public void update() {
 		super.update();
+
+		if(Dungeon.hero.belongings.weapon == null){
+			visible = false;
+			return;
+		}
 		
-		if (cell < 0 || cell >= Dungeon.level.length()){
+		if (cell < 0 || cell >= Dungeon.level.length()) {
 			visible = false;
 			return;
 		}
 		
 		if (!visible) {
-			visible = Dungeon.level.visited[cell] || Dungeon.level.mapped[cell];
+			visible = Dungeon.level.visited[cell] || Dungeon.level.mapped[cell] || Dungeon.hero.belongings.weapon instanceof SouthPointSword;
 		}
 		
 		if (visible) {

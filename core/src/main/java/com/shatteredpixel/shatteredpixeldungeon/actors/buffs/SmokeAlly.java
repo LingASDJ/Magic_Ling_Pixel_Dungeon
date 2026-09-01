@@ -3,6 +3,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class SmokeAlly extends Buff{
@@ -32,7 +34,12 @@ public class SmokeAlly extends Buff{
 
     @Override
     public void detach(){
-        ch.alignment = align;
+
+        if(!(ch.buffs(ScrollOfSirensSong.Enthralled.class) == null && ch.buffs(Corruption.class) == null && ch.buffs(WandOfAnmy.AllyToRestart.class) == null)){
+            ch.alignment = Char.Alignment.ALLY;
+        }else{
+            ch.alignment = align;
+        }
         super.detach();
     }
 

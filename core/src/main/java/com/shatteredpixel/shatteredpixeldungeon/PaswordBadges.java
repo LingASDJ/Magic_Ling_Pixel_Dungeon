@@ -178,64 +178,50 @@ public class PaswordBadges {
 
     public enum Badge {
 
+        //OLD
+        FIREGIRL(-1),
+        SLIMEPRS(-1),
+        DRAWF_HEAD(-1),
+        SPICEALBOSS 				 (-1),
+        SAKA_DIED(-1),
+        BRCLER(-1),
+        SKY_XEAD(-1),
+        GODD_MAKE(-1),
+
+        BIG_X(-1),
+        EXSG(-1),
+
+        SWORDDREAM(-1),
+
+        HELLORWORLD(-1),
+        KILL_DWG(-1),
+        KILL_FISHBOSS(-1),
+
+        //NEW PASSWORD
         TAKE_ITEM( 0 ),
-        FIREGIRL(1),
-        SLIMEPRS(2),
-        DRAWF_HEAD(3),
-        SPICEALBOSS 				 (4),
-        SAKA_DIED(5),
-        RESET_DAY(6),
-        BRCLER(7),
-
-
-        ALLCHSX(8,true,true),
-        GODCHSX(9,true,true),
-
-        SKY_XEAD(10),
-        GODD_MAKE(12),
-
-        BIG_X(13),
-        EXSG(14),
-
-        SWORDDREAM(15),
-
-        NIGHT_CAT(16),
-        ZQJ_GHOST(17),
-        GOOD_BLUE(18),
-
-        HELLORWORLD(21),
-
-        PINK_LING(22,true),
-
-        WHATSUP(23),
-        KILL_DWG(24),
-        KING_ISTO(25),
-
-        KILL_FISHBOSS(26),
-
-        UNLOCK_RICESWORD(27),
-
-        KILL_YOGSTS(28),
-
+        ALLCHSX(1,true,true),
+        GODCHSX(2,true,true),
+        NIGHT_CAT(3),
+        ZQJ_GHOST(4),
+        GOOD_BLUE(5),
+        PINK_LING(6,true),
+        WHATSUP(7),
+        VAMGHOST_DEAD(8),
+        SUGAR_FRIENDLY(9,true),
+        DOG_TOUCH(10,true),
+        GHOST_HUNTER(11,true),
+        HELL_BACK					(12),
         //祈愿
-        PRAY_LEGEND (30),
-        PRAY_MYTHOLOGY (31,true),
+        PRAY_LEGEND (13),
+        PRAY_MYTHOLOGY (14,true),
+        KING_ISTO(15),
+        UNLOCK_RICESWORD(16),
+        TIME_CIRCLE     (17,true),
+        HERO_CLRE       (18,true),
 
-        VAMGHOST_DEAD(32),
-
-        SUGAR_FRIENDLY(33,true),
-
-        DOG_TOUCH(34,true),
-
-        GHOST_HUNTER(35,true),
-
-        HELL_BACK					(36),
-
-        TIME_CIRCLE     (37,true),
-
-        HERO_CLRE       (38,true),
-
-        FLOWER_HOME     (39,true,true);
+        FLOWER_HOME     (19,true,true),
+        RESET_DAY(20),
+        KILL_YOGSTS(32);
 
         public boolean meta;
 

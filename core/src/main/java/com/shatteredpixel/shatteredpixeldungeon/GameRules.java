@@ -237,7 +237,7 @@ public class GameRules {
                     break;
             }
         } else {
-            if(Holiday.getCurrentHoliday()  == Holiday.SHATTEREDPD_BIRTHDAY){
+            if(Holiday.getCurrentHoliday()  == Holiday.SHATTEREDPD_BIRTHDAY && RegularLevel.chinaHoliday == null ){
                 banners = Assets.Interfaces.BANNERS_SP;
             } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.YX) {
                 if (!SPDSettings.ClassUI()) {

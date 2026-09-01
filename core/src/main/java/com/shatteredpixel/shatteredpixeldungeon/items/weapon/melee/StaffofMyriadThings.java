@@ -20,7 +20,7 @@ import java.util.HashSet;
 //需要将森罗万象填充进去，才能熠熠生辉。
 public class StaffofMyriadThings extends MeleeWeapon{
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.EARTH_STICK;
 
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;

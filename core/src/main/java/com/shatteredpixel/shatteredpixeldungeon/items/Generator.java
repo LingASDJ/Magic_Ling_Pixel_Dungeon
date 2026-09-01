@@ -743,8 +743,6 @@ public class Generator {
 			MIS_T5.probs = new float[]{6, 5, 4};
 
 			final Calendar calendar = Calendar.getInstance();
-			String banners;
-			int month = calendar.get(Calendar.MONTH);
 			Solar date = Solar.fromDate(calendar.getTime());
 			Lunar lunar = date.getLunar();
 

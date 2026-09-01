@@ -17,7 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class TheDrip extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.WATER_SWORD;
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
         tier = 3;
@@ -55,12 +55,14 @@ public class TheDrip extends MeleeWeapon {
         if (Dungeon.level.pit[cell])        return false;
         if (Dungeon.level.map[cell] == Terrain.CHASM) return false;
         if (Dungeon.level.water[cell])      return false;
+        if(Dungeon.level.exit() == cell || Dungeon.level.entrance() == cell ) return false;
 
         Level.set(cell, Terrain.WATER);     // 改地形 + 碰撞数据
         GameScene.updateMap(cell);          // 刷新贴图
         Dungeon.observe();
         return true;
     }
+
 
     public static class HolderTracker extends Buff {
 
@@ -75,7 +77,7 @@ public class TheDrip extends MeleeWeapon {
             if (cell == lastCell) {
                 turns++;
                 // 连续第2回合仍停留 → 生成水,成功后复位
-                if (turns >= 2 && createWater(cell)) {
+                if (turns >= 2 && createWater(cell) ) {
                     turns = 0;
                 }
             } else {

@@ -14,7 +14,7 @@ import com.watabou.utils.PathFinder;
 //能够狠狠的把敌人钉在墙里。
 public class NailingSpear extends MeleeWeapon{
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.DING;
 
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;

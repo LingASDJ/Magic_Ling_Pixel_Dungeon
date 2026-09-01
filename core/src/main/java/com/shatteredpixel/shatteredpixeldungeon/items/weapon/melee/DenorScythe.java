@@ -23,7 +23,7 @@ import java.util.HashSet;
 //产于善于舞蹈的德诺尔，镰刀柄上还贴心蚀刻上了挥舞说明。
 public class DenorScythe extends MeleeWeapon{
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.DEGUER;
 
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;

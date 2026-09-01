@@ -20,7 +20,7 @@ public class DoomsdayScepter extends MeleeWeapon{
     public static final String AC_BURST = "BURST";
 
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.ENDSUN;
 
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;

@@ -23,7 +23,7 @@ public class KillKing extends MeleeWeapon {
     private static final String TRANSMUTED = "transmuted";
 
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.KILL_KING;
 
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
@@ -94,11 +94,10 @@ public class KillKing extends MeleeWeapon {
         return tier < MAX_TIER;
     }
 
-    public boolean transmuteUpgrade() {
-        if (!canTransmuteUpgrade()) return false;
+    public void transmuteUpgrade() {
+        if (!canTransmuteUpgrade()) return;
         transmuted++;
         tier = Math.min(MAX_TIER, tier + 1);
-        return true;
     }
 
     @Override

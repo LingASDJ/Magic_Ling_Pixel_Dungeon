@@ -1148,6 +1148,8 @@ public class Badges {
 		GAMES_PLAYED_2              ( 81 ),
 
 		READ_BOOK_THREE				( 87 ),
+		SKY_DEAD				( 88 ),
+		GOOD_MAKER				( 89 ),
 
 		//platinum
 		HAPPY_END                   ( 96 ),
@@ -1168,6 +1170,9 @@ public class Badges {
 
 		READ_BOOK_FOUR				( 105 ),
 
+		SAKAFISH				( 106 ),
+		ALONECITY				( 107 ),
+
 		//diamond
 		GAMES_PLAYED_4              ( 112 ),
 		CHAMPION_2X                  ( 113 ),
@@ -1179,15 +1184,24 @@ public class Badges {
 		KILL_SM(119),
 		//rudy
 
+		KILL_FIREGIRL(128),
+		WAR_RIP(129),
+		KILL_DWMASTER(130),
+		KILL_SPBOSS(131),
 
 		STORM(132),
 
 		KILL_MG(133),
 
+		BOSSRUSH(136),
+
 		HIGH_SCORE_5(137),
 
 		KILL_CLSISTER(138),
 		KILL_FIRE_DRAGON(139),
+
+		KILL_DWG(140),
+		KILL_FISHKING(141),
 
 		KILL_DOG					( 152),
 		KILL_MORES					( 153),

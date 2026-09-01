@@ -258,6 +258,10 @@ public class ItemSpriteSheet {
     public static final int TREELIST    = WEP_TIER2+3;
     public static final int DIRK            = WEP_TIER2+4;
     public static final int SICKLE          = WEP_TIER2+5;
+
+    public static final int KILL_KING         = WEP_TIER2+6;
+    public static final int STICK_CIRCLE          = WEP_TIER2+7;
+
     static{
         assignItemRect(RITUAL_SWORD_M,      13, 13);
         assignItemRect(SHOP_SWORD,        14, 16);
@@ -265,6 +269,7 @@ public class ItemSpriteSheet {
         assignItemRect(TREELIST,    14, 13);
         assignItemRect(DIRK,            13, 14);
         assignItemRect(SICKLE,          15, 15);
+        assignItemRect(STICK_CIRCLE,          16, 15);
     }
 
     private static final int WEP_TIER3      =                               xy(18, 5);   //8 slots
@@ -283,6 +288,9 @@ public class ItemSpriteSheet {
     public static final int	SDBlade			    = WEP_TIER3+10;
     public static final int	HHBlade				= WEP_TIER3+11;
     public static final int LifeTreeSword       = WEP_TIER3+12;
+    public static final int WATER_SWORD        = WEP_TIER3+13;
+    public static final int HASTE_SWORD       = WEP_TIER3+14;
+    public static final int CURSED_SWORD       = WEP_TIER3+32;
 
     static{
         assignItemRect(SAD_MAGIC_BOOK,     14, 13);
@@ -294,6 +302,8 @@ public class ItemSpriteSheet {
         assignItemRect(SKY_SHIELD,         13, 15);
         assignItemRect(MAGIC_TORCH,        14, 16);
         assignItemRect(JUNGLE_SWORD,       16, 15);
+        assignItemRect(WATER_SWORD,        15, 16);
+        assignItemRect(HASTE_SWORD,        16, 15);
     }
 
     private static final int WEP_TIER4      =                               xy(18, 7);   //8 slots
@@ -313,6 +323,12 @@ public class ItemSpriteSheet {
     public static final int CICRE_MUSIC    = 	WEP_TIER4+12;
 
     public static final int RedBloodMoon      =  WEP_TIER4+13;
+    public static final int KILLDEMON_HAMMER      =  WEP_TIER4+14;
+    public static final int NO_LIVE      =  WEP_TIER4+32;
+    public static final int EARTH_STICK      =  WEP_TIER4+33;
+    public static final int MORNING_STAR      =  WEP_TIER4+34;
+    public static final int COMPASS      =  WEP_TIER4+35;
+    public static final int DEGUER     =  WEP_TIER4+36;
 
     static{
         assignItemRect(LONGSWORD,       15, 15);
@@ -322,6 +338,10 @@ public class ItemSpriteSheet {
         assignItemRect(ASSASSINS_BLADE, 14, 15);
         assignItemRect(CROSSBOW,        15, 15);
         assignItemRect(KATANA,          15, 16);
+
+        assignItemRect(NO_LIVE,         16, 15);
+        assignItemRect(MORNING_STAR,    15, 15);
+        assignItemRect(DEGUER,    16, 15);
     }
 
     private static final int WEP_TIER5      =                               xy(18, 9);   //8 slots
@@ -351,6 +371,10 @@ public class ItemSpriteSheet {
     public static final int  FIVEREN= WEP_TIER5+37;
     public static final int DEATHRONG_BOAT = WEP_TIER5+38;
 
+    public static final int DING = WEP_TIER5+39;
+    public static final int DOOR_PLATE = WEP_TIER5+40;
+    public static final int ENDSUN = WEP_TIER5+41;
+    public static final int SEA_SWORD = WEP_TIER5+42;
 
 
     static{
@@ -369,6 +393,9 @@ public class ItemSpriteSheet {
 
         assignItemRect(FIVEREN, 16, 13);
         assignItemRect(DEATHRONG_BOAT,            15, 15);
+
+        assignItemRect(DOOR_PLATE,            15, 16);
+        assignItemRect(ENDSUN,            14, 16);
     }
 
     private static final int WEP_TIER6      =                               xy(18, 12);   //8 slots
