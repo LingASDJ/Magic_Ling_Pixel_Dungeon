@@ -87,7 +87,7 @@ public class TreeList extends MeleeWeapon {
     }
 
     public String desc() {
-        return Messages.get(this, "desc", 20+2*level(),2 + level()/5);
+        return Messages.get(this, "desc", 20+2*buffedLvl(),2 + buffedLvl()/5);
     }
 
     @Override
@@ -172,7 +172,7 @@ public class TreeList extends MeleeWeapon {
             if (target instanceof Hero) {
                 Item weapon = ((Hero) target).belongings.weapon();
                 if (weapon != null) {
-                    maxShield = 20 + 2 * weapon.level();
+                    maxShield = 20 + 2 * weapon.buffedLvl();
                 } else {
                     maxShield = 20;
                 }
@@ -184,7 +184,7 @@ public class TreeList extends MeleeWeapon {
 
         // 攻击时积攒护盾
         public void accumulateOnAttack(Weapon weaponLevel) {
-            int gained = 2 + weaponLevel.level()/5;
+            int gained = 2 + weaponLevel.buffedLvl()/5;
             accumulatedShield = Math.min(accumulatedShield + gained, maxShield);
         }
 

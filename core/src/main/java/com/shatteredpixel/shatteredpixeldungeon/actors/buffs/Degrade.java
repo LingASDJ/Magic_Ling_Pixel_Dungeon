@@ -29,6 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class Degrade extends FlavourBuff {
+
+
 	@Override
 	public String heroMessage() {
 		return Messages.get(this, "heromsg");

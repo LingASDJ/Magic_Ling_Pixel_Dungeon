@@ -23,12 +23,10 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.QingXian_ability_utils.BuffClear;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -48,14 +46,7 @@ public class CleansingDart extends TippedDart {
 			PotionOfCleansing.cleanse(defender, PotionOfCleansing.Cleanse.DURATION*2f);
 			return 0;
 		} else {
-			for (Buff b : defender.buffs()){
-				if (!(b instanceof ChampionEnemy)
-						&& !(b instanceof ShieldBuff && defender instanceof FireMagicDied)
-						&& b.type == Buff.buffType.POSITIVE
-						&& !(b instanceof Crossbow.ChargedShot)){
-					b.detach();
-				}
-			}
+			BuffClear.BigClean(defender, BuffClear.CLEAR_LEVEL);  // 净化目标身上所有可净化Buff
 			//for when cleansed effects were keeping defender alive (e.g. raging brutes)
 			if (!defender.isAlive()){
 				defender.die(attacker);

@@ -31,7 +31,7 @@ public class MorningStar extends MeleeWeapon{
     public int min(int lvl) { return 4 + lvl; }
     // buff回合数
     public int theDuration(){
-        return (int) Math.ceil(2+0.3f*level());
+        return (int) Math.ceil(2+0.3f*buffedLvl());
     }
     // 表示当前加哪个buff,不序列化
     public int nowBuff = 0;

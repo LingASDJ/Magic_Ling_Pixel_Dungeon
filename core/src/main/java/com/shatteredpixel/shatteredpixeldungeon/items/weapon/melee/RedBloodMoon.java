@@ -79,7 +79,7 @@ public class RedBloodMoon extends MeleeWeapon {
             }
 
             if (attacker == hero && count < 2) {
-                if(level()>=3){
+                if(buffedLvl()>=3){
                     RedMagicDied guardianKnight1 = new RedMagicDied();
                     guardianKnight1.pos = attacker.pos + i;
                     guardianKnight1.aggro(defender);
@@ -128,8 +128,8 @@ public class RedBloodMoon extends MeleeWeapon {
 
         public RedMagicDied() {
             if(hero.belongings.weapon instanceof RedBloodMoon){
-                HP = HT = 8 + hero.belongings.weapon.level() * 2;
-                defenseSkill = 4 + hero.belongings.weapon.level();
+                HP = HT = 8 + hero.belongings.weapon.buffedLvl() * 2;
+                defenseSkill = 4 + hero.belongings.weapon.buffedLvl();
             } else {
                 HP = HT = 10;
                 defenseSkill = 4;
@@ -142,7 +142,7 @@ public class RedBloodMoon extends MeleeWeapon {
 
             int wepdamge;
 
-            wepdamge = hero.belongings.weapon != null ? hero.belongings.weapon.level()/3 : 4;
+            wepdamge = hero.belongings.weapon != null ? hero.belongings.weapon.buffedLvl()/3 : 4;
 
             damage(Random.NormalIntRange(1+2,wepdamge),new TRUE(), DamageType.PHYSICAL);
             return super.attack( enemy, dmgMulti, dmgBonus, accMulti );
@@ -158,7 +158,7 @@ public class RedBloodMoon extends MeleeWeapon {
 
         public int damageRoll() {
             if(hero.belongings.weapon instanceof RedBloodMoon){
-                return Random.NormalIntRange(4 + hero.belongings.weapon.level(), 9 + hero.belongings.weapon.level());
+                return Random.NormalIntRange(4 + hero.belongings.weapon.buffedLvl(), 9 + hero.belongings.weapon.buffedLvl());
             } else {
                 return Random.NormalIntRange(4, 9);
             }
@@ -193,8 +193,8 @@ public class RedBloodMoon extends MeleeWeapon {
 
         public GuardianKnight() {
             if(hero.belongings.weapon instanceof RedBloodMoon){
-                HP = HT = 5 + hero.belongings.weapon.level();
-                defenseSkill = 4 + hero.belongings.weapon.level();
+                HP = HT = 5 + hero.belongings.weapon.buffedLvl();
+                defenseSkill = 4 + hero.belongings.weapon.buffedLvl();
             } else {
                 HP = HT = 2;
                 defenseSkill = 4;

@@ -60,7 +60,7 @@ public class GoldLongGun extends MeleeWeapon {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
 
-        if (Random.Int(100) < 20+5*level()) {
+        if (Random.Int(100) < 20+5*buffedLvl()) {
             damage = (new Lucky()).proc(this, attacker, defender, damage);
         }
 
@@ -132,8 +132,6 @@ public class GoldLongGun extends MeleeWeapon {
                         Buff.affect(enemy, Vulnerable.class, 2f);
                     } else {
                         onAbilityKill(hero, enemy);
-                    }
-                    if(enemy.HP <= damageBoost){
                         int value = 5+Dungeon.depth/5*10;
                         enemy.sprite.showStatus(CharSprite.POSITIVE, Messages.get(GoldLongGun.class, "gold", value));
                         Dungeon.level.drop(new Gold(value), enemy.pos);

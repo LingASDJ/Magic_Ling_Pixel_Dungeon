@@ -59,7 +59,7 @@ public class DenorScythe extends MeleeWeapon{
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
         // 武技每次增加的Buff回合数
-        float duration = 10f + level()*2;
+        float duration = 10f + buffedLvl()*2;
 
         // 1. 先扣充能：beforeAbilityUsed 会按 baseChargeUse 的返回值扣掉对应充能
         beforeAbilityUsed(hero, null);

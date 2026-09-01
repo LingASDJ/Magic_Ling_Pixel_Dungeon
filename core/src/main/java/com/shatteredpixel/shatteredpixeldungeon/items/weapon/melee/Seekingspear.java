@@ -37,12 +37,12 @@ public class Seekingspear extends MeleeWeapon{
             Hero hero = (Hero) attacker;
             Char enemy = hero.enemy();
             if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
-                dmg = (int) ((damage * 1.5f) + (0.25f * level()));
+                dmg = (int) ((damage * 1.5f) + (0.25f * buffedLvl()));
                 damage = dmg;
                 attacker.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "crit"));
             }
         } else if(Random.Float()<=0.43f){
-            dmg = (int) ((damage * 1.5f) + (0.25f * level()));
+            dmg = (int) ((damage * 1.5f) + (0.25f * buffedLvl()));
             damage = dmg;
             attacker.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "crit"));
         }

@@ -29,6 +29,8 @@ public class Blindness extends FlavourBuff {
 	public void set(float duration) {
 	}
 	public static final float DURATION = 10f;
+
+
 	@Override
 	public String heroMessage() {
 		return Messages.get(this, "heromsg");

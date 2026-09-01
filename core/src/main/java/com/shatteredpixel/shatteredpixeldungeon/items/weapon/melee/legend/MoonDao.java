@@ -38,7 +38,7 @@ public class MoonDao extends MeleeWeapon {
             Hero hero = (Hero) attacker;
             Char enemy = hero.enemy();
             if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
-                Buff.affect(defender, Chill.class, 2+level()/4f);
+                Buff.affect(defender, Chill.class, 2+buffedLvl()/4f);
             }
         }
         damage= (new Blocking()).proc(this, attacker, defender, damage);

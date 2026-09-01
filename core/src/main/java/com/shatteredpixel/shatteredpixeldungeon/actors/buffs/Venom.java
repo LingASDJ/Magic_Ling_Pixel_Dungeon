@@ -21,6 +21,8 @@ public class Venom extends Buff implements Hero.Doom {
         type = buffType.NEGATIVE;
         announced = true;
     }
+
+
     private static final String SOURCE	= "source";
     @Override
     public void storeInBundle( Bundle bundle ) {

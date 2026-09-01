@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
@@ -30,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.QingXian_ability_utils.BuffClear;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
@@ -59,7 +61,7 @@ import java.util.ArrayList;
  * - 基础攻击15（固定值），成长4<BR>
  * - 力量需求10，攻速固定为1<BR>
  * - 命中率根据等级变化：25% → 50% → 80%<BR>
- * - 即死效果概率：10% → 腐化5% → 25% → 20%+腐化15%<BR>
+ * - 即死效果概率：10% → 15% → 20%<BR>
  *<BR><BR>
  * 升级方式：<BR>
  * - 只能通过升级卷轴和蝶变升级<BR>
@@ -68,19 +70,19 @@ import java.util.ArrayList;
  * - 每300回合只能升级一次<BR>
  *<BR><BR>
  * 等级效果：<BR>
- * L1+: 每15回合自身燃烧1回合，新增5%腐化效果<BR>
- * L4-6: 4格灵视，即死25%<BR>
- * L7-9: 吞天(15%概率吸血30%)，即死25%<BR>
+ * L1: 每15回合自身燃烧1回合，新增5%腐化效果<BR>
+ * L4: 4格灵视，即死15%<BR>
+ * L7: 吞天(15%概率吸血30%)，即死25%<BR>
  * L10: 幻惑，命中率50%<BR>
- * L11-12: 虚弱，攻击距离3<BR>
- * L13-14: 命中率80%<BR>
+ * L11: 虚弱，攻击距离3<BR>
+ * L13: 命中率80%<BR>
  * L15+: 即死20%，腐化15%，灵视6格，易伤/恍惚/失明，护甲2正2诅附魔，武器随机附魔(x-14)种，
  *        击杀50%概率获得10%最大生命奥术护盾(可叠加，自然流失)<BR>
  *<BR><BR>
  * 主动技能：<BR>
  * Top1(L6+): 3x3恐惧+30魔法伤害，CD5，耗血10%<BR>
  * Top2(L10+): 死亡诅咒区域，CD30，耗血30%<BR>
- * Top3(L15+): 净化debuff+赐福/充能/精力充沛/急速+浊焰攻心，耗血60%，每局1次<BR>
+ * Top3(L15+): 净化debuff+赐福/充能/精力充沛/急速+浊焰攻心，耗血60%，每局1次，此后阻断终焉的常驻buff效果<BR>
  *<BR><BR>
  * 特殊机制：<BR>
  * - 尝试净化触发浊焰审判（怪物伤害x2/血量x2/移速*0.85，玩家血量上限降至50%）<BR>
@@ -420,12 +422,8 @@ public class EndingBlade extends MeleeWeapon {
 
         hero.damage(hpCost, this);
 
-        // 移除所有负面buff
-        for (Buff buff : hero.buffs().toArray(new Buff[0])) {
-            if (buff.type == Buff.buffType.NEGATIVE) {
-                buff.detach();
-            }
-        }
+        // 移除所有可清除的负面buff
+        BuffClear.NegativeClean(hero, BuffClear.CLEAR_LEVEL);
 
         // 给予正面buff（20回合）
         Buff.affect(hero, Bless.class, 20f);
@@ -468,16 +466,10 @@ public class EndingBlade extends MeleeWeapon {
         return 15 + lvl * 4;
     }
 
-    @Override
-    public float accuracyFactor(Char owner, Char target) {
-        int lvl = level();
-        if (lvl >= 13) {
-            return super.accuracyFactor(owner, target) * 0.80f;
-        } else if (lvl >= 10) {
-            return super.accuracyFactor(owner, target) * 0.50f;
-        } else {
-            return super.accuracyFactor(owner, target) * 0.25f;
-        }
+    public float AccRate() {
+        if (level()>=13) return 0.8f;
+        if (level()>=10) return 0.5f;
+        return 0.25f;
     }
 
     /**
@@ -543,16 +535,32 @@ public class EndingBlade extends MeleeWeapon {
     public int proc(Char attacker, Char defender, int damage) {
         int lvl = level();
 
-        // 击杀判定
-        if (defender.HP <= damage && defender.shielding() == 0) {  // 这里没有完全修复,实际上仍然存在问题，但就用这个吧
-            // Level15+：击杀50%概率获得10%最大生命奥术护盾
-            if (lvl >= 15 && attacker instanceof Hero && Random.Float() < 0.50f) {
-                int shieldAmount = Math.max(1, Math.round(attacker.HT * 0.10f));
-                Buff.affect(attacker, Barrier.class).incShield(shieldAmount);
-                attacker.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 4);
-                GLog.p(Messages.get(this, "arcane_shield_gain", shieldAmount));
+        final Char def = defender;
+        final Char atk = attacker;
+
+        Actor.add(new Actor(){
+            {
+                actPriority = VFX_PRIO;
             }
-        }
+
+            @Override
+            protected boolean act(){
+
+                // 击杀判定
+                if (!def.isAlive()) {
+                    // Level15+：击杀50%概率获得10%最大生命奥术护盾
+                    if (lvl >= 15 && atk instanceof Hero && Random.Float() < 0.50f) {
+                        int shieldAmount = Math.max(1, Math.round(atk.HT * 0.10f));
+                        Buff.affect(atk, Barrier.class).incShield(shieldAmount);
+                        atk.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 4);
+                        GLog.p(Messages.get(this, "arcane_shield_gain", shieldAmount));
+                    }
+                }
+
+                Actor.remove(this);
+                return true;
+            }
+        });
 
         // 即死效果
         float instakillChance = getInstakillChance(lvl);
@@ -598,12 +606,14 @@ public class EndingBlade extends MeleeWeapon {
         return super.proc(attacker, defender, damage);
     }
 
+    // 即死概率
     private float getInstakillChance(int lvl) {
         if (lvl >= 15) return 0.20f;
         else if (lvl >= 4) return 0.15f;
         else return 0.10f;
     }
 
+    // 腐化概率
     private float getCorruptChance(int lvl) {
         if (lvl >= 15) return 0.15f;
         else if (lvl >= 1) return 0.05f;
@@ -621,6 +631,7 @@ public class EndingBlade extends MeleeWeapon {
                 Buff.affect(hero, MindVision.class, 12f).setRange(4);
             }
 
+            // Level7：吞天
             if(lvl >= 7){
                 Buff.affect(hero, SkyRoll.class, 2f);
             }
@@ -794,7 +805,7 @@ public class EndingBlade extends MeleeWeapon {
 
     /**
      * 死亡诅咒
-     * 在指定区域持续施加燃烧和中毒
+     * 在指定区域持续施加燃烧和中毒以及死亡后复活为盟友
      */
     public static class DeathCurseTracker extends Buff {
 

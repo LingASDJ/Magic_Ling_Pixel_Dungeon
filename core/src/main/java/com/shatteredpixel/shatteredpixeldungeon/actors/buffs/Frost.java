@@ -48,7 +48,8 @@ public class Frost extends FlavourBuff {
 		type = buffType.NEGATIVE;
 		announced = true;
 	}
-	
+
+
 	@Override
 	public boolean attachTo( Char target ) {
 		Buff.detach( target, Burning.class );

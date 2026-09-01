@@ -157,6 +157,7 @@ public class DeathMark extends ArmorAbility {
 			announced = true;
 		}
 
+
 		@Override
 		public int icon() {
 			return BuffIndicator.INVERT_MARK;

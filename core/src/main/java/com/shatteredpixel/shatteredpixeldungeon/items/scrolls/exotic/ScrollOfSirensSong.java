@@ -129,6 +129,7 @@ public class ScrollOfSirensSong extends ExoticScroll {
 			announced = true;
 		}
 
+
 		@Override
 		public void fx(boolean on) {
 			if (on) target.sprite.add(CharSprite.State.HEARTS);

@@ -28,7 +28,7 @@ public class DeathRongBoat extends MeleeWeapon {
     }
 
     public String desc() {
-        int damageReduction = Math.max(0, 25 - level());
+        int damageReduction = Math.max(0, 25 - buffedLvl());
         return Messages.get(this, "desc", damageReduction);
     }
 
@@ -42,7 +42,7 @@ public class DeathRongBoat extends MeleeWeapon {
                     if(mob.alignment == Char.Alignment.ENEMY && mob != attacker){
                         int distance = Dungeon.level.distance(targetPos, mob.pos);
                         // 确保伤害递减率至少为0，避免增伤
-                        float damageReduction = Math.max(0, (25 - level()) / 100f);
+                        float damageReduction = Math.max(0, (25 - buffedLvl()) / 100f);
                         // 计算最终伤害，确保不超过原始伤害
                         int finalDamage = (int) (damage * Math.max(0, 1 - damageReduction * distance));
                         // 确保最小伤害为1

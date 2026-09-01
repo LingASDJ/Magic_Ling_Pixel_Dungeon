@@ -144,6 +144,7 @@ public class Crossbow extends MeleeWeapon {
 			type = buffType.POSITIVE;
 		}
 
+
 		@Override
 		public int icon() {
 			return BuffIndicator.DUEL_XBOW;

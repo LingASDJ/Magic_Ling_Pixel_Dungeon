@@ -37,6 +37,7 @@ public class Terror extends FlavourBuff {
 		announced = true;
 	}
 
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle(bundle);

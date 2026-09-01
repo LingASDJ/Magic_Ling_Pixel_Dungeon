@@ -73,6 +73,7 @@ public abstract class ChampionEnemy extends Buff {
 		type = buffType.POSITIVE;
 	}
 
+
 	protected int color;
 
 	public static int Mcolor = 0x808080;

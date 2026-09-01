@@ -31,7 +31,8 @@ public class Hex extends FlavourBuff {
 		type = buffType.NEGATIVE;
 		announced = true;
 	}
-	
+
+
 	@Override
 	public int icon() {
 		return BuffIndicator.HEX;

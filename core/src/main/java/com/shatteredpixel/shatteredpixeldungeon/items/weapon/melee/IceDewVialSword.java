@@ -59,7 +59,7 @@ public class IceDewVialSword extends MeleeWeapon {
 
             if (mob.isAlive() && bolt.path.size() > bolt.dist+1) {
                 Ballistica trajectory = new Ballistica(mob.pos, bolt.path.get(bolt.dist + 1), Ballistica.MAGIC_BOLT);
-                int strength = 11 + level();
+                int strength = 11 + buffedLvl();
                 throwChar(mob, trajectory, strength);
                 Buff.affect(mob, Frost.class, Frost.duration(mob));
             }

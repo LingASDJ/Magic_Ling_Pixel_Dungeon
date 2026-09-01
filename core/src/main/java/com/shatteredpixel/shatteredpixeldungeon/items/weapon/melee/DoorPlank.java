@@ -28,7 +28,7 @@ public class DoorPlank extends MeleeWeapon{
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        defender.damage(Math.round((0.2f + 0.02f * level()) * attacker.HT), attacker, Char.DamageType.REAL);
+        defender.damage(Math.round((0.2f + 0.02f * buffedLvl()) * attacker.HT), attacker, Char.DamageType.REAL);
         return super.proc(attacker, defender, damage);
     }
 }

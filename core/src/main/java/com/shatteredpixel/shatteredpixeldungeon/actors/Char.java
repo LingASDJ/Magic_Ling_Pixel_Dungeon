@@ -764,8 +764,8 @@ public abstract class Char extends Actor {
 			((Hero) defender).interrupt();
 		}
 		// "attacker.invisible > 0"表示攻击者处于隐身状态,
-		// "attacker.canSurpriseAttack()"默认为true,
-		// attacker来自英雄时会判断
+		// "attacker.canSurpriseAttack()"默认为true,表示能够偷袭
+		// 当attacker来自英雄时会作以下对canSurpriseAttack()判断
 		// 当前是(空手/非武器)则返回true
 		// 力量小于当前武器需求(STR() < STRReq())则返回false
 		// 武器是链枷/魔法火把则返回false
@@ -777,7 +777,7 @@ public abstract class Char extends Actor {
 			defStat = INFINITE_EVASION;
 		}
 
-		// 无限闪避大于无限命中
+		// 无限闪避大于无限命中，无限闪避优先判定
 		if (defStat >= INFINITE_EVASION){
 			// 显示未命中图标
 			hitMissIcon = FloatingText.getMissReasonIcon(attacker, acuStat, defender, INFINITE_EVASION);
@@ -838,6 +838,17 @@ public abstract class Char extends Actor {
 		defRoll *= FerretTuft.evasionMultiplier();
 		// 水晶诅咒修正系数
 		defRoll *= AscensionChallenge.statModifier(defender);
+
+		// ==========特判==========
+		// 终焉 注:终焉特判小于无限
+		if (acuStat == INFINITE_ACCURACY){
+			if(attacker instanceof Hero){
+				Belongings b = ((Hero)attacker).belongings;
+				if(b != null && b.weapon instanceof EndingBlade)
+					return Random.Float(0,1) <= ((EndingBlade) b.weapon).AccRate();
+			}
+		}
+
 		// 命中倍率下的命中判定
 		if ((acuRoll * accMulti) >= defRoll){
 			return true;

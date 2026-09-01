@@ -39,7 +39,6 @@ public class AnkhCount extends Buff {
             detach();
 
         }
-
         return true;
     }
 

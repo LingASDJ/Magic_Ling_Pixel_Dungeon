@@ -322,47 +322,54 @@ public class Dart extends MissileWeapon {
 		processingChargedShot = true;
 
 		if (chargedShotPos != -1) {
-			if( bow != null  && (Dungeon.hero.buff(Crossbow.ChargedShot.class) != null )){
+			if (bow != null && (Dungeon.hero.buff(Crossbow.ChargedShot.class) != null)) {
 				PathFinder.buildDistanceMap(chargedShotPos, Dungeon.level.passable, 2);
-				//necessary to clone as some on-hit effects use Pathfinder
+				// 必须克隆，因为一些命中后效果会使用 PathFinder
 				int[] distance = PathFinder.distance.clone();
-				for (Char ch : Actor.chars()){
-					if (ch == target){
+				for (Char ch : Actor.chars()) {
+					if (ch == target) {
 						Actor.add(new Actor() {
-							{ actPriority = VFX_PRIO; }
+							{
+								actPriority = VFX_PRIO;
+							}
+
 							@Override
 							protected boolean act() {
-								if (!ch.isAlive()){
+								if (!ch.isAlive()) {
 									bow.onAbilityKill(Dungeon.hero, ch);
 								}
 								Actor.remove(this);
 								return true;
 							}
 						});
-					} else if (distance[ch.pos] != Integer.MAX_VALUE){
+					} else if (distance[ch.pos] != Integer.MAX_VALUE) {
 						proc(Dungeon.hero, ch, dmg);
 					}
 				}
 			}
-			} else if ( forestBow != null && (Dungeon.hero.buff(ForestBow.ChargedShot.class) != null )) {
-			PathFinder.buildDistanceMap(chargedShotPos, Dungeon.level.passable, 2);
-			//necessary to clone as some on-hit effects use Pathfinder
-			int[] distance = PathFinder.distance.clone();
-			for (Char ch : Actor.chars()){
-				if (ch == target){
-					Actor.add(new Actor() {
-						{ actPriority = VFX_PRIO; }
-						@Override
-						protected boolean act() {
-							if (!ch.isAlive()){
-								forestBow.onAbilityKill(Dungeon.hero, ch);
+			if (forestBow != null && (Dungeon.hero.buff(ForestBow.ChargedShot.class) != null)) {
+				PathFinder.buildDistanceMap(chargedShotPos, Dungeon.level.passable, 2);
+				// 必须克隆，因为一些命中后效果会使用 PathFinder
+				int[] distance = PathFinder.distance.clone();
+				for (Char ch : Actor.chars()) {
+					if (ch == target) {
+						Actor.add(new Actor() {
+							{
+								actPriority = VFX_PRIO;
 							}
-							Actor.remove(this);
-							return true;
-						}
-					});
-				} else if (distance[ch.pos] != Integer.MAX_VALUE){
-					proc(Dungeon.hero, ch, dmg);
+
+							@Override
+							protected boolean act() {
+								if (!ch.isAlive()) {
+									forestBow.onAbilityKill(Dungeon.hero, ch);
+								}
+								Actor.remove(this);
+								return true;
+							}
+						});
+					} else if (distance[ch.pos] != Integer.MAX_VALUE) {
+						proc(Dungeon.hero, ch, dmg);
+					}
 				}
 			}
 		}
