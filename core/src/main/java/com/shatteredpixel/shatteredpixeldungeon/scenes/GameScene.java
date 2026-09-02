@@ -2160,7 +2160,7 @@ public class GameScene extends PixelScene {
 				cure( Dungeon.hero );
 			}
 
-			if(Dungeon.branch == 0 && Dungeon.bossLevel() || Statistics.bossRushMode && Dungeon.sbbossLevel()){
+			if(Dungeon.branch == 0 && Dungeon.bossLevel() || Statistics.bossRushMode && Dungeon.sbbossLevel() || level instanceof DwarfGeneralBossLevel){
 				Buff.detach(Dungeon.hero,BlessAWP.ArmorGetReady.class);
 				Buff.detach(Dungeon.hero,BlessAWP.WeaponGetReady.class);
 
