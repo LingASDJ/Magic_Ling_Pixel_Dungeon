@@ -1,6 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_WELL;
@@ -14,16 +16,21 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 
 public class RogerBossLevel extends Level {
@@ -128,7 +135,55 @@ public class RogerBossLevel extends Level {
     @Override
     public void seal() {
         super.seal();
-        playBossMusic();
+
+        Level.set(entrance(), STATUE);
+        GameScene.updateMap(entrance());
+        Dungeon.observe();
+
+        Level.set(exit(), STATUE);
+        GameScene.updateMap(exit());
+        Dungeon.observe();
+    }
+
+    @Override
+    public void unseal() {
+        super.unseal();
+        Level.set(entrance(), ENTRANCE);
+        GameScene.updateMap(entrance());
+        Dungeon.observe();
+
+        Level.set(exit(), EXIT);
+        GameScene.updateMap(exit());
+        Dungeon.observe();
+    }
+
+    private int status = 0;
+
+    public void storeInBundle( Bundle bundle ) {
+        super.storeInBundle(bundle);
+        bundle.put("level_status", status);
+    }
+
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle( bundle );
+        status = bundle.getInt("level_status");
+    }
+
+    @Override
+    public void occupyCell( Char ch ) {
+        super.occupyCell(ch);
+
+        if (status == 0 && level.distance(hero.pos,294) >= 2) {
+            seal();
+            status++;
+            CellEmitter.get(entrance).start(FlameParticle.FACTORY, 0.1f, 10);
+            Roger roger = new Roger();
+            roger.pos = 180;
+            roger.state = roger.HUNTING;
+            GameScene.add(roger);
+            roger.notice();
+        }
     }
 
     @Override
@@ -158,9 +213,7 @@ public class RogerBossLevel extends Level {
 
     @Override
     protected void createMobs() {
-        Roger roger = new Roger();
-        roger.pos = 180;
-        mobs.add(roger);
+
     }
 
     @Override
