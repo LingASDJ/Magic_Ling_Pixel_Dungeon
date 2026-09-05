@@ -1,44 +1,77 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.custom.buffs.AbsoluteBlindness;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.ColorTargetedCell;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaReal;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.timing.VirtualActor;
+import com.shatteredpixel.shatteredpixeldungeon.effects.BeamCustom;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ScanningBeam;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RogerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Roger extends Boss {
 
@@ -62,22 +95,11 @@ public class Roger extends Boss {
         return s;
     }
 
-    // ========== 罗刹斩状态 ==========
-    private boolean usingRasetsu = false;
-    private int rasetsuSlashCount = 0;
-    private int rasetsuCooldown = 0;
-    private static final int RASETSU_COOLDOWN = 20;
-    private ArrayList<Integer> rasetsuQueue = new ArrayList<>();
-
-    // 8方向偏移（横竖 + 对角线，对应图片红线）
-    private int[] getSlashDirs() {
-        int w = Dungeon.level.width();
-        return new int[]{ -w, -w+1, 1, w+1, w, w-1, -1, -w-1 };
+    @Override
+    public void die(Object cause) {
+        super.die(cause);
+        Dungeon.level.unseal();
     }
-
-    private static final String[] DIR_NAMES = {
-            "↑", "↗", "→", "↘", "↓", "↙", "←", "↖"
-    };
 
     private int StopAG;
 
@@ -93,17 +115,11 @@ public class Roger extends Boss {
             }
             StopAG++;
         }
-
-        // 罗刹斩冷却
-        if (rasetsuCooldown > 0) rasetsuCooldown--;
-
-        // 正在执行罗刹斩
-        if (usingRasetsu) {
-            executeRasetsuSlash();
-            spend(TICK);
-            return true;
+        //处理负面药水投掷倒计时Buff
+        ThrowPotionWarning throwBuff = buff(ThrowPotionWarning.class);
+        if (throwBuff != null){
+            throwBuff.processThrow(this);
         }
-
         return super.act();
     }
 
@@ -119,233 +135,8 @@ public class Roger extends Boss {
         }
     }
 
-    // ========== 罗刹斩：释放 ==========
-
-    /**
-     * 释放罗刹斩
-     * 1. 玩家11回合绝对失明
-     * 2. 10次有预警的贯穿斩击（横竖/斜线贯穿屏幕）
-     * 3. 3倍基础伤害，非英雄即死
-     */
     public void castRasetsu() {
-        if (usingRasetsu || rasetsuCooldown > 0) return;
-
-        usingRasetsu = true;
-        rasetsuSlashCount = 0;
-        rasetsuCooldown = RASETSU_COOLDOWN;
-
-        // 绝对失明11回合
-        Buff.affect(Dungeon.hero, AbsoluteBlindness.class).addLeft(11);
-        Dungeon.observe();
-
-        // 生成10次随机斩击方向
-        rasetsuQueue.clear();
-        Random.shuffle(rasetsuQueue);
-        for (int i = 0; i < 10; i++) {
-            rasetsuQueue.add(Random.Int(8));
-        }
-
-        // 立即预警第一次
-        warnRasetsuSlash();
-    }
-
-    /**
-     * 预警下一次斩击
-     */
-    private void warnRasetsuSlash() {
-        if (rasetsuSlashCount >= rasetsuQueue.size()) {
-            endRasetsu();
-            return;
-        }
-
-        int dirIdx = rasetsuQueue.get(rasetsuSlashCount);
-
-        // 显示方向预警
-        if (sprite != null) {
-            sprite.showStatus(CharSprite.NEGATIVE,
-                    Messages.get(this, "slash_warn", DIR_NAMES[dirIdx]));
-        }
-
-        // 红色预警线
-        showWarningLine(dirIdx);
-    }
-
-    /**
-     * 显示红色预警线（参考图片）
-     */
-    private void showWarningLine(int dirIdx) {
-        if (sprite == null || sprite.parent == null) return;
-
-        int[] dirs = getSlashDirs();
-        ArrayList<Integer> path = getSlashPath(dirs[dirIdx]);
-
-        for (int cell : path) {
-            if (Dungeon.level.insideMap(cell)) {
-                sprite.parent.addToBack(new ColorTargetedCell(cell, Window.ORAGNECOLOR));
-            }
-        }
-    }
-
-    /**
-     * 执行斩击
-     */
-    private void executeRasetsuSlash() {
-        if (rasetsuSlashCount >= rasetsuQueue.size()) {
-            endRasetsu();
-            return;
-        }
-
-        int[] dirs = getSlashDirs();
-        int dirIdx = rasetsuQueue.get(rasetsuSlashCount);
-        int dir = dirs[dirIdx];
-
-        ArrayList<Integer> path = getSlashPath(dir);
-
-        // 斩击音效
-        Sample.INSTANCE.play(Assets.Sounds.HIT_SLASH, 1.0f);
-
-        // 贯穿光束效果
-        showSlashBeam(path);
-
-        // 伤害判定
-        for (int cell : path) {
-            if (!Dungeon.level.insideMap(cell)) continue;
-
-            Char ch = Actor.findChar(cell);
-            if (ch != null && ch != this) {
-                applyRasetsuDamage(ch);
-            }
-
-            // 破坏草丛
-            if (Dungeon.level.map[cell] == Terrain.HIGH_GRASS
-                    || Dungeon.level.map[cell] == Terrain.FURROWED_GRASS) {
-                Dungeon.level.destroy(cell);
-                GameScene.updateMap(cell);
-            }
-        }
-
-        rasetsuSlashCount++;
-
-        // 完成前一次后立刻预警下一次
-        if (rasetsuSlashCount < rasetsuQueue.size()) {
-            warnRasetsuSlash();
-        } else {
-            endRasetsu();
-        }
-    }
-
-    /**
-     * 显示斩击光束（贯穿屏幕）
-     */
-    private void showSlashBeam(ArrayList<Integer> path) {
-        if (sprite == null || sprite.parent == null || path.isEmpty()) return;
-
-        int start = path.get(0);
-        int end = path.get(path.size() - 1);
-
-        // 转换为像素坐标 (假设每格16像素)
-        PointF s = new PointF(
-                (start % Dungeon.level.width()) * 16 + 8,
-                ((float) start / Dungeon.level.width()) * 16 + 8
-        );
-        PointF e = new PointF(
-                (end % Dungeon.level.width()) * 16 + 8,
-                ((float) end / Dungeon.level.width()) * 16 + 8
-        );
-
-        // 使用 DeathRay（红色光束）作为斩击视觉
-        sprite.parent.add(new Beam.LightRay(s, e));
-
-        // 路径爆炸粒子
-        for (int cell : path) {
-            if (Random.Float() < 0.3f) {
-                CellEmitter.get(cell).burst(RainbowParticle.BURST, 6);
-            }
-        }
-    }
-
-    /**
-     * 罗刹斩伤害
-     */
-    private void applyRasetsuDamage(Char ch) {
-        if (ch instanceof Hero) {
-            // 英雄：3倍基础真实伤害
-            int dmg = damageRoll() * 3;
-            ch.HP -= dmg;
-            ch.sprite.showStatus(CharSprite.NEGATIVE, "%d", dmg);
-            ch.sprite.flash();
-
-            Buff.affect(ch, Cripple.class, 3f);
-            CellEmitter.get(ch.pos).burst(BlastParticle.FACTORY, 5);
-
-            if (ch.HP <= 0) {
-                ch.die(this);
-            }
-        } else if (ch instanceof Mob) {
-            // 非英雄即死
-            GLog.w(Messages.get(this, "instant_kill", ch.name()));
-            CellEmitter.get(ch.pos).burst(ShadowParticle.CURSE, 10);
-            ch.die(this);
-        }
-    }
-
-    @Override
-    public void die(Object cause) {
-        super.die(cause);
-        Dungeon.level.unseal();
-    }
-
-    /**
-     * 获取贯穿路径
-     */
-    private ArrayList<Integer> getSlashPath(int dir) {
-        ArrayList<Integer> path = new ArrayList<>();
-        int w = Dungeon.level.width();
-
-        // 正向
-        int curr = pos;
-        for (int i = 0; i < Math.max(w, Dungeon.level.height()); i++) {
-            curr += dir;
-            if (!Dungeon.level.insideMap(curr)) break;
-            // 防止跨行错误
-            int prevCol = (curr - dir) % w;
-            int currCol = curr % w;
-            if (Math.abs(currCol - prevCol) > 1 && Math.abs(currCol - prevCol) < w - 1) break;
-            path.add(curr);
-        }
-
-        // 反向（插入头部）
-        curr = pos;
-        for (int i = 0; i < Math.max(w, Dungeon.level.height()); i++) {
-            curr -= dir;
-            if (!Dungeon.level.insideMap(curr)) break;
-            int prevCol = (curr + dir) % w;
-            int currCol = curr % w;
-            if (Math.abs(currCol - prevCol) > 1 && Math.abs(currCol - prevCol) < w - 1) break;
-            path.add(0, curr);
-        }
-
-        return path;
-    }
-
-    /**
-     * 结束罗刹斩
-     */
-    private void endRasetsu() {
-        usingRasetsu = false;
-        rasetsuSlashCount = 0;
-        rasetsuQueue.clear();
-
-        if (Dungeon.level.heroFOV[pos]) {
-            GLog.w(Messages.get(this, "rasetsu_end"));
-        }
-
-        Buff.affect(this, Weakness.class, 15f);
-        Buff.affect(this, NoDr.class,15f);
-
-        AngerPock angerPock = buff(AngerPock.class);
-        if(angerPock != null){
-            angerPock.level = 0;
+        if(enemy != null){
         }
     }
 
@@ -354,7 +145,187 @@ public class Roger extends Boss {
      */
     public static class NoDr extends FlavourBuff{};
 
-    // ========== 原有代码保留 ==========
+    //禁止复制药水
+    public static final List<Class<? extends Potion>> BAN_POTIONS = new ArrayList<>();
+    static {
+        BAN_POTIONS.add(PotionOfStrength.class);
+        BAN_POTIONS.add(PotionOfHealing.class);
+        BAN_POTIONS.add(PotionOfExperience.class);
+    }
+
+    //正向药水列表（罗杰自身生效）
+    public static final List<Class<? extends Potion>> POSITIVE_POTIONS = new ArrayList<>();
+    static {
+        POSITIVE_POTIONS.add(PotionOfMindVision.class);
+        POSITIVE_POTIONS.add(PotionOfHaste.class);
+        POSITIVE_POTIONS.add(PotionOfInvisibility.class);
+        POSITIVE_POTIONS.add(PotionOfLevitation.class);
+        POSITIVE_POTIONS.add(PotionOfPurity.class);
+        POSITIVE_POTIONS.add(PotionOfLightningShiledX.class);
+    }
+
+    //负面药水列表（预警后投掷英雄）
+    public static final List<Class<? extends Potion>> NEGATIVE_POTIONS = new ArrayList<>();
+    static {
+        NEGATIVE_POTIONS.add(PotionOfFrost.class);
+        NEGATIVE_POTIONS.add(PotionOfLiquidFlame.class);
+        NEGATIVE_POTIONS.add(PotionOfToxicGas.class);
+        NEGATIVE_POTIONS.add(PotionOfParalyticGas.class);
+        NEGATIVE_POTIONS.add(PotionOfLiquidFlameX.class);
+    }
+
+    public static final Map<Class<? extends Potion>, Class<? extends FlavourBuff>> POTION_IMMUNE_MAP = new HashMap<>();
+    static {
+        POTION_IMMUNE_MAP.put(PotionOfFrost.class, ImmuneFrost.class);
+        POTION_IMMUNE_MAP.put(PotionOfLiquidFlame.class, ImmuneLiquidFlame.class);
+        POTION_IMMUNE_MAP.put(PotionOfToxicGas.class, ImmuneToxicGas.class);
+        POTION_IMMUNE_MAP.put(PotionOfParalyticGas.class, ImmuneParalyticGas.class);
+        POTION_IMMUNE_MAP.put(PotionOfLiquidFlameX.class, ImmuneLiquidFlameX.class);
+    }
+
+    // ========== 全套免疫Buff ==========
+    public static class ImmuneFrost extends FlavourBuff {
+        {
+            immunities.add(Frost.class);
+            immunities.add(Chill.class);
+        }
+    }
+    public static class ImmuneLiquidFlame extends FlavourBuff {
+        {
+            immunities.add(Burning.class);
+            immunities.add(Fire.class);
+        }
+    }
+    public static class ImmuneToxicGas extends FlavourBuff {
+        {
+            immunities.add(ToxicGas.class);
+        }
+    }
+    public static class ImmuneParalyticGas extends FlavourBuff {
+        {
+            immunities.add(Paralysis.class);
+        }
+    }
+    public static class ImmuneLiquidFlameX extends FlavourBuff {
+        {
+            immunities.add(HalomethaneBurning.class);
+            immunities.add(HalomethaneFire.class);
+        }
+    }
+
+
+    public static class ThrowPotionWarning extends FlavourBuff {
+        public Class<? extends Potion> potionCls;
+        private static final String POTION_CLS = "potion_cls";
+
+        public void setPotion(Class<? extends Potion> cls){
+            potionCls = cls;
+        }
+
+        public void processThrow(Roger roger){
+            spend(TICK);
+            if (roger.enemy != null){
+                final int fromCell = roger.pos;
+                final int targetCell = roger.enemy.pos;
+                try {
+                    final Potion pot = potionCls.newInstance();
+                    roger.sprite.turnTo(fromCell, targetCell);
+                    ((MissileSprite) roger.sprite.parent.recycle(MissileSprite.class))
+                            .reset(fromCell, targetCell, pot, new Callback() {
+                                @Override
+                                public void call() {
+                                    // 飞行结束，药水爆炸
+                                    pot.shatter(targetCell);
+                                    // 添加5回合免疫Buff
+                                    Class<? extends FlavourBuff> immune = POTION_IMMUNE_MAP.get(potionCls);
+                                    if (immune != null) {
+                                        Buff.affect(roger, immune, 5f);
+                                    }
+                                    Sample.INSTANCE.play(Assets.Sounds.HIT);
+                                }
+                            });
+                    Sample.INSTANCE.play(Assets.Sounds.ATK_SPIRITBOW);
+                } catch (Exception ignored) {
+
+                }
+                detach();
+            }
+        }
+
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put(POTION_CLS, potionCls.getName());
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+            try {
+                potionCls = (Class<? extends Potion>) Class.forName(bundle.getString(POTION_CLS));
+            }catch (Exception ignored){}
+        }
+    }
+
+
+    /**
+     * 外部调用入口：Hero使用药水后触发此方法
+     */
+    public void onHeroUsePotion(Potion usedPotion){
+        Class<? extends Potion> potCls = usedPotion.getClass();
+        //禁止复制
+        for (Class<?> ban : BAN_POTIONS){
+            if (ban.isAssignableFrom(potCls)) return;
+        }
+
+        int X = Statistics.spawnersTombTownAlive;
+        float baseScale = (50f + 5f * X) / 100f;
+
+        //正向药水：自身生效
+        for (Class<?> pos : POSITIVE_POTIONS){
+            if (pos.isAssignableFrom(potCls)){
+                applyScaledPotionEffect(this, usedPotion, baseScale);
+                return;
+            }
+        }
+        //负面药水：预警一回合后投掷
+        for (Class<?> neg : NEGATIVE_POTIONS){
+            if (neg.isAssignableFrom(potCls)){
+                ThrowPotionWarning warn = Buff.affect(this, ThrowPotionWarning.class, 5f);
+                warn.setPotion(potCls);
+                return;
+            }
+        }
+    }
+
+    /**
+     * 给目标施加按比例削弱的药水效果
+     */
+    private void applyScaledPotionEffect(Char target, Potion origin, float scale){
+        if (origin instanceof PotionOfHaste){
+            if(Dungeon.isChallenged(EXSG)) {
+                Buff.affect(target, Cripple.class, 8f * scale);
+            } else {
+                Buff.prolong(target, Haste.class, Haste.DURATION * scale);
+                SpellSprite.show(target, SpellSprite.HASTE, 1, 1, 0);
+            }
+        }else if (origin instanceof PotionOfPurity){
+            Buff.prolong(target, BlobImmunity.class, BlobImmunity.DURATION  * scale);
+        }else if (origin instanceof PotionOfMindVision){
+            if(Dungeon.isChallenged(EXSG)) {
+                Buff.affect(target, Blindness.class, 5f * scale);
+            } else {
+                Buff.affect(target, MindVision.class, MindVision.DURATION * scale );
+            }
+        }else if (origin instanceof PotionOfInvisibility){
+            Buff.affect(target, Invisibility.class, Invisibility.DURATION * scale );
+        }else if (origin instanceof PotionOfLevitation){
+            Buff.affect(target, Levitation.class, Levitation.DURATION * scale );
+        }else if (origin instanceof PotionOfLightningShiledX){
+            Buff.affect(target, ChampionHero.Light.class, ChampionHero.DURATION/2 * scale);
+        }
+    }
+
 
     private void damage_reflection(){
         if(buff(DamageREFCD.class) == null){
@@ -402,10 +373,8 @@ public class Roger extends Boss {
         }
     }
 
-
     /**
      * 怒气
-     * @param s
      */
     private void getAG(int s){
         AngerPock angerPock = buff(AngerPock.class);
@@ -427,11 +396,6 @@ public class Roger extends Boss {
         Buff.affect(enemy, BreakDamage.class).set(duration, 1);
         getAG(6);
         return super.attackProc(enemy, damage);
-    }
-
-    @Override
-    public boolean isInvulnerable(Class effect) {
-        return super.isInvulnerable(effect) || usingRasetsu;
     }
 
     @Override
@@ -505,7 +469,7 @@ public class Roger extends Boss {
             return Messages.get(this, "desc", level, dispTurns(visualcooldown()));
         }
 
-        private static final String LEVEL	    = "level";
+        private static final String LEVEL       = "level";
         private static final String INTERVAL    = "interval";
 
         @Override
@@ -571,16 +535,11 @@ public class Roger extends Boss {
         }
 
         @Override
-        public String iconTextDisplay() {
-            return Integer.toString(level);
-        }
-
-        @Override
         public String desc() {
             return Messages.get(this, "desc", 50 + 10 * Statistics.spawnersTombTownAlive, dispTurns(visualcooldown()));
         }
 
-        private static final String LEVEL	    = "level";
+        private static final String LEVEL       = "level";
         private static final String INTERVAL    = "interval";
 
         @Override
@@ -615,7 +574,11 @@ public class Roger extends Boss {
                 }
                 if(level >= 100){
                     if(target instanceof Roger){
-                        ((Roger) target).castRasetsu();
+                        if(((Roger) target).enemy != null){
+                            Buff.affect(target, LuoShaSlash.class).setTarget(((Roger) target).enemy.pos);
+                        } else {
+                            Buff.affect(target, LuoShaSlash.class).setTarget(180);
+                        }
                     }
                 }
             } else {
@@ -657,7 +620,7 @@ public class Roger extends Boss {
             return Messages.get(this, "desc", level, level/2);
         }
 
-        private static final String LEVEL	    = "level";
+        private static final String LEVEL       = "level";
         private static final String INTERVAL    = "interval";
 
         @Override
@@ -733,15 +696,10 @@ public class Roger extends Boss {
             }
 
             inDoubleMove = false;
-            return moved1 || moved2;
+            return moved1;
         }
         return super.getCloser(target);
     }
-
-    private static final String RASETSU_USING = "rasetsu_using";
-    private static final String RASETSU_COUNT = "rasetsu_count";
-    private static final String RASETSU_CD = "rasetsu_cd";
-    private static final String RASETSU_QUEUE = "rasetsu_queue";
 
     private static final String STOP_AGRH = "stop_agrh";
     private static final String DER = "der";
@@ -750,12 +708,6 @@ public class Roger extends Boss {
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
-        bundle.put(RASETSU_USING, usingRasetsu);
-        bundle.put(RASETSU_COUNT, rasetsuSlashCount);
-        bundle.put(RASETSU_CD, rasetsuCooldown);
-        int[] queue = new int[rasetsuQueue.size()];
-        for (int i = 0; i < rasetsuQueue.size(); i++) queue[i] = rasetsuQueue.get(i);
-        bundle.put(RASETSU_QUEUE, queue);
         bundle.put(STOP_AGRH, StopAG);
         bundle.put(DER, defenseFuckAttack);
         bundle.put(DOUBLE_MOVE, doubleMoveNext);
@@ -764,16 +716,236 @@ public class Roger extends Boss {
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
-        usingRasetsu = bundle.getBoolean(RASETSU_USING);
-        rasetsuSlashCount = bundle.getInt(RASETSU_COUNT);
-        rasetsuCooldown = bundle.getInt(RASETSU_CD);
-        int[] queue = bundle.getIntArray(RASETSU_QUEUE);
-        if (queue != null) {
-            rasetsuQueue.clear();
-            for (int v : queue) rasetsuQueue.add(v);
-        }
         StopAG = bundle.getInt(STOP_AGRH);
         defenseFuckAttack = bundle.getInt(DER);
         doubleMoveNext = bundle.getBoolean(DOUBLE_MOVE);
+    }
+
+    public static class LuoShaSlash extends Buff implements ScanningBeam.OnCollide {
+        // Buff总剩余回合：固定8轮攻击
+        private int totalTurnLeft = 8;
+        // true = 当前回合绘制预警标记
+        private boolean warningFrame = true;
+        // 当前这一组斩击锁定的玩家格子（一旦生成就固定，不跟随移动）
+        private int lockedHeroCell = -1;
+        // 当前回合3条斩击角度
+        private final List<Float> currentAngles = new ArrayList<>();
+
+        // 可选角度池
+        private static final float[] BASE_ANGLES = {0f, 45f, 90f, 135f, 180f, 225f, 270f, 315f};
+        private static final int WARNING_COLOR = 0xFF2222;
+        private static final float BEAM_RANGE = 15f;
+
+        public LuoShaSlash setTarget(int heroCell) {
+            // 第一次挂上buff直接锁定第一组的目标并生成角度
+            lockedHeroCell = heroCell;
+            regenerateSafeAngleSet();
+            return this;
+        }
+
+        @Override
+        public void storeInBundle(Bundle b) {
+            super.storeInBundle(b);
+            b.put("totalTurn", totalTurnLeft);
+            b.put("warningFrame", warningFrame);
+            b.put("lockedHeroCell", lockedHeroCell);
+            float[] angles = new float[currentAngles.size()];
+            for (int i = 0; i < angles.length; i++) angles[i] = currentAngles.get(i);
+            b.put("angles", angles);
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle b) {
+            super.restoreFromBundle(b);
+            totalTurnLeft = b.getInt("totalTurn");
+            warningFrame = b.getBoolean("warningFrame");
+            lockedHeroCell = b.getInt("lockedHeroCell");
+            currentAngles.clear();
+            float[] arr = b.getFloatArray("angles");
+            for (float a : arr) currentAngles.add(a);
+        }
+
+        @Override
+        public boolean act() {
+            spend(TICK);
+
+            if (warningFrame) {
+                // 绘制预警，使用【锁定的旧坐标】，不读取新hero位置
+                renderWarningBeams();
+                warningFrame = false;
+            } else {
+                // 发射激光，依然使用同一个锁定坐标！
+                fireRealSlashBeams();
+                totalTurnLeft--;
+
+                if (totalTurnLeft <= 0) {
+                    diactivate();
+                    detach();
+                    return true;
+                }
+                // ===== 准备下一轮攻击：重新锁定【此刻新的玩家位置】+生成新角度 =====
+                lockedHeroCell = hero.pos;
+                regenerateSafeAngleSet();
+                warningFrame = true;
+            }
+            return true;
+        }
+
+        @Override
+        public void detach() {
+            super.detach();
+            Buff.affect(target, Weakness.class, 15f);
+            Buff.affect(target, NoDr.class, 15f);
+            AngerPock s = target.buff(AngerPock.class);
+            if(s != null){
+                s.level = 0;
+            }
+        }
+
+        /**
+         * 根据【lockedHeroCell锁定点】生成安全角度组
+         */
+        private void regenerateSafeAngleSet() {
+            int w = Dungeon.level.width();
+            int hx = lockedHeroCell % w;
+            int hy = lockedHeroCell / w;
+            boolean validSet = false;
+
+            while (!validSet) {
+                currentAngles.clear();
+                List<Float> pool = new ArrayList<>();
+                for (float a : BASE_ANGLES) pool.add(a);
+                Random.shuffle(pool);
+                currentAngles.add(pool.get(0));
+                currentAngles.add(pool.get(1));
+                currentAngles.add(pool.get(2));
+
+                int safeCount = 0;
+                int[][] dir8 = {{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{1,-1},{-1,1},{1,1}};
+                for(int[] d : dir8){
+                    int nx = hx + d[0];
+                    int ny = hy + d[1];
+                    boolean blocked = checkCellBlockedByAnyBeam(hx, hy, nx, ny, currentAngles);
+                    if (!blocked) safeCount++;
+                }
+                if(safeCount >= 1){
+                    validSet = true;
+                }
+            }
+        }
+
+        private boolean checkCellBlockedByAnyBeam(int sx, int sy, int tx, int ty, List<Float> angles){
+            for(float ang : angles){
+                double rad = Math.toRadians(ang);
+                double dx = tx - sx;
+                double dy = ty - sy;
+                double beamDx = Math.cos(rad);
+                double beamDy = Math.sin(rad);
+                double cross = dx * beamDy - dy * beamDx;
+                if(Math.abs(cross) < 0.35f){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * 预警标记：全程使用锁定的旧坐标，不会跟随玩家移动
+         */
+        protected void renderWarningBeams() {
+            int w = Dungeon.level.width();
+            int h = Dungeon.level.height();
+            int hx = lockedHeroCell % w;
+            int hy = lockedHeroCell / w;
+
+            for (float angle : currentAngles) {
+                double rad = Math.toRadians(angle);
+                float dirX = (float) Math.cos(rad);
+                float dirY = (float) Math.sin(rad);
+
+                // 光束起点（地图外侧）格子坐标
+                float spawnX = (float) (hx + 0.5 - dirX * BEAM_RANGE);
+                float spawnY = (float) (hy + 0.5 - dirY * BEAM_RANGE);
+                // 光束终点 = 锁定玩家格子中心
+                float endX = hx;
+                float endY = hy;
+
+                PointF startWorld = new PointF(spawnX, spawnY)
+                        .offset(0.5f, 0.5f)
+                        .scale(DungeonTilemap.SIZE);
+
+                PointF endWorld = new PointF(endX, endY)
+                        .offset(0.5f, 0.5f)
+                        .scale(DungeonTilemap.SIZE);
+
+                BeamCustom beam = new BeamCustom(startWorld, endWorld, Effects.Type.DEATH_RAY)
+                        .setLifespan(0.7f)
+                        .setColor(0xD471FF);
+
+                target.sprite.parent.add(beam);
+            }
+        }
+
+        /**
+         * 发射激光：和预警使用**完全同一个锁定坐标**
+         */
+        protected void fireRealSlashBeams() {
+            int w = Dungeon.level.width();
+            int hx = lockedHeroCell % w;
+            int hy = lockedHeroCell / w;
+
+            ScanningBeam.setCollide(this);
+            for(float angle : currentAngles){
+                double rad = Math.toRadians(angle);
+                float dirX = (float)Math.cos(rad);
+                float dirY = (float)Math.sin(rad);
+
+                float spawnX = (float)(hx + 0.5 - dirX * BEAM_RANGE);
+                float spawnY = (float)(hy + 0.5 - dirY * BEAM_RANGE);
+                float speedX = dirX * 11f;
+                float speedY = dirY * 11f;
+
+                target.sprite.parent.add(new ScanningBeam(Effects.Type.BLUE_RAY, BallisticaReal.STOP_TARGET,
+                        new ScanningBeam.BeamData()
+                                .setPosition(spawnX, spawnY, angle, 16f)
+                                .setSpeed(speedX, speedY, 0f)
+                                .setTime(0.2f, 1.2f, 0.4f)
+                ).setDiameter(2.8f));
+            }
+
+            VirtualActor.delay(1.5f, ()->{
+                Camera.main.shake(1.5f, 0.25f);
+            });
+            Camera.main.shake(1.2f, 80f);
+        }
+
+        @Override
+        public int onHitProc(Char ch) {
+            if(ch instanceof Roger) return 0;
+            ch.damage(target.damageRoll()*3, LuoShaSlash.class,DamageType.PHYSICAL);
+            ch.sprite.centerEmitter().burst(RainbowParticle.BURST, Random.IntRange(6,11));
+            ch.sprite.flash();
+
+            if(ch == hero){
+                Sample.INSTANCE.play(Assets.Sounds.SCAN, Random.Float(1.0f,1.4f));
+                if(!ch.isAlive()) Dungeon.fail(getClass());
+            } else {
+                //非英雄单位即刻死亡喵
+                ch.die(true);
+            }
+            return 1;
+        }
+
+        @Override
+        public int cellProc(int i) {
+            if (i < 0 || i >= Dungeon.level.length()){
+                return 0;
+            }
+            if(Dungeon.level.flamable[i]){
+                Dungeon.level.destroy(i);
+                GameScene.updateMap(i);
+            }
+            return 0;
+        }
     }
 }

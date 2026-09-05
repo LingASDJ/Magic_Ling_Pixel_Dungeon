@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 
-
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -48,7 +47,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
@@ -71,9 +69,9 @@ public class SpawnArmor extends TestItem {
     private int enchant_id;
     private int enchant_rarity;
 
-    public SpawnArmor(){
+    public SpawnArmor() {
         this.armor_id = 1;
-        this.cursed =false;
+        this.cursed = false;
         this.armor_level = 0;
         this.enchant_id = 0;
         this.enchant_rarity = 0;
@@ -94,7 +92,7 @@ public class SpawnArmor extends TestItem {
         }
     }
 
-    private Armor getArmor(int armor_id){
+    private Armor getArmor(int armor_id) {
         switch (armor_id) {
             case 1:
                 return new LeatherArmor();
@@ -108,6 +106,7 @@ public class SpawnArmor extends TestItem {
                 return new LamellarArmor();
             case 6:
                 return new AncityArmor();
+            case 0:
             default:
                 return new ClothArmor();
         }
@@ -121,8 +120,8 @@ public class SpawnArmor extends TestItem {
         armor = modifyArmor(armor);
         armor.identify();
         if (armor.collect()) {
-            GameScene.pickUp( armor, hero.pos );
-            Sample.INSTANCE.play( Assets.Sounds.ITEM );
+            GameScene.pickUp(armor, hero.pos);
+            Sample.INSTANCE.play(Assets.Sounds.ITEM);
             GLog.i(Messages.get(hero, "you_now_have", armor.name()));
         } else {
             armor.doDrop(curUser);
@@ -130,14 +129,10 @@ public class SpawnArmor extends TestItem {
     }
 
     private Armor modifyArmor(Armor armor) {
-        if (armor_level >= 0)
-            armor.level(armor_level);
+        armor.level(armor_level);
         armor.cursed = cursed;
-        if (generateEnchant(enchant_rarity, enchant_id) == null) {
-            armor.inscribe(null);
-        } else {
-            armor.inscribe(Reflection.newInstance(generateEnchant(enchant_rarity, enchant_id)));
-        }
+        Class<? extends Armor.Glyph> glyphCls = generateEnchant(enchant_rarity, enchant_id);
+        armor.inscribe(glyphCls == null ? null : Reflection.newInstance(glyphCls));
         return armor;
     }
 
@@ -184,8 +179,7 @@ public class SpawnArmor extends TestItem {
                 return Potential.class;
             default:
                 return null;
-        }
-        else if (enc_type == 2) switch (enc_id) {
+        } else if (enc_type == 2) switch (enc_id) {
             case 0:
                 return Stone.class;
             case 1:
@@ -200,8 +194,7 @@ public class SpawnArmor extends TestItem {
                 return Flow.class;
             default:
                 return null;
-        }
-        else if (enc_type == 3) switch (enc_id) {
+        } else if (enc_type == 3) switch (enc_id) {
             case 0:
                 return AntiMagic.class;
             case 1:
@@ -210,8 +203,7 @@ public class SpawnArmor extends TestItem {
                 return Affection.class;
             default:
                 return null;
-        }
-        else if (enc_type == 4) switch (enc_id) {
+        } else if (enc_type == 4) switch (enc_id) {
             case 0:
                 return AntiEntropy.class;
             case 1:
@@ -229,102 +221,83 @@ public class SpawnArmor extends TestItem {
             case 7:
                 return Stench.class;
         }
-
         return null;
     }
 
-    /**
-     * 护甲设置窗口类，继承自Window类。
-     */
     private class ArmorSetting extends Window {
+        private static final int WIDTH = 150;
+        private static final int HEIGHT = 220;
+        private static final int GAP = 2;
+        private static final int BTN_SIZE = 18;
+        private static final int MAX_ICONS_PER_LINE = 4;
 
-        // 定义常量
-        private static final int WIDTH = 150; // 窗口宽度
-        private static final int HEIGHT = 220; // 窗口高度
-        private static final int GAP = 2; // 间隔大小
-        private static final int BTN_SIZE = 18; // 按钮尺寸
-        private static final int MAX_ICONS_PER_LINE = 4; // 每行最大图标数量
+        private Class[] AllArmor;
+        private CheckBox CheckBox_curse;
+        private RenderedTextBlock RenderedTextBlock_enchantInfo;
+        private OptionSlider OptionSlider_enchantId;
+        private OptionSlider OptionSlider_enchantRarity;
+        private RedButton RedButton_create;
+        private final ArrayList<IconButton> IconButtons = new ArrayList<>();
+        private final RedButton Button_Level;
 
-        // 成员变量
-        private Class[] AllArmor; // 所有护甲的Class数组
-        private CheckBox CheckBox_curse; // 诅咒物品复选框
-        private RenderedTextBlock RenderedTextBlock_enchantInfo; // 附魔信息文本块
-        private OptionSlider OptionSlider_enchantId; // 附魔编号选项滑块
-        private OptionSlider OptionSlider_enchantRarity; // 附魔种类选项滑块
-        private RedButton RedButton_create; // 创建武器按钮
-        private final ArrayList<IconButton> IconButtons = new ArrayList<>(); // 图标按钮列表
-        private final RedButton Button_Level; // 武器等级按钮
-
-        /**
-         * 构造函数，用于初始化窗口。
-         */
         public ArmorSetting() {
             super();
-
-            // 设置窗口尺寸
             resize(WIDTH, HEIGHT);
 
-            // 创建护甲列表及图标
             createArmorList();
             createArmorImage(AllArmor);
 
-            // 创建护甲等级按钮
-            Button_Level = new RedButton(Messages.get(this, "select_armor")) {
+            Button_Level = new RedButton("") {
                 @Override
                 protected void onClick() {
-                    if(!Button_Level.text().equals(Messages.get(SpawnArmor.ArmorSetting.class, "select_armor"))){ // 修改此行代码
-                        Game.runOnRenderThread(() ->GameScene.show(new WndTextNumberInput(
-                                Messages.get(SpawnArmor.ArmorSetting.class, "armor_level"), Messages.get(SpawnArmor.ArmorSetting.class, "armor_level_desc"),
-                                Integer.toString(armor_level),
-                                4, false, Messages.get(SpawnArmor.ArmorSetting.class, "confirm"),
-                                Messages.get(SpawnArmor.ArmorSetting.class, "cancel"),false) {
-                            @Override
-                            public void onSelect(boolean check, String text) {
-
-                                if (check && text.matches("\\d+")) {
-                                    int level = Integer.parseInt(text);
-                                    armor_level = Math.min(level, 6666);
-                                }
+                    Game.runOnRenderThread(() -> GameScene.show(new WndTextNumberInput(
+                            Messages.get(SpawnArmor.ArmorSetting.class, "armor_level"),
+                            Messages.get(SpawnArmor.ArmorSetting.class, "armor_level_desc"),
+                            Integer.toString(armor_level),
+                            4, false,
+                            Messages.get(SpawnArmor.ArmorSetting.class, "confirm"),
+                            Messages.get(SpawnArmor.ArmorSetting.class, "cancel"), false) {
+                        @Override
+                        public void onSelect(boolean check, String text) {
+                            if (check && text.matches("-?\\d+")) {
+                                int level = Integer.parseInt(text);
+                                armor_level = level;
                             }
-                        }));
-                    } else {
-                        Game.scene().add( new WndError( Messages.get(SpawnArmor.ArmorSetting.class, "armor_level_error") ) );
-                    }
+                        }
+                    }));
                 }
             };
-            Button_Level.text(((Armor) Reflection.newInstance(getArmor(armor_id).getClass())).name());
+            updateSelectedArmorText();
             add(Button_Level);
 
-            // 创建附魔信息文本块
             RenderedTextBlock_enchantInfo = PixelScene.renderTextBlock("", 6);
             RenderedTextBlock_enchantInfo.visible = true;
             RenderedTextBlock_enchantInfo.maxWidth(WIDTH);
             updateEnchantText();
             add(RenderedTextBlock_enchantInfo);
 
-            // 创建附魔种类选项滑块
             OptionSlider_enchantRarity = new OptionSlider(Messages.get(this, "enchant_rarity"), "0", "4", 0, 4) {
                 @Override
                 protected void onChange() {
                     enchant_rarity = getSelectedValue();
                     updateEnchantText();
+                    layout();
                 }
             };
             OptionSlider_enchantRarity.setSelectedValue(enchant_rarity);
             add(OptionSlider_enchantRarity);
 
-            // 创建附魔编号选项滑块
             OptionSlider_enchantId = new OptionSlider(Messages.get(this, "enchant_id"), "0", "7", 0, 7) {
                 @Override
                 protected void onChange() {
                     enchant_id = getSelectedValue();
                     updateEnchantText();
+                    layout();
                 }
             };
             OptionSlider_enchantId.setSelectedValue(enchant_id);
             add(OptionSlider_enchantId);
 
-            // 创建诅咒物品复选框
             CheckBox_curse = new CheckBox(Messages.get(this, "cursed")) {
                 @Override
                 protected void onClick() {
@@ -335,11 +308,11 @@ public class SpawnArmor extends TestItem {
             CheckBox_curse.checked(cursed);
             add(CheckBox_curse);
 
-            // 创建生成护甲按钮
             RedButton_create = new RedButton(Messages.get(this, "create")) {
                 @Override
                 protected void onClick() {
                     createArmor();
+                    hide();
                 }
             };
             add(RedButton_create);
@@ -347,39 +320,29 @@ public class SpawnArmor extends TestItem {
             layout();
         }
 
-        /**
-         * 封装一个同步UI的方法，用于调整UI组件的位置和大小。
-         */
         private void layout() {
-
-            //
             int numLines = (int) Math.ceil(AllArmor.length / (float) MAX_ICONS_PER_LINE);
             float totalHeight = 2;
             if (numLines > 0) {
                 totalHeight += numLines * (BTN_SIZE + GAP);
             }
 
-            Button_Level.setRect(0, totalHeight , WIDTH, 24);
+            Button_Level.setRect(0, totalHeight, WIDTH, 24);
             RenderedTextBlock_enchantInfo.setPos(0, GAP + Button_Level.top() + Button_Level.height());
             OptionSlider_enchantRarity.setRect(0, GAP + RenderedTextBlock_enchantInfo.bottom(), WIDTH, 24);
-            OptionSlider_enchantId.setRect(0, GAP + OptionSlider_enchantRarity.top() + OptionSlider_enchantRarity.height(), WIDTH, 24);
-            CheckBox_curse.setRect(0, GAP + OptionSlider_enchantId.top() + OptionSlider_enchantId.height(), WIDTH / 2f - GAP / 2f, 16);
+            OptionSlider_enchantId.setRect(0, GAP + OptionSlider_enchantRarity.bottom(), WIDTH, 24);
+            CheckBox_curse.setRect(0, GAP + OptionSlider_enchantId.bottom(), WIDTH / 2f - GAP / 2f, 16);
             RedButton_create.setRect(WIDTH / 2f + GAP / 2f, OptionSlider_enchantId.bottom() + GAP, WIDTH / 2f - GAP / 2f, 16);
             resize(WIDTH, (int) RedButton_create.bottom());
         }
 
+        // 删除每一帧自动update排版，只在数据改动时手动layout
         @Override
-        public synchronized void update() {
+        public void update() {
             super.update();
-            // 实时同步UI
-            layout();
         }
 
-        /**
-         * 创建护甲列表
-         */
         private void createArmorList() {
-            //AllArmor = Generator.Category.ARMOR.classes.clone();
             AllArmor = new Class<?>[]{
                     ClothArmor.class,
                     LeatherArmor.class,
@@ -387,14 +350,10 @@ public class SpawnArmor extends TestItem {
                     ScaleArmor.class,
                     PlateArmor.class,
                     LamellarArmor.class,
-                    AncityArmor.class};
+                    AncityArmor.class
+            };
         }
 
-        /**
-         * 创建护甲图标，并添加到窗口中。
-         *
-         * @param all 所有护甲的Class数组f
-         */
         private void createArmorImage(Class<? extends Armor>[] all) {
             float left = BTN_SIZE / 2f;
             float top = 0;
@@ -405,8 +364,10 @@ public class SpawnArmor extends TestItem {
                 IconButton btn = new IconButton() {
                     @Override
                     protected void onClick() {
-                        armor_id = Math.min(maxSlots(armor_id) - 1, j);
+                        // 直接映射 j → armor_id，修复跳甲BUG
+                        armor_id = j;
                         updateSelectedArmorText();
+                        layout();
                         super.onClick();
                     }
                 };
@@ -416,7 +377,7 @@ public class SpawnArmor extends TestItem {
                 btn.icon(im);
                 int row = placed / MAX_ICONS_PER_LINE;
                 int col = placed % MAX_ICONS_PER_LINE;
-                float x = left + col * (BTN_SIZE + GAP)*2;
+                float x = left + col * (BTN_SIZE + GAP) * 2;
                 float y = top + row * (BTN_SIZE + GAP);
                 btn.setRect(x, y, BTN_SIZE, BTN_SIZE);
                 add(btn);
@@ -425,21 +386,13 @@ public class SpawnArmor extends TestItem {
             }
         }
 
-         /**
-         * 更新选中的武器文本。
-         */
         private void updateSelectedArmorText() {
             Armor armor = Reflection.newInstance(getArmor(armor_id).getClass());
             Button_Level.text(armor.name());
-            layout();
         }
 
-        /**
-        * 获取附魔信息文本。
-        * @return 附魔信息文本 
-        */
         private String getEnchantInfo(Class enchant) {
-            return enchant==null?Messages.get(this, "no_enchant"):Messages.get(enchant, "name", Messages.get(this, "enchant"));
+            return enchant == null ? Messages.get(this, "no_enchant") : Messages.get(enchant, "name", Messages.get(this, "enchant"));
         }
 
         private int getEnchantCount(int rarity) {
@@ -463,21 +416,13 @@ public class SpawnArmor extends TestItem {
             } else {
                 for (int i = 0; i < getEnchantCount(enchant_rarity); i++) {
                     info.append(i + 1).append(":").append(getEnchantInfo(generateEnchant(enchant_rarity, i))).append(" ");
-
-                    // 添加换行判断
-                    if ((i + 1) % 4 == 0 || i == (getEnchantCount(enchant_rarity)-1)) {
+                    if ((i + 1) % 4 == 0 || i == (getEnchantCount(enchant_rarity) - 1)) {
                         info.append("\n");
                     }
                 }
-                info.append(Messages.get(this, "current_enchant",getEnchantInfo(generateEnchant(enchant_rarity, enchant_id))));
+                info.append(Messages.get(this, "current_enchant", getEnchantInfo(generateEnchant(enchant_rarity, enchant_id))));
             }
             RenderedTextBlock_enchantInfo.text(info.toString());
-        }
-
-        private int maxSlots(int t) {
-            if (t <= 1) return 3;
-            if (t == 2 || t == 3) return 8;
-            else return 9;
         }
     }
 }
