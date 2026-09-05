@@ -15,12 +15,15 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -32,6 +35,9 @@ import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class RogerBossLevel extends Level {
 
@@ -218,7 +224,18 @@ public class RogerBossLevel extends Level {
 
     @Override
     protected void createItems() {
-
+        Random.pushGenerator(Random.Long());
+        ArrayList<Item> bonesItems = Bones.get();
+        if (bonesItems != null) {
+            int pos;
+            do {
+                pos = randomRespawnCell(null);
+            } while (pos == entrance());
+            for (Item i : bonesItems) {
+                drop(i, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            }
+        }
+        Random.popGenerator();
     }
 
     public static class townBehind extends CustomTilemap {

@@ -24,6 +24,8 @@ public class RogerSprite extends MobSprite {
         die = new Animation( 11, false );
         die.frames( frames, 17,18,19,20,21,22,23,24,25 );
 
+        zap = attack.clone();
+
         play( idle );
     }
 

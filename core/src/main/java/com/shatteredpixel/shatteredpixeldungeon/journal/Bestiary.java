@@ -61,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.YogSou
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruitsLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.DiedClearElemet;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.Artillerist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.BoomSkull;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.DemonLord;
@@ -231,6 +232,7 @@ public enum Bestiary {
 	ANCIENT_CITY_BOSS,
 
 	TUMULUS,
+	TUMULUS_BOSS,
 	CHURCH,
 
 	UNIVERSAL,
@@ -441,6 +443,15 @@ public enum Bestiary {
 								GraveRat.class, Worm.class, Wisp.class, NecroScout.class,
 						ThiefSoul.class, SkeletonDemon.class, SmallSkeletonDemon.class,
 						NecroPioneer.class, WormWhyHuman.class
+				}
+
+						: new Class<?>[]{Rat.class}
+		);
+
+		TUMULUS_BOSS.addEntities(
+				DeviceCompat.isDebug() || DeviceCompat.isMDP()
+						? new Class<?>[]{
+						Roger.class
 				}
 
 						: new Class<?>[]{Rat.class}
