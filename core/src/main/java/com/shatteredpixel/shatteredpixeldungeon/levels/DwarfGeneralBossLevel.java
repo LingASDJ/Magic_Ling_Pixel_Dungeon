@@ -78,10 +78,7 @@ public class DwarfGeneralBossLevel extends Level {
 
     @Override
     public void playBossMusic(){
-        Music.INSTANCE.playTracks(
-                new String[]{Assets.Music.BGM_DRBOSS_INTRO, Assets.Music.BGM_DRBOSS_LOOP, Assets.Music.BGM_DRBOSS_LOOP, Assets.Music.BGM_DRBOSS_LOOP, Assets.Music.BGM_DRBOSS_LOOP, Assets.Music.BGM_DRBOSS_LOOP, Assets.Music.BGM_DRBOSS_LOOP},
-                new float[]{1, 1,1,1,1,1,1},
-                false);
+        Music.playModeBGM(Assets.Music.BGM_DRBOSS,true);
     }
 
     @Override

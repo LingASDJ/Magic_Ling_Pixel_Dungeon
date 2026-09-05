@@ -95,6 +95,12 @@ public class Roger extends Boss {
         return s;
     }
 
+    @Override
+    public void die(Object cause) {
+        super.die(cause);
+        Dungeon.level.unseal();
+    }
+
     private int StopAG;
 
     @Override
@@ -526,11 +532,6 @@ public class Roger extends Boss {
                 return Math.max(0, (max-level)/max);
             }
             return 0;
-        }
-
-        @Override
-        public String iconTextDisplay() {
-            return Integer.toString(level);
         }
 
         @Override
