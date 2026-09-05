@@ -33,6 +33,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -273,7 +275,17 @@ public class Potion extends Item {
 			
 		}
 	}
-	
+
+	@Override
+	public int throwPos(Hero user, int dst) {
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+			if (mob instanceof Roger) {
+				((Roger) mob).onHeroUsePotion(Potion.this);
+			}
+		}
+		return super.throwPos(user, dst);
+	}
+
 	@Override
 	public void doThrow( final Hero hero ) {
 
@@ -299,6 +311,8 @@ public class Potion extends Item {
 			super.doThrow( hero );
 		}
 	}
+
+
 	
 	public void drink(Hero hero) {
 
@@ -306,6 +320,12 @@ public class Potion extends Item {
 			GLog.w(Messages.get(WraithAmulet.class, "drink_cursed"));
             return;
         }
+
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+			if (mob instanceof Roger) {
+				((Roger) mob).onHeroUsePotion(this);
+			}
+		}
 
 		detach( hero.belongings.backpack );
 		
