@@ -266,7 +266,7 @@ public class Assets {
 
 		public static final String LANTERLING  = "interfaces/LanterLing.png";
 
-		public static final String LANTERLING_N  = "interfaces/LanterLing_N.png";
+		public static final String ABOUT_ICONS  = "interfaces/about_icons.png";
 
 		public static final String BANNERS     = "interfaces/Banners/banners.png";
 		public static final String BANNERS_AT  = "interfaces/Banners/banners_at.png";
