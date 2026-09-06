@@ -14,7 +14,7 @@ public class WitchRoadLevel extends Level {
     //TODO 等待正式音乐到达
     @Override
     public void playLevelMusic(){
-        Music.playModeBGM("music/road.mp3", true);
+        Music.playModeBGM("music/tomb/road.mp3", true);
     }
 
     private static final int[] codedMap = {
