@@ -988,6 +988,20 @@ public class Hero extends Char {
 			return Messages.get(Monk.class, "parried");
 		}
 
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+			if (mob instanceof Roger) {
+				((Roger) mob).defenseFuckAttack++;
+				if (((Roger) mob).defenseFuckAttack >= 3) {
+					((Roger) mob).defenseFuckAttack = 0;
+					((Roger) mob).doubleMoveNext = true;
+					if (sprite != null) {
+						mob.sprite.showStatus(CharSprite.POSITIVE, Messages.get(Roger.class, "double_move"));
+					}
+				}
+			}
+		}
+
+
 		
 		if (buff(MonkEnergy.MonkAbility.Focus.FocusBuff.class) != null){
 			buff(MonkEnergy.MonkAbility.Focus.FocusBuff.class).detach();
@@ -3552,7 +3566,7 @@ public class Hero extends Char {
 					sprite.blood(), Math.min( 10 / HT, 10 ) );
 			if (!isAlive()) {
 				Dungeon.fail( this );
-				GLog.n( Messages.get(this, "ondeath") );
+				GLog.n( Messages.get(Roger.BreakDamage.class, "ondeath") );
 			}
 		}
 

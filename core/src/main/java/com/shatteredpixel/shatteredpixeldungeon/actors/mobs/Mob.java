@@ -76,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.To
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMachineBad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMindBad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerTimeBad;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
@@ -110,7 +111,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
@@ -1047,9 +1047,25 @@ public abstract class Mob extends Char {
 		}
 	}
 
+	private boolean isRogerAlive = false;
 	@Override
 	public float speed() {
-		return super.speed() * AscensionChallenge.enemySpeedModifier(this);
+		return super.speed() * AscensionChallenge.enemySpeedModifier(this) * checkRogerAlive();
+	}
+	private float checkRogerAlive(){
+		float ds = 1;
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+			if (mob instanceof Roger) {
+				isRogerAlive = true;
+				break;
+			}
+		}
+		if(isRogerAlive){
+			if(alignment != Alignment.ENEMY){
+				ds = (100-(float) (50 + 10 * Statistics.spawnersTombTownAlive) )/100;
+			}
+		}
+		return ds;
 	}
 
 	public final boolean surprisedBy( Char enemy ){

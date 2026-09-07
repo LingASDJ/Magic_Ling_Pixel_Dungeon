@@ -22,7 +22,7 @@ import java.util.Arrays;
 public class WndDLC extends Window {
 
     private final int WIDTH = Math.min(138, (int) (PixelScene.uiCamera.width * 0.9));
-    private final int HEIGHT = 94;
+    private final int HEIGHT = 74;
     private static final int TTL_HEIGHT    = 18;
     private static final int BTN_HEIGHT    = 18;
     private static final int GAP        = 1;
@@ -53,6 +53,7 @@ public class WndDLC extends Window {
         // 排除 NULL 选项
         allConducts.remove(Conducts.Conduct.NULL);
         allConducts.remove(Conducts.Conduct.SEED);
+        allConducts.remove(Conducts.Conduct.EASY);
 
         ScrollPane pane = new ScrollPane(new Component()) {
             @Override

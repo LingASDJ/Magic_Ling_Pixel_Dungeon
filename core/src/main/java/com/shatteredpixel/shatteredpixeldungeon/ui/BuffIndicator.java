@@ -181,6 +181,8 @@ public class BuffIndicator extends Component {
 	public static final int FIRE_DEM = 159;
 
 	public static final int BREAK_DMG = 160;
+	public static final int ALL_ENEMYPY = 161;
+	public static final int AG_POCK = 162;
 
 	public static final int SIZE_SMALL = 7;
 	public static final int SIZE_LARGE = 16;

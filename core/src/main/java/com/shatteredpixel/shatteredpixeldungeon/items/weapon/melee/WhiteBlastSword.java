@@ -92,7 +92,6 @@ public class WhiteBlastSword extends MeleeWeapon {
             Messages.get(WhiteBlastSword.class,"roll3"),
     };
 
-    /*
     public void whiteBlast_Sword() {
         if(GameScene.scene != null){
             int mapLength = Dungeon.level.length();
@@ -170,7 +169,6 @@ public class WhiteBlastSword extends MeleeWeapon {
         public void onDeath() {
         }
     }
-    */
 
     @Override
     protected int baseChargeUse(Hero hero, Char target) {

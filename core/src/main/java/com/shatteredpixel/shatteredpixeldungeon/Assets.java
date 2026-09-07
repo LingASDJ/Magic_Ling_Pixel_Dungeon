@@ -266,7 +266,7 @@ public class Assets {
 
 		public static final String LANTERLING  = "interfaces/LanterLing.png";
 
-		public static final String LANTERLING_N  = "interfaces/LanterLing_N.png";
+		public static final String ABOUT_ICONS  = "interfaces/about_icons.png";
 
 		public static final String BANNERS     = "interfaces/Banners/banners.png";
 		public static final String BANNERS_AT  = "interfaces/Banners/banners_at.png";
@@ -439,15 +439,11 @@ public class Assets {
 		public static final String TOWN 		= "music/town.ogg";
 
 		public static final String TOWN_YEARS 		= "music/years.ogg";
-		public static final String BGM_YOU 		= "music/boss/you.ogg";
-
-		public static final String BGM_DRBOSS_INTRO 	= "music/boss/ドワーフ将軍_intro.ogg";
-		public static final String BGM_DRBOSS_LOOP 	= "music/boss/ドワーフ将軍_loop.ogg";
+		public static final String BGM_DRBOSS	= "music/boss/dwgboss.ogg";
 
 		public static final String BGM_BOSSEND 	= "music/boss/yogend.ogg";
 
 		public static final String BGM_SHOP 	= "music/Shop.ogg";
-		public static final String BGM_BOSSE4 	= "music/YogTime.ogg";
 		public static final String HOLLOW_CITY 	= "music/hollow/Mischief_Managed-Easy.ogg";
 		public static final String HOLLOW_CITY_HARD 	= "music/hollow/Mischief_Managed.ogg";
 		public static final String BOSSDOG 		= "music/boss/dogboss.ogg";

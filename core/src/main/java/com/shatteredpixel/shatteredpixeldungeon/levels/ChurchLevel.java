@@ -54,7 +54,7 @@ public class ChurchLevel extends RegularLevel {
     //TODO 等待正式音乐到达
     @Override
     public void playLevelMusic(){
-        Music.playModeBGM("music/tomb2.mp3",true);
+        Music.playModeBGM("music/tomb/tomb2.mp3",true);
     }
 
     @Override

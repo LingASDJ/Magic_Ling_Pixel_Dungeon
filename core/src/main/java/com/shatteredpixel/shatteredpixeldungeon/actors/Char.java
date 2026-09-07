@@ -116,6 +116,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDo
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerGods;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
@@ -157,7 +158,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.DeadBo
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.*;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.CursedBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ExorcistMaul;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeCutter;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.StaffofMyriadThings;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CrossReback;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ShockingDart;
@@ -535,15 +542,18 @@ public abstract class Char extends Actor {
 					if (((Mob) enemy).surprisedBy(hero)) {
 						if(enemy.HT <= dmg){
 							if(pr.CheckEnthralled() && !enemy.isImmune(ScrollOfSirensSong.Enthralled.class)) {
-								Buff.affect(enemy, ScrollOfSirensSong.Enthralled.class);
-								AllyBuff.affectAndLoot((Mob) enemy, hero, ScrollOfSirensSong.Enthralled.class);
-								dmg = 0;
-								pr.entrlledchance = 0.05f;
-								Transmuting.show(Dungeon.hero, new RandomChest(), pr);
-								Dungeon.hero.sprite.emitter().start(Speck.factory(Speck.BLIZZARD), 0.2f, 10);
-								GLog.pink(Messages.get(pr,"pure_charm",enemy.name()));
-								Buff.detach(enemy, Hex.class);
-								Buff.detach(enemy, Charm.class);
+								if(!(enemy instanceof NPC)){
+									Buff.affect(enemy, ScrollOfSirensSong.Enthralled.class);
+									AllyBuff.affectAndLoot((Mob) enemy, hero, ScrollOfSirensSong.Enthralled.class);
+									dmg = 0;
+									pr.entrlledchance = 0.05f;
+									Transmuting.show(Dungeon.hero, new RandomChest(), pr);
+									Dungeon.hero.sprite.emitter().start(Speck.factory(Speck.BLIZZARD), 0.2f, 10);
+									GLog.pink(Messages.get(pr,"pure_charm",enemy.name()));
+									Buff.detach(enemy, Hex.class);
+									Buff.detach(enemy, Charm.class);
+								}
+
 							}
 						}
 					}
