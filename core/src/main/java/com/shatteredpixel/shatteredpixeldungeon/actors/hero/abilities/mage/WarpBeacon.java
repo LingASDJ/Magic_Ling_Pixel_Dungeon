@@ -77,11 +77,6 @@ public class WarpBeacon extends ArmorAbility {
 			return;
 		}
 
-		if(Dungeon.level.locked){
-			GLog.w(Messages.get(this, "locked_floor"));
-			return;
-		}
-
 		if (hero.buff(WarpBeaconTracker.class) != null){
 			final WarpBeaconTracker tracker = hero.buff(WarpBeaconTracker.class);
 
@@ -99,6 +94,11 @@ public class WarpBeacon extends ArmorAbility {
 
 						if (tracker.depth != Dungeon.depth && !hero.hasTalent(Talent.LONGRANGE_WARP)){
 							GLog.w( Messages.get(WarpBeacon.class, "depths") );
+							return;
+						}
+
+						if(tracker.depth != Dungeon.depth && Dungeon.level.locked){
+							GLog.w(Messages.get(this, "locked_floor"));
 							return;
 						}
 

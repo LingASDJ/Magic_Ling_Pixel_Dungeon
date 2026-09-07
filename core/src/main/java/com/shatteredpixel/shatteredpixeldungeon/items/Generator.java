@@ -541,9 +541,10 @@ public class Generator {
 					Sickle.class,
 					KillKing.class,       // 临时加入 弑君
 					SpikedChakram.class,  // 临时加入 尖刺轮盘
+					Shovel.class,         // 临时加入 铲子
 					Pickaxe.class,
 			};
-			WEP_T2.defaultProbs = new float[]{2, 2, 2, 2, 2, 2, 0, 0, 0};
+			WEP_T2.defaultProbs = new float[]{2, 2, 2, 2, 2, 2, 0, 0, 0, 0};
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 
 			WEP_T3.classes = new Class<?>[]{

@@ -39,21 +39,25 @@ public class MorningStar extends MeleeWeapon{
     public int proc(Char attacker, Char defender, int damage ) {
         switch(nowBuff%4){
             case 0: {
+                // 虚弱
                 Buff.affect(defender, Weakness.class, theDuration());
                 nowBuff++;
                 break;
             }
             case 1:{
+                // 易伤
                 Buff.affect(defender, Vulnerable.class, theDuration());
                 nowBuff++;
                 break;
             }
             case 2:{
+                // 眩晕
                 Buff.affect(defender, Vertigo.class, theDuration());
                 nowBuff++;
                 break;
             }
             case 3:{
+                // 失明
                 Buff.affect(defender, Blindness.class, theDuration());
                 nowBuff++;
                 break;
