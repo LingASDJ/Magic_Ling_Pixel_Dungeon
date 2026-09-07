@@ -83,6 +83,7 @@ public class HuntingCarnival extends Buff {
             if (ch != target
                     && ch.pos >= 0
                     && ch.alignment != target.alignment
+                    && ch.alignment != Char.Alignment.NEUTRAL  // 不攻击中立阵营以规避宝箱怪
                     && ch instanceof Mob
                     && !(ch instanceof NPC || ch instanceof KusumiMagicGirl)
                     && ch.isAlive()

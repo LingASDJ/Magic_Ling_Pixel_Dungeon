@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BuffsOringinForWeapon.PreventTombWraithSpawn;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
@@ -90,7 +91,8 @@ public class Heap implements Bundlable {
 		CRYSTAL_MIMIC,
 		GRREN_MIMIC,
 		STATUE,
-		TrinketCatalyst
+		TrinketCatalyst,
+		GOLDEN_CHEST,   // 来自寻宝武技生成的金箱子
 	}
 
 	//好好好
@@ -111,7 +113,9 @@ public class Heap implements Bundlable {
 	public void open( Hero hero ) {
 		switch (type) {
 		case TOMB:
-			Wraith.spawnAround( hero.pos,null );
+			// 有小怨灵结界buff时阻断来自坟墓的怨灵生成
+			if (hero.buffs(PreventTombWraithSpawn.class) == null)
+				Wraith.spawnAround( hero.pos,null );
 			break;
 		case WHITETOMB:
 			ScrollOfTeleportation.appear( hero,hero.pos+5 );
@@ -133,7 +137,7 @@ public class Heap implements Bundlable {
 			break;
 		default:
 		}
-		
+
 		if (haunted){
 			if (Wraith.spawnAt( pos,null ) == null) {
 				hero.sprite.emitter().burst( ShadowParticle.CURSE, 6 );
@@ -468,6 +472,8 @@ public class Heap implements Bundlable {
 		switch(type){
 			case CHEST:case TELECRYSTL:
 				return Messages.get(this, "chest_desc");
+			case GOLDEN_CHEST:
+				return Messages.get(this, "golden_chest_desc");
 			case LOCKED_CHEST:
 				return Messages.get(this, "locked_chest_desc");
 			case GREEN_CHSET:

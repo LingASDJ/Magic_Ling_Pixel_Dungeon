@@ -50,15 +50,15 @@ public class Buff extends Actor {
 		return ClearLevel >= BuffLevel;
 	}
 
-	//determines how the buff is announced when it is shown.
+	// 决定该buff显示时其公告的方式，现在也被用作净化的依据
 	public enum buffType {POSITIVE, NEGATIVE, NEUTRAL}
 	public buffType type = buffType.NEUTRAL;
-	
-	//whether or not the buff announces its name
+
+	// 该buff是否公告其名称
 	public boolean announced = false;
 	public boolean skills = false;
 
-	//whether a buff should persist through revive effects for the hero
+	// 该buff在英雄复活后是否依然保留。
 	public boolean revivePersists = false;
 	
 	protected HashSet<Class> resistances = new HashSet<>();
@@ -93,7 +93,8 @@ public class Buff extends Actor {
 	public void detach() {
 		if (target.remove( this ) && target.sprite != null) fx( false );
 	}
-	
+
+	// diactivate函数使得buff不被actor处理器处理，也就是作为一个常驻的状态标记存在
 	@Override
 	public boolean act() {
 		diactivate();

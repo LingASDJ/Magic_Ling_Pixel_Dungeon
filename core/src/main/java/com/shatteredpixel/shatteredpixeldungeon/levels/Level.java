@@ -163,6 +163,9 @@ public abstract class Level implements Bundlable {
 	public boolean checkDown = false;
 	public boolean checkChanceFlash = false;
 
+	// 寻宝武技的寻宝数量限制(此表示当前可以寻宝的次数)
+	public int canBeFoundTreasure = 5;
+
 	public void teleportHeroIfHeapEmpty(Char ch, int targetPos,int heappos) {
 		Heap heap = Dungeon.level.heaps.get(heappos);
 		if (heap == null || heap.isEmpty()) {
@@ -594,6 +597,10 @@ public abstract class Level implements Bundlable {
 			respawner = (MobSpawner) bundle.get("respawner");
 		}
 
+		if (bundle.contains("CANBEFOUNDTREASURE")) {
+			canBeFoundTreasure = bundle.getInt("CANBEFOUNDTREASURE");
+		}		// 寻宝武技的寻宝数量限制(此表示当前可以寻宝的次数)
+
 		buildFlagMaps();
 		cleanWalls();
 
@@ -628,6 +635,7 @@ public abstract class Level implements Bundlable {
 		bundle.put("CHECKID",checkID);
 		bundle.put("CHECKDOWN",checkDown);
 		bundle.put("CHECKFLASH",checkChanceFlash);
+		bundle.put("CANBEFOUNDTREASURE", canBeFoundTreasure);  // 寻宝武技的寻宝数量限制(此表示当前可以寻宝的次数)
 	}
 	
 	public int tunnelTile() {

@@ -37,8 +37,11 @@ public class TheDrip extends MeleeWeapon {
 
     @Override
     public boolean doUnequip(Hero hero, boolean collect, boolean single) {
-        Buff.detach(hero, HolderTracker.class); // 卸下自动移除
-        return super.doUnequip(hero, collect, single);
+        boolean result = super.doUnequip(hero, collect, single);
+        if (result) {
+            Buff.detach(hero, HolderTracker.class);  // 卸掉自动删buff
+        }
+        return result;
     }
 
     @Override
