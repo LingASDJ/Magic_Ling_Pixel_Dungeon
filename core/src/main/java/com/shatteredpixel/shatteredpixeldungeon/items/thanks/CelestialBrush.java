@@ -56,9 +56,9 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
     {
         image = ItemSpriteSheet.SKY_PEN;
         levelCap = 4;
-        charge = 3;
+        charge = 2;
         partialCharge = 0;
-        chargeCap = 3;
+        chargeCap = 2;
         defaultAction = AC_PAINT;
     }
 
@@ -448,23 +448,23 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
     public class BrushRecharge extends ArtifactBuff {
         @Override
         public boolean act() {
-            if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null && Regeneration.regenOn()) {
+            if (charge < chargeCap
+                    && !cursed
+                    && target.buff(MagicImmune.class) == null
+                    && Regeneration.regenOn()) {
                 float chargeGain = 0;
                 int lost = chargeCap - charge;
-                // 公式：每 (120 - 等级*5 - 已损失充能*8) 回合获得 1 点
-                float turnCost = 120f - level() * 5f - lost * 5f;
+                // 公式：每 (120 - 等级*5 - 已损失充能*5) 回合获得 1 点
+                float turnCost = 120f - level() *5f - lost * 5f;
                 if (turnCost <= 0) turnCost = 1f;
                 chargeGain = 1f / turnCost;
                 chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
-                if ( target.buff(ArtifactRecharge.class) != null ) {
-                    chargeGain = 0.1f;
-                }
-                partialCharge += chargeGain;
-                while (partialCharge >= 1) {
+                partialCharge += Math.min(chargeGain,1f);
+                while (partialCharge >= 1f) {
                     partialCharge--;
                     charge++;
                     if (charge == chargeCap) {
-                        partialCharge = 0;
+                        partialCharge = 0f;
                         break;
                     }
                 }
@@ -475,6 +475,23 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
             spend(TICK);
             return true;
         }
+    }
+
+    @Override
+    public void charge(Hero target, float amount) {
+        if (cursed || target.buff(MagicImmune.class) != null || charge >= chargeCap) {
+            return;
+        }
+        partialCharge += 0.25f * amount
+                * RingOfEnergy.artifactChargeMultiplier(target);
+        while (partialCharge >= 1 && charge < chargeCap) {
+            partialCharge--;
+            charge++;
+        }
+        if (charge >= chargeCap) {
+            partialCharge = 0;
+        }
+        updateQuickslot();
     }
 
     //----------------------------------------------------------
@@ -508,7 +525,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
-        chargeCap = 3 + level();
+        chargeCap = 2 + level();
         if (charge > chargeCap) charge = chargeCap;
         image();
     }
