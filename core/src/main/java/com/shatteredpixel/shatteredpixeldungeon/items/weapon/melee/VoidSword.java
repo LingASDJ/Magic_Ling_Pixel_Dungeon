@@ -1,7 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.BArray;
+import com.watabou.utils.PathFinder;
 
 //虚空剑
 //四阶，力量需求15
@@ -28,4 +33,23 @@ public class VoidSword extends MeleeWeapon{
         }
         return req;
     }
+
+    // ========== 武器特效实现 ==========
+    @Override
+    public int proc(Char attacker, Char defender, int damage) {
+        Attraction(attacker, defender);
+        return super.proc(attacker, defender, damage);
+    }
+
+    // 武器特效的吸引效果
+    public void Attraction(Char attacker, Char defender) {
+        PathFinder.buildDistanceMap(defender.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+        if (!(Dungeon.level instanceof MiningLevel)
+                && PathFinder.distance[curUser.pos] == Integer.MAX_VALUE) {
+            return;
+        }
+    }
+
+    // ========== 武技实现 ==========
+
 }
