@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Metabolism;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Multiplicity;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Overgrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stench;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.AncityArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Affection;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
@@ -31,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Repulsion;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Thorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
@@ -181,8 +181,6 @@ public class SpawnArmor extends TestItem {
                 return null;
         } else if (enc_type == 2) switch (enc_id) {
             case 0:
-                return Stone.class;
-            case 1:
                 return Brimstone.class;
             case 2:
                 return Entanglement.class;
@@ -220,6 +218,8 @@ public class SpawnArmor extends TestItem {
                 return Overgrowth.class;
             case 7:
                 return Stench.class;
+            case 8:
+                return Stone.class;
         }
         return null;
     }
@@ -287,7 +287,7 @@ public class SpawnArmor extends TestItem {
             OptionSlider_enchantRarity.setSelectedValue(enchant_rarity);
             add(OptionSlider_enchantRarity);
 
-            OptionSlider_enchantId = new OptionSlider(Messages.get(this, "enchant_id"), "0", "7", 0, 7) {
+            OptionSlider_enchantId = new OptionSlider(Messages.get(this, "enchant_id"), "1", "9", 0, 8) {
                 @Override
                 protected void onChange() {
                     enchant_id = getSelectedValue();
@@ -340,6 +340,7 @@ public class SpawnArmor extends TestItem {
         @Override
         public void update() {
             super.update();
+            layout();
         }
 
         private void createArmorList() {
@@ -404,7 +405,7 @@ public class SpawnArmor extends TestItem {
                 case 3:
                     return 3;
                 case 4:
-                    return 8;
+                    return 9;
             }
             return 0;
         }

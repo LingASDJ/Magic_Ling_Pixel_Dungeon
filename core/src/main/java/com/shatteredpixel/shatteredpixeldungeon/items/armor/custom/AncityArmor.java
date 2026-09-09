@@ -14,7 +14,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AlowGlyph.AncityStone;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -154,10 +153,6 @@ public class AncityArmor extends CustomArmor {
     @Override
     public float evasionFactor(Char owner, float evasion ){
         if (testingNoArmDefSkill) return evasion;
-        if (hasGlyph(Stone.class, owner)){
-            return 0;
-        }
-
         if (owner instanceof Hero){
             int aEnc = STRReq() - ((Hero) owner).STR();
             if (aEnc > 0) evasion /= Math.pow(2.5, aEnc);

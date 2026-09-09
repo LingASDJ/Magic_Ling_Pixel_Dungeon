@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
@@ -75,7 +76,7 @@ public class WndSelectEnchants extends Window {
             enchantClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Camouflage.class);
             enchantClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow.class);
             enchantClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential.class);
-            enchantClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone.class);
+            enchantClasses.add(Stone.class);
             enchantClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness.class);
             enchantClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Thorns.class);
             enchantClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity.class);

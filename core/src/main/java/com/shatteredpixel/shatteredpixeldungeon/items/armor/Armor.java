@@ -58,7 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Repulsion;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Thorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
@@ -445,11 +445,6 @@ public class Armor extends EquipableItem {
 
 		if (testingNoArmDefSkill) return evasion;
 
-		if (hasGlyph(Stone.class, owner) ){
-			if((glyph instanceof Stone || (seal != null&&seal.getGlyph()!=null && seal.getGlyph() instanceof Stone)))
-				return 0;
-		}
-
 		if (owner instanceof Hero){
 			int aEnc = STRReq() - ((Hero) owner).STR();
 			if (aEnc > 0) evasion /= Math.pow(1.5, aEnc);
@@ -810,7 +805,7 @@ public class Armor extends EquipableItem {
 				Obfuscation.class, Swiftness.class, Viscosity.class, Potential.class };
 
 		public static final Class<?>[] uncommon = new Class<?>[]{
-				Brimstone.class, Stone.class, Entanglement.class,
+				Brimstone.class, Entanglement.class,
 				Repulsion.class, Camouflage.class, Flow.class };
 
 		public static final Class<?>[] rare = new Class<?>[]{
@@ -825,7 +820,7 @@ public class Armor extends EquipableItem {
 
 		public static final Class<?>[] curses = new Class<?>[]{
 				AntiEntropy.class, Corrosion.class, Displacement.class, Metabolism.class,
-				Multiplicity.class, Stench.class, Overgrowth.class, Bulk.class
+				Multiplicity.class, Stench.class, Overgrowth.class, Bulk.class, Stone.class
 		};
 
 		public abstract int proc( Armor armor, Char attacker, Char defender, int damage);
