@@ -125,6 +125,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
@@ -859,8 +860,9 @@ public abstract class Char extends Actor {
 			}
 		}
 
-		// 命中倍率下的命中判定
-		if ((acuRoll * accMulti) >= defRoll){
+		if (hero.belongings.armor() != null && hero.belongings.armor().hasGlyph(Stone.class, hero) && !Stone.testingEvasion()){
+			return true;
+		} else if ((acuRoll * accMulti) >= defRoll){
 			return true;
 		} else {
 			// 通过未命中原因分析器计算是谁导致的未命中,并弹出图标

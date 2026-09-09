@@ -61,6 +61,10 @@ public class ShatteredPixelDungeon extends Game {
 		}
 
 		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stone.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone" );
+
+		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ExorcistMaul.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe" );
 
