@@ -66,7 +66,6 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.TerrainFeaturesTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BadgesGrid;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BadgesList;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CustomNoteButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickRecipe;
@@ -595,9 +594,13 @@ public class WndJournal extends WndTabbed {
 		private static final int CONSUM_IDX = 1;
 		private static final int BESTIARY_IDX = 2;
 		private static final int BUFF_IDX = 3;
-		private static final int BOOK_IDX = 4;
-
 		private ScrollingGridPane grid;
+
+		public static ArrayList<Class<?>> positiveBuffs = new ArrayList<>();
+		public static ArrayList<Class<?>> negativeBuffs = new ArrayList<>();
+		public static ArrayList<Class<?>> neutralBuffs = new ArrayList<>();
+
+		public static ArrayList<Class<? extends Buff>> buffClasses = BuffScanner.getAllBuffClasses();
 
 		@Override
 		protected void createChildren() {
@@ -704,30 +707,79 @@ public class WndJournal extends WndTabbed {
 					addGridEntities(grid, bestiary.entities());
 				}
 
-			} else if (currentItemIdx == BUFF_IDX) {
-				int totalBuffs;
-				ArrayList<Class<? extends Buff>>  buffClasses = BuffScanner.getAllBuffClasses();
+			}else if (currentItemIdx == BUFF_IDX) {
+				// 先统计并清空旧数据，但不要立刻添加到 grid
+				positiveBuffs.clear();
+				negativeBuffs.clear();
+				neutralBuffs.clear();
 
-				int validBuffCount = 0;
 				for (Class<?> buffClass : buffClasses) {
-					Buff buff = (Buff) Reflection.newInstance(buffClass);
-					if (buff != null) {
-						String title = Messages.titleCase(buff.name());
-						String desc = buff.desc();
-						if (!title.contains("Ms") && !desc.contains("Ms")) {
-							validBuffCount++;
-						}
+					Buff buff;
+					try {
+						buff = (Buff) buffClass.getDeclaredConstructor().newInstance();
+					} catch (Exception e) {
+						continue;
+					}
+
+					int iconID;
+					String title, desc;
+					try {
+						iconID = buff.icon();
+						title = Messages.titleCase(buff.name());
+						desc = buff.desc();
+					} catch (Exception e) {
+						continue;
+					}
+
+					if (iconID == 68) {
+						continue;
+					}
+
+					if (title.contains("Ms") || desc.contains("Ms")) {
+						continue;
+					}
+
+					if (buff.type == Buff.buffType.POSITIVE) {
+						positiveBuffs.add(buffClass);
+					} else if (buff.type == Buff.buffType.NEGATIVE) {
+						negativeBuffs.add(buffClass);
+					} else if (buff.type == Buff.buffType.NEUTRAL) {
+						neutralBuffs.add(buffClass);
+					} else {
+						neutralBuffs.add(buffClass);
 					}
 				}
 
-				totalBuffs = validBuffCount;
+				// 先显示总标题，此时数量已经正确
+				grid.addHeader(
+						Messages.get(this, "title_buffs")
+								+ Messages.get(this, "use_buffs",
+								positiveBuffs.size() + negativeBuffs.size() + neutralBuffs.size())
+								+ Messages.get(this, "t_buff", buffClasses.size()),
+						9, true);
 
-				grid.addHeader("_" +
-						Messages.get(this, "title_buffs") +
-						"_ (" + totalBuffs + "/" + totalBuffs + ")", 9, true);
+				// 再添加分类和 Buff 内容
+				if (!positiveBuffs.isEmpty()) {
+					grid.addHeader("_" + Messages.get(CatalogTab.class, "title_positive_buffs") + "_ (" + positiveBuffs.size() + ")", 7, false);
+					for (Class<?> buffClass : positiveBuffs) {
+						addGridBuff(grid, buffClass);
+					}
+				}
 
-				addAllBuffsToGrid(grid);
-			}
+				if (!negativeBuffs.isEmpty()) {
+					grid.addHeader("_" + Messages.get(CatalogTab.class, "title_negative_buffs") + "_ (" + negativeBuffs.size() + ")", 7, false);
+					for (Class<?> buffClass : negativeBuffs) {
+						addGridBuff(grid, buffClass);
+					}
+				}
+
+				if (!neutralBuffs.isEmpty()) {
+					grid.addHeader("_" + Messages.get(CatalogTab.class, "title_neutral_buffs") + "_ (" + neutralBuffs.size() + ")", 7, false);
+					for (Class<?> buffClass : neutralBuffs) {
+						addGridBuff(grid, buffClass);
+					}
+				}
+		}
 
 			grid.setRect(x, itemButtons[NUM_BUTTONS-1].bottom() + 1, width,
 					height - itemButtons[NUM_BUTTONS-1].height() - 1);
@@ -738,27 +790,30 @@ public class WndJournal extends WndTabbed {
 
 
 	private static void addGridBuff(ScrollingGridPane grid, Class<?> buffClass) {
-		Buff buff = (Buff) Reflection.newInstance(buffClass);
-
-		Image icons = new Image();
-		if (buff != null) {
-			try {
-				int iconIndex = buff.icon();
-				icons = new BuffIcon(iconIndex, true);
-				Method tintMethod = buffClass.getMethod("tintIcon", Image.class);
-				tintMethod.invoke(buff, icons);
-			} catch (Exception ignored) {
-
-			}
-		} else {
-			icons = new BuffIcon(BuffIndicator.TIME, true);
+		Buff buff;
+		try {
+			buff = (Buff) buffClass.getDeclaredConstructor().newInstance();
+		} catch (Exception e) {
+			return;
+		}
+		int iconID;
+		String title, desc;
+		try {
+			iconID = buff.icon();
+			title = Messages.titleCase(buff.name());
+			desc = buff.desc();
+		} catch (Exception e) {
+			return;
 		}
 
-		String title = Messages.titleCase(buff.name());
-		String desc = buff.desc();
+		Image icons = new BuffIcon(iconID, true);
+		try {
+			Method tintMethod = buffClass.getMethod("tintIcon", Image.class);
+			tintMethod.invoke(buff, icons);
+		} catch (Exception ignored) {
+		}
 
 		ScrollingGridPane.GridItem gridItem = getGridItem(title, desc, icons);
-
 		grid.addItem(gridItem);
 	}
 
@@ -780,59 +835,6 @@ public class WndJournal extends WndTabbed {
 				}
 			}
 		};
-	}
-
-	public static void addAllBuffsToGrid(ScrollingGridPane grid) {
-		ArrayList<Class<? extends Buff>> buffClasses = BuffScanner.getAllBuffClasses();
-		
-		ArrayList<Class<?>> positiveBuffs = new ArrayList<>();
-		ArrayList<Class<?>> negativeBuffs = new ArrayList<>();
-		
-		ArrayList<Class<?>> neutralBuffs = new ArrayList<>();
-
-		// 过滤掉标题或描述中包含"Ms"的Buff，并按类型分类
-		for (Class<?> buffClass : buffClasses) {
-			Buff buff = (Buff) Reflection.newInstance(buffClass);
-			String title = Messages.titleCase(buff.name());
-			String desc = buff.desc();
-
-			//检查标题或描述是否包含"Ms"，如果包含则跳过
-			if (title.contains("Ms") || desc.contains("Ms")) {
-				continue;
-			}
-
-			// 按类型分类
-			if (buff.type == Buff.buffType.POSITIVE) {
-				positiveBuffs.add(buffClass);
-			} else if (buff.type == Buff.buffType.NEGATIVE) {
-				negativeBuffs.add(buffClass);
-			} else if (buff.type == Buff.buffType.NEUTRAL) {
-				neutralBuffs.add(buffClass);
-			} else {
-				neutralBuffs.add(buffClass);
-			}
-		}
-
-		if (!positiveBuffs.isEmpty()) {
-			grid.addHeader("_" + Messages.get(CatalogTab.class, "title_positive_buffs") + "_ (" + positiveBuffs.size() + ")", 7, false);
-			for (Class<?> buffClass : positiveBuffs) {
-				addGridBuff(grid, buffClass);
-			}
-		}
-
-		if (!negativeBuffs.isEmpty()) {
-			grid.addHeader("_" + Messages.get(CatalogTab.class, "title_negative_buffs") + "_ (" + negativeBuffs.size() + ")", 7, false);
-			for (Class<?> buffClass : negativeBuffs) {
-				addGridBuff(grid, buffClass);
-			}
-		}
-
-		if (!neutralBuffs.isEmpty()) {
-			grid.addHeader("_" + Messages.get(CatalogTab.class, "title_neutral_buffs") + "_ (" + neutralBuffs.size() + ")", 7, false);
-			for (Class<?> buffClass : neutralBuffs) {
-				addGridBuff(grid, buffClass);
-			}
-		}
 	}
 
 	//also includes item-like things such as enchantments, glyphs, curses.
