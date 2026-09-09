@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
@@ -766,7 +767,7 @@ public class MobPlacer extends TestItem{
                 Bestiary.ALLY,
                 Bestiary.NEUTRAL
         );
-        List<Class<?>> includedBosses = Arrays.asList(DeadDogCerberus.class, DwarfGeneral.class, GnollGeomancer.class);
+        List<Class<?>> includedBosses = Arrays.asList(DeadDogCerberus.class, DwarfGeneral.class, GnollGeomancer.class, Roger.class);
         for(Bestiary bestiary : Bestiary.values()){
             if( !excludedTypes.contains( bestiary ) ) {
                 List< Class< ? extends Mob > > mobClasses = new ArrayList<>();
