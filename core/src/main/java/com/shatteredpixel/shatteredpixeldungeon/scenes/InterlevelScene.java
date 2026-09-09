@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.DreamSeed;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -615,7 +616,9 @@ public class InterlevelScene extends PixelScene {
 			}
 			hero.resurrect();
 			Ankh ankh = null;
-			if(Statistics.ankhToExit){
+			if(Dungeon.level instanceof ColdChestBossLevel){
+				level.drop(new LostBackpack(), 717);
+			} else if(Statistics.ankhToExit){
 
 				for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
 					if (ankh == null || i.isBlessed()) {
