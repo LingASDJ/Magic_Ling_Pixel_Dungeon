@@ -39,8 +39,10 @@ public class Stone extends Armor.Glyph {
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
 
+		testing = true;
 		float accuracy = attacker.attackSkill(defender);
 		float evasion = defender.defenseSkill(attacker);
+		testing = false;
 
 		//FIXME this is duplicated here because these apply in hit(), not in attack/defenseskill
 		// the true solution is probably to refactor accuracy/evasion code a little bit
@@ -59,8 +61,10 @@ public class Stone extends Armor.Glyph {
 			evasion *= buff.evasionAndAccuracyFactor();
 		}
 		evasion *= AscensionChallenge.statModifier(defender);
-		// end of copy-pasta
 		evasion *= FerretTuft.evasionMultiplier();
+
+		// end of copy-pasta
+
 		evasion *= genericProcChanceMultiplier(defender);
 
 		float hitChance;
@@ -77,6 +81,12 @@ public class Stone extends Armor.Glyph {
 		damage = (int)Math.ceil(damage * hitChance);
 
 		return damage;
+	}
+
+	private static boolean testing = false;
+
+	public static boolean testingEvasion(){
+		return testing;
 	}
 
 	@Override
