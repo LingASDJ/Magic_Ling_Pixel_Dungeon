@@ -47,7 +47,7 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
         Buff.detach(hero, HuntingCarnival.class);
     }
 
-    private class SignalBuff extends ArtifactBuff {
+    public class SignalBuff extends ArtifactBuff {
         {
             actPriority = HERO_PRIO;
         }
