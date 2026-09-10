@@ -45,7 +45,7 @@ public class HuntingCarnival extends Buff {
             detach();
             return true;
         }
-        // 进入古堡区域后，狙击手无法支援现世以外的地方
+        // 进入古堡区域后，狙击手无法支援现世以外的地方，buff直接自清除
         if (DistressSignalNesting.inCastleArea()) {
             detach();
             return true;
