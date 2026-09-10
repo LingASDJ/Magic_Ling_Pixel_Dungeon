@@ -198,7 +198,7 @@ public class VoidSword extends MeleeWeapon {
         afterAbilityUsed(hero);
     }
 
-    // ========== 奇点实体Buff ==========
+    // ========== 奇点实体Buff  ==========
     public static class Point extends FlavourBuff{
         @Override
         public void detach() {
