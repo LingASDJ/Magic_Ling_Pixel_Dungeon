@@ -215,7 +215,7 @@ public class vM0_6_6_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(PasswordBadgeBanner.image(PaswordBadges.Badge.HELLORWORLD.image), ("新徽章：终末赞歌"),
+        changes.addButton(new ChangeButton(BadgeBanner.image(Badges.Badge.ALONECITY.image), ("新徽章：终末赞歌"),
                 ("完成孤城挑战即可获得。")));
 
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GREATAXE,

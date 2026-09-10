@@ -240,6 +240,24 @@ public enum HeroClass {
 		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.GODD_MAKE)){
 			Badges.validateGOODMAKE();
 		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.EXSG)){
+			Badges.EXSG();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.BIG_X)){
+			Badges.BIGX();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.SWORDDREAM)){
+			Badges.SWORDDRAGON();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.HELLORWORLD)){
+			Badges.NightOrHell();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.KILL_DWG)){
+			Badges.KILLDWG();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.KILL_FISHBOSS)){
+			Badges.KILL_FISH();
+		}
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			new KillSwarm().identify().collect();

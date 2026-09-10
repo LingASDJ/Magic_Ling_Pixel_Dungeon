@@ -611,7 +611,7 @@ public class YogReal extends Boss {
 
         if(Statistics.bossRushMode){
             Statistics.winGame = true;
-            PaswordBadges.BOSSRUSH();
+            Badges.BOSSRUSH();
             Statistics.questScores[4] += 30000;
             Dungeon.win( BossRushBloodGold.class );
             Dungeon.deleteGame( GamesInProgress.curSlot, true );
@@ -690,7 +690,7 @@ public class YogReal extends Boss {
             PaswordBadges.NIGHT_CAT();
         }
 
-        PaswordBadges.NightOrHell();
+        Badges.NightOrHell();
 
         if(Dungeon.isChallenged(AQUAPHOBIA)){
             Badges.CLEARWATER();
@@ -701,7 +701,7 @@ public class YogReal extends Boss {
         }
 
         if(Dungeon.isChallenged(EXSG)){
-            PaswordBadges.EXSG();
+            Badges.EXSG();
         }
 
         yell( Messages.get(this, "defeated") );

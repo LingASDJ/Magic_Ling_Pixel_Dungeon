@@ -560,7 +560,7 @@ public class YogDzewa extends Boss {
 		}
 
 		if(Dungeon.isChallenged(EXSG)){
-			PaswordBadges.EXSG();
+			Badges.EXSG();
 		}
 
 		updateVisibility(Dungeon.level);

@@ -2,7 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -66,7 +66,7 @@ public class DwarfGeneralNTNPC extends NTNPC {
                     });
                     ShatteredPixelDungeon.resetScene();
                     SPDSettings.KillDwarf(true);
-                    PaswordBadges.KILLDWG();
+                    Badges.KILLDWG();
                 }
             });
         } else {

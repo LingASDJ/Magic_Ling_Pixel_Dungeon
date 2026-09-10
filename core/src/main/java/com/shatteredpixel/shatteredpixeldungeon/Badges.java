@@ -806,9 +806,9 @@ public class Badges {
 				break;
 		}
 
-        local.add(badge);
-        displayBadge(badge);
-    }
+		local.add(badge);
+		displayBadge(badge);
+	}
 
 	public static void KILL_ST() {
 		displayBadge( Badge.KILL_CLSISTER );
@@ -904,7 +904,7 @@ public class Badges {
 
 	//necessary in order to display the happy end badge in the surface scene
 	public static void silentValidateHappyEnd() {
-        local.add( Badge.HAPPY_END );
+		local.add( Badge.HAPPY_END );
 	}
 
 	public static void validateHappyEnd() {
@@ -912,7 +912,7 @@ public class Badges {
 	}
 
 	public static void silentValidateHDEX() {
-        local.add( Badge.HIDEEN_BADAGEX);
+		local.add( Badge.HIDEEN_BADAGEX);
 	}
 
 	public static void HDEX() {
@@ -990,6 +990,22 @@ public class Badges {
 
 	public static void EXSG() {
 		displayBadge( Badge.EXSG_WIN );
+	}
+
+	public static void SWORDDRAGON() {
+		displayBadge( Badge.WAR_RIP );
+	}
+
+	public static void NightOrHell() {
+		displayBadge(Badge.ALONECITY);
+	}
+
+	public static void KILLDWG() {
+		displayBadge( Badge.KILL_DWG );
+	}
+
+	public static void KILL_FISH() {
+		displayBadge( Badge.KILL_FISHKING );
 	}
 
 	public static void validateBossChallengeCompleted() {
@@ -1557,7 +1573,7 @@ public class Badges {
 	private static void addLower( Collection<Badge> list, Badge...badges ) {
 		for (int i=badges.length-1; i > 0; i--) {
 			if (list.contains( badges[i])) {
-                list.addAll(Arrays.asList(badges).subList(0, i));
+				list.addAll(Arrays.asList(badges).subList(0, i));
 				break;
 			}
 		}
