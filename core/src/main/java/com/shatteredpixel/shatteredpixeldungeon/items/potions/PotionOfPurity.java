@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
@@ -63,6 +64,29 @@ public class PotionOfPurity extends Potion {
 			return true;
 		}
 
+
+		public void shatterR( int cell,int DIS ) {
+
+			PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ),  DIS);
+
+			ArrayList<Blob> blobs = new ArrayList<>();
+			for (Class c : affectedBlobs){
+				Blob b = Dungeon.level.blobs.get(c);
+				if (b != null && b.volume > 0){
+					blobs.add(b);
+				}
+			}
+
+			for (int i=0; i < Dungeon.level.length(); i++) {
+				if (PathFinder.distance[i] < Integer.MAX_VALUE) {
+					for (Blob blob : blobs) {
+						if(blob instanceof SmokeScreen){
+							blob.clear(i);
+						}
+					}
+				}
+			}
+		}
 
 	}
 

@@ -2,6 +2,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
@@ -9,6 +11,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.Riva
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 //诅咒之刃
 //三阶，力量需求14
@@ -55,4 +59,36 @@ public class CursedBlade extends MeleeWeapon {
         }
         return null;
     }
+
+
+    @Override
+    public String targetingPrompt() {
+        return null;
+    }
+
+    @Override
+    protected void duelistAbility(Hero hero, Integer target) {
+        if(hero.buff(CursedSword.class)!=null){
+            Buff.detach(hero,CursedSword.class);
+        } else {
+            beforeAbilityUsed(hero, null);
+            AttackIndicator.target(null);
+            Buff.affect(hero, CursedSword.class,20f);
+            hero.spendAndNext(hero.attackDelay());
+            afterAbilityUsed(hero);
+        }
+    }
+
+    public static class CursedSword extends FlavourBuff{
+        private static final float DURATION = 20f;
+        @Override
+        public int icon() {
+            return BuffIndicator.TIME;
+        }
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+        }
+    }
+
 }

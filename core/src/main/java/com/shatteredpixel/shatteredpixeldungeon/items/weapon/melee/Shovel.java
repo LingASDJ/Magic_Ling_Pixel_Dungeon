@@ -27,7 +27,7 @@ import com.watabou.utils.Random;
 
 public class Shovel extends MeleeWeapon{
     {
-        image = ItemSpriteSheet.SKIN_5;
+        image = ItemSpriteSheet.SHOVEL;
 
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
@@ -125,6 +125,7 @@ public class Shovel extends MeleeWeapon{
         heap.setHauntedIfCursed();
         // 显示外观
         heap.sprite.view( heap );
+        heap.sprite.drop();
         // 武技收尾：处理与武技相关的天赋联动
         Dungeon.level.canBeFoundTreasure--;
         afterAbilityUsed(hero);

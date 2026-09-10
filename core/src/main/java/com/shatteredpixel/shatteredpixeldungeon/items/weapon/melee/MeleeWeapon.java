@@ -268,6 +268,10 @@ public class MeleeWeapon extends Weapon {
 			}
 		}
 
+		KillKing.SmokeExecutionBuff buff = hero.buff(KillKing.SmokeExecutionBuff.class);
+		float dmgMult = buff != null ? buff.damageMultiplier() : 1f;
+		damage *= (int) dmgMult;
+
 		return super.proc( attacker, defender, damage );
 	}
 

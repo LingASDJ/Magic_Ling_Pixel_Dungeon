@@ -3,11 +3,19 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 //弑君
@@ -15,7 +23,6 @@ import com.watabou.utils.Random;
 //初始2-15，成长1-3，伏击修正50%
 //嬗变这把武器会使得它的阶级增加1。（初始+1-5，成长+0-1，力量需求+2）
 //永远都会回到应有的人手中。
-
 public class KillKing extends MeleeWeapon {
 
     private static final int BASE_TIER = 2;
@@ -35,7 +42,6 @@ public class KillKing extends MeleeWeapon {
     private int transmuted = 0;
 
     // ==================== 伏击修正 50% ====================
-
     @Override
     public int damageRoll(Char owner) {
         Char enemy = owner instanceof Hero ? ((Hero) owner).enemy()
@@ -89,7 +95,6 @@ public class KillKing extends MeleeWeapon {
     }
 
     // ==================== 嬗变：阶级 +1 ====================
-
     public boolean canTransmuteUpgrade() {
         return tier < MAX_TIER;
     }
@@ -112,5 +117,125 @@ public class KillKing extends MeleeWeapon {
         transmuted = bundle.getInt(TRANSMUTED);
         // tier 字段不参与存档，读档后按嬗变次数重新算回阶级
         tier = Math.min(MAX_TIER, BASE_TIER + transmuted);
+    }
+
+    // ==================== 决斗者武技：硝烟处刑 ====================
+    @Override
+    public String targetingPrompt() {
+        return null; //不需要选目标，以自身为中心释放
+    }
+
+    @Override
+    protected void duelistAbility(Hero hero, Integer target) {
+        beforeAbilityUsed(hero, null);
+        AttackIndicator.target(null);
+
+        Buff.affect(hero, InvisibilityDLing.class,5f);
+        Buff.affect(hero, SmokeExecutionBuff.class).setup(hero.pos, 5);
+
+        int center = hero.pos;
+        for (int offset : PathFinder.NEIGHBOURS5){
+            int p = center + offset;
+            if (p >= 0 && p < Dungeon.level.length() && !Dungeon.level.solid[p]){
+                GameScene.add( Blob.seed( p, 180, SmokeScreen.class ) );
+            }
+        }
+
+        hero.spendAndNext(hero.attackDelay());
+        afterAbilityUsed(hero);
+    }
+
+    public static class InvisibilityDLing extends Invisibility {
+        @Override
+        public void detach() {
+            super.detach();
+            Buff.detach(target,SmokeExecutionBuff.class);
+        }
+    }
+
+    @Override
+    protected int baseChargeUse(Hero hero, Char target) {
+        return 2;
+    }
+
+    public static class SmokeExecutionBuff extends Buff {
+        private static final String POS = "pos";
+        private static final String LEFT = "left";
+        private int centerPos;
+        private int leftTurns;
+        private boolean usedDamageBoost = false;
+
+        public void setup(int center, int turns) {
+            centerPos = center;
+            leftTurns = turns;
+        }
+
+        private boolean inSmokeArea(int pos) {
+            int w = Dungeon.level.width();
+            int cx = centerPos % w;
+            int cy = centerPos / w;
+
+            int px = pos % w;
+            int py = pos / w;
+
+            int dx = Math.abs(px - cx);
+            int dy = Math.abs(py - cy);
+            return dx <= 2 && dy <= 2;
+        }
+
+
+        @Override
+        public boolean act() {
+            // 条件1：英雄离开迷雾范围，直接结束
+            if (!inSmokeArea(target.pos)) {
+                detach();
+                return true;
+            }
+            // 条件2：隐身消失，提前结束迷雾
+            if (target.buff(InvisibilityDLing.class) == null) {
+                detach();
+                return true;
+            }
+            leftTurns--;
+            if (leftTurns <=0) {
+                detach();
+                return true;
+            }
+            spend(TICK);
+            return true;
+        }
+
+        // 攻击伤害修正：仅第一次攻击生效，最终伤害*1.8
+        public float damageMultiplier() {
+            if (!usedDamageBoost) {
+                usedDamageBoost = true;
+                detach();
+                return 1.8f;
+            }
+            return 1f;
+        }
+
+        @Override
+        public void detach() {
+            super.detach();
+            PotionOfPurity.PotionOfPurityLing ps = new PotionOfPurity.PotionOfPurityLing();
+            ps.shatterR(target.pos,100);
+        }
+
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put(POS, centerPos);
+            bundle.put(LEFT, leftTurns);
+            bundle.put("used", usedDamageBoost);
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+            centerPos = bundle.getInt(POS);
+            leftTurns = bundle.getInt(LEFT);
+            usedDamageBoost = bundle.getBoolean("used");
+        }
     }
 }

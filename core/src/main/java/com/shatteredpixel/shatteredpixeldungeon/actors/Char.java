@@ -1088,19 +1088,23 @@ public abstract class Char extends Actor {
 		}
 
 		// 攻击方 持有诅咒之剑 造成的所有伤害呈 cursedCost 倍
-		if (src instanceof Char) {
-			CursedBlade attackerBlade = CursedBlade.heldBy((Char) src);
-			if (attackerBlade != null) {
-				long multiplied = (long) dmg * attackerBlade.cursedCost();
+		CursedBlade.CursedSword cursedSword = hero.buff(CursedBlade.CursedSword.class);
+		if(cursedSword == null){
+			if (src instanceof Char) {
+				CursedBlade attackerBlade = CursedBlade.heldBy((Char) src);
+				if (attackerBlade != null) {
+					long multiplied = (long) dmg * attackerBlade.cursedCost();
+					dmg = multiplied > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) multiplied;
+				}
+			}
+			// 受击方 持有诅咒之剑 受到的所有伤害呈 cursedCost 倍
+			CursedBlade cursedBlade = CursedBlade.heldBy(this);
+			if (cursedBlade != null) {
+				long multiplied = (long) dmg * cursedBlade.cursedCost();
 				dmg = multiplied > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) multiplied;
 			}
 		}
-		// 受击方 持有诅咒之剑 受到的所有伤害呈 cursedCost 倍
-		CursedBlade cursedBlade = CursedBlade.heldBy(this);
-		if (cursedBlade != null) {
-			long multiplied = (long) dmg * cursedBlade.cursedCost();
-			dmg = multiplied > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) multiplied;
-		}
+
 
 		if (buff(Sickle.HarvestBleedTracker.class) != null){
 			buff(Sickle.HarvestBleedTracker.class).detach();

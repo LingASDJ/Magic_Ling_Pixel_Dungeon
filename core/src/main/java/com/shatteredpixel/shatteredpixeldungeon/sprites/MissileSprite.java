@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.thanks.SniperSupport;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SpikedChakram;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
@@ -136,6 +137,8 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(SniperSupport.FrostSnipeArrow.class, 180);
 		ANGULAR_SPEEDS.put(SniperSupport.ShockSnipeArrow.class, 180);
 		ANGULAR_SPEEDS.put(SniperSupport.BurnSnipeArrow.class,  180);
+
+		ANGULAR_SPEEDS.put(SpikedChakram.TempChakramThrow.class, 1440);
 	}
 
 	//TODO it might be nice to have a source and destination angle, to improve thrown weapon visuals

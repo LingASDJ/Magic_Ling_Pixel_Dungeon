@@ -262,6 +262,8 @@ public class ItemSpriteSheet {
     public static final int KILL_KING         = WEP_TIER2+6;
     public static final int STICK_CIRCLE          = WEP_TIER2+7;
 
+    public static final int SHOVEL          = WEP_TIER2+8;
+
     static{
         assignItemRect(RITUAL_SWORD_M,      13, 13);
         assignItemRect(SHOP_SWORD,        14, 16);
@@ -329,6 +331,8 @@ public class ItemSpriteSheet {
     public static final int MORNING_STAR      =  WEP_TIER4+34;
     public static final int COMPASS      =  WEP_TIER4+35;
     public static final int DEGUER     =  WEP_TIER4+36;
+
+    public static final int VOID_SWORD     =  WEP_TIER4+37;
 
     static{
         assignItemRect(LONGSWORD,       15, 15);

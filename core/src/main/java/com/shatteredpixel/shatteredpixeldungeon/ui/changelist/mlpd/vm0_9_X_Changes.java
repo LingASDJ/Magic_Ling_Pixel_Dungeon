@@ -585,8 +585,8 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.EASTER_EGG), "清明+复活-双节活动",
                 "清明限定复活活动正式开启，参与可获得对应活动奖励。"));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SHOP_SWORD), "新武器：商人配剑",
-                "商人配剑正式加入，将自动替换旧版存档中的手斧。\n\n它通常作为商人之间用来互相证明身份的道具，但在应急情况下你也可以把它当做武器。\n\n这把武器目前可以使商人降价 10% ，最高降价90%%。"));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SHOP_SWORD), "新武器：商人佩剑",
+                "商人佩剑正式加入，将自动替换旧版存档中的手斧。\n\n它通常作为商人之间用来互相证明身份的道具，但在应急情况下你也可以把它当做武器。\n\n这把武器目前可以使商人降价 10% ，最高降价90%%。"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.UNLESSFLOWER), "新物品：不朽花环",
                 "看上去是用不知名的花朵与坚韧的藤条编织而成的花环。戴在头上时，你几乎感受不到它的重量。\n\n全新十字架类物品，当死亡时，该优先级最高"));
