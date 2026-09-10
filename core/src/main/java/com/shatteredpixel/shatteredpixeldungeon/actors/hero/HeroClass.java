@@ -192,7 +192,7 @@ public enum HeroClass {
 
 			//Buff.affect(hero, ScaryDamageBuff.class).set((50),1);
 
-			if (passwordbadges.contains(PaswordBadges.Badge.EXSG)) {
+			if (Badges.isUnlocked(Badges.Badge.EXSG_WIN)) {
 				Dungeon.gold += 400;
 				if (!Dungeon.isDLC(Conducts.Conduct.DEV)) {
 					new IceCyanBlueSquareCoin().quantity(3).identify().collect();

@@ -988,6 +988,10 @@ public class Badges {
 		displayBadge( Badge.RLPT_WIN );
 	}
 
+	public static void EXSG() {
+		displayBadge( Badge.EXSG_WIN );
+	}
+
 	public static void validateBossChallengeCompleted() {
 		Badge badge = null;
 		switch (Dungeon.depth) {
@@ -1221,7 +1225,7 @@ public class Badges {
 		KILL_MG(133),
 
 		RLPT_WIN(134),
-		SBSG_WIN(135),
+		EXSG_WIN(135),
 
 		BOSSRUSH(136),
 
