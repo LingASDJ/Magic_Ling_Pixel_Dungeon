@@ -968,6 +968,14 @@ public class Badges {
 		displayBadge( Badge.KILL_DWMASTER );
 	}
 
+	public static void KILL_YOGZOT() {
+		displayBadge( Badge.KILL_SPBOSS );
+	}
+
+	public static void KILLSAKA() {
+		displayBadge( Badge.SAKAFISH);
+	}
+
 	public static void validateBossChallengeCompleted() {
 		Badge badge = null;
 		switch (Dungeon.depth) {

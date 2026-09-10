@@ -225,6 +225,12 @@ public enum HeroClass {
 		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.DRAWF_HEAD)){
 			Badges.KILL_DWMASTER();
 		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.SPICEALBOSS)){
+			Badges.KILL_YOGZOT();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.SAKA_DIED)){
+			Badges.KILLSAKA();
+		}
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			new KillSwarm().identify().collect();
