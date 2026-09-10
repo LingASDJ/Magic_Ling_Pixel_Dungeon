@@ -432,11 +432,11 @@ public class NormalZeroFiveLevel extends Level {
         drop((Generator.random(Generator.Category.WEP_T2)), 430).type =
                 Heap.Type.FOR_SALE;
 
-        if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
+        if (Badges.isUnlocked(Badges.Badge.GOOD_MAKER)) {
             drop((Generator.random(Generator.Category.RING)), 259);
         }
 
-        if (passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {
+        if (Badges.isUnlocked(Badges.Badge.RLPT_WIN)) {
             if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
                 drop((Generator.random(Generator.Category.WAND)), 260);
             } else {
@@ -578,7 +578,7 @@ public class NormalZeroFiveLevel extends Level {
         archettoNewYears.pos = 593;
         mobs.add(archettoNewYears);
 
-        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)
+        if (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL)
                 || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP()) {
             WaloKe shopking = new WaloKe();
             shopking.pos = 545;

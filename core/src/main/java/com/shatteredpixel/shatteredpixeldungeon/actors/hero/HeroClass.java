@@ -175,6 +175,10 @@ public enum HeroClass {
 	}
 
 	public void initHero( Hero hero ) {
+
+		PaswordBadges.loadGlobal();
+		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+
 		if (!Dungeon.isDLC(Conducts.Conduct.SEED)) {
 
 			if (Dungeon.isChallenged(Challenges.AQUAPHOBIA)) {
@@ -187,9 +191,8 @@ public enum HeroClass {
 			}
 
 			//Buff.affect(hero, ScaryDamageBuff.class).set((50),1);
-			PaswordBadges.loadGlobal();
-			List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
-			if (passwordbadges.contains(PaswordBadges.Badge.EXSG)) {
+
+			if (Badges.isUnlocked(Badges.Badge.EXSG_WIN)) {
 				Dungeon.gold += 400;
 				if (!Dungeon.isDLC(Conducts.Conduct.DEV)) {
 					new IceCyanBlueSquareCoin().quantity(3).identify().collect();
@@ -215,6 +218,28 @@ public enum HeroClass {
 		new HerbBag().quantity(1).identify().collect();
 		new KingBag().quantity(1).identify().collect();
 		new ScrollOfIdentify().identify();
+
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.FIREGIRL)){
+			Badges.KILL_FIREGIRL();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.DRAWF_HEAD)){
+			Badges.KILL_DWMASTER();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.SPICEALBOSS)){
+			Badges.KILL_YOGZOT();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.SAKA_DIED)){
+			Badges.KILLSAKA();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.BRCLER)){
+			Badges.BOSSRUSH();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.SKY_XEAD)){
+			Badges.SKY_DEAD();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.GODD_MAKE)){
+			Badges.validateGOODMAKE();
+		}
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			new KillSwarm().identify().collect();

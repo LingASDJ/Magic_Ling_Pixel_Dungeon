@@ -335,8 +335,8 @@ public class SakaFishBoss extends Boss {
                     blob.fullyClear();
                 }
             }
-            
-            PaswordBadges.KILLSAKA();
+
+            Badges.KILLSAKA();
 
             yell( Messages.get(this, "defeated") );
     }

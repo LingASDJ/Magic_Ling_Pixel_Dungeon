@@ -346,10 +346,10 @@ public class NewZeroFiveLevel extends Level {
             drop(anySkinSelect,321);
         }
 
-        if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
+        if (Badges.isUnlocked(Badges.Badge.GOOD_MAKER)) {
             drop((Generator.random(Generator.Category.RING)), 259);
         }
-        if (passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {
+        if (Badges.isUnlocked(Badges.Badge.RLPT_WIN)) {
             if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
                 drop((Generator.random(Generator.Category.WAND)), 260);
             } else {
@@ -413,13 +413,11 @@ public class NewZeroFiveLevel extends Level {
 
     protected void createMobs() {
 
-        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
-
         LanFire lanFire = new LanFire();
         lanFire.pos = 807;
         mobs.add(lanFire);
 
-        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)
+        if (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL)
                 || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP()) {
             WaloKe shopking = new WaloKe();
             shopking.pos = 545;
@@ -555,7 +553,7 @@ public class NewZeroFiveLevel extends Level {
 
         //SISTER GROUP
 
-        boolean isGet = Badges.isUnlocked(Badges.Badge.KILL_MG) && passwordbadges.contains(PaswordBadges.Badge.FIREGIRL);
+        boolean isGet = Badges.isUnlocked(Badges.Badge.KILL_MG) && Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL);
 
         if(isGet || DeviceCompat.isMDP() || DeviceCompat.isDebug()){
             FireMagicGirlNewYears fmny = new FireMagicGirlNewYears();

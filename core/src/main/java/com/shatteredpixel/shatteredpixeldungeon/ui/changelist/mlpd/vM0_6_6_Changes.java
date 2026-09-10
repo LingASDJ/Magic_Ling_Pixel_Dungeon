@@ -841,7 +841,7 @@ public class vM0_6_6_Changes {
         changes.addButton(new ChangeButton(BadgeBanner.image(Badges.Badge.NYZ_SHOP.image), ("徽章调整"),
                 ("获得该徽章后初始金币从320金币-->400金币")));
 
-        changes.addButton(new ChangeButton(PasswordBadgeBanner.image(PaswordBadges.Badge.EXSG.image), ("徽章调整"),
+        changes.addButton(new ChangeButton(BadgeBanner.image(Badges.Badge.EXSG_WIN.image), ("徽章调整"),
                 ("获得该徽章后初始金币从720金币-->648金币")));
 
         changes = new ChangeInfo("v0.6.8.0-Beta1", true, "");

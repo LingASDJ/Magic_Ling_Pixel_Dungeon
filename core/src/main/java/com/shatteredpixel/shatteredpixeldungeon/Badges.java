@@ -585,13 +585,13 @@ public class Badges {
 		validateYASD();
 	}
 
-	private static void validateGOODMAKE() {
+	public static void validateGOODMAKE() {
 		if (global.contains( Badge.KILL_ROTHEART ) &&
 				global.contains( Badge.GET_SC ) &&
 				global.contains( Badge.KILL_COLDELE)) {
 
-			PaswordBadges.Badge badge = PaswordBadges.Badge.GODD_MAKE;
-			PaswordBadges.displayBadge( badge );
+			Badge badge = Badge.GOOD_MAKER;
+			displayBadge( badge );
 		}
 	}
 
@@ -936,10 +936,6 @@ public class Badges {
 		displayBadge( Badge.KILL_DM720 );
 	}
 
-	public static void BOSSTHREE() {
-		displayBadge( Badge.BOSS_SLAIN_3 );
-	}
-
 	public static void CLEARWATER() {
 		displayBadge( Badge.CLEAR_WATER );
 	}
@@ -959,6 +955,41 @@ public class Badges {
 
 	public static void GOO() {
 		displayBadge(Badge.BOSS_CHALLENGE_1);
+	}
+
+	/**
+	 * @隐藏组迁移
+	 */
+	public static void KILL_FIREGIRL() {
+		displayBadge( Badge.KILL_FIREGIRL );
+	}
+
+	public static void KILL_DWMASTER() {
+		displayBadge( Badge.KILL_DWMASTER );
+	}
+
+	public static void KILL_YOGZOT() {
+		displayBadge( Badge.KILL_SPBOSS );
+	}
+
+	public static void KILLSAKA() {
+		displayBadge( Badge.SAKAFISH);
+	}
+
+	public static void BOSSRUSH() {
+		displayBadge( Badge.BOSSRUSH );
+	}
+
+	public static void SKY_DEAD() {
+		displayBadge(Badge.SKY_DEAD);
+	}
+
+	public static void BIGX() {
+		displayBadge( Badge.RLPT_WIN );
+	}
+
+	public static void EXSG() {
+		displayBadge( Badge.EXSG_WIN );
 	}
 
 	public static void validateBossChallengeCompleted() {
@@ -1192,6 +1223,9 @@ public class Badges {
 		STORM(132),
 
 		KILL_MG(133),
+
+		RLPT_WIN(134),
+		EXSG_WIN(135),
 
 		BOSSRUSH(136),
 

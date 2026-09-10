@@ -9,9 +9,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.FALS
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.TRUEPosition;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -546,7 +546,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         GameScene.bossSlain();
         Buff.detach(hero, MagicGirlSayTimeLast.class);
 
-        PaswordBadges.KILLFIREGIRL();
+        Badges.KILL_FIREGIRL();
 
         yell( Messages.get(this, "defeated",Dungeon.hero.name()) );
     }

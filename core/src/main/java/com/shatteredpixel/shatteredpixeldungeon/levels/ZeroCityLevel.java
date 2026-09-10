@@ -543,12 +543,10 @@ public class ZeroCityLevel extends Level {
 
         PaswordBadges.loadGlobal();
 
-        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) || DeviceCompat.isDesktop_Dev()) {
+        if (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL) || DeviceCompat.isDesktop_Dev()) {
             WaloKe npc14 = new WaloKe();
             npc14.pos = 479;
             mobs.add(npc14);
-
-
         }
 
 
@@ -683,10 +681,10 @@ public class ZeroCityLevel extends Level {
                 drop((Generator.random(Generator.Category.WEP_T2)), i).type =
                         Heap.Type.FOR_SALE;
             }
-            if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
+            if (Badges.isUnlocked(Badges.Badge.GOOD_MAKER)) {
                 drop((Generator.random(Generator.Category.RING)), 3001);
             }
-            if (passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {
+            if (Badges.isUnlocked(Badges.Badge.RLPT_WIN)) {
                 if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
                     drop((Generator.random(Generator.Category.WAND)), 3065);
                 } else {

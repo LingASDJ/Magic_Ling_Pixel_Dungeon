@@ -5,7 +5,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
@@ -1658,7 +1657,9 @@ public class DwarfMaster extends Boss {
         //Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
         Dungeon.level.drop(new PotionOfHealing().quantity(Random.NormalIntRange(2,4)), pos).sprite.drop();
         Dungeon.level.drop(new MeatPie().quantity(Random.NormalIntRange(1,2)), pos).sprite.drop();
-        PaswordBadges.KILLDWARF();
+
+        Badges.KILL_DWMASTER();
+
         Badges.validateBossSlain();
 
         yell( Messages.get(this, "defeated") );

@@ -632,7 +632,7 @@ public class YogReal extends Boss {
                     false);
         }
 
-        PaswordBadges.KILLALLBOSS();
+        Badges.KILL_YOGZOT();
 
         if(Challenges.activeChallenges() > SPDSettings.RecordChallengs()){
             SPDSettings.RecordChallengs(Challenges.activeChallenges());
@@ -697,7 +697,7 @@ public class YogReal extends Boss {
         }
 
         if(Dungeon.isChallenged(SBSG)){
-            PaswordBadges.BIGX();
+            Badges.BIGX();
         }
 
         if(Dungeon.isChallenged(EXSG)){

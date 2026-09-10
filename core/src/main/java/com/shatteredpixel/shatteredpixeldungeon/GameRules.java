@@ -27,7 +27,6 @@ import com.watabou.utils.Callback;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 public class GameRules {
 
@@ -100,9 +99,7 @@ public class GameRules {
                             Dungeon.gold = 0;
                             Dungeon.rushgold = 16;
                         } else if (index == 3) {
-                            PaswordBadges.loadGlobal();
-                            List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
-                            if (passwordbadges.contains(PaswordBadges.Badge.BRCLER)) {
+                            if (Badges.isUnlocked(Badges.Badge.BOSSRUSH)) {
                                 TimekeepersHourglass.timeFreeze timeFreeze = hero.buff(TimekeepersHourglass.timeFreeze.class);
                                 if (timeFreeze != null) timeFreeze.disarmPresses();
                                 Swiftthistle.TimeBubble timeBubble = hero.buff(Swiftthistle.TimeBubble.class);
