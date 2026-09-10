@@ -53,9 +53,11 @@ import com.watabou.input.KeyEvent;
 import com.watabou.input.PointerEvent;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.PointerArea;
+import com.watabou.noosa.Scene;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Signal;
@@ -669,12 +671,9 @@ public class InventoryPane extends Component {
 
 			crossB.point(targetingSlot.sprite.center(crossB));
 			crossB.visible = true;
-
 		} else {
-
 			lastTarget = null;
 			targeting = false;
-
 		}
 	}
 
@@ -693,12 +692,24 @@ public class InventoryPane extends Component {
 	}
 
 	private void updateEnabledState() {
-		boolean newEnabledState = Dungeon.hero.ready || !Dungeon.hero.isAlive();
+		//存在打开的弹窗窗口时，背包面板整体禁用，防止点击穿透
+		boolean hasWindows = hasOpenWindows();
+		boolean heroReady = Dungeon.hero.ready || !Dungeon.hero.isAlive();
+		boolean newEnabledState = heroReady && !hasWindows;
+
 		if (lastEnabled != newEnabledState) {
 			lastEnabled = newEnabledState;
 			updateAllElementsEnabledState();
 		}
 	}
+
+
+
+	private boolean hasOpenWindows() {
+		Scene s = Game.scene();
+		return s instanceof PixelScene && ((PixelScene) s).hasOpenWindows();
+	}
+
 
 	private void updateAllElementsEnabledState() {
 		updateEquippedSlotsEnabledState();
@@ -1034,5 +1045,4 @@ public class InventoryPane extends Component {
 			return tooltipText;
 		}
 	}
-
 }

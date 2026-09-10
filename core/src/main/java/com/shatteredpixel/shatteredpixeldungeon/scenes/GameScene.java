@@ -74,6 +74,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghos
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.SpawnEvil;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.MobPlacer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.DragonBluePlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
@@ -1078,9 +1080,16 @@ public class GameScene extends PixelScene {
 		if (scene != null) {
 			cancelCellSelector();
 
+			boolean noRightWindows;
+
+			noRightWindows =
+					wnd instanceof MobPlacer.WndSetMob
+					||
+					wnd instanceof LevelTeleporter.WndSelectLevel;
+
 			//If a window is already present (or was just present)
 			// then inherit the offset it had
-			if (scene.inventory != null && scene.inventory.visible){
+			if (scene.inventory != null && scene.inventory.visible && !noRightWindows){
 				Point offsetToInherit = null;
 				for (Gizmo g : scene.members){
 					if (g instanceof Window) offsetToInherit = ((Window) g).getOffset();
