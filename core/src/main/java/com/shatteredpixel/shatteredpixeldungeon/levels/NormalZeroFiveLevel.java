@@ -578,7 +578,7 @@ public class NormalZeroFiveLevel extends Level {
         archettoNewYears.pos = 593;
         mobs.add(archettoNewYears);
 
-        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)
+        if (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL)
                 || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP()) {
             WaloKe shopking = new WaloKe();
             shopking.pos = 545;

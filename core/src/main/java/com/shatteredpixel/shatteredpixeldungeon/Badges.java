@@ -936,10 +936,6 @@ public class Badges {
 		displayBadge( Badge.KILL_DM720 );
 	}
 
-	public static void BOSSTHREE() {
-		displayBadge( Badge.BOSS_SLAIN_3 );
-	}
-
 	public static void CLEARWATER() {
 		displayBadge( Badge.CLEAR_WATER );
 	}
@@ -959,6 +955,13 @@ public class Badges {
 
 	public static void GOO() {
 		displayBadge(Badge.BOSS_CHALLENGE_1);
+	}
+
+	/**
+	 * @隐藏组迁移
+	 */
+	public static void KILL_FIREGIRL() {
+		displayBadge( Badge.KILL_FIREGIRL );
 	}
 
 	public static void validateBossChallengeCompleted() {
@@ -1192,6 +1195,9 @@ public class Badges {
 		STORM(132),
 
 		KILL_MG(133),
+
+		RLPT_WIN(134),
+		SBSG_WIN(135),
 
 		BOSSRUSH(136),
 

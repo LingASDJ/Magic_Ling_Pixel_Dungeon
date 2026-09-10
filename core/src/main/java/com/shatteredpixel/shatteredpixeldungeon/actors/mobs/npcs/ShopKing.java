@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -13,7 +14,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ShopKing extends NTNPC {
 
@@ -27,8 +27,8 @@ public class ShopKing extends NTNPC {
 
     @Override
     protected boolean act() { PaswordBadges.loadGlobal();
-        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
-        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)) {
+
+        if (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL)) {
             die(true);
         }
         if(Dungeon.hero.belongings.getItem(BackGoKey.class) != null){

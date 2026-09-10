@@ -413,13 +413,11 @@ public class NewZeroFiveLevel extends Level {
 
     protected void createMobs() {
 
-        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
-
         LanFire lanFire = new LanFire();
         lanFire.pos = 807;
         mobs.add(lanFire);
 
-        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)
+        if (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL)
                 || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP()) {
             WaloKe shopking = new WaloKe();
             shopking.pos = 545;
@@ -555,7 +553,7 @@ public class NewZeroFiveLevel extends Level {
 
         //SISTER GROUP
 
-        boolean isGet = Badges.isUnlocked(Badges.Badge.KILL_MG) && passwordbadges.contains(PaswordBadges.Badge.FIREGIRL);
+        boolean isGet = Badges.isUnlocked(Badges.Badge.KILL_MG) && Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL);
 
         if(isGet || DeviceCompat.isMDP() || DeviceCompat.isDebug()){
             FireMagicGirlNewYears fmny = new FireMagicGirlNewYears();

@@ -175,6 +175,10 @@ public enum HeroClass {
 	}
 
 	public void initHero( Hero hero ) {
+
+		PaswordBadges.loadGlobal();
+		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+
 		if (!Dungeon.isDLC(Conducts.Conduct.SEED)) {
 
 			if (Dungeon.isChallenged(Challenges.AQUAPHOBIA)) {
@@ -187,8 +191,7 @@ public enum HeroClass {
 			}
 
 			//Buff.affect(hero, ScaryDamageBuff.class).set((50),1);
-			PaswordBadges.loadGlobal();
-			List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+
 			if (passwordbadges.contains(PaswordBadges.Badge.EXSG)) {
 				Dungeon.gold += 400;
 				if (!Dungeon.isDLC(Conducts.Conduct.DEV)) {
@@ -215,6 +218,10 @@ public enum HeroClass {
 		new HerbBag().quantity(1).identify().collect();
 		new KingBag().quantity(1).identify().collect();
 		new ScrollOfIdentify().identify();
+
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.FIREGIRL)){
+			Badges.KILL_FIREGIRL();
+		}
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			new KillSwarm().identify().collect();

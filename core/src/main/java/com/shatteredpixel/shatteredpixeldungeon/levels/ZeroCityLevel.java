@@ -543,12 +543,10 @@ public class ZeroCityLevel extends Level {
 
         PaswordBadges.loadGlobal();
 
-        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) || DeviceCompat.isDesktop_Dev()) {
+        if (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL) || DeviceCompat.isDesktop_Dev()) {
             WaloKe npc14 = new WaloKe();
             npc14.pos = 479;
             mobs.add(npc14);
-
-
         }
 
 

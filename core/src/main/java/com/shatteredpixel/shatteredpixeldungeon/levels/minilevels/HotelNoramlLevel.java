@@ -194,7 +194,7 @@ public class HotelNoramlLevel extends Level {
             mobs.add(iceMagicGirl);
         }
 
-        if(passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) && Random.Float() >= 0.7f || DeviceCompat.isMDP()){
+        if(Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL) && Random.Float() >= 0.7f || DeviceCompat.isMDP()){
             FireMagicGirl fireMagicGirl = new FireMagicGirl();
             fireMagicGirl.pos = 46;
             mobs.add(fireMagicGirl);
