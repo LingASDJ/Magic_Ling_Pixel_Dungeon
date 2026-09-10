@@ -984,6 +984,10 @@ public class Badges {
 		displayBadge(Badge.SKY_DEAD);
 	}
 
+	public static void BIGX() {
+		displayBadge( Badge.RLPT_WIN );
+	}
+
 	public static void validateBossChallengeCompleted() {
 		Badge badge = null;
 		switch (Dungeon.depth) {

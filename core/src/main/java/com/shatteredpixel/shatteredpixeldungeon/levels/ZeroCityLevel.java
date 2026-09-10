@@ -684,7 +684,7 @@ public class ZeroCityLevel extends Level {
             if (Badges.isUnlocked(Badges.Badge.GOOD_MAKER)) {
                 drop((Generator.random(Generator.Category.RING)), 3001);
             }
-            if (passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {
+            if (Badges.isUnlocked(Badges.Badge.RLPT_WIN)) {
                 if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
                     drop((Generator.random(Generator.Category.WAND)), 3065);
                 } else {

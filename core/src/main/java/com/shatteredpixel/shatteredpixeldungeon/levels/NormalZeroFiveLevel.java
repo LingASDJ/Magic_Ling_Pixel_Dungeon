@@ -436,7 +436,7 @@ public class NormalZeroFiveLevel extends Level {
             drop((Generator.random(Generator.Category.RING)), 259);
         }
 
-        if (passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {
+        if (Badges.isUnlocked(Badges.Badge.RLPT_WIN)) {
             if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
                 drop((Generator.random(Generator.Category.WAND)), 260);
             } else {

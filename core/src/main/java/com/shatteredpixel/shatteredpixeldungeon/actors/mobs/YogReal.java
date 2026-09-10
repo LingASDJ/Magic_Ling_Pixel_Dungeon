@@ -697,7 +697,7 @@ public class YogReal extends Boss {
         }
 
         if(Dungeon.isChallenged(SBSG)){
-            PaswordBadges.BIGX();
+            Badges.BIGX();
         }
 
         if(Dungeon.isChallenged(EXSG)){
