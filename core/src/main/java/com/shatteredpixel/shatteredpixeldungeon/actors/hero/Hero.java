@@ -304,6 +304,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.AllSearchHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MoveBoxHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
@@ -4024,8 +4025,7 @@ public class Hero extends Char {
 							}
 						}
 					});
-				//TODO 全面搜查-需要优化
-				} else if( Dungeon.depth == 31 && branch == 3){
+				} else if( level instanceof AllSearchHollowActorLevel){
 					switch (heap.type){
 						case GREEN_CHSET:
 							hero.spendAndNext( 8f );

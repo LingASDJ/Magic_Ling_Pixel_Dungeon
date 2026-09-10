@@ -4,9 +4,13 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.watabou.noosa.Image;
 
 //驱魔重锤
 //四阶，力量需求17
@@ -65,12 +69,36 @@ public class ExorcistMaul extends MeleeWeapon{
 
         @Override
         public int icon() {
-            return BuffIndicator.COMBO;
+            return BuffIndicator.ARMOR;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(0x5B3B8F);
         }
 
         @Override
         public String desc() {
             return Messages.get(this, "desc", dispTurns());
         }
+    }
+
+    @Override
+    public String targetingPrompt() {
+        return null;
+    }
+
+    @Override
+    protected int baseChargeUse(Hero hero, Char target) {
+        return 2;
+    }
+
+    @Override
+    protected void duelistAbility(Hero hero, Integer target) {
+        beforeAbilityUsed(hero, null);
+        AttackIndicator.target(null);
+        Buff.affect(hero, MagicImmune.class,10f);
+        hero.spendAndNext(hero.attackDelay());
+        afterAbilityUsed(hero);
     }
 }

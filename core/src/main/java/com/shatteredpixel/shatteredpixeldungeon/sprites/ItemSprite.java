@@ -246,7 +246,7 @@ public class ItemSprite extends MovieClip {
 			case CHEST:
 				return view( ItemSpriteSheet.CHEST, null );
 			case LOCKED_CHEST:
-			case GOLDEN_CHEST:  // 来自寻宝武技的金宝箱和锁箱用一个贴图
+			case GOLDEN_CHEST:
 				return view( ItemSpriteSheet.LOCKED_CHEST, null );
 			case GREEN_CHSET:
 				return view( ItemSpriteSheet.SHPD_CHEST, null );
