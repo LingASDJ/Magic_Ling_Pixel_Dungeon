@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.messages;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -36,6 +37,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IllegalFormatException;
 import java.util.Locale;
+import java.util.Properties;
 
 /*
 	Simple wrapper class for libGDX I18NBundles.
@@ -228,4 +230,94 @@ public class Messages {
 	public static String lowerCase( String str ){
 		return str.toLowerCase(locale);
 	}
+
+
+	/**
+	 * 计算指定语言的翻译进度
+	 * 进度 = 目标语言中已翻译的 key 数量 / 中文源文件中 key 的总数量 × 100%
+	 * 已翻译定义：key存在且值与【中文基准原文】不同（值相同则视为未翻译）
+	 */
+	public static double getTranslationProgress(Languages targetLang) {
+		if (targetLang == Languages.CHINESE) {
+			return 100.0; // 中文基准源语言，100%
+		}
+
+		try {
+			// 加载【中文基准原文】作为对比基底
+			HashSet<String> baseCNKeys = new HashSet<>();
+			HashMap<String, String> baseCNValues = new HashMap<>();
+			loadAllProperties(Languages.CHINESE, baseCNKeys, baseCNValues);
+
+			if (baseCNKeys.isEmpty()) {
+				return 0.0;
+			}
+
+			// 加载目标语言
+			HashSet<String> targetKeys = new HashSet<>();
+			HashMap<String, String> targetValues = new HashMap<>();
+			loadAllProperties(targetLang, targetKeys, targetValues);
+
+			int translatedCount = 0;
+			for (String key : baseCNKeys) {
+				String targetValue = targetValues.get(key);
+				String baseValue = baseCNValues.get(key);
+
+				if (targetValue != null && !targetValue.isEmpty()) {
+					// 和中文基准原文不一样，才算翻译；相同则不算
+					if (!targetValue.equals(baseValue)) {
+						translatedCount++;
+					}
+				}
+			}
+
+			return (translatedCount * 100.0) / baseCNKeys.size();
+		} catch (Exception e) {
+			ShatteredPixelDungeon.reportException(e);
+			return 0.0;
+		}
+	}
+
+	/**
+	 * 加载指定语言的所有 properties 文件中的 key-value
+	 * 保留你的特殊规则：中文是无后缀 .properties
+	 */
+	private static void loadAllProperties(Languages lang, HashSet<String> keys, HashMap<String, String> values) {
+		keys.clear();
+		values.clear();
+
+		for (String file : prop_files) {
+			try {
+				// 你的特殊命名规则保留
+				String filePath;
+				if (lang == Languages.CHINESE) {
+					filePath = file + ".properties";
+				} else {
+					filePath = file + "_" + lang.code() + ".properties";
+				}
+
+				FileHandle handle = Gdx.files.internal(filePath);
+				if (handle.exists()) {
+					Properties props = new Properties();
+					props.load(handle.reader());
+
+					for (String key : props.stringPropertyNames()) {
+						keys.add(key);
+						values.put(key, props.getProperty(key));
+					}
+				}
+			} catch (Exception e) {
+				// 文件不存在/读取失败直接跳过
+			}
+		}
+	}
+
+	/**
+	 * 获取翻译进度百分比字符串（保留两位小数）
+	 */
+	public static String getTranslationProgressString(Languages lang) {
+		double progress = getTranslationProgress(lang);
+		return String.format(Locale.ENGLISH, "%.2f%%", progress);
+	}
+
+
 }

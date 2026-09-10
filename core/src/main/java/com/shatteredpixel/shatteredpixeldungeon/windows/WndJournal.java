@@ -707,7 +707,7 @@ public class WndJournal extends WndTabbed {
 					addGridEntities(grid, bestiary.entities());
 				}
 
-			}else if (currentItemIdx == BUFF_IDX) {
+			} else if (currentItemIdx == BUFF_IDX) {
 				// 先统计并清空旧数据，但不要立刻添加到 grid
 				positiveBuffs.clear();
 				negativeBuffs.clear();
@@ -778,7 +778,7 @@ public class WndJournal extends WndTabbed {
 					for (Class<?> buffClass : neutralBuffs) {
 						addGridBuff(grid, buffClass);
 					}
-				}
+			}
 		}
 
 			grid.setRect(x, itemButtons[NUM_BUTTONS-1].bottom() + 1, width,
