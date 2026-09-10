@@ -346,7 +346,7 @@ public class NewZeroFiveLevel extends Level {
             drop(anySkinSelect,321);
         }
 
-        if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
+        if (Badges.isUnlocked(Badges.Badge.GOOD_MAKER)) {
             drop((Generator.random(Generator.Category.RING)), 259);
         }
         if (passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {

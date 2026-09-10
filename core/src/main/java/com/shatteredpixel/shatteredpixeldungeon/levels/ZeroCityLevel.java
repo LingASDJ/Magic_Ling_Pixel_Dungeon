@@ -681,7 +681,7 @@ public class ZeroCityLevel extends Level {
                 drop((Generator.random(Generator.Category.WEP_T2)), i).type =
                         Heap.Type.FOR_SALE;
             }
-            if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
+            if (Badges.isUnlocked(Badges.Badge.GOOD_MAKER)) {
                 drop((Generator.random(Generator.Category.RING)), 3001);
             }
             if (passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {

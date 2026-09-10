@@ -231,6 +231,15 @@ public enum HeroClass {
 		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.SAKA_DIED)){
 			Badges.KILLSAKA();
 		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.BRCLER)){
+			Badges.BOSSRUSH();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.SKY_XEAD)){
+			Badges.SKY_DEAD();
+		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.GODD_MAKE)){
+			Badges.validateGOODMAKE();
+		}
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			new KillSwarm().identify().collect();

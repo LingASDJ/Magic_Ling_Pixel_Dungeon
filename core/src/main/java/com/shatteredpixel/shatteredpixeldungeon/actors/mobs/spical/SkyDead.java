@@ -3,8 +3,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -224,7 +224,7 @@ public class SkyDead extends Mob {
             }
         }
 
-        PaswordBadges.SKY_DEAD();
+        Badges.SKY_DEAD();
         Statistics.bossScores[1] += 1000;
 
         yell( Messages.get(this, "defeated") );

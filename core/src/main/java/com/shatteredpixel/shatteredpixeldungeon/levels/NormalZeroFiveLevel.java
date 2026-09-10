@@ -432,7 +432,7 @@ public class NormalZeroFiveLevel extends Level {
         drop((Generator.random(Generator.Category.WEP_T2)), 430).type =
                 Heap.Type.FOR_SALE;
 
-        if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
+        if (Badges.isUnlocked(Badges.Badge.GOOD_MAKER)) {
             drop((Generator.random(Generator.Category.RING)), 259);
         }
 

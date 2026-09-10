@@ -585,13 +585,13 @@ public class Badges {
 		validateYASD();
 	}
 
-	private static void validateGOODMAKE() {
+	public static void validateGOODMAKE() {
 		if (global.contains( Badge.KILL_ROTHEART ) &&
 				global.contains( Badge.GET_SC ) &&
 				global.contains( Badge.KILL_COLDELE)) {
 
-			PaswordBadges.Badge badge = PaswordBadges.Badge.GODD_MAKE;
-			PaswordBadges.displayBadge( badge );
+			Badge badge = Badge.GOOD_MAKER;
+			displayBadge( badge );
 		}
 	}
 
@@ -974,6 +974,14 @@ public class Badges {
 
 	public static void KILLSAKA() {
 		displayBadge( Badge.SAKAFISH);
+	}
+
+	public static void BOSSRUSH() {
+		displayBadge( Badge.BOSSRUSH );
+	}
+
+	public static void SKY_DEAD() {
+		displayBadge(Badge.SKY_DEAD);
 	}
 
 	public static void validateBossChallengeCompleted() {
