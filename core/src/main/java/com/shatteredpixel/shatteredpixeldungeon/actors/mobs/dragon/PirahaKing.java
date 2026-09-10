@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.dragon;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -428,7 +429,7 @@ public class PirahaKing extends Boss {
 
         Dungeon.level.unseal();
 
-        PaswordBadges.KILL_FISH();
+        Badges.KILL_FISH();
 
         PaswordBadges.UNLOCK_RICESWORD();
 

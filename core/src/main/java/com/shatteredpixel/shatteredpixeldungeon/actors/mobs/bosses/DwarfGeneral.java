@@ -1099,7 +1099,7 @@ public class DwarfGeneral extends Boss {
                     });
                     ShatteredPixelDungeon.resetScene();
                     SPDSettings.KillDwarf(true);
-                    PaswordBadges.KILLDWG();
+                    Badges.KILLDWG();
                 }
             });
         }

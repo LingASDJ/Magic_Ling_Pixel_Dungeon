@@ -1,8 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.FayiNa;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
@@ -138,7 +138,7 @@ public class FayiNaPlot extends Plot {
 
         private void process_to_2() {
             diagulewindow.changeText(Messages.get(FayiNa.class, "message8"));
-            PaswordBadges.SWORDDRAGON();
+            Badges.SWORDDRAGON();
         }
 
 

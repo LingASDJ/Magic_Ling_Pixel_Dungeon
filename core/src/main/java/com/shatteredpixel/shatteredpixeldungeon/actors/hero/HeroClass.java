@@ -116,6 +116,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSp
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Image;
 import com.watabou.utils.DeviceCompat;
@@ -174,6 +175,44 @@ public enum HeroClass {
 		}
 	}
 
+	private static class BadgeMigrateEntry {
+		public final PaswordBadges.Badge oldBadge;
+		public final Badges.Badge targetBadge;
+		public final Runnable unlockAction;
+
+		public BadgeMigrateEntry(PaswordBadges.Badge oldBadge, Badges.Badge targetBadge, Runnable unlockAction) {
+			this.oldBadge = oldBadge;
+			this.targetBadge = targetBadge;
+			this.unlockAction = unlockAction;
+		}
+	}
+
+	private static final BadgeMigrateEntry[] MIGRATE_LIST = {
+			new BadgeMigrateEntry(PaswordBadges.Badge.FIREGIRL, Badges.Badge.KILL_FIREGIRL, Badges::KILL_FIREGIRL),
+			new BadgeMigrateEntry(PaswordBadges.Badge.DRAWF_HEAD, Badges.Badge.KILL_DWMASTER, Badges::KILL_DWMASTER),
+			new BadgeMigrateEntry(PaswordBadges.Badge.SPICEALBOSS, Badges.Badge.KILL_SPBOSS, Badges::KILL_YOGZOT),
+			new BadgeMigrateEntry(PaswordBadges.Badge.SAKA_DIED, Badges.Badge.SAKAFISH, Badges::KILLSAKA),
+			new BadgeMigrateEntry(PaswordBadges.Badge.BRCLER, Badges.Badge.BOSSRUSH, Badges::BOSSRUSH),
+			new BadgeMigrateEntry(PaswordBadges.Badge.SKY_XEAD, Badges.Badge.SKY_DEAD, Badges::SKY_DEAD),
+			new BadgeMigrateEntry(PaswordBadges.Badge.GODD_MAKE, Badges.Badge.GOOD_MAKER, Badges::validateGOODMAKE),
+			new BadgeMigrateEntry(PaswordBadges.Badge.EXSG, Badges.Badge.EXSG_WIN, Badges::EXSG),
+			new BadgeMigrateEntry(PaswordBadges.Badge.BIG_X, Badges.Badge.RLPT_WIN, Badges::BIGX),
+			new BadgeMigrateEntry(PaswordBadges.Badge.SWORDDREAM, Badges.Badge.WAR_RIP, Badges::SWORDDRAGON),
+			new BadgeMigrateEntry(PaswordBadges.Badge.HELLORWORLD, Badges.Badge.ALONECITY, Badges::NightOrHell),
+			new BadgeMigrateEntry(PaswordBadges.Badge.KILL_DWG, Badges.Badge.KILL_DWG, Badges::KILLDWG),
+			new BadgeMigrateEntry(PaswordBadges.Badge.KILL_FISHBOSS, Badges.Badge.KILL_FISHKING, Badges::KILL_FISH),
+	};
+
+	public static void migrateOldPaswordBadges() {
+		for (BadgeMigrateEntry entry : MIGRATE_LIST) {
+			if (PaswordBadges.isUnlocked(entry.oldBadge) && !Badges.isUnlocked(entry.targetBadge)) {
+				entry.unlockAction.run();
+				GLog.p("Migrate badge: " + entry.oldBadge.name() + " → " + entry.targetBadge.name());
+			}
+		}
+	}
+
+
 	public void initHero( Hero hero ) {
 
 		PaswordBadges.loadGlobal();
@@ -208,7 +247,6 @@ public enum HeroClass {
 
 		i = new Food();
 		if (!Challenges.isItemBlocked(i)) i.collect();
-			//
 		new VelvetPouch().collect();
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
 
@@ -219,27 +257,7 @@ public enum HeroClass {
 		new KingBag().quantity(1).identify().collect();
 		new ScrollOfIdentify().identify();
 
-		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.FIREGIRL)){
-			Badges.KILL_FIREGIRL();
-		}
-		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.DRAWF_HEAD)){
-			Badges.KILL_DWMASTER();
-		}
-		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.SPICEALBOSS)){
-			Badges.KILL_YOGZOT();
-		}
-		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.SAKA_DIED)){
-			Badges.KILLSAKA();
-		}
-		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.BRCLER)){
-			Badges.BOSSRUSH();
-		}
-		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.SKY_XEAD)){
-			Badges.SKY_DEAD();
-		}
-		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.GODD_MAKE)){
-			Badges.validateGOODMAKE();
-		}
+		migrateOldPaswordBadges();
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			new KillSwarm().identify().collect();

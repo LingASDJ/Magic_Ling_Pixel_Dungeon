@@ -2,8 +2,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.RivalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
@@ -25,7 +25,6 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class FayiNa extends NTNPC {
 
@@ -88,15 +87,8 @@ public class FayiNa extends NTNPC {
         FayiNaPlot plot = new FayiNaPlot();
         FayiNaPlot.FayiNaPlotEND plot2 = new FayiNaPlot.FayiNaPlotEND();
 
-        PaswordBadges.loadGlobal();
-        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
-
-       if (passwordbadges.contains(PaswordBadges.Badge.SWORDDREAM) && Dungeon.depth ==0 ) {
-            //we do a little raw position shuffling here so that the characters are never
-            // on the same cell when logic such as occupyCell() is triggered
-            int oldPos = pos;
-            int newPos = c.pos;
-            PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+       if (Badges.isUnlocked(Badges.Badge.WAR_RIP) && Dungeon.depth ==0 ) {
+           PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
             if (PathFinder.distance[pos] == Integer.MAX_VALUE){
                 return true;
             }
