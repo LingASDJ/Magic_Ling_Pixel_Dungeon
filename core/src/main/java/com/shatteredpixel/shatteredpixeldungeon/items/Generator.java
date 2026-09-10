@@ -600,6 +600,7 @@ public class Generator {
 					MorningStar.class,          // 临时加入 晨星
 					SouthPointSword.class,      // 临时加入 指南剑
 					DenorScythe.class,          // 临时加入 德诺尔镰刀
+					VoidSword.class,            // 临时加入 虚空剑
 			};
 			WEP_T4.probs = new float[]{6, 5, 4, 4, 4, 2, 3, 7,
 					SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName()) ? 4f : 0,
@@ -614,6 +615,7 @@ public class Generator {
 					0,                  // 临时加入 晨星
 					0, 					// 临时加入 指南剑
 					0,                  // 临时加入 德诺尔镰刀
+					0,                  // 临时加入 虚空剑
 			};
 
 			WEP_T5.classes = new Class<?>[]{

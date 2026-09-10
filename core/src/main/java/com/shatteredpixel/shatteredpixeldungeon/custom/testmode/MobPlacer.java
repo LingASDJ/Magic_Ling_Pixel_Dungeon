@@ -220,7 +220,7 @@ public class MobPlacer extends TestItem{
         }
     }
 
-    private class WndSetMob extends Window{
+    public class WndSetMob extends Window{
         private boolean isClosed = false;
 
         private static final int WND_WIDTH_LANDSCAPE = 200;

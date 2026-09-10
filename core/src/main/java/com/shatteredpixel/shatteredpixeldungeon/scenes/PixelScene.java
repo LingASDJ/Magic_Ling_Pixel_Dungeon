@@ -92,6 +92,16 @@ public class PixelScene extends Scene {
 
 	private Signal.Listener<KeyEvent> fullscreenListener;
 
+	public boolean hasOpenWindows(){
+		if (members == null) return false;
+		for (Gizmo g : members.toArray(new Gizmo[0])){
+			if (g instanceof Window && g.alive && g.visible){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public void create() {
 

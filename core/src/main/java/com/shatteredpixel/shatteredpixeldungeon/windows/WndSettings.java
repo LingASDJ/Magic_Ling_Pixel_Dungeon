@@ -459,7 +459,7 @@ public class WndSettings extends WndTabbed {
 						Messages.get(this, "mobile"),
 						Messages.get(this, "full"),
 						0,
-						1
+						2
 				) {
 					@Override
 					protected void onChange() {
@@ -1411,10 +1411,18 @@ public class WndSettings extends WndTabbed {
 
 			txtLangInfo = PixelScene.renderTextBlock(6);
 			String info = "_" + Messages.titleCase(currLang.nativeName()) + "_ - ";
-			if (currLang == Languages.ENGLISH) info += "This is the source language, written by the developer.";
+
+			if (currLang == Languages.CHINESE) info += "这是源语言，由MLPD制作组撰写。";
+
 			else if (currLang.status() == Languages.Status.REVIEWED) info += Messages.get(this, "completed");
 			else if (currLang.status() == Languages.Status.UNREVIEWED) info += Messages.get(this, "unreviewed");
 			else if (currLang.status() == Languages.Status.INCOMPLETE) info += Messages.get(this, "unfinished");
+
+			if (currLang != Languages.CHINESE) {
+				info += "\n\n" + Messages.get(this, "translation_progress") + ": "
+						+ Messages.getTranslationProgressString(currLang);
+			}
+
 			txtLangInfo.text(info);
 
 			if (currLang.status() == Languages.Status.UNREVIEWED) txtLangInfo.setHightlighting(true, CharSprite.WARNING);
