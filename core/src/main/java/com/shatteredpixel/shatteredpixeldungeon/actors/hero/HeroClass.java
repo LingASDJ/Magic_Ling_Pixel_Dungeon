@@ -222,6 +222,9 @@ public enum HeroClass {
 		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.FIREGIRL)){
 			Badges.KILL_FIREGIRL();
 		}
+		if(PaswordBadges.isUnlocked(PaswordBadges.Badge.DRAWF_HEAD)){
+			Badges.KILL_DWMASTER();
+		}
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			new KillSwarm().identify().collect();

@@ -964,6 +964,10 @@ public class Badges {
 		displayBadge( Badge.KILL_FIREGIRL );
 	}
 
+	public static void KILL_DWMASTER() {
+		displayBadge( Badge.KILL_DWMASTER );
+	}
+
 	public static void validateBossChallengeCompleted() {
 		Badge badge = null;
 		switch (Dungeon.depth) {
