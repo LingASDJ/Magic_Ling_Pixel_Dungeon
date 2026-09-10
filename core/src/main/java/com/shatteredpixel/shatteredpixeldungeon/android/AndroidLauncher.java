@@ -193,6 +193,7 @@ public class AndroidLauncher extends AndroidApplication {
                 finish();
             }
         }
+        CrashHandler.getInstance().setAppInForeground(true);
         super.onResume();
     }
 
@@ -250,6 +251,12 @@ public class AndroidLauncher extends AndroidApplication {
         CrashHandler.getInstance().stopAnrMonitor();
         super.onDestroy();
     }
+
+
+    @Override protected void onPause()  {
+        super.onPause();  CrashHandler.getInstance().setAppInForeground(false);
+    }
+
 
     public static void showNativeCrashDialog(final String crashText) {
         if (!(instance instanceof AndroidLauncher)) {

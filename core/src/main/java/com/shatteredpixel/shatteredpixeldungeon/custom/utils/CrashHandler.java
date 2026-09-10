@@ -55,6 +55,9 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private Handler anrMonitorHandler;
     private volatile boolean mainThreadTick;
     private Thread mainUiThread;
+    /** 应用是否处于前台；后台时暂停ANR检测，避免误报 */
+    private volatile boolean appInForeground = true;
+
     private final Runnable anrTickRunnable = new Runnable() {
         @Override
         public void run() {
@@ -62,26 +65,51 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         }
     };
 
+    /**
+     * 判断主线程是否处于"空闲等待消息"状态。
+     * 主线程阻塞在 MessageQueue.nativePollOnce 上 = 正常等待，不是 ANR。
+     * 这是过滤误报的核心判据。
+     */
+    private boolean isMainThreadIdle(StackTraceElement[] stack) {
+        if (stack == null || stack.length == 0) return true;
+        for (StackTraceElement e : stack) {
+            if ("android.os.MessageQueue".equals(e.getClassName())
+                    && "nativePollOnce".equals(e.getMethodName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断一段ANR报告文本是否属于"主线程空闲"的误报（公开接口，供外部复用）。
+     */
     public boolean isFakeAnrTrace(String stack) {
         if (stack == null) return true;
-        return stack.contains("SUSPECTED ANR")
-                && stack.contains("nativePollOnce")
-                && !stack.contains(".java:");
+        // 主线程空闲等待消息时，栈中必然出现 nativePollOnce 与 Looper.loop，
+        // 且没有业务代码帧参与。
+        return stack.contains("android.os.MessageQueue.nativePollOnce")
+                && stack.contains("android.os.Looper.loop");
     }
 
     private final Runnable anrDetectRunnable = new Runnable() {
         @Override
         public void run() {
+            // FIX：心跳直接投递到 Android 主线程 Looper。
+            // Gdx.app.postRunnable() 的 Runnable 是在 GL 渲染线程上执行的，
+            // 主线程空闲（nativePollOnce）时心跳却可能因渲染循环暂停/停滞而
+            // 4s 不执行，从而产生"主线程空闲"的假 ANR。
+            Handler mainHandler = new Handler(Looper.getMainLooper());
+
             while (!Thread.currentThread().isInterrupted()) {
-                //关键修复：Gdx.app为空就终止监控循环，避免NPE
-                if (Gdx.app == null) {
+                //关键修复：Gdx.app为空或退到后台就终止监控循环，避免NPE与误报
+                if (Gdx.app == null || !appInForeground) {
                     break;
                 }
 
-                boolean tickBefore = mainThreadTick;
                 mainThreadTick = false;
-                //往libgdx主线程post一个空任务
-                Gdx.app.postRunnable(anrTickRunnable);
+                // 投递到主线程消息队列：主线程空闲时会立刻执行
+                mainHandler.post(anrTickRunnable);
 
                 try {
                     Thread.sleep(ANR_THRESHOLD_MS);
@@ -89,9 +117,17 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
                     break;
                 }
 
-                if (!mainThreadTick && tickBefore) {
-                    // 主线程在阈值时间没有执行任务 → 疑似ANR
-                    captureSuspectedANR();
+                if (!mainThreadTick) {
+                    // 心跳未执行：主线程可能真的卡住了。抓堆栈二次确认，
+                    // 栈顶是 nativePollOnce（空闲）则属于误报，直接忽略。
+                    StackTraceElement[] stack = mainUiThread.getStackTrace();
+                    if (isMainThreadIdle(stack)) {
+                        if (DEBUG) {
+                            System.out.println("Ignore false ANR: main thread is idle (nativePollOnce)");
+                        }
+                    } else {
+                        captureSuspectedANR(stack);
+                    }
                 }
 
                 try {
@@ -103,9 +139,16 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         }
     };
 
-
     /** 保证只有一个CrashHandler实例 */
     private CrashHandler() {}
+
+    /**
+     * 设置应用前后台状态：后台时暂停ANR检测。
+     * 请在 Activity 的 onResume()/onPause()（或 Game 的 resume()/pause()）中调用。
+     */
+    public void setAppInForeground(boolean foreground) {
+        appInForeground = foreground;
+    }
 
     /**
      * 公共方法：保存崩溃信息（不依赖Gdx）
@@ -209,19 +252,22 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         }
     }
 
-    /** 捕获疑似ANR，抓取主线程堆栈，写日志 */
-    private void captureSuspectedANR(){
-        if(Gdx.app == null) return;
+    /**
+     * 捕获疑似ANR，写日志。
+     * @param stack 已二次确认过的"非空闲"主线程堆栈
+     */
+    private void captureSuspectedANR(StackTraceElement[] stack){
+        if(Gdx.app == null || stack == null || stack.length == 0) return;
         try {
             StringBuilder sb = new StringBuilder();
             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
             sb.append("Time: ").append(timestamp).append("\n");
             sb.append("===== SUSPECTED ANR (Main thread blocked) =====\n");
             sb.append("Threshold: ").append(ANR_THRESHOLD_MS).append("ms\n");
+            sb.append("Thread State: ").append(mainUiThread.getState()).append("\n");
             sb.append("\n--- MAIN THREAD STACK TRACE ---\n");
 
             //打印主线程堆栈
-            StackTraceElement[] stack = mainUiThread.getStackTrace();
             for (StackTraceElement element : stack) {
                 sb.append("\tat ").append(element.toString()).append("\n");
             }
@@ -230,13 +276,23 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             sb.append(getSystemInfo());
             sb.append("\n===== END SUSPECTED ANR =====\n");
 
+            String report = sb.toString();
+
+            // 双保险：最终文本仍命中空闲特征则丢弃，避免任何竞态下的误报
+            if (isFakeAnrTrace(report)) {
+                if (DEBUG) {
+                    System.out.println("Ignore false ANR report (idle stack)");
+                }
+                return;
+            }
+
             //保存ANR日志
             String timeFile = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(new Date());
             String fileName = ANR_FILE_PREFIX + timeFile + CRASH_FILE_EXTENSION;
             FileHandle crashFile = Gdx.files.local(CRASH_DIR).child(fileName);
-            crashFile.writeString(sb.toString(), false);
+            crashFile.writeString(report, false);
 
-            System.err.println(sb);
+            System.err.println(report);
         }catch (Exception e){
             System.err.println("captureSuspectedANR failed");
             e.printStackTrace();
@@ -282,7 +338,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             mDefaultHandler.uncaughtException(thread, ex);
         } else {
             try {
-                Thread.sleep(0);
+                Thread.sleep(200); // 留出时间让日志落盘
             } catch (InterruptedException e) {
                 System.err.println("Error while waiting to exit: " + e.getMessage());
             }
@@ -473,8 +529,14 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         mDeviceCrashInfo.put("JAVA_VENDOR", System.getProperty("java.vendor"));
 
         if (Gdx.graphics != null) {
-            mDeviceCrashInfo.put("OPENGL_VERSION", Gdx.graphics.getGLVersion().getRendererString());
-            mDeviceCrashInfo.put("DISPLAY_MODE", Gdx.graphics.getDisplayMode().toString());
+            try {
+                mDeviceCrashInfo.put("OPENGL_VERSION", Gdx.graphics.getGLVersion().getRendererString());
+                mDeviceCrashInfo.put("DISPLAY_MODE", Gdx.graphics.getDisplayMode().toString());
+            } catch (Exception e) {
+                if (DEBUG) {
+                    System.err.println("Error while collect GL info: " + e.getMessage());
+                }
+            }
         }
     }
 
