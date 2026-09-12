@@ -435,6 +435,10 @@ public abstract class Char extends Actor {
 		return attack(enemy, 1f, 0f, 1f , DamageType.PHYSICAL);
 	}
 
+	public boolean attack( Char enemy, float damageMulti){
+		return attack(enemy, damageMulti, 0f, 1f , DamageType.PHYSICAL);
+	}
+
 	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti){
 		return attack(enemy, dmgMulti, dmgBonus, accMulti , DamageType.PHYSICAL);
 	}
