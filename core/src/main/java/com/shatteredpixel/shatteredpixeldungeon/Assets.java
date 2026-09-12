@@ -95,6 +95,8 @@ public class Assets {
 		public static final String TOMB_HALL  = "environment/custom_tiles/tomb_hall.png";
 		public static final String TOMB_ROAD  = "environment/custom_tiles/palace_aisle.png";
 
+		public static final String TOMB_PALACE = "environment/custom_tiles/palace_apse.png";
+
 		public static final String CITY_PO  = "environment/custom_tiles/parliament_above.png";
 		public static final String CITY_POX  = "environment/custom_tiles/parliament_before_behind.png";
 		public static final String CITY_PSD  = "environment/custom_tiles/parliament_behind.png";
