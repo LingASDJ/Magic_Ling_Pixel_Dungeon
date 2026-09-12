@@ -65,20 +65,22 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class MeleeWeapon extends Weapon {
-
+	//标记，表示玩家执行的东西
 	public static String AC_ABILITY = "ABILITY";
-
+	//决斗家武技充能条件
 	@Override
 	public void activate(Char ch) {
 		super.activate(ch);
+		//当目标为英雄并且为决斗家时，赋予武技充能buff
 		if (ch instanceof Hero && ((Hero) ch).heroClass == HeroClass.DUELIST){
 			Buff.affect(ch, Charger.class);
 		}
 	}
-
+	//默认操作
 	@SuppressWarnings("CheckResult")
     @Override
 	public String defaultAction() {
+		//当英雄不为空 且 （英雄为决斗家 或 英雄有天赋迅疾配装时）
 		if (hero != null && (hero.heroClass == HeroClass.DUELIST
 			|| hero.hasTalent(Talent.SWIFT_EQUIP))){
 			//如果继承的类没有duelistAbility方法，则代表近战武器武技还未制作完成。为此不返回技能
@@ -88,18 +90,23 @@ public class MeleeWeapon extends Weapon {
 			} catch (NoSuchMethodException e) {
 				return super.defaultAction();
 			}
+			//返回武技执行标记
 			return AC_ABILITY;
 		} else {
 			return super.defaultAction();
 		}
 	}
 
+	//返回一个列表
 	@Override
 	public ArrayList<String> actions(Hero hero) {
+		//复制父类的操作列表
 		ArrayList<String> actions = super.actions(hero);
+		//如果已经被英雄装备 且 英雄为决斗家，则在列表中增加武技操作
 		if (isEquipped(hero) && hero.heroClass == HeroClass.DUELIST){
 			actions.add(AC_ABILITY);
 		}
+		//返回操作列表
 		return actions;
 	}
 
@@ -270,7 +277,8 @@ public class MeleeWeapon extends Weapon {
 
 		KillKing.SmokeExecutionBuff buff = hero.buff(KillKing.SmokeExecutionBuff.class);
 		float dmgMult = buff != null ? buff.damageMultiplier() : 1f;
-		damage *= (int) dmgMult;
+		//修bug：错序的类型转换导致的伤害增幅丢失
+		damage = Math.round(damage * dmgMult);
 
 		return super.proc( attacker, defender, damage );
 	}
