@@ -299,7 +299,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NormalZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.RogerBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.tomb.RogerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;

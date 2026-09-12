@@ -49,6 +49,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.CrabKingBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.DeepShadowLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.SkyGooBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.tomb.PalePalaceBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.tomb.RogerBossLevel;
 import com.watabou.utils.Random;
 
 //Level Rules Test Android
@@ -256,7 +258,9 @@ public class LevelRules {
                             return new CityLevel();
                         }
                     case 20:
-                        if(Statistics.RandMode){
+                        if(Statistics.Tomb_Reach) {
+                            return new PalePalaceBossLevel();
+                        } else if(Statistics.RandMode){
                             switch (Random.Int(6)){
                                 case 1: return new DwarfMasterBossLevel();
                                 case 3: return new DwarfGeneralBossLevel();
