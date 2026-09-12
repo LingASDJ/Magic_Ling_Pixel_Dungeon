@@ -16,6 +16,14 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
+//商人配剑
+//二阶，力量需求12
+//初始2-15，成长1-3
+//使商人降价（10+5*等级）%，最高降价90%。
+//商人之间用来互相证明身份的道具。
+//武技：爆金币，消耗充能1，进行一次必中的攻击，对目标造成（100+0.1*持有金币）%伤害，最终加成不超过200%（持有10000金币时到达最大值）。
+//如果此次攻击击杀了一个单位，那么额外掉落一份基于层数的金币（公式：区域*20～区域*35）（击杀怨灵不掉落）
+
 public class MerchantSword extends MeleeWeapon{
     {
         image = ItemSpriteSheet.SHOP_SWORD;

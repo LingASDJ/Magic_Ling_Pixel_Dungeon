@@ -4,6 +4,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
@@ -54,6 +56,10 @@ public class BrokenRingRingBind extends Ring {
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
         if (action.equals(BrokenRing.AC_RELEASE)) {
+            if (bound.cursed){
+                GLog.w(Messages.get(this, "cursed"));
+                return;
+            }
             BrokenRing.releaseBind(hero, this);
         }
     }
