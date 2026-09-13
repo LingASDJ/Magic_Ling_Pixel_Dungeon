@@ -126,15 +126,15 @@ public class SniperSupport extends Buff {
         ArrayList<Char> enemies = new ArrayList<>();
         for (Char ch : Actor.chars()) {
             if (ch != target
-                    && ch.pos >= 0                             // 目标位置存在
+                    && ch.pos >= 0                             // 此句与下一句同表示目标位置存在暨不会使得第三句发生数组越界
                     && ch.pos < target.fieldOfView.length
                     && target.fieldOfView[ch.pos]
                     && ch.alignment != target.alignment
                     && ch.alignment != Char.Alignment.NEUTRAL  // 不攻击中立阵营以规避宝箱怪
-                    && ch instanceof Mob
+                    && ch instanceof Mob                       // 目标是怪物
                     && !(ch instanceof NPC || ch instanceof KusumiMagicGirl)
                     && ch.isAlive()
-                    && !ch.isInvulnerable(getClass())) {
+                    && !ch.isInvulnerable(getClass())) {       // 目标非无敌单位
                 enemies.add(ch);
             }
         }

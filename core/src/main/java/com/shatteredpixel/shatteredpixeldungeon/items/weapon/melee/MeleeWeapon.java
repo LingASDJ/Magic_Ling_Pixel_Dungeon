@@ -252,6 +252,14 @@ public class MeleeWeapon extends Weapon {
 		updateQuickslot();
 	}
 
+	// 充能退回方法（哪个武器调用就给哪个武器充能），目前只能给英雄用且只有一处调用，有必要的话可以日后重构
+	public void refundCharge(Hero hero, float amount){
+		Charger charger = Buff.affect(hero, Charger.class);
+		if (Dungeon.hero.belongings.weapon == this) charger.gainCharge(amount);
+		else if (Dungeon.hero.belongings.secondWep == this) charger.gainSecondCharge(amount);
+		updateQuickslot();
+	}
+
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
 		if(hero.hasTalent(Talent.MAGIC_ABSORB)){
@@ -621,6 +629,19 @@ public class MeleeWeapon extends Weapon {
 					partialCharge--;
 				}
 				charges = Math.min(charges, chargeCap());
+				updateQuickslot();
+			}
+		}
+
+		// 副武器充能方法，完全仿照主武器充能的gainCharge
+		public void gainSecondCharge( float charge ){
+			if (secondCharges < secondChargeCap()) {
+				secondPartialCharge += charge;
+				while (secondPartialCharge >= 1f) {
+					secondCharges++;
+					secondPartialCharge--;
+				}
+				secondCharges = Math.min(secondCharges, secondChargeCap());
 				updateQuickslot();
 			}
 		}

@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BuffsOringinForWeapon.DoomsdayScepterVulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
@@ -600,6 +601,26 @@ public abstract class Char extends Actor {
 					&& this instanceof Hero
 					&& type == DamageType.PHYSICAL) dmg *= 1.5f;
 
+			// 攻击方 持有诅咒之剑 造成的所有伤害呈 cursedCost 倍
+			CursedBlade.CursedSword cursedSword = hero.buff(CursedBlade.CursedSword.class);
+			if(cursedSword == null){
+				if (this instanceof Char) {
+					CursedBlade attackerBlade = CursedBlade.heldBy((Char) this);
+					if (attackerBlade != null) {
+						long multiplied = (long) dmg * attackerBlade.cursedCost();
+						dmg = multiplied > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) multiplied;
+					}
+				}
+				// 受击方 持有诅咒之剑 受到的所有伤害呈 cursedCost 倍
+				if (enemy instanceof Char) {
+					CursedBlade cursedBlade = CursedBlade.heldBy(enemy);
+					if (cursedBlade != null) {
+						long multiplied = (long) dmg * cursedBlade.cursedCost();
+						dmg = multiplied > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) multiplied;
+					}
+				}
+			}
+
 			// =======================定整=======================
 			int effectiveDamage = Math.round(dmg);
 			// 物理伤害走受击方防御处理逻辑
@@ -1091,24 +1112,10 @@ public abstract class Char extends Actor {
 			dmg *= 1.5f;
 		}
 
-		// 攻击方 持有诅咒之剑 造成的所有伤害呈 cursedCost 倍
-		CursedBlade.CursedSword cursedSword = hero.buff(CursedBlade.CursedSword.class);
-		if(cursedSword == null){
-			if (src instanceof Char) {
-				CursedBlade attackerBlade = CursedBlade.heldBy((Char) src);
-				if (attackerBlade != null) {
-					long multiplied = (long) dmg * attackerBlade.cursedCost();
-					dmg = multiplied > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) multiplied;
-				}
-			}
-			// 受击方 持有诅咒之剑 受到的所有伤害呈 cursedCost 倍
-			CursedBlade cursedBlade = CursedBlade.heldBy(this);
-			if (cursedBlade != null) {
-				long multiplied = (long) dmg * cursedBlade.cursedCost();
-				dmg = multiplied > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) multiplied;
-			}
+		// 末日节杖武技的最终增伤效果
+		if(buff(DoomsdayScepterVulnerable.class) != null){
+			dmg *= 1.5f;
 		}
-
 
 		if (buff(Sickle.HarvestBleedTracker.class) != null){
 			buff(Sickle.HarvestBleedTracker.class).detach();

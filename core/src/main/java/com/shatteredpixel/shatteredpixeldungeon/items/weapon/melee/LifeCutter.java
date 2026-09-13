@@ -5,8 +5,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KusumiMagicGirl;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -19,6 +22,8 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.INFINITE_ACCURACY;
 
 //断生者
 //四阶，力量需求17
@@ -139,12 +144,15 @@ public class LifeCutter extends MeleeWeapon{
             return;
         }
 
-        // 选址位置的目标若为空、为魅惑者、不在视野范围内，则选取失败
+        // 选址位置的目标若为空、为魅惑者、不在视野范围内、为NPC（以及NPC形态久住）、为无敌单位，则选取失败
         Char enemy = Actor.findChar(target);
         if (enemy == null
                 || enemy == hero
                 || hero.isCharmedBy(enemy)
-                || !Dungeon.level.heroFOV[target]) {
+                || !Dungeon.level.heroFOV[target]
+                || (enemy instanceof NPC || enemy instanceof KusumiMagicGirl)
+                || enemy.isInvulnerable(getClass())
+        ) {
             GLog.w(Messages.get(this, "ability_no_target"));
             return;
         }
@@ -159,36 +167,56 @@ public class LifeCutter extends MeleeWeapon{
 
         // 对选择的目标进行攻击
         hero.sprite.attack(enemy.pos, new Callback() {
-            @Override
-            public void call() {
-                // 充能回复标记（击杀了至少一个敌人后会使得该标记置为真并在后续回复充能）
-                final boolean[] gainCharge = {false};
-
-                // 扣充能：beforeAbilityUsed 会按 baseChargeUse 的返回值扣掉对应充能
+            @Override public void call() {
+                // 扣2充能，并设置 abilityWeapon
                 beforeAbilityUsed(hero, enemy);
                 AttackIndicator.target(enemy);
 
-                // 攻击，攻击的耗时不在攻击方法本身中做处理
-                hero.attack(enemy, 1.6f);
+                // 创建一个列表用于存储主目标周围一圈共八格的目标
+                ArrayList<Char> linked = new ArrayList<>();
 
-                final Char target = enemy;
-                Actor.add(new Actor() {
-                    {
-                        actPriority = VFX_PRIO;
+                // 遍历主目标周围八格索敌
+                for (int n : PathFinder.NEIGHBOURS8) {
+                    Char ch = Actor.findChar(enemy.pos + n);
+                    // 向列表中添加遍历到的非空、非英雄、存活着的、非中立、非我方单位、非魅惑者
+                    if (ch != null
+                            && ch != hero
+                            && ch.isAlive()
+                            && ch.alignment != Char.Alignment.NEUTRAL
+                            && ch.alignment != hero.alignment
+                            && !hero.isCharmedBy(ch)) linked.add(ch);
+                }
+
+                // 击杀标记，表示本次攻击是否成功完成击杀，用于后续回复充能
+                boolean killed = false;
+
+                // 攻击与攻击倍率应用，先进行攻击，再判断单位是否已死亡，攻击成功且单位死亡时进入分支体
+                if (hero.attack(enemy, 1.6f, 0f, INFINITE_ACCURACY) && !enemy.isAlive()) {
+                    // 击杀置真
+                    killed = true;
+                    // 武技击杀的天赋联动效果
+                    onAbilityKill(hero, enemy);
+                }
+                // 增强for，每次循环从linked中按顺序（0，1，2，……）取出元素存入ch以参与运算
+                for (Char ch : linked) {
+                    if (ch.isAlive() && hero.attack(ch, 1.2f, 0f, INFINITE_ACCURACY) && !ch.isAlive()) {
+                        killed = true;
+                        onAbilityKill(hero, ch);
                     }
+                }
 
-                    @Override
-                    protected boolean act() {
-                        if (!target.isAlive()) {
-                            gainCharge[0] = true;
-                        }
-                        Actor.remove(this);
-                        return true;
-                    }
-                });
+                // 令攻击者（使用武技者）破隐
+                Invisibility.dispel();
 
-                // 回复充能
-                if (gainCharge[0]) Buff.affect( hero, MeleeWeapon.Charger.class ).gainCharge(1);
+                // 成功击杀则不做消耗回合的行动，并且回复1点充能
+                if (killed) {
+                    refundCharge(hero,1);
+                    hero.next();
+                } else {
+                    // 击杀失败则按攻击间隔消耗回合
+                    hero.spendAndNext(hero.attackDelay());
+                }
+
                 // 武技后处理
                 afterAbilityUsed(hero);
             }

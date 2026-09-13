@@ -251,19 +251,21 @@ abstract public class Weapon extends KindOfWeapon {
 	
 	@Override
 	public float accuracyFactor(Char owner, Char target) {
-		
+		// 吃力值
 		int encumbrance = 0;
-		
 		if( owner instanceof Hero ){
 			encumbrance = STRReq() - ((Hero)owner).STR();
 		}
 
+		// 武器本身的命中值
 		float ACC = this.ACC;
 
+		// 妄为诅咒
 		if (owner.buff(Wayward.WaywardBuff.class) != null && enchantment instanceof Wayward){
 			ACC /= 5;
 		}
 
+		// 若吃力值大于0则将返回的命中值除以（1.5^吃力值），否则直接返回命中值
 		return encumbrance > 0 ? (float)(ACC / Math.pow( 1.5, encumbrance )) : ACC;
 	}
 	
