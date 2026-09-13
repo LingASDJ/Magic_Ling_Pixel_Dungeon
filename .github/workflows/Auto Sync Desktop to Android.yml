@@ -3,7 +3,7 @@ name: Auto Sync Desktop to Android
 on:
   push:
     branches:
-      - 2025-Desktop
+      - DesktopMaster
 
 jobs:
   sync:
@@ -44,12 +44,12 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      - name: Checkout target branch (2025-Android)
+      - name: Checkout target branch (Android)
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
           git fetch origin
-          git checkout 2025-Android
-          git pull origin 2025-Android
+          git checkout Android
+          git pull origin Android
 
       - name: Backup Android-specific code
         if: steps.check_commit.outputs.skip_sync == 'false'
@@ -77,11 +77,11 @@ jobs:
             echo "TexturePackScene.java backed up"
           fi
 
-      - name: Merge folder from 2025-Desktop to 2025-Android
+      - name: Merge folder from Desktop to Android
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
           # 从Desktop分支合并代码
-          git checkout 2025-Desktop -- core/src/main
+          git checkout DesktopMaster -- core/src/main
           echo "Desktop code merged"
 
       - name: Restore Android-specific code
@@ -119,11 +119,11 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Sync from 2025-Desktop (triggered by ${{ env.commit_sha }})
+            git commit -m "Sync from DesktopMaster (triggered by ${{ env.commit_sha }})
           
             Original commit by ${{ env.commit_author }}:
             ${{ env.commit_msg }}"
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git 2025-Android
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git Android
           fi
 
       - name: Skip sync notification
