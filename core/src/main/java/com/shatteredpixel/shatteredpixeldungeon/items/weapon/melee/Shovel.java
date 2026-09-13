@@ -108,6 +108,7 @@ public class Shovel extends MeleeWeapon{
         beforeAbilityUsed(hero, null);
         // 播放使用动作，并消耗一个回合
         hero.sprite.operate(hero.pos);
+        hero.spendAndNext(1);
         // 5% 概率挖出“金宝箱”（用上锁宝箱也就是金宝箱外观，但实际上无需钥匙）
         boolean golden = Random.Float() < 0.05f;
         // 生成一件宝箱物品
