@@ -55,6 +55,7 @@ public class DeepseaKnightAnchor extends MeleeWeapon{
 
         // 3. 播放使用动作，并消耗一个回合
         hero.sprite.operate(hero.pos);
+        hero.next();
 
         // 4. 武技收尾：处理与武技相关的天赋联动
         afterAbilityUsed(hero);
