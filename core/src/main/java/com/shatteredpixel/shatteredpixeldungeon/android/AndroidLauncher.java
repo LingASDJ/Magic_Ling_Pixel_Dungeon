@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,6 +48,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.CrashHandler;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.BackupSaveScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TexturePackScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
@@ -175,6 +177,11 @@ public class AndroidLauncher extends AndroidApplication {
 
         if (requestCode == TexturePackScene.REQUEST_CODE_IMPORT_PACK) {
             TexturePackScene.handleActivityResult(requestCode, resultCode, data);
+        }
+
+        if(requestCode == 9001){
+            Uri uri = data != null ? data.getData() : null;
+            BackupSaveScene.handleSAFSaveResult(this, resultCode, uri);
         }
     }
 

@@ -1,6 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.DocumentsContract;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
@@ -50,6 +55,10 @@ public class BackupSaveScene extends PixelScene {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm")
             .withZone(ZoneId.systemDefault());
+
+    // Android请求码，用于SAF回调
+    private static final int SAF_SAVE_FILE_REQ = 9001;
+    private static FileHandle pendingExportFile;
 
     @Override
     public void create() {
@@ -114,7 +123,7 @@ public class BackupSaveScene extends PixelScene {
             }
         };
         btnExport.setSize(w, 20);
-        btnExport.setPos(0, h-20);
+        btnExport.setPos(0, h - 20);
         add(btnExport);
 
         NinePatch panel = Chrome.get(Chrome.Type.WINDOW_SILVER);
@@ -212,7 +221,7 @@ public class BackupSaveScene extends PixelScene {
 
             String seedStr = saveInfo.customSeed.isEmpty() ? String.valueOf(saveInfo.seed) : saveInfo.customSeed;
 
-            String fileName = String.format(Locale.US, "slot%s%s_%s%s", slot,"-", DungeonSeed.convertToCode(Long.parseLong(seedStr)), MLSP_EXT);
+            String fileName = String.format(Locale.US, "slot%s%s_%s%s", slot, "-", DungeonSeed.convertToCode(Long.parseLong(seedStr)), MLSP_EXT);
             FileHandle mlspHandle = backupDirHandle.child(fileName);
 
             try (ZipOutputStream zos = new ZipOutputStream(mlspHandle.write(false))) {
@@ -286,7 +295,10 @@ public class BackupSaveScene extends PixelScene {
         }
     }
 
-    private static boolean openDirectory(FileHandle dirHandle) {
+    /**
+     * 桌面端：打开文件夹
+     */
+    private static boolean openFolder(FileHandle dirHandle) {
         if (!dirHandle.exists() || !dirHandle.isDirectory()) return false;
         String path = dirHandle.file().getAbsolutePath();
         String os = System.getProperty("os.name").toLowerCase();
@@ -302,10 +314,57 @@ public class BackupSaveScene extends PixelScene {
             }
             return true;
         } catch (IOException e) {
-            //安卓端需要特殊处理
             ShatteredPixelDungeon.reportException(e);
             return false;
         }
+    }
+
+    /**
+     * Android: 唤起SAF【另存为】窗口，默认定位外部存储根目录，保存mlsp备份文件
+     * @param mlspFile 要导出的mlsp文件
+     */
+    public static void saveBackupToSAF(FileHandle mlspFile) {
+        try {
+            AndroidApplication androidApp = (AndroidApplication) Gdx.app;
+            Activity activity = (Activity) androidApp.getContext();
+
+            pendingExportFile = mlspFile;
+
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("application/octet-stream");
+            intent.putExtra(Intent.EXTRA_TITLE, mlspFile.name());
+
+            Uri rootUri = DocumentsContract.buildRootUri("com.android.externalstorage.documents", "primary");
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, rootUri);
+
+            activity.startActivityForResult(intent, SAF_SAVE_FILE_REQ);
+
+        } catch (Exception e) {
+            ShatteredPixelDungeon.reportException(e);
+            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "extract_fail")));
+        }
+    }
+
+    /**
+     * Android Activity onActivityResult回调，接收SAF选中的Uri，复制文件
+     * 在AndroidLauncher里调用这个静态方法
+     */
+    public static void handleSAFSaveResult(android.app.Activity activity, int resultCode, Uri uri) {
+        if (resultCode != android.app.Activity.RESULT_OK || uri == null || pendingExportFile == null) {
+            pendingExportFile = null;
+            return;
+        }
+        try {
+            // 使用传入的activity拿ContentResolver
+            OutputStream os = activity.getContentResolver().openOutputStream(uri);
+            byte[] data = pendingExportFile.readBytes();
+            os.write(data);
+            os.close();
+        } catch (Exception e) {
+            ShatteredPixelDungeon.reportException(e);
+        }
+        pendingExportFile = null;
     }
 
     private void showEmptyMsg(int w, int h, String msg, int color) {
@@ -515,7 +574,7 @@ public class BackupSaveScene extends PixelScene {
                     backup.fileName,
                     Messages.get(BackupSaveScene.class, "backup_options"),
                     Messages.get(BackupSaveScene.class, "import_backup"),
-                    Messages.get(BackupSaveScene.class, "extract_file"), // 提取文件
+                    Messages.get(BackupSaveScene.class, "extract_file"), // 提取文件 -> Android另存为SAF
                     Messages.get(BackupSaveScene.class, "delete_backup"),
                     Messages.get(BackupSaveScene.class, "cancel")
             ) {
@@ -552,10 +611,8 @@ public class BackupSaveScene extends PixelScene {
                             }
                         });
                     } else if (index == 1) {
-                        boolean ok = openDirectory(backup.file.parent());
-                        if (!ok) {
-                            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "extract_fail")));
-                        }
+                        // ===== 提取文件 =====
+                        saveBackupToSAF(backup.file);
                     } else if (index == 2) {
                         ShatteredPixelDungeon.scene().add(new WndOptions(
                                 Icons.get(Icons.WARNING),
@@ -593,7 +650,7 @@ public class BackupSaveScene extends PixelScene {
             } else {
                 height = Math.max(height, nameText.bottom() - y + GAP);
             }
-            bg.size(Camera.main.width-40, height);
+            bg.size(Camera.main.width - 40, height);
         }
 
         @Override
