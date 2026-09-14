@@ -518,6 +518,10 @@ public class TitleScene extends PixelScene {
 		btnError.setPos( w-25, version.y-20 );
 		add(btnError);
 
+		SavesButton btnSaves = new SavesButton();
+		btnSaves.setPos( btnError.left()-15, version.y-20 );
+		add(btnSaves);
+
 		Badges.loadGlobal();
 		if (Badges.isUnlocked(Badges.Badge.VICTORY) && !SPDSettings.victoryNagged()) {
 			SPDSettings.victoryNagged(true);
@@ -670,6 +674,26 @@ public class TitleScene extends PixelScene {
 		@Override
 		protected String hoverText() {
 			return Messages.titleCase(Messages.get(WndKeyBindings.class, "error"));
+		}
+	}
+
+	public static class SavesButton extends IconButton {
+
+		public  SavesButton() {
+			super(Icons.CATALOG.get());
+
+			width = 20;
+			height = 20;
+		}
+
+		@Override
+		protected void onClick() {
+			ShatteredPixelDungeon.switchNoFade( BackupSaveScene.class );
+		}
+
+		@Override
+		protected String hoverText() {
+			return Messages.titleCase(Messages.get(WndKeyBindings.class, "saves"));
 		}
 	}
 
