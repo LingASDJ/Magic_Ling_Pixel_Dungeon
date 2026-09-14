@@ -83,7 +83,7 @@ public class CursedBlade extends MeleeWeapon {
         private static final float DURATION = 20f;
         @Override
         public int icon() {
-            return BuffIndicator.TIME;
+            return BuffIndicator.CURSED_DOWN;
         }
         @Override
         public float iconFadePercent() {

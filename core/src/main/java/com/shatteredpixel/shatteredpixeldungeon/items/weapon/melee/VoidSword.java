@@ -26,7 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SunSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SingularitySprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -226,7 +226,7 @@ public class VoidSword extends MeleeWeapon {
     public static class Singularity extends NTNPC {
 
         {
-            spriteClass = SunSprite.class;
+            spriteClass = SingularitySprite.class;
             properties.add(Property.UNKNOWN);
         }
 

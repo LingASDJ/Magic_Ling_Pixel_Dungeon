@@ -184,6 +184,8 @@ public class BuffIndicator extends Component {
 	public static final int ALL_ENEMYPY = 161;
 	public static final int AG_POCK = 162;
 
+	public static final int CURSED_DOWN = 164;
+
 	public static final int SIZE_SMALL = 7;
 	public static final int SIZE_LARGE = 16;
 	private static BuffIndicator bossInstance;
