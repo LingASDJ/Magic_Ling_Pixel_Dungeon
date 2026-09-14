@@ -48,8 +48,8 @@ import java.util.LinkedList;
 //初始6-30，成长2-5
 //在进行攻击后，立刻将视野内可达位置中的一名随机敌人吸引至身前。
 //这把剑身中传来强大的吸引力，仿佛你正置身死寂的黑洞之中。
-//武技：奇点坍缩，消耗10充能，在指定位置放置1个奇点，奇点会持续定身9*9范围内的敌人，并且每回合会使范围内的所有敌人和物品向奇点方向强制位移一格。
-//奇点每回合都会摧毁与他相邻或重叠的物品，接触奇点的非boss单位会直接死亡，boss单位会受到20%最大生命值的伤害随后摧毁奇点。
+//武技：奇点坍缩，消耗全部充能（至少3点），在指定位置放置1个奇点，奇点会持续定身5*5范围内的敌人，每多消耗3充能使生效范围扩大一圈，并且每回合会使范围内的所有敌人和物品向奇点方向强制位移一格。
+//奇点每回合都会摧毁与他相邻或重叠的物品，接触奇点的非boss单位会直接死亡并且不提供经验，boss单位会受到(30+10lvl)%最大生命值的伤害随后减少奇点30回合持续时间。释放时消耗的每点充能使奇点存在最大时间+6回合。
 public class VoidSword extends MeleeWeapon {
     {
         image = ItemSpriteSheet.VOID_SWORD;
@@ -62,12 +62,21 @@ public class VoidSword extends MeleeWeapon {
 
     @Override
     public int STRReq(int lvl) {
-        int req = STRReq(tier, lvl) + 1;
+        int req = STRReq(tier, lvl) - 1;
         if (masteryPotionBonus) {
-            req -= 3;
+            req -= 2;
         }
         return req;
     }
+
+    //最大伤害
+    @Override
+    public int max(int lvl) { return 30 + lvl * 5; }
+
+    //最小伤害
+    @Override
+    public int min(int lvl) { return 6 + lvl * 2; }
+
 
     // ========== 武器特效实现 ==========
     @Override
@@ -151,7 +160,6 @@ public class VoidSword extends MeleeWeapon {
                                 enemy.pos = pulledPos;
 
                                 Invisibility.dispel(hero);
-                                Talent.onArtifactUsed(hero);
                                 updateQuickslot();
 
                                 Dungeon.level.occupyCell(enemy);

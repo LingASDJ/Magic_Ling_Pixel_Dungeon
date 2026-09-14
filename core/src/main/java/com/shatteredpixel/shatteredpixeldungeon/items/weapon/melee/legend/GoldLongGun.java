@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
@@ -64,7 +65,38 @@ public class GoldLongGun extends MeleeWeapon {
             damage = (new Lucky()).proc(this, attacker, defender, damage);
         }
 
-        return super.proc(attacker, defender, damage);
+        damage = super.proc(attacker, defender, damage);
+        //只有英雄用黄金长枪命中非相邻敌人时触发祝福buff
+        if (!Dungeon.level.adjacent(attacker.pos, defender.pos)) {
+
+            Buff.prolong(
+                    attacker,
+                    Bless.class,
+                    4f + buffedLvl()
+            );
+        }
+        return damage;
+    }
+    //添加获取赐福特效的描述
+    @Override
+    public String desc() {
+        String desc = Messages.get(this, "desc");
+
+        if (isIdentified()) {
+            desc += "\n" + Messages.get(
+                    this,
+                    "bless_desc",
+                    4 + buffedLvl()
+            );
+        } else {
+            desc += "\n" + Messages.get(
+                    this,
+                    "typical_bless_desc",
+                    4
+            );
+        }
+
+        return desc;
     }
 
     @Override
@@ -150,7 +182,6 @@ public class GoldLongGun extends MeleeWeapon {
         int dmgBoost = 8 + 2*buffedLvl();
         return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
     }
-
 
     public String upgradeAbilityStat(int level){
         int dmgBoost = 8 + 2*level;
