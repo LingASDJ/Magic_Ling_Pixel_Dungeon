@@ -302,6 +302,7 @@ public class BackupSaveScene extends PixelScene {
             }
             return true;
         } catch (IOException e) {
+            //安卓端需要特殊处理
             ShatteredPixelDungeon.reportException(e);
             return false;
         }
