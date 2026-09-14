@@ -1,20 +1,16 @@
 name: Auto Sync Desktop to Android
-
 on:
   push:
     branches:
       - DesktopMaster
-
 jobs:
   sync:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
       - name: Check for nosync in commit messages
         id: check_commit
         run: |
@@ -22,14 +18,14 @@ jobs:
           COMMIT_MSG=$(git log -1 --pretty=%B)
           COMMIT_SHA=$(git rev-parse HEAD)
           COMMIT_AUTHOR=$(git log -1 --pretty=%an)
-          
+
           echo "Triggered by commit: $COMMIT_SHA"
           echo "Author: $COMMIT_AUTHOR"
           echo "Message: $COMMIT_MSG"
           echo "commit_msg=$COMMIT_MSG" >> $GITHUB_ENV
           echo "commit_sha=$COMMIT_SHA" >> $GITHUB_ENV
           echo "commit_author=$COMMIT_AUTHOR" >> $GITHUB_ENV
-          
+
           if echo "$COMMIT_MSG" | grep -qi "nosync"; then
             echo "::warning::Skipping sync due to 'nosync' in commit message"
             echo "skip_sync=true" >> $GITHUB_OUTPUT
@@ -37,32 +33,29 @@ jobs:
             echo "No 'nosync' found, proceeding with sync"
             echo "skip_sync=false" >> $GITHUB_OUTPUT
           fi
-
       - name: Set up Git user info
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-
       - name: Checkout target branch (Android)
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
           git fetch origin
           git checkout Android
           git pull origin Android
-
       - name: Backup Android-specific code
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
           # 创建备份目录
           mkdir -p /tmp/android_backup
-          
+
           # 备份安卓分支上的安卓特定代码
           if [ -d "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android" ]; then
             cp -r "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android" /tmp/android_backup/
             echo "Android-specific code backed up"
           fi
-          
+
           # 备份 CrashHandler.java
           if [ -f "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/CrashHandler.java" ]; then
             mkdir -p /tmp/android_backup/crashhandler
@@ -70,20 +63,25 @@ jobs:
             echo "CrashHandler.java backed up"
           fi
 
-          # 新增：备份 TexturePackScene.java
+          # 备份 TexturePackScene.java
           if [ -f "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TexturePackScene.java" ]; then
             mkdir -p /tmp/android_backup/scenes
             cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TexturePackScene.java" /tmp/android_backup/scenes/
             echo "TexturePackScene.java backed up"
           fi
 
+          # ============ 新增：备份 BackupSaveScene.java ============
+          if [ -f "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/BackupSaveScene.java" ]; then
+            mkdir -p /tmp/android_backup/scenes
+            cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/BackupSaveScene.java" /tmp/android_backup/scenes/
+            echo "BackupSaveScene.java backed up"
+          fi
       - name: Merge folder from Desktop to Android
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
           # 从Desktop分支合并代码
           git checkout DesktopMaster -- core/src/main
           echo "Desktop code merged"
-
       - name: Restore Android-specific code
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
@@ -96,7 +94,7 @@ jobs:
             cp -r /tmp/android_backup/android "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/"
             echo "Android-specific code restored"
           fi
-          
+
           # 恢复 CrashHandler.java
           if [ -f "/tmp/android_backup/crashhandler/CrashHandler.java" ]; then
             mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/"
@@ -104,13 +102,19 @@ jobs:
             echo "CrashHandler.java restored"
           fi
 
-          # 新增：恢复 TexturePackScene.java
+          # 恢复 TexturePackScene.java
           if [ -f "/tmp/android_backup/scenes/TexturePackScene.java" ]; then
             mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/"
             cp /tmp/android_backup/scenes/TexturePackScene.java "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/"
             echo "TexturePackScene.java restored"
           fi
 
+          # ============ 新增：恢复 BackupSaveScene.java ============
+          if [ -f "/tmp/android_backup/scenes/BackupSaveScene.java" ]; then
+            mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/"
+            cp /tmp/android_backup/scenes/BackupSaveScene.java "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/"
+            echo "BackupSaveScene.java restored"
+          fi
       - name: Commit and push changes
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
@@ -120,13 +124,11 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "Sync from DesktopMaster (triggered by ${{ env.commit_sha }})
-          
-            Original commit by ${{ env.commit_author }}:
-            ${{ env.commit_msg }}"
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git Android
-          fi
-
-      - name: Skip sync notification
-        if: steps.check_commit.outputs.skip_sync == 'true'
-        run: |
-          echo "Sync skipped due to 'nosync' in commit message: ${{ env.commit_msg }}"
+Original commit by ${{ env.commit_author }}:
+  ${{ env.commit_msg }}"
+  git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git Android
+  fi
+  - name: Skip sync notification
+if: steps.check_commit.outputs.skip_sync == 'true'
+run: |
+  echo "Sync skipped due to 'nosync' in commit message: ${{ env.commit_msg }}"
