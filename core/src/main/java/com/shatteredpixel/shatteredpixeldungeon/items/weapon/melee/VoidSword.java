@@ -252,7 +252,6 @@ public class VoidSword extends MeleeWeapon {
                             && ch != Dungeon.hero
                             && ch.alignment != Char.Alignment.ALLY
                             && ch.alignment != Char.Alignment.NEUTRAL) {
-                        // 持续定身（每回合刷新）
                         Buff.prolong(ch, Roots.class, 2f);
                         if (cell != pos) {
                             removed |=pullChar(ch, cell);
@@ -367,6 +366,13 @@ public class VoidSword extends MeleeWeapon {
         private void destroyHeap(int cell) {
             Heap heap = Dungeon.level.heaps.get(cell);
             if (heap == null || heap.items == null || heap.items.isEmpty()) return;
+
+            for (Item item : heap.items) {
+                if(item.unique){
+                    return;
+                }
+            }
+
             heap.destroy();
         }
 
