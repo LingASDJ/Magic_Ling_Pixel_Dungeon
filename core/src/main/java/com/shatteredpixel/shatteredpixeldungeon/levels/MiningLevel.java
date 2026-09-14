@@ -25,8 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalWisp;
@@ -64,7 +62,6 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -95,18 +92,6 @@ public class MiningLevel extends CavesLevel {
 		Music.INSTANCE.play(Assets.Music.CAVES_BOSS_FINALE, true);
 	}
 
-	@Override
-	public int randomRespawnCell( Char ch ) {
-		int pos = entrance();
-		int cell;
-		do {
-			cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
-		} while (!passable[cell]
-				|| (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
-				|| Actor.findChar(cell) != null);
-		return cell;
-
-	}
 	@Override
 	protected ArrayList<Room> initRooms() {
 		ArrayList<Room> initRooms = new ArrayList<>();
@@ -198,17 +183,17 @@ public class MiningLevel extends CavesLevel {
 	@Override
 	protected void createItems() {
 		Random.pushGenerator(Random.Long());
-			ArrayList<Item> bonesItems = Bones.get();
-			if (bonesItems != null) {
-				int cell = randomDropCell();
-				if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
-					map[cell] = Terrain.GRASS;
-					losBlocking[cell] = false;
-				}
-				for (Item i : bonesItems) {
-					drop(i, cell).setHauntedIfCursed().type = Heap.Type.REMAINS;
-				}
+		ArrayList<Item> bonesItems = Bones.get();
+		if (bonesItems != null) {
+			int cell = randomDropCell();
+			if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+				map[cell] = Terrain.GRASS;
+				losBlocking[cell] = false;
 			}
+			for (Item i : bonesItems) {
+				drop(i, cell).setHauntedIfCursed().type = Heap.Type.REMAINS;
+			}
+		}
 		Random.popGenerator();
 
 		int cell = randomDropCell();
@@ -242,7 +227,6 @@ public class MiningLevel extends CavesLevel {
 		//avoid placing random items next to hazards
 		return randomDropCell(MineSmallRoom.class);
 	}
-
 
 	@Override
 	public String tileName( int tile ) {

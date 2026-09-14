@@ -21,7 +21,7 @@ public class NecroCavalrySprite extends MobSprite {
         attack = new Animation( 11, false );
         attack.frames( frames, 13,14,15,16);
 
-        die = new Animation( 11, false );
+        die = new Animation( 14, false );
         die.frames( frames, 17,18,19,20,21,22,23);
 
         play( idle );

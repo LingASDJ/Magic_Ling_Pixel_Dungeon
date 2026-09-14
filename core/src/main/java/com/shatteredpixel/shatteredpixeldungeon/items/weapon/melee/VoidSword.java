@@ -26,7 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SunSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SingularitySprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -234,7 +234,7 @@ public class VoidSword extends MeleeWeapon {
     public static class Singularity extends NTNPC {
 
         {
-            spriteClass = SunSprite.class;
+            spriteClass = SingularitySprite.class;
             properties.add(Property.UNKNOWN);
         }
 
@@ -260,7 +260,6 @@ public class VoidSword extends MeleeWeapon {
                             && ch != Dungeon.hero
                             && ch.alignment != Char.Alignment.ALLY
                             && ch.alignment != Char.Alignment.NEUTRAL) {
-                        // 持续定身（每回合刷新）
                         Buff.prolong(ch, Roots.class, 2f);
                         if (cell != pos) {
                             removed |=pullChar(ch, cell);
@@ -375,6 +374,13 @@ public class VoidSword extends MeleeWeapon {
         private void destroyHeap(int cell) {
             Heap heap = Dungeon.level.heaps.get(cell);
             if (heap == null || heap.items == null || heap.items.isEmpty()) return;
+
+            for (Item item : heap.items) {
+                if(item.unique){
+                    return;
+                }
+            }
+
             heap.destroy();
         }
 

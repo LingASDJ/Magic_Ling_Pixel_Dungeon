@@ -1138,6 +1138,8 @@ public class Assets {
 
 		public static final String ANIMATIONS_SUN = "sprites/items/Animation/Sun.png";
 
+		public static final String ANIMATIONS_DARKSUN = "sprites/items/Animation/singular_point.png";
+
 	}
 
 
