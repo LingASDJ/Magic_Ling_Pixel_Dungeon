@@ -11,7 +11,7 @@ public class SingularitySprite extends MobSprite {
 
         texture( Assets.Sprites.ANIMATIONS_DARKSUN );
 
-        TextureFilm frames = new TextureFilm( texture, 24, 24 );
+        TextureFilm frames = new TextureFilm( texture, 27, 15 );
 
         idle = new MovieClip.Animation( 12, true );
         idle.frames( frames, 0,1,2,3,4,5,6,7 );
