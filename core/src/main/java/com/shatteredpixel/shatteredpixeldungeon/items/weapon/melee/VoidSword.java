@@ -43,13 +43,16 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.duration;
+import static com.shatteredpixel.shatteredpixeldungeon.items.Item.updateQuickslot;
+
 //虚空剑
 //四阶，力量需求15
 //初始6-30，成长2-5
-//在进行攻击后，立刻将视野内可达位置中的一名随机敌人吸引至身前。
+//在进行攻击后，立刻将视野中的一名随机敌人吸引至身前，这种力量甚至强大到能够穿透墙壁。
 //这把剑身中传来强大的吸引力，仿佛你正置身死寂的黑洞之中。
 //武技：奇点坍缩，消耗全部充能（至少3点），在指定位置放置1个奇点，奇点会持续定身5*5范围内的敌人，每多消耗3充能使生效范围扩大一圈，并且每回合会使范围内的所有敌人和物品向奇点方向强制位移一格。
-//奇点每回合都会摧毁与他相邻或重叠的物品，接触奇点的非boss单位会直接死亡并且不提供经验，boss单位会受到(30+10lvl)%最大生命值的伤害随后减少奇点30回合持续时间。释放时消耗的每点充能使奇点存在最大时间+6回合。
+//奇点每回合都会摧毁与他相邻或重叠的物品，接触奇点的非boss单位会直接死亡并且不提供经验，boss单位会受到(30+10lvl)的真实伤害随后减少奇点30回合持续时间。释放时消耗的每点充能使奇点存在最大时间+6回合。
 public class VoidSword extends MeleeWeapon {
     {
         image = ItemSpriteSheet.VOID_SWORD;
@@ -79,34 +82,35 @@ public class VoidSword extends MeleeWeapon {
 
 
     // ========== 武器特效实现 ==========
+    // 增加合法吸引目标判定，以解决吸引不稳定的问题
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Char enemy = chooseRandomEnemy(attacker);
-        if (enemy != null && enemy != defender) {
-            Attraction(attacker, enemy);
+        PullTarget target = choosePullTarget(attacker, defender);
+        if (target != null) {
+            chainEnemy(attacker, defender, target);
         }
         return super.proc(attacker, defender, damage);
     }
 
-    // 武器特效的吸引效果
-    public void Attraction(Char attacker, Char enemy) {
-        PathFinder.buildDistanceMap(enemy.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
-        if (!(Dungeon.level instanceof MiningLevel)
-                && PathFinder.distance[curUser.pos] == Integer.MAX_VALUE) {
-            return;
-        }
-        final Ballistica chain = new Ballistica(curUser.pos, enemy.pos, Ballistica.STOP_TARGET);
-        if (Actor.findChar(chain.collisionPos) != null) {
-            chainEnemy(chain, curUser, Actor.findChar(chain.collisionPos)); // 撞到人 → 拉怪
+    // 创建一个数据类，用于存储吸引目标与与落点
+    private static class PullTarget {
+        final Char enemy;
+        final int pullPos;
+
+        PullTarget(Char enemy, int pullPos) {
+            this.enemy = enemy;
+            this.pullPos = pullPos;
         }
     }
 
     // 抄的SniperSupport的视野内随机索敌
-    private Char chooseRandomEnemy(Char attacker) {
-        if (attacker.fieldOfView == null) return null;
-        ArrayList<Char> enemies = new ArrayList<>();
+    private PullTarget choosePullTarget(Char attacker, Char defender) {
+        if (attacker.fieldOfView == null) {return null;
+    }
+        ArrayList<PullTarget> targets = new ArrayList<>();
         for (Char ch : Actor.chars()) {
             if (ch != attacker
+                    && ch != defender
                     && ch.pos >= 0                             // 目标位置存在
                     && ch.pos < attacker.fieldOfView.length
                     && attacker.fieldOfView[ch.pos]  // 目标得在攻击者视野内
@@ -115,51 +119,126 @@ public class VoidSword extends MeleeWeapon {
                     && !(ch instanceof NPC || ch instanceof KusumiMagicGirl)  // 不攻击NPC和久住
                     && ch.isAlive()  // 目标得是活的
                     && !ch.isInvulnerable(getClass())) {
-                enemies.add(ch);
+
+                // 目标需进行合法判定
+                PullTarget target = buildPullTarget(attacker, ch);
+                if (target != null) {
+                    targets.add(target);
+                }
             }
         }
-        if (enemies.isEmpty()) return null;
-        return Random.element(enemies);
+        if (targets.isEmpty()) {
+            return null;
+        }
+        return Random.element(targets);
     }
 
     // 抄的EtherealChains的拉人效果
-    private void chainEnemy(Ballistica chain, final Hero hero, final Char enemy) {
+    // 检查可达性和移动落点
+    private PullTarget buildPullTarget(Char attacker, Char enemy) {
 
-        if (enemy.properties().contains(Char.Property.IMMOVABLE)) {
-            return;
+        if (enemy == attacker || enemy.properties().contains(Char.Property.IMMOVABLE)) {
+            return null;
         }
 
-        int bestPos = -1;
+        PathFinder.buildDistanceMap(
+                enemy.pos,
+                BArray.or(
+                        Dungeon.level.passable,
+                        Dungeon.level.avoid,
+                        null
+                )
+        );
+
+        if (!(Dungeon.level instanceof MiningLevel)
+                && PathFinder.distance[attacker.pos] == Integer.MAX_VALUE) {
+            return null;
+        }
+
+        Ballistica chain = new Ballistica(
+                attacker.pos,
+                enemy.pos,
+                Ballistica.STOP_TARGET
+        );
+
         for (int i : chain.subPath(1, chain.dist)) {
+            if (i == enemy.pos) {
+                continue;
+            }
+
             if (!Dungeon.level.solid[i]
                     && Actor.findChar(i) == null
                     && (!Char.hasProp(enemy, Char.Property.LARGE) || Dungeon.level.openSpace[i])) {
-                bestPos = i;
-                break;
+                return new VoidSword.PullTarget(enemy, i);
             }
         }
+        return null;
+    }
+    // 执行已经确认合法的拉拽
+    private void chainEnemy(
+            final Char attacker,
+            final Char defender,
+            PullTarget target
+    ) {
+        final Char enemy = target.enemy;
+        final int pulledPos = target.pullPos;
 
-        if (bestPos == -1) {
+        if (!enemy.isAlive()
+                || Actor.findChar(pulledPos) != null
+                || attacker.sprite == null
+                || attacker.sprite.parent == null
+                || enemy.sprite == null) {
             return;
         }
 
-        final int pulledPos = bestPos;
-
-        hero.busy();
+        if (attacker instanceof Hero) {
+            ((Hero) attacker).busy();
+        }
 
         throwSound();
 
         Sample.INSTANCE.play(Assets.Sounds.CHAINS);
-        hero.sprite.parent.add(new Chains(hero.sprite.center(),
+        attacker.sprite.parent.add(new Chains(
+                attacker.sprite.center(),
                 enemy.sprite.center(),
                 Effects.Type.CHAIN,
                 new Callback() {
+                    @Override
                     public void call() {
+                        // 锁链动画结束后再次检查
+                        if (!enemy.isAlive()
+                                || Actor.findChar(pulledPos) != null
+                                || enemy.sprite == null) {
+                            // 如果当前目标死亡，则尝试换一个目标
+                            PullTarget retry = choosePullTarget(attacker, defender);
+
+                            if (retry != null) {
+                                chainEnemy(attacker, defender, retry);
+                            } else {
+                                attacker.next();
+                            }
+                            return;
+                        }
+
                         Actor.add(new Pushing(enemy, enemy.pos, pulledPos, new Callback() {
+                            @Override
                             public void call() {
+                                // 动画结束后，再次确认敌人仍然存活
+                                if (!enemy.isAlive()) {
+                                    // 目标在移动期间死亡，则再次尝试选择其他目标
+                                    PullTarget retry =
+                                            choosePullTarget(attacker, defender);
+
+                                    if (retry != null) {
+                                        chainEnemy(attacker, defender, retry);
+                                    }
+
+                                    return;
+                                }
                                 enemy.pos = pulledPos;
 
-                                Invisibility.dispel(hero);
+                                //最终处理
+                                Invisibility.dispel(attacker);
                                 updateQuickslot();
 
                                 Dungeon.level.occupyCell(enemy);
@@ -167,7 +246,7 @@ public class VoidSword extends MeleeWeapon {
                                 GameScene.updateFog();
                             }
                         }));
-                        hero.next();
+                        attacker.next();
                     }
                 }));
     }
@@ -179,9 +258,29 @@ public class VoidSword extends MeleeWeapon {
         return Messages.get(this, "prompt");
     }
 
+    // 消耗全部充能（至少3点）
     @Override
     protected int baseChargeUse(Hero hero, Char target) {
-        return 10; // 消耗10充能
+        return 3;
+    }
+    @Override
+    public void beforeAbilityUsed(Hero hero, Char target) {
+        // 先执行父类扣除至少3点充能的逻辑
+        super.beforeAbilityUsed(hero, target);
+
+        Charger charger = Buff.affect(hero, Charger.class);
+
+        if (hero.belongings.weapon == this) {
+            // 主手武器：清空全部剩余充能和零头
+            charger.charges = 0;
+            charger.partialCharge = 0f;
+        } else {
+            // 副手武器：清空副手全部剩余充能和零头
+            charger.secondCharges = 0;
+            charger.secondPartialCharge = 0f;
+        }
+
+        updateQuickslot();
     }
 
     @Override
@@ -192,9 +291,36 @@ public class VoidSword extends MeleeWeapon {
             return;
         }
 
+        Charger charger = Buff.affect(hero, Charger.class);
+
+        float available;
+        if (hero.belongings.weapon == this) {
+            available = charger.charges + charger.partialCharge;
+        } else {
+            available = charger.secondCharges + charger.secondPartialCharge;
+        }
+
+        if (available < 3f) {
+            GLog.w(Messages.get(this, "ability_no_charge"));
+            return;
+        }
+
+        // 实际消耗的全部充能
+        int spentCharge = Math.max(3, (int)Math.floor(available));
+
+        // 5*5 基础半径是2，每额外3点充能扩大一圈
+        int radius = 2 + (spentCharge - 3) / 3;
+
+        // 每点充能提供6回合，没有基础43回合
+        int duration = spentCharge * 6;
+
+        // 30 + 10 × 武器等级的真实伤害
+        int bossDamage = 30 + 10 * buffedLvl();
+
+        // 这里会清空全部充能
         beforeAbilityUsed(hero, null);
 
-        Singularity dark = new Singularity();
+        Singularity dark = new Singularity(radius,bossDamage,duration);
         dark.pos = target;
         GameScene.add(dark);
         Buff.affect(hero,Point.class,43f);
@@ -232,10 +358,30 @@ public class VoidSword extends MeleeWeapon {
     };
 
     public static class Singularity extends NTNPC {
+        private static final String RADIUS = "radius";
+        private static final String BOSS_DAMAGE = "boss_damage";
+        private static final String LIFE = "life";
+
+        private int radius = 2;
+        private int bossDamage = 30;
+        private int life = 43;
 
         {
             spriteClass = SingularitySprite.class;
             properties.add(Property.UNKNOWN);
+        }
+
+        public Singularity() {
+        }
+
+        public Singularity(
+                int radius,
+                int bossDamage,
+                int life
+        ) {
+            this.radius = radius;
+            this.bossDamage = bossDamage;
+            this.life = life;
         }
 
         @Override
@@ -247,9 +393,9 @@ public class VoidSword extends MeleeWeapon {
             int cx = pos % w;
             int cy = pos / w;
 
-            // 1. 9*9范围内：持续定身 + 向奇点强制位移一格
-            for (int dy = -4; dy <= 4; dy++) {
-                for (int dx = -4; dx <= 4; dx++) {
+            // 1. 范围内：持续定身 + 向奇点强制位移一格
+            for (int dy = -radius; dy <= radius; dy++) {
+                for (int dx = -radius; dx <= radius; dx++) {
                     int nx = cx + dx;
                     int ny = cy + dy;
                     if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
@@ -293,16 +439,31 @@ public class VoidSword extends MeleeWeapon {
                 return true;
             }
 
+            life--;
+
+            if (life <= 0) {
+                destroy();
+                sprite.die();
+                return true;
+            }
+
             spend(TICK);
             return true;
         }
 
-        // 接触奇点：非boss直接死亡；boss受20%最大生命伤害并摧毁奇点，返回是否摧毁
+        // 接触奇点：非Boss直接死亡且不给予经验；Boss受到固定真实伤害并减少30回合持续时间
         private boolean onContact(Char ch) {
             if (ch.properties().contains(Char.Property.BOSS)) {
-                ch.damage(Math.round(ch.HT * 0.2f), this, DamageType.REAL);
-                return true;
+                ch.damage( bossDamage, this, DamageType.REAL);
+                life -= 30;
+                return life <= 0;
+
             } else {
+                if (ch instanceof Mob) {
+                    ((Mob) ch).EXP = 0;
+                    ((Mob) ch).maxLvl = -1;
+                }
+
                 ch.die(this);
                 return false;
             }
@@ -393,12 +554,18 @@ public class VoidSword extends MeleeWeapon {
         public void storeInBundle(Bundle bundle) {
             super.storeInBundle(bundle);
             bundle.put(POS, pos);
+            bundle.put(RADIUS, radius);
+            bundle.put(BOSS_DAMAGE, bossDamage);
+            bundle.put(LIFE, life);
         }
 
         @Override
         public void restoreFromBundle(Bundle bundle) {
             super.restoreFromBundle(bundle);
             pos = bundle.getInt(POS);
+            radius = bundle.getInt(RADIUS);
+            bossDamage = bundle.getInt(BOSS_DAMAGE);
+            life = bundle.getInt(LIFE);
         }
     }
 
@@ -459,7 +626,53 @@ public class VoidSword extends MeleeWeapon {
             b.reset(pos, radius);
         }
     }
+    //武技数值文本
+        @Override
+        public String abilityInfo() {
+            float available = 0;
 
+            if (Dungeon.hero != null) {
+                Charger charger = Buff.affect(
+                        Dungeon.hero,
+                        Charger.class
+                );
 
+                if (Dungeon.hero.belongings.weapon == this) {
+                    available = charger.charges + charger.partialCharge;
+                } else {
+                    available = charger.secondCharges + charger.secondPartialCharge;
+                }
+            }
+            int spentCharge = Math.max(3, (int)Math.floor(available));
+
+            // 计算范围字符串
+            int radius = 2 + (spentCharge - 3) / 3;
+            int size = radius * 2 + 1;
+            String range = size + "*" + size;
+
+            // 计算 Boss 真实伤害
+            int bossDamage = 30 + 10 * buffedLvl();
+
+            // 每点充能持续6回合
+            int duration = spentCharge * 6;
+
+            if (levelKnown) {
+                return Messages.get(
+                        this,
+                        "ability_desc",
+                        range,
+                        bossDamage,
+                        duration
+                );
+            } else {
+                return Messages.get(
+                        this,
+                        "typical_ability_desc",
+                        "5*5",
+                        30,
+                        18
+                );
+            }
+        }
 
 }
