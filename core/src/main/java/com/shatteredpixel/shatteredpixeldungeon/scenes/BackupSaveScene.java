@@ -20,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Component;
@@ -101,45 +102,65 @@ public class BackupSaveScene extends PixelScene {
         int w = Camera.main.width;
         int h = Camera.main.height;
 
-        // 中部备份列表面板的尺寸：宽度占满屏幕，高度为屏幕高度减去底部按钮区（45px）
+        // 中部备份列表面板的尺寸：
+        // 宽度占满屏幕，
         int panelWidth = Camera.main.width;
+        // 高度为屏幕高度减去底部按钮区（45px）
         int panelHeight = h - 45;
 
         // ---- 顶部标题 ----
+        // 这里的文本是 “存档备份”
         RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(this, "title"), 11);
-        title.hardlight(0x88CCEE); // 标题文字颜色：浅蓝色
-        title.setPos((w - title.width()) / 2f, MARGIN); // 水平居中，垂直方向位于顶部边距处
+        // 标题文字颜色：浅蓝色
+        title.hardlight(0x88CCEE);
+        // 设置UI元素的位置，水平居中，垂直方向位于顶部边距处
+        title.setPos((w - title.width()) / 2f, MARGIN);
+        // 对偏移像素做吸附处理
         align(title);
+        // 添加UI元素到成员组
         add(title);
 
         // ---- 右上角退出按钮 ----
+        // 创建退出按钮
         ExitButton btnExit = new ExitButton();
+        // 设置退出按钮的坐标
         btnExit.setPos(w - btnExit.width() - MARGIN, MARGIN);
         add(btnExit);
 
         // ---- 「清除全部备份」按钮（左上角）----
         // 点击后弹出确认对话框，确认后删除备份目录下所有 .mlsp 文件并刷新场景
+        // 这里的文本是 “全部清除”
         RedButton btnClearAll = new RedButton(Messages.get(this, "clear_all"), 7) {
             @Override
             protected void onClick() {
                 ShatteredPixelDungeon.scene().add(new WndOptions(
-                        Icons.get(Icons.WARNING), // 警告图标
-                        Messages.get(BackupSaveScene.class, "clear_all_title"), // 弹窗标题
-                        Messages.get(BackupSaveScene.class, "clear_all_msg"),   // 弹窗提示语
-                        Messages.get(BackupSaveScene.class, "confirm"),         // 确认按钮
-                        Messages.get(BackupSaveScene.class, "cancel")           // 取消按钮
+                        Icons.get(Icons.WARNING),                                  // 警告图标
+                        // 弹窗标题 这里的文本是 “确认清除全部备份？”
+                        Messages.get(BackupSaveScene.class, "clear_all_title"),
+                        // 弹窗提示语 这里的文本是 “该操作将删除所有备份文件，无法恢复。”
+                        Messages.get(BackupSaveScene.class, "clear_all_msg"),
+                        // 确认按钮 这里的文本是 “确认”
+                        Messages.get(BackupSaveScene.class, "confirm"),
+                        // 取消按钮 这里的文本是 “取消”
+                        Messages.get(BackupSaveScene.class, "cancel")
                 ) {
                     @Override
                     protected void onSelect(int index) {
                         // index == 0 表示用户点击了「确认」，执行清除操作
                         if (index == 0) {
+                            // 解析以获取句柄（文件位置、某文件夹）
                             FileHandle backupDir = Gdx.files.external(BACKUP_FOLDER);
+                            // 当存在这个文件夹时
                             if (backupDir.exists()) {
+                                // 获取文件列表
                                 FileHandle[] files = backupDir.list();
+                                // 文件夹不为空
                                 if (files != null) {
-                                    // 逐个删除扩展名为 .mlsp 的备份文件
+                                    // 增强for遍历文件列表
                                     for (FileHandle f : files) {
+                                        // 若以.mlsp拓展名结尾
                                         if (f.name().endsWith(MLSP_EXT)) {
+                                            // 删除文件
                                             f.delete();
                                         }
                                     }
@@ -152,12 +173,14 @@ public class BackupSaveScene extends PixelScene {
                 });
             }
         };
+        // UI元素尺寸设置
         btnClearAll.setSize(36, 20);
         btnClearAll.setPos(2, MARGIN);
         add(btnClearAll);
 
         // ---- 「导出存档」按钮（屏幕底部）----
         // 点击后唤起内部弹窗 WndChooseSlotExport，让用户选择要导出的存档槽位
+        // 这里的文本是 “存档备份”
         RedButton btnExport = new RedButton(Messages.get(this, "export_slot"), 7) {
             @Override
             protected void onClick() {
@@ -171,8 +194,10 @@ public class BackupSaveScene extends PixelScene {
         // ---- 中部备份列表面板（银灰色窗口样式九宫格背景）----
         NinePatch panel = Chrome.get(Chrome.Type.WINDOW_SILVER);
         panel.size(panelWidth, panelHeight);
-        panel.x = (w - panelWidth) / 2f; // 水平居中
-        panel.y = title.bottom() + GAP;  // 紧贴标题下方
+        // 水平居中
+        panel.x = (w - panelWidth) / 2f;
+        // 紧贴标题下方
+        panel.y = title.bottom() + GAP;
         align(panel);
         add(panel);
 
@@ -181,9 +206,12 @@ public class BackupSaveScene extends PixelScene {
         ScrollPane list = new ScrollPane(new Component()) {
             @Override
             public void onClick(float x, float y) {
+                // infos 就是开头声明的信息集合表
                 for (BackupInfo info : infos) {
+                    // 判断鼠标点击点位落在某个按钮的区域内
                     if (info.onClick(x, y)) {
-                        return; // 已被某个按钮消费，停止分发
+                        // 已被某个按钮消费，停止分发
+                        return;
                     }
                 }
             }
@@ -191,17 +219,21 @@ public class BackupSaveScene extends PixelScene {
         add(list);
 
         // ---- 扫描备份目录，收集所有 .mlsp 备份文件 ----
+        // 新建一个用于存放备份文件的变量
         ArrayList<BackupFile> backupList = new ArrayList<>();
         FileHandle backupDir = Gdx.files.external(BACKUP_FOLDER);
         if (backupDir.exists()) {
             try {
+                // 获取文件列表
                 FileHandle[] files = backupDir.list();
+                // 文件列表不为空且长度大于0（两个操作都是防空引用）
                 if (files != null && files.length > 0) {
                     // 只保留扩展名为 .mlsp 的文件，并记录文件名与最后修改时间
                     for (FileHandle f : files) {
                         if (f.name().endsWith(MLSP_EXT)) {
                             String fileName = f.name();
                             long lastModified = f.lastModified();
+                            // 将文件存入到先前创建的变量中
                             backupList.add(new BackupFile(fileName, f, lastModified));
                         }
                     }
@@ -219,7 +251,7 @@ public class BackupSaveScene extends PixelScene {
                 return;
             }
         } else {
-            // 备份目录不存在：视为暂无备份
+            // 备份目录不存在：视为「暂无备份」
             showEmptyMsg(w, h, Messages.get(this, "no_backups"), 0x88CCEE);
             return;
         }
@@ -234,6 +266,7 @@ public class BackupSaveScene extends PixelScene {
 
         // ---- 将 BackupInfo 布局到滚动面板的内容层中 ----
         Component content = list.content();
+        // 防御性清空
         content.clear();
         float posY = 0;
         for (BackupInfo info1 : infos) {
@@ -276,7 +309,7 @@ public class BackupSaveScene extends PixelScene {
      * @param slot 存档槽位编号（1~6）
      */
     public static void exportSlotToMLSP(int slot) {
-        // 检查该槽位是否有存档，空槽不允许导出
+        // 检查该槽位是否有存档，空槽不允许导出 「该槽位没有正在进行的存档，无法备份。」
         GamesInProgress.Info saveInfo = GamesInProgress.check(slot);
         if (saveInfo == null) {
             ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "export_empty_slot")));
@@ -290,37 +323,58 @@ public class BackupSaveScene extends PixelScene {
                 backupDirHandle.mkdirs(); // 首次导出时自动创建备份目录
             }
 
-            // 优先使用自定义种子，否则使用随机种子数值
-            String seedStr = saveInfo.customSeed.isEmpty() ? String.valueOf(saveInfo.seed) : saveInfo.customSeed;
-
-            // 文件名示例：slot1-ABCD1234.mlsp（种子转成可读的字母数字代码）
-            String fileName = String.format(Locale.US, "slot%s%s_%s%s", slot, "-", DungeonSeed.convertToCode(Long.parseLong(seedStr)), MLSP_EXT);
+            // 文件名示例：slot1-DTK-KSC-PVS.mlsp（自定义种子用原文，非自定义的根据随机到的种子用对应的种子码）
+            // String.format是按格式拼接字符串，
+            // 第一个参数Locale.US指的是按美国格式，第二个参数是预设计的格式，
+            // 第三个参数是存档的槽位编号，第四个参数是种子码并将不符合windows文件命名规范的字符替换为下划线且当名字只剩下划线时返回unknown作为文件名，
+            // 第五个参数是我们设定的备份存档文件的拓展名
+            String fileName = String.format(Locale.US, "slot%d-%s%s", slot, sanitizeForFileName(seedText(saveInfo)), MLSP_EXT);
             FileHandle mlspHandle = backupDirHandle.child(fileName);
 
             // 以 ZIP 方式写出 .mlsp 文件：只打包该槽位目录下扩展名为 .dat 的数据文件
+            // mlspHandle.write(false) 以覆写方式打开一个文件，返回值为一个输出流（OutputStream）指向我们先前定义的存档文件，这会覆盖旧备份文件，若再在写过程中发生异常则会破坏旧备份
+            // ZipOutputStream是将此赋予此输出流以zip的语义，能记住当前在写哪个条目、对每个条目做DEFAULT压缩、在 close() 时补写中央目录和结束记录（所以必须关否则会丢失部分标识性内容）
             try (ZipOutputStream zos = new ZipOutputStream(mlspHandle.write(false))) {
+                // 打开存档文件夹记录其中的每个文件的文件名（当然也包括子文件夹）
                 ArrayList<String> fileList = FileUtils.filesInDir(slotFolder);
+                // 遍历存档文件夹里的每个文件
                 for (String fname : fileList) {
+                    // 只对.dat文件做操作，这一般是存储数据的文件
                     if (fname.endsWith(".dat")) {
+                        // 因为只有文件名，所以要根据文件名补全文件路径
                         String fullPath = slotFolder + "/" + fname;
+                        // 根据补全的文件路径打开文件
                         FileHandle datHandle = FileUtils.getFileHandle(fullPath);
+                        // 读取并存储数据到data变量
                         byte[] data = datHandle.readBytes();
 
                         // 每个 .dat 文件作为一个 ZIP 条目写入，条目名沿用原文件名
                         ZipEntry entry = new ZipEntry(fname);
+                        // 打开条目
                         zos.putNextEntry(entry);
+                        // 写条目
                         zos.write(data);
+                        // 关闭条目
                         zos.closeEntry();
                     }
                 }
             }
 
-            // 导出成功提示 + 刷新场景
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "export_success", fileName)));
-            ShatteredPixelDungeon.switchNoFade(BackupSaveScene.class);
-        } catch (IOException e) {
+            // 重建一个界面并重新显示但不播放切换界面动画，也许可以改为局部重建
+            ShatteredPixelDungeon.switchNoFade(BackupSaveScene.class, new Game.SceneChangeCallback() {
+                @Override public void beforeCreate() { }
+
+                @Override public void afterCreate() {
+                    // 导出成功提示 「备份已创建：%s」
+                    ShatteredPixelDungeon.scene().addToFront(
+                            new WndMessage(Messages.get(BackupSaveScene.class, "export_success", fileName)));
+                }
+            });
+        // 这里我将异常捕获对象从IOException替换成了Exception e
+        } catch (Exception e) {
             // 导出失败：上报异常并提示
             ShatteredPixelDungeon.reportException(e);
+            // 「导出失败！」
             ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "export_fail")));
         }
     }
@@ -441,6 +495,31 @@ public class BackupSaveScene extends PixelScene {
         text.setPos((w - text.width()) / 2f, (h - text.height()) / 2f);
         align(text);
         add(text);
+    }
+
+    /**
+     * 取用于显示与命名的种子文本。
+     *
+     * customSeed 存的是玩家输入的原始文本（可能是种子码，也可能是任意自定义文字），
+     * 不能按数字解析；只有没有自定义种子时，才把随机种子数值转成种子码。
+     */
+    private static String seedText(GamesInProgress.Info info) {
+        if (info.customSeed != null && !info.customSeed.isEmpty()) {
+            return info.customSeed;
+        }
+        try {
+            return DungeonSeed.convertToCode(info.seed);
+        } catch (IllegalArgumentException e) {
+            return String.valueOf(info.seed);
+        }
+    }
+
+    /**
+     * 把种子文本转成能安全放进文件名的片段（去掉 Windows 不允许的字符）。
+     */
+    private static String sanitizeForFileName(String text) {
+        String safe = text.replaceAll("[\\\\/:*?\"<>|\\s]", "_");
+        return safe.isEmpty() ? "unknown" : safe;
     }
 
     /**
@@ -585,13 +664,11 @@ public class BackupSaveScene extends PixelScene {
 
             // ---- 详情正文：多行文本 ----
             RenderedTextBlock message = PixelScene.renderTextBlock(7);
-            // 优先使用自定义种子，否则使用随机种子数值
-            String seed = info.customSeed.isEmpty() ? String.valueOf(info.seed) : info.customSeed;
-            // 依次填充：等级、层数、种子代码、副职业、生命值、力量
+            // 依次填充：等级、层数、种子、专精、生命值、力量
             String text = Messages.get(BackupSaveScene.class, "info_text",
                     info.level,
                     info.depth,
-                    DungeonSeed.convertToCode(Long.parseLong(seed)),
+                    seedText(info),
                     info.subClass.title(),
                     info.hp,
                     info.str
