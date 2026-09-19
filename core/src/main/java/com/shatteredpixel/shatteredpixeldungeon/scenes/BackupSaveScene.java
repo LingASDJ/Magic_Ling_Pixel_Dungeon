@@ -221,7 +221,7 @@ public class BackupSaveScene extends PixelScene {
 
             String seedStr = saveInfo.customSeed.isEmpty() ? String.valueOf(saveInfo.seed) : saveInfo.customSeed;
 
-            String fileName = String.format(Locale.US, "slot%s%s_%s%s", slot, "-", DungeonSeed.convertToCode(Long.parseLong(seedStr)), MLSP_EXT);
+            String fileName = String.format(Locale.US, "slot%d-%s%s", slot, sanitizeForFileName(seedText(saveInfo)), MLSP_EXT);
             FileHandle mlspHandle = backupDirHandle.child(fileName);
 
             try (ZipOutputStream zos = new ZipOutputStream(mlspHandle.write(false))) {
@@ -662,5 +662,30 @@ public class BackupSaveScene extends PixelScene {
         public float height() {
             return Math.max(24, super.height());
         }
+    }
+
+    /**
+     * 取用于显示与命名的种子文本。
+     *
+     * customSeed 存的是玩家输入的原始文本（可能是种子码，也可能是任意自定义文字），
+     * 不能按数字解析；只有没有自定义种子时，才把随机种子数值转成种子码。
+     */
+    private static String seedText(GamesInProgress.Info info) {
+        if (info.customSeed != null && !info.customSeed.isEmpty()) {
+            return info.customSeed;
+        }
+        try {
+            return DungeonSeed.convertToCode(info.seed);
+        } catch (IllegalArgumentException e) {
+            return String.valueOf(info.seed);
+        }
+    }
+
+    /**
+     * 把种子文本转成能安全放进文件名的片段（去掉 Windows 不允许的字符）。
+     */
+    private static String sanitizeForFileName(String text) {
+        String safe = text.replaceAll("[\\\\/:*?\"<>|\\s]", "_");
+        return safe.isEmpty() ? "unknown" : safe;
     }
 }
