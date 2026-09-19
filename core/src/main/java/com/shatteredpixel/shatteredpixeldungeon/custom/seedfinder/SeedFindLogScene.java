@@ -12,13 +12,17 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.ui.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class SeedFindLogScene extends PixelScene {
 
@@ -29,6 +33,10 @@ public class SeedFindLogScene extends PixelScene {
     public static Thread thread;
     public static Component content;
     public WndTextInput wndTextInput;
+
+    public static boolean powerMode = false;
+    public static SeedResult lastResult = null;
+    public static int searchedFloors = 15;
 
     public static int safeParseInt(String str, int defaultValue) {
         try {
@@ -64,17 +72,6 @@ public class SeedFindLogScene extends PixelScene {
         list = new ScrollPane(new Component());
         add(list);
         content = list.content();
-
-        ExitButton btnExit = new ExitButton() {
-            @Override
-            protected void onClick() {
-                stopSearchAndCleanup();
-                ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
-                System.gc();
-            }
-        };
-        btnExit.setPos(Camera.main.width - btnExit.width(), 0);
-        add(btnExit);
 
         // 查找进行中：恢复显示状态
         if (thread != null && thread.isAlive()) {
@@ -143,6 +140,7 @@ public class SeedFindLogScene extends PixelScene {
                     list.scrollTo(0, 0);
 
                     final int finalFloor = floor;
+                    searchedFloors = finalFloor;
 
                     // 启动新线程前先终止旧线程
                     stopSearchThread();
@@ -151,7 +149,11 @@ public class SeedFindLogScene extends PixelScene {
                         SeedResult res;
                         try {
                             // 接收SeedResult对象，修复类型不匹配
-                            res = new SeedFinder().findSeed(itemList, finalFloor);
+                            if(SPDSettings.PlusSearch()){
+                                res = new SeedFinder().findSeedParallel(itemList, finalFloor,SPDSettings.PlusThread());
+                            } else {
+                                res = new SeedFinder().findSeed(itemList, finalFloor);
+                            }
                         } catch (Exception e) {
                             Gdx.app.error("SeedFinder", "Search failed", e);
                             // 异常构造失败结果
@@ -221,6 +223,17 @@ public class SeedFindLogScene extends PixelScene {
             }
         });
 
+        ExitButton btnExit = new ExitButton() {
+            @Override
+            protected void onClick() {
+                stopSearchAndCleanup();
+                ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
+                System.gc();
+            }
+        };
+        btnExit.setPos(Camera.main.width - btnExit.width(), 0);
+        add(btnExit);
+
         fadeIn();
     }
 
@@ -240,9 +253,8 @@ public class SeedFindLogScene extends PixelScene {
 
     private static void stopSearchThread() {
         SeedFinder.findingStatus = SeedFinder.FINDING.STOP;
-        if (thread != null && thread.isAlive()) {
-            thread.interrupt();
-        }
+        SeedFinder.parallelFound = true;
+        if (thread != null && thread.isAlive()) thread.interrupt();
         thread = null;
     }
 
@@ -256,7 +268,8 @@ public class SeedFindLogScene extends PixelScene {
     @Override
     protected void onBackPressed() {
         stopSearchAndCleanup();
-        ShatteredPixelDungeon.switchScene(SeedFinderScene.class);
+        ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
+        System.gc();
     }
 
     public static class CreditsBlock extends Component {
@@ -291,4 +304,116 @@ public class SeedFindLogScene extends PixelScene {
             height = Math.max(height, topY - top());
         }
     }
+
+    /** 查种成功后询问是否保存记录 */
+    private static void promptSaveRecord(final SeedResult res) {
+        ShatteredPixelDungeon.scene().addToFront(new WndOptions(
+                Messages.get(SeedFindLogScene.class, "save_title"),
+                Messages.get(SeedFindLogScene.class, "save_body"),
+                Messages.get(SeedFindLogScene.class, "save_yes"),
+                Messages.get(SeedFindLogScene.class, "save_no")) {
+            @Override protected void onSelect(int index) {
+                if (index == 0) {
+                    SeedRecord rec = new SeedRecord();
+                    rec.seed = res.seedStr;
+                    try {
+                        rec.seedCode = DungeonSeed.convertToCode(Long.parseLong(res.seedStr));
+                    } catch (Exception e) {
+                        rec.seedCode = res.seedStr;
+                    }
+                    rec.challenges = SPDSettings.challenges();
+                    rec.floors = searchedFloors;
+                    rec.condition = "";
+                    rec.time = System.currentTimeMillis();
+                    rec.matchedInfo = new ArrayList<>(res.matchedInfo);
+                    rec.floorItems = res.floorItems != null ? res.floorItems : new java.util.HashMap<>();
+                    SeedRecordManager.saveRecord(rec);
+                    ShatteredPixelDungeon.scene().addToFront(new WndError(Icons.CATALOG,
+                            Messages.get(SeedFindLogScene.class, "saved_title"),
+                            Messages.get(SeedFindLogScene.class, "saved_body")));
+                }
+            }
+        });
+    }
+
+    /** 打开记录管理 */
+    private static void showRecords() {
+        final List<SeedRecord> records = SeedRecordManager.loadAll();
+        if (records.isEmpty()) {
+            ShatteredPixelDungeon.scene().addToFront(new WndOptions(Icons.get(Icons.CATALOG),
+                    Messages.get(SeedFindLogScene.class, "records_title"),
+                    Messages.get(SeedFindLogScene.class, "records_empty")));
+            return;
+        }
+        String[] titles = new String[records.size()];
+        for (int i = 0; i < records.size(); i++) titles[i] = records.get(i).getDisplayTitle();
+
+        ShatteredPixelDungeon.scene().addToFront(new WndOptions(
+                Messages.get(SeedFindLogScene.class, "records_count", records.size()),"",
+                titles) {
+            @Override protected void onSelect(int index) {
+                showRecordActions(records, index);
+            }
+        });
+    }
+
+    private static void showRecordActions(final List<SeedRecord> records, final int index) {
+        final SeedRecord rec = records.get(index);
+        List<String> opts = new ArrayList<>();
+        opts.add(Messages.get(SeedFindLogScene.class, "action_detail"));
+        if (lastResult != null) opts.add(Messages.get(SeedFindLogScene.class, "action_compare_last"));
+        for (int i = 0; i < records.size(); i++) {
+            if (i != index) opts.add(Messages.get(SeedFindLogScene.class, "action_compare_with",
+                    records.get(i).getDisplayTitle()));
+        }
+        opts.add(Messages.get(SeedFindLogScene.class, "action_delete"));
+
+        ShatteredPixelDungeon.scene().addToFront(new WndOptions(rec.getDisplayTitle(),"",
+                opts.toArray(new String[0])) {
+            @Override protected void onSelect(int sel) {
+                if (sel == 0) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(Messages.get(SeedFindLogScene.class, "detail_seed", rec.seedCode)).append("\n");
+                    sb.append(Messages.get(SeedFindLogScene.class, "detail_range", rec.floors)).append("\n");
+                    sb.append(Messages.get(SeedFindLogScene.class, "detail_matched")).append("\n");
+                    for (String m : rec.matchedInfo)
+                        sb.append(" - ").append(m).append("\n");
+                    ShatteredPixelDungeon.scene().addToFront(new WndError(Icons.CATALOG,
+                            Messages.get(SeedFindLogScene.class, "detail_title"), sb.toString()));
+                    return;
+                }
+                int compareBase = 1;
+                boolean hasLast = lastResult != null;
+                if (hasLast && sel == compareBase) {
+                    SeedRecord cur = new SeedRecord();
+                    cur.seedCode = Messages.get(SeedFindLogScene.class, "current_result");
+                    cur.floorItems = lastResult.floorItems != null ? lastResult.floorItems : new java.util.HashMap<>();
+                    String cmp = SeedRecordManager.compare(cur, rec);
+                    ShatteredPixelDungeon.scene().addToFront(new WndError(Icons.CATALOG,
+                            Messages.get(SeedFindLogScene.class, "compare_result_title"), cmp));
+                    return;
+                }
+                int compareIdx = hasLast ? (sel - compareBase - 1) : (sel - compareBase);
+                int otherCount = 0;
+                int otherRecordIndex = -1;
+                for (int i = 0; i < records.size(); i++) {
+                    if (i == index) continue;
+                    if (otherCount == compareIdx) { otherRecordIndex = i; break; }
+                    otherCount++;
+                }
+                if (otherRecordIndex >= 0) {
+                    String cmp = SeedRecordManager.compare(records.get(otherRecordIndex), rec);
+                    ShatteredPixelDungeon.scene().addToFront(new WndError(Icons.CATALOG,
+                            Messages.get(SeedFindLogScene.class, "compare_result_title"), cmp));
+                } else {
+                    SeedRecordManager.deleteRecord(index);
+                    ShatteredPixelDungeon.scene().addToFront(new WndError(Icons.CATALOG,
+                            Messages.get(SeedFindLogScene.class, "deleted_title"),
+                            Messages.get(SeedFindLogScene.class, "deleted_body")));
+                }
+            }
+        });
+    }
+
+
 }

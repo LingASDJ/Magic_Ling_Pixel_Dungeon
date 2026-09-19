@@ -1171,6 +1171,15 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_PLUSSEACH, false );
 	}
 
+	public static final String KEY_PLUSTR = "plussearchts";
+
+	public static void PlusThread( int value ){
+		put( KEY_PLUSTR, value);
+	}
+	public static int PlusThread(){
+		return getInt(KEY_PLUSTR, 1 );
+	}
+
 	public static void ignoreBlacklist( boolean value ) {
 		put( KEY_IGNOREBLACKLIST, value );
 	}
