@@ -37,7 +37,7 @@ public class Gregorian {
     private static long eventEndTime = 0;
 
     private static final int MID_AUTUMN_PRE_DAYS = 10;    // 中秋节前天数
-    private static final int MID_AUTUMN_POST_DAYS = 7;   // 中秋节后天数
+    private static final int MID_AUTUMN_POST_DAYS = 13;   // 中秋节后天数
     private static final int DEV_BIRTHDAY_START = 22;     // 开发者生日开始日
     private static final int DEV_BIRTHDAY_END = 28;       // 开发者生日结束日
     private static final int DRAGON_BOAT_POST_DAYS = 7;    // 端午节后天数
@@ -105,8 +105,8 @@ public class Gregorian {
      */
     private static void checkMidAutumnFestival(Lunar lunar) {
         boolean isRegularMidAutumn = lunar.getMonth() == 8 &&
-                (lunar.getDay() >= 15 &&
-                        lunar.getDay() < 15 + MID_AUTUMN_POST_DAYS);
+                (lunar.getDay() >= 8 &&
+                        lunar.getDay() < 8 + MID_AUTUMN_POST_DAYS);
 
         if (isRegularMidAutumn) {
             chinaHoliday = RegularLevel.ChinaHoliday.ZQJ;
