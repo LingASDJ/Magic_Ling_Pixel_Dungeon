@@ -1,4 +1,6 @@
-package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
+package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.INFINITE_ACCURACY;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -9,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KusumiMagicGirl;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -16,8 +19,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
-
-import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.INFINITE_ACCURACY;
 
 //钉入矛
 //五阶，力量需求18
@@ -27,7 +28,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.INFINITE_ACCU
 //武技：刻骨连钉，消耗1充能，对+1攻击距离以内的1个目标造成一次必中伤害，随后再使用副手武器对其造成一次必中伤害。
 // 副手武器造成伤害时也可以触发钉入矛的特效。
 // 如果没有副手武器，则使用钉入矛连续攻击两次。
-public class NailingSpear extends MeleeWeapon{
+public class NailingSpear extends MeleeWeapon {
     {
         image = ItemSpriteSheet.DING;
 

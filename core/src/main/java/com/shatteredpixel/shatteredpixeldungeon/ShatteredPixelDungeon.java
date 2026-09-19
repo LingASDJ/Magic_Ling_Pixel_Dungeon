@@ -22,8 +22,12 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.custom.Gift;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.DeepseaKnightAnchor;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.DenorScythe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.DoomsdayScepter;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.DoorPlank;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.MorningStar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.NailingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.SouthPointSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.StaffofMyriadThings;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.CursedBlade;
@@ -115,6 +119,22 @@ public class ShatteredPixelDungeon extends Game {
 		com.watabou.utils.Bundle.addAlias(
 				SouthPointSword.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow" );
+
+		com.watabou.utils.Bundle.addAlias(
+				DoorPlank.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword" );
+
+		com.watabou.utils.Bundle.addAlias(
+				DeepseaKnightAnchor.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WitheWoodSword" );
+
+		com.watabou.utils.Bundle.addAlias(
+				DoomsdayScepter.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe" );
+
+		com.watabou.utils.Bundle.addAlias(
+				NailingSpear.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe" );
 
 		/** @parma-第二轮武器迭代-END */
 
