@@ -102,7 +102,7 @@ public class ShatteredPixelDungeon extends Game {
 
 		com.watabou.utils.Bundle.addAlias(
 				LifeCutter.class,
-				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LongSword" );
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword" );
 
 		com.watabou.utils.Bundle.addAlias(
 				StaffofMyriadThings.class,
