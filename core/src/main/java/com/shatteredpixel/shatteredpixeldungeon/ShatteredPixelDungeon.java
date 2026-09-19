@@ -22,8 +22,14 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.custom.Gift;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.DenorScythe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.MorningStar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.SouthPointSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.StaffofMyriadThings;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.CursedBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.ExorcistMaul;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.KillKing;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.LifeCutter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.QuickSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.SpikedChakram;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TheDrip;
@@ -65,7 +71,7 @@ public class ShatteredPixelDungeon extends Game {
 			}
 		}
 
-		/** 第二轮武器 */
+		/** @parma-第二轮武器 */
 		com.watabou.utils.Bundle.addAlias(
 				KillKing.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk" );
@@ -87,12 +93,34 @@ public class ShatteredPixelDungeon extends Game {
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield" );
 
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stone.class,
-				"com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone" );
+				ExorcistMaul.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail" );
 
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ExorcistMaul.class,
+				LifeCutter.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LongSword" );
+
+		com.watabou.utils.Bundle.addAlias(
+				StaffofMyriadThings.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe" );
+
+		com.watabou.utils.Bundle.addAlias(
+				MorningStar.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana" );
+
+		com.watabou.utils.Bundle.addAlias(
+				DenorScythe.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade" );
+
+		com.watabou.utils.Bundle.addAlias(
+				SouthPointSword.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow" );
+
+		/** @parma-第二轮武器迭代-END */
+
+		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stone.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone" );
 
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword.class,
