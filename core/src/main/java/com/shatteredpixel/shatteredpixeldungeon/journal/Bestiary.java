@@ -107,6 +107,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRong;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.BloodsSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DM111;
@@ -523,7 +524,7 @@ public enum Bestiary {
 		ALLY.addEntities(MirrorImage.class, PrismaticImage.class,
 				DriedRose.GhostHero.class,
 				WandOfWarding.Ward.class, WandOfWarding.Ward.WardSentry.class, WandOfLivingEarth.EarthGuardian.class,
-				ShadowClone.ShadowAlly.class, SmokeBomb.NinjaLog.class, SpiritHawk.HawkAlly.class, MiniSaka.class, MageHand.class);
+				ShadowClone.ShadowAlly.class, SmokeBomb.NinjaLog.class, SpiritHawk.HawkAlly.class, MiniSaka.class, MageHand.class, MiniCerberus.class);
 
 		TRAP.addEntities(
 				WornDartTrap.class, PoisonDartTrap.class, DisintegrationTrap.class, GatewayTrap.class,DeadSoulTrap.class,

@@ -528,6 +528,8 @@ public class Assets {
 		public static final String ANSDOSHIP    = "sounds/ansdoship.mp3";
 		public static final String MINE    = "sounds/mine.mp3";
 
+		public static final String DOGWOOF    = "sounds/puppy_bark.ogg";
+
 		public static final String[] all = new String[]{
 				CLICK, BADGE, GOLD,
 
@@ -540,7 +542,7 @@ public class Assets {
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
 				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, ANSDOSHIP,MINE,
-				DOG_ANAGY
+				DOG_ANAGY, DOGWOOF
 		};
 	}
 
@@ -1022,6 +1024,8 @@ public class Assets {
 		//PETS
 		public static final String SKFSBABY	= "sprites/pets/sakababy.png";
 		public static final String SMSLIGHT	= "sprites/pets/smlt.png";
+
+		public static final String SMACERS	= "sprites/pets/cerberus_jr.png";
 
 		public static final String REDWRAITH	= "sprites/bluewraith.png";
 

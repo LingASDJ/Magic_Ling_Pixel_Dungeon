@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DogStick;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.EasterEgg;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
@@ -430,6 +431,12 @@ public class ShopRoom extends SpecialRoom {
 		if(passwordbadges.contains(PaswordBadges.Badge.RESET_DAY)) {
 			if (Random.Int(4) == 0) {
 				itemsToSpawn.add(new SakaFishSketon());
+			}
+		}
+
+		if(passwordbadges.contains(PaswordBadges.Badge.DOG_TOUCH)) {
+			if (Random.Int(4) == 0) {
+				itemsToSpawn.add(new DogStick());
 			}
 		}
 
