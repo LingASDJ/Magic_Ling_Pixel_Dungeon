@@ -393,7 +393,7 @@ public class HeroSelectScene extends PixelScene {
 //					}
 //				}
 //
-//			}
+//			}1
 //
 //			@Override
 //			protected String hoverText() {
