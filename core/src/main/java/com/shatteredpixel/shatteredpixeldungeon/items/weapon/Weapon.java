@@ -70,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.TimeRe
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.*;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.DenorScythe;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;

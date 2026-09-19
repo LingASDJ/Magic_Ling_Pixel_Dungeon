@@ -1,6 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.DenorScythe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.ExorcistMaul;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.LifeCutter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TheDrip;
 
 import java.util.ArrayList;
@@ -540,17 +543,17 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky.LuckProc.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.TimeReset.MobsWither.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow.ChargedShot.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DenorScythe.ExtendedReach.class);
+        buffClasses.add(DenorScythe.ExtendedReach.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade.Cooldown.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade.DeathCurse.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade.DeathCurseTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade.SkyRoll.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade.TrialModeBuff.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade.TurbulentFlameHeart.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ExorcistMaul.QuMoHuDun.class);
+        buffClasses.add(ExorcistMaul.QuMoHuDun.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword.RunicSlashTracker.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeCutter.SplitMark.class);
+        buffClasses.add(LifeCutter.SplitMark.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch.MagicLight.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon.Charger.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff.DefensiveStance.class);

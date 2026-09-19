@@ -201,23 +201,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BoomSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.CursedBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dairikyan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DeepseaKnightAnchor;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DenorScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DoomsdayScepter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DoorPlank;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DragonShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ExorcistMaul;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FiveRen;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
@@ -226,17 +220,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceLingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.JunglePoison;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeCutter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MerchantSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MorningStar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.NailingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
@@ -244,9 +234,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Seekingspear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SouthPointSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.SouthPointSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.StaffofMyriadThings;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.VoidSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
@@ -263,11 +252,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDa
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.Break;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.CursedBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.DenorScythe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.ExorcistMaul;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.KillKing;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.LifeCutter;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.MorningStar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.QuickSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.ReedPipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.RitualSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.SpikedChakram;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.StaffofMyriadThings;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TheDrip;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TragicCode;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TreeList;
@@ -621,13 +616,13 @@ public class Generator {
 					0};
 
 			WEP_T4.classes = new Class<?>[]{
-					Longsword.class,
-					ExorcistMaul.class,  // 20260821 0.9.51+ 战斧（BattleAxe）替换为诅咒战锤（ExorcistMaul）
-					Flail.class,
+					LifeCutter.class,
+					ExorcistMaul.class,
+					StaffofMyriadThings.class,
 
-					AssassinsBlade.class,
-					Crossbow.class,
-					Katana.class,
+					DenorScythe.class,
+					SouthPointSword.class,
+					MorningStar.class,
 					GrilledHerring.class,
 
 					Seekingspear.class,
@@ -641,12 +636,7 @@ public class Generator {
 					SDBSword.class,
 					KingSword.class,
 
-					LifeCutter.class,           // 临时加入 断生者
-					StaffofMyriadThings.class,  // 临时加入 万象之杖
-					MorningStar.class,          // 临时加入 晨星
-					SouthPointSword.class,      // 临时加入 指南剑
-					DenorScythe.class,          // 临时加入 德诺尔镰刀
-					VoidSword.class,            // 临时加入 虚空剑
+					VoidSword.class,
 			};
 			WEP_T4.probs = new float[]{6, 5, 4, 4, 4, 2, 3, 7,
 					SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName()) ? 4f : 0,
@@ -656,12 +646,8 @@ public class Generator {
 
 					Badges.isUnlocked(Badges.Badge.KILL_SM) ? 3 : 0,
 					Badges.isUnlocked(Badges.Badge.BOSS_CHALLENGE_4) ? 3 : 0,
-					0,                  // 临时加入 断生者
-					0,                  // 临时加入 万象之杖
-					0,                  // 临时加入 晨星
-					0, 					// 临时加入 指南剑
-					0,                  // 临时加入 德诺尔镰刀
-					0,                  // 临时加入 虚空剑
+
+					3
 			};
 
 			WEP_T5.classes = new Class<?>[]{
