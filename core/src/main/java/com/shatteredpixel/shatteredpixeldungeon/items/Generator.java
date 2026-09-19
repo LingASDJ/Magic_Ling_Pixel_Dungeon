@@ -213,8 +213,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDa
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.Break;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.KillKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.ReedPipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.RitualSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.SpikedChakram;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TragicCode;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TreeList;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.thanks.GrilledHerring;
@@ -537,14 +539,12 @@ public class Generator {
 					MerchantSword.class,
 					Spear.class,
 					TreeList.class,
-					Dirk.class,
-					Sickle.class,
-					KillKing.class,       // 临时加入 弑君
-					SpikedChakram.class,  // 临时加入 尖刺轮盘
-					Shovel.class,         // 临时加入 铲子
+					KillKing.class,
+					SpikedChakram.class,
+					Shovel.class,
 					Pickaxe.class,
 			};
-			WEP_T2.defaultProbs = new float[]{2, 2, 2, 2, 2, 2, 0, 0, 0, 0};
+			WEP_T2.defaultProbs = new float[]{2, 2, 2, 2, 2, 2, 2, 0};
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 
 			WEP_T3.classes = new Class<?>[]{

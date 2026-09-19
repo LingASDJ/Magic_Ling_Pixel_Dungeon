@@ -34,7 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KillKing;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.KillKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
