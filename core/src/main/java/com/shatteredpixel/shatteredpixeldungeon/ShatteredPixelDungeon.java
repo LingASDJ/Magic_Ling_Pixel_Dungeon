@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.custom.Gift;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.SpikedChakram;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.KillKing;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.EulaScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GoScene;
@@ -59,6 +61,15 @@ public class ShatteredPixelDungeon extends Game {
 				SPDSettings.unlockItem("skin_4_hr");
 			}
 		}
+
+		/** 第二轮武器 */
+		com.watabou.utils.Bundle.addAlias(
+				KillKing.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk" );
+
+		com.watabou.utils.Bundle.addAlias(
+				SpikedChakram.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle" );
 
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stone.class,
