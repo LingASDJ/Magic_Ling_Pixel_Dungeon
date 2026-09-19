@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.landscape;
 import static com.watabou.utils.DeviceCompat.isDesktop;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -85,7 +86,7 @@ public class WndSettings extends WndTabbed {
 
 		float height;
 
-		int width = PixelScene.landscape() ? WIDTH_L : WIDTH_P;
+		int width = landscape() ? WIDTH_L : WIDTH_P;
 
 		display = new DisplayTab();
 		display.setSize(width, 0);
@@ -920,6 +921,10 @@ public class WndSettings extends WndTabbed {
 
 		CheckBox PlusBranch;
 
+		CheckBox PlusSeach;
+
+		OptionSlider SeedThread;
+
 		@Override
 		protected void createChildren() {
 			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
@@ -1027,6 +1032,70 @@ public class WndSettings extends WndTabbed {
 			};
 			PlusBranch.checked(SPDSettings.logBranch());
 			add(PlusBranch);
+
+			PlusSeach = new CheckBox( Messages.get(this, "plus_search") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					if (checked()) {
+						checked(!checked());
+						ShatteredPixelDungeon.scene().add(new WndOptions(new Image(Icons.get(Icons.WARNING)),
+								Messages.get(SeedfinderTab.class, "plus"),
+								Messages.get(SeedfinderTab.class, "plus_desc"),
+								Messages.get(DisplayTab.class, "okay"),
+								Messages.get(DisplayTab.class, "cancel")) {
+							@Override
+							protected void onSelect(int index) {
+								if (index == 0) {
+									checked(!checked());
+									SPDSettings.PlusSearch(checked());
+									if(SPDSettings.PlusSearch()){
+										SeedThread.active = true;
+										SeedThread.visible = true;
+									}
+								}
+							}
+						});
+					} else {
+						SPDSettings.PlusSearch(checked());
+						if(!SPDSettings.PlusSearch()){
+							SeedThread.active = false;
+							SeedThread.visible = false;
+						}
+					}
+				}
+			};
+			PlusSeach.checked(SPDSettings.PlusSearch());
+			add(PlusSeach);
+
+			SeedThread = new OptionSlider(Messages.get(this, "seed_thread"),
+					"1", "4", 1,  4) {
+				@Override
+				protected void onChange() {
+					SPDSettings.PlusThread(getSelectedValue());
+					// reload scene for floor number desc
+					ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
+						@Override
+						public void beforeCreate() {
+						}
+
+						@Override
+						public void afterCreate() {
+							//do nothing
+						}
+					});
+				}
+				@Override
+				public int getTitleTextSize(){
+					return 6;
+				}
+			};
+			if(!SPDSettings.PlusSearch()){
+				SeedThread.active = false;
+				SeedThread.visible = false;
+			}
+			SeedThread.setSelectedValue(SPDSettings.PlusThread());
+			add(SeedThread);
 		}
 
 		@Override
@@ -1044,7 +1113,17 @@ public class WndSettings extends WndTabbed {
 
 			btnChallenges.setRect(0, numFloors.bottom() + GAP, width / 2 - 1, BTN_HEIGHT);
 			btnMode.setRect(width/2 + 1, numFloors.bottom() + GAP, width / 2, BTN_HEIGHT);
+
 			PlusBranch.setRect(0, btnMode.bottom() + GAP, width, BTN_HEIGHT);
+			if(landscape()){
+				PlusSeach.setRect(0, PlusBranch.bottom() + GAP, width/2f, BTN_HEIGHT);
+				SeedThread.setRect(PlusSeach.right(), PlusBranch.bottom() + GAP, width/2f, BTN_HEIGHT);
+			} else {
+				PlusSeach.setRect(0, PlusBranch.bottom() + GAP, width, BTN_HEIGHT);
+				SeedThread.setRect(0, PlusSeach.bottom() + GAP, width, BTN_HEIGHT);
+			}
+
+
 		}
 
 	}
@@ -1535,7 +1614,7 @@ public class WndSettings extends WndTabbed {
 
 						Window credits = new Window(0, 0, Chrome.get(Chrome.Type.TOAST));
 
-						int w = PixelScene.landscape() ? 120 : 80;
+						int w = landscape() ? 120 : 80;
 						if (totalCredits >= 25) w *= 1.5f;
 
 						RenderedTextBlock title = PixelScene.renderTextBlock(9);
@@ -1576,7 +1655,7 @@ public class WndSettings extends WndTabbed {
 			sep2.y = y;
 			y += 2;
 
-			int cols = PixelScene.landscape() ? COLS_L : COLS_P;
+			int cols = landscape() ? COLS_L : COLS_P;
 			int btnWidth = (int)Math.floor((width - (cols-1)) / cols);
 			for (RedButton btn : lanBtns){
 				btn.setRect(x, y, btnWidth, BTN_HEIGHT);

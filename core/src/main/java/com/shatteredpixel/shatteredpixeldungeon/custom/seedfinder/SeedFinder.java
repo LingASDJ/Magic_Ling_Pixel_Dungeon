@@ -51,8 +51,10 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class SeedFinder {
 	enum Condition {ANY, ALL}
@@ -654,4 +656,163 @@ public class SeedFinder {
 		for (boolean b : array) if (!b) return false;
 		return true;
 	}
+
+	// ===== 新增：强力查种（3 线程分片） =====
+	public static volatile boolean parallelFound = false;
+	/** Dungeon 是全局静态状态，多线程操作必须串行化 */
+	public static final Object DUNGEON_LOCK = new Object();
+
+	public static volatile long[] parallelSeeds = new long[4];
+
+	public SeedResult findSeedParallel(String[] wanted, int floors, int threadCount) {
+		itemList = new ArrayList<>(Arrays.asList(wanted));
+		findingStatus = FINDING.CONTINUE;
+		parallelFound = false;
+		Options.condition = SPDSettings.seedfinderConditionANY() ? Condition.ANY : Condition.ALL;
+		startTimer();
+		matchedFloorInfo.clear();
+
+		// 清零每个线程的当前种子槽位
+		for (int t = 0; t < parallelSeeds.length; t++) parallelSeeds[t] = -1;
+
+		final SeedResult emptyResult = new SeedResult("NONE", "", new ArrayList<>(), false);
+		long startSeed = Random.Long(DungeonSeed.TOTAL_SEEDS);
+		final long total = DungeonSeed.TOTAL_SEEDS;
+
+		final java.util.concurrent.atomic.AtomicReference<SeedResult> resultRef =
+				new java.util.concurrent.atomic.AtomicReference<>();
+
+		Thread[] workers = new Thread[threadCount];
+		for (int t = 0; t < threadCount; t++) {
+			final int tid = t;
+
+			// 把 total 均匀切成 threadCount 个连续大段，段与段之间不重叠、间隔很大
+			long seg = total / threadCount;
+			final long segStart = tid * seg;
+			final long segEnd = (tid == threadCount - 1) ? total : (tid + 1) * seg;
+
+			workers[t] = new Thread(() -> {
+				for (long i = segStart; i < segEnd
+						&& !parallelFound && findingStatus == FINDING.CONTINUE; i++) {
+
+					if (Thread.currentThread().isInterrupted()) return;
+
+					final long seedValue = (startSeed + i) % total;
+					final String seedStr = Long.toString(seedValue);
+
+					parallelSeeds[tid] = seedValue;
+
+					// 只让 tid==0 负责刷 UI，避免三个线程同时 postRunnable 刷屏
+					if (tid == 0 && i % UI_UPDATE_INTERVAL == 0) {
+						Gdx.app.postRunnable(() -> {
+							if (!SeedFindLogScene.isSceneActive()) return;
+							if (SeedFindLogScene.r == null) return;
+
+							StringBuilder sb = new StringBuilder();
+							sb.append(Messages.get(SeedFinder.class, "seedfinder")).append("\n\n")
+									.append(Messages.get(SeedFinder.class, "seedfinder_mode")).append(Options.condition).append("\n\n")
+									.append("  ").append(Messages.get(SeedFinder.class, "threads", threadCount)).append("\n\n")
+									.append(Messages.get(SeedFinder.class, "challenges_code"))
+									.append(SPDSettings.challenges()).append("\n\n")
+									.append(Messages.get(SeedFinder.class, "finder_time")).append(getElapsedTime())
+									.append("\n\n");
+
+							// 把每个线程当前在测的种子都列出来
+							for (int ts = 0; ts < threadCount; ts++) {
+								long s = parallelSeeds[ts];
+								if (s >= 0) {
+									sb.append(Messages.get(SeedFinder.class, "thread_seed", ts + 1, s)).append("\n");
+								}
+							}
+
+							SeedFindLogScene.r.text(sb.toString());
+							SeedFindLogScene.r.setPos(
+									SeedFindLogScene.uiCamera.width / 3f,
+									SeedFindLogScene.uiCamera.height / 3f);
+						});
+					}
+
+					synchronized (DUNGEON_LOCK) {
+						if (parallelFound || findingStatus != FINDING.CONTINUE) return;
+						matchedFloorInfo.clear();
+						if (testSeedALL(seedStr, floors)) {
+							parallelFound = true;
+							String logText = logSeedItems(seedStr, floors, SPDSettings.challenges());
+							Map<Integer, List<String>> floorItems = collectFloorItems(seedStr, floors);
+							SeedResult r = new SeedResult(logText, seedStr, new ArrayList<>(matchedFloorInfo), true);
+							r.floorItems = floorItems;
+							resultRef.set(r);
+							return;
+						}
+					}
+				}
+			});
+			workers[t].setName("SeedFinder-Worker-" + tid);
+			workers[t].setDaemon(true);
+		}
+
+		for (Thread w : workers) w.start();
+		try {
+			for (Thread w : workers) w.join();
+		} catch (InterruptedException e) {
+			findingStatus = FINDING.STOP;
+			for (Thread w : workers) w.interrupt();
+			running = false;
+			return emptyResult;
+		}
+
+		running = false;
+		findingStatus = FINDING.STOP;
+		SeedResult r = resultRef.get();
+		return r != null ? r : emptyResult;
+	}
+
+
+	/** 为对比用，结构化收集每层物品名（不含黑名单） */
+	public Map<Integer, List<String>> collectFloorItems(String seed, int floors) {
+		Map<Integer, List<String>> result = new HashMap<>();
+		try {
+			Dungeon.isDLC(Conducts.Conduct.SEED);
+			SPDSettings.customSeed(seed);
+			Dungeon.initSeed();
+			GamesInProgress.selectedClass = HeroClass.WARRIOR;
+			Dungeon.init();
+
+			if (blacklist == null) {
+				blacklist = Arrays.asList(
+						Gold.class, Dewdrop.class, IronKey.class, GoldenKey.class, CrystalKey.class, EnergyCrystal.class,
+						CorpseDust.class, Embers.class, CeremonialCandle.class, Pickaxe.class);
+			}
+
+			for (int i = 0; i < floors; i++) {
+				int originalBranch = Dungeon.branch;
+				Dungeon.branch = 0;
+				Level l = Dungeon.newLevel();
+				if (l == null || l instanceof DeadEndLevel) {
+					Dungeon.branch = originalBranch;
+					Dungeon.depth++;
+					continue;
+				}
+				List<String> items = new ArrayList<>();
+				ArrayList<Heap> heaps = new ArrayList<>(l.heaps.valueList());
+				heaps.addAll(getMobDrops(l));
+				for (Heap h : heaps) {
+					for (Item item : h.items) {
+						item.identify();
+						if (blacklist.contains(item.getClass())) continue;
+						items.add(item.title().toLowerCase());
+					}
+				}
+				result.put(Dungeon.depth, items);
+				Dungeon.branch = originalBranch;
+				Dungeon.depth++;
+			}
+		} finally {
+			Dungeon.depth = 0;
+			Dungeon.branch = 0;
+		}
+		return result;
+	}
+
+
 }
