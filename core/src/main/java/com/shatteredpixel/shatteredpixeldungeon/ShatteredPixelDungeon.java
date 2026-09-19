@@ -22,8 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.custom.Gift;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.SpikedChakram;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.CursedBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.KillKing;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.QuickSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.SpikedChakram;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TheDrip;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.EulaScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GoScene;
@@ -70,6 +73,18 @@ public class ShatteredPixelDungeon extends Game {
 		com.watabou.utils.Bundle.addAlias(
 				SpikedChakram.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle" );
+
+		com.watabou.utils.Bundle.addAlias(
+				TheDrip.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar" );
+
+		com.watabou.utils.Bundle.addAlias(
+				QuickSword.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield" );
+
+		com.watabou.utils.Bundle.addAlias(
+				CursedBlade.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield" );
 
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stone.class,

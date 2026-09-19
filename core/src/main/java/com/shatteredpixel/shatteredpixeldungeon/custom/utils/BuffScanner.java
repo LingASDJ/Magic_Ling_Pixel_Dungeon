@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TheDrip;
 
 import java.util.ArrayList;
 
@@ -558,7 +559,7 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai.ComboStrikeTrackerStats.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar.SwordDance.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle.HarvestBleedTracker.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.TheDrip.HolderTracker.class);
+        buffClasses.add(TheDrip.HolderTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow.Recharge.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow.ChargedShot.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.KingAxe.ArmorNoFear.class);
