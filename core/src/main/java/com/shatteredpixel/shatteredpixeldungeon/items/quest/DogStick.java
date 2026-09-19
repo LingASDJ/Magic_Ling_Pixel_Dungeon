@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
@@ -13,7 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -29,89 +28,79 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class SakaFishSketon extends Item {
+public class DogStick extends Item {
 
-    public static final String AC_SummonFish = "SummonFish";
-    public static final String AC_Died_SummonFish = "SummonFishDied";
+    public static final String AC_SummonDog = "SummonDog";
+    public static final String AC_Died_SummonDog = "SummonDogDied";
 
-    public int waterlevel = 0;
-
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        waterlevel = bundle.getInt("waterlevel");
-    }
-
-    public void storeInBundle(Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put("waterlevel", waterlevel);
-    }
+    public int fireLevel = 0;
 
     {
-        image = ItemSpriteSheet.FISHSKELETON;
+        image = ItemSpriteSheet.DOGSTICK;
         stackable = true;
-        defaultAction = AC_SummonFish;
+        defaultAction = AC_SummonDog;
     }
 
     @Override
     public ItemSprite.Glowing glowing() {
-        return waterlevel == 1 ? new ItemSprite.Glowing(0xFCE9CC, 6f) : null;
+        return fireLevel == 1 ? new ItemSprite.Glowing(0xE7971D, 6f) : null;
     }
 
     @Override
     public String defaultAction() {
         boolean needToSpawn = true;
-        boolean needNoDog = true;
+        boolean needNoFish = true;
 
-        for (Mob mob : Dungeon.level.mobs) {
-            if (mob instanceof MiniCerberus) {
-                needNoDog = false;
+        for (Mob mob : Dungeon.level.mobs){
+            if (mob instanceof MiniSaka) {
+                needNoFish = false;
                 break;
             }
         }
+
         for (Mob mob : Dungeon.level.mobs){
-            if (mob instanceof MiniSaka) {
+            if (mob instanceof MiniCerberus) {
                 needToSpawn = false;
                 break;
             }
         }
 
-        if (waterlevel == 1 && !needToSpawn && needNoDog){
-            return AC_Died_SummonFish;
-        } else if(hero.buff(CoolDownStoneRecharge.class) == null && needNoDog){
-            return AC_SummonFish;
+        if (fireLevel == 1 && !needToSpawn){
+            return AC_Died_SummonDog;
+        } else if(hero.buff(CoolDownStoneRecharge.class) == null && needNoFish) {
+            return AC_SummonDog;
         } else {
             return AC_THROW;
         }
     }
 
-    public ArrayList<String> actions( Hero hero ) {
+    public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
         boolean needToSpawn = true;
+        boolean needNoFish = true;
 
-        boolean needNoDog = true;
-
-        for (Mob mob : Dungeon.level.mobs) {
-            if (mob instanceof MiniCerberus) {
-                needNoDog = false;
+        for (Mob mob : Dungeon.level.mobs){
+            if (mob instanceof MiniSaka) {
+                needNoFish = false;
                 break;
             }
         }
 
         for (Mob mob : Dungeon.level.mobs){
-            if (mob instanceof MiniSaka) {
+            if (mob instanceof MiniCerberus) {
                 needToSpawn = false;
                 break;
             }
         }
 
-        if (hero.buff(CoolDownStoneRecharge.class) != null && waterlevel == 1){
-            waterlevel = 0;
+        if (hero.buff(CoolDownStoneRecharge.class) != null && fireLevel == 1){
+            fireLevel = 0;
         }
 
-        if (needToSpawn && hero.buff(CoolDownStoneRecharge.class) == null && needNoDog){
-            actions.add(AC_SummonFish);
-        } else if(hero.buff(CoolDownStoneRecharge.class) == null && needNoDog) {
-            actions.add(AC_Died_SummonFish);
+        if (needToSpawn && hero.buff(CoolDownStoneRecharge.class) == null && needNoFish){
+            actions.add(AC_SummonDog);
+        } else if(hero.buff(CoolDownStoneRecharge.class) == null && needNoFish) {
+            actions.add(AC_Died_SummonDog);
         }
 
         return actions;
@@ -121,50 +110,50 @@ public class SakaFishSketon extends Item {
     public void execute(Hero hero, String action ) {
 
         super.execute(hero, action);
-        PotionOfHealing potionOfHealing= hero.belongings.getItem(PotionOfHealing.class);
-        if (action.equals(AC_SummonFish)) {
-            if(potionOfHealing != null && waterlevel < 1){
+        PotionOfLiquidFlame potionOfLiquidFlame = hero.belongings.getItem(PotionOfLiquidFlame.class);
+        if (action.equals(AC_SummonDog)) {
+            if(potionOfLiquidFlame != null && fireLevel < 1){
                 GameScene.show(new WndOptions(new ItemSprite(this),
-                        Messages.titleCase( Messages.get(this, "saka")),
+                        Messages.titleCase( Messages.get(this, "dog")),
                         Messages.get(this, "wnd_body"),
                         Messages.get(this, "wnd_set"),
                         Messages.get(this, "wnd_return")){
                     @Override
                     protected void onSelect(int index) {
                         if (index == 0){
-                            waterlevel = 1;
-                            potionOfHealing.detach( hero.belongings.backpack );
+                            fireLevel = 1;
+                            potionOfLiquidFlame.detach( hero.belongings.backpack );
                             hero.sprite.operate(hero.pos);
                             hero.busy();
-                            GLog.p(Messages.get(SakaFishSketon.class, "you_active"));
+                            GLog.p(Messages.get(DogStick.class, "you_active"));
                         }
                     }
                 });
-            } else if(waterlevel == 1){
+            } else if(fireLevel == 1){
                 hero.sprite.operate(hero.pos, () ->{
-                   ArrayList<Integer> respawnPoints = new ArrayList<>();
-                   for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-                       int p = hero.pos + PathFinder.NEIGHBOURS8[i];
-                       if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
-                           respawnPoints.add(p);
-                       }
-                   }
-                   if (!respawnPoints.isEmpty()) {
-                       MiniSaka fish = new MiniSaka();
-                       fish.pos = respawnPoints.get(Random.index( respawnPoints ));
-                       GameScene.add(fish);
-                       fish.state = fish.WANDERING;
-                       fish.sprite.emitter().burst(Speck.factory(Speck.STAR), 10);
-                       hero.sprite.idle();
-                       Bestiary.setSeen(fish.getClass());
-                   }
+                    ArrayList<Integer> respawnPoints = new ArrayList<>();
+                    for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+                        int p = hero.pos + PathFinder.NEIGHBOURS8[i];
+                        if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
+                            respawnPoints.add(p);
+                        }
+                    }
+                    if (!respawnPoints.isEmpty()) {
+                        MiniCerberus dogPet = new MiniCerberus();
+                        dogPet.pos = respawnPoints.get(Random.index( respawnPoints ));
+                        GameScene.add(dogPet);
+                        dogPet.state = dogPet.WANDERING;
+                        dogPet.sprite.emitter().burst(Speck.factory(Speck.STAR), 10);
+                        hero.sprite.idle();
+                        Bestiary.setSeen(dogPet.getClass());
+                    }
                 });
             } else {
-                GLog.w(Messages.get(SakaFishSketon.class, "you_must_potion"));
+                GLog.w(Messages.get(DogStick.class, "you_must_potion"));
             }
-        } else if (action.equals(AC_Died_SummonFish)) {
+        } else if (action.equals(AC_Died_SummonDog)) {
             GameScene.show(new WndOptions(new ItemSprite(this),
-                    Messages.titleCase( Messages.get(this, "saka2")),
+                    Messages.titleCase( Messages.get(this, "dog2")),
                     Messages.get(this, "wnd2_body"),
                     Messages.get(this, "wnd2_set"),
                     Messages.get(this, "wnd2_return")){
@@ -172,20 +161,18 @@ public class SakaFishSketon extends Item {
                 protected void onSelect(int index) {
                     if (index == 0){
                         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-                            if (mob instanceof MiniSaka) {
+                            if (mob instanceof MiniCerberus) {
                                 mob.die(null);
                             }
                         }
-                        waterlevel = 0;
+                        fireLevel = 0;
                         Buff.affect(hero, CoolDownStoneRecharge.class, CoolDownStoneRecharge.DURATION);
                         hero.sprite.operate(hero.pos);
                         hero.busy();
-                        GLog.w(Messages.get(SakaFishSketon.class, "pets_died"));
+                        GLog.w(Messages.get(DogStick.class, "pets_died"));
                     }
                 }
             });
-
-
         }
     }
 
@@ -201,11 +188,7 @@ public class SakaFishSketon extends Item {
 
     @Override
     public int value() {
-        if(Statistics.sakaBackStage>=2){
-            return quantity * 1250;
-        } else {
-            return quantity * 50;
-        }
+        return quantity * 50;
     }
 
     public static class CoolDownStoneRecharge extends FlavourBuff {
@@ -224,13 +207,13 @@ public class SakaFishSketon extends Item {
             boolean needToSpawn = true;
 
             for (Mob mob : Dungeon.level.mobs){
-                if (mob instanceof MiniSaka) {
+                if (mob instanceof MiniCerberus) {
                     needToSpawn = false;
                     break;
                 }
             }
             if (needToSpawn && hero.buff(CoolDownStoneRecharge.class) == null){
-                GLog.p( Messages.get(SakaFishSketon.class, "charged") );
+                GLog.p( Messages.get(DogStick.class, "charged") );
             }
             return true;
         }
@@ -242,7 +225,7 @@ public class SakaFishSketon extends Item {
 
         @Override
         public void tintIcon(Image icon) {
-            icon.hardlight(0xFCE9CC);
+            icon.hardlight(0xDA6600);
         }
 
         @Override
@@ -256,5 +239,13 @@ public class SakaFishSketon extends Item {
         }
     }
 
-}
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        fireLevel = bundle.getInt("firelevel");
+    }
 
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put("firelevel", fireLevel);
+    }
+}

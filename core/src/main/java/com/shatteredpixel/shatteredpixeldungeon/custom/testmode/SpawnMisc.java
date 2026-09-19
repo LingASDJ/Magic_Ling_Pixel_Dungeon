@@ -108,6 +108,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.MagicBook;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DogStick;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DragonWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
@@ -440,6 +441,7 @@ public class SpawnMisc extends TestItem {
             miscList2.add(UnsignedInvitationLetter.class);
             miscList2.add(LostBackpack.class);
             miscList2.add(OldSunShadow.class);
+            miscList2.add(DogStick.class);
         }
     }
 

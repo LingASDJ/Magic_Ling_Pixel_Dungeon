@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
@@ -641,7 +642,7 @@ public class Dungeon {
 					respawnPoints.add( p );
 				}
 			}
-			if (respawnPoints.size() > 0) {
+			if (!respawnPoints.isEmpty()) {
 				BloodBat bat = new BloodBat();
 				bat.pos = respawnPoints.get(Random.index(respawnPoints));
 				bat.state = bat.WANDERING;
@@ -654,6 +655,12 @@ public class Dungeon {
 				saka.state = bat.WANDERING;
 				Dungeon.level.mobs.add( saka );
 				Actor.add( saka );
+
+				MiniCerberus cerberus = new MiniCerberus();
+				cerberus.pos = respawnPoints.get(Random.index(respawnPoints));
+				cerberus.state = bat.WANDERING;
+				Dungeon.level.mobs.add( cerberus );
+				Actor.add( cerberus );
 			}
 		}
 
