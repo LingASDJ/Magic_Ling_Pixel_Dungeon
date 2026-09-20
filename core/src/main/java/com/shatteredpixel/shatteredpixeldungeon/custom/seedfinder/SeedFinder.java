@@ -84,12 +84,26 @@ public class SeedFinder {
 	ArrayList<String> itemList;
 	private final List<String> matchedFloorInfo = new ArrayList<>();
 
-	private static final int UI_UPDATE_INTERVAL = 1;
 	private long startTime;
 	private volatile boolean running;
 
+	/** 场景轮询显示的计时快照（跨线程只读，不依赖搜索实例） */
+	public static volatile long uiStartTime = 0;
+
+	public static String getUiElapsedTime() {
+		if (uiStartTime == 0) {
+			return "00:00:00";
+		}
+		long elapsedMillis = System.currentTimeMillis() - uiStartTime;
+		long seconds = (elapsedMillis / 1000) % 60;
+		long minutes = (elapsedMillis / (1000 * 60)) % 60;
+		long hours = (elapsedMillis / (1000 * 60 * 60)) % 24;
+		return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+	}
+
 	public void startTimer() {
 		startTime = System.currentTimeMillis();
+		uiStartTime = startTime;
 		running = true;
 	}
 
@@ -112,6 +126,10 @@ public class SeedFinder {
 		startTimer();
 		matchedFloorInfo.clear();
 
+		// 单线程搜索：进度由 SeedFindLogScene.update() 轮询显示，写槽 0
+		searchThreadCount = 1;
+		parallelSeeds.set(0, -1);
+
 		SeedResult emptyResult = new SeedResult("NONE", "", new ArrayList<>(), false);
 		long startSeed = Random.Long(DungeonSeed.TOTAL_SEEDS);
 
@@ -124,22 +142,8 @@ public class SeedFinder {
 			long seedValue = (startSeed + i) % DungeonSeed.TOTAL_SEEDS;
 			String seedStr = Long.toString(seedValue);
 
-			if (i % UI_UPDATE_INTERVAL == 0) {
-				final String displaySeed = seedStr;
-				Gdx.app.postRunnable(() -> {
-					if (!SeedFindLogScene.isSceneActive()) return;
-					if (!Thread.interrupted() && SeedFindLogScene.r != null) {
-						SeedFindLogScene.r.text(
-								Messages.get(SeedFinder.class, "seedfinder") + "\n\n" +
-										Messages.get(SeedFinder.class, "seedfinder_mode") +
-										Options.condition + "\n\n" + Messages.get(SeedFinder.class, "challenges_code") + SPDSettings.challenges() +
-										"\n\n" + Messages.get(SeedFinder.class, "finder_time") + getElapsedTime() +
-										"\n\n" + Messages.get(SeedFinder.class, "seed_code") +
-										displaySeed);
-						SeedFindLogScene.r.setPos(SeedFindLogScene.uiCamera.width / 3f, SeedFindLogScene.uiCamera.height / 3f);
-					}
-				});
-			}
+			// 只写共享状态，不再向渲染线程投递 postRunnable
+			parallelSeeds.set(0, seedValue);
 
 			matchedFloorInfo.clear();
 			if (testSeedALL(seedStr, floor)) {
@@ -662,7 +666,10 @@ public class SeedFinder {
 	/** Dungeon 是全局静态状态，多线程操作必须串行化 */
 	public static final Object DUNGEON_LOCK = new Object();
 
-	public static volatile long[] parallelSeeds = new long[4];
+	/** 当前搜索线程数，供 SeedFindLogScene 轮询显示 */
+	public static volatile int searchThreadCount = 1;
+
+	public static final java.util.concurrent.atomic.AtomicLongArray parallelSeeds = new java.util.concurrent.atomic.AtomicLongArray(4);
 
 	public SeedResult findSeedParallel(String[] wanted, int floors, int threadCount) {
 		itemList = new ArrayList<>(Arrays.asList(wanted));
@@ -673,7 +680,8 @@ public class SeedFinder {
 		matchedFloorInfo.clear();
 
 		// 清零每个线程的当前种子槽位
-		for (int t = 0; t < parallelSeeds.length; t++) parallelSeeds[t] = -1;
+		searchThreadCount = threadCount;
+		for (int t = 0; t < parallelSeeds.length(); t++) parallelSeeds.set(t, -1);
 
 		final SeedResult emptyResult = new SeedResult("NONE", "", new ArrayList<>(), false);
 		long startSeed = Random.Long(DungeonSeed.TOTAL_SEEDS);
@@ -700,38 +708,9 @@ public class SeedFinder {
 					final long seedValue = (startSeed + i) % total;
 					final String seedStr = Long.toString(seedValue);
 
-					parallelSeeds[tid] = seedValue;
+					parallelSeeds.set(tid, seedValue);
 
-					// 只让 tid==0 负责刷 UI，避免三个线程同时 postRunnable 刷屏
-					if (tid == 0 && i % UI_UPDATE_INTERVAL == 0) {
-						Gdx.app.postRunnable(() -> {
-							if (!SeedFindLogScene.isSceneActive()) return;
-							if (SeedFindLogScene.r == null) return;
-
-							StringBuilder sb = new StringBuilder();
-							sb.append(Messages.get(SeedFinder.class, "seedfinder")).append("\n\n")
-									.append(Messages.get(SeedFinder.class, "seedfinder_mode")).append(Options.condition).append("\n\n")
-									.append("  ").append(Messages.get(SeedFinder.class, "threads", threadCount)).append("\n\n")
-									.append(Messages.get(SeedFinder.class, "challenges_code"))
-									.append(SPDSettings.challenges()).append("\n\n")
-									.append(Messages.get(SeedFinder.class, "finder_time")).append(getElapsedTime())
-									.append("\n\n");
-
-							// 把每个线程当前在测的种子都列出来
-							for (int ts = 0; ts < threadCount; ts++) {
-								long s = parallelSeeds[ts];
-								if (s >= 0) {
-									sb.append(Messages.get(SeedFinder.class, "thread_seed", ts + 1, s)).append("\n");
-								}
-							}
-
-							SeedFindLogScene.r.text(sb.toString());
-							SeedFindLogScene.r.setPos(
-									SeedFindLogScene.uiCamera.width / 3f,
-									SeedFindLogScene.uiCamera.height / 3f);
-						});
-					}
-
+					// 只写共享状态，UI 由 SeedFindLogScene.update() 统一轮询，杜绝投递洪峰
 					synchronized (DUNGEON_LOCK) {
 						if (parallelFound || findingStatus != FINDING.CONTINUE) return;
 						matchedFloorInfo.clear();

@@ -38,6 +38,10 @@ public class SeedFindLogScene extends PixelScene {
     public static SeedResult lastResult = null;
     public static int searchedFloors = 15;
 
+    private static final long UI_UPDATE_INTERVAL_MS = 100L;
+    private long lastUiUpdate = 0;
+    private String lastUiText = "";
+
     public static int safeParseInt(String str, int defaultValue) {
         try {
             return Integer.parseInt(str);
@@ -235,6 +239,41 @@ public class SeedFindLogScene extends PixelScene {
         add(btnExit);
 
         fadeIn();
+    }
+
+    @Override
+    public void update() {
+        super.update();
+
+        Thread t = thread;
+        if (t == null || !t.isAlive() || r == null) return;
+
+        long now = System.currentTimeMillis();
+        if (now - lastUiUpdate < UI_UPDATE_INTERVAL_MS) return;
+        lastUiUpdate = now;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(Messages.get(SeedFinder.class, "seedfinder")).append("\n\n")
+                .append(Messages.get(SeedFinder.class, "seedfinder_mode")).append(SeedFinder.Options.condition).append("\n\n")
+                .append("  ").append(Messages.get(SeedFinder.class, "threads", SeedFinder.searchThreadCount)).append("\n\n")
+                .append(Messages.get(SeedFinder.class, "challenges_code"))
+                .append(SPDSettings.challenges()).append("\n\n")
+                .append(Messages.get(SeedFinder.class, "finder_time")).append(SeedFinder.getUiElapsedTime())
+                .append("\n\n");
+
+        for (int ts = 0; ts < SeedFinder.searchThreadCount; ts++) {
+            long s = SeedFinder.parallelSeeds.get(ts);
+            if (s >= 0) {
+                sb.append(Messages.get(SeedFinder.class, "thread_seed", ts + 1, s)).append("\n");
+            }
+        }
+
+        String text = sb.toString();
+        if (text.equals(lastUiText)) return;
+        lastUiText = text;
+
+        r.text(text);
+        r.setPos(uiCamera.width / 3f, uiCamera.height / 3f);
     }
 
     /**
