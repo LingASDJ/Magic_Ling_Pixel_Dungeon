@@ -1069,7 +1069,7 @@ public class WndSettings extends WndTabbed {
 			add(PlusSeach);
 
 			SeedThread = new OptionSlider(Messages.get(this, "seed_thread"),
-					"1", "4", 1,  4) {
+					"1", "8", 1,  8) {
 				@Override
 				protected void onChange() {
 					SPDSettings.PlusThread(getSelectedValue());

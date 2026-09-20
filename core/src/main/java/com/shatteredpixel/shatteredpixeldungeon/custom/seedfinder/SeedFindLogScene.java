@@ -200,8 +200,14 @@ public class SeedFindLogScene extends PixelScene {
                             if (finalRes.success) {
                                 StringBuilder msg = new StringBuilder();
 
+                                String resCode;
+                                try {
+                                    resCode = DungeonSeed.convertToCode(Long.parseLong(finalRes.seedStr));
+                                } catch (Exception e) {
+                                    resCode = finalRes.seedStr;
+                                }
                                 msg.append(Messages.get(SeedFindLogScene.class, "found_seed"))
-                                        .append(finalRes.seedStr).append("\n");
+                                        .append(resCode).append(" (").append(finalRes.seedStr).append(")\n");
                                 msg.append(Messages.get(SeedFindLogScene.class, "code"))
                                         .append(SPDSettings.challenges()).append("\n\n");
 
@@ -264,7 +270,13 @@ public class SeedFindLogScene extends PixelScene {
         for (int ts = 0; ts < SeedFinder.searchThreadCount; ts++) {
             long s = SeedFinder.parallelSeeds.get(ts);
             if (s >= 0) {
-                sb.append(Messages.get(SeedFinder.class, "thread_seed", ts + 1, s)).append("\n");
+                String seedCode;
+                try {
+                    seedCode = DungeonSeed.convertToCode(s);
+                } catch (Exception e) {
+                    seedCode = Long.toString(s);
+                }
+                sb.append(Messages.get(SeedFinder.class, "thread_seed", ts + 1, seedCode)).append("\n");
             }
         }
 

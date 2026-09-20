@@ -669,7 +669,17 @@ public class SeedFinder {
 	/** 当前搜索线程数，供 SeedFindLogScene 轮询显示 */
 	public static volatile int searchThreadCount = 1;
 
-	public static final java.util.concurrent.atomic.AtomicLongArray parallelSeeds = new java.util.concurrent.atomic.AtomicLongArray(4);
+	public static final java.util.concurrent.atomic.AtomicLongArray parallelSeeds = new java.util.concurrent.atomic.AtomicLongArray(8);
+
+	/** 强力查种：单个区间覆盖的种子偏移数量 */
+	public static final long SEGMENT_SIZE = 100_000L;
+	/** 强力查种：单个区间超过该时长（毫秒）仍未命中，则所有线程切换到下一个区间 */
+	public static final long SEGMENT_TIMEOUT_MS = 5_000L;
+
+	/** 每个线程当前切片的起始种子偏移（跨线程只读，供日志/UI） */
+	public static volatile long[] segmentBaseOffsets = new long[8];
+	/** 每个线程当前种子池（区间起点）的种子值，15s 未命中换池后随之更新（供 UI 9 字母 Code 显示） */
+	public static volatile long[] segmentBaseSeeds = new long[8];
 
 	public SeedResult findSeedParallel(String[] wanted, int floors, int threadCount) {
 		itemList = new ArrayList<>(Arrays.asList(wanted));
@@ -687,6 +697,10 @@ public class SeedFinder {
 		long startSeed = Random.Long(DungeonSeed.TOTAL_SEEDS);
 		final long total = DungeonSeed.TOTAL_SEEDS;
 
+		// 段内切片替换：每线程段内按 SEGMENT_SIZE 切片，15s 未命中跳下一片
+		for (int t2 = 0; t2 < segmentBaseOffsets.length; t2++) segmentBaseOffsets[t2] = -1;
+		for (int t2 = 0; t2 < segmentBaseSeeds.length; t2++) segmentBaseSeeds[t2] = -1;
+
 		final java.util.concurrent.atomic.AtomicReference<SeedResult> resultRef =
 				new java.util.concurrent.atomic.AtomicReference<>();
 
@@ -694,18 +708,52 @@ public class SeedFinder {
 		for (int t = 0; t < threadCount; t++) {
 			final int tid = t;
 
-			// 把 total 均匀切成 threadCount 个连续大段，段与段之间不重叠、间隔很大
+			// 恢复全量分片：线程 tid 负责 [segStart, segEnd) 连续大段，互不重叠
 			long seg = total / threadCount;
 			final long segStart = tid * seg;
 			final long segEnd = (tid == threadCount - 1) ? total : (tid + 1) * seg;
 
 			workers[t] = new Thread(() -> {
-				for (long i = segStart; i < segEnd
-						&& !parallelFound && findingStatus == FINDING.CONTINUE; i++) {
+				// 每线程负责段内一个随机区间（种子池）；15s 未命中或池测完则完全随机 roll 一次
+				long maxSliceStart = segEnd - SEGMENT_SIZE;
+				long sliceStart = (maxSliceStart > segStart) ? (segStart + Random.Long(maxSliceStart - segStart + 1)) : segStart;
+				long sliceEnd = Math.min(sliceStart + SEGMENT_SIZE, segEnd);
+				long sliceStartTime = System.currentTimeMillis();
+				segmentBaseOffsets[tid] = sliceStart;
+				segmentBaseSeeds[tid] = (startSeed + sliceStart) % total;
 
+				long local = sliceStart;
+
+				while (!parallelFound && findingStatus == FINDING.CONTINUE) {
 					if (Thread.currentThread().isInterrupted()) return;
 
-					final long seedValue = (startSeed + i) % total;
+					// 切片超时（15s 未命中）→ 段内跳下一片
+					long now = System.currentTimeMillis();
+					if (now - sliceStartTime >= SEGMENT_TIMEOUT_MS) {
+						// 15s 未命中 → 池子完全随机 roll 一次，不再有序推进
+						if (maxSliceStart <= segStart) return;
+						sliceStart = segStart + Random.Long(maxSliceStart - segStart + 1);
+						sliceEnd = Math.min(sliceStart + SEGMENT_SIZE, segEnd);
+						sliceStartTime = System.currentTimeMillis();
+						local = sliceStart;
+						segmentBaseOffsets[tid] = sliceStart;
+						segmentBaseSeeds[tid] = (startSeed + sliceStart) % total;
+					}
+
+					// 当前切片已测完（未超时）→ 直接进入下一片
+					if (local >= sliceEnd) {
+						// 池测完未超时 → 直接随机 roll 一个新池
+						if (maxSliceStart <= segStart) return;
+						sliceStart = segStart + Random.Long(maxSliceStart - segStart + 1);
+						sliceEnd = Math.min(sliceStart + SEGMENT_SIZE, segEnd);
+						sliceStartTime = System.currentTimeMillis();
+						local = sliceStart;
+						segmentBaseOffsets[tid] = sliceStart;
+						segmentBaseSeeds[tid] = (startSeed + sliceStart) % total;
+						continue;
+					}
+
+					final long seedValue = (startSeed + local) % total;
 					final String seedStr = Long.toString(seedValue);
 
 					parallelSeeds.set(tid, seedValue);
@@ -724,6 +772,8 @@ public class SeedFinder {
 							return;
 						}
 					}
+
+					local++;
 				}
 			});
 			workers[t].setName("SeedFinder-Worker-" + tid);
