@@ -122,6 +122,10 @@ public class MLPDAboutScene extends PixelScene {
                 left = 32;
                 top = 32;
                 break;
+            case "TELLER":
+                left = 32;
+                top = 32;
+                break;
         }
         return new Image(Assets.Interfaces.ABOUT_ICONS,left,top,16,16);
     }
@@ -403,7 +407,7 @@ public class MLPDAboutScene extends PixelScene {
 
         CreditsBlock openration3 = new CreditsBlock(true, 0xa884ec,
                 "",
-                About_Icons("JISHEN"),
+                About_Icons("TELLER"),
                 "泰勒",
                 null,
                 null);
