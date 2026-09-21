@@ -95,10 +95,9 @@ public class ShopBossLevel extends Level {
         if(Statistics.attackIFGirl){
             GLog.b(Messages.get(boss,"cold"));
         }
+        boss.notice();
         boss.state = boss.HUNTING;
         GameScene.add(boss);
-
-        //activateAll();
 
         GLog.p(Messages.get(FireMagicDied.class,"go", hero.name()));
         Sample.INSTANCE.play(Assets.Sounds.DEATH);

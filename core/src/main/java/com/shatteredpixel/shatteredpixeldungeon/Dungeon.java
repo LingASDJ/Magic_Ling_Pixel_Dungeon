@@ -79,6 +79,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NormalZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.SnowChasmLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TombHallExitLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ZeroCityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ZeroLevel;
@@ -606,7 +607,7 @@ public class Dungeon {
                 && !(Dungeon.level instanceof PacmanHollowActorLevel)
                 && !(Dungeon.level instanceof MoveBoxHollowActorLevel)
                 && !(Dungeon.level instanceof AllSearchHollowActorLevel)
-                && (Dungeon.hero == null || Dungeon.hero.belongings.getItem(Amulet.class) == null) && !(Dungeon.level instanceof ShopBossLevel) && !(Dungeon.level instanceof LinkLevel);
+                && (Dungeon.hero == null || Dungeon.hero.belongings.getItem(Amulet.class) == null) && !(Dungeon.level instanceof ShopBossLevel) && !(Dungeon.level instanceof LinkLevel) && !(Dungeon.level instanceof SnowChasmLevel);
     }
 
 	public static void switchLevel( final Level level, int pos ) {

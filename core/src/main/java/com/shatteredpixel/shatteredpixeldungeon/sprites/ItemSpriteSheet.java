@@ -1001,7 +1001,7 @@ public class ItemSpriteSheet {
     public static final int	DG13				= BAGS+20;
 
     public static final int REACH_TOMB           = BAGS+25;
-    public static final int SHOP_DIED           = BAGS+27;
+    public static final int SHOP_DIED           = BAGS+26;
     public static final int	DG21				= BAGS+28;
 
     public static final int	DRAGONKINGHALOFIRE				= BAGS+44;
