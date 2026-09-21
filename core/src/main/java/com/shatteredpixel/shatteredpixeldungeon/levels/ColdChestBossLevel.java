@@ -346,8 +346,6 @@ public class ColdChestBossLevel extends Level {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于360 1阶段
                         if (pro == START && boss.HP <= 360 && !Statistics.TPDoorDieds) {
-                            Buff.affect(boss, RoseShiled.class, 10f);
-                            Buff.detach(hero, Levitation.class);
                             //宝箱王移动到看戏位
                             ScrollOfTeleportation.appear(boss, MDX);
                             //玩家移动到初始位
@@ -358,6 +356,10 @@ public class ColdChestBossLevel extends Level {
                             TPDoor ds0 = new TPDoor();
                             ds0.pos = 682;
                             GameScene.add(ds0);
+
+                            //延后浮空去除的时序，以防在特定情况下导致英雄坠楼
+                            Buff.affect(boss, RoseShiled.class, 10f);
+                            Buff.detach(hero, Levitation.class);
                         }
                     }
                 }

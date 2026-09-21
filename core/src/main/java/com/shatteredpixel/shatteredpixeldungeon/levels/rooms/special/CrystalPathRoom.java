@@ -210,6 +210,14 @@ public class CrystalPathRoom extends SpecialRoom {
 				return bVal - aVal;
 			}
 		});
+		//标记6选3房间的物品，在密封楼层复活重建时不要保留
+		for (Item i : potions) {
+			i.noPreserveOnSealedResurrect();
+		}
+
+		for (Item i : scrolls) {
+			i.noPreserveOnSealedResurrect();
+		}
 
 		//least valuable items go into rooms 2&3, then rooms 0&1, and finally 4&5
 		int shuffle = Random.Int(2);
