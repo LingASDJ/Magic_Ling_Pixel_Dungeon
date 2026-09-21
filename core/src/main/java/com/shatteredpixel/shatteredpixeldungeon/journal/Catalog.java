@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.journal;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.TowerMachine;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
@@ -33,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
+import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
+import com.shatteredpixel.shatteredpixeldungeon.items.OldSunShadow;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
@@ -61,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.HellFireBo
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.BzmdrBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.DeYiZiBooks;
@@ -93,6 +97,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
+import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHolyWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
@@ -148,13 +155,26 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DogStick;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DragonWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SoulCrack;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnsignedInvitationLetter;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.AllSearchIQuest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.hollow.PacManQuest;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
@@ -172,6 +192,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.FlareBullet;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -357,8 +378,40 @@ public enum Catalog {
 
 		PLAYBOOKS.addItems(BzmdrBooks.class, DeYiZiBooks.class, MoneyMoreBooks.class, PinkRandomBooks.class);
 
-		MISC_EQUIPMENT.addItems(BrokenSeal.class, SpiritBow.class, Waterskin.class, VelvetPouch.class,
-				PotionBandolier.class, ScrollHolder.class, MagicalHolster.class, Amulet.class);
+		MISC_EQUIPMENT.addItems(
+				BrokenSeal.class,
+				SpiritBow.class,
+				Waterskin.class,
+				VelvetPouch.class,
+				PotionBandolier.class,
+				ScrollHolder.class,
+				MagicalHolster.class,
+				Amulet.class,
+				SakaFishSketon.class,
+				DogStick.class,
+
+				MIME.GOLD_ONE.class,
+				MIME.GOLD_TWO.class,
+				MIME.GOLD_THREE.class,
+				MIME.GOLD_FOUR.class,
+
+				TestBooks.class,
+				OilLantern.class,
+
+				Red.class,
+				CrystalLing.class,
+				RedWhiteRose.class,
+
+				LingJing.class,
+				TowerMachine.StarCanon.class,
+				SoulCrack.RedSoulCrack.class,
+				SoulCrack.YellowSoulCrack.class,
+				SoulCrack.BlueSoulCrack.class,
+				SoulCrack.GreenSoulCrack.class,
+				SoulCrack.PinkSoulCrack.class,
+				UnsignedInvitationLetter.class,
+				LostBackpack.class
+		);
 
 
 
@@ -412,7 +465,7 @@ public enum Catalog {
 				CorpseDust.class, Embers.class, CeremonialCandle.class, DarkGold.class, DwarfToken.class,
 				GooBlob.class, TengusMask.class, MetalShard.class, KingsCrown.class,
 				LiquidMetal.class, ArcaneResin.class, PotionOfNoWater.class,
-
+				FlareBullet.class, OilPotion.class,    RandomChest.class,    MIME.GOLD_FIVE.class,    CrivusFruitsFlake.class,    BlessingNecklace.class,    PotionOfHolyWater.class, OldSunShadow.class,    DragonWater.class,
 				ScrollOfRoseShiled.class,
 				ScrollOfFlameCursed.class,
 				ScrollOfBlessGoTend.class);
