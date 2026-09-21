@@ -126,6 +126,18 @@ public class MLPDAboutScene extends PixelScene {
                 left = 16;
                 top = 48;
                 break;
+            case "OMICRONG":
+                left = 32;
+                top = 48;
+                break;
+            case "ROBEIRI":
+                left = 48;
+                top = 48;
+                break;
+            case "NXHY":
+                left = 64;
+                top = 48;
+                break;
         }
         return new Image(Assets.Interfaces.ABOUT_ICONS,left,top,16,16);
     }
@@ -388,7 +400,7 @@ public class MLPDAboutScene extends PixelScene {
         //*** 运营宣发（四人） ***
         CreditsBlock openration1 = new CreditsBlock(true, 0x4ecdc4,
                 "运 营 宣 发",
-                Icons.BACKPACK.get(),
+                About_Icons("ROBEIRI"),
                 "罗贝里",
                 null,
                 null);
@@ -397,7 +409,7 @@ public class MLPDAboutScene extends PixelScene {
 
         CreditsBlock openration2 = new CreditsBlock(true, 0xa884ec,
                 "",
-                About_Icons("JISHEN"),
+                About_Icons("NXHY"),
                 "那些回忆",
                 null,
                 null);
@@ -416,7 +428,7 @@ public class MLPDAboutScene extends PixelScene {
 
         CreditsBlock openration4 = new CreditsBlock(true, 0xa884ec,
                 "",
-                About_Icons("JISHEN"),
+                About_Icons("OMICRONG"),
                 "omicronrg9",
                 null,
                 null);
