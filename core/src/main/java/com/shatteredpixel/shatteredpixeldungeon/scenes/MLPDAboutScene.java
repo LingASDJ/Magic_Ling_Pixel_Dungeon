@@ -123,8 +123,8 @@ public class MLPDAboutScene extends PixelScene {
                 top = 32;
                 break;
             case "TELLER":
-                left = 32;
-                top = 32;
+                left = 16;
+                top = 48;
                 break;
         }
         return new Image(Assets.Interfaces.ABOUT_ICONS,left,top,16,16);
@@ -190,7 +190,7 @@ public class MLPDAboutScene extends PixelScene {
                 "BZMDR",
                 null,
                 null);
-        mainDesign2.setRect(mainPlan.right()+30, mainPlan.top()+5, colWidth/2f, 0);
+        mainDesign2.setRect(mainPlan.right()+40, mainPlan.top()+5, colWidth/2f, 0);
         content.add(mainDesign2);
 
         addLine(75, content);
@@ -277,7 +277,7 @@ public class MLPDAboutScene extends PixelScene {
         test2.setPos(code4.x, code4.bottom()+14);
         content.add(test2);
 
-        CreditsBlock test3 = new CreditsBlock(true,0xffca18,
+        CreditsBlock test3 = new CreditsBlock(true,0x8E1B44,
                 "",
                 About_Icons("SHENHAI"),
                 "深海",
@@ -329,7 +329,7 @@ public class MLPDAboutScene extends PixelScene {
         CreditsBlock balance1 = new CreditsBlock(true, 0x2CE8F5,
                 " ",
                 About_Icons("BZMDR"),
-                "Bzmdr",
+                "BZMDR",
                 null,
                 null);
        balance1.setSize(colWidth/2f, 0);
@@ -405,7 +405,7 @@ public class MLPDAboutScene extends PixelScene {
         openration2.setPos(code4.x, text1.bottom()+14);
         content.add(openration2);
 
-        CreditsBlock openration3 = new CreditsBlock(true, 0xa884ec,
+        CreditsBlock openration3 = new CreditsBlock(true, 0xFFD700,
                 "",
                 About_Icons("TELLER"),
                 "泰勒",
