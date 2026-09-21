@@ -46,10 +46,6 @@ public class KingBag extends Bag {
         }
     }
 
-    public int capacity(){
-        return 21;
-    }
-
     @Override
     public int value() {
         return 20;

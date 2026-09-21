@@ -27,7 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
@@ -349,7 +349,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
                case 0:
                    return PotionBandolier.class;
                case 1:
-                   return KingBag.class;
+                   return MagicalHolster.class;
                case 3: default:
                    return Bag.class;
 

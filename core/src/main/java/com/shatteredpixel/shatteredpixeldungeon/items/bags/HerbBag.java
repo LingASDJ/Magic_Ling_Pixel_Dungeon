@@ -40,10 +40,6 @@ public class HerbBag extends Bag {
         }
     }
 
-    public int capacity(){
-        return 40;
-    }
-
     @Override
     public int value() {
         return 30;

@@ -38,7 +38,9 @@ import java.util.Iterator;
 public class Bag extends Item implements Iterable<Item> {
 
 	public static final String AC_OPEN	= "OPEN";
-	
+
+	public static final int UNIFIED_CAPACITY = 49;
+
 	{
 		image = 11;
 		
@@ -52,7 +54,7 @@ public class Bag extends Item implements Iterable<Item> {
 	public ArrayList<Item> items = new ArrayList<>();
 
 	public int capacity(){
-		return 34;
+		return  UNIFIED_CAPACITY;
 	}
 	
 	@Override

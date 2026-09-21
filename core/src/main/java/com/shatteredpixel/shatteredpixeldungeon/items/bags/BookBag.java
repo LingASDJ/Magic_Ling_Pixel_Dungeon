@@ -27,10 +27,6 @@ public class BookBag extends Bag {
         }
     }
 
-    public int capacity(){
-        return 10;
-    }
-
     @Override
     public int value() {
         return 30;
