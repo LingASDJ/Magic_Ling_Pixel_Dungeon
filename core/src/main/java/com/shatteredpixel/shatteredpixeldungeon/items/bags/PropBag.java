@@ -27,10 +27,6 @@ public class PropBag extends Bag{
         }
     }
 
-    public int capacity(){
-        return 25;
-    }
-
     @Override
     public int value() {
         return 30;

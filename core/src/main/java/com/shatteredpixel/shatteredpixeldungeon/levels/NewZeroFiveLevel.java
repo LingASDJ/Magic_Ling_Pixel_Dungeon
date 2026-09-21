@@ -377,12 +377,6 @@ public class NewZeroFiveLevel extends Level {
         drop( new RandomChest(), 426  ).type = Heap.Type.FOR_SALE;
         drop( new RandomChest(), 451  ).type = Heap.Type.FOR_SALE;
 
-        if (Badges.isUnlocked(Badges.Badge.RLPT) && !Dungeon.LimitedDrops.BOOK_BAG.dropped() && !Dungeon.isDLC(Conducts.Conduct.DEV)) {
-            Item item = new BookBag();
-            drop(item, 304);
-            Dungeon.LimitedDrops.BOOK_BAG.drop();
-        }
-
         if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ) {
             if (SPDSettings.FayiNaBerry()) {
                 FayiNa npc222= new FayiNa();

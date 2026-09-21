@@ -444,11 +444,6 @@ public class NormalZeroFiveLevel extends Level {
             }
         }
 
-        if (Badges.isUnlocked(Badges.Badge.RLPT) && !Dungeon.LimitedDrops.BOOK_BAG.dropped() && !Dungeon.isDLC(Conducts.Conduct.DEV)) {
-            Item item = new BookBag();
-            drop(item, 263);
-            Dungeon.LimitedDrops.BOOK_BAG.drop();
-        }
 
     }
 

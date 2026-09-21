@@ -69,7 +69,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
@@ -254,7 +253,6 @@ public enum HeroClass {
 		waterskin.collect();
 
 		new HerbBag().quantity(1).identify().collect();
-		new KingBag().quantity(1).identify().collect();
 		new ScrollOfIdentify().identify();
 
 		migrateOldPaswordBadges();
@@ -272,8 +270,6 @@ public enum HeroClass {
 			Dungeon.LimitedDrops.SCROLL_HOLDER.dropped();
 			new MagicalHolster().collect();
 			Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped();
-			new BookBag().collect();
-			Dungeon.LimitedDrops.BOOK_BAG.dropped();
 			new BlessingNecklace().quantity(1).identify().collect();
 			Dungeon.LimitedDrops.BLESSING_NECKLACE.dropped();
 
