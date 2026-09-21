@@ -181,6 +181,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCurse
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfBlessGoTend;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
@@ -444,6 +445,11 @@ public enum Catalog {
 
 		EXOTIC_SCROLLS.addItems(ExoticScroll.exoToReg.keySet().toArray(new Class[0]));
 
+		EXOTIC_SCROLLS.addItems(ScrollOfRoseShiled.class,
+				ScrollOfFlameCursed.class,
+				ScrollOfBlessGoTend.class,
+				ScrollOfSoul.class);
+
 		BOMBS.addItems( Bomb.class, FrostBomb.class, Firebomb.class, Flashbang.class, RegrowthBomb.class,
 				WoollyBomb.class, Noisemaker.class, ShockBomb.class, HolyBomb.class, ArcaneBomb.class, ShrapnelBomb.class);
 
@@ -465,10 +471,7 @@ public enum Catalog {
 				CorpseDust.class, Embers.class, CeremonialCandle.class, DarkGold.class, DwarfToken.class,
 				GooBlob.class, TengusMask.class, MetalShard.class, KingsCrown.class,
 				LiquidMetal.class, ArcaneResin.class, PotionOfNoWater.class,
-				FlareBullet.class, OilPotion.class,    RandomChest.class,    MIME.GOLD_FIVE.class,    CrivusFruitsFlake.class,    BlessingNecklace.class,    PotionOfHolyWater.class, OldSunShadow.class,    DragonWater.class,
-				ScrollOfRoseShiled.class,
-				ScrollOfFlameCursed.class,
-				ScrollOfBlessGoTend.class);
+				FlareBullet.class, OilPotion.class,    RandomChest.class,    MIME.GOLD_FIVE.class,    CrivusFruitsFlake.class,    BlessingNecklace.class,    PotionOfHolyWater.class, OldSunShadow.class,    DragonWater.class);
 
 		MINIGAMES.addItems(
 				PacManQuest.SmallPoint.class,
