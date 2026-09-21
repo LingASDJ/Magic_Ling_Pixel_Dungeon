@@ -409,7 +409,7 @@ public class LevelRules {
                 }
 
             case 6:
-                return new LinkLevel();
+                return Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL) ? new SnowChasmLevel() : new LinkLevel();
 
             case 7:
                 return new ShopBossLevel();
