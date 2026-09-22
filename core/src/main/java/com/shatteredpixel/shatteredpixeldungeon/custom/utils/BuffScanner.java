@@ -113,7 +113,7 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.DeathBuff.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.DeathBuff.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalBaseBuff.class);
@@ -146,7 +146,7 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.StarvingStats.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.IceHealHP.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.IceHpBuff.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.IceSwordDown.class);
+        //buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.IceSwordDown.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.InvisibilityRing.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability.class);
@@ -195,7 +195,7 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PropBuff.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PureSoul.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff.DiedBuff.class);
+
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShop.class);
@@ -304,13 +304,12 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTrackerStats.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap.DoubleJumpTracker.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower.MagicPowerIceMagic.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower.MagicPowerIceMagicCooldown.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower.MagicPowerShieldDelay.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower.MagicPowerIceMagic.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower.MagicPowerIceMagicCooldown.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower.MagicPowerShieldDelay.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredBrute.ArmoredRage.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat.BloodBatRecharge.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute.BruteRage.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot.BruteBotRage.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot.Focus.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300.FallingRockBuff.class);
@@ -342,7 +341,7 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal.YogContinuousBeam.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal.YogScanHalf.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal.YogScanRound.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.Cerberus.Rage.class);
+        //buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.Cerberus.Rage.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits.CFBarrior.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits.DiedDamager.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight.DiedDamager.class);
@@ -398,22 +397,22 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.YogSoul.DeadHeartMagic.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.YogSoul.FriendBuffGet.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.YogSoul.ReHealHP.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrabKing.ReloopLife.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrabKing.ReloopLife.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits.DiedDamager.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits.Rage.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.AllEnemyPY.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.AngerPock.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.BreakDamage.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.DamageREF.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.DamageREFCD.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.ImmuneFrost.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.ImmuneLiquidFlame.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.ImmuneLiquidFlameX.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.ImmuneParalyticGas.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.ImmuneToxicGas.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.LuoShaSlash.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.NoDr.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.ThrowPotionWarning.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.AllEnemyPY.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.AngerPock.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.BreakDamage.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.DamageREF.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.DamageREFCD.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.ImmuneFrost.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.ImmuneLiquidFlame.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.ImmuneLiquidFlameX.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.ImmuneParalyticGas.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.ImmuneToxicGas.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.LuoShaSlash.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.NoDr.class);
+//        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.ThrowPotionWarning.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.Gorgon.Petrification.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Pink.RecordOtherGhost.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand.HandShield.class);
@@ -447,7 +446,7 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.ArtifactBuff.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.HeroThorns.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.Thorns.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.ThornsStats.class);
+
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.ThornsTime.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood.chaliceRegen.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows.cloakRecharge.class);
@@ -549,11 +548,11 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade.SkyRoll.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade.TrialModeBuff.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade.TurbulentFlameHeart.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker.class);
+        //buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword.RunicSlashTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch.MagicLight.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon.Charger.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff.DefensiveStance.class);
+
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield.GuardTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai.ComboStrikeTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai.ComboStrikeTrackerStats.class);
