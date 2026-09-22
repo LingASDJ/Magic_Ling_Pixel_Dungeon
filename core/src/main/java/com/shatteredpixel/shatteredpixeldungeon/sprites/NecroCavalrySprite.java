@@ -15,14 +15,14 @@ public class NecroCavalrySprite extends MobSprite {
         idle = new Animation( 5, true );
         idle.frames( frames, 0,1,2,3,4,5);
 
-        run = new Animation( 11, true );
+        run = new Animation( 14, true );
         run.frames( frames, 6,7,8,9,10,11,12);
 
-        attack = new Animation( 11, false );
+        attack = new Animation( 14, false );
         attack.frames( frames, 13,14,15,16);
 
-        die = new Animation( 14, false );
-        die.frames( frames, 17,18,19,20,21,22,23);
+        die = new Animation( 18, false );
+        die.frames( frames, 18,19,20,21,22,23);
 
         play( idle );
     }
