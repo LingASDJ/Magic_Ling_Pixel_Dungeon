@@ -205,7 +205,7 @@ public class MLPDAboutScene extends PixelScene {
                 "BZMDR",
                 null,
                 null);
-        mainDesign2.setRect(mainPlan.right()+40, mainPlan.top()+5, colWidth/2f, 0);
+        mainDesign2.setRect(mainPlan.right()+32, mainPlan.top()+5, colWidth/2f, 0);
         content.add(mainDesign2);
 
         addLine(75, content);
@@ -407,7 +407,7 @@ public class MLPDAboutScene extends PixelScene {
         addLine(text1.top()+32, content);
 
         //*** 运营宣发（四人） ***
-        CreditsBlock openration1 = new CreditsBlock(true, 0x4ecdc4,
+        CreditsBlock openration1 = new CreditsBlock(true, 0xFE9F8D,
                 "运 营 宣 发" +
                         "\n",
                 About_Icons("ROBEIRI"),
