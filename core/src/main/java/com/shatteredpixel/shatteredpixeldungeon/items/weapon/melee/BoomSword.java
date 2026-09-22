@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ArcaneBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
@@ -25,9 +26,12 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.MovieClip;
+import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Callback;
@@ -36,7 +40,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class BoomSword extends MeleeWeapon {
+public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
 
     public static final String AC_ZAP = "ZAP";
 
@@ -47,8 +51,25 @@ public class BoomSword extends MeleeWeapon {
     {
         image = ItemSpriteSheet.BOMB_SWORD;
         tier = 5;
-        animation = false;
+        animation = true;
         usesTargeting = true;
+    }
+
+    @Override
+    public void frames(ItemSprite itemSprite){
+        if (animation) {
+            itemSprite.texture(Assets.Sprites.ANIMATIONS_BOMBSWORD);
+            TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
+            if (frames.get(3) != null) {
+                MovieClip.Animation idle = new MovieClip.Animation(15, true);
+                idle.frames( frames,0, 0, 1, 1, 2, 2, 2, 3, 3);
+                itemSprite.play(idle);
+            } else {
+                itemSprite.view(image(),glowing());
+            }
+        } else {
+            itemSprite.view(image(),glowing());
+        }
     }
 
     public int maxAmmo() {
