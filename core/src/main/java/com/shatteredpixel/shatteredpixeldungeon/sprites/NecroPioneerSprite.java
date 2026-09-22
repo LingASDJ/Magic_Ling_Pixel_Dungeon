@@ -25,7 +25,7 @@ public class NecroPioneerSprite extends MobSprite {
         zap.frames( frames,  22,23,24,25,26);
 
         die = new Animation( 12, false );
-        die.frames( frames, 27,28,29,30,31);
+        die.frames( frames, 28,29,30,31);
 
         play( idle );
     }

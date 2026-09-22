@@ -14,19 +14,19 @@ public class AggregatusSprite extends MobSprite {
         texture( Assets.Sprites.AGGREATUS);
         TextureFilm frames = new TextureFilm( texture, 34, 30 );
 
-        idle = new Animation( 9, true );
+        idle = new Animation( 10, true );
         idle.frames( frames, 0, 1, 2, 3, 4, 5, 6, 7 );
 
-        run = new Animation( 9, true );
+        run = new Animation( 10, true );
         run.frames( frames, 8, 9, 10, 11, 12, 13, 14 );
 
-        attack = new Animation( 11, false );
+        attack = new Animation( 14, false );
         attack.frames( frames, 15, 16, 17, 18 );
 
-        zap = new Animation( 11, false );
+        zap = new Animation( 14, false );
         zap.frames( frames, 15, 16, 17, 18 );
 
-        die = new Animation( 12, false );
+        die = new Animation( 14, false );
         die.frames( frames, 19, 20, 21, 22 );
 
         play( idle );

@@ -221,7 +221,7 @@ public class MLPDAboutScene extends PixelScene {
         art1.setPos(mainPlan.left(), mainDesign.bottom()+10);
         content.add(art1);
 
-        CreditsBlock art2 = new CreditsBlock(true,0xffd2d2,
+        CreditsBlock art2 = new CreditsBlock(true,0x6f439c,
                 "美  术  设  计",
                 About_Icons("LUOBAI"),
                 "落白",
@@ -337,7 +337,7 @@ public class MLPDAboutScene extends PixelScene {
         skin2.setRect(code2.x, test4.bottom()+15, colWidth/3f, 0);
         content.add(skin2);
 
-        CreditsBlock skin3 = new CreditsBlock(true, 0xf898b8,
+        CreditsBlock skin3 = new CreditsBlock(true, 0xcf3227,
                 "",
                 About_Icons("Daniel_Calan"),
                 "Daniel Calan",
@@ -417,7 +417,7 @@ public class MLPDAboutScene extends PixelScene {
         openration1.setRect(code2.x, text1.bottom()+10, colWidth/3f, 0);
         content.add(openration1);
 
-        CreditsBlock openration2 = new CreditsBlock(true, 0xa884ec,
+        CreditsBlock openration2 = new CreditsBlock(true, 0XBFA041,
                 "",
                 About_Icons("NXHY"),
                 "那些回忆",

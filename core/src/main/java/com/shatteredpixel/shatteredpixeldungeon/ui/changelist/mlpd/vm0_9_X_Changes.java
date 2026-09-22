@@ -911,7 +911,7 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.R_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREELIST), ("树痕调整"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREELIST), ("调整"),
                 ("每下攻击攒2+等级/5 生命护盾量，上限20+等级*2\n" +
                         "储存盾量只可吸收奥术护盾，不吸收生命护盾")));
 
@@ -1032,7 +1032,7 @@ public class vm0_9_X_Changes {
 
         ));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREELIST), ("树痕调整"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREELIST), ("调整"),
                 ("二阶，力量需求13\n" +
                         "\n" +
                         "初始3-14，成长1-1\n" +
@@ -1180,7 +1180,7 @@ public class vm0_9_X_Changes {
                         "22.修复暗金宝石护符诅咒特效失效\n" +
                         "23.修复普通古神战中，孤城情况下，拳头在古神附近应有的无敌效果失效\n" +
                         "24.修复弩炮显示法伤的异常\n" +
-                        "25.定身期间现在无敌 & 树痕护盾为0时，快捷栏按钮不会生效")
+                        "25.定身期间现在无敌 & 护盾为0时，快捷栏按钮不会生效")
 
         ));
 
