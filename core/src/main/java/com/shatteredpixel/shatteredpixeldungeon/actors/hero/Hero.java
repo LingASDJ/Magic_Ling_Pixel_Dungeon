@@ -854,9 +854,7 @@ public class Hero extends Char {
 					accuracy *= 1f + 0.1f * pointsInTalent(Talent.PRECISE_ASSAULT);
 				}
 
-				if (wep instanceof Flail && buff(Flail.SpinAbilityTracker.class) != null){
-					//do nothing, this is not a regular attack so don't consume talent fx
-				} else if (wep instanceof Crossbow && buff(Crossbow.ChargedShot.class) != null || wep instanceof ForestBow && buff(ForestBow.ChargedShot.class) != null){
+				if (wep instanceof Crossbow && buff(Crossbow.ChargedShot.class) != null || wep instanceof ForestBow && buff(ForestBow.ChargedShot.class) != null){
 					//do nothing, this is not a regular attack so don't consume talent fx
 				} else if (buff(Talent.PreciseAssaultTracker.class) != null) {
 					// 2x/5x/inf. ACC for duelist if she just used a weapon ability
@@ -1243,7 +1241,7 @@ public class Hero extends Char {
 		if (!(w instanceof Weapon))             return true;
 		if (RingOfForce.fightingUnarmed(this))  return true;
 		if (STR() < ((Weapon)w).STRReq())       return false;
-		if (w instanceof Flail || w instanceof MagicTorch)	return false;
+		if (w instanceof MagicTorch)	return false;
 
 		return super.canSurpriseAttack();
 	}
