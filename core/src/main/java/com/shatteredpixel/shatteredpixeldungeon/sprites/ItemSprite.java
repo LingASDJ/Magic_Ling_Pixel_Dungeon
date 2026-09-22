@@ -45,6 +45,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+import com.watabou.utils.RectF;
 
 import java.nio.Buffer;
 
@@ -113,11 +114,16 @@ public class ItemSprite extends MovieClip {
 	@Override
 	public void revive() {
 		super.revive();
-		
+
 		speed.set( 0 );
 		acc.set( 0 );
 		dropInterval = 0;
-		
+
+		// 复用池里的精灵不携带任何残留的动画/图集状态，
+		// 否则下次被分配渲染其他物品时会出现整张图集闪现、图标错乱
+		curAnim = null;
+		texture( Assets.Sprites.ITEMS );
+
 		heap = null;
 		if (emitter != null) {
 			emitter.killAndErase();
@@ -207,14 +213,8 @@ public class ItemSprite extends MovieClip {
 			this.emitter = null;
 		}
 
-//		/** @直接切断动画引用 */
-//		this.curAnim = null;
-//
-//		/** @彻底重置ItemSprites状态 */
-//		resetColor();
-//		scale.set(1);
-//		angle = 0;
-//		texture(Assets.Sprites.ITEMS);
+		// 精灵状态重置统一在 view(int, Glowing) 中完成，这里不再重复重置；
+		// 动态物品(AnimationItem)的动画由下方 frames() 按需启用。
 		view(item.image(), item.glowing());
 
 		Emitter emitter = item.emitter();
@@ -274,15 +274,33 @@ public class ItemSprite extends MovieClip {
 	public ItemSprite view( int image, Glowing glowing ) {
 		if (this.emitter != null) this.emitter.killAndErase();
 		emitter = null;
+
+		// 所有物品渲染最终都汇聚到此方法。统一切断残留的动画引用并重置精灵
+		// 状态（纹理/颜色/缩放/角度），防止动态物品(AnimationItem)的动画图集
+		// 纹理与循环动画泄漏到之后渲染的其他物品上（如丢出动态物品后，快捷栏、
+		// 背包、地面物品的图标错乱）。
+		curAnim = null;
+		resetColor();
+		scale.set(1);
+		angle = 0;
+		texture( Assets.Sprites.ITEMS );
+
 		frame( image );
 		glow( glowing );
 		return this;
 	}
 
 	public void frame( int image ){
-		frame( ItemSpriteSheet.film.get( image ));
+		RectF f = ItemSpriteSheet.film.get( image );
+		if (f == null) {
+			// 防御：图集索引越界时回退到占位图标。
+			// 若直接 frame(null) 会抛 NPE，并让精灵停留在 texture() 刚设置的
+			// 整张图集(0,0,1,1)状态上，表现为"整个 items.png 显示出来"。
+			f = ItemSpriteSheet.film.get( ItemSpriteSheet.SOMETHING );
+		}
+		frame( f );
 
-		float height = ItemSpriteSheet.film.height( image );
+		float height = ItemSpriteSheet.film.height( f );
 		//adds extra raise to very short items, so they are visible
 		if (height < 8f){
 			perspectiveRaise =  (5 + 8 - height) / 16f;
