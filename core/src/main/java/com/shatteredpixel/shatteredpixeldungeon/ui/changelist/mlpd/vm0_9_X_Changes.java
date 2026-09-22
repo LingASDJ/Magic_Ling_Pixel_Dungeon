@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.StarDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -205,6 +206,9 @@ public class vm0_9_X_Changes {
                         "奇点每回合都会摧毁与他相邻或重叠的物品，接触奇点的非boss单位会直接死亡并且不提供经验，\n" +
                         "接触奇点的boss单位会受到（30+10*lv）真实伤害随后减少奇点30回合持续时间。\n" +
                         "释放时消耗的每点充能使奇点存在最大时间+6回合。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(new DistressSignalNesting()), ("新系统：动态贴图"),
+                ("潜伏三年，精心研究，好吧，就是物品动画终于横空出世了。\n\n本次实装有支援信号套组，炸弹剑\n\n非常得炫酷。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CATALOG), ("新系统：效果百科"),
                 ("在图鉴中新增效果百科，可以查询目前已有的可见Buff，和魔绫地牢游戏中使用的Buff数量总统计。")));

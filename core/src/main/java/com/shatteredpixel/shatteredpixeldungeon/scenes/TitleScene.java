@@ -680,7 +680,7 @@ public class TitleScene extends PixelScene {
 	public static class SavesButton extends IconButton {
 
 		public  SavesButton() {
-			super(Icons.CATALOG.get());
+			super(NetIcons.NEWS.get());
 
 			width = 20;
 			height = 20;
