@@ -862,6 +862,12 @@ public class WndJournal extends WndTabbed {
 				}
 
 				sprite = new ItemSprite(item.image, seen ? item.glowing() : null);
+				if (item.animation && item instanceof Item.AnimationItem){
+					// 动态物品(AnimationItem)：改用物品对象重刷，让 ItemSprite 记录
+					// 待播动画，挂载到网格后自动播放（GridItem 会连同动画状态一起复制）
+					sprite.view(item);
+					if (!seen) sprite.glow(null); // 未鉴定剪影不允许出现光效
+				}
 				if (!seen)  {
 					sprite.lightness(0);
 					title = "???";
@@ -940,8 +946,10 @@ public class WndJournal extends WndTabbed {
 				@Override
 				public boolean onClick(float x, float y) {
 					if (inside(x, y)) {
-						Image sprite = new ItemSprite();
-						sprite.copy(icon);
+						// 动态物品弹窗保留动画：Image.copy() 会退化为静态帧
+						Image sprite = (icon instanceof ItemSprite) ?
+								((ItemSprite) icon).copySprite() : new Image();
+						if (!(icon instanceof ItemSprite)) sprite.copy(icon);
 						if (ShatteredPixelDungeon.scene() instanceof GameScene){
 							GameScene.show(new WndJournalItem(sprite, finalTitle, finalDesc));
 						} else {

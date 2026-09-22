@@ -58,6 +58,9 @@ public class ItemSprite extends MovieClip {
 	public Heap heap;
 	
 	private Glowing glowing;
+	// 精灵尚未挂载到父节点时暂存的动态物品(AnimationItem)，
+	// 挂载后首个 update() 会自动补播其动画（如 ChangeButton 构造时的 ItemSprite）
+	private Item pendingAnimItem;
 	//FIXME: a lot of this emitter functionality isn't very well implemented.
 	//right now I want to ship 0.3.0, but should refactor in the future.
 	protected Emitter emitter;
@@ -115,6 +118,8 @@ public class ItemSprite extends MovieClip {
 	public void revive() {
 		super.revive();
 
+		pendingAnimItem = null;
+
 		speed.set( 0 );
 		acc.set( 0 );
 		dropInterval = 0;
@@ -139,6 +144,63 @@ public class ItemSprite extends MovieClip {
 			glow(((ItemSprite) other).glowing);
 		}
 
+	}
+
+	/**
+	 * 生成保留动画状态的副本。
+	 * Image.copy() 只复制纹理/帧/颜色，不会复制 MovieClip 的动画状态
+	 * （curAnim、帧进度、待播物品），动态物品(AnimationItem)需要专用复制，
+	 * 否则在网格/弹窗等 UI 中会退化为静态图标。
+	 */
+	public ItemSprite copySprite(){
+		ItemSprite copy = new ItemSprite();
+		copy.copy( this );
+		copy.curAnim = curAnim;
+		copy.curFrame = curFrame;
+		copy.frameTimer = frameTimer;
+		copy.finished = finished;
+		copy.paused = paused;
+		copy.pendingAnimItem = pendingAnimItem;
+		return copy;
+	}
+
+	/**
+	 * 动画帧自动水平垂直对齐到静态图标矩形。
+	 * 静态图标(items.png)通过 assignItemRect 定义实际显示尺寸（如 15×16、12×14），
+	 * 而动画图集统一按 16×16 网格切帧。若不处理，动画开播后精灵尺寸会从
+	 * 静态尺寸变为 16×16，导致已按静态尺寸布局居中的图标水平垂直偏移，
+	 * 与图鉴/快捷栏/按钮里的静态图标不一致。
+	 * 此方法把当前动画的每一帧裁剪到与静态图标一致的像素尺寸并居中，
+	 * 尺寸不再跳变，动画与静态图标完全对齐。已与静态尺寸一致的帧（16×16）
+	 * 不做任何处理。
+	 */
+	public void alignAnimationToStaticSize(Item item){
+		if (curAnim == null || curAnim.frames == null || item == null) return;
+		RectF staticRect = ItemSpriteSheet.film.get(item.image());
+		if (staticRect == null) return;
+		float sw = ItemSpriteSheet.film.width(staticRect);
+		float sh = ItemSpriteSheet.film.height(staticRect);
+		if (sw <= 0 || sh <= 0) return;
+
+		float texW = texture.width;
+		float texH = texture.height;
+
+		boolean changed = false;
+		RectF[] frames = curAnim.frames;
+		for (int i = 0; i < frames.length; i++){
+			RectF f = frames[i];
+			if (f == null) continue;
+			float fw = f.width() * texW;
+			float fh = f.height() * texH;
+			if (Math.abs(fw - sw) < 0.01f && Math.abs(fh - sh) < 0.01f) continue;
+			float dx = (fw - sw) / 2f / texW;
+			float dy = (fh - sh) / 2f / texH;
+			frames[i] = new RectF(f.left + dx, f.top + dy, f.right - dx, f.bottom - dy);
+			changed = true;
+		}
+		if (changed){
+			play(curAnim, true);
+		}
 	}
 
 	public void visible(boolean value){
@@ -224,8 +286,19 @@ public class ItemSprite extends MovieClip {
 			this.emitter = emitter;
 		}
 
-		if (!b && item.animation && item instanceof Item.AnimationItem && parent != null) {
-			item.frames(this);
+		// 动态物品(AnimationItem)的动画要求 parent != null：
+		// 精灵已挂载时直接播放；尚未挂载（如 ChangeButton 构造时的 ItemSprite）
+		// 则暂存物品，等挂载后由 update() 自动补播。
+		if (!b && item.animation && item instanceof Item.AnimationItem) {
+			if (parent != null) {
+				item.frames(this);
+				alignAnimationToStaticSize(item);
+				pendingAnimItem = null;
+			} else {
+				pendingAnimItem = item;
+			}
+		} else {
+			pendingAnimItem = null;
 		}
 
 		return this;
@@ -315,6 +388,7 @@ public class ItemSprite extends MovieClip {
 	@Override
 	public void kill() {
 		super.kill();
+		pendingAnimItem = null;
 		if (emitter != null) {
 			emitter.on = false;
 			emitter.autoKill = true;
@@ -373,6 +447,16 @@ public class ItemSprite extends MovieClip {
 	@Override
 	public synchronized void update() {
 		super.update();
+
+		// 补播：精灵挂载到父节点后，启动之前暂存的动态物品动画
+		if (pendingAnimItem != null && parent != null) {
+			Item i = pendingAnimItem;
+			pendingAnimItem = null;
+			if (i.animation && i instanceof Item.AnimationItem) {
+				i.frames(this);
+				alignAnimationToStaticSize(i);
+			}
+		}
 
 		visible = (heap == null || heap.seen);
 
