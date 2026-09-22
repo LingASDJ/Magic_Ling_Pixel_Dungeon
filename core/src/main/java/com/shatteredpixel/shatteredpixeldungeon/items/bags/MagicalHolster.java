@@ -27,6 +27,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 
 public class MagicalHolster extends Bag {
 
@@ -39,17 +42,15 @@ public class MagicalHolster extends Bag {
 	
 	@Override
 	public boolean canHold( Item item ) {
-		if (item instanceof Wand && !(item instanceof WandOfAnmy) || item instanceof MissileWeapon || item instanceof Bomb ){
+		if (item instanceof Wand && !(item instanceof WandOfAnmy) || item instanceof MissileWeapon || item instanceof Bomb || (item instanceof MeleeWeapon
+				&& !(item instanceof MagesStaff))
+				|| item instanceof Armor) {
 			return super.canHold(item);
 		} else {
 			return false;
 		}
 	}
 
-	public int capacity(){
-		return 34;
-	}
-	
 	@Override
 	public boolean collect( Bag container ) {
 		if (super.collect( container )) {

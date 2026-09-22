@@ -144,7 +144,8 @@ public class ArchettoWeightLess extends FiveYearsNPC {
             Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot3, false)));
             secnod = false;
         /**@param 未崩坏前礼物交易对话 */
-        } else if(passwordbadges.contains(PaswordBadges.Badge.TIME_CIRCLE) && rd && unlessAbyss != null && unlessAbyss.Time < 300){
+        //passwordbadges.contains(PaswordBadges.Badge.TIME_CIRCLE) &&
+        } else if(rd && unlessAbyss != null && unlessAbyss.Time < 300){
             GetGift();
         /**@param 未崩坏前与崩坏后循环对话 */
         } else  {

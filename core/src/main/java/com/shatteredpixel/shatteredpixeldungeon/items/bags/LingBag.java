@@ -40,8 +40,4 @@ public class LingBag extends Bag {
         }
     }
 
-    public int capacity(){
-        return 40;
-    }
-
 }

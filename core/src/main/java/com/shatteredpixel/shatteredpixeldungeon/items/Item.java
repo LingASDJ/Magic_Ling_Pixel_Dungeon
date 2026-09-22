@@ -658,6 +658,7 @@ public class Item implements Bundlable {
 	private static final String CURSED_KNOWN	= "cursedKnown";
 	private static final String QUICKSLOT		= "quickslotpos";
 	private static final String KEPT_LOST       = "kept_lost";
+	private static final String PRESERVE_SEALED = "preserve_sealed";
 
 	private static final String ANLIX       = "anlix";
 
@@ -679,6 +680,7 @@ public class Item implements Bundlable {
 			bundle.put( QUICKSLOT, Dungeon.quickslot.getSlot(this) );
 		}
 		bundle.put( KEPT_LOST, keptThoughLostInvent );
+		bundle.put(PRESERVE_SEALED, preserveOnSealedResurrect);
 
 		bundle.put(ANLIX,animation);
 
@@ -712,6 +714,7 @@ public class Item implements Bundlable {
 		}
 
 		keptThoughLostInvent = bundle.getBoolean( KEPT_LOST );
+		preserveOnSealedResurrect = !bundle.contains(PRESERVE_SEALED) || bundle.getBoolean(PRESERVE_SEALED);
 
 		animation = bundle.getBoolean(ANLIX);
 
@@ -805,4 +808,15 @@ public class Item implements Bundlable {
 			return Messages.get(Item.class, "prompt");
 		}
 	};
+	//标记物品在重置楼层后要不要保留（目前主要服务于4-B,8-B的6选3房间）
+	private boolean preserveOnSealedResurrect = true;
+
+	public boolean preserveOnSealedResurrect() {
+		return preserveOnSealedResurrect;
+	}
+
+	public Item noPreserveOnSealedResurrect() {
+		preserveOnSealedResurrect = false;
+		return this;
+	}
 }

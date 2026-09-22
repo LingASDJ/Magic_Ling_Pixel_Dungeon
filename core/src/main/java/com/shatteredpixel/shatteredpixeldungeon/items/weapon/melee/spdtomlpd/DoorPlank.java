@@ -1,23 +1,23 @@
-package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
+package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.INFINITE_ACCURACY;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KusumiMagicGirl;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Callback;
-
-import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.INFINITE_ACCURACY;
 
 //门板
 //五阶，力量需求18
@@ -26,7 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.INFINITE_ACCU
 //这把武器的攻击会额外附带你最大生命值（20+2*等级）%的真实伤害。
 //沉重的武器，你似乎可以把全身的力量都倾注入一击之上。
 //武技：门截裂夫，消耗2充能，处决剩余生命值低于你当前生命值的非boss单位。对boss单位释放时，进行一次必中的攻击，最终伤害*2且伤害类型变为真实。
-public class DoorPlank extends MeleeWeapon{
+public class DoorPlank extends MeleeWeapon {
     {
         image = ItemSpriteSheet.DOOR_PLATE;
 

@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
@@ -78,6 +79,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NormalZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.SnowChasmLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TombHallExitLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ZeroCityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ZeroLevel;
@@ -605,7 +607,7 @@ public class Dungeon {
                 && !(Dungeon.level instanceof PacmanHollowActorLevel)
                 && !(Dungeon.level instanceof MoveBoxHollowActorLevel)
                 && !(Dungeon.level instanceof AllSearchHollowActorLevel)
-                && (Dungeon.hero == null || Dungeon.hero.belongings.getItem(Amulet.class) == null) && !(Dungeon.level instanceof ShopBossLevel) && !(Dungeon.level instanceof LinkLevel);
+                && (Dungeon.hero == null || Dungeon.hero.belongings.getItem(Amulet.class) == null) && !(Dungeon.level instanceof ShopBossLevel) && !(Dungeon.level instanceof LinkLevel) && !(Dungeon.level instanceof SnowChasmLevel);
     }
 
 	public static void switchLevel( final Level level, int pos ) {
@@ -641,7 +643,7 @@ public class Dungeon {
 					respawnPoints.add( p );
 				}
 			}
-			if (respawnPoints.size() > 0) {
+			if (!respawnPoints.isEmpty()) {
 				BloodBat bat = new BloodBat();
 				bat.pos = respawnPoints.get(Random.index(respawnPoints));
 				bat.state = bat.WANDERING;
@@ -654,6 +656,12 @@ public class Dungeon {
 				saka.state = bat.WANDERING;
 				Dungeon.level.mobs.add( saka );
 				Actor.add( saka );
+
+				MiniCerberus cerberus = new MiniCerberus();
+				cerberus.pos = respawnPoints.get(Random.index(respawnPoints));
+				cerberus.state = bat.WANDERING;
+				Dungeon.level.mobs.add( cerberus );
+				Actor.add( cerberus );
 			}
 		}
 

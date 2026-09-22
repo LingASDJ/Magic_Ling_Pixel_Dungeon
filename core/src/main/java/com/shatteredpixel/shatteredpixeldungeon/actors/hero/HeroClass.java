@@ -69,9 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag;
@@ -89,7 +87,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.KillSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
@@ -254,14 +251,11 @@ public enum HeroClass {
 		waterskin.collect();
 
 		new HerbBag().quantity(1).identify().collect();
-		new KingBag().quantity(1).identify().collect();
 		new ScrollOfIdentify().identify();
 
 		migrateOldPaswordBadges();
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
-			new KillSwarm().identify().collect();
-
 			new PropBag().quantity(1).identify().collect();
 
 			new ScrollOfGolems().collect();
@@ -272,8 +266,6 @@ public enum HeroClass {
 			Dungeon.LimitedDrops.SCROLL_HOLDER.dropped();
 			new MagicalHolster().collect();
 			Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped();
-			new BookBag().collect();
-			Dungeon.LimitedDrops.BOOK_BAG.dropped();
 			new BlessingNecklace().quantity(1).identify().collect();
 			Dungeon.LimitedDrops.BLESSING_NECKLACE.dropped();
 

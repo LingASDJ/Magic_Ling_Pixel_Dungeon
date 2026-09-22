@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
+package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -21,7 +22,7 @@ import java.util.HashSet;
 //武技：舞刃
 //增加1格攻击范围，持续10+等级*2回合。消耗1点充能。这个武技不消耗回合。
 //产于善于舞蹈的德诺尔，镰刀柄上还贴心蚀刻上了挥舞说明。
-public class DenorScythe extends MeleeWeapon{
+public class DenorScythe extends MeleeWeapon {
     {
         image = ItemSpriteSheet.DEGUER;
 

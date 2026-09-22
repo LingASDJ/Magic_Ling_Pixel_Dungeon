@@ -24,6 +24,8 @@ public class HaloBlazing extends Weapon.Enchantment {
         float procChance = (level+1f)/(level+3f) * procChanceMultiplier(attacker);
         if (Random.Float() < procChance) {
 
+            float powerMulti = Math.max(1f, procChance);
+
             if (defender.buff(HalomethaneBurning.class) != null){
                 Buff.affect(defender, HalomethaneBurning.class).reignite(defender, 8f);
                 Buff.affect(defender, Poison.class).set(4f);
@@ -31,8 +33,17 @@ public class HaloBlazing extends Weapon.Enchantment {
                 defender.damage( Math.round(burnDamage * 0.67f), this );
             } else {
                 Buff.affect(defender, HalomethaneBurning.class).reignite(defender, 8f);
+                powerMulti -= 1;
             }
-
+            //鬼磷附魔受奥术之戒影响实现
+            if (powerMulti > 0) {
+                Buff.affect(defender, Poison.class).set(4f + powerMulti);
+                int burnDamage = Random.NormalIntRange( 1, 3 + Dungeon.depth/4 );
+                burnDamage = Math.round(burnDamage * 0.67f * powerMulti);
+                if (burnDamage > 0) {
+                    defender.damage(burnDamage, this);
+                }
+            }
             defender.sprite.emitter().burst( FlameParticle.FACTORY, level + 1 );
 
         }

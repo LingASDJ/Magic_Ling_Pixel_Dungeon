@@ -22,6 +22,21 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.custom.Gift;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.DeepseaKnightAnchor;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.DenorScythe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.DoomsdayScepter;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.DoorPlank;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.MorningStar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.NailingSpear;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.SouthPointSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.StaffofMyriadThings;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.CursedBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.ExorcistMaul;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.KillKing;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.LifeCutter;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.QuickSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.SpikedChakram;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TheDrip;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.EulaScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GoScene;
@@ -60,13 +75,72 @@ public class ShatteredPixelDungeon extends Game {
 			}
 		}
 
+		/** @parma-第二轮武器 */
+		com.watabou.utils.Bundle.addAlias(
+				KillKing.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk" );
+
+		com.watabou.utils.Bundle.addAlias(
+				SpikedChakram.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle" );
+
+		com.watabou.utils.Bundle.addAlias(
+				TheDrip.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar" );
+
+		com.watabou.utils.Bundle.addAlias(
+				QuickSword.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield" );
+
+		com.watabou.utils.Bundle.addAlias(
+				CursedBlade.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield" );
+
+		com.watabou.utils.Bundle.addAlias(
+				ExorcistMaul.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail" );
+
+		com.watabou.utils.Bundle.addAlias(
+				LifeCutter.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword" );
+
+		com.watabou.utils.Bundle.addAlias(
+				StaffofMyriadThings.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe" );
+
+		com.watabou.utils.Bundle.addAlias(
+				MorningStar.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana" );
+
+		com.watabou.utils.Bundle.addAlias(
+				DenorScythe.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade" );
+
+		com.watabou.utils.Bundle.addAlias(
+				SouthPointSword.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow" );
+
+		com.watabou.utils.Bundle.addAlias(
+				DoorPlank.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword" );
+
+		com.watabou.utils.Bundle.addAlias(
+				DeepseaKnightAnchor.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WitheWoodSword" );
+
+		com.watabou.utils.Bundle.addAlias(
+				DoomsdayScepter.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe" );
+
+		com.watabou.utils.Bundle.addAlias(
+				NailingSpear.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe" );
+
+		/** @parma-第二轮武器迭代-END */
+
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stone.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone" );
-
-		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ExorcistMaul.class,
-				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe" );
 
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword.class,

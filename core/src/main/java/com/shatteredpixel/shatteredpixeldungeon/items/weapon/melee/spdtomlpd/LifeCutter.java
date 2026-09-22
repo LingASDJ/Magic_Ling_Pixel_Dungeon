@@ -1,4 +1,6 @@
-package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
+package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.INFINITE_ACCURACY;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -11,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KusumiMagicGirl;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -23,15 +26,13 @@ import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
-import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.INFINITE_ACCURACY;
-
 //断生者
 //四阶，力量需求17
 //初始6-24，成长2-6
 //每次命中都会让敌人一分为二：本体与分身各继承当前生命值与生命上限的一半。
 //武技：腰斩，消耗2充能，对目标造成160%必中伤害，对与目标相连的所有敌人造成120%必中伤害，如果腰斩击杀了1个单位，获得1充能且本次攻击不消耗回合。每次释放至多获得1次充能。
 
-public class LifeCutter extends MeleeWeapon{
+public class LifeCutter extends MeleeWeapon {
     {
         image = ItemSpriteSheet.NO_LIVE;
 

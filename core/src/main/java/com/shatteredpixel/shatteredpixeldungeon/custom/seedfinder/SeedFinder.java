@@ -51,8 +51,10 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class SeedFinder {
 	enum Condition {ANY, ALL}
@@ -82,12 +84,26 @@ public class SeedFinder {
 	ArrayList<String> itemList;
 	private final List<String> matchedFloorInfo = new ArrayList<>();
 
-	private static final int UI_UPDATE_INTERVAL = 1;
 	private long startTime;
 	private volatile boolean running;
 
+	/** 场景轮询显示的计时快照（跨线程只读，不依赖搜索实例） */
+	public static volatile long uiStartTime = 0;
+
+	public static String getUiElapsedTime() {
+		if (uiStartTime == 0) {
+			return "00:00:00";
+		}
+		long elapsedMillis = System.currentTimeMillis() - uiStartTime;
+		long seconds = (elapsedMillis / 1000) % 60;
+		long minutes = (elapsedMillis / (1000 * 60)) % 60;
+		long hours = (elapsedMillis / (1000 * 60 * 60)) % 24;
+		return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+	}
+
 	public void startTimer() {
 		startTime = System.currentTimeMillis();
+		uiStartTime = startTime;
 		running = true;
 	}
 
@@ -110,6 +126,10 @@ public class SeedFinder {
 		startTimer();
 		matchedFloorInfo.clear();
 
+		// 单线程搜索：进度由 SeedFindLogScene.update() 轮询显示，写槽 0
+		searchThreadCount = 1;
+		parallelSeeds.set(0, -1);
+
 		SeedResult emptyResult = new SeedResult("NONE", "", new ArrayList<>(), false);
 		long startSeed = Random.Long(DungeonSeed.TOTAL_SEEDS);
 
@@ -122,22 +142,8 @@ public class SeedFinder {
 			long seedValue = (startSeed + i) % DungeonSeed.TOTAL_SEEDS;
 			String seedStr = Long.toString(seedValue);
 
-			if (i % UI_UPDATE_INTERVAL == 0) {
-				final String displaySeed = seedStr;
-				Gdx.app.postRunnable(() -> {
-					if (!SeedFindLogScene.isSceneActive()) return;
-					if (!Thread.interrupted() && SeedFindLogScene.r != null) {
-						SeedFindLogScene.r.text(
-								Messages.get(SeedFinder.class, "seedfinder") + "\n\n" +
-										Messages.get(SeedFinder.class, "seedfinder_mode") +
-										Options.condition + "\n\n" + Messages.get(SeedFinder.class, "challenges_code") + SPDSettings.challenges() +
-										"\n\n" + Messages.get(SeedFinder.class, "finder_time") + getElapsedTime() +
-										"\n\n" + Messages.get(SeedFinder.class, "seed_code") +
-										displaySeed);
-						SeedFindLogScene.r.setPos(SeedFindLogScene.uiCamera.width / 3f, SeedFindLogScene.uiCamera.height / 3f);
-					}
-				});
-			}
+			// 只写共享状态，不再向渲染线程投递 postRunnable
+			parallelSeeds.set(0, seedValue);
 
 			matchedFloorInfo.clear();
 			if (testSeedALL(seedStr, floor)) {
@@ -654,4 +660,188 @@ public class SeedFinder {
 		for (boolean b : array) if (!b) return false;
 		return true;
 	}
+
+	// ===== 新增：强力查种（3 线程分片） =====
+	public static volatile boolean parallelFound = false;
+	/** Dungeon 是全局静态状态，多线程操作必须串行化 */
+	public static final Object DUNGEON_LOCK = new Object();
+
+	/** 当前搜索线程数，供 SeedFindLogScene 轮询显示 */
+	public static volatile int searchThreadCount = 1;
+
+	public static final java.util.concurrent.atomic.AtomicLongArray parallelSeeds = new java.util.concurrent.atomic.AtomicLongArray(8);
+
+	/** 强力查种：单个区间覆盖的种子偏移数量 */
+	public static final long SEGMENT_SIZE = 100_000L;
+	/** 强力查种：单个区间超过该时长（毫秒）仍未命中，则所有线程切换到下一个区间 */
+	public static final long SEGMENT_TIMEOUT_MS = 5_000L;
+
+	/** 每个线程当前切片的起始种子偏移（跨线程只读，供日志/UI） */
+	public static volatile long[] segmentBaseOffsets = new long[8];
+	/** 每个线程当前种子池（区间起点）的种子值，15s 未命中换池后随之更新（供 UI 9 字母 Code 显示） */
+	public static volatile long[] segmentBaseSeeds = new long[8];
+
+	public SeedResult findSeedParallel(String[] wanted, int floors, int threadCount) {
+		itemList = new ArrayList<>(Arrays.asList(wanted));
+		findingStatus = FINDING.CONTINUE;
+		parallelFound = false;
+		Options.condition = SPDSettings.seedfinderConditionANY() ? Condition.ANY : Condition.ALL;
+		startTimer();
+		matchedFloorInfo.clear();
+
+		// 清零每个线程的当前种子槽位
+		searchThreadCount = threadCount;
+		for (int t = 0; t < parallelSeeds.length(); t++) parallelSeeds.set(t, -1);
+
+		final SeedResult emptyResult = new SeedResult("NONE", "", new ArrayList<>(), false);
+		long startSeed = Random.Long(DungeonSeed.TOTAL_SEEDS);
+		final long total = DungeonSeed.TOTAL_SEEDS;
+
+		// 段内切片替换：每线程段内按 SEGMENT_SIZE 切片，15s 未命中跳下一片
+		for (int t2 = 0; t2 < segmentBaseOffsets.length; t2++) segmentBaseOffsets[t2] = -1;
+		for (int t2 = 0; t2 < segmentBaseSeeds.length; t2++) segmentBaseSeeds[t2] = -1;
+
+		final java.util.concurrent.atomic.AtomicReference<SeedResult> resultRef =
+				new java.util.concurrent.atomic.AtomicReference<>();
+
+		Thread[] workers = new Thread[threadCount];
+		for (int t = 0; t < threadCount; t++) {
+			final int tid = t;
+
+			// 恢复全量分片：线程 tid 负责 [segStart, segEnd) 连续大段，互不重叠
+			long seg = total / threadCount;
+			final long segStart = tid * seg;
+			final long segEnd = (tid == threadCount - 1) ? total : (tid + 1) * seg;
+
+			workers[t] = new Thread(() -> {
+				// 每线程负责段内一个随机区间（种子池）；15s 未命中或池测完则完全随机 roll 一次
+				long maxSliceStart = segEnd - SEGMENT_SIZE;
+				long sliceStart = (maxSliceStart > segStart) ? (segStart + Random.Long(maxSliceStart - segStart + 1)) : segStart;
+				long sliceEnd = Math.min(sliceStart + SEGMENT_SIZE, segEnd);
+				long sliceStartTime = System.currentTimeMillis();
+				segmentBaseOffsets[tid] = sliceStart;
+				segmentBaseSeeds[tid] = (startSeed + sliceStart) % total;
+
+				long local = sliceStart;
+
+				while (!parallelFound && findingStatus == FINDING.CONTINUE) {
+					if (Thread.currentThread().isInterrupted()) return;
+
+					// 切片超时（15s 未命中）→ 段内跳下一片
+					long now = System.currentTimeMillis();
+					if (now - sliceStartTime >= SEGMENT_TIMEOUT_MS) {
+						// 15s 未命中 → 池子完全随机 roll 一次，不再有序推进
+						if (maxSliceStart <= segStart) return;
+						sliceStart = segStart + Random.Long(maxSliceStart - segStart + 1);
+						sliceEnd = Math.min(sliceStart + SEGMENT_SIZE, segEnd);
+						sliceStartTime = System.currentTimeMillis();
+						local = sliceStart;
+						segmentBaseOffsets[tid] = sliceStart;
+						segmentBaseSeeds[tid] = (startSeed + sliceStart) % total;
+					}
+
+					// 当前切片已测完（未超时）→ 直接进入下一片
+					if (local >= sliceEnd) {
+						// 池测完未超时 → 直接随机 roll 一个新池
+						if (maxSliceStart <= segStart) return;
+						sliceStart = segStart + Random.Long(maxSliceStart - segStart + 1);
+						sliceEnd = Math.min(sliceStart + SEGMENT_SIZE, segEnd);
+						sliceStartTime = System.currentTimeMillis();
+						local = sliceStart;
+						segmentBaseOffsets[tid] = sliceStart;
+						segmentBaseSeeds[tid] = (startSeed + sliceStart) % total;
+						continue;
+					}
+
+					final long seedValue = (startSeed + local) % total;
+					final String seedStr = Long.toString(seedValue);
+
+					parallelSeeds.set(tid, seedValue);
+
+					// 只写共享状态，UI 由 SeedFindLogScene.update() 统一轮询，杜绝投递洪峰
+					synchronized (DUNGEON_LOCK) {
+						if (parallelFound || findingStatus != FINDING.CONTINUE) return;
+						matchedFloorInfo.clear();
+						if (testSeedALL(seedStr, floors)) {
+							parallelFound = true;
+							String logText = logSeedItems(seedStr, floors, SPDSettings.challenges());
+							Map<Integer, List<String>> floorItems = collectFloorItems(seedStr, floors);
+							SeedResult r = new SeedResult(logText, seedStr, new ArrayList<>(matchedFloorInfo), true);
+							r.floorItems = floorItems;
+							resultRef.set(r);
+							return;
+						}
+					}
+
+					local++;
+				}
+			});
+			workers[t].setName("SeedFinder-Worker-" + tid);
+			workers[t].setDaemon(true);
+		}
+
+		for (Thread w : workers) w.start();
+		try {
+			for (Thread w : workers) w.join();
+		} catch (InterruptedException e) {
+			findingStatus = FINDING.STOP;
+			for (Thread w : workers) w.interrupt();
+			running = false;
+			return emptyResult;
+		}
+
+		running = false;
+		findingStatus = FINDING.STOP;
+		SeedResult r = resultRef.get();
+		return r != null ? r : emptyResult;
+	}
+
+
+	/** 为对比用，结构化收集每层物品名（不含黑名单） */
+	public Map<Integer, List<String>> collectFloorItems(String seed, int floors) {
+		Map<Integer, List<String>> result = new HashMap<>();
+		try {
+			Dungeon.isDLC(Conducts.Conduct.SEED);
+			SPDSettings.customSeed(seed);
+			Dungeon.initSeed();
+			GamesInProgress.selectedClass = HeroClass.WARRIOR;
+			Dungeon.init();
+
+			if (blacklist == null) {
+				blacklist = Arrays.asList(
+						Gold.class, Dewdrop.class, IronKey.class, GoldenKey.class, CrystalKey.class, EnergyCrystal.class,
+						CorpseDust.class, Embers.class, CeremonialCandle.class, Pickaxe.class);
+			}
+
+			for (int i = 0; i < floors; i++) {
+				int originalBranch = Dungeon.branch;
+				Dungeon.branch = 0;
+				Level l = Dungeon.newLevel();
+				if (l == null || l instanceof DeadEndLevel) {
+					Dungeon.branch = originalBranch;
+					Dungeon.depth++;
+					continue;
+				}
+				List<String> items = new ArrayList<>();
+				ArrayList<Heap> heaps = new ArrayList<>(l.heaps.valueList());
+				heaps.addAll(getMobDrops(l));
+				for (Heap h : heaps) {
+					for (Item item : h.items) {
+						item.identify();
+						if (blacklist.contains(item.getClass())) continue;
+						items.add(item.title().toLowerCase());
+					}
+				}
+				result.put(Dungeon.depth, items);
+				Dungeon.branch = originalBranch;
+				Dungeon.depth++;
+			}
+		} finally {
+			Dungeon.depth = 0;
+			Dungeon.branch = 0;
+		}
+		return result;
+	}
+
+
 }

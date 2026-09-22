@@ -50,19 +50,7 @@ public class Belongings implements Iterable<Item> {
 //		{
 //			image = ItemSpriteSheet.BACKPACK;
 //		}
-		public int capacity(){
-			int cap = super.capacity();
-			for (Item item : items){
-				if (item instanceof Bag){
-					cap++;
-				}
-			}
-			if (Dungeon.hero != null && Dungeon.hero.belongings.secondWep != null){
-				//secondary weapons still occupy an inv. slot
-				cap--;
-			}
-			return cap;
-		}
+
 	}
 
 	public Backpack backpack;

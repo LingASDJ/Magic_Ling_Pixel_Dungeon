@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Spell;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.Books;
 
 public class ScrollHolder extends Bag {
 
@@ -38,17 +39,13 @@ public class ScrollHolder extends Bag {
 	@Override
 	public boolean canHold( Item item ) {
 		if (item instanceof Scroll || item instanceof Spell
-				|| item instanceof ArcaneResin || item instanceof Stylus){
+				|| item instanceof ArcaneResin || item instanceof Stylus || item instanceof Books){
 			return super.canHold(item);
 		} else {
 			return false;
 		}
 	}
 
-	public int capacity(){
-		return 36;
-	}
-	
 	@Override
 	public void onDetach( ) {
 		super.onDetach();

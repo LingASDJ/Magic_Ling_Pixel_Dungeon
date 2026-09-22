@@ -1,6 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SeedResult {
 
@@ -8,7 +10,7 @@ public class SeedResult {
     public List<String> matchedInfo;
     public String seedStr;
     public boolean success;
-
+    public Map<Integer, List<String>> floorItems = new HashMap<>();
     public SeedResult(String fullLog, String seedStr, List<String> matchedInfo, boolean success) {
         this.fullLog = fullLog;
         this.seedStr = seedStr;

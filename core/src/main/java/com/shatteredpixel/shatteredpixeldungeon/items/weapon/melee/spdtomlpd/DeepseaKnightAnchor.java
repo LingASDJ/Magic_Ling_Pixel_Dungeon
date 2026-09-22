@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
+package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 //深海骑士的锚
@@ -17,7 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 //武技：激愤
 //获得5+等级回合激素涌动。消耗3点充能。这个武技不消耗回合。
 //附有秘密姬的加护的大锚，足以粉碎坚物的它最后沉入了深海。
-public class DeepseaKnightAnchor extends MeleeWeapon{
+public class DeepseaKnightAnchor extends MeleeWeapon {
     {
         image = ItemSpriteSheet.SEA_SWORD;
 

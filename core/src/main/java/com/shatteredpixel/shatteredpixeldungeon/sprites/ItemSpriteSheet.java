@@ -1001,7 +1001,7 @@ public class ItemSpriteSheet {
     public static final int	DG13				= BAGS+20;
 
     public static final int REACH_TOMB           = BAGS+25;
-    public static final int SHOP_DIED           = BAGS+27;
+    public static final int SHOP_DIED           = BAGS+26;
     public static final int	DG21				= BAGS+28;
 
     public static final int	DRAGONKINGHALOFIRE				= BAGS+44;
@@ -1078,11 +1078,13 @@ public class ItemSpriteSheet {
     private static final int EXFOODINDEX    	 = xy(1, 38);  //16 slots
     public static final int  FISHSKELETON=		EXFOODINDEX+0;
     public static final int  FISHBONE=			EXFOODINDEX+1;
-
     public static final int  BLACKMOON=			EXFOODINDEX+2;
+
+    public static final int  DOGSTICK =			EXFOODINDEX+3;
     static {
         assignItemRect(FISHSKELETON,16,16);
         assignItemRect(BLACKMOON, 15, 12);
+        assignItemRect(DOGSTICK, 11, 15);
     }
 
     private static final int MAINPALYBOOKS     = xy(1, 40);
