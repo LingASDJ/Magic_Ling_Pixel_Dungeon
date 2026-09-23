@@ -193,8 +193,8 @@ public class ItemSprite extends MovieClip {
 			float fw = f.width() * texW;
 			float fh = f.height() * texH;
 			if (Math.abs(fw - sw) < 0.01f && Math.abs(fh - sh) < 0.01f) continue;
-			float dx = (fw - sw) / 2f / texW;
-			float dy = (fh - sh) / 2f / texH;
+			float dx = (fw - sw) / 3f / texW;
+			float dy = (fh - sh) / 3f / texH;
 			frames[i] = new RectF(f.left + dx, f.top + dy, f.right - dx, f.bottom - dy);
 			changed = true;
 		}
