@@ -8,6 +8,7 @@ import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -17,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.android.AndroidLauncher;
 import com.shatteredpixel.shatteredpixeldungeon.custom.CollectRankings;
@@ -45,9 +47,12 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -55,6 +60,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -97,6 +106,14 @@ public class BackupSaveScene extends PixelScene {
 
     /** 局内存档备份的文件名前缀，用于与全局备份的 whole-save 前缀区分 */
     public static final String SLOT_PREFIX = "slot";
+
+    /**
+     * 安卓端 SharedPreferences 文件名（Android 自动在 shared_prefs/ 下生成 .xml，即
+     * shared_prefs/ShatteredPixelDungeon.xml）。与 AndroidLauncher.onCreate 里注入的
+     * instance.getPreferences("ShatteredPixelDungeon") 必须完全一致；
+     * 注意安卓端不能使用默认名 settings.xml（那会生成 shared_prefs/settings.xml，读写的是另一份文件）。
+     */
+    public static final String ANDROID_PREFS_NAME = "ShatteredPixelDungeon";
 
     /** 场景 UI 的边距常量（像素） */
     private static final int MARGIN = 8;
@@ -465,6 +482,14 @@ public class BackupSaveScene extends PixelScene {
                         zos.closeEntry();
                     }
                 }
+                // ---- 设置文件条目：把本机设置打包为电脑端可读的 settings.xml（Properties 格式）----
+                byte[] settingsData = buildSettingsEntryForExport();
+                if (settingsData != null) {
+                    ZipEntry entry = new ZipEntry("settings.xml");
+                    zos.putNextEntry(entry);
+                    zos.write(settingsData);
+                    zos.closeEntry();
+                }
             }
 
             // 重建一个界面并重新显示但不播放切换界面动画，也许可以改为局部重建
@@ -583,6 +608,15 @@ public class BackupSaveScene extends PixelScene {
                             }
                         }
                     }
+                    if (entryName.equals("settings.xml")) {
+                        // 电脑端备份包里的 settings.xml（Properties 格式）→ 替换本机设置：
+                        // 安卓端解析后写入 shared_prefs/ShatteredPixelDungeon.xml（Android map 格式），桌面端写回 settings.xml
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        while ((len = zis.read(buffer)) > 0) {
+                            baos.write(buffer, 0, len);
+                        }
+                        applyImportedSettings(baos.toByteArray());
+                    }
                     zis.closeEntry();
                 }
             }
@@ -692,6 +726,9 @@ public class BackupSaveScene extends PixelScene {
 
     /** 清空全局数据的缓存文件 */
     private static void resetGlobalCache() {
+        // 先作废并重载设置缓存：防止本方法内任何 SPDSettings 写入（如 Rankings.load 的 lastDaily 回写）
+        // 基于导入前的旧缓存、把刚替换的 settings.xml 内容整体覆盖回去
+        resetSettingsCache();
         Badges.global = null;                     Badges.loadGlobal();
         PaswordBadges.global = null;              PaswordBadges.loadGlobal();
         Rankings.INSTANCE.records = null;         Rankings.INSTANCE.load();
@@ -701,6 +738,190 @@ public class BackupSaveScene extends PixelScene {
         Journal.resetForReload();                 Journal.loadGlobal();
         Bones.resetForReload();
         YuanTaStoneScene.YuanTaStoryManager.reload();
+    }
+
+    /**
+     * 作废并重载设置缓存。
+     * <p>SPDSettings 只会在首次 get() 时创建一次 Preferences 实例并缓存；导入/导出替换设置文件后
+     * 必须先把旧实例作废，否则下一次 flush 会用旧值整体覆盖新文件（数据丢失）。</p>
+     * <p>安卓端注意：作废后必须重新注入 {@link #ANDROID_PREFS_NAME} 实例——因为 GameSettings 默认名是
+     * settings.xml，若放任下一次 get() 自行创建，会生成 shared_prefs/settings.xml（另一份文件），设置全丢。</p>
+     */
+    private static void resetSettingsCache() {
+        SPDSettings.set( null );
+        if (DeviceCompat.isAndroid()) {
+            SPDSettings.set( Gdx.app.getPreferences( ANDROID_PREFS_NAME ) );
+        }
+    }
+
+    /**
+     * 把备份包里的 settings.xml 内容「替换」为本机设置存储。
+     * <ul>
+     *   <li>安卓端：解析为 key-value 后按值类型写入 shared_prefs/{@link #ANDROID_PREFS_NAME}.xml
+     *       （Android map 格式），即用备份设置替换安卓自身 xml；</li>
+     *   <li>桌面端：原样写回 FileUtils 根目录 settings.xml（保持 Properties 格式）。</li>
+     * </ul>
+     * 写入完成后无条件作废旧内存缓存（并重新注入安卓实例）。
+     *
+     * @param raw 备份包内 settings.xml 条目的原始字节
+     */
+    private static void applyImportedSettings(byte[] raw) {
+        if (raw == null || raw.length == 0) return;
+        try {
+            Properties props = new Properties();
+            try {
+                props.loadFromXML( new ByteArrayInputStream( raw ) );
+            } catch (Exception e) {
+                // 「裸 entry」格式（缺 XML 声明/DOCTYPE/根节点，常见于手工编辑或旧备份）：
+                // loadFromXML 会抛 InvalidPropertiesFormatException，改用正则重建
+                Properties bare = parseBareEntryProperties( new String( raw, StandardCharsets.UTF_8 ) );
+                if (bare == null) throw e;
+                props = bare;
+            }
+            if (DeviceCompat.isAndroid()) {
+                // 安卓端：替换 shared_prefs/ShatteredPixelDungeon.xml（Android map 格式）
+                Preferences prefs = Gdx.app.getPreferences( ANDROID_PREFS_NAME );
+                prefs.clear();
+                for (String key : props.stringPropertyNames()) {
+                    putDetected( prefs, key, props.getProperty( key ) );
+                }
+                prefs.flush();
+            } else {
+                // 桌面端：原样写回 FileUtils 根目录 settings.xml（Properties 格式）
+                FileUtils.getFileHandle( "settings.xml" ).writeBytes( raw, false );
+            }
+            // 无条件作废内存缓存：下一次 get() 从磁盘/SharedPreferences 重新读取，
+            // 防止旧缓存把刚替换的设置整体覆盖回去
+            resetSettingsCache();
+        } catch (Exception e) {
+            ShatteredPixelDungeon.reportException( e );
+        }
+    }
+
+    /**
+     * 从「裸 entry」格式文本重建 Properties（手动解析 &lt;entry key="..."&gt;...&lt;/entry&gt;）。
+     * 解析时先 {@link #unescapeXmlText} 还原实体，保证已转义/未转义两种来源都能无损还原。
+     *
+     * @return 解析出的键值对；一个 entry 都识别不到时返回 null
+     */
+    private static Properties parseBareEntryProperties(String text) {
+        Properties props = new Properties();
+        Pattern p = Pattern.compile( "<entry\\s+key=\"([^\"]*)\"[^>]*>(.*?)</entry>", Pattern.DOTALL );
+        Matcher m = p.matcher( text );
+        boolean found = false;
+        while (m.find()) {
+            props.setProperty( unescapeXmlText( m.group( 1 ) ), unescapeXmlText( m.group( 2 ) ) );
+            found = true;
+        }
+        return found ? props : null;
+    }
+
+    /**
+     * 把字符串值按内容判定类型后写入 Preferences（对齐两端语义）：
+     * boolean("true"/"false") → int → long → float（含小数点/指数）→ string。
+     * 必须 int 先于 long，否则 "800" 会被存成 long、安卓端 getInteger 读不到。
+     */
+    private static void putDetected(Preferences prefs, String key, String value) {
+        if (value == null) return;
+        if (value.equals( "true" ) || value.equals( "false" )) {
+            prefs.putBoolean( key, Boolean.parseBoolean( value ) );
+            return;
+        }
+        try {
+            prefs.putInteger( key, Integer.parseInt( value ) );
+            return;
+        } catch (NumberFormatException ignored) { }
+        try {
+            prefs.putLong( key, Long.parseLong( value ) );
+            return;
+        } catch (NumberFormatException ignored) { }
+        if (value.indexOf( '.' ) != -1 || value.indexOf( 'e' ) != -1 || value.indexOf( 'E' ) != -1) {
+            try {
+                prefs.putFloat( key, Float.parseFloat( value ) );
+                return;
+            } catch (NumberFormatException ignored) { }
+        }
+        prefs.putString( key, value );
+    }
+
+    /**
+     * 生成本机设置的打包条目（settings.xml，Properties 格式，电脑端 Lwjgl3Preferences 可直接读取）。
+     * <ul>
+     *   <li>安卓端：遍历 shared_prefs/{@link #ANDROID_PREFS_NAME}.xml 的全部键值（含类型），转为字符串后 storeToXML；</li>
+     *   <li>桌面端：读取 FileUtils 根目录 settings.xml 原样返回。</li>
+     * </ul>
+     *
+     * @return settings.xml 条目字节；本机尚无设置时返回 null
+     */
+    private static byte[] buildSettingsEntryForExport() {
+        try {
+            Properties props = new Properties();
+            if (DeviceCompat.isAndroid()) {
+                if (AndroidLauncher.instance == null) return null;
+                Map<String, ?> all = AndroidLauncher.instance
+                        .getSharedPreferences( ANDROID_PREFS_NAME, 0 )
+                        .getAll();
+                if (all == null || all.isEmpty()) return null;
+                for (Map.Entry<String, ?> e : all.entrySet()) {
+                    Object v = e.getValue();
+                    if (v != null) props.setProperty( e.getKey(), String.valueOf( v ) );
+                }
+            } else {
+                FileHandle h = FileUtils.getFileHandle( "settings.xml" );
+                if (!h.exists()) return null;
+                props.loadFromXML( h.read() );
+            }
+            if (props.isEmpty()) return null;
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            props.storeToXML( bos, null );
+            return bos.toByteArray();
+        } catch (Exception e) {
+            ShatteredPixelDungeon.reportException( e );
+            return null;
+        }
+    }
+
+    /**
+     * 宽松解码 XML 实体：把 &amp; &lt; &gt; &quot; &apos; 以及 &#NN; / &#xNN; 数字字符引用还原为字符。
+     * 仅用于「裸 entry」格式解析前的预处理；无法识别的 & 序列保持原样。
+     */
+    private static String unescapeXmlText(String s) {
+        if (s == null || s.indexOf( '&' ) == -1) return s;
+        StringBuilder sb = new StringBuilder( s.length() );
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt( i );
+            if (c != '&') {
+                sb.append( c );
+                continue;
+            }
+            int semi = s.indexOf( ';', i );
+            if (semi == -1 || semi - i > 10) {
+                sb.append( c );
+                continue;
+            }
+            String ent = s.substring( i + 1, semi );
+            switch (ent) {
+                case "amp":  sb.append( '&' ); i = semi; continue;
+                case "lt":   sb.append( '<' ); i = semi; continue;
+                case "gt":   sb.append( '>' ); i = semi; continue;
+                case "quot": sb.append( '"' ); i = semi; continue;
+                case "apos": sb.append( '\'' ); i = semi; continue;
+            }
+            if (ent.length() > 1 && ent.charAt( 0 ) == '#') {
+                try {
+                    int cp = (ent.length() > 2 && (ent.charAt( 1 ) == 'x' || ent.charAt( 1 ) == 'X'))
+                            ? Integer.parseInt( ent.substring( 2 ), 16 )
+                            : Integer.parseInt( ent.substring( 1 ) );
+                    sb.appendCodePoint( cp );
+                    i = semi;
+                    continue;
+                } catch (NumberFormatException ignored) {
+                    // 非法数字引用：原样保留
+                }
+            }
+            sb.append( c );
+        }
+        return sb.toString();
     }
 
     /**

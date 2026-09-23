@@ -129,7 +129,7 @@ public class AndroidLauncher extends AndroidApplication {
             // so that we don't need to rely on Gdx.app, which isn't initialized yet.
             // Note that we use a different prefs name on android for legacy purposes,
             // this is the default prefs filename given to an android app (.xml is automatically added to it)
-            SPDSettings.set(instance.getPreferences("ShatteredPixelDungeon"));
+            SPDSettings.set(instance.getPreferences(BackupSaveScene.ANDROID_PREFS_NAME));
 
         } else {
             instance = this;
