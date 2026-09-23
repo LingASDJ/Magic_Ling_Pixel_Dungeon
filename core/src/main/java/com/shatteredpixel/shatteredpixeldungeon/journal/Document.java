@@ -392,5 +392,10 @@ public enum Document {
 			}
 		}
 	}
-	
+
+	public static void resetForReload(){
+		for (Document doc : values()){
+			doc.pagesStates.replaceAll( (page, v) -> NOT_FOUND );
+		}
+	}
 }

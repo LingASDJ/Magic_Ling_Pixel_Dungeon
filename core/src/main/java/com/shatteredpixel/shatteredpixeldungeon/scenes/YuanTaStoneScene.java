@@ -349,5 +349,10 @@ public class YuanTaStoneScene extends PixelScene {
             allStories.add(new YuanTaStory(storyId, title, content, false, iconIdx));
             saveStories();
         }
+
+        /** 全局数据被外部覆盖后调用：丢掉内存列表，重新从磁盘读 */
+        public static void reload(){
+            loadStories();   // 成功失败都会给 allStories 赋非 null 列表，不用先置 null
+        }
     }
 }

@@ -2,9 +2,9 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.shatteredpixel.shatteredpixeldungeon.Chrome;
-import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.*;
+import com.shatteredpixel.shatteredpixeldungeon.custom.CollectRankings;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.input.KeyBindings;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -27,6 +28,10 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,6 +40,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -193,9 +199,41 @@ public class BackupSaveScene extends PixelScene {
                 ShatteredPixelDungeon.scene().addToFront(new WndChooseSlotExport());
             }
         };
-        btnExport.setSize(w, 20);
+        btnExport.setSize((float) (w / 2.0), 20);
         btnExport.setPos(0, h - 20);
         add(btnExport);
+
+        // ---- 「导入存档」按钮（屏幕底部）----
+        // 点击后唤起用户文件夹，并让用户选择.mlsp文件
+        // 这里的文本是 “外部导入”
+        RedButton btnImport = new RedButton(Messages.get(this, "import_file"), 7) {
+            @Override
+            protected void onClick() {
+                if (DeviceCompat.isDesktop()) {
+                    // 仿照 TexturePackScene 的写法开新线程
+                    new Thread(() -> {
+                        JFileChooser chooser = new JFileChooser();
+                        chooser.setDialogTitle(Messages.get(BackupSaveScene.class, "import_file"));
+                        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+                        chooser.setPreferredSize(new Dimension(800, 600));
+                        chooser.setFileFilter(new FileNameExtensionFilter("(*.mlsp)", "mlsp"));
+
+                        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                            final File selected = chooser.getSelectedFile();
+                            // 回到渲染线程再动 UI 和游戏数据
+                            Gdx.app.postRunnable(() -> startImportFlow(Gdx.files.absolute(selected.getAbsolutePath())));
+                        }
+                    }).start();
+                } else {
+                    // 安卓/iOS 走不了 Swing，先给提示
+                    ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                            Messages.get(BackupSaveScene.class, "desktop_not_supported")));
+                }
+            }
+        };
+        btnImport.setSize((float) (w / 2.0), 20);
+        btnImport.setPos((float) (w / 2.0), h - 20);
+        add(btnImport);
 
         // ---- 中部备份列表面板（银灰色窗口样式九宫格背景）----
         NinePatch panel = Chrome.get(Chrome.Type.WINDOW_SILVER);
@@ -612,13 +650,102 @@ public class BackupSaveScene extends PixelScene {
                     zis.closeEntry();
                 }
             }
-            // 「备份导入成功」
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "import_success")));
+            // 磁盘已变：作废内存副本，再重建当前场景让界面立刻反映导入的数据
+            resetGlobalCache();
+            ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback(){
+                @Override public void beforeCreate(){ }
+                @Override public void afterCreate(){
+                    ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                            // 「备份导入成功」
+                            Messages.get(BackupSaveScene.class, "import_success")));
+                }
+            });
         } catch (Exception e) {
             ShatteredPixelDungeon.reportException(e);
             // 「导入失败！」
             ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "import_fail")));
         }
+    }
+
+    /**
+     * 统一的导入分流入口：按文件名前缀判断备份类型，再走对应流程。
+     * 列表里点「导入备份」和底部「外部导入」都汇到这里。
+     */
+    private static void startImportFlow(FileHandle backupFile) {
+        // 未知文件分流：不存在或非既定的拓展名
+        if (!backupFile.exists()
+                || backupFile.isDirectory()
+                || !backupFile.name().endsWith(MLSP_EXT)) {
+            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                    Messages.get(BackupSaveScene.class, "import_fail_unknownfile")));
+            return;
+        }
+        // 全局存档分流
+        if (backupFile.name().startsWith(GLOBAL_PREFIX)) {
+            ShatteredPixelDungeon.scene().addToFront(new WndOptions(
+                    Icons.get(Icons.WARNING),
+                    Messages.get(BackupSaveScene.class, "warn_overwrite_title"),
+                    Messages.get(BackupSaveScene.class, "import_global_confirm_desc"),
+                    Messages.get(BackupSaveScene.class, "confirm_overwrite"),
+                    Messages.get(BackupSaveScene.class, "cancel")
+            ) {
+                @Override
+                protected void onSelect(int yesno) {
+                    if (yesno == 0) importMLSPtoRoot(backupFile);
+                }
+            });
+        }
+        // 局内存档分流
+        else if (backupFile.name().startsWith(SLOT_PREFIX)) {
+            // ---- 导入备份：先选择目标槽位（Slot1~6），再二次确认覆盖 ----
+            ShatteredPixelDungeon.scene().add(new WndOptions(
+                    Icons.get(Icons.WARNING),
+                    Messages.get(BackupSaveScene.class, "import_confirm_title"),
+                    Messages.get(BackupSaveScene.class, "import_confirm_desc"),
+                    "Slot1", "Slot2", "Slot3", "Slot4", "Slot5", "Slot6",
+                    Messages.get(BackupSaveScene.class, "cancel")
+            ) {
+                @Override
+                protected void onSelect(int slotIdx) {
+                    // slotIdx 0~5 对应 Slot1~Slot6
+                    if (slotIdx >= 0 && slotIdx <= 5) {
+                        int targetSlot = slotIdx + 1;
+                        // 二次确认：导入会覆盖目标槽位现有存档
+                        ShatteredPixelDungeon.scene().add(new WndOptions(
+                                Icons.get(Icons.WARNING),
+                                Messages.get(BackupSaveScene.class, "warn_overwrite_title"),
+                                Messages.get(BackupSaveScene.class, "warn_overwrite_desc"),
+                                Messages.get(BackupSaveScene.class, "confirm_overwrite"),
+                                Messages.get(BackupSaveScene.class, "cancel")
+                        ) {
+                            @Override
+                            protected void onSelect(int yesno) {
+                                if (yesno == 0) { // 用户确认覆盖
+                                    importMLSPtoSlot(backupFile, targetSlot);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        // 未知文件分流：非既定的前缀名
+        else {
+            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "import_fail_unknownfile")));
+        }
+    }
+
+    /** 清空全局数据的缓存文件 */
+    private static void resetGlobalCache() {
+        Badges.global = null;                     Badges.loadGlobal();
+        PaswordBadges.global = null;              PaswordBadges.loadGlobal();
+        Rankings.INSTANCE.records = null;         Rankings.INSTANCE.load();
+        CollectRankings.INSTANCE.records = null;  CollectRankings.INSTANCE.load();
+        KeyBindings.setAllBindings(new LinkedHashMap<>());
+        SPDAction.loadBindings();
+        Journal.resetForReload();                 Journal.loadGlobal();
+        Bones.resetForReload();
+        YuanTaStoneScene.YuanTaStoryManager.reload();
     }
 
     /**
@@ -907,18 +1034,10 @@ public class BackupSaveScene extends PixelScene {
         /** 文件最后修改时间（毫秒时间戳），用于排序与展示 */
         long modTime;
 
-        /** 是否为局外存档（全局数据）备份：靠文件名前缀区分，槽位备份是 slot%d- */
-        boolean global;
-
-        /** 是否为局内存档备份：靠文件名前缀区分，全局备份是 whole-save */
-        boolean slot;
-
         BackupFile(String fileName, FileHandle file, long modTime) {
             this.fileName = fileName;
             this.file = file;
             this.modTime = modTime;
-            this.global = fileName.startsWith(GLOBAL_PREFIX);
-            this.slot = fileName.startsWith(SLOT_PREFIX);
         }
     }
 
@@ -1052,59 +1171,7 @@ public class BackupSaveScene extends PixelScene {
                 protected void onSelect(int index) {
                     if (index == 0)
                     {
-                        if (backup.slot) {
-                            // ---- 导入备份：先选择目标槽位（Slot1~6），再二次确认覆盖 ----
-                            ShatteredPixelDungeon.scene().add(new WndOptions(
-                                    Icons.get(Icons.WARNING),
-                                    Messages.get(BackupSaveScene.class, "import_confirm_title"),
-                                    Messages.get(BackupSaveScene.class, "import_confirm_desc"),
-                                    "Slot1", "Slot2", "Slot3", "Slot4", "Slot5", "Slot6",
-                                    Messages.get(BackupSaveScene.class, "cancel")
-                            ) {
-                                @Override
-                                protected void onSelect(int slotIdx) {
-                                    // slotIdx 0~5 对应 Slot1~Slot6
-                                    if (slotIdx >= 0 && slotIdx <= 5) {
-                                        int targetSlot = slotIdx + 1;
-                                        // 二次确认：导入会覆盖目标槽位现有存档
-                                        ShatteredPixelDungeon.scene().add(new WndOptions(
-                                                Icons.get(Icons.WARNING),
-                                                Messages.get(BackupSaveScene.class, "warn_overwrite_title"),
-                                                Messages.get(BackupSaveScene.class, "warn_overwrite_desc"),
-                                                Messages.get(BackupSaveScene.class, "confirm_overwrite"),
-                                                Messages.get(BackupSaveScene.class, "cancel")
-                                        ) {
-                                            @Override
-                                            protected void onSelect(int yesno) {
-                                                if (yesno == 0) { // 用户确认覆盖
-                                                    importMLSPtoSlot(backup.file, targetSlot);
-                                                }
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                        }
-                        else if (backup.global) {
-                            ShatteredPixelDungeon.scene().add(new WndOptions(
-                                    Icons.get(Icons.WARNING),
-                                    Messages.get(BackupSaveScene.class, "warn_overwrite_title"),
-                                    Messages.get(BackupSaveScene.class, "import_global_confirm_desc"),
-                                    Messages.get(BackupSaveScene.class, "confirm_overwrite"),
-                                    Messages.get(BackupSaveScene.class, "cancel")
-                            ) {
-                                @Override
-                                protected void onSelect(int yesno) {
-                                    if (yesno == 0) {
-                                        importMLSPtoRoot(backup.file);
-                                    }
-                                }
-                            });
-                        }
-                        else {
-                            // 「导入失败！导入的文件为未知的文件！」
-                            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "import_fail_unknownfile")));
-                        }
+                        startImportFlow(backup.file);
                     } else if (index == 1) {
                         // ---- 提取文件：桌面端打开该备份所在目录 ----
                         boolean ok = openDirectory(backup.file.parent());

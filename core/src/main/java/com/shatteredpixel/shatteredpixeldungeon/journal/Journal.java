@@ -80,4 +80,12 @@ public class Journal {
 
 	}
 
+	/** 全局存档被外部覆盖后调用：丢掉内存状态，让下次 loadGlobal() 真正重读磁盘 */
+	public static void resetForReload(){
+		Catalog.resetForReload();
+		Bestiary.resetForReload();
+		Document.resetForReload();
+		loaded = false;
+		saveNeeded = false;   // 包内可见，写在 Journal 里合法
+	}
 }

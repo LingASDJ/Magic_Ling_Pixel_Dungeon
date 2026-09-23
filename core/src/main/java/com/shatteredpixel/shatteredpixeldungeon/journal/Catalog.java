@@ -651,4 +651,10 @@ public enum Catalog {
 
 	}
 
+	public static void resetForReload(){
+		for (Catalog cat : values()){
+			cat.seen.replaceAll( (cls, v) -> DeviceCompat.isDesktop_Dev() );  // 默认值见 :239
+			cat.useCount.replaceAll( (cls, v) -> 0 );
+		}
+	}
 }
