@@ -1,10 +1,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
@@ -229,7 +233,21 @@ public class BackupSaveScene extends PixelScene {
                     // SAF回调里解析到的原始文件名；取不到时退回临时文件名（会按未知文件处理）
                     String originalName = pendingImportFileName;
                     pendingImportFileName = null;
-                    startImportFlow(tempMlsp, originalName != null ? originalName : tempMlsp.name());
+                    // 文件名解析失败（如拿到 document id）时，按 ZIP 内容推断备份类型，避免第一次导入误判为未知文件
+                    if (originalName == null) {
+                        originalName = guessBackupTypeByContent(tempMlsp);
+                    }
+                    // 兜底：确保弹窗一定弹出；异常时给出明确提示，而不是无声无息
+                    try {
+                        if (ShatteredPixelDungeon.scene() == null) {
+                            return;
+                        }
+                        startImportFlow(tempMlsp, originalName != null ? originalName : tempMlsp.name());
+                    } catch (Exception e) {
+                        ShatteredPixelDungeon.reportException(e);
+                        ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                                Messages.get(BackupSaveScene.class, "import_fail")));
+                    }
                     onAndroidImportFileReady = null;
                 };
                 // 直接拿到Android Activity 唤起SAF ACTION_OPEN_DOCUMENT
@@ -1097,27 +1115,49 @@ public class BackupSaveScene extends PixelScene {
         protected void onClick() {
             ShatteredPixelDungeon.scene().add(new WndOptions(
                     Icons.get(Icons.CATALOG),
-                    backup.fileName, // 标题为备份文件名
+                    backup.fileName,
                     Messages.get(BackupSaveScene.class, "backup_options"),
                     Messages.get(BackupSaveScene.class, "import_backup"),
-                    Messages.get(BackupSaveScene.class, "extract_file"), // 提取文件
+                    Messages.get(BackupSaveScene.class, "extract_file"), // 提取文件 -> Android另存为SAF
                     Messages.get(BackupSaveScene.class, "delete_backup"),
                     Messages.get(BackupSaveScene.class, "cancel")
             ) {
                 @Override
                 protected void onSelect(int index) {
-                    if (index == 0)
-                    {
-                        startImportFlow(backup.file);
+                    if (index == 0) {
+                        //导入，选择槽位
+                        ShatteredPixelDungeon.scene().add(new WndOptions(
+                                Icons.get(Icons.WARNING),
+                                Messages.get(BackupSaveScene.class, "import_confirm_title"),
+                                Messages.get(BackupSaveScene.class, "import_confirm_desc"),
+                                "Slot1", "Slot2", "Slot3", "Slot4", "Slot5", "Slot6",
+                                Messages.get(BackupSaveScene.class, "cancel")
+                        ) {
+                            @Override
+                            protected void onSelect(int slotIdx) {
+                                if (slotIdx >= 0 && slotIdx <= 5) {
+                                    int targetSlot = slotIdx + 1;
+                                    ShatteredPixelDungeon.scene().add(new WndOptions(
+                                            Icons.get(Icons.WARNING),
+                                            Messages.get(BackupSaveScene.class, "warn_overwrite_title"),
+                                            Messages.get(BackupSaveScene.class, "warn_overwrite_desc"),
+                                            Messages.get(BackupSaveScene.class, "confirm_overwrite"),
+                                            Messages.get(BackupSaveScene.class, "cancel")
+                                    ) {
+                                        @Override
+                                        protected void onSelect(int yesno) {
+                                            if (yesno == 0) {
+                                                importMLSPtoSlot(backup.file, targetSlot);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
                     } else if (index == 1) {
-                        // ---- 提取文件：桌面端打开该备份所在目录 ----
-                        boolean ok = openDirectory(backup.file.parent());
-                        if (!ok) {
-                            // 打开失败（如移动端）给出提示
-                            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "extract_fail")));
-                        }
+                        // ===== 提取文件 =====
+                        saveBackupToSAF(backup.file);
                     } else if (index == 2) {
-                        // ---- 删除备份：确认后删除文件并刷新场景 ----
                         ShatteredPixelDungeon.scene().add(new WndOptions(
                                 Icons.get(Icons.WARNING),
                                 Messages.get(BackupSaveScene.class, "del_backup_title"),
@@ -1127,9 +1167,9 @@ public class BackupSaveScene extends PixelScene {
                         ) {
                             @Override
                             protected void onSelect(int delIdx) {
-                                if (delIdx == 0) { // 用户确认删除
+                                if (delIdx == 0) {
                                     backup.file.delete();
-                                    ShatteredPixelDungeon.switchNoFade(BackupSaveScene.class); // 刷新场景
+                                    ShatteredPixelDungeon.switchNoFade(BackupSaveScene.class);
                                 }
                             }
                         });
@@ -1247,9 +1287,11 @@ public class BackupSaveScene extends PixelScene {
      * 解析SAF所选文件的原始显示名。
      *
      * <p>优先查询 ContentResolver 的 {@link OpenableColumns#DISPLAY_NAME}；
-     * 查询不到时回退到 Uri 最后路径段（去掉常见的 primary: 前缀并做URL解码）。</p>
+     * 查询不到时回退到 Uri 最后路径段（去掉常见的 primary: 前缀并做URL解码）。
+     * 若仍解析不出 .mlsp 文件名（例如拿到的是 document id），返回 null，
+     * 交由导入逻辑按 ZIP 内容推断备份类型。</p>
      *
-     * @return 原始文件名；解析不到时返回 null（此时按未知文件处理）
+     * @return 原始文件名；解析不到时返回 null
      */
     private static String resolvePickedFileName(android.app.Activity activity, Uri uri) {
         try (Cursor cursor = activity.getContentResolver().query(uri, null, null, null, null)) {
@@ -1270,7 +1312,7 @@ public class BackupSaveScene extends PixelScene {
             if (last == null || last.isEmpty()) {
                 return null;
             }
-            // 去掉 "primary:xxx" 这类文档前缀
+            // 去掉 "primary:xxx" / "document:xxx" 这类文档前缀
             int colon = last.indexOf(':');
             if (colon >= 0) {
                 last = last.substring(colon + 1);
@@ -1280,9 +1322,79 @@ public class BackupSaveScene extends PixelScene {
             if (slash >= 0) {
                 last = last.substring(slash + 1);
             }
-            return java.net.URLDecoder.decode(last, "UTF-8");
+            String decoded = java.net.URLDecoder.decode(last, "UTF-8");
+            // 只有能确认是 .mlsp 文件名才算解析成功，否则返回 null 交给内容推断
+            if (decoded == null || !decoded.toLowerCase(Locale.US).endsWith(MLSP_EXT)) {
+                return null;
+            }
+            return decoded;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    /**
+     * 按 ZIP 内容推断备份类型，用于外部导入时文件名解析失败的情况。
+     *
+     * <p>全局存档包内含有 badges.dat / rankings.dat / bones.dat 等局外数据文件；
+     * 槽位存档只含局内数据（game.dat、depth.dat 等），据此区分。</p>
+     *
+     * @param mlspFile 已复制到本地的 .mlsp 临时文件
+     * @return 可参与分流的文件名："whole-save.mlsp" / "slot-unknown.mlsp"；无法识别返回 null
+     */
+    private static String guessBackupTypeByContent(FileHandle mlspFile) {
+        boolean global = false;
+        boolean anyDat = false;
+        try (InputStream fis = mlspFile.read();
+             ZipInputStream zis = new ZipInputStream(fis)) {
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                String name = entry.getName();
+                if (name.endsWith(".dat")) {
+                    anyDat = true;
+                    if (name.equals("badges.dat") || name.equals("rankings.dat")
+                            || name.equals("bones.dat") || name.equals("keybindings.dat")) {
+                        global = true;
+                    }
+                }
+                zis.closeEntry();
+            }
+        } catch (Exception ignored) {
+            return null;
+        }
+        if (global) {
+            return GLOBAL_PREFIX + MLSP_EXT;
+        }
+        if (anyDat) {
+            return "slot-unknown" + MLSP_EXT;
+        }
+        return null;
+    }
+
+    /**
+     * Android: 唤起SAF【另存为】窗口，默认定位外部存储根目录，保存mlsp备份文件
+     * @param mlspFile 要导出的mlsp文件
+     */
+    public static void saveBackupToSAF(FileHandle mlspFile) {
+        try {
+            AndroidApplication androidApp = (AndroidApplication) Gdx.app;
+            Activity activity = (Activity) androidApp.getContext();
+
+            pendingExportFile = mlspFile;
+
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("application/octet-stream");
+            intent.putExtra(Intent.EXTRA_TITLE, mlspFile.name());
+
+            Uri rootUri = DocumentsContract.buildRootUri("com.android.externalstorage.documents", "primary");
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, rootUri);
+
+            activity.startActivityForResult(intent, 9001);
+
+        } catch (Exception e) {
+            ShatteredPixelDungeon.reportException(e);
+            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "extract_fail")));
         }
     }
 
