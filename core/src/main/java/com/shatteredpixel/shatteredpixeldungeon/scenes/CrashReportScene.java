@@ -341,7 +341,7 @@ public class CrashReportScene extends PixelScene {
                     sb.append(lines[i]).append("\n");
                 }
 
-                com.shatteredpixel.shatteredpixeldungeon.android.AndroidLauncher.showNativeCrashDialog(sb.toString());
+                com.shatteredpixel.shatteredpixeldungeon.android.AndroidLauncher.showNativeCrashDialog(sb.toString(), es.fileName);
             } else {
                 ModernCrashReportWindow window = new ModernCrashReportWindow(es);
                 ShatteredPixelDungeon.scene().add(window);
