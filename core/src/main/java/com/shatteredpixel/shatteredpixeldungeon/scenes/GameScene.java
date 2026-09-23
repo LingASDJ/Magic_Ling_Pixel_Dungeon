@@ -1205,26 +1205,32 @@ public class GameScene extends PixelScene {
 	}
 
 	public static void flash( int color, boolean lightmode ) {
-		//greater than 0 to account for negative values (which have the first bit set to 1)
-		if (color > 0 && color < 0x01000000) {
-			scene.fadeIn(0xFF000000 | color, lightmode);
-		} else {
-			scene.fadeIn(color, lightmode);
+		if (scene != null) {
+			//greater than 0 to account for negative values (which have the first bit set to 1)
+			if (color > 0 && color < 0x01000000) {
+				scene.fadeIn(0xFF000000 | color, lightmode);
+			} else {
+				scene.fadeIn(color, lightmode);
+			}
 		}
 	}
 
 	public static void fadeToBlack(float duration,float delay) {
-		Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
-		bossSlain.texture(Assets.Interfaces.BLACK_RECT);
-		bossSlain.show(Window.CBLACK, duration, delay);
-		scene.showBannerX(bossSlain);
+		if (scene != null) {
+			Banner bossSlain = new Banner(BannerSprites.get(BannerSprites.Type.NULL));
+			bossSlain.texture(Assets.Interfaces.BLACK_RECT);
+			bossSlain.show(Window.CBLACK, duration, delay);
+			scene.showBannerX(bossSlain);
+		}
 	}
 
 	public static void fadeToWhite(float duration,float delay) {
-		Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
-		bossSlain.texture(Assets.Interfaces.WHITE_RECT);
-		bossSlain.show(Window.CBLACK, duration, delay);
-		scene.showBannerX(bossSlain);
+		if (scene != null) {
+			Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
+			bossSlain.texture(Assets.Interfaces.WHITE_RECT);
+			bossSlain.show(Window.CBLACK, duration, delay);
+			scene.showBannerX(bossSlain);
+		}
 	}
 
 	public void BzmdrUnameBless(){
