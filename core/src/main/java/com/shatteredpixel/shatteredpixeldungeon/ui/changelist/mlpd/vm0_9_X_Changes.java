@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.TribemanOldSprite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.RivalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
@@ -311,7 +312,7 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(new YanStudyingPaperOne()), (new YanStudyingPaperOne().name()),
                 ("重写该藏品的实现，之前的逻辑有点问题。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HOLDER), ("背包调整"),
+        changes.addButton(new ChangeButton(new ItemSprite(new KingBag()), ("背包调整"),
                 (       "_-_ 牛皮书袋移除，书籍现在纳入卷轴筒一同管理\n" +
                         "_-_ 武甲背包移除，武甲现在纳入魔法筒一同管理\n" +
                         "_-_ 所有背包容量都已统一为49格")));
@@ -356,8 +357,7 @@ public class vm0_9_X_Changes {
                 "_-_ 现在信号弹配方不再消耗炼金能量\n" +
                 "_-_ 现在套组每次使用消耗500金币（信号弹与狩猎狂欢均消耗）\n" +
                 "_-_ 现在套组初始售价调整为500金币\n" +
-                "_-_ 现在套组无法在古堡区域(大于26层)使用，进入古堡区域或脱下/嬗变/被吞噬时提前结束狙击手的援护与狩猎狂欢buff；\n" +
-                        "描述末尾追加她们无法支援现世以外的地方")));
+                "_-_ 现在套组无法在古堡区域(大于26层)使用，进入古堡区域或脱下/嬗变/被吞噬时提前结束狙击手的援护与狩猎狂欢buff")));
 
     }
 
