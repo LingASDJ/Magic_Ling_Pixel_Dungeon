@@ -223,11 +223,13 @@ public class ScrollingGridPane extends ScrollPane {
 			super();
 
 			if (icon instanceof ItemSprite){
-				this.icon = new ItemSprite();
+				// Image.copy() 不会复制 MovieClip 的动画状态(curAnim/待播物品)，
+				// 动态物品(AnimationItem)必须用专用复制，挂载后动画才能继续播放
+				this.icon = ((ItemSprite) icon).copySprite();
 			} else {
 				this.icon = new Image();
+				this.icon.copy(icon);
 			}
-			this.icon.copy(icon);
 			add(this.icon);
 		}
 

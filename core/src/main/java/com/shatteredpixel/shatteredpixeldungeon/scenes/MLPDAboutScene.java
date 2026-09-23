@@ -34,12 +34,15 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.input.PointerEvent;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.ui.Component;
 
 public class MLPDAboutScene extends PixelScene {
+    private float rainbowHue = 0f;
+    private CreditsBlock qingXianBlock;
 
     private Image About_Icons(String id){
         int left;
@@ -123,9 +126,21 @@ public class MLPDAboutScene extends PixelScene {
                 top = 32;
                 break;
             case "TELLER":
-                left = 32;
-                top = 32;
+                left = 16;
+                top = 48;
                 break;
+            case "OMICRONG":
+                left = 32;
+                top = 48;
+                break;
+            case "ROBEIRI":
+                left = 48;
+                top = 48;
+                break;
+            case "NXHY":
+                left = 64;
+                top = 48;
+                break;    
         }
         return new Image(Assets.Interfaces.ABOUT_ICONS,left,top,16,16);
     }
@@ -154,7 +169,7 @@ public class MLPDAboutScene extends PixelScene {
         content.clear();
 
         //*** Magic Ling Pixel Dungeon 核心制作团队 ***
-        CreditsBlock shpx = new CreditsBlock(true, Window.Pink_COLOR,
+        CreditsBlock shpx = new CreditsBlock(true, 0x00C7CB,
                 "Magic Ling Pixel Dungeon",
                 Icons.SHPX.get(),
                 "魔绫像素地牢",
@@ -175,7 +190,7 @@ public class MLPDAboutScene extends PixelScene {
         mainPlan.setPos(w/2f - colWidth/2f, shpx.bottom()+10);
         content.add(mainPlan);
 
-        CreditsBlock mainDesign = new CreditsBlock(false, Window.GDX_COLOR,
+        CreditsBlock mainDesign = new CreditsBlock(false, 0x9B7951,
                 "主 设 计 ",
                 About_Icons("JISHEN"),
                 "寄神",
@@ -190,7 +205,7 @@ public class MLPDAboutScene extends PixelScene {
                 "BZMDR",
                 null,
                 null);
-        mainDesign2.setRect(mainPlan.right()+30, mainPlan.top()+5, colWidth/2f, 0);
+        mainDesign2.setRect(mainPlan.right()+32, mainPlan.top()+5, colWidth/2f, 0);
         content.add(mainDesign2);
 
         addLine(75, content);
@@ -206,7 +221,7 @@ public class MLPDAboutScene extends PixelScene {
         art1.setPos(mainPlan.left(), mainDesign.bottom()+10);
         content.add(art1);
 
-        CreditsBlock art2 = new CreditsBlock(true,0xffd2d2,
+        CreditsBlock art2 = new CreditsBlock(true,0x6f439c,
                 "美  术  设  计",
                 About_Icons("LUOBAI"),
                 "落白",
@@ -218,7 +233,7 @@ public class MLPDAboutScene extends PixelScene {
         addLine(art2.top()+31, content);
 
         //*** 程序开发团队 ***
-        CreditsBlock code1 = new CreditsBlock(true, 0x008ac1,
+        CreditsBlock code1 = new CreditsBlock(true, 0x2B8E68,
                 " ",
                 About_Icons("zxcPandora"),
                 "zxcPandora",
@@ -228,7 +243,7 @@ public class MLPDAboutScene extends PixelScene {
         code1.setPos(art1.left(), art2.bottom()+20);
         content.add(code1);
 
-        CreditsBlock code2 = new CreditsBlock(true,0xffca18,
+        CreditsBlock code2 = new CreditsBlock(true,0xB71575,
                 "程  序  编  码",
                 About_Icons("LING"),
                 "JDSALing",
@@ -237,7 +252,7 @@ public class MLPDAboutScene extends PixelScene {
         code2.setRect(code1.right(), code1.top(), colWidth/3f, 0);
         content.add(code2);
 
-        CreditsBlock code3 = new CreditsBlock(true,0x25273e,
+        CreditsBlock code3 = new CreditsBlock(true,0x123546,
                 "",
                 About_Icons("FLASH"),
                 "手电",
@@ -246,15 +261,21 @@ public class MLPDAboutScene extends PixelScene {
         code3.setRect(code2.right(), code2.top(), colWidth/3f, 0);
         content.add(code3);
 
-        CreditsBlock code4 = new CreditsBlock(true,0x25273e,
-                "",
-                About_Icons("WTR"),
-                "箐筅",
-                null,
-                null);
+
+        CreditsBlock code4 = new CreditsBlock(true,0x25273e, "", About_Icons("WTR"), "箐筅", null, null);
         code4.setRect(code1.x, code1.bottom()+10, colWidth/3f, 0);
         content.add(code4);
+        qingXianBlock = code4;
         addLine(code4.top()+28, content);
+
+        CreditsBlock code5 = new CreditsBlock(true,0xFFFFFF,
+                "",
+                About_Icons("ARE"),
+                "Archetto",
+                null,
+                null);
+        code5.setRect(code4.right(), code1.bottom()+10, colWidth/3f, 0);
+        content.add(code5);
 
 
         //*** 测试协力团队 ***
@@ -267,7 +288,7 @@ public class MLPDAboutScene extends PixelScene {
         test1.setRect(code2.x, code4.bottom()+10, colWidth/3f, 0);
         content.add(test1);
 
-        CreditsBlock test2 = new CreditsBlock(true, 0x008ac1,
+        CreditsBlock test2 = new CreditsBlock(true, 0x5C5C94,
                 "",
                 About_Icons("TSWQ"),
                 "太上忘情",
@@ -277,7 +298,7 @@ public class MLPDAboutScene extends PixelScene {
         test2.setPos(code4.x, code4.bottom()+14);
         content.add(test2);
 
-        CreditsBlock test3 = new CreditsBlock(true,0xffca18,
+        CreditsBlock test3 = new CreditsBlock(true,0x8E1B44,
                 "",
                 About_Icons("SHENHAI"),
                 "深海",
@@ -297,7 +318,7 @@ public class MLPDAboutScene extends PixelScene {
         addLine(test4.bottom()+10, content);
 
         //*** 新增：皮肤设计（三人） ***
-        CreditsBlock skin1 = new CreditsBlock(true, 0xf898b8,
+        CreditsBlock skin1 = new CreditsBlock(true, 0xCDF9FF,
                 " ",
                 About_Icons("Noah_7385"),
                 "Noah-7385",
@@ -307,7 +328,7 @@ public class MLPDAboutScene extends PixelScene {
         skin1.setPos(code2.x-30, test4.bottom()+20);
         content.add(skin1);
 
-        CreditsBlock skin2 = new CreditsBlock(true, 0xf898b8,
+        CreditsBlock skin2 = new CreditsBlock(true, 0xEF0101,
                 "皮 肤 设 计",
                 null,
                 " ",
@@ -316,7 +337,7 @@ public class MLPDAboutScene extends PixelScene {
         skin2.setRect(code2.x, test4.bottom()+15, colWidth/3f, 0);
         content.add(skin2);
 
-        CreditsBlock skin3 = new CreditsBlock(true, 0xf898b8,
+        CreditsBlock skin3 = new CreditsBlock(true, 0xcf3227,
                 "",
                 About_Icons("Daniel_Calan"),
                 "Daniel Calan",
@@ -326,10 +347,10 @@ public class MLPDAboutScene extends PixelScene {
         content.add(skin3);
         addLine(skin1.top()+25, content);
 
-        CreditsBlock balance1 = new CreditsBlock(true, 0x2CE8F5,
+        CreditsBlock balance1 = new CreditsBlock(true, 0xFF19FF,
                 " ",
                 About_Icons("BZMDR"),
-                "Bzmdr",
+                "BZMDR",
                 null,
                 null);
        balance1.setSize(colWidth/2f, 0);
@@ -375,7 +396,7 @@ public class MLPDAboutScene extends PixelScene {
         text2.setRect(text1.right(), text1.top(), colWidth/3f, 0);
         content.add(text2);
 
-        CreditsBlock text3 = new CreditsBlock(true, 0xa884ec,
+        CreditsBlock text3 = new CreditsBlock(true, 0x9B7951,
                 "",
                 About_Icons("JISHEN"),
                 "寄神",
@@ -386,18 +407,19 @@ public class MLPDAboutScene extends PixelScene {
         addLine(text1.top()+32, content);
 
         //*** 运营宣发（四人） ***
-        CreditsBlock openration1 = new CreditsBlock(true, 0x4ecdc4,
-                "运 营 宣 发",
-                Icons.BACKPACK.get(),
+        CreditsBlock openration1 = new CreditsBlock(true, 0xFE9F8D,
+                "运 营 宣 发" +
+                        "\n",
+                About_Icons("ROBEIRI"),
                 "罗贝里",
                 null,
                 null);
         openration1.setRect(code2.x, text1.bottom()+10, colWidth/3f, 0);
         content.add(openration1);
 
-        CreditsBlock openration2 = new CreditsBlock(true, 0xa884ec,
+        CreditsBlock openration2 = new CreditsBlock(true, 0XBFA041,
                 "",
-                About_Icons("JISHEN"),
+                About_Icons("NXHY"),
                 "那些回忆",
                 null,
                 null);
@@ -405,7 +427,7 @@ public class MLPDAboutScene extends PixelScene {
         openration2.setPos(code4.x, text1.bottom()+14);
         content.add(openration2);
 
-        CreditsBlock openration3 = new CreditsBlock(true, 0xa884ec,
+        CreditsBlock openration3 = new CreditsBlock(true, 0xFFD700,
                 "",
                 About_Icons("TELLER"),
                 "泰勒",
@@ -416,7 +438,7 @@ public class MLPDAboutScene extends PixelScene {
 
         CreditsBlock openration4 = new CreditsBlock(true, 0xa884ec,
                 "",
-                About_Icons("JISHEN"),
+                About_Icons("OMICRONG"),
                 "omicronrg9",
                 null,
                 null);
@@ -490,7 +512,7 @@ public class MLPDAboutScene extends PixelScene {
         boolean large;
         RenderedTextBlock title;
         Image avatar;
-        Flare flare;
+        public Flare flare;
         RenderedTextBlock body;
 
         RenderedTextBlock link;
@@ -616,4 +638,37 @@ public class MLPDAboutScene extends PixelScene {
             height = Math.max(height, topY - top());
         }
     }
+
+    @Override
+    public void update() {
+        super.update();
+        if (qingXianBlock != null && qingXianBlock.flare != null) {
+            rainbowHue += Game.elapsed * 0.5f;
+            rainbowHue %= 1f;
+            int color = hsvToRgb(rainbowHue, 1f, 1f);
+            qingXianBlock.flare.color(color, true);
+        }
+    }
+
+    /**
+     * HSV转接器
+     */
+    private int hsvToRgb(float h, float s, float v) {
+        float r=0,g=0,b=0;
+        int i = (int)(h*6);
+        float f = h*6 - i;
+        float p = v*(1-s);
+        float q = v*(1-f*s);
+        float t = v*(1-(1-f)*s);
+        switch(i%6){
+            case 0: r=v;g=t;b=p; break;
+            case 1: r=q;g=v;b=p; break;
+            case 2: r=p;g=v;b=t; break;
+            case 3: r=p;g=q;b=v; break;
+            case 4: r=t;g=p;b=v; break;
+            case 5: r=v;g=p;b=q; break;
+        }
+        return 0xE67069 | ((int)(r*255)<<16) | ((int)(g*255)<<8) | (int)(b*255);
+    }
+
 }

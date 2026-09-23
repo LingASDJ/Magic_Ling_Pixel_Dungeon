@@ -577,7 +577,7 @@ public class InterlevelScene extends PixelScene {
 		Mob.holdAllies( Dungeon.level );
 
 		Level level;
-		if (Dungeon.level.locked || branch != 0) {
+		if (shouldResetOnResurrect())  {
 			ArrayList<Item> preservedItems = Dungeon.level.getItemsToPreserveFromSealedResurrect();
 
 			hero.resurrect();
@@ -649,6 +649,30 @@ public class InterlevelScene extends PixelScene {
 		}
 
 		Dungeon.switchLevel( level, hero.pos );
+	}
+	//一个辅助方法，用于让特定在英雄使用未祝福十字架复活会重置的楼层在boss死后变为不重置的楼层（目前用于子层boss战）
+	private boolean shouldResetOnResurrect() {
+		// BOSS 还活着，仍然执行原有的重置逻辑
+		if (Dungeon.level.locked) {
+			return true;
+		}
+
+		//BOSS死亡后不再重建的层
+		if (branch == 1
+				&& (Dungeon.depth == 20 )) {
+			return false;
+		}
+		if (branch == 2
+				&& (Dungeon.depth == 4 || Dungeon.depth == 8)) {
+			return false;
+		}
+		if (branch == 3
+				&& (Dungeon.depth == 5 || Dungeon.depth == 18)) {
+			return false;
+		}
+
+		// 其他特殊分支保持旧行为
+		return branch != 0;
 	}
 
 	private void reset() throws IOException {

@@ -389,6 +389,7 @@ public class ItemSpriteSheet {
 
         assignItemRect(GAUNTLETS,   13, 15);
         assignItemRect(WAR_SCYTHE,  14, 15);
+        assignItemRect(THEDIED,     13, 14);
         assignItemRect(WASH_CRIME, 15, 14);
 
         assignItemRect(BOMB_SWORD, 16, 13);
@@ -438,6 +439,7 @@ public class ItemSpriteSheet {
 
     static{
         assignItemRect(SPIRIT_BOW,      16, 16);
+        assignItemRect(BloodDir,        10, 11);
 
         assignItemRect(THROWING_SPIKE,  11, 10);
         assignItemRect(THROWING_KNIFE,  12, 13);
@@ -522,6 +524,7 @@ public class ItemSpriteSheet {
         assignItemRect(ARMOR_PLATE,     15, 15);
         assignItemRect(ARMOR_ANCITY,    15, 14);
         assignItemRect(ARMOR_LAMELLAR,  14, 14);
+        assignItemRect(BONE_KNIFE,      13, 13);
 
         assignItemRect(DW_FT,           10, 10);
     }
@@ -847,6 +850,7 @@ public class ItemSpriteSheet {
         assignItemRect(MAGIC_INFUSE,    10, 15);
         assignItemRect(ALCHEMIZE,       10, 15);
         assignItemRect(RECYCLE,         10, 15);
+        assignItemRect(ELIXIR_DRAGON,    9, 16);
     }
 
     private static final int FOOD       =                                   xy(1, 28);  //16 slots
@@ -1001,7 +1005,7 @@ public class ItemSpriteSheet {
     public static final int	DG13				= BAGS+20;
 
     public static final int REACH_TOMB           = BAGS+25;
-    public static final int SHOP_DIED           = BAGS+27;
+    public static final int SHOP_DIED           = BAGS+26;
     public static final int	DG21				= BAGS+28;
 
     public static final int	DRAGONKINGHALOFIRE				= BAGS+44;
@@ -1370,7 +1374,7 @@ public class ItemSpriteSheet {
         assignItemRect(MISC_ROLLBLOCK,       12, 13);
         assignItemRect(MISC_WATERBOMB,       9, 13);
         assignItemRect(MISC_ROLLPOTION,       12, 14);
-        assignItemRect(MISC_EXFALLING,       14, 16);
+        assignItemRect(MISC_EXFALLING,       13, 15);
 
         assignItemRect(SOS_0,       15, 16);
         assignItemRect(SOS_1,       15, 16);

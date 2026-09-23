@@ -21,7 +21,7 @@ public class SmallSkeletonDemonSprite extends MobSprite {
         attack = new Animation( 12, false );
         attack.frames( frames, 21,22,23,24);
 
-        die = new Animation( 12, false );
+        die = new Animation( 24, false );
         die.frames( frames, 25,26,27,28,29);
 
         play( idle );

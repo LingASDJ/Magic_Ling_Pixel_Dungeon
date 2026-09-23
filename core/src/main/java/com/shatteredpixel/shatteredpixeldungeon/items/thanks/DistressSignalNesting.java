@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.thanks;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -9,14 +10,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.MovieClip;
+import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
+public class DistressSignalNesting extends Artifact implements Item.ThanksItem, Item.AnimationItem {
 
     {
         image = ItemSpriteSheet.SOS_0;
@@ -25,6 +29,7 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
         chargeCap = 1;          // 初始 1 充能上限
         charge = chargeCap;     // 购买时默认满充能
         defaultAction = AC_FIRE;
+        animation = true;
     }
 
     // 金币消耗
@@ -111,6 +116,38 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem {
                 return ItemSpriteSheet.SOS_2;
             case 3:
                 return ItemSpriteSheet.SOS_3;
+        }
+    }
+
+    @Override
+    public void frames(ItemSprite itemSprite){
+        if (animation) {
+            itemSprite.texture(Assets.Sprites.ANIMATIONS_SOS);
+            TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
+            if (frames.get(6) != null) {
+                MovieClip.Animation idle = new MovieClip.Animation(14, true);
+                int c;
+                switch (level()) {
+                    case 1:
+                        c = 7;
+                        break;
+                    case 2:
+                        c = 14;
+                        break;
+                    case 3:
+                        c = 21;
+                        break;
+                    default:
+                        c = 0;
+                        break;
+                }
+                idle.frames( frames, c, c,1+c,1+c,2+c,2+c,3+c,3+c,4+c,4+c,5+c,5+c,6+c,6+c);
+                itemSprite.play(idle);
+            } else {
+                itemSprite.view(image(),glowing());
+            }
+        } else {
+            itemSprite.view(image(),glowing());
         }
     }
 

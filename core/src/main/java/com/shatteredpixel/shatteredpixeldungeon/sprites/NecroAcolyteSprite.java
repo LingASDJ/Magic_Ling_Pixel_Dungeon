@@ -42,21 +42,21 @@ public class NecroAcolyteSprite extends MobSprite {
         texture( Assets.Sprites.NECRO_APPREN );
         TextureFilm film = new TextureFilm( texture, 18, 17 );
 
-        idle = new Animation( 11, true );
+        idle = new Animation( 14, true );
         idle.frames( film, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,3,3,3,3,3,3,3,3,3,3,4);
 
-        run = new Animation( 11, true );
+        run = new Animation( 14, true );
         run.frames( film, 5,6,7,8,9,10,11,12 );
 
         // 施法起手动画：单次不循环
-        zap = new Animation( 11, false );
+        zap = new Animation( 14, false );
         zap.frames( film, 13,14,15,16,17 );
 
         // 循环蓄力动画：true 开启循环，持续召唤时重复播放
-        charging = new Animation( 11, true );
+        charging = new Animation( 14, true );
         charging.frames( film, 13,14,15,16,17 );
 
-        die = new Animation( 11, false );
+        die = new Animation( 14, false );
         die.frames( film, 18,19,20,21,22,23 );
 
         // 攻击动画复用zap，普攻只播放一次，不进蓄力循环

@@ -5,12 +5,15 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeInfo;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.S_Changes;
+import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.WndChanges;
+import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.WndChangesTabbed;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_5_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_6_4_P_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_6_6_Changes;
@@ -18,7 +21,9 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_6_7_X_Cha
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_7_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vm0_8_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vm0_9_X_Changes;
+import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Component;
 
@@ -29,6 +34,11 @@ public class NewChangesScene extends PixelScene {
     public static int changesSelected = 0;
 
     public static boolean fromChangesScene = true;
+
+    private NinePatch rightPanel;
+    private ScrollPane rightScroll;
+    private IconTitle changeTitle;
+    private RenderedTextBlock changeBody;
 
     @Override
     public void create() {
@@ -55,11 +65,45 @@ public class NewChangesScene extends PixelScene {
         int pw = 135 + panel.marginLeft() + panel.marginRight() - 2;
         int ph = h - 36;
 
-        panel.size( pw, ph );
-        panel.x = (w - pw) / 2f;
-        panel.y = title.bottom() + 5;
-        align( panel );
-        add( panel );
+        if (h >= PixelScene.MIN_HEIGHT_FULL && w >= 300) {
+            panel.size( pw, ph );
+            panel.x = (w - pw) / 2f - pw/2 - 1;
+            panel.y = 20;
+
+            rightPanel = Chrome.get(Chrome.Type.TOAST);
+            rightPanel.size( pw, ph );
+            rightPanel.x = (w - pw) / 2f + pw/2 + 1;
+            rightPanel.y = 20;
+            add(rightPanel);
+
+            rightScroll = new ScrollPane(new Component());
+            add(rightScroll);
+            rightScroll.setRect(
+                    rightPanel.x + rightPanel.marginLeft(),
+                    rightPanel.y + rightPanel.marginTop()-1,
+                    rightPanel.innerWidth() + 2,
+                    rightPanel.innerHeight() + 2);
+            rightScroll.scrollTo(0, 0);
+
+            changeTitle = new IconTitle(Icons.get(Icons.CHANGES), Messages.get(ChangesScene.class, "right_title"));
+            changeTitle.setPos(0, 1);
+            changeTitle.setSize(pw, 20);
+            rightScroll.content().add(changeTitle);
+
+            String body = Messages.get(ChangesScene.class, "right_body");
+
+            changeBody = PixelScene.renderTextBlock(body, 6);
+            changeBody.maxWidth(pw - panel.marginHor());
+            changeBody.setPos(0, changeTitle.bottom()+2);
+            rightScroll.content().add(changeBody);
+        } else {
+            panel.size(pw, ph);
+            panel.x = (w - pw) / 2f;
+            panel.y = title.bottom() + 5;
+        }
+
+        align(panel);
+        add(panel);
 
         final ArrayList<ChangeInfo> changeInfos = new ArrayList<>();
 
@@ -236,6 +280,33 @@ public class NewChangesScene extends PixelScene {
     @Override
     protected void onBackPressed() {
         ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+    }
+
+    public void updateMLPDChangesText(Image icon, String title, String... messages){
+        if (changeTitle != null){
+            changeTitle.icon(icon);
+            changeTitle.label(title);
+            changeTitle.setPos(changeTitle.left(), changeTitle.top());
+
+            String message = "";
+            for (int i = 0; i < messages.length; i++){
+                message += messages[i];
+                if (i != messages.length-1){
+                    message += "\n\n";
+                }
+            }
+            changeBody.text(message);
+            rightScroll.content().setSize(rightScroll.width(), changeBody.bottom()+2);
+            rightScroll.setSize(rightScroll.width(), rightScroll.height());
+            rightScroll.scrollTo(0, 0);
+
+        } else {
+            if (messages.length == 1) {
+                addToFront(new WndChanges(icon, title, messages[0]));
+            } else {
+                addToFront(new WndChangesTabbed(icon, title, messages));
+            }
+        }
     }
 
 }

@@ -904,7 +904,9 @@ public abstract class Level implements Bundlable {
 					if (i instanceof Bomb){
 						((Bomb) i).fuse = null;
 					}
-					items.add(i);
+					if (i.preserveOnSealedResurrect()) {
+						items.add(i);
+					}
 				}
 			}
 		}

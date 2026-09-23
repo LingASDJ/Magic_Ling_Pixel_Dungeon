@@ -42,7 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TreeList;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -314,7 +314,7 @@ public class FloatingText extends RenderedTextBlock {
 		if (defender.buff(Bless.class) != null) blessBoost *= 1.25f;
 		if (FerretTuft.evasionMultiplier() > 1)                 missReasons.put(MISS_TUFT, FerretTuft.evasionMultiplier());
 		if (RingOfEvasion.evasionMultiplier(defender) > 1)      missReasons.put(MISS_EVA, RingOfEvasion.evasionMultiplier(defender));
-		if (defender.buff(Quarterstaff.DefensiveStance.class) != null)  missReasons.put(MISS_DEF, 3f);
+		if (defender.buff(TreeList.DefensiveStance.class) != null)  missReasons.put(MISS_DEF, 3f);
 		if (arm != null && arm.evasionFactor(defender, 100) > 100) {
 			//we express armor's normally flat evasion boost as a %, yes this is very awkward
 			Armor.testingNoArmDefSkill = true;

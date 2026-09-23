@@ -331,16 +331,6 @@ public class CapeOfThorns extends Artifact {
 
 	}
 
-	public static class ThornsStats extends Buff {
-		{
-			type = buffType.POSITIVE;
-		}
-		@Override
-		public int icon() {
-			return BuffIndicator.THORNS;
-		}
-	}
-
 	public class Thorns extends ArtifactBuff{
 
 		@Override

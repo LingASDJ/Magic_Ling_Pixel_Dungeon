@@ -110,12 +110,12 @@ public class ChangesScene extends PixelScene {
 					rightPanel.innerHeight() + 2);
 			rightScroll.scrollTo(0, 0);
 
-			changeTitle = new IconTitle(Icons.get(Icons.CHANGES), Messages.get(this, "right_title"));
+			changeTitle = new IconTitle(Icons.get(Icons.CHANGES), Messages.get(ChangesScene.class, "right_title"));
 			changeTitle.setPos(0, 1);
 			changeTitle.setSize(pw, 20);
 			rightScroll.content().add(changeTitle);
 
-			String body = Messages.get(this, "right_body");
+			String body = Messages.get(ChangesScene.class, "right_body");
 
 			changeBody = PixelScene.renderTextBlock(body, 6);
 			changeBody.maxWidth(pw - panel.marginHor());
@@ -347,6 +347,10 @@ public class ChangesScene extends PixelScene {
 		Scene s = ShatteredPixelDungeon.scene();
 		if (s instanceof ChangesScene){
 			((ChangesScene) s).updateChangesText(icon, title, messages);
+			return;
+		}
+		if (s instanceof NewChangesScene){
+			((NewChangesScene) s).updateMLPDChangesText(icon, title, messages);
 			return;
 		}
 		if (messages.length == 1) {

@@ -30,10 +30,6 @@ public class UnlessFlower extends Ankh {
         return new ArrayList<>();
     }
 
-    @Override
-    public ItemSprite.Glowing glowing() {
-        return WHITE;
-    }
 
     public static class UnlessFlowerTime extends Buff {
 

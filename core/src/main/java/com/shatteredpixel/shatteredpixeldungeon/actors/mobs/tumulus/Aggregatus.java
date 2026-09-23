@@ -13,7 +13,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfSoul;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AggregatusSprite;
@@ -162,8 +161,8 @@ public class Aggregatus extends Mob implements Callback, Hero.Doom {
     @Override
     public void rollToDropLoot() {
         super.rollToDropLoot();
-        ScrollOfSoul soul = new ScrollOfSoul();
-        Dungeon.level.drop(soul, pos).sprite.drop();
+//        ScrollOfSoul soul = new ScrollOfSoul();
+//        Dungeon.level.drop(soul, pos).sprite.drop();
     }
 
     @Override

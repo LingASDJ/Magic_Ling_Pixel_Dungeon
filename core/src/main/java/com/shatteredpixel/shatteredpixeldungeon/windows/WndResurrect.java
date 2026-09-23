@@ -189,6 +189,8 @@ public class WndResurrect extends Window {
 				KillMazeMimic = 0;
 				DragonGirlBlue.Quest.four_used_points = 0;
 
+				Statistics.NoTime = false;
+
 				Statistics.sakaBackStage = 0;
 
 				Statistics.RepaierTowerCount = 0;

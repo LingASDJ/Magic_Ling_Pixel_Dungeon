@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.StarDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -85,6 +86,7 @@ import java.util.ArrayList;
 public class vm0_9_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0960_Changes(changeInfos);
         add_V0950_Changes(changeInfos);
         add_V0948_Changes(changeInfos);
         add_V0945_Changes(changeInfos);
@@ -98,7 +100,7 @@ public class vm0_9_X_Changes {
         add_V0900_Changes(changeInfos);
     }
 
-    public static void add_V0950_Changes(ArrayList<ChangeInfo> changeInfos ) {
+    public static void add_V0960_Changes(ArrayList<ChangeInfo> changeInfos ) {
 
         ChangeInfo changes = new ChangeInfo("Lost-失落古墓-敬请期待-Tomb", true,"");
         changes.hardlight(0xCCCCCC);
@@ -127,7 +129,148 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new Image(Icons.get(Icons.NEWS)), "后续开发预告",
                 "失落古墓外传正在稳步推进开发，更多场景、怪物、专属武器与剧情内容将陆续放出，敬请期待后续版本情报！"));
 
-        changes = new ChangeInfo("v0.9.5.0", true, "");
+        changes = new ChangeInfo("v0.9.6.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+        changes.addButton(new ChangeButton(new Image("Ling.png", 0, 0, 16, 16), "开发者的话",
+                "v0.9.6.0 — 完成于 2026-09-21 23:59\n\n" +
+                        "距离上次更新已经过了一个月。目前对于古墓的开发仍在进行中，但不影响本次更新的内容之丰富！\n" +
+                        "本次更新的重点是武器大迭代与投掷武器整体修改，与此同时，数目不少的优化等你发现。\n" +
+                        "另外，不久后将会迎来中秋+绫的生日+国庆三重奏，部分限时活动将会返场，更多福利将会通过兑换码予以发放，祝大家玩得高兴！\n\n" +
+                        "——MLPD主开发：JDSALing\n" +
+                        "翻译：久住"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WATER_SWORD), ("破碎武器迭代-第二轮"),
+                ("15个破碎武器将得到替换，老存档将自动同步。\n" +
+                        "具体请参考下方列表：\n\n" +
+                        "T2-武器组：\n" +
+                        "_-_ 长匕首-->弑君\n" +
+                        "_-_ 短柄镰-->尖刺轮盘"),
+                (
+                "T3-武器组：\n" +
+                        "_-_ 弯刀-->滴落者\n" +
+                        "_-_ 圆盾-->诅咒之刃\n" +
+                        "_-_ 筝盾-->迅捷剑"
+                ),
+                (
+                 "T4-武器组：\n" +
+                        "_-_ 链枷-->驱魔重锤\n" +
+                        "_-_ 长剑-->断生者\n" +
+                        "_-_ 战斧-->万象之杖\n" +
+                        "_-_ 武士刀-->晨星\n" +
+                        "_-_ 暗杀之刃-->德诺尔镰刀\n" +
+                        "_-_ 十字弩-->指南剑"
+                ),(
+                "T5-武器组：\n" +
+                        "_-_ 巨剑-->门板\n" +
+                        "_-_ 白檩剑-->深海骑士的锚\n" +
+                        "_-_ 巨斧-->末日节杖\n" +
+                        "_-_ 战镰-->钉入矛"
+                )
+
+        ));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("新音乐：冥河惊魂"),
+                ("作者：禊-misogi-\n\n为古堡-刻耳柏洛斯全新音乐，欢迎欣赏。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_AIKELAIER), ("查种器-V4.0"),
+                ("1.强力搜查模式重做，现在支持多线程查种\n" +
+                        "2.优化查种线程，现在不会因为线程堵塞卡死渲染")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DOGSTICK), ("新道具：狗哨"),
+                ("获得-再摸亿下-隐藏徽章后在商店中有概率生成。\n" +
+                        "可以召唤小刻耳柏洛斯，目前可以狗叫敌人，但无实质伤害。\n\n" +
+                        "不过对于宠物系统已有一些制作思路，将在未来版本实装，敬请期待。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SHOVEL), ("新武器：铲子"),
+                ("二阶，力量需求12\n" +
+                        "初始2-15，成长1-3\n" +
+                        "在使用此武器击杀敌人后，有（20+3*等级）%概率在那个位置生成一堆残骸，手持此武器时打开坟墓不会生成怨灵。\n" +
+                        "挖掘生者的坟墓。\n"),(
+                        "武技：寻宝。\n" +
+                                "消耗2充能，在原地发掘一个普通宝箱。发掘时有5%概率发掘出可以直接打开的金宝箱！每一层至多被寻宝5次。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.VOID_SWORD), ("新武器：虚空剑"),
+                ("四阶，力量需求15\n" +
+                        "初始6-30，成长2-5\n" +
+                        "在进行攻击后，立刻将视野内可达位置中的一名随机敌人吸引至身前。\n" +
+                        "这把剑身中传来强大的吸引力，仿佛你正置身死寂的黑洞之中。"),
+                (
+                        "武技：奇点坍缩，消耗所有充能（至少3点），\n" +
+                        "在指定位置放置1个奇点，奇点会持续定身5*5范围内的敌人，每多消耗3充能使生效范围扩大一圈，\n" +
+                        "并且每回合会使范围内的所有敌人和物品向奇点方向强制位移一格。\n" +
+                        "奇点每回合都会摧毁与他相邻或重叠的物品，接触奇点的非boss单位会直接死亡并且不提供经验，\n" +
+                        "接触奇点的boss单位会受到（30+10*lv）真实伤害随后减少奇点30回合持续时间。\n" +
+                        "释放时消耗的每点充能使奇点存在最大时间+6回合。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(new DistressSignalNesting()), ("新系统：动态贴图"),
+                ("潜伏三年，精心研究，好吧，就是物品动画终于横空出世了。\n\n本次实装有支援信号套组，炸弹剑\n\n非常得炫酷。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CATALOG), ("新系统：效果百科"),
+                ("在图鉴中新增效果百科，可以查询目前已有的可见Buff，和魔绫地牢游戏中使用的Buff数量总统计。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("徽章优化"),
+                ("13个原隐藏徽章经组内评判，认为可移除出隐藏徽章组。\n\n" +
+                        "已在老版本获取的玩家，将在新版本自动迁移到常规徽章组。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项优化"),
+                ("_-_ 徽章现在可分页显示，不再像之前那样挤在一起\n" +
+                        "_-_ 除低版本安卓，其他高版本安卓强制使用全屏模式\n" +
+                        "_-_ 魔绫现在携带非密码TAG，可修复魅族无法截图录屏，和部分设备调出安全键盘的问题\n" +
+                        "_-_ 翻译界面现在可查看当前语言翻译进度，以百分比显示\n" +
+                        "_-_ 由于早期难度设计和现阶段设计冲突问题，经组内讨论后，简单模式已移除\n" +
+                        "_-_ PC端全尺寸回归并修复了Bug，PC玩家将可以在游玩中得到更好的体验\n" +
+                        "_-_ 部分UI迭代优化，部分素材迭代更新")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                ("V0.9.6.0：\n\n" +
+                        "_-_ 修复部分界面的继承导致的严重游戏崩溃问题\n" +
+                        "_-_ 修复破碎之环的一些优先级判定导致的严重游戏崩溃问题\n" +
+                        "_-_ 修复Bzmdr的礼物在矮人将军处不重置的问题\n" +
+                        "_-_ 修复孤城古神处使用未祝福的十字架时间加速依旧不会停止的问题\n" +
+                        "_-_ 修复全尺寸显示模式背包上方界面可以穿透的问题\n" +
+                        "_-_ 修复奥术附魔无法对鬼磷附魔生效的问题\n" +
+                        "_-_ 修复久住NPC会导致的严重游戏崩溃问题"),
+                (
+                        "_-_ 修复子层Boss重置问题\n" +
+                                "_-_ 修复6选3房间重置后错误保留的问题\n" +
+                                "_-_ 优化拟态之王浮空buff清除的时序，现在会延后\n" +
+                                "_-_ 修复拟态王极端情况下死亡的遗物背包坐标错误问题\n" +
+                                "_-_ 修复护甲生成器部分ID不一致的问题\n" +
+                                "_-_ 修复网络兑换码加载时间过长导致游戏卡住的问题\n" +
+                                "_-_ 修复支援信号套组刷弹药的问题\n" +
+                                "_-_ 修复棱光，灵壤，冲击波成长bug，修复电子烟阵营问题")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HOLDER), ("背包调整"),
+                (       "_-_ 牛皮书袋移除，书籍现在纳入卷轴筒一同管理\n" +
+                        "_-_ 武甲背包移除，武甲现在纳入魔法筒一同管理\n" +
+                        "_-_ 所有背包容量都已统一为49格")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.G_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GOLDLANGGUN), ("黄金长枪"),
+                ("黄金长枪现在拥有祝福，用黄金长枪命中非相邻敌人时将会触发祝福buff")));
+
+    }
+
+    public static void add_V0950_Changes(ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.9.5.0", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
         changes.addButton(new ChangeButton(new Image("Ling.png", 0, 0, 16, 16), "开发者的话",
@@ -306,9 +449,6 @@ public class vm0_9_X_Changes {
 
         changes.addButton (new ChangeButton (new ItemSprite(ItemSpriteSheet.SKIN_14), "新皮肤：女仆红狐",
                 "售价1500钴币\n\n作者：Priestess & 索托斯 & Daniel Calan\n\n炉边煮好了咖啡，主人，要不要来一杯歇歇？"));
-
-        changes.addButton (new ChangeButton (HeroSprite.avatar (HeroClass.HUNTRESS, 13), "新皮肤：虔书圣徒",
-                "售价1500钴币\n\n作者：海鸥\n\n黑袍藏弩，古籍诵咒，以祷言与劲矢一同肃清地牢滋生的邪秽。"));
 
         changes.addButton (new ChangeButton (HeroSprite.avatar (HeroClass.DUELIST, 14), "新皮肤：埃及艳后",
                 "售价1500钴币\n\n作者：过街的白菜——人人喊吃 & 索托斯 & Daniel Calan\n\n大漠热风裹挟着金饰微光，绿洲的女王在此等候你的到来。"));
@@ -784,7 +924,7 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.R_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREELIST), ("树痕调整"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREELIST), ("调整"),
                 ("每下攻击攒2+等级/5 生命护盾量，上限20+等级*2\n" +
                         "储存盾量只可吸收奥术护盾，不吸收生命护盾")));
 
@@ -905,7 +1045,7 @@ public class vm0_9_X_Changes {
 
         ));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREELIST), ("树痕调整"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TREELIST), ("调整"),
                 ("二阶，力量需求13\n" +
                         "\n" +
                         "初始3-14，成长1-1\n" +
@@ -1053,7 +1193,7 @@ public class vm0_9_X_Changes {
                         "22.修复暗金宝石护符诅咒特效失效\n" +
                         "23.修复普通古神战中，孤城情况下，拳头在古神附近应有的无敌效果失效\n" +
                         "24.修复弩炮显示法伤的异常\n" +
-                        "25.定身期间现在无敌 & 树痕护盾为0时，快捷栏按钮不会生效")
+                        "25.定身期间现在无敌 & 护盾为0时，快捷栏按钮不会生效")
 
         ));
 
