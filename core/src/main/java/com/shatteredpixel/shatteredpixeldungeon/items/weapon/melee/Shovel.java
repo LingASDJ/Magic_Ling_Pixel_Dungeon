@@ -175,7 +175,7 @@ public class Shovel extends MeleeWeapon{
     // 武技描述
     @Override
     public String abilityInfo() {
-        int canBeFoundTimes = levelKnown ? Dungeon.level.canBeFoundTreasure: 5;
+        int canBeFoundTimes = Dungeon.level.canBeFoundTreasure;
         if (levelKnown){
             return Messages.get(this, "ability_desc", canBeFoundTimes);
         } else {
