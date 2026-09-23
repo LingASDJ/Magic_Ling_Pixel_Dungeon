@@ -376,4 +376,15 @@ public class Bones {
 		}
 		return false;
 	}
+
+	/** 让下次 get() 重新从 bones.dat 读盘 */
+	public static void resetForReload(){
+		depth = -1;
+		branch = -1;
+		item = null;
+		heroClass = null;
+		name = null;
+		killed = 0;
+		healing = 0;
+	}
 }
