@@ -143,40 +143,70 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	@Override
-	//FIXME some logic here assumes the items are in the player's inventory. Might need to adjust
 	public Item upgrade() {
-		if (!bundleRestoring) {
-			durability = MAX_DURABILITY;
-			if (quantity > 1) {
-				MissileWeapon upgraded = (MissileWeapon) split(1);
-				upgraded.parent = null;
-
-				upgraded = (MissileWeapon) upgraded.upgrade();
-
-				//try to put the upgraded into inventory, if it didn't already merge
-				if (upgraded.quantity() == 1 && !upgraded.collect()) {
-					Dungeon.level.drop(upgraded, Dungeon.hero.pos);
-				}
-				updateQuickslot();
-				return upgraded;
-			} else {
-				super.upgrade();
-
-				Item similar = Dungeon.hero.belongings.getSimilar(this);
-				if (similar != null){
-					detach(Dungeon.hero.belongings.backpack);
-					Item result = similar.merge(this);
-					updateQuickslot();
-					return result;
-				}
-				updateQuickslot();
-				return this;
-			}
-
-		} else {
-			return super.upgrade();
-		}
+		return upgrade(false);
 	}
+
+	@Override
+	public Item upgrade(boolean enchant) {
+		if (bundleRestoring) {
+			//读档时调用父类方法，只加等级，不做合并/补耐久
+			return super.upgrade(enchant);
+		}
+
+		//走的还是 Weapon 那套掉附魔/解诅咒逻辑
+		Item result = super.upgrade(enchant);
+		//升级补满整组耐久
+		durability = MAX_DURABILITY;
+
+		if (Dungeon.hero != null && Dungeon.hero.belongings != null) {
+			Bag backpack = Dungeon.hero.belongings.backpack;
+			Item similar = Dungeon.hero.belongings.getSimilar(this);
+			if (similar != null && backpack.contains(this)) {
+				detachAll(backpack);
+				result = similar.merge(this);
+			}
+		}
+
+		updateQuickslot();
+		return result;
+	}
+
+//	@Override
+//	//FIXME some logic here assumes the items are in the player's inventory. Might need to adjust
+//	public Item upgrade() {
+//		if (!bundleRestoring) {
+//			durability = MAX_DURABILITY;
+//			if (quantity > 1) {
+//				MissileWeapon upgraded = (MissileWeapon) split(1);
+//				upgraded.parent = null;
+//
+//				upgraded = (MissileWeapon) upgraded.upgrade();
+//
+//				//try to put the upgraded into inventory, if it didn't already merge
+//				if (upgraded.quantity() == 1 && !upgraded.collect()) {
+//					Dungeon.level.drop(upgraded, Dungeon.hero.pos);
+//				}
+//				updateQuickslot();
+//				return upgraded;
+//			} else {
+//				super.upgrade();
+//
+//				Item similar = Dungeon.hero.belongings.getSimilar(this);
+//				if (similar != null){
+//					detach(Dungeon.hero.belongings.backpack);
+//					Item result = similar.merge(this);
+//					updateQuickslot();
+//					return result;
+//				}
+//				updateQuickslot();
+//				return this;
+//			}
+//
+//		} else {
+//			return super.upgrade();
+//		}
+//	}
 
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
@@ -318,6 +348,8 @@ abstract public class MissileWeapon extends Weapon {
 			}
 		}
 
+		rollLevelAndEffects();
+		if (cursed) cursedKnown = true; //诅咒直接可见
 		GameAPI.CodeCallback_OnItemCreation( item );
 		return item;
 	}
@@ -367,7 +399,7 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	protected final float durabilityPerUse( boolean rounded){
-		float usages = baseUses * (float)(Math.pow(3, level()));
+		float usages = baseUses * (float)(Math.pow(1.5, level()));
 
 		//+50%/75% durability
 		if (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.DURABLE_PROJECTILES)){
