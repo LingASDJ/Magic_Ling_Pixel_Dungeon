@@ -46,7 +46,14 @@ public class CleansingDart extends TippedDart {
 			PotionOfCleansing.cleanse(defender, PotionOfCleansing.Cleanse.DURATION*2f);
 			return 0;
 		} else {
-			BuffClear.BigClean(defender, BuffClear.CLEAR_LEVEL);  // 净化目标身上所有可净化Buff
+			for (Buff b : defender.buffs()){
+				if (!(b instanceof ChampionEnemy)
+						&& !(b instanceof ShieldBuff && defender instanceof FireMagicDied)
+						&& b.type == Buff.buffType.POSITIVE
+						&& !(b instanceof Crossbow.ChargedShot)){
+					b.detach();
+				}
+			}
 			//for when cleansed effects were keeping defender alive (e.g. raging brutes)
 			if (!defender.isAlive()){
 				defender.die(attacker);
