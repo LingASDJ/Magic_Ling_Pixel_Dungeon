@@ -213,6 +213,9 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.CATALOG), ("新系统：效果百科"),
                 ("在图鉴中新增效果百科，可以查询目前已有的可见Buff，和魔绫地牢游戏中使用的Buff数量总统计。")));
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.WARNING), ("错误报告V3登场"),
+                ("新增专门针对于安卓的ANR异常捕获，方便更快追踪无响应问题的产生缘由。\n\n注意：安卓ANR异常和桌面端无响应是两个东西，ANR无法追踪桌面端的问题，如你在电脑发生卡死，请联系制作组团队询问解决。")));
+
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
@@ -247,7 +250,8 @@ public class vm0_9_X_Changes {
                                 "_-_ 修复护甲生成器部分ID不一致的问题\n" +
                                 "_-_ 修复网络兑换码加载时间过长导致游戏卡住的问题\n" +
                                 "_-_ 修复支援信号套组刷弹药的问题\n" +
-                                "_-_ 修复棱光，灵壤，冲击波成长bug，修复电子烟阵营问题")));
+                                "_-_ 修复棱光，灵壤，冲击波成长bug，修复电子烟阵营问题\n" +
+                                "_-_ 修复在还未准备好游戏界面时渲染子控件导致崩溃")));
 
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
