@@ -125,7 +125,7 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem, 
             itemSprite.texture(Assets.Sprites.ANIMATIONS_SOS);
             TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
             if (frames.get(6) != null) {
-                MovieClip.Animation idle = new MovieClip.Animation(14, true);
+                MovieClip.Animation idle = new MovieClip.Animation(16, true);
                 int c;
                 switch (level()) {
                     case 1:
