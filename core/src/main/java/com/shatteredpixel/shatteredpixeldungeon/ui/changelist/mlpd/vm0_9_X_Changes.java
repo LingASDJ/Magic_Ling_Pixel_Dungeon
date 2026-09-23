@@ -28,8 +28,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.StarDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
+import com.shatteredpixel.shatteredpixeldungeon.items.thanks.CelestialBrush;
 import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ATRISprite;
@@ -49,11 +53,12 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulPlusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GiantFlowerSlimeSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GuardCapitalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.KusumiMagicGirlSprites;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.KusumiSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KusumiMagicGirlSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KusumiSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MageHandSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniSakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonCatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MyCoreHeartSprite;
@@ -220,6 +225,20 @@ public class vm0_9_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(new AikeLaier.Seed()), ("闪电花调整"),
+                (       "_-_ 闪电花现在回复血量的恢复至调整为最大血量的10%向上取整\n" +
+                        "_-_ 闪电花与辉耀飞镖现在对我方怪物造成精英化效果时该效果存在500回合的时间限制\n" +
+                        "_-_ 闪电花现在在自然之履中充能从10%调整为35%后才可使用")));
+
+        changes.addButton(new ChangeButton(new ShopkKingSprite(), ("抢劫事件调整优化"),
+                ("_-_ 商人领主的商店现在售价为玩家当前最高探索深度\n" +
+                        "_-_ 商人领主的商店现在刷新为 350 + 250 x 刷新次数，首次相当于0，然后后续依次+1\n" +
+                        "_-_ 击败浊焰魔女莲娜后，后续抢劫事件将不再参与前线地图，将会直接到特殊场地，进行快捷选择与战斗\n" +
+                        "_-_ 现在净化飞镖不能破除莲娜的护盾")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(new WashCrime()), ("涤罪调整"),
+                ("击杀层数上限提升至 100，同层数攻速与附加伤害下调；亡魂属性上限提高，高击杀层数下召唤物的属性将更强。")));
+
         changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("徽章优化"),
                 ("13个原隐藏徽章经组内评判，认为可移除出隐藏徽章组。\n\n" +
                         "已在老版本获取的玩家，将在新版本自动迁移到常规徽章组。")));
@@ -251,24 +270,94 @@ public class vm0_9_X_Changes {
                                 "_-_ 修复网络兑换码加载时间过长导致游戏卡住的问题\n" +
                                 "_-_ 修复支援信号套组刷弹药的问题\n" +
                                 "_-_ 修复棱光，灵壤，冲击波成长bug，修复电子烟阵营问题\n" +
-                                "_-_ 修复在还未准备好游戏界面时渲染子控件导致崩溃")));
+                                "_-_ 修复在还未准备好游戏界面时渲染子控件导致崩溃"),
+
+                (       "_-_ 修复了天界画笔吞噬已装备物品时物品删除异常的问题\n" +
+                        "_-_ 现在金蝶升级机制在嬗变\"嬗变后仍是自身\"的物品时不再是删除原有物品返回相同物品了\n" +
+                        "_-_ 修复了支援信号套组金币电表倒转的问题\n" +
+                        "_-_ 修复了种子检索日志场景静态成员引用与退出时线程未中断导致的卡死/崩溃问题\n" +
+                        "_-_ 修复了日志界面关闭故事弹窗因场景强转崩溃的问题（WndStory越界强转修复）\n" +
+                        "_-_ 修复了魔能透视下怪物坐标越界导致游戏崩溃的问题（视野计算越界保护，仅作弊/调试开关开启时提示）\n" +
+                        "_-_ 修复敌法精英没有额外法伤减免的问题"
+
+                )));
 
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changes.hardlight(Window.R_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(new CelestialBrush()),("天界画笔"),(
+                "_-_ 全等级最大充能上限减少 1 点，可储存作画次数降低\n" +
+                        "_-_ Lv2 升级献祭所需牺牲生命上限由 15 上调至 20\n" +
+                        "_-_ 古焰之色的伤害上限下调，降低火焰锥形 AOE 爆发；伤害下限随等级提升小幅增加" +
+                        "_-_ 被动充能公式改动：画笔在接近满充能时回充速度提升；空充能状态下充能速度相比旧版变慢")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WHITE_BAST), ("白浪刺剑"),
+                ("成长梯度从3-7 降至 2-6。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.THEDIED), ("肃杀"),
+                ("武技的闪现距离从5格下调至4格")));
+
+        changes.addButton(new ChangeButton(new MiniSakaFishBossSprites(), ("盟友系统优化"),
+                ("鉴于部分玩家利用此机制对怪物（特别是财富）进行卡位，现添加如下限制：\n" +
+                        "盟友持续全自动行动满 45 回合时会立刻死亡。\n" +
+                        "\n\n" +
+                        "备注：若你在第 44 回合执行任意一次行动，该回合计数将重置。请记得主动操作，相关信息可参考盟友图鉴。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(new StoneOfAggression()), ("敌意符石"),
+                ("现在敌意符石对于Boss单位的效果减半。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(new YanStudyingPaperOne()), (new YanStudyingPaperOne().name()),
+                ("重写该藏品的实现，之前的逻辑有点问题。")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HOLDER), ("背包调整"),
                 (       "_-_ 牛皮书袋移除，书籍现在纳入卷轴筒一同管理\n" +
                         "_-_ 武甲背包移除，武甲现在纳入魔法筒一同管理\n" +
                         "_-_ 所有背包容量都已统一为49格")));
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LONGSWORD), "部分系统优化",
+                  "_-_ 现在会计算英雄精英化（各类祝福）带来的增伤效果\n" +
+                            "_-_ 现在会在护甲结算前计算上述增伤效果\n" +
+                            "_-_ 现在玩家心魔损伤大于50时不会使得怪物的伤害也变成0.65倍\n" +
+                            "_-_ 现在奇怪的档案袋施加英雄祝福buff的回合数是200回合\n" +
+                            "_-_ 现在英雄祝福固定增伤至200%，固定减伤至50%\n" +
+                            "_-_ 现在敌人装备狂怒之戒不会使得攻速随狂怒之戒等级增加而降低，而是正常升高\n" +
+                            "_-_ 现在与精英化对应的祝福类buff作为攻击方增伤时在护甲结算前生效\n" +
+                            "_-_ 现在攻击方的魔女的低语-审判、纯洁的祝福-安息的伤害修正效果在护甲结算前生效"));
+
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
         changes.hardlight(Window.G_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(new CelestialBrush()),("天界画笔"),(
+                "严冬之色的减速持续时间大幅提升，控场能力增强")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FORCE_CUBE), ("投掷武器升级"),
+                (       "_-_ 自然生成投武会概率携带升级，诅咒和附魔\n" +
+                        "_-_ 升级会升级一组而不是现在的只升级一个\n" +
+                        "_-_ 升级耐久收益降低由_现在的升一级提升3倍耐久_降低至_升一级提升1.5倍耐久_\n" +
+                        "_-_ 现在升级将恢复全部耐久，投武现在可以被附魔和诅咒")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GOLDLANGGUN), ("黄金长枪"),
                 ("黄金长枪现在拥有祝福，用黄金长枪命中非相邻敌人时将会触发祝福buff")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(new DistressSignalNesting()), ("支援信号套组"),(
+                "_-_ 现在套组使用后获得12/24/36/48层狙击手援护（对应套组等级0/1/2/3）\n" +
+                "_-_ 现在套组充能上限由固定1点改为初始1点，每升级额外提高1点（满级4点），升级时自动补满充能\n" +
+                "_-_ 现在信号弹每次装填恢复至当前充能上限，最终充能不超过上限\n" +
+                "_-_ 现在狩猎狂欢改为消耗剩余所有充能，每1点充能提供40回合效果（不再固定消耗3充能90回合）\n" +
+                "_-_ 现在狙击手的援护触发冷却由8回合缩短至4回合\n" +
+                "_-_ 现在狩猎狂欢每回合朝本层随机敌人发射霜冻/穿甲燃烧/电磁震荡箭，每个敌人每回合只会被1种箭选为目标，三种箭冷却同时进行且独立计算，优先级为霜冻>穿甲燃烧>电磁震荡，buff栏可查看三位狙击手具体冷却\n"),
+                (
+                "_-_ 现在霜冻箭的冻伤时长调整为5回合\n" +
+                "_-_ 现在穿甲燃烧箭的点燃时长调整为2+套组等级回合\n" +
+                "_-_ 现在电磁震荡箭的电场持续3+套组等级回合，电场持续伤害系数为20/30/40/50%\n" +
+                "_-_ 现在信号弹配方不再消耗炼金能量\n" +
+                "_-_ 现在套组每次使用消耗500金币（信号弹与狩猎狂欢均消耗）\n" +
+                "_-_ 现在套组初始售价调整为500金币\n" +
+                "_-_ 现在套组无法在古堡区域(大于26层)使用，进入古堡区域或脱下/嬗变/被吞噬时提前结束狙击手的援护与狩猎狂欢buff；\n" +
+                        "描述末尾追加她们无法支援现世以外的地方")));
 
     }
 
