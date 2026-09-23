@@ -6,6 +6,7 @@
     <string name="copy_complete">Copy complete</string>
     <string name="crash_dialog_title">Crash / ANR Details</string>
     <string name="crash_dialog_copy">Copy</string>
+    <string name="crash_dialog_delete">Delete logs</string>
     <string name="crash_dialog_close">Close</string>
     <string name="crash_copy_success">Copied to clipboard</string>
     <string name="log_saved">Crash log saved</string>

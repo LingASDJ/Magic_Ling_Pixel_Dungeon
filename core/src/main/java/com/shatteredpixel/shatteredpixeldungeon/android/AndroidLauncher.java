@@ -27,6 +27,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationBase;
@@ -49,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.CrashHandler;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.BackupSaveScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CrashReportScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TexturePackScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
@@ -58,6 +60,8 @@ import com.shatteredpixel.shatteredpixeldungeon.update.Updates;
 import com.watabou.input.KeyEvent;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
+
+import java.io.File;
 
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
@@ -266,7 +270,13 @@ public class AndroidLauncher extends AndroidApplication {
     }
 
 
-    public static void showNativeCrashDialog(final String crashText) {
+    /**
+     * 显示原生崩溃详情对话框。
+     *
+     * @param crashText    崩溃文本内容
+     * @param logFileName  当前这条日志的文件名（仅文件名，相对 crash_logs 目录，可为 null）
+     */
+    public static void showNativeCrashDialog(final String crashText, final String logFileName) {
         if (!(instance instanceof AndroidLauncher)) {
             return;
         }
@@ -314,6 +324,20 @@ public class AndroidLauncher extends AndroidApplication {
                             }
                         });
 
+                alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL,
+                        dialogContext.getString(R.string.crash_dialog_delete),
+                        (dialog, which) -> {
+                            deleteCrashLog(launcher, logFileName);
+                            // 删除后回到游戏线程，重建崩溃报告列表（与桌面端删除行为一致）
+                            if (Gdx.app != null) {
+                                Gdx.app.postRunnable(() -> {
+                                    if (ShatteredPixelDungeon.scene() instanceof CrashReportScene) {
+                                        ShatteredPixelDungeon.switchNoFade(CrashReportScene.class);
+                                    }
+                                });
+                            }
+                        });
+
                 alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
                         dialogContext.getString(R.string.crash_dialog_close),
                         (dialog, which) -> {});
@@ -321,6 +345,31 @@ public class AndroidLauncher extends AndroidApplication {
                 alertDialog.show();
             }
         });
+    }
+
+    /**
+     * 删除指定的一条崩溃/ANR日志（crash_logs 目录下的单个 .log 文件）。
+     * 仅接受纯文件名，带路径分隔符的一律忽略，防止路径穿越。
+     */
+    private static void deleteCrashLog(Context context, String logFileName) {
+        try {
+            if (logFileName == null || logFileName.isEmpty()) {
+                return;
+            }
+            // 防御：只允许纯文件名，且必须以 .log 结尾
+            if (logFileName.contains("/") || logFileName.contains("\\")
+                    || !logFileName.endsWith(CrashHandler.CRASH_FILE_EXTENSION)) {
+                return;
+            }
+            File crashDir = new File(context.getFilesDir(), CrashHandler.CRASH_DIR);
+            File target = new File(crashDir, logFileName);
+            if (target.isFile()) {
+                //noinspection ResultOfMethodCallIgnored
+                target.delete();
+            }
+        } catch (Exception ignored) {
+            // 删除失败不影响崩溃对话框本身
+        }
     }
 
     private static int dp2px(int dp){
