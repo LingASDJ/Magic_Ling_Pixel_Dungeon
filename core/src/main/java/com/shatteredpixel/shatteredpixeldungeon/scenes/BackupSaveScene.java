@@ -37,6 +37,7 @@ import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
 
 import java.awt.Dimension;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -683,12 +684,19 @@ public class BackupSaveScene extends PixelScene {
                         }
                     }
                     if (entryName.equals("settings.xml")) {
-                        // 直接原样字节复制，无任何XML解析、修复、重写
+                        // 先完整读出条目字节
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        while ((len = zis.read(buffer)) > 0) {
+                            baos.write(buffer, 0, len);
+                        }
+                        byte[] settingsBytes = baos.toByteArray();
+                        // 兼容手机端备份：若设置条目是安卓原生 <map> 格式（旧版本导出/手动打包
+                        // shared_prefs 文件），先转成电脑端标准 Properties XML；否则（标准
+                        // Properties / 裸 entry）原样写入，交由 reloadSettingsFromDisk 规范化兜底
+                        byte[] converted = convertAndroidMapSettings(settingsBytes);
                         FileHandle outDat = FileUtils.getFileHandle(entryName);
                         try (OutputStream os = outDat.write(false)) {
-                            while ((len = zis.read(buffer)) > 0) {
-                                os.write(buffer, 0, len);
-                            }
+                            os.write(converted != null ? converted : settingsBytes);
                         }
                     }
                     zis.closeEntry();
@@ -837,6 +845,47 @@ public class BackupSaveScene extends PixelScene {
             SPDSettings.set( null );
         }
         ShatteredPixelDungeon.updateSystemUI();
+    }
+
+    /**
+     * 检测并把「安卓 SharedPreferences map 格式」的 settings.xml 转成电脑端标准 Properties XML。
+     * <p>手机端（修改后）导出的 settings.xml 已是标准 Properties 格式；但若包里的设置条目是
+     * Android 原生的 &lt;map&gt; 格式（旧版本导出、或手动把 shared_prefs 文件打包进备份），
+     * 电脑端 Lwjgl3Preferences 无法直接解析，必须先转换。</p>
+     * <p>解析时用 {@link #unescapeXmlText} 还原实体（含 &#39; 等数字引用），并把
+     * string/int/long/boolean/float 各类型节点统一转为字符串键值，再 storeToXML 输出
+     * 标准格式，桌面端 getInteger/getLong/getBoolean 会按字符串解析，兼容两端语义。</p>
+     *
+     * @param raw 备份包内 settings.xml 条目的原始字节
+     * @return 标准 Properties XML 字节；非 map 格式（无法识别）时返回 null，调用方应原样处理
+     */
+    private static byte[] convertAndroidMapSettings(byte[] raw) {
+        if (raw == null || raw.length == 0) return null;
+        String text;
+        try {
+            text = new String(raw, "UTF-8");
+        } catch (Exception e) {
+            return null;
+        }
+        if (!text.contains("<map")) return null; // 不是安卓 map 格式
+        java.util.Properties props = new java.util.Properties();
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
+                "<(string|int|long|boolean|float)\\s+name=\"([^\"]*)\"[^>]*>(.*?)</\\1>",
+                java.util.regex.Pattern.DOTALL );
+        java.util.regex.Matcher m = p.matcher( text );
+        boolean found = false;
+        while (m.find()) {
+            props.setProperty( unescapeXmlText( m.group( 2 ) ), unescapeXmlText( m.group( 3 ) ) );
+            found = true;
+        }
+        if (!found) return null;
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            props.storeToXML( bos, null );
+            return bos.toByteArray();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
