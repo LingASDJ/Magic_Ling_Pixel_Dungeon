@@ -38,7 +38,7 @@ public class GameSettings {
 			return defValue;
 		}
 	}
-	private static Preferences prefs;
+	public static Preferences prefs;
 
 	private static Preferences get() {
 		if (prefs == null) {
