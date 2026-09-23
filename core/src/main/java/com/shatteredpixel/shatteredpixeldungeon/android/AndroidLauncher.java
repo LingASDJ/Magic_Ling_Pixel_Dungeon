@@ -170,7 +170,6 @@ public class AndroidLauncher extends AndroidApplication {
         CrashHandler.getInstance().startAnrMonitor();
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -179,9 +178,11 @@ public class AndroidLauncher extends AndroidApplication {
             TexturePackScene.handleActivityResult(requestCode, resultCode, data);
         }
 
+        Uri uri = data != null ? data.getData() : null;
         if(requestCode == 9001){
-            Uri uri = data != null ? data.getData() : null;
             BackupSaveScene.handleSAFSaveResult(this, resultCode, uri);
+        } else if(requestCode == 9002) {
+            BackupSaveScene.handleSAFImportResult(this, resultCode, uri);
         }
     }
 
