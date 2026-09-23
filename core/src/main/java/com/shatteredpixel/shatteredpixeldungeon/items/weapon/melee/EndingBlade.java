@@ -422,8 +422,12 @@ public class EndingBlade extends MeleeWeapon {
 
         hero.damage(hpCost, this);
 
-        // 移除所有可清除的负面buff
-        BuffClear.NegativeClean(hero, BuffClear.CLEAR_LEVEL);
+        // 移除所有负面buff
+        for (Buff buff : hero.buffs().toArray(new Buff[0])) {
+            if (buff.type == Buff.buffType.NEGATIVE) {
+                buff.detach();
+            }
+        }
 
         // 给予正面buff（20回合）
         Buff.affect(hero, Bless.class, 20f);
