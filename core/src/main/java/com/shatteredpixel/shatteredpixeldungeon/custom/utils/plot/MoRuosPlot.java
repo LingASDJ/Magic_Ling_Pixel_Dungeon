@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
@@ -9,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.noosa.Image;
 import com.watabou.utils.DeviceCompat;
 
 import java.util.List;
@@ -90,6 +92,8 @@ public class MoRuosPlot extends Plot {
 
     private void process_to_1() {
         diagulewindow.hideAll();
+        Dungeon.hero.interrupt();
+        diagulewindow.setMainAvatar(new Image(Assets.Splashes.MORUOS));
         diagulewindow.setLeftName(Messages.get(MoRuoS.class,"name"));
         diagulewindow.changeText(Messages.get(MoRuoS.class, "message1"));
     }

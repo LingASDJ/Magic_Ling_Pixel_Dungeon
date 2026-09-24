@@ -65,7 +65,7 @@ public class FayiNaPlot extends Plot {
     private void process_to_1() {
         diagulewindow.hideAll();
         Dungeon.hero.interrupt();
-        diagulewindow.setMainAvatar(new Image(Assets.Splashes.FG));
+        diagulewindow.setMainAvatar(new Image(Assets.Splashes.FAYINA_0));
         diagulewindow.setLeftName(Messages.get(FayiNa.class, "name"));
         diagulewindow.changeText(Messages.get(FayiNa.class, "message1"));
     }
@@ -131,7 +131,7 @@ public class FayiNaPlot extends Plot {
         private void process_to_1() {
             diagulewindow.hideAll();
             Dungeon.hero.interrupt();
-            diagulewindow.setMainAvatar(new Image(Assets.Splashes.FG));
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.FAYINA_0));
             diagulewindow.setLeftName(Messages.get(FayiNa.class, "name"));
             diagulewindow.changeText(Messages.get(FayiNa.class, "message7"));
         }
