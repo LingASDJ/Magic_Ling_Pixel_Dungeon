@@ -615,6 +615,8 @@ public class Assets {
 
 		public static final String YXF = "splashes/huntress_portraits.png";
 
+		public static final String MORUOS = "splashes/mruos_portraits.png";
+
 		public static final String NYZ = "splashes/nyz_portraits.png";
 		public static final String MT = "splashes/mint_portraits.png";
 		public static final String MT_CJ = "splashes/mint_cj_portraits.png";

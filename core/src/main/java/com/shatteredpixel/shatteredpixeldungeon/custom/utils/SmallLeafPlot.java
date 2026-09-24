@@ -88,7 +88,7 @@ public class SmallLeafPlot extends Plot {
     private void process_to_1()
     {
         diagulewindow.hideAll();
-        diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLS));
+        diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
         diagulewindow.setLeftName(Messages.get(SmallLeaf.class,"name"));
         diagulewindow.changeText(Messages.get(SmallLeaf.class,"getcoin"));
         DropRules();
@@ -159,7 +159,7 @@ public class SmallLeafPlot extends Plot {
 
         private void process_to_1() {
             diagulewindow.hideAll();
-            diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLS));
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
             diagulewindow.setLeftName(Messages.get(SmallLeaf.class, "name"));
             diagulewindow.changeText(Messages.get(SmallLeaf.class, "getcoin"));
             DropRules();
@@ -235,7 +235,7 @@ public class SmallLeafPlot extends Plot {
 
         private void process_to_1() {
             diagulewindow.hideAll();
-            diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLS));
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
             diagulewindow.setLeftName(Messages.get(SmallLeaf.class, "name"));
             diagulewindow.changeText(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
         }
@@ -336,11 +336,8 @@ public class SmallLeafPlot extends Plot {
 
         private void process_to_1() {
             diagulewindow.hideAll();
-            if(Statistics.amuletObtained){
-                diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLS));
-            } else {
-                diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
-            }
+            Dungeon.hero.interrupt();
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
             diagulewindow.setLeftName(Messages.get(SmallLeaf.class, "name"));
 
             if(!change) {
