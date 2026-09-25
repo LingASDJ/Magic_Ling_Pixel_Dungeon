@@ -985,6 +985,8 @@ public class ItemSpriteSheet {
 
     static {
         assignItemRect(SHADOWMEAT,16,14);
+        assignItemRect(REDCRAB,   16,12);
+
     }
 
     private static final int BAGS       =                                   xy(1, 31);  //16 slots
