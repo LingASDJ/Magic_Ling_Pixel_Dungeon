@@ -249,7 +249,7 @@ public class Rival extends Mob implements Callback {
     public int drRoll() {
         int dr = 0;
         dr += Random.NormalIntRange( armor.DRMin(), armor.DRMax() );
-        dr += Random.NormalIntRange( 0, weapon.defenseFactor( this ) );
+        dr += weapon.defenseRoll( this );
         if (dr < 0) dr = 0;
         return dr;
     }

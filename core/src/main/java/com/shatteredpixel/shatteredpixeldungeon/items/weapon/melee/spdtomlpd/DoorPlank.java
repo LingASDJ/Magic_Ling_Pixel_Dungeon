@@ -21,9 +21,9 @@ import com.watabou.utils.Callback;
 
 //门板
 //五阶，力量需求18
-//初始4-20，成长1-4
-//初始护甲2-3，成长1-3
-//这把武器的攻击会额外附带你最大生命值（20+2*等级）%的真实伤害。
+//初始4-20，成长1-3
+//初始护甲0-3，成长1-2
+//这把武器的攻击会额外附带你最大生命值（10+等级）%的真实伤害。
 //沉重的武器，你似乎可以把全身的力量都倾注入一击之上。
 //武技：门截裂夫，消耗2充能，处决剩余生命值低于你当前生命值的非boss单位。对boss单位释放时，进行一次必中的攻击，最终伤害*2且伤害类型变为真实。
 public class DoorPlank extends MeleeWeapon {
@@ -37,14 +37,35 @@ public class DoorPlank extends MeleeWeapon {
     }
 
     @Override
-    public int max(int lvl) { return 20 + lvl * 4; }
+    public int max(int lvl) { return 20 + lvl * 3; }
 
     @Override
     public int min(int lvl) { return 4 + lvl; }
 
+    // ========== 额外护甲：0-3 起步，每级成长 1-2 ==========
+    @Override
+    public int DRMin(Char owner) { return buffedLvl(); }
+
+    @Override
+    public int DRMax(Char owner) { return 3 + buffedLvl() * 2; }
+
+    // 兼容旧的护甲 API（招架音效等仍会读它）
+    @Override
+    public int defenseFactor(Char owner) { return DRMax(owner); }
+
+    // 面板显示：护甲区间 + 真实伤害百分比
+    @Override
+    public String statsInfo() {
+        if (isIdentified()) {
+            return Messages.get(this, "stats_desc", armorStatsInfo(), 10 + buffedLvl());
+        } else {
+            return Messages.get(this, "typical_stats_desc", armorStatsInfo(0, 3), 10);
+        }
+    }
+
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        defender.damage(Math.round((0.2f + 0.02f * buffedLvl()) * attacker.HT), attacker, Char.DamageType.REAL);
+        defender.damage(Math.round((0.1f + 0.01f * buffedLvl()) * attacker.HT), attacker, Char.DamageType.REAL);
         return super.proc(attacker, defender, damage);
     }
 
@@ -91,6 +112,13 @@ public class DoorPlank extends MeleeWeapon {
             return;
         }
         hero.belongings.abilityWeapon = null;
+
+        if (!(Char.hasProp(enemy, Char.Property.BOSS) || Char.hasProp(enemy, Char.Property.MINIBOSS))
+                && enemy.isAlive()
+                && enemy.HP >= hero.HP){
+            GLog.w(Messages.get(this, "ability_cannot_execute"));
+            return;
+        }
 
         // 对选择的目标进行攻击
         hero.sprite.attack(enemy.pos, new Callback() {

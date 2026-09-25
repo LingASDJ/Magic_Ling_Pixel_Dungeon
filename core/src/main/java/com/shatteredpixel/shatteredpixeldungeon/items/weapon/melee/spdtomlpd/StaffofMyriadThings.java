@@ -18,11 +18,11 @@ import java.util.HashSet;
 
 //万象之杖
 //四阶，力量需求16
-//初始5-20，成长1-5
-//每使用这把武器击杀过一种敌人，就获得0-2的伤害成长以及仅限此武器的1精准修正。对于boss这个加成效果翻倍。
+//初始5-10，成长1-3，精准0.5
+//每使用这把武器击杀过一种敌人，就获得0-1的伤害成长以及仅限此武器的1精准修正。对于boss这个加成效果翻倍。
 //已击杀过n种敌人，分别是……
 //需要将森罗万象填充进去，才能熠熠生辉。
-//武技：万象辉光，消耗5充能，视野内每有1个任意单位（不包括自己）就获得1回合无敌。每击杀过13种敌人，最终额外获得1回合无敌。
+//武技：万象辉光，消耗4充能，获得1回合无敌，每击杀过13种敌人，额外获得1回合无敌。
 public class StaffofMyriadThings extends MeleeWeapon {
     {
         image = ItemSpriteSheet.EARTH_STICK;
@@ -30,22 +30,22 @@ public class StaffofMyriadThings extends MeleeWeapon {
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
 
+        ACC = 0.5f;
+
         tier = 4;
     }
 
     @Override
-    public int max(int lvl) { return 20 + lvl * 5 + 2*CengShu(); }
+    public int max(int lvl) { return 10 + lvl * 3 + CengShu(); }
 
     @Override
     public int min(int lvl) { return 5 + lvl; }
 
     // 已击杀过的敌人种类（按类名记录，每种只计一次）
     private HashSet<String> killedTypes = new HashSet<>();
-    // 其中属于 Boss 的种类（每种额外再计一层）
-    private HashSet<String> bossTypes = new HashSet<>();
-    // 层数：普通敌人每种1层，Boss每种2层
+    // 层数：敌人每种1层
     public int CengShu(){
-        return killedTypes.size() + bossTypes.size();
+        return killedTypes.size();
     }
 
     @Override
@@ -59,7 +59,7 @@ public class StaffofMyriadThings extends MeleeWeapon {
             killed = Messages.get(this, "killed", killedTypes.size(), killedList());
         }
 
-        return desc + "\n\n" + killed + "\n" + Messages.get(this, "bonus", 2*CengShu(), CengShu());
+        return desc + "\n\n" + killed + "\n" + Messages.get(this, "bonus", CengShu(), CengShu());
     }
 
     // 已击杀种类的名字列表（最多显示10种，超出部分用“等N种”省略）
@@ -84,18 +84,15 @@ public class StaffofMyriadThings extends MeleeWeapon {
         super.restoreFromBundle(bundle);
         // 用集合存击杀敌人的名字
         killedTypes = new HashSet<>();
-        bossTypes = new HashSet<>();
         String[] killed = bundle.getStringArray("killed_types");
         String[] bosses = bundle.getStringArray("boss_types");
         if (killed != null) Collections.addAll(killedTypes, killed);
-        if (bosses != null) Collections.addAll(bossTypes, bosses);
     }
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put("killed_types", killedTypes.toArray(new String[0]));
-        bundle.put("boss_types", bossTypes.toArray(new String[0]));
     }
 
     @Override
@@ -112,12 +109,7 @@ public class StaffofMyriadThings extends MeleeWeapon {
                 if (!def.isAlive()) {
                     // 记录击杀的敌人种类：同一类只计一次
                     String cls = def.getClass().getName();
-                    if (killedTypes.add(cls)) {
-                        // Boss 种类额外再计一层
-                        if (def instanceof Boss) {
-                            bossTypes.add(cls);
-                        }
-                    }
+                    killedTypes.add(cls);
                 }
                 Actor.remove(this);
                 return true;
@@ -131,7 +123,7 @@ public class StaffofMyriadThings extends MeleeWeapon {
     // 每次使用武技消耗的充能点数（由决斗者的 Charger buff 提供）
     @Override
     protected int baseChargeUse(Hero hero, Char target){
-        return 5;
+        return 4;
     }
 
     // 仿照MerchantSword的5g
@@ -151,26 +143,9 @@ public class StaffofMyriadThings extends MeleeWeapon {
         afterAbilityUsed(hero);
     }
 
-    // 计数器，用于数单位数量
-    private int countChars(Char origin) {
-        int n = 0;
-        // 增强for使用前确保一下遍历的目标不为空
-        if (origin.fieldOfView == null) return n;
-        for (Char ch : Actor.chars()) {
-            if (ch != origin
-                    && ch.pos >= 0                             // 此句与下一句同表示目标位置存在暨不会使得第三句发生数组越界
-                    && ch.pos < origin.fieldOfView.length
-                    && origin.fieldOfView[ch.pos]
-                    && ch.isAlive()) {
-                n++;
-            }
-        }
-        return n;
-    }
-
     // 计算器，用于计算武技最终给予的无敌回合数
-    private float Duration(Char origin){
-        return countChars(origin) + ((float)killedTypes.size() / 13f);
+    private int Duration(Char origin){
+        return (int) (1+((float)killedTypes.size() / 13f));
     }
 
     // 武技描述相关

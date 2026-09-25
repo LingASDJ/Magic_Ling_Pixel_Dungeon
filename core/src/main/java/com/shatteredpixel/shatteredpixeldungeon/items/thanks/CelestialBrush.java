@@ -12,7 +12,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -51,6 +50,8 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
+
 public class CelestialBrush extends Artifact implements Item.ThanksItem {
 
     {
@@ -87,10 +88,10 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
     @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
-        if (isEquipped(hero) && charge > 0 && !cursed && hero.buff(MagicImmune.class) == null) {
+        if (isEquipped(hero) && charge > 0 && !cursed && !isMagicImmuned(hero)) {
             actions.add(AC_PAINT);
         }
-        if (isEquipped(hero) && level() < levelCap && !cursed && hero.buff(MagicImmune.class) == null) {
+        if (isEquipped(hero) && level() < levelCap && !cursed && !isMagicImmuned(hero)) {
             actions.add(AC_INK);
         }
         return actions;
@@ -103,7 +104,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
 
-        if (hero.buff(MagicImmune.class) != null) return;
+        if (isMagicImmuned(hero)) return;
 
         // -------- 作画 --------
         if (action.equals(AC_PAINT)) {
@@ -450,7 +451,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
         public boolean act() {
             if (charge < chargeCap
                     && !cursed
-                    && target.buff(MagicImmune.class) == null
+                    && !isMagicImmuned(target)
                     && Regeneration.regenOn()) {
                 float chargeGain = 0;
                 int lost = chargeCap - charge;
@@ -479,7 +480,7 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
 
     @Override
     public void charge(Hero target, float amount) {
-        if (cursed || target.buff(MagicImmune.class) != null || charge >= chargeCap) {
+        if (cursed || isMagicImmuned(target) || charge >= chargeCap) {
             return;
         }
         partialCharge += 0.25f * amount

@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SmokeAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Smoking;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -43,6 +42,8 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
     {
@@ -95,7 +96,7 @@ public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
     @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
-        if (hero.buff(MagicImmune.class) != null) {
+        if (isMagicImmuned(hero)) {
             return actions;
         }
         if (isEquipped(hero) && !cursed) {
@@ -109,7 +110,7 @@ public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
 
-        if (hero.buff(MagicImmune.class) != null) return;
+        if (isMagicImmuned(hero)) return;
 
         if (action.equals(AC_CHARGE)) {
             GameScene.selectItem(itemSelector);
@@ -260,7 +261,7 @@ public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
 
     @Override
     public void charge(Hero target, float amount) {
-        if (cursed || target.buff(MagicImmune.class) != null) return;
+        if (cursed || isMagicImmuned(target)) return;
         if (charge < chargeCap) {
             partialCharge += amount;
             while (partialCharge >= 1f){
@@ -407,7 +408,7 @@ public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
 
         @Override
         public void charge(Hero target, float amount) {
-            if (cursed || target.buff(MagicImmune.class) != null) return;
+            if (cursed || isMagicImmuned(target)) return;
             if (charge < chargeCap) {
 
                 float chargeGain = amount;
