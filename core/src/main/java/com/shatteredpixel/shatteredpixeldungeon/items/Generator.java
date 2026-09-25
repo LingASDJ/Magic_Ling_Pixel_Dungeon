@@ -646,7 +646,7 @@ public class Generator {
 
 					3,
 
-					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 4f : 0,
+					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 0f : 0,
 			};
 
 			WEP_T5.classes = new Class<?>[]{
