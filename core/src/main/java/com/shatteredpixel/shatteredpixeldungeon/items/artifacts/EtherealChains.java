@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -54,6 +53,8 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
+
 public class EtherealChains extends Artifact {
 
 	public static final String AC_CAST       = "CAST";
@@ -73,7 +74,7 @@ public class EtherealChains extends Artifact {
 	@Override
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions( hero );
-		if (isEquipped(hero) && charge > 0 && !cursed && hero.buff(MagicImmune.class) == null) {
+		if (isEquipped(hero) && charge > 0 && !cursed && !isMagicImmuned(hero)) {
 			actions.add(AC_CAST);
 		}
 		return actions;
@@ -88,7 +89,7 @@ public class EtherealChains extends Artifact {
 
 		super.execute(hero, action);
 
-		if (hero.buff(MagicImmune.class) != null) return;
+		if (isMagicImmuned(hero)) return;
 
 		if (action.equals(AC_CAST)){
 
@@ -278,7 +279,7 @@ public class EtherealChains extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (cursed || target.buff(MagicImmune.class) != null) return;
+		if (cursed || isMagicImmuned(target)) return;
 		int chargeTarget = 5+(level()*2);
 		if (charge < chargeTarget*2){
 			partialCharge += 0.5f*amount;
@@ -311,7 +312,7 @@ public class EtherealChains extends Artifact {
 			int chargeTarget = 5+(level()*2);
 			if (charge < chargeTarget
 					&& !cursed
-					&& target.buff(MagicImmune.class) == null
+					&& !isMagicImmuned(target)
 					&& Regeneration.regenOn()) {
 				//gains a charge in 40 - 2*missingCharge turns
 				float chargeGain = (1 / (40f - (chargeTarget - charge)*2f));
@@ -334,7 +335,7 @@ public class EtherealChains extends Artifact {
 		}
 
 		public void gainExp( float levelPortion ) {
-			if (cursed || target.buff(MagicImmune.class) != null || levelPortion == 0) return;
+			if (cursed || isMagicImmuned(target) || levelPortion == 0) return;
 
 			exp += Math.round(levelPortion*100);
 

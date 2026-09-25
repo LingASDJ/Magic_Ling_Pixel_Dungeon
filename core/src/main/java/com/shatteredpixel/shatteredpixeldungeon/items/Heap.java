@@ -114,7 +114,9 @@ public class Heap implements Bundlable {
 		switch (type) {
 		case TOMB:
 			// 有小怨灵结界buff时阻断来自坟墓的怨灵生成
-			if (hero.buffs(PreventTombWraithSpawn.class) == null)
+			// 注意：Char.buffs(Class) 返回的是集合（无匹配时为空集，永不为 null），
+			// 这里必须用返回单个实例（无匹配时为 null）的 Char.buff(Class)
+			if (hero.buff(PreventTombWraithSpawn.class) == null)
 				Wraith.spawnAround( hero.pos,null );
 			break;
 		case WHITETOMB:

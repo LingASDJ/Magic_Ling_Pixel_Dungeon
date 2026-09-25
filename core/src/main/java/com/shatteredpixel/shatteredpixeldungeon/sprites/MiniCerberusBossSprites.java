@@ -43,4 +43,10 @@ public class MiniCerberusBossSprites extends MobSprite {
         }
         super.onComplete( anim );
     }
+
+    @Override
+    public void update() {
+        super.update();
+        if (ch != null && !isMoving && curAnim == run) idle();
+    }
 }

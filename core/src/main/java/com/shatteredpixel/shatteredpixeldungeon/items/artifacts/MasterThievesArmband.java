@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
@@ -51,6 +50,8 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 public class MasterThievesArmband extends Artifact {
 
@@ -73,7 +74,7 @@ public class MasterThievesArmband extends Artifact {
 		ArrayList<String> actions = super.actions(hero);
 		if (isEquipped(hero)
 				&& charge > 0
-				&& hero.buff(MagicImmune.class) == null
+				&& !isMagicImmuned(hero)
 				&& !cursed) {
 			actions.add(AC_STEAL);
 		}
@@ -84,7 +85,7 @@ public class MasterThievesArmband extends Artifact {
 	public void execute(Hero hero, String action) {
 		super.execute(hero, action);
 
-		if (hero.buff(MagicImmune.class) != null) return;
+		if (isMagicImmuned(hero)) return;
 
 		if (action.equals(AC_STEAL)){
 
@@ -221,7 +222,7 @@ public class MasterThievesArmband extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (cursed || target.buff(MagicImmune.class) != null) return;
+		if (cursed || isMagicImmuned(target)) return;
 		if (charge < chargeCap) {
 			partialCharge += 0.1f * amount;
 			while (partialCharge >= 1f) {
@@ -271,7 +272,7 @@ public class MasterThievesArmband extends Artifact {
 		}
 
 		public void gainCharge(float levelPortion) {
-			if (cursed || target.buff(MagicImmune.class) != null) return;
+			if (cursed || isMagicImmuned(target)) return;
 
 			if (charge < chargeCap){
 				float chargeGain = 3f * levelPortion;

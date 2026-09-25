@@ -4,7 +4,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -19,6 +18,8 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 public class DistressSignalNesting extends Artifact implements Item.ThanksItem, Item.AnimationItem {
 
@@ -181,7 +182,7 @@ public class DistressSignalNesting extends Artifact implements Item.ThanksItem, 
     @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
-        if (isEquipped(hero) && !cursed && hero.buff(MagicImmune.class) == null && !inCastleArea()) {
+        if (isEquipped(hero) && !cursed && !isMagicImmuned(hero) && !inCastleArea()) {
             actions.add(AC_FIRE);
             if (level() >= 2) actions.add(AC_HUNT);
         }

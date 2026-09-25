@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -181,5 +182,10 @@ public class Shovel extends MeleeWeapon{
         } else {
             return Messages.get(this, "typical_ability_desc", canBeFoundTimes);
         }
+    }
+
+    @Override
+    public String statsInfo() {
+        return Messages.get(this, "stats_desc", 20 + 3 * buffedLvl());
     }
 }

@@ -56,14 +56,20 @@ public class SpikedChakram extends MeleeWeapon {
         return dmg;
     }
 
-    // 额外护甲:提高武器提供的防御掷点上下限
+    // 额外护甲:提高武器提供的防御掷点上下限（护盾期间 1~3+等级）
+    @Override
+    public int DRMin(Char owner) {
+        return owner.shielding() > 0 ? 1 : 0;
+    }
+
+    @Override
+    public int DRMax(Char owner) {
+        return owner.shielding() > 0 ? 3 + buffedLvl() : 0;
+    }
+
     @Override
     public int defenseFactor(Char owner) {
-        int def = super.defenseFactor(owner);
-        if (owner.shielding() > 0) {
-            def += Random.IntRange(1, 3 + buffedLvl());
-        }
-        return def;
+        return DRMax(owner);
     }
 
     // 实时显示护盾加成区间
