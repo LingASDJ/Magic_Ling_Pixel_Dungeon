@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BuffsOringinForWeapon.PreventTombWraithSpawn;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -22,9 +23,10 @@ import com.watabou.utils.Random;
 //铲子
 //二阶，力量需求12
 //初始2-15，成长1-3
-//在使用此武器击杀敌人后，有（20+3*等级）%概率在那个位置生成一堆残骸，手持此武器时打开坟墓不会生成怨灵。
+//在使用此武器击杀敌人后，若该次击杀为英雄提供了经验值，则有（20+3*等级）%概率在那个位置生成一堆残骸；手持此武器时打开坟墓不会生成怨灵。
 //挖掘生者的坟墓。
-//武技：寻宝，消耗2充能，在原地发掘一个普通宝箱。发掘时有5%概率发掘出可以直接打开的金宝箱！每一层至多被寻宝5次。
+//武技：寻宝，消耗2充能，在原地发掘一个普通宝箱。宝箱有5%概率替换为可以直接打开的金宝箱！
+// 每次成功寻宝都会使下一次寻宝成功率-20%（新一层重置），寻宝失败时仅消耗充能不获得宝箱，每层成功5次后无法继续寻宝。
 
 public class Shovel extends MeleeWeapon{
     {
@@ -65,6 +67,11 @@ public class Shovel extends MeleeWeapon{
         return Random.Float() < 0.2 + 0.03 * buffedLvl();
     }
 
+    // 该次击杀是否真的为英雄提供了经验值（没有获得经验则不掉落骸骨）
+    private boolean killGaveExp(Char defender){
+        return defender instanceof Mob && ((Mob)defender).grantedExpOnDeath;
+    }
+
     @Override
     public int proc(Char attacker, Char defender, int damage ) {
         final Char def = defender;
@@ -77,7 +84,7 @@ public class Shovel extends MeleeWeapon{
 
             @Override
             protected boolean act() {
-                if (!def.isAlive() && dropRoll()) {
+                if (!def.isAlive() && killGaveExp(def) && dropRoll()) {
                     Heap heap = Dungeon.level.drop(Generator.random(), def.pos);
                     heap.setHauntedIfCursed();
                     heap.type = Heap.Type.SKELETON;
@@ -102,7 +109,7 @@ public class Shovel extends MeleeWeapon{
         // 判定还能不能挖
         if (Dungeon.level.canBeFoundTreasure <= 0)
         {
-            GLog.w(Messages.get(this,"fail_to_find_treasure"));
+            GLog.w(Messages.get(this,"fail_to_find_treasure_0"));
             return;
         }
         // 先扣充能：beforeAbilityUsed 会按 baseChargeUse 的返回值扣掉对应充能
@@ -110,6 +117,14 @@ public class Shovel extends MeleeWeapon{
         // 播放使用动作，并消耗一个回合
         hero.sprite.operate(hero.pos);
         hero.spendAndNext(1);
+        // 寻宝成功率 = 本层剩余寻宝次数/5，即首次100%，之后每成功一次-20%
+        // 失败只消耗充能，不获得宝箱，也不减少本层剩余次数
+        float successChance = Dungeon.level.canBeFoundTreasure / 5f;
+        if (Random.Float() >= successChance){
+            GLog.w(Messages.get(this,"fail_to_find_treasure_1"));
+            afterAbilityUsed(hero);
+            return;
+        }
         // 5% 概率挖出“金宝箱”（用上锁宝箱也就是金宝箱外观，但实际上无需钥匙）
         boolean golden = Random.Float() < 0.05f;
         // 生成一件宝箱物品

@@ -170,6 +170,9 @@ public abstract class Mob extends Char {
 	public int EXP = 1;
 	public int maxLvl = Hero.MAX_LEVEL-1;
 
+	//该敌人死亡时是否实际为英雄提供过经验值。用于“仅在击杀获得经验值时触发”的效果（例如铲子的遗骸）
+	public boolean grantedExpOnDeath = false;
+
 	protected Char enemy;
 	protected int enemyID = -1; //used for save/restore
 	protected boolean enemySeen;
@@ -1331,6 +1334,7 @@ public abstract class Mob extends Char {
 
 				if (exp > 0) {
 					hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "exp", exp));
+					grantedExpOnDeath = true;
 				}
 				hero.earnExp(exp, getClass());
 
