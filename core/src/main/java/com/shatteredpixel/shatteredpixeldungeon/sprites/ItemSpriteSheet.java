@@ -1032,6 +1032,7 @@ public class ItemSpriteSheet {
 
     static{
         assignItemRect(WATERSKIN,        16, 16);
+        assignItemRect(MOONCAKE,        16, 14);
         assignItemRect(POUCH,       16, 16);
         assignItemRect(HOLDER,      16, 16);
         assignItemRect(BANDOLIER,   16, 16);
@@ -1263,6 +1264,7 @@ public class ItemSpriteSheet {
         for (int i =HIGHTWAND; i < HIGHTWAND+6; i++)
             assignItemRect(i, 14, 14);
 
+        assignItemRect(HIGHTWAND_7,  14, 14);
         assignItemRect(DEV_1,  14, 16);
         assignItemRect(DEV_2,  16, 15);
         assignItemRect(DEV_3,  11, 16);
