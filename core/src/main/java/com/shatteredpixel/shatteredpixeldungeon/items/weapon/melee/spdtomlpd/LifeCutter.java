@@ -28,9 +28,9 @@ import java.util.ArrayList;
 
 //断生者
 //四阶，力量需求17
-//初始6-24，成长2-6
+//初始6-24，成长2-6，精准1.2
 //每次命中都会让敌人一分为二：本体与分身各继承当前生命值与生命上限的一半。
-//武技：腰斩，消耗2充能，对目标造成160%必中伤害，对与目标相连的所有敌人造成120%必中伤害，如果腰斩击杀了1个单位，获得1充能且本次攻击不消耗回合。每次释放至多获得1次充能。
+//武技：腰斩，消耗2充能，对目标造成130%必中伤害，对与目标相连的所有敌人造成100%必中伤害，如果腰斩击杀了1个单位，获得1充能。每次释放至多获得1次充能。
 
 public class LifeCutter extends MeleeWeapon {
     {
@@ -38,6 +38,8 @@ public class LifeCutter extends MeleeWeapon {
 
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
+
+        ACC = 1.2f;
 
         tier = 4;
     }
@@ -192,7 +194,7 @@ public class LifeCutter extends MeleeWeapon {
                 boolean killed = false;
 
                 // 攻击与攻击倍率应用，先进行攻击，再判断单位是否已死亡，攻击成功且单位死亡时进入分支体
-                if (hero.attack(enemy, 1.6f, 0f, INFINITE_ACCURACY) && !enemy.isAlive()) {
+                if (hero.attack(enemy, 1.3f, 0f, INFINITE_ACCURACY) && !enemy.isAlive()) {
                     // 击杀置真
                     killed = true;
                     // 武技击杀的天赋联动效果
@@ -200,7 +202,7 @@ public class LifeCutter extends MeleeWeapon {
                 }
                 // 增强for，每次循环从linked中按顺序（0，1，2，……）取出元素存入ch以参与运算
                 for (Char ch : linked) {
-                    if (ch.isAlive() && hero.attack(ch, 1.2f, 0f, INFINITE_ACCURACY) && !ch.isAlive()) {
+                    if (ch.isAlive() && hero.attack(ch, 1.0f, 0f, INFINITE_ACCURACY) && !ch.isAlive()) {
                         killed = true;
                         onAbilityKill(hero, ch);
                     }
@@ -209,14 +211,11 @@ public class LifeCutter extends MeleeWeapon {
                 // 令攻击者（使用武技者）破隐
                 Invisibility.dispel();
 
-                // 成功击杀则不做消耗回合的行动，并且回复1点充能
+                // 成功击杀则回复1点充能
                 if (killed) {
                     refundCharge(hero,1);
-                    hero.next();
-                } else {
-                    // 击杀失败则按攻击间隔消耗回合
-                    hero.spendAndNext(hero.attackDelay());
                 }
+                hero.spendAndNext(hero.attackDelay());
 
                 // 武技后处理
                 afterAbilityUsed(hero);

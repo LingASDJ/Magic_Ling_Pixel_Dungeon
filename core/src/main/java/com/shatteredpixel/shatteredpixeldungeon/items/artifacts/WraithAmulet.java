@@ -10,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
@@ -34,6 +33,8 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 public class WraithAmulet extends Artifact {
 
@@ -91,7 +92,7 @@ public class WraithAmulet extends Artifact {
         super.execute(hero, action);
         if(action.equals(AC_GHOST) && !cursed){
 
-            if (hero.buff(MagicImmune.class) != null) return;
+            if (isMagicImmuned(hero)) return;
 
             if (cooldown > 0) {
                 GLog.w(Messages.get(this,"cooddown"));
@@ -116,7 +117,7 @@ public class WraithAmulet extends Artifact {
             }
         } else if (action.equals(AC_ASSASSINATE) && !cursed) {
 
-            if (hero.buff(MagicImmune.class) != null) return;
+            if (isMagicImmuned(hero)) return;
 
             if (cooldown > 0) {
                 GLog.w(Messages.get(this, "cooddown"));

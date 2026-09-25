@@ -28,9 +28,9 @@ import com.watabou.utils.Callback;
 //晨星
 //四阶，力量需求16
 //初始4-20，成长1-5
-//这把武器的攻击会轮流给予敌人2+0.3*等级（向上取整）回合的虚弱、易伤、晕眩、失明。
+//这把武器的攻击会轮流给予敌人2+0.3*等级（向下取整）回合的虚弱、易伤、晕眩、失明。
 //寒光四射的单手钉头锤，也许是因此得名。
-//武技：苍茫天星，消耗2充能，对目标单位施加晨星的所有效果，随后对目标造成140%必中伤害，并使目标身上的所有负面效果延长3回合。
+//武技：苍茫天星，消耗2充能，对目标单位施加晨星的所有效果，随后对目标造成必中伤害，并使目标身上的所有负面效果延长3回合。
 // 目标身上的每一个负面效果都会使本次伤害额外+5%。
 public class MorningStar extends MeleeWeapon {
     {
@@ -49,7 +49,7 @@ public class MorningStar extends MeleeWeapon {
     public int min(int lvl) { return 4 + lvl; }
     // buff回合数
     public int theDuration(){
-        return (int) Math.ceil(2+0.3f*buffedLvl());
+        return (int) (2+0.3f*buffedLvl());
     }
     // 表示当前加哪个buff,不序列化
     private int nowBuff = 0;
@@ -161,7 +161,7 @@ public class MorningStar extends MeleeWeapon {
     }
 
     private float damageMultiplier(Char defender){
-        float multiplier = 1.4f;
+        float multiplier = 1.0f;
         for (Buff buff : defender.buffs()){
             if (buff.type != Buff.buffType.NEGATIVE) continue;
             multiplier += 0.05f;
@@ -184,5 +184,13 @@ public class MorningStar extends MeleeWeapon {
         } else {
             return Messages.get(this, "typical_ability_desc");
         }
+    }
+
+    @Override
+    public String statsInfo(){return Messages.get(this, "stats_desc", theDuration());}
+
+    @Override
+    public String devDesc() {
+        return Messages.get(this, "dev_desc");
     }
 }

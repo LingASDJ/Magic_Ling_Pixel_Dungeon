@@ -74,6 +74,10 @@ public class Belongings implements Iterable<Item> {
 	//used to ensure that the duelist always uses the weapon she's using the ability of
 	public KindOfWeapon abilityWeapon = null;
 
+	//used when a weapon's attack should resolve its on-hit proc(特效) with another weapon
+	//e.g. the offhand weapon deals the damage, but the effect is the main weapon's
+	public KindOfWeapon procWeapon = null;
+
 	//used by the champion subclass
 	public KindOfWeapon secondWep = null;
 

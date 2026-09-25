@@ -26,7 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
@@ -46,6 +45,8 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 public class Ring extends KindofMisc {
 
@@ -373,7 +374,7 @@ public class Ring extends KindofMisc {
 	}
 
 	public static int getBonus(Char target, Class<?extends RingBuff> type){
-		if (target.buff(MagicImmune.class) != null) return 0;
+		if (isMagicImmuned(target)) return 0;
 		int bonus = 0;
 		for (RingBuff buff : target.buffs(type)) {
 			bonus += buff.level();
@@ -382,7 +383,7 @@ public class Ring extends KindofMisc {
 	}
 
 	public static int getBuffedBonus(Char target, Class<?extends RingBuff> type){
-		if (target.buff(MagicImmune.class) != null) return 0;
+		if (isMagicImmuned(target)) return 0;
 		int bonus = 0;
 		for (RingBuff buff : target.buffs(type)) {
 			bonus += buff.buffedLvl();

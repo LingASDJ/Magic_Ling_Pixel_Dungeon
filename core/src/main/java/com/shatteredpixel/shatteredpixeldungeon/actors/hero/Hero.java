@@ -723,7 +723,7 @@ public class Hero extends Char {
 
 	@Override
 	public boolean blockSound(float pitch) {
-		if ( belongings.weapon() != null && belongings.weapon().defenseFactor(this) >= 4 ){
+		if ( belongings.weapon() != null && belongings.weapon().DRMax(this) >= 4 ){
 			Sample.INSTANCE.play( Assets.Sounds.HIT_PARRY, 1, pitch);
 			return true;
 		}
@@ -1042,7 +1042,7 @@ public class Hero extends Char {
 			if (armDr > 0) dr += armDr;
 		}
 		if (belongings.weapon() != null && !RingOfForce.fightingUnarmed(this))  {
-			int wepDr = Random.NormalIntRange( 0 , belongings.weapon().defenseFactor( this ) );
+			int wepDr = belongings.weapon().defenseRoll(this);
 			if (STR() < ((Weapon)belongings.weapon()).STRReq()){
 				wepDr -= 2*(((Weapon)belongings.weapon()).STRReq() - STR());
 			}
@@ -2525,7 +2525,11 @@ public class Hero extends Char {
 			}
 		}
 
-		if (wep != null) damage = wep.proc( this, enemy, damage );
+		if (wep != null) {
+			// 特效来源可被临时覆盖（例如武技中副手武器打伤害，但特效按另一把武器结算）
+			KindOfWeapon procWep = belongings.procWeapon != null ? belongings.procWeapon : wep;
+			damage = procWep.proc( this, enemy, damage );
+		}
 
 		damage = Talent.onAttackProc( this, enemy, damage );
 

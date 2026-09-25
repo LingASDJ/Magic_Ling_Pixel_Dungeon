@@ -291,7 +291,7 @@ public class WndInfoMob extends Window {
         private String MaxLevelName(Mob mob) {
             String level;
 
-            if(hero.lvl <= mob.maxLvl || mob.properties.contains(Char.Property.BOSS) || mob.properties.contains(Char.Property.MINIBOSS)){
+            if(hero.lvl <= (mob.maxLvl + 2) || mob.properties.contains(Char.Property.BOSS) || mob.properties.contains(Char.Property.MINIBOSS)){
                 level = Messages.get(WndInfoMob.class,"canroll");
             } else {
                 level = Messages.get(WndInfoMob.class,"noroll");

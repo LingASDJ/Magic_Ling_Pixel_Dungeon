@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -88,6 +87,8 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
+
 public class DriedRose extends Artifact {
 
 	{
@@ -125,7 +126,7 @@ public class DriedRose extends Artifact {
 		if (isEquipped( hero )
 				&& charge == chargeCap
 				&& !cursed
-				&& hero.buff(MagicImmune.class) == null
+				&& !isMagicImmuned(hero)
 				&& ghostID == 0) {
 			actions.add(AC_SUMMON);
 		}
@@ -161,7 +162,7 @@ public class DriedRose extends Artifact {
                         return;
                     }
                 }
-                if (hero.buff(MagicImmune.class) != null) return;
+                if (isMagicImmuned(hero)) return;
 
                 if (!Ghost.Quest.completed()) GameScene.show(new WndUseItem(null, this));
                 else if (ghost != null) GLog.i(Messages.get(this, "spawned"));
@@ -316,7 +317,7 @@ public class DriedRose extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (cursed || target.buff(MagicImmune.class) != null) return;
+		if (cursed || isMagicImmuned(target)) return;
 
 		if (ghost == null){
 			if (charge < chargeCap) {
@@ -420,7 +421,7 @@ public class DriedRose extends Artifact {
 			}
 			
 			//rose does not charge while ghost hero is alive
-			if (ghost != null && !cursed && target.buff(MagicImmune.class) == null){
+			if (ghost != null && !cursed && !isMagicImmuned(target)){
 				
 				//heals to full over 500 turns
 				if (ghost.HP < ghost.HT && Regeneration.regenOn()) {
@@ -440,7 +441,7 @@ public class DriedRose extends Artifact {
 			
 			if (charge < chargeCap
 					&& !cursed
-					&& target.buff(MagicImmune.class) == null
+					&& !isMagicImmuned(target)
 					&& Regeneration.regenOn()) {
 				//500 turns to a full charge
 				partialCharge += (1/5f * RingOfEnergy.artifactChargeMultiplier(target));
@@ -613,7 +614,7 @@ public class DriedRose extends Artifact {
 			updateRose();
 			if (rose == null
 					|| !rose.isEquipped(Dungeon.hero)
-					|| Dungeon.hero.buff(MagicImmune.class) != null){
+					|| isMagicImmuned(Dungeon.hero)){
 				damage(1, new NoRoseDamage(), DamageType.REAL);
 			}
 			
@@ -780,7 +781,7 @@ public class DriedRose extends Artifact {
 				dr += Random.NormalIntRange( rose.armor.DRMin(), rose.armor.DRMax());
 			}
 			if (rose != null && rose.weapon != null){
-				dr += Random.NormalIntRange( 0, rose.weapon.defenseFactor( this ));
+				dr += rose.weapon.defenseRoll( this );
 			}
 			return dr;
 		}

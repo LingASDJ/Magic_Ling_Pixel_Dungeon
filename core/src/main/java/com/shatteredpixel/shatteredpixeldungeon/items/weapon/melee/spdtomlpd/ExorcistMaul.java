@@ -15,9 +15,11 @@ import com.watabou.noosa.Image;
 
 //驱魔重锤
 //四阶，力量需求17
-//初始6-20，成长1-5，精准1.2
-//在使用此武器的攻击命中后，获得一个持续20+等级*4回合、能够免疫一次法术攻击的护盾，每次命中刷新持续时间。
+//初始6-20，成长1-5
+//在使用此武器的攻击命中后，获得一个持续3回合、能够免疫一次法术攻击的护盾，每次命中刷新持续时间。
+//装备驱魔重锤时，你的戒指和神器在处于魔法免疫时仍然可以生效。（包括副手）
 //对近战法术攻击者的克星。
+//武技：破魔，消耗3充能，获得10回合魔法免疫。
 
 public class ExorcistMaul extends MeleeWeapon {
     {
@@ -26,7 +28,6 @@ public class ExorcistMaul extends MeleeWeapon {
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
 
-        ACC = 1.2f;
         DLY = 2f;
 
         tier = 4;
@@ -45,16 +46,6 @@ public class ExorcistMaul extends MeleeWeapon {
             req -= 2;
         }
         return req;
-    }
-
-    @Override
-    public int proc(Char attacker, Char defender, int damage) {
-        // 持续时间 20+等级*4
-        float duration = 20f + buffedLvl()*4;
-        // affect：没有就创建，有就复用同一个实例
-        QuMoHuDun buff = Buff.affect(attacker, QuMoHuDun.class);
-        buff.refreshDuration(duration); // 每次命中都重置
-        return super.proc(attacker, defender, damage);
     }
 
     // 内部护盾 buff：显示占位符图标
@@ -84,6 +75,20 @@ public class ExorcistMaul extends MeleeWeapon {
         }
     }
 
+    // 特效一：次数法伤盾
+    @Override
+    public int proc(Char attacker, Char defender, int damage) {
+        // 持续时间 3
+        float duration = 3;
+        // affect：没有就创建，有就复用同一个实例
+        QuMoHuDun buff = Buff.affect(attacker, QuMoHuDun.class);
+        buff.refreshDuration(duration); // 每次命中都重置
+        return super.proc(attacker, defender, damage);
+    }
+
+    // 特效二：装备驱魔重锤时，你的戒指和神器在处于魔法免疫时仍然可以生效。（包括副手）
+    // 在MagicImmune中新建了方法来代替过去的魔法免疫判定
+
     @Override
     public String targetingPrompt() {
         return null;
@@ -91,7 +96,7 @@ public class ExorcistMaul extends MeleeWeapon {
 
     @Override
     protected int baseChargeUse(Hero hero, Char target) {
-        return 2;
+        return 3;
     }
 
     @Override

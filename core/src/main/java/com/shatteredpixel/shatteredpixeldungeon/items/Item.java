@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -581,6 +582,8 @@ public class Item implements Bundlable {
 	
 	public String info() {
 
+		String info = desc();
+
 		if (Dungeon.hero != null) {
 			Notes.CustomRecord note;
 			if (this instanceof EquipableItem) {
@@ -589,11 +592,24 @@ public class Item implements Bundlable {
 				note = Notes.findCustomRecord(getClass());
 			}
 			if (note != null){
-				return Messages.get(this, "custom_note", note.title()) + "\n\n" + desc();
+				info = Messages.get(this, "custom_note", note.title()) + "\n\n" + info;
 			}
 		}
 
-		return desc();
+		//仅开发者模式(Conducts.Conduct.DEV)下追加的调试描述,子类重写 devDesc() 提供文本
+		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
+			String dev = devDesc();
+			if (!dev.equals("")){
+				info += "\n\n" + dev;
+			}
+		}
+
+		return info;
+	}
+
+	//仅开发者模式下显示在描述末尾的调试文本,默认为空,子类重写后才会显示
+	public String devDesc() {
+		return Messages.get(this, "dev_desc");
 	}
 	
 	public String desc() {

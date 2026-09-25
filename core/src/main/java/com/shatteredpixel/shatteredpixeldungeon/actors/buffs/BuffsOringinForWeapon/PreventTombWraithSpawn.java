@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 // tips: 怨灵结界是我起的名字
 
 public class PreventTombWraithSpawn extends Buff {
-    {
-        revivePersists = true;
-    }
+    // 不设置 revivePersists：死亡后若铲子随背包丢失，结界也应随之消失；
+    // 拾回遗失的背包时 LostBackpack 会重新调用 activate，结界会自动恢复。
 }
