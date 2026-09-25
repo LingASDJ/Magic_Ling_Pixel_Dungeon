@@ -633,6 +633,7 @@ public class Generator {
 					KingSword.class,
 
 					VoidSword.class,
+					ForestBow.class
 			};
 			WEP_T4.probs = new float[]{6, 5, 4, 4, 4, 2, 3, 7,
 					SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName()) ? 4f : 0,
@@ -643,7 +644,9 @@ public class Generator {
 					Badges.isUnlocked(Badges.Badge.KILL_SM) ? 3 : 0,
 					Badges.isUnlocked(Badges.Badge.BOSS_CHALLENGE_4) ? 3 : 0,
 
-					3
+					3,
+
+					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 4f : 0,
 			};
 
 			WEP_T5.classes = new Class<?>[]{
@@ -667,7 +670,7 @@ public class Generator {
 					Gauntlet.class,
 					RiceSword.class,
 					ClearSword.class,
-					ForestBow.class,
+
 
 					WhiteBlastSword.class,
 					FiveRen.class,
@@ -688,7 +691,7 @@ public class Generator {
 					passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD) ? 4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName()) ? 4f : 0,
 
 					SPDSettings.isItemUnlock(ClearSword.class.getSimpleName()) ? 5f : 0,
-					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 0f : 0,
+
 					5,
 					passwordbadges.contains(PaswordBadges.Badge.ZQJ_GHOST) ? 4.2f : 0,
 					Badges.isUnlocked(Badges.Badge.KILL_DOG) ? 5 : 0,
