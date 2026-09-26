@@ -436,6 +436,11 @@ public class Item implements Bundlable {
 		return getClass() == item.getClass();
 	}
 
+	//快捷栏占位符匹配规则，默认与 isSimilar 一致，可被子类覆写以放宽/收紧回填条件
+	public boolean quickslotSimilar( Item item ) {
+		return isSimilar( item );
+	}
+
 	protected void onDetach(){}
 
 	//returns the true level of the item, ignoring all modifiers aside from upgrades
