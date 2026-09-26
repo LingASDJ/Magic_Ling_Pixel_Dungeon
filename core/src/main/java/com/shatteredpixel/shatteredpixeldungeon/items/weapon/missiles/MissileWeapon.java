@@ -93,6 +93,12 @@ abstract public class MissileWeapon extends Weapon {
 		return super.isSimilar(item);
 	}
 
+	@Override
+	public boolean quickslotSimilar(Item item) {
+		//快捷栏占位符回填只看种类：带等级/附魔的投掷武器用完后，拾取同类武器也应自动回填快捷栏
+		return item instanceof MissileWeapon && item.getClass() == getClass();
+	}
+
 	public Enchantment getEnchantment() {
 		return enchantment;
 	}
