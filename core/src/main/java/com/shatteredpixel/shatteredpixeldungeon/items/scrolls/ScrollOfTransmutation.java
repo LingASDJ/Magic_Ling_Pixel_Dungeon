@@ -284,7 +284,10 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		if(item instanceof LockSword || item instanceof BloodthirstyThorn){
 			return null;
 		}
-
+		if(item instanceof KillKing){
+			((KillKing) item).transmuteUpgrade();
+			return item;
+		}
 		if (item instanceof MagesStaff) {
 			return changeStaff((MagesStaff) item);
 		}else if (item instanceof TippedDart){
