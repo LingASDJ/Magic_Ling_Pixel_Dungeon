@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticG
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonKing;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
@@ -191,6 +192,42 @@ public class ExoticPotion extends Potion {
 		@Override
 		public Item sampleOutput(ArrayList<Item> ingredients) {
 			return Reflection.newInstance(regToExo.get(ingredients.get(0).getClass()));
+		}
+	}
+
+	public static class PotionToDK extends Recipe{
+		@Override
+		public boolean testIngredients(ArrayList<Item> ingredients) {
+			PotionOfLiquidFlameX potion = null;
+			for (Item item : ingredients) {
+				if (item instanceof PotionOfLiquidFlameX) {
+					potion = (PotionOfLiquidFlameX) item;
+					break;
+				}
+			}
+			return potion != null && potion.quantity() >= 1;
+		}
+
+		@Override
+		public int cost(ArrayList<Item> ingredients) {
+			return 8;
+		}
+
+		@Override
+		public Item brew(ArrayList<Item> ingredients) {
+			// 消耗1个药水
+			for (Item i : ingredients){
+				if (i instanceof PotionOfLiquidFlameX){
+					i.quantity(i.quantity()-1);
+					break;
+				}
+			}
+			return new ElixirOfDragonKing();
+		}
+
+		@Override
+		public Item sampleOutput(ArrayList<Item> ingredients) {
+			return new ElixirOfDragonKing();
 		}
 	}
 }

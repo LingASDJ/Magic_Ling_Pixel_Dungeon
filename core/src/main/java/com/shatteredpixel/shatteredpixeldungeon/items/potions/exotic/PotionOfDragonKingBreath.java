@@ -25,7 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.MagicFire;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
@@ -50,9 +49,7 @@ public class PotionOfDragonKingBreath extends ExoticPotion {
 
         for (int offset : PathFinder.NEIGHBOURS9){
             if (!Dungeon.level.solid[cell+offset]) {
-
-                GameScene.add(Blob.seed(cell + offset, 3, MagicFire.class));
-                GameScene.add( Blob.seed(cell + offset, 7, HalomethaneFire.class ) );
+                GameScene.add( Blob.seed(cell + offset, 18, HalomethaneFire.class ) );
             }
         }
     }
