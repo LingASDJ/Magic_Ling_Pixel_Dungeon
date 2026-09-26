@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
@@ -334,6 +335,47 @@ abstract public class MissileWeapon extends Weapon {
 
 		return super.proc(attacker, defender, damage);
 	}
+
+	@Override
+	protected void rollLevelAndEffects(){
+		// n取值：0/1/2/3
+		// Random.Int(k) 返回 [0,k-1]整数，等于0为roll成功
+		// 20%概率进入分支，进入后依次独立roll两次，每成功一次n+1
+		int n = 0;
+		if (Random.Int(5) == 0) {
+			n++;
+			if (Random.Int(7) == 0) {
+				n++;
+			}
+			if (Random.Int(9) == 0) {
+				n++;
+			}
+		}
+		level(n);
+
+		// 独立RNG，附魔/诅咒随机不影响等级roll结果
+		Random.pushGenerator(Random.Long());
+
+		/**
+		 * 调整附魔 / 诅咒概率（无羊皮纸倍率 = 1 时）：
+		 * - 诅咒：15%
+		 * - 正向附魔：7%
+		 * - 白板：88%
+		 * 诅咒优先判定，诅咒与正向附魔互斥；等级随机与附魔随机使用独立 RNG，互不干扰。
+		 * 等级概率不变：+0=80.00%，+1≈15.24%，+2≈4.44%，+3≈0.32%
+		 */
+		float effectRoll = Random.Float();
+		if (effectRoll < 0.15f * ParchmentScrap.curseChanceMultiplier()) {
+			enchant(Enchantment.randomCurse());
+			cursed = true;
+		} else if (effectRoll >= 1f - (0.07f * ParchmentScrap.enchantChanceMultiplier())){
+			enchant();
+		}
+
+		// 剩余情况：白板，无诅咒无附魔
+		Random.popGenerator();
+	}
+
 
 	@Override
 	public Item random() {
