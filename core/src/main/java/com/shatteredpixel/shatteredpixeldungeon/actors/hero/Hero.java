@@ -1272,15 +1272,6 @@ public class Hero extends Char {
 	}
 
 	public float attackDelay() {
-		if (buff(Talent.LethalMomentumTracker.class) != null){
-			buff(Talent.LethalMomentumTracker.class).detach();
-			return 0;
-		}
-
-		if (buff(KnightStabbingSword.NoRoundTracker.class) != null){
-			return 0;
-		}
-
 		float delay = 1f;
 
 
@@ -3908,9 +3899,21 @@ public class Hero extends Char {
 		boolean hit = attack( enemy );
 
 		Invisibility.dispel();
-		spend( attackDelay() );
 
-		Buff.detach(this, KnightStabbingSword.NoRoundTracker.class);
+		//本次普攻是否有"免回合标记"
+		boolean freeAction = false;
+
+		if (buff(Talent.LethalMomentumTracker.class) != null){
+			buff(Talent.LethalMomentumTracker.class).detach();
+			freeAction = true;
+		}
+
+		if (buff(KnightStabbingSword.NoRoundTracker.class) != null){
+			buff(KnightStabbingSword.NoRoundTracker.class).detach();
+			freeAction = true;
+		}
+
+		spend( freeAction ? 0f : attackDelay() );
 
 		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
 			Buff.affect( this, Combo.class ).hit(enemy);
