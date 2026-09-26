@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -152,7 +153,7 @@ public class ArcaneResin extends Item {
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
 			return ingredients.size() == 1
-					&& ingredients.get(0) instanceof Wand
+					&& ingredients.get(0) instanceof Wand && !(ingredients.get(0) instanceof WandOfAnmy)
 					&& ingredients.get(0).isIdentified()
 					&& !ingredients.get(0).cursed;
 		}

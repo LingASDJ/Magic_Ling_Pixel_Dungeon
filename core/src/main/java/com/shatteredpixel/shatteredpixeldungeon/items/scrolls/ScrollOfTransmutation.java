@@ -48,8 +48,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScrol
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.*;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.KillKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
@@ -76,6 +81,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	@Override
 	protected boolean usableOnItem(Item item) {
 		if (BrokenRing.isBind(item)) return false;
+		if(item instanceof WandOfAnmy) return false;
 		if(item instanceof MeleeWeapon) {
 
 			// 终焉不能嬗变

@@ -70,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.thanks.FlareBullet;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
@@ -304,7 +305,7 @@ public abstract class Recipe {
 			//only thrown weapons and wands allowed among equipment items
 			return item.isIdentified() && !item.cursed && (item instanceof MissileWeapon ||item instanceof ChaliceOfBlood && !item.isEquipped(hero)||item instanceof LifeTreeSword && !item.isEquipped(hero)||item instanceof GrilledHerring && !item.isEquipped(hero));
 		} else if (item instanceof Wand) {
-			return item.isIdentified() && !item.cursed;
+			return item.isIdentified() && !item.cursed && !(item instanceof WandOfAnmy);
 		} else {
 			//other items can be unidentified, but not cursed
 			return !item.cursed;
