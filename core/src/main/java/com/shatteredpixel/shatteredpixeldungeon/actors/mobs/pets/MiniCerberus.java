@@ -11,7 +11,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DogStick;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniCerberusBossSprites;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
 public class MiniCerberus extends Pets {
@@ -25,6 +24,7 @@ public class MiniCerberus extends Pets {
         spriteClass = MiniCerberusBossSprites.class;
         WANDERING = new Wandering();
         defenseSkill = 15;
+        noALLY = true;
     }
 
     private float lastWoofTime = -999f;

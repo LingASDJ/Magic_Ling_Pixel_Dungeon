@@ -49,7 +49,7 @@ public class MorningStar extends MeleeWeapon {
     public int min(int lvl) { return 4 + lvl; }
     // buff回合数
     public int theDuration(){
-        return (int) (2+0.3f*buffedLvl());
+        return (int) (2+0.3f* (isIdentified() ? buffedLvl() : 0));
     }
     // 表示当前加哪个buff,不序列化
     private int nowBuff = 0;
@@ -189,8 +189,4 @@ public class MorningStar extends MeleeWeapon {
     @Override
     public String statsInfo(){return Messages.get(this, "stats_desc", theDuration());}
 
-    @Override
-    public String devDesc() {
-        return Messages.get(this, "dev_desc");
-    }
 }

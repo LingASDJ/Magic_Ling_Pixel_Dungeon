@@ -49,13 +49,8 @@ public class QuickSword extends MeleeWeapon {
     }
 
     @Override
-    public String desc() {
-        return Messages.get(this, "desc");
-    }
-
-    @Override
     public String statsInfo() {
-        float maxMultiplier = 1f + (buffedLvl() + 1) * 0.5f;
+        float maxMultiplier = 1f + (isIdentified() ? buffedLvl() + 1 : 1) * 0.5f;
         float speedMultiplier = Dungeon.hero != null ? 1+((Math.max(1f, Dungeon.hero.speed() / Dungeon.hero.baseSpeed)-1)/3.0f) : 1f;
         float multiplier = Math.min(speedMultiplier, maxMultiplier);
         return Messages.get(this, "stats_desc", multiplier, maxMultiplier);

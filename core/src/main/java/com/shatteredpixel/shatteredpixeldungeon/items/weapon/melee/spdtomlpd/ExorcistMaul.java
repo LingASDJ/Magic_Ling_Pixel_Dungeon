@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -68,11 +67,6 @@ public class ExorcistMaul extends MeleeWeapon {
         public void tintIcon(Image icon) {
             icon.hardlight(0x5B3B8F);
         }
-
-        @Override
-        public String desc() {
-            return Messages.get(this, "desc", dispTurns());
-        }
     }
 
     // 特效一：次数法伤盾
@@ -84,14 +78,6 @@ public class ExorcistMaul extends MeleeWeapon {
         QuMoHuDun buff = Buff.affect(attacker, QuMoHuDun.class);
         buff.refreshDuration(duration); // 每次命中都重置
         return super.proc(attacker, defender, damage);
-    }
-
-    // 特效二：装备驱魔重锤时，你的戒指和神器在处于魔法免疫时仍然可以生效。（包括副手）
-    // 在MagicImmune中新建了方法来代替过去的魔法免疫判定
-
-    @Override
-    public String targetingPrompt() {
-        return null;
     }
 
     @Override

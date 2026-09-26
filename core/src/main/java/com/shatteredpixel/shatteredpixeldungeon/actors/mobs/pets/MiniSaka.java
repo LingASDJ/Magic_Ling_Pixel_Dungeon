@@ -15,14 +15,11 @@ public class MiniSaka extends Pets {
 
     private static final String[] TXT_RANDOM = {"saka……saka……", "saka!!!","saka?!"};
 
-    private static final int IDLE_DEATH_TURNS = 45;
-    private int idleTurns = 0;
-    private int lastHeroPos = -1;
-
     {
         spriteClass = MiniSakaFishBossSprites.class;
         WANDERING = new Wandering();
         defenseSkill = 15;
+        noALLY = true;
     }
 
     @Override
@@ -31,27 +28,6 @@ public class MiniSaka extends Pets {
         this.sprite.showStatus(0xFCE9CC, "saka……T-T");
         Dungeon.level.drop(Generator.random(Generator.Category.STONE),pos).sprite.drop();
         Buff.affect(hero, SakaFishSketon.CoolDownStoneRecharge.class, SakaFishSketon.CoolDownStoneRecharge.DURATION);
-    }
-
-    @Override
-    protected boolean act() {
-        if (lastHeroPos == -1) {
-            lastHeroPos = hero.pos;
-        } else if (hero.pos != lastHeroPos) {
-            lastHeroPos = hero.pos;
-            idleTurns = 0;
-        } else if (hero.paralysed != 0) {
-            //麻痹回合不计入挂机
-        } else if (hero.actedThisTurn || hero.curAction != null) {
-            idleTurns = 0;
-        } else {
-            idleTurns++;
-            if (idleTurns >= IDLE_DEATH_TURNS) {
-                die(null);
-                return true;
-            }
-        }
-        return super.act();
     }
 
     private static final String IDLE_TURNS = "idle_turns";

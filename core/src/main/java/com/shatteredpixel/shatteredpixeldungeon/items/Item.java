@@ -599,7 +599,7 @@ public class Item implements Bundlable {
 		//仅开发者模式(Conducts.Conduct.DEV)下追加的调试描述,子类重写 devDesc() 提供文本
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			String dev = devDesc();
-			if (!dev.equals("")){
+			if (!dev.isEmpty()){
 				info += "\n\n" + dev;
 			}
 		}
