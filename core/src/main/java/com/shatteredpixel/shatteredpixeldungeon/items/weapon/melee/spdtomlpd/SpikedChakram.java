@@ -75,7 +75,7 @@ public class SpikedChakram extends MeleeWeapon {
     // 实时显示护盾加成区间
     @Override
     public String statsInfo() {
-        return Messages.get(this, "stats_desc", 1, 3 + buffedLvl());
+        return Messages.get(this, "stats_desc", 1, 3 + (isIdentified() ? buffedLvl() : 0));
     }
 
     // ==================== 决斗者武技：血滴子 ====================

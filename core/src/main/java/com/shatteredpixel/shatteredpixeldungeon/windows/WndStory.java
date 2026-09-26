@@ -356,7 +356,9 @@ public class WndStory extends Window {
 		if (hero.lanterfire >= 90 || Dungeon.isChallenged(DHXD) && hero.lanterfire > 60) {
 			goodLanterFire();
 		} else if (hero.lanterfire >= 80) {
-			applyEffectBasedOnChance(0.85f, 0.05f);
+			applyEffectBasedOnChance(0.85f, 0f);
+		} else if (hero.lanterfire >= 72) {
+			applyEffectBasedOnChance(0.95f, 0f);
 		} else if (hero.lanterfire >= 60) {
 			applyEffectBasedOnChance(0.70f, 0.25f);
 		} else if (hero.lanterfire >= 35) {

@@ -3,21 +3,16 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 //弑君
@@ -93,9 +88,16 @@ public class KillKing extends MeleeWeapon {
         // 实时显示当前伏击修正后的伤害区间
         int diff = max() - min();
         int ambushMin = min() + Math.round(diff * 0.5f);
-        return Messages.get(this, "stats_desc",
-                augment.damageFactor(ambushMin),
-                augment.damageFactor(max()));
+
+        if(isIdentified()){
+            return Messages.get(this, "stats_desc",
+                    augment.damageFactor(ambushMin),
+                    augment.damageFactor(max()));
+        } else {
+            return Messages.get(this, "stats_desc",
+                   9,
+                 15);
+        }
     }
 
     // ==================== 嬗变：阶级 +1 ====================

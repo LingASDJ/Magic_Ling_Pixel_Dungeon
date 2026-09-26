@@ -278,7 +278,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
@@ -299,7 +298,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NormalZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.tomb.RogerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -310,6 +308,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MoveBoxHollowActor
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.WeakFloorRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.tomb.RogerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
@@ -1905,7 +1904,7 @@ public class Hero extends Char {
 	}
 
 	public static void goodLanterFire() {
-		switch (Random.Int(5)) {
+		switch (Random.Int(6)) {
 			case 1:
 				Buff.affect(hero, BlessGoodSTR.class).set((100), 1);
 				break;
@@ -1918,6 +1917,14 @@ public class Hero extends Char {
 			case 4:
 				if(Dungeon.depth < 20){
 					Buff.affect(hero, BlessImmune.class).set((100), 1);
+				}
+				break;
+			case 5:
+				if(Dungeon.depth < 20){
+					new WandOfAnmy().quantity(1).identify().collect();
+					Buff.affect(hero, BlessAnmy.class).set((100), 1);
+				} else {
+					Buff.affect(hero, BlessMobDied.class).set((100), 1);
 				}
 				break;
 			default:

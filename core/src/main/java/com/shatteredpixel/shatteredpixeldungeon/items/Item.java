@@ -436,6 +436,11 @@ public class Item implements Bundlable {
 		return getClass() == item.getClass();
 	}
 
+	//快捷栏占位符匹配规则，默认与 isSimilar 一致，可被子类覆写以放宽/收紧回填条件
+	public boolean quickslotSimilar( Item item ) {
+		return isSimilar( item );
+	}
+
 	protected void onDetach(){}
 
 	//returns the true level of the item, ignoring all modifiers aside from upgrades
@@ -599,7 +604,7 @@ public class Item implements Bundlable {
 		//仅开发者模式(Conducts.Conduct.DEV)下追加的调试描述,子类重写 devDesc() 提供文本
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			String dev = devDesc();
-			if (!dev.equals("")){
+			if (!dev.isEmpty()){
 				info += "\n\n" + dev;
 			}
 		}

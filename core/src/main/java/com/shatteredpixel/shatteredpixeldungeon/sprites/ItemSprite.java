@@ -127,7 +127,15 @@ public class ItemSprite extends MovieClip {
 		// 复用池里的精灵不携带任何残留的动画/图集状态，
 		// 否则下次被分配渲染其他物品时会出现整张图集闪现、图标错乱
 		curAnim = null;
+		resetColor();
+		scale.set(1);
+		angle = 0;
 		texture( Assets.Sprites.ITEMS );
+		// 关键：texture() 会把 UV 重置为 (0,0,1,1)（整张 items.png）。
+		// 若不立刻 frame() 一个合法小图，一旦在 link()/view() 之前被绘制，
+		// 或 view() 链路因动态物品 frames() 异常中断，就会渲染出整张 items.png。
+		// 这里先锚定到占位图标作为安全网，后续 link()→view() 会覆盖为真正的物品图标。
+		frame( ItemSpriteSheet.SOMETHING );
 
 		heap = null;
 		if (emitter != null) {
@@ -371,13 +379,20 @@ public class ItemSprite extends MovieClip {
 			// 整张图集(0,0,1,1)状态上，表现为"整个 items.png 显示出来"。
 			f = ItemSpriteSheet.film.get( ItemSpriteSheet.SOMETHING );
 		}
-		frame( f );
-
-		float height = ItemSpriteSheet.film.height( f );
-		//adds extra raise to very short items, so they are visible
-		if (height < 8f){
-			perspectiveRaise =  (5 + 8 - height) / 16f;
+		if (f == null && texture != null && texture.width > 0) {
+			// 最终兜底：即使 SOMETHING 也未注册（极端时序下类初始化不完整），
+			// 也不要 frame(null)——那会 NPE 并让精灵停留在整张图集状态。
+			// 钉到图集左上角 16x16 的一小块，避免渲染整张 items.png。
+			f = new RectF( 0, 0, SIZE / (float)texture.width, SIZE / (float)texture.height );
 		}
+		if (f != null) {
+			frame( f );
+			float height = ItemSpriteSheet.film.height( f );
+			//adds extra raise to very short items, so they are visible
+			if (height < 8f){
+				perspectiveRaise =  (5 + 8 - height) / 16f;
+		}
+	}
 	}
 	
 	public synchronized void glow( Glowing glowing ){

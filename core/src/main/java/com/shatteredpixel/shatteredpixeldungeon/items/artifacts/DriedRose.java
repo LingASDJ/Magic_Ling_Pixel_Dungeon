@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -86,8 +87,6 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-
-import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 public class DriedRose extends Artifact {
 
@@ -564,10 +563,6 @@ public class DriedRose extends Artifact {
 		}
 		
 		private DriedRose rose = null;
-
-		private static final int IDLE_DEATH_TURNS = 45;
-		private int idleTurns = 0;
-		private int lastHeroPos = -1;
 		
 		public GhostHero(){
 			super();
@@ -621,39 +616,10 @@ public class DriedRose extends Artifact {
 			if (!isAlive()) {
 				return true;
 			}
-			if (lastHeroPos == -1) {
-				lastHeroPos = hero.pos;
-			} else if (hero.pos != lastHeroPos) {
-				lastHeroPos = hero.pos;
-				idleTurns = 0;
-			} else if (hero.paralysed != 0) {
-				//麻痹回合不计入挂机
-			} else if (hero.actedThisTurn || hero.curAction != null) {
-				idleTurns = 0;
-			} else {
-				idleTurns++;
-				if (idleTurns >= IDLE_DEATH_TURNS) {
-					die(null);
-					return true;
-				}
-			}
+
 			return super.act();
 		}
-
-		@Override
-		public void storeInBundle(Bundle bundle) {
-			super.storeInBundle(bundle);
-			bundle.put(IDLE_TURNS, idleTurns);
-			bundle.put(LAST_HERO_POS, lastHeroPos);
-		}
-
-		@Override
-		public void restoreFromBundle(Bundle bundle) {
-			super.restoreFromBundle(bundle);
-			idleTurns = bundle.getInt(IDLE_TURNS);
-			lastHeroPos = bundle.getInt(LAST_HERO_POS);
-		}
-
+		
 		private static final String IDLE_TURNS = "idle_turns";
 		private static final String LAST_HERO_POS = "last_hero_pos";
 

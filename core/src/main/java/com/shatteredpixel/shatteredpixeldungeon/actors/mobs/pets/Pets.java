@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -7,6 +9,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.watabou.utils.Bundle;
 
 public abstract class Pets extends Mob {
+
+    public static final int IDLE_DEATH_TURNS = 45;
+    public int idleTurns = 0;
+    public int lastHeroPos = -1;
+
+    public boolean noALLY = false;
 
     {
         alignment = Alignment.ALLY;
@@ -17,6 +25,30 @@ public abstract class Pets extends Mob {
         state = PASSIVE;
         invisible = 1;
         baseSpeed = 1.5f;
+    }
+
+    @Override
+    protected boolean act() {
+        if(!noALLY){
+            if (lastHeroPos == -1) {
+                lastHeroPos = hero.pos;
+            } else if (hero.pos != lastHeroPos) {
+                lastHeroPos = hero.pos;
+                idleTurns = 0;
+            } else if (hero.paralysed != 0) {
+                //麻痹回合不计入挂机
+            } else if (hero.actedThisTurn || hero.curAction != null) {
+                idleTurns = 0;
+            } else {
+                idleTurns++;
+                if (idleTurns >= IDLE_DEATH_TURNS) {
+                    die(null);
+                    return true;
+                }
+            }
+        }
+
+        return super.act();
     }
 
     @Override
