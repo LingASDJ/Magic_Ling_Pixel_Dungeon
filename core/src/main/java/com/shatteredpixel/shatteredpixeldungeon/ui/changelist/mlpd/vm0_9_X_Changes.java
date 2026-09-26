@@ -6,7 +6,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.TribemanOldSprite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.RivalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonKing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.GhostLingElixir;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
@@ -32,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.thanks.CelestialBrush;
 import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
@@ -92,6 +97,7 @@ import java.util.ArrayList;
 public class vm0_9_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0961_Changes(changeInfos);
         add_V0960_Changes(changeInfos);
         add_V0950_Changes(changeInfos);
         add_V0948_Changes(changeInfos);
@@ -106,7 +112,7 @@ public class vm0_9_X_Changes {
         add_V0900_Changes(changeInfos);
     }
 
-    public static void add_V0960_Changes(ArrayList<ChangeInfo> changeInfos ) {
+    public static void add_V0961_Changes(ArrayList<ChangeInfo> changeInfos ) {
 
         ChangeInfo changes = new ChangeInfo("Lost-失落古墓-敬请期待-Tomb", true,"");
         changes.hardlight(0xCCCCCC);
@@ -135,7 +141,78 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new Image(Icons.get(Icons.NEWS)), "后续开发预告",
                 "失落古墓外传正在稳步推进开发，更多场景、怪物、专属武器与剧情内容将陆续放出，敬请期待后续版本情报！"));
 
-        changes = new ChangeInfo("v0.9.6.0", true, "");
+        changes = new ChangeInfo("v0.9.6.1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+
+        changes.addButton(new ChangeButton(new ItemSprite(new ElixirOfDragonKing()), ("新药剂：龙王之怒"),
+                (       "饮用后，这瓶秘药会使饮用者的血管里充斥着磷火的力量。这个效果能让引用者对全部火焰完全免疫，并且还能通过物理攻击使用磷火点燃敌人。\n\n" +
+                        "合成方式：磷火药剂 + 8炼金能量")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(new GhostLingElixir()), ("新药剂：鬼磷秘药"),
+                ("结合了磷火的不稳定性质，和无序结晶与附魔符石的强大力量。你可以使用鬼磷秘药来冲刷3x3范围内的投掷武器/近战武器/护甲。会为这些物品带来附魔且瓶子碎裂的时候，会立刻产生磷火风暴，如果对英雄使用，在上述基础之上，英雄还会获得8回合无敌。\n\n" +
+                        "合成方式：无序结晶 + 附魔符石 + 磷火药剂")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(new PotionOfDragonKingBreath()), ("龙王吐息合剂"),
+                ("现在没有附魔效果了，但是磷火造成的范围会更加的大。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGHTSTABBINGSWORD), "迅捷骑士刺剑",
+                "优化骑士刺剑逻辑，修复该藏品会让镜像等单位一回合内无限攻击的问题。"));
+
+        Image ss =new ShubNiggurathSprite();
+        ss.scale.set(PixelScene.align(0.4f));
+        changes.addButton(new ChangeButton(ss, ("莎布·尼古拉丝"),
+                "由于本版本无敌，已回调到V0.9.5.1版本"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FORCE_CUBE), ("投掷武器调整"),
+                (       "_-_ 自然生成的投掷武器有概率获得等级升级、诅咒或附魔\n" +
+                        "_-_ 等级升级会一次性提升一组投掷武器，而非仅单个\n" +
+                        "_-_ 耐久升级收益下调：原每级+3倍耐久 → 修改为每级+1.5倍耐久\n" +
+                        "_-_ 升级后将完全恢复耐久；投掷武器现在可被附魔与施加诅咒\n" +
+                        "_-_ 自然生成概率（无残魔密卷加成）：\n" +
+                        "等级加成：\n" +
+                        "_-_ +0：80.00%\n" +
+                        "_-_ +1：≈15.24%\n" +
+                        "_-_ +2：≈4.44%\n" +
+                        "_-_ +3：≈0.32%\n" +
+                        "其他加成：\n" +
+                        "_—_ 诅咒：15%，正向附魔：7%，白板：78%")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                ("V0.9.6.1：\n\n" +
+                        "_-_ 修复二代武器描述部分逻辑判定问题\n" +
+                        "_-_ 修复高灯火包含诅咒的问题\n" +
+                        "_-_ 修复动态素材渲染异常\n" +
+                        "_-_ 修复孤城古神处使用未祝福的十字架时间加速依旧不会停止的问题\n" +
+                        "_-_ 修复投掷武器有等级的不会自动补全在快捷栏的问题\n" +
+                        "_-_ 修复投掷武器因为使用武器的附魔逻辑导致的诅咒频率过高")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.G_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(new DriedRose()), ("干枯玫瑰调整"),
+                (       "经过测试评估，玫瑰无需45回合影响，已将其移除。\n" +
+                        "该设计主要针对于当前的无敌的宠物系统")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(new WandOfAnmy()), ("共生法杖调整"),
+                (       "祝福现在不止一区可用，前三区均可使用。\n\n" +
+                        "但不能再嬗变，不能拆，不能放炼金炉，不能灌注")));
+
+    }
+
+    public static void add_V0960_Changes(ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.9.6.0", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
         changes.addButton(new ChangeButton(new Image("Ling.png", 0, 0, 16, 16), "开发者的话",

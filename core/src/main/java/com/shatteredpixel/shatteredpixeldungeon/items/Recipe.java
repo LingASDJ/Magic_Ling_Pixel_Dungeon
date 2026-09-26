@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHo
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.GhostLingElixir;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
@@ -195,6 +196,7 @@ public abstract class Recipe {
 	private static Recipe[] oneIngredientRecipes = new Recipe[]{
 			new Scroll.ScrollToStone(),
 			new ExoticPotion.PotionToExotic(),
+			new ExoticPotion.PotionToDK(),
 			new ExoticScroll.ScrollToExotic(),
 			new ArcaneResin.Recipe(),
 			new Alchemize.Recipe(),
@@ -220,7 +222,6 @@ public abstract class Recipe {
 			new Recycle.Recipe(),
 			new TelekineticGrab.Recipe(),
 			new SummonElemental.Recipe()
-
 	};
 	
 	private static Recipe[] twoIngredientRecipes = new Recipe[]{
@@ -263,6 +264,7 @@ public abstract class Recipe {
 			new FlareBullet.Recipe(),
 			new WandOfVenom.Recipe(),
 			new IceFishSword.Recipe(),
+			new GhostLingElixir.Recipe()
 	};
 	
 	public static ArrayList<Recipe> findRecipes(ArrayList<Item> ingredients){

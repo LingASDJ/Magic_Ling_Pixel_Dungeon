@@ -809,11 +809,19 @@ public class ItemSpriteSheet {
     public static final int ELIXIR_TOXIC    = ELIXIRS+4;
     public static final int ELIXIR_ICY      = ELIXIRS+5;
     public static final int ELIXIR_ARCANE   = ELIXIRS+6;
+
+    public static final int ELIXIR_GHOSTLING   = ELIXIRS+7;
+
+    public static final int ELIXIR_DRAGONKING   = ELIXIRS+8;
+
     static{
         assignItemRect( ELIXIR_DRAGON,    16, 16);
         assignItemRect( ELIXIR_ICY,    9, 15);
         assignItemRect( WATERSOUL,    16, 16);
         assignItemRect( REDDRAGON,    12, 16);
+
+        assignItemRect( ELIXIR_GHOSTLING,    9, 15);
+        assignItemRect( ELIXIR_DRAGONKING,    10, 12);
     }
 
     //16 free slots

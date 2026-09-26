@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.GhostLingElixir;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
@@ -133,6 +134,7 @@ public class Potion extends Item {
 		mustThrowPots.add(PotionOfStormClouds.class);
 		mustThrowPots.add(PotionOfDragonKingBreath.class);
 		//also all brews, hardcoded
+		mustThrowPots.add(GhostLingElixir.class);
 	}
 	
 	public static final HashSet<Class<?extends Potion>> canThrowPots = new HashSet<>();
