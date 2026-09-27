@@ -119,10 +119,10 @@ public class JunglePoison extends MeleeWeapon {
     public String abilityInfo() {
         if (levelKnown){
             int dur = level()*2;
-            int poison = 2 + level()/2;
-            return Messages.get(this, "typical_ability_desc", dur, poison, dur);
+            int poison = 10+level()*5;
+            return Messages.get(this, "typical_ability_desc", dur,poison);
         } else {
-            return Messages.get(this, "ability_desc",0,2,0);
+            return Messages.get(this, "ability_desc",0,10);
         }
     }
 

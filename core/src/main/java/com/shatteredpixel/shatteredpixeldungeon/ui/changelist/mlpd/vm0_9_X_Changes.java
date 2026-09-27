@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.thanks.CelestialBrush;
 import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
@@ -149,21 +150,24 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARMOR_CLOTH,new ItemSprite.Glowing(0x0)), ("磐岩调整"),
+                ("磐岩刻印一直处于尴尬场景，经组内评估后，改为磐岩诅咒。\n\n" +
+                        "磐岩诅咒沉重的魔法包裹了整个铠甲让穿戴者无法闪避，但是穿戴者的每点闪避会使其获得 0.75% 受伤减免，与其它减伤效果共同计算后的最终减伤至多不超过 75%")));
 
         changes.addButton(new ChangeButton(new ItemSprite(new ElixirOfDragonKing()), ("新药剂：龙王之怒"),
                 (       "饮用后，这瓶秘药会使饮用者的血管里充斥着磷火的力量。这个效果能让引用者对全部火焰完全免疫，并且还能通过物理攻击使用磷火点燃敌人。\n\n" +
-                        "合成方式：磷火药剂 + 8炼金能量")));
+                        "合成方式：龙王吐息合剂 + 10炼金能量")));
 
         changes.addButton(new ChangeButton(new ItemSprite(new GhostLingElixir()), ("新药剂：鬼磷秘药"),
-                ("结合了磷火的不稳定性质，和无序结晶与附魔符石的强大力量。你可以使用鬼磷秘药来冲刷3x3范围内的投掷武器/近战武器/护甲。会为这些物品带来附魔且瓶子碎裂的时候，会立刻产生磷火风暴，如果对英雄使用，在上述基础之上，英雄还会获得8回合无敌。\n\n" +
-                        "合成方式：无序结晶 + 附魔符石 + 磷火药剂")));
+                ("结合了磷火的不稳定性质，和无序结晶与升级卷轴的强大力量。你可以使用鬼磷秘药来冲刷3x3范围内的投掷武器/近战武器/护甲。如果对英雄使用，在上述基础之上，英雄还会获得8回合无敌。\n\n" +
+                        "合成方式：无序结晶 + 升级卷轴 + 磷火药剂 + 8炼金能量")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(new PotionOfDragonKingBreath()), ("龙王吐息合剂"),
-                ("现在没有附魔效果了，但是磷火造成的范围会更加的大。")));
+                ("现在没有附魔效果了，是火龙吐息合剂的上位替代。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGHTSTABBINGSWORD), "迅捷骑士刺剑",
                 "优化骑士刺剑逻辑，修复该藏品会让镜像等单位一回合内无限攻击的问题。"));
@@ -200,13 +204,18 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.G_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(new WandOfGodIce()), ("冬灵霜殇法杖"),
+                ("大冰杖现在不会立刻直接冰冻水上的敌人，不过在水上的敌人冻伤效率会翻倍")));
+
         changes.addButton(new ChangeButton(new ItemSprite(new DriedRose()), ("干枯玫瑰调整"),
-                (       "经过测试评估，玫瑰无需45回合影响，已将其移除。\n" +
-                        "该设计主要针对于当前的无敌的宠物系统")));
+                (       "经过测试评估，玫瑰现在从45回合改为150回合，对于正常玩家已可支持。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(new WandOfAnmy()), ("共生法杖调整"),
                 (       "祝福现在不止一区可用，前三区均可使用。\n\n" +
                         "但不能再嬗变，不能拆，不能放炼金炉，不能灌注")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(new YanStudyingPaperOne()), ("言的研究手稿 一"),
+                (       "现在该藏品会让药水挎包无法被丢弃。")));
 
     }
 

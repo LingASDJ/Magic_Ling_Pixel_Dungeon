@@ -546,6 +546,10 @@ public class DriedRose extends Artifact {
 
 	public static class GhostHero extends DirectableAlly {
 
+		public static final int IDLE_DEATH_TURNS = 150;
+		public int idleTurns = 0;
+		public int lastHeroPos = -1;
+
 		{
 			spriteClass = GhostSprite.class;
 
@@ -607,6 +611,24 @@ public class DriedRose extends Artifact {
 		@Override
 		protected boolean act() {
 			updateRose();
+
+			if (lastHeroPos == -1) {
+				lastHeroPos = hero.pos;
+			} else if (hero.pos != lastHeroPos) {
+				lastHeroPos = hero.pos;
+				idleTurns = 0;
+			} else if (hero.paralysed != 0) {
+				//麻痹回合不计入挂机
+			} else if (hero.actedThisTurn || hero.curAction != null) {
+				idleTurns = 0;
+			} else {
+				idleTurns++;
+				if (idleTurns >= IDLE_DEATH_TURNS) {
+					die(null);
+					return true;
+				}
+			}
+
 			if (rose == null
 					|| !rose.isEquipped(Dungeon.hero)
 					|| isMagicImmuned(Dungeon.hero)){
@@ -619,9 +641,6 @@ public class DriedRose extends Artifact {
 
 			return super.act();
 		}
-		
-		private static final String IDLE_TURNS = "idle_turns";
-		private static final String LAST_HERO_POS = "last_hero_pos";
 
 		public static class NoRoseDamage{}
 
@@ -805,6 +824,23 @@ public class DriedRose extends Artifact {
 				rose.ghostID = -1;
 			}
 			super.destroy();
+		}
+
+		private static final String IDLE_TURNS = "idle_turns";
+		private static final String LAST_HERO_POS = "last_hero_pos";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(IDLE_TURNS, idleTurns);
+			bundle.put(LAST_HERO_POS, lastHeroPos);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			idleTurns = bundle.getInt(IDLE_TURNS);
+			lastHeroPos = bundle.getInt(LAST_HERO_POS);
 		}
 		
 		public void sayAppeared(){
