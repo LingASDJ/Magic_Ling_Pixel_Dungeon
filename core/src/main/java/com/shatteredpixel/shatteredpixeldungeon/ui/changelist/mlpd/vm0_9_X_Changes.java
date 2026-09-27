@@ -214,6 +214,9 @@ public class vm0_9_X_Changes {
                 (       "祝福现在不止一区可用，前三区均可使用。\n\n" +
                         "但不能再嬗变，不能拆，不能放炼金炉，不能灌注")));
 
+        changes.addButton(new ChangeButton(new ItemSprite(new YanStudyingPaperOne()), ("言的研究手稿 一"),
+                (       "现在该藏品会让药水挎包无法被丢弃。")));
+
     }
 
     public static void add_V0960_Changes(ArrayList<ChangeInfo> changeInfos ) {

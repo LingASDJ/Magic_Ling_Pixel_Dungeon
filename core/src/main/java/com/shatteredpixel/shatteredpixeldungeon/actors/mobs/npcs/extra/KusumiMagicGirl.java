@@ -10,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.jokings.HornOfPlentyBomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KusumiMagicGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -144,7 +143,7 @@ public class KusumiMagicGirl extends Mob {
             Dungeon.level.drop(horn, pos).sprite.drop(pos);
         } else {
             HornOfPlentyBomb bomb = new HornOfPlentyBomb();
-            bomb.isLit = true;
+            bomb.isLit = false;
             Dungeon.level.drop(bomb, pos).sprite.drop(pos);                  // 先落地
             Actor.addDelayed(bomb.fuse = bomb.createFuse().ignite(bomb), 1); // 再点引信（1 回合后炸）
         }
