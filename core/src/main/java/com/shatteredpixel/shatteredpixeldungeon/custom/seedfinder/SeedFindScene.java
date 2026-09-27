@@ -52,7 +52,7 @@ public class SeedFindScene extends PixelScene {
     public static String seedCode = "";
     private static final ArrayList<Item> wantedItems = new ArrayList<>();
     public HeroClass currentHero = null;
-    public static int currentFloor = Constants.MAX_DEPTH;
+    public static int currentFloor = Constants.MAX_DEPTH - 1;
     public void create() {
         super.create();
 
@@ -830,14 +830,13 @@ public class SeedFindScene extends PixelScene {
             }
 
             private StyledButton floorBtn(int i) {
-                final int j = i + 1;
-                return new StyledButton(Chrome.Type.GEM, String.valueOf(j), 8) {
+                return new StyledButton(Chrome.Type.GEM, String.valueOf(i), 8) {
                     {
                         hotArea.blockLevel = PointerArea.NEVER_BLOCK;
                     }
                     @Override
                     protected void onClick() {
-                        selectedFloor = j;
+                        selectedFloor = i;
                         confirm.text(Messages.get(SeedFindScene.class, "confirm_floor", selectedFloor));
                     }
                 };
