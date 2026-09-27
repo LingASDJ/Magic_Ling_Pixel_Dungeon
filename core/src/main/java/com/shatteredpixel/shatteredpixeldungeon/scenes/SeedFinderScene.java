@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.BitmapText;
@@ -118,13 +117,14 @@ public class SeedFinderScene extends PixelScene {
 		btnSeedfinder.icon(Icons.get(Icons.MAGNIFY));
 		add(btnSeedfinder);
 
-		StyledButton btnScoutDaily = new StyledButton(GREY_TR, Messages.get(this, "scout_daily")) {
+		StyledButton btnScoutDaily = new StyledButton(GREY_TR, "新版查种器") {
 			@Override
 			protected void onClick() {
-				Game.scene().add( new WndError( "敬请期待" ) );
+				ShatteredPixelDungeon.switchNoFade(
+						com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFindScene.class);
 			}
 		};
-		btnScoutDaily.icon(Icons.get(Icons.ENTER));
+		btnScoutDaily.icon(Icons.get(Icons.MAGNIFY));
 		add(btnScoutDaily);
 		Dungeon.daily = Dungeon.dailyReplay = false;
 

@@ -107,6 +107,13 @@ public abstract class OptionSlider extends Component {
 		pointerArea = new PointerArea(0, 0, 0, 0){
 			boolean pressed = false;
 
+			@Override			// 修滑块会穿透的选到别的物品的bug
+			public boolean onSignal( PointerEvent event ) {
+				boolean wasPressed = pressed;
+				boolean result = super.onSignal( event );
+				return wasPressed || result;
+			}
+
 			@Override
 			protected void onPointerDown( PointerEvent event ) {
 				pressed = true;
