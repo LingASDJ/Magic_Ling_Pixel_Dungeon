@@ -821,7 +821,7 @@ public class ItemSpriteSheet {
         assignItemRect( REDDRAGON,    12, 16);
 
         assignItemRect( ELIXIR_GHOSTLING,    9, 15);
-        assignItemRect( ELIXIR_DRAGONKING,    10, 12);
+        assignItemRect( ELIXIR_DRAGONKING,   13, 15);
     }
 
     //16 free slots

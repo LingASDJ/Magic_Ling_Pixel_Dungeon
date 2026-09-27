@@ -2,12 +2,14 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.fiveyears;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.FireMagicGirl;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.noosa.Image;
 
 public class FireMagicGirlPlot extends Plot {
     private final static int maxprocess = 4;
@@ -73,7 +75,8 @@ public class FireMagicGirlPlot extends Plot {
 
     private void process_to_1() {
         diagulewindow.hideAll();
-        hero.interrupt();
+        Dungeon.hero.interrupt();
+        diagulewindow.setMainAvatar(new Image(Assets.Splashes.LENA));
         diagulewindow.setLeftName(Messages.get(FireMagicGirl.class, "name"));
         diagulewindow.changeText(Messages.get(FireMagicGirl.class, "messages1",hero.name()));
     }
