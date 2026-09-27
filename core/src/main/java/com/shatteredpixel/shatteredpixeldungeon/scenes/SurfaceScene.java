@@ -476,7 +476,7 @@ public class SurfaceScene extends PixelScene {
 		}
 
 		private void updateAvatar(HeroClass cl) {
-			if (cl == HeroClass.SPELLSWORD && !DeviceCompat.isDesktop_Dev()) {
+			if (cl == HeroClass.SPELLSWORD && !cl.isUnlocked()) {
 				hardlight(0x222222);
 			} else {
 				resetColor();
