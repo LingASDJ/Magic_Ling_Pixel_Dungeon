@@ -12,7 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
@@ -22,6 +22,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CommRelay;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
@@ -35,8 +38,18 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ClearSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.GoldLongGun;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SliverLockSword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.utils.Random;
 
@@ -62,6 +75,25 @@ public class NewSeedFinder implements Runnable {
 
     public static volatile boolean running;
     public static volatile boolean SeedFinding = false;
+
+    // ===== 图鉴中存在、但正常对局永远不会生成的物品（选择网格与匹配都应跳过） =====
+    public static final HashSet<Class<? extends Item>> UNGENERATED = new HashSet<>(Arrays.asList(
+            MasterThievesArmband.class,
+            LloydsBeacon.class,
+            CommRelay.class,
+            SliverLockSword.class
+    ));
+
+    public static boolean isUngenerated(Class<?> cls) {
+        for (Class<? extends Item> c : UNGENERATED) {
+            if (c.isAssignableFrom(cls)) return true;
+        }
+        return false;
+    }
+
+    // 子层开关沿用旧查种器设置；遍历子层 1/2/3
+    private static final boolean checkBranches = SPDSettings.logBranch();
+    private static final int[] BRANCH_IDS = {1, 2, 3};
 
     protected final WantedTarget[] wantedArr;
     // Class → 目标下标数组：tryMatch 先查 map 取候选目标，跳过无关物品
@@ -147,9 +179,7 @@ public class NewSeedFinder implements Runnable {
     protected boolean testSeed(long seed) {
         initRunWithSeed(seed);
         boolean[] itemsFound = new boolean[wantedArr.length];
-        int foundCount = 0;
-        int n = wantedArr.length;
-        boolean ghostSeen = false, impSeen = false, wandmakerSeen = false;
+        boolean ghostSeen = false, impSeen = false, wandmakerSeen = false, redDragonSeen = false;
 
         Dungeon.depth = 0;
         while (Dungeon.depth <= floor) {
@@ -161,33 +191,23 @@ public class NewSeedFinder implements Runnable {
             }
 
             // 地面物品：遇物即匹配，不建中间表、不 identify
-            for (Heap h : l.heaps.valueList())
-                for (Item item : h.items)
-                    if (tryMatch(item, itemsFound) && ++foundCount == n)
-                        return true;
+            if (matchHeaps(l, itemsFound)) return true;
 
-            // 怪物掉落：直接取物，不包装 Heap
-            for (Mob m : l.mobs) {
-                if (m.getClass() == ArmoredStatue.class) {
-                    if (tryMatch(((ArmoredStatue) m).armor(), itemsFound) && ++foundCount == n)
-                        return true;
-                    if (tryMatch(((ArmoredStatue) m).weapon(), itemsFound) && ++foundCount == n)
-                        return true;
-                }
-                else if (m.getClass() == Statue.class) {
-                    if (tryMatch(((Statue) m).weapon(), itemsFound) && ++foundCount == n)
-                        return true;
-                }
-                else if (m instanceof Mimic) {
-                    for (Item item : ((Mimic) m).items)
-                        if (tryMatch(item, itemsFound) && ++foundCount == n)
-                            return true;
-                }
-            }
+            // 怪物掉落：雕像/铠甲雕像/宝箱怪
+            if (matchMobs(l, itemsFound)) return true;
+
             if (!ghostSeen && Ghost.Quest.armor != null) {
                 ghostSeen = true;
                 if ((tryMatch(Ghost.Quest.armor, itemsFound)
-                        || tryMatch(Ghost.Quest.weapon, itemsFound)) && ++foundCount == n)
+                        || tryMatch(Ghost.Quest.weapon, itemsFound)) && allFound(itemsFound))
+                    return true;
+            }
+            // 红龙之王任务奖励：戒指 / 神器或法杖 / 法杖 / 异国卷轴 五选一
+            if (!redDragonSeen && RedDragon.Quest.armor != null) {
+                redDragonSeen = true;
+                Item[] rewards = {RedDragon.Quest.weapon, RedDragon.Quest.armor,
+                        RedDragon.Quest.RingT, RedDragon.Quest.food, RedDragon.Quest.scrolls};
+                if (tryMatchAny(rewards, itemsFound) && allFound(itemsFound))
                     return true;
             }
             if (!wandmakerSeen && Wandmaker.Quest.wand1 != null) {
@@ -196,20 +216,83 @@ public class NewSeedFinder implements Runnable {
                 Item w2 = Wandmaker.Quest.wand2;
                 if (wand != null && !wand.matches(w1) && !wand.matches(w2))
                     return false;
-                if ((tryMatch(w1, itemsFound) || tryMatch(w2, itemsFound)) && ++foundCount == n)
+                if ((tryMatch(w1, itemsFound) || tryMatch(w2, itemsFound)) && allFound(itemsFound))
                     return true;
             }
             if (!impSeen && Imp.Quest.reward != null) {
                 impSeen = true;
                 if (ring != null && !ring.matches(Imp.Quest.reward))
                     return false;
-                if (tryMatch(Imp.Quest.reward, itemsFound) && ++foundCount == n)
+                if (tryMatch(Imp.Quest.reward, itemsFound) && allFound(itemsFound))
                     return true;
+            }
+
+            // 子层：与主层同一深度，命中任意子层即算数
+            if (checkBranches) {
+                int curDepth = Dungeon.depth;
+                for (int br : BRANCH_IDS) {
+                    if (checkBranchLevel(curDepth, br, itemsFound)) return true;
+                }
             }
 
             Dungeon.depth++;
         }
         return false;
+    }
+
+    // 主层/子层共用：匹配地面堆
+    private boolean matchHeaps(Level l, boolean[] itemsFound) {
+        for (Heap h : l.heaps.valueList())
+            for (Item item : h.items)
+                if (tryMatch(item, itemsFound) && allFound(itemsFound))
+                    return true;
+        return false;
+    }
+
+    // 主层/子层共用：匹配雕像/铠甲雕像/宝箱怪掉落
+    private boolean matchMobs(Level l, boolean[] itemsFound) {
+        for (Mob m : l.mobs) {
+            if (m.getClass() == ArmoredStatue.class) {
+                if (tryMatch(((ArmoredStatue) m).armor(), itemsFound) && allFound(itemsFound))
+                    return true;
+                if (tryMatch(((ArmoredStatue) m).weapon(), itemsFound) && allFound(itemsFound))
+                    return true;
+            }
+            else if (m.getClass() == Statue.class) {
+                if (tryMatch(((Statue) m).weapon(), itemsFound) && allFound(itemsFound))
+                    return true;
+            }
+            else if (m instanceof Mimic) {
+                for (Item item : ((Mimic) m).items)
+                    if (tryMatch(item, itemsFound) && allFound(itemsFound))
+                        return true;
+            }
+        }
+        return false;
+    }
+
+    // 子层查种：保存 depth/branch → 生成子层 → 匹配地面与怪物掉落 → 还原
+    private boolean checkBranchLevel(int depth, int branch, boolean[] itemsFound) {
+        if (Thread.currentThread().isInterrupted()) return false;
+        int originalBranch = Dungeon.branch;
+        int originalDepth = Dungeon.depth;
+        try {
+            Dungeon.branch = branch;
+            Dungeon.depth = depth;
+
+            Level branchLevel = Dungeon.newLevel();
+            if (branchLevel == null || branchLevel instanceof DeadEndLevel) {
+                return false;
+            }
+
+            if (matchHeaps(branchLevel, itemsFound)) return true;
+            return matchMobs(branchLevel, itemsFound);
+        } catch (Exception e) {
+            return false;
+        } finally {
+            Dungeon.branch = originalBranch;
+            Dungeon.depth = originalDepth;
+        }
     }
 
     private void initRunWithSeed(long seed) {
@@ -219,6 +302,7 @@ public class NewSeedFinder implements Runnable {
     }
 
     private boolean tryMatch(Item item, boolean[] itemsFound) {
+        if (item == null) return false;
         int[] candidates = matchIndex.get(item.getClass());
         if (candidates == null) return false;
         for (int idx : candidates) {
@@ -228,6 +312,19 @@ public class NewSeedFinder implements Runnable {
             }
         }
         return false;
+    }
+
+    private boolean tryMatchAny(Item[] items, boolean[] itemsFound) {
+        boolean matched = false;
+        for (Item item : items) {
+            if (tryMatch(item, itemsFound)) matched = true;
+        }
+        return matched;
+    }
+
+    private static boolean allFound(boolean[] itemsFound) {
+        for (boolean b : itemsFound) if (!b) return false;
+        return true;
     }
 
     private ArrayList<Heap> getMobDrops(Level l) {
@@ -306,6 +403,17 @@ public class NewSeedFinder implements Runnable {
                 Ghost.Quest.complete();
                 fd.ghostRewards = rewards;
             }
+            // 红龙之王任务奖励（先收引用再 complete：complete 会清空 weapon/armor 静态字段）
+            if (RedDragon.Quest.armor != null) {
+                ArrayList<Item> rewards = new ArrayList<>();
+                rewards.add(RedDragon.Quest.weapon);
+                rewards.add(RedDragon.Quest.armor);
+                rewards.add(RedDragon.Quest.RingT);
+                rewards.add(RedDragon.Quest.food);
+                rewards.add(RedDragon.Quest.scrolls);
+                RedDragon.Quest.complete();
+                fd.redDragonRewards = rewards;
+            }
             // 工匠任务奖励（type 在 complete 前捕获）
             if (Wandmaker.Quest.wand1 != null) {
                 ArrayList<Item> rewards = new ArrayList<>();
@@ -323,6 +431,14 @@ public class NewSeedFinder implements Runnable {
                 fd.impRewards = rewards;
             }
 
+            // 子层物品收集（同一深度）
+            if (checkBranches) {
+                for (int br : BRANCH_IDS) {
+                    BranchData bd = collectBranch(curDepth, br);
+                    if (bd != null) fd.branches.add(bd);
+                }
+            }
+
             floorDataList.add(fd);
             Dungeon.depth++;
         }
@@ -336,92 +452,72 @@ public class NewSeedFinder implements Runnable {
             if (fd.ghostRewards != null)
                 for (Item i : fd.ghostRewards) i.identify();
 
+            if (fd.redDragonRewards != null)
+                for (Item i : fd.redDragonRewards) i.identify();
+
             if (fd.wandmakerRewards != null)
                 for (Item i : fd.wandmakerRewards) i.identify();
 
             if (fd.impRewards != null)
                 for (Item i : fd.impRewards) i.identify();
+
+            for (BranchData bd : fd.branches)
+                for (HeapItem hi : bd.heapItems)
+                    hi.item.identify();
         }
 
-        // Phase 3: 生成文本
-        StringBuilder result = new StringBuilder("种子 " + seedCode + " (" + seed + ") 物品列表：\n\n");
+        // Phase 3: 生成旧版样式文本（彩色等级、传说紫字、诅咒前缀）
+        StringBuilder result = new StringBuilder();
+        result.append(Messages.get(SeedFinder.class, "seed")).append(seedCode)
+                .append(" (").append(seed).append(") ")
+                .append(Messages.get(SeedFinder.class, "items")).append(":\n\n");
+        result.append(Messages.get(SeedFindScene.class, "hero_info",
+                Messages.capitalize(heroClass.title()))).append("\n");
+        result.append(Messages.get(SeedFinder.class, "css"))
+                .append(Dungeon.challenges).append("\n\n");
+
         for (FloorData fd : floorDataList) {
-            result.append("\n----- 第").append(fd.depth).append("层 -----\n\n");
+            result.append("\n----- ").append(fd.depth).append(' ')
+                    .append(Messages.get(SeedFinder.class, "floor")).append(" -----\n\n");
+
             StringBuilder builder = new StringBuilder();
-            ArrayList<HeapItem> scrolls = new ArrayList<>();
-            ArrayList<HeapItem> potions = new ArrayList<>();
-            ArrayList<HeapItem> equipment = new ArrayList<>();
-            ArrayList<HeapItem> rings = new ArrayList<>();
-            ArrayList<HeapItem> artifacts = new ArrayList<>();
-            ArrayList<HeapItem> wands = new ArrayList<>();
-            ArrayList<HeapItem> others = new ArrayList<>();
-            ArrayList<HeapItem> forSales = new ArrayList<>();
 
             // 任务奖励（在地面物品之前展示）
-            if (fd.ghostRewards != null) {
-                this.addTextQuest("[ 伤心幽灵的奖励 ]", fd.ghostRewards, builder);
-            }
+            if (fd.ghostRewards != null)
+                addTextQuest(caption("sad_ghost_reward"), fd.ghostRewards, builder);
+            if (fd.redDragonRewards != null)
+                addTextQuest(caption("red_dragon_reward"), fd.redDragonRewards, builder);
             if (fd.wandmakerRewards != null) {
-                builder.append("[ 工匠的需求 ]:\n ");
+                builder.append(caption("wandmaker_need")).append(":\n ");
                 switch (fd.wandmakerType) {
-                    case 1:
-                    default:
-                        builder.append("腐尸尘土").append("\n\n");
-                        break;
                     case 2:
-                        builder.append("余烬").append("\n\n");
+                        builder.append(Messages.get(SeedFinder.class, "embers")).append("\n\n");
                         break;
                     case 3:
-                        builder.append("腐烂浆果").append("\n\n");
+                        builder.append(Messages.get(SeedFinder.class, "rotberry")).append("\n\n");
+                        break;
+                    case 1:
+                    default:
+                        builder.append(Messages.get(SeedFinder.class, "corpsedust")).append("\n\n");
+                        break;
                 }
-                addTextQuest("[ 工匠的奖励 ]", fd.wandmakerRewards, builder);
+                addTextQuest(caption("wandmaker_reward"), fd.wandmakerRewards, builder);
             }
-            if (fd.impRewards != null) {
-                addTextQuest("[ 小恶魔的奖励 ]", fd.impRewards, builder);
+            if (fd.impRewards != null)
+                addTextQuest(caption("imp_reward"), fd.impRewards, builder);
+
+            // 主层分类地面物品
+            appendCategories(builder, categorize(fd.heapItems, blacklist));
+
+            // 子层：每个子层独立标题与分类
+            for (BranchData bd : fd.branches) {
+                builder.append("\n----- ").append(fd.depth).append(' ')
+                        .append(Messages.get(SeedFinder.class, "floor")).append(" (")
+                        .append(Messages.get(SeedFinder.class, "branch_h")).append(bd.branch)
+                        .append(Messages.get(SeedFinder.class, "branch_e")).append(") -----\n\n");
+                appendCategories(builder, categorize(bd.heapItems, blacklist));
             }
 
-            // 分类地面物品
-            int gold = 0;
-            for (HeapItem hi : fd.heapItems) {
-                Item item = hi.item;
-                Heap h = hi.heap;
-                if (h.type == Type.FOR_SALE) {
-                    forSales.add(hi);
-                } else if (!blacklist.contains(item.getClass())) {
-                    if (item instanceof Scroll)
-                        scrolls.add(hi);
-                    else if (item instanceof Potion)
-                        potions.add(hi);
-                    else if (!(item instanceof MeleeWeapon) && !(item instanceof Armor)) {
-                        if (item instanceof Ring)
-                            rings.add(hi);
-                        else if (item instanceof Artifact)
-                            artifacts.add(hi);
-                        else if (item instanceof Wand)
-                            wands.add(hi);
-                        else if (item instanceof Gold)
-                            gold += item.quantity();
-                        else
-                            others.add(hi);
-                    } else
-                        equipment.add(hi);
-                }
-            }
-            if (gold != 0) {
-                Gold goldA = new Gold(gold);
-                Heap heapA = new Heap();
-                heapA.items = new LinkedList<>();
-                heapA.items.add(goldA);
-                others.add(new HeapItem(goldA, heapA));
-            }
-            addTextItems("[ 卷轴 ]", scrolls, builder);
-            addTextItems("[ 药水 ]", potions, builder);
-            addTextItems("[ 装备 ]", equipment, builder);
-            addTextItems("[ 戒指 ]", rings, builder);
-            addTextItems("[ 神器 ]", artifacts, builder);
-            addTextItems("[ 法杖 ]", wands, builder);
-            addTextItems("[ 商店 ]", forSales, builder);
-            addTextItems("[ 其他 ]", others, builder);
             result.append(builder);
         }
 
@@ -430,22 +526,157 @@ public class NewSeedFinder implements Runnable {
         return result.toString();
     }
 
+    // 子层物品收集：保存/设置 depth+branch → newLevel → 收物 → 还原；死路返回 null
+    private BranchData collectBranch(int depth, int branch) {
+        int originalBranch = Dungeon.branch;
+        int originalDepth = Dungeon.depth;
+        try {
+            Dungeon.branch = branch;
+            Dungeon.depth = depth;
+
+            Level branchLevel = Dungeon.newLevel();
+            if (branchLevel == null || branchLevel instanceof DeadEndLevel) {
+                return null;
+            }
+
+            BranchData bd = new BranchData(branch);
+            for (Heap h : branchLevel.heaps.valueList())
+                for (Item item : h.items)
+                    bd.heapItems.add(new HeapItem(item, h));
+            for (Heap h : getMobDrops(branchLevel))
+                for (Item item : h.items)
+                    bd.heapItems.add(new HeapItem(item, h));
+            return bd;
+        } catch (Exception e) {
+            return null;
+        } finally {
+            Dungeon.branch = originalBranch;
+            Dungeon.depth = originalDepth;
+        }
+    }
+
+    private static String caption(String key) {
+        return "【 " + Messages.get(SeedFinder.class, key) + " 】";
+    }
+
+    // 把物品按旧版分类归档
+    private Categorized categorize(ArrayList<HeapItem> items, HashSet<Class<? extends Item>> blacklist) {
+        Categorized c = new Categorized();
+        for (HeapItem hi : items) {
+            Item item = hi.item;
+            Heap h = hi.heap;
+            if (h.type == Type.FOR_SALE) {
+                c.forSales.add(hi);
+            } else if (!blacklist.contains(item.getClass())) {
+                if (item instanceof Scroll)
+                    c.scrolls.add(hi);
+                else if (item instanceof Potion)
+                    c.potions.add(hi);
+                else if (!(item instanceof MeleeWeapon) && !(item instanceof Armor)) {
+                    if (item instanceof Ring)
+                        c.rings.add(hi);
+                    else if (item instanceof Artifact)
+                        c.artifacts.add(hi);
+                    else if (item instanceof Wand)
+                        c.wands.add(hi);
+                    else if (item instanceof Gold)
+                        c.gold += item.quantity();
+                    else
+                        c.others.add(hi);
+                } else
+                    c.equipment.add(hi);
+            }
+        }
+        return c;
+    }
+
+    // 追加全部旧版分类段
+    private void appendCategories(StringBuilder builder, Categorized c) {
+        if (c.gold != 0) {
+            Gold goldA = new Gold(c.gold);
+            Heap heapA = new Heap();
+            heapA.items = new LinkedList<>();
+            heapA.items.add(goldA);
+            c.others.add(new HeapItem(goldA, heapA));
+        }
+        addTextItems(caption("scrolls"), c.scrolls, builder);
+        addTextItems(caption("potions"), c.potions, builder);
+        addTextItems(caption("equipment"), c.equipment, builder);
+        addTextItems(caption("rings"), c.rings, builder);
+        addTextItems(caption("artifacts"), c.artifacts, builder);
+        addTextItems(caption("wands"), c.wands, builder);
+        addTextItems(caption("for_sales"), c.forSales, builder);
+        addTextItems(caption("others"), c.others, builder);
+    }
+
+    private static boolean isLegend(Item i) {
+        return i instanceof DiedCrossBow || i instanceof MoonDao || i instanceof SaiPlus
+                || i instanceof RiceSword || i instanceof RedBloodMoon || i instanceof GoldLongGun
+                || i instanceof ClearSword || i instanceof ForestBow;
+    }
+
+    // 地面/怪物掉落物品的旧版彩色命名（不自带末尾换行，由调用方补）
+    private void appendStyledName(StringBuilder builder, Item i) {
+        String name = i.title().toLowerCase();
+        if (isLegend(i)) {
+            builder.append("<#df00ff>").append(Messages.get(SeedFinder.class, "lengds"))
+                    .append("<RGB> - ").append(name);
+        } else if (((i instanceof Armor && ((Armor) i).hasGoodGlyph())
+                || (i instanceof Weapon && ((Weapon) i).hasGoodEnchant())
+                || (i instanceof Ring) || (i instanceof Wand)) && i.cursed && i.level <= 0) {
+            builder.append("- ").append(Messages.get(SeedFinder.class, "cursed")).append(name);
+        } else if (i.cursed && i.level <= 0) {
+            builder.append("- ").append(Messages.get(SeedFinder.class, "cursed")).append(name).append("\n");
+        } else if (i.level > 0 && i.cursed) {
+            builder.append("<#808080>").append(Messages.get(SeedFinder.class, "cursed"))
+                    .append(name).append("<RGB>\n");
+        } else if (i.level > 4) {
+            builder.append("<#FFA500>").append(name).append("<RGB>\n");
+        } else if (i.level == 4) {
+            builder.append("<#F00>").append(name).append("<RGB>\n");
+        } else if (i.level == 3) {
+            builder.append("<#FF1493>").append(name).append("<RGB>\n");
+        } else if (i.level == 2) {
+            builder.append("<#0F0>").append(name).append("<RGB>\n");
+        } else if (i.level == 1) {
+            builder.append("_").append(name).append("_ \n");
+        } else {
+            builder.append("- ").append(name);
+        }
+    }
+
+    // 任务奖励物品的旧版彩色命名（每行自带换行）
+    private void appendStyledQuestName(StringBuilder builder, Item i) {
+        String name = i.title().toLowerCase();
+        if (i.cursed && i.level <= 0) {
+            builder.append("- ").append(Messages.get(SeedFinder.class, "cursed")).append(name).append("\n");
+        } else if (i.level > 0 && i.cursed) {
+            builder.append("<#808080>").append(Messages.get(SeedFinder.class, "cursed"))
+                    .append(name).append("<RGB>\n");
+        } else if (i.level > 4) {
+            builder.append("<#FFA500>").append(name).append("<RGB>\n");
+        } else if (i.level == 4) {
+            builder.append("<#F00>").append(name).append("<RGB>\n");
+        } else if (i.level == 3) {
+            builder.append("<#FF1493>").append(name).append("<RGB>\n");
+        } else if (i.level == 2) {
+            builder.append("<#0F0>").append(name).append("<RGB>\n");
+        } else if (i.level == 1) {
+            builder.append("_").append(name).append("_ \n");
+        } else {
+            builder.append("- ").append(name).append("\n");
+        }
+    }
+
     private void addTextItems(String caption, ArrayList<HeapItem> items, StringBuilder builder) {
         if (!items.isEmpty()) {
             builder.append(caption).append(":\n");
             for (HeapItem item : items) {
                 Item i = item.item;
                 Heap h = item.heap;
-                if (!(i instanceof Armor && ((Armor) i).hasCurseGlyph()
-                        || i instanceof Weapon && ((Weapon) i).hasCurseEnchant()) && i.cursed)
-                    builder.append("- 诅咒的").append(i);
-                else
-                    builder.append("- ").append(i);
-                if (h.type != Type.HEAP) {
-                    String heap = h.toString();
-                    if (h.type == Type.FOR_SALE)
-                        heap = Shopkeeper.sellPrice(h.peek()) + "金币";
-                    builder.append("(").append(heap).append(")");
+                appendStyledName(builder, i);
+                if (h != null && h.type != Type.HEAP) {
+                    builder.append(" (").append(h.toString().toLowerCase()).append(")");
                 }
                 builder.append("\n");
             }
@@ -457,12 +688,22 @@ public class NewSeedFinder implements Runnable {
         if (!items.isEmpty()) {
             builder.append(caption).append(":\n");
             for (Item i : items)
-                if (i.cursed)
-                    builder.append("- 诅咒的").append(i).append("\n");
-                else
-                    builder.append("- ").append(i).append("\n");
+                appendStyledQuestName(builder, i);
             builder.append("\n");
         }
+    }
+
+    // 分类容器
+    private static final class Categorized {
+        final ArrayList<HeapItem> scrolls = new ArrayList<>();
+        final ArrayList<HeapItem> potions = new ArrayList<>();
+        final ArrayList<HeapItem> equipment = new ArrayList<>();
+        final ArrayList<HeapItem> rings = new ArrayList<>();
+        final ArrayList<HeapItem> artifacts = new ArrayList<>();
+        final ArrayList<HeapItem> wands = new ArrayList<>();
+        final ArrayList<HeapItem> forSales = new ArrayList<>();
+        final ArrayList<HeapItem> others = new ArrayList<>();
+        int gold = 0;
     }
 
     // 单层数据载体：Phase 1 收集、Phase 2 identify、Phase 3 展示
@@ -470,12 +711,24 @@ public class NewSeedFinder implements Runnable {
         final int depth;
         final ArrayList<HeapItem> heapItems = new ArrayList<>();
         ArrayList<Item> ghostRewards = null;
+        ArrayList<Item> redDragonRewards = null;
         ArrayList<Item> wandmakerRewards = null;
         int wandmakerType = 0;
         ArrayList<Item> impRewards = null;
+        final ArrayList<BranchData> branches = new ArrayList<>();
 
         FloorData(int depth) {
             this.depth = depth;
+        }
+    }
+
+    // 子层数据载体
+    private static final class BranchData {
+        final int branch;
+        final ArrayList<HeapItem> heapItems = new ArrayList<>();
+
+        BranchData(int branch) {
+            this.branch = branch;
         }
     }
 
