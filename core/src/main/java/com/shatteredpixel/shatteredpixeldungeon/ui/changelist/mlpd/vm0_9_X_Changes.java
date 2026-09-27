@@ -10,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.GhostLingElixir;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
@@ -166,7 +165,7 @@ public class vm0_9_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(new PotionOfDragonKingBreath()), ("龙王吐息合剂"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.EXOTIC_AZURE), ("龙王吐息合剂"),
                 ("现在没有附魔效果了，是火龙吐息合剂的上位替代。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGHTSTABBINGSWORD), "迅捷骑士刺剑",
@@ -204,9 +203,6 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.G_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(new WandOfGodIce()), ("冬灵霜殇法杖"),
-                ("大冰杖现在不会立刻直接冰冻水上的敌人，不过在水上的敌人冻伤效率会翻倍")));
-
         changes.addButton(new ChangeButton(new ItemSprite(new DriedRose()), ("干枯玫瑰调整"),
                 (       "经过测试评估，玫瑰现在从45回合改为150回合，对于正常玩家已可支持。")));
 
@@ -217,6 +213,12 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(new YanStudyingPaperOne()), ("言的研究手稿 一"),
                 (       "现在该藏品会让药水挎包无法被丢弃。")));
 
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(new WandOfGodIce()), ("冬灵霜殇法杖"),
+                ("大冰杖现在不会立刻直接冰冻水上的敌人，不过在水上的敌人冻伤效率会翻倍")));
     }
 
     public static void add_V0960_Changes(ArrayList<ChangeInfo> changeInfos ) {
