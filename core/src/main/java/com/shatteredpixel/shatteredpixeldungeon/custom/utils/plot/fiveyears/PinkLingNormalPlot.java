@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.MintPlot.RandomBooks;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLing;
@@ -11,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.noosa.Image;
 
 public class PinkLingNormalPlot extends Plot {
     private final static int maxprocess = 3;
@@ -74,6 +76,7 @@ public class PinkLingNormalPlot extends Plot {
     private void process_to_1() {
         diagulewindow.hideAll();
         hero.interrupt();
+        diagulewindow.setMainAvatar(new Image(Assets.Splashes.SERENE));
         diagulewindow.setLeftName(Messages.get(PinkLing.class, "name"));
         diagulewindow.changeText(Messages.get(PinkLing.class, "messages1"));
     }
