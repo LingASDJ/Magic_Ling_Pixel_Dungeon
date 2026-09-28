@@ -68,8 +68,8 @@ public class Gregorian {
 
     private static final int MID_AUTUMN_PRE_DAYS = 10;    // 中秋节前天数
     private static final int MID_AUTUMN_POST_DAYS = 13;   // 中秋节后天数
-    private static final int DEV_BIRTHDAY_START = 22;     // 开发者生日开始日
-    private static final int DEV_BIRTHDAY_END = 28;       // 开发者生日结束日
+    private static final int DEV_BIRTHDAY_START = 19;     // 开发者生日开始日
+    private static final int DEV_BIRTHDAY_END = 29;       // 开发者生日结束日
     private static final int DRAGON_BOAT_POST_DAYS = 7;    // 端午节后天数
     private static final int SPRING_FESTIVAL_POST_DAYS = 13; // 春节后天数
     private static final int LANTERN_FESTIVAL_POST_DAYS = 7; // 元宵节后天数
@@ -151,7 +151,7 @@ public class Gregorian {
                         lunar.getDay() < 8 + MID_AUTUMN_POST_DAYS);
 
         if (isRegularMidAutumn) {
-            RegularLevel.ChinaHoliday h = RegularLevel.ChinaHoliday.ZQJ;
+            RegularLevel.ChinaHoliday h = RegularLevel.ChinaHoliday.GQJ;
             chinaHoliday = h;
             long endTs = calculateLunarEventEndTime(lunar, 8, 21);
             activeHolidayList.add(new HolidayMeta(h, endTs));
@@ -167,20 +167,20 @@ public class Gregorian {
                 lunar.getDay() <= DEV_BIRTHDAY_END) {
             RegularLevel.DevBirthday h = RegularLevel.DevBirthday.DEV_BIRTHDAY;
             birthday = h;
-            long endTs = calculateLunarEventEndTime(lunar, 8, 28);
+            long endTs = calculateLunarEventEndTime(lunar, 8, 29);
             activeHolidayList.add(new HolidayMeta(h, endTs));
         }
     }
 
     /**
-     * 检查是否为国庆节期间（阳历10月1日至10.5）
+     * 检查是否为国庆节期间（阳历10月1日至10.10）
      */
     private static void checkChinaBirthday(int month, int day) {
         if (month == 10) {
-            if(day >= 1 &&  day < 6){
+            if(day >= 1 &&  day < 10){
                 RegularLevel.ChinaHoliday h = RegularLevel.ChinaHoliday.GQJ;
                 chinaHoliday = h;
-                long endTs = calculateSolarEventEndTime(2025, 10, 6);
+                long endTs = calculateSolarEventEndTime(2026, 10, 10);
                 activeHolidayList.add(new HolidayMeta(h, endTs));
             }
         }

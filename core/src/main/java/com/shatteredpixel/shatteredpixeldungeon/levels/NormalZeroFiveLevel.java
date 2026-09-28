@@ -663,7 +663,7 @@ public class NormalZeroFiveLevel extends Level {
             new Ankh(true).collect();
             drop( new ElixirOfNukeCole(), 687  );
             Prop p1 = Prop.randomPropA(0,false);
-            p1.collect();
+            drop(p1, 738);
         }
     }
 
