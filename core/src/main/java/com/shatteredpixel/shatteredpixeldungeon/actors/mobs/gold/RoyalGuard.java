@@ -98,7 +98,7 @@ public class RoyalGuard extends Mob {
     }
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(1, 8) + equipment.defenseFactor(this);
+        return Random.NormalIntRange(1, 8) + equipment.DRMax(this);
     }
 
     @Override

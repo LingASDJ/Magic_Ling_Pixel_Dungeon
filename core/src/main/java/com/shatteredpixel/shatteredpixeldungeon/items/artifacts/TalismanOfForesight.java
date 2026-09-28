@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -50,6 +49,8 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 public class TalismanOfForesight extends Artifact {
 
@@ -73,7 +74,7 @@ public class TalismanOfForesight extends Artifact {
 		ArrayList<String> actions = super.actions( hero );
 		if (isEquipped( hero )
 				&& !cursed
-				&& hero.buff(MagicImmune.class) == null) {
+				&& !isMagicImmuned(hero)) {
 			actions.add(AC_SCRY);
 		}
 		return actions;
@@ -83,7 +84,7 @@ public class TalismanOfForesight extends Artifact {
 	public void execute( Hero hero, String action ) {
 		super.execute(hero, action);
 
-		if (hero.buff(MagicImmune.class) != null) return;
+		if (isMagicImmuned(hero)) return;
 
 		if (action.equals(AC_SCRY)){
 			if (!isEquipped(hero))  GLog.i( Messages.get(Artifact.class, "need_to_equip") );
@@ -99,7 +100,7 @@ public class TalismanOfForesight extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (cursed || target.buff(MagicImmune.class) != null) return;
+		if (cursed || isMagicImmuned(target)) return;
 		if (charge < chargeCap){
 			partialCharge += 2*amount;
 			while (partialCharge >= 1f){
@@ -284,7 +285,7 @@ public class TalismanOfForesight extends Artifact {
 
 			if (charge < chargeCap
 					&& !cursed
-					&& target.buff(MagicImmune.class) == null
+					&& !isMagicImmuned(target)
 					&& Regeneration.regenOn()) {
 				//fully charges in 2000 turns at +0, scaling to 1000 turns at +10.
 				float chargeGain = (0.05f+(level()*0.005f));
@@ -344,7 +345,7 @@ public class TalismanOfForesight extends Artifact {
 
 			if (smthFound
 					&& !cursed
-					&& target.buff(MagicImmune.class) == null){
+					&& !isMagicImmuned(target)){
 				if (!warn){
 					GLog.w( Messages.get(this, "uneasy") );
 					if (target instanceof Hero){
@@ -358,7 +359,7 @@ public class TalismanOfForesight extends Artifact {
 		}
 
 		public void charge(int boost){
-			if (!cursed && target.buff(MagicImmune.class) == null) {
+			if (!cursed && !isMagicImmuned(target)) {
 				charge = Math.min((charge + boost), chargeCap);
 				updateQuickslot();
 			}

@@ -23,6 +23,7 @@ public class MiniCerberus extends Pets {
         spriteClass = MiniCerberusBossSprites.class;
         WANDERING = new Wandering();
         defenseSkill = 15;
+        noALLY = true;
     }
 
     private float lastWoofTime = -999f;
@@ -35,19 +36,22 @@ public class MiniCerberus extends Pets {
         closest = null;
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-            if (mob != this && mob.isAlive()
-                    && mob.state != SLEEPING
-                    && hero.fieldOfView[mob.pos]){
-                closest = mob;
-                if (Actor.now() - lastWoofTime >= WOOF_COOLDOWN
-                        && Dungeon.level.distance(pos, mob.pos) < 3){
+            if(mob != null){
+                // 这里原来是SLEEPING,而不是mob.SLEEPING，猜测意图是不对睡觉的怪狗叫，故改为后者
+                if (mob != this && mob.isAlive() && mob.state != mob.SLEEPING && hero.fieldOfView[mob.pos] && mob.alignment == Alignment.ENEMY && !mob.properties().contains(Property.PETS)){
+                    closest = mob;
+                    // 换层时，时钟重置带来的大数CD问题
+                    if (lastWoofTime > Actor.now()) lastWoofTime = -999f;
+                    if (Actor.now() - lastWoofTime >= WOOF_COOLDOWN
+                            && Dungeon.level.distance(pos, mob.pos) < 3){
 
-                    ((MiniCerberusBossSprites)sprite).dogWoof( closest.pos );
-                    Sample.INSTANCE.play( Assets.Sounds.DOGWOOF );
+                        ((MiniCerberusBossSprites)sprite).dogWoof( closest.pos );
+                        Sample.INSTANCE.play( Assets.Sounds.DOGWOOF );
 
-                    lastWoofTime = Actor.now();
-                    didWoof = true;
-                    break;
+                        lastWoofTime = Actor.now();
+                        didWoof = true;
+                        break;
+                    }
                 }
             }
         }

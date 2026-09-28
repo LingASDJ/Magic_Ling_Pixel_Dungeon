@@ -194,3 +194,4 @@ public class ExoticPotion extends Potion {
 		}
 	}
 }
+

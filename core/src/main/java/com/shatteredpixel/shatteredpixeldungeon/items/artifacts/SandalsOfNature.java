@@ -25,7 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -68,6 +67,8 @@ import com.watabou.utils.Reflection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 public class SandalsOfNature extends Artifact {
 
@@ -127,7 +128,7 @@ public class SandalsOfNature extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if (hero.buff(MagicImmune.class) != null){
+		if (isMagicImmuned(hero)){
 			return actions;
 		}
 		if (isEquipped( hero ) && !cursed) {
@@ -146,7 +147,7 @@ public class SandalsOfNature extends Artifact {
 	public void execute( Hero hero, String action ) {
 		super.execute(hero, action);
 
-		if (hero.buff(MagicImmune.class) != null) return;
+		if (isMagicImmuned(hero)) return;
 
 		if (action.equals(AC_FEED)){
 
@@ -170,7 +171,7 @@ public class SandalsOfNature extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (cursed || target.buff(MagicImmune.class) != null) return;
+		if (cursed || isMagicImmuned(target)) return;
 		if (charge < chargeCap) {
 			partialCharge += 2*amount;
 			while (partialCharge >= 1f){
@@ -267,7 +268,7 @@ public class SandalsOfNature extends Artifact {
 
 	public class Naturalism extends ArtifactBuff{
 		public void charge() {
-			if (cursed || target.buff(MagicImmune.class) != null) return;
+			if (cursed || isMagicImmuned(target)) return;
 			if (charge < chargeCap){
 				//0.5 charge per grass at +0, up to 1 at +10
 				float chargeGain = (3f + level())/6f;

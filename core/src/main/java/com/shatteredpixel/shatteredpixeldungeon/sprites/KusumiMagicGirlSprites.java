@@ -8,11 +8,13 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FrostFlamePart
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Callback;
 
 public class KusumiMagicGirlSprites extends CharSprite {
 
     private Emitter teleParticles;
+    private static final float FADE_TIME = 3f;
 
     public KusumiMagicGirlSprites() {
 
@@ -99,6 +101,16 @@ public class KusumiMagicGirlSprites extends CharSprite {
         if (anim == die && !died) {
             died = true;
             emitter().burst(FrostFlameParticle.FACTORY, 4 );
+
+            //CharSprite 没有 MobSprite 的死亡淡出，这里补上，否则尸体会一直留在原地
+            if (parent != null) {
+                parent.add( new AlphaTweener( this, 0, FADE_TIME ) {
+                    @Override
+                    protected void onComplete() {
+                        KusumiMagicGirlSprites.this.killAndErase();
+                    }
+                } );
+            }
         }
         if (anim == zap) {
             idle();

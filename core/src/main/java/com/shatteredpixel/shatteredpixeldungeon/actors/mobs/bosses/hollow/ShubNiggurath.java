@@ -37,7 +37,7 @@ public class ShubNiggurath extends Boss {
 
     private static final int MAX_SPLIT_COUNT = 18;
 
-    private static final int MAX_REHEAL_COUNT = 5;  // 暂且留着
+    private static final int MAX_REHEAL_COUNT = 5;
 
     {
         initBaseStatus(0, 0, 0, 0, 3200, 0, 0);
@@ -86,7 +86,6 @@ public class ShubNiggurath extends Boss {
                     GameScene.add( clone, SPLIT_DELAY ); //we add before assigning HP due to ascension
 
                     clone.HP = (HP - damage) / 2;
-                    clone.isEndLess = isEndLess;
                     Dungeon.level.randomDestination(clone);
                     clone.pos = Dungeon.level.randomDestination(clone);
                     Actor.add( new Pushing( clone, pos, clone.pos ) );
@@ -106,22 +105,24 @@ public class ShubNiggurath extends Boss {
         if(getClass() == ShubNiggurath.class && !notFirst) {
 
             boolean hasClone = false;
-            synchronized (Dungeon.class) {
-                ArrayList<Mob> mobsCopy = new ArrayList<>(Dungeon.level.mobs);
-                for (Mob mob : mobsCopy){
-                    if (mob instanceof ShubNiggurathClone ||
-                            (mob instanceof ShubNiggurath && ((ShubNiggurath) mob).notFirst)) {
-                        hasClone = true;
-                        break;
-                    }
+            ArrayList<Mob> mobsCopy = new ArrayList<>(Dungeon.level.mobs);
+            for (Mob mob : mobsCopy){
+                if (mob instanceof ShubNiggurathClone ||
+                        (mob instanceof ShubNiggurath && ((ShubNiggurath) mob).notFirst)) {
+                    hasClone = true;
+                    break;
                 }
             }
 
             if (HP <= 0) {
                 if (!hasClone) {
-                    HP = HT;
+                    return super.isAlive();
+                }
+                if (maxReHeal < MAX_REHEAL_COUNT) {
+                    HP = 1000;
                     maxReHeal++;
                     Buff.prolong(hero, MindVision.class, 50000);
+                } else {
                     return super.isAlive();
                 }
                 return true;
@@ -171,7 +172,7 @@ public class ShubNiggurath extends Boss {
         super.die(cause);
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob instanceof ShubNiggurathClone) {
-               mob.die(true);
+                mob.die(true);
             }
         }
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
@@ -249,7 +250,6 @@ public class ShubNiggurath extends Boss {
                 if (mob instanceof ShubNiggurath) {
                     clone.HT = mob.HP;
                     clone.HP = mob.HP;
-                    clone.isEndLess = mob.isEndLess;
                     clone.notFirst = true;
                 }
             }

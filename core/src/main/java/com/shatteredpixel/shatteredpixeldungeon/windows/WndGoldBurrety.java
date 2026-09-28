@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfTele
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -630,7 +631,7 @@ public class WndGoldBurrety extends Window {
 
         @Override
         public boolean itemSelectable(Item item) {
-            if (item == null || item.noUpgrade || item == hero.belongings.misc() || item instanceof ScrollOfTeleTation) { // 增加item空值检查
+            if (item == null || item.noUpgrade || item == hero.belongings.misc() || item instanceof ScrollOfTeleTation || item instanceof WandOfAnmy) { // 增加item空值检查
                 return false;
             }
             if (item instanceof MeleeWeapon) {

@@ -95,7 +95,7 @@ public class BruteBot extends Mob implements Callback,Hero.Doom {
 
     @Override
     public int attackSkill( Char target ) {
-        return 16;
+        return 40;
     }
 
     @Override

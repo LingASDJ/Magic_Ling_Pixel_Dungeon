@@ -9,7 +9,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -26,6 +25,8 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 public class CapeOfThorns extends Artifact {
 
@@ -101,7 +102,7 @@ public class CapeOfThorns extends Artifact {
 
 		CapeOfThorns.ThornsTime thornst = hero.buff( CapeOfThorns.ThornsTime.class );
 
-		if (hero.buff(MagicImmune.class) != null) return;
+		if (isMagicImmuned(hero)) return;
 
 		if(action.equals(AC_THORNSCANCEL)){
 			if(thornst != null){
@@ -335,7 +336,7 @@ public class CapeOfThorns extends Artifact {
 
 		@Override
 		public boolean act(){
-			if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null && target.buff(ThornsTime.class) == null) {
+			if (charge < chargeCap && !cursed && !isMagicImmuned(target) && target.buff(ThornsTime.class) == null) {
 
 				if (activeBuff == null && Regeneration.regenOn()) {
 					partialCharge += 0.25f * RingOfEnergy.artifactChargeMultiplier(target);
@@ -360,7 +361,7 @@ public class CapeOfThorns extends Artifact {
 
 		@Override
 		public void charge(Hero target, float amount) {
-			if (cursed || target.buff(MagicImmune.class) != null) return;
+			if (cursed || isMagicImmuned(target)) return;
 			if (charge < chargeCap) {
 				partialCharge += amount;
 				while (partialCharge >= 1f){
@@ -377,7 +378,7 @@ public class CapeOfThorns extends Artifact {
 
 		public int proc(int damage, Char attacker){
 
-			if (!cursed && target.buff(MagicImmune.class) == null) {
+			if (!cursed && !isMagicImmuned(target)) {
 				if (attacker != null) {
 					attacker.damage(damage/2, this, Char.DamageType.REAL);
 					Buff.append(attacker, Bleeding.class).set(level());
@@ -401,7 +402,7 @@ public class CapeOfThorns extends Artifact {
 		}
 
 		public void onDamageTaken(int damage) {
-			if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null) {
+			if (charge < chargeCap && !cursed && !isMagicImmuned(target)) {
 				float chargeToAdd = damage / 2f;
 				partialCharge += chargeToAdd;
 

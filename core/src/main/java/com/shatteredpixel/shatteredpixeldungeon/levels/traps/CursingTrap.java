@@ -62,7 +62,7 @@ public class CursingTrap extends Trap {
 		Heap heap = Dungeon.level.heaps.get(pos);
 		if (heap != null) {
 			for (Item item : heap.items) {
-				if ((item.isUpgradable() && !(item instanceof MissileWeapon || item instanceof RitualSword || item instanceof BloodthirstyThorn)) || (item instanceof BrokenSeal && Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE)))
+				if ((item.isUpgradable() && !(item instanceof RitualSword || item instanceof BloodthirstyThorn)) || (item instanceof BrokenSeal && Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE)))
 					curse(item);
 			}
 		}

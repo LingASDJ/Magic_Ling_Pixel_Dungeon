@@ -388,6 +388,12 @@ abstract public class Weapon extends KindOfWeapon {
 	
 	@Override
 	public Item random() {
+		rollLevelAndEffects();
+		GameAPI.CodeCallback_OnItemCreation( this );
+		return this;
+	}
+
+	protected void rollLevelAndEffects(){
 		//+0: 75% (3/4)
 		//+1: 20% (4/20)
 		//+2: 5%  (1/20)
@@ -414,12 +420,7 @@ abstract public class Weapon extends KindOfWeapon {
 			enchant();
 		}
 
-		Weapon item = this;
-		GameAPI.CodeCallback_OnItemCreation( item );
-
 		Random.popGenerator();
-
-		return item;
 	}
 	
 	public Weapon enchant( Enchantment ench ) {

@@ -770,7 +770,13 @@ public class HeroSelectScene extends PixelScene {
 		IconButton DiffcultButton = new IconButton(new ItemSprite(ItemSpriteSheet.DIFFCULTBOOT)) {
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true));
+				ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true){
+					@Override
+					public void hide() {
+						super.hide();
+						setSelectedHero();
+					}
+				});
 			}
 		};
 		DiffcultButton.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
@@ -1068,7 +1074,7 @@ public class HeroSelectScene extends PixelScene {
 		}
 
 		private void updateAvatar(HeroClass cl) {
-			if (cl == HeroClass.SPELLSWORD && !DeviceCompat.isDesktop_Dev()) {
+			if (cl == HeroClass.SPELLSWORD && !cl.isUnlocked()) {
 				hardlight(0x222222);
 			} else {
 				resetColor();

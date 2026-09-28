@@ -41,12 +41,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.GhostLingElixir;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
@@ -70,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.thanks.FlareBullet;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
@@ -209,6 +212,7 @@ public abstract class Recipe {
 			new AquaBrew.Recipe(),
 			new ShockingBrew.Recipe(),
 			new ElixirOfDragonsBlood.Recipe(),
+			new ElixirOfDragonKing.Recipe(),
 			new ElixirOfIcyTouch.Recipe(),
 			new ElixirOfToxicEssence.Recipe(),
 			new ElixirOfMight.Recipe(),
@@ -219,7 +223,6 @@ public abstract class Recipe {
 			new Recycle.Recipe(),
 			new TelekineticGrab.Recipe(),
 			new SummonElemental.Recipe()
-
 	};
 	
 	private static Recipe[] twoIngredientRecipes = new Recipe[]{
@@ -262,6 +265,7 @@ public abstract class Recipe {
 			new FlareBullet.Recipe(),
 			new WandOfVenom.Recipe(),
 			new IceFishSword.Recipe(),
+			new GhostLingElixir.Recipe()
 	};
 	
 	public static ArrayList<Recipe> findRecipes(ArrayList<Item> ingredients){
@@ -304,7 +308,7 @@ public abstract class Recipe {
 			//only thrown weapons and wands allowed among equipment items
 			return item.isIdentified() && !item.cursed && (item instanceof MissileWeapon ||item instanceof ChaliceOfBlood && !item.isEquipped(hero)||item instanceof LifeTreeSword && !item.isEquipped(hero)||item instanceof GrilledHerring && !item.isEquipped(hero));
 		} else if (item instanceof Wand) {
-			return item.isIdentified() && !item.cursed;
+			return item.isIdentified() && !item.cursed && !(item instanceof WandOfAnmy);
 		} else {
 			//other items can be unidentified, but not cursed
 			return !item.cursed;

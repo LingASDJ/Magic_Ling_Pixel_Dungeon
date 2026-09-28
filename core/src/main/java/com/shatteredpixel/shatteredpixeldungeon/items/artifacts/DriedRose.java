@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -35,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -125,7 +125,7 @@ public class DriedRose extends Artifact {
 		if (isEquipped( hero )
 				&& charge == chargeCap
 				&& !cursed
-				&& hero.buff(MagicImmune.class) == null
+				&& !isMagicImmuned(hero)
 				&& ghostID == 0) {
 			actions.add(AC_SUMMON);
 		}
@@ -161,7 +161,7 @@ public class DriedRose extends Artifact {
                         return;
                     }
                 }
-                if (hero.buff(MagicImmune.class) != null) return;
+                if (isMagicImmuned(hero)) return;
 
                 if (!Ghost.Quest.completed()) GameScene.show(new WndUseItem(null, this));
                 else if (ghost != null) GLog.i(Messages.get(this, "spawned"));
@@ -316,7 +316,7 @@ public class DriedRose extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (cursed || target.buff(MagicImmune.class) != null) return;
+		if (cursed || isMagicImmuned(target)) return;
 
 		if (ghost == null){
 			if (charge < chargeCap) {
@@ -420,7 +420,7 @@ public class DriedRose extends Artifact {
 			}
 			
 			//rose does not charge while ghost hero is alive
-			if (ghost != null && !cursed && target.buff(MagicImmune.class) == null){
+			if (ghost != null && !cursed && !isMagicImmuned(target)){
 				
 				//heals to full over 500 turns
 				if (ghost.HP < ghost.HT && Regeneration.regenOn()) {
@@ -440,7 +440,7 @@ public class DriedRose extends Artifact {
 			
 			if (charge < chargeCap
 					&& !cursed
-					&& target.buff(MagicImmune.class) == null
+					&& !isMagicImmuned(target)
 					&& Regeneration.regenOn()) {
 				//500 turns to a full charge
 				partialCharge += (1/5f * RingOfEnergy.artifactChargeMultiplier(target));
@@ -546,6 +546,10 @@ public class DriedRose extends Artifact {
 
 	public static class GhostHero extends DirectableAlly {
 
+		public static final int IDLE_DEATH_TURNS = 150;
+		public int idleTurns = 0;
+		public int lastHeroPos = -1;
+
 		{
 			spriteClass = GhostSprite.class;
 
@@ -563,10 +567,6 @@ public class DriedRose extends Artifact {
 		}
 		
 		private DriedRose rose = null;
-
-		private static final int IDLE_DEATH_TURNS = 45;
-		private int idleTurns = 0;
-		private int lastHeroPos = -1;
 		
 		public GhostHero(){
 			super();
@@ -611,15 +611,7 @@ public class DriedRose extends Artifact {
 		@Override
 		protected boolean act() {
 			updateRose();
-			if (rose == null
-					|| !rose.isEquipped(Dungeon.hero)
-					|| Dungeon.hero.buff(MagicImmune.class) != null){
-				damage(1, new NoRoseDamage(), DamageType.REAL);
-			}
-			
-			if (!isAlive()) {
-				return true;
-			}
+
 			if (lastHeroPos == -1) {
 				lastHeroPos = hero.pos;
 			} else if (hero.pos != lastHeroPos) {
@@ -636,25 +628,19 @@ public class DriedRose extends Artifact {
 					return true;
 				}
 			}
+
+			if (rose == null
+					|| !rose.isEquipped(Dungeon.hero)
+					|| isMagicImmuned(Dungeon.hero)){
+				damage(1, new NoRoseDamage(), DamageType.REAL);
+			}
+			
+			if (!isAlive()) {
+				return true;
+			}
+
 			return super.act();
 		}
-
-		@Override
-		public void storeInBundle(Bundle bundle) {
-			super.storeInBundle(bundle);
-			bundle.put(IDLE_TURNS, idleTurns);
-			bundle.put(LAST_HERO_POS, lastHeroPos);
-		}
-
-		@Override
-		public void restoreFromBundle(Bundle bundle) {
-			super.restoreFromBundle(bundle);
-			idleTurns = bundle.getInt(IDLE_TURNS);
-			lastHeroPos = bundle.getInt(LAST_HERO_POS);
-		}
-
-		private static final String IDLE_TURNS = "idle_turns";
-		private static final String LAST_HERO_POS = "last_hero_pos";
 
 		public static class NoRoseDamage{}
 
@@ -780,7 +766,7 @@ public class DriedRose extends Artifact {
 				dr += Random.NormalIntRange( rose.armor.DRMin(), rose.armor.DRMax());
 			}
 			if (rose != null && rose.weapon != null){
-				dr += Random.NormalIntRange( 0, rose.weapon.defenseFactor( this ));
+				dr += rose.weapon.defenseRoll( this );
 			}
 			return dr;
 		}
@@ -838,6 +824,23 @@ public class DriedRose extends Artifact {
 				rose.ghostID = -1;
 			}
 			super.destroy();
+		}
+
+		private static final String IDLE_TURNS = "idle_turns";
+		private static final String LAST_HERO_POS = "last_hero_pos";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(IDLE_TURNS, idleTurns);
+			bundle.put(LAST_HERO_POS, lastHeroPos);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			idleTurns = bundle.getInt(IDLE_TURNS);
+			lastHeroPos = bundle.getInt(LAST_HERO_POS);
 		}
 		
 		public void sayAppeared(){

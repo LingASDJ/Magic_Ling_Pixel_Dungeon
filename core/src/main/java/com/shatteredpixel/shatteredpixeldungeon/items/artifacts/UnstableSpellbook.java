@@ -25,7 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -58,6 +57,8 @@ import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 public class UnstableSpellbook extends Artifact {
 
@@ -98,10 +99,10 @@ public class UnstableSpellbook extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if (isEquipped( hero ) && charge > 0 && !cursed && hero.buff(MagicImmune.class) == null) {
+		if (isEquipped( hero ) && charge > 0 && !cursed && !isMagicImmuned(hero)) {
 			actions.add(AC_READ);
 		}
-		if (isEquipped( hero ) && level() < levelCap && !cursed && hero.buff(MagicImmune.class) == null) {
+		if (isEquipped( hero ) && level() < levelCap && !cursed && !isMagicImmuned(hero)) {
 			actions.add(AC_ADD);
 		}
 		return actions;
@@ -112,7 +113,7 @@ public class UnstableSpellbook extends Artifact {
 
 		super.execute( hero, action );
 
-		if (hero.buff(MagicImmune.class) != null) return;
+		if (isMagicImmuned(hero)) return;
 
 		if (action.equals( AC_READ )) {
 
@@ -226,7 +227,7 @@ public class UnstableSpellbook extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null){
+		if (charge < chargeCap && !cursed && !isMagicImmuned(target)){
 			partialCharge += 0.1f*amount;
 			while (partialCharge >= 1){
 				partialCharge--;
@@ -296,7 +297,7 @@ public class UnstableSpellbook extends Artifact {
 		public boolean act() {
 			if (charge < chargeCap
 					&& !cursed
-					&& target.buff(MagicImmune.class) == null
+					&& !isMagicImmuned(target)
 					&& Regeneration.regenOn()) {
 				//120 turns to charge at full, 80 turns to charge at 0/8
 				float chargeGain = 1 / (120f - (chargeCap - charge)*5f);

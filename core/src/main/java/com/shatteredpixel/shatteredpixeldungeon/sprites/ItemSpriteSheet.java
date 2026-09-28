@@ -809,11 +809,19 @@ public class ItemSpriteSheet {
     public static final int ELIXIR_TOXIC    = ELIXIRS+4;
     public static final int ELIXIR_ICY      = ELIXIRS+5;
     public static final int ELIXIR_ARCANE   = ELIXIRS+6;
+
+    public static final int ELIXIR_GHOSTLING   = ELIXIRS+7;
+
+    public static final int ELIXIR_DRAGONKING   = ELIXIRS+8;
+
     static{
         assignItemRect( ELIXIR_DRAGON,    16, 16);
         assignItemRect( ELIXIR_ICY,    9, 15);
         assignItemRect( WATERSOUL,    16, 16);
         assignItemRect( REDDRAGON,    12, 16);
+
+        assignItemRect( ELIXIR_GHOSTLING,    9, 15);
+        assignItemRect( ELIXIR_DRAGONKING,   13, 15);
     }
 
     //16 free slots
@@ -985,6 +993,8 @@ public class ItemSpriteSheet {
 
     static {
         assignItemRect(SHADOWMEAT,16,14);
+        assignItemRect(REDCRAB,   16,12);
+
     }
 
     private static final int BAGS       =                                   xy(1, 31);  //16 slots
@@ -1032,6 +1042,7 @@ public class ItemSpriteSheet {
 
     static{
         assignItemRect(WATERSKIN,        16, 16);
+        assignItemRect(MOONCAKE,        16, 14);
         assignItemRect(POUCH,       16, 16);
         assignItemRect(HOLDER,      16, 16);
         assignItemRect(BANDOLIER,   16, 16);
@@ -1263,6 +1274,7 @@ public class ItemSpriteSheet {
         for (int i =HIGHTWAND; i < HIGHTWAND+6; i++)
             assignItemRect(i, 14, 14);
 
+        assignItemRect(HIGHTWAND_7,  14, 14);
         assignItemRect(DEV_1,  14, 16);
         assignItemRect(DEV_2,  16, 15);
         assignItemRect(DEV_3,  11, 16);

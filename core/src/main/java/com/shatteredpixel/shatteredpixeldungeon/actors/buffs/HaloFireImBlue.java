@@ -112,5 +112,6 @@ public class HaloFireImBlue extends Buff {
     {
         immunities.add( Burning.class );
         immunities.add( HalomethaneBurning.class );
+        immunities.add( FrostBurning.class );
     }
 }

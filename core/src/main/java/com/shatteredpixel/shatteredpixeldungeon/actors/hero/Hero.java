@@ -278,7 +278,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
@@ -299,7 +298,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NormalZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.tomb.RogerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -310,6 +308,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MoveBoxHollowActor
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.WeakFloorRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.tomb.RogerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
@@ -723,7 +722,7 @@ public class Hero extends Char {
 
 	@Override
 	public boolean blockSound(float pitch) {
-		if ( belongings.weapon() != null && belongings.weapon().defenseFactor(this) >= 4 ){
+		if ( belongings.weapon() != null && belongings.weapon().DRMax(this) >= 4 ){
 			Sample.INSTANCE.play( Assets.Sounds.HIT_PARRY, 1, pitch);
 			return true;
 		}
@@ -1042,7 +1041,7 @@ public class Hero extends Char {
 			if (armDr > 0) dr += armDr;
 		}
 		if (belongings.weapon() != null && !RingOfForce.fightingUnarmed(this))  {
-			int wepDr = Random.NormalIntRange( 0 , belongings.weapon().defenseFactor( this ) );
+			int wepDr = belongings.weapon().defenseRoll(this);
 			if (STR() < ((Weapon)belongings.weapon()).STRReq()){
 				wepDr -= 2*(((Weapon)belongings.weapon()).STRReq() - STR());
 			}
@@ -1272,15 +1271,6 @@ public class Hero extends Char {
 	}
 
 	public float attackDelay() {
-		if (buff(Talent.LethalMomentumTracker.class) != null){
-			buff(Talent.LethalMomentumTracker.class).detach();
-			return 0;
-		}
-
-		if (buff(KnightStabbingSword.NoRoundTracker.class) != null){
-			return 0;
-		}
-
 		float delay = 1f;
 
 
@@ -1914,7 +1904,7 @@ public class Hero extends Char {
 	}
 
 	public static void goodLanterFire() {
-		switch (Random.Int(5)) {
+		switch (Random.Int(6)) {
 			case 1:
 				Buff.affect(hero, BlessGoodSTR.class).set((100), 1);
 				break;
@@ -1927,6 +1917,14 @@ public class Hero extends Char {
 			case 4:
 				if(Dungeon.depth < 20){
 					Buff.affect(hero, BlessImmune.class).set((100), 1);
+				}
+				break;
+			case 5:
+				if(Dungeon.depth < 20){
+					new WandOfAnmy().quantity(1).identify().collect();
+					Buff.affect(hero, BlessAnmy.class).set((100), 1);
+				} else {
+					Buff.affect(hero, BlessMobDied.class).set((100), 1);
 				}
 				break;
 			default:
@@ -2525,7 +2523,11 @@ public class Hero extends Char {
 			}
 		}
 
-		if (wep != null) damage = wep.proc( this, enemy, damage );
+		if (wep != null) {
+			// 特效来源可被临时覆盖（例如武技中副手武器打伤害，但特效按另一把武器结算）
+			KindOfWeapon procWep = belongings.procWeapon != null ? belongings.procWeapon : wep;
+			damage = procWep.proc( this, enemy, damage );
+		}
 
 		damage = Talent.onAttackProc( this, enemy, damage );
 
@@ -3904,9 +3906,21 @@ public class Hero extends Char {
 		boolean hit = attack( enemy );
 
 		Invisibility.dispel();
-		spend( attackDelay() );
 
-		Buff.detach(this, KnightStabbingSword.NoRoundTracker.class);
+		//本次普攻是否有"免回合标记"
+		boolean freeAction = false;
+
+		if (buff(Talent.LethalMomentumTracker.class) != null){
+			buff(Talent.LethalMomentumTracker.class).detach();
+			freeAction = true;
+		}
+
+		if (buff(KnightStabbingSword.NoRoundTracker.class) != null){
+			buff(KnightStabbingSword.NoRoundTracker.class).detach();
+			freeAction = true;
+		}
+
+		spend( freeAction ? 0f : attackDelay() );
 
 		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
 			Buff.affect( this, Combo.class ).hit(enemy);

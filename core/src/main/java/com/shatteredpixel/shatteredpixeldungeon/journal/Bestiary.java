@@ -681,4 +681,10 @@ public enum Bestiary {
 
 	}
 
+	public static void resetForReload(){
+		for (Bestiary cat : values()){
+			cat.seen.replaceAll( (cls, v) -> false );                          // 默认值见 :261
+			cat.encounterCount.replaceAll( (cls, v) -> 0 );
+		}
+	}
 }

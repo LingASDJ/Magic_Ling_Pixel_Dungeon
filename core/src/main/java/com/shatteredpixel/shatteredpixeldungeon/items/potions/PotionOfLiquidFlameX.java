@@ -25,6 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonKing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
@@ -54,6 +56,29 @@ public class PotionOfLiquidFlameX extends Potion {
 
             }
         }
+    }
+
+    /**
+     * 龙王药水配方内部类
+     * 继承自SimpleRecipe，定义了制作龙王药水的配方
+     */
+    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
+
+        // 初始化代码块，设置配方所需材料
+        {
+            // 需要的材料：龙王呼吸药水
+            inputs =  new Class[]{PotionOfDragonKingBreath.class};
+            // 材料数量：1瓶
+            inQuantity = new int[]{1};
+
+            cost = 8;
+
+            // 产品：龙王药水
+            output = ElixirOfDragonKing.class;
+            // 产品数量：1瓶
+            outQuantity = 1;
+        }
+
     }
 
     @Override

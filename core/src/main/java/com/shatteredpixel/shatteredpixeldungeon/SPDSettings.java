@@ -408,7 +408,7 @@ public class SPDSettings extends GameSettings {
 	}
 
 	public static int interfaceSize() {
-		int size = getInt(KEY_UI_SIZE, DeviceCompat.isDesktop() ? 1 : 0);
+		int size = getInt(KEY_UI_SIZE, DeviceCompat.isDesktop() ? 2 : 0);
 		if (size > 0) {
 			//force mobile UI if there is not enough space for full UI
 			float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;

@@ -14,7 +14,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GameRules;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
@@ -58,11 +57,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.Rai
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.SliceDream;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.SmallBlue;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
@@ -71,7 +70,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfNukeCole;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
@@ -611,8 +612,8 @@ public class NormalZeroFiveLevel extends Level {
         dogDogMusic.pos = 264;
         mobs.add(dogDogMusic);
 
-        if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX) || passwordbadges.contains(PaswordBadges.Badge.GODCHSX) || DeviceCompat.isDebug()) {
-            if(Random.Int(4) == 0) {
+        if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX) || passwordbadges.contains(PaswordBadges.Badge.GODCHSX) || DeviceCompat.isDebug() || RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY) {
+            if(Random.Int(4) == 0 || RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY) {
                 WhiteLingLand god = new WhiteLingLand();
                 god.pos = 657;
                 mobs.add(god);
@@ -655,6 +656,14 @@ public class NormalZeroFiveLevel extends Level {
                 gods4.cursed = false;
                 drop(gods4,683).type = Heap.Type.FOR_ICE;
             }
+        }
+
+        if(RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY){
+            drop( new ElixirOfNukeCole(), 737  );
+            new Ankh(true).collect();
+            drop( new ElixirOfNukeCole(), 687  );
+            Prop p1 = Prop.randomPropA(0,false);
+            p1.collect();
         }
     }
 

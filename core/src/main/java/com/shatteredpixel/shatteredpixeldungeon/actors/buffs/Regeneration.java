@@ -33,6 +33,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
 
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
+
 public class Regeneration extends Buff {
 
 	{
@@ -76,7 +78,7 @@ public class Regeneration extends Buff {
 			float delay = REGENERATION_DELAY;
 
 			if(target != null){
-				if (regenBuff != null && target.buff(MagicImmune.class) == null) {
+				if (regenBuff != null && !isMagicImmuned(target)) {
 					if (regenBuff.isCursed()) {
 						delay *= 1.5f;
 					} else {

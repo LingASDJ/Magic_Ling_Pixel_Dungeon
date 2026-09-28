@@ -22,10 +22,10 @@ import com.watabou.utils.PathFinder;
 
 //钉入矛
 //五阶，力量需求18
-//初始4-30，成长1-5，攻击距离2
-//若目标敌人的3*3范围内有墙地块，则攻击它造成的伤害提升50%。
+//初始4-30，成长1-4，攻击距离2
+//若目标敌人的3*3范围内有墙地块，则攻击它造成的伤害提升30%。
 //能够狠狠的把敌人钉在墙里。
-//武技：刻骨连钉，消耗1充能，对+1攻击距离以内的1个目标造成一次必中伤害，随后再使用副手武器对其造成一次必中伤害。
+//武技：刻骨连钉，消耗2充能，对+1攻击距离以内的1个目标造成一次必中伤害，随后再使用副手武器对其造成一次必中伤害。
 // 副手武器造成伤害时也可以触发钉入矛的特效。
 // 如果没有副手武器，则使用钉入矛连续攻击两次。
 public class NailingSpear extends MeleeWeapon {
@@ -41,16 +41,16 @@ public class NailingSpear extends MeleeWeapon {
     }
 
     @Override
-    public int max(int lvl) { return 30 + lvl * 5; }
+    public int max(int lvl) { return 30 + lvl * 4; }
 
     @Override
     public int min(int lvl) { return 4 + lvl; }
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        // 目标 3*3 范围内有墙地块时，伤害 +50% 四舍五入
+        // 目标 3*3 范围内有墙地块时，伤害 +30% 四舍五入
         if (nearWall(defender)) {
-            damage = Math.round(damage * 1.5f);
+            damage = Math.round(damage * 1.3f);
         }
         return super.proc(attacker, defender, damage);
     }
@@ -83,7 +83,7 @@ public class NailingSpear extends MeleeWeapon {
     // 每次使用武技消耗的充能点数（由决斗者的 Charger buff 提供）
     @Override
     protected int baseChargeUse(Hero hero, Char target){
-        return 1;
+        return 2;
     }
 
     // 选址文本与选址功能启用
@@ -128,7 +128,7 @@ public class NailingSpear extends MeleeWeapon {
         // 对选择的目标进行攻击
         hero.sprite.attack(enemy.pos, new Callback() {
             @Override public void call() {
-                // 抠1充能，并设置 abilityWeapon
+                // 抠2充能，并设置 abilityWeapon
                 beforeAbilityUsed(hero, enemy);
                 AttackIndicator.target(enemy);
 
@@ -140,8 +140,10 @@ public class NailingSpear extends MeleeWeapon {
                     KindOfWeapon off = hero.belongings.secondWep();
                     if (off != null) {
                         hero.belongings.abilityWeapon = off;
-                        float mult = (!(off instanceof NailingSpear) && nearWall(enemy)) ? 1.5f : 1f;
-                        hero.attack(enemy, mult, 0f, INFINITE_ACCURACY);
+                        // 伤害由副手武器结算，但特效仍按钉入矛结算（因此这一击也能触发钉墙）
+                        hero.belongings.procWeapon = NailingSpear.this;
+                        hero.attack(enemy, 1f, 0f, INFINITE_ACCURACY);
+                        hero.belongings.procWeapon = null;
                         hero.belongings.abilityWeapon = NailingSpear.this;
                     }
                     else hero.attack(enemy, 1f, 0f, INFINITE_ACCURACY);

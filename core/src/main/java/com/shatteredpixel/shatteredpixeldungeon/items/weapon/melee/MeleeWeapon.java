@@ -478,10 +478,8 @@ public class MeleeWeapon extends Weapon {
 	public String abilityInfo() {
 		return Messages.get(this, "ability_desc");
 	}
-	
-	public String statsInfo(){
-		return Messages.get(this, "stats_desc");
-	}
+
+	public String statsInfo(){return Messages.get(this, "stats_desc");}
 
 	public String upgradeAbilityStat(int level){
 		return null;

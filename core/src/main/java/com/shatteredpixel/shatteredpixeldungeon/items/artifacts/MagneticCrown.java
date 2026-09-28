@@ -5,7 +5,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -29,6 +28,8 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 public class MagneticCrown extends Artifact {
     {
@@ -54,7 +55,7 @@ public class MagneticCrown extends Artifact {
     @Override
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
-        if (hero.buff(MagicImmune.class) != null) return;
+        if (isMagicImmuned(hero)) return;
         if (action.equals(AC_ACTIVATE)) {
             if (!isEquipped(hero)) {
                 GLog.w(Messages.get(this, "no_equip"));
@@ -311,7 +312,7 @@ public class MagneticCrown extends Artifact {
         @Override
         public boolean act() {
             if (charge < chargeCap && !cursed) {
-                if (Regeneration.regenOn() || target.buff(MagicImmune.class) == null) {
+                if (Regeneration.regenOn() || !isMagicImmuned(target)) {
                     float chargeToGain = 1f / (50f - level());
                     chargeToGain *= RingOfEnergy.artifactChargeMultiplier(target);
                     partialCharge += chargeToGain;
@@ -334,7 +335,7 @@ public class MagneticCrown extends Artifact {
 
     @Override
     public void charge(Hero target, float amount) {
-        if (cursed || target.buff(MagicImmune.class) != null) return;
+        if (cursed || isMagicImmuned(target)) return;
 
         if (charge < chargeCap) {
             if (!isEquipped(target)) amount *= 0.75f;

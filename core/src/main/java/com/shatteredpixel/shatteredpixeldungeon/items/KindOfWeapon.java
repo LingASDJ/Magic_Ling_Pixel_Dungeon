@@ -262,8 +262,34 @@ abstract public class KindOfWeapon extends EquipableItem {
 		}
 	}
 
+	// 旧 · 武器的护甲增幅API
 	public int defenseFactor( Char owner ) {
 		return 0;
+	}
+
+	// 装备时提供的护甲下限，默认 0
+	public int DRMin(Char owner){ return 0; }
+
+	// 装备时提供的护甲上限，默认沿用旧 API
+	public int DRMax(Char owner){ return defenseFactor(owner); }
+
+	// 统一掷点入口：所有读取武器护甲的地方都调它
+	public int defenseRoll(Char owner){
+		int min = Math.max(0, DRMin(owner));
+		int max = Math.max(0, DRMax(owner));
+		return Random.NormalIntRange(Math.min(min, max), max);
+	}
+
+	// 统一的武器护甲文案，武器在 statsInfo() 里调用即可
+	public String armorStatsInfo(int min, int max){
+		return Messages.get(KindOfWeapon.class, "stats_armor_desc", Math.max(0, min), Math.max(0, max));
+	}
+
+	// 按当前英雄的实际状态取护甲区间
+	public String armorStatsInfo(){
+		Char ch = Dungeon.hero;
+		if (ch == null) return armorStatsInfo(0, 0);
+		return armorStatsInfo(DRMin(ch), DRMax(ch));
 	}
 
     public abstract float speedFactor(Char owner);

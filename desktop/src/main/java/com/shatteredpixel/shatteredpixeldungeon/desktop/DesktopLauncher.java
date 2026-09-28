@@ -13,12 +13,14 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.CrashHandler;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.BackupSaveScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
 import com.shatteredpixel.shatteredpixeldungeon.update.UpdateImpl;
 import com.shatteredpixel.shatteredpixeldungeon.update.Updates;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
+import com.watabou.utils.GameSettings;
 import com.watabou.utils.Point;
 
 import java.text.SimpleDateFormat;
@@ -173,8 +175,17 @@ public class DesktopLauncher {
 		}
 
 		config.setPreferencesConfig(basePath, Files.FileType.External);
-		SPDSettings.set(new Lwjgl3Preferences(SPDSettings.DEFAULT_PREFS_FILE, basePath));
 		FileUtils.setDefaultFileProperties(Files.FileType.External, basePath);
+
+		// 启动自愈：若 settings.xml 被手工编辑成「裸 entry」格式（缺 XML 声明/DOCTYPE/<properties> 根节点），
+		// 先规范化为标准 Properties XML，否则 Lwjgl3Preferences 构造时 loadFromXML 抛异常、设置会被整体读成空
+		if(GameSettings.prefs != null){
+			BackupSaveScene.ensureSettingsXmlValid( FileUtils.getFileHandle( SPDSettings.DEFAULT_PREFS_FILE ) );
+			SPDSettings.set(new Lwjgl3Preferences(SPDSettings.DEFAULT_PREFS_FILE, basePath));
+		} else {
+			SPDSettings.set(new Lwjgl3Preferences(SPDSettings.DEFAULT_PREFS_FILE, basePath));
+		}
+
 
 		config.setWindowSizeLimits(720, 400, -1, -1);
 		Point p = SPDSettings.windowResolution();

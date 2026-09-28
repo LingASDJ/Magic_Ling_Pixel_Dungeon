@@ -2,9 +2,17 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.Rankings;
+import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.CollectRankings;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
@@ -19,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.input.KeyBindings;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -27,6 +36,9 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
 
+import java.awt.Dimension;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,10 +47,14 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * 存档备份场景（BackupSaveScene）
@@ -60,7 +76,7 @@ public class BackupSaveScene extends PixelScene {
      * 当前实现只使用一个 BackupInfo 来承载全部备份文件按钮。
      */
     private final ArrayList<BackupInfo> infos = new ArrayList<>();
-
+    private static volatile boolean importChooserOpened = false;
     /**
      * 备份文件存放目录：
      * <ul>
@@ -193,9 +209,67 @@ public class BackupSaveScene extends PixelScene {
                 ShatteredPixelDungeon.scene().addToFront(new WndChooseSlotExport());
             }
         };
-        btnExport.setSize(w, 20);
+        btnExport.setSize((float) (w / 2.0), 20);
         btnExport.setPos(0, h - 20);
         add(btnExport);
+
+        // ---- 「导入存档」按钮（屏幕底部）----
+        // 点击后唤起用户文件夹，并让用户选择.mlsp文件
+        // 这里的文本是 “外部导入”
+        // ---- 「导入存档」按钮（屏幕底部）----
+        RedButton btnImport = new RedButton(Messages.get(this, "import_file"), 7) {
+            @Override
+            protected void onClick() {
+                if (DeviceCompat.isDesktop()) {
+                    // 锁：防止重复点击多次弹出对话框
+                    if (importChooserOpened) {
+                        return;
+                    }
+                    importChooserOpened = true;
+
+                    // Swing操作必须放到AWT事件调度线程EDT
+                    javax.swing.SwingUtilities.invokeLater(() -> {
+                        JFileChooser chooser = new JFileChooser();
+                        chooser.setDialogTitle(Messages.get(BackupSaveScene.class, "import_file"));
+                        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+                        chooser.setPreferredSize(new Dimension(800, 600));
+                        chooser.setFileFilter(new FileNameExtensionFilter("(*.mlsp)", "mlsp"));
+
+                        // 创建一个隐藏的JFrame作为对话框owner，实现模态置顶，不显示窗口
+                        javax.swing.JFrame tempOwnerFrame = new javax.swing.JFrame();
+                        tempOwnerFrame.setUndecorated(true);
+                        tempOwnerFrame.setSize(1,1);
+                        tempOwnerFrame.setLocationRelativeTo(null);
+                        tempOwnerFrame.setVisible(true);
+
+                        int ret = chooser.showOpenDialog(tempOwnerFrame);
+
+                        // 销毁临时owner窗口
+                        tempOwnerFrame.dispose();
+
+                        final File selected = chooser.getSelectedFile();
+
+                        // 释放锁，允许下一次打开
+                        importChooserOpened = false;
+
+                        // 把结果切回libGDX渲染线程执行游戏逻辑
+                        Gdx.app.postRunnable(() -> {
+                            if (ret == JFileChooser.APPROVE_OPTION && selected != null) {
+                                startImportFlow(Gdx.files.absolute(selected.getAbsolutePath()));
+                            }
+                        });
+                    });
+
+                } else {
+                    // 安卓/iOS 走不了 Swing，先给提示
+                    ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                            Messages.get(BackupSaveScene.class, "desktop_not_supported")));
+                }
+            }
+        };
+        btnImport.setSize((float) (w / 2.0), 20);
+        btnImport.setPos((float) (w / 2.0), h - 20);
+        add(btnImport);
 
         // ---- 中部备份列表面板（银灰色窗口样式九宫格背景）----
         NinePatch panel = Chrome.get(Chrome.Type.WINDOW_SILVER);
@@ -408,7 +482,6 @@ public class BackupSaveScene extends PixelScene {
      */
     public static void exportWholeSlotToMLSP() {
         try {
-
             FileHandle backupDirHandle = Gdx.files.external(BACKUP_FOLDER);
             if (!backupDirHandle.exists()) {
                 backupDirHandle.mkdirs();
@@ -419,43 +492,39 @@ public class BackupSaveScene extends PixelScene {
             FileHandle mlspHandle = backupDirHandle.child(fileName);
 
             try (ZipOutputStream zos = new ZipOutputStream(mlspHandle.write(false))) {
-                // 打开存档根目录（传空串即根目录），记录其中的每个条目名（含子目录名，故下面仍需按后缀过滤）
                 ArrayList<String> fileList = FileUtils.filesInDir("");
-                // 遍历根目录里的每个条目
                 for (String fname : fileList) {
-                    // 只对.dat文件做操作，这一般是存储数据的文件
                     if (fname.endsWith(".dat")) {
-                        // 根目录下的文件没有目录前缀，直接用文件名取句柄即可
                         FileHandle datHandle = FileUtils.getFileHandle(fname);
-                        // 读取并存储数据到data变量
                         byte[] data = datHandle.readBytes();
-                        // 每个 .dat 文件作为一个 ZIP 条目写入，条目名沿用原文件名
                         ZipEntry entry = new ZipEntry(fname);
-                        // 打开条目
                         zos.putNextEntry(entry);
-                        // 写条目
                         zos.write(data);
-                        // 关闭条目
+                        zos.closeEntry();
+                    }
+                    if (fname.equals("settings.xml")) {
+                        // 导出前先规范化：防止磁盘上的 settings.xml 被手工编辑成「裸 entry」格式后，
+                        // 原样打包进备份，导致下次导入时 Lwjgl3Preferences 解析为空
+                        ensureSettingsXmlValid( FileUtils.getFileHandle( fname ) );
+                        FileHandle datHandle = FileUtils.getFileHandle(fname);
+                        byte[] data = datHandle.readBytes();
+                        ZipEntry entry = new ZipEntry(fname);
+                        zos.putNextEntry(entry);
+                        zos.write(data);
                         zos.closeEntry();
                     }
                 }
             }
 
-            // 重建一个界面并重新显示但不播放切换界面动画，也许可以改为局部重建
             ShatteredPixelDungeon.switchNoFade(BackupSaveScene.class, new Game.SceneChangeCallback() {
                 @Override public void beforeCreate() { }
-
                 @Override public void afterCreate() {
-                    // 导出成功提示 「备份已创建：%s」
                     ShatteredPixelDungeon.scene().addToFront(
                             new WndMessage(Messages.get(BackupSaveScene.class, "export_success", fileName)));
                 }
             });
-            // 这里我将异常捕获对象从IOException替换成了Exception e
         } catch (Exception e) {
-            // 导出失败：上报异常并提示
             ShatteredPixelDungeon.reportException(e);
-            // 「导出失败！」
             ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "export_fail")));
         }
     }
@@ -548,7 +617,7 @@ public class BackupSaveScene extends PixelScene {
                     // 结束此条目，关闭条目
                     // 实际上这里做的并不是真正的关闭条目，因为是在同一个文件内，也不存在关闭与否的说法，准确地说这里是一个收尾性质的工作
 
-                    // 以下全部来自AI：
+                    // 以下全部来自AI的注释：
                     // 结束当前条目的读取，把流推进到下一条目开头；注意它不关闭流、也不关闭文件
                     // 实现上就是把当前条目「还没读的字节全部读掉丢弃」（JDK ZipInputStream.closeEntry）
                     // 两种情形：
@@ -593,6 +662,11 @@ public class BackupSaveScene extends PixelScene {
                         FileUtils.deleteFile(fName);
                     }
                 }
+                for (String fName : oldFiles) {
+                    if (fName.equals("settings.xml")) {
+                        FileUtils.deleteFile(fName);
+                    }
+                }
             }
             try (InputStream fis = mlspFile.read();
                  ZipInputStream zis = new ZipInputStream(fis)) {
@@ -609,16 +683,329 @@ public class BackupSaveScene extends PixelScene {
                             }
                         }
                     }
+                    if (entryName.equals("settings.xml")) {
+                        // 先完整读出条目字节
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        while ((len = zis.read(buffer)) > 0) {
+                            baos.write(buffer, 0, len);
+                        }
+                        byte[] settingsBytes = baos.toByteArray();
+                        // 兼容手机端备份：若设置条目是安卓原生 <map> 格式（旧版本导出/手动打包
+                        // shared_prefs 文件），先转成电脑端标准 Properties XML；否则（标准
+                        // Properties / 裸 entry）原样写入，交由 reloadSettingsFromDisk 规范化兜底
+                        byte[] converted = convertAndroidMapSettings(settingsBytes);
+                        FileHandle outDat = FileUtils.getFileHandle(entryName);
+                        try (OutputStream os = outDat.write(false)) {
+                            os.write(converted != null ? converted : settingsBytes);
+                        }
+                    }
                     zis.closeEntry();
                 }
             }
-            // 「备份导入成功」
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "import_success")));
+            // =================================================================
+            // 【关键修复】写完文件后【立即】作废旧内存设置缓存，然后再 resetGlobalCache()。
+            // resetGlobalCache 内部存在会写 settings.xml 的路径（例如 Rankings.load() 里
+            // `SPDSettings.lastDaily(...)` 就是 put→flush）：若在作废前执行，会用"导入前的旧缓存"
+            // 整体重写磁盘文件，把刚导入的 settings.xml（如 dlc 困难模式等键）抹掉——
+            // 这正是"第一次导入总丢数据、第二次导入才正常"的根因（第一次触发写入、把旧值覆盖上去，
+            // 第二次因 lastDaily 已是最新不再触发 flush）。
+            // 先作废后，resetGlobalCache 内任何 SPDSettings 写入都会先重读刚导入的文件，
+            // flush 的也是导入后的值，导入结果不再被旧缓存覆盖。
+            // =================================================================
+            SPDSettings.set( null );
+            resetGlobalCache();
+            ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback(){
+                @Override public void beforeCreate(){ }
+                @Override public void afterCreate(){
+                    ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                            Messages.get(BackupSaveScene.class, "import_success")));
+                }
+            });
         } catch (Exception e) {
             ShatteredPixelDungeon.reportException(e);
-            // 「导入失败！」
             ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "import_fail")));
         }
+    }
+
+    /**
+     * 统一的导入分流入口：按文件名前缀判断备份类型，再走对应流程。
+     * 列表里点「导入备份」和底部「外部导入」都汇到这里。
+     */
+    private static void startImportFlow(FileHandle backupFile) {
+        // 未知文件分流：不存在或非既定的拓展名
+        if (!backupFile.exists()
+                || backupFile.isDirectory()
+                || !backupFile.name().endsWith(MLSP_EXT)) {
+            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                    Messages.get(BackupSaveScene.class, "import_fail_unknownfile")));
+            return;
+        }
+        // 全局存档分流
+        if (backupFile.name().startsWith(GLOBAL_PREFIX)) {
+            ShatteredPixelDungeon.scene().addToFront(new WndOptions(
+                    Icons.get(Icons.WARNING),
+                    Messages.get(BackupSaveScene.class, "warn_overwrite_title"),
+                    Messages.get(BackupSaveScene.class, "import_global_confirm_desc"),
+                    Messages.get(BackupSaveScene.class, "confirm_overwrite"),
+                    Messages.get(BackupSaveScene.class, "cancel")
+            ) {
+                @Override
+                protected void onSelect(int yesno) {
+                    if (yesno == 0) importMLSPtoRoot(backupFile);
+                }
+            });
+        }
+        // 局内存档分流
+        else if (backupFile.name().startsWith(SLOT_PREFIX)) {
+            // ---- 导入备份：先选择目标槽位（Slot1~6），再二次确认覆盖 ----
+            ShatteredPixelDungeon.scene().add(new WndOptions(
+                    Icons.get(Icons.WARNING),
+                    Messages.get(BackupSaveScene.class, "import_confirm_title"),
+                    Messages.get(BackupSaveScene.class, "import_confirm_desc"),
+                    "Slot1", "Slot2", "Slot3", "Slot4", "Slot5", "Slot6",
+                    Messages.get(BackupSaveScene.class, "cancel")
+            ) {
+                @Override
+                protected void onSelect(int slotIdx) {
+                    // slotIdx 0~5 对应 Slot1~Slot6
+                    if (slotIdx >= 0 && slotIdx <= 5) {
+                        int targetSlot = slotIdx + 1;
+                        // 二次确认：导入会覆盖目标槽位现有存档
+                        ShatteredPixelDungeon.scene().add(new WndOptions(
+                                Icons.get(Icons.WARNING),
+                                Messages.get(BackupSaveScene.class, "warn_overwrite_title"),
+                                Messages.get(BackupSaveScene.class, "warn_overwrite_desc"),
+                                Messages.get(BackupSaveScene.class, "confirm_overwrite"),
+                                Messages.get(BackupSaveScene.class, "cancel")
+                        ) {
+                            @Override
+                            protected void onSelect(int yesno) {
+                                if (yesno == 0) { // 用户确认覆盖
+                                    importMLSPtoSlot(backupFile, targetSlot);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        // 未知文件分流：非既定的前缀名
+        else {
+            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "import_fail_unknownfile")));
+        }
+    }
+
+    /** 清空全局数据的缓存文件 */
+    private static void resetGlobalCache() {
+        // 双保险：方法开头就先作废设置缓存。这样本方法内任何 SPDSettings 读取/写入
+        // （如 Rankings.load 里的 lastDaily 越界修正与回写）都会基于磁盘上【最新】的
+        // settings.xml（导入后的内容），而绝不会把导入前的旧缓存 flush 覆盖回去。
+        SPDSettings.set( null );
+        Badges.global = null;                     Badges.loadGlobal();
+        PaswordBadges.global = null;              PaswordBadges.loadGlobal();
+        Rankings.INSTANCE.records = null;         Rankings.INSTANCE.load();
+        CollectRankings.INSTANCE.records = null;  CollectRankings.INSTANCE.load();
+        KeyBindings.setAllBindings(new LinkedHashMap<>());
+        SPDAction.loadBindings();
+        Journal.resetForReload();                 Journal.loadGlobal();
+        Bones.resetForReload();
+        YuanTaStoneScene.YuanTaStoryManager.reload();
+        reloadSettingsFromDisk();
+    }
+
+    /**
+     * 重新从磁盘加载设置。SPDSettings 封装 libGDX Preferences：启动时一次性读入内存 map，此后不会自动重读文件；
+     * 导入会替换磁盘上的 settings.xml，必须作废旧的内存缓存，否则下一次 flush 会把旧值整体覆盖回去。
+     * <p>修复要点：</p>
+     * <ol>
+     *   <li>先用 {@link #ensureSettingsXmlValid} 把「裸 entry」格式（缺 XML 声明/DOCTYPE/根节点，
+     *       常见于手工编辑或旧版本备份）修复成标准 Properties XML，否则 loadFromXML 会抛
+     *       InvalidPropertiesFormatException，Lwjgl3Preferences 会把设置解析为空；</li>
+     *   <li>无论解析成功与否都无条件 {@code SPDSettings.set(null)} 作废内存缓存——
+     *       只要旧缓存存活，下一帧 updateSystemUI 的 put→flush 就会把导入前的旧值整体覆盖回新文件。</li>
+     * </ol>
+     */
+    private static void reloadSettingsFromDisk() {
+        FileHandle settingsHandle = FileUtils.getFileHandle("settings.xml");
+        if (!settingsHandle.exists()) {
+            SPDSettings.set( null );
+            return;
+        }
+        // 先规范化再校验：保证磁盘文件是 Lwjgl3Preferences 能读的标准格式
+        ensureSettingsXmlValid( settingsHandle );
+        try (InputStream in = settingsHandle.read()) {
+            java.util.Properties p = new java.util.Properties();
+            p.loadFromXML( in );
+        } catch (Exception e) {
+            // 记录异常但继续：下面仍然要作废缓存，避免旧值被 flush 覆盖回来
+            ShatteredPixelDungeon.reportException( e );
+        } finally {
+            // 无条件作废旧内存缓存；下次 get() 会重新从磁盘读取（若文件仍不可读则 Preferences 从空表开始，
+            // 随后第一次 put 会用标准格式重写文件，不会再用旧值覆盖导入结果）
+            SPDSettings.set( null );
+        }
+        ShatteredPixelDungeon.updateSystemUI();
+    }
+
+    /**
+     * 检测并把「安卓 SharedPreferences map 格式」的 settings.xml 转成电脑端标准 Properties XML。
+     * <p>手机端（修改后）导出的 settings.xml 已是标准 Properties 格式；但若包里的设置条目是
+     * Android 原生的 &lt;map&gt; 格式（旧版本导出、或手动把 shared_prefs 文件打包进备份），
+     * 电脑端 Lwjgl3Preferences 无法直接解析，必须先转换。</p>
+     * <p>解析时用 {@link #unescapeXmlText} 还原实体（含 &#39; 等数字引用），并把
+     * string/int/long/boolean/float 各类型节点统一转为字符串键值，再 storeToXML 输出
+     * 标准格式，桌面端 getInteger/getLong/getBoolean 会按字符串解析，兼容两端语义。</p>
+     *
+     * @param raw 备份包内 settings.xml 条目的原始字节
+     * @return 标准 Properties XML 字节；非 map 格式（无法识别）时返回 null，调用方应原样处理
+     */
+    private static byte[] convertAndroidMapSettings(byte[] raw) {
+        if (raw == null || raw.length == 0) return null;
+        String text;
+        try {
+            text = new String(raw, "UTF-8");
+        } catch (Exception e) {
+            return null;
+        }
+        if (!text.contains("<map")) return null; // 不是安卓 map 格式
+        java.util.Properties props = new java.util.Properties();
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
+                "<(string|int|long|boolean|float)\\s+name=\"([^\"]*)\"[^>]*>(.*?)</\\1>",
+                java.util.regex.Pattern.DOTALL );
+        java.util.regex.Matcher m = p.matcher( text );
+        boolean found = false;
+        while (m.find()) {
+            props.setProperty( unescapeXmlText( m.group( 2 ) ), unescapeXmlText( m.group( 3 ) ) );
+            found = true;
+        }
+        if (!found) return null;
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            props.storeToXML( bos, null );
+            return bos.toByteArray();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 确保 settings.xml 是 java.util.Properties 可解析的标准 XML 格式。
+     * 部分历史或手工生成的备份文件缺少 XML 声明、DOCTYPE 与 &lt;properties&gt; 根节点（「裸 entry」形式），
+     * 直接交给 libGDX Preferences 解析会抛 InvalidPropertiesFormatException 导致设置整体丢失/被旧缓存覆盖；
+     * 本方法将「裸 entry」形式重写为标准格式，已是标准格式则原样保留。
+     * <p>入口幂等：标准格式且可解析时不做任何改动；带 DOCTYPE 但解析失败、或缺少 DOCTYPE 时按
+     * entry 正则重建。重建时先 {@link #unescapeXmlText} 再 {@link #escapeXmlText}，保证原始值无论是
+     * 已转义（storeToXML 产物）还是未转义（手工编辑）都能无损往返，避免双重转义。</p>
+     *
+     * @param settingsHandle settings.xml 的文件句柄（用 FileUtils 的相对根目录句柄）
+     */
+    public static void ensureSettingsXmlValid(FileHandle settingsHandle) {
+        if (settingsHandle == null || !settingsHandle.exists()) return;
+        String raw;
+        try {
+            raw = settingsHandle.readString( "UTF-8" );
+        } catch (Exception e) {
+            ShatteredPixelDungeon.reportException( e );
+            return;
+        }
+        // 已含 DOCTYPE：尝试解析，能解析即为标准格式，不动
+        if (raw.contains( "<!DOCTYPE properties" )) {
+            try (InputStream in = settingsHandle.read()) {
+                java.util.Properties p = new java.util.Properties();
+                p.loadFromXML( in );
+                return;
+            } catch (Exception e) {
+                // 带 DOCTYPE 但无法解析（如内容被破坏）：继续走重建流程
+                ShatteredPixelDungeon.reportException( e );
+            }
+        }
+
+        StringBuilder out = new StringBuilder();
+        out.append( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
+        out.append( "<!DOCTYPE properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">\n" );
+        out.append( "<properties>\n" );
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
+                "<entry\\s+key=\"([^\"]*)\"[^>]*>(.*?)</entry>",
+                java.util.regex.Pattern.DOTALL );
+        java.util.regex.Matcher m = p.matcher( raw );
+        boolean found = false;
+        while (m.find()) {
+            out.append( "<entry key=\"" ).append( escapeXmlText( unescapeXmlText( m.group( 1 ) ) ) ).append( "\">" )
+                    .append( escapeXmlText( unescapeXmlText( m.group( 2 ) ) ) ).append( "</entry>\n" );
+            found = true;
+        }
+        if (!found) return; // 无法识别条目结构：不做改写，交由 reloadSettingsFromDisk 兜底
+        out.append( "</properties>\n" );
+        try {
+            settingsHandle.writeString( out.toString(), false, "UTF-8" );
+        } catch (Exception e) {
+            ShatteredPixelDungeon.reportException( e );
+        }
+    }
+
+    /**
+     * 宽松解码 XML 实体：把 &amp; &lt; &gt; &quot; &apos; 以及 &#NN; / &#xNN; 数字字符引用还原为字符。
+     * 仅用于把「裸 entry」格式转标准格式前的预处理，无法识别的 & 序列保持原样，
+     * 保证未转义与已转义两种来源都能无损往返（配合 {@link #escapeXmlText} 使用，杜绝双重转义）。
+     */
+    private static String unescapeXmlText(String s) {
+        if (s == null || s.indexOf( '&' ) == -1) return s;
+        StringBuilder sb = new StringBuilder( s.length() );
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt( i );
+            if (c != '&') {
+                sb.append( c );
+                continue;
+            }
+            int semi = s.indexOf( ';', i );
+            // 不是合法实体（没有分号、或实体名过长）→ 原样保留
+            if (semi == -1 || semi - i > 10) {
+                sb.append( c );
+                continue;
+            }
+            String ent = s.substring( i + 1, semi );
+            switch (ent) {
+                case "amp":  sb.append( '&' ); i = semi; continue;
+                case "lt":   sb.append( '<' ); i = semi; continue;
+                case "gt":   sb.append( '>' ); i = semi; continue;
+                case "quot": sb.append( '"' ); i = semi; continue;
+                case "apos": sb.append( '\'' ); i = semi; continue;
+            }
+            if (ent.length() > 1 && ent.charAt( 0 ) == '#') {
+                try {
+                    int cp = (ent.length() > 2 && (ent.charAt( 1 ) == 'x' || ent.charAt( 1 ) == 'X'))
+                            ? Integer.parseInt( ent.substring( 2 ), 16 )
+                            : Integer.parseInt( ent.substring( 1 ) );
+                    sb.appendCodePoint( cp );
+                    i = semi;
+                    continue;
+                } catch (NumberFormatException ignored) {
+                    // 非法数字引用：原样保留
+                }
+            }
+            sb.append( c );
+        }
+        return sb.toString();
+    }
+
+    /** 与 java.util.Properties.storeToXML 一致的转义，保证解析往返无损 */
+    private static String escapeXmlText(String s) {
+        StringBuilder sb = new StringBuilder( s.length() );
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt( i );
+            switch (c) {
+                case '&':  sb.append( "&amp;" );  break;
+                case '<':  sb.append( "&lt;" );   break;
+                case '>':  sb.append( "&gt;" );   break;
+                case '"':  sb.append( "&quot;" ); break;
+                case '\'': sb.append( "&apos;" ); break;
+                case '\t': sb.append( "&#09;" );  break;
+                case '\n': sb.append( "&#10;" );  break;
+                case '\r': sb.append( "&#13;" );  break;
+                default:   sb.append( c );
+            }
+        }
+        return sb.toString();
     }
 
     /**
@@ -907,18 +1294,10 @@ public class BackupSaveScene extends PixelScene {
         /** 文件最后修改时间（毫秒时间戳），用于排序与展示 */
         long modTime;
 
-        /** 是否为局外存档（全局数据）备份：靠文件名前缀区分，槽位备份是 slot%d- */
-        boolean global;
-
-        /** 是否为局内存档备份：靠文件名前缀区分，全局备份是 whole-save */
-        boolean slot;
-
         BackupFile(String fileName, FileHandle file, long modTime) {
             this.fileName = fileName;
             this.file = file;
             this.modTime = modTime;
-            this.global = fileName.startsWith(GLOBAL_PREFIX);
-            this.slot = fileName.startsWith(SLOT_PREFIX);
         }
     }
 
@@ -1052,59 +1431,7 @@ public class BackupSaveScene extends PixelScene {
                 protected void onSelect(int index) {
                     if (index == 0)
                     {
-                        if (backup.slot) {
-                            // ---- 导入备份：先选择目标槽位（Slot1~6），再二次确认覆盖 ----
-                            ShatteredPixelDungeon.scene().add(new WndOptions(
-                                    Icons.get(Icons.WARNING),
-                                    Messages.get(BackupSaveScene.class, "import_confirm_title"),
-                                    Messages.get(BackupSaveScene.class, "import_confirm_desc"),
-                                    "Slot1", "Slot2", "Slot3", "Slot4", "Slot5", "Slot6",
-                                    Messages.get(BackupSaveScene.class, "cancel")
-                            ) {
-                                @Override
-                                protected void onSelect(int slotIdx) {
-                                    // slotIdx 0~5 对应 Slot1~Slot6
-                                    if (slotIdx >= 0 && slotIdx <= 5) {
-                                        int targetSlot = slotIdx + 1;
-                                        // 二次确认：导入会覆盖目标槽位现有存档
-                                        ShatteredPixelDungeon.scene().add(new WndOptions(
-                                                Icons.get(Icons.WARNING),
-                                                Messages.get(BackupSaveScene.class, "warn_overwrite_title"),
-                                                Messages.get(BackupSaveScene.class, "warn_overwrite_desc"),
-                                                Messages.get(BackupSaveScene.class, "confirm_overwrite"),
-                                                Messages.get(BackupSaveScene.class, "cancel")
-                                        ) {
-                                            @Override
-                                            protected void onSelect(int yesno) {
-                                                if (yesno == 0) { // 用户确认覆盖
-                                                    importMLSPtoSlot(backup.file, targetSlot);
-                                                }
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                        }
-                        else if (backup.global) {
-                            ShatteredPixelDungeon.scene().add(new WndOptions(
-                                    Icons.get(Icons.WARNING),
-                                    Messages.get(BackupSaveScene.class, "warn_overwrite_title"),
-                                    Messages.get(BackupSaveScene.class, "import_global_confirm_desc"),
-                                    Messages.get(BackupSaveScene.class, "confirm_overwrite"),
-                                    Messages.get(BackupSaveScene.class, "cancel")
-                            ) {
-                                @Override
-                                protected void onSelect(int yesno) {
-                                    if (yesno == 0) {
-                                        importMLSPtoRoot(backup.file);
-                                    }
-                                }
-                            });
-                        }
-                        else {
-                            // 「导入失败！导入的文件为未知的文件！」
-                            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "import_fail_unknownfile")));
-                        }
+                        startImportFlow(backup.file);
                     } else if (index == 1) {
                         // ---- 提取文件：桌面端打开该备份所在目录 ----
                         boolean ok = openDirectory(backup.file.parent());

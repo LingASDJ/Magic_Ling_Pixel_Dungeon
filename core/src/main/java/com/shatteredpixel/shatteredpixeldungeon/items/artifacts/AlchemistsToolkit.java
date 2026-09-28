@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
@@ -41,6 +40,8 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 public class AlchemistsToolkit extends Artifact {
 
@@ -62,7 +63,7 @@ public class AlchemistsToolkit extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if (isEquipped( hero ) && !cursed && hero.buff(MagicImmune.class) == null) {
+		if (isEquipped( hero ) && !cursed && !isMagicImmuned(hero)) {
 			actions.add(AC_BREW);
 			if (level() < levelCap) {
 				actions.add(AC_ENERGIZE);
@@ -76,7 +77,7 @@ public class AlchemistsToolkit extends Artifact {
 
 		super.execute(hero, action);
 
-		if (hero.buff(MagicImmune.class) != null) return;
+		if (isMagicImmuned(hero)) return;
 
 		if (action.equals(AC_BREW)){
 			if (!isEquipped(hero))              GLog.i( Messages.get(this, "need_to_equip") );
@@ -161,7 +162,7 @@ public class AlchemistsToolkit extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (target.buff(MagicImmune.class) != null) return;
+		if (isMagicImmuned(target)) return;
 		partialCharge += 0.25f*amount;
 		while (partialCharge >= 1){
 			partialCharge--;
@@ -228,7 +229,7 @@ public class AlchemistsToolkit extends Artifact {
 					warmUpDelay = 0;
 				} else if (warmUpDelay == 101){
 					warmUpDelay = 100f;
-				} else if (!cursed && target.buff(MagicImmune.class) == null) {
+				} else if (!cursed && !isMagicImmuned(target)) {
 					float turnsToWarmUp = (int) Math.pow(10 - level(), 2);
 					warmUpDelay -= 100 / turnsToWarmUp;
 				}
@@ -240,7 +241,7 @@ public class AlchemistsToolkit extends Artifact {
 		}
 
 		public void gainCharge(float levelPortion) {
-			if (cursed || target.buff(MagicImmune.class) != null) return;
+			if (cursed || isMagicImmuned(target)) return;
 
 			//generates 2 energy every hero level, +1 energy per toolkit level
 			//to a max of 12 energy per hero level
