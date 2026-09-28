@@ -149,7 +149,7 @@ abstract public class Boss extends Mob {
                 Dungeon.level.drop(new KingGold(Random.NormalIntRange(3+Dungeon.depth/5,5+Dungeon.depth/5)),pos);
             }
 
-        boolean holiday = RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ;
+        boolean holiday = RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ || RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY;
 
             if(!Statistics.bossRushMode && !noDropIceCoin){
                 int normal = ((hero.lvl + Dungeon.depth)/5) * (Math.max(Challenges.activeChallenges(), 5));
