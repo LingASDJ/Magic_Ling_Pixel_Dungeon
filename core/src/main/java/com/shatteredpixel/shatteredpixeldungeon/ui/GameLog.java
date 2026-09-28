@@ -94,22 +94,26 @@ public class GameLog extends Component implements Signal.Listener<String> {
 				color = CharSprite.NEUTRAL;
 			}
 
-			if (lastEntry != null && color == lastColor && lastEntry.nLines < MAX_LINES) {
+			//将相同消息进行折叠而不是并列展示
+			Entry lastLog = entries.isEmpty()
+							? null
+							: entries.get(entries.size() - 1);
 
-				String lastMessage = lastEntry.text();
-				lastEntry.text( lastMessage.length() == 0 ? text : lastMessage + " " + text );
+			if (lastEntry != null && color == lastColor && lastLog != null && lastLog.text.equals(text)) {
 
-				entries.get( entries.size() - 1 ).text = lastEntry.text();
+				lastLog.count++;
+				lastEntry.text(lastLog.displayText());
 
 			} else {
 
-				lastEntry = PixelScene.renderTextBlock( text, 6 );
+				Entry entry = new Entry(text, color);
+				entries.add(entry);
+
+				lastEntry = PixelScene.renderTextBlock( entry.displayText(), 6 );
 				lastEntry.setHightlighting( false );
 				lastEntry.hardlight( color );
 				lastColor = color;
 				add( lastEntry );
-
-				entries.add( new Entry( text, color ) );
 
 			}
 
@@ -144,7 +148,7 @@ public class GameLog extends Component implements Signal.Listener<String> {
 
 	private synchronized void recreateLines() {
 		for (Entry entry : entries) {
-			lastEntry = PixelScene.renderTextBlock( entry.text, 6 );
+			lastEntry = PixelScene.renderTextBlock( entry.displayText(), 6 );
 			lastEntry.hardlight( lastColor = entry.color );
 			add( lastEntry );
 		}
@@ -180,9 +184,19 @@ public class GameLog extends Component implements Signal.Listener<String> {
 	private static class Entry {
 		public String text;
 		public int color;
+		//给 Entry 增加计数
+		public int count = 1;
+
 		public Entry( String text, int color ) {
 			this.text = text;
 			this.color = color;
+		}
+		public String displayText() {
+			if (count > 1) {
+				return text + "(" + count + ")";
+			} else {
+				return text;
+			}
 		}
 	}
 
