@@ -235,7 +235,8 @@ public class Messages {
 	/**
 	 * 计算指定语言的翻译进度
 	 * 进度 = 目标语言中已翻译的 key 数量 / 中文源文件中 key 的总数量 × 100%
-	 * 已翻译定义：key存在且值与【中文基准原文】不同（值相同则视为未翻译）
+	 * 已翻译定义：目标语言文件中存在该 key 即视为已翻译
+	 * （译文是否与中文基准相同、是否为空均不影响；空值可能是有意为之的不可翻译条目，同 Transifex 算法）
 	 */
 	public static double getTranslationProgress(Languages targetLang) {
 		if (targetLang == Languages.CHINESE) {
@@ -243,7 +244,7 @@ public class Messages {
 		}
 
 		try {
-			// 加载【中文基准原文】作为对比基底
+			// 加载【中文基准】的 key 集合作为分母
 			HashSet<String> baseCNKeys = new HashSet<>();
 			HashMap<String, String> baseCNValues = new HashMap<>();
 			loadAllProperties(Languages.CHINESE, baseCNKeys, baseCNValues);
@@ -259,14 +260,10 @@ public class Messages {
 
 			int translatedCount = 0;
 			for (String key : baseCNKeys) {
-				String targetValue = targetValues.get(key);
-				String baseValue = baseCNValues.get(key);
-
-				if (targetValue != null && !targetValue.isEmpty()) {
-					// 和中文基准原文不一样，才算翻译；相同则不算
-					if (!targetValue.equals(baseValue)) {
-						translatedCount++;
-					}
+				// 目标语言文件里有这个 key 即计为已翻译；
+				// 不要求非空（部分条目本就不可翻译/无语义），不要求与中文基准不同
+				if (targetValues.containsKey(key)) {
+					translatedCount++;
 				}
 			}
 
