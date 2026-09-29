@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShopLimitLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
@@ -52,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDHBLR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLRPRO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaReal;
@@ -82,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireMagicGirlSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ThiefSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -131,7 +134,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     public boolean allDead = false;
 
     //莲娜愤怒姿态时的特殊技能判定：true 时解锁「召唤系 + 喷火」怒之技
-    public boolean VeryAngry = true;
+    public boolean VeryAngry = false;
 
     @Override
     public int damageRoll() {
@@ -181,16 +184,27 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private static final int SACRIFICE = 5;
     private static final int SUMMON = 6;
     private static final int FIREBREATH = 7;
+    private static final int HONGLIAN = 8;   //红莲真火（仅第二阶段）
+    private static final int SKYFIRE = 9;    //天火（仅第三阶段）
 
     //场上至多存在的召唤物数量
     private static final int MAX_SUMMONS = 6;
 
-    private static final float[] chanceMap = {0f, 100f, 100f, 100f, 100f, 100f, 100f, 100f};
+    private static final float[] chanceMap = {0f, 100f, 100f, 100f, 100f, 100f, 100f, 100f, 100f, 100f};
 
     //===== 喷火蓄力（预警 + 施法动画）=====
     private int fireBreathCharge = 0;               //>0 表示正在蓄力，倒计时结束后才释放怒焰
     private ArrayList<Integer> fireBreathCells;     //蓄力时锁定的即将被点燃的格子
     private int fireBreathTarget = -1;              //蓄力时锁定的目标格（用于释放时的弹道动画）
+
+    //===== 暴怒姿态三阶段：鬼磷精英 / 红莲真火 / 天火 ===== 
+    private int redLotusCharge = 0;                                       //红莲真火蓄力回合数（>0 表示蓄力中）
+    private int redLotusCooldown = 0;                                     //红莲真火冷却回合数（40-80，冷却期内不再触发）
+    private ArrayList<Integer> pendingCorePositions = null;               //读档暂存的核心位置（首回合重挂引用）
+    private ArrayList<TurbidFlameCore> redLotusCores = new ArrayList<>(); //红莲真火的两个浊焰核心
+    private int skyFireCharge = 0;                                        //天火蓄力回合数（>0 表示蓄力中）
+    private ArrayList<Integer> skyFireCells;                              //天火三角警告区格子
+    private float skyFireAngle = 0f;                                      //天火方向
 
 
     @Override
@@ -207,7 +221,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         int projectileProps = Ballistica.IGNORE_SOFT_SOLID;
         int aoeSize = 6;
         ConeAOE aoe = new ConeAOE(aim, aoeSize, 360, projectileProps);
-        GameScene.flash(0x00dd00);
+
         for (Ballistica ray : aoe.outerRays){
             ((MagicMissile)ch.sprite.parent.recycle( MagicMissile.class )).reset(
                     MagicMissile.FROST,
@@ -337,9 +351,22 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     }
 
     private void rollForAbility(){
-        lastAbility = Random.chances(chanceMap);
-        chanceMap[lastAbility] /= 4f;
-        if(chanceMap[lastAbility] < 0.0001f) resetChanceMap();
+        for (int tries = 0; tries < 10; tries++){
+            lastAbility = Random.chances(chanceMap);
+            if (isAbilityAllowed(lastAbility)) {
+                chanceMap[lastAbility] /= 4f;
+                if(chanceMap[lastAbility] < 0.0001f) resetChanceMap();
+                return;
+            }
+        }
+        lastAbility = NONE;
+    }
+
+    //怒之技按阶段限定：红莲真火仅第二阶段且需度过冷却、天火仅第三阶段
+    private boolean isAbilityAllowed(int ability){
+        if (ability == HONGLIAN) return phase == 2 && redLotusCooldown <= 0;
+        if (ability == SKYFIRE) return phase == 3;
+        return true;
     }
     private void resetChanceMap(){
         for(int i=1;i<chanceMap.length;++i){
@@ -368,7 +395,17 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     //真正召唤一只烈焰守卫（旧版 SUMMON 空壳的实体化）
     private boolean summonSubject(){
         if (getSubjects().size() >= MAX_SUMMONS) return false;
-        Class<? extends Mob> type = (Random.Int(2) == 0) ? ColdGuradB.class : ColdGuradC.class;
+        //ColdGurad（雪凛守卫）数量上限 3，达到上限后只召唤 SRPDHBLR（ColdGuradC）
+        int guardCount = 0;
+        for (Mob m : getSubjects()){
+            if (m instanceof ColdGurad) guardCount++;
+        }
+        Class<? extends Mob> type;
+        if (guardCount >= 3){
+            type = ColdGuradC.class;
+        } else {
+            type = (Random.Int(2) == 0) ? ColdGuradB.class : ColdGuradC.class;
+        }
         int spawnPos = findSpawnPos();
         if (spawnPos == -1) return false;
         Mob m = Reflection.newInstance(type);
@@ -461,11 +498,82 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             immunities.add(FrostBurning.class);
         }
 
+        //红莲真火冷却递减（冷却期内不再触发红莲业火）
+        if (redLotusCooldown > 0){
+            redLotusCooldown--;
+        }
+
+        //读档后重挂浊焰核心引用（核心实体由 Level.mobs 恢复流程自动重建，这里只找回来）
+        if (pendingCorePositions != null){
+            ArrayList<Integer> pending = pendingCorePositions;
+            pendingCorePositions = null;
+            redLotusCores.clear();
+            for (int cp : pending){
+                for (Mob m : Dungeon.level.mobs){
+                    if (m instanceof TurbidFlameCore && m.pos == cp && m.isAlive()){
+                        redLotusCores.add((TurbidFlameCore) m);
+                        break;
+                    }
+                }
+            }
+            //若读档时核心已全部消亡，蓄力直接化解
+            if (redLotusCores.isEmpty() && redLotusCharge > 0){
+                redLotusCharge = 0;
+                if (sprite != null){
+                    sprite.showStatus(CharSprite.NEUTRAL, Messages.get(this, "redlotus_save"));
+                    yell(Messages.get(this, "redlotus_save"));
+                }
+            }
+        }
+
         //===== 喷火蓄力中：倒计时结束才真正喷出怒焰 =====
         if (fireBreathCharge > 0){
             fireBreathCharge--;
             if (fireBreathCharge <= 0){
                 releaseFireBreath();
+            }
+            spend(TICK);
+            return true;
+        }
+
+        //===== 红莲真火蓄力中：起手已全屏预警一次，蓄力期间只显示回合倒计时 =====
+        if (redLotusCharge > 0){
+            redLotusCharge--;
+
+            //起手已全屏警告，这里只显示剩余回合倒计时
+            if (redLotusCharge > 0){
+                sprite.showStatus(0xFF8800, Messages.get(this, "redlotus_count", redLotusCharge));
+            }
+
+            boolean allDestroyed = true;
+            for (TurbidFlameCore core : redLotusCores.toArray(new TurbidFlameCore[0])){
+                if (core.isAlive()){
+                    allDestroyed = false;
+                }
+            }
+
+            if (allDestroyed){
+                //保命成功：红莲真火被化解
+                redLotusCharge = 0;
+                redLotusCores.clear();
+                //化解也算一次完整使用，进入长冷却
+                redLotusCooldown = Random.NormalIntRange(40, 80);
+                sprite.showStatus(CharSprite.NEUTRAL, Messages.get(this, "redlotus_save"));
+                yell(Messages.get(this, "redlotus_save"));
+            } else if (redLotusCharge <= 0){
+                releaseRedLotus();
+            }
+
+            spend(TICK);
+            return true;
+        }
+
+        //===== 天火蓄力中：三角警告区预警，2回合后真实AOE =====
+        if (skyFireCharge > 0){
+            skyFireCharge--;
+            warnSkyFire();
+            if (skyFireCharge <= 0){
+                releaseSkyFire();
             }
             spend(TICK);
             return true;
@@ -509,7 +617,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             }
         } else if (phase == 2 && shielding() == 0 && HP <= HT/3) {
             yell(  Messages.get(this, "enraged" ));
-            VeryAngry = true;   //莲娜愤怒姿态 → 解锁「召唤系 + 喷火」特殊技能
             ScrollOfTeleportation.teleportToLocation(this, ShopBossLevel.throneling);
             GLog.pink(  Messages.get(this, "xslx") );
             for (int i : CryStalPosition2) {
@@ -557,7 +664,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             yell( Messages.get(this, "losing") );
             die(Dungeon.hero);
             Dungeon.hero.interrupt();
-            GameScene.flash(0x80FFFFFF);
         }
 
         //===== 怒之技：莲娜愤怒姿态（VeryAngry）时才能使用的特殊技能 =====
@@ -565,6 +671,12 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             if (paralysed > 0){
                 spend(TICK);
                 return true;
+            }
+
+            //暴怒姿态·第一阶段：莲娜直接获得鬼磷精英
+            if (buff(ChampionEnemy.GhostPhos.class) == null){
+                Buff.affect(this, ChampionEnemy.GhostPhos.class);
+                sprite.showStatus(0xAAFF55, Messages.get(this, "ghostphos_gain"));
             }
 
             if (abilityCooldown <= 0){
@@ -609,6 +721,18 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                     abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
                     spend(TICK);
                     return true;
+                } else if (lastAbility == HONGLIAN){
+                    if (castRedLotus()){
+                        abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                    }
+                    spend(TICK);
+                    return true;
+                } else if (lastAbility == SKYFIRE){
+                    if (castSkyFire()){
+                        abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                    }
+                    spend(TICK);
+                    return true;
                 }
             } else {
                 abilityCooldown--;
@@ -617,6 +741,213 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
         return super.act();
     }
+    //===== 暴怒姿态·第二阶段：红莲真火（全屏预警，摧毁浊焰核心保命）===== 
+    private static final int RED_LOTUS_CHARGE_TOTAL = 10;   //全屏预警持续回合数
+
+    //强制莲娜闪现到王座(612)：常规传送失败时改用邻近空位强制闪现
+    private void flashToThrone(){
+        int throne = 612;
+        if (ScrollOfTeleportation.teleportToLocation(this, throne)){
+            return;
+        }
+        int fallback = -1;
+        int w = Dungeon.level.width();
+        for (int i : PathFinder.NEIGHBOURS8){
+            int c = throne + i;
+            if (Dungeon.level.insideMap(c) && !Dungeon.level.solid[c] && !Dungeon.level.pit[c] && Actor.findChar(c) == null){
+                fallback = c;
+                break;
+            }
+        }
+        if (fallback == -1) fallback = throne;
+        ScrollOfTeleportation.appear(this, fallback);
+        Dungeon.level.occupyCell(this);
+    }
+
+    //红莲真火·起手：生成两个浊焰核心 + 全屏预警
+    private boolean castRedLotus(){
+        if (enemy == null) return false;
+
+        //释放红莲业火时，莲娜必定闪现到王座(612)处，浊焰核心也将在其周围生成
+        flashToThrone();
+
+        ArrayList<Integer> corePos = findCorePositions();
+        if (corePos.size() < 2) return false;
+
+        redLotusCores.clear();
+        //只生成两个浊焰核心（摧毁两个结晶即可化解）
+        for (int i = 0; i < Math.min(2, corePos.size()); i++){
+            int p = corePos.get(i);
+            TurbidFlameCore core = new TurbidFlameCore();
+            core.pos = p;
+            Dungeon.level.mobs.add(core);
+            GameScene.add(core);
+            Dungeon.level.occupyCell(core);
+            redLotusCores.add(core);
+        }
+
+        redLotusCharge = RED_LOTUS_CHARGE_TOTAL;
+        warnFullScreen();
+        Camera.main.shake(3f, 0.6f);
+        Sample.INSTANCE.play(Assets.Sounds.BURNING);
+        ((FireMagicGirlSprite) sprite).cast(enemy.pos);
+        yell(Messages.get(this, "redlotus_" + Random.IntRange(1, 2)));
+        return true;
+    }
+
+    //为浊焰核心寻找两个空位（优先贴身八格，不足则用召唤空位补足）
+    private ArrayList<Integer> findCorePositions(){
+        ArrayList<Integer> spots = new ArrayList<>();
+        for (int i : PathFinder.NEIGHBOURS8){
+            if (Actor.findChar(pos + i) == null && !Dungeon.level.solid[pos + i] && !Dungeon.level.pit[pos + i]){
+                spots.add(pos + i);
+            }
+        }
+        while (spots.size() < 2){
+            int p = findSpawnPos();
+            if (p == -1) break;
+            if (!spots.contains(p)) spots.add(p);
+        }
+        return spots;
+    }
+
+    //全屏预警：对所有可见格子铺红色警告标记
+    private void warnFullScreen(){
+        for (int c = 0; c < Dungeon.level.length(); c++){
+            if (Dungeon.level.heroFOV[c]){
+                sprite.parent.add(new ColorTargetedCell(c, 0xFF0000));
+            }
+        }
+    }
+
+    //红莲真火·释放：未摧毁全部核心 → 血量削至当前 1/5；若当前血量已低于 1/5 则直接秒杀
+    private void releaseRedLotus(){
+
+        Sample.INSTANCE.play(Assets.Sounds.BLAST);
+        Camera.main.shake(4f, 1f);
+
+        Char h = Dungeon.hero;
+        if (h != null && h.isAlive()){
+            if (h.HP <= h.HT / 5){
+                h.damage(h.HP + 1, this, DamageType.REAL);
+                h.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "redlotus_kill"));
+                if (h == Dungeon.hero && !h.isAlive()) Dungeon.fail(getClass());
+            } else {
+                h.HP = h.HP / 5;
+                if (h.HP <= 0) h.HP = 1;
+                h.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "redlotus_hit"));
+                h.sprite.burst(0xFF0000, 10);
+            }
+        }
+
+        for (TurbidFlameCore core : redLotusCores.toArray(new TurbidFlameCore[0])){
+            if (core.isAlive()){
+                core.die(this);
+            }
+        }
+        redLotusCores.clear();
+        redLotusCharge = 0;
+        //释放完成，进入长冷却（40-80 回合）
+        redLotusCooldown = Random.NormalIntRange(40, 80);
+    }
+
+    //浊焰核心被摧毁
+    public void onCoreDestroyed(TurbidFlameCore core){
+        redLotusCores.remove(core);
+        if (sprite != null) sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "core_down"));
+    }
+
+    //红莲真火是否正在蓄力（供水晶塔判断是否暂停火墙）
+    public boolean isRedLotusCharging(){
+        return redLotusCharge > 0;
+    }
+
+    //天火是否正在蓄力（供水晶塔判断是否跳过8向齐射）
+    public boolean isSkyFireCharging(){
+        return skyFireCharge > 0;
+    }
+
+    //===== 暴怒姿态·第三阶段：天火（三角警告区，2回合后真实AOE）===== 
+    private static final int SKY_FIRE_CHARGE_TOTAL = 2;   //三角区预警回合数
+
+    //天火·起手：以莲娜为顶点朝英雄方向生成三角警告区
+    private boolean castSkyFire(){
+        if (enemy == null) return false;
+
+        int w = Dungeon.level.width();
+        float dx = enemy.pos % w - pos % w;
+        float dy = enemy.pos / w - pos / w;
+        skyFireAngle = (float)Math.atan2(dy, dx);
+
+        skyFireCells = triangleCells(pos, skyFireAngle, 12, 6);
+        if (skyFireCells.isEmpty()) return false;
+
+        skyFireCharge = SKY_FIRE_CHARGE_TOTAL;
+        warnSkyFire();
+        Sample.INSTANCE.play(Assets.Sounds.BURNING);
+        ((FireMagicGirlSprite) sprite).cast(enemy.pos);
+        yell(Messages.get(this, "skyfire_" + Random.IntRange(1, 2)));
+        return true;
+    }
+
+    //三角形警告区格子：顶点 apex、方向 angle、长度 length、底边半宽 halfBase
+    private ArrayList<Integer> triangleCells(int apex, float angle, int length, int halfBase){
+        ArrayList<Integer> cells = new ArrayList<>();
+        HashSet<Integer> seen = new HashSet<>();
+        int w = Dungeon.level.width();
+        float dirX = (float)Math.cos(angle);
+        float dirY = (float)Math.sin(angle);
+        float px = -dirY;
+        float py = dirX;
+        int ax = apex % w;
+        int ay = apex / w;
+        for (int d = 1; d <= length; d++){
+            float hw = halfBase * (float)d / length;
+            int cx = Math.round(ax + dirX * d);
+            int cy = Math.round(ay + dirY * d);
+            int half = (int)Math.ceil(hw);
+            for (int s = -half; s <= half; s++){
+                int x = cx + Math.round(px * s);
+                int y = cy + Math.round(py * s);
+                int c = y * w + x;
+                if (!Dungeon.level.insideMap(c)) continue;
+                if (seen.add(c)) cells.add(c);
+            }
+        }
+        return cells;
+    }
+
+    //天火预警：三角警告区铺金色警告标记
+    private void warnSkyFire(){
+        if (skyFireCells == null) return;
+        for (int c : skyFireCells){
+            sprite.parent.add(new ColorTargetedCell(c, 0xFFAA00));
+        }
+    }
+
+    //天火·释放：2回合后，对三角区内所有非敌方角色造成真实伤害并附磷火燃烧
+    private void releaseSkyFire(){
+        if (skyFireCells == null) return;
+
+        Sample.INSTANCE.play(Assets.Sounds.BLAST);
+        Camera.main.shake(3f, 0.6f);
+
+        for (int c : skyFireCells){
+            GameScene.add(Blob.seed(c, 3, HalomethaneFire.class));
+            Char ch = Actor.findChar(c);
+            if (ch != null && ch.alignment != Alignment.ENEMY){
+                ch.damage(Random.IntRange(20, 35), this, DamageType.REAL);
+                Buff.affect(ch, HalomethaneBurning.class).reignite(ch, 8f);
+                ch.sprite.burst(0xFFAA00, 8);
+                if (ch == Dungeon.hero && !ch.isAlive()){
+                    Dungeon.fail(getClass());
+                }
+            }
+        }
+        skyFireCells = null;
+        skyFireCharge = 0;
+    }
+
     private static final String PHASE = "phase";
     private static final String ABILITY_CD = "ability_cd";
     private static final String SUMMON_CD = "summon_cd";
@@ -627,6 +958,12 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private static final String FIRE_BREATH_CHARGE = "firebreath_charge";
     private static final String FIRE_BREATH_CELLS = "firebreath_cells";
     private static final String FIRE_BREATH_TARGET = "firebreath_target";
+    private static final String RED_LOTUS_CHARGE = "red_lotus_charge";
+    private static final String RED_LOTUS_COOLDOWN = "red_lotus_cooldown";
+    private static final String RED_LOTUS_CORES = "red_lotus_cores";
+    private static final String SKY_FIRE_CHARGE = "sky_fire_charge";
+    private static final String SKY_FIRE_CELLS = "sky_fire_cells";
+    private static final String SKY_FIRE_ANGLE = "sky_fire_angle";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -654,6 +991,24 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             bundle.put(FIRE_BREATH_CELLS, cells);
         }
         bundle.put(FIRE_BREATH_TARGET, fireBreathTarget);
+
+        bundle.put(RED_LOTUS_CHARGE, redLotusCharge);
+        bundle.put(RED_LOTUS_COOLDOWN, redLotusCooldown);
+        int[] coreArr = new int[redLotusCores.size()];
+        for (int i = 0; i < redLotusCores.size(); i++){
+            coreArr[i] = redLotusCores.get(i).pos;
+        }
+        bundle.put(RED_LOTUS_CORES, coreArr);
+
+        bundle.put(SKY_FIRE_CHARGE, skyFireCharge);
+        if (skyFireCells != null){
+            int[] skyArr = new int[skyFireCells.size()];
+            for (int i = 0; i < skyFireCells.size(); i++){
+                skyArr[i] = skyFireCells.get(i);
+            }
+            bundle.put(SKY_FIRE_CELLS, skyArr);
+        }
+        bundle.put(SKY_FIRE_ANGLE, skyFireAngle);
     }
 
     @Override
@@ -679,6 +1034,24 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             for (int i : cells) fireBreathCells.add(i);
         }
         fireBreathTarget = bundle.getInt(FIRE_BREATH_TARGET);
+
+        redLotusCharge = bundle.getInt(RED_LOTUS_CHARGE);
+        redLotusCooldown = bundle.getInt(RED_LOTUS_COOLDOWN);
+        redLotusCores = new ArrayList<>();
+        //核心实体由 Level.mobs 的 bundle 恢复流程自动重建，这里只暂存位置，首回合再重挂引用
+        int[] coreArr = bundle.getIntArray(RED_LOTUS_CORES);
+        if (coreArr != null){
+            pendingCorePositions = new ArrayList<>();
+            for (int p : coreArr) pendingCorePositions.add(p);
+        }
+
+        skyFireCharge = bundle.getInt(SKY_FIRE_CHARGE);
+        int[] skyArr = bundle.getIntArray(SKY_FIRE_CELLS);
+        if (skyArr != null){
+            skyFireCells = new ArrayList<>();
+            for (int p : skyArr) skyFireCells.add(p);
+        }
+        skyFireAngle = bundle.getFloat(SKY_FIRE_ANGLE);
     }
 
 
@@ -908,7 +1281,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         Buff.affect(hero, ShopLimitLock.class).set((1), 1);
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-            if (mob instanceof SRPDICLRPRO ||mob instanceof Skeleton||mob instanceof DM100|| mob instanceof BlackHost|| mob instanceof Warlock|| mob instanceof Monk|| mob instanceof CrystalDiedTower|| mob instanceof CrystalLingTower) {
+            if (mob instanceof SRPDICLRPRO ||mob instanceof Skeleton||mob instanceof DM100|| mob instanceof BlackHost|| mob instanceof Warlock|| mob instanceof Monk|| mob instanceof CrystalDiedTower|| mob instanceof CrystalLingTower|| mob instanceof TurbidFlameCore) {
                 mob.die( cause );
             }
         }
@@ -1102,22 +1475,58 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             boolean str = buff(FireMagicDied.StrengthEmpower.class)!=null;
             return Math.round(super.damageRoll()*(str? 1.5f:1f));
         }
+        @Override
+        public void damage(int dmg, Object src, DamageType type) {
+            super.damage(dmg, src, type);
+            LockedFloor lock = hero.buff(LockedFloor.class);
+            if (lock != null){
+                if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
+                else                                                    lock.addTime(dmg*1.5f);
+            }
+        }
     }
 
-    public static class ColdGuradC extends SRPDHBLR {
+    public static class ColdGuradC extends Thief {
+
+        public static class ColdGuradCSprite extends ThiefSprite {
+
+            public ColdGuradCSprite(){
+                super();
+                tint(1, 1, 0, 0.2f);
+            }
+
+            @Override
+            public void resetColor() {
+                super.resetColor();
+                tint(1, 1, 0, 0.2f);
+            }
+        }
+
         {
             state = HUNTING;
-            this.HT = 40;
-            this.HP = 40;
+            this.HT = 20;
+            this.HP = 20;
             immunities.add(Corruption.class);
             resistances.add(Amok.class);
             lootChance=0f;
             maxLvl = -8848;
+            spriteClass = ColdGuradCSprite.class;
         }
+
+        @Override
+        public void damage(int dmg, Object src, DamageType type) {
+            super.damage(dmg, src, type);
+            LockedFloor lock = hero.buff(LockedFloor.class);
+            if (lock != null){
+                if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
+                else                                                    lock.addTime(dmg*1.5f);
+            }
+        }
+
         @Override
         public int attackProc(Char enemy, int damage){
             if(Random.Int(10)==0) {
-                Buff.affect(enemy, Degrade.class, 2f);
+                Buff.affect(enemy, Weakness.class, 2f);
             }
             return super.attackProc(enemy, damage);
         }

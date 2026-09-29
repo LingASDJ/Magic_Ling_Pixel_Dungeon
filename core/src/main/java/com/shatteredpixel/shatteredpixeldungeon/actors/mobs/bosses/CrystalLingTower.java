@@ -134,6 +134,13 @@ public class CrystalLingTower extends Mob {
     @Override
     protected boolean act(){
         if(alignment == Alignment.NEUTRAL) return true;
+        //红莲真火蓄力期间，莲娜进入绝招蓄力阶段，塔暂停一切激光
+        for (Mob m : Dungeon.level.mobs){
+            if (m instanceof FireMagicDied && ((FireMagicDied) m).isRedLotusCharging()){
+                spend(TICK);
+                return true;
+            }
+        }
         CrystalDiedTower.State s = countDown();
         if(s == CrystalDiedTower.State.SHOOTING) {
             zapProc();

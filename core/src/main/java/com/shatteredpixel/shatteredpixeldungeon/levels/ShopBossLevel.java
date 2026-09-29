@@ -99,6 +99,9 @@ public class ShopBossLevel extends Level {
         boss.state = boss.HUNTING;
         GameScene.add(boss);
 
+        set( 612, Terrain.PEDESTAL );
+        GameScene.updateMap( 612 );
+
         GLog.p(Messages.get(FireMagicDied.class,"go", hero.name()));
         Sample.INSTANCE.play(Assets.Sounds.DEATH);
     }

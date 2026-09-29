@@ -566,6 +566,33 @@ public abstract class ChampionEnemy extends Buff {
 		}
 	}
 
+	public static class GhostPhos extends ChampionEnemy {
+
+		{
+			color = 0xAAFF55;
+		}
+
+		@Override
+		public void onAttackProc(Char enemy) {
+			for (int i : PathFinder.NEIGHBOURS4){
+				if (!Dungeon.level.solid[target.pos+i]){
+					GameScene.add(Blob.seed(target.pos+i, 2, CorrosiveGas.class));
+				}
+			}
+		}
+
+
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1.2f;
+		}
+
+		{
+			immunities.add(CorrosiveGas.class);
+		}
+	}
+
 	public static class DelayMob extends ChampionEnemy {
 
 		{
