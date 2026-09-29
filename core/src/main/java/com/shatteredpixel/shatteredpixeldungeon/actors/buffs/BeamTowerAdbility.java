@@ -23,6 +23,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PointF;
 
@@ -169,8 +170,8 @@ public class BeamTowerAdbility extends Buff {
         public int element = 1;   //0=霜焰 1=普通火 2=磷火
 
         //按元素区分火焰颜色：霜火亮蓝、磷火亮绿（普通火用引擎自带橙红 FlameParticle）
-        private static final Emitter.Factory FROST_FACTORY = ColoredFlameParticle.factory(0x4488FF);
-        private static final Emitter.Factory HALO_FACTORY = ColoredFlameParticle.factory(0x33CC33);
+        private static Emitter.Factory FROST_FACTORY = ColoredFlameParticle.factory(0x4488FF);
+        private static Emitter.Factory HALO_FACTORY = ColoredFlameParticle.factory(0x33CC33);
 
         {
             actPriority = BUFF_PRIO - 1;
@@ -181,11 +182,11 @@ public class BeamTowerAdbility extends Buff {
         public void use(BlobEmitter emitter) {
             super.use(emitter);
             if (element == 0){
-                emitter.pour(FROST_FACTORY, 0.03f);   //霜火：亮蓝
+                emitter.pour(FROST_FACTORY, DeviceCompat.isDesktop() ? 0.03f : 0.1f);   //霜火：亮蓝
             } else if (element == 1){
-                emitter.pour(FlameParticle.FACTORY, 0.03f);   //普通火：橙红
+                emitter.pour(FlameParticle.FACTORY, DeviceCompat.isDesktop() ? 0.03f : 0.1f);   //普通火：橙红
             } else {
-                emitter.pour(HALO_FACTORY, 0.03f);   //磷火：亮绿
+                emitter.pour(HALO_FACTORY, DeviceCompat.isDesktop() ? 0.03f : 0.1f);   //磷火：亮绿
             }
         }
 
@@ -233,11 +234,11 @@ public class BeamTowerAdbility extends Buff {
 
                         burned = true;
                         if (element == 0){
-                            CellEmitter.get(cell).start(FROST_FACTORY, 0.03f, 10);
+                            CellEmitter.get(cell).start(FROST_FACTORY, DeviceCompat.isDesktop() ? 0.03f : 0.1f, 10);
                         } else if (element == 1){
-                            CellEmitter.get(cell).start(FlameParticle.FACTORY, 0.03f, 10);
+                            CellEmitter.get(cell).start(FlameParticle.FACTORY, DeviceCompat.isDesktop() ? 0.03f : 0.1f, 10);
                         } else {
-                            CellEmitter.get(cell).start(HALO_FACTORY, 0.03f, 10);
+                            CellEmitter.get(cell).start(HALO_FACTORY, DeviceCompat.isDesktop() ? 0.03f : 0.1f, 10);
                         }
                     }
                 }
