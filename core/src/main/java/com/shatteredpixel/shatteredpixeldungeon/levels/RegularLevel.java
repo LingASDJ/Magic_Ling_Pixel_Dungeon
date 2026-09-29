@@ -695,6 +695,7 @@ public abstract class RegularLevel extends Level {
 			if (toDrop == null) continue;
 
 			int cell = randomDropCell();
+			if (cell == -1) continue;	//无可用格子时跳过该物品，防止 map[-1] 越界
 			if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 				map[cell] = Terrain.GRASS;
 				losBlocking[cell] = false;
@@ -764,13 +765,16 @@ public abstract class RegularLevel extends Level {
 
 		for (Item item : itemsToSpawn) {
 			int cell = randomDropCell();
+			if (cell == -1) continue;	//无可用格子时跳过该物品，防止 map[-1] 越界
 			if (item instanceof TrinketCatalyst){
 				drop( item, cell ).type = Heap.Type.LOCKED_CHEST;
 				int keyCell = randomDropCell();
-				drop( new GoldenKey(Dungeon.depth), keyCell ).type = Heap.Type.HEAP;
-				if (map[keyCell] == Terrain.HIGH_GRASS || map[keyCell] == Terrain.FURROWED_GRASS) {
-					map[keyCell] = Terrain.GRASS;
-					losBlocking[keyCell] = false;
+				if (keyCell != -1){
+					drop( new GoldenKey(Dungeon.depth), keyCell ).type = Heap.Type.HEAP;
+					if (map[keyCell] == Terrain.HIGH_GRASS || map[keyCell] == Terrain.FURROWED_GRASS) {
+						map[keyCell] = Terrain.GRASS;
+						losBlocking[keyCell] = false;
+					}
 				}
 			} else {
 				drop( item, cell ).type = Heap.Type.HEAP;
@@ -787,19 +791,23 @@ public abstract class RegularLevel extends Level {
 		Random.pushGenerator( Random.Long() );
 			if (Dungeon.isChallenged(Challenges.DARKNESS)){
 				int cell = randomDropCell();
-				if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
-					map[cell] = Terrain.GRASS;
-					losBlocking[cell] = false;
-				}
-				drop( new Torch(), cell );
-				//add a second torch to help with the larger floor
-				if (feeling == Feeling.LARGE || feeling == Feeling.BIGROOMS){
-					cell = randomDropCell();
+				if (cell != -1){
 					if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 						map[cell] = Terrain.GRASS;
 						losBlocking[cell] = false;
 					}
 					drop( new Torch(), cell );
+					//add a second torch to help with the larger floor
+					if (feeling == Feeling.LARGE || feeling == Feeling.BIGROOMS){
+						cell = randomDropCell();
+						if (cell != -1){
+							if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+								map[cell] = Terrain.GRASS;
+								losBlocking[cell] = false;
+							}
+							drop( new Torch(), cell );
+						}
+					}
 				}
 			}
 		Random.popGenerator();
@@ -808,12 +816,14 @@ public abstract class RegularLevel extends Level {
 			ArrayList<Item> bonesItems = Bones.get();
 			if (bonesItems != null) {
 				int cell = randomDropCell();
-				if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
-					map[cell] = Terrain.GRASS;
-					losBlocking[cell] = false;
-				}
-				for (Item i : bonesItems) {
-					drop(i, cell).setHauntedIfCursed().type = Heap.Type.REMAINS;
+				if (cell != -1){
+					if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+						map[cell] = Terrain.GRASS;
+						losBlocking[cell] = false;
+					}
+					for (Item i : bonesItems) {
+						drop(i, cell).setHauntedIfCursed().type = Heap.Type.REMAINS;
+					}
 				}
 			}
 		Random.popGenerator();
@@ -829,12 +839,14 @@ public abstract class RegularLevel extends Level {
 					if (rose.droppedPetals < 11) {
 						Item item = new DriedRose.Petal();
 						int cell = randomDropCell();
-						drop( item, cell ).type = Heap.Type.HEAP;
-						if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
-							map[cell] = Terrain.GRASS;
-							losBlocking[cell] = false;
+						if (cell != -1){
+							drop( item, cell ).type = Heap.Type.HEAP;
+							if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+								map[cell] = Terrain.GRASS;
+								losBlocking[cell] = false;
+							}
+							rose.droppedPetals++;
 						}
-						rose.droppedPetals++;
 					}
 				}
 			}
@@ -887,11 +899,13 @@ public abstract class RegularLevel extends Level {
 				GuidePage p = new GuidePage();
 				p.page(missingPages.get(0));
 				int cell = randomDropCell();
-				if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
-					map[cell] = Terrain.GRASS;
-					losBlocking[cell] = false;
+				if (cell != -1){
+					if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+						map[cell] = Terrain.GRASS;
+						losBlocking[cell] = false;
+					}
+					drop( p, cell );
 				}
-				drop( p, cell );
 			}
 		Random.popGenerator();
 
@@ -931,11 +945,13 @@ public abstract class RegularLevel extends Level {
 		int items = (int)(Random.Float() + CrackedSpyglass.extraLootChance());
 		for (int i = 0; i < items; i++){
 			int cell = randomDropCell();
-			if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
-				map[cell] = Terrain.GRASS;
-				losBlocking[cell] = false;
+			if (cell != -1){
+				if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+					map[cell] = Terrain.GRASS;
+					losBlocking[cell] = false;
+				}
+				drop( Generator.randomUsingDefaults(), cell).hidden = true;
 			}
-			drop( Generator.randomUsingDefaults(), cell).hidden = true;
 		}
 		Random.popGenerator();
 
@@ -984,11 +1000,17 @@ public abstract class RegularLevel extends Level {
 		while (tries-- > 0) {
 			Room room = randomRoom( roomType );
 			if (room == null){
-				return -1;
+				//该类型房间不存在（如无标准房间的Boss层等）时，退而求其次使用任意房间，
+				//避免直接返回-1后调用方以 map[-1] 越界崩溃
+				room = randomRoom( Room.class );
+				if (room == null){
+					return -1;
+				}
 			}
 			if (room != roomEntrance) {
 				int pos = pointToCell(room.random());
-				if (passable[pos] && !solid[pos]
+				if (pos >= 0 && pos < map.length
+						&& passable[pos] && !solid[pos]
 						&& pos != exit()
 						&& heaps.get(pos) == null
 						&& room.canPlaceItem(cellToPoint(pos), this)
@@ -1003,6 +1025,29 @@ public abstract class RegularLevel extends Level {
                             || t instanceof PitfallTrap)) {
 						
 						return pos;
+					}
+				}
+			}
+		}
+		//随机尝试100次全部失败时兜底：只要全图还存在任意可放置格，就返回它，杜绝返回-1
+		for (Room r : rooms) {
+			if (r == roomEntrance) continue;
+			for (int i = r.left; i <= r.right; i++) {
+				for (int j = r.top; j <= r.bottom; j++) {
+					int pos = pointToCell(new Point(i, j));
+					if (pos >= 0 && pos < map.length
+							&& passable[pos] && !solid[pos]
+							&& pos != exit()
+							&& heaps.get(pos) == null
+							&& r.canPlaceItem(cellToPoint(pos), this)
+							&& findMob(pos) == null) {
+						Trap t = traps.get(pos);
+						if (!(t instanceof BurningTrap || t instanceof BlazingTrap
+                                || t instanceof ChillingTrap || t instanceof FrostTrap
+                                || t instanceof ExplosiveTrap || t instanceof DisintegrationTrap
+                                || t instanceof PitfallTrap)) {
+							return pos;
+						}
 					}
 				}
 			}
