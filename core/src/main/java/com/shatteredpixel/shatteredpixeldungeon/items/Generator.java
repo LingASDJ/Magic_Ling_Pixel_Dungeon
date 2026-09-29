@@ -839,7 +839,7 @@ public class Generator {
 					1,  // 蓄血圣杯
 					0,  // 暗影斗篷
 					1,  // 丰饶之角
-					0,  // 神偷袖章
+					Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL) ? 1:0,
 					1,  // 自然之履
 					1,  // 先见护符
 					1,  // 时光沙漏

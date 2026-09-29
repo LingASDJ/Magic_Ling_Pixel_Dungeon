@@ -13,22 +13,29 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BeamTowerAdbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HellBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
@@ -42,15 +49,21 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MagicGirlDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDHBLR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLRPRO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaReal;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.timing.VirtualActor;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BeamCustom;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.ColorTargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ScanningBeam;
@@ -60,7 +73,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -75,10 +90,13 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
@@ -111,6 +129,9 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private int pumpedUp = 0;
 
     public boolean allDead = false;
+
+    //莲娜愤怒姿态时的特殊技能判定：true 时解锁「召唤系 + 喷火」怒之技
+    public boolean VeryAngry = true;
 
     @Override
     public int damageRoll() {
@@ -147,6 +168,30 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private float abilityCooldown = 6;
     private final ArrayList<Integer> targetedCells = new ArrayList<>();
 
+    //===== 怒之技：召唤系（旧版废弃方法复活）=====
+    private static final int MIN_COOLDOWN = 7;
+    private static final int MAX_COOLDOWN = 11;
+
+    private int lastAbility = 0;
+    private static final int NONE = 0;
+    private static final int LINK = 1;
+    private static final int TELE = 2;
+    private static final int ENRAGE = 3;
+    private static final int DEATHRATTLE = 4;
+    private static final int SACRIFICE = 5;
+    private static final int SUMMON = 6;
+    private static final int FIREBREATH = 7;
+
+    //场上至多存在的召唤物数量
+    private static final int MAX_SUMMONS = 6;
+
+    private static final float[] chanceMap = {0f, 100f, 100f, 100f, 100f, 100f, 100f, 100f};
+
+    //===== 喷火蓄力（预警 + 施法动画）=====
+    private int fireBreathCharge = 0;               //>0 表示正在蓄力，倒计时结束后才释放怒焰
+    private ArrayList<Integer> fireBreathCells;     //蓄力时锁定的即将被点燃的格子
+    private int fireBreathTarget = -1;              //蓄力时锁定的目标格（用于释放时的弹道动画）
+
 
     @Override
     public float speed() {
@@ -173,6 +218,240 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         }
     }
 
+    //读取召唤物（莲娜的烈焰守卫）
+    private HashSet<Mob> getSubjects(){
+        HashSet<Mob> subjects = new HashSet<>();
+        for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (m.alignment == alignment && (m instanceof ColdGurad || m instanceof SRPDICLRPRO || m instanceof SRPDHBLR || m instanceof ColdGuradB)){
+                subjects.add(m);
+            }
+        }
+        return subjects;
+    }
+
+    private boolean lifeLinkSubject(){
+        Mob furthest = null;
+
+        for (Mob m : getSubjects()){
+            boolean alreadyLinked = false;
+            for (LifeLink l : m.buffs(LifeLink.class)){
+                if (l.object == id()) alreadyLinked = true;
+            }
+            if (!alreadyLinked) {
+                if (furthest == null || Dungeon.level.distance(pos, furthest.pos) < Dungeon.level.distance(pos, m.pos)){
+                    furthest = m;
+                }
+            }
+        }
+
+        if (furthest != null) {
+            Buff.append(furthest, LifeLink.class, 100f).object = id();
+            Buff.append(this, LifeLink.class, 100f).object = furthest.id();
+            yell(Messages.get(this, "lifelink_" + Random.IntRange(1, 2)));
+            Buff.affect(this, Healing.class).setHeal(5, 0f, 6);
+            sprite.parent.add(new Beam.HealthRay(sprite.destinationCenter(), furthest.sprite.destinationCenter()));
+            return true;
+        }
+        return false;
+    }
+
+    private boolean teleportSubject(){
+        if (enemy == null) return false;
+
+        Mob furthest = null;
+
+        for (Mob m : getSubjects()){
+            if (furthest == null || Dungeon.level.distance(pos, furthest.pos) < Dungeon.level.distance(pos, m.pos)){
+                furthest = m;
+            }
+        }
+
+        if (furthest != null){
+
+            float bestDist;
+            int bestPos = pos;
+
+            Ballistica trajectory = new Ballistica(enemy.pos, pos, Ballistica.STOP_TARGET);
+            int targetCell = trajectory.path.get(trajectory.dist);
+            //if the position opposite the direction of the hero is open, go there
+            if (Actor.findChar(targetCell) == null && !Dungeon.level.solid[targetCell]){
+                bestPos = targetCell;
+
+                //Otherwise go to the neighbour cell that's open and is furthest
+            } else {
+                bestDist = Dungeon.level.trueDistance(pos, enemy.pos);
+
+                for (int i : PathFinder.NEIGHBOURS8){
+                    if (Actor.findChar(pos+i) == null
+                            && !Dungeon.level.solid[pos+i]
+                            && Dungeon.level.trueDistance(pos+i, enemy.pos) > bestDist){
+                        bestPos = pos+i;
+                        bestDist = Dungeon.level.trueDistance(pos+i, enemy.pos);
+                    }
+                }
+            }
+
+            Actor.add(new Pushing(this, pos, bestPos));
+            pos = bestPos;
+
+            //find closest cell that's adjacent to enemy, place subject there
+            bestDist = Dungeon.level.trueDistance(enemy.pos, pos);
+            bestPos = enemy.pos;
+            for (int i : PathFinder.NEIGHBOURS8){
+                if (Actor.findChar(enemy.pos+i) == null
+                        && !Dungeon.level.solid[enemy.pos+i]
+                        && Dungeon.level.trueDistance(enemy.pos+i, pos) < bestDist){
+                    bestPos = enemy.pos+i;
+                    bestDist = Dungeon.level.trueDistance(enemy.pos+i, pos);
+                }
+            }
+
+            if (bestPos != enemy.pos) ScrollOfTeleportation.appear(furthest, bestPos);
+            yell(Messages.get(this, "teleport_" + Random.IntRange(1, 2)));
+            return true;
+        }
+        return false;
+    }
+
+    //献祭所有召唤物：每个召唤物在爆炸时对周围敌人造成伤害
+    private void sacrificeSubject(){
+        for (Mob m : getSubjects()){
+            for (int i : PathFinder.NEIGHBOURS8){
+                CellEmitter.center(i+m.pos).burst(Speck.factory(Speck.BONE), 3);
+                Char ch = Actor.findChar(i+m.pos);
+                if (ch != null){
+                    if (ch.alignment != Alignment.ENEMY){
+                        ch.damage(Random.IntRange(25, 36), m);
+                        if (ch == Dungeon.hero && !ch.isAlive()){
+                            Dungeon.fail(getClass());
+                        }
+                    }
+                }
+            }
+            CellEmitter.center(m.pos).burst(Speck.factory(Speck.BONE), 6);
+            m.die(this);
+            Dungeon.level.mobs.remove(m);
+        }
+        new Flare(6, 32).color(0xFF22FF, false).show(sprite, 1.5f);
+        yell(Messages.get(this, "sacrifice"));
+    }
+
+    private void rollForAbility(){
+        lastAbility = Random.chances(chanceMap);
+        chanceMap[lastAbility] /= 4f;
+        if(chanceMap[lastAbility] < 0.0001f) resetChanceMap();
+    }
+    private void resetChanceMap(){
+        for(int i=1;i<chanceMap.length;++i){
+            chanceMap[i]=100f;
+        }
+        chanceMap[0]=0f;
+    }
+
+    //在自身周围寻找一个可召唤的空位
+    private int findSpawnPos(){
+        int w = Dungeon.level.width();
+        ArrayList<Integer> candidates = new ArrayList<>();
+        for (int y = -3; y <= 3; y++){
+            for (int x = -3; x <= 3; x++){
+                int c = pos + y*w + x;
+                if (!Dungeon.level.insideMap(c)) continue;
+                if (Dungeon.level.solid[c]) continue;
+                if (Actor.findChar(c) != null) continue;
+                candidates.add(c);
+            }
+        }
+        if (candidates.isEmpty()) return -1;
+        return candidates.get(Random.Int(candidates.size()));
+    }
+
+    //真正召唤一只烈焰守卫（旧版 SUMMON 空壳的实体化）
+    private boolean summonSubject(){
+        if (getSubjects().size() >= MAX_SUMMONS) return false;
+        Class<? extends Mob> type = (Random.Int(2) == 0) ? ColdGuradB.class : ColdGuradC.class;
+        int spawnPos = findSpawnPos();
+        if (spawnPos == -1) return false;
+        Mob m = Reflection.newInstance(type);
+        m.pos = spawnPos;
+        m.state = m.HUNTING;
+        Dungeon.level.mobs.add(m);
+        GameScene.add(m);
+        Dungeon.level.occupyCell(m);
+        CellEmitter.get(spawnPos).burst(Speck.factory(Speck.RED_LIGHT), 10);
+        return true;
+    }
+
+    //喷火法术·起手：锁定锥形区域并预警，播放施法动画，进入蓄力
+    private void castFireBreath(){
+        if (enemy == null) return;
+
+        fireBreathTarget = enemy.pos;
+        final Ballistica bolt = new Ballistica(pos, fireBreathTarget,
+                Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID);
+        ConeAOE cone = new ConeAOE(bolt, 6, 45,
+                Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID);
+
+        fireBreathCells = new ArrayList<>();
+        for (int cell : cone.cells){
+            if (cell == pos) continue;
+            fireBreathCells.add(cell);
+            //预警：在即将被点燃的格子上显示高亮标记
+            sprite.parent.add(new ColorTargetedCell(cell, 0xFF4422));
+        }
+
+        //施法动画：朝向目标播放蓄力施法动作（不发射弹道、不结算伤害）
+        ((FireMagicGirlSprite) sprite).cast(fireBreathTarget);
+
+        fireBreathCharge = 2;
+    }
+
+    //喷火法术·释放：对预警锁定的格子真正喷出怒焰
+    private void releaseFireBreath(){
+        if (fireBreathCells == null) return;
+
+        for (int cell : fireBreathCells){
+            if (!Dungeon.level.insideMap(cell)) continue;
+            if (Dungeon.level.map[cell] == Terrain.DOOR){
+                Level.set(cell, Terrain.OPEN_DOOR);
+                GameScene.updateMap(cell);
+            }
+
+            GameScene.add(Blob.seed(cell, 12, HalomethaneFire.class));
+
+            Char ch = Actor.findChar(cell);
+            if (ch != null && ch.alignment == Alignment.ENEMY){
+                ch.damage(Random.NormalIntRange(12, 22), this);
+                if (ch.isAlive()){
+                    Buff.affect(ch, Burning.class).reignite(ch, 8f);
+                }
+            }
+        }
+
+        //喷出锥形火弹视觉（朝预警时锁定的方向）
+        if (fireBreathTarget != -1){
+            final Ballistica bolt = new Ballistica(pos, fireBreathTarget,
+                    Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID);
+            ConeAOE cone = new ConeAOE(bolt, 6, 45,
+                    Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID);
+            for (Ballistica ray : cone.outerRays){
+                ((MagicMissile) sprite.parent.recycle(MagicMissile.class)).reset(
+                        MagicMissile.FIRE_CONE,
+                        sprite,
+                        ray.path.get(ray.dist),
+                        null
+                );
+            }
+        }
+
+        Sample.INSTANCE.play(Assets.Sounds.BURNING);
+        Sample.INSTANCE.play(Assets.Sounds.BLAST);
+
+        yell(Messages.get(this, "firebreath_" + Random.IntRange(1, 2)));
+
+        fireBreathCells = null;
+        fireBreathTarget = -1;
+    }
+
     @Override
     public boolean act() {
 
@@ -180,6 +459,16 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             immunities.add(Burning.class);
             immunities.add(HalomethaneBurning.class);
             immunities.add(FrostBurning.class);
+        }
+
+        //===== 喷火蓄力中：倒计时结束才真正喷出怒焰 =====
+        if (fireBreathCharge > 0){
+            fireBreathCharge--;
+            if (fireBreathCharge <= 0){
+                releaseFireBreath();
+            }
+            spend(TICK);
+            return true;
         }
 
         if (phase == 1) {
@@ -202,7 +491,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
                 sprite.showStatus(0xff0000, Messages.get(this, "dead"));
 
-                if(Statistics.attackIFGirl) {
+                if(Statistics.attackIFGirl && !VeryAngry) {
                     MagicGirlDead boss = new MagicGirlDead();
                     boss.state = boss.WANDERING;
                     boss.pos = 547;
@@ -220,6 +509,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             }
         } else if (phase == 2 && shielding() == 0 && HP <= HT/3) {
             yell(  Messages.get(this, "enraged" ));
+            VeryAngry = true;   //莲娜愤怒姿态 → 解锁「召唤系 + 喷火」特殊技能
             ScrollOfTeleportation.teleportToLocation(this, ShopBossLevel.throneling);
             GLog.pink(  Messages.get(this, "xslx") );
             for (int i : CryStalPosition2) {
@@ -269,6 +559,62 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             Dungeon.hero.interrupt();
             GameScene.flash(0x80FFFFFF);
         }
+
+        //===== 怒之技：莲娜愤怒姿态（VeryAngry）时才能使用的特殊技能 =====
+        if (VeryAngry && phase >= 0){
+            if (paralysed > 0){
+                spend(TICK);
+                return true;
+            }
+
+            if (abilityCooldown <= 0){
+                rollForAbility();
+
+                if (lastAbility == LINK && lifeLinkSubject()){
+                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                    spend(TICK);
+                    return true;
+                } else if (lastAbility == TELE && teleportSubject()) {
+                    lastAbility = TELE;
+                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                    spend(TICK);
+                    return true;
+                } else if (lastAbility == ENRAGE){
+                    Buff.affect(this, Adrenaline.class, 12f);
+                    Buff.affect(this, ChampionEnemy.Halo.class);
+                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                    spend(TICK);
+                    return true;
+                } else if (lastAbility == DEATHRATTLE){
+                    yell(Messages.get(this, "death_rattle"));
+                    summonSubject();
+                    summonSubject();
+                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                    spend(TICK);
+                    return true;
+                } else if (lastAbility == SACRIFICE){
+                    sacrificeSubject();
+                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                    spend(TICK);
+                    return true;
+                } else if (lastAbility == SUMMON){
+                    if (summonSubject()){
+                        yell(Messages.get(this, "more_summon"));
+                    }
+                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                    spend(TICK);
+                    return true;
+                } else if (lastAbility == FIREBREATH){
+                    castFireBreath();
+                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                    spend(TICK);
+                    return true;
+                }
+            } else {
+                abilityCooldown--;
+            }
+        }
+
         return super.act();
     }
     private static final String PHASE = "phase";
@@ -277,6 +623,10 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private static final String TARGETED_CELLS = "targeted_cells";
 
     private static final String ALL_DEAD = "all_dead";
+    private static final String VERY_ANGRY = "very_angry";
+    private static final String FIRE_BREATH_CHARGE = "firebreath_charge";
+    private static final String FIRE_BREATH_CELLS = "firebreath_cells";
+    private static final String FIRE_BREATH_TARGET = "firebreath_target";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -293,6 +643,17 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         bundle.put(TARGETED_CELLS, bundleArr);
 
         bundle.put(ALL_DEAD,allDead);
+        bundle.put(VERY_ANGRY, VeryAngry);
+
+        bundle.put(FIRE_BREATH_CHARGE, fireBreathCharge);
+        if (fireBreathCells != null){
+            int[] cells = new int[fireBreathCells.size()];
+            for (int i = 0; i < fireBreathCells.size(); i++){
+                cells[i] = fireBreathCells.get(i);
+            }
+            bundle.put(FIRE_BREATH_CELLS, cells);
+        }
+        bundle.put(FIRE_BREATH_TARGET, fireBreathTarget);
     }
 
     @Override
@@ -309,6 +670,15 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         }
 
         allDead = bundle.getBoolean(ALL_DEAD);
+        VeryAngry = bundle.getBoolean(VERY_ANGRY);
+
+        fireBreathCharge = bundle.getInt(FIRE_BREATH_CHARGE);
+        int[] cells = bundle.getIntArray(FIRE_BREATH_CELLS);
+        if (cells != null){
+            fireBreathCells = new ArrayList<>();
+            for (int i : cells) fireBreathCells.add(i);
+        }
+        fireBreathTarget = bundle.getInt(FIRE_BREATH_TARGET);
     }
 
 
@@ -715,6 +1085,45 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         public boolean attachTo(Char target){
             target.sprite.showStatus(0x00FF00, Messages.get(DwarfMaster.class, "str_empower"));
             return super.attachTo(target);
+        }
+    }
+
+    //===== 怒之技：召唤系小怪（旧版废弃方法复活）=====
+    public static class ColdGuradB extends ColdGurad {
+        {
+            state = HUNTING;
+            immunities.add(Corruption.class);
+            resistances.add(Amok.class);
+            lootChance=0f;
+            maxLvl = -8848;
+        }
+        @Override
+        public int damageRoll(){
+            boolean str = buff(FireMagicDied.StrengthEmpower.class)!=null;
+            return Math.round(super.damageRoll()*(str? 1.5f:1f));
+        }
+    }
+
+    public static class ColdGuradC extends SRPDHBLR {
+        {
+            state = HUNTING;
+            this.HT = 40;
+            this.HP = 40;
+            immunities.add(Corruption.class);
+            resistances.add(Amok.class);
+            lootChance=0f;
+            maxLvl = -8848;
+        }
+        @Override
+        public int attackProc(Char enemy, int damage){
+            if(Random.Int(10)==0) {
+                Buff.affect(enemy, Degrade.class, 2f);
+            }
+            return super.attackProc(enemy, damage);
+        }
+        @Override
+        public int damageRoll() {
+            return Random.NormalIntRange( 10, 15 );
         }
     }
 
