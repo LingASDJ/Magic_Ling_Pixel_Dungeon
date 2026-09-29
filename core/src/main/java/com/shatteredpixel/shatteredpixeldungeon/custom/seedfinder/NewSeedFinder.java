@@ -39,6 +39,19 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.DogDogMusic;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MagneticCrown;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FiveRen;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.JunglePoison;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.hollow.DeathRongBoat;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.KingAxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CrossReback;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ClearSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
@@ -64,10 +77,19 @@ public class NewSeedFinder implements Runnable {
 
     @Override
     public void run() {
+        // 与旧查种器一致：强力查种总开关 PlusSearch 关闭时强制单线程，
+        // PlusThread 只是线程数设置，不是开关。
+        run(SPDSettings.PlusSearch() ? SPDSettings.PlusThread() : 1);
+    }
+
+    // threadCount > 1 时走多线程分片；parallelSeeds 槽位上限 8，超出截断
+    public void run(int threadCount) {
         try {
             String str;
             if (wantedArr.length == 0)
                 str = logSeedItems(DungeonSeed.convertFromText(SeedFindScene.seedCode));
+            else if (threadCount > 1)
+                str = findSeedParallel(Math.min(threadCount, SeedFinder.parallelSeeds.length()));
             else
                 str = findSeed();
             SeedFindScene.INSTANCE.text = str;
@@ -94,6 +116,45 @@ public class NewSeedFinder implements Runnable {
             if (c.isAssignableFrom(cls)) return true;
         }
         return false;
+    }
+
+    // ===== 需要满足解锁条件才会进入生成池的物品 =====
+    // 映射表与 Generator.initGeneral() 中的概率门控一一对应（条件不满足时概率为 0）。
+    // 选择网格将这些物品置灰不可选，避免玩家查找当前存档根本不可能生成的物品。
+    // 条件在每次查询时实时求值，解锁进度变化后重新打开界面即生效。
+    public static final HashMap<Class<? extends Item>, java.util.function.BooleanSupplier> LOCK_CONDITIONS = new HashMap<>();
+    static {
+        // 商店购买/图鉴解锁类（SPDSettings.isItemUnlock）
+        LOCK_CONDITIONS.put(RedBloodMoon.class, () -> SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName()));
+        LOCK_CONDITIONS.put(MoonDao.class, () -> SPDSettings.isItemUnlock(MoonDao.class.getSimpleName()));
+        LOCK_CONDITIONS.put(GoldLongGun.class, () -> SPDSettings.isItemUnlock(GoldLongGun.class.getSimpleName()));
+        LOCK_CONDITIONS.put(DogDogMusic.CICREMUSIC.class, () -> SPDSettings.isItemUnlock("DogDogLingDang"));
+        LOCK_CONDITIONS.put(DiedCrossBow.class, () -> SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName()));
+        LOCK_CONDITIONS.put(SaiPlus.class, () -> SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName()));
+        LOCK_CONDITIONS.put(ClearSword.class, () -> SPDSettings.isItemUnlock(ClearSword.class.getSimpleName()));
+        // 徽章解锁类
+        LOCK_CONDITIONS.put(WandOfGodIce.class, () -> Badges.isUnlocked(Badges.Badge.KILL_MG));
+        LOCK_CONDITIONS.put(JunglePoison.class, () -> Badges.isUnlocked(Badges.Badge.KILL_CLSISTER));
+        LOCK_CONDITIONS.put(SDBSword.class, () -> Badges.isUnlocked(Badges.Badge.KILL_SM));
+        LOCK_CONDITIONS.put(KingSword.class, () -> Badges.isUnlocked(Badges.Badge.BOSS_CHALLENGE_4));
+        LOCK_CONDITIONS.put(KingAxe.class, SPDSettings::KillDwarf);
+        LOCK_CONDITIONS.put(DeathRongBoat.class, () -> Badges.isUnlocked(Badges.Badge.KILL_DOG));
+        LOCK_CONDITIONS.put(CapeOfThorns.class, () -> Badges.isUnlocked(Badges.Badge.KILL_DM720));
+        LOCK_CONDITIONS.put(MagneticCrown.class, () -> Badges.isUnlocked(Badges.Badge.YASD));
+        // 密码徽章解锁类
+        LOCK_CONDITIONS.put(RiceSword.class, () ->
+                PaswordBadges.filtered(true).contains(PaswordBadges.Badge.UNLOCK_RICESWORD)
+                        || SPDSettings.isItemUnlock(RiceSword.class.getSimpleName()));
+        LOCK_CONDITIONS.put(FiveRen.class, () ->
+                PaswordBadges.filtered(true).contains(PaswordBadges.Badge.ZQJ_GHOST));
+        LOCK_CONDITIONS.put(CrossReback.class, () ->
+                PaswordBadges.filtered(true).contains(PaswordBadges.Badge.VAMGHOST_DEAD));
+    }
+
+    /** 该物品当前存档尚未满足生成条件（网格中置灰） */
+    public static boolean isLocked(Class<?> cls) {
+        java.util.function.BooleanSupplier cond = LOCK_CONDITIONS.get(cls);
+        return cond != null && !cond.getAsBoolean();
     }
 
     // 子层开关沿用旧查种器设置；遍历子层 1/2/3
@@ -149,6 +210,8 @@ public class NewSeedFinder implements Runnable {
         String result = "NONE";
         SeedFinding = true;
         running = true;
+        // 与旧查种器一致：单线程时把共享线程数置 1，避免 UI 残留上一次的多线程显示
+        SeedFinder.searchThreadCount = 1;
 
         final long start = Random.Long(DungeonSeed.TOTAL_SEEDS);
 
@@ -184,6 +247,83 @@ public class NewSeedFinder implements Runnable {
         }
         SeedFinding = false;
         return result;
+    }
+
+    // ===== 多线程分片查种（接入旧查种器同一套并行机制） =====
+    /**说明一下接入原理防止看不懂 
+    与 SeedFinder.findSeedParallel 相同的三条原则：      
+    1. Dungeon 是全局静态状态，楼层测试必须串行（DUNGEON_LOCK）；多线程的并行价值在于各线程同时推进自己独立的种子段、先到先得。
+    2. 确定性分片：线程 tid 负责 [segStart, segEnd) 连续大段，互不重叠、无随机跳片。
+    3. 锁外不调用全局 Random，避免污染生成器栈导致结果不一致。**/
+    private String findSeedParallel(int threadCount) {
+        SeedFinding = true;
+        running = true;
+        SeedFinder.parallelFound = false;
+        SeedFinder.searchThreadCount = threadCount;
+        for (int t = 0; t < SeedFinder.parallelSeeds.length(); t++)
+            SeedFinder.parallelSeeds.set(t, -1);
+
+        final long total = DungeonSeed.TOTAL_SEEDS;
+        final long start = Random.Long(total);
+        final java.util.concurrent.atomic.AtomicReference<String> resultRef =
+                new java.util.concurrent.atomic.AtomicReference<>();
+
+        Thread[] workers = new Thread[threadCount];
+        for (int t = 0; t < threadCount; t++) {
+            final int tid = t;
+            long seg = total / threadCount;
+            final long segStart = tid * seg;
+            final long segEnd = (tid == threadCount - 1) ? total : (tid + 1) * seg;
+
+            workers[t] = new Thread(() -> {
+                long local = segStart;
+                while (!SeedFinder.parallelFound && SeedFinding && local < segEnd) {
+                    if (Thread.currentThread().isInterrupted()) return;
+
+                    final long seedValue = (start + local) % total;
+                    // 每线程当前种子写共享槽位；UI 进度只由 0 号线程上报，避免文本闪烁
+                    SeedFinder.parallelSeeds.set(tid, seedValue);
+                    if (tid == 0 && SeedFindScene.INSTANCE != null)
+                        SeedFindScene.INSTANCE.updateCurrentSeed(seedValue);
+
+                    synchronized (SeedFinder.DUNGEON_LOCK) {
+                        if (SeedFinder.parallelFound || !SeedFinding) return;
+                        // 单次命中后再做 10 连复查，确认该种子多次生成结果一致
+                        if (testSeed(seedValue)) {
+                            boolean confirmed = true;
+                            for (int r = 1; r < 10; r++) {
+                                if (!testSeed(seedValue)) {
+                                    confirmed = false;
+                                    break;
+                                }
+                            }
+                            if (confirmed) {
+                                SeedFinder.parallelFound = true;
+                                resultRef.set(logSeedItems(seedValue));
+                                return;
+                            }
+                        }
+                    }
+
+                    local++;
+                }
+            });
+            workers[t].setName("NewSeedFinder-Worker-" + tid);
+            workers[t].setDaemon(true);
+        }
+
+        for (Thread w : workers) w.start();
+        try {
+            for (Thread w : workers) w.join();
+        } catch (InterruptedException e) {
+            // 用户在搜索中点了停止：打断所有工作线程后照常收尾
+            for (Thread w : workers) w.interrupt();
+        }
+
+        SeedFinding = false;
+        running = false;
+        String r = resultRef.get();
+        return r != null ? r : "NONE";
     }
 
     protected boolean testSeed(long seed) {
