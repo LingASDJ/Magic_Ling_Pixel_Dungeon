@@ -1499,6 +1499,9 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             resistances.add(Amok.class);
             lootChance=0f;
             maxLvl = -8848;
+            immunities.add(Burning.class);
+            immunities.add(HalomethaneBurning.class);
+            immunities.add(FrostBurning.class);
         }
         @Override
         public int damageRoll(){
@@ -1534,13 +1537,16 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
         {
             state = HUNTING;
-            this.HT = 20;
-            this.HP = 20;
+            this.HT = Statistics.deepestFloor * (Statistics.amuletObtained ? 8 : 4);
+            this.HP = Statistics.deepestFloor * (Statistics.amuletObtained ? 8 : 4);
             immunities.add(Corruption.class);
             resistances.add(Amok.class);
             lootChance=0f;
             maxLvl = -8848;
             spriteClass = ColdGuradCSprite.class;
+            immunities.add(Burning.class);
+            immunities.add(HalomethaneBurning.class);
+            immunities.add(FrostBurning.class);
         }
 
         @Override
