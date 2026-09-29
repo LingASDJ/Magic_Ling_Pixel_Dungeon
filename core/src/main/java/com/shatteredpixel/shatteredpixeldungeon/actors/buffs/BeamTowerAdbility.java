@@ -209,7 +209,7 @@ public class BeamTowerAdbility extends Buff {
 
                         Char ch = Actor.findChar( cell );
                         if (ch != null && !ch.isImmune(Fire.class)) {
-                            if(!(ch instanceof MagicGirlDead)){
+                            if(!(ch instanceof MagicGirlDead || ch instanceof FireMagicDied.ColdGuradB || ch instanceof FireMagicDied.ColdGuradC)){
                                 if (element == 0){
                                     Buff.affect( ch, FrostBurning.class ).reignite( ch );
                                 } else if (element == 1){
