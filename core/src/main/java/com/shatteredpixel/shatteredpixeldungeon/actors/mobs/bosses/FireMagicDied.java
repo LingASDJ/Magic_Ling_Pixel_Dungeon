@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
@@ -134,7 +135,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     public boolean allDead = false;
 
     //莲娜愤怒姿态时的特殊技能判定：true 时解锁「召唤系 + 喷火」怒之技
-    public boolean VeryAngry = false;
+    public boolean VeryAngry = true;
 
     @Override
     public int damageRoll() {
@@ -327,7 +328,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         return false;
     }
 
-    //献祭所有召唤物：每个召唤物在爆炸时对周围敌人造成伤害
+    //献祭所有召唤物：每个召唤物在爆炸时对周围敌人造成物理伤害
     private void sacrificeSubject(){
         for (Mob m : getSubjects()){
             for (int i : PathFinder.NEIGHBOURS8){
@@ -335,7 +336,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 Char ch = Actor.findChar(i+m.pos);
                 if (ch != null){
                     if (ch.alignment != Alignment.ENEMY){
-                        ch.damage(Random.IntRange(25, 36), m);
+                        ch.damage(Random.IntRange(25, 36), m, DamageType.PHYSICAL);
                         if (ch == Dungeon.hero && !ch.isAlive()){
                             Dungeon.fail(getClass());
                         }
@@ -491,6 +492,39 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     public boolean act() {
+
+        //安全兜底：莲娜已死（如临死反扑自杀）时立即结束回合，避免已移除实体继续执行技能
+        if (!isAlive()){
+            spend(TICK);
+            return true;
+        }
+
+        if(VeryAngry){
+            if (Dungeon.level.map[pos] == Terrain.WATER){
+                Level.set( pos, Terrain.EMPTY);
+                GameScene.updateMap( pos );
+                CellEmitter.get( pos ).burst( Speck.factory( Speck.STEAM ), 10 );
+            }
+
+            //1.67 evaporated tiles on average
+            int evaporatedTiles = Random.chances(new float[]{0, 1, 2});
+
+            for (int i = 0; i < evaporatedTiles; i++) {
+                int cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+                if (Dungeon.level.map[cell] == Terrain.WATER){
+                    Level.set( cell, Terrain.EMPTY);
+                    GameScene.updateMap( cell );
+                    CellEmitter.get( cell ).burst( Speck.factory( Speck.STEAM ), 10 );
+                }
+            }
+
+            for (int i : PathFinder.NEIGHBOURS9) {
+                int vol = Fire.volumeAt(pos+i, HalomethaneFire.class);
+                if (vol < 4 && !Dungeon.level.water[pos + i] && !Dungeon.level.solid[pos + i]){
+                    GameScene.add( Blob.seed( pos + i, 4 - vol, HalomethaneFire.class ) );
+                }
+            }
+        }
 
         if(allDead){
             immunities.add(Burning.class);
@@ -664,6 +698,8 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             yell( Messages.get(this, "losing") );
             die(Dungeon.hero);
             Dungeon.hero.interrupt();
+            //莲娜已在此处死亡（临死反扑自杀），立即结束回合，绝不能再执行后续怒之技/召唤/蓄力逻辑
+            return true;
         }
 
         //===== 怒之技：莲娜愤怒姿态（VeryAngry）时才能使用的特殊技能 =====

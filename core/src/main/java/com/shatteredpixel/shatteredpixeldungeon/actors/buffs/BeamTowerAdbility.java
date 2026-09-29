@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MagicGirlDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
@@ -208,12 +209,14 @@ public class BeamTowerAdbility extends Buff {
 
                         Char ch = Actor.findChar( cell );
                         if (ch != null && !ch.isImmune(Fire.class)) {
-                            if (element == 0){
-                                Buff.affect( ch, FrostBurning.class ).reignite( ch );
-                            } else if (element == 1){
-                                Buff.affect( ch, Burning.class ).reignite( ch );
-                            } else {
-                                Buff.affect( ch, HalomethaneBurning.class ).reignite( ch );
+                            if(!(ch instanceof MagicGirlDead)){
+                                if (element == 0){
+                                    Buff.affect( ch, FrostBurning.class ).reignite( ch );
+                                } else if (element == 1){
+                                    Buff.affect( ch, Burning.class ).reignite( ch );
+                                } else {
+                                    Buff.affect( ch, HalomethaneBurning.class ).reignite( ch );
+                                }
                             }
                         }
                         if (ch == Dungeon.hero){
