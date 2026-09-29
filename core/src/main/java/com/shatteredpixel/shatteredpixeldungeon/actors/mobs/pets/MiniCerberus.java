@@ -36,7 +36,7 @@ public class MiniCerberus extends Pets {
         closest = null;
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-            if(mob != null){
+            if(hero.fieldOfView != null){
                 // 这里原来是SLEEPING,而不是mob.SLEEPING，猜测意图是不对睡觉的怪狗叫，故改为后者
                 if (mob != this && mob.isAlive() && mob.state != mob.SLEEPING && hero.fieldOfView[mob.pos] && mob.alignment == Alignment.ENEMY && !mob.properties().contains(Property.PETS)){
                     closest = mob;
