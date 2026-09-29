@@ -673,12 +673,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 return true;
             }
 
-            //暴怒姿态·第一阶段：莲娜直接获得鬼磷精英
-            if (buff(ChampionEnemy.GhostPhos.class) == null){
-                Buff.affect(this, ChampionEnemy.GhostPhos.class);
-                sprite.showStatus(0xAAFF55, Messages.get(this, "ghostphos_gain"));
-            }
-
             if (abilityCooldown <= 0){
                 rollForAbility();
 
