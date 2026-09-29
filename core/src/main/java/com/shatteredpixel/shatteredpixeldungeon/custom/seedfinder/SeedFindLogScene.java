@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder;
 
 import com.badlogic.gdx.Gdx;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -220,6 +221,7 @@ public class SeedFindLogScene extends PixelScene {
 
                                 String winTitle = Messages.get(SeedFindLogScene.class, "window_title");
                                 ShatteredPixelDungeon.scene().addToFront(new WndError(Icons.CATALOG, winTitle, msg.toString()));
+                                SPDSettings.customSeed(finalRes.seedStr);
                             }
                         });
                     });
@@ -307,6 +309,8 @@ public class SeedFindLogScene extends PixelScene {
         SeedFinder.parallelFound = true;
         if (thread != null && thread.isAlive()) thread.interrupt();
         thread = null;
+        // 复位内存态种子，避免中断后残留覆盖正常游戏种子
+        Dungeon.overrideSeed = -1;
     }
 
     @Override

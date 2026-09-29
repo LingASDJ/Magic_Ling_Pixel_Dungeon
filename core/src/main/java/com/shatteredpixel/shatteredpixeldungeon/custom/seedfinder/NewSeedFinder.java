@@ -64,13 +64,18 @@ public class NewSeedFinder implements Runnable {
 
     @Override
     public void run() {
-        String str;
-        if (wantedArr.length == 0)
-            str = logSeedItems(DungeonSeed.convertFromText(SeedFindScene.seedCode));
-        else
-            str = findSeed();
-        SeedFindScene.INSTANCE.text = str;
-        SeedFindScene.INSTANCE.needUpdate = true;
+        try {
+            String str;
+            if (wantedArr.length == 0)
+                str = logSeedItems(DungeonSeed.convertFromText(SeedFindScene.seedCode));
+            else
+                str = findSeed();
+            SeedFindScene.INSTANCE.text = str;
+            SeedFindScene.INSTANCE.needUpdate = true;
+        } finally {
+            // 复位内存态种子，避免污染正常游戏
+            Dungeon.overrideSeed = -1;
+        }
     }
 
     public static volatile boolean running;
@@ -151,25 +156,30 @@ public class NewSeedFinder implements Runnable {
                 && running && SeedFinding; ++j) {
             long currentSeed = (start + j) % DungeonSeed.TOTAL_SEEDS;
 
-            if (SeedFindScene.INSTANCE != null)
-                SeedFindScene.INSTANCE.updateCurrentSeed(currentSeed);
-
-            // 10 连复查：命中目标必须落在该种子各楼层生成变体的交集内
-            boolean confirmed = true;
-            for (int r = 0; r < 10; r++) {
-                if (!testSeed(currentSeed)) {
-                    confirmed = false;
-                    break;
-                }
-            }
-            if (confirmed) {
-                result = logSeedItems(currentSeed);
-                break;
-            }
-
             if (Thread.currentThread().isInterrupted()) {
                 running = false;
                 break;
+            }
+
+            if (SeedFindScene.INSTANCE != null)
+                SeedFindScene.INSTANCE.updateCurrentSeed(currentSeed);
+
+            // 先单次命中，命中后才做 10 连复查（确认该种子多次生成结果一致）。
+            // 旧实现对每个候选种子都跑 10 次 testSeed，且每次 testSeed 都会触发一次
+            // Preferences 磁盘写，把搜索成本放大 10 倍以上——这是"看起来卡死、永不
+            // 完成"的直接原因之一。复查只应作用于首轮命中的种子。
+            if (testSeed(currentSeed)) {
+                boolean confirmed = true;
+                for (int r = 1; r < 10; r++) {
+                    if (!testSeed(currentSeed)) {
+                        confirmed = false;
+                        break;
+                    }
+                }
+                if (confirmed) {
+                    result = logSeedItems(currentSeed);
+                    break;
+                }
             }
         }
         SeedFinding = false;
@@ -296,7 +306,10 @@ public class NewSeedFinder implements Runnable {
     }
 
     private void initRunWithSeed(long seed) {
-        SPDSettings.customSeed(DungeonSeed.convertToCode(seed));
+        // 内存态种子：直接设置 Dungeon.overrideSeed，避免每次测试写 Preferences 磁盘 flush。
+        // Dungeon.init() 内部会重置 depth/branch/Quest 等静态状态，newLevel() 也会释放
+        // 上一层的引用，连续测试不会累积旧楼层对象。
+        Dungeon.overrideSeed = seed;
         GamesInProgress.selectedClass = heroClass;
         Dungeon.init();
     }
@@ -365,7 +378,9 @@ public class NewSeedFinder implements Runnable {
     protected String logSeedItems(long seed) {
         String seedCode = DungeonSeed.convertToCode(seed);
         SeedFindScene.seedCode = seedCode;
-        SPDSettings.customSeed(seedCode);
+        // 内存态种子：不写 Preferences（避免磁盘 IO），出口恢复调用前值
+        long prevOverride = Dungeon.overrideSeed;
+        Dungeon.overrideSeed = seed;
         GamesInProgress.selectedClass = heroClass;
         Dungeon.init();
         HashSet<Class<? extends Item>> blacklist = new HashSet<>(Arrays.asList(Dewdrop.class, IronKey.class, GoldenKey.class, CrystalKey.class, EnergyCrystal.class, CorpseDust.class, Embers.class, CeremonialCandle.class, Pickaxe.class));
@@ -523,6 +538,8 @@ public class NewSeedFinder implements Runnable {
 
         Dungeon.depth = 0;
         Dungeon.branch = 0;
+        Dungeon.level = null;
+        Dungeon.overrideSeed = prevOverride;
         return result.toString();
     }
 

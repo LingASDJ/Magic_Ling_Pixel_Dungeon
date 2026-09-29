@@ -1189,6 +1189,8 @@ public class SeedFindScene extends PixelScene {
         }
         NewSeedFinder.SeedFinding = false;
         NewSeedFinder.running = false;
+        // 复位内存态种子，避免中断后残留覆盖正常游戏种子
+        Dungeon.overrideSeed = -1;
     }
 
     // ======================== CreditsBlock（保留原样） ========================
