@@ -152,7 +152,12 @@ public class ShopGuardEye extends Statue {
     @Override
     public CharSprite sprite() {
         CharSprite sprite = super.sprite();
-        ((StatueSprite)sprite).setArmor(armor.tier);
+        if(armor != null){
+            ((StatueSprite)sprite).setArmor(armor.tier);
+        } else {
+            ((StatueSprite)sprite).setArmor(1);
+        }
+
         return sprite;
     }
 

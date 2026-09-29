@@ -151,7 +151,7 @@ public class Gregorian {
                         lunar.getDay() < 8 + MID_AUTUMN_POST_DAYS);
 
         if (isRegularMidAutumn) {
-            RegularLevel.ChinaHoliday h = RegularLevel.ChinaHoliday.GQJ;
+            RegularLevel.ChinaHoliday h = RegularLevel.ChinaHoliday.ZQJ;
             chinaHoliday = h;
             long endTs = calculateLunarEventEndTime(lunar, 8, 21);
             activeHolidayList.add(new HolidayMeta(h, endTs));

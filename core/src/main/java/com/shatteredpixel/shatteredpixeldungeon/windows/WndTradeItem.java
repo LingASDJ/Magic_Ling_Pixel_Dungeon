@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.shopOnLevel;
 
@@ -28,27 +29,38 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
 import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MerchantSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireMagicGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class WndTradeItem extends WndInfoItem {
 
@@ -217,7 +229,33 @@ public class WndTradeItem extends WndInfoItem {
 						for (Mob mob : Dungeon.level.mobs) {
 							if (mob instanceof Shopkeeper) {
 								mob.yell(Messages.get(mob, "thief"));
-								((Shopkeeper) mob).flee();
+								TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+								if (timeFreeze != null) timeFreeze.disarmPresses();
+								Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+								if (timeBubble != null) timeBubble.disarmPresses();
+								InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+								InterlevelScene.curTransition = new LevelTransition();
+								InterlevelScene.curTransition.destDepth = depth;
+								InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_EXIT;
+								InterlevelScene.curTransition.destBranch = 6;
+								InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_EXIT;
+								InterlevelScene.curTransition.centerCell = -1;
+								Game.switchScene(InterlevelScene.class);
+								Buff.affect(hero, Cost.class).set((6), 1);
+								Game.switchScene(InterlevelScene.class);
+								Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
+								Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
+
+								ArrayList<Ankh> ankh = hero.belongings.getAllItems(Ankh.class);
+								for (Ankh w : ankh.toArray(new Ankh[0])){
+									if(!w.spankh){
+										Dungeon.level.drop(w, hero.pos).sprite.drop();
+										w.detachAll(hero.belongings.backpack);
+									}
+								}
+
+								Statistics.fireGirlnoshopping = true;
+
 								break;
 							}
 						}
