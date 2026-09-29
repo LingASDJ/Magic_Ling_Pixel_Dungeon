@@ -389,6 +389,7 @@ public class DwarfGeneral extends Boss {
                     if(enemy != null){
                         enemy.damage(dmg*Random.NormalIntRange(1,3), new DM100.LightningBolt());
                         Buff.affect(enemy, Chill.class, 10f);
+                        Statistics.bossScores[4] -= 200;
                         yell(Messages.get(this, "spear_warn"));
                     }
                 }
@@ -1071,6 +1072,8 @@ public class DwarfGeneral extends Boss {
         Dungeon.level.drop( new CrystalKey( Dungeon.depth ).quantity(2), pos ).sprite.drop();
         Dungeon.level.drop( new SkeletonKey( Dungeon.depth ).quantity(1), pos ).sprite.drop();
         Dungeon.level.drop( new GoldenKey( Dungeon.depth ).quantity(1), pos ).sprite.drop();
+
+        Statistics.bossScores[4] += 7500;
 
         Badges.validateBossSlain();
 

@@ -32,8 +32,8 @@ public class ColdGurad extends Mob implements Callback {
     private boolean chainsUsed = false;
     //释放锁链前的预警状态：先预警一回合，再真正拖拽
     private boolean chainWarn = false;
-    //召唤缓冲：刚被召唤出来时暂不抓人（由召唤者设置）
-    private int chainGrace = 0;
+    //召唤缓冲：刚被召唤出来时暂不抓人
+    private int chainGrace = 5;
 
     {
         spriteClass = ColdGuardSprite.class;
