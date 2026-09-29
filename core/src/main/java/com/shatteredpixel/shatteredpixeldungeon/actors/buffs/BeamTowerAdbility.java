@@ -219,6 +219,7 @@ public class BeamTowerAdbility extends Buff {
                                 }
                             }
                         }
+
                         if (ch == Dungeon.hero){
                             Statistics.bossScores[3] -= 100;
                         }

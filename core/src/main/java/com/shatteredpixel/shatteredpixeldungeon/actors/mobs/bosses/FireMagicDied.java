@@ -85,7 +85,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireMagicGirlSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ThiefSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MurdererSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -94,6 +94,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
@@ -133,9 +134,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private int pumpedUp = 0;
 
     public boolean allDead = false;
-
-    //莲娜愤怒姿态时的特殊技能判定：true 时解锁「召唤系 + 喷火」怒之技
-    public boolean VeryAngry = true;
+    public boolean VeryAngry = Statistics.fireGirlnoshopping || DeviceCompat.isDebug();
 
     @Override
     public int damageRoll() {
@@ -1498,7 +1497,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             immunities.add(Corruption.class);
             resistances.add(Amok.class);
             lootChance=0f;
-            maxLvl = -8848;
+            maxLvl = -325;
             immunities.add(Burning.class);
             immunities.add(HalomethaneBurning.class);
             immunities.add(FrostBurning.class);
@@ -1521,20 +1520,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     public static class ColdGuradC extends Thief {
 
-        public static class ColdGuradCSprite extends ThiefSprite {
-
-            public ColdGuradCSprite(){
-                super();
-                tint(1, 1, 0, 0.2f);
-            }
-
-            @Override
-            public void resetColor() {
-                super.resetColor();
-                tint(1, 1, 0, 0.2f);
-            }
-        }
-
         {
             state = HUNTING;
             this.HT = Statistics.deepestFloor * (Statistics.amuletObtained ? 8 : 4);
@@ -1542,8 +1527,8 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             immunities.add(Corruption.class);
             resistances.add(Amok.class);
             lootChance=0f;
-            maxLvl = -8848;
-            spriteClass = ColdGuradCSprite.class;
+            maxLvl = -325;
+            spriteClass = MurdererSprite.class;
             immunities.add(Burning.class);
             immunities.add(HalomethaneBurning.class);
             immunities.add(FrostBurning.class);
