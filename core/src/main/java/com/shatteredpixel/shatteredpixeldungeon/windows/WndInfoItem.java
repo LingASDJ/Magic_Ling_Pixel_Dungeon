@@ -57,7 +57,12 @@ public class WndInfoItem extends Window {
 
 	private void fillFields(Heap heap) {
 		IconTitle iconTitle = new IconTitle(heap);
-		iconTitle.color(16777028);
+		if (heap.type == Heap.Type.FOR_SALE && heap.stealFails > 0){
+			//偷窃失败导致价格翻倍的物品标题显示红色；达到上限被商人禁锢的物品显示灰色
+			iconTitle.color(heap.stealRefused() ? 0x999999 : Window.R_COLOR);
+		} else {
+			iconTitle.color(16777028);
+		}
 		layoutFields(null, iconTitle, PixelScene.renderTextBlock(heap.info(), 6));
 	}
 

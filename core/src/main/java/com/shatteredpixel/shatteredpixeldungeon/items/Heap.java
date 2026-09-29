@@ -107,8 +107,22 @@ public class Heap implements Bundlable {
 	public boolean autoExplored = false; //used to determine if this heap should count for exploration bonus
 
 	public boolean hidden = false; //sets alpha to 15%
-	
+
+	//商店偷窃失败次数：每失败一次，价格上涨3倍（3倍/6倍/9倍，上限9倍）；达到上限后再次偷窃失败，物品将被摧毁
+	public int stealFails = 0;
+
 	public LinkedList<Item> items = new LinkedList<>();
+
+	//偷窃失败导致的价格倍率：0次=1倍，之后每失败一次上涨3倍，封顶9倍
+	public float stealPriceMultiplier(){
+		if (stealFails <= 0) return 1f;
+		return Math.min(9f, stealFails * 3f);
+	}
+
+	//是否已达到价格上限（9倍）：此时物品被商人禁锢，无法购买
+	public boolean stealRefused(){
+		return stealFails >= 3;
+	}
 	
 	public void open( Hero hero ) {
 		switch (type) {
@@ -422,7 +436,7 @@ public class Heap implements Bundlable {
 			case FOR_SALE:
 				Item i = peek();
 				if (size() == 1) {
-					return Messages.get(this, "for_sale", Shopkeeper.sellPrice(i), i.toString());
+					return Messages.get(this, "for_sale", (int) (Shopkeeper.sellPrice(i) * stealPriceMultiplier()), i.toString());
 				} else {
 					return i.toString();
 				}
@@ -504,7 +518,12 @@ public class Heap implements Bundlable {
 				return Messages.get(this, "remains_desc", new Object[0]);
 
 			default:
-				return peek().info();
+				String info = peek().info();
+				//偷窃失败导致价格翻倍的商店物品，在描述末尾追加商人的警告/禁锢文案
+				if (type == Type.FOR_SALE && stealFails > 0){
+					info += "\n\n" + Messages.get(this, stealRefused() ? "steal_sealed" : "steal_angry");
+				}
+				return info;
 		}
 	}
 
@@ -516,6 +535,7 @@ public class Heap implements Bundlable {
 
 	private static final String AUTO_EXPLORED	= "auto_explored";
 	private static final String HIDDEN	= "hidden";
+	private static final String STEAL_FAILS	= "steal_fails";
 	@SuppressWarnings("unchecked")
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
@@ -543,6 +563,7 @@ public class Heap implements Bundlable {
 		//SPD
 		autoExplored = bundle.getBoolean( AUTO_EXPLORED );
 		hidden = bundle.getBoolean( HIDDEN );
+		stealFails = bundle.contains( STEAL_FAILS ) ? bundle.getInt( STEAL_FAILS ) : 0;
 	}
 
 	@Override
@@ -556,6 +577,7 @@ public class Heap implements Bundlable {
 		//SPD
 		bundle.put( AUTO_EXPLORED, autoExplored );
 		bundle.put( HIDDEN, hidden );
+		bundle.put( STEAL_FAILS, stealFails );
 	}
 	
 }

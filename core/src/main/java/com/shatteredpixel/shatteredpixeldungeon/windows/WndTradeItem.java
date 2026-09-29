@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.shopOnLevel;
 
@@ -29,38 +28,27 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
 import com.shatteredpixel.shatteredpixeldungeon.items.thanks.DistressSignalNesting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MerchantSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireMagicGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Game;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 public class WndTradeItem extends WndInfoItem {
 
@@ -157,15 +145,17 @@ public class WndTradeItem extends WndInfoItem {
 		float pos = height;
 
 		// ========== 修复：购买按钮显示价格同步固定1500逻辑 ==========
+		// 偷窃失败会使物品价格翻倍（3倍/9倍，上限9倍）；达到上限后物品被商人禁锢，无法购买
+		boolean stealRefused = heap.stealRefused();
 		int price;
 		if (item instanceof DistressSignalNesting) {
 			price = ((DistressSignalNesting) item).shopValue();
 		} else {
 			int basePrice = Shopkeeper.sellPrice(item);
-			price = (int) (basePrice * priceMulti);
+			price = (int) (basePrice * priceMulti * heap.stealPriceMultiplier());
 		}
 
-		RedButton btnBuy = new RedButton( Messages.get(this, "buy", price) ) {
+		RedButton btnBuy = new RedButton( stealRefused ? Messages.get(this, "refused") : Messages.get(this, "buy", price) ) {
 			@Override
 			protected void onClick() {
 				hide();
@@ -174,7 +164,7 @@ public class WndTradeItem extends WndInfoItem {
 		};
 		btnBuy.setRect( 0, pos + GAP, width, BTN_HEIGHT );
 		btnBuy.icon(new ItemSprite(ItemSpriteSheet.GOLD));
-		btnBuy.enable( price <= Dungeon.gold );
+		btnBuy.enable( !stealRefused && price <= Dungeon.gold );
 		add( btnBuy );
 
 		pos = btnBuy.bottom();
@@ -226,37 +216,21 @@ public class WndTradeItem extends WndInfoItem {
 							Dungeon.level.drop(item, heap.pos).sprite.drop();
 						}
 					} else {
+						//偷窃失败：物品价格上涨3倍（3倍/6倍/9倍，上限9倍），达到上限后再次失败物品将被摧毁
+						heap.stealFails++;
+						if (heap.stealFails >= 4) {
+							GLog.n(Messages.get(Heap.class, "steal_destroyed"));
+							heap.destroy();
+						} else if (heap.stealFails == 1) {
+							GLog.w(Messages.get(Heap.class, "steal_price_up"));
+						} else if (heap.stealFails == 2) {
+							GLog.w(Messages.get(Heap.class, "steal_price_mid"));
+						} else {
+							GLog.w(Messages.get(Heap.class, "steal_price_max"));
+						}
 						for (Mob mob : Dungeon.level.mobs) {
 							if (mob instanceof Shopkeeper) {
 								mob.yell(Messages.get(mob, "thief"));
-								TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-								if (timeFreeze != null) timeFreeze.disarmPresses();
-								Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-								if (timeBubble != null) timeBubble.disarmPresses();
-								InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-								InterlevelScene.curTransition = new LevelTransition();
-								InterlevelScene.curTransition.destDepth = depth;
-								InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_EXIT;
-								InterlevelScene.curTransition.destBranch = 6;
-								InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_EXIT;
-								InterlevelScene.curTransition.centerCell = -1;
-								Game.switchScene(InterlevelScene.class);
-								Buff.affect(hero, Cost.class).set((6), 1);
-								Game.switchScene(InterlevelScene.class);
-								Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
-								Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
-
-								ArrayList<Ankh> ankh = hero.belongings.getAllItems(Ankh.class);
-								for (Ankh w : ankh.toArray(new Ankh[0])){
-									if(!w.spankh){
-										Dungeon.level.drop(w, hero.pos).sprite.drop();
-										w.detachAll(hero.belongings.backpack);
-									}
-								}
-
-								Statistics.fireGirlnoshopping = true;
-
-								break;
 							}
 						}
 						hide();
@@ -265,9 +239,13 @@ public class WndTradeItem extends WndInfoItem {
 			};
 			btnSteal.setRect(0, pos + 1, width, BTN_HEIGHT);
 			btnSteal.icon(new ItemSprite(ItemSpriteSheet.ARTIFACT_ARMBAND));
-			add(btnSteal);
+			if(!stealRefused){
+				add(btnSteal);
+				pos = btnSteal.bottom();
+			}
 
-			pos = btnSteal.bottom();
+
+
 
 		}
 
@@ -349,7 +327,7 @@ public class WndTradeItem extends WndInfoItem {
 			price = ((DistressSignalNesting) item).shopValue();
 		} else {
 			int basePrice = Shopkeeper.sellPrice(item);
-			price = (int) (basePrice * priceMulti);
+			price = (int) (basePrice * priceMulti * heap.stealPriceMultiplier());
 		}
 
 		if(hero.belongings.getItem(LuckyGlove.class)!=null && Random.Float()>0.85f) {
