@@ -389,6 +389,15 @@ public class Dungeon {
 	public static String customSeedText = "";
 	public static long seed;
 
+	/**
+	 * 内存态种子覆盖（查种器专用）。
+	 * 查种循环会频繁切换种子，若每次都写入 SPDSettings(Preferences) 并 flush 磁盘，
+	 * 每个种子一次 IO 会把搜索拖到几乎无法推进（表现为"卡死"）。
+	 * 设置本字段后 init() 优先使用它（不写 Preferences）；-1 表示未启用。
+	 * 查种结束（含中断）必须复位为 -1，避免污染正常游戏。
+	 */
+	public static long overrideSeed = -1;
+
 	//we initialize the seed separately so that things like interlevelscene can access it early
 	public static void initSeed(){
 		if (!SPDSettings.customSeed().isEmpty()){
@@ -906,7 +915,11 @@ public class Dungeon {
 		mobsToStateLing = -1;
 
 
-		if (!SPDSettings.customSeed().isEmpty()) {
+		if (overrideSeed >= 0) {
+			// 查种器内存态种子：避免每次测试写 Preferences 造成磁盘 IO 卡死
+			customSeedText = DungeonSeed.convertToCode(overrideSeed);
+			seed = overrideSeed;
+		} else if (!SPDSettings.customSeed().isEmpty()) {
 			customSeedText = SPDSettings.customSeed();
 			seed = DungeonSeed.convertFromText(customSeedText);
 		} else if(Dungeon.daily || Dungeon.dailyReplay){
