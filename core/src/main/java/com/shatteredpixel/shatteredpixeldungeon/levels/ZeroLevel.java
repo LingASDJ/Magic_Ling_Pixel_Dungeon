@@ -208,7 +208,7 @@ public class ZeroLevel extends Level {
             drop( new ElixirOfNukeCole(), 644 );
             new Ankh(true).collect();
             drop( new ElixirOfNukeCole(), 681  );
-            Prop p1 = Prop.randomPropA(0,false);
+            Prop p1 = Prop.randomPropA(0,true);
             drop(p1, 718);
         }
 
