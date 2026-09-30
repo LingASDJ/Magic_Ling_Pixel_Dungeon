@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -50,8 +52,6 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-
-import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 public class MasterThievesArmband extends Artifact {
 
@@ -299,6 +299,8 @@ public class MasterThievesArmband extends Artifact {
 			int chargesUsed = chargesToUse(item);
 			float stealChance = stealChance(item);
 			if (Random.Float() > stealChance){
+				charge -= chargesUsed;
+				updateQuickslot();
 				return false;
 			} else {
 				charge -= chargesUsed;
