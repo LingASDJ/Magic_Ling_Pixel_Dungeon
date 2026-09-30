@@ -199,6 +199,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     //===== 暴怒姿态三阶段：鬼磷精英 / 红莲真火 / 天火 ===== 
     private int redLotusCharge = 0;                                       //红莲真火蓄力回合数（>0 表示蓄力中）
     private int redLotusCooldown = 0;                                     //红莲真火冷却回合数（40-80，冷却期内不再触发）
+    private int skyFireCooldown = 0;                                      //天火冷却回合数（15-27，冷却期内不再触发）
     private ArrayList<Integer> pendingCorePositions = null;               //读档暂存的核心位置（首回合重挂引用）
     private ArrayList<TurbidFlameCore> redLotusCores = new ArrayList<>(); //红莲真火的两个浊焰核心
     private int skyFireCharge = 0;                                        //天火蓄力回合数（>0 表示蓄力中）
@@ -361,10 +362,10 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         lastAbility = NONE;
     }
 
-    //怒之技按阶段限定：红莲真火仅第二阶段且需度过冷却、天火仅第三阶段
+    //怒之技按阶段限定：红莲真火仅第二阶段且需度过冷却、天火仅第三阶段且需度过冷却
     private boolean isAbilityAllowed(int ability){
         if (ability == HONGLIAN) return phase == 2 && redLotusCooldown <= 0;
-        if (ability == SKYFIRE) return phase == 3;
+        if (ability == SKYFIRE) return phase == 3 && skyFireCooldown <= 0;
         return true;
     }
     private void resetChanceMap(){
@@ -533,6 +534,11 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         //红莲真火冷却递减（冷却期内不再触发红莲业火）
         if (redLotusCooldown > 0){
             redLotusCooldown--;
+        }
+
+        //天火冷却递减（冷却期内不再触发天火）
+        if (skyFireCooldown > 0){
+            skyFireCooldown--;
         }
 
         //读档后重挂浊焰核心引用（核心实体由 Level.mobs 恢复流程自动重建，这里只找回来）
@@ -758,6 +764,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 } else if (lastAbility == SKYFIRE){
                     if (castSkyFire()){
                         abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                        skyFireCooldown = Random.NormalIntRange(15, 27);
                     }
                     spend(TICK);
                     return true;
@@ -857,7 +864,9 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private void releaseRedLotus(){
 
         Sample.INSTANCE.play(Assets.Sounds.BLAST);
+        Sample.INSTANCE.play(Assets.Sounds.MINE, 1f, Random.Float(0.85f, 1.15f));
         Camera.main.shake(4f, 1f);
+        GameScene.flash(0x80FF0000);
 
         Char h = Dungeon.hero;
         if (h != null && h.isAlive()){
@@ -871,13 +880,19 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 h.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "redlotus_hit"));
                 h.sprite.burst(0xFF0000, 10);
             }
+            CellEmitter.center(h.pos).burst(Speck.factory(Speck.ROCK), 12);
+            CellEmitter.center(h.pos).burst(Speck.factory(Speck.INFERNO), 10);
+            CellEmitter.center(h.pos).burst(Speck.factory(Speck.DUST), 8);
         }
 
         for (TurbidFlameCore core : redLotusCores.toArray(new TurbidFlameCore[0])){
             if (core.isAlive()){
+                CellEmitter.center(core.pos).burst(Speck.factory(Speck.ROCK), 10);
+                CellEmitter.center(core.pos).burst(Speck.factory(Speck.INFERNO), 8);
                 core.die(this);
             }
         }
+        new Flare(8, 48).color(0xFF2200, true).show(sprite, 2f);
         redLotusCores.clear();
         redLotusCharge = 0;
         //释放完成，进入长冷却（40-80 回合）
@@ -969,7 +984,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             GameScene.add(Blob.seed(c, 3, HalomethaneFire.class));
             Char ch = Actor.findChar(c);
             if (ch != null && ch.alignment != Alignment.ENEMY){
-                ch.damage(Random.IntRange(20, 35), this, DamageType.REAL);
+                ch.damage(Random.IntRange(15, 35), this, DamageType.REAL);
                 Buff.affect(ch, HalomethaneBurning.class).reignite(ch, 8f);
                 ch.sprite.burst(0xFFAA00, 8);
                 if (ch == Dungeon.hero && !ch.isAlive()){
@@ -997,6 +1012,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private static final String SKY_FIRE_CHARGE = "sky_fire_charge";
     private static final String SKY_FIRE_CELLS = "sky_fire_cells";
     private static final String SKY_FIRE_ANGLE = "sky_fire_angle";
+    private static final String SKY_FIRE_COOLDOWN = "sky_fire_cooldown";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -1042,6 +1058,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             bundle.put(SKY_FIRE_CELLS, skyArr);
         }
         bundle.put(SKY_FIRE_ANGLE, skyFireAngle);
+        bundle.put(SKY_FIRE_COOLDOWN, skyFireCooldown);
     }
 
     @Override
@@ -1085,6 +1102,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             for (int p : skyArr) skyFireCells.add(p);
         }
         skyFireAngle = bundle.getFloat(SKY_FIRE_ANGLE);
+        skyFireCooldown = bundle.getInt(SKY_FIRE_COOLDOWN);
     }
 
 
