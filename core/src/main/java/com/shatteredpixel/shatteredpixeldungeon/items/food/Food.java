@@ -116,9 +116,10 @@ public class Food extends Item {
 	
 	protected void satisfy( Hero hero ){
 		float foodVal = energy;
-		if (Dungeon.isChallenged(Challenges.NO_FOOD)){
+		if (Dungeon.isChallenged(Challenges.NO_FOOD)) {
 			foodVal /= 3f;
-		} else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.GQJ) {
+		}
+		if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.GQJ) {
 			foodVal += 30f;
 		}
 

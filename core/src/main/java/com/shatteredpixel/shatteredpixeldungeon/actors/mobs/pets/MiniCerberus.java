@@ -5,7 +5,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
@@ -37,23 +36,22 @@ public class MiniCerberus extends Pets {
         closest = null;
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-            if (mob != this && mob.isAlive()
-                    && mob.state != mob.SLEEPING  // 这里原来是SLEEPING,而不是mob.SLEEPING，猜测意图是不对睡觉的怪狗叫，故改为后者
-                    && hero.fieldOfView[mob.pos]
-                    && mob.alignment == Alignment.ENEMY
-                    && !mob.properties().contains(Char.Property.PETS)){
-                closest = mob;
-                // 换层时，时钟重置带来的大数CD问题
-                if (lastWoofTime > Actor.now()) lastWoofTime = -999f;
-                if (Actor.now() - lastWoofTime >= WOOF_COOLDOWN
-                        && Dungeon.level.distance(pos, mob.pos) < 3){
+            if(hero.fieldOfView != null){
+                // 这里原来是SLEEPING,而不是mob.SLEEPING，猜测意图是不对睡觉的怪狗叫，故改为后者
+                if (mob != this && mob.isAlive() && mob.state != mob.SLEEPING && hero.fieldOfView[mob.pos] && mob.alignment == Alignment.ENEMY && !mob.properties().contains(Property.PETS)){
+                    closest = mob;
+                    // 换层时，时钟重置带来的大数CD问题
+                    if (lastWoofTime > Actor.now()) lastWoofTime = -999f;
+                    if (Actor.now() - lastWoofTime >= WOOF_COOLDOWN
+                            && Dungeon.level.distance(pos, mob.pos) < 3){
 
-                    ((MiniCerberusBossSprites)sprite).dogWoof( closest.pos );
-                    Sample.INSTANCE.play( Assets.Sounds.DOGWOOF );
+                        ((MiniCerberusBossSprites)sprite).dogWoof( closest.pos );
+                        Sample.INSTANCE.play( Assets.Sounds.DOGWOOF );
 
-                    lastWoofTime = Actor.now();
-                    didWoof = true;
-                    break;
+                        lastWoofTime = Actor.now();
+                        didWoof = true;
+                        break;
+                    }
                 }
             }
         }

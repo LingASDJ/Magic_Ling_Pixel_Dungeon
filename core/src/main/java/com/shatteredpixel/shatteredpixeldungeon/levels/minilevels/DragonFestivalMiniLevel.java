@@ -52,39 +52,47 @@ public class DragonFestivalMiniLevel extends CavesLevel {
         ArrayList<Item> bonesItems = Bones.get();
         if (bonesItems != null) {
             int cell = randomDropCell();
-            if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
-                map[cell] = Terrain.GRASS;
-                losBlocking[cell] = false;
-            }
-            for (Item i : bonesItems) {
-                drop(i, cell).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            if (cell != -1){
+                if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+                    map[cell] = Terrain.GRASS;
+                    losBlocking[cell] = false;
+                }
+                for (Item i : bonesItems) {
+                    drop(i, cell).setHauntedIfCursed().type = Heap.Type.REMAINS;
+                }
             }
         }
         Random.popGenerator();
 
         int cell = randomDropCell();
-        if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
-            map[cell] = Terrain.GRASS;
-            losBlocking[cell] = false;
-        }
-        drop( Generator.randomUsingDefaults(Generator.Category.FOOD), cell );
-        if (Blacksmith.Quest.Type() == Blacksmith.Quest.GNOLL){
-            //drop a second ration for the gnoll quest type, more mining required!
-            cell = randomDropCell();
+        if (cell != -1){
             if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
                 map[cell] = Terrain.GRASS;
                 losBlocking[cell] = false;
             }
             drop( Generator.randomUsingDefaults(Generator.Category.FOOD), cell );
         }
+        if (Blacksmith.Quest.Type() == Blacksmith.Quest.GNOLL){
+            //drop a second ration for the gnoll quest type, more mining required!
+            cell = randomDropCell();
+            if (cell != -1){
+                if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+                    map[cell] = Terrain.GRASS;
+                    losBlocking[cell] = false;
+                }
+                drop( Generator.randomUsingDefaults(Generator.Category.FOOD), cell );
+            }
+        }
 
         if (Dungeon.isChallenged(Challenges.DARKNESS)){
             cell = randomDropCell();
-            if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
-                map[cell] = Terrain.GRASS;
-                losBlocking[cell] = false;
+            if (cell != -1){
+                if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+                    map[cell] = Terrain.GRASS;
+                    losBlocking[cell] = false;
+                }
+                drop( new Torch(), cell );
             }
-            drop( new Torch(), cell );
         }
     }
     @Override

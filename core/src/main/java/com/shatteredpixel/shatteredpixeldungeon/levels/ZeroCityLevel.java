@@ -700,11 +700,11 @@ public class ZeroCityLevel extends Level {
         }
 
         if(RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY){
-            drop( new ElixirOfNukeCole(), 130  );
+            drop( new ElixirOfNukeCole(), 609 );
             new Ankh(true).collect();
-            drop( new ElixirOfNukeCole(), 132  );
+            drop( new ElixirOfNukeCole(), 611  );
             Prop p1 = Prop.randomPropA(0,false);
-            p1.collect();
+            drop(p1, 647);
         }
 
         if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ){

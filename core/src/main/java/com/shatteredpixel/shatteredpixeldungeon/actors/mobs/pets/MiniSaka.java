@@ -19,7 +19,6 @@ public class MiniSaka extends Pets {
         spriteClass = MiniSakaFishBossSprites.class;
         WANDERING = new Wandering();
         defenseSkill = 15;
-        noALLY = true;
     }
 
     @Override

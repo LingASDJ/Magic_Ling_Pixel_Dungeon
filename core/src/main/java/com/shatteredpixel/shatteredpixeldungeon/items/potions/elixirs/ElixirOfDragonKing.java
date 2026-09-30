@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HaloFireImBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 
@@ -47,7 +48,7 @@ public class ElixirOfDragonKing extends Elixir {
     @Override
     public void apply(Hero hero) {
         // 为英雄添加蓝色火焰光环效果，持续时间为HaloFireImBlue.DURATION
-        Buff.affect(hero, HaloFireImBlue.class).set(HaloFireImBlue.DURATION);
+        Buff.affect(hero, HaloFireImBlue.class).set(50f);
         // 播放燃烧音效
         Sample.INSTANCE.play( Assets.Sounds.BURNING );
         // 生成10个火焰粒子效果
@@ -61,6 +62,20 @@ public class ElixirOfDragonKing extends Elixir {
     @Override
     protected int splashColor() {
         return 0xFFFF002A;
+    }
+
+    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
+
+        {
+            inputs =  new Class[]{PotionOfDragonKingBreath.class};
+            inQuantity = new int[]{1};
+
+            cost = 10;
+
+            output = ElixirOfDragonKing.class;
+            outQuantity = 1;
+        }
+
     }
 
     /**

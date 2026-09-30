@@ -144,6 +144,14 @@ public class CrystalDiedTower extends Mob implements Mob.NoMobSpawn {
     @Override
     protected boolean act(){
 
+        //红莲真火蓄力期间，莲娜进入绝招蓄力阶段，塔暂停一切激光
+        for (Mob m : Dungeon.level.mobs){
+            if (m instanceof FireMagicDied && ((FireMagicDied) m).isRedLotusCharging()){
+                spend(TICK);
+                return true;
+            }
+        }
+
         State s = countDown();
         if(s == State.SHOOTING) {
             zapProc();

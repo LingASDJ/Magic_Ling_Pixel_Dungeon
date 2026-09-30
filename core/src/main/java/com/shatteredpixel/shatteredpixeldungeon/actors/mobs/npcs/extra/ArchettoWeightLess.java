@@ -12,8 +12,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfAwareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.FiveYearsNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.fiveyears.ArchettoWeightLessPlot;
@@ -34,9 +34,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.TimeFlower;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDivination;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfGolems;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -187,7 +187,7 @@ public class ArchettoWeightLess extends FiveYearsNPC {
 
         @Override
         public void onSelect(Item item) {
-            if(item instanceof ScrollOfRoseShiled || item instanceof ScrollOfFlameCursed || item instanceof ScrollOfGolems){
+            if(item instanceof ScrollOfRoseShiled || item instanceof ScrollOfFlameCursed || item instanceof ExoticScroll && !(item instanceof ScrollOfEnchantment) || item instanceof ScrollOfSoul){
                 PotionOfHealing.cure( hero );
                 hero.belongings.uncurseEquipped();
                 hero.buff( Hunger.class ).satisfy( Hunger.STARVING );
@@ -250,7 +250,7 @@ public class ArchettoWeightLess extends FiveYearsNPC {
                                                    hero.spend( Actor.TICK );
                                                    hero.busy();
                                                    hero.sprite.operate( hero.pos );
-                                                   Buff.affect(hero,Paralysis.class,100f);
+                                                   Buff.affect(hero, Invulnerability.class,100f);
                                                    rd = false;
                                                } else if(index == 2){
                                                    hide();

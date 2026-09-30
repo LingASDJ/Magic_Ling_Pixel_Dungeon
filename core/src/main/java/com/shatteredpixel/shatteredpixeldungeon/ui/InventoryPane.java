@@ -111,6 +111,9 @@ public class InventoryPane extends Component {
 
 	public static Bag lastBag;
 
+	// 记录当前正在显示的背包，用于判断是否发生了背包切换
+	private Bag displayedBag = null;
+
 	private boolean lastEnabled = true;
 
 	private static Image crossB;
@@ -139,6 +142,7 @@ public class InventoryPane extends Component {
 			targetingSlot = null;
 			lastTarget = null;
 		}
+		displayedBag = null;
 		if (equipped != null) {
 			equipped.clear();
 			equipped = null;
@@ -349,11 +353,12 @@ public class InventoryPane extends Component {
 	}
 
 	private void layoutBagScrollPane() {
+		// 先按可见槽位数确定容器（内容）尺寸，再 setRect 触发 ScrollPane.layout()，
+		// 这样 thumb 的显示判断与滚动钳制使用的是本次的最新内容高度
+		layoutBagSlotsInContainer();
 		// 设置滚动窗格的位置和大小
 		bagScrollPane.setRect(x + 4, y + 4 + SLOT_HEIGHT + 1,
 				WIDTH - 8, SCROLL_PANE_HEIGHT);
-		// 布局背包容器中的格子
-		layoutBagSlotsInContainer();
 	}
 
 	private void layoutBagSlotsInContainer() {
@@ -363,19 +368,27 @@ public class InventoryPane extends Component {
 		float top = 0;
 		int slotsPerRow = SLOTS_PER_ROW;
 
+		// 只布局可见槽位；槽位池中隐藏的多余槽位不参与布局
+		int totalSlots = 0;
+		for (InventorySlot slot : bagItems) {
+			if (slot.visible) totalSlots++;
+		}
+		if (totalSlots == 0) return;
+
 		// 计算需要的行数
-		int totalSlots = bagItems.size();
 		int rows = (int) Math.ceil((double) totalSlots / slotsPerRow);
 
 		// 设置容器的大小
 		bagContainer.setSize(WIDTH - 8, rows * (SLOT_HEIGHT + 1));
 
-		for (int i = 0; i < totalSlots; i++) {
+		int laidOut = 0;
+		for (int i = 0; i < bagItems.size(); i++) {
 			InventorySlot slot = bagItems.get(i);
-			slot.visible = true;
+			if (!slot.visible) continue;
 			slot.setRect(left, top, SLOT_WIDTH, SLOT_HEIGHT);
 			left += SLOT_WIDTH + 1;
-			if ((i + 1) % slotsPerRow == 0) {
+			laidOut++;
+			if (laidOut % slotsPerRow == 0) {
 				left = 0;
 				top += SLOT_HEIGHT + 1;
 			}
@@ -459,14 +472,34 @@ public class InventoryPane extends Component {
 
 	//更新背包中的物品
 	private void updateBagItems() {
-		// 清空现有格子
-		for (InventorySlot slot : bagItems) {
-			slot.destroy();
-		}
-		bagItems.clear();
-		bagContainer.clear();
+		// 复用槽位而非每次销毁重建。
+		// 原因：销毁重建会移除旧槽位 hotArea 的指针监听器；若物品显示刷新
+		// （Item.updateQuickslot() -> GameScene.updateItemDisplays -> refresh()）
+		// 恰好发生在一次点击的 DOWN 与 UP 之间，UP 事件将无人处理而被静默丢弃，
+		// 表现为部分存档中背包槽位点击无任何响应，而顶部按钮（常驻不复用）正常。
+		int targetSlots = lastBag == null ? 0 : lastBag.capacity();
 
-		bagScrollPane.scrollTo(0, 0);
+		// 确保槽位池足够（只增不减）
+		while (bagItems.size() < targetSlots) {
+			InventorySlot slot = new InventoryPaneSlot(null);
+			bagItems.add(slot);
+			bagContainer.add(slot);
+		}
+		// 新槽位的 hotArea 会压到指针事件监听队列前面，
+		// 重新把滚动控制器提升到队列最前，保证拖拽滚动始终可用
+		bagScrollPane.refreshPointerPriority();
+		// 若容量缩小导致池中槽位过多，隐藏多余槽位
+		for (int i = targetSlots; i < bagItems.size(); i++) {
+			bagItems.get(i).visible = false;
+		}
+
+		// 仅在真正切换了显示的背包时才把滚动位置重置回顶部；
+		// 普通物品刷新（拾取/数量/充能/耐久变化触发 updateInventory）必须保留用户已滚到的位置，
+		// 否则每次刷新滚动都会被打断回顶，表现为"滚动坏了"
+		if (lastBag != displayedBag) {
+			bagScrollPane.scrollTo(0, 0);
+			displayedBag = lastBag;
+		}
 
 		if (lastBag == null) {
 			return;
@@ -479,20 +512,15 @@ public class InventoryPane extends Component {
 			items.add(0, stuff.secondWep);
 		}
 
-		// 动态创建格子
 		int slotsToCreate = Math.min(lastBag.capacity(), items.size());
-		for (int i = 0; i < slotsToCreate; i++) {
-			InventorySlot slot = new InventoryPaneSlot(items.get(i));
-			bagItems.add(slot);
-			bagContainer.add(slot);
-		}
-
-		// 如果背包容量大于当前物品数量，创建空格子
-		if (lastBag.capacity() > items.size()) {
-			for (int i = items.size(); i < lastBag.capacity(); i++) {
-				InventorySlot slot = new InventoryPaneSlot(null);
-				bagItems.add(slot);
-				bagContainer.add(slot);
+		for (int i = 0; i < targetSlots; i++) {
+			InventorySlot slot = bagItems.get(i);
+			slot.visible = true;
+			if (i < slotsToCreate) {
+				slot.item(items.get(i));
+			} else {
+				// 空槽位
+				slot.item(null);
 			}
 		}
 	}
@@ -744,6 +772,7 @@ public class InventoryPane extends Component {
 
 	private void resetToDefaultState() {
 		lastBag = Dungeon.hero.belongings.backpack;
+		displayedBag = null;
 		currentPage = 0;
 		selector = null;
 	}
@@ -780,6 +809,9 @@ public class InventoryPane extends Component {
 
 		@Override
 		protected void onClick() {
+			//拖动滚动结束时指针抬起，本次"点击"应被忽略
+			if (bagScrollPane.wasDragging()) return;
+
 			if (lastBag != item && !lastBag.contains(item) && !item.isEquipped(Dungeon.hero)){
 				updateInventory();
 				return;
@@ -816,6 +848,9 @@ public class InventoryPane extends Component {
 
 		@Override
 		protected boolean onLongClick() {
+			//正在拖拽滚动时，吞掉长按，避免误触快捷栏设置/信息窗
+			if (bagScrollPane.isDragging()) return true;
+
 			if (selector == null && item.defaultAction() != null) {
 				QuickSlotButton.set( item );
 				return true;
@@ -830,6 +865,8 @@ public class InventoryPane extends Component {
 
 		@Override
 		protected void onMiddleClick() {
+			if (bagScrollPane.wasDragging()) return;
+
 			if (lastBag != item && !lastBag.contains(item) && !item.isEquipped(Dungeon.hero)){
 				updateInventory();
 				return;
@@ -859,6 +896,8 @@ public class InventoryPane extends Component {
 
 		@Override
 		protected void onRightClick() {
+			if (bagScrollPane.wasDragging()) return;
+
 			if (lastBag != item && !lastBag.contains(item) && !item.isEquipped(Dungeon.hero)){
 				updateInventory();
 				return;
@@ -951,6 +990,8 @@ public class InventoryPane extends Component {
 
 		@Override
 		protected void onClick() {
+			//拖动滚动结束时指针抬起，本次"点击"应被忽略
+			if (bagScrollPane.wasDragging()) return;
 			super.onClick();
 			GameScene.cancel();
 			lastBag = bag;
@@ -1037,6 +1078,8 @@ public class InventoryPane extends Component {
 
 		@Override
 		protected void onClick() {
+			//拖动滚动结束时指针抬起，本次"点击"应被忽略
+			if (bagScrollPane.wasDragging()) return;
 			nextPage();
 		}
 

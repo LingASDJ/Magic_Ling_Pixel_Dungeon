@@ -623,6 +623,9 @@ public class Assets {
 		public static final String LN = "splashes/ln_portraits.png";
 		public static final String WTX = "splashes/yan_portraits.png";
 		public static final String JIT = "splashes/JIT_portraits.png";
+		public static final String LENA = "splashes/Lena_portraits.png";
+		public static final String WINTERBELL = "splashes/winter_bell_portraits.png";
+		public static final String SERENE	= "splashes/serene_portraits.png";
 
 		public static final String MOON = "splashes/moon_portraits.png";
 

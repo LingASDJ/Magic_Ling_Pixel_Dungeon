@@ -145,15 +145,17 @@ public class WndTradeItem extends WndInfoItem {
 		float pos = height;
 
 		// ========== 修复：购买按钮显示价格同步固定1500逻辑 ==========
+		// 偷窃失败会使物品价格翻倍（3倍/9倍，上限9倍）；达到上限后物品被商人禁锢，无法购买
+		boolean stealRefused = heap.stealRefused();
 		int price;
 		if (item instanceof DistressSignalNesting) {
 			price = ((DistressSignalNesting) item).shopValue();
 		} else {
 			int basePrice = Shopkeeper.sellPrice(item);
-			price = (int) (basePrice * priceMulti);
+			price = (int) (basePrice * priceMulti * heap.stealPriceMultiplier());
 		}
 
-		RedButton btnBuy = new RedButton( Messages.get(this, "buy", price) ) {
+		RedButton btnBuy = new RedButton( stealRefused ? Messages.get(this, "refused") : Messages.get(this, "buy", price) ) {
 			@Override
 			protected void onClick() {
 				hide();
@@ -162,7 +164,7 @@ public class WndTradeItem extends WndInfoItem {
 		};
 		btnBuy.setRect( 0, pos + GAP, width, BTN_HEIGHT );
 		btnBuy.icon(new ItemSprite(ItemSpriteSheet.GOLD));
-		btnBuy.enable( price <= Dungeon.gold );
+		btnBuy.enable( !stealRefused && price <= Dungeon.gold );
 		add( btnBuy );
 
 		pos = btnBuy.bottom();
@@ -214,11 +216,21 @@ public class WndTradeItem extends WndInfoItem {
 							Dungeon.level.drop(item, heap.pos).sprite.drop();
 						}
 					} else {
+						//偷窃失败：物品价格上涨3倍（3倍/6倍/9倍，上限9倍），达到上限后再次失败物品将被摧毁
+						heap.stealFails++;
+						if (heap.stealFails >= 4) {
+							GLog.n(Messages.get(Heap.class, "steal_destroyed"));
+							heap.destroy();
+						} else if (heap.stealFails == 1) {
+							GLog.w(Messages.get(Heap.class, "steal_price_up"));
+						} else if (heap.stealFails == 2) {
+							GLog.w(Messages.get(Heap.class, "steal_price_mid"));
+						} else {
+							GLog.w(Messages.get(Heap.class, "steal_price_max"));
+						}
 						for (Mob mob : Dungeon.level.mobs) {
 							if (mob instanceof Shopkeeper) {
 								mob.yell(Messages.get(mob, "thief"));
-								((Shopkeeper) mob).flee();
-								break;
 							}
 						}
 						hide();
@@ -227,9 +239,13 @@ public class WndTradeItem extends WndInfoItem {
 			};
 			btnSteal.setRect(0, pos + 1, width, BTN_HEIGHT);
 			btnSteal.icon(new ItemSprite(ItemSpriteSheet.ARTIFACT_ARMBAND));
-			add(btnSteal);
+			if(!stealRefused){
+				add(btnSteal);
+				pos = btnSteal.bottom();
+			}
 
-			pos = btnSteal.bottom();
+
+
 
 		}
 
@@ -311,7 +327,7 @@ public class WndTradeItem extends WndInfoItem {
 			price = ((DistressSignalNesting) item).shopValue();
 		} else {
 			int basePrice = Shopkeeper.sellPrice(item);
-			price = (int) (basePrice * priceMulti);
+			price = (int) (basePrice * priceMulti * heap.stealPriceMultiplier());
 		}
 
 		if(hero.belongings.getItem(LuckyGlove.class)!=null && Random.Float()>0.85f) {

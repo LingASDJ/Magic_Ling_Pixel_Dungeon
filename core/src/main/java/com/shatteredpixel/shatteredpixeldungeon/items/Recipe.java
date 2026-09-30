@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
@@ -196,7 +197,6 @@ public abstract class Recipe {
 	private static Recipe[] oneIngredientRecipes = new Recipe[]{
 			new Scroll.ScrollToStone(),
 			new ExoticPotion.PotionToExotic(),
-			new ExoticPotion.PotionToDK(),
 			new ExoticScroll.ScrollToExotic(),
 			new ArcaneResin.Recipe(),
 			new Alchemize.Recipe(),
@@ -212,6 +212,7 @@ public abstract class Recipe {
 			new AquaBrew.Recipe(),
 			new ShockingBrew.Recipe(),
 			new ElixirOfDragonsBlood.Recipe(),
+			new ElixirOfDragonKing.Recipe(),
 			new ElixirOfIcyTouch.Recipe(),
 			new ElixirOfToxicEssence.Recipe(),
 			new ElixirOfMight.Recipe(),

@@ -4,7 +4,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SpellCaster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BeamCustom;
@@ -29,6 +31,9 @@ public class CrystalLingTower extends Mob {
         properties.add(Property.MINIBOSS);
 
         state = HUNTING;
+
+        immunities.add(Burning.class);
+        immunities.add(HalomethaneBurning.class);
     }
 
     protected enum State{
@@ -134,6 +139,13 @@ public class CrystalLingTower extends Mob {
     @Override
     protected boolean act(){
         if(alignment == Alignment.NEUTRAL) return true;
+        //红莲真火蓄力期间，莲娜进入绝招蓄力阶段，塔暂停一切激光
+        for (Mob m : Dungeon.level.mobs){
+            if (m instanceof FireMagicDied && ((FireMagicDied) m).isRedLotusCharging()){
+                spend(TICK);
+                return true;
+            }
+        }
         CrystalDiedTower.State s = countDown();
         if(s == CrystalDiedTower.State.SHOOTING) {
             zapProc();

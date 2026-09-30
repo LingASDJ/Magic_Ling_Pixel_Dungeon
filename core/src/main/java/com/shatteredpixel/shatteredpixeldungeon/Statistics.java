@@ -208,6 +208,7 @@ public class Statistics {
 	public static boolean amuletObtained = false;
 
 	public static boolean fireGirlnoshopping = false;
+	public static boolean fireGirlAnary = false;
 
 	public static boolean deadshoppingdied = false;
 
@@ -398,7 +399,7 @@ public class Statistics {
 
 	//浊焰契约
 	private static final String NOSHOPPING		= "fireGirlnoshopping";
-
+	private static final String FGANARY		= "fireGirlAnary";
 	private static final String SHOPPINGDIED		= "deadshoppingdied";
 
 	private static final String WZGL		= "wangzheguilai";
@@ -808,6 +809,7 @@ public class Statistics {
 		tipsgodungeon = false;
 
 		fireGirlnoshopping = false;
+		fireGirlAnary = false;
 
 		deadshoppingdied = false;
 		wangzheguilai = false;
@@ -1133,6 +1135,8 @@ public class Statistics {
 
 		bundle.put( NOSHOPPING,	fireGirlnoshopping );
 
+		bundle.put( FGANARY , fireGirlAnary);
+
 		bundle.put( SHOPPINGDIED, deadshoppingdied );
 
 		bundle.put( WZGL, wangzheguilai );
@@ -1456,6 +1460,7 @@ public class Statistics {
 		amuletObtained	= bundle.getBoolean( AMULET );
 
 		fireGirlnoshopping	= bundle.getBoolean( NOSHOPPING );
+		fireGirlAnary = bundle.getBoolean( FGANARY );
 		deadshoppingdied = bundle.getBoolean( SHOPPINGDIED );
 
 		wangzheguilai = bundle.getBoolean( WZGL );

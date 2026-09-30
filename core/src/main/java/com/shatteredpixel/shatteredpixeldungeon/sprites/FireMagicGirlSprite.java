@@ -170,6 +170,12 @@ public class FireMagicGirlSprite extends MobSprite {
         Sample.INSTANCE.play( Assets.Sounds.ZAP );
     }
 
+    //纯施法动画：只播放施法动作（不发射弹道、不结算伤害），用于喷火等技能的蓄力前摇
+    public void cast( int cell ) {
+        turnTo( ch.pos , cell );
+        play( zap );
+    }
+
     @Override
     public void onComplete( Animation anim ) {
         super.onComplete(anim);

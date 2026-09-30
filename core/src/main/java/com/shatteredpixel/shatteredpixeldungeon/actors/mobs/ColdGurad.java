@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
+import com.shatteredpixel.shatteredpixeldungeon.effects.ColorTargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
@@ -29,6 +30,10 @@ public class ColdGurad extends Mob implements Callback {
 
     //they can only use their chains once
     private boolean chainsUsed = false;
+    //释放锁链前的预警状态：先预警一回合，再真正拖拽
+    private boolean chainWarn = false;
+    //召唤缓冲：刚被召唤出来时暂不抓人
+    private int chainGrace = 5;
 
     {
         spriteClass = ColdGuardSprite.class;
@@ -77,6 +82,11 @@ public class ColdGurad extends Mob implements Callback {
                 return true;
             }
         }
+    }
+
+    //召唤缓冲设置：缓冲回合内守卫只正常行动，不进入锁链预警/抓人
+    public void setChainGrace(int grace){
+        chainGrace = grace;
     }
 
     private boolean chain(int target){
@@ -159,11 +169,13 @@ public class ColdGurad extends Mob implements Callback {
     }
 
     private final String CHAINSUSED = "chainsused";
+    private static final String CHAIN_WARN = "chainwarn";
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(CHAINSUSED, chainsUsed);
+        bundle.put(CHAIN_WARN, chainWarn);
     }
 
     private static final float TIME_TO_ZAP	= 6f;
@@ -171,6 +183,7 @@ public class ColdGurad extends Mob implements Callback {
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         chainsUsed = bundle.getBoolean(CHAINSUSED);
+        chainWarn = bundle.getBoolean(CHAIN_WARN);
     }
     public static class DarkBolt{}
 
@@ -259,19 +272,35 @@ public class ColdGurad extends Mob implements Callback {
         public boolean act( boolean enemyInFOV, boolean justAlerted ) {
             enemySeen = enemyInFOV;
 
+            //召唤缓冲回合：刚出现时先正常行动，不直接预警抓人
+            if (chainGrace > 0){
+                chainGrace--;
+                return super.act( enemyInFOV, justAlerted );
+            }
+
             if (!chainsUsed
                     && enemyInFOV
                     && !isCharmedBy( enemy )
                     && !canAttack( enemy )
-                    && Dungeon.level.distance( pos, enemy.pos ) < 5
-
-
-                    && chain(enemy.pos)){
-                return !(sprite.visible || enemy.sprite.visible);
+                    && Dungeon.level.distance( pos, enemy.pos ) < 5){
+                if (!chainWarn){
+                    //释放锁链前预警：标记即将被拖拽的目标格
+                    chainWarn = true;
+                    if (Dungeon.level.heroFOV[enemy.pos]){
+                        sprite.parent.add(new ColorTargetedCell(enemy.pos, 0x5588FF));
+                    }
+                    spend(TICK);
+                    return true;
+                } else {
+                    chainWarn = false;
+                    if (chain(enemy.pos)){
+                        return !(sprite.visible || enemy.sprite.visible);
+                    }
+                }
             } else {
-                return super.act( enemyInFOV, justAlerted );
+                chainWarn = false;
             }
-
+            return super.act( enemyInFOV, justAlerted );
         }
     }
 }
