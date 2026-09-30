@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.SliceDream;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -59,8 +60,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourg
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfNukeCole;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -197,6 +203,25 @@ public class ZeroLevel extends Level {
                 drop( new Gold(325), 595 );
                 drop( new BzmdrNewYears.BzmdrGift(), 668 );
             }
+
+        if(RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY){
+            drop( new ElixirOfNukeCole(), 644 );
+            new Ankh(true).collect();
+            drop( new ElixirOfNukeCole(), 681  );
+            Prop p1 = Prop.randomPropA(0,false);
+            drop(p1, 718);
+        }
+
+        if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.GQJ){
+            drop( new RandomChest(), 683  );
+            drop( new ElixirOfMight(),647 );
+            drop( new RandomChest(), 721  );
+        }
+
+        if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ){
+            drop( new Pasty(), 725  );
+            drop( new Food(), 853  );
+        }
 
     }
 

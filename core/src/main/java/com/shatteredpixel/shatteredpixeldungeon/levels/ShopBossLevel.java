@@ -92,7 +92,9 @@ public class ShopBossLevel extends Level {
         FireMagicDied boss = new FireMagicDied();
         boss.pos = WIDTH*16 + 17;
         boss.yell( Messages.get(boss, "notice") );
-        if(Statistics.attackIFGirl){
+        if(Statistics.fireGirlAnary){
+            GLog.w(Messages.get(boss,"fire"));
+        } else if(Statistics.attackIFGirl){
             GLog.b(Messages.get(boss,"cold"));
         }
         boss.notice();

@@ -222,7 +222,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MerchantSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.NailingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
@@ -253,6 +252,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.Exo
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.KillKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.LifeCutter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.MorningStar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.NailingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.QuickSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.ReedPipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.RitualSword;
@@ -606,10 +606,13 @@ public class Generator {
 					JunglePoison.class,
 
 					LifeTreeSword.class,
+					ForestBow.class
 			};
 			WEP_T3.probs = new float[]{1, 5, 4, 4, 4, 3, 5, 3, 6,
 					Badges.isUnlocked(Badges.Badge.KILL_CLSISTER) ? 3 : 0,
-					0};
+					0,
+					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 1f : 0,
+			};
 
 			WEP_T4.classes = new Class<?>[]{
 					LifeCutter.class,
@@ -632,8 +635,7 @@ public class Generator {
 					SDBSword.class,
 					KingSword.class,
 
-					VoidSword.class,
-					ForestBow.class
+					VoidSword.class
 			};
 			WEP_T4.probs = new float[]{6, 5, 4, 4, 4, 2, 3, 7,
 					SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName()) ? 4f : 0,
@@ -644,9 +646,7 @@ public class Generator {
 					Badges.isUnlocked(Badges.Badge.KILL_SM) ? 3 : 0,
 					Badges.isUnlocked(Badges.Badge.BOSS_CHALLENGE_4) ? 3 : 0,
 
-					3,
-
-					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 0f : 0,
+					3
 			};
 
 			WEP_T5.classes = new Class<?>[]{

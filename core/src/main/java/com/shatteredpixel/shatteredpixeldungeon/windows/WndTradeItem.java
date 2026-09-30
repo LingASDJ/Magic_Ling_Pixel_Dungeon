@@ -235,6 +235,7 @@ public class WndTradeItem extends WndInfoItem {
 						}
 						hide();
 					}
+					hero.FireAngry(null);
 				}
 			};
 			btnSteal.setRect(0, pos + 1, width, BTN_HEIGHT);
@@ -332,6 +333,13 @@ public class WndTradeItem extends WndInfoItem {
 
 		if(hero.belongings.getItem(LuckyGlove.class)!=null && Random.Float()>0.85f) {
 			GLog.n(Messages.get(LuckyGlove.class,"lucky"));
+			if(!Statistics.stoleItem){
+				Statistics.LenaAnaryTotal += 30;
+				if(Statistics.LenaAnaryTotal > Random.Int(100)){
+					Statistics.fireGirlAnary = true;
+				}
+				Statistics.stoleItem = true;
+			}
 		}else{
 			Dungeon.gold -= price;
 		}

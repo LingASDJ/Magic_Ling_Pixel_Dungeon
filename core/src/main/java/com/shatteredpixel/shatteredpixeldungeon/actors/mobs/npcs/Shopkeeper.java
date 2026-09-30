@@ -212,6 +212,7 @@ public class Shopkeeper extends NPC {
 			sprite.killAndErase();
 			CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
 		}
+		hero.FireAngry(this);
 	}
 
 	@Override
