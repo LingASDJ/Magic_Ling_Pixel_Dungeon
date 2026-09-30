@@ -340,6 +340,10 @@ public class Statistics {
 
 	public static boolean MustHardLevel = false;
 
+	public static int LenaAnaryTotal;
+	public static boolean stoleItem;
+	public static boolean beatMerchant;
+
 	public static boolean moonlowgetAloneRoom;
 
 	public static boolean isEndingbald=false;
@@ -809,7 +813,6 @@ public class Statistics {
 		tipsgodungeon = false;
 
 		fireGirlnoshopping = false;
-		fireGirlAnary = false;
 
 		deadshoppingdied = false;
 		wangzheguilai = false;
@@ -871,6 +874,11 @@ public class Statistics {
 		BzmdrCJMobViewDistance = 0;
 		BzmdrCJHeroSTR = 0;
 		BzmdrCJHeroViewDistance = 0;
+
+		fireGirlAnary = false;
+		LenaAnaryTotal = 0;
+		stoleItem = false;
+		beatMerchant = false;
 	}
 
 	public static boolean hasAllRarenessProp(int rare,int kind){
@@ -1194,6 +1202,8 @@ public class Statistics {
 		bundle.put("BZMDRCJHEROSTR",BzmdrCJHeroSTR);
 		bundle.put("BZMDRCJHEROVIEW",BzmdrCJHeroViewDistance);
 
+		bundle.put("FIREANGRYTX",fireGirlAnary);
+
 		bundle.put("YUANXI",YuanXiLimit);
 
 		bundle.put("propPositive0", propPositive0);
@@ -1209,6 +1219,9 @@ public class Statistics {
 		bundle.put("MustDFRT",MustHardLevel);
 		bundle.put("MJPORALROOM",moonlowgetAloneRoom);
 		bundle.put("EDXDFR",isEndingbald);
+
+		bundle.put("STOLEITEM",stoleItem);
+		bundle.put("BEATMERCHANT",beatMerchant);
 	}
 
 	private static ArrayList<Prop> convertToPropList(Collection<Bundlable> bundlableCollection) {
@@ -1396,6 +1409,9 @@ public class Statistics {
 
 		isEndingbald = bundle.getBoolean("EDXDFR");
 
+		stoleItem = bundle.getBoolean("STOLEITEM");
+		beatMerchant = bundle.getBoolean("BEATMERCHANT");
+
 		//分数
 		progressScore   = bundle.getInt( PROG_SCORE );
 		heldItemValue   = bundle.getInt( ITEM_VAL );
@@ -1492,6 +1508,8 @@ public class Statistics {
 
 		BzmdrCJHeroSTR = bundle.getInt("BZMDRCJHEROSTR");
 		BzmdrCJHeroViewDistance = bundle.getInt("BZMDRCJHEROVIEW");
+
+		LenaAnaryTotal = bundle.getInt("FIREANGRYTX");
 
 		attackIFGirl = bundle.getBoolean("ICEFIRE");
 

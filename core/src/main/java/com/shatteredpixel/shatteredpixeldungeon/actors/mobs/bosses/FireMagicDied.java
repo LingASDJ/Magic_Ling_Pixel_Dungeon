@@ -94,7 +94,6 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
@@ -134,7 +133,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     private int pumpedUp = 0;
 
     public boolean allDead = false;
-    public boolean VeryAngry = Statistics.fireGirlnoshopping || DeviceCompat.isDebug();
+    public boolean VeryAngry = Statistics.fireGirlAnary;
 
     @Override
     public int damageRoll() {
@@ -820,7 +819,12 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         Camera.main.shake(3f, 0.6f);
         Sample.INSTANCE.play(Assets.Sounds.BURNING);
         ((FireMagicGirlSprite) sprite).cast(enemy.pos);
-        yell(Messages.get(this, "redlotus_" + Random.IntRange(1, 2)));
+        if(Random.Float()>0.5f){
+            yell(Messages.get(this, "redlotus_1"));
+        } else {
+            GLog.n(Messages.get(this, "redlotus_2"));
+        }
+
         return true;
     }
 
@@ -1288,12 +1292,12 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         }
 
         super.die( cause );
-        Statistics.bossScores[3] += 1000 * Dungeon.depth/5;
+        Statistics.bossScores[3] += 3000 * Dungeon.depth/5;
         //Dungeon.level.drop(new BackGoKey().quantity(1).identify(), pos).sprite.drop();
         Dungeon.level.drop(new ScrollOfMagicMapping().quantity(1).identify(), pos).sprite.drop();
 
 
-        if(Dungeon.isChallenged(CS)){
+        if(Dungeon.isChallenged(CS) || Statistics.fireGirlAnary || Statistics.attackIFGirl){
             Dungeon.level.drop(new Gold().quantity(1012), pos).sprite.drop();
             Dungeon.level.drop(new ScrollOfUpgrade().quantity(1).identify(), pos).sprite.drop();
         } else {

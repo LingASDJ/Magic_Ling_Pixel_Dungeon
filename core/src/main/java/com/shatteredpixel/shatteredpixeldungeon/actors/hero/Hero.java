@@ -148,6 +148,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.En
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MagicGirlDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
@@ -162,6 +163,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLingLand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.DogDogMusic;
@@ -4466,6 +4468,27 @@ public class Hero extends Char {
 				GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
 				resistHealth += 10;
         }
+	}
+
+
+	public void FireAngry(Char ch){
+		if(ch instanceof MagicGirlDead){
+			Statistics.LenaAnaryTotal += 40;
+		} else if(ch instanceof Shopkeeper){
+			if(!Statistics.beatMerchant){
+				Statistics.LenaAnaryTotal += 30;
+				Statistics.beatMerchant = true;
+			}
+		} else {
+			if(!Statistics.stoleItem){
+				Statistics.LenaAnaryTotal += 30;
+				Statistics.stoleItem = true;
+			}
+		}
+		if (Statistics.LenaAnaryTotal > 100) Statistics.LenaAnaryTotal = 100;
+		if(Statistics.LenaAnaryTotal > Random.Int(100)){
+			Statistics.fireGirlAnary = true;
+		}
 	}
 
 	public interface Doom {

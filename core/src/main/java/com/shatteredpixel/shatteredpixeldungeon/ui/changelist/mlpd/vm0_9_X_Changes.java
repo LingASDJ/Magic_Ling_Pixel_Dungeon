@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.DM111Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadEyeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DogDogMusicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ElementalSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FodderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulPlusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GiantFlowerSlimeSprites;
@@ -74,6 +75,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.PumkingBomberSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShubNiggurathSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpawnereEvilSprite;
@@ -141,13 +143,53 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new Image(Icons.get(Icons.NEWS)), "后续开发预告",
                 "失落古墓外传正在稳步推进开发，更多场景、怪物、专属武器与剧情内容将陆续放出，敬请期待后续版本情报！"));
 
-        changes = new ChangeInfo("v0.9.6.1", true, "");
+        changes = new ChangeInfo("v0.9.6.1-2", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_AIKELAIER), ("查种器-V4.1"),
+                ("1.新版查种器上线，特别感谢少前制作组的帮忙\n" +
+                        "2.优化查种线程，进一步优化查种效率")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FORESTCROSSBOW), ("新传说武器：森林弓"),
+                ("修复了一些Bug，正式上线，欢迎使用！")));
+
+        changes.addButton(new ChangeButton(new FireCrystalSprites(), ("暴怒莲娜"),
+                ("暴怒状态下的莲娜有以下变化：\n" +
+                        "_—_ 业火之路：\n"+
+                        "莲娜周围盘旋磷火，可以蒸发水地块\n" +
+                        "莲娜可以召唤 劫罪者 与 雪凛守卫\n\n" +
+                        "_-_ 红莲业火：\n" +
+                        "莲娜可以召唤红莲业火，该技能为全屏伤害。该技能需要在莲娜蓄力完成摧毁两个浊焰核心才能阻止。" +
+                        "否则将直接扣减目标的血量到五分之一，如果目标低于五分之一血量，则直接斩杀\n\n" +
+                        "_-_ 怒焰焚天：\n" +
+                        "莲娜在三阶段将可以对一个大范围的三角区域释放磷火\n\n" +
+                        "_-_ 生命链接：\n" +
+                        "莲娜可以与召唤的怪物建立生命链接，分担受到的伤害\n\n" +
+                        "_-_ 双面夹击：\n" +
+                        "莲娜可以立刻召唤两个怪物在目标附近\n\n" +
+                        "_-_ 火球术：\n" +
+                        "莲娜可以远程发射磷火火球")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_ARMBAND), ("神偷腕套"),
+                ("神偷袖章改名，并强势回归。" +
+                        "\n\n以下为魔绫特殊调整：" +
+                        "如果偷窃物品失败，商人不会逃跑。而是在这个物品原有基础上翻3倍，至多上限9倍，翻倍上限的物品将定义为非卖品，并且不能继续偷窃。")));
+
+        changes.addButton(new ChangeButton(new ShopkKingSprite(), ("抢劫事件-暴怒莲娜"),
+                (
+                        "双打近期大量玩家反馈较为困难，经评估决斗，加入暴怒莲娜，和双打是两个分支\n" +
+                        "如果遭遇暴怒状态的莲娜，则必定不会触发双打。\n\n" +
+                        "_-_ 本局偷窃过物品（神偷袖章&赌神手套）+30%概率\n" +
+                        "_-_ 本局殴打商人+30%概率\n" +
+                        "_-_ 本局击败过冬玲+40%概率\n" +
+                        "如果遭遇了暴怒莲娜，将在战前看见警告文本：\n" +
+                        "周围的空气越来越热……\n\n" +
+                                "并且现在 双打/暴怒 打完后 必定掉落升级卷轴+1012个金币。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARMOR_CLOTH,new ItemSprite.Glowing(0x0)), ("磐岩调整"),
                 ("磐岩刻印一直处于尴尬场景，经组内评估后，改为磐岩诅咒。\n\n" +
@@ -167,6 +209,17 @@ public class vm0_9_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.EXOTIC_AZURE), ("龙王吐息合剂"),
                 ("现在没有附魔效果了，是火龙吐息合剂的上位替代。")));
+
+        changes.addButton(new ChangeButton(new ShopkeeperSprite(), ("普通商人"),
+                ("普通商人现在会警告玩家一次，然后关店跑路。")));
+
+        changes.addButton(new ChangeButton(new SliceGirlSprite(), "常规分数系统",
+                "【矮人将军】\n" +
+                        "- 崩山斩如果中心命中英雄：-200分\n" +
+                        "- 吃到无用之盾：-100分\n" +
+                        "- 击败Boss：+7500分\n\n" +
+                        "【莲娜】\n" +
+                        "- 击败Boss：从之前的1000*（当前楼层/5） 改为3000*（当前楼层/5）"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGHTSTABBINGSWORD), "迅捷骑士刺剑",
                 "优化骑士刺剑逻辑，修复该藏品会让镜像等单位一回合内无限攻击的问题。"));
@@ -191,6 +244,11 @@ public class vm0_9_X_Changes {
                         "_—_ 诅咒：15%，正向附魔：7%，白板：78%")));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                ("V0.9.6.2：\n\n" +
+                        "_-_ 修复一种载体的回合异常问题\n" +
+                        "_-_ 修复全尺寸UI无响应问题\n" +
+                        "_-_ 修复视野为null的崩溃\n" +
+                        "_-_ 修复多线程查种的一些异常"),
                 ("V0.9.6.1：\n\n" +
                         "_-_ 修复二代武器描述部分逻辑判定问题\n" +
                         "_-_ 修复高灯火包含诅咒的问题\n" +

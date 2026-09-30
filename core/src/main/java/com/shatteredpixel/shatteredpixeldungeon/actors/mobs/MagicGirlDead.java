@@ -400,6 +400,8 @@ public class MagicGirlDead extends Boss {
             }
         }
 
+        hero.FireAngry(this);
+
         Badges.validateBossSlain();
         if (Statistics.qualifiedForBossChallengeBadge){
             Badges.validateBossChallengeCompleted();
