@@ -96,7 +96,7 @@ public class NewsScene extends PixelScene {
 		int columns = landscape ? 2 : 1;
 
 		if (displayingNoArticles || Messages.lang() != Languages.CHINESE) {
-			Component newsInfo = new NewsInfo();
+			Component newsInfo = new NewsInfo(list);
 			newsInfo.setRect(0, posY, panel.innerWidth(), 0);
 			content.add(newsInfo);
 			posY = nextPosY = newsInfo.bottom() + GAP;
@@ -115,7 +115,7 @@ public class NewsScene extends PixelScene {
             });
 
 			for (NewsArticle article : articles) {
-				StyledButton b = new ArticleButton(article);
+				StyledButton b = new ArticleButton(article, list);
 				b.multiline = true;
 
 				if (columns == 1) {
@@ -144,6 +144,10 @@ public class NewsScene extends PixelScene {
 				w,
 				panel.height()
 		);
+		// 所有 ArticleButton 的 hotArea 会在创建时被压到指针事件监听队列前端，
+		// 导致 ScrollPane 的滚动控制器排在按钮之后，按下按钮时无法捕获拖动。
+		// 这里重新把滚动控制器提升到队列最前，保证在按钮上也能拖拽滚动。
+		list.refreshPointerPriority();
 
 		StyledButton btnSite = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "read_more")){
 			@Override
@@ -242,6 +246,11 @@ public class NewsScene extends PixelScene {
 		NinePatch bg;
 		RenderedTextBlock text;
 		RedButton button;
+		ScrollPane scrollPane;
+
+		public NewsInfo(ScrollPane scrollPane) {
+			this.scrollPane = scrollPane;
+		}
 
 		@Override
 		protected void createChildren() {
@@ -263,6 +272,7 @@ public class NewsScene extends PixelScene {
 							@Override
 							protected void onClick() {
 								super.onClick();
+								if (scrollPane != null && scrollPane.wasDragging()) return;
 								SPDSettings.WiFi(false);
 								News.checkForNews();
 								ShatteredPixelDungeon.seamlessResetScene();
@@ -279,6 +289,7 @@ public class NewsScene extends PixelScene {
 						@Override
 						protected void onClick() {
 							super.onClick();
+							if (scrollPane != null && scrollPane.wasDragging()) return;
 							SPDSettings.news(true);
 							News.checkForNews();
 							ShatteredPixelDungeon.seamlessResetScene();
@@ -323,13 +334,15 @@ public class NewsScene extends PixelScene {
 	private static class ArticleButton extends StyledButton {
 
 		NewsArticle article;
+		ScrollPane scrollPane;
 
 		BitmapText date;
 		BitmapText topTag;
 
-		public ArticleButton(NewsArticle article) {
+		public ArticleButton(NewsArticle article, ScrollPane scrollPane) {
 			super(Chrome.Type.GREY_BUTTON_TR, article.title, 6);
 			this.article = article;
+			this.scrollPane = scrollPane;
 
 			icon(News.parseArticleIcon(article,true));
 			long lastRead = SPDSettings.newsLastRead();
@@ -375,6 +388,8 @@ public class NewsScene extends PixelScene {
 		@Override
 		protected void onClick() {
 			super.onClick();
+			// 拖动滚动结束后指针抬起时，不应触发按钮点击
+			if (scrollPane != null && scrollPane.wasDragging()) return;
 			textColor(Window.WHITE);
 			if (article.date.getTime() > SPDSettings.newsLastRead()){
 				SPDSettings.newsLastRead(article.date.getTime());
