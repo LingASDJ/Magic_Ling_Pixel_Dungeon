@@ -206,11 +206,11 @@ public class Dart extends MissileWeapon {
 		} else if(Dungeon.hero.belongings.weapon() instanceof DiedCrossBow){
 			diedCrossBow = (DiedCrossBow) Dungeon.hero.belongings.weapon();
 		} else if(Dungeon.hero.belongings.secondWep() instanceof DiedCrossBow){
-			diedCrossBow = (DiedCrossBow) Dungeon.hero.belongings.weapon();
+			diedCrossBow = (DiedCrossBow) Dungeon.hero.belongings.secondWep();
 		} else if(Dungeon.hero.belongings.weapon() instanceof ForestBow){
 			forestBow = (ForestBow) Dungeon.hero.belongings.weapon();
 		} else if(Dungeon.hero.belongings.secondWep() instanceof ForestBow){
-			forestBow = (ForestBow) Dungeon.hero.belongings.weapon();
+			forestBow = (ForestBow) Dungeon.hero.belongings.secondWep();
 		} else {
 			bow = null;
 			diedCrossBow = null;
@@ -261,11 +261,11 @@ public class Dart extends MissileWeapon {
 			damage = forestBow.proc(attacker, defender, damage);
 
 			// ForestBow 特殊效果
-			int triggerChance = 15 + 4 * level();
+			int triggerChance = 15 + 4 * forestBow.buffedLvl();
 			if (Random.Int(100) < triggerChance) {
 				// 计算效果持续时间
-				int duration = 3 + (level() / 4);
-				int effectCount = (level() >= 9) ? 2 : 1; // +9以上时施加两种效果
+				int duration = 3 + (forestBow.buffedLvl() / 4);
+				int effectCount = (forestBow.buffedLvl() >= 9) ? 2 : 1; // +9以上时施加两种效果
 
 				// 可选效果列表
 				Class<?>[] effects = {
@@ -275,10 +275,11 @@ public class Dart extends MissileWeapon {
 				};
 
 				// 随机选择效果
+				ArrayList<Class<?>> pool = new ArrayList<>();
+				pool.add(Poison.class); pool.add(Blindness.class); pool.add(Frost.class);
 				ArrayList<Class<?>> selectedEffects = new ArrayList<>();
-				for (int i = 0; i < effectCount; i++) {
-					Class<?> effect = Random.element(effects);
-					selectedEffects.add(effect);
+				for (int i = 0; i < effectCount && !pool.isEmpty(); i++) {
+					selectedEffects.add(pool.remove(Random.Int(pool.size())));
 				}
 
 				// 应用选中的效果

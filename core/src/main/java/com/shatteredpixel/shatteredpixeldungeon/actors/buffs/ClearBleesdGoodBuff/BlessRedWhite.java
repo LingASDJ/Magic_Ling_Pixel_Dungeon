@@ -19,7 +19,6 @@ public class BlessRedWhite extends ClearLanterBuff {
         if (Math.sqrt(interval)*level <= Math.sqrt(time)*value) {
             level = value;
             interval = time;
-            spend(time - cooldown() - 1);
         }
     }
 
