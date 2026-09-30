@@ -498,11 +498,11 @@ public enum HeroClass {
 	}
 
 	public boolean isUnlocked(){
-		if (this == SPELLSWORD){
-			return SPDSettings.dlc().isConducted(Conducts.Conduct.DEV);
+		//always unlock on debug builds
+		if(this == SPELLSWORD && !(DeviceCompat.isDesktop_Dev())){
+			return false;
 		}
 
-		//always unlock on debug builds
 		if (DeviceCompat.isDebug()) return true;
 
 		switch (this){
@@ -514,6 +514,8 @@ public enum HeroClass {
 				return Badges.isUnlocked(Badges.Badge.UNLOCK_ROGUE);
 			case HUNTRESS:
 				return Badges.isUnlocked(Badges.Badge.UNLOCK_HUNTRESS);
+			case SPELLSWORD:
+				return Badges.isUnlocked(Badges.Badge.UNLOCK_SPELLSWORD);
 		}
 	}
 	
