@@ -177,9 +177,10 @@ public class vm0_9_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_ARMBAND), ("神偷腕套"),
                 ("神偷袖章改名，并强势回归。" +
-                        "\n\n以下为魔绫特殊调整：" +
-                        "如果偷窃物品失败，本次将只会消耗充能，但本次充能不会让神器升级。\n" +
-                        "商人不会逃跑。而是在这个物品原有基础上翻3倍，至多上限9倍，翻倍上限的物品将定义为非卖品，并且不能继续偷窃。")));
+                        "\n\n以下为魔绫特殊调整：\n\n" +
+                        "_-_ 如果偷窃物品失败，且是普通商人，首次将立刻传送到峡谷，并且莲娜将会直接变成暴怒状态。如果逃跑，后续偷窃失败商人会直接跑路。\n\n" +
+                        "_-_ 如果是其他商人，偷窃失败会直接跑路\n" +
+                        "_-_ 奈亚子,卡戎,落白商店无法被偷取")));
 
         changes.addButton(new ChangeButton(new ShopkKingSprite(), ("抢劫事件-暴怒莲娜"),
                 (
