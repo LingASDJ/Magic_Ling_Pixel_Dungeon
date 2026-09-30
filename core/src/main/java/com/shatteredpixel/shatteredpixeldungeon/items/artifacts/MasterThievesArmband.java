@@ -219,7 +219,7 @@ public class MasterThievesArmband extends Artifact {
 	protected ArtifactBuff passiveBuff() {
 		return new Thievery();
 	}
-	
+
 	@Override
 	public void charge(Hero target, float amount) {
 		if (cursed || isMagicImmuned(target)) return;
@@ -294,13 +294,11 @@ public class MasterThievesArmband extends Artifact {
 				partialCharge = 0f;
 			}
 		}
-		
+
 		public boolean steal(Item item){
 			int chargesUsed = chargesToUse(item);
 			float stealChance = stealChance(item);
 			if (Random.Float() > stealChance){
-				charge -= chargesUsed;
-				updateQuickslot();
 				return false;
 			} else {
 				charge -= chargesUsed;
