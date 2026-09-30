@@ -86,7 +86,7 @@ public class MobPlacer extends TestItem{
 
     private boolean shouldOverride = false;
     private int HT = 1;
-    private int maxPage = 24;
+    private int maxPage = 25;
     private int ST = 1;
     private int elite_op = 0;
     private Char.Alignment mobAlign = Char.Alignment.ENEMY;
