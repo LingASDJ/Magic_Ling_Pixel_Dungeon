@@ -84,6 +84,9 @@ public class SeedFinder {
 	ArrayList<String> itemList;
 	private final List<String> matchedFloorInfo = new ArrayList<>();
 
+	/** 生成楼层时使用的角色（默认战士，保持旧行为；新查种器 UI 可指定） */
+	public HeroClass heroClass = HeroClass.WARRIOR;
+
 	private long startTime;
 	private volatile boolean running;
 
@@ -255,7 +258,7 @@ public class SeedFinder {
 			Dungeon.isDLC(Conducts.Conduct.SEED);
 			// 内存态种子：直接设置 Dungeon.overrideSeed，避免每个种子一次 Preferences 磁盘 flush
 			Dungeon.overrideSeed = Long.parseLong(seed);
-			GamesInProgress.selectedClass = HeroClass.WARRIOR;
+			GamesInProgress.selectedClass = heroClass;
 			Dungeon.init();
 
 			boolean[] itemsFound = new boolean[itemList.size()];
@@ -497,7 +500,7 @@ public class SeedFinder {
 		long prevOverride = Dungeon.overrideSeed;
 		int prevChallenges = SPDSettings.challenges();
 		Dungeon.overrideSeed = Long.parseLong(seed);
-		GamesInProgress.selectedClass = HeroClass.WARRIOR;
+		GamesInProgress.selectedClass = heroClass;
 		SPDSettings.challenges(challenges);
 		Dungeon.init();
 
@@ -817,7 +820,7 @@ public class SeedFinder {
 			Dungeon.isDLC(Conducts.Conduct.SEED);
 			// 内存态种子：不写 Preferences（避免磁盘 IO）
 			Dungeon.overrideSeed = Long.parseLong(seed);
-			GamesInProgress.selectedClass = HeroClass.WARRIOR;
+			GamesInProgress.selectedClass = heroClass;
 			Dungeon.init();
 
 			if (blacklist == null) {
