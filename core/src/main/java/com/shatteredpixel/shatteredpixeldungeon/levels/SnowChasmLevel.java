@@ -10,6 +10,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -100,7 +101,9 @@ public class SnowChasmLevel extends Level {
 
     @Override
     protected void createItems() {
-        drop( new BackGoKey(), 42  );
+        if(!Statistics.fireGirlAnary){
+            drop( new BackGoKey(), 42  );
+        }
     }
 
     @Override
