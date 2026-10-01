@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CommRelay;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MagneticCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FiveRen;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.JunglePoison;
@@ -21,6 +22,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.hollow.DeathRongBoat;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ClearSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.ForestBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.GoldLongGun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.KingAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
@@ -41,11 +43,13 @@ public class SeedItemFilters {
 
     // ===== 图鉴中存在、但正常对局永远不会生成的物品（选择网格直接隐藏） =====
     public static final HashSet<Class<? extends Item>> UNGENERATED = new HashSet<>(Arrays.asList(
-            MasterThievesArmband.class,
-            LloydsBeacon.class,
-            CommRelay.class,
-            SliverLockSword.class,
-            CloakOfShadows.class// 隐身披风不进生成池
+            //MasterThievesArmband.class,//神偷
+            LloydsBeacon.class,//时空信标
+            CommRelay.class,//通信中继器
+            SliverLockSword.class,//锁剑
+            //CloakOfShadows.class,// 隐身披风
+            Pickaxe.class//铁镐
+            
             //还有任何不会生成的物品直接加在这里就行
             
         
