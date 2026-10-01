@@ -81,7 +81,7 @@ public class Shopkeeper extends NPC {
 	public static int MAX_BUYBACK_HISTORY = 3;
 	public ArrayList<Item> buybackItems = new ArrayList<>();
 
-	private int turnsSinceHarmed = -1;
+	public int turnsSinceHarmed = -1;
 	private boolean seenBefore = false;
 
 	@Override
@@ -206,12 +206,17 @@ public class Shopkeeper extends NPC {
 
 		Notes.remove( landmark() );
 		GLog.newLine();
-		GLog.n(Messages.get(this, "flee"));
+
+		if(getClass() == Shopkeeper.class){
+			GLog.n(Messages.get(this, "flee"));
+		}
+
 
 		if (sprite != null) {
 			sprite.killAndErase();
 			CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
 		}
+		hero.FireAngry(this);
 	}
 
 	@Override

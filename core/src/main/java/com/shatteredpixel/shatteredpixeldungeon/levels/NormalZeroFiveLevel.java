@@ -70,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfNukeCole;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
@@ -662,8 +663,14 @@ public class NormalZeroFiveLevel extends Level {
             drop( new ElixirOfNukeCole(), 737  );
             new Ankh(true).collect();
             drop( new ElixirOfNukeCole(), 687  );
-            Prop p1 = Prop.randomPropA(0,false);
+            Prop p1 = Prop.randomPropA(0,true);
             drop(p1, 738);
+        }
+
+        if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.GQJ){
+            drop( new RandomChest(), 736  );
+            drop( new ElixirOfMight(),735 );
+            drop( new RandomChest(), 761  );
         }
     }
 
