@@ -37,6 +37,7 @@ public class GameLog extends Component implements Signal.Listener<String> {
 	private static final Pattern PUNCTUATION = Pattern.compile( ".*[.,;?! ]$" );
 
 	private RenderedTextBlock lastEntry;
+	private Entry lastFoldEntry;
 	private int lastColor;
 
 	private static ArrayList<Entry> entries = new ArrayList<>();
@@ -94,22 +95,32 @@ public class GameLog extends Component implements Signal.Listener<String> {
 				color = CharSprite.NEUTRAL;
 			}
 
-			//将相同消息进行折叠而不是并列展示
-			Entry lastLog = entries.isEmpty()
-							? null
-							: entries.get(entries.size() - 1);
+			//将相同消息进行折叠而不是并列展示，不同消息再并列展示
+			// 折叠判断使用 lastFoldEntry，不受 NEW_LINE 影响
+			boolean canFold =
+					lastFoldEntry != null
+							&& color == lastFoldEntry.color
+							&& lastFoldEntry.isLastPart(text);
 
-			if (lastEntry != null && color == lastColor && lastLog != null && lastLog.text.equals(text)) {
+			if (canFold) {lastFoldEntry.addOrFold(text);
+				if (lastFoldEntry.rendered != null) {
+					lastFoldEntry.rendered.text(
+							lastFoldEntry.displayText()
+					);
+				}
+			} else if (lastEntry != null && color == lastColor && lastFoldEntry != null  && lastEntry.nLines < MAX_LINES) {
 
-				lastLog.count++;
-				lastEntry.text(lastLog.displayText());
+				lastFoldEntry.addOrFold(text);
+				lastEntry.text(lastFoldEntry.displayText());
 
 			} else {
 
 				Entry entry = new Entry(text, color);
 				entries.add(entry);
 
+				lastFoldEntry = entry;
 				lastEntry = PixelScene.renderTextBlock( entry.displayText(), 6 );
+				entry.rendered = lastEntry;
 				lastEntry.setHightlighting( false );
 				lastEntry.hardlight( color );
 				lastColor = color;
@@ -130,7 +141,13 @@ public class GameLog extends Component implements Signal.Listener<String> {
 						remove(r);
 						r.destroy();
 
-						entries.remove( 0 );
+						Entry removed = entries.remove(0);
+
+						if (lastFoldEntry == removed) {
+							lastFoldEntry = entries.isEmpty()
+									? null
+									: entries.get(entries.size() - 1);
+						}
 					}
 				} while (nLines > MAX_LINES);
 				if (entries.isEmpty()) {
@@ -147,10 +164,18 @@ public class GameLog extends Component implements Signal.Listener<String> {
 	}
 
 	private synchronized void recreateLines() {
+		//每个 Entry 重新绑定自己的显示块
+		//lastFoldEntry 始终指向最后一个逻辑 Entry
+		lastEntry = null;
+		lastFoldEntry = null;
+
 		for (Entry entry : entries) {
-			lastEntry = PixelScene.renderTextBlock( entry.displayText(), 6 );
-			lastEntry.hardlight( lastColor = entry.color );
-			add( lastEntry );
+			entry.rendered = PixelScene.renderTextBlock( entry.displayText(), 6 );
+			entry.rendered.hardlight(
+					lastColor = entry.color);
+			add(entry.rendered );
+			lastEntry = entry.rendered;
+			lastFoldEntry = entry;
 		}
 	}
 
@@ -186,17 +211,72 @@ public class GameLog extends Component implements Signal.Listener<String> {
 		public int color;
 		//给 Entry 增加计数
 		public int count = 1;
+		public RenderedTextBlock rendered;
+
+		// 第一段之后的额外消息
+		public ArrayList<String> extraTexts = new ArrayList<>();
+		public ArrayList<Integer> extraCounts = new ArrayList<>();
 
 		public Entry( String text, int color ) {
 			this.text = text;
 			this.color = color;
 		}
-		public String displayText() {
+
+		public void addOrFold(String nextText) {
+			// 如果还没有额外消息，就比较第一段
+			if (extraTexts.isEmpty()) {
+				if (text.equals(nextText)) {
+					count++;
+					return;
+				}
+			} else {
+				int lastIndex = extraTexts.size() - 1;
+				String lastText = extraTexts.get(lastIndex);
+
+				// 如果和最后一段相同，只增加次数
+				if (lastText.equals(nextText)) {
+					extraCounts.set(
+							lastIndex,
+							extraCounts.get(lastIndex) + 1
+					);
+					return;
+				}
+			}
+
+			// 和最后一段不同，添加一个新片段
+			extraTexts.add(nextText);
+			extraCounts.add(1);
+		}
+
+		private String formatPart(String text, int count) {
 			if (count > 1) {
 				return text + "(" + count + ")";
 			} else {
 				return text;
 			}
+		}
+		//判断当前消息是否和 Entry 最后一段相同
+		public boolean isLastPart(String nextText) {
+			if (extraTexts.isEmpty()) {
+				return text.equals(nextText);
+			} else {
+				int lastIndex = extraTexts.size() - 1;
+				return extraTexts.get(lastIndex).equals(nextText);
+			}
+		}
+		public String displayText() {
+			StringBuilder result = new StringBuilder(
+					formatPart(text, count));
+
+			for (int i = 0; i < extraTexts.size(); i++) {
+				result.append(" ");
+				result.append(formatPart(
+						extraTexts.get(i),
+						extraCounts.get(i)
+				));
+			}
+
+			return result.toString();
 		}
 	}
 
