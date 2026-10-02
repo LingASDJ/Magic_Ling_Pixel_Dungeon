@@ -523,7 +523,7 @@ public class Statistics {
 	public static int moveBoxScoreMax;
 	public static int YuanXiLimit;
 	//求救信号套组的生成
-	public static boolean SOSisAlreadySpawn = false;
+	public static boolean SOSisAlreadySpawn;
 
 	static {
 		propPositive0 = new ArrayList<>(Arrays.asList(
@@ -701,6 +701,8 @@ public class Statistics {
 		SmallLeafGet = false;
 		noClearKill = false;
 		Statistics.AutoOilPotion = false;
+
+		SOSisAlreadySpawn = false;
 
 		luoWhitePageCollected = 0;
 

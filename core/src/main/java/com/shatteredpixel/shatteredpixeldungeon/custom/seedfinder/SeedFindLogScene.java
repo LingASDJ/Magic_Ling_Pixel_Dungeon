@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SeedFinderScene;
@@ -38,6 +39,8 @@ public class SeedFindLogScene extends PixelScene {
     public static boolean powerMode = false;
     public static SeedResult lastResult = null;
     public static int searchedFloors = 15;
+    /** 当前运行中的协调器（统一新版查种实现），供停止与进度轮询 */
+    private static SeedFinderCoordinator legacyCoordinator = null;
 
     private static final long UI_UPDATE_INTERVAL_MS = 100L;
     private long lastUiUpdate = 0;
@@ -49,6 +52,15 @@ public class SeedFindLogScene extends PixelScene {
         } catch (NumberFormatException e) {
             return defaultValue;
         }
+    }
+
+    /** 从完整物品清单首行提取数字种子（"Seed: xxx (123456) Items:" → "123456"）；找不到返回 null */
+    private static String extractSeed(String log) {
+        if (log == null || log.isEmpty()) return null;
+        int nl = log.indexOf('\n');
+        String firstLine = nl < 0 ? log : log.substring(0, nl);
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\((\\d{1,})\\)").matcher(firstLine);
+        return m.find() ? m.group(1) : null;
     }
 
     /**
@@ -153,16 +165,37 @@ public class SeedFindLogScene extends PixelScene {
                     thread = new Thread(() -> {
                         SeedResult res;
                         try {
-                            // 接收SeedResult对象，修复类型不匹配
-                            if(SPDSettings.PlusSearch()){
-                                res = new SeedFinder().findSeedParallel(itemList, finalFloor,SPDSettings.PlusThread());
+                            // 统一使用新版查种实现：文本行 → WantedTarget → 协调器（多进程/单进程线程查找）
+                            final ArrayList<WantedTarget> targets = SeedFinder.parseWanted(itemList);
+                            final int workers = SeedFinderCoordinator.resolveWorkers(
+                                    SPDSettings.PlusSearch() ? SPDSettings.PlusThread() : 1);
+                            if (SeedFinderCoordinator.launcher == null) {
+                                res = new SeedResult(Messages.get(SeedFindLogScene.class, "not_supported"),
+                                        "", new ArrayList<>(), false);
                             } else {
-                                res = new SeedFinder().findSeed(itemList, finalFloor);
+                                legacyCoordinator = new SeedFinderCoordinator(
+                                        targets, finalFloor, HeroClass.WARRIOR, workers);
+                                legacyCoordinator.run();
+                                String log = legacyCoordinator.lastResult;
+                                String fullLog = log;
+                                String seedStr = extractSeed(log);
+                                ArrayList<String> matchedInfo = new ArrayList<>();
+                                // 解析清单尾部的“匹配楼层”区块（reportHit 追加），填回弹窗楼层列表
+                                String marker = "\n" + Messages.get(SeedFinder.class, "matched_floors");
+                                int markerIdx = log.indexOf(marker);
+                                if (markerIdx >= 0) {
+                                    String block = log.substring(markerIdx + marker.length());
+                                    for (String line : block.split("\n")) {
+                                        String t = line.trim();
+                                        if (!t.isEmpty()) matchedInfo.add(t);
+                                    }
+                                }
+                                res = new SeedResult(fullLog, seedStr, matchedInfo, seedStr != null);
                             }
                         } catch (Exception e) {
                             Gdx.app.error("SeedFinder", "Search failed", e);
                             // 异常构造失败结果
-                            res = new SeedResult("Search Error: " + e.getMessage(), "", null, false);
+                            res = new SeedResult("Search Error: " + e.getMessage(), "", new ArrayList<>(), false);
                         }
 
                         SeedResult finalRes = res;
@@ -213,8 +246,13 @@ public class SeedFindLogScene extends PixelScene {
                                         .append(SPDSettings.challenges()).append("\n\n");
 
                                 msg.append(Messages.get(SeedFindLogScene.class, "match_floor_list")).append("\n");
-                                for (String info : finalRes.matchedInfo) {
-                                    msg.append("- ").append(info).append("\n");
+                                if (finalRes.matchedInfo == null || finalRes.matchedInfo.isEmpty()) {
+                                    // 未启用目标匹配或全部未命中：无楼层明细（完整清单见上方滚动区）
+                                    msg.append("-\n");
+                                } else {
+                                    for (String info : finalRes.matchedInfo) {
+                                        msg.append("- ").append(info).append("\n");
+                                    }
                                 }
 
                                 msg.append("\n").append(Messages.get(SeedFindLogScene.class, "scroll_full_log"));
@@ -222,6 +260,8 @@ public class SeedFindLogScene extends PixelScene {
                                 String winTitle = Messages.get(SeedFindLogScene.class, "window_title");
                                 ShatteredPixelDungeon.scene().addToFront(new WndError(Icons.CATALOG, winTitle, msg.toString()));
                                 SPDSettings.customSeed(finalRes.seedStr);
+                                // 保存记录提示（旧版功能：成功查种后询问是否保存，最多 5 条）
+                                promptSaveRecord(finalRes);
                             }
                         });
                     });
@@ -262,23 +302,23 @@ public class SeedFindLogScene extends PixelScene {
 
         StringBuilder sb = new StringBuilder();
         sb.append(Messages.get(SeedFinder.class, "seedfinder")).append("\n\n")
-                .append(Messages.get(SeedFinder.class, "seedfinder_mode")).append(SeedFinder.Options.condition).append("\n\n")
-                .append("  ").append(Messages.get(SeedFinder.class, "threads", SeedFinder.searchThreadCount)).append("\n\n")
                 .append(Messages.get(SeedFinder.class, "challenges_code"))
-                .append(SPDSettings.challenges()).append("\n\n")
-                .append(Messages.get(SeedFinder.class, "finder_time")).append(SeedFinder.getUiElapsedTime())
-                .append("\n\n");
+                .append(SPDSettings.challenges()).append("\n\n");
 
-        for (int ts = 0; ts < SeedFinder.searchThreadCount; ts++) {
-            long s = SeedFinder.parallelSeeds.get(ts);
-            if (s >= 0) {
-                String seedCode;
-                try {
-                    seedCode = DungeonSeed.convertToCode(s);
-                } catch (Exception e) {
-                    seedCode = Long.toString(s);
+        long[] ws = SeedFinderCoordinator.workerSeeds;
+        if (ws != null) {
+            sb.append(Messages.get(SeedFinder.class, "threads", ws.length)).append("\n\n");
+            for (int ts = 0; ts < ws.length; ts++) {
+                long s = ws[ts];
+                if (s >= 0) {
+                    String seedCode;
+                    try {
+                        seedCode = DungeonSeed.convertToCode(s);
+                    } catch (Exception e) {
+                        seedCode = Long.toString(s);
+                    }
+                    sb.append(Messages.get(SeedFinder.class, "thread_seed", ts + 1, seedCode)).append("\n");
                 }
-                sb.append(Messages.get(SeedFinder.class, "thread_seed", ts + 1, seedCode)).append("\n");
             }
         }
 
@@ -305,8 +345,9 @@ public class SeedFindLogScene extends PixelScene {
     }
 
     private static void stopSearchThread() {
-        SeedFinder.findingStatus = SeedFinder.FINDING.STOP;
-        SeedFinder.parallelFound = true;
+        SeedFinderCoordinator c = legacyCoordinator;
+        if (c != null) c.stop();
+        legacyCoordinator = null;
         if (thread != null && thread.isAlive()) thread.interrupt();
         thread = null;
         // 复位内存态种子，避免中断后残留覆盖正常游戏种子
@@ -431,8 +472,9 @@ public class SeedFindLogScene extends PixelScene {
                     sb.append(Messages.get(SeedFindLogScene.class, "detail_seed", rec.seedCode)).append("\n");
                     sb.append(Messages.get(SeedFindLogScene.class, "detail_range", rec.floors)).append("\n");
                     sb.append(Messages.get(SeedFindLogScene.class, "detail_matched")).append("\n");
-                    for (String m : rec.matchedInfo)
-                        sb.append(" - ").append(m).append("\n");
+                    if (rec.matchedInfo != null)
+                        for (String m : rec.matchedInfo)
+                            sb.append(" - ").append(m).append("\n");
                     ShatteredPixelDungeon.scene().addToFront(new WndError(Icons.CATALOG,
                             Messages.get(SeedFindLogScene.class, "detail_title"), sb.toString()));
                     return;

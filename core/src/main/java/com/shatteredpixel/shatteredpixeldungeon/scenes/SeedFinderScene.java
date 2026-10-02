@@ -99,7 +99,7 @@ public class SeedFinderScene extends PixelScene {
 
 		final Chrome.Type GREY_TR = Chrome.Type.GREY_BUTTON_TR;
 
-		StyledButton btnScout = new StyledButton(GREY_TR, Messages.get(SeedFinderScene.class, "scout_seed_button")) {
+		StyledButton btnScout = new StyledButton(GREY_TR, Messages.get(this, "scout_seed_button")) {
 			@Override
 			protected void onClick() {
 				ShatteredPixelDungeon.switchNoFade(SeedFindLogScene.class);

@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder;
 import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SeedFinderScene;
@@ -17,6 +18,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.ui.Component;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class SeedALRLogScene extends PixelScene {
@@ -72,7 +74,9 @@ public class SeedALRLogScene extends PixelScene {
                     ShatteredPixelDungeon.scene().addToFront(r);
 
                     thread = new Thread(() -> {
-                        s = new SeedFinder().logSeedItems(Long.toString(seed),SPDSettings.seedfinderFloors(),SPDSettings.challenges());
+                        // 统一使用新版查种实现：无目标日志模式（全物品清单，固定战士）
+                        s = new SeedFinder(new ArrayList<>(), SPDSettings.seedfinderFloors(), HeroClass.WARRIOR)
+                                .logSeedItems(seed);
                         Gdx.app.postRunnable(() -> {
                             if (stop) return;
                             r.destroy();

@@ -4,9 +4,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.alter.AWaterOfAware
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.alter.AWaterOfHealth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.alter.AWaterOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.alter.AltWellWater;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfAwareness;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfHealth;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
