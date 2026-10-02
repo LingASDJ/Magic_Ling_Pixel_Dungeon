@@ -53,13 +53,16 @@ public class GameLog extends Component implements Signal.Listener<String> {
 
 	@Override
 	public synchronized void update() {
-		for (String text : textsToAdd){
-			if (length != entries.size()){
+		ArrayList<String> toAdd = new ArrayList<>(textsToAdd);
+		textsToAdd.clear();
+
+		for (String text : toAdd) {
+			if (length != entries.size()) {
 				clear();
 				recreateLines();
 			}
 
-			if (text.equals( GLog.NEW_LINE )){
+			if (text.equals( GLog.NEW_LINE )) {
 				lastEntry = null;
 				continue;
 			}
@@ -95,26 +98,25 @@ public class GameLog extends Component implements Signal.Listener<String> {
 				color = CharSprite.NEUTRAL;
 			}
 
-			//将相同消息进行折叠而不是并列展示，不同消息再并列展示
+			// 将相同消息进行折叠而不是并列展示，不同消息再并列展示
 			// 折叠判断使用 lastFoldEntry，不受 NEW_LINE 影响
 			boolean canFold =
 					lastFoldEntry != null
 							&& color == lastFoldEntry.color
 							&& lastFoldEntry.isLastPart(text);
 
-			if (canFold) {lastFoldEntry.addOrFold(text);
-				if (lastFoldEntry.rendered != null) {
-					lastFoldEntry.rendered.text(
-							lastFoldEntry.displayText()
-					);
-				}
-			} else if (lastEntry != null && color == lastColor && lastFoldEntry != null  && lastEntry.nLines < MAX_LINES) {
+			boolean canAppend = lastEntry != null
+					&& color == lastColor
+					&& lastFoldEntry != null
+					&& lastEntry.nLines < MAX_LINES;
 
+			if (canFold || canAppend) {
 				lastFoldEntry.addOrFold(text);
-				lastEntry.text(lastFoldEntry.displayText());
-
+				RenderedTextBlock target = (lastFoldEntry.rendered != null) ? lastFoldEntry.rendered : lastEntry;
+				if (target != null) {
+					target.text(lastFoldEntry.displayText());
+				}
 			} else {
-
 				Entry entry = new Entry(text, color);
 				entries.add(entry);
 
@@ -125,7 +127,6 @@ public class GameLog extends Component implements Signal.Listener<String> {
 				lastEntry.hardlight( color );
 				lastColor = color;
 				add( lastEntry );
-
 			}
 
 			if (length > 0) {
@@ -156,24 +157,23 @@ public class GameLog extends Component implements Signal.Listener<String> {
 			}
 		}
 
-		if (!textsToAdd.isEmpty()){
+		if (!toAdd.isEmpty()) {
 			layout();
-			textsToAdd.clear();
 		}
 		super.update();
 	}
 
 	private synchronized void recreateLines() {
-		//每个 Entry 重新绑定自己的显示块
-		//lastFoldEntry 始终指向最后一个逻辑 Entry
+		// 每个 Entry 重新绑定自己的显示块
+		// lastFoldEntry 始终指向最后一个逻辑 Entry
 		lastEntry = null;
 		lastFoldEntry = null;
 
 		for (Entry entry : entries) {
 			entry.rendered = PixelScene.renderTextBlock( entry.displayText(), 6 );
-			entry.rendered.hardlight(
-					lastColor = entry.color);
-			add(entry.rendered );
+			lastColor = entry.color;
+			entry.rendered.hardlight( lastColor );
+			add( entry.rendered );
 			lastEntry = entry.rendered;
 			lastFoldEntry = entry;
 		}
@@ -209,11 +209,9 @@ public class GameLog extends Component implements Signal.Listener<String> {
 	private static class Entry {
 		public String text;
 		public int color;
-		//给 Entry 增加计数
 		public int count = 1;
 		public RenderedTextBlock rendered;
 
-		// 第一段之后的额外消息
 		public ArrayList<String> extraTexts = new ArrayList<>();
 		public ArrayList<Integer> extraCounts = new ArrayList<>();
 
@@ -222,30 +220,30 @@ public class GameLog extends Component implements Signal.Listener<String> {
 			this.color = color;
 		}
 
-		public void addOrFold(String nextText) {
-			// 如果还没有额外消息，就比较第一段
+		private String getLastPart() {
 			if (extraTexts.isEmpty()) {
-				if (text.equals(nextText)) {
+				return text;
+			} else {
+				return extraTexts.get(extraTexts.size() - 1);
+			}
+		}
+
+		public boolean isLastPart(String nextText) {
+			return getLastPart().equals(nextText);
+		}
+
+		public void addOrFold(String nextText) {
+			if (getLastPart().equals(nextText)) {
+				if (extraTexts.isEmpty()) {
 					count++;
-					return;
+				} else {
+					int lastIndex = extraCounts.size() - 1;
+					extraCounts.set(lastIndex, extraCounts.get(lastIndex) + 1);
 				}
 			} else {
-				int lastIndex = extraTexts.size() - 1;
-				String lastText = extraTexts.get(lastIndex);
-
-				// 如果和最后一段相同，只增加次数
-				if (lastText.equals(nextText)) {
-					extraCounts.set(
-							lastIndex,
-							extraCounts.get(lastIndex) + 1
-					);
-					return;
-				}
+				extraTexts.add(nextText);
+				extraCounts.add(1);
 			}
-
-			// 和最后一段不同，添加一个新片段
-			extraTexts.add(nextText);
-			extraCounts.add(1);
 		}
 
 		private String formatPart(String text, int count) {
@@ -255,15 +253,7 @@ public class GameLog extends Component implements Signal.Listener<String> {
 				return text;
 			}
 		}
-		//判断当前消息是否和 Entry 最后一段相同
-		public boolean isLastPart(String nextText) {
-			if (extraTexts.isEmpty()) {
-				return text.equals(nextText);
-			} else {
-				int lastIndex = extraTexts.size() - 1;
-				return extraTexts.get(lastIndex).equals(nextText);
-			}
-		}
+
 		public String displayText() {
 			StringBuilder result = new StringBuilder(
 					formatPart(text, count));
