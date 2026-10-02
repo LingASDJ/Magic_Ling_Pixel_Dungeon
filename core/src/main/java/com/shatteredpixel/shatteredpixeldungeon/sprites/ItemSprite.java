@@ -52,11 +52,11 @@ import java.nio.Buffer;
 public class ItemSprite extends MovieClip {
 
 	public static final int SIZE	= 16;
-	
+
 	private static final float DROP_INTERVAL = 0.4f;
-	
+
 	public Heap heap;
-	
+
 	private Glowing glowing;
 	// 精灵尚未挂载到父节点时暂存的动态物品(AnimationItem)，
 	// 挂载后首个 update() 会自动补播其动画（如 ChangeButton 构造时的 ItemSprite）
@@ -66,7 +66,7 @@ public class ItemSprite extends MovieClip {
 	protected Emitter emitter;
 	private float phase;
 	private boolean glowUp;
-	
+
 	private float dropInterval;
 
 	//the amount the sprite is raised from flat when viewed in a raised perspective
@@ -78,34 +78,34 @@ public class ItemSprite extends MovieClip {
 	protected float shadowWidth     = 1f;
 	protected float shadowHeight    = 0.25f;
 	protected float shadowOffset    = 0.5f;
-	
+
 	public ItemSprite() {
 		this( ItemSpriteSheet.SOMETHING, null );
 	}
-	
+
 	public ItemSprite( Heap heap ){
 		super(Assets.Sprites.ITEMS);
 		view( heap );
 	}
-	
+
 	public ItemSprite( Item item ) {
 		super(Assets.Sprites.ITEMS);
 		view( item );
 	}
-	
+
 	public ItemSprite( int image ){
 		this( image, null );
 	}
-	
+
 	public ItemSprite( int image, Glowing glowing ) {
 		super( Assets.Sprites.ITEMS );
 		view(image, glowing);
 	}
-	
+
 	public void link() {
 		link(heap);
 	}
-	
+
 	public void link( Heap heap ) {
 		this.heap = heap;
 		view(heap);
@@ -113,7 +113,7 @@ public class ItemSprite extends MovieClip {
 		visible = heap.seen;
 		place(heap.pos);
 	}
-	
+
 	@Override
 	public void revive() {
 		super.revive();
@@ -193,20 +193,37 @@ public class ItemSprite extends MovieClip {
 		float texW = texture.width;
 		float texH = texture.height;
 
+		RectF[] originalFrames = curAnim.frames;
+		// 关键修复：不要直接修改 originalFrames（它属于共享的 Animation 对象）。
+		// 必须创建一个新的数组来存储裁剪后的帧，避免污染全局动画数据。
+		RectF[] newFrames = new RectF[originalFrames.length];
 		boolean changed = false;
-		RectF[] frames = curAnim.frames;
-		for (int i = 0; i < frames.length; i++){
-			RectF f = frames[i];
-			if (f == null) continue;
+
+		for (int i = 0; i < originalFrames.length; i++){
+			RectF f = originalFrames[i];
+			if (f == null) {
+				newFrames[i] = null;
+				continue;
+			}
 			float fw = f.width() * texW;
 			float fh = f.height() * texH;
-			if (Math.abs(fw - sw) < 0.01f && Math.abs(fh - sh) < 0.01f) continue;
+			if (Math.abs(fw - sw) < 0.01f && Math.abs(fh - sh) < 0.01f) {
+				newFrames[i] = f;
+				continue;
+			}
+
 			float dx = (fw - sw) / 3f / texW;
 			float dy = (fh - sh) / 3f / texH;
-			frames[i] = new RectF(f.left + dx, f.top + dy, f.right - dx, f.bottom - dy);
+			newFrames[i] = new RectF(f.left + dx, f.top + dy, f.right - dx, f.bottom - dy);
 			changed = true;
 		}
+
 		if (changed){
+			// 如果引擎的 Animation 不支持克隆，我们只能替换当前引用的 frames 数组。
+			// 但为了安全，最好在这里创建一个新的 Animation 对象（如果 API 允许）。
+			// 如果无法创建新 Animation，则仅替换当前 curAnim 的 frames 引用，
+			// 并确保原始的共享 Animation 不被修改。
+			curAnim.frames = newFrames;
 			play(curAnim, true);
 		}
 	}
@@ -218,23 +235,23 @@ public class ItemSprite extends MovieClip {
 			emitter = null;
 		}
 	}
-	
+
 	public PointF worldToCamera( int cell ) {
 		final int csize = DungeonTilemap.SIZE;
-		
+
 		return new PointF(
 				PixelScene.align(Camera.main, ((cell % Dungeon.level.width()) + 0.5f) * csize - width() * 0.5f),
 				PixelScene.align(Camera.main, ((cell / Dungeon.level.width()) + 1.0f) * csize - height() - csize * perspectiveRaise)
 		);
 	}
-	
+
 	public void place( int p ) {
 		if (Dungeon.level != null) {
 			point(worldToCamera(p));
 			shadowOffset = 0.5f;
 		}
 	}
-	
+
 	public void drop() {
 
 		if (heap.isEmpty()) {
@@ -245,30 +262,30 @@ public class ItemSprite extends MovieClip {
 			// where as long as the player continually taps, the heap sails up into the air.
 			place(heap.pos);
 		}
-			
+
 		dropInterval = DROP_INTERVAL;
-		
+
 		speed.set( 0, -100 );
 		acc.set(0, -speed.y / DROP_INTERVAL * 2);
-		
+
 		if (heap != null && heap.seen && heap.peek() instanceof Gold) {
 			CellEmitter.center( heap.pos ).burst( Speck.factory( Speck.COIN ), 5 );
 			Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
 		}
 	}
-	
+
 	public void drop( int from ) {
 
 		if (heap.pos == from) {
 			drop();
 		} else {
-			
+
 			float px = x;
 			float py = y;
 			drop();
-			
+
 			place(from);
-	
+
 			speed.offset((px - x) / DROP_INTERVAL, (py - y) / DROP_INTERVAL);
 		}
 	}
@@ -299,9 +316,16 @@ public class ItemSprite extends MovieClip {
 		// 则暂存物品，等挂载后由 update() 自动补播。
 		if (!b && item.animation && item instanceof Item.AnimationItem) {
 			if (parent != null) {
-				item.frames(this);
-				alignAnimationToStaticSize(item);
-				pendingAnimItem = null;
+				try {
+					item.frames(this);
+					alignAnimationToStaticSize(item);
+					pendingAnimItem = null;
+				} catch (Exception e) {
+					// 捕获异常，防止因动画帧异常导致整个 view 链路中断，
+					// 从而停留在整张 items.png 或错误状态。
+					pendingAnimItem = null;
+					frame(item.image()); // 回退到静态图标
+				}
 			} else {
 				pendingAnimItem = item;
 			}
@@ -351,7 +375,7 @@ public class ItemSprite extends MovieClip {
 				return view( 0, null );
 		}
 	}
-	
+
 	public ItemSprite view( int image, Glowing glowing ) {
 		if (this.emitter != null) this.emitter.killAndErase();
 		emitter = null;
@@ -391,10 +415,10 @@ public class ItemSprite extends MovieClip {
 			//adds extra raise to very short items, so they are visible
 			if (height < 8f){
 				perspectiveRaise =  (5 + 8 - height) / 16f;
+			}
 		}
 	}
-	}
-	
+
 	public synchronized void glow( Glowing glowing ){
 		this.glowing = glowing;
 		if (glowing == null) resetColor();
@@ -468,8 +492,13 @@ public class ItemSprite extends MovieClip {
 			Item i = pendingAnimItem;
 			pendingAnimItem = null;
 			if (i.animation && i instanceof Item.AnimationItem) {
-				i.frames(this);
-				alignAnimationToStaticSize(i);
+				try {
+					i.frames(this);
+					alignAnimationToStaticSize(i);
+				} catch (Exception e) {
+					// 异常保护：防止因为动画帧异常导致精灵卡在占位图或整张图集状态
+					frame(i.image());
+				}
 			}
 		}
 
@@ -514,19 +543,19 @@ public class ItemSprite extends MovieClip {
 
 		if (visible && glowing != null) {
 			if (glowUp && (phase += Game.elapsed) > glowing.period) {
-				
+
 				glowUp = false;
 				phase = glowing.period;
-				
+
 			} else if (!glowUp && (phase -= Game.elapsed) < 0) {
-				
+
 				glowUp = true;
 				phase = 0;
-				
+
 			}
-			
+
 			float value = phase / glowing.period * 0.6f;
-			
+
 			rm = gm = bm = 1 - value;
 			ra = glowing.red * value;
 			ga = glowing.green * value;
@@ -541,19 +570,19 @@ public class ItemSprite extends MovieClip {
 		int col = index % rows;
 		return tx.getPixel( col * SIZE + x, row * SIZE + y );
 	}
-	
+
 	public static class Glowing {
-		
+
 		public int color;
 		public float red;
 		public float green;
 		public float blue;
 		public float period;
-		
+
 		public Glowing( int color ) {
 			this( color, 1f );
 		}
-		
+
 		public Glowing( int color, float period ) {
 
 			this.color = color;
@@ -561,7 +590,7 @@ public class ItemSprite extends MovieClip {
 			red = (color >> 16) / 255f;
 			green = ((color >> 8) & 0xFF) / 255f;
 			blue = (color & 0xFF) / 255f;
-			
+
 			this.period = period;
 		}
 	}
