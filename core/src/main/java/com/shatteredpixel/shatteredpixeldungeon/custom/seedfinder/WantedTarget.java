@@ -17,6 +17,14 @@ public class WantedTarget {
     public final Class<?> aug;
     private final boolean augIsGlyph;
 
+    /** 供子进程根据任务文件中的类名重建目标（aug 为 null 表示不限定附魔/铭文） */
+    public WantedTarget(Class<? extends Item> cls, int minLevel, Class<?> aug) {
+        this.cls = cls;
+        this.minLevel = minLevel;
+        this.aug = aug;
+        this.augIsGlyph = aug != null && Armor.Glyph.class.isAssignableFrom(aug);
+    }
+
     public WantedTarget(Item item) {
         this.cls = item.getClass();
         this.minLevel = item.trueLevel();
@@ -33,6 +41,16 @@ public class WantedTarget {
             this.aug = null;
             this.augIsGlyph = false;
         }
+    }
+
+    /** 序列化用：目标类名（写入任务文件） */
+    public String clsName() {
+        return cls.getName();
+    }
+
+    /** 序列化用：附魔/铭文类名，空串表示不限定 */
+    public String augName() {
+        return aug == null ? "" : aug.getName();
     }
 
     public boolean matches(Item item) {

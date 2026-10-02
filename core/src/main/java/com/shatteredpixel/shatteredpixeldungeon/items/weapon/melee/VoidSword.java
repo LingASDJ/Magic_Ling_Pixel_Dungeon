@@ -9,7 +9,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
@@ -42,9 +41,6 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.duration;
-import static com.shatteredpixel.shatteredpixeldungeon.items.Item.updateQuickslot;
 
 //虚空剑
 //四阶，力量需求15
