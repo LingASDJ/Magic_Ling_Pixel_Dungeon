@@ -434,16 +434,22 @@ public class NormalZeroFiveLevel extends Level {
         drop((Generator.random(Generator.Category.WEP_T2)), 430).type =
                 Heap.Type.FOR_SALE;
 
-        if (Badges.isUnlocked(Badges.Badge.GOOD_MAKER)) {
-            drop((Generator.random(Generator.Category.RING)), 259);
-        }
-
-        if (Badges.isUnlocked(Badges.Badge.RLPT_WIN)) {
-            if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
-                drop((Generator.random(Generator.Category.WAND)), 260);
-            } else {
-                drop((Generator.random(Generator.Category.ARMOR)),260);
+        // 种子稳定性修复：徽章奖励装备生成隔离到独立随机流，不再扰动关卡生成流
+        Random.pushGenerator(Dungeon.seedCurDepth() + 0x5EED03L);
+        try {
+            if (Badges.isUnlocked(Badges.Badge.GOOD_MAKER)) {
+                drop((Generator.random(Generator.Category.RING)), 259);
             }
+
+            if (Badges.isUnlocked(Badges.Badge.RLPT_WIN)) {
+                if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
+                    drop((Generator.random(Generator.Category.WAND)), 260);
+                } else {
+                    drop((Generator.random(Generator.Category.ARMOR)),260);
+                }
+            }
+        } finally {
+            Random.popGenerator();
         }
 
 
@@ -500,9 +506,10 @@ public class NormalZeroFiveLevel extends Level {
             drop( new LingJing(),  859);
         }
 
+        float moonLowRoll = Random.Float();
         if(!Statistics.moonlowgetAloneRoom){
             MoonLow ml = new MoonLow();
-            ml.pos = Random.Float()>0.5f ? 722 : 720;
+            ml.pos = moonLowRoll>0.5f ? 722 : 720;
             mobs.add(ml);
         }
 
@@ -550,14 +557,20 @@ public class NormalZeroFiveLevel extends Level {
             yty.pos = 255;
             mobs.add(yty);
 
-            for (int i : SALEPOS_TWO) {
-                drop((Generator.random(Generator.Category.POTION)), i).type =
-                        Heap.Type.FOR_SALE;
-            }
+            // 种子稳定性修复：商店货物生成隔离到独立随机流，不再扰动关卡生成流
+            Random.pushGenerator(Dungeon.seedCurDepth() + 0x5EED02L);
+            try {
+                for (int i : SALEPOS_TWO) {
+                    drop((Generator.random(Generator.Category.POTION)), i).type =
+                            Heap.Type.FOR_SALE;
+                }
 
-            for (int i : SALEPOS_FOUR) {
-                drop((Generator.random(Generator.Category.SEED)), i).type =
-                        Heap.Type.FOR_SALE;
+                for (int i : SALEPOS_FOUR) {
+                    drop((Generator.random(Generator.Category.SEED)), i).type =
+                            Heap.Type.FOR_SALE;
+                }
+            } finally {
+                Random.popGenerator();
             }
         }
 
@@ -582,7 +595,8 @@ public class NormalZeroFiveLevel extends Level {
             mobs.add(shopking);
         }
 
-        if(Badges.isUnlocked(Badges.Badge.KILL_MORES) && Random.Float() >=0.7f || DeviceCompat.isDebug()){
+        float sliceRoll = Random.Float();
+        if(DeviceCompat.isDebug() || (sliceRoll >= 0.7f && Badges.isUnlocked(Badges.Badge.KILL_MORES))){
             SliceDream sliceDream = new SliceDream();
             sliceDream.pos = 645;
             mobs.add(sliceDream);
@@ -613,13 +627,21 @@ public class NormalZeroFiveLevel extends Level {
         dogDogMusic.pos = 264;
         mobs.add(dogDogMusic);
 
-        if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX) || passwordbadges.contains(PaswordBadges.Badge.GODCHSX) || DeviceCompat.isDebug() || RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY) {
-            if(Random.Int(4) == 0 || RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY) {
-                WhiteLingLand god = new WhiteLingLand();
-                god.pos = 657;
-                mobs.add(god);
-                Statistics.onlyLing = true;
+        // 种子稳定性修复：刷点判定恒定消耗 1 次随机数（由种子决定），徽章/调试/生日只决定"是否现身"；
+        // 奖励生成隔离到独立随机流（seedCurDepth()+盐值），不再扰动关卡生成流。
+        int lingRoll = Random.Int(4);
+        boolean lingAllowed = passwordbadges.contains(PaswordBadges.Badge.ALLCHSX)
+                || passwordbadges.contains(PaswordBadges.Badge.GODCHSX)
+                || DeviceCompat.isDebug()
+                || RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY;
+        if (lingAllowed && (lingRoll == 0 || RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY)) {
+            WhiteLingLand god = new WhiteLingLand();
+            god.pos = 657;
+            mobs.add(god);
+            Statistics.onlyLing = true;
 
+            Random.pushGenerator(Dungeon.seedCurDepth() + 0x5EED01L);
+            try {
                 MeleeWeapon gods1;
                 gods1 = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
                 gods1.cursed = false;
@@ -656,6 +678,8 @@ public class NormalZeroFiveLevel extends Level {
                 gods4 = Generator.random(Generator.Category.ARTIFACT);
                 gods4.cursed = false;
                 drop(gods4,683).type = Heap.Type.FOR_ICE;
+            } finally {
+                Random.popGenerator();
             }
         }
 
@@ -663,8 +687,14 @@ public class NormalZeroFiveLevel extends Level {
             drop( new ElixirOfNukeCole(), 737  );
             new Ankh(true).collect();
             drop( new ElixirOfNukeCole(), 687  );
-            Prop p1 = Prop.randomPropA(0,true);
-            drop(p1, 738);
+            // 种子稳定性修复：随机藏品生成隔离到独立随机流，不再扰动关卡生成流
+            Random.pushGenerator(Dungeon.seedCurDepth() + 0x5EED07L);
+            try {
+                Prop p1 = Prop.randomPropA(0,true);
+                drop(p1, 738);
+            } finally {
+                Random.popGenerator();
+            }
         }
 
         if(RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.GQJ){
