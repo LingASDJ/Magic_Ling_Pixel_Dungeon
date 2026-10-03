@@ -2,6 +2,12 @@
 -keepnames class com.shatteredpixel.** { *; }
 -keepnames class com.watabou.** { *; }
 
+# 安卓原生多线程查种：入口类仅由字符串反射调用（Class.forName），
+# 且类名必须原样保留，否则 R8 会视为死代码裁剪、混淆后反射失配
+-keep class com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinderThreadWorker {
+    public static void main(java.lang.Object[]);
+}
+
 # keep members of classes that are instantiated via reflection
 -keep class * extends com.watabou.glscripts.Script { *; }
 -keep class * implements com.watabou.utils.Bundlable { *; }

@@ -298,6 +298,8 @@ public class SeedFinder implements Runnable {
         try {
             // 统一楼层语义：遍历 0..floor（含第 0 层与最深一层），与现行查种器一致
             for (int i = 0; i <= floor; i++) {
+                // 线程版查种：被打断时在当前楼层边界尽快让出（楼层内不检查，保证 RNG 生成器栈平衡）
+                if (Thread.currentThread().isInterrupted()) return false;
                 int originalBranch = Dungeon.branch;
                 Dungeon.branch = 0;
 
@@ -404,6 +406,7 @@ public class SeedFinder implements Runnable {
 
     /** 支线楼层命中检查：生成指定支线的楼层并匹配物品（itemsFound 由 tryMatch 增量更新） */
     private boolean checkBranchLevel(int branch, boolean[] itemsFound) {
+        if (Thread.currentThread().isInterrupted()) return false;
         int originalBranch = Dungeon.branch;
         try {
             Dungeon.branch = branch;
@@ -524,7 +527,8 @@ public class SeedFinder implements Runnable {
                 ArrayList<Item> rewards = new ArrayList<>();
                 rewards.add(Quest.armor);
                 rewards.add(Quest.weapon);
-                Quest.complete();
+                Quest.armor = null;   // 手动清状态：不调 complete()（无头环境下 Game.scene()==null 会 NPE），
+                Quest.weapon = null;  // 清空即可阻止后续楼层重复收集
                 fd.ghostRewards = rewards;
             }
             // 红龙之王任务奖励（weapon/armor/RingT/food/scrolls 五选一，仅出现者非 null）
@@ -533,23 +537,27 @@ public class SeedFinder implements Runnable {
                 for (Item rr : new Item[]{RedDragon.Quest.weapon, RedDragon.Quest.armor,
                         RedDragon.Quest.RingT, RedDragon.Quest.food, RedDragon.Quest.scrolls})
                     if (rr != null) rewards.add(rr);
-                RedDragon.Quest.complete();
+                RedDragon.Quest.weapon = null;
+                RedDragon.Quest.RingT = null;
+                RedDragon.Quest.armor = null;
+                RedDragon.Quest.food = null;
+                RedDragon.Quest.scrolls = null;
                 fd.redDragonRewards = rewards;
             }
-            // 工匠任务奖励（type 在 complete 前捕获）
+            // 工匠任务奖励（type 在清空前捕获）
             if (Wandmaker.Quest.wand1 != null) {
                 ArrayList<Item> rewards = new ArrayList<>();
                 rewards.add(Wandmaker.Quest.wand1);
                 rewards.add(Wandmaker.Quest.wand2);
                 fd.wandmakerType = Wandmaker.Quest.type();
-                Wandmaker.Quest.complete();
+                Wandmaker.Quest.wand1 = Wandmaker.Quest.wand2 = null;
                 fd.wandmakerRewards = rewards;
             }
             // 小恶魔任务奖励
             if (Imp.Quest.reward != null) {
                 ArrayList<Item> rewards = new ArrayList<>();
                 rewards.add(Imp.Quest.reward);
-                Imp.Quest.complete();
+                Imp.Quest.reward = null;
                 fd.impRewards = rewards;
             }
 

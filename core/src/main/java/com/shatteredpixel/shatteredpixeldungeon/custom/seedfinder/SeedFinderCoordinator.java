@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder;
 
+import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
@@ -72,6 +73,12 @@ public class SeedFinderCoordinator implements Runnable {
     /** 平台支持的最大子进程数（1 = 不支持多进程） */
     public static int maxWorkers() {
         SeedFinderLauncher l = launcher;
+        if (l == null) {
+            // 未显式指定平台实现时（如安卓分支无法 fork 子进程），
+            // 默认启用进程内多线程查种（每线程独立 ClassLoader 隔离游戏静态状态）
+            l = SeedFinderThreadLauncher.create();
+            launcher = l;
+        }
         return l == null ? 1 : Math.max(1, l.maxWorkers());
     }
 
@@ -158,6 +165,7 @@ public class SeedFinderCoordinator implements Runnable {
         }
 
         long hitSeed = -1;
+        int hitWorkerIdx = -1;
         while (!stopped && hitSeed < 0) {
             int activeCount = 0;
             long frontier = Long.MAX_VALUE;
@@ -169,6 +177,7 @@ public class SeedFinderCoordinator implements Runnable {
                 long hit = readLong(fileOf(w, "hit"));
                 if (hit >= 0) {
                     hitSeed = hit;
+                    hitWorkerIdx = w.index;
                     break;
                 }
 
@@ -217,8 +226,23 @@ public class SeedFinderCoordinator implements Runnable {
             if (stopped) break;
             if (hitSeed >= 0) {
                 killAll();
+                // 优先使用 worker 自生成的完整日志（含“匹配物品层数”区块）：
+                // 安卓主进程的全局 RNG 被渲染线程消耗，reportHit 重新生成会与 worker 不一致，
+                // 只有 worker（与 testSeed 同一环境）生成的命中日志才可靠。
+                // 无 log 文件（老客户端/回退路径）时仍用 reportHit。
+                String log;
+                File logFile = hitWorkerIdx >= 0 ? fileOf(ws[hitWorkerIdx], "log") : null;
+                if (logFile != null && logFile.exists() && logFile.length() > 0) {
+                    try {
+                        log = readText(logFile);
+                    } catch (Throwable t) {
+                        log = reportHit(hitSeed);
+                    }
+                } else {
+                    log = reportHit(hitSeed);
+                }
                 //【临时·性能测试】命中结果附带耗时与已扫描种子数
-                return reportHit(hitSeed) + SeedFinder.scanStats(scanned, benchStartMs);
+                return log + SeedFinder.scanStats(scanned, benchStartMs);
             }
 
             activeWorkers = activeCount;
@@ -307,7 +331,27 @@ public class SeedFinderCoordinator implements Runnable {
         SeedFinder.resetTest();
         ArrayList<String> matched = new ArrayList<>();
         SeedFinder finder = new SeedFinder(targets, floor, heroClass);
+        // 诊断：PC 正常安卓空的差异点——先确认目标解析与匹配收集
+        try {
+            StringBuilder td = new StringBuilder();
+            for (WantedTarget t : targets) {
+                td.append(t == null || t.cls == null ? "null" : t.cls.getSimpleName())
+                        .append("+").append(t == null ? "?" : t.minLevel).append(" ");
+            }
+            Gdx.app.log("SeedFinder", "reportHit seed=" + seed + " floor=" + floor
+                    + " targets=" + targets.size() + " [" + td + "]");
+        } catch (Throwable ignored) {
+        }
         String log = finder.logSeedItemsWithMatches(seed, matched);
+        try {
+            Gdx.app.log("SeedFinder", "reportHit done matched=" + matched.size()
+                    + " logLen=" + log.length());
+            if (matched.isEmpty() && !targets.isEmpty()) {
+                Gdx.app.log("SeedFinder", "matched empty despite " + targets.size()
+                        + " targets: collectMatches found nothing (类精确/等级不满足或收集盲区)");
+            }
+        } catch (Throwable ignored) {
+        }
         if (matched.isEmpty()) return log;
         StringBuilder sb = new StringBuilder(log);
         sb.append("\n").append(Messages.get(SeedFinder.class, "matched_floors")).append("\n");
