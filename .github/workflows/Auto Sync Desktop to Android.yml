@@ -1,40 +1,32 @@
 name: Auto Sync Desktop to Android
-
 on:
   push:
-    branches:
-      - DesktopMaster
-
+    branches: [ DesktopMaster ]
+permissions:
+  contents: write
+concurrency:
+  group: sync-desktop-to-android
+  cancel-in-progress: true
 jobs:
   sync:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Check for nosync in commit messages
         id: check_commit
         run: |
-          # 获取触发这次工作流的提交信息
           COMMIT_MSG=$(git log -1 --pretty=%B)
-          COMMIT_SHA=$(git rev-parse HEAD)
-          COMMIT_AUTHOR=$(git log -1 --pretty=%an)
-          
-          echo "Triggered by commit: $COMMIT_SHA"
-          echo "Author: $COMMIT_AUTHOR"
-          echo "Message: $COMMIT_MSG"
           echo "commit_msg=$COMMIT_MSG" >> $GITHUB_ENV
-          echo "commit_sha=$COMMIT_SHA" >> $GITHUB_ENV
-          echo "commit_author=$COMMIT_AUTHOR" >> $GITHUB_ENV
-          
+          echo "commit_author=$(git log -1 --pretty=%an)" >> $GITHUB_ENV
+          echo "commit_sha=$(git rev-parse HEAD)" >> $GITHUB_ENV
           if echo "$COMMIT_MSG" | grep -qi "nosync"; then
-            echo "::warning::Skipping sync due to 'nosync' in commit message"
+            echo "::warning::Skipping sync due to 'nosync'"
             echo "skip_sync=true" >> $GITHUB_OUTPUT
           else
-            echo "No 'nosync' found, proceeding with sync"
             echo "skip_sync=false" >> $GITHUB_OUTPUT
           fi
 
@@ -54,93 +46,73 @@ jobs:
       - name: Backup Android-specific code
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
-          # 创建备份目录
-          mkdir -p /tmp/android_backup
-          
-          # 备份安卓分支上的安卓特定代码
+          set -e
+          mkdir -p /tmp/android_backup/scenes /tmp/android_backup/crashhandler /tmp/seed_backup
+          # android 目录
           if [ -d "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android" ]; then
             cp -r "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android" /tmp/android_backup/
-            echo "Android-specific code backed up"
           fi
-          
-          # 备份 CrashHandler.java
-          if [ -f "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/CrashHandler.java" ]; then
-            mkdir -p /tmp/android_backup/crashhandler
-            cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/CrashHandler.java" /tmp/android_backup/crashhandler/
-            echo "CrashHandler.java backed up"
+          # seedfinder 目录（关键修复）
+          if [ -d "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/seedfinder" ]; then
+            cp -r "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/seedfinder" /tmp/seed_backup/
           fi
-
-          # 新增：备份 TexturePackScene.java
-          if [ -f "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TexturePackScene.java" ]; then
-            mkdir -p /tmp/android_backup/scenes
-            cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TexturePackScene.java" /tmp/android_backup/scenes/
-            echo "TexturePackScene.java backed up"
-          fi
-          
-          # ============ 新增：备份 BackupSaveScene.java ============
-          if [ -f "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/BackupSaveScene.java" ]; then
-            mkdir -p /tmp/android_backup/scenes
-            cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/BackupSaveScene.java" /tmp/android_backup/scenes/
-            echo "BackupSaveScene.java backed up"
-          fi
+          # 其余已知安卓特有文件
+          for f in \
+            "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/CrashHandler.java" \
+            "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TexturePackScene.java" \
+            "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/BackupSaveScene.java" ; do
+            if [ -f "$f" ]; then
+              mkdir -p "/tmp/android_backup/$(dirname "${f#core/src/main/java/}")"
+              cp "$f" "/tmp/android_backup/${f#core/src/main/java/}"
+            fi
+          done
+          # 【按需扩充】SPDSettings.java 等共用但安卓有差异的文件
+          # if [ -f "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java" ]; then
+          #   cp "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java" /tmp/android_backup/
+          # fi
 
       - name: Merge folder from Desktop to Android
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
-          # 从Desktop分支合并代码
+          set -e
           git checkout DesktopMaster -- core/src/main
           echo "Desktop code merged"
 
       - name: Restore Android-specific code
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
-          # 恢复安卓特定代码
+          set -e
+          # android 目录
           if [ -d "/tmp/android_backup/android" ]; then
-            # 删除从Desktop分支带来的安卓代码（如果有的话）
-            rm -rf "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android" 2>/dev/null || true
-            # 恢复备份的安卓代码
-            mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon"
+            rm -rf "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android"
             cp -r /tmp/android_backup/android "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/"
-            echo "Android-specific code restored"
           fi
-          
-          # 恢复 CrashHandler.java
-          if [ -f "/tmp/android_backup/crashhandler/CrashHandler.java" ]; then
-            mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/"
-            cp /tmp/android_backup/crashhandler/CrashHandler.java "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/utils/"
-            echo "CrashHandler.java restored"
+          # seedfinder 目录（关键修复：路径是 /tmp/seed_backup/seedfinder）
+          if [ -d "/tmp/seed_backup/seedfinder" ]; then
+            rm -rf "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/seedfinder"
+            cp -r /tmp/seed_backup/seedfinder "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/custom/"
           fi
-
-          # 新增：恢复 TexturePackScene.java
-          if [ -f "/tmp/android_backup/scenes/TexturePackScene.java" ]; then
-            mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/"
-            cp /tmp/android_backup/scenes/TexturePackScene.java "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/"
-            echo "TexturePackScene.java restored"
+          # 其余已知安卓特有文件
+          if [ -d "/tmp/android_backup/custom" ]; then
+            cp -r /tmp/android_backup/custom "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/"
           fi
-          
-          # ============ 新增：恢复 BackupSaveScene.java ============
-          if [ -f "/tmp/android_backup/scenes/BackupSaveScene.java" ]; then
-            mkdir -p "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/"
-            cp /tmp/android_backup/scenes/BackupSaveScene.java "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/"
-            echo "BackupSaveScene.java restored"
+          if [ -d "/tmp/android_backup/scenes" ]; then
+            cp -r /tmp/android_backup/scenes "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/"
           fi
 
       - name: Commit and push changes
         if: steps.check_commit.outputs.skip_sync == 'false'
         run: |
+          set -e
           git add core/src/main
-          # 检查是否有更改需要提交
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Sync from DesktopMaster (triggered by ${{ env.commit_sha }})
-          
-            Original commit by ${{ env.commit_author }}:
-            ${{ env.commit_msg }}"
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git Android
+            git commit -m "Sync from DesktopMaster (triggered by ${{ env.commit_sha }})" -m "Original commit by ${{ env.commit_author }}: ${{ env.commit_msg }}"
+            git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" Android
           fi
 
       - name: Skip sync notification
         if: steps.check_commit.outputs.skip_sync == 'true'
         run: |
-          echo "Sync skipped due to 'nosync' in commit message: ${{ env.commit_msg }}"
+          echo "Sync skipped due to 'nosync': ${{ env.commit_msg }}"
