@@ -153,7 +153,7 @@ public class TowerGodsBad extends Mob {
                                     Buff.affect(TowerGodsBad.this,
                                             MyCoreHeart.RepaierDown.class,
                                             MyCoreHeart.RepaierDown.DURATION);
-                                    Statistics.RepaierTowerCount--;
+                                    Statistics.RepaierTowerCount = Math.max(Statistics.RepaierTowerCount - 1, 0);
                                     repiaer = true;
                                 }
                             }
