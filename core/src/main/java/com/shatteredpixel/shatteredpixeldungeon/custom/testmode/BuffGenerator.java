@@ -3,57 +3,30 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessBossRushLow;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLingJing;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoDied;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessQinyue;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessUnlock;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.ClearLanterBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.Immunities.ScaryImmunitiesBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.DragonWall;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.FoundChest;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.OozeStatueDead;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.QuestGold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BuffScanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollingGridPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BuffGenerator extends TestItem{
@@ -68,7 +41,6 @@ public class BuffGenerator extends TestItem{
 
     private BitSet buffsStatus = new BitSet();
     private int duration = 1;
-    private int currentPage = 1;
 
     @FunctionalInterface
     private interface Function<T>{
@@ -77,9 +49,55 @@ public class BuffGenerator extends TestItem{
 
     private static final Map<Class<?>,Function<?>> functions = new HashMap<>();
 
-    //带有自定义回合函数/继承自Buff类的方法应写在这里
+    
     {
         functions.put( AdrenalineSurge.class, (Char ch,float duration) -> Buff.affect( ch, AdrenalineSurge.class ).reset(1, duration ) );
+    }
+
+    //数据源：BuffScanner 全量扫描 + 效果百科同款过滤
+    private final ArrayList<BuffEntry> availableBuffs = new ArrayList<>();
+
+    private static class BuffEntry {
+        Class<? extends Buff> clazz;
+        Buff instance;
+        int iconID;
+        String title;
+        String desc;
+    }
+
+    private void buildBuffList() {
+        availableBuffs.clear();
+        ArrayList<Class<? extends Buff>> scanned = BuffScanner.getTestBuffClasses();
+        for (Class<? extends Buff> buffClass : scanned) {
+            Buff buff;
+            try {
+                buff = buffClass.getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                continue;
+            }
+
+            int iconID;
+            String title, desc;
+            try {
+                iconID = buff.icon();
+                title = Messages.titleCase(buff.name());
+                desc = buff.desc();
+            } catch (Exception e) {
+                continue;
+            }
+
+            //效果百科同款过滤：无图标占位、缺翻译的跳过
+            if (iconID == 68) continue;
+            if (title.contains("Ms") || desc.contains("Ms")) continue;
+
+            BuffEntry entry = new BuffEntry();
+            entry.clazz = buffClass;
+            entry.instance = buff;
+            entry.iconID = iconID;
+            entry.title = title;
+            entry.desc = desc;
+            availableBuffs.add(entry);
+        }
     }
 
     private CellSelector.Listener buff_target_selector = new CellSelector.Listener() {
@@ -92,7 +110,8 @@ public class BuffGenerator extends TestItem{
                 GLog.w(M.L(WndSetBuff.class, "no_char"));
             }else {
                 for (int i = buffsStatus.nextSetBit(0 ); i >= 0; i = buffsStatus.nextSetBit(i + 1 ) ) {
-                    Class buffClass = allData.get(i);
+                    if (i >= availableBuffs.size()) continue;
+                    Class buffClass = availableBuffs.get(i).clazz;
                     AffectBuff( ch, buffClass, duration);
                 }
             }
@@ -172,7 +191,6 @@ public class BuffGenerator extends TestItem{
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
         bundle.put( "buffDuration", duration );
-        bundle.put( "currentPage", currentPage );
 
         int[] storeStatus = new int[ buffsStatus.cardinality() ];
         for( int i = buffsStatus.nextSetBit(0), j = 0;i >= 0; i = buffsStatus.nextSetBit(i + 1 ), j++ )
@@ -185,7 +203,6 @@ public class BuffGenerator extends TestItem{
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle( bundle );
         duration = bundle.getInt("buffDuration" );
-        currentPage = bundle.getInt("currentPage" );
 
         int[] storeStatus = bundle.getIntArray("storeStatus" );
         for(int i = 0;i < storeStatus.length; i++)
@@ -194,89 +211,36 @@ public class BuffGenerator extends TestItem{
 
     private class WndSetBuff extends Window {
 
-        private static final int WIDTH = 180;
-        private static final int HEIGHT = 280;
-        private static final int BTN_SIZE = 18;
+        private static final int WIDTH = 150;
+        private static final int HEIGHT = 180;
         private static final int GAP = 2;
+        private static final int TOP_BAR_H = 21;
+        private static final int DESC_AREA_H = 32;
 
-        private int columPerPage = 9;
-        private int maxPage = allData.size() / columPerPage;
-        private ArrayList<CheckBox> buffButtons = new ArrayList<>(columPerPage + 1 );
-        private RenderedTextBlock selectedPage;
-        private RedButton modifyDuration;
-        private RenderedTextBlock buffText = PixelScene.renderTextBlock(8);
-        private RenderedTextBlock descText = PixelScene.renderTextBlock(6);
+        //选中高亮与默认底色（效果百科网格默认底 0x9953564D）
+        private static final float SEL_R = 0.35f, SEL_G = 0.85f, SEL_B = 0.45f;
+        private static final float DEF_R = 0.325f, DEF_G = 0.337f, DEF_B = 0.302f;
 
-        // 新增过滤后的数据缓存
-        private ArrayList<Class<?>> filteredData = new ArrayList<>();
-        private ArrayList<Class<?>> filteredBuffs = new ArrayList<>();
-        // 核心过滤方法
-        private void filterBuffs() {
-            filteredBuffs.clear();
-            for (Class<?> buffClass : allData) {
-                String buffName = M.L(buffClass, "name");
-                if (!buffName.startsWith("Ms:")) {
-                    filteredBuffs.add(buffClass);
-                }
-            }
-        }
+        private final ScrollingGridPane grid = new ScrollingGridPane();
+        private final Map<Integer, ScrollingGridPane.GridItem> itemByIndex = new HashMap<>();
+
+        private final ArrayList<Integer> positiveBuffs = new ArrayList<>();
+        private final ArrayList<Integer> negativeBuffs = new ArrayList<>();
+        private final ArrayList<Integer> neutralBuffs = new ArrayList<>();
+
+        private final RedButton modifyDuration;
+        private final RedButton clearButton;
+        private final RenderedTextBlock selectedCount;
+        private final RenderedTextBlock descText;
+        private final ScrollPane descPane;
 
         public WndSetBuff(){
             super();
-
-            //过略Ms:开头的buff
-            filterBuffs();
-            //计算过略的分页参数
-            maxPage = (int) Math.ceil((double) filteredBuffs.size() / columPerPage);
-
             resize(WIDTH, HEIGHT);
 
-            int pos = 110;
-
-            RedButton lhs = new RedButton(Messages.get(WndSetBuff.class,"last_page"), 6){
-                @Override
-                public void onClick(){
-                    updateFilteredData();
-                    currentPage--;
-                    if(currentPage < 1 || currentPage>maxPage){
-                        currentPage = maxPage;
-                    }
-                    updateBuffButtons();
-                    updateSelectedPage();
-                }
-            };
-            lhs.setRect(GAP, GAP, 24, 18);
-            add(lhs);
-
-            RedButton rhs = new RedButton(Messages.get(WndSetBuff.class,"next_page"), 6){
-                @Override
-                public void onClick(){
-                    currentPage++;
-                    updateFilteredData();
-                    if(currentPage < 1 || currentPage >maxPage){
-                        currentPage = 1;
-                    }
-                    updateBuffButtons();
-                    updateSelectedPage();
-                }
-            };
-            rhs.setRect(WIDTH - 24 - GAP,  GAP, 24, 18);
-            add(rhs);
-
-            buffText.setPos(lhs.left(), lhs.bottom() + 2 * GAP);
-            buffText.maxWidth(WIDTH - 2 * GAP);  // 添加自动换行
-            buffText.hardlight(Window.TITLE_COLOR);
-            add(buffText);
-
-            // 修改后的代码段
-            descText.setPos(0, 0);
-            descText.maxWidth(WIDTH - 2 * GAP - 4); // 为滚动条保留空间
-            descText.setPos(lhs.left(), buffText.bottom() + 6 * GAP);
-            add(descText);
-
-            selectedPage = PixelScene.renderTextBlock("", 9);
-            PixelScene.align(selectedPage);
-            add(selectedPage);
+            //数据源：BuffScanner 全量扫描（效果百科同款过滤规则）
+            buildBuffList();
+            classifyBuffs();
 
             modifyDuration = new RedButton(Messages.get(WndSetBuff.class, "modify_duration",duration), 7) {
                 @Override
@@ -300,323 +264,132 @@ public class BuffGenerator extends TestItem{
                     }));
                 }
             };
-            modifyDuration.setRect((WIDTH/3f)/6f-8, 90, (WIDTH/3f - GAP), 16);
             add(modifyDuration);
 
-            RedButton clearButton = new RedButton(Messages.get(WndSetBuff.class, "clear_all",duration)) {
+            clearButton = new RedButton(Messages.get(WndSetBuff.class, "clear_all"), 7) {
                 @Override
                 protected void onClick() {
                     super.onClick();
                     buffsStatus.clear();
-                    updateBuffButtons();
+                    for (ScrollingGridPane.GridItem item : itemByIndex.values()) {
+                        item.hardLightBG(DEF_R, DEF_G, DEF_B);
+                    }
+                    updateCount();
+                    descText.text("");
+                    descPane.scrollTo(0, 0);
                 }
             };
-            clearButton.setRect(modifyDuration.right() + GAP+5, 90, 109, 16);
             add(clearButton);
 
-            int column = 0;
-            for (int i = 0; i < columPerPage && column < 3; ++i) {
-                int temp = i;
-                CheckBox cb = new CheckBox(M.L(allData.get(temp + ( currentPage - 1 ) * columPerPage), "name")){
-                    @Override
-                    protected void onClick() {
-                        super.onClick();
-                        int finalI = temp + ( currentPage - 1 ) * columPerPage;
-                        descText.text(M.L(allData.get(finalI), "desc"));
-                        buffText.text(M.L(allData.get(finalI), "name"));
-                        if (checked) {
-                            buffsStatus.set(finalI);
-                        } else {
-                            buffsStatus.clear(finalI);
-                        }
-                    }
+            selectedCount = PixelScene.renderTextBlock("", 7);
+            PixelScene.align(selectedCount);
+            add(selectedCount);
 
-                    @Override
-                    protected boolean onLongClick() {
-                        int finalI = temp + ( currentPage - 1 ) * columPerPage;
-                        GameScene.show( new WndMessage( M.L(allData.get(finalI), "desc") ) ) ;
-                        return super.onLongClick();
-                    }
-                };
-                cb.active = true;
-                add(cb);
-                buffButtons.add(cb);
-
-                float Radius = 2.8f;
-
-                if (column == 0) {
-                    cb.setRect(GAP, pos, 58, 16);
-                } else if (column == 1) {
-                    cb.setRect(column * 58 + GAP, pos, 58, 16);
-                }else{
-                    cb.setRect(column * 58 + GAP, pos, 58, 16);
-                    column = -1; // 重置column的值，使其在下一次循环时为0（即第一列）
-                    pos += 16 + GAP; // 换行
-                }
-
-                if(i==16){
-                    cb.setRect((WIDTH/Radius - GAP)/Radius * 2+81, 90, (WIDTH/3f - GAP), 16);
-                }
-
-                column++;
-            }
-            resize(WIDTH, (int) (buffButtons.get(buffButtons.size()-1).bottom()+GAP));
-
-            updateBuffButtons();
-            updateSelectedPage();
-            updateFilteredData();
-        }
-
-        private void updateBuffButtons(){
-            // 清空现有UI元素
-            for (CheckBox cb : buffButtons) {
-                remove(cb);
-            }
-            buffButtons.clear();
-
-            // 计算分页参数
-
-            // 基于过滤后列表创建按钮
-            int startIdx = (currentPage - 1) * columPerPage;
-            int endIdx = Math.min(startIdx + columPerPage, filteredBuffs.size());
-
-            int pos = 110;
-            int column = 0;
-
-            // 动态生成CheckBox
-            for (int i = startIdx; i < endIdx; i++) {
-                Class<?> buffClass = filteredBuffs.get(i);
-                CheckBox cb = createCheckBox(buffClass, i);
-
-                descText.text(M.L(buffClass, "desc"));
-                buffText.text(M.L(buffClass, "name"));
-
-
-                // 布局逻辑
-                int Base = 58;
-                if (column == 0) {
-                    cb.setRect(GAP, pos, Base, 16);
-                } else if (column == 1) {
-                    cb.setRect(Base + GAP, pos, Base, 16);
-                } else {
-                    cb.setRect(Base*2 + GAP, pos, Base, 16);
-                    column = -1;
-                    pos += 16 + GAP;
-                }
-                column++;
-
-                add(cb);
-                buffButtons.add(cb);
-            }
-
-            // 调整窗口高度
-            if (!buffButtons.isEmpty()) {
-                resize(WIDTH, (int) (buffButtons.get(buffButtons.size()-1).bottom() + GAP));
-            } else {
-                resize(WIDTH, HEIGHT);
-            }
-        }
-        private void updateFilteredData() {
-            filteredData.clear();
-            for (Class<?> buffClass : allData) {
-                String name = M.L(buffClass, "name");
-                if (!name.startsWith("Ms:")) {
-                    filteredData.add(buffClass);
-                }
-            }
-        }
-
-        private CheckBox createCheckBox(Class<?> buffClass, int filteredIndex) {
-            CheckBox cb = new CheckBox(M.L(buffClass, "name"),6) {
+            descText = PixelScene.renderTextBlock("", 4);
+            descText.maxWidth(WIDTH - 2 * GAP);
+            descPane = new ScrollPane(descText) {
+                //放宽访问权限：切换描述后需要主动重新布局以更新滚动范围与滑块
                 @Override
-                protected void onClick() {
-                    super.onClick();
-                    int originalIndex = allData.indexOf(buffClass);
-                    buffsStatus.set(originalIndex, checked);
+                public void layout() {
+                    super.layout();
                 }
-
-                @Override
-                protected boolean onLongClick() {
-                    int originalIndex = allData.indexOf(buffClass);
-                    GameScene.show( new WndMessage( M.L(allData.get(originalIndex), "desc") ) ) ;
-                    return super.onLongClick();
-                }
-
             };
-            cb.checked(buffsStatus.get(allData.indexOf(buffClass)));
-            return cb;
+            add(descPane);
+
+            buildGrid();
+            layout();
+            updateCount();
         }
 
-        private void updateSelectedPage(){
-            maxPage = (int) Math.ceil(filteredBuffs.size() / (double) columPerPage);
-            selectedPage.text(Messages.get(WndSetBuff.class, "selected_page",currentPage,maxPage));
-            selectedPage.maxWidth(WIDTH / 2);
-            selectedPage.setPos((WIDTH - selectedPage.width())/2, 5);
+        private void buildGrid(){
+            grid.clear();
+            itemByIndex.clear();
+
+            grid.addHeader(Messages.get(this, "total_buffs", availableBuffs.size()), 9, true);
+
+            if (!positiveBuffs.isEmpty()) {
+                grid.addHeader("_" + Messages.get(this, "title_positive") + "_ (" + positiveBuffs.size() + ")", 7, false);
+                for (int idx : positiveBuffs) addBuffItem(idx);
+            }
+            if (!negativeBuffs.isEmpty()) {
+                grid.addHeader("_" + Messages.get(this, "title_negative") + "_ (" + negativeBuffs.size() + ")", 7, false);
+                for (int idx : negativeBuffs) addBuffItem(idx);
+            }
+            if (!neutralBuffs.isEmpty()) {
+                grid.addHeader("_" + Messages.get(this, "title_neutral") + "_ (" + neutralBuffs.size() + ")", 7, false);
+                for (int idx : neutralBuffs) addBuffItem(idx);
+            }
+            add(grid);
         }
-    }
 
-    private static final List<Class> allData = new ArrayList<>();
-    static {
-        allData.add(Adrenaline.class);
-        allData.add(AdrenalineSurge.class);
-        allData.add(Amok.class);
-        allData.add(AntiLightShiled.class);
-        allData.add(ArcaneArmor.class);
-        allData.add(ArtifactRecharge.class);
-        allData.add(AscensionChallenge.class);
-        allData.add(AutoRandomBuff.class);
+        private void addBuffItem(final int index){
+            BuffEntry entry = availableBuffs.get(index);
 
-        allData.add(Barkskin.class);
-        allData.add(Barrier.class);
-        allData.add(BeamTowerAdbility.class);
+            //效果百科同款：按图标ID构建 BuffIcon，再用反射做 tint（异常忽略，避免个别buff导致窗口打不开）
+            BuffIcon icons = new BuffIcon(entry.iconID, false);
+            try {
+                Method tintMethod = entry.clazz.getMethod("tintIcon", Image.class);
+                tintMethod.invoke(entry.instance, icons);
+            } catch (Exception ignored) {
+            }
 
-        allData.add(Bleeding.class);
-        allData.add(Bless.class);
-        allData.add(Blindness.class);
-        allData.add(BlobImmunity.class);
-        allData.add(BrokenArmor.class);
-        allData.add(Burning.class);
+            ScrollingGridPane.GridItem item = new ScrollingGridPane.GridItem(icons) {
+                @Override
+                public boolean onClick(float x, float y) {
+                    if (inside(x, y)) {
+                        toggleBuff(index);
+                        return true;
+                    }
+                    return false;
+                }
+            };
+            if (buffsStatus.get(index)) {
+                item.hardLightBG(SEL_R, SEL_G, SEL_B);
+            }
+            itemByIndex.put(index, item);
+            grid.addItem(item);
+        }
 
-        allData.add(Charm.class);
-        allData.add(Chill.class);
-        allData.add(Combo.class);
-        allData.add(Corrosion.class);
-        allData.add(Corruption.class);
+        private void toggleBuff(int index){
+            BuffEntry entry = availableBuffs.get(index);
+            ScrollingGridPane.GridItem item = itemByIndex.get(index);
+            if (buffsStatus.get(index)) {
+                buffsStatus.clear(index);
+                item.hardLightBG(DEF_R, DEF_G, DEF_B);
+            } else {
+                buffsStatus.set(index);
+                item.hardLightBG(SEL_R, SEL_G, SEL_B);
+            }
+            descText.text(entry.title + "\n\n" + entry.desc);
+            descPane.scrollTo(0, 0);
+            updateCount();
+        }
 
+        private void updateCount(){
+            selectedCount.text(Messages.get(this, "selected_buffs", buffsStatus.cardinality(), availableBuffs.size()));
+            selectedCount.setPos((WIDTH - selectedCount.width())/2f, modifyDuration.bottom() + GAP);
+        }
 
-        allData.add(Cripple.class);
+        private void layout(){
+            modifyDuration.setRect(0, GAP, WIDTH / 2f - GAP / 2f, TOP_BAR_H);
+            clearButton.setRect(WIDTH / 2f + GAP / 2f, GAP, WIDTH / 2f - GAP / 2f, TOP_BAR_H);
 
-        allData.add(Daze.class);
-        allData.add(DeadSoul.class);
-        allData.add(Degrade.class);
-        allData.add(Doom.class);
-        allData.add(Dread.class);
-        allData.add(Drowsy.class);
-        allData.add(EnhancedRings.class);
-        allData.add(FireImbue.class);
-        allData.add(FlavourBuff.class);
-        allData.add(Foresight.class);
-        allData.add(Frost.class);
-        allData.add(FrostBurning.class);
-        allData.add(FrostImbue.class);
-        allData.add(FrostImbueEX.class);
-        allData.add(Fury.class);
-        allData.add(GoodLuck.class);
-        allData.add(GravityChaosTracker.class);
-        allData.add(GreaterHaste.class);
-        allData.add(HaloFireImBlue.class);
-        allData.add(HalomethaneBurning.class);
-        allData.add(Haste.class);
-        allData.add(HasteLing.class);
-        allData.add(Healing.class);
-        allData.add(HeroDisguise.class);
-        allData.add(Hex.class);
-        allData.add(HoldFast.class);
-        allData.add(Hunger.class);
-        allData.add(Invisibility.class);
-        allData.add(InvisibilityRing.class);
-        allData.add(Invulnerability.class);
-        allData.add(Killer.class);
+            float countBottom = modifyDuration.bottom() + GAP + 12;
+            descPane.setRect(GAP, HEIGHT - DESC_AREA_H, WIDTH - 2 * GAP, DESC_AREA_H + GAP);
+            grid.setRect(0, countBottom, WIDTH, descPane.top() - countBottom);
+        }
 
-        allData.add(LethalDefense.class);
-        allData.add(Levitation.class);
-        allData.add(LifeLink.class);
-        allData.add(LighS.class);
-        allData.add(Light.class);
-
-        allData.add(LockedFloor.class);
-        allData.add(LostInventory.class);
-        allData.add(MagicalSight.class);
-        allData.add(MagicalSleep.class);
-        allData.add(MagicImmune.class);
-        //allData.add(Marked.class);
-        allData.add(MindVision.class);
-
-        allData.add(MonkEnergy.class);
-        allData.add(Nyctophobia.class);
-        allData.add(Ooze.class);
-        allData.add(Paralysis.class);
-        allData.add(PhysicalEmpower.class);
-        allData.add(PinCushion.class);
-        allData.add(Poison.class);
-        allData.add(Preparation.class);
-        allData.add(PrismaticGuard.class);
-        allData.add(PropBuff.class);
-
-        allData.add(Recharging.class);
-
-        allData.add(ReloadShop.class);
-        allData.add(ReloadShopTwo.class);
-        allData.add(RevealedArea.class);
-        allData.add(Roots.class);
-        allData.add(RoseShiled.class);
-
-        allData.add(ScrollEmpower.class);
-
-        allData.add(Shadows.class);
-
-
-        allData.add(Slow.class);
-        allData.add(SmokeAlly.class);
-        allData.add(Smoking.class);
-        allData.add(SnipersMark.class);
-        allData.add(SoulMark.class);
-
-        allData.add(Stamina.class);
-        allData.add(StormCloudDied.class);
-        allData.add(SunFire.class);
-
-        allData.add(Terror.class);
-
-        allData.add(ToxicImbue.class);
-        allData.add(TrueInvisibiity.class);
-        allData.add(Venom.class);
-        allData.add(Vertigo.class);
-        allData.add(Vulnerable.class);
-        allData.add(WandEmpower.class);
-        allData.add(WaterSoulX.class);
-        allData.add(Weakness.class);
-        allData.add(WellFed.class);
-        allData.add(WorstBlizzard.class);
-
-        //ClearBleesdGoodBuff
-        allData.add(BlessAnmy.class);
-        allData.add(BlessBossRushLow.class);
-        allData.add(BlessGoodSTR.class);
-        allData.add(BlessGoRead.class);
-        allData.add(BlessImmune.class);
-        allData.add(BlessLing.class);
-        allData.add(BlessLingJing.class);
-        allData.add(BlessMixShiled.class);
-        allData.add(BlessMobDied.class);
-        allData.add(BlessNoDied.class);
-        allData.add(BlessNoMoney.class);
-        allData.add(BlessQinyue.class);
-        allData.add(BlessRedWhite.class);
-        allData.add(BlessUnlock.class);
-        allData.add(ClearLanterBuff.class);
-
-        //ElementalBuff
-        allData.add(ScaryBuff.class);
-        allData.add(ScaryDamageBuff.class);
-        allData.add(ScaryImmunitiesBuff.class);
-
-        //MagicGirlDebuff
-        //allData.add((NO)MagicGirlSaySoftDied.class);
-        allData.add(MagicGirlSayCursed.class);
-        allData.add(MagicGirlSayKill.class);
-        allData.add(MagicGirlSayMoneyMore.class);
-        allData.add(MagicGirlSayNoSTR.class);
-        allData.add(MagicGirlSaySlowy.class);
-        allData.add(MagicGirlSayTimeLast.class);
-
-        allData.add(DragonWall.class);
-        allData.add(FoundChest.class);
-        allData.add(NightorDay.class);
-        allData.add(OozeStatueDead.class);
-        allData.add(QuestGold.class);
-
-        //SP
-        allData.add(ScrollOfSirensSong.Enthralled.class);
+        //效果百科同款分类统计
+        private void classifyBuffs(){
+            positiveBuffs.clear();
+            negativeBuffs.clear();
+            neutralBuffs.clear();
+            for (int i = 0; i < availableBuffs.size(); i++){
+                Buff buff = availableBuffs.get(i).instance;
+                if (buff.type == Buff.buffType.POSITIVE) positiveBuffs.add(i);
+                else if (buff.type == Buff.buffType.NEGATIVE) negativeBuffs.add(i);
+                else neutralBuffs.add(i);
+            }
+        }
     }
 }
