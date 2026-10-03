@@ -59,7 +59,7 @@ public class CerbusSleepRoom extends SpecialRoom {
             }
         }
 
-        Painter.set( level, c, Terrain.PEDESTAL );
+        Painter.set( level, level.pointToCell(center()), Terrain.PEDESTAL );
 
         door.set( Door.Type.REGULAR );
     }
