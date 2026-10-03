@@ -1,15 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.DocumentsContract;
-import android.provider.OpenableColumns;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
@@ -20,7 +11,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.android.AndroidLauncher;
 import com.shatteredpixel.shatteredpixeldungeon.custom.CollectRankings;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -34,7 +24,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
@@ -47,12 +36,12 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
 
-import java.io.ByteArrayInputStream;
+import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -60,13 +49,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * 存档备份场景（BackupSaveScene）
@@ -88,7 +76,7 @@ public class BackupSaveScene extends PixelScene {
      * 当前实现只使用一个 BackupInfo 来承载全部备份文件按钮。
      */
     private final ArrayList<BackupInfo> infos = new ArrayList<>();
-
+    private static volatile boolean importChooserOpened = false;
     /**
      * 备份文件存放目录：
      * <ul>
@@ -107,14 +95,6 @@ public class BackupSaveScene extends PixelScene {
     /** 局内存档备份的文件名前缀，用于与全局备份的 whole-save 前缀区分 */
     public static final String SLOT_PREFIX = "slot";
 
-    /**
-     * 安卓端 SharedPreferences 文件名（Android 自动在 shared_prefs/ 下生成 .xml，即
-     * shared_prefs/ShatteredPixelDungeon.xml）。与 AndroidLauncher.onCreate 里注入的
-     * instance.getPreferences("ShatteredPixelDungeon") 必须完全一致；
-     * 注意安卓端不能使用默认名 settings.xml（那会生成 shared_prefs/settings.xml，读写的是另一份文件）。
-     */
-    public static final String ANDROID_PREFS_NAME = "ShatteredPixelDungeon";
-
     /** 场景 UI 的边距常量（像素） */
     private static final int MARGIN = 8;
 
@@ -125,11 +105,6 @@ public class BackupSaveScene extends PixelScene {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm")
             .withZone(ZoneId.systemDefault());
-    private static FileHandle pendingExportFile;
-    // 安卓SAF文件选择回调，用于外部导入mlsp
-    public static Runnable onAndroidImportFileReady;
-    // 外部导入时用户所选文件的原始文件名（SAF的DISPLAY_NAME），用于导入分流判断
-    private static String pendingImportFileName;
 
     /**
      * 场景创建入口：初始化整个备份管理界面的 UI。
@@ -241,38 +216,55 @@ public class BackupSaveScene extends PixelScene {
         // ---- 「导入存档」按钮（屏幕底部）----
         // 点击后唤起用户文件夹，并让用户选择.mlsp文件
         // 这里的文本是 “外部导入”
+        // ---- 「导入存档」按钮（屏幕底部）----
         RedButton btnImport = new RedButton(Messages.get(this, "import_file"), 7) {
             @Override
             protected void onClick() {
-                // ====== 安卓SAF导入，发起请求 ======
-                onAndroidImportFileReady = () -> {
-                    FileHandle tempMlsp = Gdx.files.local("temp_import.mlsp");
-                    // SAF回调里解析到的原始文件名；取不到时退回临时文件名（会按未知文件处理）
-                    String originalName = pendingImportFileName;
-                    pendingImportFileName = null;
-                    // 文件名解析失败（如拿到 document id）时，按 ZIP 内容推断备份类型，避免第一次导入误判为未知文件
-                    if (originalName == null) {
-                        originalName = guessBackupTypeByContent(tempMlsp);
+                if (DeviceCompat.isDesktop()) {
+                    // 锁：防止重复点击多次弹出对话框
+                    if (importChooserOpened) {
+                        return;
                     }
-                    // 兜底：确保弹窗一定弹出；异常时给出明确提示，而不是无声无息
-                    try {
-                        if (ShatteredPixelDungeon.scene() == null) {
-                            return;
-                        }
-                        startImportFlow(tempMlsp, originalName != null ? originalName : tempMlsp.name());
-                    } catch (Exception e) {
-                        ShatteredPixelDungeon.reportException(e);
-                        ShatteredPixelDungeon.scene().addToFront(new WndMessage(
-                                Messages.get(BackupSaveScene.class, "import_fail")));
-                    }
-                    onAndroidImportFileReady = null;
-                };
-                // 直接拿到Android Activity 唤起SAF ACTION_OPEN_DOCUMENT
-                android.app.Activity activity = AndroidLauncher.instance;
-                android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(android.content.Intent.CATEGORY_OPENABLE);
-                intent.setType("*/*");
-                activity.startActivityForResult(intent, 9002);
+                    importChooserOpened = true;
+
+                    // Swing操作必须放到AWT事件调度线程EDT
+                    javax.swing.SwingUtilities.invokeLater(() -> {
+                        JFileChooser chooser = new JFileChooser();
+                        chooser.setDialogTitle(Messages.get(BackupSaveScene.class, "import_file"));
+                        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+                        chooser.setPreferredSize(new Dimension(800, 600));
+                        chooser.setFileFilter(new FileNameExtensionFilter("(*.mlsp)", "mlsp"));
+
+                        // 创建一个隐藏的JFrame作为对话框owner，实现模态置顶，不显示窗口
+                        javax.swing.JFrame tempOwnerFrame = new javax.swing.JFrame();
+                        tempOwnerFrame.setUndecorated(true);
+                        tempOwnerFrame.setSize(1,1);
+                        tempOwnerFrame.setLocationRelativeTo(null);
+                        tempOwnerFrame.setVisible(true);
+
+                        int ret = chooser.showOpenDialog(tempOwnerFrame);
+
+                        // 销毁临时owner窗口
+                        tempOwnerFrame.dispose();
+
+                        final File selected = chooser.getSelectedFile();
+
+                        // 释放锁，允许下一次打开
+                        importChooserOpened = false;
+
+                        // 把结果切回libGDX渲染线程执行游戏逻辑
+                        Gdx.app.postRunnable(() -> {
+                            if (ret == JFileChooser.APPROVE_OPTION && selected != null) {
+                                startImportFlow(Gdx.files.absolute(selected.getAbsolutePath()));
+                            }
+                        });
+                    });
+
+                } else {
+                    // 安卓/iOS 走不了 Swing，先给提示
+                    ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                            Messages.get(BackupSaveScene.class, "desktop_not_supported")));
+                }
             }
         };
         btnImport.setSize((float) (w / 2.0), 20);
@@ -397,43 +389,82 @@ public class BackupSaveScene extends PixelScene {
      * @param slot 存档槽位编号（1~6）
      */
     public static void exportSlotToMLSP(int slot) {
+        // 检查该槽位是否有存档，空槽不允许导出 「该槽位没有正在进行的存档，无法备份。」
         GamesInProgress.Info saveInfo = GamesInProgress.check(slot);
         if (saveInfo == null) {
             ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "export_empty_slot")));
             return;
         }
         try {
+            // 存档数据目录与备份目录
             String slotFolder = GamesInProgress.gameFolder(slot);
             FileHandle backupDirHandle = Gdx.files.external(BACKUP_FOLDER);
             if (!backupDirHandle.exists()) {
-                backupDirHandle.mkdirs();
+                backupDirHandle.mkdirs(); // 首次导出时自动创建备份目录
             }
 
-            String seedStr = saveInfo.customSeed.isEmpty() ? String.valueOf(saveInfo.seed) : saveInfo.customSeed;
-
+            // 文件名示例：slot1-DTK-KSC-PVS.mlsp（自定义种子用原文，非自定义的根据随机到的种子用对应的种子码）
+            // String.format是按格式拼接字符串，
+            // 第一个参数Locale.US指的是按美国格式，第二个参数是预设计的格式，
+            // 第三个参数是存档的槽位编号，第四个参数是种子码并将不符合windows文件命名规范的字符替换为下划线且当名字只剩下划线时返回unknown作为文件名，
+            // 第五个参数是我们设定的备份存档文件的拓展名
+            // 这里需要具体讲讲命名相关的东西，只是作为知识补充：
+            // 其一：这里我们加了个前缀“slot%d-”，
+            //      倘若不加这个前缀可能导致一些Windows操作系统保留名被作为文件名命名出来，这会导致输出文件经历各种乱七八糟的情况
+            //      以nul为例，Windows大小写不敏感，如果种子名为nul，Windows操作系统比对保留字时拓展名不参与比对，这样命名就命中了保留字NUL
+            //      后果分两种：现代 Windows 会直接拒绝创建；
+            //      但更阴险的是历史行为——NUL 设备会「接受」写入并把数据丢进黑洞，写操作看起来成功了，实际什么都没留下。这类问题排查起来非常费劲。
+            // 其二：Windows会自动删除文件末尾的“.”和“ ”（空格），而且不报告，不过我们这里末尾自动加了个“.mlpd”所以没事
+            // 其三：同一个字符在Unicode编码中存在多种等价的码点写法，比如NFC、NFD，而各个平台的处理方式又不相同，会遇到各种难以预测的问题，
+            //      而编码值不同的同一个字符其equal方法返回的结果往往是false，所以输入的文件名与其对应的预期编码值可能是有出入的，所以设计特定文字组成特定预设键时需要注意这个问题
+            //      当然，这里由于没有这个需求，所以不会遇到这个问题
             String fileName = String.format(Locale.US, "slot%d-%s%s", slot, sanitizeForFileName(seedText(saveInfo)), MLSP_EXT);
             FileHandle mlspHandle = backupDirHandle.child(fileName);
 
+            // 以 ZIP 方式写出 .mlsp 文件：只打包该槽位目录下扩展名为 .dat 的数据文件
+            // mlspHandle.write(false) 以覆写方式打开一个文件，返回值为一个输出流（OutputStream）指向我们先前定义的存档文件，这会覆盖旧备份文件，若再在写过程中发生异常则会破坏旧备份
+            // ZipOutputStream是将此赋予此输出流以zip的语义，能记住当前在写哪个条目、对每个条目做DEFAULT压缩、在 close() 时补写中央目录和结束记录（所以必须关否则会丢失部分标识性内容）
             try (ZipOutputStream zos = new ZipOutputStream(mlspHandle.write(false))) {
+                // 打开存档文件夹记录其中的每个文件的文件名（当然也包括子文件夹）
                 ArrayList<String> fileList = FileUtils.filesInDir(slotFolder);
+                // 遍历存档文件夹里的每个文件
                 for (String fname : fileList) {
+                    // 只对.dat文件做操作，这一般是存储数据的文件
                     if (fname.endsWith(".dat")) {
+                        // 因为只有文件名，所以要根据文件名补全文件路径
                         String fullPath = slotFolder + "/" + fname;
+                        // 根据补全的文件路径打开文件
                         FileHandle datHandle = FileUtils.getFileHandle(fullPath);
+                        // 读取并存储数据到data变量
                         byte[] data = datHandle.readBytes();
 
+                        // 每个 .dat 文件作为一个 ZIP 条目写入，条目名沿用原文件名
                         ZipEntry entry = new ZipEntry(fname);
+                        // 打开条目
                         zos.putNextEntry(entry);
+                        // 写条目
                         zos.write(data);
+                        // 关闭条目
                         zos.closeEntry();
                     }
                 }
             }
 
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "export_success", fileName)));
-            ShatteredPixelDungeon.switchNoFade(BackupSaveScene.class);
-        } catch (IOException e) {
+            // 重建一个界面并重新显示但不播放切换界面动画，也许可以改为局部重建
+            ShatteredPixelDungeon.switchNoFade(BackupSaveScene.class, new Game.SceneChangeCallback() {
+                @Override public void beforeCreate() { }
+
+                @Override public void afterCreate() {
+                    // 导出成功提示 「备份已创建：%s」
+                    ShatteredPixelDungeon.scene().addToFront(
+                            new WndMessage(Messages.get(BackupSaveScene.class, "export_success", fileName)));
+                }
+            });
+        // 这里我将异常捕获对象从IOException替换成了Exception e
+        } catch (Exception e) {
+            // 导出失败：上报异常并提示
             ShatteredPixelDungeon.reportException(e);
+            // 「导出失败！」
             ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "export_fail")));
         }
     }
@@ -451,7 +482,6 @@ public class BackupSaveScene extends PixelScene {
      */
     public static void exportWholeSlotToMLSP() {
         try {
-
             FileHandle backupDirHandle = Gdx.files.external(BACKUP_FOLDER);
             if (!backupDirHandle.exists()) {
                 backupDirHandle.mkdirs();
@@ -462,51 +492,39 @@ public class BackupSaveScene extends PixelScene {
             FileHandle mlspHandle = backupDirHandle.child(fileName);
 
             try (ZipOutputStream zos = new ZipOutputStream(mlspHandle.write(false))) {
-                // 打开存档根目录（传空串即根目录），记录其中的每个条目名（含子目录名，故下面仍需按后缀过滤）
                 ArrayList<String> fileList = FileUtils.filesInDir("");
-                // 遍历根目录里的每个条目
                 for (String fname : fileList) {
-                    // 只对.dat文件做操作，这一般是存储数据的文件
                     if (fname.endsWith(".dat")) {
-                        // 根目录下的文件没有目录前缀，直接用文件名取句柄即可
                         FileHandle datHandle = FileUtils.getFileHandle(fname);
-                        // 读取并存储数据到data变量
                         byte[] data = datHandle.readBytes();
-                        // 每个 .dat 文件作为一个 ZIP 条目写入，条目名沿用原文件名
                         ZipEntry entry = new ZipEntry(fname);
-                        // 打开条目
                         zos.putNextEntry(entry);
-                        // 写条目
                         zos.write(data);
-                        // 关闭条目
+                        zos.closeEntry();
+                    }
+                    if (fname.equals("settings.xml")) {
+                        // 导出前先规范化：防止磁盘上的 settings.xml 被手工编辑成「裸 entry」格式后，
+                        // 原样打包进备份，导致下次导入时 Lwjgl3Preferences 解析为空
+                        ensureSettingsXmlValid( FileUtils.getFileHandle( fname ) );
+                        FileHandle datHandle = FileUtils.getFileHandle(fname);
+                        byte[] data = datHandle.readBytes();
+                        ZipEntry entry = new ZipEntry(fname);
+                        zos.putNextEntry(entry);
+                        zos.write(data);
                         zos.closeEntry();
                     }
                 }
-                // ---- 设置文件条目：把本机设置打包为电脑端可读的 settings.xml（Properties 格式）----
-                byte[] settingsData = buildSettingsEntryForExport();
-                if (settingsData != null) {
-                    ZipEntry entry = new ZipEntry("settings.xml");
-                    zos.putNextEntry(entry);
-                    zos.write(settingsData);
-                    zos.closeEntry();
-                }
             }
 
-            // 重建一个界面并重新显示但不播放切换界面动画，也许可以改为局部重建
             ShatteredPixelDungeon.switchNoFade(BackupSaveScene.class, new Game.SceneChangeCallback() {
                 @Override public void beforeCreate() { }
-
                 @Override public void afterCreate() {
-                    // 导出成功提示 「备份已创建：%s」
                     ShatteredPixelDungeon.scene().addToFront(
                             new WndMessage(Messages.get(BackupSaveScene.class, "export_success", fileName)));
                 }
             });
-            // 这里我将异常捕获对象从IOException替换成了Exception e
         } catch (Exception e) {
-            // 导出失败：上报异常并提示
             ShatteredPixelDungeon.reportException(e);
-            // 「导出失败！」
             ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "export_fail")));
         }
     }
@@ -526,11 +544,24 @@ public class BackupSaveScene extends PixelScene {
      */
     private static void importMLSPtoSlot(FileHandle mlspFile, int targetSlot) {
         try {
+            // 每个槽位的存档都放在一个独立目录里
+            // 取该槽位存档目录的相对路径（纯字符串拼接，"game%d" 格式化而来）
+            // 本质只是生成字符串，不涉及磁盘读写
+            // 实际得到的就是 "game1"~"game6"
             String slotFolder = GamesInProgress.gameFolder(targetSlot);
+            // 把上面这个相对路径包装成 libGDX 的 FileHandle
+            // 「相对」是相对于哪个存储位置，由 FileType 决定（这里启动时注册的是 External = 外部存储根目录），
+            // 各平台的实际根路径不同，因此不能写死绝对路径，这里使用这套工具大概也是为了跨平台方便考虑
+            // FileHandle 自带一整套文件/目录操作方法（exists/mkdirs/list/read/write/delete...），后续所有 IO 都通过它进行
+            // 注意：本行同样不产生磁盘 IO，也不要求目录已存在；
+            // 真正访问磁盘的是后面的 slotDirHandle.exists()（第401行）与 mkdirs()（第411行）
             FileHandle slotDirHandle = FileUtils.getFileHandle(slotFolder);
 
-            //清空旧存档所有dat文件
+            // 清空目标槽位中所有旧存档 .dat 文件，保证导入后是干净状态
+            // 首先判定目录的存在性（不过当然也可以用于判定文件的存在性，此方法不对目录和文件做区分）
+            // 这里也就是判定选中槽位是不是空的，是空的话就新建个目录，不是的话就把旧的文件删了（当然了，只是删存数据的.dat文件）
             if (slotDirHandle.exists()) {
+                // 删除ing……
                 ArrayList<String> oldFiles = FileUtils.filesInDir(slotFolder);
                 if (oldFiles != null) {
                     for (String fName : oldFiles) {
@@ -540,33 +571,72 @@ public class BackupSaveScene extends PixelScene {
                     }
                 }
             } else {
-                slotDirHandle.mkdirs();
+                // 新建ing……
+                slotDirHandle.mkdirs(); // 槽位目录不存在则创建
             }
 
+            // 逐条解压 .mlsp（ZIP）中的 .dat 文件到目标槽位目录
+            // 将存档压缩文件读入到一个输入流fis
+            // 给fis套一层zip解析器成为zis
+            // try后面紧跟的括号在java语法里隐含了当try块结束（执行完或中断）自行关闭打开的文件
             try (InputStream fis = mlspFile.read();
                  ZipInputStream zis = new ZipInputStream(fis)) {
-
+                // ZipEntry = 压缩包中「一条条目」的元数据（名字、大小、CRC、时间等），不包含数据本身，也就是条目的数据头、文件头、数据标识或者别的什么理解方法都行
+                // 这里解释一下【条目】这个名词，这个指的是压缩包压缩之前的那个文件夹中的一个文件，姑且可以这样理解
+                // 数据始终要通过 zis.read() 读取；每次 getNextEntry() 返回的是新对象，循环里复用变量名而已
+                // getNextEntry() 返回 null 表示没有更多条目，循环结束；它顺带会关闭上一条目并重置解压状态
+                // 注意：这里的 entry 只反映本地文件头，若条目带数据描述符则 getSize()/getCrc() 返回 -1，
+                //      本项目导出用 ZipOutputStream 流式写入正属此列，因此只应使用 entry.getName()
+                // （导出侧同一个类以相反方向使用：new ZipEntry(fname) + zos.putNextEntry(entry) 表示「要写这一条」）
                 ZipEntry entry;
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[4096]; // 4KB 拷贝缓冲区
                 int len;
+                // 获取下一个条目的元数据
                 while ((entry = zis.getNextEntry()) != null) {
+                    // 获取条目的名字，用来识别文件
                     String entryName = entry.getName();
+                    // 如果是以.dat结尾的文件（这是存档的数据文件），将其解压（还原）
                     if (entryName.endsWith(".dat")) {
+                        // 解压输出ing……
                         FileHandle outDat = FileUtils.getFileHandle(slotFolder + "/" + entryName);
                         try (OutputStream os = outDat.write(false)) {
+                            // zis.read(buffer) 返回本次实际读入 buffer 的字节数，-1 表示「当前条目已读完」
+                            //   1) 读取并从下标0开始存入len个字节，最多不超过先前设定的拷贝缓冲区的最大大小，
+                            //      这里注意，每次读取只存入len个字节，假如发生了什么奇奇怪怪的情况，读取了200个字节，那就应该从0读到199，而199之后的是上次读取残留的数据，不能读
+                            //   2) 返回的是解压后的字节数
+                            //   3) -1 是条目级结束，不是压缩包级结束；此时内部 entry 会被置为 null，
+                            //      所以内层循环只作用于单条 .dat，外层再由 getNextEntry() 推进
+                            // 另外：条目读完后 readEnd() 会解析数据描述符并校验 size/csize/CRC，损坏会抛 ZipException；
+                            //      但 ZipInputStream 不读中央目录，若文件被截断在条目边界上会静默少导入文件
                             while ((len = zis.read(buffer)) > 0) {
+                                // 因此（上一段的注释），这里要写0，len，表示从0开始存入buffer中存的len个字节
                                 os.write(buffer, 0, len);
                             }
                         }
                     }
+                    // 结束此条目，关闭条目
+                    // 实际上这里做的并不是真正的关闭条目，因为是在同一个文件内，也不存在关闭与否的说法，准确地说这里是一个收尾性质的工作
+
+                    // 以下全部来自AI的注释：
+                    // 结束当前条目的读取，把流推进到下一条目开头；注意它不关闭流、也不关闭文件
+                    // 实现上就是把当前条目「还没读的字节全部读掉丢弃」（JDK ZipInputStream.closeEntry）
+                    // 两种情形：
+                    //   .dat 条目  → 上面已读到 -1，此处 read() 立即返回 -1，等于空操作
+                    //   非 .dat 条目 → 一个字节都没读过，这里才是真正跳过该条目数据的地方
+                    // 补充：getNextEntry() 内部本就会先关闭上一条目（entry != null 时），
+                    //      因此本行属于显式化写法，去掉也不影响行为，保留是为了意图清晰并与写入侧对称
                     zis.closeEntry();
                 }
             }
 
+            // 删除旧存档
             GamesInProgress.setUnknown(targetSlot);
+            // 「备份导入成功」
             ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "import_success")));
         } catch (Exception e) {
+            // 导入失败：上报异常并提示
             ShatteredPixelDungeon.reportException(e);
+            // 「导入失败！」
             ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "import_fail")));
         }
     }
@@ -592,6 +662,11 @@ public class BackupSaveScene extends PixelScene {
                         FileUtils.deleteFile(fName);
                     }
                 }
+                for (String fName : oldFiles) {
+                    if (fName.equals("settings.xml")) {
+                        FileUtils.deleteFile(fName);
+                    }
+                }
             }
             try (InputStream fis = mlspFile.read();
                  ZipInputStream zis = new ZipInputStream(fis)) {
@@ -609,30 +684,45 @@ public class BackupSaveScene extends PixelScene {
                         }
                     }
                     if (entryName.equals("settings.xml")) {
-                        // 电脑端备份包里的 settings.xml（Properties 格式）→ 替换本机设置：
-                        // 安卓端解析后写入 shared_prefs/ShatteredPixelDungeon.xml（Android map 格式），桌面端写回 settings.xml
+                        // 先完整读出条目字节
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         while ((len = zis.read(buffer)) > 0) {
                             baos.write(buffer, 0, len);
                         }
-                        applyImportedSettings(baos.toByteArray());
+                        byte[] settingsBytes = baos.toByteArray();
+                        // 兼容手机端备份：若设置条目是安卓原生 <map> 格式（旧版本导出/手动打包
+                        // shared_prefs 文件），先转成电脑端标准 Properties XML；否则（标准
+                        // Properties / 裸 entry）原样写入，交由 reloadSettingsFromDisk 规范化兜底
+                        byte[] converted = convertAndroidMapSettings(settingsBytes);
+                        FileHandle outDat = FileUtils.getFileHandle(entryName);
+                        try (OutputStream os = outDat.write(false)) {
+                            os.write(converted != null ? converted : settingsBytes);
+                        }
                     }
                     zis.closeEntry();
                 }
             }
-            // 磁盘已变：作废内存副本，再重建当前场景让界面立刻反映导入的数据
+            // =================================================================
+            // 【关键修复】写完文件后【立即】作废旧内存设置缓存，然后再 resetGlobalCache()。
+            // resetGlobalCache 内部存在会写 settings.xml 的路径（例如 Rankings.load() 里
+            // `SPDSettings.lastDaily(...)` 就是 put→flush）：若在作废前执行，会用"导入前的旧缓存"
+            // 整体重写磁盘文件，把刚导入的 settings.xml（如 dlc 困难模式等键）抹掉——
+            // 这正是"第一次导入总丢数据、第二次导入才正常"的根因（第一次触发写入、把旧值覆盖上去，
+            // 第二次因 lastDaily 已是最新不再触发 flush）。
+            // 先作废后，resetGlobalCache 内任何 SPDSettings 写入都会先重读刚导入的文件，
+            // flush 的也是导入后的值，导入结果不再被旧缓存覆盖。
+            // =================================================================
+            SPDSettings.set( null );
             resetGlobalCache();
             ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback(){
                 @Override public void beforeCreate(){ }
                 @Override public void afterCreate(){
                     ShatteredPixelDungeon.scene().addToFront(new WndMessage(
-                            // 「备份导入成功」
                             Messages.get(BackupSaveScene.class, "import_success")));
                 }
             });
         } catch (Exception e) {
             ShatteredPixelDungeon.reportException(e);
-            // 「导入失败！」
             ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "import_fail")));
         }
     }
@@ -642,35 +732,16 @@ public class BackupSaveScene extends PixelScene {
      * 列表里点「导入备份」和底部「外部导入」都汇到这里。
      */
     private static void startImportFlow(FileHandle backupFile) {
-        startImportFlow(backupFile, backupFile.name());
-    }
-
-    /**
-     * 导入分流入口（带原始文件名）。
-     * <p>外部导入时，用户所选文件会被复制到固定名临时文件 temp_import.mlsp，
-     * 因此分流判断必须使用原始文件名（originalName），而不是临时文件名。</p>
-     *
-     * @param backupFile   备份文件句柄（内容从此读取）
-     * @param originalName 用户所选文件的原始文件名（用于扩展名与前后缀分流判断）
-     */
-    private static void startImportFlow(FileHandle backupFile, String originalName) {
         // 未知文件分流：不存在或非既定的拓展名
-
-        try {
-            if (!backupFile.exists()
-                    || backupFile.isDirectory()
-                    || originalName == null
-                    || !originalName.toLowerCase(Locale.US).endsWith(MLSP_EXT)) {
-                ShatteredPixelDungeon.scene().addToFront(new WndMessage(
-                        Messages.get(BackupSaveScene.class, "import_fail_unknownfile")));
-                return;
-            }
-        } catch (Exception e){
-            GLog.yellow(e.getMessage());
+        if (!backupFile.exists()
+                || backupFile.isDirectory()
+                || !backupFile.name().endsWith(MLSP_EXT)) {
+            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                    Messages.get(BackupSaveScene.class, "import_fail_unknownfile")));
+            return;
         }
-
         // 全局存档分流
-        if (originalName.startsWith(GLOBAL_PREFIX)) {
+        if (backupFile.name().startsWith(GLOBAL_PREFIX)) {
             ShatteredPixelDungeon.scene().addToFront(new WndOptions(
                     Icons.get(Icons.WARNING),
                     Messages.get(BackupSaveScene.class, "warn_overwrite_title"),
@@ -685,7 +756,7 @@ public class BackupSaveScene extends PixelScene {
             });
         }
         // 局内存档分流
-        else if (originalName.startsWith(SLOT_PREFIX)) {
+        else if (backupFile.name().startsWith(SLOT_PREFIX)) {
             // ---- 导入备份：先选择目标槽位（Slot1~6），再二次确认覆盖 ----
             ShatteredPixelDungeon.scene().add(new WndOptions(
                     Icons.get(Icons.WARNING),
@@ -709,7 +780,7 @@ public class BackupSaveScene extends PixelScene {
                         ) {
                             @Override
                             protected void onSelect(int yesno) {
-                                if (yesno == 0) {
+                                if (yesno == 0) { // 用户确认覆盖
                                     importMLSPtoSlot(backupFile, targetSlot);
                                 }
                             }
@@ -726,9 +797,10 @@ public class BackupSaveScene extends PixelScene {
 
     /** 清空全局数据的缓存文件 */
     private static void resetGlobalCache() {
-        // 先作废并重载设置缓存：防止本方法内任何 SPDSettings 写入（如 Rankings.load 的 lastDaily 回写）
-        // 基于导入前的旧缓存、把刚替换的 settings.xml 内容整体覆盖回去
-        resetSettingsCache();
+        // 双保险：方法开头就先作废设置缓存。这样本方法内任何 SPDSettings 读取/写入
+        // （如 Rankings.load 里的 lastDaily 越界修正与回写）都会基于磁盘上【最新】的
+        // settings.xml（导入后的内容），而绝不会把导入前的旧缓存 flush 覆盖回去。
+        SPDSettings.set( null );
         Badges.global = null;                     Badges.loadGlobal();
         PaswordBadges.global = null;              PaswordBadges.loadGlobal();
         Rankings.INSTANCE.records = null;         Rankings.INSTANCE.load();
@@ -738,152 +810,143 @@ public class BackupSaveScene extends PixelScene {
         Journal.resetForReload();                 Journal.loadGlobal();
         Bones.resetForReload();
         YuanTaStoneScene.YuanTaStoryManager.reload();
+        reloadSettingsFromDisk();
     }
 
     /**
-     * 作废并重载设置缓存。
-     * <p>SPDSettings 只会在首次 get() 时创建一次 Preferences 实例并缓存；导入/导出替换设置文件后
-     * 必须先把旧实例作废，否则下一次 flush 会用旧值整体覆盖新文件（数据丢失）。</p>
-     * <p>安卓端注意：作废后必须重新注入 {@link #ANDROID_PREFS_NAME} 实例——因为 GameSettings 默认名是
-     * settings.xml，若放任下一次 get() 自行创建，会生成 shared_prefs/settings.xml（另一份文件），设置全丢。</p>
+     * 重新从磁盘加载设置。SPDSettings 封装 libGDX Preferences：启动时一次性读入内存 map，此后不会自动重读文件；
+     * 导入会替换磁盘上的 settings.xml，必须作废旧的内存缓存，否则下一次 flush 会把旧值整体覆盖回去。
+     * <p>修复要点：</p>
+     * <ol>
+     *   <li>先用 {@link #ensureSettingsXmlValid} 把「裸 entry」格式（缺 XML 声明/DOCTYPE/根节点，
+     *       常见于手工编辑或旧版本备份）修复成标准 Properties XML，否则 loadFromXML 会抛
+     *       InvalidPropertiesFormatException，Lwjgl3Preferences 会把设置解析为空；</li>
+     *   <li>无论解析成功与否都无条件 {@code SPDSettings.set(null)} 作废内存缓存——
+     *       只要旧缓存存活，下一帧 updateSystemUI 的 put→flush 就会把导入前的旧值整体覆盖回新文件。</li>
+     * </ol>
      */
-    private static void resetSettingsCache() {
-        SPDSettings.set( null );
-        if (DeviceCompat.isAndroid()) {
-            SPDSettings.set( Gdx.app.getPreferences( ANDROID_PREFS_NAME ) );
+    private static void reloadSettingsFromDisk() {
+        FileHandle settingsHandle = FileUtils.getFileHandle("settings.xml");
+        if (!settingsHandle.exists()) {
+            SPDSettings.set( null );
+            return;
         }
+        // 先规范化再校验：保证磁盘文件是 Lwjgl3Preferences 能读的标准格式
+        ensureSettingsXmlValid( settingsHandle );
+        try (InputStream in = settingsHandle.read()) {
+            java.util.Properties p = new java.util.Properties();
+            p.loadFromXML( in );
+        } catch (Exception e) {
+            // 记录异常但继续：下面仍然要作废缓存，避免旧值被 flush 覆盖回来
+            ShatteredPixelDungeon.reportException( e );
+        } finally {
+            // 无条件作废旧内存缓存；下次 get() 会重新从磁盘读取（若文件仍不可读则 Preferences 从空表开始，
+            // 随后第一次 put 会用标准格式重写文件，不会再用旧值覆盖导入结果）
+            SPDSettings.set( null );
+        }
+        ShatteredPixelDungeon.updateSystemUI();
     }
 
     /**
-     * 把备份包里的 settings.xml 内容「替换」为本机设置存储。
-     * <ul>
-     *   <li>安卓端：解析为 key-value 后按值类型写入 shared_prefs/{@link #ANDROID_PREFS_NAME}.xml
-     *       （Android map 格式），即用备份设置替换安卓自身 xml；</li>
-     *   <li>桌面端：原样写回 FileUtils 根目录 settings.xml（保持 Properties 格式）。</li>
-     * </ul>
-     * 写入完成后无条件作废旧内存缓存（并重新注入安卓实例）。
+     * 检测并把「安卓 SharedPreferences map 格式」的 settings.xml 转成电脑端标准 Properties XML。
+     * <p>手机端（修改后）导出的 settings.xml 已是标准 Properties 格式；但若包里的设置条目是
+     * Android 原生的 &lt;map&gt; 格式（旧版本导出、或手动把 shared_prefs 文件打包进备份），
+     * 电脑端 Lwjgl3Preferences 无法直接解析，必须先转换。</p>
+     * <p>解析时用 {@link #unescapeXmlText} 还原实体（含 &#39; 等数字引用），并把
+     * string/int/long/boolean/float 各类型节点统一转为字符串键值，再 storeToXML 输出
+     * 标准格式，桌面端 getInteger/getLong/getBoolean 会按字符串解析，兼容两端语义。</p>
      *
      * @param raw 备份包内 settings.xml 条目的原始字节
+     * @return 标准 Properties XML 字节；非 map 格式（无法识别）时返回 null，调用方应原样处理
      */
-    private static void applyImportedSettings(byte[] raw) {
-        if (raw == null || raw.length == 0) return;
+    private static byte[] convertAndroidMapSettings(byte[] raw) {
+        if (raw == null || raw.length == 0) return null;
+        String text;
         try {
-            Properties props = new Properties();
-            try {
-                props.loadFromXML( new ByteArrayInputStream( raw ) );
-            } catch (Exception e) {
-                // 「裸 entry」格式（缺 XML 声明/DOCTYPE/根节点，常见于手工编辑或旧备份）：
-                // loadFromXML 会抛 InvalidPropertiesFormatException，改用正则重建
-                Properties bare = parseBareEntryProperties( new String( raw, StandardCharsets.UTF_8 ) );
-                if (bare == null) throw e;
-                props = bare;
-            }
-            if (DeviceCompat.isAndroid()) {
-                // 安卓端：替换 shared_prefs/ShatteredPixelDungeon.xml（Android map 格式）
-                Preferences prefs = Gdx.app.getPreferences( ANDROID_PREFS_NAME );
-                prefs.clear();
-                for (String key : props.stringPropertyNames()) {
-                    putDetected( prefs, key, props.getProperty( key ) );
-                }
-                prefs.flush();
-            } else {
-                // 桌面端：原样写回 FileUtils 根目录 settings.xml（Properties 格式）
-                FileUtils.getFileHandle( "settings.xml" ).writeBytes( raw, false );
-            }
-            // 无条件作废内存缓存：下一次 get() 从磁盘/SharedPreferences 重新读取，
-            // 防止旧缓存把刚替换的设置整体覆盖回去
-            resetSettingsCache();
+            text = new String(raw, "UTF-8");
         } catch (Exception e) {
-            ShatteredPixelDungeon.reportException( e );
+            return null;
         }
-    }
-
-    /**
-     * 从「裸 entry」格式文本重建 Properties（手动解析 &lt;entry key="..."&gt;...&lt;/entry&gt;）。
-     * 解析时先 {@link #unescapeXmlText} 还原实体，保证已转义/未转义两种来源都能无损还原。
-     *
-     * @return 解析出的键值对；一个 entry 都识别不到时返回 null
-     */
-    private static Properties parseBareEntryProperties(String text) {
-        Properties props = new Properties();
-        Pattern p = Pattern.compile( "<entry\\s+key=\"([^\"]*)\"[^>]*>(.*?)</entry>", Pattern.DOTALL );
-        Matcher m = p.matcher( text );
+        if (!text.contains("<map")) return null; // 不是安卓 map 格式
+        java.util.Properties props = new java.util.Properties();
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
+                "<(string|int|long|boolean|float)\\s+name=\"([^\"]*)\"[^>]*>(.*?)</\\1>",
+                java.util.regex.Pattern.DOTALL );
+        java.util.regex.Matcher m = p.matcher( text );
         boolean found = false;
         while (m.find()) {
-            props.setProperty( unescapeXmlText( m.group( 1 ) ), unescapeXmlText( m.group( 2 ) ) );
+            props.setProperty( unescapeXmlText( m.group( 2 ) ), unescapeXmlText( m.group( 3 ) ) );
             found = true;
         }
-        return found ? props : null;
-    }
-
-    /**
-     * 把字符串值按内容判定类型后写入 Preferences（对齐两端语义）：
-     * boolean("true"/"false") → int → long → float（含小数点/指数）→ string。
-     * 必须 int 先于 long，否则 "800" 会被存成 long、安卓端 getInteger 读不到。
-     */
-    private static void putDetected(Preferences prefs, String key, String value) {
-        if (value == null) return;
-        if (value.equals( "true" ) || value.equals( "false" )) {
-            prefs.putBoolean( key, Boolean.parseBoolean( value ) );
-            return;
-        }
+        if (!found) return null;
         try {
-            prefs.putInteger( key, Integer.parseInt( value ) );
-            return;
-        } catch (NumberFormatException ignored) { }
-        try {
-            prefs.putLong( key, Long.parseLong( value ) );
-            return;
-        } catch (NumberFormatException ignored) { }
-        if (value.indexOf( '.' ) != -1 || value.indexOf( 'e' ) != -1 || value.indexOf( 'E' ) != -1) {
-            try {
-                prefs.putFloat( key, Float.parseFloat( value ) );
-                return;
-            } catch (NumberFormatException ignored) { }
-        }
-        prefs.putString( key, value );
-    }
-
-    /**
-     * 生成本机设置的打包条目（settings.xml，Properties 格式，电脑端 Lwjgl3Preferences 可直接读取）。
-     * <ul>
-     *   <li>安卓端：遍历 shared_prefs/{@link #ANDROID_PREFS_NAME}.xml 的全部键值（含类型），转为字符串后 storeToXML；</li>
-     *   <li>桌面端：读取 FileUtils 根目录 settings.xml 原样返回。</li>
-     * </ul>
-     *
-     * @return settings.xml 条目字节；本机尚无设置时返回 null
-     */
-    private static byte[] buildSettingsEntryForExport() {
-        try {
-            Properties props = new Properties();
-            if (DeviceCompat.isAndroid()) {
-                if (AndroidLauncher.instance == null) return null;
-                Map<String, ?> all = AndroidLauncher.instance
-                        .getSharedPreferences( ANDROID_PREFS_NAME, 0 )
-                        .getAll();
-                if (all == null || all.isEmpty()) return null;
-                for (Map.Entry<String, ?> e : all.entrySet()) {
-                    Object v = e.getValue();
-                    if (v != null) props.setProperty( e.getKey(), String.valueOf( v ) );
-                }
-            } else {
-                FileHandle h = FileUtils.getFileHandle( "settings.xml" );
-                if (!h.exists()) return null;
-                props.loadFromXML( h.read() );
-            }
-            if (props.isEmpty()) return null;
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             props.storeToXML( bos, null );
             return bos.toByteArray();
         } catch (Exception e) {
-            ShatteredPixelDungeon.reportException( e );
             return null;
         }
     }
 
     /**
+     * 确保 settings.xml 是 java.util.Properties 可解析的标准 XML 格式。
+     * 部分历史或手工生成的备份文件缺少 XML 声明、DOCTYPE 与 &lt;properties&gt; 根节点（「裸 entry」形式），
+     * 直接交给 libGDX Preferences 解析会抛 InvalidPropertiesFormatException 导致设置整体丢失/被旧缓存覆盖；
+     * 本方法将「裸 entry」形式重写为标准格式，已是标准格式则原样保留。
+     * <p>入口幂等：标准格式且可解析时不做任何改动；带 DOCTYPE 但解析失败、或缺少 DOCTYPE 时按
+     * entry 正则重建。重建时先 {@link #unescapeXmlText} 再 {@link #escapeXmlText}，保证原始值无论是
+     * 已转义（storeToXML 产物）还是未转义（手工编辑）都能无损往返，避免双重转义。</p>
+     *
+     * @param settingsHandle settings.xml 的文件句柄（用 FileUtils 的相对根目录句柄）
+     */
+    public static void ensureSettingsXmlValid(FileHandle settingsHandle) {
+        if (settingsHandle == null || !settingsHandle.exists()) return;
+        String raw;
+        try {
+            raw = settingsHandle.readString( "UTF-8" );
+        } catch (Exception e) {
+            ShatteredPixelDungeon.reportException( e );
+            return;
+        }
+        // 已含 DOCTYPE：尝试解析，能解析即为标准格式，不动
+        if (raw.contains( "<!DOCTYPE properties" )) {
+            try (InputStream in = settingsHandle.read()) {
+                java.util.Properties p = new java.util.Properties();
+                p.loadFromXML( in );
+                return;
+            } catch (Exception e) {
+                // 带 DOCTYPE 但无法解析（如内容被破坏）：继续走重建流程
+                ShatteredPixelDungeon.reportException( e );
+            }
+        }
+
+        StringBuilder out = new StringBuilder();
+        out.append( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
+        out.append( "<!DOCTYPE properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">\n" );
+        out.append( "<properties>\n" );
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
+                "<entry\\s+key=\"([^\"]*)\"[^>]*>(.*?)</entry>",
+                java.util.regex.Pattern.DOTALL );
+        java.util.regex.Matcher m = p.matcher( raw );
+        boolean found = false;
+        while (m.find()) {
+            out.append( "<entry key=\"" ).append( escapeXmlText( unescapeXmlText( m.group( 1 ) ) ) ).append( "\">" )
+                    .append( escapeXmlText( unescapeXmlText( m.group( 2 ) ) ) ).append( "</entry>\n" );
+            found = true;
+        }
+        if (!found) return; // 无法识别条目结构：不做改写，交由 reloadSettingsFromDisk 兜底
+        out.append( "</properties>\n" );
+        try {
+            settingsHandle.writeString( out.toString(), false, "UTF-8" );
+        } catch (Exception e) {
+            ShatteredPixelDungeon.reportException( e );
+        }
+    }
+
+    /**
      * 宽松解码 XML 实体：把 &amp; &lt; &gt; &quot; &apos; 以及 &#NN; / &#xNN; 数字字符引用还原为字符。
-     * 仅用于「裸 entry」格式解析前的预处理；无法识别的 & 序列保持原样。
+     * 仅用于把「裸 entry」格式转标准格式前的预处理，无法识别的 & 序列保持原样，
+     * 保证未转义与已转义两种来源都能无损往返（配合 {@link #escapeXmlText} 使用，杜绝双重转义）。
      */
     private static String unescapeXmlText(String s) {
         if (s == null || s.indexOf( '&' ) == -1) return s;
@@ -895,6 +958,7 @@ public class BackupSaveScene extends PixelScene {
                 continue;
             }
             int semi = s.indexOf( ';', i );
+            // 不是合法实体（没有分号、或实体名过长）→ 原样保留
             if (semi == -1 || semi - i > 10) {
                 sb.append( c );
                 continue;
@@ -920,6 +984,26 @@ public class BackupSaveScene extends PixelScene {
                 }
             }
             sb.append( c );
+        }
+        return sb.toString();
+    }
+
+    /** 与 java.util.Properties.storeToXML 一致的转义，保证解析往返无损 */
+    private static String escapeXmlText(String s) {
+        StringBuilder sb = new StringBuilder( s.length() );
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt( i );
+            switch (c) {
+                case '&':  sb.append( "&amp;" );  break;
+                case '<':  sb.append( "&lt;" );   break;
+                case '>':  sb.append( "&gt;" );   break;
+                case '"':  sb.append( "&quot;" ); break;
+                case '\'': sb.append( "&apos;" ); break;
+                case '\t': sb.append( "&#09;" );  break;
+                case '\n': sb.append( "&#10;" );  break;
+                case '\r': sb.append( "&#13;" );  break;
+                default:   sb.append( c );
+            }
         }
         return sb.toString();
     }
@@ -1336,49 +1420,27 @@ public class BackupSaveScene extends PixelScene {
         protected void onClick() {
             ShatteredPixelDungeon.scene().add(new WndOptions(
                     Icons.get(Icons.CATALOG),
-                    backup.fileName,
+                    backup.fileName, // 标题为备份文件名
                     Messages.get(BackupSaveScene.class, "backup_options"),
                     Messages.get(BackupSaveScene.class, "import_backup"),
-                    Messages.get(BackupSaveScene.class, "extract_file"), // 提取文件 -> Android另存为SAF
+                    Messages.get(BackupSaveScene.class, "extract_file"), // 提取文件
                     Messages.get(BackupSaveScene.class, "delete_backup"),
                     Messages.get(BackupSaveScene.class, "cancel")
             ) {
                 @Override
                 protected void onSelect(int index) {
-                    if (index == 0) {
-                        //导入，选择槽位
-                        ShatteredPixelDungeon.scene().add(new WndOptions(
-                                Icons.get(Icons.WARNING),
-                                Messages.get(BackupSaveScene.class, "import_confirm_title"),
-                                Messages.get(BackupSaveScene.class, "import_confirm_desc"),
-                                "Slot1", "Slot2", "Slot3", "Slot4", "Slot5", "Slot6",
-                                Messages.get(BackupSaveScene.class, "cancel")
-                        ) {
-                            @Override
-                            protected void onSelect(int slotIdx) {
-                                if (slotIdx >= 0 && slotIdx <= 5) {
-                                    int targetSlot = slotIdx + 1;
-                                    ShatteredPixelDungeon.scene().add(new WndOptions(
-                                            Icons.get(Icons.WARNING),
-                                            Messages.get(BackupSaveScene.class, "warn_overwrite_title"),
-                                            Messages.get(BackupSaveScene.class, "warn_overwrite_desc"),
-                                            Messages.get(BackupSaveScene.class, "confirm_overwrite"),
-                                            Messages.get(BackupSaveScene.class, "cancel")
-                                    ) {
-                                        @Override
-                                        protected void onSelect(int yesno) {
-                                            if (yesno == 0) {
-                                                importMLSPtoSlot(backup.file, targetSlot);
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        });
+                    if (index == 0)
+                    {
+                        startImportFlow(backup.file);
                     } else if (index == 1) {
-                        // ===== 提取文件 =====
-                        saveBackupToSAF(backup.file);
+                        // ---- 提取文件：桌面端打开该备份所在目录 ----
+                        boolean ok = openDirectory(backup.file.parent());
+                        if (!ok) {
+                            // 打开失败（如移动端）给出提示
+                            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "extract_fail")));
+                        }
                     } else if (index == 2) {
+                        // ---- 删除备份：确认后删除文件并刷新场景 ----
                         ShatteredPixelDungeon.scene().add(new WndOptions(
                                 Icons.get(Icons.WARNING),
                                 Messages.get(BackupSaveScene.class, "del_backup_title"),
@@ -1388,9 +1450,9 @@ public class BackupSaveScene extends PixelScene {
                         ) {
                             @Override
                             protected void onSelect(int delIdx) {
-                                if (delIdx == 0) {
+                                if (delIdx == 0) { // 用户确认删除
                                     backup.file.delete();
-                                    ShatteredPixelDungeon.switchNoFade(BackupSaveScene.class);
+                                    ShatteredPixelDungeon.switchNoFade(BackupSaveScene.class); // 刷新场景
                                 }
                             }
                         });
@@ -1442,182 +1504,4 @@ public class BackupSaveScene extends PixelScene {
             return Math.max(24, super.height());
         }
     }
-
-
-    /**
-     * Android Activity onActivityResult回调，接收SAF选中的Uri，复制文件
-     * 在AndroidLauncher里调用这个静态方法
-     */
-    public static void handleSAFSaveResult(android.app.Activity activity, int resultCode, Uri uri) {
-        if (resultCode != android.app.Activity.RESULT_OK || uri == null || pendingExportFile == null) {
-            pendingExportFile = null;
-            return;
-        }
-        try {
-            // 使用传入的activity拿ContentResolver
-            OutputStream os = activity.getContentResolver().openOutputStream(uri);
-            byte[] data = pendingExportFile.readBytes();
-            os.write(data);
-            os.close();
-        } catch (Exception e) {
-            ShatteredPixelDungeon.reportException(e);
-        }
-        pendingExportFile = null;
-    }
-
-    /**
-     * Android Activity onActivityResult回调，接收SAF选中的Uri，读取mlsp并写入临时文件
-     * 在AndroidLauncher里调用这个静态方法，和handleSAFSaveResult配套
-     */
-    public static void handleSAFImportResult(android.app.Activity activity, int resultCode, Uri uri) {
-        if (resultCode != android.app.Activity.RESULT_OK || uri == null || onAndroidImportFileReady == null) {
-            onAndroidImportFileReady = null;
-            pendingImportFileName = null;
-            return;
-        }
-        try {
-            // 记录用户所选文件的原始文件名（导入分流判断依据），取不到时保持 null
-            pendingImportFileName = resolvePickedFileName(activity, uri);
-
-            // 打开SAF Uri输入流
-            InputStream is = activity.getContentResolver().openInputStream(uri);
-            // 写入游戏本地临时文件 temp_import.mlsp
-            FileHandle tempFile = Gdx.files.local("temp_import.mlsp");
-            OutputStream os = tempFile.write(false);
-
-            byte[] buffer = new byte[4096];
-            int len;
-            while ((len = is.read(buffer)) > 0) {
-                os.write(buffer, 0, len);
-            }
-            os.flush();
-            os.close();
-            is.close();
-
-            // 回到GL渲染线程执行导入
-            Gdx.app.postRunnable(onAndroidImportFileReady);
-        } catch (Exception e) {
-            ShatteredPixelDungeon.reportException(e);
-            pendingImportFileName = null;
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "saf_import_failed")));
-        }
-        onAndroidImportFileReady = null;
-    }
-
-    /**
-     * 解析SAF所选文件的原始显示名。
-     *
-     * <p>优先查询 ContentResolver 的 {@link OpenableColumns#DISPLAY_NAME}；
-     * 查询不到时回退到 Uri 最后路径段（去掉常见的 primary: 前缀并做URL解码）。
-     * 若仍解析不出 .mlsp 文件名（例如拿到的是 document id），返回 null，
-     * 交由导入逻辑按 ZIP 内容推断备份类型。</p>
-     *
-     * @return 原始文件名；解析不到时返回 null
-     */
-    private static String resolvePickedFileName(android.app.Activity activity, Uri uri) {
-        try (Cursor cursor = activity.getContentResolver().query(uri, null, null, null, null)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                int idx = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                if (idx >= 0) {
-                    String name = cursor.getString(idx);
-                    if (name != null && !name.isEmpty()) {
-                        return name;
-                    }
-                }
-            }
-        } catch (Exception ignored) {
-            // 部分Provider不支持查询，走下面的Uri回退
-        }
-        try {
-            String last = uri.getLastPathSegment();
-            if (last == null || last.isEmpty()) {
-                return null;
-            }
-            // 去掉 "primary:xxx" / "document:xxx" 这类文档前缀
-            int colon = last.indexOf(':');
-            if (colon >= 0) {
-                last = last.substring(colon + 1);
-            }
-            // 去掉可能残留的目录路径
-            int slash = Math.max(last.lastIndexOf('/'), last.lastIndexOf('\\'));
-            if (slash >= 0) {
-                last = last.substring(slash + 1);
-            }
-            String decoded = java.net.URLDecoder.decode(last, "UTF-8");
-            // 只有能确认是 .mlsp 文件名才算解析成功，否则返回 null 交给内容推断
-            if (decoded == null || !decoded.toLowerCase(Locale.US).endsWith(MLSP_EXT)) {
-                return null;
-            }
-            return decoded;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * 按 ZIP 内容推断备份类型，用于外部导入时文件名解析失败的情况。
-     *
-     * <p>全局存档包内含有 badges.dat / rankings.dat / bones.dat 等局外数据文件；
-     * 槽位存档只含局内数据（game.dat、depth.dat 等），据此区分。</p>
-     *
-     * @param mlspFile 已复制到本地的 .mlsp 临时文件
-     * @return 可参与分流的文件名："whole-save.mlsp" / "slot-unknown.mlsp"；无法识别返回 null
-     */
-    private static String guessBackupTypeByContent(FileHandle mlspFile) {
-        boolean global = false;
-        boolean anyDat = false;
-        try (InputStream fis = mlspFile.read();
-             ZipInputStream zis = new ZipInputStream(fis)) {
-            ZipEntry entry;
-            while ((entry = zis.getNextEntry()) != null) {
-                String name = entry.getName();
-                if (name.endsWith(".dat")) {
-                    anyDat = true;
-                    if (name.equals("badges.dat") || name.equals("rankings.dat")
-                            || name.equals("bones.dat") || name.equals("keybindings.dat")) {
-                        global = true;
-                    }
-                }
-                zis.closeEntry();
-            }
-        } catch (Exception ignored) {
-            return null;
-        }
-        if (global) {
-            return GLOBAL_PREFIX + MLSP_EXT;
-        }
-        if (anyDat) {
-            return "slot-unknown" + MLSP_EXT;
-        }
-        return null;
-    }
-
-    /**
-     * Android: 唤起SAF【另存为】窗口，默认定位外部存储根目录，保存mlsp备份文件
-     * @param mlspFile 要导出的mlsp文件
-     */
-    public static void saveBackupToSAF(FileHandle mlspFile) {
-        try {
-            AndroidApplication androidApp = (AndroidApplication) Gdx.app;
-            Activity activity = (Activity) androidApp.getContext();
-
-            pendingExportFile = mlspFile;
-
-            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("application/octet-stream");
-            intent.putExtra(Intent.EXTRA_TITLE, mlspFile.name());
-
-            Uri rootUri = DocumentsContract.buildRootUri("com.android.externalstorage.documents", "primary");
-            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, rootUri);
-
-            activity.startActivityForResult(intent, 9001);
-
-        } catch (Exception e) {
-            ShatteredPixelDungeon.reportException(e);
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(BackupSaveScene.class, "extract_fail")));
-        }
-    }
-
-
 }
