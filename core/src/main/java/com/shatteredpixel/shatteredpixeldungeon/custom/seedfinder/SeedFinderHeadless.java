@@ -48,11 +48,8 @@ public final class SeedFinderHeadless {
 		if (installed) return;
 		installed = true;
 
-		//Android 子进程会预先 System.load 所有 .so；此处 loadLibrary 可能因"已加载"抛异常，吞掉即可
-		try {
-			GdxNativesLoader.load();
-		} catch (Throwable ignored) {
-		}
+		GdxNativesLoader.load();
+
 		Gdx.files = files;
 		Gdx.gl = Gdx.gl20 = stub(GL20.class);
 		Gdx.graphics = stub(Graphics.class);
