@@ -71,8 +71,23 @@ public class SeedFinderCoordinator implements Runnable {
 
     /** 平台支持的最大子进程数（1 = 不支持多进程） */
     public static int maxWorkers() {
+        ensureLauncher();
         SeedFinderLauncher l = launcher;
         return l == null ? 1 : Math.max(1, l.maxWorkers());
+    }
+
+    /**
+     * 平台自动注册：desktop 在 DesktopLauncher 中注入 launcher，
+     * Android 在此反射创建 AndroidSeedFinderLauncher（拿不到 Application 上下文时返回 null）。
+     * 非 Android 环境下 AndroidSeedFinderLauncher.create() 直接返回 null，不影响 desktop。
+     */
+    private static void ensureLauncher() {
+        if (launcher != null) return;
+        synchronized (SeedFinderCoordinator.class) {
+            if (launcher != null) return;
+            SeedFinderLauncher l = AndroidSeedFinderLauncher.create();
+            if (l != null) launcher = l;
+        }
     }
 
     /** 自动档：核数 - 1，上限 4 */
@@ -115,6 +130,8 @@ public class SeedFinderCoordinator implements Runnable {
     }
 
     private String coordinate() throws IOException, InterruptedException {
+        ensureLauncher();
+        if (launcher == null) return Messages.get(SeedFinder.class, "platform_missing");
         long firstSeed = startSeedOverride >= 0 ? startSeedOverride : deriveFirstSeed();
         benchStartMs = System.currentTimeMillis();//【临时·性能测试】
 
@@ -244,9 +261,10 @@ public class SeedFinderCoordinator implements Runnable {
         return "";
     }
 
-    /** 把种子归一到环 [0, TOTAL_SEEDS) 内 */
+    /** 把种子归一到环 [0, TOTAL_SEEDS) 内；手写取模，兼容 minSdk 21（Math.floorMod 为 API 24+） */
     private static long ring(long seed) {
-        return Math.floorMod(seed, DungeonSeed.TOTAL_SEEDS);
+        long m = seed % DungeonSeed.TOTAL_SEEDS;
+        return m < 0 ? m + DungeonSeed.TOTAL_SEEDS : m;
     }
 
     /** 完全镜像 SeedFinder.findSeed() 的起步种子算法 */
