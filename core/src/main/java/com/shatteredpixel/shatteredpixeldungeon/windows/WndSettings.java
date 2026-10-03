@@ -931,8 +931,6 @@ public class WndSettings extends WndTabbed {
 			title.hardlight(TITLE_COLOR);
 			add(title);
 
-			boolean isDesktop = DeviceCompat.isDesktop();
-
 			numFloors = new OptionSlider(Messages.get(this, "floors_slider") + " (" + SPDSettings.seedfinderFloors() + ")",
 					"1", "30", 1,  30) {
 				@Override
