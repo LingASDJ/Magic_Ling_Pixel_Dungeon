@@ -56,8 +56,8 @@ public class WndGoShop extends Window {
                 }else if(Statistics.fireGirlnoshopping){
                     for (Mob mob : Dungeon.level.mobs) {
                         if (mob instanceof Shopkeeper) {
-                            ((Shopkeeper) mob).flee();
                             Statistics.endingbald = true;
+                            ((Shopkeeper) mob).flee();
                             break;
                         }
                     }

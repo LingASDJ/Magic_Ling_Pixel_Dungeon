@@ -207,7 +207,7 @@ public class Shopkeeper extends NPC {
 		Notes.remove( landmark() );
 		GLog.newLine();
 
-		if(getClass() == Shopkeeper.class){
+		if(getClass() == Shopkeeper.class && !Statistics.fireGirlnoshopping){
 			GLog.n(Messages.get(this, "flee"));
 		}
 
@@ -216,13 +216,15 @@ public class Shopkeeper extends NPC {
 			sprite.killAndErase();
 			CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
 		}
-		hero.FireAngry(this);
+		if(!Statistics.endingbald){
+			hero.FireAngry(this);
+		}
 	}
 
 	@Override
 	public void destroy() {
 		super.destroy();
-		if(turnsSinceHarmed >= 1){
+		if(turnsSinceHarmed >= 1 && !Statistics.fireGirlnoshopping ){
 			for (Heap heap: Dungeon.level.heaps.valueList()) {
 				if (heap.type == Heap.Type.FOR_SALE) {
 					if (ShatteredPixelDungeon.scene() instanceof GameScene) {
@@ -236,7 +238,7 @@ public class Shopkeeper extends NPC {
 					}
 				}
 			}
-		} else if(Statistics.endingbald){
+		} else if(Statistics.endingbald && !Statistics.fireGirlnoshopping){
 			for (Heap heap: Dungeon.level.heaps.valueList()) {
 				if (heap.type == Heap.Type.FOR_SALE) {
 					if (ShatteredPixelDungeon.scene() instanceof GameScene) {
