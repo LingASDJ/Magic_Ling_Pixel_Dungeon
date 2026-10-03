@@ -29,10 +29,8 @@ public final class SeedFinderWorker {
         int stride = job.stride > 0 ? job.stride : 1;
         int reps = job.reps > 0 ? job.reps : SeedFinder.CONFIRM_REPS;
         long checked = 0;
-        //种子空间是一个环 [0, TOTAL_SEEDS)：本进程从自己的环段起点开始连续推进，越过环尾回绕到 0
-        //Math.floorMod 是 API 24+，这里手写欧几里得取模以兼容 minSdk 21
-        long seed = job.startSeed % DungeonSeed.TOTAL_SEEDS;
-        if (seed < 0) seed += DungeonSeed.TOTAL_SEEDS;
+        
+        long seed = Math.floorMod(job.startSeed, DungeonSeed.TOTAL_SEEDS);
 
         while (job.count <= 0 || checked < job.count) {
             //先发布进度再处理：父进程据此判定该种子是否卡死
