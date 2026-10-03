@@ -193,7 +193,7 @@ public class MyCoreHeart extends Boss {
     }
 
     public void TryGetSummonedMobs() {
-        int spawnCount = 0;
+        int spawnCount;
         if(summonedmobsCount < 26){
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                 if(!mob.isOldDay){
