@@ -87,7 +87,7 @@ public class Shopkeeper extends NPC {
 	@Override
 	protected boolean act() {
 		if(Statistics.endingbald &&  getClass() == Shopkeeper.class) {
-			flee();
+			Tflee();
 		}
 		if (Dungeon.level.visited[pos]){
 			Notes.add(Notes.Landmark.SHOP);
