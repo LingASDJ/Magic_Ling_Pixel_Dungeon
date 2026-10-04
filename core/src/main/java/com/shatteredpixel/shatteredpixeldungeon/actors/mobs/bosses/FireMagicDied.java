@@ -119,9 +119,8 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         immunities.add(HalomethaneBurning.class);
         immunities.add(Terror.class);
         immunities.add(HellBurning.class);
-
+        immunities.add(Burning.class);
         if(Statistics.bossRushMode){
-            immunities.add(Burning.class);
             immunities.add(Vertigo.class);
             immunities.add(Corrosion.class);
             immunities.add(Chill.class);
