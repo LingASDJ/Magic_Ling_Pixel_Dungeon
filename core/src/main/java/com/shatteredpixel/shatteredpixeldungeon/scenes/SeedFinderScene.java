@@ -117,7 +117,7 @@ public class SeedFinderScene extends PixelScene {
 		btnSeedfinder.icon(Icons.get(Icons.MAGNIFY));
 		add(btnSeedfinder);
 
-		StyledButton btnScoutDaily = new StyledButton(GREY_TR, Messages.get(this, "newscs")) {
+		StyledButton btnScoutDaily = new StyledButton(GREY_TR, "新版查种器") {
 			@Override
 			protected void onClick() {
 				ShatteredPixelDungeon.switchNoFade(
