@@ -295,7 +295,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new DearthRongShopRoom());
 		}
 
-		if (Badges.isUnlocked(Badges.Badge.KILL_MORES) && depth == 29 && Statistics.AbyssCityRules == 2 || 1==1){
+		if (Badges.isUnlocked(Badges.Badge.KILL_MORES) && depth == 29 && Statistics.AbyssCityRules == 2){
 			initRooms.add(new CerbusSleepRoom());
 		}
 
