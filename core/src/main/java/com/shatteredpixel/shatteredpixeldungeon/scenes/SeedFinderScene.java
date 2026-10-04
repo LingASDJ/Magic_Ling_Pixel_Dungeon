@@ -42,12 +42,11 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
-import com.watabou.utils.DeviceCompat;
 
 public class SeedFinderScene extends PixelScene {
 	@Override
 	protected void onBackPressed() {
-		ShatteredPixelDungeon.switchScene(TitleScene.class);
+		ShatteredPixelDungeon.switchNoFade(TitleScene.class);
 	}
 	@Override
 	public void create() {
@@ -117,7 +116,7 @@ public class SeedFinderScene extends PixelScene {
 		btnSeedfinder.icon(Icons.get(Icons.MAGNIFY));
 		add(btnSeedfinder);
 
-		StyledButton btnScoutDaily = new StyledButton(GREY_TR, Messages.get(this, "newscs")) {
+		StyledButton btnScoutDaily = new StyledButton(GREY_TR, Messages.get(SeedFinderScene.class, "newscs")) {
 			@Override
 			protected void onClick() {
 				ShatteredPixelDungeon.switchNoFade(
@@ -179,11 +178,9 @@ public class SeedFinderScene extends PixelScene {
 		version.y = h - version.height() - 2;
 		add( version );
 
-		if (DeviceCompat.isDesktop()) {
-			ExitButton btnExit = new ExitButton();
-			btnExit.setPos( w - btnExit.width(), 0 );
-			add( btnExit );
-		}
+		ExitButton btnExit = new ExitButton();
+		btnExit.setPos( w - btnExit.width(), 0 );
+		add( btnExit );
 
 		fadeIn();
 	}
