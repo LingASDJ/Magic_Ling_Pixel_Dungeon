@@ -47,12 +47,12 @@ public class SeedFinderJob {
         return t.clsName() + "|" + t.minLevel + "|" + t.augName();
     }
 
-    /** 子进程按类名重建查询目标 */
+    /** 子进程按类名重建查询目标（类名空串 = 通配任意物品，仅按等级/附魔） */
     public ArrayList<WantedTarget> buildTargets() throws ClassNotFoundException {
         ArrayList<WantedTarget> targets = new ArrayList<>();
         for (String spec : targetSpecs) {
             String[] parts = spec.split("\\|", -1);
-            Class<? extends Item> cls = Class.forName(parts[0]).asSubclass(Item.class);
+            Class<? extends Item> cls = parts[0].isEmpty() ? null : Class.forName(parts[0]).asSubclass(Item.class);
             int minLevel = parts.length > 1 && !parts[1].isEmpty() ? Integer.parseInt(parts[1]) : 0;
             Class<?> aug = parts.length > 2 && !parts[2].isEmpty() ? Class.forName(parts[2]) : null;
             targets.add(new WantedTarget(cls, minLevel, aug));

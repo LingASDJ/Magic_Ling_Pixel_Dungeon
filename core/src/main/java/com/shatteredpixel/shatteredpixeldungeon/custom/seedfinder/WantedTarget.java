@@ -6,12 +6,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 
 /**
  * 结构化查询目标：物品类 + 最低等级 + 可选附魔/铭文体。
- * 匹配要求物品类精确一致、强化等级不低于要求；
+ * cls 为 null 表示通配（任意物品类），仅按最低等级（以及 aug，若指定）匹配——
+ * 即"模糊查找：只要强化等级 ≥ minLevel 的任意物品"。
+ * 匹配要求物品类精确一致（非通配时）、强化等级不低于要求；
  * 指定 aug 时，武器走附魔分支、护甲走铭文分支（由 augIsGlyph 在构造时定型，
  * 调用方保证 aug 为附魔则 cls 必为 Weapon、aug 为铭文则 cls 必为 Armor）。
  */
 public class WantedTarget {
 
+    /** 查询物品类；null 表示通配任意物品（模糊等级查找） */
     public final Class<? extends Item> cls;
     public final int minLevel;
     public final Class<?> aug;
@@ -43,9 +46,9 @@ public class WantedTarget {
         }
     }
 
-    /** 序列化用：目标类名（写入任务文件） */
+    /** 序列化用：目标类名（null=通配时为空串，由任务文件用空字段还原） */
     public String clsName() {
-        return cls.getName();
+        return cls == null ? "" : cls.getName();
     }
 
     /** 序列化用：附魔/铭文类名，空串表示不限定 */
@@ -54,7 +57,7 @@ public class WantedTarget {
     }
 
     public boolean matches(Item item) {
-        if (item.getClass() != cls) return false;
+        if (cls != null && item.getClass() != cls) return false;
         if (item.level() < minLevel) return false;
         if (aug == null) return true;
         if (augIsGlyph) {

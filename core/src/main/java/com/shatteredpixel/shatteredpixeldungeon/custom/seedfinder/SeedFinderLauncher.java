@@ -23,4 +23,9 @@ public interface SeedFinderLauncher {
 
     /** 第 index 个子进程是否仍在运行 */
     boolean isAlive(int index);
+
+    /** 等待全部子进程真正退出（调用方应先 kill 各进程）；超时未退出则放弃等待。
+     *  默认空实现：不支持多进程的平台无需等待。 */
+    default void awaitTermination(long timeoutMs) {
+    }
 }

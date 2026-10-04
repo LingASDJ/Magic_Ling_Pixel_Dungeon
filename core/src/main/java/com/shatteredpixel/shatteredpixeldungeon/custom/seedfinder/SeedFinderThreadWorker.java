@@ -5,14 +5,30 @@ import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.DefaultAndroidFiles;
 import com.badlogic.gdx.backends.android.AndroidPreferences;
 import com.badlogic.gdx.files.FileHandle;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.Rankings;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.custom.CollectRankings;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.watabou.noosa.Game;
+import com.watabou.utils.DeviceCompat;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Calendar;
 
 /**
  * 安卓原生多线程查种的工作线程入口。
@@ -48,6 +64,13 @@ public final class SeedFinderThreadWorker {
         String workDir = (String) args[5];
         String gameVersion = (String) args[6];
 
+        // 先把主进程全局存档复刻到本 worker 的 external 根目录（纯文件 IO，不依赖 Gdx/FileUtils）。
+        // 必须在 install 之前完成：install 里 new Game(PixelScene.class, null) 会触发
+        // Badges/Generator 等类的静态初始化，而 Generator.<clinit> 直接 Badges.loadGlobal()
+        // 读磁盘决定武器/法杖的徽章解锁概率——存档若在 install 之后才复制，概率表会按
+        // “空存档”定型且静态块只执行一次，生成结果与主进程不一致（地面掉落缺失/解锁武器为 0）。
+        copyMainSave(context, new File(workDir, "external"));
+
         Files files = (assets != null) ? new WorkerFiles(assets, context, new File(workDir)) : new FallbackFiles();
         Preferences prefs = (sp != null) ? new AndroidPreferences(sp) : null;
 
@@ -68,6 +91,19 @@ public final class SeedFinderThreadWorker {
             Game.version = gameVersion;
         }
 
+        // 复刻主进程全局存档到本 worker 的 external 根目录：
+        // worker 的 FileUtils 默认 External 指向私有目录，Badges.loadGlobal / Rankings.load /
+        // Bones / Journal / keybindings 等全部读到"无存档"，而 Generator 静态块里
+        // Badges.isUnlocked(...) 门控的生成概率会恒为 0，bones 掉落也受影响——
+        // 依赖进度/徽章解锁的物品永远查不出来，查种结果与真实进度不适配。
+        // 必须在 Generator 预初始化之前复制（Badges.loadGlobal 由 Generator.<clinit> 触发）。
+        copyMainSave(context, new File(workDir, "external"));
+        // install 里 new Game(PixelScene.class, null) 可能提前触发 Badges/Rankings/Bones 等
+        // 类的静态初始化（缓存空存档），因此复制完磁盘文件后必须强制作废并重载这些全局缓存，
+        // 与 BackupSaveScene.resetGlobalCache 的行为对齐；若 prefs 非本 worker 私有副本，
+        // 这里 Rankings.load 的 lastDaily 回写会污染主进程设置（launcher 已保证私有）。
+        reloadGlobalSaves();
+
         // 预初始化核心物品生成器：把类初始化失败提前暴露成带完整 cause 链的异常
         //（否则会在 testSeed 深处炸成难读的 ExceptionInInitializerError + Rejecting re-init）
         try {
@@ -76,12 +112,135 @@ public final class SeedFinderThreadWorker {
             throw new RuntimeException("游戏核心类预初始化失败（Generator），完整原因见 cause 链：", t);
         }
 
+        // 复刻主进程日期相关状态（worker 不跑 TitleScene，这些状态全留在默认值，生成会与主进程不一致）：
+        // 1) Dungeon.whiteDaymode：主进程按当前小时设置（7-22 点为白天），影响 Yog 夜战等生成分支；
+        // 2) 节日状态：主进程在 TitleScene 里按本地日期（含农历）调用 Gregorian.LunarCheckDate()
+        //    初始化 RegularLevel.holiday/chinaHoliday/birthday——中国节日（国庆/中秋/春节等）
+        //    生成在 worker 里原本全部失效（0 楼掉落差异的直接原因之一）。
+        Calendar calendar = Calendar.getInstance();
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
+        try {
+            Gregorian.LunarCheckDate();
+        } catch (Throwable ignored) {
+            // 节日初始化失败不阻塞查种（最多节日生成失效，与修复前行为一致）
+        }
+        logWorkerEnv();
+
         String cb = job.params.get("checkBranches");
         if (cb != null) {
             SeedFinder.Options.checkBranches = Boolean.parseBoolean(cb);
         }
 
         SeedFinderWorker.run(job);
+    }
+
+    /** 复刻主进程全局存档（根目录下全部 .dat 文件）到本 worker 的 external 根目录。
+     *  worker 的 FileUtils 默认 External 指向私有目录，不复制的话 Badges/Rankings/Bones/
+     *  Journal/keybindings 全部读到"无存档"——徽章门控的生成概率恒为 0、bones 掉落也缺失，
+     *  查种结果与真实进度不适配。
+     *  主进程 defaultFileType=Local（AndroidLauncher 设置），全局存档根目录 = getFilesDir()。
+     *  与 BackupSaveScene.exportWholeSlotToMLSP 的 whole-save 备份范围一致（根目录 *.dat）。 */
+    private static void copyMainSave(ContextWrapper context, File workerExternal) {
+        File mainRoot = context.getFilesDir();
+        if (mainRoot == null) return;
+        File[] datFiles = mainRoot.listFiles((dir, name) -> name.endsWith(".dat"));
+        int copied = 0;
+        if (datFiles != null) {
+            try {
+                if (!workerExternal.exists()) {
+                    workerExternal.mkdirs();
+                }
+            } catch (Throwable ignored) {
+            }
+            for (File src : datFiles) {
+                try {
+                    File dst = new File(workerExternal, src.getName());
+                    FileInputStream in = new FileInputStream(src);
+                    try {
+                        FileOutputStream out = new FileOutputStream(dst);
+                        try {
+                            byte[] buf = new byte[8192];
+                            int n;
+                            while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+                        } finally {
+                            out.close();
+                        }
+                    } finally {
+                        in.close();
+                    }
+                    copied++;
+                } catch (Throwable ignored) {
+                    // 单个文件复制失败：跳过该文件，不阻塞查种
+                }
+            }
+        }
+        // 诊断日志：确认主进程根目录到底有几个全局存档、复制成功几个
+        //（若 dat=0 说明主进程本身就是新装空存档，worker 读不到进度是正常的）
+        // 注意：copyMainSave 在 install 之前调用，Gdx.app 尚未安装，必须走 System.out
+        //（worker 的日志本来也以 System.out + [SeedFinder] 前缀进 logcat，与 Gdx stub 格式一致）
+        System.out.println("[SeedFinder] copyMainSave: root=" + mainRoot
+                + " dat=" + (datFiles == null ? -1 : datFiles.length)
+                + " copied=" + copied + " -> " + workerExternal);
+        // 诊断：列出复制后的文件大小，确认 journal.dat 等存档文件确实非空（而非复制到错误路径）
+        File[] dstFiles = workerExternal.listFiles();
+        if (dstFiles != null) {
+            StringBuilder sb = new StringBuilder("[SeedFinder] workFiles:");
+            for (File f : dstFiles) sb.append(" ").append(f.getName()).append("=").append(f.length());
+            System.out.println(sb);
+        }
+    }
+
+    /** 强制作废并重载全部全局存档缓存（与 BackupSaveScene.resetGlobalCache 对齐）。
+     *  install 的 new Game 可能在复制前触发这些类的静态初始化（缓存空存档），
+     *  文件复制完成后必须重载一次才能让 Generator / Bones 读到真实进度。 */
+    private static void reloadGlobalSaves() {
+        try {
+            Badges.global = null;
+            Badges.loadGlobal();
+            PaswordBadges.global = null;
+            PaswordBadges.loadGlobal();
+            Rankings.INSTANCE.records = null;
+            Rankings.INSTANCE.load();
+            CollectRankings.INSTANCE.records = null;
+            CollectRankings.INSTANCE.load();
+            Journal.resetForReload();
+            Journal.loadGlobal();
+            Bones.resetForReload();
+        } catch (Throwable ignored) {
+            // 任一重载失败不阻塞查种（Generator 预初始化仍会暴露真正的类初始化问题）
+        }
+        // 诊断：journal.dat 的 Document 页面状态是否恢复（决定 GuidePage/指南书页是否生成）。
+        // 主进程玩过指南 → 页面 FOUND/READ → 不生成书页；worker 若一直 NOT_FOUND → 会生成书页，
+        // 与主进程生成不一致。debug=true（INDEV）时 <clinit> 默认全 READ，不会走这条差异。
+        try {
+            System.out.println("[SeedFinder] document: debug=" + DeviceCompat.isDebug()
+                    + " introFound=" + Document.ADVENTURERS_GUIDE.isPageFound(Document.GUIDE_INTRO)
+                    + " introRead=" + Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO)
+                    + " totalPages=" + Document.ADVENTURERS_GUIDE.pageNames().size());
+        } catch (Throwable ignored) {
+        }
+    }
+
+    /** 环境诊断：打印 worker 的挑战/难度/娱乐模式/节日/关键徽章解锁与 Generator 概率表，
+     *  与主进程查种结果对照，用于定位“同种子生成不一致”。 */
+    private static void logWorkerEnv() {
+        try {
+            int challenges = SPDSettings.challenges();
+            String difficulty = String.valueOf(SPDSettings.difficulty());
+            String dlc = String.valueOf(SPDSettings.dlc());
+            boolean killMg = Badges.isUnlocked(Badges.Badge.KILL_MG);
+            boolean riceSword = PaswordBadges.filtered(true).contains(PaswordBadges.Badge.UNLOCK_RICESWORD)
+                    || SPDSettings.isItemUnlock("RiceSword");
+            float[] t5 = Generator.Category.WEP_T5.probs;
+            com.badlogic.gdx.Gdx.app.log("SeedFinder",
+                    "workerEnv: challenges=" + challenges + " difficulty=" + difficulty + " dlc=" + dlc
+                            + " holiday=" + RegularLevel.holiday + " chinaHoliday=" + RegularLevel.chinaHoliday
+                            + " KILL_MG=" + killMg + " riceSword=" + riceSword
+                            + " WEP_T5=" + java.util.Arrays.toString(t5));
+        } catch (Throwable ignored) {
+            // 诊断失败不阻塞查种
+        }
     }
 
     /** 加载 libgdx natives 副本；失败直接抛出（错误可见，不再静默吞掉） */
@@ -116,10 +275,19 @@ public final class SeedFinderThreadWorker {
             switch (type) {
                 case Internal:
                     return assetsFiles.internal(path);
-                case Local:
-                    return new FileHandle(new File(localRoot, path));
-                case External:
-                    return new FileHandle(new File(externalRoot, path));
+                case Local: {
+                    // FileUtils 以 Local/External 为默认类型时传的是“defaultPath + 文件名”的完整路径
+                    //（如 workDir/external/badges.dat），此时必须直接用该路径，不能再拼一次根目录；
+                    // 直接调 files.local("相对名") 的路径才是相对的，才需要拼本 worker 的根目录。
+                    File f = new File(path);
+                    if (!f.isAbsolute()) f = new File(localRoot, path);
+                    return new FileHandle(f);
+                }
+                case External: {
+                    File f = new File(path);
+                    if (!f.isAbsolute()) f = new File(externalRoot, path);
+                    return new FileHandle(f);
+                }
                 case Classpath:
                     return new ClasspathHandle(path);
                 case Absolute:

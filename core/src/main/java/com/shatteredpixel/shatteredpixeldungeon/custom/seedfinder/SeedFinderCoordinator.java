@@ -56,6 +56,8 @@ public class SeedFinderCoordinator implements Runnable {
     private SeedFinderState state;
     private boolean anyFailed;
     private String failureInfo = "";
+    /** 运行根目录（filesDir/seedfinder），其下平级放着各 worker 的私有工作目录 work-* */
+    private String runRootPath;
     /** 最终结果：种子码 / 物品清单 / "NONE" / 错误文案 */
     volatile String lastResult = "";
     /** 供测试覆盖起步种子；<0 表示按 findSeed() 的随机逻辑 */
@@ -111,6 +113,12 @@ public class SeedFinderCoordinator implements Runnable {
         } finally {
             activeWorkers = 0;
             workerSeeds = null;
+            // 查种结束（命中/完成/失败/取消）：终止所有迷你线程并清空其私有工作目录，
+            // 避免残留的存档副本/日志占用空间，也保证下一次查种从干净状态重新复制主存档。
+            killAll();
+            SeedFinderLauncher l = launcher;
+            if (l != null) l.awaitTermination(5000);
+            cleanupWorkerDirs();
         }
         lastResult = result;
         //被用户中止（打断 sleep 会抛 InterruptedException）时不展示任何结果
@@ -128,6 +136,7 @@ public class SeedFinderCoordinator implements Runnable {
         Map<String, String> params = launcher.platformParams();
         String runRootPath = params.get("runRoot");
         if (runRootPath == null) return Messages.get(SeedFinder.class, "platform_missing");
+        this.runRootPath = runRootPath;
         File runRoot = new File(runRootPath);
         cleanOldRuns(runRoot);
         runDir = new File(runRoot, "run-" + System.currentTimeMillis());
@@ -377,6 +386,23 @@ public class SeedFinderCoordinator implements Runnable {
         for (File f : old)
             if (f.isDirectory() && f.getName().startsWith("run-"))
                 deleteRecursively(f);
+    }
+
+    /** 查种结束后清空各 worker 的私有工作目录（work-*），下次查种重新复制主存档 */
+    private void cleanupWorkerDirs() {
+        try {
+            if (runRootPath == null) return;
+            // work-* 位于 runRootPath（filesDir/seedfinder）本身之下，而不是其父目录
+            File root = new File(runRootPath);
+            if (!root.isDirectory()) return;
+            File[] dirs = root.listFiles();
+            if (dirs == null) return;
+            for (File d : dirs)
+                if (d.isDirectory() && d.getName().startsWith("work-"))
+                    deleteRecursively(d);
+        } catch (Throwable ignored) {
+            // 清理失败不影响查种结果（残留目录下次启动仍会覆盖重建）
+        }
     }
 
     private static void deleteRecursively(File f) {

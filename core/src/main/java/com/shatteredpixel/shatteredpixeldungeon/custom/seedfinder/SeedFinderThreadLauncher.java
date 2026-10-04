@@ -176,6 +176,21 @@ public class SeedFinderThreadLauncher implements SeedFinderLauncher {
         return t != null && t.isAlive();
     }
 
+    @Override
+    public void awaitTermination(long timeoutMs) {
+        long per = Math.max(50L, timeoutMs / Math.max(1, threads.length));
+        for (Thread t : threads) {
+            if (t == null || !t.isAlive()) continue;
+            t.interrupt();
+            try {
+                t.join(per);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+        }
+    }
+
     /** 取（或首次创建）第 index 个 worker 的独立加载器 */
     private ClassLoader loaderFor(int index) throws Exception {
         ClassLoader loader = loaders[index];
@@ -231,9 +246,24 @@ public class SeedFinderThreadLauncher implements SeedFinderLauncher {
             try {
                 Class<?> entry = Class.forName(WORKER_ENTRY, true, loader);
                 Method main = entry.getMethod("main", Object[].class);
+                // worker 使用私有 SharedPreferences 副本：读的是一份复制的主进程设置（challenges/branches
+                // 等与主进程一致），写（如 Rankings.load 的 lastDaily 回写、SPDSettings.flush）只落在
+                // worker 自己的文件里，绝不污染主进程设置。
+                SharedPreferences workerPrefs = context.getSharedPreferences(
+                        "seedfinder_prefs_" + index, Context.MODE_PRIVATE);
+                SharedPreferences.Editor ed = workerPrefs.edit();
+                for (Map.Entry<String, ?> e : prefs.getAll().entrySet()) {
+                    Object v = e.getValue();
+                    if (v instanceof String) ed.putString(e.getKey(), (String) v);
+                    else if (v instanceof Integer) ed.putInt(e.getKey(), (Integer) v);
+                    else if (v instanceof Long) ed.putLong(e.getKey(), (Long) v);
+                    else if (v instanceof Float) ed.putFloat(e.getKey(), (Float) v);
+                    else if (v instanceof Boolean) ed.putBoolean(e.getKey(), (Boolean) v);
+                }
+                ed.apply();
                 // 把主进程已设置的 Game.version 传给 worker（worker 副本默认 null，
                 // 而 Document.<clinit> → DeviceCompat.isDebug 会 String.contains 直接 NPE）
-                main.invoke(null, (Object) new Object[]{jobFile.getAbsolutePath(), assets, prefs, context,
+                main.invoke(null, (Object) new Object[]{jobFile.getAbsolutePath(), assets, workerPrefs, context,
                         nativesPath, workDir, Game.version});
             } catch (Throwable t) {
                 t.printStackTrace(); // 完整栈进 logcat，便于真机抓取（Rejecting re-init 不打印 cause）

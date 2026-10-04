@@ -27,6 +27,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.journal.AlchemyPage;
+import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
+import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
@@ -87,8 +90,9 @@ public class SeedFinder implements Runnable {
     public static volatile long SEARCH_LIMIT_MS = 200000L;
 
     /**
-     * 侦察种子文本行 → WantedTarget 列表（"物品名+等级"，等级缺省 0）。
+     * 侦察种子文本行 → WantedTarget 列表（"物品名+等级" 或 纯"等级"模糊）。
      * 解析失败的行直接跳过（与旧版文本匹配行为一致：找不到的物品不参与匹配）。
+     * 纯等级行（如 "+4" / "+3"）生成通配目标（任意物品类、最低等级），实现模糊查找。
      */
     public static ArrayList<WantedTarget> parseWanted(String[] lines) {
         ArrayList<WantedTarget> out = new ArrayList<>();
@@ -99,12 +103,17 @@ public class SeedFinder implements Runnable {
             name = name.replaceAll("\"", "").trim();
             int level = 0;
             int plus = name.lastIndexOf('+');
-            if (plus > 0) {
+            if (plus >= 0) {
                 try {
                     level = Integer.parseInt(name.substring(plus + 1).trim());
                     name = name.substring(0, plus).trim();
                 } catch (NumberFormatException ignored) {
                 }
+            }
+            if (name.isEmpty()) {
+                // 纯等级模糊：任意物品，强化等级 ≥ level（不限定物品名）
+                out.add(new WantedTarget(null, level, null));
+                continue;
             }
             Class<? extends Item> cls = findItemClassByName(name);
             if (cls != null)
@@ -179,15 +188,23 @@ public class SeedFinder implements Runnable {
     protected final WantedTarget[] wantedArr;
     // Class → 目标下标数组：tryMatch 先查 map 取候选目标，跳过无关物品
     private final HashMap<Class<? extends Item>, int[]> matchIndex;
+    // 通配目标（cls==null，纯等级模糊）：不按类索引，每个物品都要过一遍
+    private final int[] wildcardIndices;
     // 预筛下标：循环内直接遍历，避免对全量 wantedArr 逐条 isAssignableFrom
     protected final int floor;
     protected final HeroClass heroClass;
     protected SeedFinder(ArrayList<WantedTarget> wanted, int fl, HeroClass cl) {
         wantedArr = wanted.toArray(new WantedTarget[0]);
         matchIndex = buildMatchIndex(wantedArr);
+        ArrayList<Integer> wc = new ArrayList<>();
+        for (int j = 0; j < wantedArr.length; j++)
+            if (wantedArr[j].cls == null) wc.add(j);
+        wildcardIndices = new int[wc.size()];
+        for (int k = 0; k < wc.size(); k++) wildcardIndices[k] = wc.get(k);
         floor = fl;
         heroClass = cl;
         for (WantedTarget w : wanted) {
+            if (w.cls == null) continue;
             if (Wand.class.isAssignableFrom(w.cls) && w.minLevel >= 3)
                 wand = w;
             else if (Ring.class.isAssignableFrom(w.cls) && w.minLevel >= 3)
@@ -197,11 +214,12 @@ public class SeedFinder implements Runnable {
     WantedTarget wand;
     WantedTarget ring;
 
-    // 构造时按 cls 分组目标下标，供 tryMatch 做 O(1) 跳查
+    // 构造时按 cls 分组目标下标，供 tryMatch 做 O(1) 跳查（通配目标不进索引，单独维护）
     private static HashMap<Class<? extends Item>, int[]> buildMatchIndex(WantedTarget[] arr) {
         HashMap<Class<? extends Item>, ArrayList<Integer>> temp = new HashMap<>();
         for (int j = 0; j < arr.length; j++) {
             Class<? extends Item> cls = arr[j].cls;
+            if (cls == null) continue;
             ArrayList<Integer> list = temp.get(cls);
             if (list == null) {
                 list = new ArrayList<>();
@@ -393,9 +411,17 @@ public class SeedFinder implements Runnable {
 
     private boolean tryMatch(Item item, boolean[] itemsFound) {
         int[] candidates = matchIndex.get(item.getClass());
-        if (candidates == null) return false;
-        for (int idx : candidates) {
-            //只查找这个类所能在的位置
+        if (candidates != null) {
+            for (int idx : candidates) {
+                //只查找这个类所能在的位置
+                if (!itemsFound[idx] && wantedArr[idx].matches(item)) {
+                    itemsFound[idx] = true;
+                    return true;
+                }
+            }
+        }
+        // 通配目标（纯等级模糊）：不按类索引，每个物品都要过一遍
+        for (int idx : wildcardIndices) {
             if (!itemsFound[idx] && wantedArr[idx].matches(item)) {
                 itemsFound[idx] = true;
                 return true;
@@ -493,7 +519,7 @@ public class SeedFinder implements Runnable {
         Dungeon.overrideSeed = seed;
         Dungeon.isDLC(Conducts.Conduct.SEED);
         Dungeon.init();
-        HashSet<Class<? extends Item>> blacklist = new HashSet<>(Arrays.asList(Dewdrop.class, IronKey.class, GoldenKey.class, CrystalKey.class, EnergyCrystal.class, CorpseDust.class, Embers.class, CeremonialCandle.class, Pickaxe.class));
+        HashSet<Class<? extends Item>> blacklist = new HashSet<>(Arrays.asList(Dewdrop.class, IronKey.class, GoldenKey.class, CrystalKey.class, EnergyCrystal.class, CorpseDust.class, Embers.class, CeremonialCandle.class, Pickaxe.class, Guidebook.class, GuidePage.class, AlchemyPage.class));
 
         // Phase 1: 遍历所有楼层，收集物品（不 identify），任务奖励在出现层一次性收取并 complete
         ArrayList<FloorData> floorDataList = new ArrayList<>();
@@ -709,8 +735,17 @@ public class SeedFinder implements Runnable {
         if (fd.impRewards != null) all.addAll(fd.impRewards);
         for (Item item : all) {
             int[] candidates = matchIndex.get(item.getClass());
-            if (candidates == null) continue;
-            for (int idx : candidates) {
+            if (candidates != null) {
+                for (int idx : candidates) {
+                    if (!matched[idx] && wantedArr[idx].matches(item)) {
+                        matched[idx] = true;
+                        matchedInfo.add(item.toString() + " - "
+                                + Messages.get(SeedFinder.class, "floor_at", fd.depth));
+                    }
+                }
+            }
+            // 通配目标（纯等级模糊）：任意物品类都检查等级
+            for (int idx : wildcardIndices) {
                 if (!matched[idx] && wantedArr[idx].matches(item)) {
                     matched[idx] = true;
                     matchedInfo.add(item.toString() + " - "

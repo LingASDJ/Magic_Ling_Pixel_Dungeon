@@ -31,9 +31,24 @@ public final class SeedFinderWorker {
         int stride = job.stride > 0 ? job.stride : 1;
         int reps = job.reps > 0 ? job.reps : SeedFinder.CONFIRM_REPS;
         long checked = 0;
-        
+
         long seed = Math.floorMod(job.startSeed, DungeonSeed.TOTAL_SEEDS);
 
+        // 线程版查种：父进程 kill/stop 时 interrupt 本线程，mmap 等中断点上
+        // 会抛 ClosedByInterruptException（而不是等下一轮循环检查），这是停止的正常
+        // 副作用，必须静默退出——否则会被当成 worker 崩溃写 error 文件、触发无谓重启。
+        try {
+            scanLoop(dir, job, finder, state, hitFile, doneFile, stride, reps, checked, seed);
+        } catch (java.nio.channels.ClosedByInterruptException e) {
+            return; // 父进程中断：正常停止
+        } catch (InterruptedException e) {
+            return; // 父进程中断：正常停止
+        }
+    }
+
+    private static void scanLoop(File dir, SeedFinderJob job, SeedFinder finder, SeedFinderState state,
+                                 File hitFile, File doneFile, int stride, int reps,
+                                 long checked, long seed) throws Exception {
         while (job.count <= 0 || checked < job.count) {
             // 线程版查种：被 kill/stop 打断后尽快退出（多进程版由进程销毁承担）
             if (Thread.currentThread().isInterrupted()) return;
