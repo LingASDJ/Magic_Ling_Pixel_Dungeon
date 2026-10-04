@@ -700,7 +700,7 @@ public class SeedFindScene extends PixelScene {
                 public void onClick() {
                     currentFloor = tempFloor;
                     Dungeon.overrideSeed = -1;
-                    Dungeon.init();
+                    //Dungeon.init();
                     mainWindow.refreshPage1Info();
                     hide();
                 }

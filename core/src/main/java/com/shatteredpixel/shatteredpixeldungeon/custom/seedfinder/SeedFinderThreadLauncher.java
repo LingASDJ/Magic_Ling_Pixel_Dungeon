@@ -188,6 +188,11 @@ public class SeedFinderThreadLauncher implements SeedFinderLauncher {
                 Thread.currentThread().interrupt();
                 return;
             }
+            // 等满本轮仍未退出：打印诊断（哪个 index 卡住，方便定位深层循环/单层生成耗时）
+            if (t.isAlive()) {
+                System.out.println("[SeedFinder] worker thread still alive after interrupt: "
+                        + t.getName() + " state=" + t.getState());
+            }
         }
     }
 

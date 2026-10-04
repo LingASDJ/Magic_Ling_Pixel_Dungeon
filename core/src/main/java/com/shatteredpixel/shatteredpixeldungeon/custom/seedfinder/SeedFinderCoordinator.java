@@ -51,6 +51,8 @@ public class SeedFinderCoordinator implements Runnable {
     private volatile boolean stopped;
 
     private File runDir;
+    /** 每个 worker 的种子段大小（用于 job.count，让 worker 扫完本段自然结束，不无限循环） */
+    private long[] segSize;
     private SeedFinderJob template;
     /** 与子进程共享的进度状态（内存映射） */
     private SeedFinderState state;
@@ -163,10 +165,14 @@ public class SeedFinderCoordinator implements Runnable {
         long rem = DungeonSeed.TOTAL_SEEDS % workers;
         long offset = 0;
         long[] segStart = new long[workers];
+        long[] segSize = new long[workers];
         for (int i = 0; i < workers; i++) {
             segStart[i] = (firstSeed + offset) % DungeonSeed.TOTAL_SEEDS;
-            offset += slice + (i < rem ? 1 : 0);
+            long size = slice + (i < rem ? 1 : 0);
+            segSize[i] = size;
+            offset += size;
         }
+        this.segSize = segSize;
         Worker[] ws = new Worker[workers];
         for (int i = 0; i < workers; i++) {
             ws[i] = new Worker(i, segStart[i]);
@@ -290,7 +296,10 @@ public class SeedFinderCoordinator implements Runnable {
     }
 
     private void launchWorker(Worker w) throws IOException {
-        SeedFinderJob job = template.copyForWorker(w.index, w.nextSeed, -1);
+        // count 必须是本 worker 段的真实大小：-1 会让 scanLoop 的 while(job.count<=0) 恒真，
+        // worker 永不自然结束，查种命中/完成后仍会继续扫新种子（logcat 里一直"还在跑"）。
+        long count = segSize != null && w.index >= 0 && w.index < segSize.length ? segSize[w.index] : -1;
+        SeedFinderJob job = template.copyForWorker(w.index, w.nextSeed, count);
         File jobFile = new File(runDir, "worker-" + w.index + ".job");
         job.write(jobFile);
         //清掉上一轮的终态文件与状态格，避免误读

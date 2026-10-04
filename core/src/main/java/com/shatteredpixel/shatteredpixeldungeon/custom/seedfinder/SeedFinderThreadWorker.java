@@ -122,8 +122,13 @@ public final class SeedFinderThreadWorker {
         Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
         try {
             Gregorian.LunarCheckDate();
-        } catch (Throwable ignored) {
-            // 节日初始化失败不阻塞查种（最多节日生成失效，与修复前行为一致）
+            System.out.println("[SeedFinder] holiday applied: holiday=" + RegularLevel.holiday
+                    + " chinaHoliday=" + RegularLevel.chinaHoliday
+                    + " active=" + Gregorian.getActiveHolidayList().size());
+        } catch (Throwable t) {
+            // 不静默吞：打印完整异常，方便定位节日复刻失败的真实原因
+            System.out.println("[SeedFinder] LunarCheckDate FAILED: " + t);
+            t.printStackTrace(System.out);
         }
         logWorkerEnv();
 
@@ -223,7 +228,8 @@ public final class SeedFinderThreadWorker {
     }
 
     /** 环境诊断：打印 worker 的挑战/难度/娱乐模式/节日/关键徽章解锁与 Generator 概率表，
-     *  与主进程查种结果对照，用于定位“同种子生成不一致”。 */
+     *  与主进程查种结果对照，用于定位“同种子生成不一致”。
+     *  注意：worker 无头环境下 Gdx.app.log 可能不可靠，统一走 System.out + [SeedFinder] 前缀。 */
     private static void logWorkerEnv() {
         try {
             int challenges = SPDSettings.challenges();
@@ -233,13 +239,15 @@ public final class SeedFinderThreadWorker {
             boolean riceSword = PaswordBadges.filtered(true).contains(PaswordBadges.Badge.UNLOCK_RICESWORD)
                     || SPDSettings.isItemUnlock("RiceSword");
             float[] t5 = Generator.Category.WEP_T5.probs;
-            com.badlogic.gdx.Gdx.app.log("SeedFinder",
-                    "workerEnv: challenges=" + challenges + " difficulty=" + difficulty + " dlc=" + dlc
-                            + " holiday=" + RegularLevel.holiday + " chinaHoliday=" + RegularLevel.chinaHoliday
-                            + " KILL_MG=" + killMg + " riceSword=" + riceSword
-                            + " WEP_T5=" + java.util.Arrays.toString(t5));
-        } catch (Throwable ignored) {
-            // 诊断失败不阻塞查种
+            System.out.println("[SeedFinder] workerEnv: challenges=" + challenges + " difficulty=" + difficulty
+                    + " dlc=" + dlc + " holiday=" + RegularLevel.holiday
+                    + " chinaHoliday=" + RegularLevel.chinaHoliday
+                    + " activeHolidays=" + Gregorian.getActiveHolidayList().size()
+                    + " KILL_MG=" + killMg + " riceSword=" + riceSword
+                    + " WEP_T5=" + java.util.Arrays.toString(t5));
+        } catch (Throwable t) {
+            // 诊断失败不阻塞查种，但打印异常方便定位
+            System.out.println("[SeedFinder] workerEnv FAILED: " + t);
         }
     }
 

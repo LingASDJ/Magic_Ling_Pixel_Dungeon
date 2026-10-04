@@ -56,8 +56,14 @@ public final class SeedFinderHeadless {
 		Preferences settings = prefs != null ? prefs : stub(Preferences.class);
 		Gdx.app = new StubApplication(settings);
 		GameSettings.set(settings);
-		if (externalPath != null)
-			FileUtils.setDefaultFileProperties(Files.FileType.External, externalPath);
+		if (externalPath != null) {
+			// FileUtils.getFileHandle 内部是 basePath + name 直接拼接，basePath 必须以 / 结尾；
+			// 主进程 defaultPath="" 天然正确，这里传的绝对路径必须补尾斜杠，
+			// 否则 "…/external" + "journal.dat" = "…/externaljournal.dat"，所有全局存档都读不到
+			//（Badges 空存档 → Generator 概率表按无解锁定型、Document 页面恢复失败 → 新存档感）。
+			String base = externalPath.endsWith("/") ? externalPath : externalPath + "/";
+			FileUtils.setDefaultFileProperties(Files.FileType.External, base);
+		}
 		//父进程是在“查种子模式”下做生成的，子进程必须一致
 		SeedFinder.SeedFinding = true;
 
