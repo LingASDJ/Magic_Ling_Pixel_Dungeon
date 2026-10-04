@@ -6,13 +6,20 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SliverLockSword;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.DogDogMusic;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.AncityArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CommRelay;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MagneticCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DragonShiled;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FiveRen;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.JunglePoison;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KingSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
@@ -44,9 +51,14 @@ public class SeedItemFilters {
             LloydsBeacon.class,//时空信标
             CommRelay.class,//通信中继器
             SliverLockSword.class,//锁剑
-            //CloakOfShadows.class,// 隐身披风
-            Pickaxe.class//铁镐
-            
+            CloakOfShadows.class,// 隐身披风
+            Pickaxe.class,//铁镐
+            DragonShiled.class,//龙盾
+            IceFishSword.class,//冰鱼剑
+            BloodthirstyThorn.class,//血渴的orns
+            FireFishSword.class,//火鱼剑
+            AncityArmor.class,//甲鱼甲
+            EndingBlade.class//终焉
             //还有任何不会生成的物品直接加在这里就行
             
         
