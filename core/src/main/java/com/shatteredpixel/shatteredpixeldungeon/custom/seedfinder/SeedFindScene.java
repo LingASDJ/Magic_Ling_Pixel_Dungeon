@@ -334,47 +334,6 @@ public class SeedFindScene extends PixelScene {
             root.add(testBtn);
             testBtn.setRect(2, 110, w, 18);
 
-            // 文本输入查询目标：支持「物品名+等级」与纯等级模糊（如 +4 → 任意 +4 及以上物品）
-            RedButton itemInputBtn = new RedButton(Messages.get(SeedFindScene.class, "btn_input_items"), 8) {
-                @Override
-                protected void onClick() {
-                    ShatteredPixelDungeon.scene().addToFront(
-                            new WndTextInput(
-                                    Messages.get(SeedFindScene.class, "input_items_title"),
-                                    Messages.get(SeedFindScene.class, "input_items_body"),
-                                    "",
-                                    200,
-                                    true,
-                                    Messages.get(SeedFindScene.class, "confirm"),
-                                    Messages.get(SeedFindScene.class, "cancel")
-                            ) {
-                                @Override
-                                public void onSelect(boolean check, String text) {
-                                    if (!check || text == null) return;
-                                    ArrayList<WantedTarget> parsed =
-                                            SeedFinder.parseWanted(text.split("\n"));
-                                    if (parsed.isEmpty()) {
-                                        ShatteredPixelDungeon.scene().addToFront(
-                                                new WndMessage(Messages.get(SeedFindScene.class, "input_items_none")));
-                                        return;
-                                    }
-                                    textTargets = parsed;
-                                    StringBuilder sb = new StringBuilder(
-                                            Messages.get(SeedFindScene.class, "input_items_ok", parsed.size()));
-                                    for (WantedTarget t : parsed)
-                                        sb.append("\n").append(t.cls == null
-                                                ? Messages.get(SeedFindScene.class, "input_items_any") + "+" + t.minLevel
-                                                : t.cls.getSimpleName() + "+" + t.minLevel);
-                                    ShatteredPixelDungeon.scene().addToFront(new WndMessage(sb.toString()));
-                                }
-                            }
-                    );
-                }
-            };
-            itemInputBtn.icon(Icons.get(Icons.MAGNIFY));
-            root.add(itemInputBtn);
-            itemInputBtn.setRect(2, 131, w, 18);
-
             return root;
         }
         private void refreshPage1Info() {
