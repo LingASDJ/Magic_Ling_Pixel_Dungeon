@@ -705,14 +705,14 @@ public class SeedFindScene extends PixelScene {
                     Component content = sp.content();
                     float xPos = (PICKER_W - 5 * BTN_SIZE - GAP * 8) / 2f;
                     float each = GAP * 2 + BTN_SIZE;
-                    for (int i = 0; i < Constants.MAX_DEPTH; ++i) {
+                    for (int i = 0; i < 26; ++i) {
                         StyledButton btn = floorBtn(i);
                         btn.setRect(xPos + (i % 5) * each, (i / 5) * each, BTN_SIZE, BTN_SIZE);
                         PixelScene.align(btn);
                         content.add(btn);
                     }
 
-                    int rows = (Constants.MAX_DEPTH - 1) / 5 + 1;
+                    int rows = (26 - 1) / 5 + 1;
                     float contentHeight = rows * each - GAP * 2;
                     content.setSize(PICKER_W, contentHeight);
                     sp.setRect(0, 0, PICKER_W, contentHeight);
@@ -1017,7 +1017,7 @@ public class SeedFindScene extends PixelScene {
                     ? 2 : 4;
         }
         return (Weapon.class.isAssignableFrom(cls) || Armor.class.isAssignableFrom(cls))
-                ? 3 : 0;
+                ? 4 : 0;
     }
     private static boolean hasQuestLevel(Class<?> type) {
         for (Item item : wantedItems)
