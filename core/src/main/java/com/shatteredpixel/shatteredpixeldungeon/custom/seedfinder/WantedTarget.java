@@ -43,9 +43,9 @@ public class WantedTarget {
         }
     }
 
-    /** 序列化用：目标类名（写入任务文件） */
+    /** 序列化用：目标类名（写入任务文件）；纯等级目标（cls 为 null，如文本输入 "+2"）写空串 */
     public String clsName() {
-        return cls.getName();
+        return cls == null ? "" : cls.getName();
     }
 
     /** 序列化用：附魔/铭文类名，空串表示不限定 */
@@ -54,7 +54,9 @@ public class WantedTarget {
     }
 
     public boolean matches(Item item) {
-        if (item.getClass() != cls) return false;
+        if (item == null) return false;
+        // cls 为 null 表示纯等级目标（"+N"）：任意物品，只看等级
+        if (cls != null && item.getClass() != cls) return false;
         if (item.level() < minLevel) return false;
         if (aug == null) return true;
         if (augIsGlyph) {

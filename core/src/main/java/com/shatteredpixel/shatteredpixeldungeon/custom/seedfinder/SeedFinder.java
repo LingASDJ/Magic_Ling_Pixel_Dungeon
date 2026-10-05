@@ -49,7 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,6 +96,14 @@ public class SeedFinder implements Runnable {
             String name = line.trim();
             // 兼容旧版引号精确匹配语法："名字"（去掉引号后按精确名匹配）
             name = name.replaceAll("\"", "").trim();
+            // 纯等级模糊查询："+N"（如 "+2"）→ 任意物品中等级不低于 N 的目标，可命中板甲+2、断生者+2 等
+            if (name.matches("\\+\\d+")) {
+                try {
+                    out.add(new WantedTarget(null, Integer.parseInt(name.substring(1)), null));
+                } catch (NumberFormatException ignored) {
+                }
+                continue;
+            }
             int level = 0;
             int plus = name.lastIndexOf('+');
             if (plus > 0) {
@@ -179,29 +186,41 @@ public class SeedFinder implements Runnable {
     protected final WantedTarget[] wantedArr;
     // Class → 目标下标数组：tryMatch 先查 map 取候选目标，跳过无关物品
     private final HashMap<Class<? extends Item>, int[]> matchIndex;
+    // 纯等级目标（cls == null，如文本输入 "+2"）的下标：逐物品检查，不按类建索引
+    protected final int[] wildcardIndices;
     // 预筛下标：循环内直接遍历，避免对全量 wantedArr 逐条 isAssignableFrom
     protected final int floor;
     protected final HeroClass heroClass;
     protected SeedFinder(ArrayList<WantedTarget> wanted, int fl, HeroClass cl) {
         wantedArr = wanted.toArray(new WantedTarget[0]);
         matchIndex = buildMatchIndex(wantedArr);
+        ArrayList<Integer> wild = new ArrayList<>();
+        for (int j = 0; j < wantedArr.length; j++)
+            if (wantedArr[j].cls == null) wild.add(j);
+        wildcardIndices = wild.isEmpty() ? null : toIntArray(wild);
         floor = fl;
         heroClass = cl;
         for (WantedTarget w : wanted) {
-            if (Wand.class.isAssignableFrom(w.cls) && w.minLevel >= 3)
+            if (w.cls != null && Wand.class.isAssignableFrom(w.cls) && w.minLevel >= 3)
                 wand = w;
-            else if (Ring.class.isAssignableFrom(w.cls) && w.minLevel >= 3)
+            else if (w.cls != null && Ring.class.isAssignableFrom(w.cls) && w.minLevel >= 3)
                 ring = w;
         }
+    }
+    private static int[] toIntArray(ArrayList<Integer> list) {
+        int[] arr = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) arr[i] = list.get(i);
+        return arr;
     }
     WantedTarget wand;
     WantedTarget ring;
 
-    // 构造时按 cls 分组目标下标，供 tryMatch 做 O(1) 跳查
+    // 构造时按 cls 分组目标下标，供 tryMatch 做 O(1) 跳查；纯等级目标（cls == null）不参与
     private static HashMap<Class<? extends Item>, int[]> buildMatchIndex(WantedTarget[] arr) {
         HashMap<Class<? extends Item>, ArrayList<Integer>> temp = new HashMap<>();
         for (int j = 0; j < arr.length; j++) {
             Class<? extends Item> cls = arr[j].cls;
+            if (cls == null) continue;
             ArrayList<Integer> list = temp.get(cls);
             if (list == null) {
                 list = new ArrayList<>();
@@ -225,58 +244,49 @@ public class SeedFinder implements Runnable {
         SeedFinding = true;
         running = true;
 
-        long seedDigits = DungeonSeed.randomSeed();
-        if (seedDigits > 200000) {
-            seedDigits -= 100000;
-        }
+        // 随机起点 + 环形全量覆盖：从随机起点沿种子环连续推进，越过环尾回绕到 0，
+        // 保证本轮内任何种子都在扫描范围内（旧版行为；重构时误改成不环绕的随机窗口，
+        // 导致起点之前的种子永远扫不到，表现为"有概率出现无结果"）。
+        long startSeed = DungeonSeed.randomSeed();
 
         //【临时·性能测试】
         long startMs = System.currentTimeMillis();
         long scanned = 0;
-        boolean timedOut = false;
 
-        for (int i = Random.Int(99999); (long) i < DungeonSeed.TOTAL_SEEDS
-                && running && SeedFinding; ++i) {
-            long currentSeed = seedDigits + i;
+        for (long i = 0; i < DungeonSeed.TOTAL_SEEDS && running && SeedFinding; i++) {
+            long currentSeed = (startSeed + i) % DungeonSeed.TOTAL_SEEDS;
 
             if (SeedFindScene.INSTANCE != null) {
                 SeedFindScene.INSTANCE.updateCurrentSeed(currentSeed);
                 SeedFindScene.INSTANCE.scannedSeeds = scanned;//【临时·性能测试】
             }
 
-            //【临时·性能测试】满上限仍未命中则中断，如实报告已扫描的种子数
-            if (System.currentTimeMillis() - startMs >= SEARCH_LIMIT_MS) {
-                timedOut = true;
-                break;
-            }
-
-            // 复查：命中目标必须在该种子反复生成下稳定出现
-            boolean confirmed = true;
-            for (int r = 0; r < CONFIRM_REPS; r++) {
-                if (!testSeed(currentSeed)) {
-                    confirmed = false;
+            // 筛选一次 + 命中后再复查：世界生成确定性已验证，非命中种子无需重复测试
+            if (!verifySeed(currentSeed, CONFIRM_REPS)) {
+                scanned++;//【临时·性能测试】
+                if (Thread.currentThread().isInterrupted()) {
+                    running = false;
                     break;
                 }
-            }
-            scanned++;//【临时·性能测试】
-            if (confirmed) {
-                //【临时·性能测试】命中结果附带耗时与已扫描种子数
-                result = logSeedItems(currentSeed) + scanStats(scanned, startMs);
-                break;
+                continue;
             }
 
-            if (Thread.currentThread().isInterrupted()) {
-                running = false;
-                break;
-            }
+            scanned++;//【临时·性能测试】
+            //【临时·性能测试】命中结果附带耗时与已扫描种子数
+            result = logSeedItems(currentSeed) + scanStats(scanned, startMs);
+            break;
         }
         SeedFinding = false;
-        if (timedOut) {//【临时·性能测试】
-            if (SeedFindScene.INSTANCE != null) SeedFindScene.INSTANCE.scannedSeeds = scanned;
-            result = Messages.get(SeedFinder.class, "not_found")
-                    + scanStats(scanned, startMs) + Messages.get(SeedFinder.class, "time_limit");
-        }
         return result;
+    }
+
+    /** 筛选 + 命中复查：先快速测试一次，命中后再补足 reps-1 次确认（确保命中种子反复生成下稳定出现） */
+    public boolean verifySeed(long seed, int reps) {
+        if (!testSeed(seed)) return false;
+        for (int r = 1; r < reps; r++) {
+            if (!testSeed(seed)) return false;
+        }
+        return true;
     }
 
     //【临时·性能测试】统计文案：共扫描 N 个种子、用时 X 秒（后续移除）
@@ -316,15 +326,16 @@ public class SeedFinder implements Runnable {
                         if (tryMatch(item, itemsFound) && ++foundCount == n)
                             return true;
 
-                // 怪物掉落：直接取物，不包装 Heap
+                // 怪物掉落：直接取物，不包装 Heap（与 getMobDrops 一致用 instanceof，
+                // 覆盖 ShopGuard/Guardian 等 Statue 子类携带的武器；tryMatch 已防空）
                 for (Mob m : l.mobs) {
-                    if (m.getClass() == ArmoredStatue.class) {
+                    if (m instanceof ArmoredStatue) {
                         if (tryMatch(((ArmoredStatue) m).armor(), itemsFound) && ++foundCount == n)
                             return true;
                         if (tryMatch(((ArmoredStatue) m).weapon(), itemsFound) && ++foundCount == n)
                             return true;
                     }
-                    else if (m.getClass() == Statue.class) {
+                    else if (m instanceof Statue) {
                         if (tryMatch(((Statue) m).weapon(), itemsFound) && ++foundCount == n)
                             return true;
                     }
@@ -390,6 +401,16 @@ public class SeedFinder implements Runnable {
     }
 
     private boolean tryMatch(Item item, boolean[] itemsFound) {
+        if (item == null) return false;
+        // 纯等级目标（"+N"）：任意物品按等级匹配
+        if (wildcardIndices != null) {
+            for (int idx : wildcardIndices) {
+                if (!itemsFound[idx] && wantedArr[idx].matches(item)) {
+                    itemsFound[idx] = true;
+                    return true;
+                }
+            }
+        }
         int[] candidates = matchIndex.get(item.getClass());
         if (candidates == null) return false;
         for (int idx : candidates) {
@@ -415,11 +436,11 @@ public class SeedFinder implements Runnable {
                 for (Item item : h.items)
                     tryMatch(item, itemsFound);
             for (Mob m : branchLevel.mobs) {
-                if (m.getClass() == ArmoredStatue.class) {
+                if (m instanceof ArmoredStatue) {
                     tryMatch(((ArmoredStatue) m).armor(), itemsFound);
                     tryMatch(((ArmoredStatue) m).weapon(), itemsFound);
                 }
-                else if (m.getClass() == Statue.class) {
+                else if (m instanceof Statue) {
                     tryMatch(((Statue) m).weapon(), itemsFound);
                 }
                 else if (m instanceof Mimic) {
@@ -700,6 +721,16 @@ public class SeedFinder implements Runnable {
         if (fd.wandmakerRewards != null) all.addAll(fd.wandmakerRewards);
         if (fd.impRewards != null) all.addAll(fd.impRewards);
         for (Item item : all) {
+            if (item == null) continue;
+            if (wildcardIndices != null) {
+                for (int idx : wildcardIndices) {
+                    if (!matched[idx] && wantedArr[idx].matches(item)) {
+                        matched[idx] = true;
+                        matchedInfo.add(item.toString() + " - "
+                                + Messages.get(SeedFinder.class, "floor_at", fd.depth));
+                    }
+                }
+            }
             int[] candidates = matchIndex.get(item.getClass());
             if (candidates == null) continue;
             for (int idx : candidates) {

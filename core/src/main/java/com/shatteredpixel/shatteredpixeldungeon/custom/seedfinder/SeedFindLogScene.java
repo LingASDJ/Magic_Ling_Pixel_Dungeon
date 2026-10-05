@@ -261,7 +261,7 @@ public class SeedFindLogScene extends PixelScene {
                                 ShatteredPixelDungeon.scene().addToFront(new WndError(Icons.CATALOG, winTitle, msg.toString()));
                                 SPDSettings.customSeed(finalRes.seedStr);
                                 // 保存记录提示（旧版功能：成功查种后询问是否保存，最多 5 条）
-                                promptSaveRecord(finalRes);
+                                // promptSaveRecord(finalRes);
                             }
                         });
                     });

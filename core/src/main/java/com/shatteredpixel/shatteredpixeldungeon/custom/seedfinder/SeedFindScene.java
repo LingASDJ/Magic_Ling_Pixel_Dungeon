@@ -10,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -288,14 +287,14 @@ public class SeedFindScene extends PixelScene {
                 Component content = sp.content();
                 float xPos = (PICKER_W - 5 * BTN_SIZE - GAP * 8) / 2f;
                 float each = GAP * 2 + BTN_SIZE;
-                for (int i = 0; i < Constants.MAX_DEPTH; ++i) {
+                for (int i = 0; i < 27; ++i) {
                     StyledButton btn = levelBtn(i);
                     btn.setRect(xPos + (i % 5) * each, (i / 5) * each, BTN_SIZE, BTN_SIZE);
                     PixelScene.align(btn);
                     content.add(btn);
                 }
 
-                int rows = (Constants.MAX_DEPTH - 1) / 5 + 1;
+                int rows = (26) / 5 + 1;
                 float contentHeight = rows * each - GAP * 2;
                 content.setSize(PICKER_W, contentHeight);
                 sp.setRect(0, 0, PICKER_W, contentHeight);
@@ -915,17 +914,15 @@ public class SeedFindScene extends PixelScene {
     }
     private static int getMaxLevelForClass(Class<?> cls) {
         if (Wand.class.isAssignableFrom(cls)) {
-            // 已选 +3 任务配件，其余配件最多 +2（一局仅一根任务杖）
             return hasQuestLevel(Wand.class)
                     ? 2 : 3;
         }
         if (Ring.class.isAssignableFrom(cls)) {
-            // 已选 +3（小恶魔任务奖励 +3/+4 的下限）瞄准镜，其余只能 +2
             return hasQuestLevel(Ring.class)
                     ? 2 : 4;
         }
         return (Weapon.class.isAssignableFrom(cls) || Armor.class.isAssignableFrom(cls))
-                ? 3 : 0;
+                ? 4 : 0;
     }
     private static boolean hasQuestLevel(Class<?> type) {
         for (Item item : wantedItems)
@@ -958,11 +955,11 @@ public class SeedFindScene extends PixelScene {
     }
     // 进度文案：计时与已扫描种子数；多进程时逐进程列出各自正在遍历的种子
     private String progressText() {
-        //【临时·性能测试】已用时按壁钟计算，上限文案跟随 SEARCH_LIMIT_MS
+        //【临时·性能测试】已用时按壁钟计算；搜索不再设硬性超时，命中即结束
         long elapsedMs = System.currentTimeMillis() - scanStartMs;
         StringBuilder sb = new StringBuilder(Messages.get(SeedFindScene.class, "searching")).append(" ")
                 .append(Messages.get(SeedFindScene.class, "progress_elapsed",
-                        (elapsedMs / 100) / 10.0, SeedFinder.SEARCH_LIMIT_MS / 1000));
+                        (elapsedMs / 100) / 10.0));
         long[] ws = SeedFinderCoordinator.workerSeeds;
         if (ws != null && ws.length > 1) {
             sb.append("\n").append(Messages.get(SeedFindScene.class, "progress_scanned",
@@ -1055,6 +1052,7 @@ public class SeedFindScene extends PixelScene {
         }
         SeedFinder.SeedFinding = false;
         SeedFinder.running = false;
+
     }
 
     // ======================== CreditsBlock（保留原样） ========================

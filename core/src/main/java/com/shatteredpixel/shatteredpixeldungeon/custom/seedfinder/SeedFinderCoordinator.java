@@ -5,7 +5,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.Game;
 import com.watabou.utils.DeviceCompat;
-import com.watabou.utils.Random;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -223,17 +222,13 @@ public class SeedFinderCoordinator implements Runnable {
 
             activeWorkers = activeCount;
             if (activeCount == 0) {
+                //所有子进程都已结束且未命中（失败或扫完），如实报告
                 if (anyFailed)
                     return Messages.get(SeedFinder.class, "interrupted", failureInfo, runDir);
                 return "NONE" + SeedFinder.scanStats(scanned, benchStartMs);//【临时·性能测试】
             }
-            //【临时·性能测试】满上限仍未命中则中断，如实报告已扫描的种子数
-            if (System.currentTimeMillis() - benchStartMs >= SeedFinder.SEARCH_LIMIT_MS) {
-                killAll();
-                return Messages.get(SeedFinder.class, "not_found")
-                        + SeedFinder.scanStats(scanned, benchStartMs)
-                        + Messages.get(SeedFinder.class, "time_limit_multi", workers);
-            }
+            // 不做硬性超时中止：子进程沿环持续扫描直到命中（用户可随时停止），
+            // 可行目标不再出现"有概率无结果"；本轮已扫描种子数仍实时上报
             if (SeedFindScene.INSTANCE != null && frontier != Long.MAX_VALUE)
                 SeedFindScene.INSTANCE.updateCurrentSeed(frontier);
 
@@ -249,11 +244,9 @@ public class SeedFinderCoordinator implements Runnable {
         return Math.floorMod(seed, DungeonSeed.TOTAL_SEEDS);
     }
 
-    /** 完全镜像 SeedFinder.findSeed() 的起步种子算法 */
+    /** 随机起点（与 findSeed 同源算法）；segStart 分段逻辑保证整个种子环都被覆盖 */
     private static long deriveFirstSeed() {
-        long seedDigits = DungeonSeed.randomSeed();
-        if (seedDigits > 200000) seedDigits -= 100000;
-        return seedDigits + Random.Int(99999);
+        return DungeonSeed.randomSeed();
     }
 
     private void launchWorker(Worker w) throws IOException {

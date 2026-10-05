@@ -157,7 +157,8 @@ public class vm0_9_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_AIKELAIER), ("查种器-V4.3"),
                 ("1.新版查种器上线，特别感谢少前制作组的帮忙\n" +
-                        "2.并发查种线程，进一步优化查种效率")));
+                        "2.并发查种线程，进一步优化查种效率\n" +
+                        "3.更加智能的查种，对+1仪式短剑不再只查+1，而是保底+1")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FORESTCROSSBOW), ("新传说武器：森林弓"),
                 ("修复了一些Bug，正式上线，欢迎使用！")));
