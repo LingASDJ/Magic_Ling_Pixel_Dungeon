@@ -11,7 +11,7 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Callback;
 
-public class KusumiMagicGirlSprites extends CharSprite {
+public class KusumiMagicGirlSprites extends MobSprite {
 
     private Emitter teleParticles;
     private static final float FADE_TIME = 3f;
