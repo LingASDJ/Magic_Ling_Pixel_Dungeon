@@ -1214,7 +1214,9 @@ public class Hero extends Char {
 			((HeroSprite)sprite).sprint( momentum.freerunning() ? 1.5f : 1f );
 			speed *= momentum.speedMultiplier();
 		} else {
-			((HeroSprite)sprite).sprint( 1f );
+			if(sprite != null){
+				((HeroSprite)sprite).sprint( 1f );
+			}
 		}
 
 		NaturesPower.naturesPowerTracker natStrength = buff(NaturesPower.naturesPowerTracker.class);
