@@ -143,7 +143,7 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new Image(Icons.get(Icons.NEWS)), "后续开发预告",
                 "失落古墓外传正在稳步推进开发，更多场景、怪物、专属武器与剧情内容将陆续放出，敬请期待后续版本情报！"));
 
-        changes = new ChangeInfo("v0.9.6.1-4", true, "");
+        changes = new ChangeInfo("v0.9.6.1-5", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
