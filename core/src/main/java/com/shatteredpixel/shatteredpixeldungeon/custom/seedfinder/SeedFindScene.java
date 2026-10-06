@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndJournal;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
@@ -59,7 +60,6 @@ public class SeedFindScene extends PixelScene {
     /** 文本输入解析出的查询目标（含纯等级通配，如 "+4"），启动查种时并入 targets */
     private static ArrayList<WantedTarget> textTargets = null;
     // 查种不需要选角色：角色不影响地形与奖励生成，固定用战士（与旧版一致）
-    public final HeroClass currentHero = HeroClass.WARRIOR;
     public static int currentFloor = Constants.MAX_DEPTH;
     public void create() {
         super.create();
@@ -96,6 +96,8 @@ public class SeedFindScene extends PixelScene {
     private Component resultContent;
     private boolean searchViewVisible = false;
     private float seedDisplayCooldown = 0f;
+    /** 本轮查找是否命中（找到种子/文本清单）。由 SeedFinder/SeedFinderCoordinator 在命中时置 true */
+    public volatile boolean searchHit = false;
 
     private void buildSearchView() {
         currentSeedText = PixelScene.renderTextBlock("", 6);
@@ -149,6 +151,13 @@ public class SeedFindScene extends PixelScene {
 
         btnCopy.enable(true);
         btnCopy.visible = true;
+
+        // 命中（找到种子/文本清单）时弹窗提醒，正文为完整结果（旧查种器风格，可滚动查看）
+        if (searchHit) {
+            searchHit = false;
+            ShatteredPixelDungeon.scene().addToFront(new WndError(Icons.CATALOG,
+                    Messages.get(SeedFindLogScene.class, "window_title"), body));
+        }
 
         resultContent.clear();
         CreditsBlock txt = new CreditsBlock(true, Window.TITLE_COLOR, body);
@@ -219,14 +228,12 @@ public class SeedFindScene extends PixelScene {
 
     private static final int BTN_H = 16;
 
-    // ======================== 新窗口（五个页签：设置/装备/消耗品/清单/开始） ========================
+    // ======================== 新窗口（四个页签：装备/消耗品/清单/开始） ========================
     private final class WndFinder extends WndTabbed {
         private final int winW;
         private final int winH;
-        private final Component[] pages = new Component[5];
-        private final Tab[] tabs = new Tab[5];
-        private RedButton testBtn;
-        private RenderedTextBlock page1Info;
+        private final Component[] pages = new Component[4];
+        private final Tab[] tabs = new Tab[4];
 
         WndFinder() {
             super();
@@ -237,12 +244,11 @@ public class SeedFindScene extends PixelScene {
             // 含 ScrollPane 的窗口必须最先 resize
             resize(winW, winH);
 
-            // ---- 五个页签，initPage 内部同时添加页和 Tab ----
-            initPage(0, settingPage(),       Icons.get(Icons.PREFS));
-            initPage(1, equipmentPane(),     new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER));
-            initPage(2, stackablePage(),     new ItemSprite(ItemSpriteSheet.POTION_HOLDER));
-            initPage(3, listPage(),          Icons.get(Icons.BACKPACK));
-            initPage(4, startFindingPane(),  Icons.get(Icons.TARGET));
+            // ---- 四个页签，initPage 内部同时添加页和 Tab ----
+            initPage(0, equipmentPane(),     new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER));
+            initPage(1, stackablePage(),     new ItemSprite(ItemSpriteSheet.POTION_HOLDER));
+            initPage(2, listPage(),          Icons.get(Icons.BACKPACK));
+            initPage(3, startFindingPane(),  Icons.get(Icons.TARGET));
 
             layoutTabs();
             // 初始只显示第一页（select(0) 仅对 tab[0] 调 select(true)，其余需手动隐藏）
@@ -265,85 +271,68 @@ public class SeedFindScene extends PixelScene {
             tabs[index] = tab;
             add(tab);
         }
-        @Override
-        public void update() {
-            super.update();
-            boolean hasItems = !wantedItems.isEmpty();
-            tabs[1].active = true;
-            tabs[2].active = true;
-            tabs[3].active = true;
-            tabs[4].active = hasItems;
-            if (testBtn != null) testBtn.enable(true);
-        }
 
-        //第一页设置
-        private Component settingPage() {
-            Component root = new Component();
-            float w = winW - 4;
+        // ======================== 楼层选择 ========================
+        private final class WndSelectLevel extends Window {
+            private static final int PICKER_W = 120;
+            private static final int GAP = 2;
+            private static final int BTN_SIZE = 16;
+            private static final int PANE_MAX_HEIGHT = 96;
 
-            RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(SeedFindScene.class, "current_settings"), 9);
-            title.hardlight(TITLE_COLOR);
-            root.add(title);
-            title.setPos(2, 1);
+            private int selectedFloor = currentFloor;
 
-            page1Info = PixelScene.renderTextBlock("", 6);
-            root.add(page1Info);
-            page1Info.setRect(2, 13, w, 40);
-            refreshPage1Info();
+            private RedButton confirm;
 
-            RenderedTextBlock hint = PixelScene.renderTextBlock(
-                    Messages.get(SeedFindScene.class, "settings_hint"), 6);
-            root.add(hint);
-            hint.setRect(2, 55, w, 32);
+            WndSelectLevel() {
+                super();
+                ScrollPane sp = new ScrollPane(new Component());
+                add(sp);
 
-            RedButton settingsBtn = new RedButton(Messages.get(SeedFindScene.class, "btn_settings"), 8) {
-                @Override
-                protected void onClick() {
-                    ShatteredPixelDungeon.scene().addToFront(new WndFinderSettings());
+                confirm = new RedButton(Messages.get(SeedFindScene.class, "confirm_floor", selectedFloor)) {
+                    @Override
+                    protected void onClick() {
+                        currentFloor = selectedFloor;
+                        // 摘要页 update() 轮询 currentFloor，会自动重建显示
+                        hide();
+                    }
+                };
+                add(confirm);
+
+                Component content = sp.content();
+                float xPos = (PICKER_W - 5 * BTN_SIZE - GAP * 8) / 2f;
+                float each = GAP * 2 + BTN_SIZE;
+                for (int i = 0; i < 26; ++i) {
+                    StyledButton btn = floorBtn(i);
+                    btn.setRect(xPos + (i % 5) * each, (i / 5) * each, BTN_SIZE, BTN_SIZE);
+                    PixelScene.align(btn);
+                    content.add(btn);
                 }
-            };
-            settingsBtn.icon(Icons.get(Icons.PREFS));
-            root.add(settingsBtn);
-            settingsBtn.setRect(2, 89, w, 18);
 
-            testBtn = new RedButton(Messages.get(SeedFindScene.class, "btn_test"), 8) {
-                @Override
-                protected void onClick() {
-                    ShatteredPixelDungeon.scene().addToFront(
-                            new WndTextInput(
-                                    Messages.get(SeedFindScene.class, "input_title"),
-                                    Messages.get(SeedFindScene.class, "input_body"),
-                                    SeedFindScene.seedCode,
-                                    20,
-                                    false,
-                                    Messages.get(SeedFindScene.class, "confirm"),
-                                    Messages.get(SeedFindScene.class, "cancel")
-                            ) {
-                                @Override
-                                public void onSelect(boolean check, String text) {
-                                    if(check) {
-                                        seedCode = DungeonSeed.formatText(text);
-                                        startSearch();
-                                    }
-                                }
-                            }
-                    );
-                }
-            };
-            testBtn.icon(new ItemSprite(ItemSpriteSheet.SEED_SUNGRASS));
-            root.add(testBtn);
-            testBtn.setRect(2, 110, w, 18);
+                int rows = (26 - 1) / 5 + 1;
+                float contentHeight = rows * each - GAP * 2;
+                content.setSize(PICKER_W, contentHeight);
+                sp.setRect(0, 0, PICKER_W, contentHeight);
+                confirm.setRect(0, PANE_MAX_HEIGHT + GAP * 2, PICKER_W, BTN_SIZE);
+                resize(PICKER_W, (int) confirm.bottom());
+                sp.setRect(0, 0, PICKER_W, PANE_MAX_HEIGHT);
+                sp.scrollTo(0, 0);
+            }
 
-            return root;
+            private StyledButton floorBtn(int i) {
+                final int j = i + 1;
+                return new StyledButton(Chrome.Type.GEM, String.valueOf(j), 8) {
+                    {
+                        hotArea.blockLevel = PointerArea.NEVER_BLOCK;
+                    }
+                    @Override
+                    protected void onClick() {
+                        selectedFloor = j;
+                        confirm.text(Messages.get(SeedFindScene.class, "confirm_floor", selectedFloor));
+                    }
+                };
+            }
         }
-        private void refreshPage1Info() {
-            if (page1Info == null) return;
-            page1Info.text(
-                    Messages.get(SeedFindScene.class, "hero_fixed") + "\n"
-                            + Messages.get(SeedFindScene.class, "deep_floor", currentFloor) + "\n"
-                            + Messages.get(SeedFindScene.class, "challenges_info", challengeText()), winW);
-        }
-        //第二页装备
+        //第一页装备
         @SuppressWarnings("unchecked")
         private Component equipmentPane() {
             ArrayList<ItemGroup> groups = new ArrayList<>();
@@ -405,7 +394,7 @@ public class SeedFindScene extends PixelScene {
             grid.scrollTo(0, 0);
             return grid;
         }
-        //第三页消耗品
+        //第二页消耗品
         @SuppressWarnings("unchecked")
         private Component stackablePage() {
             ArrayList<ItemGroup> groups = new ArrayList<>();
@@ -449,7 +438,7 @@ public class SeedFindScene extends PixelScene {
             grid.scrollTo(0, 0);
             return grid;
         }
-        //第四页物品清单
+        //第三页物品清单
         private Component listPage() {
             return new listPageWrapper();
         }
@@ -535,12 +524,14 @@ public class SeedFindScene extends PixelScene {
                 content.setSize(width, pos - 1);
             }
         }
-        //第五页文字清单+开始查询
+        //第四页文字清单+开始查询（楼层/挑战/测试种子按钮也在本页）
         private Component startFindingPane() {
             return new summaryPane();
         }
         private class summaryPane extends ScrollPane {
             int lastCount = -1;
+            int lastFloor = -1;
+            int lastChallenges = -1;
             RedButton startBtn;
             RenderedTextBlock summaryText;
             public summaryPane() {
@@ -549,10 +540,14 @@ public class SeedFindScene extends PixelScene {
             @Override
             public void update() {
                 super.update();
+                // 物品数量、楼层、挑战任一变化都要重建（楼层/挑战按钮状态随之刷新）
                 int count = wantedItems.size();
-                if (count != lastCount) {
+                if (count != lastCount || currentFloor != lastFloor
+                        || SPDSettings.challenges() != lastChallenges) {
                     resetButton();
                     lastCount = count;
+                    lastFloor = currentFloor;
+                    lastChallenges = SPDSettings.challenges();
                 }
             }
             //摘要文案：角色（固定战士）/挑战/楼层/物品需求 + 当前并行进程数
@@ -586,18 +581,75 @@ public class SeedFindScene extends PixelScene {
                 content.add(summaryText);
                 summaryText.setRect(1, 1, w - 2, 0);
 
-                float nextY = summaryText.bottom() + 4;
+                // 楼层 + 挑战 同一行（原设置页控件搬入）
+                float rowY = summaryText.bottom() + 4;
+                StyledButton floorBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR,
+                        Messages.get(SeedFindScene.class, "floor_info", currentFloor), 8) {
+                    @Override
+                    protected void onClick() {
+                        ShatteredPixelDungeon.scene().addToFront(new WndSelectLevel());
+                    }
+                };
+                content.add(floorBtn);
+                floorBtn.setRect(1, rowY, w / 2f - 3, 16);
+
+                IconButton challengeBtn = new IconButton(
+                        Icons.get(SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF)) {
+                    @Override
+                    protected void onClick() {
+                        // 必须 editable=true：否则挑战勾选框 active=false，完全无法勾选。
+                        // 关闭后由本页 update() 轮询 challenges 自动重建（图标随之刷新）。
+                        ShatteredPixelDungeon.scene().addToFront(
+                                new WndChallenges(SPDSettings.challenges(), true, null));
+                    }
+                };
+                content.add(challengeBtn);
+                challengeBtn.setRect(w / 2f + 1, rowY, 16, 16);
+
+                // 测试种子按钮（原设置页搬入）
+                RedButton testBtn = new RedButton(Messages.get(SeedFindScene.class, "btn_test"), 8) {
+                    @Override
+                    protected void onClick() {
+                        ShatteredPixelDungeon.scene().addToFront(
+                                new WndTextInput(
+                                        Messages.get(SeedFindScene.class, "input_title"),
+                                        Messages.get(SeedFindScene.class, "input_body"),
+                                        SeedFindScene.seedCode,
+                                        20,
+                                        false,
+                                        Messages.get(SeedFindScene.class, "confirm"),
+                                        Messages.get(SeedFindScene.class, "cancel")
+                                ) {
+                                    @Override
+                                    public void onSelect(boolean check, String text) {
+                                        if(check) {
+                                            seedCode = DungeonSeed.formatText(text);
+                                            startSearch();
+                                        }
+                                    }
+                                }
+                        );
+                    }
+                };
+                content.add(testBtn);
+                testBtn.setRect(1, rowY + 20, w - 2, 16);
 
                 startBtn = new RedButton(wantedItems.isEmpty()
                         ? Messages.get(SeedFindScene.class, "start_empty")
                         : Messages.get(SeedFindScene.class, "start")) {
                     @Override
                     protected void onClick() {
+                        // 未选择物品时不再静默锁定，弹窗提示
+                        if (wantedItems.isEmpty()) {
+                            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                                    Messages.get(SeedFindScene.class, "no_items")));
+                            return;
+                        }
                         startSearch();
                     }
                 };
                 content.add(startBtn);
-                startBtn.setRect(1, nextY, w - 2, 18);
+                startBtn.setRect(1, testBtn.bottom() + 4, w - 2, 18);
 
                 content.setSize(w, startBtn.bottom() + 2);
             }
@@ -605,137 +657,6 @@ public class SeedFindScene extends PixelScene {
         @Override
         public void onBackPressed() {
 
-        }
-    }
-    // ======================== 查种设置窗口（楼层/挑战，自建 Window 版；查种不需要选角色，固定战士） ========================
-    public static class WndFinderSettings extends Window {
-        private static final int WIN_W = 120;
-
-        private int tempFloor = currentFloor;
-
-        public WndFinderSettings() {
-            super();
-
-            RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(SeedFindScene.class, "settings_title"), 9);
-            title.hardlight(Window.TITLE_COLOR);
-            title.setPos((WIN_W - title.width()) / 2f, 3);
-            add(title);
-
-            // ---- 挑战 + 楼层按钮行 ----
-            float rowY = title.bottom() + 8;
-
-            IconButton challengeBtn = new IconButton(
-                    Icons.get(SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF)) {
-                @Override
-                protected void onClick() {
-                    // 必须 editable=true：否则挑战勾选框 active=false，完全无法勾选
-                    ShatteredPixelDungeon.scene().addToFront(
-                            new WndChallenges(SPDSettings.challenges(), true, null) {
-                                public void onBackPressed() {
-                                    super.onBackPressed();
-                                    if (parent != null) {
-                                        icon(Icons.get(SPDSettings.challenges() > 0 ?
-                                                Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF));
-                                    }
-                                }
-                            });
-                }
-                @Override
-                public void update() {
-                    icon(Icons.get(SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF));
-                    super.update();
-                }
-            };
-            challengeBtn.setRect(0, rowY, 20, 20);
-            add(challengeBtn);
-
-            StyledButton floorBtn = new FloorButton();
-            floorBtn.setRect(WIN_W - 40, rowY, 40, 20);
-            add(floorBtn);
-
-            // ---- 确认按钮 ----
-            RedButton confirmBtn = new RedButton(Messages.get(SeedFindScene.class, "confirm")) {
-                @Override
-                public void onClick() {
-                    currentFloor = tempFloor;
-                    Dungeon.overrideSeed = -1;
-                    //Dungeon.init();
-                    mainWindow.refreshPage1Info();
-                    hide();
-                }
-            };
-            confirmBtn.setRect(0, rowY + 24, WIN_W, 20);
-            add(confirmBtn);
-
-            resize(WIN_W, (int) confirmBtn.bottom() + 2);
-        }
-
-        public final class FloorButton extends StyledButton {
-            public FloorButton() {
-                super(Chrome.Type.GEM, String.valueOf(tempFloor), 8);
-            }
-            @Override
-            protected void onClick() {
-                ShatteredPixelDungeon.scene().addToFront(new WndSelectLevel());
-            }
-            public final class WndSelectLevel extends Window {
-                private static final int PICKER_W = 120;
-                private static final int GAP = 2;
-                private static final int BTN_SIZE = 16;
-                private static final int PANE_MAX_HEIGHT = 96;
-
-                private int selectedFloor = tempFloor;
-                final public RedButton confirm;
-
-                WndSelectLevel() {
-                    super();
-                    ScrollPane sp = new ScrollPane(new Component());
-                    add(sp);
-
-                    confirm = new RedButton(Messages.get(SeedFindScene.class, "confirm_floor", selectedFloor)) {
-                        @Override
-                        protected void onClick() {
-                            tempFloor = selectedFloor;
-                            FloorButton.this.text(String.valueOf(selectedFloor));
-                            hide();
-                        }
-                    };
-                    add(confirm);
-
-                    Component content = sp.content();
-                    float xPos = (PICKER_W - 5 * BTN_SIZE - GAP * 8) / 2f;
-                    float each = GAP * 2 + BTN_SIZE;
-                    for (int i = 0; i < 26; ++i) {
-                        StyledButton btn = floorBtn(i);
-                        btn.setRect(xPos + (i % 5) * each, (i / 5) * each, BTN_SIZE, BTN_SIZE);
-                        PixelScene.align(btn);
-                        content.add(btn);
-                    }
-
-                    int rows = (26 - 1) / 5 + 1;
-                    float contentHeight = rows * each - GAP * 2;
-                    content.setSize(PICKER_W, contentHeight);
-                    sp.setRect(0, 0, PICKER_W, contentHeight);
-                    confirm.setRect(0, PANE_MAX_HEIGHT + GAP * 2, PICKER_W, BTN_SIZE);
-                    resize(PICKER_W, (int) confirm.bottom());
-                    sp.setRect(0, 0, PICKER_W, PANE_MAX_HEIGHT);
-                    sp.scrollTo(0, 0);
-                }
-
-                private StyledButton floorBtn(int i) {
-                    final int j = i + 1;
-                    return new StyledButton(Chrome.Type.GEM, String.valueOf(j), 8) {
-                        {
-                            hotArea.blockLevel = PointerArea.NEVER_BLOCK;
-                        }
-                        @Override
-                        protected void onClick() {
-                            selectedFloor = j;
-                            confirm.text(Messages.get(SeedFindScene.class, "confirm_floor", selectedFloor));
-                        }
-                    };
-                }
-            }
         }
     }
 
@@ -1097,6 +1018,7 @@ public class SeedFindScene extends PixelScene {
         stopThread = false;
         currentSeedValue = -1;
         lastShownStatus = null;
+        searchHit = false;
         scanStartMs = System.currentTimeMillis();//【临时·性能测试】
         scannedSeeds = 0;//【临时·性能测试】
         searchRunning = true;//【临时·性能测试】
@@ -1115,11 +1037,11 @@ public class SeedFindScene extends PixelScene {
                 SPDSettings.PlusSearch() ? SPDSettings.PlusThread() : 1);
         if (SeedFinderCoordinator.launcher != null && !targets.isEmpty() && workers >= 2) {
             // 多进程：每个子进程独立 JVM，物品生成依赖的静态状态互不干扰
-            coordinator = new SeedFinderCoordinator(targets, currentFloor, currentHero, workers);
+            coordinator = new SeedFinderCoordinator(targets, currentFloor, HeroClass.WARRIOR, workers);
             findSeedThread = new Thread(coordinator, "seed-finder-coordinator");
         } else {
             coordinator = null;
-            final SeedFinder finder = new SeedFinder(targets, currentFloor, currentHero);
+            final SeedFinder finder = new SeedFinder(targets, currentFloor, HeroClass.WARRIOR);
             findSeedThread = new Thread(new Runnable() {
                 @Override
                 public void run() {

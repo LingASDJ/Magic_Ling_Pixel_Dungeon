@@ -241,6 +241,7 @@ public class SeedFinderCoordinator implements Runnable {
             if (stopped) break;
             if (hitSeed >= 0) {
                 killAll();
+                if (SeedFindScene.INSTANCE != null) SeedFindScene.INSTANCE.searchHit = true;
                 // 优先使用 worker 自生成的完整日志（含“匹配物品层数”区块）：
                 // 安卓主进程的全局 RNG 被渲染线程消耗，reportHit 重新生成会与 worker 不一致，
                 // 只有 worker（与 testSeed 同一环境）生成的命中日志才可靠。

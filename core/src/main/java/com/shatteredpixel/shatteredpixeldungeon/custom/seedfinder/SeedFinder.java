@@ -67,8 +67,11 @@ public class SeedFinder implements Runnable {
     public void run() {
         resetTest();
         String str;
-        if (wantedArr.length == 0)
+        if (wantedArr.length == 0) {
+            // 文本清单模式（无查找目标）：直接展示指定种子的物品清单，视为成功
+            if (SeedFindScene.INSTANCE != null) SeedFindScene.INSTANCE.searchHit = true;
             str = logSeedItems(DungeonSeed.convertFromText(SeedFindScene.seedCode));
+        }
         else
             str = findSeed();
         SeedFindScene.INSTANCE.text = str;
@@ -279,6 +282,7 @@ public class SeedFinder implements Runnable {
             scanned++;//【临时·性能测试】
             if (confirmed) {
                 //【临时·性能测试】命中结果附带耗时与已扫描种子数
+                if (SeedFindScene.INSTANCE != null) SeedFindScene.INSTANCE.searchHit = true;
                 result = logSeedItems(currentSeed) + scanStats(scanned, startMs);
                 break;
             }
