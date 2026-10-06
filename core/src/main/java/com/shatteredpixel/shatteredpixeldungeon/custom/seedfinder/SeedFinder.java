@@ -138,15 +138,15 @@ public class SeedFinder implements Runnable {
             if (matches(ic, clean))
                 return ic;
         if (RedDragon.Quest.weapon != null && matches(RedDragon.Quest.weapon.getClass(), clean))
-            return (Class<? extends Item>) RedDragon.Quest.weapon.getClass();
+            return RedDragon.Quest.weapon.getClass();
         if (RedDragon.Quest.armor != null && matches(RedDragon.Quest.armor.getClass(), clean))
-            return (Class<? extends Item>) RedDragon.Quest.armor.getClass();
+            return RedDragon.Quest.armor.getClass();
         if (RedDragon.Quest.RingT != null && matches(RedDragon.Quest.RingT.getClass(), clean))
-            return (Class<? extends Item>) RedDragon.Quest.RingT.getClass();
+            return RedDragon.Quest.RingT.getClass();
         if (RedDragon.Quest.food != null && matches(RedDragon.Quest.food.getClass(), clean))
-            return (Class<? extends Item>) RedDragon.Quest.food.getClass();
+            return RedDragon.Quest.food.getClass();
         if (RedDragon.Quest.scrolls != null && matches(RedDragon.Quest.scrolls.getClass(), clean))
-            return (Class<? extends Item>) RedDragon.Quest.scrolls.getClass();
+            return RedDragon.Quest.scrolls.getClass();
         return null;
     }
 
@@ -357,7 +357,7 @@ public class SeedFinder implements Runnable {
                     Item[] redDragonRewards = {RedDragon.Quest.weapon, RedDragon.Quest.armor,
                             RedDragon.Quest.RingT, RedDragon.Quest.food, RedDragon.Quest.scrolls};
                     for (Item rr : redDragonRewards) {
-                        if (rr != null && tryMatch(rr, itemsFound) && ++foundCount == n)
+                        if (tryMatch(rr, itemsFound) && ++foundCount == n)
                             return true;
                     }
                 }
@@ -726,7 +726,7 @@ public class SeedFinder implements Runnable {
                 for (int idx : wildcardIndices) {
                     if (!matched[idx] && wantedArr[idx].matches(item)) {
                         matched[idx] = true;
-                        matchedInfo.add(item.toString() + " - "
+                        matchedInfo.add(item + " - "
                                 + Messages.get(SeedFinder.class, "floor_at", fd.depth));
                     }
                 }
@@ -736,7 +736,7 @@ public class SeedFinder implements Runnable {
             for (int idx : candidates) {
                 if (!matched[idx] && wantedArr[idx].matches(item)) {
                     matched[idx] = true;
-                    matchedInfo.add(item.toString() + " - "
+                    matchedInfo.add(item + " - "
                             + Messages.get(SeedFinder.class, "floor_at", fd.depth));
                 }
             }
