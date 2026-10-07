@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -209,6 +210,19 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 			hero.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10 );
 			hero.updateHT( false ); //for ring of might
 			updateQuickslot();
+
+			//投掷武器解除诅咒后可能与背包中另一组状态完全相同，
+			//此时应合并为一组，避免同类投掷物分别占格
+			for (Item item : items) {
+				if (item instanceof MissileWeapon && hero.belongings.backpack.contains(item)) {
+					Item similar = hero.belongings.getSimilar(item);
+					if (similar != null) {
+						item.detachAll(hero.belongings.backpack);
+						similar.merge(item);
+						updateQuickslot();
+					}
+				}
+			}
 		}
 		
 		return procced;

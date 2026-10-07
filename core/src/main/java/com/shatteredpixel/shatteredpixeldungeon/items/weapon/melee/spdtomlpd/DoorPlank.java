@@ -145,7 +145,7 @@ public class DoorPlank extends MeleeWeapon {
                         DeathMark.processFearTheReaper(enemy);
                     }
                     if (enemy.sprite != null) {
-                        enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "executed"));
+                        enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(DoorPlank.class, "executed"));
                     }
                     if (!enemy.isAlive()) onAbilityKill(hero, enemy);
                 }

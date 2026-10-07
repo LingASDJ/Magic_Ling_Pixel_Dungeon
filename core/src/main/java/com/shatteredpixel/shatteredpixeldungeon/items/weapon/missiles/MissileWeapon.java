@@ -83,12 +83,13 @@ abstract public class MissileWeapon extends Weapon {
 		if (item instanceof MissileWeapon && item.getClass() == getClass()) {
 			MissileWeapon mitem = (MissileWeapon) item;
 			Enchantment en = mitem.getEnchantment();
+			//诅咒状态不同不能视为同组，避免拾取时把诅咒/非诅咒投掷物静默合并
 			if (en != null && enchantment != null) {
-				return level == item.level() && enchantment.getClass() == en.getClass();
+				return level == item.level() && cursed == item.cursed && enchantment.getClass() == en.getClass();
 			} else if (en != null || enchantment != null) {
 				return false;
 			} else {
-				return level() == item.level();
+				return level() == item.level() && cursed == item.cursed;
 			}
 		}
 		return super.isSimilar(item);
@@ -338,6 +339,9 @@ abstract public class MissileWeapon extends Weapon {
 
 	@Override
 	protected void rollLevelAndEffects(){
+		//飞镖等不可升级的投掷武器保持白板：不参与等级/诅咒/附魔随机
+		if (!isUpgradable()) return;
+
 		// n取值：0/1/2/3
 		// Random.Int(k) 返回 [0,k-1]整数，等于0为roll成功
 		// 20%概率进入分支，进入后依次独立roll两次，每成功一次n+1
@@ -368,6 +372,9 @@ abstract public class MissileWeapon extends Weapon {
 		if (effectRoll < 0.15f * ParchmentScrap.curseChanceMultiplier()) {
 			enchant(Enchantment.randomCurse());
 			cursed = true;
+			//投掷武器视为已鉴定（isIdentified恒为true），被诅咒应立即显示，
+			//避免“无诅咒显示但伤害/命中异常”的隐蔽诅咒问题
+			cursedKnown = true;
 		} else if (effectRoll >= 1f - (0.07f * ParchmentScrap.enchantChanceMultiplier())){
 			enchant();
 		}

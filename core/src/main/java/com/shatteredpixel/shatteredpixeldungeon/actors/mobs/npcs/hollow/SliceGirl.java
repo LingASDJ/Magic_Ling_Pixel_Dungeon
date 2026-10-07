@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.SliceDogPlot;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.hollow.SlicePlot;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -65,8 +66,12 @@ public class SliceGirl extends NTNPC {
         sprite.turnTo(pos, Dungeon.hero.pos);
         SlicePlot plot = new SlicePlot();
 
+        SliceDogPlot plot2 = new SliceDogPlot();
+
         if(first && Dungeon.depth == 27 && Statistics.Hollow_Holiday){
             Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot,false)));
+        } else if(Dungeon.depth == 29) {
+            Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot2,false)));
         }
         Bestiary.setSeen(getClass());
 

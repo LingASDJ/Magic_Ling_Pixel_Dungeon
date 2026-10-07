@@ -143,7 +143,7 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new Image(Icons.get(Icons.NEWS)), "后续开发预告",
                 "失落古墓外传正在稳步推进开发，更多场景、怪物、专属武器与剧情内容将陆续放出，敬请期待后续版本情报！"));
 
-        changes = new ChangeInfo("v0.9.6.1-2", true, "");
+        changes = new ChangeInfo("v0.9.6.1-5", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -151,9 +151,14 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_AIKELAIER), ("查种器-V4.1"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BLESS_SCROLL), ("开发者模式v0.9"),
+                ("1、投掷武器现在可以调用附魔/诅咒接口\n" +
+                        "2、状态效应器正式上线")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_AIKELAIER), ("查种器-V4.3"),
                 ("1.新版查种器上线，特别感谢少前制作组的帮忙\n" +
-                        "2.优化查种线程，进一步优化查种效率")));
+                        "2.并发查种线程，进一步优化查种效率\n" +
+                        "3.更加智能的查种，对+1仪式短剑不再只查+1，而是保底+1")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FORESTCROSSBOW), ("新传说武器：森林弓"),
                 ("修复了一些Bug，正式上线，欢迎使用！")));
@@ -245,7 +250,21 @@ public class vm0_9_X_Changes {
                         "其他加成：\n" +
                         "_—_ 诅咒：15%，正向附魔：7%，白板：78%")));
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项优化"),
+                ("_-_ 消息折叠功能进一步优化\n" +
+                        "_-_ 部分UI迭代优化，部分素材迭代更新")));
+
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                ("V0.9.6.3：\n\n" +
+                        "_-_ 修复森林弩与神射伤害不叠加\n" +
+                        "_-_ 修复暴怒火魔女抢劫优先级问题\n" +
+                        "_-_ 修复投掷武器相同属性可能无法成组\n" +
+                        "_-_ 修复澪导致的种子异常\n" +
+                        "_-_ 修复飞镖自带附魔或存在等级\n" +
+                        "_-_ 修复宇宙之心可能出现负数的异常\n" +
+                        "_-_ 修复动态物品贴图异常\n" +
+                        "_-_ 未署名的邀请函现在不能丢弃\n" +
+                        "_-_ 修复极端情况下萨卡班甲鱼楼层死锁"),
                 ("V0.9.6.2：\n\n" +
                         "_-_ 修复一种载体的回合异常问题\n" +
                         "_-_ 修复全尺寸UI无响应问题\n" +

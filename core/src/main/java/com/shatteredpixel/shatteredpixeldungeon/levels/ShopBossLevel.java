@@ -71,12 +71,7 @@ public class ShopBossLevel extends Level {
 
     @Override
     public void playBossMusic(){
-        if(Statistics.attackIFGirl){
-            Music.playModeBGM(Assets.Music.IFWAR,true);
-        } else {
-            Music.playModeBGM(Assets.Music.SHOP,true);
-        }
-
+        Music.playModeBGM(Assets.Music.IFWAR,true);
     }
 
     @Override

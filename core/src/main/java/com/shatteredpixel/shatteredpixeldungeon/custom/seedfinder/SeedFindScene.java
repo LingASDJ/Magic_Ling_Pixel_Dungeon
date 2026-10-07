@@ -1,13 +1,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder;
 
-import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -36,7 +38,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndJournal;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
@@ -67,15 +68,14 @@ public class SeedFindScene extends PixelScene {
 
         INSTANCE = this;
 
-        // 预热：必须无条件初始化一次。Scroll/Potion/Ring 的 ItemStatusHandler
-        // 都在 Dungeon.init() 内创建，否则网格里 identify() 未鉴定物品会 NPE。
-        // 角色不影响地形与奖励生成，固定用战士初始化。
+        // 预热：以战士初始化一次地牢（含 ItemStatusHandler 等静态状态）
         GamesInProgress.selectedClass = HeroClass.WARRIOR;
-        SPDSettings.customSeed("");
+        Dungeon.overrideSeed = -1;
         Dungeon.init();
-        // 加载徽章/密码徽章，供 SeedItemFilters.isLocked() 判定条件生成物品
-        com.shatteredpixel.shatteredpixeldungeon.Badges.loadGlobal();
-        com.shatteredpixel.shatteredpixeldungeon.PaswordBadges.loadGlobal();
+        GamesInProgress.selectedClass = null;
+        // 预热徽章状态：未解锁判定（SeedItemFilters.isLocked）依赖 Badges/PaswordBadges
+        Badges.loadGlobal();
+        PaswordBadges.loadGlobal();
 
         addToFront(mainWindow = new WndFinder());
 
@@ -87,7 +87,6 @@ public class SeedFindScene extends PixelScene {
 
     // ======================== 搜索结果视图（scene 级，盖住 WndFinder） ========================
     private RenderedTextBlock currentSeedText;
-    private RenderedTextBlock threadInfoText;
     private ScrollPane resultScroll;
     private Component resultContent;
     private boolean searchViewVisible = false;
@@ -98,11 +97,6 @@ public class SeedFindScene extends PixelScene {
         currentSeedText.hardlight(0xFFFFFF);
         currentSeedText.visible = false;
         add(currentSeedText);
-
-        threadInfoText = PixelScene.renderTextBlock("", 5);
-        threadInfoText.hardlight(0xAAAAAA);
-        threadInfoText.visible = false;
-        add(threadInfoText);
 
         resultContent = new Component();
         resultScroll = new ScrollPane(resultContent);
@@ -127,18 +121,12 @@ public class SeedFindScene extends PixelScene {
         currentSeedText.setRect(cx, 12, contentW, 0);
         currentSeedText.visible = true;
 
-        // 初始化线程信息（空文本，由 update() 节流填充）；
-        // 强力查种总开关关闭或线程数为 1 时直接隐藏，避免残留
-        threadInfoText.text("");
-        threadInfoText.setRect(cx, currentSeedText.bottom() + 1, contentW, 0);
-        threadInfoText.visible = SPDSettings.PlusSearch() && SPDSettings.PlusThread() > 1;
-
         if (btnCopy != null)
             btnCopy.enable(btnCopy.visible = false);
 
         resultContent.clear();
         resultContent.setSize(contentW, 0);
-        float top = threadInfoText.bottom() + 2;
+        float top = currentSeedText.bottom() + 2;
         resultScroll.setRect(cx, top, contentW, screenH - top);
         resultScroll.visible = true;
         resultScroll.active = true;
@@ -148,12 +136,11 @@ public class SeedFindScene extends PixelScene {
     // 显示查找结果（GitHub 版 CreditsBlock 风格）
     private void showSearchResult(String body) {
         if (!searchViewVisible) return;
-        // 查询结束，清掉“正在查找……”状态文本与线程信息
+        // 查询结束，清掉“正在查找……”状态文本
         currentSeedText.text("");
         currentSeedText.visible = false;
-        threadInfoText.text("");
-        threadInfoText.visible = false;
         currentSeedValue = -1;
+        searchRunning = false;//【临时·性能测试】
 
         btnCopy.enable(true);
         btnCopy.visible = true;
@@ -201,39 +188,33 @@ public class SeedFindScene extends PixelScene {
         exitBtn.setPos((float) Camera.main.width - exitBtn.width(), 0);
         add(exitBtn);
     }
-
-    @Override
-    protected void onBackPressed() {
-        stopSearch();
-        ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
-    }
-
     // 挑战文本
     private static String challengeText() {
-        return challengeText(SPDSettings.challenges());
-    }
-    private static String challengeText(int challenges) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for (int i = 0; i < com.shatteredpixel.shatteredpixeldungeon.Challenges.NAME_IDS.length; i++) {
-            if ((challenges & com.shatteredpixel.shatteredpixeldungeon.Challenges.MASKS[i]) != 0) {
+        for (int i = 0; i < Challenges.NAME_IDS.length; i++) {
+            if ((SPDSettings.challenges() & Challenges.MASKS[i]) != 0) {
                 if (!first) sb.append(Messages.get(SeedFindScene.class, "separator"));
-                sb.append(Messages.titleCase(Messages.get(com.shatteredpixel.shatteredpixeldungeon.Challenges.class,
-                        com.shatteredpixel.shatteredpixeldungeon.Challenges.NAME_IDS[i])));
+                sb.append(Messages.titleCase(Messages.get(Challenges.class, Challenges.NAME_IDS[i])));
                 first = false;
             }
         }
         if (first) sb.append(Messages.get(SeedFindScene.class, "none"));
         return sb.toString();
     }
+    //【临时·性能测试】本轮扫描起点时间、已扫描种子总数与进度显示开关（后续移除）
+    volatile long scanStartMs = 0;
+    volatile long scannedSeeds = -1;
+    private volatile boolean searchRunning = false;
+
     private volatile long currentSeedValue = -1;
     private volatile boolean stopThread = false;
-    // 后台线程只写这个值，渲染线程每 250ms 聚合刷新一次，避免逐种子 post 事件
-    private long lastShownSeed = -1;
+    // 后台线程只写进度数据，渲染线程每 250ms 聚合成整段文案刷新，避免逐种子 post 事件
+    private String lastShownStatus = null;
 
     private static final int BTN_H = 16;
 
-    // ======================== 新窗口 ========================
+    // ======================== 新窗口（四个页签：装备/消耗品/清单/开始） ========================
     private final class WndFinder extends WndTabbed {
         private final int winW;
         private final int winH;
@@ -306,14 +287,14 @@ public class SeedFindScene extends PixelScene {
                 Component content = sp.content();
                 float xPos = (PICKER_W - 5 * BTN_SIZE - GAP * 8) / 2f;
                 float each = GAP * 2 + BTN_SIZE;
-                for (int i = 0; i < Constants.MAX_DEPTH; ++i) {
+                for (int i = 0; i < 27; ++i) {
                     StyledButton btn = levelBtn(i);
                     btn.setRect(xPos + (i % 5) * each, (i / 5) * each, BTN_SIZE, BTN_SIZE);
                     PixelScene.align(btn);
                     content.add(btn);
                 }
 
-                int rows = (Constants.MAX_DEPTH - 1) / 5 + 1;
+                int rows = (26) / 5 + 1;
                 float contentHeight = rows * each - GAP * 2;
                 content.setSize(PICKER_W, contentHeight);
                 sp.setRect(0, 0, PICKER_W, contentHeight);
@@ -337,12 +318,12 @@ public class SeedFindScene extends PixelScene {
                 };
             }
         }
-        //第二页装备
+        //第一页装备
         @SuppressWarnings("unchecked")
         private Component equipmentPane() {
             ArrayList<ItemGroup> groups = new ArrayList<>();
 
-            // 2-6阶近战武器
+            // 2-6阶近战武器（Catalog 不分阶，标题沿用旧版 "T阶数" 写法）
             Generator.Category category;
             ItemGroup g;
             for (int t = 1; t < Generator.wepTiers.length; t++) {
@@ -359,7 +340,7 @@ public class SeedFindScene extends PixelScene {
             category = Generator.Category.ARMOR;
             g = new ItemGroup(Catalog.ARMOR.title());
             for (int i = 0; i < category.classes.length; i++)
-                if (category.probs[i] >= 0f)
+                if (category.probs[i] >= 0f && !SeedItemFilters.isUngenerated(category.classes[i]))
                     g.items.add((Class<? extends Item>) category.classes[i]);
             groups.add(g);
 
@@ -367,7 +348,7 @@ public class SeedFindScene extends PixelScene {
             category = Generator.Category.WAND;
             g = new ItemGroup(Catalog.WANDS.title());
             for (int i = 0; i < category.classes.length; i++)
-                if (category.probs[i] >= 0f)
+                if (category.probs[i] >= 0f && !SeedItemFilters.isUngenerated(category.classes[i]))
                     g.items.add((Class<? extends Item>) category.classes[i]);
             if (!g.items.isEmpty())
                 groups.add(g);
@@ -376,7 +357,7 @@ public class SeedFindScene extends PixelScene {
             category = Generator.Category.RING;
             g = new ItemGroup(Catalog.RINGS.title());
             for (int i = 0; i < category.classes.length; i++)
-                if (category.probs[i] >= 0f)
+                if (category.probs[i] >= 0f && !SeedItemFilters.isUngenerated(category.classes[i]))
                     g.items.add((Class<? extends Item>) category.classes[i]);
             if (!g.items.isEmpty())
                 groups.add(g);
@@ -409,28 +390,28 @@ public class SeedFindScene extends PixelScene {
             category = Generator.Category.POTION;
             g = new ItemGroup(Catalog.POTIONS.title());
             for (int i = 0; i < category.classes.length; i++)
-                if (category.probs[i] >= 0f)
+                if (category.probs[i] >= 0f && !SeedItemFilters.isUngenerated(category.classes[i]))
                     g.items.add((Class<? extends Item>) category.classes[i]);
             groups.add(g);
 
             category = Generator.Category.SCROLL;
             g = new ItemGroup(Catalog.SCROLLS.title());
             for (int i = 0; i < category.classes.length; i++)
-                if (category.probs[i] >= 0f)
+                if (category.probs[i] >= 0f && !SeedItemFilters.isUngenerated(category.classes[i]))
                     g.items.add((Class<? extends Item>) category.classes[i]);
             groups.add(g);
 
             category = Generator.Category.STONE;
             g = new ItemGroup(Catalog.STONES.title());
             for (int i = 0; i < category.classes.length; i++)
-                if (category.probs[i] >= 0f)
+                if (category.probs[i] >= 0f && !SeedItemFilters.isUngenerated(category.classes[i]))
                     g.items.add((Class<? extends Item>) category.classes[i]);
             groups.add(g);
 
             category = Generator.Category.FOOD;
             g = new ItemGroup(Catalog.FOOD.title());
             for (int i = 0; i < category.classes.length; i++)
-                if (category.probs[i] >= 0f)
+                if (category.probs[i] >= 0f && !SeedItemFilters.isUngenerated(category.classes[i]))
                     g.items.add((Class<? extends Item>) category.classes[i]);
             groups.add(g);
 
@@ -443,7 +424,7 @@ public class SeedFindScene extends PixelScene {
             grid.scrollTo(0, 0);
             return grid;
         }
-        //第四页物品清单
+        //第三页物品清单
         private Component listPage() {
             return new listPageWrapper();
         }
@@ -500,7 +481,7 @@ public class SeedFindScene extends PixelScene {
                             : new String[]{Messages.get(SeedFindScene.class, "remove"),
                                     Messages.get(SeedFindScene.class, "cancel")};
                     WantedItemButton button = new WantedItemButton(item);
-                    button.setRect( 0, pos, width, 20 );
+                    button.setRect( 0, pos, width, 23 );
                     button.setClickAction(() -> ShatteredPixelDungeon.scene().addToFront(
                             new WndOptions(item.toString(), item.desc(), actions) {
                                 @Override
@@ -537,58 +518,57 @@ public class SeedFindScene extends PixelScene {
             int lastCount = -1;
             int lastFloor = -1;
             int lastChallenges = -1;
-            int lastThreads = -1;
             RedButton startBtn;
+            RenderedTextBlock summaryText;
             public summaryPane() {
                 super(new Component());
             }
             @Override
             public void update() {
                 super.update();
-                // 物品数量、楼层、挑战、线程数任一变化都要重建，否则摘要显示旧值
+                // 物品数量、楼层、挑战任一变化都要重建（楼层/挑战按钮状态随之刷新）
                 int count = wantedItems.size();
-                int challenges = SPDSettings.challenges();
-                // 强力查种关闭时按 0 处理：触发重建且不再显示线程数行
-                int threads = SPDSettings.PlusSearch()
-                        ? Math.max(1, Math.min(SeedFinder.parallelSeeds.length(), SPDSettings.PlusThread()))
-                        : 0;
                 if (count != lastCount || currentFloor != lastFloor
-                        || challenges != lastChallenges || threads != lastThreads) {
+                        || SPDSettings.challenges() != lastChallenges) {
                     resetButton();
                     lastCount = count;
                     lastFloor = currentFloor;
-                    lastChallenges = challenges;
-                    lastThreads = threads;
+                    lastChallenges = SPDSettings.challenges();
                 }
+            }
+            //摘要文案：角色（固定战士）/挑战/楼层/物品需求 + 当前并行进程数
+            private String summaryBody() {
+                StringBuilder sb = new StringBuilder();
+                sb.append(Messages.get(SeedFindScene.class, "hero_fixed")).append("\n");
+                sb.append(Messages.get(SeedFindScene.class, "challenges_info", challengeText())).append("\n");
+                sb.append(Messages.get(SeedFindScene.class, "deep_floor", currentFloor)).append("\n");
+                sb.append(Messages.get(SeedFindScene.class, "requirements", wantedItems.size())).append("\n");
+                for (int i = 0; i < wantedItems.size(); i++) {
+                    sb.append(i + 1).append(". ").append(wantedItems.get(i).name()).append("\n");
+                }
+                // 并行进程数：开启强力搜索 → 用设置页「种子线程」滑块的数值；关闭 → 单进程
+                int workers = SeedFinderCoordinator.resolveWorkers(
+                        SPDSettings.PlusSearch() ? SPDSettings.PlusThread() : 1);
+                sb.append(Messages.get(SeedFindScene.class, "workers_info", workers));
+                if (workers < 2) sb.append(Messages.get(SeedFindScene.class, "single_process"));
+                return sb.toString();
+            }
+            //滑块变动时原地刷新数值（行数不变，不影响布局）
+            void refreshSummary() {
+                if (summaryText != null) summaryText.text(summaryBody(), (int) (width - 2));
             }
             void resetButton() {
                 Component content = this.content();
                 content.clear();
                 float w = width;
 
-                StringBuilder sb = new StringBuilder();
-                sb.append(Messages.get(SeedFindScene.class, "challenges_info",
-                        challengeText())).append("\n");
-                sb.append(Messages.get(SeedFindScene.class, "floor_info",
-                        currentFloor)).append("\n");
-                // 仅强力查种开启时显示线程数行，关掉后不留残留
-                if (SPDSettings.PlusSearch()) {
-                    sb.append(Messages.get(SeedFindScene.class, "threads_info",
-                            Math.max(1, Math.min(SeedFinder.parallelSeeds.length(), SPDSettings.PlusThread())))).append("\n");
-                }
-                sb.append(Messages.get(SeedFindScene.class, "requirements",
-                        wantedItems.size())).append("\n");
-                for (int i = 0; i < wantedItems.size(); i++) {
-                    sb.append(i + 1).append(". ").append(wantedItems.get(i).name()).append("\n");
-                }
-
-                RenderedTextBlock summary = PixelScene.renderTextBlock("", 6);
-                summary.text(sb.toString(), (int) w);
-                content.add(summary);
-                summary.setRect(1, 1, w - 2, 0);
+                summaryText = PixelScene.renderTextBlock("", 6);
+                summaryText.text(summaryBody(), (int) (w - 2));
+                content.add(summaryText);
+                summaryText.setRect(1, 1, w - 2, 0);
 
                 // 楼层 + 挑战 同一行（原设置页控件搬入）
-                float rowY = summary.bottom() + 4;
+                float rowY = summaryText.bottom() + 4;
                 StyledButton floorBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR,
                         Messages.get(SeedFindScene.class, "floor_info", currentFloor), 8) {
                     @Override
@@ -666,42 +646,15 @@ public class SeedFindScene extends PixelScene {
         }
     }
 
-    // 清单页物品行：图标 + 名称（替代旧版 WndRanking.canScrollItemButton）
-    private static final class WantedItemButton extends StyledButton {
-        private Runnable clickAction;
-
-        WantedItemButton(Item item) {
-            super(Chrome.Type.GREY_BUTTON_TR, item.toString(), 7);
-            // 戒指/药水用固定小图标，避免随机贴图无法辨认
-            if ((item instanceof Potion || item instanceof Ring) && item.icon >= 0) {
-                Image im = new Image(Assets.Sprites.ITEM_ICONS);
-                im.frame(ItemSpriteSheet.Icons.film.get(item.icon));
-                im.scale.set(2f);
-                icon(im);
-            } else {
-                icon(new ItemSprite(item));
-            }
-        }
-
-        void setClickAction(Runnable action) {
-            clickAction = action;
-        }
-
-        @Override
-        protected void onClick() {
-            if (clickAction != null) clickAction.run();
-        }
-    }
-
     private static final class PickGridItem extends ScrollingGridPane.GridItem {
         private final Class<? extends Item> cls;
+        // 条件生成物品（商店解锁/徽章解锁等，见 SeedItemFilters）：网格保留显示但置灰不可选，点击提示无法查找
         private final boolean locked;
         private volatile boolean tinted = false;
         PickGridItem(Class<? extends Item> cls) {
             super(image(cls));
             this.cls = cls;
-            // 条件生成物品（如黄金长枪未购买）：网格中保留显示但置灰不可选
-            locked = SeedItemFilters.isLocked(cls);
+            this.locked = SeedItemFilters.isLocked(cls);
             if (locked)
                 icon.brightness(0.3f);
             if (Artifact.class.isAssignableFrom(cls))
@@ -730,8 +683,8 @@ public class SeedFindScene extends PixelScene {
                 return false;
             }
             if (locked) {
-                ShatteredPixelDungeon.scene().addToFront(new WndMessage(
-                        Messages.get(SeedFindScene.class, "locked_hint")));
+                ShatteredPixelDungeon.scene().addToFront(
+                        new WndMessage(Messages.get(SeedFindScene.class, "locked_hint")));
                 return true;
             }
             if (Artifact.class.isAssignableFrom(cls)) {
@@ -754,6 +707,7 @@ public class SeedFindScene extends PixelScene {
             private static final int SLIDER_H = 22;
             private static final int AUG_MAX_LINES = 3; // 最多3行(8项/4每行=2行 + 当前1行)
             private Class<?>[][] pools;
+            boolean isEnchant;
             int augRare, augId;
             RenderedTextBlock augInfo;
             ItemConfigWindow(Class<? extends Item> cls) {
@@ -763,8 +717,10 @@ public class SeedFindScene extends PixelScene {
 
                 if (Weapon.class.isAssignableFrom(cls)) {
                     pools = enchant;
+                    isEnchant = true;
                 } else if (Armor.class.isAssignableFrom(cls)) {
                     pools = glyph;
+                    isEnchant = false;
                 }
 
                 float pos = GAP;
@@ -786,7 +742,7 @@ public class SeedFindScene extends PixelScene {
                     pos = augInfo.bottom() + GAP;
 
                     OptionSlider idSlider = new OptionSlider(
-                            Messages.get(SeedFindScene.class, "enchant_or_glyph"), "1", "8", 0, 7) {
+                            isEnchant ? "" : "", "1", "8", 0, 7) {
                         @Override
                         protected void onChange() {
                             augId = getSelectedValue();
@@ -799,9 +755,7 @@ public class SeedFindScene extends PixelScene {
                     pos = idSlider.bottom() + GAP;
 
                     OptionSlider rareSlider = new OptionSlider(
-                            Messages.get(SeedFindScene.class, "rarity"),
-                            Messages.get(SeedFindScene.class, "rarity_common"),
-                            Messages.get(SeedFindScene.class, "rarity_cursed"), 0, 4) {
+                            isEnchant ? "" : "", "", "", 0, 4) {
                         @Override
                         protected void onChange() {
                             augRare = getSelectedValue();
@@ -862,8 +816,7 @@ public class SeedFindScene extends PixelScene {
             private OptionSlider getSlider(int maxLevel, Item item) {
                 OptionSlider slider;
                 if (maxLevel > 0) {
-                    slider = new OptionSlider(Messages.get(SeedFindScene.class, "level"),
-                            "0", "+" + maxLevel, 0, maxLevel) {
+                    slider = new OptionSlider(Messages.get(SeedFindScene.class, "level"), "0", "+" + maxLevel, 0, maxLevel) {
                         @Override
                         protected void onChange() {
                             item.level(getSelectedValue());
@@ -872,8 +825,7 @@ public class SeedFindScene extends PixelScene {
                 slider.setSelectedValue(0);
                 }
                 else {
-                    slider = new OptionSlider(Messages.get(SeedFindScene.class, "quantity"),
-                            "1", "10", 1, 10) {
+                    slider = new OptionSlider(Messages.get(SeedFindScene.class, "quantity"), "1", "10", 1, 10) {
                         @Override
                         protected void onChange() {
                             int value = getSelectedValue();
@@ -904,8 +856,7 @@ public class SeedFindScene extends PixelScene {
                         }
                     }
                     if (augId < pool.length)
-                        info.append(Messages.get(SeedFindScene.class, "current",
-                                getAugName(pool[augId])));
+                        info.append(Messages.get(SeedFindScene.class, "current", getAugName(pool[augId])));
                     else
                         info.append(Messages.get(SeedFindScene.class, "current_none"));
                     lines++;
@@ -963,17 +914,15 @@ public class SeedFindScene extends PixelScene {
     }
     private static int getMaxLevelForClass(Class<?> cls) {
         if (Wand.class.isAssignableFrom(cls)) {
-            // 已选 +3 任务配件，其余配件最多 +2（一局仅一根任务杖）
             return hasQuestLevel(Wand.class)
                     ? 2 : 3;
         }
         if (Ring.class.isAssignableFrom(cls)) {
-            // 已选 +3（小恶魔任务奖励 +3/+4 的下限）瞄准镜，其余只能 +2
             return hasQuestLevel(Ring.class)
                     ? 2 : 4;
         }
         return (Weapon.class.isAssignableFrom(cls) || Armor.class.isAssignableFrom(cls))
-                ? 3 : 0;
+                ? 4 : 0;
     }
     private static boolean hasQuestLevel(Class<?> type) {
         for (Item item : wantedItems)
@@ -991,83 +940,48 @@ public class SeedFindScene extends PixelScene {
             text = "";
             showSearchResult(result);
         }
-        // 查找成功弹"查找完成"窗口（参考旧查种器 SeedFindLogScene）
-        if (foundResult != null) {
-            SeedResult res = foundResult;
-            foundResult = null;
-            showFoundWindow(res);
-        }
-        // 当前种子显示（节流到 4 次/秒，避免与查找线程争抢 CPU）
+        // 搜索进度显示（节流到 4 次/秒，避免与查找线程争抢 CPU）
         seedDisplayCooldown += Game.elapsed;
         if (seedDisplayCooldown >= 0.25f) {
             seedDisplayCooldown = 0f;
-            if (searchViewVisible && !stopThread) {
-                int threads = SeedFinder.searchThreadCount;
-                if (threads > 1) {
-                    // 多线程：显示总线程数与每个线程的当前种子（9字母码）
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(Messages.get(SeedFinder.class, "threads", threads)).append("\n");
-                    for (int ts = 0; ts < threads; ts++) {
-                        long s = SeedFinder.parallelSeeds.get(ts);
-                        if (s >= 0) {
-                            String code;
-                            try {
-                                code = DungeonSeed.convertToCode(s);
-                            } catch (Exception e) {
-                                code = Long.toString(s);
-                            }
-                            sb.append(Messages.get(SeedFinder.class, "thread_seed", ts + 1, code)).append("\n");
-                        }
-                    }
-                    String info = sb.toString();
-                    if (!info.equals(threadInfoText.text())) {
-                        threadInfoText.text(info);
-                        threadInfoText.setRect(threadInfoText.left(), threadInfoText.top(),
-                                threadInfoText.width(), 0);
-                    }
-                    currentSeedText.text(Messages.get(SeedFindScene.class, "searching"));
-                } else {
-                    // 单线程：旧查种器把当前种子写入 0 号槽位
-                    long s = SeedFinder.parallelSeeds.get(0);
-                    if (s != lastShownSeed && s >= 0) {
-                        lastShownSeed = s;
-                        currentSeedText.text(Messages.get(SeedFindScene.class, "searching_current")
-                                + s);
-                    }
+            if (searchViewVisible && searchRunning) {//【临时·性能测试】改为按查找进行中判断，起步阶段也能看到计时
+                String status = progressText();
+                if (!status.equals(lastShownStatus)) {
+                    lastShownStatus = status;
+                    currentSeedText.text(status);
                 }
             }
         }
     }
+    // 进度文案：计时与已扫描种子数；多进程时逐进程列出各自正在遍历的种子
+    private String progressText() {
+        //【临时·性能测试】已用时按壁钟计算；搜索不再设硬性超时，命中即结束
+        long elapsedMs = System.currentTimeMillis() - scanStartMs;
+        StringBuilder sb = new StringBuilder(Messages.get(SeedFindScene.class, "searching")).append(" ")
+                .append(Messages.get(SeedFindScene.class, "progress_elapsed",
+                        (elapsedMs / 100) / 10.0));
+        long[] ws = SeedFinderCoordinator.workerSeeds;
+        if (ws != null && ws.length > 1) {
+            sb.append("\n").append(Messages.get(SeedFindScene.class, "progress_scanned",
+                    Math.max(0, scannedSeeds), ws.length));
+            for (int i = 0; i < ws.length; i++) {
+                sb.append('\n').append(Messages.get(SeedFindScene.class, "progress_worker", i + 1));
+                sb.append(ws[i] >= 0 ? Long.toString(ws[i])
+                        : Messages.get(SeedFindScene.class, "progress_starting"));
+            }
+            return sb.toString();
+        }
+        sb.append("\n").append(Messages.get(SeedFindScene.class, "progress_current",
+                currentSeedValue >= 0 ? Long.toString(currentSeedValue)
+                        : Messages.get(SeedFindScene.class, "progress_starting")));
+        if (SeedFinderCoordinator.activeWorkers >= 2)
+            sb.append(Messages.get(SeedFindScene.class, "progress_active", SeedFinderCoordinator.activeWorkers));
+        sb.append(Messages.get(SeedFindScene.class, "progress_total", Math.max(0, scannedSeeds)));
+        return sb.toString();
+    }
     public static SeedFindScene INSTANCE = null;
     volatile boolean needUpdate;
     volatile String text = "";
-    // 查找成功后待弹窗的结果（查找线程写入，渲染线程消费）
-    volatile SeedResult foundResult = null;
-
-    // "查找完成"窗口：标题 + 种子码 + 挑战代码 + 匹配楼层清单（复用旧查种器的 key）
-    private void showFoundWindow(SeedResult res) {
-        String resCode;
-        try {
-            resCode = DungeonSeed.convertToCode(Long.parseLong(res.seedStr));
-        } catch (Exception e) {
-            resCode = res.seedStr;
-        }
-        StringBuilder msg = new StringBuilder();
-        msg.append(Messages.get(SeedFindLogScene.class, "found_seed"))
-                .append(resCode).append(" (").append(res.seedStr).append(")\n");
-        msg.append(Messages.get(SeedFindLogScene.class, "code"))
-                .append(SPDSettings.challenges()).append("\n\n");
-        if (res.matchedInfo != null && !res.matchedInfo.isEmpty()) {
-            msg.append(Messages.get(SeedFindLogScene.class, "match_floor_list")).append("\n");
-            for (String info : res.matchedInfo) {
-                msg.append("- ").append(info).append("\n");
-            }
-            msg.append("\n");
-        }
-        msg.append(Messages.get(SeedFindLogScene.class, "scroll_full_log"));
-        addToFront(new WndError(Icons.CATALOG,
-                Messages.get(SeedFindLogScene.class, "window_title"), msg.toString()));
-    }
     public void updateCurrentSeed(long seed) {
         currentSeedValue = seed;
         needUpdate = true;
@@ -1081,89 +995,64 @@ public class SeedFindScene extends PixelScene {
 
     private static WndFinder mainWindow;
     private Thread findSeedThread;
+    private volatile SeedFinderCoordinator coordinator;
 
-    // 查找种子：构建物品名列表，委托旧查种器 SeedFinder 执行（保留本窗口 UI）
+    // 查找种子：平台支持且进程数>=2 时走多进程，否则单进程线程查找
     private void startSearch() {
         stopThread = false;
         currentSeedValue = -1;
-        lastShownSeed = -1;
+        lastShownStatus = null;
+        scanStartMs = System.currentTimeMillis();//【临时·性能测试】
+        scannedSeeds = 0;//【临时·性能测试】
+        searchRunning = true;//【临时·性能测试】
 
-        // 预置线程数，避免工作线程启动前的空窗期里 UI 读到上一次搜索的残留值。
-        // 注意：多线程按钮是 PlusSearch 总开关，PlusThread 只是线程数。
-        final int threads = SPDSettings.PlusSearch()
-                ? Math.max(1, Math.min(SeedFinder.parallelSeeds.length(), SPDSettings.PlusThread()))
-                : 1;
-        SeedFinder.searchThreadCount = threads;
-        for (int t = 0; t < SeedFinder.parallelSeeds.length(); t++)
-            SeedFinder.parallelSeeds.set(t, -1);
-
-        // 旧查种器按名称匹配：物品名（小写）× 数量展开为字符串列表
-        final ArrayList<String> wanted = new ArrayList<>();
+        final ArrayList<WantedTarget> targets = new ArrayList<>();
         for (Item item : wantedItems)
             for (int i = 0; i < item.quantity(); i++)
-                wanted.add(item.name().toLowerCase());
+                targets.add(new WantedTarget(item));
 
         showSearchView();
-        findSeedThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    SeedFinder finder = new SeedFinder();
-                    // 角色不影响地形与奖励生成，固定战士
-                    finder.heroClass = HeroClass.WARRIOR;
-                    SeedResult res;
-                    if (wanted.isEmpty()) {
-                        // 测试种子模式：直接输出指定种子的物品清单
-                        long seed = DungeonSeed.convertFromText(seedCode);
-                        String log = finder.logSeedItems(Long.toString(seed), currentFloor,
-                                SPDSettings.challenges());
-                        res = new SeedResult(log, Long.toString(seed), new ArrayList<>(), true);
-                    } else if (threads > 1) {
-                        res = finder.findSeedParallel(
-                                wanted.toArray(new String[0]), currentFloor, threads);
-                    } else {
-                        res = finder.findSeed(wanted.toArray(new String[0]), currentFloor);
-                    }
-                    if (!stopThread && res != null) {
-                        if (res.success) {
-                            // 更新种子码，供"复制种子码"按钮使用
-                            try {
-                                seedCode = DungeonSeed.convertToCode(Long.parseLong(res.seedStr));
-                            } catch (Exception e) {
-                                seedCode = res.seedStr;
-                            }
+
+        // 并行进程数：开启强力搜索 → 用设置页「种子线程」滑块的数值；关闭 → 单进程
+        final int workers = SeedFinderCoordinator.resolveWorkers(
+                SPDSettings.PlusSearch() ? SPDSettings.PlusThread() : 1);
+        if (SeedFinderCoordinator.launcher != null && !targets.isEmpty() && workers >= 2) {
+            // 多进程：每个子进程独立 JVM，物品生成依赖的静态状态互不干扰
+            coordinator = new SeedFinderCoordinator(targets, currentFloor, HeroClass.WARRIOR, workers);
+            findSeedThread = new Thread(coordinator, "seed-finder-coordinator");
+        } else {
+            coordinator = null;
+            final SeedFinder finder = new SeedFinder(targets, currentFloor, HeroClass.WARRIOR);
+            findSeedThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        finder.run();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (!stopThread) {
+                            text = Messages.get(SeedFinder.class, "find_failed", e.getMessage());
+                            needUpdate = true;
                         }
-                        text = res.success ? res.fullLog
-                                : Messages.get(SeedFindScene.class, "find_failed", "NONE");
-                        needUpdate = true;
-                        // 仅真实查找（非测试种子）成功时弹"查找完成"窗口
-                        if (res.success && !wanted.isEmpty())
-                            foundResult = res;
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (!stopThread) {
-                        text = Messages.get(SeedFindScene.class, "find_failed", e.getMessage());
-                        needUpdate = true;
-                    }
-                } finally {
-                    Dungeon.overrideSeed = -1;
                 }
-            }
-        });
+            }, "seed-finder");
+        }
         findSeedThread.start();
     }
 
     private void stopSearch() {
         stopThread = true;
-        // 旧查种器的停止协议：状态位置 STOP + 并行完成标记 + 中断等待线程
-        SeedFinder.findingStatus = SeedFinder.FINDING.STOP;
-        SeedFinder.parallelFound = true;
+        if (coordinator != null) {
+            coordinator.stop();
+            coordinator = null;
+        }
         if (findSeedThread != null && findSeedThread.isAlive()) {
             findSeedThread.interrupt();
         }
-        // 复位内存态种子，避免中断后残留覆盖正常游戏种子
-        Dungeon.overrideSeed = -1;
+        SeedFinder.SeedFinding = false;
+        SeedFinder.running = false;
+
     }
 
     // ======================== CreditsBlock（保留原样） ========================
@@ -1199,6 +1088,33 @@ public class SeedFindScene extends PixelScene {
 
             topY += this.body.height();
             this.height = Math.max(this.height, topY - this.top());
+        }
+    }
+
+    // 清单页物品行：图标 + 名称（替代旧版 WndRanking.canScrollItemButton）
+    private static final class WantedItemButton extends StyledButton {
+        private Runnable clickAction;
+
+        WantedItemButton(Item item) {
+            super(Chrome.Type.GREY_BUTTON_TR, item.toString(), 7);
+            // 戒指/药水用固定小图标，避免随机贴图无法辨认
+            if ((item instanceof Potion || item instanceof Ring) && item.icon >= 0) {
+                Image im = new Image(Assets.Sprites.ITEM_ICONS);
+                im.frame(ItemSpriteSheet.Icons.film.get(item.icon));
+                im.scale.set(2f);
+                icon(im);
+            } else {
+                icon(new ItemSprite(item));
+            }
+        }
+
+        void setClickAction(Runnable action) {
+            clickAction = action;
+        }
+
+        @Override
+        protected void onClick() {
+            if (clickAction != null) clickAction.run();
         }
     }
 }

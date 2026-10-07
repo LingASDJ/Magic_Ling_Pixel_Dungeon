@@ -235,8 +235,8 @@ public class WndTradeItem extends WndInfoItem {
 					} else {
 						for (Mob mob :  Dungeon.level.mobs.toArray(new Mob[0])) {
 							if (mob instanceof Shopkeeper && !(mob instanceof ImpShopkeeper || mob instanceof Nxhy)) {
-								mob.yell(Messages.get(mob, "thief"));
 								if(!Statistics.fireGirlnoshopping){
+									mob.yell(Messages.get(mob, "thief"));
 									TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
 									if (timeFreeze != null) timeFreeze.disarmPresses();
 									Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);

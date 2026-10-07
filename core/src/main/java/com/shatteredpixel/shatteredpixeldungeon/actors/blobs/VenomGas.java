@@ -11,7 +11,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Bundle;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class VenomGas extends Blob {

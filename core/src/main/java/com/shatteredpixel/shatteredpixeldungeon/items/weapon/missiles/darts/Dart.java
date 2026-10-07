@@ -133,9 +133,11 @@ public class Dart extends MissileWeapon {
 			int orgrinDamage = 3 + forestBow.level();
 			if(Dungeon.hero != null) {
 				if (!(this instanceof TippedDart) && Dungeon.hero.buff(ForestBow.ChargedShot.class) != null) {
-					return (int) (orgrinDamage * 0.9f);
+					//蓄力AOE伤害降低，但神射戒指等加成仍应生效
+					return (int) (orgrinDamage * 0.9f) + lvl;
 				} else {
-					return  orgrinDamage;
+					//lvl 包含飞镖自身等级与神射戒指加成，需与弩一致叠加
+					return  orgrinDamage + lvl;
 				}
 			} else {
 				return 4 + lvl;
@@ -175,9 +177,11 @@ public class Dart extends MissileWeapon {
 			int orgrinDamage = (int) (6 + forestBow.level() * 2.5f);
 			if(Dungeon.hero != null) {
 				if (!(this instanceof TippedDart) && Dungeon.hero.buff(ForestBow.ChargedShot.class) != null) {
-					return (int) (orgrinDamage * 0.9f);
+					//蓄力AOE伤害降低，但神射戒指等加成仍应生效
+					return (int) (orgrinDamage * 0.9f) + 2*lvl;
 				} else {
-					return  orgrinDamage;
+					//lvl 包含飞镖自身等级与神射戒指加成，需与弩一致叠加
+					return  orgrinDamage + 2*lvl;
 				}
 			} else {
 				return 4 + lvl;

@@ -70,14 +70,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourg
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.AnySkinSelect;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
@@ -466,13 +463,19 @@ public class ZeroCityLevel extends Level {
             }
 
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
-        if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX) || passwordbadges.contains(PaswordBadges.Badge.GODCHSX)) {
-            if(Random.Int(4) == 0) {
-                WhiteLingLand god = new WhiteLingLand();
-                god.pos = 326;
-                mobs.add(god);
-                Statistics.onlyLing = true;
+        // 种子稳定性修复：刷点判定恒定消耗 1 次随机数（由种子决定），徽章只决定"是否现身"；
+        // 奖励生成隔离到独立随机流（seedCurDepth()+盐值），不再扰动关卡生成流。
+        int lingRoll = Random.Int(4);
+        boolean lingAllowed = passwordbadges.contains(PaswordBadges.Badge.ALLCHSX)
+                || passwordbadges.contains(PaswordBadges.Badge.GODCHSX);
+        if (lingRoll == 0 && lingAllowed) {
+            WhiteLingLand god = new WhiteLingLand();
+            god.pos = 326;
+            mobs.add(god);
+            Statistics.onlyLing = true;
 
+            Random.pushGenerator(Dungeon.seedCurDepth() + 0x5EED04L);
+            try {
                 MeleeWeapon gods1;
                 gods1 = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
                 gods1.cursed = false;
@@ -501,7 +504,7 @@ public class ZeroCityLevel extends Level {
                     case 4: gods3 = new InfernalBrew();   break;
                     case 5: gods3 = new ShockingBrew();   break;
                     default:
-                            gods3 = new WaterSoul();   break;
+                        gods3 = new WaterSoul();   break;
                 }
                 drop(gods3,328).type = Heap.Type.FOR_ICE;
 
@@ -509,6 +512,8 @@ public class ZeroCityLevel extends Level {
                 gods4 = Generator.random(Generator.Category.ARTIFACT);
                 gods4.cursed = false;
                 drop(gods4,198).type = Heap.Type.FOR_ICE;
+            } finally {
+                Random.popGenerator();
             }
         }
 
@@ -647,19 +652,24 @@ public class ZeroCityLevel extends Level {
             npc1.pos = 663;
             mobs.add(npc1);
 
+            // 种子稳定性修复：商店货物生成隔离到独立随机流，不再扰动关卡生成流
+            Random.pushGenerator(Dungeon.seedCurDepth() + 0x5EED05L);
+            try {
+                for (int i : SALEPOS_TWO) {
+                    drop((Generator.random(Generator.Category.POTION)), i).type =
+                            Heap.Type.FOR_SALE;
+                }
 
-            for (int i : SALEPOS_TWO) {
-                drop((Generator.random(Generator.Category.POTION)), i).type =
-                        Heap.Type.FOR_SALE;
-            }
-
-            for (int i : SALEPOS_FOUR) {
-                drop((Generator.random(Generator.Category.SCROLL)), i).type =
-                        Heap.Type.FOR_SALE;
-            }
-            for (int i : POSSALE) {
-                drop((Generator.random(Generator.Category.SEED)), i).type =
-                        Heap.Type.FOR_SALE;
+                for (int i : SALEPOS_FOUR) {
+                    drop((Generator.random(Generator.Category.SCROLL)), i).type =
+                            Heap.Type.FOR_SALE;
+                }
+                for (int i : POSSALE) {
+                    drop((Generator.random(Generator.Category.SEED)), i).type =
+                            Heap.Type.FOR_SALE;
+                }
+            } finally {
+                Random.popGenerator();
             }
         }
 
@@ -667,25 +677,31 @@ public class ZeroCityLevel extends Level {
             PaswordBadges.loadGlobal();
             List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-            drop( new RandomChest(), 1425  ).type = Heap.Type.FOR_SALE;
-            drop( new RandomChest(), 1426  ).type = Heap.Type.FOR_SALE;
-            for (int i : SALEPOS_ONE) {
-                drop((Generator.random(Generator.Category.MISSILE)), i).type =
-                        Heap.Type.FOR_SALE;
-            }
-            for (int i : SALEPOS_THREE) {
-                drop((Generator.random(Generator.Category.WEP_T2)), i).type =
-                        Heap.Type.FOR_SALE;
-            }
-            if (Badges.isUnlocked(Badges.Badge.GOOD_MAKER)) {
-                drop((Generator.random(Generator.Category.RING)), 3001);
-            }
-            if (Badges.isUnlocked(Badges.Badge.RLPT_WIN)) {
-                if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
-                    drop((Generator.random(Generator.Category.WAND)), 3065);
-                } else {
-                    drop((Generator.random(Generator.Category.ARMOR)), 3065);
+            // 种子稳定性修复：商店内容生成隔离到独立随机流，不再扰动关卡生成流
+            Random.pushGenerator(Dungeon.seedCurDepth() + 0x5EED06L);
+            try {
+                drop( new RandomChest(), 1425  ).type = Heap.Type.FOR_SALE;
+                drop( new RandomChest(), 1426  ).type = Heap.Type.FOR_SALE;
+                for (int i : SALEPOS_ONE) {
+                    drop((Generator.random(Generator.Category.MISSILE)), i).type =
+                            Heap.Type.FOR_SALE;
                 }
+                for (int i : SALEPOS_THREE) {
+                    drop((Generator.random(Generator.Category.WEP_T2)), i).type =
+                            Heap.Type.FOR_SALE;
+                }
+                if (Badges.isUnlocked(Badges.Badge.GOOD_MAKER)) {
+                    drop((Generator.random(Generator.Category.RING)), 3001);
+                }
+                if (Badges.isUnlocked(Badges.Badge.RLPT_WIN)) {
+                    if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
+                        drop((Generator.random(Generator.Category.WAND)), 3065);
+                    } else {
+                        drop((Generator.random(Generator.Category.ARMOR)), 3065);
+                    }
+                }
+            } finally {
+                Random.popGenerator();
             }
 
         }

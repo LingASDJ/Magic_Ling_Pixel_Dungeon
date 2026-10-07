@@ -33,7 +33,7 @@ public class Yuanxi extends NTNPC {
                 teleporting = true;
             }
             if(selfTeleCooldown == 0) {
-                ScrollOfTeleportation.appear(this, Dungeon.level.randomRespawnCell(this));
+                ScrollOfTeleportation.appear(this, 387);
                 destroy();
                 sprite.killAndErase();
             }

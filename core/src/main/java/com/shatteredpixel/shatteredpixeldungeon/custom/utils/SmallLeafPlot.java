@@ -6,7 +6,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;

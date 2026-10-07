@@ -57,7 +57,7 @@ public class CurseInfusion extends InventorySpell {
 
 	@Override
 	protected boolean usableOnItem(Item item) {
-		return !(item instanceof EndingBlade) && ((item instanceof EquipableItem && !(item instanceof BloodthirstyThorn || item instanceof RitualSword)) || item instanceof Wand || (item instanceof BrokenSeal && Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE) && !item.curseInfusionBonus && item.level() == 0));
+		return !(item instanceof EndingBlade) && ((item instanceof EquipableItem && !(item instanceof BloodthirstyThorn || item instanceof RitualSword || (item instanceof MissileWeapon && !item.isUpgradable()))) || item instanceof Wand || (item instanceof BrokenSeal && Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE) && !item.curseInfusionBonus && item.level() == 0));
 	}
 
 	@Override

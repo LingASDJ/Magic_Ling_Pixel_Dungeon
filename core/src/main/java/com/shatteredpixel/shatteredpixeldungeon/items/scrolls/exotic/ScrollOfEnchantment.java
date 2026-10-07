@@ -71,7 +71,7 @@ public class ScrollOfEnchantment extends ExoticScroll {
 	}
 
 	public static boolean enchantable( Item item ){
-		return !(item instanceof EndingBlade) && ((item instanceof MeleeWeapon || item instanceof SpiritBow || item instanceof Armor)||(Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE)&&item instanceof BrokenSeal)|| item instanceof MissileWeapon);
+		return !(item instanceof EndingBlade) && ((item instanceof MeleeWeapon || item instanceof SpiritBow || item instanceof Armor)||(Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE)&&item instanceof BrokenSeal)|| (item instanceof MissileWeapon && item.isUpgradable()));
 	}
 
 	private void confirmCancelation() {

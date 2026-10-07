@@ -1,9 +1,42 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AntiLightShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessBossRushLow;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLingJing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessQinyue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessUnlock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.ClearLanterBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.Immunities.ScaryImmunitiesBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.DragonWall;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.FoundChest;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.OozeStatueDead;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.QuestGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 
 import java.util.ArrayList;
-
 public class BuffScanner {
     public static ArrayList<Class<? extends Buff>> getAllBuffClasses() {
         ArrayList<Class<? extends Buff>> buffClasses = new ArrayList<>();
@@ -591,5 +624,174 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle.TimeBubble.class);
 
         return buffClasses;
+    }
+
+    public static ArrayList<Class<? extends Buff>> getTestBuffClasses() {
+        
+        ArrayList<Class<? extends Buff>> allData = new ArrayList<>();
+
+        allData.add(Adrenaline.class);
+        allData.add(AdrenalineSurge.class);
+        allData.add(Amok.class);
+        allData.add(AntiLightShiled.class);
+        allData.add(ArcaneArmor.class);
+        allData.add(ArtifactRecharge.class);
+        allData.add(AscensionChallenge.class);
+        allData.add(AutoRandomBuff.class);
+
+        allData.add(Barkskin.class);
+        allData.add(Barrier.class);
+        allData.add(BeamTowerAdbility.class);
+
+        allData.add(Bleeding.class);
+        allData.add(Bless.class);
+        allData.add(Blindness.class);
+        allData.add(BlobImmunity.class);
+        allData.add(BrokenArmor.class);
+        allData.add(Burning.class);
+
+        allData.add(Charm.class);
+        allData.add(Chill.class);
+        allData.add(Combo.class);
+        allData.add(Corrosion.class);
+        allData.add(Corruption.class);
+
+
+        allData.add(Cripple.class);
+
+        allData.add(Daze.class);
+        allData.add(DeadSoul.class);
+        allData.add(Degrade.class);
+        allData.add(Doom.class);
+        allData.add(Dread.class);
+        allData.add(Drowsy.class);
+        allData.add(EnhancedRings.class);
+        allData.add(FireImbue.class);
+        allData.add(FlavourBuff.class);
+        allData.add(Foresight.class);
+        allData.add(Frost.class);
+        allData.add(FrostBurning.class);
+        allData.add(FrostImbue.class);
+        allData.add(FrostImbueEX.class);
+        allData.add(Fury.class);
+        allData.add(GoodLuck.class);
+        allData.add(GravityChaosTracker.class);
+        allData.add(GreaterHaste.class);
+        allData.add(HaloFireImBlue.class);
+        allData.add(HalomethaneBurning.class);
+        allData.add(Haste.class);
+        allData.add(HasteLing.class);
+        allData.add(Healing.class);
+        allData.add(HeroDisguise.class);
+        allData.add(Hex.class);
+        allData.add(HoldFast.class);
+        allData.add(Hunger.class);
+        allData.add(Invisibility.class);
+        allData.add(InvisibilityRing.class);
+        allData.add(Invulnerability.class);
+        allData.add(Killer.class);
+
+        allData.add(LethalDefense.class);
+        allData.add(Levitation.class);
+        allData.add(LifeLink.class);
+        allData.add(LighS.class);
+        allData.add(Light.class);
+
+        allData.add(LockedFloor.class);
+        allData.add(LostInventory.class);
+        allData.add(MagicalSight.class);
+        allData.add(MagicalSleep.class);
+        allData.add(MagicImmune.class);
+        //allData.add(Marked.class);
+        allData.add(MindVision.class);
+
+        allData.add(MonkEnergy.class);
+        allData.add(Nyctophobia.class);
+        allData.add(Ooze.class);
+        allData.add(Paralysis.class);
+        allData.add(PhysicalEmpower.class);
+        allData.add(PinCushion.class);
+        allData.add(Poison.class);
+        allData.add(Preparation.class);
+        allData.add(PrismaticGuard.class);
+        allData.add(PropBuff.class);
+
+        allData.add(Recharging.class);
+
+        allData.add(ReloadShop.class);
+        allData.add(ReloadShopTwo.class);
+        allData.add(RevealedArea.class);
+        allData.add(Roots.class);
+        allData.add(RoseShiled.class);
+
+        allData.add(ScrollEmpower.class);
+
+        allData.add(Shadows.class);
+
+
+        allData.add(Slow.class);
+        allData.add(SmokeAlly.class);
+        allData.add(Smoking.class);
+        allData.add(SnipersMark.class);
+        allData.add(SoulMark.class);
+
+        allData.add(Stamina.class);
+        allData.add(StormCloudDied.class);
+        allData.add(SunFire.class);
+
+        allData.add(Terror.class);
+
+        allData.add(ToxicImbue.class);
+        allData.add(TrueInvisibiity.class);
+        allData.add(Venom.class);
+        allData.add(Vertigo.class);
+        allData.add(Vulnerable.class);
+        allData.add(WandEmpower.class);
+        allData.add(WaterSoulX.class);
+        allData.add(Weakness.class);
+        allData.add(WellFed.class);
+        allData.add(WorstBlizzard.class);
+
+        //ClearBleesdGoodBuff
+        allData.add(BlessAnmy.class);
+        allData.add(BlessBossRushLow.class);
+        allData.add(BlessGoodSTR.class);
+        allData.add(BlessGoRead.class);
+        allData.add(BlessImmune.class);
+        allData.add(BlessLing.class);
+        allData.add(BlessLingJing.class);
+        allData.add(BlessMixShiled.class);
+        allData.add(BlessMobDied.class);
+        allData.add(BlessNoDied.class);
+        allData.add(BlessNoMoney.class);
+        allData.add(BlessQinyue.class);
+        allData.add(BlessRedWhite.class);
+        allData.add(BlessUnlock.class);
+        allData.add(ClearLanterBuff.class);
+
+        //ElementalBuff
+        allData.add(ScaryBuff.class);
+        allData.add(ScaryDamageBuff.class);
+        allData.add(ScaryImmunitiesBuff.class);
+
+        //MagicGirlDebuff
+        //allData.add((NO)MagicGirlSaySoftDied.class);
+        allData.add(MagicGirlSayCursed.class);
+        allData.add(MagicGirlSayKill.class);
+        allData.add(MagicGirlSayMoneyMore.class);
+        allData.add(MagicGirlSayNoSTR.class);
+        allData.add(MagicGirlSaySlowy.class);
+        allData.add(MagicGirlSayTimeLast.class);
+
+        allData.add(DragonWall.class);
+        allData.add(FoundChest.class);
+        allData.add(NightorDay.class);
+        allData.add(OozeStatueDead.class);
+        allData.add(QuestGold.class);
+
+        //SP
+        allData.add(ScrollOfSirensSong.Enthralled.class);
+
+        return allData;
     }
 }

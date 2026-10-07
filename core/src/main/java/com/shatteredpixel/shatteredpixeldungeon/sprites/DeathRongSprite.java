@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
