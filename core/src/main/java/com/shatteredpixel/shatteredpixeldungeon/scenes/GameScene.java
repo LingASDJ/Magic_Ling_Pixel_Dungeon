@@ -476,7 +476,13 @@ public class GameScene extends PixelScene {
 	public static void endActorThread(){
 		if (actorThread != null && actorThread.isAlive()){
 			Actor.keepActorThreadAlive = false;
-			actorThread.interrupt();
+			if (DeviceCompat.isWeb()) {
+				synchronized (actorThread) {
+					actorThread.notify();
+				}
+			} else {
+				actorThread.interrupt();
+			}
 		}
 	}
 
@@ -497,6 +503,13 @@ public class GameScene extends PixelScene {
 
 	@Override
 	public synchronized void onPause() {
+		if (DeviceCompat.isWeb() && Actor.processing()) {
+			//we can't interrupt a thread on the web. this should only happen
+			//in extreme cases, but if it does, we just don't pause the game.
+			return;
+		} else if (!Dungeon.hero.ready) {
+			waitForActorThread(500, false);
+		}
 		try {
 			Dungeon.saveAll();
 			Badges.saveGlobal();
@@ -614,7 +627,17 @@ public class GameScene extends PixelScene {
 				actorThread = new Thread() {
 					@Override
 					public void run() {
-						Actor.process();
+						try {
+							Actor.process();
+						} catch (Exception e) {
+							ShatteredPixelDungeon.reportException(e);
+						} finally {
+							if (DeviceCompat.isWeb()) {
+								synchronized (this) {
+									notify();
+								}
+							}
+						}
 					}
 				};
 

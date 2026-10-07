@@ -33,16 +33,53 @@ public class GameSettings {
 	public static <T extends Bundlable> T getBundlable(String key, T defValue){
 		try {
 			Bundle b = Bundle.fromString(getString(key,""));
-			return (T)b.get(BUNDLABLE);
+			if (b == null) return defValue;
+			T result = (T)b.get(BUNDLABLE);
+			//存储内容合法但没有该键（首次运行/旧存档/平台偏好缺失）时回退默认值
+			return result != null ? result : defValue;
 		} catch (Exception e) {
 			return defValue;
 		}
 	}
 	public static Preferences prefs;
 
+	/**
+	 * 启动早期（Gdx.app 尚未就绪或平台暂不支持 Preferences）的无操作实现：
+	 * 读操作返回默认值、写操作丢弃，避免在应用初始化完成前因 null 崩溃。
+	 */
+	private static final Preferences NULL_PREFS = new Preferences() {
+		@Override public Preferences putBoolean(String key, boolean val) { return this; }
+		@Override public Preferences putInteger(String key, int val) { return this; }
+		@Override public Preferences putLong(String key, long val) { return this; }
+		@Override public Preferences putFloat(String key, float val) { return this; }
+		@Override public Preferences putString(String key, String val) { return this; }
+		@Override public Preferences put(java.util.Map<String, ?> vals) { return this; }
+		@Override public boolean getBoolean(String key) { return false; }
+		@Override public int getInteger(String key) { return 0; }
+		@Override public long getLong(String key) { return 0L; }
+		@Override public float getFloat(String key) { return 0f; }
+		@Override public String getString(String key) { return ""; }
+		@Override public boolean getBoolean(String key, boolean defValue) { return defValue; }
+		@Override public int getInteger(String key, int defValue) { return defValue; }
+		@Override public long getLong(String key, long defValue) { return defValue; }
+		@Override public float getFloat(String key, float defValue) { return defValue; }
+		@Override public String getString(String key, String defValue) { return defValue; }
+		@Override public java.util.Map<String, ?> get() { return new java.util.HashMap<>(); }
+		@Override public boolean contains(String key) { return false; }
+		@Override public void flush() { }
+		@Override public void remove(String key) { }
+		@Override public void clear() { }
+	};
+
 	private static Preferences get() {
 		if (prefs == null) {
-			prefs = Gdx.app.getPreferences( DEFAULT_PREFS_FILE );
+			if (Gdx.app != null) {
+				prefs = Gdx.app.getPreferences( DEFAULT_PREFS_FILE );
+			}
+			if (prefs == null) {
+				//启动早期/平台暂不可用：临时返回无操作实现（不缓存，应用就绪后走真实实现）
+				return NULL_PREFS;
+			}
 		}
 		return prefs;
 	}

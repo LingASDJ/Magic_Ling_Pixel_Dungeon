@@ -30,9 +30,12 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.watabou.input.ControllerHandler;
 import com.watabou.noosa.Game;
 
+import com.badlogic.gdx.files.FileHandle;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Pattern;
+import java.util.function.Consumer;
 
 public abstract class PlatformSupport {
 	public void setOnscreenKeyboardVisible(boolean value){
@@ -59,34 +62,6 @@ public abstract class PlatformSupport {
 
 	protected static FreeTypeFontGenerator fallbackFontGenerator;
 
-	//splits on newlines, underscores, and chinese/japaneses characters
-	protected static Pattern regularsplitter = Pattern.compile(
-			"(?<=\n)|(?=\n)|(?<=_)|(?=_)|(?<=\\\\)|(?=\\\\)|" +
-					"(?<=<#[A-Fa-f0-9]{6}>)|(?=<#[A-Fa-f0-9]{6}>)|" +
-					"(?<=<#[A-Fa-f0-9]{3}>)|(?=<#[A-Fa-f0-9]{3}>)|" +
-					"(?<=<RGB>)|(?=<RGB>)|" +
-					"(?<=[^\\x00-\\xff])|(?=[^\\x00-\\xff])|" +
-					"(?<=\\p{InHiragana})|(?=\\p{InHiragana})|" +
-					"(?<=\\p{InKatakana})|(?=\\p{InKatakana})|" +
-					"(?<=\\p{InHangul_Syllables})|(?=!\\p{InHangul_Syllables})|" +
-					"(?<=\\p{InCJK_Unified_Ideographs})|(?=\\p{InCJK_Unified_Ideographs})|" +
-					"(?<=\\p{InCJK_Symbols_and_Punctuation})|(?=\\p{InCJK_Symbols_and_Punctuation})" +
-					"(?<=\\p{InHalfwidth_and_Fullwidth_Forms})|(?=\\p{InHalfwidth_and_Fullwidth_Forms})");
-
-	//additionally splits on words, so that each word can be arranged individually
-	protected static Pattern regularsplitterMultiline = Pattern.compile(
-			"(?<= )|(?= )|(?<=\n)|(?=\n)|(?<=_)|(?=_)|(?<=\\\\)|(?=\\\\)|" +
-					"(?<=<#[A-Fa-f0-9]{6}>)|(?=<#[A-Fa-f0-9]{6}>)|" +
-					"(?<=<#[A-Fa-f0-9]{3}>)|(?=<#[A-Fa-f0-9]{3}>)|" +
-                    "(?<=<RGB>)|(?=<RGB>)|" +
-					"(?<=[^\\x00-\\xff])|(?=[^\\x00-\\xff])|" +
-					"(?<=\\p{InHiragana})|(?=\\p{InHiragana})|" +
-					"(?<=\\p{InKatakana})|(?=\\p{InKatakana})|" +
-					"(?<=\\p{InHangul_Syllables})|(?=!\\p{InHangul_Syllables})|" +
-					"(?<=\\p{InCJK_Unified_Ideographs})|(?=\\p{InCJK_Unified_Ideographs})|" +
-					"(?<=\\p{InCJK_Symbols_and_Punctuation})|(?=\\p{InCJK_Symbols_and_Punctuation})" +
-					"(?<=\\p{InHalfwidth_and_Fullwidth_Forms})|(?=\\p{InHalfwidth_and_Fullwidth_Forms})");
-
 	protected int pageSize;
 	protected PixmapPacker packer;
 	protected boolean systemfont;
@@ -98,11 +73,103 @@ public abstract class PlatformSupport {
     }
 
     public String[] splitforTextBlock(String text, boolean multiline) {
-		if (multiline) {
-			return regularsplitterMultiline.split(text);
-		} else {
-			return regularsplitter.split(text);
+		// Simple default splitter (no regex, so it is safe on all platforms).
+		// Platforms with CJK text rendering requirements should override this.
+		if (text == null || text.length() == 0) return new String[]{""};
+		ArrayList<String> pieces = new ArrayList<>();
+		StringBuilder cur = new StringBuilder();
+		for (int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			if (c == '\n' || c == '_' || c > 255) {
+				if (cur.length() > 0) {
+					pieces.add(cur.toString());
+					cur.setLength(0);
+				}
+				if (c == '\n' || c == '_') pieces.add(String.valueOf(c));
+			} else {
+				cur.append(c);
+			}
 		}
+		if (cur.length() > 0) pieces.add(cur.toString());
+		return pieces.toArray(new String[0]);
+	}
+
+	/**
+	 * Whether this platform can show a native file-open dialog.
+	 * Defaults to false (web cannot browse the local filesystem).
+	 */
+	public boolean supportsFileDialogs(){
+		return false;
+	}
+
+	/**
+	 * Shows a native file-open dialog and delivers the selected absolute path
+	 * (or null when cancelled / unsupported) to the callback. The callback is
+	 * always invoked on the GL render thread.
+	 */
+	public void openFileDialog(String title, String[] extensions, Consumer<String> callback){
+		//default: unsupported, deliver null
+		if (callback != null) com.badlogic.gdx.Gdx.app.postRunnable(() -> callback.accept(null));
+	}
+
+	/**
+	 * Performs a synchronous HTTP GET and returns the response body, or null
+	 * when the request failed / the platform has no synchronous HTTP support.
+	 */
+	public String httpGet(String url){
+		return null;
+	}
+
+	/**
+	 * Installs an insecure, trust-all TLS configuration for outgoing HTTPS
+	 * requests. Needed by some desktop environments with self-signed game
+	 * servers; a no-op on platforms whose networking cannot be configured
+	 * this way (web uses the browser's native TLS).
+	 */
+	public void setupInsecureTls(){
+		//default: no-op
+	}
+
+	/**
+	 * Runs a task outside the GL render thread. Default implementation defers
+	 * it to the render thread (safe everywhere); desktop overrides with a real
+	 * background thread to keep networking off the UI thread.
+	 */
+	public void runAsync(Runnable task){
+		if (task != null) com.badlogic.gdx.Gdx.app.postRunnable(task);
+	}
+
+	/**
+	 * Returns the HTTP Date header of {@code url} as epoch milliseconds, or
+	 * -1 when the request failed / the platform cannot read response headers.
+	 * Used by the title screen's NTP check.
+	 */
+	public long getHttpDate(String url){
+		return -1;
+	}
+
+	/**
+	 * Opens a local directory in the system file manager.
+	 * Returns false when unsupported (web/mobile).
+	 */
+	public boolean openDirectory(String path){
+		return false;
+	}
+
+	/**
+	 * Validates/normalizes a settings.xml backup (Android-era raw entry format).
+	 * No-op by default (web).
+	 */
+	public void ensureSettingsXmlValid(FileHandle settingsHandle){
+		//default: no-op
+	}
+
+	/**
+	 * Converts an Android-era map settings backup to a standard format.
+	 * Pass-through by default (web).
+	 */
+	public byte[] convertAndroidMapSettings(byte[] raw){
+		return raw;
 	}
 
 	public void resetGenerators(){

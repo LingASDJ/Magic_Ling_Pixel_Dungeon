@@ -36,9 +36,7 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
 
-import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -52,9 +50,6 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * 存档备份场景（BackupSaveScene）
@@ -220,48 +215,31 @@ public class BackupSaveScene extends PixelScene {
         RedButton btnImport = new RedButton(Messages.get(this, "import_file"), 7) {
             @Override
             protected void onClick() {
-                if (DeviceCompat.isDesktop()) {
+                if (Game.platform.supportsFileDialogs()) {
                     // 锁：防止重复点击多次弹出对话框
                     if (importChooserOpened) {
                         return;
                     }
                     importChooserOpened = true;
 
-                    // Swing操作必须放到AWT事件调度线程EDT
-                    javax.swing.SwingUtilities.invokeLater(() -> {
-                        JFileChooser chooser = new JFileChooser();
-                        chooser.setDialogTitle(Messages.get(BackupSaveScene.class, "import_file"));
-                        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-                        chooser.setPreferredSize(new Dimension(800, 600));
-                        chooser.setFileFilter(new FileNameExtensionFilter("(*.mlsp)", "mlsp"));
-
-                        // 创建一个隐藏的JFrame作为对话框owner，实现模态置顶，不显示窗口
-                        javax.swing.JFrame tempOwnerFrame = new javax.swing.JFrame();
-                        tempOwnerFrame.setUndecorated(true);
-                        tempOwnerFrame.setSize(1,1);
-                        tempOwnerFrame.setLocationRelativeTo(null);
-                        tempOwnerFrame.setVisible(true);
-
-                        int ret = chooser.showOpenDialog(tempOwnerFrame);
-
-                        // 销毁临时owner窗口
-                        tempOwnerFrame.dispose();
-
-                        final File selected = chooser.getSelectedFile();
-
-                        // 释放锁，允许下一次打开
-                        importChooserOpened = false;
-
-                        // 把结果切回libGDX渲染线程执行游戏逻辑
-                        Gdx.app.postRunnable(() -> {
-                            if (ret == JFileChooser.APPROVE_OPTION && selected != null) {
-                                startImportFlow(Gdx.files.absolute(selected.getAbsolutePath()));
-                            }
-                        });
-                    });
+                    // File dialog is delegated to the platform (desktop shows a native
+                    // Swing chooser, web is unsupported and delivers null).
+                    Game.platform.openFileDialog(
+                            Messages.get(BackupSaveScene.class, "import_file"),
+                            new String[]{"mlsp"},
+                            new java.util.function.Consumer<String>() {
+                                @Override
+                                public void accept(String path) {
+                                    // 释放锁，允许下一次打开
+                                    importChooserOpened = false;
+                                    if (path != null) {
+                                        startImportFlow(Gdx.files.absolute(path));
+                                    }
+                                }
+                            });
 
                 } else {
-                    // 安卓/iOS 走不了 Swing，先给提示
+                    // 非桌面平台走不了 Swing，先给提示
                     ShatteredPixelDungeon.scene().addToFront(new WndMessage(
                             Messages.get(BackupSaveScene.class, "desktop_not_supported")));
                 }
@@ -831,19 +809,12 @@ public class BackupSaveScene extends PixelScene {
             SPDSettings.set( null );
             return;
         }
-        // 先规范化再校验：保证磁盘文件是 Lwjgl3Preferences 能读的标准格式
-        ensureSettingsXmlValid( settingsHandle );
-        try (InputStream in = settingsHandle.read()) {
-            java.util.Properties p = new java.util.Properties();
-            p.loadFromXML( in );
-        } catch (Exception e) {
-            // 记录异常但继续：下面仍然要作废缓存，避免旧值被 flush 覆盖回来
-            ShatteredPixelDungeon.reportException( e );
-        } finally {
-            // 无条件作废旧内存缓存；下次 get() 会重新从磁盘读取（若文件仍不可读则 Preferences 从空表开始，
-            // 随后第一次 put 会用标准格式重写文件，不会再用旧值覆盖导入结果）
-            SPDSettings.set( null );
-        }
+        // 先规范化再校验：保证磁盘文件是 Preferences 能读的标准格式
+        //（平台桥：桌面端执行 XML 修复，web 端为 no-op）
+        Game.platform.ensureSettingsXmlValid( settingsHandle );
+        // 无条件作废旧内存缓存；下次 get() 会重新从磁盘读取（若文件仍不可读则 Preferences 从空表开始，
+        // 随后第一次 put 会用标准格式重写文件，不会再用旧值覆盖导入结果）
+        SPDSettings.set( null );
         ShatteredPixelDungeon.updateSystemUI();
     }
 
@@ -860,32 +831,8 @@ public class BackupSaveScene extends PixelScene {
      * @return 标准 Properties XML 字节；非 map 格式（无法识别）时返回 null，调用方应原样处理
      */
     private static byte[] convertAndroidMapSettings(byte[] raw) {
-        if (raw == null || raw.length == 0) return null;
-        String text;
-        try {
-            text = new String(raw, "UTF-8");
-        } catch (Exception e) {
-            return null;
-        }
-        if (!text.contains("<map")) return null; // 不是安卓 map 格式
-        java.util.Properties props = new java.util.Properties();
-        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
-                "<(string|int|long|boolean|float)\\s+name=\"([^\"]*)\"[^>]*>(.*?)</\\1>",
-                java.util.regex.Pattern.DOTALL );
-        java.util.regex.Matcher m = p.matcher( text );
-        boolean found = false;
-        while (m.find()) {
-            props.setProperty( unescapeXmlText( m.group( 2 ) ), unescapeXmlText( m.group( 3 ) ) );
-            found = true;
-        }
-        if (!found) return null;
-        try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            props.storeToXML( bos, null );
-            return bos.toByteArray();
-        } catch (Exception e) {
-            return null;
-        }
+        // 平台桥：桌面端执行 XML map 转换，web 端为原样透传
+        return Game.platform.convertAndroidMapSettings(raw);
     }
 
     /**
@@ -900,47 +847,8 @@ public class BackupSaveScene extends PixelScene {
      * @param settingsHandle settings.xml 的文件句柄（用 FileUtils 的相对根目录句柄）
      */
     public static void ensureSettingsXmlValid(FileHandle settingsHandle) {
-        if (settingsHandle == null || !settingsHandle.exists()) return;
-        String raw;
-        try {
-            raw = settingsHandle.readString( "UTF-8" );
-        } catch (Exception e) {
-            ShatteredPixelDungeon.reportException( e );
-            return;
-        }
-        // 已含 DOCTYPE：尝试解析，能解析即为标准格式，不动
-        if (raw.contains( "<!DOCTYPE properties" )) {
-            try (InputStream in = settingsHandle.read()) {
-                java.util.Properties p = new java.util.Properties();
-                p.loadFromXML( in );
-                return;
-            } catch (Exception e) {
-                // 带 DOCTYPE 但无法解析（如内容被破坏）：继续走重建流程
-                ShatteredPixelDungeon.reportException( e );
-            }
-        }
-
-        StringBuilder out = new StringBuilder();
-        out.append( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
-        out.append( "<!DOCTYPE properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">\n" );
-        out.append( "<properties>\n" );
-        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
-                "<entry\\s+key=\"([^\"]*)\"[^>]*>(.*?)</entry>",
-                java.util.regex.Pattern.DOTALL );
-        java.util.regex.Matcher m = p.matcher( raw );
-        boolean found = false;
-        while (m.find()) {
-            out.append( "<entry key=\"" ).append( escapeXmlText( unescapeXmlText( m.group( 1 ) ) ) ).append( "\">" )
-                    .append( escapeXmlText( unescapeXmlText( m.group( 2 ) ) ) ).append( "</entry>\n" );
-            found = true;
-        }
-        if (!found) return; // 无法识别条目结构：不做改写，交由 reloadSettingsFromDisk 兜底
-        out.append( "</properties>\n" );
-        try {
-            settingsHandle.writeString( out.toString(), false, "UTF-8" );
-        } catch (Exception e) {
-            ShatteredPixelDungeon.reportException( e );
-        }
+        // 平台桥：桌面端执行 XML 规范化，web 端为 no-op
+        Game.platform.ensureSettingsXmlValid( settingsHandle );
     }
 
     /**
@@ -1023,27 +931,12 @@ public class BackupSaveScene extends PixelScene {
      * @return 是否成功发起打开操作
      */
     private static boolean openDirectory(FileHandle dirHandle) {
+        // 只有桌面端能调用系统文件管理器
+        if (!DeviceCompat.isDesktop()) return false;
         // 目录不存在或不是目录时直接失败
         if (!dirHandle.exists() || !dirHandle.isDirectory()) return false;
-        String path = dirHandle.file().getAbsolutePath();
-        String os = System.getProperty("os.name").toLowerCase();
-        try {
-            // 按操作系统分发到对应的系统文件管理器
-            if (os.contains("win")) {
-                Runtime.getRuntime().exec(new String[]{"explorer.exe", path});
-            } else if (os.contains("mac")) {
-                Runtime.getRuntime().exec(new String[]{"open", path});
-            } else if (os.contains("nix") || os.contains("nux")) {
-                Runtime.getRuntime().exec(new String[]{"xdg-open", path});
-            } else {
-                return false; // 安卓等移动平台无法调用系统文件管理器
-            }
-            return true;
-        } catch (IOException e) {
-            // 打开失败（安卓端常见）：上报异常并返回 false
-            ShatteredPixelDungeon.reportException(e);
-            return false;
-        }
+        // 经平台桥交给系统文件管理器（桌面实现打开资源管理器/Finder/文件管理器）
+        return Game.platform.openDirectory(dirHandle.file().getAbsolutePath());
     }
 
     /**

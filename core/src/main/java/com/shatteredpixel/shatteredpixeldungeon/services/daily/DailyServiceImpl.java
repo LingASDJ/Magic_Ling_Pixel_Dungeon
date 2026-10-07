@@ -11,33 +11,15 @@ import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 
 import java.io.StringWriter;
-import java.security.cert.X509Certificate;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 public class DailyServiceImpl extends DailyService {
 
     private static final String API_BASE = "https://mlpddailybeta.spldream.com/MLPD/api/v1/daily";
 
     private static void setupSSL() {
-        try {
-            TrustManager[] trustAllCerts = new TrustManager[] {
-                    new X509TrustManager() {
-                        public X509Certificate[] getAcceptedIssuers() { return null; }
-                        public void checkClientTrusted(X509Certificate[] certs, String authType) {}
-                        public void checkServerTrusted(X509Certificate[] certs, String authType) {}
-                    }
-            };
-            SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
-        } catch (Exception e) {
-            Game.reportException(e);
-        }
+        // TLS configuration is platform-specific; desktop installs an
+        // insecure trust-all context, web uses the browser's native TLS.
+        Game.platform.setupInsecureTls();
     }
 
     private void httpGet(String url, Net.HttpResponseListener listener) {

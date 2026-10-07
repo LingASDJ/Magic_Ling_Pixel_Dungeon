@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.desktop;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -35,11 +36,29 @@ import com.watabou.utils.PlatformSupport;
 import com.watabou.utils.Point;
 
 import java.awt.Desktop;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
+import java.util.Properties;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class DesktopPlatformSupport extends PlatformSupport {
 
@@ -209,5 +228,269 @@ public class DesktopPlatformSupport extends PlatformSupport {
 	@Override
 	public void install(File file) {
 		// TODO
+	}
+
+	/* PLATFORM BRIDGES (used by core code on desktop only) */
+
+	@Override
+	public boolean supportsFileDialogs(){
+		return true;
+	}
+
+	@Override
+	public void openFileDialog(String title, String[] extensions, Consumer<String> callback){
+		// Swing dialog must run on the AWT event dispatch thread (EDT)
+		javax.swing.SwingUtilities.invokeLater(() -> {
+			JFileChooser chooser = new JFileChooser();
+			chooser.setDialogTitle(title);
+			chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+			chooser.setPreferredSize(new java.awt.Dimension(800, 600));
+			if (extensions != null && extensions.length > 0) {
+				chooser.setFileFilter(new FileNameExtensionFilter(
+						"(*." + String.join(", *.", extensions) + ")", extensions));
+			}
+
+			// a hidden undecorated owner frame keeps the dialog modal and on top
+			javax.swing.JFrame tempOwnerFrame = new javax.swing.JFrame();
+			tempOwnerFrame.setUndecorated(true);
+			tempOwnerFrame.setSize(1, 1);
+			tempOwnerFrame.setLocationRelativeTo(null);
+			tempOwnerFrame.setVisible(true);
+
+			int ret = chooser.showOpenDialog(tempOwnerFrame);
+			tempOwnerFrame.dispose();
+
+			final File selected = chooser.getSelectedFile();
+			final String path = (ret == JFileChooser.APPROVE_OPTION && selected != null)
+					? selected.getAbsolutePath() : null;
+
+			// deliver the result back on the GL render thread
+			Gdx.app.postRunnable(() -> callback.accept(path));
+		});
+	}
+
+	@Override
+	public void runAsync(Runnable task){
+		new Thread(task).start();
+	}
+
+	@Override
+	public long getHttpDate(String url){
+		try {
+			setupInsecureTls();
+			URLConnection conn = new URL(url).openConnection();
+			conn.setConnectTimeout(4000);
+			conn.setReadTimeout(4000);
+			conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+			conn.connect();
+			return conn.getDate();
+		} catch (Exception e) {
+			return -1;
+		}
+	}
+
+	@Override
+	public boolean openDirectory(String path){
+		if (path == null || path.isEmpty()) return false;
+		try {
+			File f = new File(path);
+			if (!f.isDirectory()) return false;
+			if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+				Desktop.getDesktop().browse(f.toURI());
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	@Override
+	public void setupInsecureTls(){
+		try {
+			TrustManager[] trustAllCerts = new TrustManager[] {
+					new X509TrustManager() {
+						public X509Certificate[] getAcceptedIssuers() {
+							return null;
+						}
+						public void checkClientTrusted(X509Certificate[] certs, String authType) {
+						}
+						public void checkServerTrusted(X509Certificate[] certs, String authType) {
+						}
+					}
+			};
+
+			// install an all-trusting TrustManager
+			SSLContext sc = SSLContext.getInstance("TLS");
+			sc.init(null, trustAllCerts, new java.security.SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+			// create a HostnameVerifier that does not validate the host name
+			HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+		} catch (Exception e) {
+			Game.reportException(e);
+		}
+	}
+
+	@Override
+	public String httpGet(String url){
+		try {
+			setupInsecureTls();
+
+			URLConnection conn = new URL(url).openConnection();
+			conn.setConnectTimeout(4000);
+			conn.setReadTimeout(4000);
+			conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+			conn.connect();
+
+			InputStream inputStream = conn.getInputStream();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+
+			StringBuilder sb = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+			reader.close();
+			inputStream.close();
+
+			return sb.toString();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	@Override
+	public void ensureSettingsXmlValid(FileHandle settingsHandle) {
+		if (settingsHandle == null || !settingsHandle.exists()) return;
+		String raw;
+		try {
+			raw = settingsHandle.readString("UTF-8");
+		} catch (Exception e) {
+			Game.reportException(e);
+			return;
+		}
+		// 已含 DOCTYPE：尝试解析，能解析即为标准格式，不动
+		if (raw.contains("<!DOCTYPE properties")) {
+			try (InputStream in = settingsHandle.read()) {
+				Properties p = new Properties();
+				p.loadFromXML(in);
+				return;
+			} catch (Exception e) {
+				Game.reportException(e);
+			}
+		}
+
+		StringBuilder out = new StringBuilder();
+		out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		out.append("<!DOCTYPE properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">\n");
+		out.append("<properties>\n");
+		Pattern p = Pattern.compile(
+				"<entry\\s+key=\"([^\"]*)\"[^>]*>(.*?)</entry>",
+				Pattern.DOTALL);
+		Matcher m = p.matcher(raw);
+		boolean found = false;
+		while (m.find()) {
+			out.append("<entry key=\"").append(escapeXmlText(unescapeXmlText(m.group(1)))).append("\">")
+					.append(escapeXmlText(unescapeXmlText(m.group(2)))).append("</entry>\n");
+			found = true;
+		}
+		if (!found) return;
+		out.append("</properties>\n");
+		try {
+			settingsHandle.writeString(out.toString(), false, "UTF-8");
+		} catch (Exception e) {
+			Game.reportException(e);
+		}
+	}
+
+	@Override
+	public byte[] convertAndroidMapSettings(byte[] raw) {
+		if (raw == null || raw.length == 0) return null;
+		String text;
+		try {
+			text = new String(raw, "UTF-8");
+		} catch (Exception e) {
+			return null;
+		}
+		if (!text.contains("<map")) return null; // 不是安卓 map 格式
+		Properties props = new Properties();
+		Pattern p = Pattern.compile(
+				"<(string|int|long|boolean|float)\\s+name=\"([^\"]*)\"[^>]*>(.*?)</\\1>",
+				Pattern.DOTALL);
+		Matcher m = p.matcher(text);
+		boolean found = false;
+		while (m.find()) {
+			props.setProperty(unescapeXmlText(m.group(2)), unescapeXmlText(m.group(3)));
+			found = true;
+		}
+		if (!found) return null;
+		try {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			props.storeToXML(bos, null);
+			return bos.toByteArray();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/** 宽松解码 XML 实体（与 BackupSaveScene 原实现一致） */
+	private static String unescapeXmlText(String s) {
+		if (s == null || s.indexOf('&') == -1) return s;
+		StringBuilder sb = new StringBuilder(s.length());
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (c != '&') {
+				sb.append(c);
+				continue;
+			}
+			int semi = s.indexOf(';', i);
+			if (semi == -1 || semi - i > 10) {
+				sb.append(c);
+				continue;
+			}
+			String ent = s.substring(i + 1, semi);
+			switch (ent) {
+				case "amp":  sb.append('&');  i = semi; continue;
+				case "lt":   sb.append('<');  i = semi; continue;
+				case "gt":   sb.append('>');  i = semi; continue;
+				case "quot": sb.append('"');  i = semi; continue;
+				case "apos": sb.append('\''); i = semi; continue;
+			}
+			if (ent.length() > 1 && ent.charAt(0) == '#') {
+				try {
+					int cp = (ent.length() > 2 && (ent.charAt(1) == 'x' || ent.charAt(1) == 'X'))
+							? Integer.parseInt(ent.substring(2), 16)
+							: Integer.parseInt(ent.substring(1));
+					sb.appendCodePoint(cp);
+					i = semi;
+					continue;
+				} catch (NumberFormatException ignored) {
+				}
+			}
+			sb.append(c);
+		}
+		return sb.toString();
+	}
+
+	/** 与 java.util.Properties.storeToXML 一致的转义（与 BackupSaveScene 原实现一致） */
+	private static String escapeXmlText(String s) {
+		StringBuilder sb = new StringBuilder(s.length());
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			switch (c) {
+				case '&':  sb.append("&amp;");  break;
+				case '<':  sb.append("&lt;");   break;
+				case '>':  sb.append("&gt;");   break;
+				case '"':  sb.append("&quot;"); break;
+				case '\'': sb.append("&apos;"); break;
+				case '\t': sb.append("&#09;");  break;
+				case '\n': sb.append("&#10;");  break;
+				case '\r': sb.append("&#13;");  break;
+				default:   sb.append(c);
+			}
+		}
+		return sb.toString();
 	}
 }

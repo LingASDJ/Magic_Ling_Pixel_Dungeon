@@ -22,6 +22,8 @@
 package com.watabou.glwrap;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.watabou.utils.DeviceCompat;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
@@ -75,13 +77,30 @@ public class Vertexbuffer {
 	public void updateGLData(){
 		if (updateStart == -1) return;
 
-		((Buffer)vertices).position(updateStart);
 		bind();
 
 		if (updateStart == 0 && updateEnd == vertices.limit()){
+			((Buffer)vertices).position(0);
 			Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, vertices.limit()*4, vertices, Gdx.gl.GL_DYNAMIC_DRAW);
 		} else {
-			Gdx.gl.glBufferSubData(Gdx.gl.GL_ARRAY_BUFFER, updateStart*4, (updateEnd - updateStart)*4, vertices);
+			int length = updateEnd - updateStart;
+			if (DeviceCompat.isWeb()) {
+				// TeaVM's WebGL bridge uploads the entire typed-array view, so give it a
+				// buffer that contains exactly the dirty range for partial updates.
+				int position = vertices.position();
+				int limit = vertices.limit();
+				FloatBuffer update = BufferUtils.newFloatBuffer(length);
+				((Buffer)vertices).position(updateStart);
+				((Buffer)vertices).limit(updateEnd);
+				update.put(vertices);
+				((Buffer)update).position(0);
+				((Buffer)vertices).limit(limit);
+				((Buffer)vertices).position(position);
+				Gdx.gl.glBufferSubData(Gdx.gl.GL_ARRAY_BUFFER, updateStart*4, length*4, update);
+			} else {
+				((Buffer)vertices).position(updateStart);
+				Gdx.gl.glBufferSubData(Gdx.gl.GL_ARRAY_BUFFER, updateStart*4, length*4, vertices);
+			}
 		}
 
 		release();

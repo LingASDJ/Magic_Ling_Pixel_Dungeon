@@ -4,6 +4,7 @@ include ':core'
 
 //platform modules
 include ':desktop'
+include ':web'
 //service modules
 include ':services'
 

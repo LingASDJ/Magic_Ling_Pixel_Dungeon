@@ -47,15 +47,24 @@ public class SeedFinderJob {
         return t.clsName() + "|" + t.minLevel + "|" + t.augName();
     }
 
-    /** 子进程按类名重建查询目标；类名为空表示纯等级目标（"+N"，任意物品按等级匹配） */
+    /** 子进程按类名重建查询目标；类名为空表示纯等级目标（"+N"，任意物品按等级匹配）。
+     *  类名支持逗号分隔的多类列表（文本模糊名如 "之戒" 命中的全部 X之戒 戒指），任一命中即满足 */
     public ArrayList<WantedTarget> buildTargets() throws ClassNotFoundException {
         ArrayList<WantedTarget> targets = new ArrayList<>();
         for (String spec : targetSpecs) {
             String[] parts = spec.split("\\|", -1);
-            Class<? extends Item> cls = parts[0].isEmpty() ? null : Class.forName(parts[0]).asSubclass(Item.class);
             int minLevel = parts.length > 1 && !parts[1].isEmpty() ? Integer.parseInt(parts[1]) : 0;
             Class<?> aug = parts.length > 2 && !parts[2].isEmpty() ? Class.forName(parts[2]) : null;
-            targets.add(new WantedTarget(cls, minLevel, aug));
+            if (parts[0].isEmpty()) {
+                targets.add(new WantedTarget((Class<? extends Item>) null, minLevel, aug));
+                continue;
+            }
+            String[] names = parts[0].split(",");
+            @SuppressWarnings("unchecked")
+            Class<? extends Item>[] classes = (Class<? extends Item>[]) new Class<?>[names.length];
+            for (int i = 0; i < names.length; i++)
+                classes[i] = Class.forName(names[i].trim()).asSubclass(Item.class);
+            targets.add(new WantedTarget(classes, minLevel, aug));
         }
         return targets;
     }

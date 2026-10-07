@@ -11,11 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.ConnectionRoom;
 import com.watabou.utils.Point;
 
-import org.luaj.vm2.Globals;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.jse.JsePlatform;
-
-import java.io.InputStream;
+import java.util.ArrayList;
 
 public abstract class CustomLuaRoom extends ConnectionRoom {
 
@@ -42,50 +38,103 @@ public abstract class CustomLuaRoom extends ConnectionRoom {
     }
 
     // 从Lua文件加载地图数据
+    // These map files are exported by Tiled (v1.10 Lua format). Instead of running
+    // them through the LuaJ interpreter (which is not available on web/TeaVM targets),
+    // we parse the deterministic Tiled-Lua layout directly: the first layer's "data"
+    // table, an array of integer tile GIDs.
     public int[] loadMapFromLua(String t) {
         try {
-            Globals globals = JsePlatform.standardGlobals();
-
-            InputStream inputStream = Gdx.files.internal(map_lua_file).read();
-
-            if (inputStream == null) {
-                inputStream = CustomLuaRoom.class.getResourceAsStream("/" + t);
-
-                if (inputStream == null) {
-                    throw new RuntimeException("The file map_room.lua cannot be found. Try the following path:: " +
-                            "assets/" + t + " and " +
-                            "/" + t);
-                }
+            String luaText;
+            if (Gdx.files.internal(map_lua_file).exists()) {
+                luaText = Gdx.files.internal(map_lua_file).readString("UTF-8");
+            } else {
+                throw new RuntimeException("The file map_room.lua cannot be found. Try the following path:: " +
+                        "assets/" + t + " and " +
+                        "/" + t);
             }
 
-            LuaValue chunk = globals.load(inputStream, "map_room.lua", "t", globals);
-            LuaValue result = chunk.call();
-
-            LuaValue layers = result.get("layers");
-            if (!layers.istable()) {
-                throw new RuntimeException("The ‘layers’ table was not found in the Lua file. Your Lua file may be corrupted.");
-            }
-
-            LuaValue layer1 = layers.get(1);
-            if (!layer1.istable()) {
-                throw new RuntimeException("The first layer was not found in the Lua file. Your Lua file may be corrupted.");
-            }
-
-            LuaValue data = layer1.get("data");
-            if (!data.istable()) {
-                throw new RuntimeException("The ‘data’ array was not found in the Lua file. Your Lua file may be corrupted.");
-            }
-
-            int size = data.length();
-            int[] mapData = new int[size];
-            for (int i = 1; i <= size; i++) {
-                mapData[i-1] = data.get(i).toint();
-            }
-
-            return mapData;
+            return parseTiledLuaMap(luaText);
         } catch (Exception e) {
             return null;
         }
+    }
+
+    // Minimal parser for Tiled's Lua export format. It locates the first layer's
+    // "data" table and reads its integer array. Fully deterministic, no interpreter.
+    private static int[] parseTiledLuaMap(String lua) {
+        if (lua == null) return null;
+
+        // strip Lua comments (-- to end of line), honoring simple string literals
+        StringBuilder clean = new StringBuilder(lua.length());
+        boolean inString = false;
+        for (int i = 0; i < lua.length(); i++) {
+            char c = lua.charAt(i);
+            if (inString) {
+                clean.append(c);
+                if (c == '"') inString = false;
+                continue;
+            }
+            if (c == '"') {
+                inString = true;
+                clean.append(c);
+                continue;
+            }
+            if (c == '-' && i + 1 < lua.length() && lua.charAt(i + 1) == '-') {
+                while (i < lua.length() && lua.charAt(i) != '\n') i++;
+                clean.append('\n');
+                continue;
+            }
+            clean.append(c);
+        }
+        String text = clean.toString();
+
+        // locate the layers table
+        int layersIdx = text.indexOf("[\"layers\"]");
+        if (layersIdx == -1) layersIdx = text.indexOf("layers");
+        if (layersIdx == -1) return null;
+        int layersBrace = text.indexOf('{', layersIdx);
+        if (layersBrace == -1) return null;
+
+        // the first layer's data table
+        int dataIdx = text.indexOf("[\"data\"]", layersBrace);
+        if (dataIdx == -1) dataIdx = text.indexOf("data", layersBrace);
+        if (dataIdx == -1) return null;
+        int dataBrace = text.indexOf('{', dataIdx);
+        if (dataBrace == -1) return null;
+
+        int end = dataBrace + 1;
+        int depth = 1;
+        while (end < text.length() && depth > 0) {
+            char c = text.charAt(end);
+            if (c == '{') depth++;
+            else if (c == '}') depth--;
+            end++;
+        }
+        if (depth != 0) return null;
+
+        String body = text.substring(dataBrace + 1, end - 1);
+        ArrayList<Integer> values = new ArrayList<>();
+        int idx = 0;
+        while (idx < body.length()) {
+            char c = body.charAt(idx);
+            if (c == ',' || Character.isWhitespace(c)) {
+                idx++;
+                continue;
+            }
+            int start = idx;
+            while (idx < body.length() && body.charAt(idx) != ',' && !Character.isWhitespace(body.charAt(idx))) idx++;
+            String token = body.substring(start, idx);
+            if (!token.isEmpty()) {
+                try {
+                    if (token.endsWith(".0")) token = token.substring(0, token.length() - 2);
+                    values.add((int) Double.parseDouble(token));
+                } catch (NumberFormatException ignored) {}
+            }
+        }
+
+        int[] result = new int[values.size()];
+        for (int i = 0; i < values.size(); i++) result[i] = values.get(i);
+        return result;
     }
 
     private static int codeToTerrain(int code){

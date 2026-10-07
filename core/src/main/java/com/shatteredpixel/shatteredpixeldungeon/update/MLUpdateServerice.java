@@ -36,14 +36,14 @@ public class MLUpdateServerice extends UpdateService {
 				if (UpdateChecker.config == null) {
 					callback.onConnectionFailed();
 				} else {
-					String latestVersionCode = UpdateChecker.config.get("MLPDVersionCode").asText();
+					String latestVersionCode = UpdateChecker.config.getString("MLPDVersionCode", "0");
 					if (ShatteredPixelDungeon.versionCode < Integer.parseInt(latestVersionCode)) {
 						AvailableUpdateData update = new AvailableUpdateData();
-						update.versionName = UpdateChecker.config.get("MLPDGameVersion").asText();
-						update.desc = UpdateChecker.config.get("changeLog").asText();
-						update.URL1 = UpdateChecker.config.get("DownloadLink1").asText();
-						update.URL3 = UpdateChecker.config.get("DownloadLink3").asText();
-						update.URL4 = UpdateChecker.config.get("Blog").asText();
+						update.versionName = UpdateChecker.config.getString("MLPDGameVersion", "");
+						update.desc = UpdateChecker.config.getString("changeLog", "");
+						update.URL1 = UpdateChecker.config.getString("DownloadLink1", "");
+						update.URL3 = UpdateChecker.config.getString("DownloadLink3", "");
+						update.URL4 = UpdateChecker.config.getString("Blog", "");
 						callback.onUpdateAvailable(update);
 					} else {
 						callback.onNoUpdateFound();

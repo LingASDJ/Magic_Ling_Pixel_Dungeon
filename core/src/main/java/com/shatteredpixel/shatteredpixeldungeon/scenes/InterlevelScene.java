@@ -281,62 +281,69 @@ public class InterlevelScene extends PixelScene {
 		phase = Phase.FADE_IN;
 		timeLeft = fadeTime;
 
-		if (thread == null) {
+		if (DeviceCompat.isWeb()) {
+			// TeaVM 无真实线程：thread.start() 的 run() 在 web 上永不执行，
+			// 楼层生成改为在渲染线程上同步内联完成。
+			loadLevelInline();
+		} else if (thread == null) {
 			thread = new Thread() {
 				@Override
 				public void run() {
-
-					try {
-
-						Actor.fixTime();
-
-						switch (mode) {
-							case DESCEND:
-							case ANCITYBOSS:
-							case AMULET:
-							case GARDEN:
-							case REDSTART:
-							case HIRO:
-							case YOG:
-								descend();
-								break;
-							case ASCEND:
-								ascend();
-								break;
-							case CONTINUE:
-								restore();
-								break;
-							case RESURRECT:
-								resurrect();
-								break;
-							case RETURN:
-								returnTo();
-								break;
-							case FALL:
-								fall();
-								break;
-							case RESET:
-								reset();
-								break;
-						}
-
-					} catch (Exception e) {
-
-						error = e;
-
-					}
-
-					synchronized (thread) {
-						if (phase == Phase.STATIC && error == null) {
-							phase = Phase.FADE_OUT;
-							timeLeft = fadeTime;
-						}
-					}
+					loadLevelInline();
 				}
 			};
 			thread.start();
 		}
 		waitingTime = 0f;
+	}
+
+	private void loadLevelInline() {
+		try {
+
+			Actor.fixTime();
+
+			switch (mode) {
+				case DESCEND:
+				case ANCITYBOSS:
+				case AMULET:
+				case GARDEN:
+				case REDSTART:
+				case HIRO:
+				case YOG:
+					descend();
+					break;
+				case ASCEND:
+					ascend();
+					break;
+				case CONTINUE:
+					restore();
+					break;
+				case RESURRECT:
+					resurrect();
+					break;
+				case RETURN:
+					returnTo();
+					break;
+				case FALL:
+					fall();
+					break;
+				case RESET:
+					reset();
+					break;
+			}
+
+		} catch (Exception e) {
+
+			error = e;
+
+		}
+
+		if (thread != null) synchronized (thread) {
+			if (phase == Phase.STATIC && error == null) {
+				phase = Phase.FADE_OUT;
+				timeLeft = fadeTime;
+			}
+		}
 	}
 
 	@Override
@@ -352,7 +359,15 @@ public class InterlevelScene extends PixelScene {
 			case FADE_IN:
 				message.alpha( 1 - p );
 				if ((timeLeft -= Game.elapsed) <= 0) {
-					synchronized (thread) {
+					if (thread == null) {
+						// web 内联路径：生成已在 create() 同步完成
+						if (error == null) {
+							phase = Phase.FADE_OUT;
+							timeLeft = fadeTime;
+						} else {
+							phase = Phase.STATIC;
+						}
+					} else synchronized (thread) {
 						if (!thread.isAlive() && error == null) {
 							phase = Phase.FADE_OUT;
 							timeLeft = fadeTime;

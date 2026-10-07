@@ -1,0 +1,46 @@
+plugins {
+	id 'java-library'
+}
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
+def teavmBackendVersion = '1.5.5'
+dependencies {
+	implementation project(':core')
+	implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+	implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+	implementation "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
+	implementation "com.github.xpenatan.gdx-teavm:backend-web:$teavmBackendVersion"
+	implementation "com.github.xpenatan.gdx-teavm:gdx-freetype-teavm:$teavmBackendVersion"
+	implementation "com.github.xpenatan.gdx-teavm:gdx-controllers-teavm:$teavmBackendVersion"
+	// SPD-classes keeps org.json as an implementation dependency; the web
+	// target needs it explicitly because TeaVM compiles the whole reachable app.
+	implementation "org.json:json:20170516"
+}
+tasks.register('webBuild', JavaExec) {
+	group = 'web'
+	description = 'Builds the TeaVM browser version into web/build/dist/webapp.'
+	dependsOn classes
+	// build-host shadow of TeaVM 0.14.0 ClassGenerator that guards the
+	// getEnumConstants null-class NPE; must come before teavm-classlib.
+	classpath = files('debug-out') + sourceSets.main.runtimeClasspath
+	mainClass = 'com.shatteredpixel.shatteredpixeldungeon.web.BuildWeb'
+	workingDir = rootDir
+	jvmArgs '-Xmx10g'
+	args 'build'
+}
+
+tasks.register('printWebClasspath') {
+	doLast {
+		println sourceSets.main.runtimeClasspath.asPath
+	}
+}
+tasks.register('webRun', JavaExec) {
+	group = 'web'
+	description = 'Builds and serves the TeaVM browser version on http://localhost:8080/.'
+	dependsOn classes
+	classpath = files('debug-out') + sourceSets.main.runtimeClasspath
+	mainClass = 'com.shatteredpixel.shatteredpixeldungeon.web.BuildWeb'
+	workingDir = rootDir
+	jvmArgs '-Xmx10g'
+	args 'run'
+}

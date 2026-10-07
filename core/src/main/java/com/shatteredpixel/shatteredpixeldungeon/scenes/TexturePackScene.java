@@ -27,33 +27,25 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
 
-import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.nio.channels.FileChannel;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class TexturePackScene extends PixelScene {
 
@@ -199,19 +191,24 @@ public class TexturePackScene extends PixelScene {
         posY = nextPosY = packInfo.bottom() + GAP;
         second = false;
 
-        File dir = new File(Gdx.files.getLocalStoragePath() + TEXTURE_PACKS_DIR);
+        // FileHandle-based listing: works on desktop (local dir) and web (IndexedDB)
+        FileHandle dir = Gdx.files.local(TEXTURE_PACKS_DIR);
         if (!dir.exists()) {
             dir.mkdirs();
         }
 
-        File[] localFiles = dir.listFiles((d, name) -> {
-            for (String ext : ALLOWED_EXTENSIONS) {
-                if (name.toLowerCase().endsWith(ext)) {
-                    return true;
+        FileHandle[] allFiles = dir.list();
+        ArrayList<FileHandle> localFiles = new ArrayList<>();
+        if (allFiles != null) {
+            for (FileHandle f : allFiles) {
+                for (String ext : ALLOWED_EXTENSIONS) {
+                    if (f.name().toLowerCase().endsWith(ext)) {
+                        localFiles.add(f);
+                        break;
+                    }
                 }
             }
-            return false;
-        });
+        }
 
         List<FileHandle> assetFiles = new ArrayList<>();
         for (String fileName : PRESET_PACKS) {
@@ -227,9 +224,9 @@ public class TexturePackScene extends PixelScene {
 
         boolean hasPacks = false;
 
-        if (localFiles != null && localFiles.length > 0) {
+        if (!localFiles.isEmpty()) {
             hasPacks = true;
-            for (File file : localFiles) {
+            for (FileHandle file : localFiles) {
                 // 传递 activePath 以便判断
                 TexturePackItem item = new TexturePackItem(file, activePath);
                 addItemToContent(item, columns, panel, posY, second);
@@ -322,7 +319,7 @@ public class TexturePackScene extends PixelScene {
     }
 
     private void importTexturePack() {
-        if (DeviceCompat.isDesktop()) {
+        if (DeviceCompat.isDesktop() && Game.platform.supportsFileDialogs()) {
             importTexturePackDesktop();
         } else if (DeviceCompat.isAndroid()) {
             //importTexturePackAndroid();
@@ -334,42 +331,32 @@ public class TexturePackScene extends PixelScene {
     private void importTexturePackDesktop() {
         isImporting = true;
 
-        new Thread(() -> {
-            try {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setDialogTitle(Messages.get(this, "import_texture_pack"));
-                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-                fileChooser.setPreferredSize(new Dimension(800, 600));
-
-                FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                        "(*.zip, *.mlpack)", "zip", "mlpack");
-                fileChooser.setFileFilter(filter);
-
-                int returnValue = fileChooser.showOpenDialog(null);
-
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    final File selectedFile = fileChooser.getSelectedFile();
-
-                    Gdx.app.postRunnable(() -> {
+        // File dialog is delegated to the platform (desktop shows a native Swing
+        // chooser, web has no local filesystem access and delivers null).
+        Game.platform.openFileDialog(
+                Messages.get(this, "import_texture_pack"),
+                new String[]{"zip", "mlpack"},
+                new java.util.function.Consumer<String>() {
+                    @Override
+                    public void accept(String selectedPath) {
+                        if (selectedPath == null) {
+                            isImporting = false;
+                            return;
+                        }
                         try {
+                            FileHandle selectedFile = Gdx.files.absolute(selectedPath);
                             if (!isValidTexturePack(selectedFile)) {
                                 add(new WndError(Messages.get(this, "invalid_pack")));
                                 return;
                             }
 
-                            File destDir = new File(Gdx.files.getLocalStoragePath() + TEXTURE_PACKS_DIR);
+                            FileHandle destDir = Gdx.files.local(TEXTURE_PACKS_DIR);
                             if (!destDir.exists()) {
                                 destDir.mkdirs();
                             }
 
-                            File destFile = new File(destDir, selectedFile.getName());
-
-                            try (FileInputStream fis = new FileInputStream(selectedFile);
-                                 FileOutputStream fos = new FileOutputStream(destFile);
-                                 FileChannel sourceChannel = fis.getChannel();
-                                 FileChannel destChannel = fos.getChannel()) {
-                                destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
-                            }
+                            FileHandle destFile = destDir.child(selectedFile.name());
+                            selectedFile.copyTo(destFile);
 
                             ShatteredPixelDungeon.seamlessResetScene();
                         } catch (Exception e) {
@@ -377,31 +364,22 @@ public class TexturePackScene extends PixelScene {
                         } finally {
                             isImporting = false;
                         }
-                    });
-                } else {
-                    Gdx.app.postRunnable(() -> isImporting = false);
-                }
-            } catch (Exception e) {
-                Gdx.app.postRunnable(() -> {
-                    add(new WndError(Messages.get(this, "import_failed") + "\n" + e.getMessage()));
-                    isImporting = false;
+                    }
                 });
-            }
-        }).start();
     }
 
-    private boolean isValidTexturePack(File file) {
-        try (ZipFile zipFile = new ZipFile(file)) {
-            boolean hasManifest = zipFile.getEntry("manifest.json") != null;
+    private boolean isValidTexturePack(FileHandle file) {
+        try (ZipInputStream zis = new ZipInputStream(file.read())) {
+            boolean hasManifest = false;
             boolean hasTextures = false;
-
-            for (ZipEntry entry : Collections.list(zipFile.entries())) {
-                if (!entry.isDirectory() && entry.getName().endsWith(".png")) {
-                    hasTextures = true;
-                    break;
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                if (!entry.isDirectory()) {
+                    if (entry.getName().equals("manifest.json")) hasManifest = true;
+                    if (entry.getName().endsWith(".png")) hasTextures = true;
                 }
+                if (hasManifest && hasTextures) return true;
             }
-
             return hasManifest && hasTextures;
         } catch (IOException e) {
             return false;
@@ -587,7 +565,7 @@ public class TexturePackScene extends PixelScene {
 
         private static InputStream getInputStream(Object source) throws IOException {
             if (source instanceof File) {
-                return Files.newInputStream(((File) source).toPath());
+                return new FileInputStream((File) source);
             } else if (source instanceof FileHandle) {
                 return ((FileHandle) source).read();
             }

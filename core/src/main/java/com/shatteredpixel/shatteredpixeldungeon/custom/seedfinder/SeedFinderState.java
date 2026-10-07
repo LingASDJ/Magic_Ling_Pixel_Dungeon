@@ -12,7 +12,7 @@ import java.nio.channels.FileChannel;
  * 逐种子写文件（新建 → 写入 → 删除 → 改名）在本机实测约 8-13ms/次，而映射写入只是一次内存拷贝，
  * 这是多进程查种与多线程查种差距的主要来源。
  */
-public final class SeedFinderState {
+public final class SeedFinderState implements ProgressState {
 
     /** 运行目录内的状态文件名 */
     public static final String FILE_NAME = "state.bin";

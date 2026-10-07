@@ -50,8 +50,8 @@ public class SeedFinderCoordinator implements Runnable {
 
     private File runDir;
     private SeedFinderJob template;
-    /** 与子进程共享的进度状态（内存映射） */
-    private SeedFinderState state;
+    /** 与子进程共享的进度状态（桌面 = 内存映射，经平台桥注入） */
+    private ProgressState state;
     private boolean anyFailed;
     private String failureInfo = "";
     /** 最终结果：种子码 / 物品清单 / "NONE" / 错误文案 */
@@ -114,6 +114,8 @@ public class SeedFinderCoordinator implements Runnable {
     }
 
     private String coordinate() throws IOException, InterruptedException {
+        //平台不支持多进程查种（web 等）：明确失败而不是 NPE
+        if (launcher == null) return Messages.get(SeedFinder.class, "platform_missing");
         long firstSeed = startSeedOverride >= 0 ? startSeedOverride : deriveFirstSeed();
         benchStartMs = System.currentTimeMillis();//【临时·性能测试】
 
@@ -125,7 +127,9 @@ public class SeedFinderCoordinator implements Runnable {
         runDir = new File(runRoot, "run-" + System.currentTimeMillis());
         if (!runDir.mkdirs() && !runDir.isDirectory())
             return Messages.get(SeedFinder.class, "run_dir_failed", runDir);
-        state = SeedFinderState.forCoordinator(new File(runDir, SeedFinderState.FILE_NAME), workers);
+        SeedFinderPlatform platform = SeedFinderPlatform.instance;
+        if (platform == null) return Messages.get(SeedFinder.class, "platform_missing");
+        state = platform.openCoordinatorState(new File(runDir, SeedFinderPlatform.STATE_FILE_NAME), workers);
 
         template = new SeedFinderJob();
         template.floor = floor;

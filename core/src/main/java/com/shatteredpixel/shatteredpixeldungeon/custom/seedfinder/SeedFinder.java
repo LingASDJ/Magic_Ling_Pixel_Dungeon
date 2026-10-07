@@ -99,7 +99,7 @@ public class SeedFinder implements Runnable {
             // 纯等级模糊查询："+N"（如 "+2"）→ 任意物品中等级不低于 N 的目标，可命中板甲+2、断生者+2 等
             if (name.matches("\\+\\d+")) {
                 try {
-                    out.add(new WantedTarget(null, Integer.parseInt(name.substring(1)), null));
+                    out.add(new WantedTarget((Class<? extends Item>) null, Integer.parseInt(name.substring(1)), null));
                 } catch (NumberFormatException ignored) {
                 }
                 continue;
@@ -113,41 +113,61 @@ public class SeedFinder implements Runnable {
                 } catch (NumberFormatException ignored) {
                 }
             }
-            Class<? extends Item> cls = findItemClassByName(name);
-            if (cls != null)
-                out.add(new WantedTarget(cls, level, null));
+            // 模糊名可能命中多个类（如 "之戒" 命中全部 X之戒 戒指），收集全部类组成"任一命中"目标，
+            // 修复旧逻辑只取首个类导致部分物品（如 之戒+2）扫不出种子返回 NONE 的问题
+            ArrayList<Class<? extends Item>> classes = findItemClassesByName(name);
+            if (!classes.isEmpty())
+                out.add(new WantedTarget((Class<? extends Item>[]) classes.toArray(new Class<?>[0]), level, null));
         }
         return out;
     }
 
-    /** 在全部生成池中按本地化名称查找物品类（去空格后子串双向匹配，容忍前后缀差异） */
+    /** 在全部生成池中按本地化名称查找物品类（去空格后子串双向匹配，容忍前后缀差异）；返回首个命中或 null */
     public static Class<? extends Item> findItemClassByName(String name) {
+        ArrayList<Class<? extends Item>> all = findItemClassesByName(name);
+        return all.isEmpty() ? null : all.get(0);
+    }
+
+    /** 按本地化名称在全部生成池中收集命中的物品类集合（去空格后子串双向匹配，容忍前后缀差异）。
+     *  模糊名可命中多个类（如 "之戒" 命中全部 X之戒 戒指），全部收集，供"任一命中"目标使用 */
+    public static ArrayList<Class<? extends Item>> findItemClassesByName(String name) {
+        ArrayList<Class<? extends Item>> out = new ArrayList<>();
         String clean = name.replaceAll("\\s+", "").toLowerCase();
-        if (clean.isEmpty()) return null;
+        if (clean.isEmpty()) return out;
         for (Generator.Category cat : Generator.Category.values()) {
             if (cat.classes == null) continue;
             for (Class<?> cl : cat.classes) {
                 if (cl == null || !Item.class.isAssignableFrom(cl)) continue;
                 Class<? extends Item> ic = (Class<? extends Item>) cl;
-                if (matches(ic, clean))
-                    return ic;
+                if (matches(ic, clean) && !out.contains(ic))
+                    out.add(ic);
             }
         }
         // 任务奖励/传说武器（可能不在 Generator 品类池中，红龙五选一与传说武器必须可查）
         for (Class<? extends Item> ic : EXTRA_ITEM_CLASSES)
-            if (matches(ic, clean))
-                return ic;
-        if (RedDragon.Quest.weapon != null && matches(RedDragon.Quest.weapon.getClass(), clean))
-            return RedDragon.Quest.weapon.getClass();
-        if (RedDragon.Quest.armor != null && matches(RedDragon.Quest.armor.getClass(), clean))
-            return RedDragon.Quest.armor.getClass();
-        if (RedDragon.Quest.RingT != null && matches(RedDragon.Quest.RingT.getClass(), clean))
-            return RedDragon.Quest.RingT.getClass();
-        if (RedDragon.Quest.food != null && matches(RedDragon.Quest.food.getClass(), clean))
-            return RedDragon.Quest.food.getClass();
-        if (RedDragon.Quest.scrolls != null && matches(RedDragon.Quest.scrolls.getClass(), clean))
-            return RedDragon.Quest.scrolls.getClass();
-        return null;
+            if (matches(ic, clean) && !out.contains(ic))
+                out.add(ic);
+        if (RedDragon.Quest.weapon != null && matches(RedDragon.Quest.weapon.getClass(), clean)) {
+            Class<? extends Item> ic = RedDragon.Quest.weapon.getClass();
+            if (!out.contains(ic)) out.add(ic);
+        }
+        if (RedDragon.Quest.armor != null && matches(RedDragon.Quest.armor.getClass(), clean)) {
+            Class<? extends Item> ic = RedDragon.Quest.armor.getClass();
+            if (!out.contains(ic)) out.add(ic);
+        }
+        if (RedDragon.Quest.RingT != null && matches(RedDragon.Quest.RingT.getClass(), clean)) {
+            Class<? extends Item> ic = RedDragon.Quest.RingT.getClass();
+            if (!out.contains(ic)) out.add(ic);
+        }
+        if (RedDragon.Quest.food != null && matches(RedDragon.Quest.food.getClass(), clean)) {
+            Class<? extends Item> ic = RedDragon.Quest.food.getClass();
+            if (!out.contains(ic)) out.add(ic);
+        }
+        if (RedDragon.Quest.scrolls != null && matches(RedDragon.Quest.scrolls.getClass(), clean)) {
+            Class<? extends Item> ic = RedDragon.Quest.scrolls.getClass();
+            if (!out.contains(ic)) out.add(ic);
+        }
+        return out;
     }
 
     /** 传说武器（7 件紫色 lengds 标注）与红月大剑：文本输入时必须可查 */
@@ -186,7 +206,7 @@ public class SeedFinder implements Runnable {
     protected final WantedTarget[] wantedArr;
     // Class → 目标下标数组：tryMatch 先查 map 取候选目标，跳过无关物品
     private final HashMap<Class<? extends Item>, int[]> matchIndex;
-    // 纯等级目标（cls == null，如文本输入 "+2"）的下标：逐物品检查，不按类建索引
+    // 纯等级目标（classes == null，如文本输入 "+2"）的下标：逐物品检查，不按类建索引
     protected final int[] wildcardIndices;
     // 预筛下标：循环内直接遍历，避免对全量 wantedArr 逐条 isAssignableFrom
     protected final int floor;
@@ -196,15 +216,23 @@ public class SeedFinder implements Runnable {
         matchIndex = buildMatchIndex(wantedArr);
         ArrayList<Integer> wild = new ArrayList<>();
         for (int j = 0; j < wantedArr.length; j++)
-            if (wantedArr[j].cls == null) wild.add(j);
+            if (wantedArr[j].classes == null) wild.add(j);
         wildcardIndices = wild.isEmpty() ? null : toIntArray(wild);
         floor = fl;
         heroClass = cl;
         for (WantedTarget w : wanted) {
-            if (w.cls != null && Wand.class.isAssignableFrom(w.cls) && w.minLevel >= 3)
-                wand = w;
-            else if (w.cls != null && Ring.class.isAssignableFrom(w.cls) && w.minLevel >= 3)
-                ring = w;
+            if (w.classes == null || w.minLevel < 3) continue;
+            // 多类目标（如 "之戒+3"）：只要集合中任一命中的类是法杖/戒指，就启用对应的任务奖励预筛
+            for (Class<? extends Item> c : w.classes) {
+                if (Wand.class.isAssignableFrom(c)) {
+                    wand = w;
+                    break;
+                }
+                if (Ring.class.isAssignableFrom(c)) {
+                    ring = w;
+                    break;
+                }
+            }
         }
     }
     private static int[] toIntArray(ArrayList<Integer> list) {
@@ -215,18 +243,21 @@ public class SeedFinder implements Runnable {
     WantedTarget wand;
     WantedTarget ring;
 
-    // 构造时按 cls 分组目标下标，供 tryMatch 做 O(1) 跳查；纯等级目标（cls == null）不参与
+    // 构造时按 cls 分组目标下标，供 tryMatch 做 O(1) 跳查；纯等级目标（classes == null）不参与
     private static HashMap<Class<? extends Item>, int[]> buildMatchIndex(WantedTarget[] arr) {
         HashMap<Class<? extends Item>, ArrayList<Integer>> temp = new HashMap<>();
         for (int j = 0; j < arr.length; j++) {
-            Class<? extends Item> cls = arr[j].cls;
-            if (cls == null) continue;
-            ArrayList<Integer> list = temp.get(cls);
-            if (list == null) {
-                list = new ArrayList<>();
-                temp.put(cls, list);
+            // 多类目标：集合中每个类都映射到同一目标下标，任一类的物品都能命中该目标
+            Class<? extends Item>[] classes = arr[j].classes;
+            if (classes == null) continue;
+            for (Class<? extends Item> cls : classes) {
+                ArrayList<Integer> list = temp.get(cls);
+                if (list == null) {
+                    list = new ArrayList<>();
+                    temp.put(cls, list);
+                }
+                list.add(j);
             }
-            list.add(j);
         }
         HashMap<Class<? extends Item>, int[]> idx = new HashMap<>();
         for (Map.Entry<Class<? extends Item>, ArrayList<Integer>> e : temp.entrySet()) {

@@ -24,7 +24,6 @@ package com.watabou.utils;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.watabou.noosa.Game;
 
 //TODO migrate to platformSupport class
@@ -51,7 +50,7 @@ public class DeviceCompat {
 
 	public static boolean isAndroid(){
 		if(Gdx.app == null){
-			return SharedLibraryLoader.isAndroid;
+			return false; //no android-specific detection before Gdx is initialized
 		} else {
 			return Gdx.app.getType() == Application.ApplicationType.Android;
 		}
@@ -64,14 +63,15 @@ public class DeviceCompat {
 	
 	public static boolean isiOS(){
 		if(Gdx.app == null){
-			return SharedLibraryLoader.isIos;
+			return false;
 		} else {
 			return Gdx.app.getType() == Application.ApplicationType.iOS;
 		}
 	}
 	public static boolean isDesktop(){
 		if(Gdx.app == null){
-			return SharedLibraryLoader.isWindows || SharedLibraryLoader.isMac || SharedLibraryLoader.isLinux;
+			String os = System.getProperty("os.name", "").toLowerCase();
+			return os.contains("win") || os.contains("mac") || os.contains("nux");
 		} else {
 			return System.getProperty("os.name").toLowerCase().contains("win") ||
 					System.getProperty("os.name").toLowerCase().contains("mac") ||

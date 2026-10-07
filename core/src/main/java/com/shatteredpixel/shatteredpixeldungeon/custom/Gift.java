@@ -24,24 +24,10 @@ import com.watabou.utils.Reflection;
 
 import net.iharder.Base64;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 public class Gift implements Bundlable {
     private static final String Local_Gift = "";
@@ -243,8 +229,8 @@ public class Gift implements Bundlable {
 
     //将兑换码导入本地数据中
     public static void GiftTime() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
+        //平台桥：桌面在后台线程执行，web 回渲染线程执行（web 网络桥返回 null 即跳过）
+        Game.platform.runAsync(() -> {
             saveJsonGift( getLocalGift() );
             saveJsonGift( getLocalFileGift() );
             saveJsonGift( getNetworkedGift() );
@@ -286,7 +272,6 @@ public class Gift implements Bundlable {
             } catch (Exception ignored) {
             }
         });
-        executor.shutdown();
     }
 
     private static JsonValue getLocalFileGift() {
@@ -322,48 +307,12 @@ public class Gift implements Bundlable {
         if( TitleScene.NTP_NOINTER || TitleScene.NTP_ERROR || TitleScene.NTP_NOINTER_VEFY || TitleScene.NTP_ERROR_VEFY )
             return null;
 
+        // Network fetching is delegated to the platform: desktop uses a JVM
+        // HTTPS connection, web has no synchronous HTTPS support and returns null.
+        String jsonContent = Game.platform.httpGet("https://gameupdate.insrv.mlpd.spldream.com/MLPD/gift.json");
+        if (jsonContent == null) return null;
+
         try {
-            TrustManager[] trustAllCerts = new TrustManager[] {
-                    new X509TrustManager() {
-                        public X509Certificate[] getAcceptedIssuers() {
-                            return null;
-                        }
-                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                        }
-                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                        }
-                    }
-            };
-
-            // 安装全信任的TrustManager
-            SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-            // 创建不验证主机名的HostnameVerifier
-            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
-
-            URL url = new URL("https://gameupdate.insrv.mlpd.spldream.com/MLPD/gift.json");
-            URLConnection conn = url.openConnection();
-            conn.setConnectTimeout( 4000 );
-            conn.setReadTimeout( 4000 );
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-
-            conn.connect();
-
-            InputStream inputStream = conn.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-
-            String jsonContent = sb.toString();
-            reader.close();
-            inputStream.close();
-
             JsonReader jsonReader = new JsonReader();
             JsonValue jsonValue = jsonReader.parse(jsonContent);
 

@@ -44,19 +44,10 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class TitleScene extends PixelScene {
 	public static boolean Reusable = false;
@@ -94,25 +85,21 @@ public class TitleScene extends PixelScene {
 		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
 
 		if(!NTP_LINK){
-			ExecutorService executor = Executors.newSingleThreadExecutor();
-			Future<?> future = executor.submit(() -> {
-				try {
-					String ntpServer;
-					switch (SPDSettings.language()){
-						default:
-						case CHINESE:
-							ntpServer = "www.baidu.com";
-							break;
-						case GREEK:case ENGLISH:case RUSSIAN:case JAPANESE:case HARDCHINESE:
-							ntpServer = "www.bing.com";
-							break;
-					}
-					URL url = new URL("https://" + ntpServer);
-					URLConnection conn = url.openConnection();
-					conn.connect();
-					long dateL = conn.getDate();
+			try {
+				String ntpServer;
+				switch (SPDSettings.language()){
+					default:
+					case CHINESE:
+						ntpServer = "www.baidu.com";
+						break;
+					case GREEK:case ENGLISH:case RUSSIAN:case JAPANESE:case HARDCHINESE:
+						ntpServer = "www.bing.com";
+						break;
+				}
+				//经平台桥读取 HTTP Date 头（桌面真实探测、web 桥返回 -1 走失败分支）
+				long dateL = Game.platform.getHttpDate("https://" + ntpServer);
+				if (dateL > 0) {
 					Date onlineDate = new Date(dateL);
-
 					Date localDate = new Date(); // 获取本地时间
 					String strDateFormat = "yyyy-MM-dd";
 					SimpleDateFormat dateFormat = new SimpleDateFormat(strDateFormat, Locale.getDefault());
@@ -133,28 +120,19 @@ public class TitleScene extends PixelScene {
 						NTP_ERROR = true;
 						NTP_ERROR_VEFY = true;
 					}
-
-				} catch (IOException e) {
+				} else {
+					//探测失败（网络不可达或平台不支持）：走无网络分支
 					if (!NTP_NOINTER_VEFY || SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()) {
 						NTP_NOINTER = true;
 
 						NTP_NOINTER_VEFY = true;
 					}
+					noInter();
 				}
-			});
-
-			try {
-				//超时1s 实际3s
-				future.get(4, TimeUnit.SECONDS);
-			} catch (InterruptedException | ExecutionException | TimeoutException e) {
-				if (!NTP_NOINTER_VEFY || SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()) {
-					NTP_NOINTER = true;
-					NTP_NOINTER_VEFY = true;
-				}
+			} catch (Exception e) {
 				noInter();
 			}
 			NTP_LINK = true;
-			executor.shutdown();
 		}
 
 		uiCamera.visible = false;
@@ -276,8 +254,7 @@ public class TitleScene extends PixelScene {
 			protected void onClick() {
 				if(NTP_ERROR) {
 
-					ExecutorService executor = Executors.newSingleThreadExecutor();
-					executor.submit(() -> {
+					Game.platform.runAsync(() -> {
 						try {
 							// NTP服务器有严重延迟，直接使用百度的地址进行监测
 							String ntpServer;
@@ -290,11 +267,10 @@ public class TitleScene extends PixelScene {
 									ntpServer = "www.bing.com";
 									break;
 							}
-							URL url = new URL("https://" + ntpServer);
-							URLConnection conn = url.openConnection();
-							conn.connect();
-							long dateL = conn.getDate();
-							Date onlineDate = new Date(dateL);
+							//经平台桥读取 HTTP Date 头；-1 表示探测失败，与超时/无网络同处理
+							long dateL = Game.platform.getHttpDate("https://" + ntpServer);
+							if (dateL > 0) {
+								Date onlineDate = new Date(dateL);
 
 							Date localDate = new Date(); // 获取本地时间
 							String strDateFormat = "yyyy-MM-dd";
@@ -327,9 +303,9 @@ public class TitleScene extends PixelScene {
 								});
 							});
 
-						} catch (IOException ignored) {}
-					});
-					executor.shutdown();
+							}
+							} catch (Exception ignored) {}
+						});
 				} else if(NTP_NOINTER){
 					ShatteredPixelDungeon.scene().add(new WndHardNotification(NetIcons.get(NetIcons.ALERT),
 							Messages.get(this, "lntp_error"),

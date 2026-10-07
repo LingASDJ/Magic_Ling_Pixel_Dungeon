@@ -485,7 +485,10 @@ public class SPDSettings extends GameSettings {
 	public static <T extends Bundlable> T getCundlable(String key, T defValue){
 		try {
 			Bundle b = Bundle.fromString(getString(key,""));
-			return (T)b.get(CUNDLABLE);
+			if (b == null) return defValue;
+			T result = (T)b.get(CUNDLABLE);
+			//存储内容合法但没有该键（首次运行/旧存档/平台偏好缺失）时回退默认值
+			return result != null ? result : defValue;
 		} catch (Exception e) {
 			return defValue;
 		}

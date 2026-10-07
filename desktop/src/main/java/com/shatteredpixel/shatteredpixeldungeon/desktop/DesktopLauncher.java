@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinderCoordinator;
+import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinderPlatform;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.CrashHandler;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.BackupSaveScene;
@@ -189,6 +190,7 @@ public class DesktopLauncher {
 
 		//多进程查种：不可用时为 null，查种界面自动回退到单进程
 		SeedFinderCoordinator.launcher = DesktopSeedFinderLauncher.create(basePath);
+		SeedFinderPlatform.instance = new DesktopSeedFinderPlatform();
 
 
 		config.setWindowSizeLimits(720, 400, -1, -1);
