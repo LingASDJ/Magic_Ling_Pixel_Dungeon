@@ -92,6 +92,11 @@ public class Bleeding extends Buff {
 
 	@Override
 	public boolean act() {
+		if (target == null){
+			detach();
+			return true;
+		}
+
 		if (target.isAlive()) {
 
 			level = Random.NormalFloat(level / 2f, level);
