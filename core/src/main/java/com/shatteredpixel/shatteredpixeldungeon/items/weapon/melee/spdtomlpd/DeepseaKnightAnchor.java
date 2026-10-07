@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -66,22 +67,8 @@ public class DeepseaKnightAnchor extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage ) {
-        // 注意：必须先用 toArray 复制一份再遍历。
-        // buffs 是 LinkedHashSet（fail-fast），在遍历中直接 detach 会抛
-        // ConcurrentModificationException（详见仓库里 EndingBlade / Char.onRemove 的写法）。
-        for (Buff b : attacker.buffs().toArray(new Buff[0])){
-            if (b.type == Buff.buffType.NEGATIVE
-                    && !(b instanceof AllyBuff)
-                    && !(b instanceof LostInventory)){
-                b.detach();
-            }
-            if (b instanceof Hunger){
-                // Hunger 默认是 NEUTRAL 类型，不会被上面的分支删掉，这里单独把饥饿压回安全值
-                ((Hunger) b).satisfy(Hunger.STARVING);
-            }
-        }
-        // 剧毒累积伤害也属于负面效果，一并清掉（与净化药水 PotionOfCleansing 一致）
-        attacker.venodamage = 0;
+        // 魔皇草同款净化
+        PotionOfHealing.cure(attacker);
         return super.proc(attacker, defender, damage);
     }
 }
