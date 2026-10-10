@@ -22,7 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.utils.RectF;
+
+import java.util.HashMap;
 
 public class ItemSpriteSheet {
 
@@ -40,6 +44,38 @@ public class ItemSpriteSheet {
         int x = (item % WIDTH) * SIZE;
         int y = (item / WIDTH) * SIZE;
         film.add( item, x, y, x+width, y+height);
+    }
+
+    // ========================================================================
+    // 动态物品动画注册表：所有动画帧直接排在 items.png 上，零纹理切换。
+    // key = item image 序号（与 assignItemRect 同一编号空间）。
+    // ========================================================================
+
+    /** 默认状态动画表 */
+    public static final HashMap<Integer, MovieClip.Animation> ANIMATIONS = new HashMap<>();
+    /** 双状态物品的第二组动画（如 CommRelay 拨通后的 toidle 姿态） */
+    public static final HashMap<Integer, MovieClip.Animation> ANIMATIONS_ALT = new HashMap<>();
+
+    /**
+     * 注册一个循环动画，帧直接从 items.png 的 film 上切。
+     *
+     * @param image   物品图标序号
+     * @param fps     播放帧率
+     * @param looped  是否循环
+     * @param frames  帧格子序号序列（可重复，如 {0,0,1,1,2,2,2,3,3}）
+     */
+    private static void assignItemAnimation(int image, int fps, boolean looped, int... frames) {
+        MovieClip.Animation anim = new MovieClip.Animation(fps, looped);
+        anim.frames = new RectF[frames.length];
+        for (int i = 0; i < frames.length; i++) {
+            RectF r = film.get(frames[i]);
+            if (r == null) {
+                throw new IllegalStateException(
+                    "Length Index: image=" + image + " frameIdx=" + frames[i]);
+            }
+            anim.frames[i] = r;
+        }
+        ANIMATIONS.put(image, anim);
     }
 
     private static final int PLACEHOLDERS   =                               xy(1, 1);   //16 slots
@@ -1769,6 +1805,116 @@ public class ItemSpriteSheet {
 
 
 
+    }
+
+    // ========================================================================
+    // 动态物品动画 基于恶魔的像素地牢重构
+    // ========================================================================
+
+    private static final int ANIM_BASE = xy(1, 67);
+
+    private static final int BS_FRAME0 = ANIM_BASE;
+    private static final int BS_FRAME1 = ANIM_BASE + 1;
+    private static final int BS_FRAME2 = ANIM_BASE + 2;
+    private static final int BS_FRAME3 = ANIM_BASE + 3;
+
+    private static final int CR_FRAME_IDLE = ANIM_BASE + 5;
+    private static final int CR_FRAME4     = ANIM_BASE + 6;
+    private static final int CR_FRAME5     = ANIM_BASE + 7;
+    private static final int CR_FRAME6     = ANIM_BASE + 8;
+    private static final int CR_FRAME7     = ANIM_BASE + 9;
+    private static final int CR_FRAME8     = ANIM_BASE + 10;
+
+    private static final int DSN_BASE = xy(1, 69);
+    private static final int DSN_F0  = DSN_BASE;
+    private static final int DSN_F1  = DSN_BASE + 1;
+    private static final int DSN_F2  = DSN_BASE + 2;
+    private static final int DSN_F3  = DSN_BASE + 3;
+    private static final int DSN_F4  = DSN_BASE + 4;
+    private static final int DSN_F5  = DSN_BASE + 5;
+    private static final int DSN_F6  = DSN_BASE + 6;
+    private static final int DSN_F7  = xy(1, 70);
+    private static final int DSN_F8  = DSN_F7 + 8;
+    private static final int DSN_F9  = DSN_F7 + 9;
+    private static final int DSN_F10 = DSN_F7 + 10;
+    private static final int DSN_F11 = DSN_F7 + 11;
+    private static final int DSN_F12 = DSN_F7 + 12;
+    private static final int DSN_F13 = DSN_F7 + 13;
+    private static final int DSN_F14 = xy(1, 71);
+    private static final int DSN_F15 = DSN_F14 + 15;
+    private static final int DSN_F16 = DSN_F14 + 16;
+    private static final int DSN_F17 = DSN_F14 + 17;
+    private static final int DSN_F18 = DSN_F14 + 18;
+    private static final int DSN_F19 = DSN_F14 + 19;
+    private static final int DSN_F20 = DSN_F14 + 20;
+    private static final int DSN_F21 = xy(1, 72);
+    private static final int DSN_F22 = DSN_F21 + 22;
+    private static final int DSN_F23 = DSN_F21 + 23;
+    private static final int DSN_F24 = DSN_F21 + 24;
+    private static final int DSN_F25 = DSN_F21 + 25;
+    private static final int DSN_F26 = DSN_F21 + 26;
+    private static final int DSN_F27 = DSN_F21 + 27;
+
+    private static final int SRL_BASE = xy(13, 67);
+    private static final int SRL_F0  = SRL_BASE;
+    private static final int SRL_F1  = SRL_BASE + 1;
+    private static final int SRL_F2  = SRL_BASE + 2;
+    private static final int SRL_F3  = SRL_BASE + 3;
+    private static final int SRL_F4  = SRL_BASE + 4;
+    private static final int SRL_F5  = SRL_BASE + 5;
+    private static final int SRL_F6  = SRL_BASE + 6;
+    private static final int SRL_F7  = SRL_BASE + 7;
+
+    static {
+        assignItemAnimation(BOMB_SWORD, 15, true,
+                BS_FRAME0, BS_FRAME0,
+                BS_FRAME1, BS_FRAME1,
+                BS_FRAME2, BS_FRAME2, BS_FRAME2,
+                BS_FRAME3, BS_FRAME3);
+
+        assignItemAnimation(DM100RELEY, 15, true, CR_FRAME_IDLE);
+
+        MovieClip.Animation toidle = new MovieClip.Animation(15, true);
+        toidle.frames = new RectF[]{
+            film.get(CR_FRAME_IDLE), film.get(CR_FRAME_IDLE),
+            film.get(CR_FRAME4), film.get(CR_FRAME4),
+            film.get(CR_FRAME5), film.get(CR_FRAME5),
+            film.get(CR_FRAME6), film.get(CR_FRAME6),
+            film.get(CR_FRAME7), film.get(CR_FRAME7),
+            film.get(CR_FRAME8), film.get(CR_FRAME8),
+        };
+        ANIMATIONS_ALT.put(DM100RELEY, toidle);
+
+        assignItemAnimation(SOS_0, 16, true,
+                DSN_F0, DSN_F0, DSN_F1, DSN_F1, DSN_F2, DSN_F2,
+                DSN_F3, DSN_F3, DSN_F4, DSN_F4, DSN_F5, DSN_F5,
+                DSN_F6, DSN_F6);
+
+        assignItemAnimation(SOS_1, 16, true,
+                DSN_F7, DSN_F7, DSN_F8, DSN_F8, DSN_F9, DSN_F9,
+                DSN_F10, DSN_F10, DSN_F11, DSN_F11, DSN_F12, DSN_F12,
+                DSN_F13, DSN_F13);
+
+        assignItemAnimation(SOS_2, 16, true,
+                DSN_F14, DSN_F14, DSN_F15, DSN_F15, DSN_F16, DSN_F16,
+                DSN_F17, DSN_F17, DSN_F18, DSN_F18, DSN_F19, DSN_F19,
+                DSN_F20, DSN_F20);
+
+        assignItemAnimation(SOS_3, 16, true,
+                DSN_F21, DSN_F21, DSN_F22, DSN_F22, DSN_F23, DSN_F23,
+                DSN_F24, DSN_F24, DSN_F25, DSN_F25, DSN_F26, DSN_F26,
+                DSN_F27, DSN_F27);
+
+        assignItemAnimation(SLIVER_LOCK, 14, true,
+                SRL_F0, SRL_F0,
+                SRL_F1, SRL_F1,
+                SRL_F2, SRL_F2,
+                SRL_F3, SRL_F3,
+                SRL_F4, SRL_F4,
+                SRL_F5, SRL_F5,
+                SRL_F6, SRL_F6,
+                SRL_F7, SRL_F7
+        );
     }
 
 }

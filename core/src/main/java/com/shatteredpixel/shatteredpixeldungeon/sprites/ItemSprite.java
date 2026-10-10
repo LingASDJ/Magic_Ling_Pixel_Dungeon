@@ -124,18 +124,10 @@ public class ItemSprite extends MovieClip {
 		acc.set( 0 );
 		dropInterval = 0;
 
-		// 复用池里的精灵不携带任何残留的动画/图集状态，
-		// 否则下次被分配渲染其他物品时会出现整张图集闪现、图标错乱
 		curAnim = null;
 		resetColor();
 		scale.set(1);
 		angle = 0;
-		texture( Assets.Sprites.ITEMS );
-		// 关键：texture() 会把 UV 重置为 (0,0,1,1)（整张 items.png）。
-		// 若不立刻 frame() 一个合法小图，一旦在 link()/view() 之前被绘制，
-		// 或 view() 链路因动态物品 frames() 异常中断，就会渲染出整张 items.png。
-		// 这里先锚定到占位图标作为安全网，后续 link()→view() 会覆盖为真正的物品图标。
-		frame( ItemSpriteSheet.SOMETHING );
 
 		heap = null;
 		if (emitter != null) {
@@ -219,13 +211,29 @@ public class ItemSprite extends MovieClip {
 		}
 
 		if (changed){
-			// 如果引擎的 Animation 不支持克隆，我们只能替换当前引用的 frames 数组。
-			// 但为了安全，最好在这里创建一个新的 Animation 对象（如果 API 允许）。
-			// 如果无法创建新 Animation，则仅替换当前 curAnim 的 frames 引用，
-			// 并确保原始的共享 Animation 不被修改。
-			curAnim.frames = newFrames;
-			play(curAnim, true);
+			// 关键：不能直接 curAnim.frames = newFrames，因为 curAnim 指向的是
+			// ItemSpriteSheet 里全局共享的 Animation 对象，改了会污染其他精灵。
+			// 必须 new 一个独立的 Animation 包装裁剪后的帧。
+			int fps = Math.round(1f / curAnim.delay);
+			MovieClip.Animation adjusted = new MovieClip.Animation(fps, curAnim.looped);
+			adjusted.frames = newFrames;
+			play(adjusted);
 		}
+	}
+
+	/**
+	 * 从 ItemSpriteSheet 的全局注册表查 item 对应的动画并播放。
+	 * 查不到动画时直接返回（view(item.image(), glowing()) 已经把静态帧设好了）。
+	 */
+	private void playRegisteredAnimation(Item item){
+		int key = item.image();
+		boolean alt = item.animationToidle;
+		MovieClip.Animation anim = alt
+				? ItemSpriteSheet.ANIMATIONS_ALT.get(key)
+				: ItemSpriteSheet.ANIMATIONS.get(key);
+		if (anim == null) return;
+		play(anim);
+		alignAnimationToStaticSize(item);
 	}
 
 	public void visible(boolean value){
@@ -311,21 +319,13 @@ public class ItemSprite extends MovieClip {
 			this.emitter = emitter;
 		}
 
-		// 动态物品(AnimationItem)的动画要求 parent != null：
+		// 动态物品(AnimationItem)：从 ItemSpriteSheet 的全局注册表查动画。
 		// 精灵已挂载时直接播放；尚未挂载（如 ChangeButton 构造时的 ItemSprite）
 		// 则暂存物品，等挂载后由 update() 自动补播。
-		if (!b && item.animation && item instanceof Item.AnimationItem) {
+		if (!b && item instanceof Item.AnimationItem) {
 			if (parent != null) {
-				try {
-					item.frames(this);
-					alignAnimationToStaticSize(item);
-					pendingAnimItem = null;
-				} catch (Exception e) {
-					// 捕获异常，防止因动画帧异常导致整个 view 链路中断，
-					// 从而停留在整张 items.png 或错误状态。
-					pendingAnimItem = null;
-					frame(item.image()); // 回退到静态图标
-				}
+				playRegisteredAnimation(item);
+				pendingAnimItem = null;
 			} else {
 				pendingAnimItem = item;
 			}
@@ -380,15 +380,10 @@ public class ItemSprite extends MovieClip {
 		if (this.emitter != null) this.emitter.killAndErase();
 		emitter = null;
 
-		// 所有物品渲染最终都汇聚到此方法。统一切断残留的动画引用并重置精灵
-		// 状态（纹理/颜色/缩放/角度），防止动态物品(AnimationItem)的动画图集
-		// 纹理与循环动画泄漏到之后渲染的其他物品上（如丢出动态物品后，快捷栏、
-		// 背包、地面物品的图标错乱）。
 		curAnim = null;
 		resetColor();
 		scale.set(1);
 		angle = 0;
-		texture( Assets.Sprites.ITEMS );
 
 		frame( image );
 		glow( glowing );
@@ -397,18 +392,7 @@ public class ItemSprite extends MovieClip {
 
 	public void frame( int image ){
 		RectF f = ItemSpriteSheet.film.get( image );
-		if (f == null) {
-			// 防御：图集索引越界时回退到占位图标。
-			// 若直接 frame(null) 会抛 NPE，并让精灵停留在 texture() 刚设置的
-			// 整张图集(0,0,1,1)状态上，表现为"整个 items.png 显示出来"。
-			f = ItemSpriteSheet.film.get( ItemSpriteSheet.SOMETHING );
-		}
-		if (f == null && texture != null && texture.width > 0) {
-			// 最终兜底：即使 SOMETHING 也未注册（极端时序下类初始化不完整），
-			// 也不要 frame(null)——那会 NPE 并让精灵停留在整张图集状态。
-			// 钉到图集左上角 16x16 的一小块，避免渲染整张 items.png。
-			f = new RectF( 0, 0, SIZE / (float)texture.width, SIZE / (float)texture.height );
-		}
+		if (f == null) f = ItemSpriteSheet.film.get( ItemSpriteSheet.SOMETHING );
 		if (f != null) {
 			frame( f );
 			float height = ItemSpriteSheet.film.height( f );
@@ -491,14 +475,8 @@ public class ItemSprite extends MovieClip {
 		if (pendingAnimItem != null && parent != null) {
 			Item i = pendingAnimItem;
 			pendingAnimItem = null;
-			if (i.animation && i instanceof Item.AnimationItem) {
-				try {
-					i.frames(this);
-					alignAnimationToStaticSize(i);
-				} catch (Exception e) {
-					// 异常保护：防止因为动画帧异常导致精灵卡在占位图或整张图集状态
-					frame(i.image());
-				}
+			if (i instanceof Item.AnimationItem) {
+				playRegisteredAnimation(i);
 			}
 		}
 
