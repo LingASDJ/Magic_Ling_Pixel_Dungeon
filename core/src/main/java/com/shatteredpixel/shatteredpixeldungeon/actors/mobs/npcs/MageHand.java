@@ -38,7 +38,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHigh
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.PacmanHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -161,9 +160,8 @@ public class MageHand extends DirectableAlly {
 
     @Override
     public void damage(int dmg, Object src, DamageType type) {
-        // 先执行伤害逻辑
-        super.damage(0, src, type);
-
+        // 法师之手无敌：不受到任何伤害，只传送到英雄身边
+        HP = HT;
         teleportNearHero();
     }
 
@@ -665,6 +663,7 @@ public class MageHand extends DirectableAlly {
 
     private static final String WAND =        "wand";
     private static final String MAGE_STAFF = "mage_staff";
+    private static final String WAND_COOLDOWN = "wand_cooldown";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
@@ -672,6 +671,7 @@ public class MageHand extends DirectableAlly {
 
         if (equippedWand != null)  bundle.put( WAND,equippedWand );
         if(magesStaff != null) bundle.put( MAGE_STAFF, magesStaff );
+        bundle.put( WAND_COOLDOWN, wandCooldown );
     }
 
     @Override
@@ -682,6 +682,15 @@ public class MageHand extends DirectableAlly {
             equippedWand = (Wand) bundle.get( WAND );
         if (bundle.contains(MAGE_STAFF))
             magesStaff = (MagesStaff) bundle.get( MAGE_STAFF );
+        wandCooldown = bundle.getInt( WAND_COOLDOWN );
+
+        // 读档后重新链接法杖到法师之手
+        if (equippedWand != null) {
+            equippedWand.charge(this);
+        }
+        if (magesStaff != null && magesStaff.wand != null) {
+            magesStaff.wand.charge(this);
+        }
     }
 
     public static class HandShield extends FlavourBuff {
@@ -874,25 +883,66 @@ public class MageHand extends DirectableAlly {
 
     @Override
     public void die( Object cause ) {
-
         super.die(cause);
-        if(magesStaff != null){
-            Dungeon.level.drop(magesStaff, hero.pos).sprite.drop();
-            if(Dungeon.level instanceof PacmanHollowActorLevel){
-                magesStaff.keptThoughLostInvent = true;
+
+        // 死亡时将装备归还到玩家脚下（能拾取就直接拾取，否则掉落）
+        boolean hadEquipment = false;
+        if (magesStaff != null) {
+            hadEquipment = true;
+            if (!magesStaff.doPickUp(hero)) {
+                Dungeon.level.drop(magesStaff, hero.pos).sprite.drop();
             }
+            magesStaff = null;
         }
-        if(equippedWand != null){
-            Dungeon.level.drop(equippedWand, hero.pos).sprite.drop();
-            if(Dungeon.level instanceof PacmanHollowActorLevel){
-               equippedWand.keptThoughLostInvent = true;
+        if (equippedWand != null) {
+            hadEquipment = true;
+            if (!equippedWand.doPickUp(hero)) {
+                Dungeon.level.drop(equippedWand, hero.pos).sprite.drop();
             }
+            equippedWand = null;
         }
+
+        // 断开控制器链接
         MageHandControl mageHandControl = hero.belongings.getItem(MageHandControl.class);
-        if(mageHandControl != null){
+        if (mageHandControl != null) {
             mageHandControl.mageHand = null;
         }
-        Buff.detach(hero,MageHandControlBuff.class);
+        Buff.detach(hero, MageHandControlBuff.class);
+
+        // 提醒玩家
+        if (hadEquipment) {
+            GLog.w(Messages.get(this, "vanished_with_gear"));
+        } else {
+            GLog.w(Messages.get(this, "vanished"));
+        }
+    }
+
+    /**
+     * 真正释放法师之手（由玩家主动使用时调用），归还装备。
+     */
+    public void release() {
+        if (magesStaff != null) {
+            if (!magesStaff.doPickUp(hero)) {
+                Dungeon.level.drop(magesStaff, hero.pos).sprite.drop();
+            }
+            magesStaff = null;
+        }
+        if (equippedWand != null) {
+            if (!equippedWand.doPickUp(hero)) {
+                Dungeon.level.drop(equippedWand, hero.pos).sprite.drop();
+            }
+            equippedWand = null;
+        }
+        MageHandControl mageHandControl = hero.belongings.getItem(MageHandControl.class);
+        if (mageHandControl != null) {
+            mageHandControl.mageHand = null;
+        }
+        Buff.detach(hero, MageHandControlBuff.class);
+        Actor.remove(this);
+        Dungeon.level.mobs.remove(this);
+        if (sprite != null) {
+            sprite.killAndErase();
+        }
     }
 
     private static class WndMageHand extends Window {
@@ -1102,36 +1152,52 @@ public class MageHand extends DirectableAlly {
                     }
                     break;
                 case AC_SUMMON_HAND:
-                    ArrayList<Integer> spawnPoints = new ArrayList<>();
+                    // 先检查当前楼层是否已经存在法师之手（可能是读档后未链接的情况）
+                    MageHand existingHand = null;
+                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                        if (mob instanceof MageHand) {
+                            existingHand = (MageHand) mob;
+                            break;
+                        }
+                    }
+                    if (existingHand != null) {
+                        // 链接到已存在的手，避免重复创建
+                        MageHandControl.this.mageHand = existingHand;
+                        GameScene.show(new WndMageHand(existingHand));
+                        break;
+                    }
+
+                    ArrayList<Integer> spawnPoints2 = new ArrayList<>();
                     for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
                         int p = hero.pos + PathFinder.NEIGHBOURS8[i];
                         if (Actor.findChar(p) == null
                                 && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])
                                 && !(PathFinder.distance[p] == Integer.MAX_VALUE)) {
-                            spawnPoints.add(p);
+                            spawnPoints2.add(p);
                         }
                     }
 
-                    if(mageHand == null){
+                    if (MageHandControl.this.mageHand == null) {
 
-                        if (spawnPoints.size() > 0) {
-                            MageHand mageHand = new MageHand();
-                            mageHand.pos = Random.element(spawnPoints);
-                            GameScene.add(mageHand, 1f);
-                            Dungeon.level.occupyCell(mageHand);
-                            Bestiary.setSeen(mageHand.getClass());
-                            CellEmitter.get(mageHand.pos).start(ShaftParticle.FACTORY, 0.3f, 4);
-                            CellEmitter.get(mageHand.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+                        if (spawnPoints2.size() > 0) {
+                            MageHand newHand = new MageHand();
+                            newHand.pos = Random.element(spawnPoints2);
+                            MageHandControl.this.mageHand = newHand;
+                            GameScene.add(newHand, 1f);
+                            Dungeon.level.occupyCell(newHand);
+                            Bestiary.setSeen(newHand.getClass());
+                            CellEmitter.get(newHand.pos).start(ShaftParticle.FACTORY, 0.3f, 4);
+                            CellEmitter.get(newHand.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
 
                             hero.spend(1f);
                             hero.busy();
                             hero.sprite.operate(hero.pos);
 
-                            if (mageHand.equippedWand != null) {
-                                mageHand.equipWand(mageHand.equippedWand);
-                                mageHand.yell(Messages.get(MageHand.class, "appear"));
+                            if (newHand.equippedWand != null) {
+                                newHand.equipWand(newHand.equippedWand);
+                                newHand.yell(Messages.get(MageHand.class, "appear"));
                                 Sample.INSTANCE.play(Assets.Sounds.MASTERY);
-                                mageHand.sayAppeared();
+                                newHand.sayAppeared();
                             }
 
                             Invisibility.dispel(hero);
