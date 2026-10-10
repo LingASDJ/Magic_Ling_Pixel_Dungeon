@@ -1616,8 +1616,20 @@ public abstract class Char extends Actor {
 		}
 	}
 
-	public synchronized void updateSpriteState() {
-		for (Buff buff:buffs) {
+	public void updateSpriteState() {
+		// Iterate a defensive snapshot of buffs (built under the intrinsic Char lock
+		// inside buffs()) and invoke each buff's visual FX OUTSIDE that lock.
+		//
+		// Why: this game runs actor logic on a dedicated "SHPD Actor Thread" while
+		// rendering happens on the GL/render thread. Some buff FX mutate the scene
+		// graph, e.g. ChampionEnemy -> CharSprite.aura -> Flare.show -> Group.addToBack.
+		// If we kept the Char monitor while doing that, the actor thread would hold
+		// Char-lock -> Group-lock. Meanwhile the render thread, inside Group.update()
+		// (Group-lock), iterates sprites and calls Char.isAlive() (Char-lock). That is
+		// an AB-BA lock-order inversion and deadlocks the two threads -> ANR. It triggers
+		// easily when a boss (e.g. MyCoreHeart.TryGetSummonedMobs) summons a burst of
+		// mobs that get champion auras on the actor thread.
+		for (Buff buff : buffs()) {
 			buff.fx( true );
 		}
 	}
