@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHigh
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.PacmanHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -888,6 +889,9 @@ public class MageHand extends DirectableAlly {
         // 死亡时将装备归还到玩家脚下（能拾取就直接拾取，否则掉落）
         boolean hadEquipment = false;
         if (magesStaff != null) {
+            if(Dungeon.level instanceof PacmanHollowActorLevel){
+                magesStaff.keptThoughLostInvent = true;
+            }
             hadEquipment = true;
             if (!magesStaff.doPickUp(hero)) {
                 Dungeon.level.drop(magesStaff, hero.pos).sprite.drop();
@@ -895,6 +899,9 @@ public class MageHand extends DirectableAlly {
             magesStaff = null;
         }
         if (equippedWand != null) {
+            if(Dungeon.level instanceof PacmanHollowActorLevel){
+                equippedWand.keptThoughLostInvent = true;
+            }
             hadEquipment = true;
             if (!equippedWand.doPickUp(hero)) {
                 Dungeon.level.drop(equippedWand, hero.pos).sprite.drop();
