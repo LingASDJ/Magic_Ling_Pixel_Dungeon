@@ -88,7 +88,8 @@ public class WndGameInProgress extends Window {
 		}
 
 		IconTitle title = new IconTitle();
-		title.icon( HeroSprite.avatar(info.heroClass, info.armorTier) );
+		com.watabou.noosa.Image customAvatar = com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins.avatarFor(info.heroClass, info.skin);
+		title.icon(customAvatar != null ? customAvatar : HeroSprite.avatar(info.heroClass, info.armorTier));
 
 		if (info.name.isEmpty()) {
 			title.label(Messages.get(this, "title", info.level, className.toUpperCase(Locale.ENGLISH)));

@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
@@ -729,7 +730,12 @@ public class StatusPane extends Component {
 		int tier = hero.tier();
 		if (tier != lastTier) {
 			lastTier = tier;
-			avatar.copy( HeroSprite.avatar( hero.heroClass, tier ) );
+			if (HeroSkins.isCustomSkin(hero)) {
+				Image custom = HeroSkins.customAvatar(hero);
+				if (custom != null) avatar.copy(custom);
+			} else {
+				avatar.copy( HeroSprite.avatar( hero.heroClass, tier ) );
+			}
 		}
 
 		counter.setSweep((1f - Actor.now()%1f)%1f);
@@ -760,5 +766,13 @@ public class StatusPane extends Component {
 
 	public void updateAvatar(){
 		avatar.copy( HeroSprite.avatar( Dungeon.hero ) );
+		// 头像尺寸变化后，仅重新居中 avatar 和 compass，不触发全量 layout()
+		avatar.x = bg.x - avatar.width / 2f + 15;
+		avatar.y = bg.y - avatar.height / 2f + (large ? 15 : 16);
+		PixelScene.align(avatar);
+		compass.x = avatar.x + avatar.width / 2f - compass.origin.x;
+		compass.y = avatar.y + avatar.height / 2f - compass.origin.y;
+		PixelScene.align(compass);
+		counter.point(busy.center());
 	}
 }

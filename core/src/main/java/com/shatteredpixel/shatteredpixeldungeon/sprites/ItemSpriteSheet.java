@@ -1304,13 +1304,13 @@ public class ItemSpriteSheet {
     public static final int SKIN_14  = + SKIN+13;
     public static final int SKIN_15  = + SKIN+14;
 
-    public static final int SKIN_16  = + SKIN+15;
+    public static final int SKIN_16  = + SKIN+25;
+
+    public static final int SKIN_BUNNY  = + SKIN+15;
 
     static {
         for (int i =SKIN; i < SKIN+10; i++)
             assignItemRect(i, 16, 16);
-
-        //assignItemRect(RGJT_1, 13, 16);
     }
 
     private static final int TRINKETS        =                               xy(1, 54);  //24 slots
