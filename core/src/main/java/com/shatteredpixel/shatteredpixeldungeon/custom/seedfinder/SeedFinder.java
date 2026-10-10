@@ -165,6 +165,15 @@ public class SeedFinder implements Runnable {
     /** 识别后的本地化标题（去空格小写）；未识别物品标题是"未知的XX"，无法与输入名匹配 */
     private static String identifiedTitle(Class<? extends Item> ic) {
         try {
+            // 首次查种时 Ring/Potion/Scroll 的静态 handler 可能尚未初始化（initGems/initColors
+            // /initLabels 只在 Dungeon.init() 中调用），需确保已初始化，否则 identify() 会 NPE 被吞掉
+            if (Ring.class.isAssignableFrom(ic) && Ring.handlerNeedsInit()) {
+                Ring.initGems();
+            } else if (Potion.class.isAssignableFrom(ic) && Potion.handlerNeedsInit()) {
+                Potion.initColors();
+            } else if (Scroll.class.isAssignableFrom(ic) && Scroll.handlerNeedsInit()) {
+                Scroll.initLabels();
+            }
             Item it = ic.newInstance();
             it.identify();
             return it.title().replaceAll("\\s+", "").toLowerCase();
@@ -365,14 +374,28 @@ public class SeedFinder implements Runnable {
                     wandmakerSeen = true;
                     Item w1 = Wandmaker.Quest.wand1;
                     Item w2 = Wandmaker.Quest.wand2;
-                    if (wand != null && !wand.matches(w1) && !wand.matches(w2))
+                    // 只有当法杖目标尚未在其他地方找到时，才要求 Wandmaker 奖励匹配
+                    boolean wandAlreadyFound = false;
+                    if (wand != null) {
+                        for (int idx : matchIndex.getOrDefault(wand.cls, new int[0])) {
+                            if (itemsFound[idx]) { wandAlreadyFound = true; break; }
+                        }
+                    }
+                    if (wand != null && !wandAlreadyFound && !wand.matches(w1) && !wand.matches(w2))
                         return false;
                     if ((tryMatch(w1, itemsFound) || tryMatch(w2, itemsFound)) && ++foundCount == n)
                         return true;
                 }
                 if (!impSeen && Imp.Quest.reward != null) {
                     impSeen = true;
-                    if (ring != null && !ring.matches(Imp.Quest.reward))
+                    // 只有当戒指目标尚未在其他地方找到时，才要求 Imp 奖励匹配
+                    boolean ringAlreadyFound = false;
+                    if (ring != null) {
+                        for (int idx : matchIndex.getOrDefault(ring.cls, new int[0])) {
+                            if (itemsFound[idx]) { ringAlreadyFound = true; break; }
+                        }
+                    }
+                    if (ring != null && !ringAlreadyFound && !ring.matches(Imp.Quest.reward))
                         return false;
                     if (tryMatch(Imp.Quest.reward, itemsFound) && ++foundCount == n)
                         return true;
