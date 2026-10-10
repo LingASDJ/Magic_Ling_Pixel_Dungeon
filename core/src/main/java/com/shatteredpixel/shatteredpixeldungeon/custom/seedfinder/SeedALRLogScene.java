@@ -74,7 +74,6 @@ public class SeedALRLogScene extends PixelScene {
                     ShatteredPixelDungeon.scene().addToFront(r);
 
                     thread = new Thread(() -> {
-                        // 统一使用新版查种实现：无目标日志模式（全物品清单，固定战士）
                         s = new SeedFinder(new ArrayList<>(), SPDSettings.seedfinderFloors(), HeroClass.WARRIOR)
                                 .logSeedItems(seed);
                         Gdx.app.postRunnable(() -> {
@@ -97,7 +96,7 @@ public class SeedALRLogScene extends PixelScene {
                         });
                     });
                     thread.start();
-
+                    SPDSettings.customSeed(String.valueOf(seed));
                 } else {
                     SPDSettings.customSeed("");
                     ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
