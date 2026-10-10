@@ -114,6 +114,11 @@ public abstract class Scroll extends Item {
 	public static void clearLabels(){
 		handler = null;
 	}
+
+	/** 供查种器判断是否需要先调用 initLabels() */
+	public static boolean handlerNeedsInit() {
+		return handler == null;
+	}
 	
 	public static void save( Bundle bundle ) {
 		handler.save( bundle );

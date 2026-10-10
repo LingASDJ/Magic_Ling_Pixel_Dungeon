@@ -173,6 +173,11 @@ public class Potion extends Item {
 	public static void clearColors() {
 		handler = null;
 	}
+
+	/** 供查种器判断是否需要先调用 initColors() */
+	public static boolean handlerNeedsInit() {
+		return handler == null;
+	}
 	
 	public static void save( Bundle bundle ) {
 		handler.save( bundle );
