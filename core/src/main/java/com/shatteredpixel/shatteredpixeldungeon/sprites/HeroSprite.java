@@ -39,15 +39,15 @@ import com.watabou.utils.RectF;
 
 public class HeroSprite extends CharSprite {
 	
-	private static final int FRAME_WIDTH	= 12;
-	private static final int FRAME_HEIGHT	= 15;
+	public static int FRAME_WIDTH	= 12;
+	public static int FRAME_HEIGHT	= 15;
 	
-	private static final int RUN_FRAMERATE	= 20;
+	public static int RUN_FRAMERATE	= 20;
 	
 	private static TextureFilm tiers;
 	
-	private Animation fly;
-	private Animation read;
+	public Animation fly;
+	public Animation read;
 
 	public HeroSprite() {
 		super();
@@ -175,21 +175,25 @@ public class HeroSprite extends CharSprite {
 	}
 
 	public static Image avatar( Hero hero ){
+		Image custom = HeroSkins.customAvatar( hero );
+		if (custom != null){
+			return custom;
+		}
 		if (hero.buff(HeroDisguise.class) != null){
 			return avatar(hero.buff(HeroDisguise.class).getDisguise(), hero.tier());
 		} else {
 			return avatar(hero.heroClass, hero.tier());
 		}
 	}
-	
+
 	public static Image avatar( HeroClass cl, int armorTier ) {
-		
+
 		RectF patch = tiers().get( armorTier );
 		Image avatar = new Image( cl.spritesheet() );
 		RectF frame = avatar.texture.uvRect( 0, 0, FRAME_WIDTH, FRAME_HEIGHT );
 		frame.shift( patch.left, patch.top );
 		avatar.frame( frame );
-		
+
 		return avatar;
 	}
 }

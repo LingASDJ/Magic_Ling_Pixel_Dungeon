@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailySeedData;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyService;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.SubmitResultData;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FourYearsAnimation;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
@@ -280,7 +281,6 @@ public class HeroSelectScene extends PixelScene {
 		add( startBtn );
 
 		skin = new StyledButton( Chrome.Type.BLANK,Messages.get(WndKeyBindings.class, "skin"),6 ){
-			private float time = 0;
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -857,7 +857,7 @@ public class HeroSelectScene extends PixelScene {
 	@Override
 	public void update() {
 		super.update();
-		boolean shouldShowGrass = heroClass().GetSkin() != 4;
+		boolean shouldShowGrass = heroClass().GetSkin() < 4;
 		for (GrassPatch patch : grassPatches) {
 			if (patch != null) {
 				patch.visible = shouldShowGrass;
@@ -1037,32 +1037,8 @@ public class HeroSelectScene extends PixelScene {
 	}
 
 	private static class Avatar extends Image {
-		// 常量统一抽取，便于后续修改
 		private static final int FRAME_W = 64;
 		private static final int FRAME_H = 64;
-		private static final int SPECIAL_FRAME_W = 88;
-		private static final int SPECIAL_FRAME_H = 120;
-
-		private static final class SkinConfig {
-			public final HeroClass heroClass;
-			public final int skinId;
-			public final String texPath;
-
-			public SkinConfig(HeroClass heroClass, int skinId, String texPath) {
-				this.heroClass = heroClass;
-				this.skinId = skinId;
-				this.texPath = texPath;
-			}
-		}
-
-		private static final SkinConfig[] SPECIAL_SKINS = {
-				new SkinConfig(HeroClass.WARRIOR,  4, "splashes/skin/giftskin_warrior.png"),
-				new SkinConfig(HeroClass.ROGUE,    4, "splashes/skin/giftskin_rogue.png"),
-				new SkinConfig(HeroClass.MAGE,     4, "splashes/skin/mage_collagedays.png"),
-				new SkinConfig(HeroClass.DUELIST,  4, "splashes/skin/duelist_kitsunemimi.png"),
-
-				new SkinConfig(HeroClass.DUELIST, 5, "splashes/skin/duelist_desertspirit.png"),
-		};
 
 		public Avatar(HeroClass cl) {
 			super();
@@ -1081,17 +1057,11 @@ public class HeroSelectScene extends PixelScene {
 			}
 
 			int skinId = cl.GetSkin();
-			SkinConfig matchSkin = null;
-			for (SkinConfig cfg : SPECIAL_SKINS) {
-				if (cfg.heroClass == cl && cfg.skinId == skinId) {
-					matchSkin = cfg;
-					break;
-				}
-			}
+			HeroSkins.SkinDef def = HeroSkins.get(cl, skinId);
 
-			if (matchSkin != null) {
-				texture(TextureCache.get(matchSkin.texPath));
-				frame(0, 0, SPECIAL_FRAME_W, SPECIAL_FRAME_H);
+			if (def != null && def.splashPath != null) {
+				texture(TextureCache.get(def.splashPath));
+				frame(0, 0, def.splashFrameW, def.splashFrameH);
 				setPos(0, 0);
 			} else {
 				texture(cl.GetSkinAssest());

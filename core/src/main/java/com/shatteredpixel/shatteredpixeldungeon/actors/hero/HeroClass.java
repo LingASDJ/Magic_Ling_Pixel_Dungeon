@@ -113,6 +113,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSp
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Image;
@@ -309,7 +310,7 @@ public enum HeroClass {
 			hero.HP=hero.HT=120;
 			hero.exp=-1;
 			if(DeviceCompat.isMidTest() || DeviceCompat.isMDP() || DeviceCompat.isDesktop_Dev()){
-				SPDSettings.iceTestCoin(20260000);
+				//SPDSettings.iceTestCoin(20260000);
 			}
 		}
 
@@ -547,10 +548,16 @@ public enum HeroClass {
 		Image img = new Image(this.GetSkinAssest());
 		int skinCount = img.texture.width/64;
 
+		// 注册的特殊皮肤可能超出图集宽度，循环上限需包含它们
+		int maxIndex = skinCount;
+		for (int registered : HeroSkins.registeredSkins(this)) {
+			if (registered >= maxIndex) maxIndex = registered + 1;
+		}
+
 		if(skinIndex==0){
 			isSkinUnlock = true;
 		}else {
-			while ( skinIndex < skinCount ) {
+			while ( skinIndex < maxIndex ) {
 				switch (this) {
 					case WARRIOR:
 					default:

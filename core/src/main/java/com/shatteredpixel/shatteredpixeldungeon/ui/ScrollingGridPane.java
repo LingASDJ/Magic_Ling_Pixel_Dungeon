@@ -203,8 +203,11 @@ public class ScrollingGridPane extends ScrollPane {
 				}
 
 				if (gridItemCounter == targetIndex) {
-					// 滚动到目标位置，预留少量上边距
-					scrollTo(0, topPos);
+					// 滚动到目标位置，钳位到内容底部，避免选中最后一个时下方留空
+					float maxScroll = content.height() - height();
+					if (maxScroll < 0) maxScroll = 0;
+					float targetY = Math.min(topPos, maxScroll);
+					scrollTo(0, targetY);
 					return;
 				}
 				left += cellW + cellGap;

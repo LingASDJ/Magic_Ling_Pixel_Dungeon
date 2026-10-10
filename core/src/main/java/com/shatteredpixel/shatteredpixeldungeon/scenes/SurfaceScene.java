@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EarthGuardianSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniSakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WardSprite;
@@ -438,32 +439,8 @@ public class SurfaceScene extends PixelScene {
 	}
 
 	private static class Avatar extends Image {
-		// 常量统一抽取，便于后续修改
 		private static final int FRAME_W = 64;
 		private static final int FRAME_H = 64;
-		private static final int SPECIAL_FRAME_W = 88;
-		private static final int SPECIAL_FRAME_H = 120;
-
-		private static final class SkinConfig {
-			public final HeroClass heroClass;
-			public final int skinId;
-			public final String texPath;
-
-			public SkinConfig(HeroClass heroClass, int skinId, String texPath) {
-				this.heroClass = heroClass;
-				this.skinId = skinId;
-				this.texPath = texPath;
-			}
-		}
-
-		private static final SkinConfig[] SPECIAL_SKINS = {
-				new SkinConfig(HeroClass.WARRIOR,  4, "splashes/skin/giftskin_warrior.png"),
-				new SkinConfig(HeroClass.ROGUE,    4, "splashes/skin/giftskin_rogue.png"),
-				new SkinConfig(HeroClass.MAGE,     4, "splashes/skin/mage_collagedays.png"),
-				new SkinConfig(HeroClass.DUELIST,  4, "splashes/skin/duelist_kitsunemimi.png"),
-
-				new SkinConfig(HeroClass.DUELIST, 5, "splashes/skin/duelist_desertspirit.png"),
-		};
 
 		public Avatar(HeroClass cl) {
 			super();
@@ -482,17 +459,11 @@ public class SurfaceScene extends PixelScene {
 			}
 
 			int skinId = cl.GetSkin();
-			SkinConfig matchSkin = null;
-			for (SkinConfig cfg : SPECIAL_SKINS) {
-				if (cfg.heroClass == cl && cfg.skinId == skinId) {
-					matchSkin = cfg;
-					break;
-				}
-			}
+			HeroSkins.SkinDef def = HeroSkins.get(cl, skinId);
 
-			if (matchSkin != null) {
-				texture(TextureCache.get(matchSkin.texPath));
-				frame(0, 0, SPECIAL_FRAME_W, SPECIAL_FRAME_H);
+			if (def != null && def.splashPath != null) {
+				texture(TextureCache.get(def.splashPath));
+				frame(0, 0, def.splashFrameW, def.splashFrameH);
 				setPos(0, 0);
 			} else {
 				texture(cl.GetSkinAssest());
