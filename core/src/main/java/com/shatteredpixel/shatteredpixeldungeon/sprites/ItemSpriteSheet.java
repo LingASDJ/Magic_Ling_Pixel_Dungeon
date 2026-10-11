@@ -816,6 +816,8 @@ public class ItemSpriteSheet {
     public static final int SEED_SKYBLUEFIRE      = SEEDS+12;
     public static final int SEED_AIKELAIER      = SEEDS+13;
 
+    public static final int SEED_MARIGOLD      = SEEDS+14;
+
     public static final int GREEN_LING      = SEEDS+15;
 
     public static final int STDR      = SEEDS+16;
