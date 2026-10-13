@@ -47,7 +47,34 @@ public class WndUseItem extends WndInfoItem {
 
 	private static final float GAP	= 2;
 
+	/**普通物品使用窗口的兼容构造器
+	 * 原来的调用方式保持不变：
+	 * - actions = null：稍后使用 item.actions(hero)，显示物品的全部动作；
+	 * - afterUse = null：执行后继续使用原来的目标选择逻辑。
+	 */
 	public WndUseItem( final Window owner, final Item item ) {
+		this(owner, item, null, null);
+	}
+	/**
+	 * 通用物品使用窗口构造器。
+	 * @param owner
+	 *        打开这个窗口的父窗口。执行动作后如果父窗口仍然存在，会一并关闭。
+	 * @param item
+	 *        当前操作的物品。窗口中的动作都只会在这个物品上执行。
+	 * @param actions
+	 *        要显示的动作列表。
+	 *        null 表示显示 item.actions(hero) 的完整动作；
+	 *        快捷栏传入过滤后的 quickslotActions()，因此只显示主动技能。
+	 * @param afterUse
+	 *        动作执行后的额外回调。
+	 *        快捷栏用它来指定目标选择应该回到对应的快捷栏槽位；
+	 *        为 null 时继续采用原来的 InventoryPane.useTargeting() 逻辑。
+	 */
+		public WndUseItem(
+		final Window owner,
+		final Item item,
+		ArrayList<String> actions,
+		final Runnable afterUse) {
 
 		super(item);
 		float y = height;
@@ -55,7 +82,14 @@ public class WndUseItem extends WndInfoItem {
 		if (Dungeon.hero.isAlive() && Dungeon.hero.belongings.contains(item)) {
 			y += GAP;
 			ArrayList<RedButton> buttons = new ArrayList<>();
-			for (final String action : item.actions( Dungeon.hero )) {
+
+			// 没有指定动作列表时，使用物品自身的完整 action 列表
+			// 指定列表时，则只显示调用方允许的动作
+			if (actions == null) {
+				actions = item.actions(Dungeon.hero);
+			}
+
+			for (final String action : actions) {
 
 				RedButton btn = new RedButton( item.actionName(action, Dungeon.hero), 8 ) {
 					@Override
@@ -65,8 +99,14 @@ public class WndUseItem extends WndInfoItem {
 						if (Dungeon.hero.isAlive() && Dungeon.hero.belongings.contains(item)){
 							item.execute( Dungeon.hero, action );
 						}
+						// 物品状态发生变化后，通知快捷栏和物品显示刷新
 						Item.updateQuickslot();
-						if (action.equals(item.defaultAction) && item.usesTargeting && owner == null){
+						// 如果调用方提供了额外回调，优先执行回调
+						// 快捷栏使用这个回调，让目标选择回到对应的快捷栏槽位
+						if (afterUse != null) {
+							afterUse.run();
+						}
+						else if (action.equals(item.defaultAction) && item.usesTargeting && owner == null){
 							InventoryPane.useTargeting();
 						}
 					}

@@ -40,17 +40,15 @@ public class TreeList extends MeleeWeapon {
 
 
     public String defaultAction(){
-        if(Dungeon.hero.buff(TreeBarrier.class)!=null ){
+        //修复树痕在无充能的情况下，决斗家不能放入快捷栏的问题
+        if (Dungeon.hero != null) {
             TreeBarrier tb = Dungeon.hero.buff(TreeBarrier.class);
-            if(tb.accumulatedShield != 0){
-                defaultAction = AC_BARRIER;
-            } else {
-                defaultAction = null;
+
+            if (tb != null && tb.accumulatedShield != 0) {
+                return AC_BARRIER;
             }
-        } else {
-            defaultAction = null;
         }
-        return defaultAction;
+        return super.defaultAction();
     }
 
     @Override

@@ -1453,4 +1453,15 @@ public class SPDSettings extends GameSettings {
 		return getInt(KEY_CURRENT_BGM, 3);
 	}
 
+	// 快捷栏多技能物品的选择模式设置键
+	public static final String KEY_QUICKSLOT_SKILL_MODE = "quickslot_skill_mode";
+	// 保存快捷栏技能选择模式
+	public static void quickslotSkillMode(int value) {
+		put(KEY_QUICKSLOT_SKILL_MODE, value);
+	}
+	// 读取快捷栏技能选择模式
+	public static int quickslotSkillMode() {
+		return getInt(KEY_QUICKSLOT_SKILL_MODE, 0, 0, 1);
+	}
+
 }
