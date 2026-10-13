@@ -21,20 +21,35 @@ public class QuickSlot {
 	//note that the current max size is coded at 6, due to UI constraints, but it could be much much bigger with no issue.
 
 	private Item[] slots = new Item[SIZE];
+	// 每个快捷栏槽位当前选中的技能 action ID
+	// 空值表示该槽位还没有指定技能，使用时需要让玩家选择
+	private String[] slotActions = new String[SIZE];
+
+	// 保存玩家为某个快捷栏槽位选择的技能
+	// 记录 action ID，不记录显示文字；显示名称由 Item.actionName() 生成
+	public void setSlotAction(int slot, String action) {
+		slotActions[slot] = action;
+	}
+	// 读取某个快捷栏槽位保存的技能
+	// 返回 null 表示没有记录技能，通常需要回退到“使用时选择”或补选窗口
+	public String getSlotAction(int slot) {
+		return slotActions[slot];
+	}
+	// 清空快捷栏槽位
+	public void clearSlot(int slot) {
+		slots[slot] = null;
+		slotActions[slot] = null;
+	}
 
 
 	//direct array interaction methods, everything should build from these methods.
 	public void setSlot(int slot, Item item){
 		clearItem(item); //we don't want to allow the same item in multiple slots.
-		slots[slot] = item;
-	}
-
-	public void clearSlot(int slot){
-		slots[slot] = null;
+		setSlotInternal(slot, item, null);
 	}
 
 	public void reset(){
-		slots = new Item[SIZE];
+		slots = new Item[SIZE];slotActions = new String[SIZE];
 	}
 
 	public Item getItem(int slot){
@@ -68,15 +83,19 @@ public class QuickSlot {
 	public boolean contains(Item item){
 		return getSlot(item) != -1;
 	}
-
+	// 底层快捷栏写入方法，主要用于恢复存档和占位符替换，因为这些场景需要保留原有技能。
 	public void replacePlaceholder(Item item) {
 		for (int i = 0; i < SIZE; i++) {
 			if (isPlaceholder(i) && item.quickslotSimilar(getItem(i))) {
-				setSlot(i, item);
+				// 先保存旧技能，再替换物品。
+				String oldAction = slotActions[i];
+				setSlotInternal(i, item, oldAction);
 			}
 		}
 	}
 
+	// 将实际物品转换成虚拟占位符。
+	// 当物品数量变成 0 后，快捷栏仍需要记住原来的位置和技能。
 	public void convertToPlaceholder(Item item){
 
 		if (contains(item)) {
@@ -84,7 +103,11 @@ public class QuickSlot {
 			if (placeholder == null) return;
 
 			for (int i = 0; i < SIZE; i++) {
-				if (getItem(i) == item) setSlot(i, placeholder);
+				// 保存该槽位原来的技能，然后用占位符替换物品
+				if (getItem(i) == item) {
+					String oldAction = slotActions[i];
+					setSlotInternal(i, placeholder, oldAction);
+				}
 			}
 		}
 	}
@@ -99,43 +122,87 @@ public class QuickSlot {
 		}
 		return Random.element(result);
 	}
+	private void setSlotInternal(int slot, Item item, String action) {
+		slots[slot] = item;
+		slotActions[slot] = action;
+	}
 
 	private final String PLACEHOLDERS = "placeholders";
 	private final String PLACEMENTS = "placements";
+	private static final String SLOT_ACTIONS = "slot_actions";
 
 	/**
 	 * Placements array is used as order is preserved while bundling, but exact index is not, so if we
 	 * bundle both the placeholders (which preserves their order) and an array telling us where the placeholders are,
 	 * we can reconstruct them perfectly.
 	 */
-
+	// 保存快捷栏占位符、占位符位置和每个槽位的技能
+	// slotActions 中的 null 不能直接保存为 JSON null，所以这里统一转换成空字符串，读取时再还原成 null
 	public void storePlaceholders(Bundle bundle){
 		ArrayList<Item> placeholders = new ArrayList<>(SIZE);
 		boolean[] placements = new boolean[SIZE];
+		String[] savedActions = new String[SIZE];
 
 		for (int i = 0; i < SIZE; i++) {
+			// 记录当前哪些槽位是占位符
 			if (isPlaceholder(i)) {
 				placeholders.add(getItem(i));
 				placements[i] = true;
 			}
+			// 没有技能的槽位保存为空字符串
+			savedActions[i] = slotActions[i] == null ? "" : slotActions[i];
 		}
 		bundle.put( PLACEHOLDERS, placeholders );
 		bundle.put( PLACEMENTS, placements );
+		bundle.put(SLOT_ACTIONS, savedActions);
 	}
-
+	// 恢复快捷栏占位符和每个槽位的技能
 	public void restorePlaceholders(Bundle bundle){
 		Collection<Bundlable> placeholders = bundle.getCollection(PLACEHOLDERS);
 		boolean[] placements = bundle.getBooleanArray( PLACEMENTS );
 
+		// 兼容旧存档或异常数据
+		if (placements == null) {
+			placements = new boolean[SIZE];}
+
+		String[] actions = bundle.contains(SLOT_ACTIONS)
+				? bundle.getStringArray(SLOT_ACTIONS)
+				: new String[SIZE];
+
+		// 旧存档、字段缺失、读取失败时都使用空数组
+		if (actions == null) {
+			actions = new String[SIZE];
+		}
+
+		//先恢复整个技能数组，而不是只在占位符循环里恢复
+		slotActions = new String[SIZE];
+
+		for (int i = 0; i < SIZE; i++) {
+			String action = i < actions.length ? actions[i] : "";
+
+			if (action == null
+					|| action.isEmpty()
+					|| action.equals("null")) {
+				slotActions[i] = null;
+			} else {
+				slotActions[i] = action;
+			}
+		}
+		// 恢复占位符
 		int i = 0;
 		for (Bundlable item : placeholders){
 			while (!placements[i]){
 				i++;
 			}
-			setSlot( i, (Item)item );
+			setSlotInternal(i, (Item) item, slotActions[i]);
 			i++;
 		}
 
+	}
+	//防止清理已保存的快捷栏技能选择（1）
+	//用新物品替换槽位内容，但保留该槽位已经选择的技能
+	public void setSlotPreservingAction(int slot, Item item) {
+		setSlotInternal(slot, item, slotActions[slot]);
 	}
 
 }

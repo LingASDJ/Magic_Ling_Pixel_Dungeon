@@ -177,6 +177,37 @@ public class Item implements Bundlable {
 		actions.add( AC_THROW );
 		return actions;
 	}
+	/**
+	 * 返回该物品可以在快捷栏中作为“主动技能”使用的 action 列表。
+	 * 该方法会调用 actions(hero)，因此：
+	 * - 决斗家装备近战武器时，MeleeWeapon.actions() 才会加入 AC_ABILITY；
+	 * - 非决斗家不会把武技算作快捷栏技能；
+	 * - LegendWeapon 等物品自带的主动技能仍会正常保留。
+	 */
+	public ArrayList<String> quickslotActions(Hero hero) {
+		ArrayList<String> result = new ArrayList<>();
+
+		for (String action : actions(hero)) {
+			// 过滤通用物品动作：
+			// DROP  丢弃
+			// THROW 投掷
+			// EQUIP 装备
+			// UNEQUIP 卸下
+			if (action.equals(AC_DROP)
+					|| action.equals(AC_THROW)
+					|| action.equals(EquipableItem.AC_EQUIP)
+					|| action.equals(EquipableItem.AC_UNEQUIP)) {
+				continue;
+			}
+
+			// 避免同一个 action 被重复加入列表
+			if (!result.contains(action)) {
+				result.add(action);
+			}
+		}
+
+		return result;
+	}
 
 	public String actionName(String action, Hero hero){
 		return Messages.get(this, "ac_" + action);
@@ -730,7 +761,11 @@ public class Item implements Bundlable {
 		//only want to populate slot on first load.
 		if (hero == null) {
 			if (bundle.contains(QUICKSLOT)) {
-				Dungeon.quickslot.setSlot(bundle.getInt(QUICKSLOT), this);
+				//防止清理已保存的快捷栏技能选择（3）
+				// 恢复物品到原快捷栏位置，同时保留已保存的技能选择
+				Dungeon.quickslot.setSlotPreservingAction(
+						bundle.getInt(QUICKSLOT),
+						this);
 			}
 		}
 
