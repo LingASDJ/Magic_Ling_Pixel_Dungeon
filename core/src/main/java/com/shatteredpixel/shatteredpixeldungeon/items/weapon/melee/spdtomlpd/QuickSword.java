@@ -75,7 +75,8 @@ public class QuickSword extends MeleeWeapon {
     }
 
     @Override
-    protected void duelistAbility(Hero hero, Integer target) {if (target == null) return;
+    protected void duelistAbility(Hero hero, Integer target) {
+        if (target == null) return;
 
         // 不能连续释放：上一次释放的标记还在（英雄还没消耗回合做过其它行动）
         if (hero.buff(QuickStrikeTracker.class) != null) {

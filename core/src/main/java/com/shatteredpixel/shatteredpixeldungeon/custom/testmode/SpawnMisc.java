@@ -78,6 +78,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.WhiteSugar_B;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.tomb.CookGraveMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.tomb.FrozenGraveMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.tomb.GraveMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.jokings.HornOfPlentyBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.jokings.HornOfPlentyRiceBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
@@ -271,6 +273,8 @@ public class SpawnMisc extends TestItem {
             bombList.add(ShrapnelBomb.class);
             bombList.add(WoollyBomb.class);
             bombList.add(LaserPython.class);
+            bombList.add(HornOfPlentyBomb.class);
+            bombList.add(HornOfPlentyRiceBomb.class);
         }
 
         //Brew

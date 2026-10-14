@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BuffsOringinForWeapon.DoomsdayScepterVulnerable;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BuffsOringinForWeapon.FloatingTargetDefenseIgnore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
@@ -126,6 +127,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
@@ -628,16 +630,20 @@ public abstract class Char extends Actor {
 			if(type == DamageType.PHYSICAL ) effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
 
 			// =======================护甲结算=======================
-			// 攻击有效 则伤害值减去护甲值(大于0)
-			if (effectiveDamage >= 0) {
-				effectiveDamage = Math.max(effectiveDamage - dr, 0);
+			// 攻击有效(大于0) 若为物理伤害则伤害值减去护甲值
+			if (effectiveDamage >= 0 ) {
+				// 浮空目标防御忽略buff 的 忽略防御效果（默认值为50%）
+				if (buff(FloatingTargetDefenseIgnore.class) != null && enemy.flying) dr *= buff(FloatingTargetDefenseIgnore.class).DefenseIgnoreRate;
+				if (type == DamageType.PHYSICAL) {
+					effectiveDamage = Math.max(effectiveDamage - dr, 0);
+				}
 				// 粘滞处理:伤害延时(未查)
 				if (enemy.buff(Viscosity.ViscosityTracker.class) != null) {
 					effectiveDamage = enemy.buff(Viscosity.ViscosityTracker.class).deferDamage(effectiveDamage);
 					enemy.buff(Viscosity.ViscosityTracker.class).detach();
 				}
-				// 受击方 处于 易伤 1.33倍
-				if (enemy.buff(Vulnerable.class) != null) effectiveDamage *= 1.33f;
+				// 受击方 处于 易伤 物理伤害1.33倍
+				if (enemy.buff(Vulnerable.class) != null && type == DamageType.PHYSICAL) effectiveDamage *= 1.33f;
 				// 攻击特效
 				effectiveDamage = attackProc(enemy, effectiveDamage);
 			}
@@ -723,12 +729,23 @@ public abstract class Char extends Actor {
 					GLog.i( Messages.capitalize(Messages.get(Char.class, "defeat", enemy.name())) );
 				}
 			}
+			// 命中后触发武器的命中后效果，也就是所谓的命中后钩子
+			if (this instanceof Hero) {
+				KindOfWeapon w = ((Hero) this).belongings.attackingWeapon();
+				if (w != null) w.onAttackHit(this, enemy, effectiveDamage);
+			}
 
 			return true;
 
 		} else {
 
 			//enemy.sprite.showStatus( CharSprite.NEUTRAL, enemy.defenseVerb() );
+
+			// 未命中后触发武器的命中后效果，也就是所谓的未命中后钩子
+			if (this instanceof Hero) {
+				KindOfWeapon w = ((Hero) this).belongings.attackingWeapon();
+				if (w != null) w.onAttackMissed(this, enemy);
+			}
 
 			if(enemy instanceof Hero && ((Hero) enemy).belongings.getItem(KnightStabbingSword.class) !=null){
 				if(Random.Float()<=0.40f && hero.buff(KnightStabbingSword.NoRoundTracker.class) == null){

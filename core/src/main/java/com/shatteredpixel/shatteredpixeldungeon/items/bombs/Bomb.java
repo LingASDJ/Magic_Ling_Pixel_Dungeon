@@ -84,6 +84,10 @@ public class Bomb extends Item {
 	//FIXME using a static variable for this is kinda gross, should be a better way
 	private static boolean lightingFuse = false;
 
+	// 记录被炸的地块与单位
+	protected ArrayList<Integer> affectedCells = new ArrayList<>();
+	protected ArrayList<Char>    affectedChars = new ArrayList<>();
+
 	private static final String AC_LIGHTTHROW = "LIGHTTHROW";
 
 	@Override
@@ -155,8 +159,8 @@ public class Bomb extends Item {
 
 		if (explodesDestructively()) {
 
-			ArrayList<Integer> affectedCells = new ArrayList<>();
-			ArrayList<Char> affectedChars = new ArrayList<>();
+			affectedCells.clear();
+			affectedChars.clear();
 
 			if (Dungeon.level.heroFOV[cell]) {
 				CellEmitter.center(cell).burst(BlastParticle.FACTORY, 30);

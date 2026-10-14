@@ -17,6 +17,6 @@ public class HornOfPlentyBomb extends Bomb {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", 4 + Dungeon.scalingDepth(), 12 + 3*Dungeon.scalingDepth()) + "\n\n" + Messages.get(Bomb.class, "desc_burning");
+        return Messages.get(this, "desc", 4 + Dungeon.scalingDepth(), 12 + 3*Dungeon.scalingDepth()) + "\n\n" + Messages.get(Bomb.class, fuse == null ? "desc_fuse" : "desc_burning");
     }
 }
