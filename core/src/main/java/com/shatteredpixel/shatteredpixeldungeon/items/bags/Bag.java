@@ -119,8 +119,10 @@ public class Bag extends Item implements Iterable<Item> {
 				if (!item.collect(this)) {
 					item.collect(container);
 				}
-				if (slot != -1) {
-					Dungeon.quickslot.setSlot(slot, item);
+				//防止清理已保存的快捷栏技能选择（2）
+				//如果物品原本就在快捷栏中，重新关联到原槽位
+					if (slot != -1) {
+						Dungeon.quickslot.setSlotPreservingAction(slot, item);
 				}
 			}
 		}

@@ -157,10 +157,7 @@ public class ToobarV extends Component {
                                 });
                             } else {
 
-                                item.execute(Dungeon.hero);
-                                if (item.usesTargeting) {
-                                    QuickSlotButton.useTargeting(idx);
-                                }
+                                QuickSlotButton.use(idx);
                             }
                             super.onSelect(idx, alt);
                         }
