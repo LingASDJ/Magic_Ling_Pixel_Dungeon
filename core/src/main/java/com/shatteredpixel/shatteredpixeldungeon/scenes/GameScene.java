@@ -125,6 +125,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiscardedItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniGhostSprite;
@@ -232,6 +233,23 @@ public class GameScene extends PixelScene {
 
 	public static void updateAvatar(){
 		if (scene != null && scene.status != null) scene.status.updateAvatar();
+	}
+
+	public static void rebuildHeroSprite(){
+		if (scene != null) scene.doRebuildHeroSprite();
+	}
+
+	private void doRebuildHeroSprite(){
+		if (hero != null) {
+			mobs.remove( hero );
+			hero.killAndErase();
+			hero = null;
+		}
+
+		hero = HeroSkins.createSprite( Dungeon.hero );
+		hero.place( Dungeon.hero.pos );
+		hero.updateArmor();
+		mobs.add( hero );
 	}
 
 	private void tell(String text) {
@@ -1417,7 +1435,7 @@ public class GameScene extends PixelScene {
 		mobs = new Group();
 		add( mobs );
 
-		hero = new HeroSprite();
+		hero = HeroSkins.createSprite( Dungeon.hero );
 		hero.place( Dungeon.hero.pos );
 		hero.updateArmor();
 		mobs.add( hero );

@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -62,30 +63,6 @@ public class WndSelectSkin extends Window {
     public SkinNameBar nameBar;
     private Image frame;
     private int selectedSkin;
-
-    private static final class SkinConfig {
-        public final HeroClass heroClass;
-        public final int skinId;
-        public final String texPath;
-        public final int frameW;
-        public final int frameH;
-
-        public SkinConfig(HeroClass heroClass, int skinId, String texPath, int frameW, int frameH) {
-            this.heroClass = heroClass;
-            this.skinId = skinId;
-            this.texPath = texPath;
-            this.frameW = frameW;
-            this.frameH = frameH;
-        }
-    }
-
-    private static final SkinConfig[] SPECIAL_SKINS = {
-            new SkinConfig(HeroClass.WARRIOR,  4, "splashes/skin/giftskin_warrior.png", 80, 112),
-            new SkinConfig(HeroClass.ROGUE,    4, "splashes/skin/giftskin_rogue.png", 80, 112),
-            new SkinConfig(HeroClass.MAGE,     4, "splashes/skin/mage_collagedays.png", 80, 112),
-            new SkinConfig(HeroClass.DUELIST,  4, "splashes/skin/duelist_kitsunemimi.png", 80, 112),
-            new SkinConfig(HeroClass.DUELIST,  5, "splashes/skin/duelist_desertspirit.png", 80, 112),
-    };
 
     private static final int FRAME_WIDTH    = 89;
     private static final int FRAME_HEIGHT    = 128;
@@ -146,8 +123,6 @@ public class WndSelectSkin extends Window {
 
         refreshSkinList();
         refreshDisplay();
-
-        skinList.scrollToCell(selectedSkin);
     }
 
     private int TextureRules() {
@@ -183,7 +158,36 @@ public class WndSelectSkin extends Window {
             skinList.addItem(item);
         }
 
+        // 追加注册的特殊皮肤（不在头像图集中的皮肤）
+        for (int skinIndex : HeroSkins.registeredSkins(heroClass)) {
+            if (skinIndex < skinCount) continue; // 已在图集中
+            final int idx = skinIndex;
+            boolean unlocked = isSkinUnlocked(idx);
+
+            SkinListItem item = new SkinListItem(heroClass, idx, unlocked, idx == selectedSkin);
+            item.setSkinClickListener(() -> {
+                if (unlocked) {
+                    selectedSkin = idx;
+                    refreshSkinList();
+                    refreshDisplay();
+                }
+            });
+            skinList.addItem(item);
+        }
+
         skinList.layout();
+
+        // 滚动到当前选中皮肤在列表中的位置
+        int pos = 0;
+        for (int i = 0; i < skinCount; i++) {
+            if (i == selectedSkin) { skinList.scrollToCell(pos); break; }
+            pos++;
+        }
+        for (int skinIndex : HeroSkins.registeredSkins(heroClass)) {
+            if (skinIndex < skinCount) continue;
+            if (skinIndex == selectedSkin) { skinList.scrollToCell(pos); break; }
+            pos++;
+        }
     }
 
     private boolean isSkinUnlocked(int skinIndex) {
@@ -212,18 +216,9 @@ public class WndSelectSkin extends Window {
     public void hide() {
         SPDSettings.setHeroSkin(heroClass.ordinal(), selectedSkin);
         Char target = Dungeon.hero;
-        ((HeroSprite)target.sprite).disguise(heroClass);
+        GameScene.rebuildHeroSprite();
         GameScene.updateAvatar();
         super.hide();
-    }
-
-    private static SkinConfig getSpecialSkinConfig(HeroClass cl, int skinId) {
-        for (SkinConfig cfg : SPECIAL_SKINS) {
-            if (cfg.heroClass == cl && cfg.skinId == skinId) {
-                return cfg;
-            }
-        }
-        return null;
     }
 
     private static int skinIndexToTier(int skinIndex) {
@@ -233,6 +228,7 @@ public class WndSelectSkin extends Window {
             case 3:  return 10;
             case 4:  return 13;
             case 5:  return 14;
+            case 6:  return 15;
             default: return 7;
         }
     }
@@ -252,8 +248,13 @@ public class WndSelectSkin extends Window {
         }
 
         private static Image createThumbnail(HeroClass heroClass, int skinIndex, boolean unlocked) {
-            int tier = skinIndexToTier(skinIndex);
-            Image avatar = HeroSprite.avatar(heroClass, tier);
+            Image avatar;
+            if (HeroSkins.avatarFor(heroClass, skinIndex) != null) {
+                avatar = HeroSkins.avatarFor(heroClass, skinIndex);
+            } else {
+                int tier = skinIndexToTier(skinIndex);
+                avatar = HeroSprite.avatar(heroClass, tier);
+            }
 
             if (!unlocked) {
                 avatar.hardlight(0.4f, 0.4f, 0.4f);
@@ -313,6 +314,7 @@ public class WndSelectSkin extends Window {
                 case 3:  return "skin_" + prefix + "d";
                 case 4:  return "skin_" + prefix + "c";
                 case 5:  return heroClass == HeroClass.DUELIST ? "skin_" + prefix + "d" : "skin_" + prefix + "e";
+                case 6:  return "skin_" + prefix + "f";
                 default: return "";
             }
         }
@@ -338,30 +340,32 @@ public class WndSelectSkin extends Window {
             }
             clouds.clear();
 
-            // 创建天空背景
-            boolean dayTime = false;
+            // 立绘逻辑：优先用 HeroSkins 注册的大立绘
+            HeroSkins.SkinDef def = HeroSkins.get(heroClass, skinIndex);
+            isSpecialSkin = (def != null && def.splashPath != null);
 
+            // 创建天空背景（特殊皮肤不画云朵）
             sky = new Sky(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
             sky.scale.set(SKY_WIDTH, SKY_HEIGHT);
             add(sky);
 
-            float range = SKY_HEIGHT * 2 / 3;
-            for (int i = 0; i < NCLOUDS; i++) {
-                Cloud cloud = new Cloud(
-                        (NCLOUDS - 1 - i) * (range / NCLOUDS) + Random.Float(range / NCLOUDS),
-                        dayTime
-                );
-                add(cloud);
-                clouds.add(cloud);
+            if (!isSpecialSkin) {
+                float range = SKY_HEIGHT * 2 / 3;
+                for (int i = 0; i < NCLOUDS; i++) {
+                    Cloud cloud = new Cloud(
+                            (NCLOUDS - 1 - i) * (range / NCLOUDS) + Random.Float(range / NCLOUDS),
+                            false
+                    );
+                    add(cloud);
+                    clouds.add(cloud);
+                }
             }
 
-            // 原有立绘逻辑
-            SkinConfig special = getSpecialSkinConfig(heroClass, skinIndex);
-            isSpecialSkin = (special != null);
-
-            if (special != null) {
-                skinImage = new Image(TextureCache.get(special.texPath));
-                skinImage.frame(0, 0, special.frameW, special.frameH);
+            if (def != null && def.splashPath != null) {
+                skinImage = new Image(TextureCache.get(def.splashPath));
+                skinImage.frame(0, 0, def.splashFrameW, def.splashFrameH);
+            } else if (def != null && def.avatarFactory != null) {
+                skinImage = HeroSkins.avatarFor(heroClass, skinIndex);
             } else {
                 skinImage = new Image(heroClass.GetSkinAssest());
                 TextureFilm film = new TextureFilm(skinImage.texture, AVATAR_FRAME_W, AVATAR_FRAME_H);
@@ -672,6 +676,7 @@ public class WndSelectSkin extends Window {
                 case 3:  return "skin_" + prefix + "d";
                 case 4:  return "skin_" + prefix + "c";
                 case 5:  return heroClass == HeroClass.DUELIST ? "skin_" + prefix + "d" : "skin_" + prefix + "e";
+                case 6:  return "skin_" + prefix + "f";
                 default: return "";
             }
         }

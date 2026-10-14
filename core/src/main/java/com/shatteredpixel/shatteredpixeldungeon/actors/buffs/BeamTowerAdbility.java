@@ -181,12 +181,15 @@ public class BeamTowerAdbility extends Buff {
         @Override
         public void use(BlobEmitter emitter) {
             super.use(emitter);
+            //手机端火焰线会铺满大半张图，BlobEmitter 每次发射要对每个着火格吐粒子，
+            //发射间隔太小会导致粒子洪流 -> 掉帧/GC 抖动直至 ANR。桌面端保持密集，手机端放慢。
+            float rate = DeviceCompat.isDesktop() ? 0.03f : 0.28f;
             if (element == 0){
-                emitter.pour(FROST_FACTORY, DeviceCompat.isDesktop() ? 0.03f : 0.1f);   //霜火：亮蓝
+                emitter.pour(FROST_FACTORY, rate);   //霜火：亮蓝
             } else if (element == 1){
-                emitter.pour(FlameParticle.FACTORY, DeviceCompat.isDesktop() ? 0.03f : 0.1f);   //普通火：橙红
+                emitter.pour(FlameParticle.FACTORY, rate);   //普通火：橙红
             } else {
-                emitter.pour(HALO_FACTORY, DeviceCompat.isDesktop() ? 0.03f : 0.1f);   //磷火：亮绿
+                emitter.pour(HALO_FACTORY, rate);   //磷火：亮绿
             }
         }
 
@@ -233,12 +236,18 @@ public class BeamTowerAdbility extends Buff {
                         }
 
                         burned = true;
-                        if (element == 0){
-                            CellEmitter.get(cell).start(FROST_FACTORY, DeviceCompat.isDesktop() ? 0.03f : 0.1f, 10);
-                        } else if (element == 1){
-                            CellEmitter.get(cell).start(FlameParticle.FACTORY, DeviceCompat.isDesktop() ? 0.03f : 0.1f, 10);
-                        } else {
-                            CellEmitter.get(cell).start(HALO_FACTORY, DeviceCompat.isDesktop() ? 0.03f : 0.1f, 10);
+                        //离屏格子的余焰玩家根本看不到，却会为每条火线的每个格子各建一个 CellEmitter，
+                        //在手机端造成大量临时发射器/粒子。只在玩家视野内生成，且手机端减量。
+                        if (Dungeon.level.heroFOV[cell]) {
+                            float iv = DeviceCompat.isDesktop() ? 0.03f : 0.25f;
+                            int n = DeviceCompat.isDesktop() ? 10 : 4;
+                            if (element == 0){
+                                CellEmitter.get(cell).start(FROST_FACTORY, iv, n);
+                            } else if (element == 1){
+                                CellEmitter.get(cell).start(FlameParticle.FACTORY, iv, n);
+                            } else {
+                                CellEmitter.get(cell).start(HALO_FACTORY, iv, n);
+                            }
                         }
                     }
                 }

@@ -58,6 +58,8 @@ public class WndZeroShop extends Window {
         SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_DC.class, "avatars_duelist_4"));
 
         SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_DD.class, "avatars_duelist_5"));
+
+        SKIN_MAPPINGS.add(new SkinMapping(SKINITEM.SKIN_WF.class, "avatars_warrior_6"));
     }
 
     // 映射内部类
@@ -78,7 +80,8 @@ public class WndZeroShop extends Window {
                 SKINITEM.SKIN_WB.class, SKINITEM.SKIN_MB.class, SKINITEM.SKIN_RB.class, SKINITEM.SKIN_HB.class, SKINITEM.SKIN_DB.class,
                 // 第3行 4格 (11,12,13,14) 补齐14个元素
                 null,SKINITEM.SKIN_MC.class, SKINITEM.SKIN_RC.class, SKINITEM.SKIN_HC.class, SKINITEM.SKIN_DC.class,
-                null,null,null,null,SKINITEM.SKIN_DD.class
+                null,null,null,null,SKINITEM.SKIN_DD.class,
+                SKINITEM.SKIN_WF.class,null,null,null,null
         };
         // 强制长度校验，防止数组不匹配
         assert skinClasses.length == ZeroDreamShop.SHOP_ITEMS.length;

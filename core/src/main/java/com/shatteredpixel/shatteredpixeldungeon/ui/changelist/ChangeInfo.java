@@ -86,6 +86,18 @@ public class ChangeInfo extends Component {
 		}
 		return false;
 	}
+
+	/** Builds a haystack of all searchable text: this entry's title/body plus every attached button. */
+	public String searchText() {
+		StringBuilder sb = new StringBuilder( title.text() );
+		if (text != null) {
+			sb.append( ' ' ).append( text.text() );
+		}
+		for (ChangeButton b : buttons) {
+			sb.append( ' ' ).append( b.searchText() );
+		}
+		return sb.toString();
+	}
 	
 	@Override
 	protected void layout() {

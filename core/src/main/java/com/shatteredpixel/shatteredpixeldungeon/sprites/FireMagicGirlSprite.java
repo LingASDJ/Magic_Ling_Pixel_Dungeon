@@ -8,7 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
-import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
@@ -72,14 +71,25 @@ public class FireMagicGirlSprite extends MobSprite {
         } else {
             play(pump);
             Sample.INSTANCE.play( Assets.Sounds.CHARGEUP, 1f, warnDist == 1 ? 0.8f : 1f );
-            for (int i = 0; i < Dungeon.level.length(); i++){
-                if (ch.fieldOfView != null && ch.fieldOfView[i]
-                        && Dungeon.level.distance(i, ch.pos) <= warnDist
-                        && new Ballistica( ch.pos, i, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID).collisionPos == i
-                        && new Ballistica( i, ch.pos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID).collisionPos == ch.pos){
-                    Emitter e = CellEmitter.get(i);
-                    CellEmitter.get( ch.pos ).start(Speck.factory(Speck.STAR), 0.14f, 8);
-                    pumpUpEmitters.add(e);
+
+            // Rebuild the emitter list every pump-up instead of appending. The old code
+            // kept adding CellEmitters here without clearing, so repeated pump-ups
+            // accumulated duplicate emitters and triggerEmitters() would burst an
+            // ever-growing number of particles -> mobile frame freeze.
+            pumpUpEmitters.clear();
+
+            // ch.fieldOfView[] already encodes line-of-sight from the boss. The old
+            // code re-ran two full new Ballistica raycasts per cell (O(level area)
+            // allocations) to re-verify LOS that fieldOfView already gives us. On a
+            // phone this was a big per-attack hitch; keep only the cheap FOV + distance
+            // checks, and start the central emitter once instead of inside the loop.
+            CellEmitter.get( ch.pos ).start( Speck.factory( Speck.STAR ), 0.14f, 8 );
+            if (ch.fieldOfView != null) {
+                for (int i = 0; i < Dungeon.level.length(); i++){
+                    if (ch.fieldOfView[i]
+                            && Dungeon.level.distance(i, ch.pos) <= warnDist){
+                        pumpUpEmitters.add( CellEmitter.get(i) );
+                    }
                 }
             }
         }

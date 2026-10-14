@@ -413,6 +413,7 @@ public class Hero extends Char {
 
 	private static final String CLASS = "class";
 	private static final String SUBCLASS = "subClass";
+	private static final String SKIN = "skin";
 	private static final String ABILITY = "armorAbility";
 
 	public int STR;
@@ -639,6 +640,7 @@ public class Hero extends Char {
 		info.shld = bundle.getInt( Char.TAG_SHLD );
 		info.heroClass = bundle.getEnum( CLASS, HeroClass.class );
 		info.subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
+		info.skin = bundle.contains(SKIN) ? bundle.getInt(SKIN) : 0;
 		Belongings.preview( info, bundle );
 
 		info.name = bundle.contains("name") ? bundle.getString("name") : "";
@@ -792,6 +794,8 @@ public class Hero extends Char {
 				return heroClass == HeroClass.HUNTRESS ? normalSkin(armor) : 13;
 			case 5:
 				return 14;
+			case 6:
+				return 15;
 		}
 
         return normalSkin(armor);
@@ -1339,6 +1343,7 @@ public class Hero extends Char {
 	@Override
 	public boolean act() {
 		actedThisTurn = false;
+
 		PropBuff propBuffbuff = buff(PropBuff.class);
 		if (propBuffbuff != null) {
 			int remainingLevel = Math.max(0, propBuffbuff.levelA);
@@ -3404,6 +3409,7 @@ public class Hero extends Char {
 
 		bundle.put(CLASS, heroClass);
 		bundle.put(SUBCLASS, subClass);
+		bundle.put(SKIN, heroClass.GetSkin());
 		bundle.put(ABILITY, armorAbility);
 		Talent.storeTalentsInBundle(bundle, this);
 
@@ -3444,6 +3450,10 @@ public class Hero extends Char {
 
 		heroClass = bundle.getEnum(CLASS, HeroClass.class);
 		subClass = bundle.getEnum(SUBCLASS, HeroSubClass.class);
+		// 恢复存档时保存的皮肤，覆盖全局设置
+		if (bundle.contains(SKIN)) {
+			SPDSettings.setHeroSkin(heroClass.ordinal(), bundle.getInt(SKIN));
+		}
 		armorAbility = (ArmorAbility) bundle.get(ABILITY);
 		Talent.restoreTalentsFromBundle(bundle, this);
 

@@ -30,8 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.MovieClip;
-import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Callback;
@@ -53,23 +51,6 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
         tier = 5;
         animation = true;
         usesTargeting = true;
-    }
-
-    @Override
-    public void frames(ItemSprite itemSprite){
-        if (animation) {
-            itemSprite.texture(Assets.Sprites.ANIMATIONS_BOMBSWORD);
-            TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
-            if (frames.get(3) != null) {
-                MovieClip.Animation idle = new MovieClip.Animation(15, true);
-                idle.frames( frames,0, 0, 1, 1, 2, 2, 2, 3, 3);
-                itemSprite.play(idle);
-            } else {
-                itemSprite.view(image(),glowing());
-            }
-        } else {
-            itemSprite.view(image(),glowing());
-        }
     }
 
     public int maxAmmo() {
@@ -244,19 +225,6 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
     public int max(int lvl) {
         return 15 + lvl * 6;
     }
-
-//    @Override
-//    public void frames(ItemSprite itemSprite) {
-//        if (animation) {
-//            itemSprite.texture(Assets.Sprites.ANIMATIONS_BOMBSWORD);
-//            TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
-//            MovieClip.Animation idle = new MovieClip.Animation(14, true);
-//            idle.frames(frames, 0, 0, 1, 1, 2, 2, 2, 3, 3);
-//            itemSprite.play(idle);
-//        } else {
-//            itemSprite.view(image(), glowing());
-//        }
-//    }
 
     @Override
     public void storeInBundle(com.watabou.utils.Bundle bundle) {

@@ -55,6 +55,17 @@ public class ChangeButton extends Component {
 	protected void onClick() {
 		ChangesScene.showChangeInfo(new Image(icon), title, messages);
 	}
+
+	/** Builds a lowercase-friendly haystack of all searchable text on this button. */
+	public String searchText() {
+		StringBuilder sb = new StringBuilder( title );
+		if (messages != null) {
+			for (String m : messages) {
+				if (m != null) sb.append( ' ' ).append( m );
+			}
+		}
+		return sb.toString();
+	}
 	
 	@Override
 	protected void layout() {

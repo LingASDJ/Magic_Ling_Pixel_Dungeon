@@ -37,6 +37,11 @@ import com.watabou.input.GameAction;
 import com.watabou.noosa.Image;
 import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUseItem;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import java.util.ArrayList;
 
 public class QuickSlotButton extends Button {
 
@@ -92,14 +97,7 @@ public class QuickSlotButton extends Button {
 						GameScene.handleCell( lastTarget.pos );
 					}
 				} else {
-					Item item = select(slotNum);
-					if (Dungeon.hero.belongings.contains(item) && !GameScene.cancel()) {
-						GameScene.centerNextWndOnInvPane();
-						item.execute(Dungeon.hero);
-						if (item.usesTargeting) {
-							useTargeting();
-						}
-					}
+					QuickSlotButton.use(slotNum);
 				}
 			}
 
@@ -268,8 +266,127 @@ public class QuickSlotButton extends Button {
 	}
 
 	public static void set(int slotNum, Item item){
-		Dungeon.quickslot.setSlot( slotNum , item );
-		refresh();
+		// 传入 null 表示清空该快捷栏槽位
+		// clearSlot() 会同时清空物品引用和已保存技能，避免残留旧状态
+		if (item == null) {
+			Dungeon.quickslot.setSlot(slotNum, null);
+			refresh();
+			return;
+		}
+
+		ArrayList<String> skills = item.quickslotActions(Dungeon.hero);
+		// 不足两个技能时，多技能选择没有意义
+		// 当前为“使用时选择”时，也不需要在放入阶段弹窗
+		if (skills.size() < 2 || SPDSettings.quickslotSkillMode() == 1) {
+			Dungeon.quickslot.setSlot(slotNum, item);
+			refresh();
+			return;
+		}
+		// “放入时选择”模式下，物品有多个主动技能
+		// 先弹出技能选择窗口，选完后再写入快捷栏
+		showSkillAssignWindow(slotNum, item, skills);
+	}
+
+	public static void use(int slotNum) {
+		Item item = select(slotNum);
+		// 基础状态检查：物品存在、仍在英雄背包中、英雄可以行动、没有正在取消的界面操作
+		if (item == null
+				|| !Dungeon.hero.belongings.contains(item)
+				|| !Dungeon.hero.ready
+				|| GameScene.cancel()) {
+			return;
+		}
+		// 获取当前真正可用的主动技能
+		ArrayList<String> skills = item.quickslotActions(Dungeon.hero);
+		// 没有多个技能时，保持原版快捷栏行为，直接执行默认动作
+		if (skills.size() < 2) {
+			item.execute(Dungeon.hero);
+			if (item.usesTargeting) {
+				useTargeting(slotNum);
+			}
+			return;
+		}
+		// “使用时选择”
+		if (SPDSettings.quickslotSkillMode() == 1) {
+			showSkillUseWindow(slotNum, item, skills);
+		} else {
+			// “放入时选择”
+			String savedAction = Dungeon.quickslot.getSlotAction(slotNum);
+			// 保存的技能必须仍然存在于当前技能列表中
+			if (savedAction != null && skills.contains(savedAction)) {
+				item.execute(Dungeon.hero, savedAction);
+				if (item.usesTargeting) {
+					useTargeting(slotNum);
+				}
+			} else {
+				// 兼容旧存档、未保存技能或被转换过的物品:没有有效技能时，补弹一次技能选择窗口
+				showSkillAssignWindow(slotNum, item, skills);
+			}
+		}
+	}
+	/**打开“使用时选择技能”窗口。
+	 * 窗口会显示物品图标和名称，方便玩家确认正在配置哪个物品。
+	 * 玩家选择技能后，物品和技能会一起写入该快捷栏槽位。
+	 */
+	private static void showSkillUseWindow(
+			final int slotNum,
+			final Item item,
+			final ArrayList<String> skills
+	) {
+		String[] names = new String[skills.size()];
+		// 把 action ID 转换成玩家可读的技能名称
+		for (int i = 0; i < skills.size(); i++) {
+			names[i] = item.actionName(skills.get(i), Dungeon.hero);
+		}
+
+		GameScene.show(new WndOptions(
+				new ItemSprite(item),
+				Messages.titleCase(item.name()),
+				Messages.get(QuickSlotButton.class, "choose_skill_to_use"),
+				names
+		) {
+			@Override
+			protected void onSelect(int index) {
+				// 执行玩家本次选择的技能
+				item.execute(Dungeon.hero, skills.get(index));
+				// 如果技能需要指定目标，让目标选择回到对应快捷栏槽位
+				if (item.usesTargeting) {
+					QuickSlotButton.useTargeting(slotNum);
+				}
+			}
+		});
+	}
+	/**
+	 * 打开“放入快捷栏时选择技能”窗口。
+	 * 窗口会显示物品图标和名称，方便玩家确认正在配置哪个物品。
+	 * 玩家选择技能后，物品和技能会一起写入该快捷栏槽位。
+	 */
+	private static void showSkillAssignWindow(
+			final int slotNum,
+			final Item item,
+			final ArrayList<String> skills
+	) {
+		String[] names = new String[skills.size()];
+		// 将技能 action ID 转换为显示名称
+		for (int i = 0; i < skills.size(); i++) {
+			names[i] = item.actionName(skills.get(i), Dungeon.hero);
+		}
+
+		GameScene.show(new WndOptions(
+				new ItemSprite(item),
+				Messages.titleCase(item.name()),
+				Messages.get(QuickSlotButton.class, "choose_skill"),
+				names
+		) {
+			@Override
+			protected void onSelect(int index) {
+				// 玩家确认技能后，才真正写入物品并把选择的技能绑定到这个快捷栏槽位
+				Dungeon.quickslot.setSlot(slotNum, item);
+				Dungeon.quickslot.setSlotAction(slotNum, skills.get(index));
+				// 刷新快捷栏显示
+				QuickSlotButton.refresh();
+			}
+		});
 	}
 
 	private static Item select(int slotNum){

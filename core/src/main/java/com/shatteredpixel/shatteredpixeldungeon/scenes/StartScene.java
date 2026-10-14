@@ -181,7 +181,8 @@ public class StartScene extends PixelScene {
 				}
 				
 				if (hero == null){
-					hero = new Image(info.heroClass.spritesheet(), 0, 15*info.armorTier, 12, 15);
+					Image custom = com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins.avatarFor(info.heroClass, info.skin);
+					hero = custom != null ? custom : new Image(info.heroClass.spritesheet(), 0, 15*info.armorTier, 12, 15);
 					add(hero);
 					
 					steps = new Image(Icons.get(Icons.STAIRS));
@@ -195,7 +196,8 @@ public class StartScene extends PixelScene {
 					level = new BitmapText(PixelScene.pixelFont);
 					add(level);
 				} else {
-					hero.copy(new Image(info.heroClass.spritesheet(), 0, 15*info.armorTier, 12, 15));
+					Image custom = com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins.avatarFor(info.heroClass, info.skin);
+					hero.copy(custom != null ? custom : new Image(info.heroClass.spritesheet(), 0, 15*info.armorTier, 12, 15));
 					
 					classIcon.copy(Icons.get(info.heroClass));
 				}

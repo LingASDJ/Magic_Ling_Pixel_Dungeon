@@ -1072,6 +1072,8 @@ public class Assets {
 		public static final String STATUE	= "sprites/statue.png";
 		public static final String SUCCUBUS	= "sprites/succubus.png";
 
+		public static final String BUNNY	   = "sprites/bunny.png";
+
 		public static final String SUCCUBUS_QUEEN	= "sprites/succubus_queen.png";
 		public static final String IFE_SCORPIO	= "sprites/ife_scriopi.png";
 		public static final String SCORPIO	= "sprites/scorpio.png";

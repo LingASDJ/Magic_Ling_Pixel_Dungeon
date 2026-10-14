@@ -1255,7 +1255,8 @@ public class BackupSaveScene extends PixelScene {
 
             // ---- 标题栏：职业头像 + 槽位号/职业名 ----
             IconTitle titlebar = new IconTitle();
-            titlebar.icon(HeroSprite.avatar(info.heroClass, info.armorTier)); // 根据职业与护甲等级生成头像
+            Image customAvatar = com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins.avatarFor(info.heroClass, info.skin);
+            titlebar.icon(customAvatar != null ? customAvatar : HeroSprite.avatar(info.heroClass, info.armorTier));
             titlebar.label("Slot" + slotNum + "-" + info.heroClass.title());
             titlebar.setRect(0, 0, WIDTH, 0);
             add(titlebar);

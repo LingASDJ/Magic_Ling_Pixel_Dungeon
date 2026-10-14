@@ -19,8 +19,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.MovieClip;
-import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PathFinder;
@@ -36,27 +34,6 @@ public class CommRelay extends Artifact implements Item.AnimationItem {
         levelCap = 10;
         animation = true;
         defaultAction=AC_MERC;
-    }
-
-    @Override
-    public void frames(ItemSprite itemSprite){
-        if (animation) {
-            itemSprite.texture(Assets.Sprites.ANIMATIONS_TERMIAL);
-            TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
-            if (frames.get(animationToidle ? 5 : 3) != null) {
-                MovieClip.Animation idle = new MovieClip.Animation(15, true);
-                if(animationToidle){
-                    idle.frames( frames,3,3,4,4,5,5);
-                } else {
-                    idle.frames( frames,3);
-                }
-                itemSprite.play(idle);
-            } else {
-                itemSprite.view(image(),glowing());
-            }
-        } else {
-            itemSprite.view(image(),glowing());
-        }
     }
 
     private static final int NIMAGES = 1;

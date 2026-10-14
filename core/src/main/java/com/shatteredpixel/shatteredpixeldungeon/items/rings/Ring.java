@@ -94,6 +94,11 @@ public class Ring extends KindofMisc {
 		handler = null;
 	}
 
+	/** 供查种器判断是否需要先调用 initGems()（handler 为 null 时 identify 会 NPE） */
+	public static boolean handlerNeedsInit() {
+		return handler == null;
+	}
+
 
 	
 	public static void save( Bundle bundle ) {

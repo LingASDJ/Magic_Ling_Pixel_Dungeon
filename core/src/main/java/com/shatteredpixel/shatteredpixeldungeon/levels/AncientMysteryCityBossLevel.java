@@ -414,7 +414,7 @@ public class AncientMysteryCityBossLevel extends Level{
 
     @Override
     public int randomRespawnCell( Char ch ) {
-        return 668;
+        return 742;
     }
 
     private static final int getBossDoor = 688;

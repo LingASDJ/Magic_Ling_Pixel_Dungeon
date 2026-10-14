@@ -441,6 +441,7 @@ public class WndSettings extends WndTabbed {
 		CheckBox chkFont;
 
 		OptionSlider quickslots;
+		OptionSlider quickSlotSkillMode;
 
 		@Override
 		protected void createChildren() {
@@ -685,6 +686,22 @@ public class WndSettings extends WndTabbed {
 			};
 			quickslots.setSelectedValue(SPDSettings.quickslots());
 			add(quickslots);
+			// 创建“多技能快捷栏”模式滑块
+			quickSlotSkillMode = new OptionSlider(
+					Messages.get(this, "quickslot_skill_mode"),
+					Messages.get(this, "quickslot_skill_assign"),
+					Messages.get(this, "quickslot_skill_use"),
+					0,
+					1
+			) {
+				@Override
+				protected void onChange() {
+					SPDSettings.quickslotSkillMode(getSelectedValue());
+				}
+			};
+
+			quickSlotSkillMode.setSelectedValue(SPDSettings.quickslotSkillMode());
+			add(quickSlotSkillMode);
 
 			btnKeyBindings = new RedButton(Messages.get(this, "key_bindings")){
 				@Override
@@ -755,6 +772,15 @@ public class WndSettings extends WndTabbed {
 
 
 			height = chkFont.bottom();
+			// 为快捷栏技能模式滑块设置实际位置和尺寸
+			quickSlotSkillMode.setRect(
+					0,
+					height + GAP,
+					width,
+					SLIDER_HEIGHT
+			);
+			height = quickSlotSkillMode.bottom();
+
 
 			if (!isDesktop()) {
 				btnKeyBindings.active = false;

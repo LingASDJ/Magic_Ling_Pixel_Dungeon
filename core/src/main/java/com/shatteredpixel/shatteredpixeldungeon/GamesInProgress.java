@@ -153,6 +153,7 @@ public class GamesInProgress {
 		info.heroClass = hero.heroClass;
 		info.subClass = hero.subClass;
 		info.armorTier = hero.tier();
+		info.skin = hero.heroClass.GetSkin();
 		
 		info.goldCollected = Statistics.goldCollected;
 		info.maxDepth = Statistics.deepestFloor;
@@ -193,6 +194,7 @@ public class GamesInProgress {
         public HeroClass heroClass;
         public HeroSubClass subClass;
         public int armorTier;
+        public int skin;
 
         public int goldCollected;
         public int maxDepth;

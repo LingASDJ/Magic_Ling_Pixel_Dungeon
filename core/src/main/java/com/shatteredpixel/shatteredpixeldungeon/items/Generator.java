@@ -291,6 +291,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Icecap;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Mageroyal;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Marigold;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Rotberry;
 import com.shatteredpixel.shatteredpixeldungeon.plants.SkyBlueFireBloom;
@@ -496,8 +497,10 @@ public class Generator {
 					Earthroot.Seed.class,
 					Starflower.Seed.class,
 					AikeLaier.Seed.class,
-					Mageroyal.Seed.class};
-			SEED.defaultProbs = new float[]{0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4};
+					Mageroyal.Seed.class,
+					Marigold.Seed.class
+			};
+			SEED.defaultProbs = new float[]{0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 5};
 			SEED.probs = SEED.defaultProbs.clone();
 
 			SCROLL.classes = new Class<?>[]{
