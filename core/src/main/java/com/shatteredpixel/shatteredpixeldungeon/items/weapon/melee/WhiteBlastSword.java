@@ -1,34 +1,20 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.INFINITE_ACCURACY;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BuffsOringinForWeapon.FloatingParalysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BuffsOringinForWeapon.FloatingTargetDefenseIgnore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.WhiteBlastSwordStatus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
-import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.QuickSword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -36,22 +22,23 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
+//白浪刺剑
+//5阶武器
+//一位审判官曾使用的武器，仅仅是握着它你就使你充满了坚定的决心。
+//3-25，+2-6，1延迟
+
+//空灵：被动技能，装备白浪刺剑时，所有敌人在漂浮时会被持续施加麻痹（麻痹消失时立刻再次施加，永控），攻击命中时使敌人漂浮1回合，冷却7回合。
+
+//弑羽：被动技能，对处于空中的敌人造成物理伤害时无视其50%防御力。攻击未命中或被格挡后立刻追加一次额外的攻击（不消耗回合），无法连续触发。
+
+//判决：主动技能，使周围所有不处于空中的敌人漂浮2回合，随后对周围所有敌人分别造成3次攻击伤害。
+//  这个技能需要30点充能来开启，每次攻击（无需命中）获得1点，处于空中的敌人死亡时获得4点。
+
+//武技：风袭，2消耗，使目标浮空1回合，随后对其造成2次必中的100%伤害。
 public class WhiteBlastSword extends MeleeWeapon {
-
-    public int attack_Teleology;
-
     {
         image = ItemSpriteSheet.WHITE_BAST;
         tier = 5;
-    }
-
-    @Override
-    public int proc(Char attacker, Char defender, int damage) {
-        attack_Teleology++;
-        if(attack_Teleology >= 14 - buffedLvl()/5){
-            Buff.affect(hero, WhiteBlastSwordStatus.class).set(1,100);
-        }
-        return super.proc(attacker, defender, damage);
     }
 
     @Override
@@ -65,25 +52,134 @@ public class WhiteBlastSword extends MeleeWeapon {
 
     @Override
     public int min(int lvl) {
-        return 7 + lvl * 2;
+        return 3 + lvl * 2;
     }
     @Override
     public int max(int lvl) {
-        return 20 + lvl * 6;
+        return 25 + lvl * 6;
     }
 
-    private static final String INTERVAL    = "acs";
+    @Override
+    public void activate(Char ch) {
+        super.activate(ch);
+        Buff.affect(ch, FloatingParalysis.class);   // 装备上自动挂buff 浮空麻痹
+        Buff.affect(ch, FloatingTargetDefenseIgnore.class);  // 装备上自动挂buff 浮空目标防御忽略 默认忽略0.5倍
+    }
+
+    @Override
+    public boolean doUnequip(Hero hero, boolean collect, boolean single) {
+        boolean result = super.doUnequip(hero, collect, single);
+        if (result) {
+            Buff.detach(hero, FloatingParalysis.class);  // 卸掉自动删buff
+            Buff.detach(hero, FloatingTargetDefenseIgnore.class);
+            Buff.detach(hero, WhiteBlastSwordStatus.class);
+        }
+        return result;
+    }
+
+    // 每次攻击使技能充能自增，并检测当技能充能大于等于30时，玩家可以释放技能
+    public int SkillCharge = 0;
+
+    @Override
+    public int proc(Char attacker, Char defender, int damage) {
+        // 空灵：命中使目标浮空，7回合冷却
+        if (attacker.buff(LevitationCooldown.class) == null) {
+            Buff.affect(defender, Levitation.class, 1f);
+            Buff.affect(attacker, LevitationCooldown.class, 7f);
+        }
+        return super.proc(attacker, defender, damage);
+    }
+
+    // 空灵效果的计时器buff
+    public static class LevitationCooldown extends FlavourBuff {
+    }
+
+    // 弑羽效果的不可连续触发标记
+    private boolean pending    = false;   // 已排队，等待 Actor 执行
+    private boolean inFollowup = false;   // 追加上击正在结算中（防嵌套连锁）
+
+    @Override
+    public void onAttackMissed(Char attacker, Char defender) {
+        SkillCharge++;                  // 判决的无需命中充能
+        checkReady(attacker);
+
+        if (pending || inFollowup) return;      // 无法连续触发
+        pending = true;
+
+        Actor.addDelayed(new Actor() {
+            { actPriority = HERO_PRIO + 1; }
+            @Override protected boolean act() {
+                Actor.remove(this);
+                pending = false;                // 一出队就解锁排队标记
+
+                if (!defender.isAlive() || !attacker.isAlive()) return true;
+
+                Callback finish = new Callback() {
+                    @Override public void call() {
+                        inFollowup = true;
+                        if (defender.isAlive() && attacker.isAlive()) attacker.attack(defender);
+                        inFollowup = false;     // ← 结算完才解锁，防止追加上击再触发追加上击
+                    }
+                };
+
+                if (attacker.sprite != null) attacker.sprite.attack(defender.pos, finish);
+                else finish.call();             // 兜底：没有 sprite 就直接结算，别丢这次攻击
+
+                return true;
+            }
+        }, 0);
+    }
+
+    // 判决的充能效果
+    @Override public void onAttackHit(Char attacker, Char defender, int damageDealt) {
+        SkillCharge++;
+        if (!defender.isAlive() && defender.buff(Levitation.class) != null) SkillCharge += 4;
+        checkReady(attacker);
+    }
+    // 判决的就绪效果
+    private void checkReady(Char attacker) {
+        if (SkillCharge >= 30 && attacker == Dungeon.hero) {
+            Buff.affect(attacker, WhiteBlastSwordStatus.class);
+        }
+    }
+    // 判决效果
+    public void judgement(Hero hero) {
+        // 1. 收集周围敌人（自身格 + 8邻格）（3*3）
+        ArrayList<Char> targets = new ArrayList<>();
+        Char onSelf = Actor.findChar(hero.pos);
+        if (onSelf != null && onSelf != hero && onSelf.alignment != hero.alignment) targets.add(onSelf);
+        for (int n : PathFinder.NEIGHBOURS8) {
+            Char ch = Actor.findChar(hero.pos + n);
+            if (ch != null && ch != hero && ch.alignment != hero.alignment) targets.add(ch);
+        }
+
+        // 2. 不浮空的 → 浮空2回合
+        for (Char ch : targets) {
+            if (ch.buff(Levitation.class) == null) Buff.affect(ch, Levitation.class, 2f);
+        }
+
+        // 3. 对每个敌人造成3次攻击伤害
+        for (Char ch : targets) {
+            for (int i = 0; i < 3 && ch.isAlive(); i++) {
+                hero.attack(ch, 1f, 0f, INFINITE_ACCURACY);
+            }
+        }
+        GLog.newLine();
+        GLog.n("%s: \"%s\" ", Messages.titleCase(Dungeon.hero.name()), TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
+    }
+
+    private static final String SKILLCHARGE    = "skillcharge";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
-        bundle.put( INTERVAL, attack_Teleology );
+        bundle.put( SKILLCHARGE, SkillCharge );
     }
 
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle( bundle );
-        attack_Teleology = bundle.getInt( INTERVAL );
+        SkillCharge = bundle.getInt( SKILLCHARGE );
     }
 
     public static String[] TXT_RANDOM = {
@@ -92,83 +188,7 @@ public class WhiteBlastSword extends MeleeWeapon {
             Messages.get(WhiteBlastSword.class,"roll3"),
     };
 
-    public void whiteBlast_Sword() {
-        if(GameScene.scene != null){
-            int mapLength = Dungeon.level.length();
-
-            for (int i : PathFinder.NEIGHBOURS13) {
-                int targetingPos = hero.pos + i;
-                if (targetingPos >= 0 && targetingPos < mapLength && !Dungeon.level.solid[targetingPos]) {
-                    Emitter emitter = CellEmitter.get(targetingPos);
-                    emitter.burst(ElmoParticle.FACTORY, 5);
-                    GameScene.add(Blob.seed(targetingPos, 1, LastBlobs.class));
-                }
-            }
-            hero.spend( Actor.TICK );
-            hero.busy();
-            curUser = hero;
-            hero.sprite.operate( curUser.pos );
-            Sample.INSTANCE.play( Assets.Sounds.HIT_SLASH );
-            BuffIndicator.refreshHero();
-            attack_Teleology = 0;
-        }
-    }
-
-
-    public static class LastBlobs extends Blob implements Hero.Doom {
-        private static ArrayList<Class> affectedBlobs;
-        {
-            affectedBlobs = new ArrayList<>(new BlobImmunity().immunities());
-        }
-
-        @Override
-        public String tileDesc() {
-            return "";
-        }
-        @Override
-        protected void evolve() {
-            super.evolve();
-
-            int damage = (int) (hero.damageRoll()*1.2f);
-
-            Char ch;
-            int cell;
-
-            ArrayList<Blob> blobs = new ArrayList<>();
-            for (Class c : affectedBlobs){
-                Blob b = Dungeon.level.blobs.get(c);
-                if (b != null && b.volume > 0){
-                    blobs.add(b);
-                }
-            }
-
-            for (int i = area.left; i < area.right; i++){
-                for (int j = area.top; j < area.bottom; j++){
-                    cell = i + j*Dungeon.level.width();
-                    if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null && ch != hero) {
-                        if (!ch.isImmune(this.getClass())) {
-                            ch.damage(damage, this);
-                            Buff.affect( ch, Vertigo.class,8f);
-                            int poisonLevel = 2 + (hero.belongings.weapon != null ? hero.belongings.weapon.level() : 4);
-                            Buff.affect( ch, Poison.class ).set(poisonLevel);
-                            for (Blob blob : blobs) {
-                                blob.clear(i);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void use( BlobEmitter emitter ) {
-            emitter.pour( Speck.factory( Speck.DISCOVER ), 0.4f );
-        }
-
-        @Override
-        public void onDeath() {
-        }
-    }
+    //  ========== 武技：风袭 ==========
 
     @Override
     protected int baseChargeUse(Hero hero, Char target) {
@@ -184,102 +204,56 @@ public class WhiteBlastSword extends MeleeWeapon {
     protected void duelistAbility(Hero hero, Integer target) {
         if (target == null) return;
 
-        boolean targetIsWall = Dungeon.level.solid[target];
-        PathFinder.buildDistanceMap(target, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
-
-        if (targetIsWall ||PathFinder.distance[curUser.pos] == Integer.MAX_VALUE){
-            GLog.w(Messages.get(MeleeWeapon.class, "ability_bad_position"));
+        Char enemy = Actor.findChar(target);
+        if (enemy == null || enemy == hero || hero.isCharmedBy(enemy)
+                || !Dungeon.level.heroFOV[target]) {
+            GLog.w(Messages.get(this, "ability_no_target"));
             return;
         }
 
-        //===== 普通敌人目标，原有逻辑，消耗充能、逐浪突刺，最大3格 =====
-        int dmgBoost =  augment.damageFactor(5 + Math.round(1.5f*buffedLvl()));
-        waveLunge(hero, target, 1, dmgBoost, this);
+        // 检查这次攻击是否合法，检查失败不会扣充能
+        hero.belongings.abilityWeapon = this;
+        if (!hero.canAttack(enemy)) {
+            GLog.w(Messages.get(this, "ability_bad_position"));
+            hero.belongings.abilityWeapon = null;
+            return;
+        }
+        hero.belongings.abilityWeapon = null;
+
+        hero.sprite.attack(enemy.pos, new Callback() {
+            @Override
+            public void call() {}
+        });
+
+        // 1. 先扣充能：beforeAbilityUsed 会按 baseChargeUse 的返回值扣掉对应充能
+        beforeAbilityUsed(hero, null);
+        AttackIndicator.target(enemy);
+
+        // 2.使得目标漂浮并执行一次普通攻击
+        Buff.affect(enemy, Levitation.class, 1f);
+        boolean hit = hero.attack(enemy, 1f, 0f, INFINITE_ACCURACY);
+
+        if (hit && !enemy.isAlive()) {
+            onAbilityKill(hero, enemy);
+        }
+
+        // 如果还活着就进行第二次普通攻击
+        if (enemy.isAlive()) {
+            hit = hero.attack(enemy, 1f, 0f, INFINITE_ACCURACY);
+            if (hit && !enemy.isAlive()) {
+                onAbilityKill(hero, enemy);
+            }
+        }
+
+        Invisibility.dispel();
+        hero.spendAndNext(hero.attackDelay());
+
+        // 4. 武技收尾：处理与武技相关的天赋联动
+        afterAbilityUsed(hero);
     }
 
     @Override
-    public String abilityInfo() {
-        int dmgBoost = levelKnown ? 5 + Math.round(1.5f*buffedLvl()) : 5;
-        if (levelKnown){
-            return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
-        } else {
-            return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
-        }
+    public String devDesc() {
+        return Messages.get(this, "dev_desc",Dungeon.hero.buff(LevitationCooldown.class) != null?Dungeon.hero.buff(LevitationCooldown.class).cooldown():"就绪",SkillCharge);
     }
-
-    public String upgradeAbilityStat(int level){
-        int dmgBoost = 5 + Math.round(1.5f*level);
-        return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
-    }
-
-    // ====================== 逐浪突刺（复刻解离魔杖 弹道穿透伤害） ======================
-    public static void waveLunge(Hero hero, Integer target, float dmgMulti, int dmgBoost, MeleeWeapon wep){
-        if (target == null) return;
-
-        // 目标校验
-        Char enemy = Actor.findChar(target);
-        if (Dungeon.level.heroFOV[target]) {
-            if (enemy == null || enemy == hero || hero.isCharmedBy(enemy)) {
-                GLog.w(Messages.get(wep, "ability_no_target"));
-                return;
-            }
-        }
-
-        // 核心规则：至多3格，超过禁用
-        final int MAX_RANGE = 3;
-        Ballistica ballistica = new Ballistica(hero.pos, target, Ballistica.PROJECTILE);
-        if (Dungeon.level.distance(hero.pos,target) > MAX_RANGE || hero.rooted) {
-            GLog.w(Messages.get(wep, "ability_target_range"));
-            return;
-        }
-
-        // 突进落点：目标所在格子的相邻位置（安全可站立）
-        int lungeCell = -1;
-        for (int i : PathFinder.NEIGHBOURS8) {
-            int cell = target + i;
-            if (Actor.findChar(cell) == null && (Dungeon.level.passable[cell] || Dungeon.level.avoid[cell] && hero.flying)) {
-                lungeCell = cell;
-                break;
-            }
-        }
-        if (lungeCell == -1) lungeCell = hero.pos; // 无落点则原地
-
-        final int dest = lungeCell;
-
-        hero.busy();
-        Sample.INSTANCE.play(Assets.Sounds.MISS);
-        hero.sprite.jump(hero.pos, dest, 0, 0.15f, new Callback() {
-            @Override
-            public void call() {
-                hero.pos = dest;
-                Dungeon.level.occupyCell(hero);
-                Dungeon.observe();
-
-                hero.belongings.abilityWeapon = wep;
-                // ========== 完全复刻解离魔杖：遍历弹道路径，沿途所有敌人造成伤害 ==========
-                for (int cell : ballistica.subPath(1, ballistica.dist)) {
-                    Char ch = Actor.findChar(cell);
-                    if (ch != null && ch != hero && ch.alignment == Char.Alignment.ENEMY) {
-                        // 必定命中，沿途伤害
-                        hero.attack(ch, dmgMulti, dmgBoost, Char.INFINITE_ACCURACY);
-                        AttackIndicator.target(ch);
-                    }
-                }
-
-                // 主目标已由路径遍历命中，不再重复攻击；此处仅结算充能消耗
-                if (enemy != null) {
-                    wep.beforeAbilityUsed(hero, enemy);
-                    wep.afterAbilityUsed(hero);
-                }
-
-                Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-                hero.sprite.showStatus(CharSprite.NEGATIVE, WhiteBlastSword.TXT_RANDOM[Random.Int(WhiteBlastSword.TXT_RANDOM.length)]);
-
-                Invisibility.dispel();
-                hero.spendAndNext(hero.attackDelay());
-                hero.belongings.abilityWeapon = null;
-            }
-        });
-    }
-
 }

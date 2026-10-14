@@ -46,7 +46,12 @@ abstract public class KindOfWeapon extends EquipableItem {
 
 	protected String hitSound = Assets.Sounds.HIT;
 	protected float hitSoundPitch = 1f;
-	
+
+	// 命中后调用（此时 defender.damage() 已经结算完毕）
+	public void onAttackHit(Char attacker, Char defender, int damageDealt) { }
+	// 未命中（闪避/无敌/被格挡）后调用
+	public void onAttackMissed(Char attacker, Char defender) { }
+
 	@Override
 	public void execute(Hero hero, String action) {
 		if (hero.subClass == HeroSubClass.CHAMPION && action.equals(AC_EQUIP)){

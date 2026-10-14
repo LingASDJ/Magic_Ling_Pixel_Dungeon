@@ -101,16 +101,6 @@ public class KusumiMagicGirlSprites extends MobSprite {
         if (anim == die && !died) {
             died = true;
             emitter().burst(FrostFlameParticle.FACTORY, 4 );
-
-            //CharSprite 没有 MobSprite 的死亡淡出，这里补上，否则尸体会一直留在原地
-            if (parent != null) {
-                parent.add( new AlphaTweener( this, 0, FADE_TIME ) {
-                    @Override
-                    protected void onComplete() {
-                        KusumiMagicGirlSprites.this.killAndErase();
-                    }
-                } );
-            }
         }
         if (anim == zap) {
             idle();

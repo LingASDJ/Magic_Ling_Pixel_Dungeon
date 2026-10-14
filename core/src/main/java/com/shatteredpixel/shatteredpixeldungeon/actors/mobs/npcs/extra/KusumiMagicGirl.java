@@ -4,12 +4,14 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.jokings.HornOfPlentyBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.jokings.HornOfPlentyRiceBomb;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KusumiMagicGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -39,6 +41,12 @@ public class KusumiMagicGirl extends Mob {
         return false;
     }
 
+    // 命中能力
+    @Override
+    public int attackSkill(Char target) {
+        return 100;
+    }
+
     @Override
     public void move(int step) {
 
@@ -51,19 +59,21 @@ public class KusumiMagicGirl extends Mob {
 
     @Override
     public int damageRoll() {
-        return 0;
+        return 10;
     }
 
     @Override
     public void damage(int dmg, Object src, DamageType type) {
         super.damage(dmg, src, type);
+        if(dmg < 0) return;
         if(first){
             if (enemy == null && src instanceof Char) {
                 enemy = (Char) src;
             }
             if (enemy != null && enemy.isAlive() && enemy != this && Dungeon.level.adjacent(pos, enemy.pos)) {
-                enemy.damage(10,this,DamageType.REAL);
-                GLog.n(Messages.get(this, "ha"));
+                if (attack(enemy, 1f, 0f, INFINITE_ACCURACY, DamageType.REAL))
+                    if (enemy instanceof Hero)
+                        GLog.n(Messages.get(this, "ha"));
                 first = false;
             }
         }
@@ -83,11 +93,13 @@ public class KusumiMagicGirl extends Mob {
                 Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
                 CellEmitter.get(pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
                 destroy();
-                sprite.killAndErase();
                 if (enemy != null && enemy.isAlive() && enemy != this && Dungeon.level.adjacent(pos, enemy.pos)) {
-                    enemy.damage(10,this,DamageType.REAL);
-                    GLog.n(Messages.get(this, "ha2"));
+                    if (attack(enemy, 1f, 0f, INFINITE_ACCURACY, DamageType.REAL))
+                        if (enemy instanceof Hero)
+                            GLog.n(Messages.get(this, "ha2"));
                 }
+                sprite.die();
+                return true;
             }
         }
 
@@ -110,6 +122,7 @@ public class KusumiMagicGirl extends Mob {
     private static final String TELEPORTING = "teleporting";
     private static final String FIRST = "first";
     private static final String SELF_COOLDOWN = "self_cooldown";
+    private static final String VANISHING = "vanishing";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -117,6 +130,8 @@ public class KusumiMagicGirl extends Mob {
         bundle.put(TELEPORTING, teleporting);
         bundle.put(SELF_COOLDOWN, selfTeleCooldown);
         bundle.put(FIRST, first);
+        bundle.put(VANISHING, vanishing);
+        bundle.put(DROPPED, dropped);
     }
 
     @Override
@@ -125,6 +140,8 @@ public class KusumiMagicGirl extends Mob {
         teleporting = bundle.getBoolean( TELEPORTING );
         selfTeleCooldown = bundle.getInt( SELF_COOLDOWN );
         first = bundle.getBoolean(FIRST);
+        vanishing = bundle.getBoolean(VANISHING);
+        dropped = bundle.getBoolean(DROPPED);
     }
 
     //================ 掉落 ================
@@ -136,12 +153,18 @@ public class KusumiMagicGirl extends Mob {
         if (Dungeon.level == null || Dungeon.hero == null) return;
 
         // removeArtifact 返回 true = 本局排行里还有丰收号角（此前没出现过），顺手把它从生成器余量里划掉
-        if (Random.Float() < 0.05f && Generator.removeArtifact(HornOfPlenty.class)) {
+        float GeneratorRandom = Random.Float();
+        if (GeneratorRandom < 0.05f && Generator.removeArtifact(HornOfPlenty.class)) {
             HornOfPlenty horn = new HornOfPlenty();
             horn.cursed = true;
             horn.cursedKnown = true;      // 和 Bones.java:262-272 的写法一致，玩家一眼能看出是诅咒的
             Dungeon.level.drop(horn, pos).sprite.drop(pos);
-        } else {
+        }
+        else if(GeneratorRandom < 0.5f){
+            HornOfPlentyRiceBomb bomb = new HornOfPlentyRiceBomb();
+            Dungeon.level.drop(bomb, pos).sprite.drop(pos);
+        }
+        else{
             HornOfPlentyBomb bomb = new HornOfPlentyBomb();
             bomb.isLit = false;
             Dungeon.level.drop(bomb, pos).sprite.drop(pos);                  // 先落地

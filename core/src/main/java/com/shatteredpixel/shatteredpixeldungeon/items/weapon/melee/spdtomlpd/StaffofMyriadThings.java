@@ -18,7 +18,7 @@ import java.util.HashSet;
 //万象之杖
 //四阶，力量需求16
 //初始5-10，成长1-3，精准0.5
-//每使用这把武器击杀过一种敌人，就获得0-1的伤害成长以及仅限此武器的1精准修正。对于boss这个加成效果翻倍。
+//每使用这把武器击杀过一种敌人，就获得0-1的伤害成长以及仅限此武器的1精准修正。
 //已击杀过n种敌人，分别是……
 //需要将森罗万象填充进去，才能熠熠生辉。
 //武技：万象辉光，消耗4充能，获得1回合无敌，每击杀过13种敌人，额外获得1回合无敌。
@@ -84,7 +84,6 @@ public class StaffofMyriadThings extends MeleeWeapon {
         // 用集合存击杀敌人的名字
         killedTypes = new HashSet<>();
         String[] killed = bundle.getStringArray("killed_types");
-        String[] bosses = bundle.getStringArray("boss_types");
         if (killed != null) Collections.addAll(killedTypes, killed);
     }
 
