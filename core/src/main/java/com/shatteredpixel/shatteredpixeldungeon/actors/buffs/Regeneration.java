@@ -24,8 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Dirt_KnifeStand;
@@ -33,66 +35,80 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnlessFlower;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 
+// dot血量处理器
 public class Regeneration extends Buff {
 
 	{
-		//unlike other buffs, this one acts after the hero and takes priority against other effects
-		//healing is much more useful if you get some of it off before taking damage
+		// 与其它 buff 不同，这个 buff 在英雄行动之后结算，并优先于其它效果处理
+		// 如果能在挨打之前先结算掉一部分回血，回血的收益要大得多
 		actPriority = HERO_PRIO - 1;
 	}
 
-	private static final float REGENERATION_DELAY = 10;
+	private static final String PARTIALREGEN = "partialRegen";
+	// 未结算的回血值：正=回血，负=掉血，绝对值攒到 ≥1 才结算到 HP 上
+	private float partialRegen = 0f;
+	private float baseHealthRegenRate = 0.1f;
 
 	@Override
 	public boolean act() {
-		if (target.isAlive()) {
+		if (target != null && target.isAlive()) {
 
-			//if other trinkets ever get buffs like this should probably make the buff attaching
-			// behaviour more like wands/rings/artifacts
-			if (ChaoticCenser.averageTurnsUntilGas() != -1){
-				Buff.affect(Dungeon.hero, ChaoticCenser.CenserGasTracker.class);
-			}
+			if (target instanceof Hero) {
 
-			//cancel regenning entirely in thie case
-			if (SaltCube.healthRegenMultiplier() == 0){
-				spend(REGENERATION_DELAY);
-				return true;
-			}
-
-			boolean dirtKnifeStand = hero.belongings.getItem(Dirt_KnifeStand.class)!=null;
-			if (target.buff(UnlessFlower.UnlessFlowerTime.class) == null
-					&& (target.HP < regencap() && !((Hero)target).isStarving() && !((Hero)target).isSmallHunger() && dirtKnifeStand
-					|| target.HP < regencap() && !((Hero)target).isStarving() && !dirtKnifeStand)) {
-				if (regenOn()) {
-					target.HP += 1;
-					if (target.HP == regencap()) {
-						((Hero) target).resting = false;
-					}
+				// TODO 香炉的实现，无需关心，与回血无关，可能存在一些问题
+				if (ChaoticCenser.averageTurnsUntilGas() != -1) {
+					Buff.affect(Dungeon.hero, ChaoticCenser.CenserGasTracker.class);
 				}
+
+				float healthRegenRate = baseHealthRegenRate;
+
+				// ========== 加算区 ==========
+
+				// 菊寿凝身buff的效果
+				MarigoldBuff marigoldBuff = target.buff(MarigoldBuff.class);
+				if (marigoldBuff != null) healthRegenRate += marigoldBuff.ExtendRegen();
+
+				// 蓄血圣杯buff的加算效果
+				ChaliceOfBlood.chaliceRegen regenBuff = target.buff(ChaliceOfBlood.chaliceRegen.class);
+				if (regenBuff != null) healthRegenRate += regenBuff.RegenRateModifierAddValue();
+
+				// ========== 乘算区 ==========
+
+				// 蓄血圣杯buff的乘算效果
+				if (regenBuff != null) healthRegenRate *= regenBuff.RegenRateModifierMultiplierValue();
+
+				// 盐晶立方体的效果
+				healthRegenRate *= SaltCube.healthRegenMultiplier();
+
+				// 阻断药物
+
+				if (((Hero) target).belongings.getItem(BlockingDrug.class) != null) healthRegenRate *= 0.8f;
+
+				// ========== 额外加算区 ==========
+
+				// 暂无
+
+				// ========== 结算区 ==========
+
+				// 可回血时，回血量不管正负值都加
+				// 不可回血时加负值，正值归0且回血值也归0
+				if (!canRegen() && healthRegenRate > 0f) {
+					healthRegenRate = 0f;
+					if (partialRegen > 0f) partialRegen = 0f;
+				} else partialRegen += healthRegenRate;
+
+				settle();
+
+				spend(1f);
 			}
 
-			ChaliceOfBlood.chaliceRegen regenBuff = Dungeon.hero.buff( ChaliceOfBlood.chaliceRegen.class);
+			else if (Dungeon.isDLC(Conducts.Conduct.DEV)) GLog.n("存在非英雄单位进入Regeneration");
 
-			float delay = REGENERATION_DELAY;
-
-			if(target != null){
-				if (regenBuff != null && !isMagicImmuned(target)) {
-					if (regenBuff.isCursed()) {
-						delay *= 1.5f;
-					} else {
-						//15% boost at +0, scaling to a 500% boost at +10
-						delay -= 1.33f + regenBuff.itemLevel()*0.667f;
-						delay /= RingOfEnergy.artifactChargeMultiplier(target);
-					}
-				}
-			}
-
-			delay /= SaltCube.healthRegenMultiplier();
-
-			if(Dungeon.hero.belongings.getItem(BlockingDrug.class)!=null) delay *= 1.20f;
-
-			spend( delay );
+			diactivate();
 
 		} else {
 
@@ -101,6 +117,52 @@ public class Regeneration extends Buff {
 		}
 
 		return true;
+	}
+
+	// 可回血判据
+	private boolean canRegen() {
+		// 土刀架的放宽饱食度对自然回血的约束效果（不饿回血 → 不饿或只有一点饿回血）
+		boolean dirtKnifeStand = hero.belongings.getItem(Dirt_KnifeStand.class) != null;
+		// 幽寂花环的效果
+		if (target.buff(UnlessFlower.UnlessFlowerTime.class) != null) return false;
+		// 血上限效果
+		if (target.HP >= regencap()) return false;
+		// 极度饥饿
+		if (((Hero) target).isStarving()) return false;
+		// 有一点饿
+		if (dirtKnifeStand && ((Hero) target).isSmallHunger()) return false;
+		// 背水一战
+		return regenOn();
+	}
+
+	// 回血值结算（支持负数回血，也就是说dot伤害也可以依赖于此实现）
+	// TODO 但是这一实现需要完善或接入damage，但不建议这么做，会造成较多的耦合
+	private void settle() {
+		int whole = (int) partialRegen;
+		if (whole == 0) return;
+		partialRegen -= whole;
+
+		if (whole > 0) {
+			target.HP = Math.min(target.HP + whole, regencap());
+			// 英雄满血时停止睡觉
+			if (target.HP == regencap() && target instanceof Hero) {
+				((Hero) target).resting = false;
+			}
+		} else {
+			target.HP = Math.max(1, target.HP + whole);
+		}
+	}
+
+	@Override
+	public void storeInBundle(Bundle bundle) {
+		super.storeInBundle(bundle);
+		bundle.put(PARTIALREGEN, partialRegen);
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		partialRegen = bundle.getFloat(PARTIALREGEN);
 	}
 
 	public int regencap(){
