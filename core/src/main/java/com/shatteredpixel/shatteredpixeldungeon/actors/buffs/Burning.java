@@ -168,7 +168,8 @@ public class Burning extends Buff implements Hero.Doom {
 		}
 		
 		spend( TICK );
-		left -= TICK;
+		//引燃会冻住燃烧的倒计时：既不延长也不缩短，等引燃掉光才继续走
+		if (target.buff(Ignite.class) == null) left -= TICK;
 		
 		if (left <= 0 ||
 			(Dungeon.level.water[target.pos] && !target.flying)) {
@@ -201,6 +202,16 @@ public class Burning extends Buff implements Hero.Doom {
 			}
 		}
 		if (left < duration) left = duration;
+		acted = false;
+	}
+
+	/**
+	 * 引燃（{@link Ignite}）专用：把剩余燃烧时长直接改成指定值。
+	 * 与{@link #reignite(Char, float)}不同，这里允许缩短——引燃的要求是
+	 * "给予等同引燃层数的燃烧"，而不是"至少8回合"。
+	 */
+	public void setLeft( float duration ) {
+		left = duration;
 		acted = false;
 	}
 	

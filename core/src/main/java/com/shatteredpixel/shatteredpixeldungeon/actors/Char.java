@@ -514,6 +514,12 @@ public abstract class Char extends Actor {
 
 			// attack调用处传入固定增伤
 			dmg += dmgBonus;
+			// 攻击方 处于 微醺 物理伤害1.15倍
+			TipsyEffect tipsyEffect = buff(TipsyEffect.class);
+			if (tipsyEffect != null && type == DamageType.PHYSICAL) dmg *= tipsyEffect.PhysicDamageModifier();
+			// 攻击方 处于 酩酊大醉 攻击（就是普攻）伤害1.4倍
+			Smashed smashed = buff(Smashed.class);
+			if (smashed != null) dmg *= smashed.PhysicDamageModifier();
 			// 攻击方 处于 狂战领主 狂暴 至多2倍
 			Berserk berserk = buff(Berserk.class);
 			if (berserk != null) dmg = berserk.damageFactor(dmg);
@@ -546,7 +552,6 @@ public abstract class Char extends Actor {
 			if (buff(BlessMobDied.class) != null
 					&& this instanceof Hero
 					&& type == DamageType.PHYSICAL) dmg *= 1.5f;
-
 			// 攻击方 持有诅咒之剑 造成的所有伤害呈 cursedCost 倍
 			CursedBlade.CursedSword cursedSword = hero.buff(CursedBlade.CursedSword.class);
 			if(cursedSword == null){
@@ -580,13 +585,13 @@ public abstract class Char extends Actor {
 				if (type == DamageType.PHYSICAL) {
 					effectiveDamage = Math.max(effectiveDamage - dr, 0);
 				}
+				// 受击方 处于 易伤 物理伤害1.33倍
+				if (enemy.buff(Vulnerable.class) != null && type == DamageType.PHYSICAL) effectiveDamage *= 1.33f;
 				// 粘滞处理:伤害延时(未查)
 				if (enemy.buff(Viscosity.ViscosityTracker.class) != null) {
 					effectiveDamage = enemy.buff(Viscosity.ViscosityTracker.class).deferDamage(effectiveDamage);
 					enemy.buff(Viscosity.ViscosityTracker.class).detach();
 				}
-				// 受击方 处于 易伤 物理伤害1.33倍
-				if (enemy.buff(Vulnerable.class) != null && type == DamageType.PHYSICAL) effectiveDamage *= 1.33f;
 				// 攻击特效
 				effectiveDamage = attackProc(enemy, effectiveDamage);
 			}
@@ -786,6 +791,12 @@ public abstract class Char extends Actor {
 
 		// =====================命中骰子=====================
 		float acuRoll = Random.Float( acuStat );
+		// 攻击者 处于 微醺buff 命中0.85倍
+		TipsyEffect attackerTipsyEffect = attacker.buff(TipsyEffect.class);
+		if (attackerTipsyEffect != null) acuRoll *= attackerTipsyEffect.AccuracyModifier();
+		// 攻击者 处于 酩酊大醉buff 命中0.7倍
+		Smashed attackerSmashed = attacker.buff(Smashed.class);
+		if (attackerSmashed != null) acuRoll *= attackerSmashed.AccuracyModifier();
 		// 万象之杖特判 加值：每种已击杀敌人 +1 命中（Boss 翻倍）
 		if (attacker instanceof Hero){
 			Belongings b = ((Hero)attacker).belongings;
@@ -818,6 +829,12 @@ public abstract class Char extends Actor {
 		acuRoll *= AscensionChallenge.statModifier(attacker);
 		// =====================闪避骰子=====================
 		float defRoll = Random.Float( defStat );
+		// 受击者微醺buff的0.85倍
+		TipsyEffect defenderTipsyEffect = defender.buff(TipsyEffect.class);
+		if (defenderTipsyEffect != null) defRoll *= defenderTipsyEffect.DefenceModifier();
+		// 受击者 处于 酩酊大醉buff 闪避0倍
+		Smashed defenderSmashed = defender.buff(Smashed.class);
+		if (defenderSmashed != null) defRoll *= defenderSmashed.DefenceModifier();
 		// 祝福buff的1.25倍
 		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
 		// 幻惑buff的0.8倍
@@ -1140,6 +1157,16 @@ public abstract class Char extends Actor {
 			}
 		}
 		shielded -= dmg;
+
+		// ========== 酩酊大醉的延时伤害实现 ==========
+		Smashed smashed = buff(Smashed.class);
+		if (smashed != null && dmg > 0 && !(src instanceof Viscosity.DeferedDamage)) {
+			int delayed = (int)(dmg * smashed.damageDelayMultiplier);
+			if (delayed > 0) {
+				Buff.affect(this, Viscosity.DeferedDamage.class).prolong(delayed);
+				dmg -= delayed;
+			}
+		}
 		HP -= dmg;
 
 		if (HP > 0 && shielded > 0 && shielding() == 0){
@@ -1605,7 +1632,9 @@ public abstract class Char extends Actor {
 	//travelling may be false when a character is moving instantaneously, such as via teleportation
 	public void move( int step, boolean travelling ) {
 
-		if (travelling && Dungeon.level.adjacent( step, pos ) && buff( Vertigo.class ) != null) {
+		boolean vertigo = buff( Vertigo.class ) != null;
+		boolean smashedWalk = buff( Smashed.class ) != null && Random.Int(2) == 0;
+		if (travelling && Dungeon.level.adjacent( step, pos ) && (vertigo || smashedWalk)) {
 			sprite.interruptMotion();
 			int newPos = pos + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
 			if (!(Dungeon.level.passable[newPos] || Dungeon.level.avoid[newPos])
