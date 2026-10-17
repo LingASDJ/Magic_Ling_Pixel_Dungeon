@@ -31,6 +31,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.LightFood;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlcoholMixture;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.BottledMarigoldWine;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.LegacyWine;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.MolotovCocktail;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
@@ -82,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.thanks.GrilledHerring;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Marigold;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
@@ -184,7 +189,7 @@ public abstract class Recipe {
 			}
 		}
 	}
-	
+
 	
 	//*******
 	// Static members
@@ -222,7 +227,10 @@ public abstract class Recipe {
 			new PhaseShift.Recipe(),
 			new Recycle.Recipe(),
 			new TelekineticGrab.Recipe(),
-			new SummonElemental.Recipe()
+			new SummonElemental.Recipe(),
+
+			new AlcoholMixture.Recipe(),
+			new LegacyWine.Recipe()
 	};
 	
 	private static Recipe[] twoIngredientRecipes = new Recipe[]{
@@ -246,6 +254,11 @@ public abstract class Recipe {
 			new ScrollOfRoseShiled.Recipe(),
 
 			new WaterSoul.Recipe(),
+
+			new BottledMarigoldWine.SeedToWineFood(),
+			new BottledMarigoldWine.SeedToWineSmallRation(),
+
+			new MolotovCocktail.Recipe(),
 	};
 	
 	private static Recipe[] threeIngredientRecipes = new Recipe[]{
@@ -265,7 +278,9 @@ public abstract class Recipe {
 			new FlareBullet.Recipe(),
 			new WandOfVenom.Recipe(),
 			new IceFishSword.Recipe(),
-			new GhostLingElixir.Recipe()
+			new GhostLingElixir.Recipe(),
+			new BottledMarigoldWine.SeedToWineFood(),
+			new BottledMarigoldWine.SeedToWineSmallRation(),
 	};
 	
 	public static ArrayList<Recipe> findRecipes(ArrayList<Item> ingredients){

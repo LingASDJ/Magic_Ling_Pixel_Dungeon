@@ -19,7 +19,7 @@ public class MarigoldBuff extends FlavourBuff{
     // 额外生命恢复
 
     {
-        type = buffType.NEGATIVE;
+        type = buffType.POSITIVE;
         announced = true;
     }
     public float ExtendRegen(){
