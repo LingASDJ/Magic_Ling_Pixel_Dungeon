@@ -24,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -87,10 +88,6 @@ public class DiedCrossBow extends LegendWeapon implements Item.LengedsItem {
     protected LegendWeapon.LegendWeaponBuff passiveBuff() {
         return new DiedCrossBow.Recharge();
     }
-
-    /**
-     *
-     */
 
     public class Recharge extends LegendWeapon.LegendWeaponBuff {
         @Override
@@ -169,9 +166,6 @@ public class DiedCrossBow extends LegendWeapon implements Item.LengedsItem {
     public DiedCrossBow.BombArrow knockArrow(){
         return new BombArrow();
     }
-
-
-
 
     public static class BombArrow extends TippedDart {
 
@@ -298,7 +292,7 @@ public class DiedCrossBow extends LegendWeapon implements Item.LengedsItem {
                         }
 
                         DiedCrossBow diedCrossBow =  hero.belongings.getItem(DiedCrossBow.class);
-                        int dmg = Random.NormalIntRange(diedCrossBow.Lmin(),diedCrossBow.Lmin());
+                        int dmg = Random.NormalIntRange(diedCrossBow.Lmin(),diedCrossBow.Lmax());
 
                         //those not at the center of the blast take less damage
                         if (ch.pos != cell){
@@ -341,13 +335,13 @@ public class DiedCrossBow extends LegendWeapon implements Item.LengedsItem {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        if (hero.buff(Crossbow.ChargedShot.class) != null){
+        if (hero.buff(ChargedShot.class) != null){
             GLog.w(Messages.get(this, "ability_cant_use"));
             return;
         }
 
         beforeAbilityUsed(hero, null);
-        Buff.affect(hero, Crossbow.ChargedShot.class);
+        Buff.affect(hero, ChargedShot.class);
         hero.sprite.operate(hero.pos);
         hero.next();
         afterAbilityUsed(hero);
@@ -365,6 +359,21 @@ public class DiedCrossBow extends LegendWeapon implements Item.LengedsItem {
     @Override
     public String upgradeAbilityStat(int level) {
         return Integer.toString(3 + level);
+    }
+
+    public static class ChargedShot extends Buff{
+
+        {
+            announced = true;
+            type = buffType.POSITIVE;
+        }
+
+
+        @Override
+        public int icon() {
+            return BuffIndicator.DUEL_XBOW;
+        }
+
     }
 
 }

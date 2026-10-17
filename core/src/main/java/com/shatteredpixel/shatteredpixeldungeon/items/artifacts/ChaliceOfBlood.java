@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.isMagicImmuned;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -32,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -183,7 +185,6 @@ public class ChaliceOfBlood extends Artifact {
 		healDelay /= amount;
 
 		float heal = 5f/healDelay;
-		//effectively 0.5/1/1.5/2/2.5 HP per turn at +0/+6/+8/+9/+10
 		if (Random.Float() < heal%1){
 			heal++;
 		}
@@ -218,6 +219,22 @@ public class ChaliceOfBlood extends Artifact {
 
 	public class chaliceRegen extends ArtifactBuff {
 		//see Regeneration.class for effect
+		// 蓄血圣杯的加算修正值
+		public float RegenRateModifierAddValue(){
+			if(!isMagicImmuned(target)) {
+				if (this.isCursed()) return 0f;
+				else return 0.1f + itemLevel() * 0.04f;
+			}
+			else return 0f;
+		}
+		// 蓄血圣杯的乘算修正值
+		public float RegenRateModifierMultiplierValue(){
+			if(!isMagicImmuned(target)) {
+				if (this.isCursed()) return 0.6f;
+				else return Math.max(1f,RingOfEnergy.artifactChargeMultiplier(target));
+			}
+			else return 1f;
+		}
 	}
 
 }

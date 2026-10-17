@@ -428,4 +428,12 @@ public class Belongings implements Iterable<Item> {
 			}
 		}
 	}
+
+	// 是否装备了某类型的物品（不含背包）
+	// Class<? extends Item>表示某类型（Item）的子类，约束形参必须是Item
+	public boolean isEquipped(Class<? extends Item> itemClass) {
+		return itemClass.isInstance(weapon())   || itemClass.isInstance(secondWep())
+				|| itemClass.isInstance(armor())    || itemClass.isInstance(artifact())
+				|| itemClass.isInstance(misc())     || itemClass.isInstance(ring());
+	}
 }

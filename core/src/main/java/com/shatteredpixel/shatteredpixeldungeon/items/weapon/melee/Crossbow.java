@@ -22,12 +22,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -49,10 +51,9 @@ public class Crossbow extends MeleeWeapon {
 	@Override
 	public boolean doUnequip(Hero hero, boolean collect, boolean single) {
 		if (super.doUnequip(hero, collect, single)){
-			if (hero.buff(ChargedShot.class) != null &&
-					!(hero.belongings.weapon() instanceof Crossbow)
-					&& !(hero.belongings.secondWep() instanceof Crossbow)){
-				//clear charged shot if no crossbow is equipped
+			if (hero.buff(ChargedShot.class) != null
+					&& !(hero.belongings.isEquipped(Crossbow.class)))
+			{
 				hero.buff(ChargedShot.class).detach();
 			}
 			return true;
@@ -151,5 +152,4 @@ public class Crossbow extends MeleeWeapon {
 		}
 
 	}
-
 }

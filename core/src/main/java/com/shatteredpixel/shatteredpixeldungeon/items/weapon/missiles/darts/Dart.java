@@ -97,7 +97,9 @@ public class Dart extends MissileWeapon {
 			GameScene.selectItem(itemSelector);
 		}
 	}
-	
+
+	// ========== 最小伤害与最大伤害修正（来源于弩系列特效） ==========
+
 	@Override
 	public int min(int lvl) {
 		if (bow != null ){
@@ -116,7 +118,7 @@ public class Dart extends MissileWeapon {
 		}
 		if(diedCrossBow != null ){
 			if(Dungeon.hero != null) {
-				if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null) {
+				if (!(this instanceof TippedDart) && Dungeon.hero.buff(DiedCrossBow.ChargedShot.class) != null) {
 					//ability increases base dmg by 37.5%, scaling by 50%
 					return 7 +                     //7 base
 							2 * diedCrossBow.buffedLvl() + lvl;//+2 per bow level, +1 per level
@@ -151,9 +153,9 @@ public class Dart extends MissileWeapon {
 		if (bow != null){
 			if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null){
 				//ability increases base dmg by 37.5%, scaling by 50%
-				return  15 +                       //15 base
+				return  15 +                       	//15 点基础伤害
 						4*bow.buffedLvl() +
-						2*lvl; //+4 per bow level, +2 per level
+						2*lvl; 						// 弩等级每级+4点伤害, 飞镖自身等级（含神射戒指）每级+2伤害
 			} else {
 				return  12 +                       //12 base
 						3*bow.buffedLvl() +
@@ -161,7 +163,7 @@ public class Dart extends MissileWeapon {
 			}
 		}
 		if(diedCrossBow != null){
-			if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null){
+			if (!(this instanceof TippedDart) && Dungeon.hero.buff(DiedCrossBow.ChargedShot.class) != null){
 				//ability increases base dmg by 37.5%, scaling by 50%
 				return  15 +                       //15 base
 						4*diedCrossBow.buffedLvl() +
@@ -172,7 +174,6 @@ public class Dart extends MissileWeapon {
 						2*lvl; //+3 per bow level, +2 per level
 			}
 		}
-
 		if(forestBow != null ){
 			int orgrinDamage = (int) (6 + forestBow.level() * 2.5f);
 			if(Dungeon.hero != null) {
@@ -191,6 +192,8 @@ public class Dart extends MissileWeapon {
 		return  2 + 2*lvl;
 
 	}
+
+	// ---------- 最小伤害与最大伤害修正（来源于弩系列武技） ----------
 
 	public static Crossbow bow;
 
@@ -223,7 +226,17 @@ public class Dart extends MissileWeapon {
 	}
 
 	public boolean crossbowHasEnchant( Char owner ){
-		return (bow != null && bow.enchantment != null && owner.buff(MagicImmune.class) == null) || ( diedCrossBow != null && diedCrossBow.enchantment != null && owner.buff(MagicImmune.class) == null) || (forestBow != null && forestBow.enchantment != null && owner.buff(MagicImmune.class) == null);
+		return (bow != null
+				&& bow.enchantment != null
+				&& owner.buff(MagicImmune.class) == null)
+				||
+				( diedCrossBow != null
+				&& diedCrossBow.enchantment != null
+				&& owner.buff(MagicImmune.class) == null)
+				||
+				(forestBow != null
+				&& forestBow.enchantment != null
+				&& owner.buff(MagicImmune.class) == null);
 	}
 	
 	@Override
@@ -245,6 +258,8 @@ public class Dart extends MissileWeapon {
 		if (forestBow != null && owner.buff(ForestBow.ChargedShot.class) != null) {
 			return Char.INFINITE_ACCURACY;
 		} else if (bow != null && owner.buff(Crossbow.ChargedShot.class) != null){
+			return Char.INFINITE_ACCURACY;
+		} else if (diedCrossBow != null && owner.buff(DiedCrossBow.ChargedShot.class) != null){
 			return Char.INFINITE_ACCURACY;
 		} else {
 			return super.accuracyFactor(owner, target);
@@ -327,7 +342,9 @@ public class Dart extends MissileWeapon {
 		processingChargedShot = true;
 
 		if (chargedShotPos != -1) {
-			if (bow != null && (Dungeon.hero.buff(Crossbow.ChargedShot.class) != null)) {
+			if ((bow != null && (Dungeon.hero.buff(Crossbow.ChargedShot.class) != null))
+					|| (diedCrossBow != null && (Dungeon.hero.buff(DiedCrossBow.ChargedShot.class) != null))
+			) {
 				PathFinder.buildDistanceMap(chargedShotPos, Dungeon.level.passable, 2);
 				// 必须克隆，因为一些命中后效果会使用 PathFinder
 				int[] distance = PathFinder.distance.clone();
@@ -341,7 +358,12 @@ public class Dart extends MissileWeapon {
 							@Override
 							protected boolean act() {
 								if (!ch.isAlive()) {
-									bow.onAbilityKill(Dungeon.hero, ch);
+									if(bow!=null){
+										bow.onAbilityKill(Dungeon.hero, ch);
+									}
+									else if(diedCrossBow!=null){
+										diedCrossBow.onAbilityKill(Dungeon.hero, ch);
+									}
 								}
 								Actor.remove(this);
 								return true;
@@ -390,6 +412,9 @@ public class Dart extends MissileWeapon {
 		}
 		if (Dungeon.hero.buff(ForestBow.ChargedShot.class) != null) {
 			Dungeon.hero.buff(ForestBow.ChargedShot.class).detach();
+		}
+		if (Dungeon.hero.buff(DiedCrossBow.ChargedShot.class) != null) {
+			Dungeon.hero.buff(DiedCrossBow.ChargedShot.class).detach();
 		}
 	}
 

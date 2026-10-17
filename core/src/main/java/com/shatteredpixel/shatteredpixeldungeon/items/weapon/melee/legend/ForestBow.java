@@ -51,10 +51,8 @@ public class ForestBow extends MeleeWeapon implements Item.LengedsItem {
     @Override
     public boolean doUnequip(Hero hero, boolean collect, boolean single) {
         if (super.doUnequip(hero, collect, single)){
-            if (hero.buff(ChargedShot.class) != null &&
-                    !(hero.belongings.weapon() instanceof Crossbow)
-                    && !(hero.belongings.secondWep() instanceof Crossbow)){
-                //clear charged shot if no crossbow is equipped
+            if (hero.buff(ChargedShot.class) != null
+                    && !(hero.belongings.isEquipped(ForestBow.class))){
                 hero.buff(ChargedShot.class).detach();
             }
             return true;
