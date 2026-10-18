@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Random;
 
 import java.util.HashSet;
@@ -16,7 +17,6 @@ public class MarigoldBuff extends FlavourBuff{
     public static float MardenExtendMultiplier = 0.5f;
     // 基础生命恢复数值
     public static float BaseExtendRenge = 0.8f;
-    // 额外生命恢复
 
     {
         type = buffType.POSITIVE;
@@ -60,4 +60,9 @@ public class MarigoldBuff extends FlavourBuff{
         return best;
     }
 
+    // UI 图标
+    @Override
+    public int icon() {
+        return BuffIndicator.HUNGER;  // TODO 暂用
+    }
 }
