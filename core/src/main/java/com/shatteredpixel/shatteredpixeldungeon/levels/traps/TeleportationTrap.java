@@ -42,6 +42,9 @@ public class TeleportationTrap extends Trap {
 		shape = DOTS;
 	}
 
+	//周期性触发的传送（如空间残片）：只搬动普通掉落物，不搬动贵重物品
+	public boolean keepValuableItems = false;
+
 	@Override
 	public void activate() {
 
@@ -56,21 +59,35 @@ public class TeleportationTrap extends Trap {
 			}
 			Heap heap = Dungeon.level.heaps.get(pos + i);
 
-			if (heap != null && heap.type == Heap.Type.HEAP){
+			if (heap != null && heap.type == Heap.Type.HEAP && !(keepValuableItems && hasValuableItem(heap))){
+
+				//先确认落点，再取物：落点无效时保留原地物品，避免物品被取走却无处放置而凭空消失
 				int cell = Dungeon.level.randomRespawnCell( null );
 
-				Item item = heap.pickUp();
-
 				if (cell != -1) {
-					Dungeon.level.drop( item, cell );
-					if (item instanceof Honeypot.ShatteredPot){
-						((Honeypot.ShatteredPot)item).movePot(pos, cell);
+					Item item = heap.pickUp();
+
+					if (item != null) {
+						Dungeon.level.drop( item, cell );
+						if (item instanceof Honeypot.ShatteredPot){
+							((Honeypot.ShatteredPot)item).movePot(pos, cell);
+						}
+						Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+						CellEmitter.get(pos).burst(Speck.factory(Speck.LIGHT), 4);
 					}
-					Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-					CellEmitter.get(pos).burst(Speck.factory(Speck.LIGHT), 4);
 				}
 			}
 		}
 
+	}
+
+	//贵重物品判定：Item.unique（升级卷轴、力量药水、神器、藏品、钥匙、任务道具等）
+	//与 DeadEye 解离、小偷窃取、燃烧等机制采用的判定保持一致
+	public static boolean hasValuableItem( Heap heap ){
+		if (heap == null) return false;
+		for (Item item : heap.items){
+			if (item.unique) return true;
+		}
+		return false;
 	}
 }

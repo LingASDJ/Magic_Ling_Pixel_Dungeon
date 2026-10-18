@@ -79,11 +79,29 @@ public class PropBuff extends Buff{
             }
 
             if(Dungeon.hero.belongings.getItem(FreeCrack.class)!=null) {
-                timeI ++;
-                if(!(Dungeon.level instanceof MoveBoxHollowActorLevel || Dungeon.level instanceof PacmanHollowActorLevel || Dungeon.level instanceof AllSearchHollowActorLevel)){
-                    if(timeI >= 50 && Statistics.bossRushMode && Dungeon.depth != 1 || !Statistics.bossRushMode && timeI >= 50) {
+
+                //传送无法进行的场合（hollow小游戏层、BossRush第1层）暂停计时，
+                //避免计时器空转导致离开后毫无预警地立刻传送
+                boolean teleportBlocked = Dungeon.level instanceof MoveBoxHollowActorLevel
+                        || Dungeon.level instanceof PacmanHollowActorLevel
+                        || Dungeon.level instanceof AllSearchHollowActorLevel
+                        || (Statistics.bossRushMode && Dungeon.depth == 1);
+
+                if(!teleportBlocked) {
+                    timeI ++;
+
+                    //预警：传送前 10 回合轻声提示，前 3 回合正式警告
+                    if(timeI == 50 - 10) {
+                        GLog.i(Messages.get(FreeCrack.class, "warning_start"));
+                    }
+                    if(timeI == 50 - 3) {
+                        GLog.w(Messages.get(FreeCrack.class, "warning", 3));
+                    }
+
+                    if(timeI >= 50) {
                         TeleportationTrap t = new TeleportationTrap();
                         t.pos = hero.pos;
+                        t.keepValuableItems = true;   //空间残片的传送不搬动贵重物品
                         t.activate();
                         timeI = 0;
                         Buff.affect(hero,Vertigo.class,2f);
