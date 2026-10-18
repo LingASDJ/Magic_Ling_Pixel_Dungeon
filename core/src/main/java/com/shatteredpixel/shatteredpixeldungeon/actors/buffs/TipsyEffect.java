@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
-import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 // 微醺：物理伤害提升15%，精准和闪避均下降15%。
@@ -26,9 +25,9 @@ public class TipsyEffect extends FlavourBuff{
         return 1f - DefenceModifierMultiplier;
     }
 
-    // UI 图标
+
     @Override
     public int icon() {
-        return BuffIndicator.HUNGER;  // TODO 暂用
+        return BuffIndicator.TIPSY;
     }
 }

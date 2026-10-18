@@ -49,9 +49,9 @@ public class Smashed extends FlavourBuff {
     public float damageDelayMultiplier = 0.5f;
     // 无法伏击在Hero.java中搜索“酩酊大醉的无法伏击实现”
 
-    // UI 图标
+
     @Override
     public int icon() {
-        return BuffIndicator.HUNGER;  // TODO 暂用
+        return BuffIndicator.SMASHED;
     }
 }

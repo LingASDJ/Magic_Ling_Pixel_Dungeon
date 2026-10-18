@@ -43,7 +43,6 @@ import java.util.LinkedHashMap;
 
 public class BuffIndicator extends Component {
 	public static int SIZE = 16;
-	private static BuffIndicator[] bossInstances = new BuffIndicator[4];
 	private static BuffIndicator heroInstance;
 	private static final int SCROLL_THRESHOLD = 12;
 
@@ -185,6 +184,13 @@ public class BuffIndicator extends Component {
 	public static final int AG_POCK = 162;
 
 	public static final int CURSED_DOWN = 164;
+
+	public static final int TIPSY = 166;
+	public static final int SMASHED = 167;
+	public static final int IGNITE = 168;
+	public static final int INEBRIATION = 169;
+
+	public static final int MARIGOLD = 170;
 
 	public static final int SIZE_SMALL = 7;
 	public static final int SIZE_LARGE = 16;

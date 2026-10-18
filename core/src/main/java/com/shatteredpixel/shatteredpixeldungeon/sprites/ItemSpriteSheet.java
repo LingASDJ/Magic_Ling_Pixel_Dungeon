@@ -546,6 +546,9 @@ public class ItemSpriteSheet {
 
     public static final int BONE_KNIFE     = ARMOR+13;
 
+    public static final int MARGOLD_TR     = ARMOR+14;
+    public static final int MOTO_FIRE    = ARMOR+15;
+
     static{
         assignItemRect(ARMOR_WARRIOR,   15, 13);
         assignItemRect(ARMOR_MAGE,      13, 13);
@@ -563,6 +566,9 @@ public class ItemSpriteSheet {
         assignItemRect(BONE_KNIFE,      13, 13);
 
         assignItemRect(DW_FT,           10, 10);
+
+        assignItemRect(MARGOLD_TR,           13, 13);
+        assignItemRect(MOTO_FIRE,           12, 15);
     }
 
     //16 free slots
@@ -794,9 +800,19 @@ public class ItemSpriteSheet {
     public static final int EXOTIC_SILVER   = EXOTIC_POTIONS+10;
     public static final int EXOTIC_IVORY    = EXOTIC_POTIONS+11;
     public static final int EXOTIC_BLUEFIREX    = EXOTIC_POTIONS+12;
+
+    public static final int MARIGOLD_POTION    = EXOTIC_POTIONS+14;
+    public static final int MARIGOLD_EXC_POTION    = EXOTIC_POTIONS+15;
+    public static final int MARIGOLD_WORLD_POTION    = EXOTIC_POTIONS+16;
+
     static {
         for (int i = EXOTIC_POTIONS; i < EXOTIC_POTIONS+16; i++)
             assignItemRect(i, 14, 15);
+
+        assignItemRect(MARIGOLD_POTION, 10, 14);
+        assignItemRect(MARIGOLD_EXC_POTION, 10, 13);
+        assignItemRect(MARIGOLD_WORLD_POTION, 12, 15);
+
     }
 
     private static final int SEEDS              =                           xy(1, 24);  //16 slots
