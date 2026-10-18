@@ -17,7 +17,7 @@ import com.watabou.noosa.audio.Sample;
  *       <li>合成：瓶装菊酒+10能量。</li>
  *       <li>饮用获得90回合菊寿凝身。</li>
  *       <li>投掷后破碎并产生3500单位酒气。</li>
- *       <li>无法自然生成，只能炼金合成与商店售卖，1800底价，每层+100。</li>
+ *       <li>无法自然生成，只能炼金合成。卖给商店价格为，1800底价，每层+100。</li>
  *       <li>重阳节（{@link RegularLevel.ChinaHoliday#CYJ}）限时道具。</li>
  *     </ul>
  * </div>
@@ -62,7 +62,7 @@ public class LegacyWine extends Potion {
      */
     @Override
     public int value() {
-        return (int)(quantity * (BASE_VALUE + VALUE_PER_DEPTH * Math.max(0, Dungeon.depth - 1) * 0.1f));
+        return quantity * (BASE_VALUE + VALUE_PER_DEPTH * Math.max(0, Dungeon.depth - 1));
     }
 
     @Override

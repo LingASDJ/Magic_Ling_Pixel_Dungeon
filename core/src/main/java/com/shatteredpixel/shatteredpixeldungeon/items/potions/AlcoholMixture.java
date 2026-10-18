@@ -12,7 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
  *       <li>合成：瓶装菊酒+4能量。</li>
  *       <li>饮用获得100%醉意。</li>
  *       <li>投掷后产生1000气体量酒气。</li>
- *       <li>瓶装菊酒无法自然生成，只能通过炼金合成和商人售卖，400底价。</li>
+ *       <li>瓶装菊酒无法自然生成，只能通过炼金合成和商人售卖，商人以400底价出售。</li>
  *     </ul>
  * </div>
  *

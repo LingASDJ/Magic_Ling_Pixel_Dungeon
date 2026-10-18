@@ -3,6 +3,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.AlcoholGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlcoholMixture;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.BottledMarigoldWine;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
 
@@ -105,4 +109,9 @@ public class Inebriation extends Buff{
         return BuffIndicator.INEBRIATION;
     }
 
+    // 描述
+    @Override
+    public String desc() {
+        return Messages.get(this, "desc", value);
+    }
 }

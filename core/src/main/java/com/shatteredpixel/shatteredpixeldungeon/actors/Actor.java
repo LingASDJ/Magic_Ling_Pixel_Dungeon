@@ -364,6 +364,15 @@ public abstract class Actor implements Bundlable {
 			if (actor.id > 0) {
 				ids.remove( actor.id );
 			}
+
+			//清理正在等待的 current：角色在等待自身动画回调的期间被移除时
+			//（例如怪物等待攻击动画时被追加攻击击杀，sprite.die() 打断了攻击动画，
+			//onAttackComplete()/next() 永远不会执行），必须在这里释放 current。
+			//否则 Actor.processing() 永远为 true，GameScene 不再唤醒 Actor 线程，
+			//线程会永久停留在 process() 的 wait() 上。
+			if (current == actor) {
+				current = null;
+			}
 		}
 	}
 

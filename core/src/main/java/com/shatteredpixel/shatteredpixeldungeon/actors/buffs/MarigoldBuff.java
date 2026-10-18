@@ -16,7 +16,6 @@ public class MarigoldBuff extends FlavourBuff{
     public static float MardenExtendMultiplier = 0.5f;
     // 基础生命恢复数值
     public static float BaseExtendRenge = 0.8f;
-    // 额外生命恢复
 
     {
         type = buffType.POSITIVE;
