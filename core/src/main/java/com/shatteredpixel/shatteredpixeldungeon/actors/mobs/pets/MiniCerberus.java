@@ -23,7 +23,6 @@ public class MiniCerberus extends Pets {
         spriteClass = MiniCerberusBossSprites.class;
         WANDERING = new Wandering();
         defenseSkill = 15;
-        noALLY = true;
     }
 
     private float lastWoofTime = -999f;

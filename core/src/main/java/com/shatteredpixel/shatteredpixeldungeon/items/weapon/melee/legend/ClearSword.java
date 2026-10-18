@@ -158,6 +158,9 @@ public class ClearSword extends MeleeWeapon implements Item.LengedsItem {
                             }
                             updateQuickslot();
                             beforeAbilityUsed(hero, xenemy);
+                            // 修复夺舍：beforeAbilityUsed 会把 abilityWeapon 重新设为 this，
+                            // 必须调用 afterAbilityUsed 将其清空，否则后续普通攻击会错误触发本武器的 proc。
+                            afterAbilityUsed(hero);
                         }
                     });
 

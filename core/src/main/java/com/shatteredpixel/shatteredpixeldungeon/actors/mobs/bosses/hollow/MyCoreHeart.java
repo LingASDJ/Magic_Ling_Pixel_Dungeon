@@ -238,6 +238,10 @@ public class MyCoreHeart extends Boss {
                         }
                         Buff.affect(this, SummonColdDown.class, SummonColdDown.DURATION);
                         summonedmobsCount++;
+                        // 修复：每 5 波立即给一次修塔次数，避免 detach 时跳过 5 的倍数导致次数丢失卡关
+                        if (summonedmobsCount % 5 == 0) {
+                            Statistics.RepaierTowerCount++;
+                        }
                     }
                 }
             }
@@ -301,9 +305,7 @@ public class MyCoreHeart extends Boss {
                     MyCoreHeart heart = (MyCoreHeart) mob;
                     heart.getHP = false;
                     heart.brokenCount = 0;
-                    if(heart.summonedmobsCount % 5 == 0){
-                        Statistics.RepaierTowerCount++;
-                    }
+                    // 修塔次数已在召唤时发放，此处不再重复检查 %5
                 }
             }
         }

@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
@@ -61,7 +62,7 @@ public class CatGirlCosplay extends Prop {
                     cell = i + j*Dungeon.level.width();
                     if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null && ch != hero) {
                         if (!ch.isImmune(this.getClass())) {
-                            if(ch instanceof Mob && !(ch instanceof NPC)){
+                            if(ch instanceof Mob && !(ch instanceof NPC) && !(ch instanceof Boss)){
                                 if(((Mob) ch).state != ((Mob) ch).PASSIVE){
                                     if(Random.Float() <= 0.5f){
                                         ((Mob) ch).clearEnemy();

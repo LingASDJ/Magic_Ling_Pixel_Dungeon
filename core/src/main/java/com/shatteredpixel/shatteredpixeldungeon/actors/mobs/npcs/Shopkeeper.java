@@ -224,46 +224,21 @@ public class Shopkeeper extends NPC {
 	@Override
 	public void destroy() {
 		super.destroy();
-		if(turnsSinceHarmed >= 1 && !Statistics.fireGirlnoshopping ){
-			for (Heap heap: Dungeon.level.heaps.valueList()) {
-				if (heap.type == Heap.Type.FOR_SALE) {
-					if (ShatteredPixelDungeon.scene() instanceof GameScene) {
-						CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
-					}
-					if (heap.size() == 1) {
-						heap.destroy();
-					} else {
-						heap.items.remove(heap.size()-1);
-						heap.type = Heap.Type.HEAP;
-					}
+		// 修复免费抢商店：无论商人因何种原因跑路，都必须带走/销毁商品，
+		// 不能把 FOR_SALE 商品直接留在地上让玩家白拿。
+		for (Heap heap: Dungeon.level.heaps.valueList()) {
+			if (heap.type == Heap.Type.FOR_SALE) {
+				if (ShatteredPixelDungeon.scene() instanceof GameScene) {
+					CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
 				}
-			}
-		} else if(Statistics.endingbald && !Statistics.fireGirlnoshopping){
-			for (Heap heap: Dungeon.level.heaps.valueList()) {
-				if (heap.type == Heap.Type.FOR_SALE) {
-					if (ShatteredPixelDungeon.scene() instanceof GameScene) {
-						CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
-					}
-					if (heap.size() == 1) {
-						heap.destroy();
-					} else {
-						heap.items.remove(heap.size()-1);
-						heap.type = Heap.Type.HEAP;
-					}
-				}
-			}
-		} else {
-			for (Heap heap: Dungeon.level.heaps.valueList()) {
-				if (heap.type == Heap.Type.FOR_SALE) {
-					if (ShatteredPixelDungeon.scene() instanceof GameScene) {
-						CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
-					}
+				if (heap.size() == 1) {
+					heap.destroy();
+				} else {
+					heap.items.remove(heap.size()-1);
 					heap.type = Heap.Type.HEAP;
 				}
 			}
 		}
-
-
 	}
 
 	@Override

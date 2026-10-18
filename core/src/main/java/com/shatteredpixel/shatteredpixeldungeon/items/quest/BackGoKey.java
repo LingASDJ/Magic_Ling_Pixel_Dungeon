@@ -53,6 +53,12 @@ public class BackGoKey extends TestItem {
             Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
             if (timeBubble != null) timeBubble.disarmPresses();
             InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+            // 修复传送错误：RETURN 模式实际读取 returnDepth/returnBranch/returnPos，
+            // 而非 curTransition.destDepth/destBranch。此前未赋值导致残留旧值，
+            // 抢劫后再用会被送回 0 层/抢劫层。
+            InterlevelScene.returnDepth = depth;
+            InterlevelScene.returnBranch = 0;
+            InterlevelScene.returnPos = -1;
             InterlevelScene.curTransition = new LevelTransition();
             InterlevelScene.curTransition.destDepth = depth;
             InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;

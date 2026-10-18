@@ -239,6 +239,8 @@ public class ZeroHallsBossLevel extends Level {
                         PaswordBadges.ALLCS(Challenges.activeChallenges());
                         Badges.validateChampion(Challenges.activeChallenges());
                         PaswordBadges.HERO_CLRE(Challenges.activeChallenges());
+                        // 修复真结局藏品分丢失
+                        com.shatteredpixel.shatteredpixeldungeon.GameRules.PropsScore();
                         Dungeon.win( BadDream.class );
                         Game.switchScene( RankingsScene.class );
                         Dungeon.deleteGame( GamesInProgress.curSlot, true );
