@@ -68,7 +68,7 @@ public class HellBurning extends Buff implements Hero.Doom {
     public boolean act() {
         if (target.isAlive() && !target.isImmune(getClass())) {
             int damage;
-            if (target instanceof Boss) {
+            if (Char.hasProp(target, Char.Property.BOSS) || Char.hasProp(target, Char.Property.MINIBOSS)) {
                 damage = (int) BOSS_DAMAGE;
                 for (Buff buff : target.buffs()) {
                     boolean isRage = buff instanceof CrivusStarFruits.Rage;

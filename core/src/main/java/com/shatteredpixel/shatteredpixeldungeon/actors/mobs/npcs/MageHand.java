@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
@@ -81,6 +82,9 @@ public class MageHand extends DirectableAlly {
             GameScene.updateFog();
         }
     }
+
+    public static final float AGGRESSION_ON_ATTACK = 5f;
+    public static final float AGGRESSION_ON_DAMAGE = 1f;
 
     {
         spriteClass = MageHandSprite.class;
@@ -161,20 +165,35 @@ public class MageHand extends DirectableAlly {
 
     @Override
     public void damage(int dmg, Object src, DamageType type) {
-        // 法师之手无敌：不受到任何伤害，只传送到英雄身边
+        // 法师之手无敌：不受到任何伤害
         HP = HT;
+        applyAggression(AGGRESSION_ON_DAMAGE);
+        // 传送到英雄身边
         teleportNearHero();
+    }
+
+    private static void applyAggression(float duration) {
+        if (hero == null || hero.buff(PotionOfCleansing.Cleanse.class) != null) {
+            return;
+        }
+        Buff.prolong(hero, StoneOfAggression.Aggression.class, duration);
     }
 
     // 尝试传送到英雄周围5x5区域
     private void teleportNearHero() {
         int heroPos = hero.pos;
+        int width = Dungeon.level.width();
         ArrayList<Integer> validPositions = new ArrayList<>();
 
         // 获取5x5区域内的有效位置
         for (int i = -2; i <= 2; i++) {
             for (int j = -2; j <= 2; j++) {
-                int newPos = heroPos + i + j * Dungeon.level.width();
+                int newPos = heroPos + i + j * width;
+
+                // 防止 i、j 偏移把坐标绕到行的另一侧
+                if (i != 0 && (newPos % width) != (heroPos % width) + i) {
+                    continue;
+                }
 
                 // 检查位置是否有效
                 if (isHeroValidTeleportPosition(newPos)) {
@@ -186,7 +205,7 @@ public class MageHand extends DirectableAlly {
         // 如果找到有效位置，随机选择一个传送
         if (!validPositions.isEmpty()) {
             int targetPos = Random.element(validPositions);
-            ScrollOfTeleportation.appear(this,targetPos);
+            ScrollOfTeleportation.appear(this, targetPos);
         }
 
     }
@@ -645,7 +664,7 @@ public class MageHand extends DirectableAlly {
         damage = super.attackProc(enemy, damage);
         if (magesStaff != null) {
             damage = magesStaff.proc(this, enemy, damage);
-            Buff.prolong(hero, StoneOfAggression.Aggression.class, 1f);
+            applyAggression(AGGRESSION_ON_ATTACK);
             if(hero.hasTalent(Talent.MAGIC_ABSORB)){
                 MagicAbsorb buff = hero.buff(MagicAbsorb.class);
                 if(buff != null){
