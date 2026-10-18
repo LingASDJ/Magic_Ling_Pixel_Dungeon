@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.AlcoholGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Inebriation;
@@ -39,7 +38,7 @@ import com.watabou.noosa.audio.Sample;
 public class BottledMarigoldWine extends Potion{
 
     {
-        image = ItemSpriteSheet.POTION_DEEPYELLOW;   // TODO 先随便复用一个现成瓶身
+        image = ItemSpriteSheet.MARIGOLD_POTION;
     }
 
     static {

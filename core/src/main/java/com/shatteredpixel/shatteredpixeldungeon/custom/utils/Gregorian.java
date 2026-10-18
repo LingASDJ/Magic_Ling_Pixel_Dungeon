@@ -261,10 +261,10 @@ public class Gregorian {
     private static void checkChongYang(Lunar lunar) {
         if (lunar.getMonth() == 9 &&
                 (lunar.getDay() >= 9 &&
-                        lunar.getDay() <= 16)){
+                        lunar.getDay() <= 20)){
             RegularLevel.ChinaHoliday h = RegularLevel.ChinaHoliday.CYJ;
             chinaHoliday = h;
-            long endTs = calculateLunarEventEndTime(lunar, 9, 16);
+            long endTs = calculateLunarEventEndTime(lunar, 9, 20);
             activeHolidayList.add(new HolidayMeta(h, endTs));
         }
     }

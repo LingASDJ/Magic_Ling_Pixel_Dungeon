@@ -5,7 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
-import com.watabou.utils.Random;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 import java.util.HashSet;
 
@@ -22,6 +22,12 @@ public class MarigoldBuff extends FlavourBuff{
         type = buffType.POSITIVE;
         announced = true;
     }
+
+    @Override
+    public int icon() {
+        return BuffIndicator.MARIGOLD;
+    }
+
     public float ExtendRegen(){
         float multiplier = 1f;
         if(target instanceof Hero
