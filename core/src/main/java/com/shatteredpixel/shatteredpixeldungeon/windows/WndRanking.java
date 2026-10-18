@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -180,8 +181,8 @@ public class WndRanking extends WndTabbed {
 
 			String name = Dungeon.hero.className();
 			IconTitle title = new IconTitle();
-			Hero hero = Dungeon.hero;
-			title.icon(HeroSprite.avatar(hero.heroClass, hero.tier()));
+			Image customAvatar = com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins.avatarFor(record.heroClass, record.skin);
+			title.icon(customAvatar != null ? customAvatar : HeroSprite.avatar(record.heroClass, record.armorTier));
 			if (Dungeon.hero.name().equals(Dungeon.hero.className())) {
 				title.label(Messages.get(this, "title", Dungeon.hero.lvl, name).toUpperCase(Locale.ENGLISH));
 			} else {
@@ -491,7 +492,8 @@ public class WndRanking extends WndTabbed {
 			camera = WndRanking.this.camera;
 
 			IconTitle title = new IconTitle();
-			title.icon( HeroSprite.avatar( record.heroClass, record.armorTier ) );
+			Image customAvatar = HeroSkins.avatarFor(record.heroClass, record.skin);
+			title.icon(customAvatar != null ? customAvatar : HeroSprite.avatar(record.heroClass, record.armorTier));
 			title.label( Messages.get(WndChallenges.class, "titlerank",Challenges.activeChallenges()));
 			title.setRect( WIDTH/6f, 0, WIDTH, 0 );
 			add( title );

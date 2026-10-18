@@ -45,7 +45,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar_Block;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.WhiteSugar_B;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.BottledMarigoldWine;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.LegacyWine;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.MolotovCocktail;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
@@ -377,7 +376,6 @@ public class QuickRecipe extends Component {
 						}));
 				result.add(new QuickRecipe( new BottledMarigoldWine.SeedToWineFood() ));
 				result.add(new QuickRecipe( new BottledMarigoldWine.SeedToWineSmallRation() ));
-				result.add(new QuickRecipe( new LegacyWine.Recipe() ));
 				//莫洛托夫鸡尾酒：酒精合剂+液火药剂+2能量＝4瓶
 				result.add(new QuickRecipe( new MolotovCocktail.Recipe() ));
 				return result;

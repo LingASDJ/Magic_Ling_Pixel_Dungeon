@@ -136,6 +136,7 @@ public enum Rankings {
         rec.win = win;
         rec.heroClass	= hero.heroClass;
 		rec.armorTier	= hero.tier();
+		rec.skin		= hero.heroClass.GetSkin();
         rec.herolevel = hero.lvl;
         if (Statistics.highestAscent == 0) {
             rec.depth = Statistics.deepestFloor;
@@ -523,6 +524,7 @@ public enum Rankings {
 
         public HeroClass heroClass;
         public int armorTier;
+        public int skin;
         public int herolevel;
         public int depth;
         public boolean ascending;
@@ -572,6 +574,7 @@ public enum Rankings {
 
             heroClass = bundle.getEnum(CLASS, HeroClass.class);
             armorTier = bundle.getInt(TIER);
+            skin = bundle.contains("skin") ? bundle.getInt("skin") : 0;
             herolevel = bundle.getInt(LEVEL);
             depth = bundle.getInt(DEPTH);
             ascending = bundle.getBoolean(ASCEND);
@@ -602,6 +605,7 @@ public enum Rankings {
 
             bundle.put(CLASS, heroClass);
             bundle.put(TIER, armorTier);
+            bundle.put("skin", skin);
             bundle.put(LEVEL, herolevel);
             bundle.put(DEPTH, depth);
             bundle.put(ASCEND, ascending);
