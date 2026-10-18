@@ -41,6 +41,12 @@ public class BuffScanner {
     public static ArrayList<Class<? extends Buff>> getAllBuffClasses() {
         ArrayList<Class<? extends Buff>> buffClasses = new ArrayList<>();
 
+        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Inebriation.class);
+        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TipsyEffect.class);
+        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Smashed.class);
+        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ignite.class);
+        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MarigoldBuff.class);
+
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.SpellCaster.BounceCaster.BouncePostShoot.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.SpellCaster.DeadLingCaster.BouncePostShoot.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.SpellCaster.DegradeCaster.BouncePostShoot.class);
