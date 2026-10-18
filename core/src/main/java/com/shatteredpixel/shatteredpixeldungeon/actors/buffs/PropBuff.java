@@ -92,10 +92,13 @@ public class PropBuff extends Buff{
 
                     //预警：传送前 10 回合轻声提示，前 3 回合正式警告
                     if(timeI == 50 - 10) {
-                        GLog.i(Messages.get(FreeCrack.class, "warning_start"));
+                        GLog.w(Messages.get(FreeCrack.class, "warning_start"));
                     }
                     if(timeI == 50 - 3) {
-                        GLog.w(Messages.get(FreeCrack.class, "warning", 3));
+                        Transmuting.show(Dungeon.hero, new RandomChest(), new FreeCrack());
+                        Dungeon.hero.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
+                        Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+                        GLog.n(Messages.get(FreeCrack.class, "warning", 3));
                     }
 
                     if(timeI >= 50) {

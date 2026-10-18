@@ -153,6 +153,12 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
+        Image img = new Image(Assets.Sprites.BUNNY);
+        img.frame(0, 0, 20, 22);
+        img.scale.set(0.8f);
+        changes.addButton (new ChangeButton (img, "新皮肤：霓虹兔姬",
+                "售价-1000钴币\n\n原稿：白菜\n\n绘制：Noah-7385 & Daniel-Calan\n\n在另一个时间线上，并没有这些魔法与诅咒，取而代之的是现代科技与无限的可能。霓虹喧嚣之下，她不再披甲征战，细品这来之不易的人间烟火。"));
+
         changes.addButton( new ChangeButton(new Image(Assets.Environment.TERRAIN_FEATURES, 32, 128, 16, 16), "新植物：金菊花",
                 "在重阳节期间，上线全选金菊花植物，作为魔绫的第19个新植物。\n\n" +
                         "被踩踏时，长寿的祝福会庇佑踩踏者一段时间。"));
@@ -194,7 +200,8 @@ public class vm0_9_X_Changes {
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("功能优化"),
                 ("_-_ 新增功能优化：多物品快捷栏\n" +
-                        "_-_ 部分页面的一些小问题修复")));
+                        "_-_ 部分页面的一些小问题修复\n" +
+                        "_-_ 改动界面现在支持搜索关键词")));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 ("V0.9.7.0：\n\n" +
