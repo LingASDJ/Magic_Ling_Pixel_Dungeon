@@ -85,6 +85,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlcoholMixture;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.BottledMarigoldWine;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.LegacyWine;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.MolotovCocktail;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHolyWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
@@ -310,6 +311,7 @@ public class SpawnMisc extends TestItem {
             brewList.add(BottledMarigoldWine.class);
             brewList.add(AlcoholMixture.class);
             brewList.add(LegacyWine.class);
+            brewList.add(MolotovCocktail.class);
         }
 
         //Spell

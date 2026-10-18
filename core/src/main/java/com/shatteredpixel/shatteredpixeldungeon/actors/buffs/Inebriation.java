@@ -3,13 +3,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.AlcoholGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlcoholMixture;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.BottledMarigoldWine;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
-
-import java.util.ArrayList;
 
 //醉意：提升至30%时持续获得微醺直到醉意<=15%，提升至100%时转变为30回合酩酊大醉。如果不处于酒气中，每回合会自然衰减1%。
 public class Inebriation extends Buff{
@@ -107,7 +102,7 @@ public class Inebriation extends Buff{
     // UI 图标
     @Override
     public int icon() {
-        return BuffIndicator.HUNGER;  // TODO 暂用
+        return BuffIndicator.INEBRIATION;
     }
 
 }

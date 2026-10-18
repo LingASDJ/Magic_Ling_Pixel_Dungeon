@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MarigoldBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -20,7 +19,9 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
  * @see com.shatteredpixel.shatteredpixeldungeon.plants.Marigold            黄金菊
  */
 public class MarigoldDart extends TippedDart {
-    { image = ItemSpriteSheet.HOLY_DART; }   // TODO 占位
+    {
+        image = ItemSpriteSheet.MARGOLD_TR;
+    }
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {

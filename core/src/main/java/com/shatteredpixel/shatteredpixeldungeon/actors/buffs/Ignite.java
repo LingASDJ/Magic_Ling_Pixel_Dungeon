@@ -159,7 +159,7 @@ public class Ignite extends Buff {
 	@Override
 	public int icon() {
 		// TODO 占位的
-		return BuffIndicator.FIRE_DEM;
+		return BuffIndicator.IGNITE;
 	}
 
 	@Override
@@ -183,4 +183,7 @@ public class Ignite extends Buff {
 		super.restoreFromBundle( bundle );
 		layers = bundle.getInt( LAYERS );
 	}
+
+
+
 }

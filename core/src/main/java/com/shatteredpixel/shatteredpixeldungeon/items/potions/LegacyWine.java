@@ -44,7 +44,7 @@ public class LegacyWine extends Potion {
     public static final int BREW_COST        = 10;     // 炼金能量
 
     {
-        image = ItemSpriteSheet.POTION_DEEPYELLOW;   // TODO 占位瓶身
+        image = ItemSpriteSheet.MARIGOLD_WORLD_POTION;
     }
 
     static {

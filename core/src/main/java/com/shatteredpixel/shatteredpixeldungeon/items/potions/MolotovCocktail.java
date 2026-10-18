@@ -46,7 +46,7 @@ public class MolotovCocktail extends Brew {
     public static final int OUT_QUANTITY = 4;   // 一次合成产出
 
     {
-        image = ItemSpriteSheet.MOTO_BREW;   // TODO 借用现成瓶身，之后可以换专属贴图
+        image = ItemSpriteSheet.MOTO_FIRE;
     }
 
     // 扔：落点铺一片爆燃区域，引燃/伤害都由blob每回合结算

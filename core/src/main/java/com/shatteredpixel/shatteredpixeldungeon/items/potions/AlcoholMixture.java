@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.AlcoholGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Inebriation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 /**
@@ -30,7 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class AlcoholMixture extends Potion{
 
     {
-        image = ItemSpriteSheet.POTION_DEEPYELLOW;   // TODO 先随便复用一个现成瓶身
+        image = ItemSpriteSheet.MARIGOLD_EXC_POTION;
     }
 
     static {

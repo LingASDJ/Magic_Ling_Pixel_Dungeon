@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 /**
  * <p><font color="orange"><b><h3>酩酊大醉：持续期间无法获得醉意，攻击伤害提升40%，闪避归0，精准下降30%，无法伏击，移动时有50%概率随机移动（同眩晕），受到伤害的50%变为延迟伤害。</h3></b></font></p>
@@ -47,4 +48,10 @@ public class Smashed extends FlavourBuff {
     // 受伤延时-量系数 50% 在Char.java中搜索“酩酊大醉的延时伤害实现”
     public float damageDelayMultiplier = 0.5f;
     // 无法伏击在Hero.java中搜索“酩酊大醉的无法伏击实现”
+
+
+    @Override
+    public int icon() {
+        return BuffIndicator.SMASHED;
+    }
 }
