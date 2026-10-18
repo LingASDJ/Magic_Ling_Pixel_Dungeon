@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlcoholMixture;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.BottledMarigoldWine;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
@@ -126,6 +128,9 @@ public class ExoticPotion extends Potion {
 
 		regToExo.put(PotionOfExperience.class, PotionOfDivineInspiration.class);
 		exoToReg.put(PotionOfDivineInspiration.class, PotionOfExperience.class);
+
+		regToExo.put(BottledMarigoldWine.class, AlcoholMixture.class);
+		exoToReg.put(AlcoholMixture.class, BottledMarigoldWine.class);
 
 	}
 	

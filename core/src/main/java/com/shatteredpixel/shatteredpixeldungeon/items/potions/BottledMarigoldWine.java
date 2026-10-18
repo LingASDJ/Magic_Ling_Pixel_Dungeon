@@ -50,6 +50,11 @@ public class BottledMarigoldWine extends Potion{
         return true;
     }
 
+    @Override
+    public boolean isIdentified() {
+        return true;
+    }
+
     @Override public int value()     { return 20 * quantity; }
     @Override public int energyVal() { return  4 * quantity; }
 

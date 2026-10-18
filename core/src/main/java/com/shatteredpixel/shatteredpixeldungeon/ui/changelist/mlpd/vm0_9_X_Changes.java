@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Dirt_KnifeStand;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.DreamSeed;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.FaintGlimmer;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.FreeCrack;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.HeartOfCrystalFractal;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.HellButterfly;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.KillEye;
@@ -99,6 +100,7 @@ import java.util.ArrayList;
 public class vm0_9_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0970_Changes(changeInfos);
         add_V0961_Changes(changeInfos);
         add_V0960_Changes(changeInfos);
         add_V0950_Changes(changeInfos);
@@ -114,7 +116,7 @@ public class vm0_9_X_Changes {
         add_V0900_Changes(changeInfos);
     }
 
-    public static void add_V0961_Changes(ArrayList<ChangeInfo> changeInfos ) {
+    public static void add_V0970_Changes(ArrayList<ChangeInfo> changeInfos ) {
 
         ChangeInfo changes = new ChangeInfo("Lost-失落古墓-敬请期待-Tomb", true,"");
         changes.hardlight(0xCCCCCC);
@@ -143,7 +145,107 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new Image(Icons.get(Icons.NEWS)), "后续开发预告",
                 "失落古墓外传正在稳步推进开发，更多场景、怪物、专属武器与剧情内容将陆续放出，敬请期待后续版本情报！"));
 
-        changes = new ChangeInfo("v0.9.6.1-5", true, "");
+        changes = new ChangeInfo("v0.9.7.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TERRAIN_FEATURES, 32, 128, 16, 16), "新植物：金菊花",
+                "在重阳节期间，上线全选金菊花植物，作为魔绫的第19个新植物。\n\n" +
+                        "被踩踏时，长寿的祝福会庇佑踩踏者一段时间。"));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.WHITE_BAST), "白浪刺剑重做",
+                ("【主要技能】：\n\n空灵：被动技能，装备白浪刺剑时，所有敌人在漂浮时会被持续施加麻痹（麻痹消失时立刻再次施加，永控），攻击命中时使敌人漂浮1回合，冷却7回合。\n\n弑羽：被动技能，对处于空中的敌人造成物理伤害时无视其50%%防御力。攻击未命中或被格挡后立刻追加一次额外的攻击（不消耗回合），无法连续触发。\n\n判决：主动技能，使以自身为中心八格范围内所有不处于空中的敌人漂浮2回合，随后对这一范围内的敌人各进行3次必中攻击。\n这个技能需要30点充能来开启，每次攻击（无需命中）获得1点，处于空中的敌人死亡时获得4点。"),
+                ("【武技：风袭】：\n\n" +
+                        "艾诺琳娜可用白浪刺剑对1格内的敌人使出_风袭_。使得目标浮空一回合并对其进行两次必定命中的攻击。\n\n该技能会消耗 2 点充能。"
+                )));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_MARIGOLD), "新种子：金菊花之种",
+                "与金菊花配套上线的种子。"));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MARIGOLD_POTION), "新药剂：瓶装菊酒",
+                "与金菊花配套上线的药剂，由于此药剂无法自然生成，配方有所变化，具体查阅炼金表，该物品可在商人处购买。"));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MARIGOLD_EXC_POTION), "新合剂：酒精合剂",
+                "与金菊花配套上线的合剂，且该物品可在商人处购买。"));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MARIGOLD_WORLD_POTION), "新特殊物品：传世佳酿",
+                "与金菊花配套上线的限时物品，仅在重阳节和特殊复刻时期中可在炼金里制作，且该物品可在商人处卖出特高价！"));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MARGOLD_TR), "新飞镖：金菊飞镖",
+                "与金菊花配套上线的新飞镖，这些飞镖上涂着一种用金菊花制成的药物，命中友方会产生短暂的寿菊庇佑，对敌方掷出则会造成一段时间的眩晕。"));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MOTO_FIRE), "新物品：莫洛托夫鸡尾酒",
+                "与金菊花配套上线的新物品，投掷出会出现5x5爆燃区域，具体可查看物品图鉴的详细介绍。"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(new DistressSignalNesting()), ("动态物品贴图：V0.2"),
+                ("结合恶魔的像素地牢动画原理，进行了优化，现在不会出现整个item的图显示在地牢中的渲染异常。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_AIKELAIER), ("查种器-V4.4"),
+                ("_-_ 1.修复查戒和一些小的异常\n" +
+                        "_-_ 2.修复分析器异常")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("功能优化"),
+                ("_-_ 新增功能优化：多物品快捷栏\n" +
+                        "_-_ 部分页面的一些小问题修复")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                ("V0.9.7.0：\n\n" +
+                        "_-_ 优化深海骑士的锚特效修改：全面净化合剂同款效果→魔皇草同款效果\n" +
+                        "_-_ 法师之手部分逻辑处理优化\n" +
+                        "_-_ 修复安卓些粒子效果过多导致的LMKD异常\n" +
+                        "_-_ 修复了树痕在无充能的情况下，决斗家不能放入快捷栏的问题\n" +
+                        "_-_ 修复清道夫武技夺舍问题\n" +
+                        "_-_ 修复鬼磷魔杖战法效果召唤的亡魂残躯-鬼磷概率导致崩溃\n" +
+                        "_-_ 修复修复放大镜察看墨菲厄斯时崩溃\n" +
+                        "_-_ 修复墨菲托斯战最后守塔阶段跳过波次太快可能导致修塔次数丢失导致卡关\n"),
+                (
+                        "_-_ 修复久住npc偶现卡墙问题\n" +
+                        "_-_ 修复回溯之书在楼层封锁时使用时会出现文本缺失\n" +
+                        "_-_ 修复狗哨召唤的小狗不会因为玩家不移动而消失\n" +
+                        "_-_ 修复给归返秘卷加上子层限制\n" +
+                        "_-_ 修复因为真结局会使玩家进入遗物状态通关，导致藏品分丢失\n" +
+                        "_-_ 修复猫娘cosplay藏品异常的会主动激活boss\n" +
+                        "_-_ 修复血月魔盾猎人能够踢掉诅咒物品的异常\n" +
+                        "_-_ 修复甲鱼层使用未祝福的重生十字架没有遗物生成\n" +
+                        "_-_ 修复回溯之书传送错误问题，在抢劫出来之后再用回溯之书会回到0层/抢劫层\n" +
+                        "_-_ 修复抢劫后直接攻击普通商人会让其跑路，但是不会带走商品"
+                )));
+
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.G_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(new HellButterfly()), ("炼狱赤蝶"),
+                (       "加强炼狱赤蝶，现在针对于Boss的效果，同样可针对于小Boss怪物。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(new FreeCrack()), ("空间残片"),
+                (       "优化空间残片，现在在传送前将会进行预警。")));
+
+        changes.addButton(new ChangeButton(new Image(new MageHandSprite()), ("法师之手"),
+                ("_-_ 现在无论是使用老法杖还是法杖，均会触发敌意符石的效果")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_TOPAZ), ("部分戒指削弱"),
+                ("削弱了奥术之戒、能量之戒，现在他们在5级前的强度高于旧版，5级后的强度低于旧版，大幅收缩了再高等级时过于膨胀的数值")));
+
+    }
+
+    public static void add_V0961_Changes(ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.9.6.1-5", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 

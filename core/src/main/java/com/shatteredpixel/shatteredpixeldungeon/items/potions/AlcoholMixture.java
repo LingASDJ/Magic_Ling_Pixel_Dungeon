@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.AlcoholGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Inebriation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 /**
@@ -26,7 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
  * @see com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Inebriation   醉意
  * @see com.shatteredpixel.shatteredpixeldungeon.actors.blobs.AlcoholGas    酒气
  */
-public class AlcoholMixture extends Potion{
+public class AlcoholMixture extends ExoticPotion {
 
     {
         image = ItemSpriteSheet.MARIGOLD_EXC_POTION;

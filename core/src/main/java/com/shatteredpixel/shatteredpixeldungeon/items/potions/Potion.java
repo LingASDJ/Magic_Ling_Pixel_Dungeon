@@ -60,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Icecap;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Mageroyal;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Marigold;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Rotberry;
 import com.shatteredpixel.shatteredpixeldungeon.plants.SkyBlueFireBloom;
@@ -535,6 +536,7 @@ public class Potion extends Item {
 
 			types.put(SkyBlueFireBloom.Seed.class,     PotionOfLiquidFlameX.class);
 			types.put(AikeLaier.Seed.class, PotionOfLightningShiledX.class);
+			types.put(Marigold.Seed.class, BottledMarigoldWine.class);
 		}
 		
 		@Override
