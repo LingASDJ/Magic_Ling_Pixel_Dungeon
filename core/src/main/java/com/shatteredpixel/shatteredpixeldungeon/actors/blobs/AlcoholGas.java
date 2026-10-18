@@ -176,7 +176,7 @@ public class AlcoholGas extends Blob {
 	@Override
 	public void use(BlobEmitter emitter) {
 		super.use(emitter);                       // 必须调，负责给 this.emitter 赋值
-		emitter.pour(Speck.factory(Speck.CONFUSION, true), 0.4f);  // TODO 占位ing……
+		emitter.pour(Speck.factory(Speck.JUICE, true), 0.4f);  // TODO 占位ing……
 	}
 
 	// 文本

@@ -90,6 +90,8 @@ public class Speck extends Image {
 
 	public static final int ROT = 122;
 
+	public static final int JUICE = 123;
+
 	private static final int SIZE = 7;
 
 	private int type;
@@ -159,6 +161,7 @@ public class Speck extends Image {
 			case SMOKE:
 			case BLIZZARD:
 			case INFERNO:
+			case JUICE:
 				frame(film.get(STEAM));
 				break;
 			case CALM:
@@ -437,6 +440,13 @@ public class Speck extends Image {
 				lifespan = Random.Float(1f, 3f);
 				break;
 
+			case JUICE:
+				hardlight(Random.Int(0x22223456) | 0x882288);
+				angularSpeed = Random.Float(-30, +40);
+				angle = Random.Float(360);
+				lifespan = Random.Float(1.5f, 3f);
+				break;
+
 			case STORM:
 				hardlight(0x8AD8D8);
 				angularSpeed = Random.Float(-20, +20);
@@ -591,6 +601,7 @@ public class Speck extends Image {
 				case BLIZZARD:
 				case INFERNO:
 				case DUST:
+				case JUICE:
 					am = (float) Math.sqrt((p < 0.5f ? p : 1 - p) * 0.5f);
 					scale.set(1 + p);
 					break;

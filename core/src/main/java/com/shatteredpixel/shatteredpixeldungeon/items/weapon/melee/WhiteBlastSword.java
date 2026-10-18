@@ -5,12 +5,14 @@ import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.INFINITE_ACCU
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BuffsOringinForWeapon.FloatingParalysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BuffsOringinForWeapon.FloatingTargetDefenseIgnore;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.WhiteBlastSwordStatus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.QuickSword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
@@ -254,6 +256,11 @@ public class WhiteBlastSword extends MeleeWeapon {
 
     @Override
     public String devDesc() {
-        return Messages.get(this, "dev_desc",Dungeon.hero.buff(LevitationCooldown.class) != null?Dungeon.hero.buff(LevitationCooldown.class).cooldown():"就绪",SkillCharge);
+        if(Dungeon.hero != null){
+            return Messages.get(this, "dev_desc",Dungeon.hero.buff(LevitationCooldown.class) != null?Dungeon.hero.buff(LevitationCooldown.class).cooldown():Messages.get(this,"co"),SkillCharge);
+        } else {
+            return Messages.get(this, "dev_desc",Messages.get(this,"co"),SkillCharge);
+        }
+
     }
 }

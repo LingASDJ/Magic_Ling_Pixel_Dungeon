@@ -99,6 +99,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlcoholMixture;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.BottledMarigoldWine;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHolyWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
@@ -419,6 +421,7 @@ public enum Catalog {
 
 
 		POTIONS.addItems(Generator.Category.POTION.classes);
+		POTIONS.addItems(BottledMarigoldWine.class);
 
 		SCROLLS.addItems(Generator.Category.SCROLL.classes);
 
@@ -443,9 +446,10 @@ public enum Catalog {
 				RiceDumplings.RiceDumplingsRed.class);
 
 		EXOTIC_POTIONS.addItems(ExoticPotion.exoToReg.keySet().toArray(new Class[0]));
-
+		EXOTIC_POTIONS.addItems(AlcoholMixture.class);
 
 		EXOTIC_SCROLLS.addItems(ExoticScroll.exoToReg.keySet().toArray(new Class[0]));
+
 
 		EXOTIC_SCROLLS.addItems(ScrollOfRoseShiled.class,
 				ScrollOfFlameCursed.class,
