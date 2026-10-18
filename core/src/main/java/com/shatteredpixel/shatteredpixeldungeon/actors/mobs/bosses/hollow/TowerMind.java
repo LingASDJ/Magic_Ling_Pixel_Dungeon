@@ -343,6 +343,7 @@ public class TowerMind extends Boss {
         super.die(cause);
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob instanceof TowerMind.MindCore) {
+                ((TowerMind.MindCore) mob).towerAlive = false;
                 mob.die(true);
             }
         }
@@ -366,6 +367,8 @@ public class TowerMind extends Boss {
 
         public ArrayList<Item> items = new ArrayList<>();
         public boolean dropped = false;
+        // 修复 CME：不再每帧遍历 Dungeon.level.mobs，改由 TowerMind.die() 主动置 false
+        public volatile boolean towerAlive = true;
 
         {
             spriteClass = MindCoreSprite.class;
@@ -438,15 +441,7 @@ public class TowerMind extends Boss {
 
         @Override
         public boolean isAlive() {
-            boolean isAlive = false;
-            ArrayList<Mob> mobsCopy = new ArrayList<>(Dungeon.level.mobs);
-            for (Mob mob : mobsCopy){
-                if (mob instanceof TowerMind) {
-                    isAlive = true;
-                    break;
-                }
-            }
-            return isAlive;
+            return HP > 0 && towerAlive;
         }
 
 

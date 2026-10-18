@@ -74,7 +74,7 @@ public class ShieldHuntsman extends Mob {
 
             switch (Random.Int(3)){
                 case 0:
-                    if (weapon != null) {
+                    if (weapon != null && !weapon.cursed) {
                         if(!(weapon instanceof EndingBlade)){
                             if (hitsToDisarm == 0) hitsToDisarm = Random.NormalIntRange(5, 7);
 
@@ -101,7 +101,7 @@ public class ShieldHuntsman extends Mob {
                     }
                     break;
                     case 1:
-                    if(armor != null){
+                    if(armor != null && !armor.cursed){
                         if (hitsToDisarm == 0) hitsToDisarm = Random.NormalIntRange(5, 7);
 
                         if (--hitsToDisarm == 0) {
@@ -125,7 +125,7 @@ public class ShieldHuntsman extends Mob {
                     }
                     break;
                     case 2:
-                    if (misc != null) {
+                    if (misc != null && !misc.cursed) {
                         if (hitsToDisarm == 0) hitsToDisarm = Random.NormalIntRange(5, 7);
 
                         if (--hitsToDisarm == 0) {

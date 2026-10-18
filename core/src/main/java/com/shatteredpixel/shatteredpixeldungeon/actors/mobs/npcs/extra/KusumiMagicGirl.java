@@ -27,6 +27,12 @@ public class KusumiMagicGirl extends Mob {
         HP = HT = 1;
         spriteClass = KusumiMagicGirlSprites.class;
         properties.add(Char.Property.UNKNOWN);
+        properties.add(Char.Property.IMMOVABLE);
+    }
+
+    // 修复卡墙：不被 beckon 吸引而进入 HUNTING
+    @Override
+    public void beckon(int cell) {
     }
 
     private boolean vanishing;      // 已经决定要消失
@@ -81,6 +87,22 @@ public class KusumiMagicGirl extends Mob {
 
     @Override
     protected boolean act() {
+        // 修复卡墙：偶发被外部效果（爆炸/传送/推挤）落到不可通行格时，自动回落到相邻可通行格
+        if (!vanishing && Dungeon.level != null
+                && !Dungeon.level.passable[pos] && !Dungeon.level.avoid[pos]) {
+            for (int i : com.watabou.utils.PathFinder.NEIGHBOURS8) {
+                int n = pos + i;
+                if (n >= 0 && n < Dungeon.level.length()
+                        && (Dungeon.level.passable[n] || Dungeon.level.avoid[n])
+                        && Actor.findChar(n) == null) {
+                    if (sprite != null) sprite.move(pos, n);
+                    pos = n;
+                    Dungeon.level.occupyCell(this);
+                    break;
+                }
+            }
+        }
+
         if(vanishing || HP <= 0){
             vanishing = true;
             sprite.showAlert();

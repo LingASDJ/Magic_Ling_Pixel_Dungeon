@@ -6,7 +6,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
@@ -97,9 +96,7 @@ public class LinkLevel extends Level {
 
     @Override
     protected void createItems() {
-        if(!Statistics.fireGirlAnary){
-            drop( new BackGoKey(), this.width  + 1  );
-        }
+        drop( new BackGoKey(), this.width  + 1  );
         drop( new IronKey(depth), this.width  + 22  );
     }
 

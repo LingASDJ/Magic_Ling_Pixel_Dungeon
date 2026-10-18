@@ -475,7 +475,7 @@ public class WandOfBlueFuck extends DamageWand {
                 }
 
                 Blob fire = Dungeon.level.blobs.get(HalomethaneFire.class);
-                if(hero.pos == cell){
+                if(fire != null && hero.pos == cell){
                     fire.clear(cell);
                 }
 
