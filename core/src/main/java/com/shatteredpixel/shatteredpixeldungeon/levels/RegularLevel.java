@@ -157,10 +157,10 @@ public abstract class RegularLevel extends Level {
 				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
 					holiday =WestHoliday.XMAS;
 				break;
-			case Calendar.NOVEMBER:
-				if (calendar.get(Calendar.DAY_OF_MONTH) == 1)
-					holiday =WestHoliday.HWEEN;
-				break;
+//			case Calendar.NOVEMBER:
+//				if (calendar.get(Calendar.DAY_OF_MONTH) == 1)
+//					holiday =WestHoliday.HWEEN;
+//				break;
 			case Calendar.DECEMBER:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
 					holiday =WestHoliday.XMAS;

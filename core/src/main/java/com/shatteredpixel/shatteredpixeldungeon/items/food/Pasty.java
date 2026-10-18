@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MarigoldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -62,6 +63,9 @@ public class Pasty extends Food {
 					break;
 				case QMJ:
 					image = ItemSpriteSheet.QKA;
+					break;
+				case CYJ:
+					image = ItemSpriteSheet.RICE_C;
 					break;
 				default:
 					image = ItemSpriteSheet.PASTY;
@@ -113,6 +117,9 @@ public class Pasty extends Food {
 					Buff.affect(hero, Barrier.class).setShield(8);
 					Buff.affect(hero, MindVision.class, 8f);
 					break;
+				case CYJ:
+					Buff.affect(hero, MarigoldBuff.class, 12f);
+					break;
 			}
 		} else {
 			switch(RegularLevel.holiday){
@@ -141,6 +148,8 @@ public class Pasty extends Food {
 					return Messages.get(this, "fish_name");
 				case QMJ:
 					return Messages.get(this, "qk_name");
+				case CYJ:
+					return Messages.get(this, "rice");
 				default:
 					return Messages.get(this, "pasty");
 			}
@@ -166,6 +175,8 @@ public class Pasty extends Food {
 					return Messages.get(this, "fish_desc");
 				case QMJ:
 					return Messages.get(this, "qk_desc");
+				case CYJ:
+					return Messages.get(this, "cyj_desc");
 				default:
 					return Messages.get(this, "pasty_desc");
 			}

@@ -89,7 +89,7 @@ public class LegacyWine extends Potion {
 
     /** 是否处于重阳活动期（配方 / 商店上架的门控判断） */
     public static boolean active() {
-        return RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CYJ;
+        return RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CYJ ;
     }
 
     // ---------- 配方：瓶装菊酒 ×1 + 10 能量 ----------
