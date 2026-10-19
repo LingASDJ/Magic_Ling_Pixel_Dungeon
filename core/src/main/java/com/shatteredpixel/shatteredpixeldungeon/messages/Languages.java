@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.messages;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public enum Languages {
@@ -31,8 +32,7 @@ public enum Languages {
 			new String[]{"那些回忆","冷群"}),
 	VIETNAMESE("tiếng việt","vi", Status.INCOMPLETE, new String[]{"JDSALing", "Niko De Lightbulb"}, null),
 	RUSSIAN("Russian", "ru", Status.INCOMPLETE, new String[]{"JDSALing","FixAkaTheFix"},new String[]{"Dominowood371"}),
-	JAPANESE("日本語","ja", Status.INCOMPLETE, new String[]{"JDSALing","Ayanokosa","FromBeyond"}, new String[]{
-			null}),
+	JAPANESE("日本語","ja", Status.INCOMPLETE, new String[]{"JDSALing","Ayanokosa","FromBeyond"}, null),
 	GREEK("ελληνικά",       "el", Status.INCOMPLETE, new String[]{"Aeonius", "JDSALing"}, null),
 	PORTUGUESE("Brazilian-PT", "ptbr", Status.INCOMPLETE, new String[]{"Andrew-px1 [TETO]", "JDSALing"},null);
 
@@ -70,13 +70,21 @@ public enum Languages {
 	}
 
 	public String[] reviewers() {
-		if (reviewers == null) return new String[]{};
-		else return reviewers.clone();
+		return clean(reviewers);
 	}
 
 	public String[] translators() {
-		if (translators == null) return new String[]{};
-		else return translators.clone();
+		return clean(translators);
+	}
+
+	//过滤掉数组中的 null 与空串：名单 UI 拿到 null 词条会导致空指针闪退
+	private static String[] clean(String[] names){
+		if (names == null) return new String[]{};
+		ArrayList<String> list = new ArrayList<>();
+		for (String name : names){
+			if (name != null && !name.isEmpty()) list.add(name);
+		}
+		return list.toArray(new String[0]);
 	}
 
 	public static Languages matchLocale(Locale locale){
