@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
@@ -47,6 +48,11 @@ public class NewChangesScene extends PixelScene {
     private Component content;
     private TextInput textBox;
     private StyledButton[] tabButtons;
+    private IconButton toggleSearchBtn;
+
+    private RenderedTextBlock searchBody;
+    /** 搜索栏是否展开。默认关闭，点左边箭头按钮展开。 */
+    private boolean searchOpen = false;
 
     /** All change entries, grouped by version tab (index matches the version switch buttons). */
     private final ArrayList<ArrayList<ChangeInfo>> allTabs = new ArrayList<>();
@@ -149,6 +155,25 @@ public class NewChangesScene extends PixelScene {
             allTabs.add(tab);
         }
 
+        // 搜索栏左侧的展开/关闭按钮（Icons.ARROW 箭头）。
+        // 默认 searchOpen=false：搜索栏隐藏，列表顶到面板顶部；点击按钮展开搜索栏。
+        toggleSearchBtn = new IconButton(Icons.RIGHTARROW.get()){
+            @Override
+            protected void onClick() {
+                searchOpen = !searchOpen;
+                textBox.visible = searchOpen;
+                // 关闭时箭头朝右（→，提示右侧可展开），展开后朝左（←，提示可收起）
+                toggleSearchBtn.icon( searchOpen ? Icons.LEFTARROW.get() : Icons.RIGHTARROW.get());
+                layoutSearch();
+                searchBody.visible = !searchOpen;
+            }
+        };
+        add(toggleSearchBtn);
+
+
+        searchBody = PixelScene.renderTextBlock(Messages.get(ChangesScene.class,"searchbody"), 8);
+        add(searchBody);
+
         // Search box pinned to the top of the changelog list panel.
         textBox = new TextInput(Chrome.get(Chrome.Type.TOAST_WHITE), false, (int) PixelScene.uiCamera.zoom * 9) {
             @Override
@@ -157,12 +182,8 @@ public class NewChangesScene extends PixelScene {
             }
         };
         textBox.setMaxLength(40);
+        textBox.visible = false;
         add(textBox);
-        textBox.setRect(
-                panel.x + panel.marginLeft(),
-                panel.y + panel.marginTop() - 1,
-                panel.innerWidth(),
-                SEARCH_HEIGHT);
 
         list = new ScrollPane( new Component() ){
 
@@ -180,11 +201,7 @@ public class NewChangesScene extends PixelScene {
 
         content = list.content();
 
-        list.setRect(
-                panel.x + panel.marginLeft(),
-                panel.y + panel.marginTop() - 1 + SEARCH_HEIGHT + 2,
-                panel.innerWidth() + 2,
-                panel.innerHeight() + 2 - SEARCH_HEIGHT - 2);
+        layoutSearch();
 
         applyFilter();
         list.scrollTo(0, fromChangesScene ? content.height() - list.height() : 0);
@@ -228,6 +245,36 @@ public class NewChangesScene extends PixelScene {
         addToBack( archs );
 
         fadeIn();
+    }
+
+    /**
+     * 根据 {@link #searchOpen} 状态重排搜索栏按钮、输入框和列表位置。
+     * 列表始终从搜索栏行下方开始，避免和左上角的按钮重叠；
+     * 展开与否只影响 textBox 是否可见。
+     */
+    private void layoutSearch() {
+        float bx = panel.x + panel.marginLeft();
+        float by = panel.y + panel.marginTop() - 1;
+
+        toggleSearchBtn.setRect(bx, by, SEARCH_HEIGHT, SEARCH_HEIGHT);
+
+        textBox.setRect(
+                bx + SEARCH_HEIGHT + 1,
+                by,
+                panel.innerWidth() - SEARCH_HEIGHT - 1,
+                SEARCH_HEIGHT);
+
+        searchBody.setPos(bx+20, by+6);
+
+        list.setRect(
+                bx,
+                by + SEARCH_HEIGHT + 2,
+                panel.innerWidth() + 2,
+                panel.innerHeight() + 2 - SEARCH_HEIGHT - 2);
+
+        if (tabButtons != null) {
+            updateTabButtons();
+        }
     }
 
     /** Refill the changelog list from allTabs, filtered by the current search query. */
