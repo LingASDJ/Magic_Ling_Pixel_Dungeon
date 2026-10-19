@@ -51,7 +51,7 @@ public class Regeneration extends Buff {
 	private static final String PARTIALREGEN = "partialRegen";
 	// 未结算的回血值：正=回血，负=掉血，绝对值攒到 ≥1 才结算到 HP 上
 	private float partialRegen = 0f;
-	private float baseHealthRegenRate = 0.1f;
+	private final float baseHealthRegenRate = 0.1f;
 
 	@Override
 	public boolean act() {
@@ -85,7 +85,6 @@ public class Regeneration extends Buff {
 				healthRegenRate *= SaltCube.healthRegenMultiplier();
 
 				// 阻断药物
-
 				if (((Hero) target).belongings.getItem(BlockingDrug.class) != null) healthRegenRate *= 0.8f;
 
 				// ========== 额外加算区 ==========
@@ -106,9 +105,11 @@ public class Regeneration extends Buff {
 				spend(1f);
 			}
 
-			else if (Dungeon.isDLC(Conducts.Conduct.DEV)) GLog.n("存在非英雄单位进入Regeneration");
-
-			diactivate();
+			else if (Dungeon.isDLC(Conducts.Conduct.DEV)) {
+				// 目前的实现不完全支持非英雄单位进入此生命恢复流程
+				GLog.n("存在非英雄单位进入Regeneration");
+				diactivate();
+			}
 
 		} else {
 
@@ -130,7 +131,7 @@ public class Regeneration extends Buff {
 		// 极度饥饿
 		if (((Hero) target).isStarving()) return false;
 		// 有一点饿
-		if (dirtKnifeStand && ((Hero) target).isSmallHunger()) return false;
+		if (((Hero) target).isSmallHunger() && !dirtKnifeStand) return false;
 		// 背水一战
 		return regenOn();
 	}
