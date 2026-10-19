@@ -953,6 +953,11 @@ public class DeadDogCerberus extends Boss {
                     }
                 } else {
                     ch.damage( 5,new DeadDogCerberus() );
+                    //狱火是直接伤害，cause 不是 Doom 实现者，不会走 Buff.onDeath 里的 Dungeon.fail，
+                    //这里需要自己补上排行榜/每日快照的记录，否则被狱火烧死的玩家会没有排行记录
+                    if (ch == Dungeon.hero && !ch.isAlive()) {
+                        Dungeon.fail( DeadHaloFire.class );
+                    }
                 }
             }
 

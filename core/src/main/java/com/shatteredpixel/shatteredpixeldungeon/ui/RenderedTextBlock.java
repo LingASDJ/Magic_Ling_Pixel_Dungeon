@@ -279,6 +279,11 @@ public class RenderedTextBlock extends Component {
 	private synchronized String[] processColorText(String[] text){
         ArrayList<String> newList = new ArrayList<>();
 		for ( String current : text ) {
+			// 空 token（数据缺失或数组预留位可能为 null）直接置空，避免空指针崩溃
+			if ( current == null ) {
+				newList.add( "" );
+				continue;
+			}
 			// 处理颜色开始标记 <#XXXXXX> / <#XXX>
 			if ( current.contains( "<#" ) ) {
 				int start = current.indexOf( "<#" );
