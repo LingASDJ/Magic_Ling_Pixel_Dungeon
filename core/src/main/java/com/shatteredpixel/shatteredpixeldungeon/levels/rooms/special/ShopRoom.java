@@ -369,9 +369,6 @@ public class ShopRoom extends SpecialRoom {
 		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
 		itemsToSpawn.add(new BottledMarigoldWine());
 		itemsToSpawn.add( new AlcoholMixture() );    // 酒精合剂
-		if (LegacyWine.active() && Random.Int(2) == 0) {
-			itemsToSpawn.add( new LegacyWine() );    // 传世佳酿，重阳限时
-		}
 
 		if(Dungeon.isChallenged(DHXD)){
 				itemsToSpawn.add(new OilPotion());
