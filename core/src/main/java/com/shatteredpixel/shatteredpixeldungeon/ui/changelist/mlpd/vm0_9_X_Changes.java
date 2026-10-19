@@ -160,8 +160,9 @@ public class vm0_9_X_Changes {
                 "售价-1000钴币\n\n原稿：白菜\n\n绘制：Noah-7385 & Daniel-Calan\n\n在另一个时间线上，并没有这些魔法与诅咒，取而代之的是现代科技与无限的可能。霓虹喧嚣之下，她不再披甲征战，细品这来之不易的人间烟火。"));
 
         changes.addButton( new ChangeButton(new Image(Assets.Environment.TERRAIN_FEATURES, 32, 128, 16, 16), "新植物：金菊花",
-                "在重阳节期间，上线全选金菊花植物，作为魔绫的第19个新植物。\n\n" +
-                        "被踩踏时，长寿的祝福会庇佑踩踏者一段时间。"));
+                "自重阳节版本开始，上线一种新的植物——金菊花，作为魔绫的第19种植物。\n" +
+                        "\n" +
+                        "——被踩踏时，长寿的祝福会庇佑踩踏者一段时间"));
 
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.WHITE_BAST), "白浪刺剑重做",
                 ("【主要技能】：\n\n空灵：被动技能，装备白浪刺剑时，所有敌人在漂浮时会被持续施加麻痹（麻痹消失时立刻再次施加，永控），攻击命中时使敌人漂浮1回合，冷却7回合。\n\n弑羽：被动技能，对处于空中的敌人造成物理伤害时无视其50%%防御力。攻击未命中或被格挡后立刻追加一次额外的攻击（不消耗回合），无法连续触发。\n\n判决：主动技能，使以自身为中心八格范围内所有不处于空中的敌人漂浮2回合，随后对这一范围内的敌人各进行3次必中攻击。\n这个技能需要30点充能来开启，每次攻击（无需命中）获得1点，处于空中的敌人死亡时获得4点。"),
@@ -173,19 +174,29 @@ public class vm0_9_X_Changes {
                 "与金菊花配套上线的种子。"));
 
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MARIGOLD_POTION), "新药剂：瓶装菊酒",
-                "与金菊花配套上线的药剂，由于此药剂无法自然生成，配方有所变化，具体查阅炼金表，该物品可在商人处购买。"));
+                "与金菊花配套上线的药剂，此药剂无法自然生成，但可以通过炼金合成，详情可查阅炼金表。\n" +
+                        "\n" +
+                        "该物品可在商人处购买。"));
 
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MARIGOLD_EXC_POTION), "新合剂：酒精合剂",
-                "与金菊花配套上线的合剂，且该物品可在商人处购买。"));
+                "与金菊花配套上线的合剂。\n" +
+                        "\n" +
+                        "该物品可在商人处购买。"));
 
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MARIGOLD_WORLD_POTION), "新特殊物品：传世佳酿",
-                "与金菊花配套上线的限时物品，仅在重阳节和特殊复刻时期中可在炼金里制作，且该物品可在商人处卖出特高价！"));
+                "与金菊花配套上线的活动物品，仅在重阳节和部分活动期间可使用相应的炼金配方制作。\n" +
+                        "\n" +
+                        "商人会以极高的价格收购此物品。"));
 
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MARGOLD_TR), "新飞镖：金菊飞镖",
-                "与金菊花配套上线的新飞镖，这些飞镖上涂着一种用金菊花制成的药物，命中友方会产生短暂的寿菊庇佑，对敌方掷出则会造成一段时间的眩晕。"));
+                "与金菊花配套上线的新飞镖。\n" +
+                        "\n" +
+                        "这些飞镖上涂着一种用金菊花制成的药物，命中友方会产生短暂的寿菊庇佑，对敌方掷出则会造成一段时间的眩晕。"));
 
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MOTO_FIRE), "新物品：莫洛托夫鸡尾酒",
-                "与金菊花配套上线的新物品，投掷出会出现5x5爆燃区域，具体可查看物品图鉴的详细介绍。"));
+                "与金菊花配套上线的新物品，投掷出会产生5x5范围的爆燃区域。\n" +
+                        "\n" +
+                        "更多细节可通过物品图鉴查看。"));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
@@ -205,35 +216,34 @@ public class vm0_9_X_Changes {
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 ("V0.9.7.0：\n\n" +
-                        "_-_ 优化深海骑士的锚特效修改：全面净化合剂同款效果→魔皇草同款效果\n" +
+                        "_-_ 修正深海骑士的锚特效：全面净化合剂同款效果→魔皇草同款效果\n" +
                         "_-_ 法师之手部分逻辑处理优化\n" +
-                        "_-_ 修复安卓些粒子效果过多导致的LMKD异常\n" +
-                        "_-_ 修复了树痕在无充能的情况下，决斗家不能放入快捷栏的问题\n" +
-                        "_-_ 修复清道夫武技夺舍问题\n" +
-                        "_-_ 修复鬼磷魔杖战法效果召唤的亡魂残躯-鬼磷概率导致崩溃\n" +
-                        "_-_ 修复修复放大镜察看墨菲厄斯时崩溃\n" +
-                        "_-_ 修复墨菲托斯战最后守塔阶段跳过波次太快可能导致修塔次数丢失导致卡关\n"),
+                        "_-_ 修复安卓粒子效果过多导致的LMKD异常\n" +
+                        "_-_ 修复了树痕在无充能的情况下，艾诺琳娜不能将其放入快捷栏的问题\n" +
+                        "_-_ 修复清道夫夺舍问题\n" +
+                        "_-_ 修复鬼磷魔杖的战法效果召唤的亡魂残躯-鬼磷概率导致崩溃的问题\n" +
+                        "_-_ 修复使用放大镜察看墨菲厄斯时崩溃的问题\n" +
+                        "_-_ 修复墨菲厄斯战最后守护宇宙之心阶段跳过波次太快可能导致修复世界之柱次数丢失，进而导致卡关的问题"),
                 (
-                        "_-_ 修复久住npc偶现卡墙问题\n" +
-                        "_-_ 修复回溯之书在楼层封锁时使用时会出现文本缺失\n" +
-                        "_-_ 修复狗哨召唤的小狗不会因为玩家不移动而消失\n" +
-                        "_-_ 修复给归返秘卷加上子层限制\n" +
-                        "_-_ 修复因为真结局会使玩家进入遗物状态通关，导致藏品分丢失\n" +
-                        "_-_ 修复猫娘cosplay藏品异常的会主动激活boss\n" +
-                        "_-_ 修复血月魔盾猎人能够踢掉诅咒物品的异常\n" +
-                        "_-_ 修复甲鱼层使用未祝福的重生十字架没有遗物生成\n" +
-                        "_-_ 修复回溯之书传送错误问题，在抢劫出来之后再用回溯之书会回到0层/抢劫层\n" +
-                        "_-_ 修复抢劫后直接攻击普通商人会让其跑路，但是不会带走商品"
+                        "_-_ 修复久住npc偶现卡墙的问题\n" +
+                        "_-_ 修复在楼层封锁时使用回溯之书会导致文本缺失的问题\n" +
+                        "_-_ 修正：狗哨召唤的小狗现在会在玩家长久不移动时正确消失。\n" +
+                        "_-_ 修正：给归返秘卷加上子层限制。\n" +
+                        "_-_ 修复真结局使玩家进入遗物状态通关，导致藏品分丢失的问题。\n" +
+                        "_-_ 修复猫娘cosplay藏品会异常主动激活boss的问题。\n" +
+                        "_-_ 修复血月魔盾猎人能够踢掉诅咒物品的问题。\n" +
+                        "_-_ 修复甲鱼层使用未祝福的重生十字架没有遗物生成的问题。\n" +
+                        "_-_ 修复回溯之书在非抢劫层传送目标地点异常的问题。\n" +
+                        "_-_ 修复抢劫后普通商人会离开，但不会带走商品的问题。"
                 )));
 
 
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
-        changes.hardlight(Window.G_COLOR);
-        changeInfos.add(changes);
-
         changes.addButton(new ChangeButton(new ItemSprite(new HellButterfly()), ("炼狱赤蝶"),
-                (       "加强炼狱赤蝶，现在针对于Boss的效果，同样可针对于小Boss怪物。")));
+                (       "修正炼狱赤蝶错误地将小boss以常规单位计的问题。现在炼狱赤蝶对于小Boss怪物的效果等同对boss单位的效果。")));
+
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_TOPAZ), ("部分戒指调整"),
+                ("改变了奥术之戒、能量之戒升级时的成长速度，现在他们的成长更加平滑。在低等级时他们的效果更好，相应地，高等级时它们的效果更弱了。")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changes.hardlight(Window.R_COLOR);
@@ -245,8 +255,6 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new Image(new MageHandSprite()), ("法师之手"),
                 ("_-_ 现在无论是使用老法杖还是法杖，均会触发敌意符石的效果")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_TOPAZ), ("部分戒指削弱"),
-                ("削弱了奥术之戒、能量之戒，现在他们在5级前的强度高于旧版，5级后的强度低于旧版，大幅收缩了再高等级时过于膨胀的数值")));
 
     }
 

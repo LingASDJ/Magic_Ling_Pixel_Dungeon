@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.LightFood;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlcoholMixture;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.BottledMarigoldWine;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.LegacyWine;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.MolotovCocktail;
@@ -86,7 +85,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.thanks.GrilledHerring;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Marigold;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
@@ -228,8 +226,6 @@ public abstract class Recipe {
 			new Recycle.Recipe(),
 			new TelekineticGrab.Recipe(),
 			new SummonElemental.Recipe(),
-
-			new AlcoholMixture.Recipe(),
 			new LegacyWine.Recipe()
 	};
 	

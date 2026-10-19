@@ -441,7 +441,7 @@ public class Speck extends Image {
 				break;
 
 			case JUICE:
-				hardlight(Random.Int(0x22223456) | 0x882288);
+				hardlight(0xeba94c);
 				angularSpeed = Random.Float(-30, +40);
 				angle = Random.Float(360);
 				lifespan = Random.Float(1.5f, 3f);
