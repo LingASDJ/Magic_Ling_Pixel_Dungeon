@@ -153,6 +153,15 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：英文(EN)"),
+                ("英文翻译更新，目前覆盖率为99.15%，感谢英文翻译组团队。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：俄文(RU)"),
+                ("俄文翻译更新，目前覆盖率为99.12%，感谢俄文翻译组团队。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：葡萄牙语(PTBR)"),
+                ("葡萄牙语翻译更新，但目前覆盖率较低，仅5%，但还是非常感谢葡萄牙翻译组团队。")));
+
         Image img = new Image(Assets.Sprites.BUNNY);
         img.frame(0, 0, 20, 22);
         img.scale.set(0.8f);
