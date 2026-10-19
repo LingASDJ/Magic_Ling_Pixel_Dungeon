@@ -165,7 +165,7 @@ public class NewChangesScene extends PixelScene {
                 textBox.active = searchOpen;
                 // 关闭时箭头朝右（→，提示右侧可展开），展开后朝左（←，提示可收起）
                 toggleSearchBtn.icon( searchOpen ? Icons.LEFTARROW.get() : Icons.RIGHTARROW.get());
-                layoutSearch();
+                layoutSearch(searchOpen);
                 searchBody.visible = !searchOpen;
             }
         };
@@ -203,7 +203,7 @@ public class NewChangesScene extends PixelScene {
 
         content = list.content();
 
-        layoutSearch();
+        layoutSearch(false);
 
         applyFilter();
         list.scrollTo(0, fromChangesScene ? content.height() - list.height() : 0);
@@ -254,7 +254,7 @@ public class NewChangesScene extends PixelScene {
      * 列表始终从搜索栏行下方开始，避免和左上角的按钮重叠；
      * 展开与否只影响 textBox 是否可见。
      */
-    private void layoutSearch() {
+    private void layoutSearch(boolean c) {
         float bx = panel.x + panel.marginLeft();
         float by = panel.y + panel.marginTop() - 1;
 
@@ -266,7 +266,7 @@ public class NewChangesScene extends PixelScene {
                 panel.innerWidth() - SEARCH_HEIGHT - 1,
                 SEARCH_HEIGHT);
 
-        searchBody.setPos(bx+20, by+6);
+        searchBody.setPos(bx+20, c? by+5000 : by+6);
 
         list.setRect(
                 bx,
