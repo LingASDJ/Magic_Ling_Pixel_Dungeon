@@ -256,8 +256,8 @@ public enum HeroClass {
 
 		migrateOldPaswordBadges();
 
-		// if (Dungeon.isDLC(Conducts.Conduct.DEV)){
-		if (true){
+		 if (Dungeon.isDLC(Conducts.Conduct.DEV)){
+//		if (true){
 			new PropBag().quantity(1).identify().collect();
 
 			new ScrollOfGolems().collect();

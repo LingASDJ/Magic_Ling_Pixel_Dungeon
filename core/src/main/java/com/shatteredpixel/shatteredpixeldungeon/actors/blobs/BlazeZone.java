@@ -27,9 +27,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ignite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HellFlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlazeZonParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.Bundle;
 
@@ -40,25 +42,28 @@ import java.util.List;
  * <div style="color:orange;font-weight:bold" >
  *     <h3>爆燃区域</h3>
  *     <ul>
- *       <li>来源：莫洛托夫鸡尾酒投掷落地时生成，以落点为中心的5x5（半径2）圆形/方形区域。</li>
- *       <li>存在10回合，期间形状不变（不扩散、不衰减），到时间整体消失。</li>
- *       <li>落地当回合（投掷回合结束）以及之后每回合，对区域内所有单位施加5层引燃，并造成"楼层/5"点火焰伤害。</li>
+ *       <li>来源：莫洛托夫鸡尾酒投掷落地时生成，以落点为中心的5x5（半径2）方形区域。</li>
+ *       <li>存在10回合，中心区域形状不变（不衰减），到时间整体消失。</li>
+ *       <li>落地当回合以及之后每回合，对中心区域内所有单位施加5层引燃，并造成"楼层/5"点火焰伤害。</li>
+ *       <li>参考 {@link Fire}：火会向相邻的可燃地形蔓延，蔓延出去的火逐层衰减（4层起，每回合-1），
+ *           烧尽且地形可燃时会摧毁该地形（烧穿木门、烧光草丛）。</li>
+ *       <li>同时烧掉区域内地上的物品堆（卷轴烧毁、露水蒸发）与植物（枯萎）。</li>
  *       <li>火焰免疫的单位既不点燃也不受伤，但格子照常铺。</li>
- *       <li>不点燃可燃地形、不产生普通火焰，也烧不掉地上的物品。</li>
  *     </ul>
  * </div>
  *
  * <p>分散实现的效果如下
  * <ul>
  *   <li>区域铺设— {@link #spawn(int)}，逐格写{@code cur}，靠{@link #RADIUS 半径}控制大小</li>
- *   <li>每回合结算— {@link #evolve()}（伤害、引燃），{@link #IGNITE_LAYERS 层数}在这里用</li>
- *   <li>持续时间— {@link #TURNS}，{@link #act()} 里倒计时，归零后{@code fullyClear()}</li>
+ *   <li>每回合结算— {@link #evolve()}（中心格：引燃+伤害+烧物品/植物；蔓延格：衰减+烧物品/植物/地形）</li>
+ *   <li>持续时间— {@link #TURNS}，{@link #act()} 里倒计时，归零后{@link #fullyClear()}</li>
  *   <li>施加引燃— {@link Ignite#addLayers(int)}</li>
+ *   <li>蔓延与烧毁— 参考 {@link Fire#evolve()}，相邻可燃格被引燃，烧尽摧毁地形</li>
  * </ul>
  *
  * @see Ignite                                            引燃
  * @see com.shatteredpixel.shatteredpixeldungeon.items.potions.MolotovCocktail 莫洛托夫鸡尾酒
- * @see Fire                                              普通火焰（对比：会扩散、依赖可燃地形）
+ * @see Fire                                              普通火焰（蔓延/衰减/烧物品/烧地形的参考实现）
  */
 public class BlazeZone extends Blob {
 
@@ -66,8 +71,17 @@ public class BlazeZone extends Blob {
 	public static final int RADIUS = 2;
 	/** 爆燃区域存在回合数 */
 	public static final int TURNS = 10;
-	/** 每回合给区域内单位叠加的引燃层数 */
+	/** 每回合给中心区域内单位叠加的引燃层数 */
 	public static final int IGNITE_LAYERS = 5;
+
+	/**
+	 * 中心爆燃格的层数标记：{@link #spawn(int)} 与 {@link #ignite(List, int)} 铺出的格子用这个值，
+	 * 在 {@link #evolve()} 里不衰减、持续到 {@link #turnsLeft} 走完。
+	 * 取值必须大于 {@link #SPREAD_FIRE}，避免和蔓延格的递减路径撞值。
+	 */
+	public static final int CENTER_FIRE = 5;
+	/** 蔓延格初始层数：从中心火蔓延到相邻可燃地形时用，每回合 -1，烧尽且可燃则摧毁地形。 */
+	public static final int SPREAD_FIRE = 4;
 
 	private int turnsLeft = TURNS;
 
@@ -88,7 +102,7 @@ public class BlazeZone extends Blob {
 				if (x < 0 || x >= width) continue;
 				int c = x + y * width;
 				if (level.solid[c]) continue;    //墙里不用点火
-				zone = Blob.seed( c, 1, BlazeZone.class );
+				zone = Blob.seed( c, CENTER_FIRE, BlazeZone.class );
 			}
 		}
 
@@ -113,7 +127,7 @@ public class BlazeZone extends Blob {
 
 		BlazeZone zone = null;
 		for (int cell : valid) {
-			zone = Blob.seed( cell, 1, BlazeZone.class );
+			zone = Blob.seed( cell, CENTER_FIRE, BlazeZone.class );
 		}
 
 		if (zone != null) {
@@ -133,7 +147,7 @@ public class BlazeZone extends Blob {
 
 	@Override
 	public boolean act() {
-		//super.act() 里已经跑过本回合的 evolve()（叠引燃+烧血），这里只负责倒计时
+		//super.act() 里已经跑过本回合的 evolve()（叠引燃+烧血+蔓延），这里只负责倒计时
 		boolean cont = super.act();
 
 		if (turnsLeft > 0) {
@@ -147,25 +161,96 @@ public class BlazeZone extends Blob {
 
 	@Override
 	protected void evolve() {
+		boolean[] flamable = Dungeon.level.flamable;
+		int width = Dungeon.level.width();
+		int length = Dungeon.level.length();
 		int damage = Math.max( 1, Dungeon.depth / 5 );
 		Level level = Dungeon.level;
+		boolean observe = false;
 
-		for (int cell = 0; cell < cur.length; cell++) {
-			if (cur[cell] <= 0) {
-				off[cell] = 0;
-				continue;
+		//参考 Fire：遍历 area 包围盒多一圈，这样外围的可燃格才能被检查并蔓延
+		for (int i = area.left - 1; i <= area.right; i++) {
+			for (int j = area.top - 1; j <= area.bottom; j++) {
+				int cell = i + j * width;
+
+				if (cell < 0 || cell >= length) continue;
+				if (!level.insideMap( cell )) continue;
+
+				if (cur[cell] > 0) {
+					if (cur[cell] == CENTER_FIRE) {
+						//中心爆燃格：不衰减，每回合保持火
+						off[cell] = CENTER_FIRE;
+						volume += CENTER_FIRE;
+						//爆燃效果：5层引燃 + 楼层/5 伤害 + 烧物品/植物
+						burnEffects( cell, IGNITE_LAYERS, damage );
+					} else {
+						//蔓延格：逐层衰减
+						int fire = cur[cell] - 1;
+						off[cell] = fire;
+						volume += fire;
+						//蔓延格也挂1层引燃、烧物品/植物，但不直接造成爆燃伤害
+						burnEffects( cell, 1, 0 );
+						//火灭了且地形可燃：烧掉地形
+						if (fire <= 0 && flamable[cell]) {
+							level.destroy( cell );
+							observe = true;
+							GameScene.updateMap( cell );
+						}
+					}
+				} else if (flamable[cell]) {
+					//无火但可燃：检查四邻是否有 BlazeZone 火，有就蔓延过来
+					boolean hasAdjacentFire = false;
+					if (cell % width != 0 && cur[cell - 1] > 0) {
+						hasAdjacentFire = true;
+					} else if (cell % width != width - 1 && cur[cell + 1] > 0) {
+						hasAdjacentFire = true;
+					} else if (cell >= width && cur[cell - width] > 0) {
+						hasAdjacentFire = true;
+					} else if (cell < length - width && cur[cell + width] > 0) {
+						hasAdjacentFire = true;
+					}
+
+					if (hasAdjacentFire) {
+						off[cell] = SPREAD_FIRE;
+						volume += SPREAD_FIRE;
+						//刚蔓延点燃：挂1层引燃 + 烧物品/植物
+						burnEffects( cell, 1, 0 );
+						area.union( i, j );
+					} else {
+						off[cell] = 0;
+					}
+				} else {
+					off[cell] = 0;
+				}
 			}
+		}
 
-			//本blob不扩散也不衰减：有的格子一直烧到turnsLeft走完
-			off[cell] = cur[cell];
-			volume += off[cell];
+		if (observe) {
+			Dungeon.observe();
+		}
+	}
 
-			if (!level.insideMap(cell) || level.solid[cell]) continue;
-
-			Char ch = Actor.findChar( cell );
-			if (ch == null || ch.isImmune(Fire.class) || ch.isImmune(BlazeZone.class)) continue;
-
-			Buff.affect( ch, Ignite.class ).addLayers( IGNITE_LAYERS );
+	/**
+	 * 对格子施加燃烧副作用：烧地上物品堆、烧植物、给单位挂引燃。
+	 * @param igniteLayers 给单位叠的引燃层数
+	 * @param damage       直接伤害（<=0 表示不造成直接伤害）
+	 */
+	private void burnEffects( int cell, int igniteLayers, int damage ) {
+		//烧地上的物品堆（卷轴烧毁、露水蒸发）——参考 Fire.burn
+		Heap heap = Dungeon.level.heaps.get( cell );
+		if (heap != null) {
+			heap.burn();
+		}
+		//烧植物——参考 Fire.burn
+		Plant plant = Dungeon.level.plants.get( cell );
+		if (plant != null) {
+			plant.wither();
+		}
+		//给单位挂引燃
+		Char ch = Actor.findChar( cell );
+		if (ch == null || ch.isImmune( Fire.class ) || ch.isImmune( BlazeZone.class )) return;
+		Buff.affect( ch, Ignite.class ).addLayers( igniteLayers );
+		if (damage > 0) {
 			ch.damage( damage, this, Char.DamageType.Element );
 		}
 	}
@@ -173,7 +258,7 @@ public class BlazeZone extends Blob {
 	@Override
 	public void use( BlobEmitter emitter ) {
 		super.use( emitter );     // 必须调，负责给this.emitter赋值
-		emitter.pour( HellFlameParticle.FACTORY, 0.03f );
+		emitter.pour(BlazeZonParticle.FACTORY, 0.03f );
 	}
 
 	@Override

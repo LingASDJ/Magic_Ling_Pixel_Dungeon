@@ -101,6 +101,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlcoholMixture;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.BottledMarigoldWine;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.LegacyWine;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.MolotovCocktail;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHolyWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
@@ -465,7 +467,8 @@ public enum Catalog {
 				ShockingBrew.class, CausticBrew.class, AquaBrew.class, ElixirOfHoneyedHealing.class,
 				ElixirOfAquaticRejuvenation.class, ElixirOfArcaneArmor.class, ElixirOfDragonsBlood.class,
 				ElixirOfIcyTouch.class, ElixirOfToxicEssence.class, ElixirOfMight.class, ElixirOfFeatherFall.class,
-				WaterSoul.class, ElixirOfNukeCole.class, GhostLingElixir.class, ElixirOfDragonKing.class);
+				WaterSoul.class, ElixirOfNukeCole.class, GhostLingElixir.class, ElixirOfDragonKing.class, MolotovCocktail.class,
+				LegacyWine.class);
 
 		SPELLS.addItems( UnstableSpell.class, WildEnergy.class, TelekineticGrab.class, PhaseShift.class,
 				Alchemize.class, CurseInfusion.class, MagicalInfusion.class, Recycle.class,

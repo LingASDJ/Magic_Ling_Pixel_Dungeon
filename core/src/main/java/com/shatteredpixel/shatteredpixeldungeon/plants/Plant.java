@@ -182,6 +182,23 @@ public abstract class Plant implements Bundlable {
 			return actions;
 		}
 
+		/**
+		 * 种子的快捷栏默认动作就是扔出（{@link #AC_THROW}，投掷到目标格后种植）。
+		 * <p>
+		 * 基类 {@link Item#quickslotActions(Hero)} 会过滤掉 THROW/DROP/EQUIP 等通用动作，
+		 * 导致种子的快捷栏技能列表里只剩下 PLANT（战士还有 EATSEED）：
+		 * 一旦 size>=2，放入或使用时就会弹出选择窗，且选项里根本没有"扔出"，
+		 * 玩家被迫把快捷栏绑成"原地种植/吃种子"，反而丢了种子最常用的扔出动作。
+		 * <p>
+		 * 这里直接返回空列表，让快捷栏走 {@link Item#execute(Hero)} →
+		 * {@link #defaultAction()}（非战士=THROW 扔出，战士=EATSEED）。
+		 * 想原地种植或吃种子，在物品栏里点种子选对应动作即可。
+		 */
+		@Override
+		public ArrayList<String> quickslotActions( Hero hero ) {
+			return new ArrayList<>();
+		}
+
 		protected void satisfy( Hero hero ){
 			float foodVal = 30f;
 

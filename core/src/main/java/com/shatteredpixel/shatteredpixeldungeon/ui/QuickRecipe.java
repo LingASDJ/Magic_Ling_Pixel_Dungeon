@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Gelatin;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.Sugar_Block;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.hollow.WhiteSugar_B;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlcoholMixture;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.BottledMarigoldWine;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.MolotovCocktail;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
@@ -376,8 +377,6 @@ public class QuickRecipe extends Component {
 						}));
 				result.add(new QuickRecipe( new BottledMarigoldWine.SeedToWineFood() ));
 				result.add(new QuickRecipe( new BottledMarigoldWine.SeedToWineSmallRation() ));
-				//莫洛托夫鸡尾酒：酒精合剂+液火药剂+2能量＝4瓶
-				result.add(new QuickRecipe( new MolotovCocktail.Recipe() ));
 				return result;
 			case 3:
 				r = new ExoticPotion.PotionToExotic();
@@ -386,6 +385,7 @@ public class QuickRecipe extends Component {
 					ArrayList<Item> in = new ArrayList<>(Arrays.asList(pot));
 					result.add(new QuickRecipe( r, in, r.sampleOutput(in)));
 				}
+				result.add(new QuickRecipe( new AlcoholMixture.Recipe() ));
 				return result;
 			case 4:
 				r = new ExoticScroll.ScrollToExotic();
@@ -449,6 +449,7 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new ElixirOfFeatherFall.Recipe()));
 				result.add(new QuickRecipe(new ElixirOfMight.Recipe()));
 				result.add(new QuickRecipe(new GhostLingElixir.Recipe()));
+				result.add(new QuickRecipe( new MolotovCocktail.Recipe() ));
 				return result;
 			case 8:
 				result.add(new QuickRecipe(new UnstableSpell.Recipe(), new ArrayList<>(Arrays.asList(new Scroll.PlaceHolder(), new  Runestone.PlaceHolder())), new UnstableSpell()));
