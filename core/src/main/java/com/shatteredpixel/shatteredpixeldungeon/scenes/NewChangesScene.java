@@ -162,6 +162,7 @@ public class NewChangesScene extends PixelScene {
             protected void onClick() {
                 searchOpen = !searchOpen;
                 textBox.visible = searchOpen;
+                textBox.active = searchOpen;
                 // 关闭时箭头朝右（→，提示右侧可展开），展开后朝左（←，提示可收起）
                 toggleSearchBtn.icon( searchOpen ? Icons.LEFTARROW.get() : Icons.RIGHTARROW.get());
                 layoutSearch();
@@ -183,6 +184,7 @@ public class NewChangesScene extends PixelScene {
         };
         textBox.setMaxLength(40);
         textBox.visible = false;
+        textBox.active = false;
         add(textBox);
 
         list = new ScrollPane( new Component() ){
