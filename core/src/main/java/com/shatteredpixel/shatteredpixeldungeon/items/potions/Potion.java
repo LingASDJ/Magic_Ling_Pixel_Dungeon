@@ -135,7 +135,6 @@ public class Potion extends Item {
 
 		//also all brews, hardcoded
 		mustThrowPots.add(GhostLingElixir.class);
-		mustThrowPots.add(AlcoholMixture.class);
 	}
 	
 	public static final HashSet<Class<?extends Potion>> canThrowPots = new HashSet<>();
