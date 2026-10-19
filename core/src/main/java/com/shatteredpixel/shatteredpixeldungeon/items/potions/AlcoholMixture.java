@@ -1,10 +1,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.AlcoholGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Inebriation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.noosa.audio.Sample;
 
 /**
  * <div style="color:orange;font-weight:bold" >
@@ -51,7 +54,11 @@ public class AlcoholMixture extends ExoticPotion {
 
     @Override
     public void shatter(int cell) {
-        super.shatter(cell);            // splash + 碎裂音 + 日志，Potion.java:382 已经写好了
+        splash( cell );
+        if (Dungeon.level.heroFOV[cell]) {
+            Sample.INSTANCE.play( Assets.Sounds.SHATTER );
+            Sample.INSTANCE.play( Assets.Sounds.GAS );
+        }
         AlcoholGas.spawn(cell, 1000);   // 1000气体量
     }
 
