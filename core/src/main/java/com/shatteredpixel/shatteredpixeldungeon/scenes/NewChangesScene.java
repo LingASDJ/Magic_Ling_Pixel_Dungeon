@@ -262,7 +262,7 @@ public class NewChangesScene extends PixelScene {
 
         textBox.setRect(
                 bx + SEARCH_HEIGHT + 1,
-                c? by+5000 : by,
+                c? by : by+5000,
                 panel.innerWidth() - SEARCH_HEIGHT - 1,
                 SEARCH_HEIGHT);
 
