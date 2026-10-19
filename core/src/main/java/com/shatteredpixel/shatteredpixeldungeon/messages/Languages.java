@@ -30,8 +30,9 @@ public enum Languages {
 	CHINESE("中文",      "",   Status.REVIEWED,  null, null),
 	HARDCHINESE("繁體中文","chk", Status.REVIEWED, new String[]{"Sotis","JDSALing"},
 			new String[]{"那些回忆","冷群"}),
+	RUSSIAN("Russian", "ru", Status.REVIEWED, new String[]{"JDSALing","FixAkaTheFix"},new String[]{"Dominowood371"}),
 	VIETNAMESE("tiếng việt","vi", Status.INCOMPLETE, new String[]{"JDSALing", "Niko De Lightbulb"}, null),
-	RUSSIAN("Russian", "ru", Status.INCOMPLETE, new String[]{"JDSALing","FixAkaTheFix"},new String[]{"Dominowood371"}),
+
 	JAPANESE("日本語","ja", Status.INCOMPLETE, new String[]{"JDSALing","Ayanokosa","FromBeyond"}, null),
 	GREEK("ελληνικά",       "el", Status.INCOMPLETE, new String[]{"Aeonius", "JDSALing"}, null),
 	PORTUGUESE("Brazilian-PT", "ptbr", Status.INCOMPLETE, new String[]{"Andrew-px1 [TETO]", "JDSALing"},null);
