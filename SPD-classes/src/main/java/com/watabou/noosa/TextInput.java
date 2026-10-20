@@ -50,7 +50,7 @@ import com.watabou.utils.Point;
 public class TextInput extends Component {
 
 	private Stage stage;
-	private Container container;
+	public Container container;
 	private TextField textField;
 
 	private Skin skin;
@@ -191,6 +191,21 @@ public class TextInput extends Component {
 	public void setText(String text){
 		textField.setText(text);
 		textField.setCursorPosition(textField.getText().length());
+	}
+
+	/**
+	 * 动态开关键盘输入。传入 false 会释放 libGDX stage 的键盘焦点并收起系统软键盘，
+	 * 这样即使 noosa 层面 visible/active 被置为 false，也不会再接收按键输入。
+	 * 传入 true 会重新拿回焦点并弹出软键盘。
+	 */
+	public void setInputEnabled(boolean enabled) {
+		if (enabled) {
+			stage.setKeyboardFocus(textField);
+			Game.platform.setOnscreenKeyboardVisible(true);
+		} else {
+			stage.setKeyboardFocus(null);
+			Game.platform.setOnscreenKeyboardVisible(false);
+		}
 	}
 
 	public void setMaxLength(int maxLength){

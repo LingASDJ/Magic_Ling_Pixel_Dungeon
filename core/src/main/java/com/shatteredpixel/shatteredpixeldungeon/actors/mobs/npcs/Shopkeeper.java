@@ -84,6 +84,9 @@ public class Shopkeeper extends NPC {
 	public int turnsSinceHarmed = -1;
 	private boolean seenBefore = false;
 
+	// 莲娜试炼通过后商人和平撤离时为 true：商人离开，但商店商品全部留给玩家免费拾取
+	private boolean leaveShopStock = false;
+
 	@Override
 	protected boolean act() {
 		if(Statistics.endingbald &&  getClass() == Shopkeeper.class) {
@@ -221,21 +224,34 @@ public class Shopkeeper extends NPC {
 		}
 	}
 
+	// 莲娜试炼通过后：商人和平离开，商店商品全部留给玩家
+	public void farewellAndLeaveStock() {
+		leaveShopStock = true;
+		flee();
+	}
+
 	@Override
 	public void destroy() {
 		super.destroy();
-		// 修复免费抢商店：无论商人因何种原因跑路，都必须带走/销毁商品，
-		// 不能把 FOR_SALE 商品直接留在地上让玩家白拿。
 		for (Heap heap: Dungeon.level.heaps.valueList()) {
 			if (heap.type == Heap.Type.FOR_SALE) {
-				if (ShatteredPixelDungeon.scene() instanceof GameScene) {
-					CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
-				}
-				if (heap.size() == 1) {
-					heap.destroy();
-				} else {
-					heap.items.remove(heap.size()-1);
+				if (leaveShopStock) {
+					// 莲娜试炼通过：商品作为奖励全部留给玩家，转为普通掉落堆可直接拾取
 					heap.type = Heap.Type.HEAP;
+					if (heap.sprite != null) {
+						heap.sprite.link();
+						heap.sprite.drop();
+					}
+				} else {
+					if (ShatteredPixelDungeon.scene() instanceof GameScene) {
+						CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
+					}
+					if (heap.size() == 1) {
+						heap.destroy();
+					} else {
+						heap.items.remove(heap.size()-1);
+						heap.type = Heap.Type.HEAP;
+					}
 				}
 			}
 		}
