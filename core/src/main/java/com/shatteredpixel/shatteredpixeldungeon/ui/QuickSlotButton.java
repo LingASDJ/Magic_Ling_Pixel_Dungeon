@@ -312,9 +312,12 @@ public class QuickSlotButton extends Button {
 		} else {
 			// “放入时选择”
 			String savedAction = Dungeon.quickslot.getSlotAction(slotNum);
+			// 让物品把已保存动作解析为当前状态下真正可执行的动作。
+			// 提灯等状态切换物品会返回当前状态对应的动作。
+			String actionToUse = item.resolveQuickslotAction(savedAction, skills);
 			// 保存的技能必须仍然存在于当前技能列表中
-			if (savedAction != null && skills.contains(savedAction)) {
-				item.execute(Dungeon.hero, savedAction);
+			if (actionToUse != null) {
+				item.execute(Dungeon.hero, actionToUse);
 				if (item.usesTargeting) {
 					useTargeting(slotNum);
 				}
@@ -381,8 +384,12 @@ public class QuickSlotButton extends Button {
 			@Override
 			protected void onSelect(int index) {
 				// 玩家确认技能后，才真正写入物品并把选择的技能绑定到这个快捷栏槽位
-				Dungeon.quickslot.setSlot(slotNum, item);
-				Dungeon.quickslot.setSlotAction(slotNum, skills.get(index));
+				// “放入时选择”允许多技能物品占用多个快捷栏槽位。
+				Dungeon.quickslot.setSlotWithAction(
+						slotNum,
+						item,
+						skills.get(index)
+				);
 				// 刷新快捷栏显示
 				QuickSlotButton.refresh();
 			}

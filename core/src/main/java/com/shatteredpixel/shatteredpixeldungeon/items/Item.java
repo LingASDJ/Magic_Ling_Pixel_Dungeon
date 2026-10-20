@@ -208,6 +208,21 @@ public class Item implements Bundlable {
 
 		return result;
 	}
+	/**
+	 * 解析快捷栏中保存的动作在当前状态下应该执行哪个 action。
+	 * 状态会变化的物品可以重写这个方法，
+	 * 把同一个技能逻辑的不同状态动作互相兼容。
+	 */
+	public String resolveQuickslotAction(
+			String savedAction,
+			ArrayList<String> currentActions
+	) {
+		if (savedAction != null && currentActions.contains(savedAction)) {
+			return savedAction;
+		}
+
+		return null;
+	}
 
 	public String actionName(String action, Hero hero){
 		return Messages.get(this, "ac_" + action);
@@ -717,6 +732,8 @@ public class Item implements Bundlable {
 	private static final String WINDOWSBUY       = "windowsbuy";
 
 	public static final String ALLSEARCH = "allsearch";
+
+	private static final String QUICKSLOTS = "quickslots";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -728,8 +745,21 @@ public class Item implements Bundlable {
 		bundle.put( WINDOWSBUY, windowsBuy );
 
 		bundle.put( CURSED_KNOWN, cursedKnown );
-		if (Dungeon.quickslot.contains(this)) {
-			bundle.put( QUICKSLOT, Dungeon.quickslot.getSlot(this) );
+		// 获取该物品当前占用的全部快捷栏槽位
+		ArrayList<Integer> positions = Dungeon.quickslot.getSlots(this);
+		// 没有放入快捷栏时，不保存位置字段
+		if (!positions.isEmpty()) {
+			int[] positionArray = new int[positions.size()];
+
+			for (int i = 0; i < positions.size(); i++) {
+				positionArray[i] = positions.get(i);
+			}
+
+			// 新存档保存全部快捷栏位置
+			bundle.put(QUICKSLOTS, positionArray);
+
+			// 旧字段保存第一个位置，兼容旧读取逻辑
+			bundle.put(QUICKSLOT, positionArray[0]);
 		}
 		bundle.put( KEPT_LOST, keptThoughLostInvent );
 		bundle.put(PRESERVE_SEALED, preserveOnSealedResurrect);
@@ -760,12 +790,28 @@ public class Item implements Bundlable {
 
 		//only want to populate slot on first load.
 		if (hero == null) {
-			if (bundle.contains(QUICKSLOT)) {
-				//防止清理已保存的快捷栏技能选择（3）
-				// 恢复物品到原快捷栏位置，同时保留已保存的技能选择
-				Dungeon.quickslot.setSlotPreservingAction(
-						bundle.getInt(QUICKSLOT),
-						this);
+			int[] positions;
+
+			if (bundle.contains(QUICKSLOTS)) {
+				// 新存档：恢复该物品占用的全部快捷栏位置
+				positions = bundle.getIntArray(QUICKSLOTS);
+			} else if (bundle.contains(QUICKSLOT)) {
+				// 旧存档只有一个快捷栏位置
+				positions = new int[]{
+						bundle.getInt(QUICKSLOT)
+				};
+			} else {
+				positions = new int[0];
+			}
+
+			// 兼容异常或损坏的数组
+			if (positions == null) {
+				positions = new int[0];
+			}
+
+			// 恢复物品到所有原快捷栏位置
+			for (int slot : positions) {
+				Dungeon.quickslot.setSlotPreservingAction(slot, this);
 			}
 		}
 

@@ -114,15 +114,13 @@ public class Bag extends Item implements Iterable<Item> {
 	public void grabItems( Bag container ){
 		for (Item item : container.items.toArray( new Item[0] )) {
 			if (canHold( item )) {
-				int slot = Dungeon.quickslot.getSlot(item);
+				// 在 detach 之前记录全部快捷栏位置
+				ArrayList<Integer> slots =
+						Dungeon.quickslot.getSlots(item);
 				item.detachAll(container);
-				if (!item.collect(this)) {
-					item.collect(container);
-				}
-				//防止清理已保存的快捷栏技能选择（2）
-				//如果物品原本就在快捷栏中，重新关联到原槽位
-					if (slot != -1) {
-						Dungeon.quickslot.setSlotPreservingAction(slot, item);
+				// 背包整理只改变物品所在容器，不改变快捷栏技能选择
+				for (int slot : slots) {
+					Dungeon.quickslot.setSlotPreservingAction(slot, item);
 				}
 			}
 		}

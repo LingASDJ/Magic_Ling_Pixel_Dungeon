@@ -138,6 +138,7 @@ public class OilLantern extends Artifact {
             actions.remove(AC_THROW);
         }
 
+
 //        if(Statistics.AutoOilPotion){
 //            actions.remove(AC_AUTO);
 //            actions.add(AC_NUTO);
@@ -147,6 +148,31 @@ public class OilLantern extends Artifact {
 //        }
 
         return actions;
+    }
+
+    @Override
+    public String resolveQuickslotAction(
+            String savedAction,
+            ArrayList<String> currentActions
+    ) {
+
+        // 点亮和熄灯属于同一个“切换提灯状态”的快捷栏技能。
+        // 玩家放入时选择的是点亮，提灯亮起后应自动执行熄灭；
+        // 玩家放入时选择的是熄灭，提灯熄灭后应自动执行点亮。
+        if (AC_LIGHT.equals(savedAction)
+                || AC_SNUFF.equals(savedAction)) {
+
+            if (currentActions.contains(AC_LIGHT)) {
+                return AC_LIGHT;
+            }
+
+            if (currentActions.contains(AC_SNUFF)) {
+                return AC_SNUFF;
+            }
+        }
+
+        // 加油等其他动作继续走默认规则。
+        return super.resolveQuickslotAction(savedAction, currentActions);
     }
 
     public void execute(Hero hero, String action) {
