@@ -48,6 +48,16 @@ public class QuickSlot {
 		setSlotInternal(slot, item, null);
 	}
 
+	/**
+	 * 与 setSlot() 不同，这个方法不会调用 clearItem()，
+	 * 因此同一个物品可以同时占用多个快捷栏槽位
+	 * 只由“放入时选择”的多技能窗口调用
+	 * 这样玩家可以让同一个物品在不同槽位绑定不同技能
+	 */
+	public void setSlotWithAction(int slot, Item item, String action) {
+		setSlotInternal(slot, item, action);
+	}
+
 	public void reset(){
 		slots = new Item[SIZE];slotActions = new String[SIZE];
 	}
@@ -74,9 +84,16 @@ public class QuickSlot {
 		return getItem(slot) != null && getItem(slot).quantity() > 0;
 	}
 
-	public void clearItem(Item item){
-		if (contains(item)) {
-			clearSlot(getSlot(item));
+	/**
+	 * 从快捷栏中清除这个物品占用的所有槽位
+	 * 一个物品现在可能同时出现在多个快捷栏中了
+	 * 物品被丢弃、移除或离开背包时，清除全部引用，避免快捷栏留下失效槽位
+	 */
+	public void clearItem(Item item) {
+		for (int i = 0; i < SIZE; i++) {
+			if (slots[i] == item) {
+				clearSlot(i);
+			}
 		}
 	}
 
@@ -92,6 +109,23 @@ public class QuickSlot {
 				setSlotInternal(i, item, oldAction);
 			}
 		}
+	}
+	/**
+	 * 返回同一个物品占用的所有快捷栏槽位。
+	 * 用于兼容原本只支持单槽位的老代码。
+	 * 多个槽位主要用于“放入时选择”模式：
+	 * 同一个物品可以放到不同快捷栏，并绑定不同技能。
+	 */
+	public ArrayList<Integer> getSlots(Item item) {
+		ArrayList<Integer> result = new ArrayList<>();
+
+		for (int i = 0; i < SIZE; i++) {
+			if (slots[i] == item) {
+				result.add(i);
+			}
+		}
+
+		return result;
 	}
 
 	// 将实际物品转换成虚拟占位符。
