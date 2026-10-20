@@ -427,7 +427,7 @@ public class InterlevelScene extends PixelScene {
 			if (hero.belongings.getItem(BottleWraith.class) != null) {
 				for (int i = 0; i < Random.Int(1, Dungeon.depth / 2); i++) {
 					Wraith w = new Wraith();
-					w.pos = level.randomRespawnCell(w);
+					w.pos = level.randomRespawnCell(hero);
 					level.mobs.add(w);
 				}
 			}

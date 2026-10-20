@@ -161,25 +161,22 @@ public class HotelNoramlLevel extends Level {
     @Override
     protected void createMobs() {
 
+        // 种子稳定性修复：刷点判定恒定消耗 1 次随机数（由种子决定），onlyLing/徽章只决定"是否现身"，
+        // 不再因 onlyLing 真假而改变随机流消耗次数（否则 WhiteLingLand 不生成时本层后续物品/NPC 整体偏移）。
+        float lingHotelRoll = Random.Float();
         if(!Statistics.onlyLing){
+            float threshold;
             if (passwordbadges.contains(PaswordBadges.Badge.ALLCHSX) || RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY) {
-                if (Random.Float() < 0.65f) {
-                    WhiteLing n = new WhiteLing();
-                    n.pos= 80;
-                    mobs.add(n);
-                }
+                threshold = 0.65f;
             } else if (Badges.isUnlocked(Badges.Badge.VICTORY)) {
-                if (Random.Float() < 0.45f) {
-                    WhiteLing n = new WhiteLing();
-                    n.pos = 80;
-                    mobs.add(n);
-                }
+                threshold = 0.45f;
             } else {
-                if (Random.Float() < 0.1f) {
-                    WhiteLing n = new WhiteLing();
-                    n.pos = 80;
-                    mobs.add(n);
-                }
+                threshold = 0.1f;
+            }
+            if (lingHotelRoll < threshold) {
+                WhiteLing n = new WhiteLing();
+                n.pos= 80;
+                mobs.add(n);
             }
         }
 
