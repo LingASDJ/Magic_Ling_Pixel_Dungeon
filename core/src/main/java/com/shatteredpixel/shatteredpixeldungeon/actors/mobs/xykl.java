@@ -48,7 +48,7 @@ public class xykl extends Mob {
         this.EXP = 0;
         this.state = this.SLEEPING;
         this.loot = new Crossbow();
-        this.lootChance = 0.05f;
+        this.lootChance = 0f;
     }
 
     public int attackSkill(Char target) {

@@ -615,7 +615,7 @@ public class Generator {
 			WEP_T3.probs = new float[]{1, 5, 4, 4, 4, 3, 5, 3, 6,
 					Badges.isUnlocked(Badges.Badge.KILL_CLSISTER) ? 3 : 0,
 					0,
-					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 1f : 0,
+					SPDSettings.isItemUnlock(ForestBow.class.getSimpleName()) ? 2.8f : 0,
 			};
 
 			WEP_T4.classes = new Class<?>[]{

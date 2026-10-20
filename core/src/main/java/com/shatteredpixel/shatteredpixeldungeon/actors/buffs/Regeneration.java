@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.Dirt_KnifeStand;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.UnlessFlower;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
@@ -62,6 +63,10 @@ public class Regeneration extends Buff {
 				float healthRegenRate = baseHealthRegenRate;
 
 				// ========== 加算区 ==========
+
+				// 水晶吊坠的效果
+				boolean hasCrystalling = hero.belongings.getItem(CrystalLing.class) != null;
+				if (hasCrystalling) healthRegenRate += 0.02f;
 
 				// 菊寿凝身buff的效果
 				MarigoldBuff marigoldBuff = target.buff(MarigoldBuff.class);
@@ -117,16 +122,16 @@ public class Regeneration extends Buff {
 
 	// 可回血判据
 	private boolean canRegen() {
-		// 土刀架的放宽饱食度对自然回血的约束效果（不饿回血 → 不饿或只有一点饿回血）
-		boolean dirtKnifeStand = hero.belongings.getItem(Dirt_KnifeStand.class) != null;
-		// 幽寂花环的效果
+		// 幽寂花环触发不回血
 		if (target.buff(UnlessFlower.UnlessFlowerTime.class) != null) return false;
-		// 血上限效果
+		// 到达血上限不回血
 		if (target.HP >= regencap()) return false;
-		// 极度饥饿
+		// 土刀架的收紧饱食度对自然回血的约束效果（不饿或只有一点饿回血 → 不饿回血）
+		boolean dirtKnifeStand = hero.belongings.getItem(Dirt_KnifeStand.class) != null;
+		// 黄饿且有土刀架时不回血
+		if (((Hero) target).isSmallHunger() && dirtKnifeStand) return false;
+		// 红饿不回血
 		if (((Hero) target).isStarving()) return false;
-		// 有一点饿
-		if (((Hero) target).isSmallHunger() && !dirtKnifeStand) return false;
 		// 背水一战
 		return regenOn();
 	}

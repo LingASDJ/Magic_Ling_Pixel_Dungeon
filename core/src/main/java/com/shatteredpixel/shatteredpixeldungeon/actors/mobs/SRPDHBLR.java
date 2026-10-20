@@ -48,7 +48,7 @@ public class SRPDHBLR extends Mob {
         this.EXP = 15;
         this.maxLvl = 15;
         this.loot = new Crossbow();
-        this.lootChance = 0.05f;
+        this.lootChance = 0f;
     }
 
     public int attackSkill(Char target) {
