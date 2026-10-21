@@ -163,7 +163,10 @@ public class NewChangesScene extends PixelScene {
                 searchOpen = !searchOpen;
                 textBox.visible = searchOpen;
                 textBox.active = searchOpen;
-                // 关闭时箭头朝右（→，提示右侧可展开），展开后朝左（←，提示可收起）
+                textBox.setInputEnabled(searchOpen);
+                if(!searchOpen){
+                    textBox.setText(null);
+                }
                 toggleSearchBtn.icon( searchOpen ? Icons.LEFTARROW.get() : Icons.RIGHTARROW.get());
                 layoutSearch(searchOpen);
                 searchBody.visible = !searchOpen;
@@ -186,6 +189,8 @@ public class NewChangesScene extends PixelScene {
         textBox.visible = false;
         textBox.active = false;
         add(textBox);
+        // 构造函数会立刻弹软键盘并抢焦点，这里默认收起，等用户点箭头展开时再开。
+        textBox.setInputEnabled(false);
 
         list = new ScrollPane( new Component() ){
 

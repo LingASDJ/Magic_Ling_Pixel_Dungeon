@@ -1156,7 +1156,8 @@ public class Dungeon {
 	public static void observe(){
 
 		int dist = Math.max(Dungeon.hero.viewDistance, Dungeon.hero.viewDistance + Statistics.BzmdrCJHeroViewDistance);
-		dist *= (int) (1f + 0.25f*Dungeon.hero.pointsInTalent(Talent.FARSIGHT));
+
+		dist *= (1f + 0.25f*Dungeon.hero.pointsInTalent(Talent.FARSIGHT));
 
 		if (Dungeon.hero.buff(MagicalSight.class) != null || level instanceof TombHallExitLevel && hero.pos < 314){
 			dist = Math.max( dist, MagicalSight.DISTANCE );

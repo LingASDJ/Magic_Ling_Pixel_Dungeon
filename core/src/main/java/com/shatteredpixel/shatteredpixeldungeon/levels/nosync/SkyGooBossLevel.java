@@ -18,7 +18,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -32,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -209,14 +207,7 @@ public class SkyGooBossLevel extends Level {
 
     @Override
     public int randomRespawnCell( Char ch ) {
-        int pos = 31;
-        int cell;
-        do {
-            cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
-        } while (!passable[cell]
-                || (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
-                || Actor.findChar(cell) != null);
-        return cell;
+        return 31;
     }
 
     public String tilesTex() {

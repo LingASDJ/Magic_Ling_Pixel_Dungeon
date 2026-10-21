@@ -29,18 +29,36 @@ import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.PointF;
 
 public class MirrorSprite extends MobSprite {
-	
+
 	private static final int FRAME_WIDTH	= 12;
 	private static final int FRAME_HEIGHT	= 15;
-	
+
 	public MirrorSprite() {
 		super();
-		
-		texture( Dungeon.hero != null ? Dungeon.hero.heroClass.spritesheet() : HeroClass.WARRIOR.spritesheet() );
+
+		HeroSkins.SkinDef def = currentSkinDef();
+		if (def != null && def.texturePath != null) {
+			texture( def.texturePath );
+		} else {
+			texture( Dungeon.hero != null ? Dungeon.hero.heroClass.spritesheet() : HeroClass.WARRIOR.spritesheet() );
+		}
 		updateArmor( 0 );
 		idle();
 	}
-	
+
+	private static HeroSkins.SkinDef currentSkinDef() {
+		if (Dungeon.hero == null) return null;
+		return HeroSkins.get(Dungeon.hero.heroClass, Dungeon.hero.heroClass.GetSkin());
+	}
+
+	/** 将 int[] 装箱为 Object[]，供 Animation.frames(TextureFilm, Object...) 使用。 */
+	private static Object[] box(int[] arr) {
+		if (arr == null) return new Object[0];
+		Object[] result = new Object[arr.length];
+		for (int i = 0; i < arr.length; i++) result[i] = arr[i];
+		return result;
+	}
+
 	@Override
 	public void link( Char ch ) {
 		super.link( ch );
@@ -55,22 +73,45 @@ public class MirrorSprite extends MobSprite {
 	public void updateArmor(){
 		updateArmor( ((MirrorImage)ch).armTier );
 	}
-	
+
 	public void updateArmor( int tier ) {
-		TextureFilm film = new TextureFilm( HeroSprite.tiers(), tier, FRAME_WIDTH, FRAME_HEIGHT );
-		
-		idle = new Animation( 1, true );
-		idle.frames( film, 0, 0, 0, 1, 0, 0, 1, 1 );
-		
-		run = new Animation( 20, true );
-		run.frames( film, 2, 3, 4, 5, 6, 7 );
-		
-		die = new Animation( 20, false );
-		die.frames( film, 0 );
-		
-		attack = new Animation( 15, false );
-		attack.frames( film, 13, 14, 15, 0 );
-		
+		HeroSkins.SkinDef def = currentSkinDef();
+
+		if (def != null && def.texturePath != null && def.frameW > 0) {
+			// 自定义 sprite 皮肤（如 bunny）
+			texture( def.texturePath );
+			TextureFilm film = new TextureFilm( def.texturePath, def.frameW, def.frameH );
+
+			idle = new Animation( 1, true );
+			idle.frames( film, box(def.idleFrames) );
+
+			run = new Animation( 20, true );
+			run.frames( film, box(def.runFrames) );
+
+			die = new Animation( 8, false );
+			die.frames( film, box(def.dieFrames) );
+
+			attack = new Animation( 15, false );
+			attack.frames( film, box(def.attackFrames) );
+
+			zap = attack.clone();
+		} else {
+			// 默认皮肤
+			TextureFilm film = new TextureFilm( HeroSprite.tiers(), tier, FRAME_WIDTH, FRAME_HEIGHT );
+
+			idle = new Animation( 1, true );
+			idle.frames( film, 0, 0, 0, 1, 0, 0, 1, 1 );
+
+			run = new Animation( 20, true );
+			run.frames( film, 2, 3, 4, 5, 6, 7 );
+
+			die = new Animation( 20, false );
+			die.frames( film, 0 );
+
+			attack = new Animation( 15, false );
+			attack.frames( film, 13, 14, 15, 0 );
+		}
+
 		idle();
 	}
 }

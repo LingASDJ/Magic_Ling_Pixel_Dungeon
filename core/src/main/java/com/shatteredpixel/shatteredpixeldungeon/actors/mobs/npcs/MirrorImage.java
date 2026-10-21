@@ -71,9 +71,11 @@ public class MirrorImage extends NPC {
 				return true;
 			}
 		}
-		
-		if (hero.tier() != armTier){
-			armTier = hero.tier();
+
+		// 只在实际护甲变化时更新外观，皮肤切换不触发镜像重绘
+		int realTier = hero.normalSkin( hero.belongings.armor() );
+		if (realTier != armTier){
+			armTier = realTier;
 			((MirrorSprite)sprite).updateArmor( armTier );
 		}
 		
@@ -186,7 +188,7 @@ public class MirrorImage extends NPC {
 		hero = (Hero)Actor.findById(heroID);
 		Actor targetActor = Actor.findById(heroID);
 		if (hero != null) {
-			armTier = hero.tier();
+			armTier = hero.normalSkin( hero.belongings.armor() );
 		} else {
 			armTier = 1;
 		}
