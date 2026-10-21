@@ -118,6 +118,9 @@ public class Bag extends Item implements Iterable<Item> {
 				ArrayList<Integer> slots =
 						Dungeon.quickslot.getSlots(item);
 				item.detachAll(container);
+				if (!item.collect(this)) {
+					item.collect(container);
+				}
 				// 背包整理只改变物品所在容器，不改变快捷栏技能选择
 				for (int slot : slots) {
 					Dungeon.quickslot.setSlotPreservingAction(slot, item);
