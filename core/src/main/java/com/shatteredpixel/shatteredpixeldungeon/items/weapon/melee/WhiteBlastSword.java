@@ -66,6 +66,8 @@ public class WhiteBlastSword extends MeleeWeapon {
         super.activate(ch);
         Buff.affect(ch, FloatingParalysis.class);   // 装备上自动挂buff 浮空麻痹
         Buff.affect(ch, FloatingTargetDefenseIgnore.class);  // 装备上自动挂buff 浮空目标防御忽略 默认忽略0.5倍
+        pending = false;
+        inFollowup = false;
     }
 
     @Override
@@ -76,6 +78,8 @@ public class WhiteBlastSword extends MeleeWeapon {
             Buff.detach(hero, FloatingTargetDefenseIgnore.class);
             Buff.detach(hero, WhiteBlastSwordStatus.class);
         }
+        pending = false;
+        inFollowup = false;
         return result;
     }
 
@@ -101,35 +105,65 @@ public class WhiteBlastSword extends MeleeWeapon {
     private boolean inFollowup = false;   // 追加上击正在结算中（防嵌套连锁）
 
     @Override
-    public void onAttackMissed(Char attacker, Char defender) {
-        SkillCharge++;                  // 判决的无需命中充能
-        checkReady(attacker);
+    public void onAttackMissed( Char attacker, Char defender ) {
 
-        if (pending || inFollowup) return;      // 无法连续触发
+        SkillCharge++;
+        checkReady( attacker );
+
+        if (pending || inFollowup) return;
+
         pending = true;
 
-        Actor.addDelayed(new Actor() {
+        final Char target = defender;
+        final Char owner = attacker;
+
+        Actor.addDelayed( new Actor() {
             { actPriority = HERO_PRIO + 1; }
-            @Override protected boolean act() {
-                Actor.remove(this);
-                pending = false;                // 一出队就解锁排队标记
 
-                if (!defender.isAlive() || !attacker.isAlive()) return true;
+            @Override
+            protected boolean act() {
+                Actor.remove( this );
 
-                Callback finish = new Callback() {
-                    @Override public void call() {
-                        inFollowup = true;
-                        if (defender.isAlive() && attacker.isAlive()) attacker.attack(defender);
-                        inFollowup = false;     // ← 结算完才解锁，防止追加上击再触发追加上击
+                inFollowup = true;
+                pending = false;
+
+                if (!owner.isAlive() || owner.sprite == null || !target.isAlive()) {
+                    inFollowup = false;
+                    return true;
+                }
+
+                owner.sprite.attack( target.pos, new Callback() {
+                    @Override
+                    public void call() {
+
+                        Actor.addDelayed( new Actor() {
+                            { actPriority = HERO_PRIO + 1; }
+
+                            @Override
+                            protected boolean act() {
+                                Actor.remove( this );
+                                try {
+                                    if (owner.sprite != null) owner.sprite.idle();
+
+                                    if (target.isAlive()
+                                            && owner.isAlive()
+                                            && owner.sprite != null
+                                            && owner instanceof Hero
+                                            && ((Hero) owner).canAttack( target )) {
+                                        owner.attack( target );
+                                    }
+                                } finally {
+                                    inFollowup = false;
+                                }
+                                return true;
+                            }
+                        }, 0 );
                     }
-                };
-
-                if (attacker.sprite != null) attacker.sprite.attack(defender.pos, finish);
-                else finish.call();             // 兜底：没有 sprite 就直接结算，别丢这次攻击
+                } );
 
                 return true;
             }
-        }, 0);
+        }, 0 );
     }
 
     // 判决的充能效果
