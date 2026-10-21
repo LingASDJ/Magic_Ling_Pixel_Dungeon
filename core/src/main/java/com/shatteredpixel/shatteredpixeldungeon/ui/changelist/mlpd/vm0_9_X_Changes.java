@@ -145,7 +145,7 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new Image(Icons.get(Icons.NEWS)), "后续开发预告",
                 "失落古墓外传正在稳步推进开发，更多场景、怪物、专属武器与剧情内容将陆续放出，敬请期待后续版本情报！"));
 
-        changes = new ChangeInfo("v0.9.7.0", true, "");
+        changes = new ChangeInfo("v0.9.7.0-2", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -222,6 +222,18 @@ public class vm0_9_X_Changes {
                 ("_-_ 新增功能优化：多物品快捷栏\n" +
                         "_-_ 部分页面的一些小问题修复\n" +
                         "_-_ 改动界面现在支持搜索关键词")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                ("V0.9.7.1：\n\n" +
+                        "_-_ 修复镜像，虹卫的特殊皮肤兼容问题\n" +
+                        "_-_ 修复莲娜试炼通过后索要商店物品仍然跑路的问题\n" +
+                        "_-_ 修复查种无澪反而查种不一致的异常问题\n" +
+                        "_-_ 修复天痕粘咕地图卡死问题\n" +
+                        "_-_ 优化更新记录的搜索栏\n" +
+                        "_-_ 修复鹰眼远视的视野问题"),
+                (
+                        "_-_ 修复黄饿状态下自然生命恢复失效\n" +
+                        "_-_ 修复十字弩可能在部分怪物上概率掉落\n")));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 ("V0.9.7.0：\n\n" +

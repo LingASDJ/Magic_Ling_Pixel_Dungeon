@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.BottledMarigoldWine;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
@@ -117,9 +118,11 @@ public class Blandfruit extends Food {
 		super.execute(hero, action);
 
 		if (action.equals( AC_EAT ) && potionAttrib != null){
-
-			potionAttrib.apply(hero);
-
+			if(potionAttrib instanceof BottledMarigoldWine){
+				((BottledMarigoldWine) potionAttrib).blt_apply(hero);
+			} else {
+				potionAttrib.apply(hero);
+			}
 		}
 	}
 
@@ -139,6 +142,7 @@ public class Blandfruit extends Food {
 		if (potionAttrib instanceof PotionOfHaste)          return Messages.get(this, "swiftfruit");
 		if (potionAttrib instanceof PotionOfLiquidFlameX)          return Messages.get(this, "halofruit");
 		if (potionAttrib instanceof PotionOfLightStromCloud)          return Messages.get(this, "lightfruit");
+		if (potionAttrib instanceof BottledMarigoldWine)          return Messages.get(this, "longlifefruit");
 		return super.name();
 	}
 
@@ -189,10 +193,11 @@ public class Blandfruit extends Food {
 		if (potionAttrib instanceof PotionOfPurity)         potionGlow = new ItemSprite.Glowing( 0xC152AA );
 		if (potionAttrib instanceof PotionOfExperience)     potionGlow = new ItemSprite.Glowing( 0x404040 );
 		if (potionAttrib instanceof PotionOfHaste)          potionGlow = new ItemSprite.Glowing( 0xCCBB00 );
-		if (potionAttrib instanceof PotionOfLiquidFlameX)          potionGlow = new ItemSprite.Glowing( 0x00ffff );
-		if (potionAttrib instanceof PotionOfLightningShiledX)          potionGlow = new ItemSprite.Glowing( 0xFF4500 );
+		if (potionAttrib instanceof PotionOfLiquidFlameX)   potionGlow = new ItemSprite.Glowing( 0x00ffff );
 
+		if (potionAttrib instanceof PotionOfLightningShiledX)         potionGlow = new ItemSprite.Glowing( 0xFF4500 );
 		if (potionAttrib instanceof PotionOfLightStromCloud)          potionGlow = new ItemSprite.Glowing(Window.CYELLOW);
+		if (potionAttrib instanceof BottledMarigoldWine)              potionGlow = new ItemSprite.Glowing(0xFFD856);
 
 		return this;
 	}
@@ -204,13 +209,15 @@ public class Blandfruit extends Food {
 		if (Dungeon.level.map[cell] == Terrain.WELL || Dungeon.level.pit[cell]) {
 			super.onThrow( cell );
 			
-		} else if (potionAttrib instanceof PotionOfLiquidFlame ||
+		} else if (
+				potionAttrib instanceof PotionOfLiquidFlame ||
 				potionAttrib instanceof PotionOfToxicGas ||
 				potionAttrib instanceof PotionOfParalyticGas ||
 				potionAttrib instanceof PotionOfFrost ||
 				potionAttrib instanceof PotionOfLevitation ||
 				potionAttrib instanceof PotionOfPurity
-				||potionAttrib instanceof PotionOfLiquidFlameX) {
+				||
+				potionAttrib instanceof PotionOfLiquidFlameX) {
 
 			Catalog.countUse(getClass());
 			potionAttrib.shatter( cell );
