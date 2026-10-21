@@ -40,26 +40,61 @@ public final class HeroSkins {
         /** 小头像工厂；null 表示用默认 tier-based 头像 */
         public final Supplier<Image> avatarFactory;
 
+        // ---- 自定义 sprite 纹理与帧布局（供 MirrorSprite/PrismaticSprite 等克隆体使用） ----
+        /** 游戏内精灵纹理路径；null 表示用默认职业 spritesheet */
+        public final String texturePath;
+        /** 自定义帧宽；<=0 表示用默认 12 */
+        public final int frameW;
+        /** 自定义帧高；<=0 表示用默认 15 */
+        public final int frameH;
+        /** idle 动画帧索引；null 表示用默认 */
+        public final int[] idleFrames;
+        /** run 动画帧索引；null 表示用默认 */
+        public final int[] runFrames;
+        /** die 动画帧索引；null 表示用默认 */
+        public final int[] dieFrames;
+        /** attack 动画帧索引；null 表示用默认 */
+        public final int[] attackFrames;
+
         public SkinDef(String splashPath, int splashFrameW, int splashFrameH,
                        Supplier<HeroSprite> spriteFactory,
-                       Supplier<Image> avatarFactory) {
+                       Supplier<Image> avatarFactory,
+                       String texturePath, int frameW, int frameH,
+                       int[] idleFrames, int[] runFrames, int[] dieFrames, int[] attackFrames) {
             this.splashPath = splashPath;
             this.splashFrameW = splashFrameW;
             this.splashFrameH = splashFrameH;
             this.spriteFactory = spriteFactory;
             this.avatarFactory = avatarFactory;
+            this.texturePath = texturePath;
+            this.frameW = frameW;
+            this.frameH = frameH;
+            this.idleFrames = idleFrames;
+            this.runFrames = runFrames;
+            this.dieFrames = dieFrames;
+            this.attackFrames = attackFrames;
         }
 
         /** 只注册大立绘的便捷构造器。 */
         public static SkinDef splash(String path, int w, int h) {
-            return new SkinDef(path, w, h, null, null);
+            return new SkinDef(path, w, h, null, null, null, 0, 0, null, null, null, null);
         }
 
         /** 注册大立绘 + 特殊 sprite + 头像的完整构造器。 */
         public static SkinDef full(String path, int w, int h,
                                    Supplier<HeroSprite> spriteFactory,
                                    Supplier<Image> avatarFactory) {
-            return new SkinDef(path, w, h, spriteFactory, avatarFactory);
+            return new SkinDef(path, w, h, spriteFactory, avatarFactory, null, 0, 0, null, null, null, null);
+        }
+
+        /** 注册带游戏内纹理与帧布局的完整 sprite 皮肤。 */
+        public static SkinDef full(String path, int w, int h,
+                                   Supplier<HeroSprite> spriteFactory,
+                                   Supplier<Image> avatarFactory,
+                                   String texturePath, int frameW, int frameH,
+                                   int[] idleFrames, int[] runFrames, int[] dieFrames, int[] attackFrames) {
+            return new SkinDef(path, w, h, spriteFactory, avatarFactory,
+                    texturePath, frameW, frameH, idleFrames, runFrames, dieFrames, attackFrames);
         }
     }
 
@@ -148,7 +183,12 @@ public final class HeroSkins {
                 Image img = new Image(Assets.Sprites.BUNNY);
                 img.frame(0, 0, 20, 22);
                 return img;
-            }
+            },
+            Assets.Sprites.BUNNY, 20, 22,
+            new int[]{0, 1},
+            new int[]{2, 3, 4, 5, 6, 7},
+            new int[]{8, 9, 10, 11, 12, 13, 14},
+            new int[]{15, 16, 17, 18}
         ));
     }
 }
