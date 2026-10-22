@@ -639,4 +639,8 @@ public class MagesStaff extends MeleeWeapon {
 			size(minSize + (left / lifespan)*(maxSize-minSize) + Random.Float(sizeJitter));
 		}
 	}
+	@Override
+	public boolean useDefaultQuickslotAction(Hero hero) {
+		return true;
+	}
 }

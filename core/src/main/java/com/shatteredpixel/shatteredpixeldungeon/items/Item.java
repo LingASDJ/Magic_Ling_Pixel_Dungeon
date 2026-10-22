@@ -921,4 +921,14 @@ public class Item implements Bundlable {
 		preserveOnSealedResurrect = false;
 		return this;
 	}
+
+	/**
+	 * “使用时选择”模式下是否跳过快捷栏技能菜单，
+	 * 直接执行物品的 defaultAction()。
+	 * 默认返回 false，因此不会改变普通多技能物品的行为。
+	 * 只有确实需要一键使用的物品才重写为 true。
+	 */
+	public boolean useDefaultQuickslotAction(Hero hero) {
+		return false;
+	}
 }
