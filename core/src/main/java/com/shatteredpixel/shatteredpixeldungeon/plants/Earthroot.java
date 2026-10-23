@@ -47,7 +47,10 @@ public class Earthroot extends Plant {
 
 		if (ch != null){
 			if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN) {
-				Barkskin.conditionallyAppend(Dungeon.hero, Dungeon.hero.lvl + 5, 5);
+				Barkskin.conditionallyAppend(
+						Dungeon.hero,
+						Dungeon.hero.lvl + 5,
+						linkDuration(5));
 			} else {
 				Buff.affect(ch, Armor.class).level(ch.HT);
 			}

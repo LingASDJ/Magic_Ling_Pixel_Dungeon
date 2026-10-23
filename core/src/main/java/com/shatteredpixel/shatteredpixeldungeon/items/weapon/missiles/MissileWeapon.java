@@ -276,7 +276,7 @@ abstract public class MissileWeapon extends Weapon {
 	protected float adjacentAccFactor(Char owner, Char target) {
 		if (Dungeon.level.adjacent(owner.pos, target.pos)) {
 			if (owner instanceof Hero) {
-				return (0.5f + 0.2f * ((Hero) owner).pointsInTalent(Talent.POINT_BLANK));
+				return (0.4f + 0.3f * ((Hero) owner).pointsInTalent(Talent.POINT_BLANK));
 			} else {
 				return 0.5f;
 			}
@@ -305,7 +305,11 @@ abstract public class MissileWeapon extends Weapon {
 					RevealedArea a = Buff.affect(curUser, RevealedArea.class, 5 * curUser.pointsInTalent(Talent.SEER_SHOT));
 					a.depth = Dungeon.depth;
 					a.pos = cell;
-					Buff.affect(curUser, Talent.SeerShotCooldown.class, 20f);
+					Buff.affect(
+							curUser,
+							Talent.SeerShotCooldown.class,
+							Talent.SeerShotCooldown.duration(curUser)
+					);
 				}
 			}
 

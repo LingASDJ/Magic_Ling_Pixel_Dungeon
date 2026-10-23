@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -52,8 +53,9 @@ public abstract class TippedDart extends Dart {
 		stackable = true;
 		baseUses = 1f;
 	}
-	
+
 	private static final String AC_CLEAN = "CLEAN";
+
 	
 	@Override
 	public ArrayList<String> actions(Hero hero) {
@@ -62,7 +64,7 @@ public abstract class TippedDart extends Dart {
 		actions.add( AC_CLEAN );
 		return actions;
 	}
-	
+
 	@Override
 	public void execute(final Hero hero, String action) {
 		super.execute(hero, action);
@@ -108,7 +110,6 @@ public abstract class TippedDart extends Dart {
 					}
 				}
 			});
-			
 		}
 	}
 	
@@ -201,6 +202,18 @@ public abstract class TippedDart extends Dart {
 
 		//add a tiny amount to account for rounding error for calculations like 1/3
 		return (MAX_DURABILITY/usages) + 0.001f;
+	}
+
+	//守望者点出天赋萃药秘术，所有涂药飞镖的命中倍率变为必定命中
+	@Override
+	public float accuracyFactor(Char owner, Char target) {
+		if (owner instanceof Hero
+				&& ((Hero) owner).subClass == HeroSubClass.WARDEN
+				&& ((Hero) owner).pointsInTalent(Talent.DURABLE_TIPS) > 0) {
+			return Char.INFINITE_ACCURACY;
+		}
+
+		return super.accuracyFactor(owner, target);
 	}
 	
 	@Override

@@ -41,7 +41,11 @@ public class Stormvine extends Plant {
 
 		if (ch != null) {
 			if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN){
-				Buff.affect(ch, Levitation.class, Levitation.DURATION/2f);
+				Buff.affect(
+						ch,
+						Levitation.class,
+						linkDuration(Levitation.DURATION / 2f)
+				);
 			} else {
 				Buff.affect(ch, Vertigo.class, Vertigo.DURATION);
 			}

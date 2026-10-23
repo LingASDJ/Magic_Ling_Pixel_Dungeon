@@ -321,6 +321,7 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.RejuvenatingStepsFurrow.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.RestoredAgilityTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.SeerShotCooldown.class);
+        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.GrowingShotCooldown.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.SpiritBladesTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.StrikingWaveTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.SuckerPunchTracker.class);

@@ -46,7 +46,12 @@ public class Blindweed extends Plant {
 		
 		if (ch != null) {
 			if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN){
-				Buff.affect(ch, Invisibility.class, Invisibility.DURATION/2f);
+				//细叶裁剪天赋
+				Buff.affect(
+						ch,
+						Invisibility.class,
+						linkDuration(Invisibility.DURATION / 2f)
+				);
 			} else {
 				Buff.prolong(ch, Blindness.class, Blindness.DURATION);
 				Buff.prolong(ch, Cripple.class, Cripple.DURATION);
@@ -56,7 +61,7 @@ public class Blindweed extends Plant {
 				}
 			}
 		}
-		
+
 		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.get( pos ).burst( Speck.factory( Speck.LIGHT ), 4 );
 		}

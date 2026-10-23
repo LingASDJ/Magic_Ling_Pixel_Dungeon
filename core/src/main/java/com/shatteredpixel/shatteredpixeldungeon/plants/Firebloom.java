@@ -45,7 +45,8 @@ public class Firebloom extends Plant {
 	public void activate( Char ch ) {
 		
 		if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN){
-			Buff.affect(ch, FireImbue.class).set( FireImbue.DURATION*0.3f );
+			Buff.affect(ch, FireImbue.class)
+					.set(linkDuration(FireImbue.DURATION * 0.3f));
 		}
 		
 		GameScene.add( Blob.seed( pos, 2, Fire.class ) );
