@@ -45,7 +45,8 @@ public class SkyBlueFireBloom extends Plant {
     public void activate( Char ch ) {
 
         if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN){
-            Buff.affect(ch, HaloFireImBlue.class).set( HaloFireImBlue.DURATION*0.7f );
+            Buff.affect(ch, HaloFireImBlue.class)
+                    .set(linkDuration(HaloFireImBlue.DURATION * 0.7f));
         }
 
         GameScene.add( Blob.seed( pos, 2, HalomethaneFire.class ) );

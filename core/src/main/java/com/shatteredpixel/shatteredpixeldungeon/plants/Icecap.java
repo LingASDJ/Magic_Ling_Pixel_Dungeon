@@ -43,7 +43,11 @@ public class Icecap extends Plant {
 	public void activate( Char ch ) {
 		
 		if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN){
-			Buff.affect(ch, FrostImbue.class, FrostImbue.DURATION*0.3f);
+			Buff.affect(
+					ch,
+					FrostImbue.class,
+					linkDuration(FrostImbue.DURATION * 0.3f)
+			);
 		}
 		
 		PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.losBlocking, null ), 1 );

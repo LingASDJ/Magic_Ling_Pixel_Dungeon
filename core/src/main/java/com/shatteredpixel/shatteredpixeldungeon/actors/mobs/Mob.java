@@ -70,7 +70,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.MyCoreHeart;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerGodsBad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerMachineBad;
@@ -1585,13 +1584,6 @@ public abstract class Mob extends Char {
 				for (Char ch : Actor.chars()){
 					if (fieldOfView[ch.pos] && ch.invisible == 0 && ch.alignment != alignment && ch.alignment != Alignment.NEUTRAL){
 						float chDist = ch.stealth() + distance(ch);
-						//silent steps rogue talent, which also applies to rogue's shadow clone
-						if ((ch instanceof Hero || ch instanceof ShadowClone.ShadowAlly)
-								&& Dungeon.hero.hasTalent(Talent.SILENT_STEPS)){
-							if (distance(ch) >= 4 - Dungeon.hero.pointsInTalent(Talent.SILENT_STEPS)) {
-								chDist = Float.POSITIVE_INFINITY;
-							}
-						}
 						//flying characters are naturally stealthy
 						if (ch.flying && distance(ch) >= 2){
 							chDist = Float.POSITIVE_INFINITY;

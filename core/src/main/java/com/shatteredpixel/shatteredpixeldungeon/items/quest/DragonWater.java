@@ -2,11 +2,9 @@ package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -65,30 +63,15 @@ public class DragonWater extends Item {
         int heal = Math.round( hero.HT * 0.05f * quantity );
 
         int effect = Math.min( hero.HT - hero.HP, heal );
-        int shield = 0;
-        if (hero.hasTalent(Talent.SHIELDING_DEW)){
-            shield = heal - effect;
-            int maxShield = Math.round(hero.HT *0.2f*hero.pointsInTalent(Talent.SHIELDING_DEW));
-            int curShield = 0;
-            if (hero.buff(Barrier.class) != null) curShield = hero.buff(Barrier.class).shielding();
-            shield = Math.min(shield, maxShield-curShield);
-        }
-        if (effect > 0 || shield > 0) {
+        if (effect > 0 ) {
 
-            if (effect > 0 && quantity > 1 && VialOfBlood.delayBurstHealing()){
+            if (  VialOfBlood.delayBurstHealing()){
                 Healing healing = Buff.affect(hero, Healing.class);
                 healing.setHeal(effect, 0, VialOfBlood.maxHealPerTurn());
                 healing.applyVialEffect();
             } else {
                 hero.HP += effect;
-                if (effect > 0){
                     hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(effect), FloatingText.HEALING);
-                }
-            }
-
-            if (shield > 0) {
-                Buff.affect(hero, Barrier.class).incShield(shield);
-                hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING );
             }
 
         } else if (!force) {

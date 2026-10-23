@@ -161,7 +161,7 @@ public enum Talent {
 	//Sniper T3
 	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3),
 	//Warden T3
-	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), SHIELDING_DEW(112, 3),
+	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), SHIELDING_DEW(112, 3),GROWING_SHOT(176,3),
 	//Spectral Blades T4
 	FAN_OF_BLADES(113, 4), PROJECTING_BLADES(114, 4), SPIRIT_BLADES(115, 4),
 	//Natures Power T4
@@ -264,11 +264,50 @@ public enum Talent {
 	};
 	public static class RejuvenatingStepsFurrow extends CounterBuff{{revivePersists = true;}};
 	public static class SeerShotCooldown extends FlavourBuff{
+		/**
+		 * 根据探地之矢等级返回冷却时间。
+		 * +1：30 - 5 × 1 = 25
+		 * +2：30 - 5 × 2 = 20
+		 * +3：30 - 5 × 3 = 15
+		 */
+		public static float duration(Hero hero) {return 30f - 5f * hero.pointsInTalent(SEER_SHOT);}
 		public int icon() { return target.buff(RevealedArea.class) != null ? BuffIndicator.NONE : BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0.4f, 0.7f); }
-		public float iconFadePercent() { return Math.max(0, visualcooldown() / 20); }
+		@Override
+		public float iconFadePercent() {
+			float cooldown = duration(Dungeon.hero);
+			return Math.max(0, visualcooldown() / cooldown);
+		}
 	};
 	public static class SpiritBladesTracker extends FlavourBuff{};
+	/**
+	 * “生息之矢”的冷却 Buff。
+	 * 天赋点数越高，冷却越短：
+	 * 1点 = 25回合
+	 * 2点 = 20回合
+	 * 3点 = 15回合
+	 */
+	public static class GrowingShotCooldown extends FlavourBuff {
+		//图标
+		@Override
+		public int icon() {
+			return BuffIndicator.TIME;
+		}
+		//绿色染色
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(0.25f, 0.8f, 0.25f);
+		}
+		//返回图标的透明度衰减比例。
+		//冷却开始时 visualcooldown() 较大，图标接近完全显示；随着冷却时间减少，图标逐渐变淡。
+		@Override
+		public float iconFadePercent() {
+			float cooldown = 30f
+					- 5f * Dungeon.hero.pointsInTalent(GROWING_SHOT);
+			// 将比例限制在 0~1 之间，避免图标透明度超出正常范围。
+			return GameMath.gate(0, visualcooldown() / cooldown, 1);
+		}
+	}
 
 
 	public static class BloodRiverDealy extends FlavourBuff{
@@ -1045,7 +1084,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES);
 				break;
 			case WARDEN:
-				Collections.addAll(tierTalents, DURABLE_TIPS, BARKSKIN, SHIELDING_DEW);
+				Collections.addAll(tierTalents, DURABLE_TIPS, BARKSKIN, SHIELDING_DEW,GROWING_SHOT);
 				break;
 			case CHAMPION:
 				Collections.addAll(tierTalents, SECONDARY_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY);
