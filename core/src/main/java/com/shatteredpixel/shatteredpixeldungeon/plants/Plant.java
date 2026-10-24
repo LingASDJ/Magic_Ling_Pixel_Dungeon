@@ -355,8 +355,10 @@ public abstract class Plant implements Bundlable {
 					return;
 				}
 
-				//消耗背包中的一枚种子
-				Seed used = (Seed) detach(hero.belongings.backpack);
+				//消耗背包中的一枚种子，但是腐莓不消耗
+				Seed used = this instanceof Rotberry.Seed
+						? this
+						: (Seed) detach(hero.belongings.backpack);
 
 				//按照种子的 plantClass 创建对应植物
 				Plant plant = used.couch(hero.pos, Dungeon.level);
