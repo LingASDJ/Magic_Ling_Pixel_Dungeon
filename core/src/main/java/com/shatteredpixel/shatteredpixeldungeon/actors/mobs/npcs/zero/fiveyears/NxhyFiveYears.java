@@ -44,6 +44,12 @@ public class NxhyFiveYears extends FiveYearsNPC {
         {
             image = ItemSpriteSheet.MOTO_BREW;
         }
+
+        @Override
+        public int energyVal() {
+            return 0;
+        }
+
         @Override
         public void apply(Hero hero) {
             Buff.affect(hero, Adrenaline.class,50f);

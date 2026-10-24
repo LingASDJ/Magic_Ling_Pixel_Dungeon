@@ -3340,8 +3340,7 @@ public class Hero extends Char {
 		float stealth = super.stealth();
 
 		// 隐蔽技巧：与晦暗刻印一样，直接增加潜行值。
-		if (heroClass == HeroClass.ROGUE
-				&& hasTalent(Talent.SILENT_STEPS)) {
+		if (hasTalent(Talent.SILENT_STEPS)) {
 
 			int points = pointsInTalent(Talent.SILENT_STEPS);
 

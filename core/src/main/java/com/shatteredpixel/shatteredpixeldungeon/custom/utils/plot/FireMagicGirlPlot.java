@@ -2,15 +2,13 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.FireMagicDiedNPC;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
 
 public class FireMagicGirlPlot extends Plot {
-
-
-    private final static int maxprocess = 4;
 
     {
         process = 1;
@@ -79,7 +77,8 @@ public class FireMagicGirlPlot extends Plot {
 
     @Override
     public boolean end() {
-        return process > maxprocess;
+        int maxProcess = Statistics.fireGirlAnary ? 3 : 4;
+        return process > maxProcess;
     }
 
     @Override
@@ -91,19 +90,33 @@ public class FireMagicGirlPlot extends Plot {
         Dungeon.hero.interrupt();
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.LN));
         diagulewindow.setLeftName(Messages.get(FireMagicDiedNPC.class, "name"));
-        diagulewindow.changeText(Messages.get(FireMagicDiedNPC.class, "talk_1", Dungeon.hero.name()));
+
+        diagulewindow.changeText(Messages.get(
+                FireMagicDiedNPC.class,
+                FireMagicDiedNPC.dialogueKey(1),
+                Dungeon.hero.name()
+        ));
     }
 
     private void process_to_2() {
-        diagulewindow.changeText(Messages.get(FireMagicDiedNPC.class, "talk_2"));
+        diagulewindow.changeText(Messages.get(
+                FireMagicDiedNPC.class,
+                FireMagicDiedNPC.dialogueKey(2)
+        ));
     }
 
     private void process_to_3() {
-        diagulewindow.changeText(Messages.get(FireMagicDiedNPC.class, "talk_3"));
+        diagulewindow.changeText(Messages.get(
+                FireMagicDiedNPC.class,
+                FireMagicDiedNPC.dialogueKey(3)
+        ));
     }
 
     private void process_to_4() {
-        diagulewindow.changeText(Messages.get(FireMagicDiedNPC.class, "talk_4"));
+        diagulewindow.changeText(Messages.get(
+                FireMagicDiedNPC.class,
+                FireMagicDiedNPC.dialogueKey(4)
+        ));
     }
 }
 

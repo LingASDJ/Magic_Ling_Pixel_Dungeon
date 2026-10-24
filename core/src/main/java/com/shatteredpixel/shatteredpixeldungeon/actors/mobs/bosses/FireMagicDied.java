@@ -1341,7 +1341,9 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
         Badges.KILL_FIREGIRL();
 
-        yell( Messages.get(this, "defeated",Dungeon.hero.name()) );
+        if (!Statistics.fireGirlAnary) {
+            yell(Messages.get(this, "defeated", Dungeon.hero.name()));
+        }
     }
 
     @Override
