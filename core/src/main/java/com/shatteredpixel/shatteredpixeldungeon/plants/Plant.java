@@ -80,15 +80,52 @@ public abstract class Plant implements Bundlable {
 			((Hero) ch).interrupt();
 		}
 
-		if (Dungeon.level.heroFOV[pos] && hero.hasTalent(Talent.NATURES_AID)){
-			// 3/5 turns based on talent points spent
-			Barkskin.conditionallyAppend(hero, 2, 1 + 2*(hero.pointsInTalent(Talent.NATURES_AID)));
-		}
-
 		wither();
 		activate( ch );
 		Bestiary.setSeen(getClass());
 		Bestiary.countEncounter(getClass());
+	}
+
+	public void activateLinked(Char ch) {
+
+		if (!(ch instanceof Hero)) {
+			activate(ch);
+			return;
+		}
+
+		Hero hero = (Hero) ch;
+		hero.interrupt();
+
+		if (hero.subClass != HeroSubClass.WARDEN) {
+			activate(ch);
+			return;
+		}
+
+		float previousMultiplier = linkDurationMultiplier;
+
+		// 1点=1.3倍，2点=1.5倍，3点=1.7倍
+		int points = hero.pointsInTalent(Talent.SHIELDING_DEW);
+
+		linkDurationMultiplier = points == 0
+				? 1f
+				: 1.1f + 0.2f * points;
+
+		try {
+			activate(ch);
+		} finally {
+			// 连结结束后恢复，不影响普通踩踏和其他效果
+			linkDurationMultiplier = previousMultiplier;
+		}
+	}
+
+	private static float linkDurationMultiplier = 1f;
+
+	protected static float linkDuration(float duration) {
+		return duration * linkDurationMultiplier;
+	}
+
+	protected static int linkDuration(int duration) {
+		return Math.round(duration * linkDurationMultiplier);
 	}
 	
 	public abstract void activate( Char ch );
@@ -147,6 +184,8 @@ public abstract class Plant implements Bundlable {
 		public static final String AC_PLANT	= "PLANT";
 
 		public static final String AC_EATSEED	= "EATSEED";
+
+		public static final String AC_LINK = "LINK";
 		
 		private static final float TIME_TO_PLANT = 1f;
 
@@ -179,6 +218,11 @@ public abstract class Plant implements Bundlable {
 			if(hero.heroClass== HeroClass.WARRIOR){
 				actions.add(AC_EATSEED);
 			}
+
+			if (hero.subClass == HeroSubClass.WARDEN) {
+				actions.add(AC_LINK);
+			}
+
 			return actions;
 		}
 
@@ -193,12 +237,22 @@ public abstract class Plant implements Bundlable {
 		 * 这里直接返回空列表，让快捷栏走 {@link Item#execute(Hero)} →
 		 * {@link #defaultAction()}（非战士=THROW 扔出，战士=EATSEED）。
 		 * 想原地种植或吃种子，在物品栏里点种子选对应动作即可。
+		 * 当玩家转职守望者时，quickslotActions() 返回两个动作：扔出、连结。
+		 * 	“使用时选择”模式会弹出选择窗口。
+		 * 	“放入时选择”模式放入种子时会先选择动作。
+		 * 	同一个种子可以分别放入两个快捷栏，一个选择“扔出”，另一个选择“连结”。
 		 */
 		@Override
 		public ArrayList<String> quickslotActions( Hero hero ) {
-			return new ArrayList<>();
-		}
+			ArrayList<String> actions = new ArrayList<>();
 
+			if (hero.subClass == HeroSubClass.WARDEN) {
+				actions.add(AC_THROW);
+				actions.add(AC_LINK);
+			}
+
+			return actions;
+		}
 		protected void satisfy( Hero hero ){
 			float foodVal = 30f;
 
@@ -294,6 +348,29 @@ public abstract class Plant implements Bundlable {
 					Badges.validateFoodEaten();
 				}
 
+			} else if (action.equals(AC_LINK)) {
+
+				//敌人或其他途径伪造动作时也不能触发
+				if (hero.subClass != HeroSubClass.WARDEN) {
+					return;
+				}
+
+				//消耗背包中的一枚种子，但是腐莓不消耗
+				Seed used = this instanceof Rotberry.Seed
+						? this
+						: (Seed) detach(hero.belongings.backpack);
+
+				//按照种子的 plantClass 创建对应植物
+				Plant plant = used.couch(hero.pos, Dungeon.level);
+
+				Catalog.countUse(used.getClass());
+
+				hero.busy();
+				hero.sprite.operate(hero.pos);
+				hero.spend(TIME_TO_PLANT);
+
+				//直接执行效果，不在地图上种植物
+				plant.activateLinked(hero);
 			}
 		}
 

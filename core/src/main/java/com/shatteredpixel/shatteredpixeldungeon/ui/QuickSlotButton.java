@@ -296,6 +296,19 @@ public class QuickSlotButton extends Button {
 				|| GameScene.cancel()) {
 			return;
 		}
+		// “使用时选择”模式下，某些物品跳过技能菜单，直接执行默认动作。例如提灯和老魔杖
+		if (SPDSettings.quickslotSkillMode() == 1
+				&& item.useDefaultQuickslotAction(Dungeon.hero)
+				&& item.defaultAction() != null) {
+
+			item.execute(Dungeon.hero);
+
+			if (item.usesTargeting) {
+				useTargeting(slotNum);
+			}
+
+			return;
+		}
 		// 获取当前真正可用的主动技能
 		ArrayList<String> skills = item.quickslotActions(Dungeon.hero);
 		// 没有多个技能时，保持原版快捷栏行为，直接执行默认动作

@@ -454,6 +454,9 @@ public class CapeOfThorns extends Artifact {
 		}
 
 	}
-
+	@Override
+	public ArrayList<String> quickslotActions(Hero hero) {
+		return new ArrayList<>();
+	}
 
 }

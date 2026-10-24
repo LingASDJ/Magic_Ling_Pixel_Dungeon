@@ -26,14 +26,18 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
@@ -461,12 +465,154 @@ public class SpiritBow extends Weapon {
 						a.depth = Dungeon.depth;
 						a.branch = Dungeon.branch;
 						a.pos = shotPos;
-						Buff.affect(user, Talent.SeerShotCooldown.class, 20f);
+						Buff.affect(
+								user,
+								Talent.SeerShotCooldown.class,
+								Talent.SeerShotCooldown.duration(user)
+						);
 					}
 				}
 
 				super.cast(user, dst);
 			}
+
+			if (user.subClass == HeroSubClass.WARDEN) {
+				tryGrowingShot(user, dst);
+			}
+		}
+		/**
+		 * 尝试触发“生息之矢”。
+		 * 1点：在落点生成1格草。
+		 * 2点：在落点左右生成3格横排草。
+		 * 3点：在落点生成5格十字形草。
+		 * 箭矢必须落在没有角色的可生草地面。
+		 * 只有实际处理了地面之后，才会进入冷却。
+		 */
+		private void tryGrowingShot(Hero user, int dst) {
+			int points = user.pointsInTalent(Talent.GROWING_SHOT);
+			// 未学习天赋或仍在冷却中时，不触发效果
+			if (points <= 0
+					|| user.buff(Talent.GrowingShotCooldown.class) != null) {
+				return;
+			}
+			// 把玩家选择的目标转换为箭矢的实际落点，
+			int shotPos = throwPos(user, dst);
+			// 落点本身必须是能生草的空地面。
+			if (!canGrowGrassAt(shotPos)) {
+				return;
+			}
+			// RejuvenatingStepsFurrow 是原版“复春步伐”使用的经验追踪器：
+			// 生成高草时增加计数，获得经验时减少计数
+			Talent.RejuvenatingStepsFurrow furrow =
+					user.buff(Talent.RejuvenatingStepsFurrow.class);
+
+			boolean highGrass = Regeneration.regenOn()
+					&& (furrow == null || furrow.count() < 200);
+
+			ArrayList<Integer> cells = getGrowingShotCells(shotPos, points);
+
+			int grownCells = 0;
+			int highGrassCells = 0;
+
+			for (int cell : cells) {
+				// 周围格子可能有墙、角色或不适合生草的地形，
+				// 这类格子直接跳过，不会强行覆盖。
+				if (!canGrowGrassAt(cell)) {
+					continue;
+				}
+
+				Level.set(cell, highGrass
+								? Terrain.HIGH_GRASS
+								: Terrain.FURROWED_GRASS
+				);
+
+				GameScene.updateMap(cell);
+
+				grownCells++;
+				if (highGrass) {
+					highGrassCells++;
+				}
+			}
+				// 落点已经验证过，理论上至少会生成1格。
+				if (grownCells == 0) {
+					return;
+				}
+
+			// 生成正常高草时累计“长时间未获得经验”的计数器。
+			if (highGrass) {
+				Buff.count(
+						user,
+						Talent.RejuvenatingStepsFurrow.class,
+						highGrassCells
+								* (3 - user.pointsInTalent(Talent.REJUVENATING_STEPS))
+				);
+			}
+
+			// 成功在地面生成草后开始冷却
+			// 1点：25回合；2点：20回合；3点：15回合
+			Buff.affect(
+					user,
+					Talent.GrowingShotCooldown.class,
+					30f - 5f * points
+			);
+		}
+		/**
+		 * 根据天赋点数返回本次要处理的地图格。
+		 * points = 1：[中心]
+		 * points = 2：[左、中心、右]
+		 * points = 3：[上、左、中心、右、下]
+		 */
+		private ArrayList<Integer> getGrowingShotCells(int center, int points) {
+
+			ArrayList<Integer> cells = new ArrayList<>();
+			cells.add(center);
+
+			int width = Dungeon.level.width();
+
+			if (points >= 2) {
+				// 横排左右两格。
+				// 如果中心格位于地图最左或最右列，则对应一侧跳过。
+				if (center % width != 0) {
+					cells.add(center - 1);
+				}
+
+				if ((center + 1) % width != 0) {
+					cells.add(center + 1);
+				}
+			}
+
+			if (points >= 3) {
+				// 上下两格组成十字形。
+				if (Dungeon.level.insideMap(center - width)) {
+					cells.add(center - width);
+				}
+
+				if (Dungeon.level.insideMap(center + width)) {
+					cells.add(center + width);
+				}
+			}
+
+			return cells;
+		}
+		/**
+		 * 判断指定格子是否允许生息之矢生成草。
+		 * 这里只接受原本就可以承载草或改变地形的地面，
+		 * 避免把水面、熔岩、门、墙等地形转换成草地。
+		 */
+		private boolean canGrowGrassAt(int cell) {
+
+			if (!Dungeon.level.insideMap(cell)
+					|| Actor.findChar(cell) != null) {
+				return false;
+			}
+
+			int terrain = Dungeon.level.map[cell];
+
+			return terrain == Terrain.EMPTY
+					|| terrain == Terrain.EMPTY_DECO
+					|| terrain == Terrain.EMBERS
+					|| terrain == Terrain.HIGH_GRASS
+					|| terrain == Terrain.FURROWED_GRASS;
 		}
 	}
 	

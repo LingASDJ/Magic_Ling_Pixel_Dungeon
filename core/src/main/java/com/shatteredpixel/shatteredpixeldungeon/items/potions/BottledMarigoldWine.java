@@ -66,6 +66,11 @@ public class BottledMarigoldWine extends Potion{
         Buff.affect(hero, MarigoldBuff.class, 30f);
     }
 
+
+    public void blt_apply(Hero hero) {
+        Buff.affect(hero, MarigoldBuff.class, 30f);
+    }
+
     // 扔：400 气体量酒气
     @Override
     public void shatter(int cell) {

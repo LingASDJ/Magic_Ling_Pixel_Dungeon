@@ -33,8 +33,8 @@ public class Marigold extends Plant {
     public void activate( Char ch ) {
 
         if (ch == null) return;
-        Buff.affect(ch, MarigoldBuff.class, 15f);
 
+        Buff.affect(ch, MarigoldBuff.class, linkDuration(15f));
     }
 
     public static class Seed extends Plant.Seed {

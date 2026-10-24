@@ -95,19 +95,45 @@ public abstract class EquipableItem extends Item {
 
 		super.execute( hero, action );
 
-		if (action.equals( AC_EQUIP )) {
-			//In addition to equipping itself, item reassigns itself to the quickslot
-			//This is a special case as the item is being removed from inventory, but is staying with the hero.
-			int slot = Dungeon.quickslot.getSlot( this );
+		if (action.equals(AC_EQUIP)) {
+
+			// 在装备前记录该物品占用的全部快捷栏槽位
+			// 多技能物品可能同时绑定多个槽位，因此不只使用 getSlot
+			ArrayList<Integer> slots =
+					Dungeon.quickslot.getSlots(this);
+
+			// 同时保存每个槽位绑定的技能。
+			String[] savedActions = new String[slots.size()];
+
+			for (int i = 0; i < slots.size(); i++) {
+				savedActions[i] =
+						Dungeon.quickslot.getSlotAction(slots.get(i));
+			}
+
+			// 用于新装备继承被替换装备的快捷栏位置
+			// 只有当前装备原本不在快捷栏时才会用到
 			slotOfUnequipped = -1;
+
 			doEquip(hero);
-			if (slot != -1) {
-				Dungeon.quickslot.setSlot( slot, this );
+
+			if (!slots.isEmpty()) {
+
+				// 装备后重新关联全部原槽位
+				for (int i = 0; i < slots.size(); i++) {
+					Dungeon.quickslot.setSlotWithAction(
+							slots.get(i),
+							this,
+							savedActions[i]
+					);
+				}
+
 				updateQuickslot();
-				//if this item wasn't quickslotted, but the item it is replacing as equipped was
-				//then also have the item occupy the unequipped item's quickslot
-			} else if (slotOfUnequipped != -1 && defaultAction() != null) {
-				Dungeon.quickslot.setSlot( slotOfUnequipped, this );
+
+			} else if (slotOfUnequipped != -1
+					&& defaultAction() != null) {
+
+				// 如果当前装备原本没有快捷栏位置,但被替换下来的装备有快捷栏位置,则让新装备继承那一个槽位
+				Dungeon.quickslot.setSlot(slotOfUnequipped, this);
 				updateQuickslot();
 			}
 		} else if (action.equals( AC_UNEQUIP )) {

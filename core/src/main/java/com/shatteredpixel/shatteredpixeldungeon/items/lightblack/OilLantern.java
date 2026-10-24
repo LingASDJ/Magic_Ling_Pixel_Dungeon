@@ -174,6 +174,11 @@ public class OilLantern extends Artifact {
         // 加油等其他动作继续走默认规则。
         return super.resolveQuickslotAction(savedAction, currentActions);
     }
+    
+    @Override
+    public boolean useDefaultQuickslotAction(Hero hero) {
+        return true;
+    }
 
     public void execute(Hero hero, String action) {
         switch (action) {

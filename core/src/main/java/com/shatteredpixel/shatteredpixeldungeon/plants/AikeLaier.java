@@ -53,7 +53,10 @@ public class AikeLaier extends Plant {
             } else if (ch instanceof Hero){
                 GLog.i( Messages.get(this, "refreshed") );
                 PotionOfHealing.cure(ch);
-                Buff.affect(ch, ChampionHero.Light.class, ChampionHero.DURATION/5);
+                Buff.affect(
+                        ch,
+                        ChampionHero.Light.class,
+                        linkDuration(ChampionHero.DURATION / 5f));
                 Buff.affect(ch, Healing.class).setHeal((int)Math.ceil(ch.HT * 0.1f), 5f, 6);
             }
         }

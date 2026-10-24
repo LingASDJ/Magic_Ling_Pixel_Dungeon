@@ -978,14 +978,34 @@ public class Hero extends Char {
 
 		return super.defenseVerb();
 	}
+	/**
+	 * 判断女猎手当前是否站在草地地形中。
+	 * GRASS         植物所在的草地
+	 * HIGH_GRASS    高草
+	 * FURROWED_GRASS 枯草/被踩过的草
+	 */
+	private boolean standingInGrass() {
+		int terrain = level.map[pos];
+
+		return terrain == Terrain.GRASS
+				|| terrain == Terrain.HIGH_GRASS
+				|| terrain == Terrain.FURROWED_GRASS;
+	}
 
 	@Override
 	public int drRoll() {
 		int dr = super.drRoll();
-		if( Dungeon.isDLC(Conducts.Conduct.DEV) &&CustomPlayer.overrideGame &&!CustomPlayer.shouldOverride ){
-			dr += CustomPlayer.baseArmor;
-		}
+		// 自然之庇：女猎手站在草中时获得额外护甲。
+		// +1获得0-1护甲，+2获得0-2护甲。
+		if (heroClass == HeroClass.HUNTRESS
+				&& hasTalent(Talent.NATURES_AID)
+				&& standingInGrass()) {
 
+			dr += Random.NormalIntRange(
+					0,
+					pointsInTalent(Talent.NATURES_AID)
+			);
+		}
 		if (belongings.armor() != null) {
 			int armDr = Random.NormalIntRange( belongings.armor().DRMin(), belongings.armor().DRMax());
 			if (STR() < belongings.armor().STRReq()){
@@ -3319,7 +3339,17 @@ public class Hero extends Char {
 	public float stealth() {
 		float stealth = super.stealth();
 
-		if (belongings.armor() != null){
+		// 隐蔽技巧：与晦暗刻印一样，直接增加潜行值。
+		if (hasTalent(Talent.SILENT_STEPS)) {
+
+			int points = pointsInTalent(Talent.SILENT_STEPS);
+
+			// +1：等级/4
+			// +2：等级/2
+			stealth += lvl / (points == 1 ? 4f : 2f);
+		}
+
+		if (belongings.armor() != null) {
 			stealth = belongings.armor().stealthFactor(this, stealth);
 		}
 
@@ -4080,9 +4110,8 @@ public class Hero extends Char {
 
 		boolean smthFound = false;
 
-		boolean circular = pointsInTalent(Talent.WIDE_SEARCH) == 1;
+		boolean circular = false;
 		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;
-		if (hasTalent(Talent.WIDE_SEARCH)) distance++;
 
 		boolean foresight = buff(Foresight.class) != null;
 		boolean foresightScan = foresight && !level.mapped[pos];
@@ -4172,8 +4201,22 @@ public class Hero extends Char {
 						if (CelestialBrush.isEquippedAndCursed()) {
 							chance /= 2f; // 诅咒生效，陷阱感知概率减半
 						}
+						// 敏锐直觉：
+						// 只在自动搜索时提高概率。
+						// +1：乘以1.5；+2：乘以2.0。
+						if (!intentional
+								&& !foresight
+								&& hasTalent(Talent.WIDE_SEARCH)) {
 
-						if (Random.Float() < chance) {
+							chance *= 1f
+									+ 0.5f * pointsInTalent(Talent.WIDE_SEARCH);
+
+							// 避免概率超过100%
+							chance = Math.min(chance, 1f);
+						}
+
+
+							if (Random.Float() < chance) {
 
 							int oldValue = level.map[curr];
 

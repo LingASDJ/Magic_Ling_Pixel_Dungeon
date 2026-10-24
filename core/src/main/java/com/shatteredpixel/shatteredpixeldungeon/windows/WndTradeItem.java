@@ -310,6 +310,30 @@ public class WndTradeItem extends WndInfoItem {
 		if (selling) Shopkeeper.sell();
 	}
 
+	public static void sell( Item item, Shopkeeper shop, float priceMulti ) {
+
+		Hero hero = Dungeon.hero;
+
+		if (item.isEquipped( hero ) && !((EquipableItem)item).doUnequip( hero, false )) {
+			return;
+		}
+		item.detachAll( hero.belongings.backpack );
+
+		//selling items in the sell interface doesn't spend time
+		hero.spend(-hero.cooldown());
+
+		int sellPrice;
+		sellPrice = (int) (item.value() * priceMulti);
+		new Gold(sellPrice).doPickUp( hero );
+
+		if (shop != null){
+			shop.buybackItems.add(item);
+			while (shop.buybackItems.size() > Shopkeeper.MAX_BUYBACK_HISTORY){
+				shop.buybackItems.remove(0);
+			}
+		}
+	}
+
 	public static void sell( Item item, Shopkeeper shop ) {
 
 		Hero hero = Dungeon.hero;
@@ -339,6 +363,32 @@ public class WndTradeItem extends WndInfoItem {
 	}
 
 	public static void sellOne( Item item, Shopkeeper shop ) {
+
+		if (item.quantity() <= 1) {
+			sell( item, shop );
+		} else {
+
+			Hero hero = Dungeon.hero;
+
+			item = item.detach( hero.belongings.backpack );
+
+			//selling items in the sell interface doesn't spend time
+			hero.spend(-hero.cooldown());
+
+			int sellPrice;
+			sellPrice = (int) (item.value() * priceMulti);
+			new Gold(sellPrice).doPickUp( hero );
+
+			if (shop != null){
+				shop.buybackItems.add(item);
+				while (shop.buybackItems.size() > Shopkeeper.MAX_BUYBACK_HISTORY){
+					shop.buybackItems.remove(0);
+				}
+			}
+		}
+	}
+
+	public static void sellOne( Item item, Shopkeeper shop, float priceMulti ) {
 
 		if (item.quantity() <= 1) {
 			sell( item, shop );

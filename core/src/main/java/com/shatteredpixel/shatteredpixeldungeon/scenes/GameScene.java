@@ -1816,17 +1816,70 @@ public class GameScene extends PixelScene {
 
 			if (Dungeon.hero.hasTalent(Talent.ROGUES_FORESIGHT)
 					&& Dungeon.level instanceof RegularLevel) {
-				int reqSecrets = Dungeon.level.feeling == Level.Feeling.SECRETS ? 2 : 1;
-				for (Room r : ((RegularLevel) Dungeon.level).rooms()) {
-					if (r instanceof SecretRoom) reqSecrets--;
+
+				int points = Dungeon.hero.pointsInTalent(Talent.ROGUES_FORESIGHT);
+
+				int reqSecrets =
+						Dungeon.level.feeling == Level.Feeling.SECRETS ? 2 : 1;
+
+				ArrayList<Integer> secretDoors = new ArrayList<>();
+
+				for (Room room : ((RegularLevel) Dungeon.level).rooms()) {
+					if (room instanceof SecretRoom) {
+						reqSecrets--;
+
+						Room.Door door = ((SecretRoom) room).entrance();
+
+						if (door != null && door.type == Room.Door.Type.HIDDEN) {
+							int cell = Dungeon.level.pointToCell(door);
+
+							if (Dungeon.level.map[cell] == Terrain.SECRET_DOOR
+									&& !secretDoors.contains(cell)) {
+								secretDoors.add(cell);
+							}
+						}
+					}
 				}
 
-				//50%/75% chance, use level's seed so that we get the same result for the same level
-				Random.pushGenerator(Dungeon.seedCurDepth());
-				if (reqSecrets <= 0 && Random.Int(4) <= Dungeon.hero.pointsInTalent(Talent.ROGUES_FORESIGHT)) {
-					GLog.p(Messages.get(this, "secret_hint"));
+				// 这个楼层确实存在密室时才处理。
+				if (reqSecrets <= 0 && !secretDoors.isEmpty()) {
+
+					// 使用楼层种子，读档后不会重新抽取结果。
+					Random.pushGenerator(Dungeon.seedCurDepth());
+
+					try {
+						// +1：75%知道存在密室
+						// +2：100%知道存在密室
+						boolean knowsSecret = points >= 2
+								|| Random.Float() < 0.75f;
+
+						if (knowsSecret) {
+							GLog.p(Messages.get(this, "secret_hint"));
+
+							// 知道存在密室后：
+							// +1：25%直接揭示一扇秘密门
+							// +2：50%直接揭示一扇秘密门
+							float revealChance = points >= 2 ? 0.5f : 0.25f;
+
+							if (Random.Float() < revealChance) {
+								int cell = Random.element(secretDoors);
+								int oldValue = Dungeon.level.map[cell];
+
+								// 揭示秘密门，但不展示密室内部。
+								GameScene.discoverTile(cell, oldValue);
+								Dungeon.level.discover(cell);
+								Dungeon.level.mapped[cell] = true;
+								GameScene.updateMap(cell);
+
+								GLog.p(Messages.get(this, "secret_revealed"));
+								Sample.INSTANCE.play(Assets.Sounds.SECRET);
+							}
+						}
+
+					} finally {
+						Random.popGenerator();
+					}
 				}
-				Random.popGenerator();
 			}
 
 			boolean unspentTalents = false;
@@ -1888,13 +1941,20 @@ public class GameScene extends PixelScene {
 					break;
 			}
 
+			boolean hasChampion = false;
+
 			for (Mob mob : Dungeon.level.mobs) {
-				if (!mob.buffs(ChampionEnemy.class).isEmpty() && Dungeon.isChallenged(SBSG)) {
-					GLog.n(Messages.get(ChampionEnemy.class, "warn2"));
-					GLog.w(Messages.get(ChampionEnemy.class, "warn"));
-				} else if (!mob.buffs(ChampionEnemy.class).isEmpty() && Dungeon.isChallenged(CHAMPION_ENEMIES)) {
-					GLog.w(Messages.get(ChampionEnemy.class, "warn"));
+				if (!mob.buffs(ChampionEnemy.class).isEmpty()) {
+					hasChampion = true;
+					break;
 				}
+			}
+
+			if (hasChampion && Dungeon.isChallenged(SBSG)) {
+				GLog.n(Messages.get(ChampionEnemy.class, "warn2"));
+				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
+			} else if (hasChampion && Dungeon.isChallenged(CHAMPION_ENEMIES)) {
+				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
 			}
 
 			if (Dungeon.hero.buff(AscensionChallenge.class) != null) {
