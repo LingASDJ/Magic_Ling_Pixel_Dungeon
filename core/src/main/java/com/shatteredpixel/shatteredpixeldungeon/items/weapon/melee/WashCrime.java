@@ -31,6 +31,10 @@ public class WashCrime extends MeleeWeapon {
     private int killmobs;
     private int spawnmobs;
 
+    public float spawnChance(){
+        return 0.3f + buffedLvl()*0.05f;
+    }
+
     @Override
     public int min(int lvl) {
         return  2 + (lvl) + Math.min(killmobs / 2, 26);//level scaling
@@ -64,14 +68,13 @@ public class WashCrime extends MeleeWeapon {
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         killmobs = bundle.getInt("lvl");
-        spawnmobs = bundle.getInt("vlv");
+        spawnmobs = 0;
     }
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put("lvl", killmobs);
-        bundle.put("vlv",spawnmobs);
     }
 
     @Override
@@ -97,51 +100,34 @@ public class WashCrime extends MeleeWeapon {
             }
         });
 
-        if (killmobs>= 2) {
-            for (int i : PathFinder.NEIGHBOURS9){
 
-                if (!Dungeon.level.solid[attacker.pos + i]
-                        && !Dungeon.level.pit[attacker.pos + i]
-                        && Actor.findChar(attacker.pos + i) == null
-                        && attacker == Dungeon.hero && spawnmobs < 1 && this.level>1 ) {
+        if (killmobs>= 2 && spawnmobs <= 5) {
 
-                    WashCrime.DiedGhost Mob = new WashCrime.DiedGhost();
-                    Mob.pos = defender.pos + i;
-                    Mob.aggro(defender);
-                    GameScene.add(Mob);
-                    Dungeon.level.occupyCell(Mob);
-
-                    spawnmobs++;
-
-                    CellEmitter.get(Mob.pos).burst(Speck.factory(Speck.EVOKE), 4);
-                    break;
-                } else if(!Dungeon.level.solid[attacker.pos + i]
-                        && !Dungeon.level.pit[attacker.pos + i]
-                        && Actor.findChar(attacker.pos + i) == null
-                        && attacker == Dungeon.hero && spawnmobs<2 && this.level>6 ){
-                    WashCrime.DiedGhost Mob = new WashCrime.DiedGhost();
-                    Mob.pos = defender.pos + i;
-                    Mob.aggro(defender);
-                    GameScene.add(Mob);
-                    Dungeon.level.occupyCell(Mob);
-
-                    spawnmobs++;
-
-                    CellEmitter.get(Mob.pos).burst(Speck.factory(Speck.EVOKE), 4);
-                } else if(!Dungeon.level.solid[attacker.pos + i]) {
-                    spawnmobs = 0;
-                    return super.proc( attacker, defender, damage );
+            ArrayList<Integer> candidates = new ArrayList<>();
+            if (attacker == Dungeon.hero) {
+                for (int i : PathFinder.NEIGHBOURS9) {
+                    int cell = defender.pos + i;
+                    if (Dungeon.level.solid[cell]) continue;
+                    if (Dungeon.level.pit[cell]) continue;
+                    if (Actor.findChar(cell) != null) continue;
+                    candidates.add(cell);
+                }
+                if (!candidates.isEmpty() && Random.Float() < spawnChance()) {
+                    int cell = Random.element(candidates);
+                    if (spawnmobs < 5) {
+                        WashCrime.DiedGhost Mob = new WashCrime.DiedGhost();
+                        Mob.pos = cell;
+                        Mob.aggro(defender);
+                        GameScene.add(Mob);
+                        Dungeon.level.occupyCell(Mob);
+                        spawnmobs++;
+                        CellEmitter.get(Mob.pos).burst(Speck.factory(Speck.EVOKE), 4);
+                    }
                 }
             }
-
-
-            if (Random.NormalIntRange(1, 4) == 4) {
-                Buff.prolong(defender, Cripple.class, 8f);
-            } else {
-                return super.proc(attacker, defender, damage);
-            }
-
         }
+
+        if (defender.isAlive() && Random.NormalIntRange(1, 4) == 4) Buff.prolong(defender, Cripple.class, 8f);
 
         return super.proc(attacker, defender, damage);
     }
@@ -167,9 +153,10 @@ public class WashCrime extends MeleeWeapon {
             return Random.Int(3+killmobs/10, 6+killmobs/10);
         }
 
-        public void die(Object cause) {
-            super.die(cause);
-            spawnmobs=0;
+        @Override
+        public void destroy() {
+            super.destroy();
+            if (spawnmobs > 0) spawnmobs--;
         }
 
         private class Wandering extends Mob.Wandering{

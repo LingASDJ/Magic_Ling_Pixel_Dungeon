@@ -11,20 +11,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 public class FloatingParalysis extends Buff {
     {
         type = buffType.POSITIVE;
+        actPriority = HERO_PRIO - 1;
     }
 
     @Override
     public boolean act() {
         if (target != null && Dungeon.level != null) {
             for (Char ch : Actor.chars()) {
-                if (ch == target) continue;
-                if (ch.alignment == target.alignment) continue;
-                if (ch.buff(Levitation.class) == null) continue;
-
-                Paralysis p = ch.buff(Paralysis.class);
-                if (p == null || p.cooldown() < 1f) {
-                    Buff.affect(ch, Paralysis.class, 1f);
-                }
+                if (ch == target
+                        || ch.alignment == target.alignment
+                        || ch.buff(Levitation.class) == null) continue;
+                Buff.prolong(ch, Paralysis.class, 1f);
             }
         }
         spend(TICK);
