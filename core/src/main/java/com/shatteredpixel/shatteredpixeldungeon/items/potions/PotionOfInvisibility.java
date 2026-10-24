@@ -28,8 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Revealed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -51,12 +51,14 @@ public class PotionOfInvisibility extends Potion {
 			GLog.i( Messages.get(this, "invisible") );
 			Sample.INSTANCE.play( Assets.Sounds.MELD );
 		} else {
-			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-				mob.beckon( Dungeon.hero.pos );
-			}
-			GLog.i( Messages.get(this, "notinvisible") );
-			Sample.INSTANCE.play( Assets.Sounds.ALERT );
-			CellEmitter.center( Dungeon.hero.pos ).start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
+			Buff.detach(hero, Invisibility.class);
+			Buff.affect(hero, Revealed.class, Revealed.DURATION);
+
+			GLog.i(Messages.get(this, "revealed"));
+			Sample.INSTANCE.play(Assets.Sounds.MELD);
+
+			CellEmitter.center(Dungeon.hero.pos)
+					.start(Speck.factory(Speck.LIGHT), 0.2f, 3);
 		}
 
 

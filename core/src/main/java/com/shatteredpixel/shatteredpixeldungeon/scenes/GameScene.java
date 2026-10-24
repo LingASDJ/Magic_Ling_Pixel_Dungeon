@@ -1827,12 +1827,17 @@ public class GameScene extends PixelScene {
 				for (Room room : ((RegularLevel) Dungeon.level).rooms()) {
 					if (room instanceof SecretRoom) {
 						reqSecrets--;
-					}
-				}
 
-				for (int i = 0; i < Dungeon.level.length(); i++) {
-					if (Dungeon.level.map[i] == Terrain.SECRET_DOOR) {
-						secretDoors.add(i);
+						Room.Door door = ((SecretRoom) room).entrance();
+
+						if (door != null && door.type == Room.Door.Type.HIDDEN) {
+							int cell = Dungeon.level.pointToCell(door);
+
+							if (Dungeon.level.map[cell] == Terrain.SECRET_DOOR
+									&& !secretDoors.contains(cell)) {
+								secretDoors.add(cell);
+							}
+						}
 					}
 				}
 
@@ -1936,13 +1941,20 @@ public class GameScene extends PixelScene {
 					break;
 			}
 
+			boolean hasChampion = false;
+
 			for (Mob mob : Dungeon.level.mobs) {
-				if (!mob.buffs(ChampionEnemy.class).isEmpty() && Dungeon.isChallenged(SBSG)) {
-					GLog.n(Messages.get(ChampionEnemy.class, "warn2"));
-					GLog.w(Messages.get(ChampionEnemy.class, "warn"));
-				} else if (!mob.buffs(ChampionEnemy.class).isEmpty() && Dungeon.isChallenged(CHAMPION_ENEMIES)) {
-					GLog.w(Messages.get(ChampionEnemy.class, "warn"));
+				if (!mob.buffs(ChampionEnemy.class).isEmpty()) {
+					hasChampion = true;
+					break;
 				}
+			}
+
+			if (hasChampion && Dungeon.isChallenged(SBSG)) {
+				GLog.n(Messages.get(ChampionEnemy.class, "warn2"));
+				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
+			} else if (hasChampion && Dungeon.isChallenged(CHAMPION_ENEMIES)) {
+				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
 			}
 
 			if (Dungeon.hero.buff(AscensionChallenge.class) != null) {
