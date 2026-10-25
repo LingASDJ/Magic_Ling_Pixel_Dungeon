@@ -64,6 +64,8 @@ import java.util.Comparator;
 
 public class Item implements Bundlable {
 
+	public boolean noTRScroll = false;
+
 	public interface AnimationItem{}
 
 	public interface ThanksItem{}

@@ -215,6 +215,9 @@ public class vm0_9_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WASH_CRIME), ("涤罪调整"),
+                ("修复涤罪的生成怨灵时选址的问题以及残废不生效的问题，且怨灵上限增至5，生成概率修正为（30+5*武器等级）%")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_12), ("药水癔症v0.5"),
                 ("_-_ 挑衅药剂→显影药剂\n" +
                         "_-_ 效果更改：使5回合内全层敌怪获得英雄视野。（以新buff“显影”来实现）\n" +
@@ -241,14 +244,16 @@ public class vm0_9_X_Changes {
                         "_-_ 修复查种无澪反而查种不一致的异常问题\n" +
                         "_-_ 修复天痕粘咕地图卡死问题\n" +
                         "_-_ 优化更新记录的搜索栏\n" +
-                        "_-_ 修复鹰眼远视的视野问题"),
+                        "_-_ 修复鹰眼远视的视野问题"+
+                        "_-_ 修复黄饿状态下自然生命恢复失效\n"),
                 (
-                        "_-_ 修复黄饿状态下自然生命恢复失效\n" +
                         "_-_ 修复十字弩可能在部分怪物上概率掉落\n" +
                                 "_-_ 修复“放入时选择”时，多技能装备在卸下后再装备会清理快捷栏的问题，老魔杖和提灯在“使用时选择”下不进行多技能快捷栏判定\n" +
                                 "_-_ 修复了其他角色获取隐蔽技巧不生效的问题\n" +
                                 "_-_ 修复了地形感知不正确发现隐藏房间的问题\n" +
-                                "_-_ 优化了精英突变的生成文本，使其不在进入新楼层时刷屏影响其他文本消息")));
+                                "_-_ 优化了精英突变的生成文本，使其不在进入新楼层时刷屏影响其他文本消息\n" +
+                                "_-_ 修复部分特殊卷轴可以参与嬗变导致部分天赋无限生效的问题\n" +
+                                "_-_ 优化白浪刺剑施加麻痹的逻辑（修复了施加过久的麻痹的问题，但浮空后立即施加麻痹暂未实现(也就是说敌人浮空的一瞬间仍热会完成其本回合将要进行的行动)）")));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 ("V0.9.7.0：\n\n" +
