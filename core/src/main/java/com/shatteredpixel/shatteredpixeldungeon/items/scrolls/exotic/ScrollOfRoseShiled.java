@@ -36,6 +36,7 @@ public class ScrollOfRoseShiled extends Scroll {
     {
         image = ItemSpriteSheet.ROSE_SCROLL;
         unique = true;
+        noTRScroll = true;
     }
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

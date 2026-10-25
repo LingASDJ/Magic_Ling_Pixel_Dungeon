@@ -25,6 +25,7 @@ public class ScrollOfSoul extends Scroll {
         image = ItemSpriteSheet.SOUL_SCROLL;
         unique = true;
         soulLimit = 300;
+        noTRScroll = true;
     }
 
     @Override

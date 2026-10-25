@@ -43,6 +43,7 @@ public class ScrollOfFlameCursed extends Scroll {
     {
         image = ItemSpriteSheet.FLAME_SCROLL;
         unique = true;
+        noTRScroll = true;
     }
 
     public void bolt(Integer target, final Mob mob){
