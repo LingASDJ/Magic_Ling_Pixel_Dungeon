@@ -156,13 +156,13 @@ public class vm0_9_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：英文(EN)"),
-                ("英文翻译更新，目前覆盖率为99.15%，感谢英文翻译组团队。")));
+                ("英文翻译更新，目前覆盖率为99.65%，感谢英文翻译组团队。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：俄文(RU)"),
-                ("俄文翻译更新，目前覆盖率为99.12%，感谢俄文翻译组团队。")));
+                ("俄文翻译更新，目前覆盖率为99.72%，感谢俄文翻译组团队。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：葡萄牙语(PTBR)"),
-                ("葡萄牙语翻译更新，但目前覆盖率较低，仅5%，但还是非常感谢葡萄牙翻译组团队。")));
+                ("葡萄牙语翻译更新，但目前覆盖率较低，仅7%，但还是非常感谢葡萄牙翻译组团队。")));
 
         Image img = new Image(Assets.Sprites.BUNNY);
         img.frame(0, 0, 20, 22);
@@ -221,8 +221,7 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_12), ("药水癔症v0.5"),
                 ("_-_ 挑衅药剂→显影药剂\n" +
                         "_-_ 效果更改：使5回合内全层敌怪获得英雄视野。（以新buff“显影”来实现）\n" +
-                        "_-_ 断腿药剂→缚足药剂（仅文本修改）\n" +
-                        "_-_ 莲娜抢劫战斗后对话文本新增双打与暴怒两种情况")));
+                        "_-_ 断腿药剂→缚足药剂（仅文本修改）" )));
 
 
         changes.addButton(new ChangeButton(new ItemSprite(new DistressSignalNesting()), ("动态物品贴图：V0.2"),
@@ -235,7 +234,8 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("功能优化"),
                 ("_-_ 新增功能优化：多物品快捷栏\n" +
                         "_-_ 部分页面的一些小问题修复\n" +
-                        "_-_ 改动界面现在支持搜索关键词")));
+                        "_-_ 改动界面现在支持搜索关键词\n" +
+                        "_-_ 莲娜抢劫战斗后对话文本新增双打与暴怒两种情况")));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 ("V0.9.7.1：\n\n" +
@@ -319,10 +319,8 @@ public class vm0_9_X_Changes {
                 "天赋调整：\n\n" +
                         "持久药液→萃药秘术 \n" +
                         "自然仙子的涂药飞镖拥有2/3/4倍耐久值，并且 必定命中。（不会被闪避，但仍然会被精神集中 格挡)\n\n" +
-                        "露水护体→细叶裁剪 通过联结获得的增益效果时长变为原来的 1.3/1.5/1.7倍。 \n" +
-                        "颐莲梅錵t2天赋修改"
-        )
-        ));
+                        "露水护体→细叶裁剪 通过联结获得的增益效果时长变为原来的 1.3/1.5/1.7倍。 \n"
+        )));
 
         changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.ROGUE, 7), ("极影铃虹-T2天赋优化"),
                 (       "_-_ 广域搜索→敏锐直觉：\n" +
