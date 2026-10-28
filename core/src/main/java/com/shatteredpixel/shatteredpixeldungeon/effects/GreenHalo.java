@@ -16,7 +16,7 @@ public class GreenHalo extends Halo {
     public GreenHalo(CharSprite sprite ) {
 
         //rectangular sprite to circular radius. Pythagorean theorem
-        super( (float)Math.sqrt(Math.pow(sprite.width()/2f, 2) + Math.pow(sprite.height()/2f, 2)), Window.GREEN_COLOR, 1.5f );
+        super( (float)Math.sqrt(Math.pow(sprite.width()/1.8f, 2) + Math.pow(sprite.height()/1.8f, 2)), Window.GREEN_COLOR, 1.5f );
 
         am = -0.22f;
         aa = +0.22f;
