@@ -16,7 +16,7 @@ public class CrimsonSprite extends HeroSprite {
         TextureFilm film = new TextureFilm( Assets.Sprites.CRIMSON, FRAME_W, FRAME_H );
 
         idle = new Animation( 6, true );
-        idle.frames( film, 0,1,2,3,4,5 );
+        idle.frames( film, 0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,27,28,29,30,31,31,31,31,32,33,33,33,33,33,33,34 );
 
         run = new Animation( 20, true );
         run.frames( film, 6,7,8,9,10,11);
