@@ -25,13 +25,21 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 /** MultiplayerService 的默认实现，委托给 multiplayer.Mp 单例。 */
 public class MultiplayerServiceImpl extends MultiplayerService {
 
-	/** GameScene 每帧调用：委托给联机核心。 */
+	/**
+	 * GameScene 每帧调用：委托给联机核心。
+	 *
+	 * @param scene 参数。
+	 */
 	@Override
 	public void tick(GameScene scene) {
 		Mp.get().tick(scene);
 	}
 
-	/** TitleScene 每帧调用：委托给联机核心。 */
+	/**
+	 * TitleScene 每帧调用：委托给联机核心。
+	 *
+	 * @param scene 参数。
+	 */
 	@Override
 	public void tickTitle(TitleScene scene) {
 		Mp.get().tickTitle(scene);
@@ -43,7 +51,11 @@ public class MultiplayerServiceImpl extends MultiplayerService {
 		Mp.get().onGamePause();
 	}
 
-	/** 访客连接中（用于 StartScene 拦截单独进入游戏）。 */
+	/**
+	 * 访客连接中（用于 StartScene 拦截单独进入游戏）。
+	 *
+	 * @return 返回值。
+	 */
 	@Override
 	public boolean isClientConnected() {
 		return Mp.get().isConnected() && Mp.get().isClient();

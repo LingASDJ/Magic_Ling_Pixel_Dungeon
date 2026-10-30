@@ -23,12 +23,20 @@ public class MultiplayerImpl {
 
 	private static final MultiplayerService service = new MultiplayerServiceImpl();
 
-	/** 获取联机服务实例。 */
+	/**
+	 * 获取联机服务实例。
+	 *
+	 * @return 返回值。
+	 */
 	public static MultiplayerService getService() {
 		return service;
 	}
 
-	/** 当前版本是否支持联机（恒为 true）。 */
+	/**
+	 * 当前版本是否支持联机（恒为 true）。
+	 *
+	 * @return 返回值。
+	 */
 	public static boolean supportsMultiplayer() {
 		return true;
 	}

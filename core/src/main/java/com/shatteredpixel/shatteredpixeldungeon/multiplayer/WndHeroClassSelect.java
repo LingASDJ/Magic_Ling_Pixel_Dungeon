@@ -25,6 +25,8 @@ public class WndHeroClassSelect extends Window {
 
     /**
      * 访客首次加入时的职业选择窗口。
+     *
+     * @param onSelect 参数。
      */
     public WndHeroClassSelect(Consumer<HeroClass> onSelect) {
         this.onSelect = onSelect;

@@ -85,8 +85,13 @@ public class Mp {
     /** 全局单例（外部通过 {@link #get()} 访问）。 */
     private static final Mp I = new Mp();
 
-    /** 获取联机单例。 */
+    /**
+     * 获取联机单例。
+     *
+     * @return 返回值。
+     */
     public static Mp get() {
+        // skipcq: JAVA-S1049  联机状态机是全局可变单例，调用方均为本模组内部代码
         return I;
     }
 
@@ -223,6 +228,8 @@ public class Mp {
 
     /**
      * 开房：在指定端口监听，等待访客加入（房主权威）。
+     *
+     * @param port 参数。
      */
     public synchronized void host(int port) {
         disconnect();
@@ -284,6 +291,9 @@ public class Mp {
 
     /**
      * 加入房间：支持 address 或 address:port，等待房主 STATE 后进入关卡。
+     *
+     * @param address 参数。
+     * @param defaultPort 参数。
      */
     public synchronized void join(String address, int defaultPort) {
         disconnect();
@@ -839,7 +849,11 @@ public class Mp {
 
     // ---------------------------------------------------------------- 名字与聊天
 
-    /** 本机玩家名：mp_name.txt 持久化，没有就用系统用户名 */
+    /**
+     * 本机玩家名：mp_name.txt 持久化，没有就用系统用户名
+     *
+     * @return 返回值。
+     */
     public String getMyName() {
         if (myName != null) return myName;
         try {
@@ -856,7 +870,11 @@ public class Mp {
         return myName;
     }
 
-    /** 设置本机玩家名（持久化；已连接时重新通知对方） */
+    /**
+     * 设置本机玩家名（持久化；已连接时重新通知对方）
+     *
+     * @param name 参数。
+     */
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()) return;
         myName = name.trim();
@@ -868,7 +886,11 @@ public class Mp {
         }
     }
 
-    /** 发送聊天消息（本地也回显到事件栏，亮紫色）；"/" 开头交给指令处理 */
+    /**
+     * 发送聊天消息（本地也回显到事件栏，亮紫色）；"/" 开头交给指令处理
+     *
+     * @param text 参数。
+     */
     public void sendChat(String text) {
         if (text == null || text.trim().isEmpty()) return;
         String msg = text.trim();
@@ -929,7 +951,11 @@ public class Mp {
         status = "已请离玩家 " + p.name;
     }
 
-    /** /list 数据：房主端 = 自己 + 所有访客；访客端 = 房主 + 自己 + 其他访客 */
+    /**
+     * /list 数据：房主端 = 自己 + 所有访客；访客端 = 房主 + 自己 + 其他访客
+     *
+     * @return 返回值。
+     */
     public List<PlayerInfo> getPlayerList() {
         List<PlayerInfo> out = new ArrayList<>();
         synchronized (peers) {
@@ -1269,7 +1295,11 @@ public class Mp {
 
     // ---------------------------------------------------------------- 每帧
 
-    /** 由 GameScene.update() 每帧调用（渲染线程） */
+    /**
+     * 由 GameScene.update() 每帧调用（渲染线程）
+     *
+     * @param gs 参数。
+     */
     public void tick(GameScene gs) {
         if (!connected) {
             hideChatButton();
@@ -1420,7 +1450,11 @@ public class Mp {
         syncRemote(gs);
     }
 
-    /** 由 TitleScene.update() 每帧调用（渲染线程）：检测退出存档 */
+    /**
+     * 由 TitleScene.update() 每帧调用（渲染线程）：检测退出存档
+     *
+     * @param ts 参数。
+     */
     public void tickTitle(TitleScene ts) {
         if (!connected || lastScene == null) return;
         lastScene = null;
@@ -1549,7 +1583,12 @@ public class Mp {
         /** 帧载荷。 */
         public final byte[] data;
 
-        /** 构造一帧。 */
+        /**
+         * 构造一帧。
+         *
+         * @param type 参数。
+         * @param data 参数。
+         */
         public Frame(int type, byte[] data) {
             this.type = type;
             this.data = data;
@@ -1573,6 +1612,10 @@ public class Mp {
 
     /**
      * 写入一帧：[int32 长度][int8 类型][payload]（大端）。
+     *
+     * @param o 参数。
+     * @param type 参数。
+     * @param payload 参数。
      */
     public static void writeFrame(DataOutputStream o, int type, byte[] payload) throws IOException {
         synchronized (o) {
@@ -1585,6 +1628,9 @@ public class Mp {
 
     /**
      * 读取一帧并校验长度（单帧上限 MAX_FRAME）。
+     *
+     * @param in 参数。
+     * @return 返回值。
      */
     public static Frame readFrame(DataInputStream in) throws IOException {
         int len = in.readInt();
@@ -1597,6 +1643,12 @@ public class Mp {
 
     /**
      * 编码 STATE 帧：depth/branch/游戏档/当前层字节。
+     *
+     * @param depth 参数。
+     * @param branch 参数。
+     * @param game 参数。
+     * @param level 参数。
+     * @return 返回值。
      */
     public static byte[] encodeState(int depth, int branch, byte[] game, byte[] level) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(game.length + level.length + 32);
@@ -1613,6 +1665,9 @@ public class Mp {
 
     /**
      * 解码 STATE 帧。
+     *
+     * @param data 参数。
+     * @return 返回值。
      */
     public static StatePayload decodeState(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
@@ -1640,6 +1695,12 @@ public class Mp {
 
     /**
      * 编码 POS 帧：id/depth/branch/cell。
+     *
+     * @param id 参数。
+     * @param depth 参数。
+     * @param branch 参数。
+     * @param pos 参数。
+     * @return 返回值。
      */
     public static byte[] encodePos(int id, int depth, int branch, int pos) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(16);
@@ -1654,6 +1715,9 @@ public class Mp {
 
     /**
      * 解码 POS 帧。
+     *
+     * @param data 参数。
+     * @return 返回值。
      */
     public static PosPayload readPos(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
@@ -1747,6 +1811,10 @@ public class Mp {
 
     /**
      * 编码 HERO 帧：id + 职业序数。
+     *
+     * @param id 参数。
+     * @param cls 参数。
+     * @return 返回值。
      */
     public static byte[] encodeHero(int id, HeroClass cls) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
@@ -1759,6 +1827,9 @@ public class Mp {
 
     /**
      * 解码 HERO 帧。
+     *
+     * @param data 参数。
+     * @return 返回值。
      */
     public static HeroPayload decodeHero(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
@@ -1783,6 +1854,10 @@ public class Mp {
 
     /**
      * 编码 CHAT 帧：玩家名 + 内容。
+     *
+     * @param name 参数。
+     * @param text 参数。
+     * @return 返回值。
      */
     public static byte[] encodeChat(String name, String text) throws IOException {
         byte[] nb = (name == null ? "" : name).getBytes("UTF-8");
@@ -1798,6 +1873,9 @@ public class Mp {
 
     /**
      * 解码 CHAT 帧。
+     *
+     * @param data 参数。
+     * @return 返回值。
      */
     public static ChatPayload decodeChat(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
@@ -1813,6 +1891,9 @@ public class Mp {
 
     /**
      * 编码 RTT_INFO 帧：各访客延迟列表。
+     *
+     * @param recs 参数。
+     * @return 返回值。
      */
     public static byte[] encodeRttInfo(List<RttRec> recs) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(4 + recs.size() * 9);
@@ -1829,6 +1910,9 @@ public class Mp {
 
     /**
      * 解码 RTT_INFO 帧。
+     *
+     * @param data 参数。
+     * @return 返回值。
      */
     public static RttInfoPayload decodeRttInfo(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
@@ -1848,6 +1932,9 @@ public class Mp {
 
     /**
      * 编码 4 字节大端整数。
+     *
+     * @param v 参数。
+     * @return 返回值。
      */
     public static byte[] encodeInt(int v) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(4);
@@ -1859,6 +1946,9 @@ public class Mp {
 
     /**
      * 解码 4 字节大端整数。
+     *
+     * @param data 参数。
+     * @return 返回值。
      */
     public static int decodeInt(byte[] data) throws IOException {
         return new DataInputStream(new ByteArrayInputStream(data)).readInt();
@@ -1866,6 +1956,10 @@ public class Mp {
 
     /**
      * 编码 JOIN 帧：id + 玩家名。
+     *
+     * @param id 参数。
+     * @param name 参数。
+     * @return 返回值。
      */
     public static byte[] encodeJoin(int id, String name) throws IOException {
         byte[] nb = (name == null ? "" : name).getBytes("UTF-8");
@@ -1879,6 +1973,9 @@ public class Mp {
 
     /**
      * 解码 JOIN 帧。
+     *
+     * @param data 参数。
+     * @return 返回值。
      */
     public static ChatPayload decodeJoin(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
