@@ -15,7 +15,7 @@ public class RoseHalo extends Halo {
     public RoseHalo(CharSprite sprite ) {
 
         //rectangular sprite to circular radius. Pythagorean theorem
-        super( (float)Math.sqrt(Math.pow(sprite.width()/2f, 2) + Math.pow(sprite.height()/2f, 2)),0xff00ff, 1.5f );
+        super( (float)Math.sqrt(Math.pow(sprite.width()/1.6f, 2) + Math.pow(sprite.height()/1.6f, 2)),0xff00ff, 1.5f );
 
         am = -0.22f;
         aa = +0.22f;

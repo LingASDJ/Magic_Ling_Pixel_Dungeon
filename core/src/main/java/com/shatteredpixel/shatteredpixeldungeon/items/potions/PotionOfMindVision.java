@@ -69,7 +69,7 @@ public class PotionOfMindVision extends Potion {
 
 	@Override
 	public String desc() {
-		return Dungeon.isChallenged(Challenges.EXSG) && isIdentified() ? Messages.get(this, "descx") : isIdentified() ?  Messages.get(this, "desc") : super.name();
+		return Dungeon.isChallenged(Challenges.EXSG) && isIdentified() ? Messages.get(this, "descx") : isIdentified() ?  Messages.get(this, "desc") : super.desc();
 	}
 	
 	@Override

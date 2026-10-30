@@ -78,20 +78,20 @@ public class MirrorSprite extends MobSprite {
 		HeroSkins.SkinDef def = currentSkinDef();
 
 		if (def != null && def.texturePath != null && def.frameW > 0) {
-			// 自定义 sprite 皮肤（如 bunny）
+			// 自定义 sprite 皮肤（如 bunny / crimson）
 			texture( def.texturePath );
 			TextureFilm film = new TextureFilm( def.texturePath, def.frameW, def.frameH );
 
-			idle = new Animation( 1, true );
+			idle = new Animation( def.idleFps, true );
 			idle.frames( film, box(def.idleFrames) );
 
-			run = new Animation( 20, true );
+			run = new Animation( def.runFps, true );
 			run.frames( film, box(def.runFrames) );
 
-			die = new Animation( 8, false );
+			die = new Animation( def.dieFps, false );
 			die.frames( film, box(def.dieFrames) );
 
-			attack = new Animation( 15, false );
+			attack = new Animation( def.attackFps, false );
 			attack.frames( film, box(def.attackFrames) );
 
 			zap = attack.clone();

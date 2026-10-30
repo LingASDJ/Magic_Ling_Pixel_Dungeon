@@ -52,11 +52,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.DreamSeed;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ForestPoisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.DeepShadowLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.GameLog;
@@ -424,7 +426,8 @@ public class InterlevelScene extends PixelScene {
 		}
 
 		if (!level.checkDown && branch == 0) {
-			if (hero.belongings.getItem(BottleWraith.class) != null) {
+			if (hero.belongings.getItem(BottleWraith.class) != null &&
+					!(level instanceof ForestHardBossLevel || level instanceof ForestPoisonBossLevel)) {
 				for (int i = 0; i < Random.Int(1, Dungeon.depth / 2); i++) {
 					Wraith w = new Wraith();
 					w.pos = level.randomRespawnCell(hero);

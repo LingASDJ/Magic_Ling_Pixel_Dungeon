@@ -56,11 +56,22 @@ public final class HeroSkins {
         /** attack 动画帧索引；null 表示用默认 */
         public final int[] attackFrames;
 
+        // ---- 自定义动画帧率（fps），供 MirrorSprite/PrismaticSprite 等克隆体复用 ----
+        /** idle 帧率，默认 1 */
+        public final int idleFps;
+        /** run 帧率，默认 20 */
+        public final int runFps;
+        /** die 帧率，默认 8 */
+        public final int dieFps;
+        /** attack 帧率，默认 15 */
+        public final int attackFps;
+
         public SkinDef(String splashPath, int splashFrameW, int splashFrameH,
                        Supplier<HeroSprite> spriteFactory,
                        Supplier<Image> avatarFactory,
                        String texturePath, int frameW, int frameH,
-                       int[] idleFrames, int[] runFrames, int[] dieFrames, int[] attackFrames) {
+                       int[] idleFrames, int[] runFrames, int[] dieFrames, int[] attackFrames,
+                       int idleFps, int runFps, int dieFps, int attackFps) {
             this.splashPath = splashPath;
             this.splashFrameW = splashFrameW;
             this.splashFrameH = splashFrameH;
@@ -73,28 +84,47 @@ public final class HeroSkins {
             this.runFrames = runFrames;
             this.dieFrames = dieFrames;
             this.attackFrames = attackFrames;
+            this.idleFps = idleFps;
+            this.runFps = runFps;
+            this.dieFps = dieFps;
+            this.attackFps = attackFps;
         }
 
         /** 只注册大立绘的便捷构造器。 */
         public static SkinDef splash(String path, int w, int h) {
-            return new SkinDef(path, w, h, null, null, null, 0, 0, null, null, null, null);
+            return new SkinDef(path, w, h, null, null, null, 0, 0, null, null, null, null,
+                    1, 20, 8, 15);
         }
 
         /** 注册大立绘 + 特殊 sprite + 头像的完整构造器。 */
         public static SkinDef full(String path, int w, int h,
                                    Supplier<HeroSprite> spriteFactory,
                                    Supplier<Image> avatarFactory) {
-            return new SkinDef(path, w, h, spriteFactory, avatarFactory, null, 0, 0, null, null, null, null);
+            return new SkinDef(path, w, h, spriteFactory, avatarFactory, null, 0, 0, null, null, null, null,
+                    1, 20, 8, 15);
         }
 
-        /** 注册带游戏内纹理与帧布局的完整 sprite 皮肤。 */
+        /** 注册带游戏内纹理与帧布局的完整 sprite 皮肤（fps 取默认值 1/20/8/15）。 */
         public static SkinDef full(String path, int w, int h,
                                    Supplier<HeroSprite> spriteFactory,
                                    Supplier<Image> avatarFactory,
                                    String texturePath, int frameW, int frameH,
                                    int[] idleFrames, int[] runFrames, int[] dieFrames, int[] attackFrames) {
             return new SkinDef(path, w, h, spriteFactory, avatarFactory,
-                    texturePath, frameW, frameH, idleFrames, runFrames, dieFrames, attackFrames);
+                    texturePath, frameW, frameH, idleFrames, runFrames, dieFrames, attackFrames,
+                    1, 20, 8, 15);
+        }
+
+        /** 注册带游戏内纹理、帧布局与自定义帧率的完整 sprite 皮肤。 */
+        public static SkinDef full(String path, int w, int h,
+                                   Supplier<HeroSprite> spriteFactory,
+                                   Supplier<Image> avatarFactory,
+                                   String texturePath, int frameW, int frameH,
+                                   int[] idleFrames, int[] runFrames, int[] dieFrames, int[] attackFrames,
+                                   int idleFps, int runFps, int dieFps, int attackFps) {
+            return new SkinDef(path, w, h, spriteFactory, avatarFactory,
+                    texturePath, frameW, frameH, idleFrames, runFrames, dieFrames, attackFrames,
+                    idleFps, runFps, dieFps, attackFps);
         }
     }
 
@@ -175,7 +205,7 @@ public final class HeroSkins {
         register(HeroClass.DUELIST,  4, SkinDef.splash("splashes/skin/duelist_kitsunemimi.png",80, 112));
         register(HeroClass.DUELIST,  5, SkinDef.splash("splashes/skin/duelist_desertspirit.png",80,112));
 
-        // ---- Bunny：Warrior skin 6，大立绘 + 独立 20x22 游戏内 sprite ----
+
         register(HeroClass.WARRIOR, 6, SkinDef.full(
             "splashes/skin/warrior_bunny.png", 80, 112,
             BunnySprite::new,
@@ -189,6 +219,22 @@ public final class HeroSkins {
             new int[]{2, 3, 4, 5, 6, 7},
             new int[]{8, 9, 10, 11, 12, 13, 14},
             new int[]{15, 16, 17, 18}
+        ));
+
+        register(HeroClass.DUELIST, 6, SkinDef.full(
+                "splashes/skin/duelist_crimson_fatebound.png", 80, 112,
+                CrimsonSprite::new,
+                () -> {
+                    Image img = new Image(Assets.Sprites.CRIMSON);
+                    img.frame(0, 0, 28, 19);
+                    return img;
+                },
+                Assets.Sprites.CRIMSON, 28, 19,
+                new int[]{0, 1, 2, 3, 4, 5},
+                new int[]{6, 7, 8, 9 ,10,11},
+                new int[]{12, 13, 14, 15, 16},
+                new int[]{17, 18, 19, 20, 21},
+                6, 20, 8, 15
         ));
     }
 }

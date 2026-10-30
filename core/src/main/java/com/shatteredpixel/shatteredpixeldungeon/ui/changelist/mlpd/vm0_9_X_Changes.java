@@ -8,9 +8,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.RivalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.MolotovCocktail;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.GhostLingElixir;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenBone;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BrokenRing;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.CatGirlCosplay;
@@ -154,13 +156,13 @@ public class vm0_9_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：英文(EN)"),
-                ("英文翻译更新，目前覆盖率为99.15%，感谢英文翻译组团队。")));
+                ("英文翻译更新，目前覆盖率为99.65%，感谢英文翻译组团队。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：俄文(RU)"),
-                ("俄文翻译更新，目前覆盖率为99.12%，感谢俄文翻译组团队。")));
+                ("俄文翻译更新，目前覆盖率为99.72%，感谢俄文翻译组团队。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：葡萄牙语(PTBR)"),
-                ("葡萄牙语翻译更新，但目前覆盖率较低，仅5%，但还是非常感谢葡萄牙翻译组团队。")));
+                ("葡萄牙语翻译更新，但目前覆盖率较低，仅7%，但还是非常感谢葡萄牙翻译组团队。")));
 
         Image img = new Image(Assets.Sprites.BUNNY);
         img.frame(0, 0, 20, 22);
@@ -178,6 +180,8 @@ public class vm0_9_X_Changes {
                 ("【武技：风袭】：\n\n" +
                         "艾诺琳娜可用白浪刺剑对1格内的敌人使出_风袭_。使得目标浮空一回合并对其进行两次必定命中的攻击。\n\n该技能会消耗 2 点充能。"
                 )));
+
+
 
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_MARIGOLD), "新种子：金菊花之种",
                 "与金菊花配套上线的种子。"));
@@ -211,6 +215,15 @@ public class vm0_9_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WASH_CRIME), ("涤罪调整"),
+                ("修复涤罪的生成怨灵时选址的问题以及残废不生效的问题，且怨灵上限增至5，生成概率修正为（30+5*武器等级）%")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_12), ("药水癔症v0.5"),
+                ("_-_ 挑衅药剂→显影药剂\n" +
+                        "_-_ 效果更改：使5回合内全层敌怪获得英雄视野。（以新buff“显影”来实现）\n" +
+                        "_-_ 断腿药剂→缚足药剂（仅文本修改）" )));
+
+
         changes.addButton(new ChangeButton(new ItemSprite(new DistressSignalNesting()), ("动态物品贴图：V0.2"),
                 ("结合恶魔的像素地牢动画原理，进行了优化，现在不会出现整个item的图显示在地牢中的渲染异常。")));
 
@@ -221,7 +234,8 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("功能优化"),
                 ("_-_ 新增功能优化：多物品快捷栏\n" +
                         "_-_ 部分页面的一些小问题修复\n" +
-                        "_-_ 改动界面现在支持搜索关键词")));
+                        "_-_ 改动界面现在支持搜索关键词\n" +
+                        "_-_ 莲娜抢劫战斗后对话文本新增双打与暴怒两种情况")));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 ("V0.9.7.1：\n\n" +
@@ -230,10 +244,16 @@ public class vm0_9_X_Changes {
                         "_-_ 修复查种无澪反而查种不一致的异常问题\n" +
                         "_-_ 修复天痕粘咕地图卡死问题\n" +
                         "_-_ 优化更新记录的搜索栏\n" +
-                        "_-_ 修复鹰眼远视的视野问题"),
+                        "_-_ 修复鹰眼远视的视野问题"+
+                        "_-_ 修复黄饿状态下自然生命恢复失效\n"),
                 (
-                        "_-_ 修复黄饿状态下自然生命恢复失效\n" +
-                        "_-_ 修复十字弩可能在部分怪物上概率掉落\n")));
+                        "_-_ 修复十字弩可能在部分怪物上概率掉落\n" +
+                                "_-_ 修复“放入时选择”时，多技能装备在卸下后再装备会清理快捷栏的问题，老魔杖和提灯在“使用时选择”下不进行多技能快捷栏判定\n" +
+                                "_-_ 修复了其他角色获取隐蔽技巧不生效的问题\n" +
+                                "_-_ 修复了地形感知不正确发现隐藏房间的问题\n" +
+                                "_-_ 优化了精英突变的生成文本，使其不在进入新楼层时刷屏影响其他文本消息\n" +
+                                "_-_ 修复部分特殊卷轴可以参与嬗变导致部分天赋无限生效的问题\n" +
+                                "_-_ 优化白浪刺剑施加麻痹的逻辑（修复了施加过久的麻痹的问题，但浮空后立即施加麻痹暂未实现(也就是说敌人浮空的一瞬间仍热会完成其本回合将要进行的行动)）")));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 ("V0.9.7.0：\n\n" +
@@ -270,13 +290,50 @@ public class vm0_9_X_Changes {
         changes.hardlight(Window.R_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(new BottleWraith()), ("瓶装怨灵"),
+                (       "现在在任意果子层将不再生成怨灵。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(new MolotovCocktail()), ("莫托洛夫鸡尾酒"),
+                (       "莫托洛夫鸡尾酒将不可分解为炼金能量。")));
+
         changes.addButton(new ChangeButton(new ItemSprite(new FreeCrack()), ("空间残片"),
                 (       "优化空间残片，现在在传送前将会进行预警。")));
 
         changes.addButton(new ChangeButton(new Image(new MageHandSprite()), ("法师之手"),
                 ("_-_ 现在无论是使用老法杖还是法杖，均会触发敌意符石的效果")));
 
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.G_COLOR);
+        changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.HUNTRESS, 7), ("颐莲梅錵-自然仙子"),
+                ("经组内评估，自然仙子当前版本较为弱势，为此重做该子职业。\n\n" +
+                        "_-_ 自然仙子被动效果新增：\n" +
+                        "_-_ 可以直接使用种子来获得增益 （点击种子新增按钮“联结”），如果联结的种子为腐莓，则不会消耗。 \n\n" +
+                        "_-_ 抵近射击增强：\n" +
+                        "_-_ 效果由原来的-30%/-10% +10%修改为-30%/0%/+30%。"),
+                (       "_-_ 新天赋: 生息之矢 \n" +
+                        "_-_ 当自然仙子射箭击中地面时，在原地生成高草， 这个效果有25/20/15回合冷却时间。" +
+                        "\n若被动恢复效果被禁用或英雄长时间内没有获 得经验，此天赋只会长出枯草。"
+                ),(
+                "天赋调整：\n\n" +
+                        "持久药液→萃药秘术 \n" +
+                        "自然仙子的涂药飞镖拥有2/3/4倍耐久值，并且 必定命中。（不会被闪避，但仍然会被精神集中 格挡)\n\n" +
+                        "露水护体→细叶裁剪 通过联结获得的增益效果时长变为原来的 1.3/1.5/1.7倍。 \n"
+        )));
+
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.ROGUE, 7), ("极影铃虹-T2天赋优化"),
+                (       "_-_ 广域搜索→敏锐直觉：\n" +
+                        "_-_ +1 极影铃虹自动发现隐藏门和隐藏陷阱的概率+50%\n" +
+                        "_-_ +2 极影铃虹自动发现隐藏门和隐藏陷阱的概率+100% \n\n" +
+                        "_-_ 无声步伐→隐蔽技巧：\n" +
+                        "_-_ +1 极影铃虹获得等级/4的潜行 \n" +
+                        "_-_ +2 极影铃虹获得等级/2的潜行 \n\n" +
+                        "_-_ 行窃预知→地形感知：\n" +
+                        "_-_ +1 极影铃虹有75%的概率知道有无隐藏房，如果知道了，有25%的概率直接揭示隐藏房的位置 \n" +
+                        "_-_ +2 极影铃虹有100%的概率知道有无隐藏房，如果知道了，有50%概率直接揭示隐藏房的位置"
+                )
+        ));
     }
 
     public static void add_V0961_Changes(ArrayList<ChangeInfo> changeInfos ) {
