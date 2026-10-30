@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CommRelay;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElectricalSmoke;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.GoldIronHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MagneticCrown;
@@ -836,7 +837,9 @@ public class Generator {
 					ElectricalSmoke.class,
 					MagneticCrown.class,
 					DistressSignalNesting.class,
-					CelestialBrush.class
+					CelestialBrush.class,
+
+					GoldIronHammer.class
 			};
 			ARTIFACT.defaultProbs = new float[]{
 					Badges.isUnlocked(Badges.Badge.KILL_DM720) ? 1:0,   // 荆棘斗篷
@@ -857,7 +860,8 @@ public class Generator {
 					1,  // 锐科五代
 					Badges.isUnlocked(Badges.Badge.YASD) ? 1:0,  // 引力王冠
 					0,  // 支援信号套组
-					1  // 天界画笔
+					1,  // 天界画笔
+					0, // 镀金铁锤
 			};
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();
 

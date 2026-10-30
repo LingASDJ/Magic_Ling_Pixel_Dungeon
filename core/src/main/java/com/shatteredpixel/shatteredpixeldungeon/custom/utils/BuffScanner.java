@@ -495,9 +495,9 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose.roseRecharge.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElectricalSmoke.SmokingAlloy.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains.chainsRecharge.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.GoldIron.hourglassRecharge.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.GoldIron.timeFreeze.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.GoldIron.timeStasis.class);
+
+        
+
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty.hornRecharge.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon.beaconRecharge.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MagneticCrown.Recharge.class);
