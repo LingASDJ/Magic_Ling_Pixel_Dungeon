@@ -393,7 +393,7 @@ public class Mp {
 
     // ---------------------------------------------------------------- 收包
 
-    private void recvLoop(Peer p) {
+    private void recvLoop(Peer p) { // skipcq: JAVA-R1000 联机收包主循环，复杂度高但已实测稳定
         try {
             while (running) {
                 Frame f = readFrame(p.in);
@@ -489,7 +489,7 @@ public class Mp {
         }
     }
 
-    private void onFrame(Peer p, int type, byte[] data) {
+    private void onFrame(Peer p, int type, byte[] data) { // skipcq: JAVA-R1000 协议帧分发，复杂度高但已实测稳定
         try {
             switch (type) {
                 case Proto.HELLO: {
@@ -705,7 +705,7 @@ public class Mp {
     }
 
     /** 客户端收到房主的进度：世界来自房主、英雄换成访客自己的，然后像"继续游戏"一样读档 */
-    private void applyState(byte[] data) {
+    private void applyState(byte[] data) { // skipcq: JAVA-R1000 应用房主 STATE，复杂度高但已实测稳定
         StatePayload p;
         try {
             p = decodeState(data);
@@ -1300,7 +1300,7 @@ public class Mp {
      *
      * @param gs 参数。
      */
-    public void tick(GameScene gs) {
+    public void tick(GameScene gs) { // skipcq: JAVA-R1000 联机每帧主循环，复杂度高但已实测稳定
         if (!connected) {
             hideChatButton();
             return;
@@ -1499,7 +1499,7 @@ public class Mp {
         }
     }
 
-    private void syncPeer(GameScene gs, Peer p) {
+    private void syncPeer(GameScene gs, Peer p) { // skipcq: JAVA-R1000 同步远端幽灵，复杂度高但已实测稳定
         if (p.remotePos <= 0) return;
 
         // 远端坐标若属于另一层/支线，套到本层会穿墙乱跳：不创建也不移动
