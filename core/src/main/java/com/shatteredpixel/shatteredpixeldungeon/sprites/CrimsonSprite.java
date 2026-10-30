@@ -30,13 +30,13 @@ public class CrimsonSprite extends HeroSprite {
         zap = attack.clone();
 
         operate = new Animation( 8, false );
-        operate.frames( film, 25, 26 );
+        operate.frames( film, 22, 23 );
 
         fly = new Animation( 1, true );
         fly.frames( film, 24 );
 
         read = new Animation( 20, false );
-        read.frames( film, 22, 23 );
+        read.frames( film, 25, 26 );
 
         if (Dungeon.hero.isAlive())
             idle();

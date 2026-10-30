@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.GoldIron;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -52,7 +51,6 @@ public class SpawnArtifact extends TestItem {
             for (int i = 0; i < Generator.Category.ARTIFACT.classes.length; ++i) {
                 artifactList.add((Class<? extends Artifact>) Generator.Category.ARTIFACT.classes[i]);
             }
-            artifactList.add(GoldIron.class);
         }
     }
 

@@ -167,19 +167,11 @@ public class WndResurrect extends Window {
 					btnItem4.item.keptThoughLostInvent = true;
 				}
 
-				if(Statistics.bossRushMode){
-					//克里弗斯之果二阶段死亡的时候的给予重新评估
-					if(crivusfruitslevel2){
-						crivusfruitslevel2 = false;
-					}
-					if(crivusfruitslevel3){
-						crivusfruitslevel3 = false;
-					}
-				} else {
-					//克里弗斯之果二阶段死亡的时候的给予重新评估
-					if(crivusfruitslevel2){
-						crivusfruitslevel2 = false;
-					}
+				if(crivusfruitslevel2){
+					crivusfruitslevel2 = false;
+				}
+				if(crivusfruitslevel3){
+					crivusfruitslevel3 = false;
 				}
 
 				//拟态王二阶段死亡的时候给予重新评估

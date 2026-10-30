@@ -250,7 +250,7 @@ public class WandOfBlastWave extends DamageWand {
 
 	public static class BlastWave extends Image {
 
-		private static final float TIME_TO_FADE = 0.2f;
+		public static float TIME_TO_FADE = 0.2f;
 
 		private float time;
 		private float size;
@@ -288,6 +288,14 @@ public class WandOfBlastWave extends DamageWand {
 		}
 
 		public static void blast(int pos, float radius) {
+			Group parent = Dungeon.hero.sprite.parent;
+			BlastWave b = (BlastWave) parent.recycle(BlastWave.class);
+			parent.bringToFront(b);
+			b.reset(pos, radius);
+		}
+
+		public static void blast(int pos, float radius,float speed) {
+			TIME_TO_FADE = speed;
 			Group parent = Dungeon.hero.sprite.parent;
 			BlastWave b = (BlastWave) parent.recycle(BlastWave.class);
 			parent.bringToFront(b);
