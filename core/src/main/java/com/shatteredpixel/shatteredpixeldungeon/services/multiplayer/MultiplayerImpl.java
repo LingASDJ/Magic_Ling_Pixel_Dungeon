@@ -18,14 +18,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.services.multiplayer;
 
+/** 联机服务入口（对照 services/daily 的 DailyImpl）。 */
 public class MultiplayerImpl {
 
 	private static final MultiplayerService service = new MultiplayerServiceImpl();
 
+	/** 获取联机服务实例。 */
 	public static MultiplayerService getService() {
 		return service;
 	}
 
+	/** 当前版本是否支持联机（恒为 true）。 */
 	public static boolean supportsMultiplayer() {
 		return true;
 	}

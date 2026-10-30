@@ -14,6 +14,7 @@ import java.util.function.Consumer;
  * 访客首次加入时选择英雄职业的简易窗口：只有职业按钮，不含种子/挑战/难度等原版选项。
  * 点击职业 → onSelect.accept(职业)；关闭/取消 → onSelect.accept(null)。
  */
+/** 访客首次加入时的职业选择窗口。 */
 public class WndHeroClassSelect extends Window {
 
     private static final int WIDTH = 150;
@@ -22,6 +23,9 @@ public class WndHeroClassSelect extends Window {
 
     private final Consumer<HeroClass> onSelect;
 
+    /**
+     * 访客首次加入时的职业选择窗口。
+     */
     public WndHeroClassSelect(Consumer<HeroClass> onSelect) {
         this.onSelect = onSelect;
 
@@ -52,6 +56,9 @@ public class WndHeroClassSelect extends Window {
     }
 
     @Override
+    /**
+     * 取消选择 = 取消本次加入。
+     */
     public void onBackPressed() {
         hide();
         onSelect.accept(null);   // 取消选择 = 取消本次加入

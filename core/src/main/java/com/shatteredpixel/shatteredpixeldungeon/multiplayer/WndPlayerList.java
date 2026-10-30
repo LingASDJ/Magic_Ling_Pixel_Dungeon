@@ -13,6 +13,7 @@ import java.util.List;
  * /list 的玩家列表窗口（房主/访客都可打开）。
  * 每行：职业图标（仅图标）、玩家名、网络状态；延迟每 3 秒刷新一次。
  */
+/** 玩家列表窗口（/list）。 */
 public class WndPlayerList extends Window {
 
     private static final int WIDTH = 170;
@@ -23,6 +24,9 @@ public class WndPlayerList extends Window {
     private final float top;
     private long lastRefresh = 0L;
 
+    /**
+     * 玩家列表窗口（/list）。
+     */
     public WndPlayerList() {
         RenderedTextBlock title = PixelScene.renderTextBlock("玩家列表", 9);
         title.hardlight(TITLE_COLOR);
@@ -41,7 +45,7 @@ public class WndPlayerList extends Window {
         }
         rowGizmos.clear();
 
-        List<Mp.PlayerInfo> list = Mp.I.getPlayerList();
+        List<Mp.PlayerInfo> list = Mp.get().getPlayerList();
         float y = top;
         for (Mp.PlayerInfo info : list) {
             if (info.heroClass != null) {
@@ -87,6 +91,9 @@ public class WndPlayerList extends Window {
     }
 
     @Override
+    /**
+     * 每帧刷新界面状态。
+     */
     public void update() {
         super.update();
         long now = System.currentTimeMillis();

@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 
+/** 联机窗口：开房/加入/断开/名字设置/状态显示。 */
 public class WndMultiplayer extends Window {
 
     private static final int WIDTH = 150;
@@ -16,6 +17,9 @@ public class WndMultiplayer extends Window {
     private RenderedTextBlock status;
     private RenderedTextBlock nameText;
 
+    /**
+     * 联机窗口：开房/加入/断开/名字设置/状态显示。
+     */
     public WndMultiplayer() {
         float pos = 0f;
 
@@ -27,13 +31,13 @@ public class WndMultiplayer extends Window {
         pos = title.bottom() + 4f;
 
         status = PixelScene.renderTextBlock(6);
-        status.text(Mp.I.status, WIDTH);
+        status.text(Mp.get().status, WIDTH);
         status.setPos(0f, pos);
         add(status);
         pos = status.bottom() + 4f;
 
         nameText = PixelScene.renderTextBlock(6);
-        nameText.text("名字: " + Mp.I.getMyName(), WIDTH);
+        nameText.text("名字: " + Mp.get().getMyName(), WIDTH);
         nameText.setPos(0f, pos);
         add(nameText);
         pos = nameText.bottom() + 4f;
@@ -41,7 +45,7 @@ public class WndMultiplayer extends Window {
         RedButton host = new RedButton("开房（我是房主）") {
             @Override
             protected void onClick() {
-                Mp.I.host(Mp.DEFAULT_PORT);
+                Mp.get().host(Mp.DEFAULT_PORT);
                 refresh();
             }
         };
@@ -58,7 +62,7 @@ public class WndMultiplayer extends Window {
                     @Override
                     public void onSelect(boolean positive, String text) {
                         if (positive) {
-                            Mp.I.join(text, Mp.DEFAULT_PORT);
+                            Mp.get().join(text, Mp.DEFAULT_PORT);
                             refresh();
                         }
                     }
@@ -72,7 +76,7 @@ public class WndMultiplayer extends Window {
         RedButton stop = new RedButton("断开连接") {
             @Override
             protected void onClick() {
-                Mp.I.disconnect();
+                Mp.get().disconnect();
                 refresh();
             }
         };
@@ -85,11 +89,11 @@ public class WndMultiplayer extends Window {
             protected void onClick() {
                 ShatteredPixelDungeon.scene().addToFront(new WndTextInput(
                         "设置名字", "输入你的联机名字（对方能看到）",
-                        Mp.I.getMyName(), 16, false, "确定", "取消") {
+                        Mp.get().getMyName(), 16, false, "确定", "取消") {
                     @Override
                     public void onSelect(boolean positive, String text) {
                         if (positive && text != null && !text.trim().isEmpty()) {
-                            Mp.I.setName(text.trim());
+                            Mp.get().setName(text.trim());
                             refresh();
                         }
                     }
@@ -122,14 +126,17 @@ public class WndMultiplayer extends Window {
 
     private void refresh() {
         if (status != null) {
-            status.text(Mp.I.status, WIDTH);
+            status.text(Mp.get().status, WIDTH);
         }
         if (nameText != null) {
-            nameText.text("名字: " + Mp.I.getMyName(), WIDTH);
+            nameText.text("名字: " + Mp.get().getMyName(), WIDTH);
         }
     }
 
     @Override
+    /**
+     * 每帧刷新界面状态。
+     */
     public void update() {
         super.update();
         refresh();

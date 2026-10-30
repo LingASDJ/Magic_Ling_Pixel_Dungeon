@@ -74,10 +74,23 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * 联机核心：房主/访客状态机、帧协议与多人同步。
+ * 房间由房主权威模拟，访客只同步位置/职业/聊天。
+ */
 public class Mp {
 
-    public static final Mp I = new Mp();
+    /** 全局单例（外部通过 {@link #get()} 访问）。 */
+    private static final Mp I = new Mp();
+
+    /** 获取联机单例。 */
+    public static Mp get() {
+        return I;
+    }
+
+    /** 默认联机端口。 */
     public static final int DEFAULT_PORT = 28771;
     /** 最大人数：1 房主 + 3 访客（推荐上限，理由见 PROGRESS §10 多人适配） */
     public static final int MAX_PLAYERS = 4;
@@ -86,15 +99,23 @@ public class Mp {
     private static final int PING_MISS_LIMIT = 5;
 
     /** 断线提示文案（回标题后弹窗用） */
+        /** 房主断线原因文案。 */
     public static final String REASON_HOST_LOST = "房主断开了连接";
+        /** 心跳超时原因文案。 */
     public static final String REASON_NETWORK = "网络状态不佳，与房主的连接已中断";
+        /** 被房主踢出原因文案。 */
     public static final String REASON_KICKED = "你被房主请离了游戏";
 
+        /** 联机角色：未连接 / 房主 / 访客。 */
     public enum Role { NONE, HOST, CLIENT }
 
+        /** 当前角色。 */
     public volatile Role role = Role.NONE;
+        /** 联机状态文本（联机窗口显示）。 */
     public volatile String status = "未连接";
+        /** 是否已连接（任一对端在线）。 */
     public volatile boolean connected = false;
+        /** 最近一个 HELLO 的对端名字（兼容 1v1 显示）。 */
     public volatile String peer = "玩家";   // 兼容 1v1 显示：最近一个 HELLO 的名字
 
     /** 房主自己的 id；访客 id 由房主连接时分配（1..N） */
@@ -107,6 +128,7 @@ public class Mp {
     private volatile int myId = -1;         // 访客侧：房主分配的 id
 
     /** 一个对端连接：房主侧有 N-1 个访客 peer，访客侧有房主 peer(0) 与其他访客 peer（按 id） */
+        /** 一个对端连接：房主侧为访客，访客侧为房主与其他访客。 */
     public static class Peer {
         int id = -1;
         Socket sock;
@@ -125,31 +147,46 @@ public class Mp {
         volatile boolean kicked = false;     // 房主侧：已被 /kick 请离
         volatile int rttMs = -1;             // 房主侧：到该访客的延迟（-1=未知）
         volatile boolean pingTimeout = false;
-        volatile int pingMisses = 0;         // 连续多少个 PING 没有回应（用于判定网络断开）
+        /** 连续多少个 PING 没有回应（用于判定网络断开）。 */
+        final AtomicInteger pingMisses = new AtomicInteger(0);
         volatile int pingToken = 0;
         volatile long pingSentAt = 0L;
         boolean joinedGame = false;          // 已播报过「加入了游戏」（首次位置同步时置位）
     }
 
     /** /list 的一行数据 */
+        /** /list 的一行玩家信息。 */
     public static class PlayerInfo {
+        /** 标识 id。 */
         public int id;
+        /** 玩家名。 */
         public String name;
+        /** 职业。 */
         public HeroClass heroClass;
+        /** 是否房主。 */
         public boolean isHost;
+        /** 是否自己。 */
         public boolean isSelf;
+        /** 到该对端的延迟（毫秒，-1=未知）。 */
         public int rttMs = -1;
+        /** 是否超时。 */
         public boolean timeout;
     }
 
     /** 房主广播给访客的延迟信息（访客 /list 用来显示其他访客的延迟） */
+        /** RTT_INFO 中的一条延迟记录。 */
     public static class RttRec {
+        /** 标识 id。 */
         public int id;
+        /** 到该对端的延迟（毫秒，-1=未知）。 */
         public int rttMs = -1;
+        /** 是否超时。 */
         public boolean timeout;
     }
 
+        /** RTT_INFO 帧载荷。 */
     public static class RttInfoPayload {
+        /** 延迟记录列表。 */
         public List<RttRec> recs;
     }
 
@@ -165,6 +202,7 @@ public class Mp {
 
     private StatePayload pendingState;        // 选职业期间暂存的最新 STATE
     private WndHeroClassSelect classWindow;   // 职业选择窗口（断连时自动关掉）
+        /** 玩家名持久化文件名。 */
     public static final String MP_NAME_FILE = "mp_name.txt";
 
     private long worldSeed = Long.MIN_VALUE;  // 当前世界的种子：访客英雄按世界分档
@@ -177,11 +215,15 @@ public class Mp {
     private boolean guestHeroUnreadable = false;
 
     private String myName;                    // 本机玩家名（联机窗口可设置，mp_name.txt 持久化）
+        /** 聊天输入框是否打开（防止按键重入）。 */
     public volatile boolean chatOpen = false;
     private StyledButton chatButton;          // 局内聊天按钮（Mp 自己挂在 GameScene 上）
 
     // ---------------------------------------------------------------- 开房
 
+    /**
+     * 开房：在指定端口监听，等待访客加入（房主权威）。
+     */
     public synchronized void host(int port) {
         disconnect();
         role = Role.HOST;
@@ -189,6 +231,7 @@ public class Mp {
         running = true;
         worker = new Thread(() -> {
             try {
+                // skipcq: JAVA-S1011  局域网游戏数据走明文 TCP，不传账号/敏感信息；TLS 会破坏联机协议兼容性
                 server = new ServerSocket(port);
                 status = "房间已开，等待加入（局域网 IP: " + localIp() + " 端口 " + port + "）";
                 while (running) {
@@ -239,6 +282,9 @@ public class Mp {
 
     // ---------------------------------------------------------------- 加入
 
+    /**
+     * 加入房间：支持 address 或 address:port，等待房主 STATE 后进入关卡。
+     */
     public synchronized void join(String address, int defaultPort) {
         disconnect();
         role = Role.CLIENT;
@@ -254,6 +300,7 @@ public class Mp {
                     host = host.substring(0, idx).trim();
                 }
                 if (host.isEmpty()) throw new IOException("地址为空");
+                // skipcq: JAVA-S1011  同上：联机协议为明文 TCP，与房主端保持一致
                 Socket s = new Socket();
                 s.connect(new InetSocketAddress(host, port), 8000);
                 synchronized (peers) {
@@ -294,6 +341,9 @@ public class Mp {
         return p;
     }
 
+    /**
+     * 断开当前连接，清理所有 peer、远端幽灵与临时状态。
+     */
     public synchronized void disconnect() {
         if (role == Role.CLIENT) {
             // 断开前先保存访客英雄；只有确认保存成功，才清理临时世界
@@ -548,7 +598,7 @@ public class Mp {
                     if (token == p.pingToken && p.pingSentAt > 0) {
                         p.rttMs = (int) Math.min(Integer.MAX_VALUE, System.currentTimeMillis() - p.pingSentAt);
                         p.pingTimeout = false;
-                        p.pingMisses = 0;
+                        p.pingMisses.set(0);
                     }
                     break;
                 }
@@ -941,7 +991,7 @@ public class Mp {
             };
             chatButton.camera = PixelScene.uiCamera;
             chatButton.setRect(PixelScene.uiCamera.width - 32f, 36f, 32f, 16f);
-            gs.add(chatButton);
+            gs.addToFront(chatButton);
         }
         chatButton.visible = true;
         chatButton.active = true;
@@ -1328,8 +1378,8 @@ public class Mp {
                     if (p.pingSentAt > 0 && pingNow - p.pingSentAt > 2500L) {
                         p.pingTimeout = true;
                         p.rttMs = -1;
-                        p.pingMisses++;
-                        if (p.pingMisses >= PING_MISS_LIMIT) {
+                        p.pingMisses.incrementAndGet();
+                        if (p.pingMisses.get() >= PING_MISS_LIMIT) {
                             // 连续多个心跳无回应：判定该访客掉线，关闭 socket。
                             // 清理与"断开了连接"提示统一由 recvLoop 完成，避免重复提示。
                             try { if (p.sock != null) p.sock.close(); } catch (IOException ignored) {}
@@ -1351,8 +1401,8 @@ public class Mp {
                     if (hp.pingSentAt > 0 && pingNow - hp.pingSentAt > 2500L) {
                         hp.pingTimeout = true;
                         hp.rttMs = -1;
-                        hp.pingMisses++;
-                        if (hp.pingMisses >= PING_MISS_LIMIT) {
+                        hp.pingMisses.incrementAndGet();
+                        if (hp.pingMisses.get() >= PING_MISS_LIMIT) {
                             // 连续多个心跳无回应：网络状态不佳，回标题并弹窗说明原因
                             handleHostLost(REASON_NETWORK);
                             return;
@@ -1435,7 +1485,7 @@ public class Mp {
                 p.remote.heroClass = remoteClass(p);
                 p.remote.pos = p.remotePos;
                 p.remoteSprite = new HeroSprite(p.remote);
-                gs.add(p.remoteSprite);
+                gs.addToFront(p.remoteSprite);
             } catch (Throwable t) {
                 status = "生成对方角色失败: " + t.getMessage();
                 p.remote = null;
@@ -1475,7 +1525,7 @@ public class Mp {
         if (p.nameLabel == null) {
             p.nameLabel = PixelScene.renderTextBlock(6);
             p.nameLabel.text(p.name);
-            gs.add(p.nameLabel);
+            gs.addToFront(p.nameLabel);
         }
         p.nameLabel.setPos(
                 p.remoteSprite.x + (p.remoteSprite.width() - p.nameLabel.width()) / 2f,
@@ -1492,25 +1542,38 @@ public class Mp {
     // ---------------------------------------------------------------- 线协议
     // 帧格式: [int 长度][byte 类型][payload]
 
+        /** 协议帧：类型 + payload。 */
     public static class Frame {
+        /** 帧类型。 */
         public final int type;
+        /** 帧载荷。 */
         public final byte[] data;
 
+        /** 构造一帧。 */
         public Frame(int type, byte[] data) {
             this.type = type;
             this.data = data;
         }
     }
 
+        /** STATE 帧载荷：层数 + 游戏档 + 当前层。 */
     public static class StatePayload {
+        /** 层数。 */
         public int depth;
+        /** 分支（0=主线）。 */
         public int branch;
+        /** 游戏存档字节。 */
         public byte[] game;
+        /** 当前层字节。 */
         public byte[] level;
     }
 
+        /** 单帧最大长度（64 MB），防止非法长度攻击。 */
     public static final int MAX_FRAME = 64 * 1024 * 1024;
 
+    /**
+     * 写入一帧：[int32 长度][int8 类型][payload]（大端）。
+     */
     public static void writeFrame(DataOutputStream o, int type, byte[] payload) throws IOException {
         synchronized (o) {
             o.writeInt(payload.length);
@@ -1520,6 +1583,9 @@ public class Mp {
         }
     }
 
+    /**
+     * 读取一帧并校验长度（单帧上限 MAX_FRAME）。
+     */
     public static Frame readFrame(DataInputStream in) throws IOException {
         int len = in.readInt();
         if (len < 0 || len > MAX_FRAME) throw new IOException("非法包长度 " + len);
@@ -1529,6 +1595,9 @@ public class Mp {
         return new Frame(type, data);
     }
 
+    /**
+     * 编码 STATE 帧：depth/branch/游戏档/当前层字节。
+     */
     public static byte[] encodeState(int depth, int branch, byte[] game, byte[] level) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(game.length + level.length + 32);
         DataOutputStream dos = new DataOutputStream(bos);
@@ -1542,6 +1611,9 @@ public class Mp {
         return bos.toByteArray();
     }
 
+    /**
+     * 解码 STATE 帧。
+     */
     public static StatePayload decodeState(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
         StatePayload p = new StatePayload();
@@ -1554,13 +1626,21 @@ public class Mp {
         return p;
     }
 
+        /** POS 帧载荷。 */
     public static class PosPayload {
+        /** 标识 id。 */
         public int id;
+        /** 层数。 */
         public int depth;
+        /** 分支（0=主线）。 */
         public int branch;
+        /** 格子位置。 */
         public int pos;
     }
 
+    /**
+     * 编码 POS 帧：id/depth/branch/cell。
+     */
     public static byte[] encodePos(int id, int depth, int branch, int pos) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(16);
         DataOutputStream dos = new DataOutputStream(bos);
@@ -1572,6 +1652,9 @@ public class Mp {
         return bos.toByteArray();
     }
 
+    /**
+     * 解码 POS 帧。
+     */
     public static PosPayload readPos(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
         PosPayload p = new PosPayload();
@@ -1621,29 +1704,50 @@ public class Mp {
         return "127.0.0.1";
     }
 
+        /** 协议帧类型常量。 */
     public static class Proto {
+        /** HELLO：玩家名。 */
         public static final int HELLO = 1;
+        /** STATE：房主存档 + 当前层。 */
         public static final int STATE = 2;
+        /** POS：位置 + 层。 */
         public static final int POS = 3;
+        /** HERO：职业通知（房主转发给其他访客）。 */
         public static final int HERO = 4;   // 带 id 的职业通知（房主转发给其他访客）
+        /** CHAT：聊天（房主转发）。 */
         public static final int CHAT = 5;   // 名字+内容 编码，房主转发
+        /** KICK：房主退出存档，访客回标题（连接保持）。 */
         public static final int KICK = 6;   // 房主 → 访客：房主退出存档，回标题（连接保持）
+        /** ASSIGN：房主给新访客分配 id。 */
         public static final int ASSIGN = 7; // 房主 → 新访客：分配 id
+        /** JOIN：新玩家加入（id + 名字）。 */
         public static final int JOIN = 8;   // 房主 → 其他访客：新玩家加入（id + 名字）
+        /** LEAVE：玩家离开（id）。 */
         public static final int LEAVE = 9;  // 房主 → 其他访客：玩家离开（id）
         // 20+ 为稳定线新增；避开 test 线已占用的 11/15
+        /** FULL：房间已满。 */
         public static final int FULL = 20;    // 房主 → 第 5 名加入者：房间已满
+        /** KICKED：被 /kick 的访客立即断开。 */
         public static final int KICKED = 21;  // 房主 → 被 /kick 的访客：立即断开
+        /** PING：延迟测量。 */
         public static final int PING = 22;    // 双向：延迟测量
+        /** PONG：延迟回应。 */
         public static final int PONG = 23;    // 双向：延迟回应
+        /** RTT_INFO：各访客延迟列表。 */
         public static final int RTT_INFO = 24; // 房主 → 访客：各访客到房主的延迟（访客 /list 用）
     }
 
+        /** HERO 帧载荷：id + 职业。 */
     public static class HeroPayload {
+        /** 标识 id。 */
         public int id;
+        /** 职业。 */
         public HeroClass cls;
     }
 
+    /**
+     * 编码 HERO 帧：id + 职业序数。
+     */
     public static byte[] encodeHero(int id, HeroClass cls) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
         DataOutputStream dos = new DataOutputStream(bos);
@@ -1653,6 +1757,9 @@ public class Mp {
         return bos.toByteArray();
     }
 
+    /**
+     * 解码 HERO 帧。
+     */
     public static HeroPayload decodeHero(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
         HeroPayload p = new HeroPayload();
@@ -1664,12 +1771,19 @@ public class Mp {
     }
 
     /** 聊天帧：名字长度 + 名字 + 内容（房主原样转发，显示格式全端统一）；JOIN 解码复用 id 字段 */
+        /** CHAT 帧载荷：名字 + 内容。 */
     public static class ChatPayload {
+        /** 标识 id。 */
         public int id;
+        /** 玩家名。 */
         public String name;
+        /** 聊天内容。 */
         public String text;
     }
 
+    /**
+     * 编码 CHAT 帧：玩家名 + 内容。
+     */
     public static byte[] encodeChat(String name, String text) throws IOException {
         byte[] nb = (name == null ? "" : name).getBytes("UTF-8");
         byte[] tb = (text == null ? "" : text).getBytes("UTF-8");
@@ -1682,6 +1796,9 @@ public class Mp {
         return bos.toByteArray();
     }
 
+    /**
+     * 解码 CHAT 帧。
+     */
     public static ChatPayload decodeChat(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
         ChatPayload p = new ChatPayload();
@@ -1694,6 +1811,9 @@ public class Mp {
         return p;
     }
 
+    /**
+     * 编码 RTT_INFO 帧：各访客延迟列表。
+     */
     public static byte[] encodeRttInfo(List<RttRec> recs) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(4 + recs.size() * 9);
         DataOutputStream dos = new DataOutputStream(bos);
@@ -1707,6 +1827,9 @@ public class Mp {
         return bos.toByteArray();
     }
 
+    /**
+     * 解码 RTT_INFO 帧。
+     */
     public static RttInfoPayload decodeRttInfo(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
         int count = di.readInt();
@@ -1723,6 +1846,9 @@ public class Mp {
         return p;
     }
 
+    /**
+     * 编码 4 字节大端整数。
+     */
     public static byte[] encodeInt(int v) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(4);
         DataOutputStream dos = new DataOutputStream(bos);
@@ -1731,10 +1857,16 @@ public class Mp {
         return bos.toByteArray();
     }
 
+    /**
+     * 解码 4 字节大端整数。
+     */
     public static int decodeInt(byte[] data) throws IOException {
         return new DataInputStream(new ByteArrayInputStream(data)).readInt();
     }
 
+    /**
+     * 编码 JOIN 帧：id + 玩家名。
+     */
     public static byte[] encodeJoin(int id, String name) throws IOException {
         byte[] nb = (name == null ? "" : name).getBytes("UTF-8");
         ByteArrayOutputStream bos = new ByteArrayOutputStream(4 + nb.length);
@@ -1745,6 +1877,9 @@ public class Mp {
         return bos.toByteArray();
     }
 
+    /**
+     * 解码 JOIN 帧。
+     */
     public static ChatPayload decodeJoin(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
         ChatPayload p = new ChatPayload();

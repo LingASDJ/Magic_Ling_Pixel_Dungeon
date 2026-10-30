@@ -22,25 +22,30 @@ import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 
+/** MultiplayerService 的默认实现，委托给 multiplayer.Mp 单例。 */
 public class MultiplayerServiceImpl extends MultiplayerService {
 
+	/** GameScene 每帧调用：委托给联机核心。 */
 	@Override
 	public void tick(GameScene scene) {
-		Mp.I.tick(scene);
+		Mp.get().tick(scene);
 	}
 
+	/** TitleScene 每帧调用：委托给联机核心。 */
 	@Override
 	public void tickTitle(TitleScene scene) {
-		Mp.I.tickTitle(scene);
+		Mp.get().tickTitle(scene);
 	}
 
+	/** GameScene.onPause 钩子：委托给联机核心保存访客英雄。 */
 	@Override
 	public void onGamePause() {
-		Mp.I.onGamePause();
+		Mp.get().onGamePause();
 	}
 
+	/** 访客连接中（用于 StartScene 拦截单独进入游戏）。 */
 	@Override
 	public boolean isClientConnected() {
-		return Mp.I.isConnected() && Mp.I.isClient();
+		return Mp.get().isConnected() && Mp.get().isClient();
 	}
 }
