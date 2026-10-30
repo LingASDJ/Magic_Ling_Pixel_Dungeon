@@ -217,7 +217,7 @@ public enum HeroClass {
 		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
 		if (!Dungeon.isDLC(Conducts.Conduct.SEED)) {
-			SPDSettings.unlockItem("avatars_duelist_6");
+
 			if (Dungeon.isChallenged(Challenges.AQUAPHOBIA)) {
 				new WaterSoul().quantity(4).identify().collect();
 			}
