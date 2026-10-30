@@ -750,6 +750,8 @@ public abstract class Char extends Actor {
 		if (bubble != null){
 			bubble.detach();
 		}
+		// 某些强制显形路径不经过Invisibility.dispel()，在这里补做片影惊鸿结算。
+		Talent.applyPendingPhantomFlash(this);
 	}
 
 
@@ -1014,6 +1016,8 @@ public abstract class Char extends Actor {
 	}
 
 	public void damage( int dmg, Object src, DamageType type ) {
+		//重置lastDamageOverkill，使溢出伤害为0时，不会错误的转化为血雾缭绕
+		lastDamageOverkill = 0;
 
 		if (!isAlive() || dmg < 0) {
 			return;
@@ -1309,8 +1313,11 @@ public abstract class Char extends Actor {
 		if(src instanceof VenomGas){
 			venodamage += dmg;
 		}
-
-		if (HP < 0) HP = 0;
+		//在HP被限制为0之前保存真实溢出伤害，Mob.die()随后会读取该值，交给血雾掩身转化为护盾。
+		if (HP < 0) {
+			lastDamageOverkill = -HP;
+			HP = 0;
+		}
 
 		//断生者：伤害结算后若目标存活则分裂
 		if (buff(LifeCutter.SplitMark.class) != null){
@@ -1325,6 +1332,12 @@ public abstract class Char extends Actor {
 		} else if (HP == 0 && buff(DeathMark.DeathMarkTracker.class) != null){
 			DeathMark.processFearTheReaper(this);
 		}
+	}
+	// 当前伤害结算产生的溢出值。
+	private int lastDamageOverkill = 0;
+
+	public int lastDamageOverkill() {
+		return lastDamageOverkill;
 	}
 
 	/**
