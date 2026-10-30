@@ -112,6 +112,8 @@ public class Invisibility extends FlavourBuff {
 		if (bubble != null){
 			bubble.detach();
 		}
+		// 攻击原本的显形结算完成后，再发放片影惊鸿，避免奖励被同一次攻击解除。
+		Talent.applyPendingPhantomFlash(ch);
 	}
 
 	@Override

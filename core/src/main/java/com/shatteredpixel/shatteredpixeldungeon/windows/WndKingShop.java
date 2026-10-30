@@ -59,8 +59,22 @@ public class WndKingShop extends Window {
 
         add(titlebar);
 
-        RenderedTextBlock message = PixelScene.renderTextBlock(Statistics.bossRushMode ? (Messages.get(WndKingShop.class, "run")) :
-                (Messages.get(WndKingShop.class, "select")), 6);
+        String messageText;
+
+        if (Statistics.bossRushMode) {
+            messageText = Messages.get(WndKingShop.class, "run");
+        } else {
+            messageText = Messages.get(
+                    WndKingShop.class,
+                    "select",
+                    currentReloadPrice()
+            );
+        }
+
+        RenderedTextBlock message = PixelScene.renderTextBlock(
+                messageText,
+                6
+        );
         message.maxWidth(WIDTH);
         message.setPos(0, titlebar.bottom() + GAP);
         add(message);
@@ -192,14 +206,7 @@ public class WndKingShop extends Window {
                 Game.runOnRenderThread(new Callback() {
                     @Override
                     public void call() {
-                        int reloadCount = 0;
-                        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                            if (mob instanceof NullDiedTO) {
-                                reloadCount = ((NullDiedTO) mob).reloadCount;
-                                break;
-                            }
-                        }
-                        int reloadPrice = 350 + 250 * reloadCount;
+                        int reloadPrice = currentReloadPrice();
                         if (Dungeon.gold >= reloadPrice) {
                             hide();
                             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
@@ -471,6 +478,22 @@ public class WndKingShop extends Window {
 
             slot.setRect( x + 2, y + 2, width - 4, height - 4 );
         }
+    }
+    /**
+     * 计算本次刷新需要的金币。
+     * 首次刷新为350金币，此后每次增加250金币。
+     */
+    private static int currentReloadPrice() {
+        int reloadCount = 0;
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof NullDiedTO) {
+                reloadCount = ((NullDiedTO) mob).reloadCount;
+                break;
+            }
+        }
+
+        return 350 + 250 * reloadCount;
     }
 }
 

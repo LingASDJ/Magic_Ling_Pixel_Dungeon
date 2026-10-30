@@ -37,10 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.DeathBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.MyCoreHeart;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.bad.TowerGodsBad;
@@ -82,6 +79,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
@@ -1324,6 +1322,14 @@ public abstract class Mob extends Char {
     @Override
 	public void die( Object cause ) {
 		discovered = true;
+		// 在super.die()前读取，此时伏击状态和本次伤害的溢出值仍然有效。
+		if (alignment == Alignment.ENEMY) {
+			Talent.onAmbushKill(
+					Dungeon.hero,
+					this,
+					lastDamageOverkill()
+			);
+		}
 
 		if (cause == Chasm.class){
 			//50% chance to round up, 50% to round down
@@ -1353,6 +1359,20 @@ public abstract class Mob extends Char {
 				if (hero.hasTalent(Talent.IRON_WILL)) {
 					Buff.affect(hero, Barrier.class).setShield(1 + hero.pointsInTalent(Talent.IRON_WILL));
 				}
+			}
+    		//片影惊鸿的击杀登记
+			// 近战攻击的伤害来源通常记录为英雄，因此需要同时检查当前动作和攻击武器；
+			// *投掷过程中，thrownWeapon会暂时保存正在使用的投掷武器。
+			boolean meleeOrThrownWeaponKill =
+					cause instanceof MeleeWeapon
+							|| cause instanceof MissileWeapon
+							|| Dungeon.hero.belongings.thrownWeapon instanceof MissileWeapon
+							|| (Dungeon.hero.curAction instanceof HeroAction.Attack
+							&& Dungeon.hero.belongings.attackingWeapon()
+							instanceof MeleeWeapon);
+
+			if (meleeOrThrownWeaponKill) {
+				Talent.onEnemyKilledByHero(Dungeon.hero);
 			}
 
 			if (cause == Dungeon.hero || cause instanceof Weapon || cause instanceof Weapon.Enchantment){

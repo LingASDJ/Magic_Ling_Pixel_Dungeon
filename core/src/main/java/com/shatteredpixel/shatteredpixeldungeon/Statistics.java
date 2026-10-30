@@ -329,6 +329,8 @@ public class Statistics {
 	public static boolean godGirl = false;
 
 	public static boolean enterHiro = false;
+	// 第9层携带天狗面具尝试进入0-e的次数。
+	public static int hiroAttempts = 0;
 	public static boolean attackIFGirl = false;
 
 	public static float BzmdrCJMobSpeed = 0f;
@@ -368,6 +370,8 @@ public class Statistics {
 	private static final String STS = "sts";
 
     private static final String BOSS_CHALLENGE_QUALIFIED = "qualifiedForBossChallengeBadge";
+
+	private static final String HIRO_ATTEMPTS = "HiroAttempts";
 	//Directly add float time will cause accuracy lose and stop timing if time is long enough
 	//so use long to record seconds, float to count sub-seconds.
     //SPD-V1.3.2-ITEM SPAWN CODE
@@ -659,6 +663,8 @@ public class Statistics {
 				new Trash()
 		));
 
+		hiroAttempts = 0;
+
 		MustHardLevel = false;
 
 		isEndingbald = Random.Float() <= 0.2f;
@@ -867,6 +873,7 @@ public class Statistics {
 		miniGamesTotalLevel = 0;
 
 		enterHiro = false;
+		hiroAttempts = 0;
 
 		attackIFGirl = DeviceCompat.isDebug() || Random.Int(100) <= 20 + Challenges.activeChallenges() * 5;
 
@@ -949,6 +956,8 @@ public class Statistics {
 	}
 
     public static void storeInBundle(Bundle bundle) {
+		//0-e
+		bundle.put(HIRO_ATTEMPTS, hiroAttempts);
 
 		/**/
 		bundle.put("SOS_SPAWNED", SOSisAlreadySpawn);
@@ -1258,6 +1267,9 @@ public class Statistics {
 
 		YuanXiLimit = bundle.getInt("YUANXI");
 		enterHiro = bundle.getBoolean("EnterHiro");
+		hiroAttempts = bundle.contains(HIRO_ATTEMPTS)
+				? bundle.getInt(HIRO_ATTEMPTS)
+				: 0;
 
 		survey_research_points = bundle.getInt("SFRCFV");
 

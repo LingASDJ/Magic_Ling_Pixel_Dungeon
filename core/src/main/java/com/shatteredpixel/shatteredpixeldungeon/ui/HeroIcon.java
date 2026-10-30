@@ -47,6 +47,7 @@ public class HeroIcon extends Image {
 	public static final int WARDEN      = 7;
 	public static final int CHAMPION    = 8;
 	public static final int MONK        = 9;
+	public static final int PHANTOM_HUNTER = 10;
 
 	//abilities
 	public static final int HEROIC_LEAP     = 16;

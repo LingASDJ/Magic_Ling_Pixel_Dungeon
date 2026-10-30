@@ -120,7 +120,10 @@ public class CloakOfShadows extends Artifact {
 				else if (cursed)       GLog.i( Messages.get(this, "cursed") );
 				else if (charge <= 0)  GLog.i( Messages.get(this, "no_charge") );
 				else {
-					hero.spend( 1f );
+					//幽冥斗篷使用不消耗回合
+					if (!phantomMode) {
+						hero.spend(1f);
+					}
 					hero.busy();
 					Sample.INSTANCE.play(Assets.Sounds.MELD);
 					activeBuff = activeBuff();
@@ -192,10 +195,16 @@ public class CloakOfShadows extends Artifact {
 	@Override
 	public boolean collect( Bag container ) {
 		if (super.collect(container)){
-			if (container.owner instanceof Hero
-					&& passiveBuff == null
-					&& ((Hero) container.owner).hasTalent(Talent.LIGHT_CLOAK)){
-				activate((Hero) container.owner);
+			//转职幽冥猎手时，自动将进入背包的暗影斗篷转换成幽冥斗篷
+			if (container.owner instanceof Hero) {
+				Hero owner = (Hero) container.owner;
+				if (owner.subClass == HeroSubClass.PHANTOM_HUNTER) {
+					becomePhantomCloak();
+				}
+				if (passiveBuff == null
+						&& owner.hasTalent(Talent.LIGHT_CLOAK)) {
+					activate(owner);
+				}
 			}
 			return true;
 		} else{
@@ -231,7 +240,9 @@ public class CloakOfShadows extends Artifact {
 
 		if (charge < chargeCap) {
 			if (!isEquipped(target)) amount *= 0.75f*target.pointsInTalent(Talent.LIGHT_CLOAK)/3f;
-			partialCharge += 0.25f*amount;
+			//幽冥斗篷神器充能效率更高
+			float chargeFactor = phantomMode ? 0.5f : 0.25f;
+			partialCharge += chargeFactor * amount;
 			while (partialCharge >= 1f) {
 				charge++;
 				partialCharge--;
@@ -255,19 +266,32 @@ public class CloakOfShadows extends Artifact {
 		return super.upgrade();
 	}
 
-	private static final String STEALTHED = "stealthed";
 	private static final String BUFF = "buff";
 
 	@Override
-	public void storeInBundle( Bundle bundle ) {
+	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
-		if (activeBuff != null) bundle.put(BUFF, activeBuff);
+
+		bundle.put(PHANTOM_MODE, phantomMode);
+
+		if (activeBuff != null) {
+			bundle.put(BUFF, activeBuff);
+		}
 	}
 
 	@Override
-	public void restoreFromBundle( Bundle bundle ) {
+	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
-		if (bundle.contains(BUFF)){
+
+		phantomMode = bundle.contains(PHANTOM_MODE)
+				&& bundle.getBoolean(PHANTOM_MODE);
+
+		// 物品初始化时会先设置成暗影斗篷，所以恢复后要重新设置图标
+		image = phantomMode
+				? ItemSpriteSheet.ARTIFACT_PHANTOM_CLOAK
+				: ItemSpriteSheet.ARTIFACT_CLOAK;
+
+		if (bundle.contains(BUFF)) {
 			activeBuff = new cloakStealth();
 			activeBuff.restoreFromBundle(bundle.getBundle(BUFF));
 		}
@@ -355,7 +379,66 @@ public class CloakOfShadows extends Artifact {
 
 		@Override
 		public float iconFadePercent() {
-			return (4f - turnsToCost) / 4f;
+			float duration = stealthTurnsPerCharge(target,chargesSpentThisUse);
+			return Math.max(0f, (duration - turnsToCost) / duration);
+		}
+		//记录隐身时间
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+
+			bundle.put(TURNSTOCOST, turnsToCost);
+			bundle.put(CHARGES_SPENT_THIS_USE, chargesSpentThisUse);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+
+			if (bundle.contains(TURNSTOCOST)) {
+				turnsToCost = bundle.getInt(TURNSTOCOST);
+			}
+
+			if (bundle.contains(CHARGES_SPENT_THIS_USE)) {
+				chargesSpentThisUse =
+						bundle.getInt(CHARGES_SPENT_THIS_USE);
+			}
+		}
+		/**
+		 * 幽冥漫步：记录本次连续隐身已经完整消耗的充能数。
+		 * 每结束一段充能，这个值就增加1。
+		 * 它有两个用途：
+		 * 1. 为下一段隐身增加相同数量的持续回合；
+		 * 2. 隐身结束时判断是否达到4/3/2点返还门槛。
+		 */
+		private int chargesSpentThisUse = 0;
+		// 一次隐身可能从主动关闭、自然耗尽等多个出口结束，确保只返还一次。
+		private boolean refundedThisUse = false;
+		/**
+		 * 结算幽冥漫步的充能返还。
+		 * 天赋+1/+2/+3分别需要本次累计消耗4/3/2点充能。
+		 * 达到门槛后返还1点，但神器已经满充能时不继续增加。
+		 */
+		private void refundIfEligible() {
+			if (refundedThisUse || !(target instanceof Hero)) {
+				return;
+			}
+
+			refundedThisUse = true;
+
+			Hero hero = (Hero) target;
+			int points = hero.pointsInTalent(Talent.PHANTOM_WALK);
+
+			int requiredCharges = 5 - points;
+			// 1点需要4，2点需要3，3点需要2
+
+			if (points > 0
+					&& chargesSpentThisUse >= requiredCharges
+					&& charge < chargeCap) {
+
+				charge++;
+				updateQuickslot();
+			}
 		}
 
 		@Override
@@ -396,6 +479,8 @@ public class CloakOfShadows extends Artifact {
 					GLog.w(Messages.get(this, "no_charge"));
 					((Hero) target).interrupt();
 				} else {
+					// 当前这段充能已经耗尽，先记录消耗数，再计算下一段隐身时长。
+					chargesSpentThisUse++;
 					//target hero level is 1 + 2*cloak level
 					int lvlDiffFromTarget = ((Hero) target).lvl - (1+level()*2);
 					//plus an extra one for each level after 6
@@ -415,7 +500,7 @@ public class CloakOfShadows extends Artifact {
 						GLog.p(Messages.get(this, "levelup"));
 						
 					}
-					turnsToCost = 4;
+					turnsToCost = stealthTurnsPerCharge(target,chargesSpentThisUse);
 				}
 				updateQuickslot();
 			}
@@ -441,6 +526,11 @@ public class CloakOfShadows extends Artifact {
 
 		@Override
 		public void detach() {
+			/*
+			 * 主动关闭、自然耗尽、受击显形等结束方式最终都会进入detach()。
+			 * 因此把幽冥漫步的返还结算统一放在这里。
+			 */
+			refundIfEligible();
 			activeBuff = null;
 
 			if (target.invisible > 0)   target.invisible--;
@@ -450,20 +540,47 @@ public class CloakOfShadows extends Artifact {
 		}
 		
 		private static final String TURNSTOCOST = "turnsToCost";
-		private static final String BARRIER_INC = "barrier_inc";
-		
-		@Override
-		public void storeInBundle(Bundle bundle) {
-			super.storeInBundle(bundle);
-			
-			bundle.put( TURNSTOCOST , turnsToCost);
+		private static final String CHARGES_SPENT_THIS_USE = "charges_spent_this_use";
+
+	}
+	//幽冥斗篷
+	private boolean phantomMode = false;
+	private static final String PHANTOM_MODE = "phantom_mode";
+
+	public void becomePhantomCloak() {
+		if (!phantomMode) {
+			phantomMode = true;
+			image = ItemSpriteSheet.ARTIFACT_PHANTOM_CLOAK;
+			updateQuickslot();
 		}
-		
-		@Override
-		public void restoreFromBundle(Bundle bundle) {
-			super.restoreFromBundle(bundle);
-			
-			turnsToCost = bundle.getInt( TURNSTOCOST );
+	}
+		//幽冥/隐身斗篷时，每点充能5/4回合隐身
+	protected int stealthTurnsPerCharge(Char wearer, int chargesSpentThisUse) {
+		int duration = phantomMode ? 5 : 4;
+
+		if (phantomMode && wearer instanceof Hero) {
+			int points = ((Hero) wearer).pointsInTalent(Talent.PHANTOM_WALK);
+
+			if (points > 0) {
+				// 本次已消耗1点，就为下一段增加1回合
+				duration += chargesSpentThisUse;
+			}
 		}
+
+		return duration;
+	}
+	//斗篷的动态文本
+	@Override
+	public String name() {
+		return phantomMode
+				? Messages.get(this, "phantom_name")
+				: super.name();
+	}
+
+	@Override
+	public String desc() {
+		return phantomMode
+				? Messages.get(this, "phantom_desc")
+				: super.desc();
 	}
 }
