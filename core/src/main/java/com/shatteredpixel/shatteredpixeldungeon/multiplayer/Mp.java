@@ -537,11 +537,22 @@ public class Mp {
         }
     }
 
+    /**
+     * 版本握手完成前仍允许处理的帧（连接控制/握手，不涉及游戏世界状态）。
+     *
+     * @param type 帧类型。
+     * @return 是否放行。
+     */
+    private static boolean isPreHandshakeFrame(int type) {
+        return type == Proto.HELLO || type == Proto.ASSIGN || type == Proto.VERSION
+                || type == Proto.FULL || type == Proto.KICKED
+                || type == Proto.KICK || type == Proto.PING || type == Proto.PONG;
+    }
+
     private void onFrame(Peer p, int type, byte[] data) { // skipcq: JAVA-R1000 协议帧分发，复杂度高但已实测稳定
         try {
-            if (!p.versionOk && type != Proto.HELLO && type != Proto.ASSIGN
-                    && type != Proto.VERSION) {
-                return;   // 版本握手完成前忽略游戏帧；HELLO/ASSIGN 仍用于最初的识别
+            if (!p.versionOk && !isPreHandshakeFrame(type)) {
+                return;   // 版本握手完成前忽略游戏帧；控制帧仍放行
             }
             switch (type) {
                 case Proto.HELLO: {
