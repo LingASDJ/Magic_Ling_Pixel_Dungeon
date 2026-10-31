@@ -104,6 +104,11 @@ public class Mp {
 
     /** 默认联机端口。 */
     public static final int DEFAULT_PORT = 28771;
+    /**
+     * 联机模块版本号：显示在联机菜单右下角，并记录在根目录《更新日志.txt》。
+     * 不得随意迭代：仅在用户明确指示“更新至某某版本”时修改，同时追加更新日志。
+     */
+    public static final String MP_VERSION = "v0.1.1";
     /** 最大人数：1 房主 + 3 访客（推荐上限，理由见 PROGRESS §10 多人适配） */
     public static final int MAX_PLAYERS = 4;
 

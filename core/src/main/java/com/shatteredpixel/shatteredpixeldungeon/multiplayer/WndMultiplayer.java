@@ -127,6 +127,14 @@ public class WndMultiplayer extends Window {
         credit.alpha(0.6f);
         credit.setPos(0f, pos);
         add(credit);
+
+        // 版本号：署名右侧、菜单右下角
+        RenderedTextBlock version = PixelScene.renderTextBlock(5);
+        version.text(Mp.MP_VERSION);
+        version.alpha(0.6f);
+        version.setPos(WIDTH - version.width() - 2f, credit.top());
+        add(version);
+
         pos = credit.bottom() + 2f;
 
         resize(WIDTH, (int) pos);
