@@ -6,6 +6,8 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 
 import java.util.function.Consumer;
@@ -45,6 +47,14 @@ public class WndHeroClassSelect extends Window {
             RedButton btn = new RedButton(Messages.titleCase(cls.title())) {
                 @Override
                 protected void onClick() {
+                    // 法尔塔娅（剑士）是 v1.0.0 的预载资源：正式上线前不可选。
+                    // 判定委托原版 HeroClass.isUnlocked()：正式版为 false 弹提示，
+                    // 桌面开发版(INDEV)可玩；作者在 v1.0.0 放开原版判定后这里自动解锁。
+                    if (cls == HeroClass.SPELLSWORD && !cls.isUnlocked()) {
+                        Game.scene().add(new WndMessage(
+                                Messages.get(WndHeroClassSelect.class, "spellsword_locked")));
+                        return;
+                    }
                     hide();
                     WndHeroClassSelect.this.onSelect.accept(cls);
                 }

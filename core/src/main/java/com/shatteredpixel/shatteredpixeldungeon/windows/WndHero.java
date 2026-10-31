@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
@@ -90,9 +89,17 @@ public class WndHero extends WndTabbed {
 
 	public static int lastIdx = 0;
 
-	public WndHero() {
+	/** 查看的英雄：默认是自己；联机时可传远端玩家（详情一致、只读副本） */
+	private final Hero hero;
 
+	public WndHero() {
+		this(Dungeon.hero);
+	}
+
+	public WndHero(Hero hero) {
 		super();
+
+		this.hero = hero;
 
 		resize( WIDTH, HEIGHT );
 
@@ -208,7 +215,6 @@ public class WndHero extends WndTabbed {
 			}
 			clear();
 
-			Hero hero = Dungeon.hero;
 
 			IconTitle title = new IconTitle();
 			title.icon( HeroSprite.avatar(hero) );
@@ -278,7 +284,10 @@ public class WndHero extends WndTabbed {
 				protected void onClick() {
 					super.onClick();
 					hide();
-					GameScene.show(new WndSelectSkin(Dungeon.hero.heroClass));
+					// 联机查看远端玩家时不开皮肤选择（皮肤属于本机英雄）
+					if (hero == Dungeon.hero) {
+						GameScene.show(new WndSelectSkin(Dungeon.hero.heroClass));
+					}
 				}
 
 				@Override
@@ -365,7 +374,7 @@ public class WndHero extends WndTabbed {
 
 			pos += GAP;
 
-			Hunger hunger = Dungeon.hero.buff(Hunger.class);
+			Hunger hunger = hero.buff(Hunger.class);
 			String hunger_str = "null";
 			if(hunger != null){
 				hunger_str = hunger.hunger() + "/" + Hunger.STARVING;
