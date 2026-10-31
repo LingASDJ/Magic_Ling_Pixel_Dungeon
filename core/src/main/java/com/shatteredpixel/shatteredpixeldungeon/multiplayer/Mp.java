@@ -375,6 +375,7 @@ public class Mp {
             try {
                 Thread.sleep(HANDSHAKE_TIMEOUT_MS);
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 return;
             }
             synchronized (p) {
