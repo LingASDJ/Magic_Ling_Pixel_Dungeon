@@ -33,7 +33,8 @@ public class WndHeroClassSelect extends Window {
 
         float pos = 0f;
 
-        RenderedTextBlock title = PixelScene.renderTextBlock("选择英雄职业", 9);
+        RenderedTextBlock title = PixelScene.renderTextBlock(
+                Messages.get(WndHeroClassSelect.class, "title"), 9);
         title.hardlight(TITLE_COLOR);
         title.setPos(0f, pos);
         title.maxWidth(WIDTH);

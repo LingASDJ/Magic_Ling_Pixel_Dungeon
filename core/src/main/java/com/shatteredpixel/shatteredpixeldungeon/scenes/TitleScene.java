@@ -539,7 +539,8 @@ public class TitleScene extends PixelScene {
 
 		// 联机补丁：「联机」按钮并入「开始游戏」这一行——把「开始游戏」缩短出「联机」的宽度，
 		// 两者合计仍占满原按钮组的整行宽度（右边界与下方各行对齐），不再向右溢出、显得突兀。
-		StyledButton btnMp = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "联机", 8){
+		StyledButton btnMp = new StyledButton(Chrome.Type.GREY_BUTTON_TR,
+				Messages.get(TitleScene.class, "mp"), 8){
 			@Override
 			protected void onClick() {
 				ShatteredPixelDungeon.scene().add(new WndMultiplayer());

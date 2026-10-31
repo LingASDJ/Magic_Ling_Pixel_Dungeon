@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.multiplayer;
 
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -23,7 +24,8 @@ public class WndMultiplayer extends Window {
     public WndMultiplayer() {
         float pos = 0f;
 
-        RenderedTextBlock title = PixelScene.renderTextBlock("联机", 9);
+        RenderedTextBlock title = PixelScene.renderTextBlock(
+                Messages.get(WndMultiplayer.class, "title"), 9);
         title.hardlight(TITLE_COLOR);
         title.setPos(0f, pos);
         title.maxWidth(WIDTH);
@@ -37,12 +39,12 @@ public class WndMultiplayer extends Window {
         pos = status.bottom() + 4f;
 
         nameText = PixelScene.renderTextBlock(6);
-        nameText.text("名字: " + Mp.get().getMyName(), WIDTH);
+        nameText.text(Messages.get(WndMultiplayer.class, "name_label", Mp.get().getMyName()), WIDTH);
         nameText.setPos(0f, pos);
         add(nameText);
         pos = nameText.bottom() + 4f;
 
-        RedButton host = new RedButton("开房（我是房主）") {
+        RedButton host = new RedButton(Messages.get(WndMultiplayer.class, "host")) {
             @Override
             protected void onClick() {
                 Mp.get().host(Mp.DEFAULT_PORT);
@@ -53,12 +55,15 @@ public class WndMultiplayer extends Window {
         host.setRect(0f, pos, WIDTH, BTN_HEIGHT);
         pos += BTN_HEIGHT + GAP;
 
-        RedButton join = new RedButton("加入房间（输入房主IP）") {
+        RedButton join = new RedButton(Messages.get(WndMultiplayer.class, "join")) {
             @Override
             protected void onClick() {
                 ShatteredPixelDungeon.scene().addToFront(new WndTextInput(
-                        "加入房间", "输入房主的局域网IP，可写成 192.168.1.5 或 192.168.1.5:28771",
-                        "", 40, false, "连接", "取消") {
+                        Messages.get(WndMultiplayer.class, "join_title"),
+                        Messages.get(WndMultiplayer.class, "join_prompt"),
+                        "", 40, false,
+                        Messages.get(WndMultiplayer.class, "connect"),
+                        Messages.get(WndMultiplayer.class, "cancel")) {
                     @Override
                     public void onSelect(boolean positive, String text) {
                         if (positive) {
@@ -73,7 +78,7 @@ public class WndMultiplayer extends Window {
         join.setRect(0f, pos, WIDTH, BTN_HEIGHT);
         pos += BTN_HEIGHT + GAP;
 
-        RedButton stop = new RedButton("断开连接") {
+        RedButton stop = new RedButton(Messages.get(WndMultiplayer.class, "disconnect")) {
             @Override
             protected void onClick() {
                 Mp.get().disconnect();
@@ -84,12 +89,15 @@ public class WndMultiplayer extends Window {
         stop.setRect(0f, pos, WIDTH, BTN_HEIGHT);
         pos += BTN_HEIGHT + GAP;
 
-        RedButton setName = new RedButton("设置名字") {
+        RedButton setName = new RedButton(Messages.get(WndMultiplayer.class, "set_name")) {
             @Override
             protected void onClick() {
                 ShatteredPixelDungeon.scene().addToFront(new WndTextInput(
-                        "设置名字", "输入你的联机名字（对方能看到）",
-                        Mp.get().getMyName(), 16, false, "确定", "取消") {
+                        Messages.get(WndMultiplayer.class, "set_name"),
+                        Messages.get(WndMultiplayer.class, "name_prompt"),
+                        Mp.get().getMyName(), 16, false,
+                        Messages.get(WndMultiplayer.class, "ok"),
+                        Messages.get(WndMultiplayer.class, "cancel")) {
                     @Override
                     public void onSelect(boolean positive, String text) {
                         if (positive && text != null && !text.trim().isEmpty()) {
@@ -104,7 +112,7 @@ public class WndMultiplayer extends Window {
         setName.setRect(0f, pos, WIDTH, BTN_HEIGHT);
         pos += BTN_HEIGHT + GAP;
 
-        RedButton close = new RedButton("关闭") {
+        RedButton close = new RedButton(Messages.get(WndMultiplayer.class, "close")) {
             @Override
             protected void onClick() {
                 hide();
@@ -115,7 +123,7 @@ public class WndMultiplayer extends Window {
         pos += BTN_HEIGHT + 4f;
 
         RenderedTextBlock credit = PixelScene.renderTextBlock(5);
-        credit.text("联机功能开发者: knox", WIDTH);
+        credit.text(Messages.get(WndMultiplayer.class, "credit"), WIDTH);
         credit.alpha(0.6f);
         credit.setPos(0f, pos);
         add(credit);
@@ -129,7 +137,7 @@ public class WndMultiplayer extends Window {
             status.text(Mp.get().status, WIDTH);
         }
         if (nameText != null) {
-            nameText.text("名字: " + Mp.get().getMyName(), WIDTH);
+            nameText.text(Messages.get(WndMultiplayer.class, "name_label", Mp.get().getMyName()), WIDTH);
         }
     }
 

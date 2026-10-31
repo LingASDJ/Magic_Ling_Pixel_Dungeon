@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -100,16 +101,17 @@ public class Mp {
     /** 最大人数：1 房主 + 3 访客（推荐上限，理由见 PROGRESS §10 多人适配） */
     public static final int MAX_PLAYERS = 4;
 
+    /**
+     * 联机协议版本。线协议（帧类型/载荷格式）改动时必须递增；
+     * 双方版本不一致会拒绝连接，避免旧版本用不兼容的存档/协议混连。
+     */
+    public static final int MP_PROTOCOL_VERSION = 2;
+
     /** 连续多少个 PING 收不到 PONG 就判定连接中断（每 3 秒一次，约 15 秒） */
     private static final int PING_MISS_LIMIT = 5;
 
-    /** 断线提示文案（回标题后弹窗用） */
-        /** 房主断线原因文案。 */
-    public static final String REASON_HOST_LOST = "房主断开了连接";
-        /** 心跳超时原因文案。 */
-    public static final String REASON_NETWORK = "网络状态不佳，与房主的连接已中断";
-        /** 被房主踢出原因文案。 */
-    public static final String REASON_KICKED = "你被房主请离了游戏";
+    /** 版本握手超时（毫秒）：超时视为对方版本过旧或未完成握手。 */
+    private static final long HANDSHAKE_TIMEOUT_MS = 5000L;
 
         /** 联机角色：未连接 / 房主 / 访客。 */
     public enum Role { NONE, HOST, CLIENT }
@@ -117,11 +119,11 @@ public class Mp {
         /** 当前角色。 */
     public volatile Role role = Role.NONE;
         /** 联机状态文本（联机窗口显示）。 */
-    public volatile String status = "未连接";
+    public volatile String status = Messages.get(Mp.class, "status_disconnected");
         /** 是否已连接（任一对端在线）。 */
     public volatile boolean connected = false;
         /** 最近一个 HELLO 的对端名字（兼容 1v1 显示）。 */
-    public volatile String peer = "玩家";   // 兼容 1v1 显示：最近一个 HELLO 的名字
+    public volatile String peer = Messages.get(Mp.class, "default_player_name");   // 兼容 1v1 显示：最近一个 HELLO 的名字
 
     /** 房主自己的 id；访客 id 由房主连接时分配（1..N） */
     public static final int HOST_ID = 0;
@@ -139,7 +141,19 @@ public class Mp {
         Socket sock;
         DataInputStream in;
         DataOutputStream out;
-        volatile String name = "玩家";
+        volatile String name = Messages.get(Mp.class, "default_player_name");
+        /** 对端联机协议版本（-1=尚未握手）。 */
+        int protocolVersion = -1;
+        /** 对端游戏版本号（manifest/Android versionCode）。 */
+        int gameVersionCode = 0;
+        /** 对端游戏版本名（如 0.9.7.2）。 */
+        String gameVersion = "";
+        /** 是否已完成版本握手且双方兼容。 */
+        volatile boolean versionOk = false;
+        /** 是否已处理过 VERSION（成功或失败）。 */
+        volatile boolean versionChecked = false;
+        /** 版本不兼容/握手超时的具体原因（断开时保留给玩家看）。 */
+        volatile String versionError = null;
         HeroClass heroClass;                 // 对端职业（房主侧=访客的 HERO 帧；访客侧=房主 STATE 里捕获）
         boolean gotState = false;            // 房主侧：是否已给该访客发过 STATE
         Hero remote;
@@ -234,13 +248,13 @@ public class Mp {
     public synchronized void host(int port) {
         disconnect();
         role = Role.HOST;
-        status = "正在开房，端口 " + port + " ...";
+        status = Messages.get(Mp.class, "status_hosting", port);
         running = true;
         worker = new Thread(() -> {
             try {
                 // skipcq: JAVA-S1011  局域网游戏数据走明文 TCP，不传账号/敏感信息；TLS 会破坏联机协议兼容性
                 server = new ServerSocket(port);
-                status = "房间已开，等待加入（局域网 IP: " + localIp() + " 端口 " + port + "）";
+                status = Messages.get(Mp.class, "status_host_waiting", localIp(), port);
                 while (running) {
                     Socket s = server.accept();
                     synchronized (peers) {
@@ -267,7 +281,7 @@ public class Mp {
                                 } catch (Throwable ignored) {}
                             } catch (IOException ignored) {}
                             try { s.close(); } catch (IOException ignored) {}
-                            status = "有玩家尝试加入，但房间已满（最多 " + MAX_PLAYERS + " 人）";
+                            status = Messages.get(Mp.class, "status_room_full_host", MAX_PLAYERS);
                             continue;
                         }
                         Peer p = setupPeer(s);
@@ -275,12 +289,14 @@ public class Mp {
                         peers.add(p);
                         sendTo(p, Proto.HELLO, getMyName().getBytes("UTF-8"));   // 房主也把自己的名字发过去
                         try { sendTo(p, Proto.ASSIGN, encodeInt(p.id)); } catch (IOException ignored) {}
+                        try { sendTo(p, Proto.VERSION, encodeVersion()); } catch (IOException ignored) {}
+                        scheduleHandshakeTimeout(p);
                         connected = true;
-                        status = peers.size() + " 名玩家在线，等待进入游戏后同步进度...";
+                        status = Messages.get(Mp.class, "status_players_online", peers.size());
                     }
                 }
             } catch (Throwable t) {
-                if (running) status = "开房失败: " + t.getMessage();
+                if (running) status = Messages.get(Mp.class, "status_host_failed", t.getMessage());
             }
         }, "mp-host");
         worker.setDaemon(true);
@@ -298,7 +314,7 @@ public class Mp {
     public synchronized void join(String address, int defaultPort) {
         disconnect();
         role = Role.CLIENT;
-        status = "正在连接 " + address + " ...";
+        status = Messages.get(Mp.class, "status_connecting", address);
         running = true;
         worker = new Thread(() -> {
             try {
@@ -309,7 +325,7 @@ public class Mp {
                     port = Integer.parseInt(host.substring(idx + 1).trim());
                     host = host.substring(0, idx).trim();
                 }
-                if (host.isEmpty()) throw new IOException("地址为空");
+                if (host.isEmpty()) throw new IOException(Messages.get(Mp.class, "error_empty_address"));
                 // skipcq: JAVA-S1011  同上：联机协议为明文 TCP，与房主端保持一致
                 Socket s = new Socket();
                 s.connect(new InetSocketAddress(host, port), 8000);
@@ -317,15 +333,16 @@ public class Mp {
                     Peer hp = setupPeer(s);
                     hp.id = HOST_ID;   // 访客侧唯一固定的房主 peer
                     peers.add(hp);
+                    scheduleHandshakeTimeout(hp);
                 }
                 connected = true;
                 sendToAll(Proto.HELLO, getMyName().getBytes("UTF-8"));
-                status = "已连接，正在等待房主同步进度...";
+                sendToAll(Proto.VERSION, encodeVersion());
+                status = Messages.get(Mp.class, "status_connected_waiting");
             } catch (Throwable t) {
                 String detail = (t.getMessage() != null && !t.getMessage().isEmpty())
                         ? t.getMessage() : t.getClass().getSimpleName();
-                final String msg = "连接失败：" + detail
-                        + "\n\n请确认房主已开房、地址正确，且双方网络互通。";
+                final String msg = Messages.get(Mp.class, "msg_connect_failed", detail);
                 status = msg;
                 connected = false;
                 Game.runOnRenderThread(() -> {
@@ -349,6 +366,31 @@ public class Mp {
         recv.setDaemon(true);
         recv.start();
         return p;
+    }
+
+    /** 版本握手超时：对方在 HANDSHAKE_TIMEOUT_MS 内没有发来兼容的 VERSION 就断开。 */
+    private void scheduleHandshakeTimeout(final Peer p) {
+        Thread t = new Thread(() -> {
+            try {
+                Thread.sleep(HANDSHAKE_TIMEOUT_MS);
+            } catch (InterruptedException e) {
+                return;
+            }
+            synchronized (p) {
+                if (!running || p.versionChecked) return;
+                p.versionChecked = true;   // 超时也标记为已处理，避免重复关闭
+            }
+            if (role == Role.CLIENT && p.id == HOST_ID) {
+                p.versionError = Messages.get(Mp.class, "version_timeout_host");
+                handleHostLost(p.versionError);
+            } else if (role == Role.HOST && p.id > 0) {
+                p.versionError = Messages.get(Mp.class, "version_timeout_peer", displayName(p.name));
+                status = p.versionError;
+                try { if (p.sock != null) p.sock.close(); } catch (IOException ignored) {}
+            }
+        }, "mp-handshake");
+        t.setDaemon(true);
+        t.start();
     }
 
     /**
@@ -388,7 +430,7 @@ public class Mp {
         server = null;
         lastScene = null;
         role = Role.NONE;
-        status = "未连接";
+        status = Messages.get(Mp.class, "status_disconnected");
     }
 
     // ---------------------------------------------------------------- 收包
@@ -406,17 +448,22 @@ public class Mp {
                 try { if (p.sock != null) p.sock.close(); } catch (IOException ignored) {}
                 // 访客侧：host peer 断开就是连接结束，不能被其他访客占位 peer 骗成"还连着"
                 connected = hostLost ? false : !peers.isEmpty();
-                if (hostLost) {
-                    status = REASON_HOST_LOST;
+                if (p.versionError != null) {
+                    // 版本不匹配/握手超时：保留具体原因，不覆盖成通用的“断线”提示
+                    status = p.versionError;
+                } else if (hostLost) {
+                    status = Messages.get(Mp.class, "reason_host_lost");
                 } else if (role == Role.CLIENT && kickedByHost) {
-                    status = REASON_KICKED;
+                    status = Messages.get(Mp.class, "reason_kicked");
                 } else if (p.kicked) {
-                    status = "已请离玩家 " + p.name;
+                    status = Messages.get(Mp.class, "status_kicked_peer", displayName(p.name));
                 } else if (isHost() && p.id > 0) {
                     // 房主侧：有访客断线（主动退出/关游戏/网络中断），所有在场玩家都提示
-                    systemNotice(p.name + " 断开了连接");
+                    systemNotice(Messages.get(Mp.class, "notice_player_left", displayName(p.name)));
                 } else {
-                    status = "玩家 " + p.name + " 已断开" + (connected ? "" : "，连接结束");
+                    status = Messages.get(Mp.class,
+                            connected ? "status_peer_disconnected" : "status_peer_disconnected_end",
+                            displayName(p.name));
                 }
                 if (isHost() && p.id > 0) {
                     // 房主自己的画面上也要清掉该玩家的幽灵/名牌（渲染线程操作精灵）
@@ -434,10 +481,11 @@ public class Mp {
                     // 广播 LEAVE：其他访客清掉这个玩家的幽灵（被踢的玩家也要清）
                     try { sendToAll(Proto.LEAVE, encodeInt(p.id)); } catch (IOException ignored) {}
                 }
-                if (hostLost && !kickedByHost) {
+                if (hostLost && !kickedByHost && p.versionError == null) {
                     // 房主卡退/关游戏/网络中断：访客保存自己并回标题，弹窗说明原因。
                     // pingTimeout=true 说明断线前已经有一轮 PING 无回应，更可能是网络问题。
-                    handleHostLost(p.pingTimeout ? REASON_NETWORK : REASON_HOST_LOST);
+                    handleHostLost(Messages.get(Mp.class,
+                            p.pingTimeout ? "reason_network" : "reason_host_lost"));
                 } else if (role == Role.CLIENT && !connected && !kickedByHost) {
                     // 其他断连情况：访客回标题（被 /kick 的由 KICKED 帧统一处理）
                     Game.runOnRenderThread(() -> {
@@ -491,6 +539,10 @@ public class Mp {
 
     private void onFrame(Peer p, int type, byte[] data) { // skipcq: JAVA-R1000 协议帧分发，复杂度高但已实测稳定
         try {
+            if (!p.versionOk && type != Proto.HELLO && type != Proto.ASSIGN
+                    && type != Proto.VERSION) {
+                return;   // 版本握手完成前忽略游戏帧；HELLO/ASSIGN 仍用于最初的识别
+            }
             switch (type) {
                 case Proto.HELLO: {
                     String name = new String(data, "UTF-8");
@@ -500,6 +552,33 @@ public class Mp {
                         if (isHost() && p.id > 0) {
                             // 把新玩家的 id+名字广播给其他访客（访客据此渲染幽灵与名牌）
                             sendToOthers(p, Proto.JOIN, encodeJoin(p.id, name));
+                        }
+                    }
+                    break;
+                }
+                case Proto.VERSION: {
+                    synchronized (p) {
+                        if (p.versionChecked) return;   // 已超时关闭或重复帧
+                        p.versionChecked = true;
+                    }
+                    VersionPayload vp = decodeVersion(data);
+                    p.protocolVersion = vp.protocolVersion;
+                    p.gameVersionCode = vp.gameVersionCode;
+                    p.gameVersion = vp.gameVersion;
+                    if (vp.protocolVersion == MP_PROTOCOL_VERSION
+                            && vp.gameVersionCode == Game.versionCode) {
+                        p.versionOk = true;
+                    } else {
+                        p.versionError = Messages.get(Mp.class, "version_mismatch",
+                                gameVersionName(), MP_PROTOCOL_VERSION,
+                                vp.gameVersion == null || vp.gameVersion.isEmpty()
+                                        ? "?" : vp.gameVersion,
+                                vp.protocolVersion);
+                        if (role == Role.CLIENT) {
+                            handleHostLost(p.versionError);
+                        } else {
+                            status = p.versionError;
+                            try { if (p.sock != null) p.sock.close(); } catch (IOException ignored) {}
                         }
                     }
                     break;
@@ -519,7 +598,7 @@ public class Mp {
                         // 某访客的第一条位置包 = 他已真正进入游戏（选完职业、载入存档）
                         if (pp.pos > 0 && !p.joinedGame) {
                             p.joinedGame = true;
-                            systemNotice(p.name + " 加入了游戏");
+                            systemNotice(Messages.get(Mp.class, "notice_player_joined", displayName(p.name)));
                         }
                     } else {
                         Peer pp2 = peerFor(pp.id);
@@ -529,7 +608,7 @@ public class Mp {
                         // 其他访客的第一条位置包（房主转发的 POS）= 他进入了游戏
                         if (pp.pos > 0 && pp.id != HOST_ID && pp.id != myId && !pp2.joinedGame) {
                             pp2.joinedGame = true;
-                            systemNotice(pp2.name + " 加入了游戏");
+                            systemNotice(Messages.get(Mp.class, "notice_player_joined", displayName(pp2.name)));
                         }
                     }
                     break;
@@ -558,7 +637,7 @@ public class Mp {
                 case Proto.KICK: {
                     Game.runOnRenderThread(() -> {
                         if (Game.scene() instanceof GameScene) {
-                            status = "房主已退出存档";
+                            status = Messages.get(Mp.class, "status_host_left_save");
                             ShatteredPixelDungeon.switchScene(TitleScene.class);
                         }
                     });
@@ -566,7 +645,7 @@ public class Mp {
                 }
                 case Proto.FULL: {
                     // 第 5 名加入者：房主已发送"房间已满"，随后断开
-                    final String msg = "房间已满（最多 " + MAX_PLAYERS + " 人）";
+                    final String msg = Messages.get(Mp.class, "msg_room_full", MAX_PLAYERS);
                     Game.runOnRenderThread(() -> {
                         status = msg;
                         if (ShatteredPixelDungeon.scene() != null) {
@@ -588,12 +667,12 @@ public class Mp {
                                 @Override
                                 public void afterCreate() {
                                     disconnect();
-                                    showTitleMessage(REASON_KICKED);
+                                    showTitleMessage(Messages.get(Mp.class, "reason_kicked"));
                                 }
                             });
                         } else {
                             disconnect();
-                            showTitleMessage(REASON_KICKED);
+                            showTitleMessage(Messages.get(Mp.class, "reason_kicked"));
                         }
                     });
                     break;
@@ -650,7 +729,7 @@ public class Mp {
                                     pp.nameLabel = null;
                                 }
                                 pp.remote = null;
-                                systemNotice(pp.name + " 断开了连接");
+                                systemNotice(Messages.get(Mp.class, "notice_player_left", displayName(pp.name)));
                             }
                         }
                     });
@@ -660,7 +739,7 @@ public class Mp {
                     break;
             }
         } catch (Throwable t) {
-            status = "处理数据出错: " + t.getMessage();
+            status = Messages.get(Mp.class, "status_data_error", t.getMessage());
         }
     }
 
@@ -668,7 +747,7 @@ public class Mp {
 
     private void sendTo(Peer p, int type, byte[] payload) throws IOException {
         DataOutputStream o = p.out;
-        if (o == null) throw new IOException("未连接");
+        if (o == null) throw new IOException(Messages.get(Mp.class, "error_not_connected"));
         writeFrame(o, type, payload);
     }
 
@@ -710,7 +789,7 @@ public class Mp {
         try {
             p = decodeState(data);
         } catch (IOException e) {
-            status = "处理数据出错: " + e.getMessage();
+            status = Messages.get(Mp.class, "status_data_error", e.getMessage());
             return;
         }
         try {
@@ -734,9 +813,9 @@ public class Mp {
                 // 首次加入：先弹职业选择窗口，选定后继续
                 if (pendingState == null) {
                     pendingState = p;
-                    status = guestHeroUnreadable
-                            ? "访客英雄档读取失败（原文件已保留），请重新选择职业"
-                            : "已连接，请选择英雄职业";
+                    status = Messages.get(Mp.class, guestHeroUnreadable
+                            ? "status_guest_hero_unreadable"
+                            : "status_choose_class");
                     final StatePayload fp = p;
                     final int fpos = hostPos;
                     Game.runOnRenderThread(() -> {
@@ -759,14 +838,14 @@ public class Mp {
                                 backupUnreadableGuestHero();   // 旧档读不出来时先改名留底，避免被覆盖
                                 Bundle b = newGuestHeroBundle(cls);
                                 if (!saveGuestHeroBundle(b)) {
-                                    status = "创建英雄后保存失败，本次仍会进入游戏";
+                                    status = Messages.get(Mp.class, "status_save_new_hero_failed");
                                 }
                                 try {
                                     sendToAll(Proto.HERO, encodeHero(myId, cls));   // 通知房主自己的职业
                                 } catch (Throwable ignored) {}
                                 mergeAndEnter(latest, latestPos, b);
                             } catch (Throwable t) {
-                                status = "创建英雄失败: " + t.getMessage();
+                                status = Messages.get(Mp.class, "status_create_hero_failed", t.getMessage());
                             }
                         });
                         ShatteredPixelDungeon.scene().add(classWindow);
@@ -778,7 +857,7 @@ public class Mp {
             }
             mergeAndEnter(p, hostPos, guest);
         } catch (Throwable t) {
-            status = "处理数据出错: " + t.getMessage();
+            status = Messages.get(Mp.class, "status_data_error", t.getMessage());
         }
     }
 
@@ -841,9 +920,9 @@ public class Mp {
                 InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
                 ShatteredPixelDungeon.switchScene(InterlevelScene.class);
             });
-            status = "已进入游戏";
+            status = Messages.get(Mp.class, "status_entered_game");
         } catch (Throwable t) {
-            status = "进入游戏失败: " + t.getMessage();
+            status = Messages.get(Mp.class, "status_enter_game_failed", t.getMessage());
         }
     }
 
@@ -916,11 +995,11 @@ public class Mp {
         }
         if (name.equalsIgnoreCase("/kick")) {
             if (role != Role.HOST) {
-                GLog.n("只有房主可以使用该指令");
+                GLog.n(Messages.get(Mp.class, "cmd_host_only"));
                 return;
             }
             if (parts.length < 2 || parts[1].trim().isEmpty()) {
-                GLog.n("用法：/kick 玩家名");
+                GLog.n(Messages.get(Mp.class, "cmd_kick_usage"));
                 return;
             }
             String targetName = parts[1].trim();
@@ -931,15 +1010,14 @@ public class Mp {
                 }
             }
             if (target == null) {
-                GLog.n("没有找到玩家：" + targetName);
+                GLog.n(Messages.get(Mp.class, "cmd_kick_not_found", targetName));
                 return;
             }
             kickPeer(target);
             return;
         }
-        GLog.n(role == Role.HOST
-                ? "未知指令（可用：/kick、/list）"
-                : "未知指令（可用：/list）");
+        GLog.n(Messages.get(Mp.class,
+                role == Role.HOST ? "cmd_unknown_host" : "cmd_unknown_client"));
     }
 
     /** 房主请离一名访客：发 KICKED 后断开 socket；清理由 recvLoop 统一完成 */
@@ -947,8 +1025,8 @@ public class Mp {
         p.kicked = true;
         try { sendTo(p, Proto.KICKED, new byte[0]); } catch (Throwable ignored) {}
         try { if (p.sock != null) p.sock.close(); } catch (Throwable ignored) {}
-        GLog.n("已请离玩家 " + p.name);
-        status = "已请离玩家 " + p.name;
+        GLog.n(Messages.get(Mp.class, "cmd_kick_done", displayName(p.name)));
+        status = Messages.get(Mp.class, "cmd_kick_done", displayName(p.name));
     }
 
     /**
@@ -1009,7 +1087,8 @@ public class Mp {
     /** 联机时在 GameScene 右上角挂"聊天"按钮；每个场景只建一次 */
     private void updateChatButton(GameScene gs) {
         if (chatButton == null) {
-            chatButton = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "聊天", 8) {
+            chatButton = new StyledButton(Chrome.Type.GREY_BUTTON_TR,
+                    Messages.get(Mp.class, "chat_button"), 8) {
                 @Override
                 protected void onClick() {
                     openChat();
@@ -1037,7 +1116,12 @@ public class Mp {
         chatOpen = true;
         Game.runOnRenderThread(() -> {
             try {
-                WndTextInput w = new WndTextInput("聊天", "发送消息给 " + peer, "", 200, false, "发送", "取消") {
+                WndTextInput w = new WndTextInput(
+                        Messages.get(Mp.class, "chat_title"),
+                        Messages.get(Mp.class, "chat_prompt", displayName(peer)),
+                        "", 200, false,
+                        Messages.get(Mp.class, "chat_send"),
+                        Messages.get(Mp.class, "chat_cancel")) {
                     @Override
                     public void onSelect(boolean positive, String text) {
                         chatOpen = false;
@@ -1045,10 +1129,10 @@ public class Mp {
                     }
                 };
                 ShatteredPixelDungeon.scene().addToFront(w);
-                status = "聊天框已打开（回车发送）";
+                status = Messages.get(Mp.class, "chat_open");
             } catch (Throwable t) {
                 chatOpen = false;
-                status = "打开聊天失败: " + t.getMessage();
+                status = Messages.get(Mp.class, "chat_open_failed", t.getMessage());
             }
         });
     }
@@ -1076,10 +1160,10 @@ public class Mp {
             Bundle b = FileUtils.bundleFromFile(file);
             if (b != null && b.contains("class")) return b;
             guestHeroUnreadable = true;
-            status = "访客英雄存档缺少职业信息（原文件已保留）";
+            status = Messages.get(Mp.class, "guest_hero_missing_class");
         } catch (Throwable t) {
             guestHeroUnreadable = true;
-            status = "读取访客英雄存档失败（原文件已保留）: " + t.getMessage();
+            status = Messages.get(Mp.class, "guest_hero_read_failed", t.getMessage());
         }
         // 主文件坏了就尝试上一次写入前的备份，避免直接把玩家判成"首次加入"
         Bundle bak = loadGuestHeroBackup(file);
@@ -1094,7 +1178,7 @@ public class Mp {
             if (!bak.exists()) return null;
             Bundle b = FileUtils.bundleFromFile(file + ".bak");
             if (b != null && b.contains("class")) {
-                status = "已从备份恢复访客英雄存档";
+                status = Messages.get(Mp.class, "guest_hero_restored");
                 return b;
             }
         } catch (Throwable ignored) {}
@@ -1112,7 +1196,7 @@ public class Mp {
                 f.moveTo(FileUtils.getFileHandle(file + ".corrupt-" + System.currentTimeMillis()));
             }
         } catch (Throwable t) {
-            status = "备份损坏的访客英雄存档失败: " + t.getMessage();
+            status = Messages.get(Mp.class, "guest_hero_backup_failed", t.getMessage());
         }
         guestHeroUnreadable = false;
     }
@@ -1222,7 +1306,7 @@ public class Mp {
     private boolean saveGuestHeroBundle(Bundle b) {
         String file = mpHeroFile();
         if (file == null) {
-            status = "未进入联机世界，跳过访客英雄保存";
+            status = Messages.get(Mp.class, "guest_hero_not_in_world");
             return false;
         }
         try {
@@ -1244,12 +1328,12 @@ public class Mp {
             // 读回校验：只有确认落盘的英雄档完整，调用方才允许清理临时世界
             Bundle check = FileUtils.bundleFromFile(file);
             if (check == null || !check.contains("class")) {
-                status = "访客英雄保存校验失败（旧档已保留）";
+                status = Messages.get(Mp.class, "guest_hero_save_check_failed");
                 return false;
             }
             return true;
         } catch (Throwable t) {
-            status = "保存访客英雄失败（旧档已保留）: " + t.getMessage();
+            status = Messages.get(Mp.class, "guest_hero_save_failed", t.getMessage());
             return false;
         }
     }
@@ -1269,7 +1353,7 @@ public class Mp {
             h.storeInBundle(b);
             return saveGuestHeroBundle(b);
         } catch (Throwable t) {
-            status = "保存访客英雄失败（旧档已保留）: " + t.getMessage();
+            status = Messages.get(Mp.class, "guest_hero_save_failed", t.getMessage());
             return false;
         }
     }
@@ -1280,16 +1364,16 @@ public class Mp {
         try {
             String folder = GamesInProgress.gameFolder(GUEST_TEMP_SLOT);
             if (!("game" + GUEST_TEMP_SLOT).equals(folder)) {   // 路径安全检查，防误删
-                status = "临时存档路径异常，已取消清理: " + folder;
+                status = Messages.get(Mp.class, "temp_slot_path_error", folder);
                 return;
             }
             if (FileUtils.dirExists(folder) && !FileUtils.deleteDir(folder)) {
-                status = "临时存档清理未完成（可能被占用）；下次加入会覆盖";
+                status = Messages.get(Mp.class, "temp_slot_cleanup_incomplete");
             }
             GamesInProgress.setUnknown(GUEST_TEMP_SLOT);
             GamesInProgress.curSlot = 0;
         } catch (Throwable t) {
-            status = "清理联机临时存档失败: " + t.getMessage();
+            status = Messages.get(Mp.class, "temp_slot_cleanup_failed", t.getMessage());
         }
     }
 
@@ -1342,7 +1426,7 @@ public class Mp {
             boolean needState = false;
             synchronized (peers) {
                 for (Peer p : peers) {
-                    if (!p.gotState) { needState = true; break; }
+                    if (p.versionOk && !p.gotState) { needState = true; break; }
                 }
             }
             if (needState) {
@@ -1354,15 +1438,15 @@ public class Mp {
                     byte[] payload = encodeState(Dungeon.depth, Dungeon.branch, game, level);
                     synchronized (peers) {
                         for (Peer p : peers) {
-                            if (!p.gotState) {
+                            if (p.versionOk && !p.gotState) {
                                 try { sendTo(p, Proto.STATE, payload); p.gotState = true; } catch (IOException ignored) {}
                             }
                         }
                     }
                     lastSentPos = -1;
-                    status = "已同步进度给 " + peers.size() + " 名玩家";
+                    status = Messages.get(Mp.class, "status_state_sent", peers.size());
                 } catch (Throwable t) {
-                    status = "同步进度失败: " + t.getMessage();
+                    status = Messages.get(Mp.class, "status_state_failed", t.getMessage());
                 }
             }
         }
@@ -1404,7 +1488,7 @@ public class Mp {
                     try { sendToAll(Proto.RTT_INFO, encodeRttInfo(infos)); } catch (Throwable ignored) {}
                 }
                 for (Peer p : snapshot) {
-                    if (p.id <= 0) continue;
+                    if (p.id <= 0 || !p.versionOk) continue;
                     if (p.pingSentAt > 0 && pingNow - p.pingSentAt > 2500L) {
                         p.pingTimeout = true;
                         p.rttMs = -1;
@@ -1427,14 +1511,14 @@ public class Mp {
                 for (Peer p : snapshot) {
                     if (p.id == HOST_ID) { hp = p; break; }
                 }
-                if (hp != null) {
+                if (hp != null && hp.versionOk) {
                     if (hp.pingSentAt > 0 && pingNow - hp.pingSentAt > 2500L) {
                         hp.pingTimeout = true;
                         hp.rttMs = -1;
                         hp.pingMisses.incrementAndGet();
                         if (hp.pingMisses.get() >= PING_MISS_LIMIT) {
                             // 连续多个心跳无回应：网络状态不佳，回标题并弹窗说明原因
-                            handleHostLost(REASON_NETWORK);
+                            handleHostLost(Messages.get(Mp.class, "reason_network"));
                             return;
                         }
                     }
@@ -1474,7 +1558,7 @@ public class Mp {
         if (role == Role.HOST) {
             // 房主退出存档：踢所有访客回标题；连接保持，房主存档只在本机
             sendToAll(Proto.KICK, new byte[0]);
-            status = "已退出存档，连接保持（访客已回到标题）";
+            status = Messages.get(Mp.class, "status_host_exit_save");
         } else {
             // 访客退出存档（主动或被踢）：先保存自己的英雄，再清理临时世界；连接保持
             boolean ok = !guestWorldActive || saveGuestHero();
@@ -1482,9 +1566,9 @@ public class Mp {
                 clearGuestTempSlot();
                 guestWorldActive = false;
                 worldSeed = Long.MIN_VALUE;
-                status = "已退出存档，连接保持";
+                status = Messages.get(Mp.class, "status_client_exit_save");
             } else {
-                status = "已退出存档，但访客英雄保存失败；临时存档已保留以便恢复";
+                status = Messages.get(Mp.class, "status_client_exit_save_failed");
             }
         }
     }
@@ -1521,7 +1605,7 @@ public class Mp {
                 p.remoteSprite = new HeroSprite(p.remote);
                 gs.addToFront(p.remoteSprite);
             } catch (Throwable t) {
-                status = "生成对方角色失败: " + t.getMessage();
+                status = Messages.get(Mp.class, "status_spawn_peer_failed", t.getMessage());
                 p.remote = null;
                 p.remoteSprite = null;
             }
@@ -1607,6 +1691,16 @@ public class Mp {
         public byte[] level;
     }
 
+        /** VERSION 帧载荷：联机协议版本 + 游戏版本。 */
+    public static class VersionPayload {
+        /** 联机协议版本。 */
+        public int protocolVersion;
+        /** 游戏版本号（manifest/Android versionCode）。 */
+        public int gameVersionCode;
+        /** 游戏版本名（如 0.9.7.2）。 */
+        public String gameVersion;
+    }
+
         /** 单帧最大长度（64 MB），防止非法长度攻击。 */
     public static final int MAX_FRAME = 64 * 1024 * 1024;
 
@@ -1634,7 +1728,9 @@ public class Mp {
      */
     public static Frame readFrame(DataInputStream in) throws IOException {
         int len = in.readInt();
-        if (len < 0 || len > MAX_FRAME) throw new IOException("非法包长度 " + len);
+        if (len < 0 || len > MAX_FRAME) {
+            throw new IOException(Messages.get(Mp.class, "error_bad_frame_length", len));
+        }
         int type = in.readByte();
         byte[] data = new byte[len];
         in.readFully(data);
@@ -1674,10 +1770,72 @@ public class Mp {
         StatePayload p = new StatePayload();
         p.depth = di.readInt();
         p.branch = di.readInt();
-        p.game = new byte[di.readInt()];
+        int gameLen = di.readInt();
+        if (gameLen < 0 || gameLen > di.available()) {
+            throw new IOException(Messages.get(Mp.class, "error_bad_state_length", gameLen));
+        }
+        p.game = new byte[gameLen];
         di.readFully(p.game);
-        p.level = new byte[di.readInt()];
+        int levelLen = di.readInt();
+        if (levelLen < 0 || levelLen > di.available()) {
+            throw new IOException(Messages.get(Mp.class, "error_bad_state_length", levelLen));
+        }
+        p.level = new byte[levelLen];
         di.readFully(p.level);
+        return p;
+    }
+
+    /**
+     * 编码 VERSION 帧：联机协议版本 + 游戏版本号 + 游戏版本名。
+     *
+     * @return 返回值。
+     * @throws IOException 参数。
+     */
+    public static byte[] encodeVersion() throws IOException {
+        return encodeVersion(MP_PROTOCOL_VERSION, Game.versionCode, gameVersionName());
+    }
+
+    /**
+     * 编码 VERSION 帧（显式传入版本信息，便于测试）。
+     *
+     * @param protocolVersion 参数。
+     * @param gameVersionCode 参数。
+     * @param gameVersion 参数。
+     * @return 返回值。
+     * @throws IOException 参数。
+     */
+    public static byte[] encodeVersion(int protocolVersion, int gameVersionCode,
+                                       String gameVersion) throws IOException {
+        byte[] vb = (gameVersion == null ? "" : gameVersion).getBytes("UTF-8");
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(12 + vb.length);
+        DataOutputStream dos = new DataOutputStream(bos);
+        dos.writeInt(protocolVersion);
+        dos.writeInt(gameVersionCode);
+        dos.writeInt(vb.length);
+        dos.write(vb);
+        dos.flush();
+        return bos.toByteArray();
+    }
+
+    /**
+     * 解码 VERSION 帧。
+     *
+     * @param data 参数。
+     * @return 返回值。
+     * @throws IOException 参数。
+     */
+    public static VersionPayload decodeVersion(byte[] data) throws IOException {
+        DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
+        VersionPayload p = new VersionPayload();
+        p.protocolVersion = di.readInt();
+        p.gameVersionCode = di.readInt();
+        int len = di.readInt();
+        if (len < 0 || len > di.available()) {
+            throw new IOException(Messages.get(Mp.class, "error_bad_version_length", len));
+        }
+        byte[] vb = new byte[len];
+        di.readFully(vb);
+        p.gameVersion = new String(vb, "UTF-8");
         return p;
     }
 
@@ -1744,10 +1902,22 @@ public class Mp {
     private static String peername() {
         try {
             String n = System.getProperty("user.name");
-            return n == null || n.isEmpty() ? "玩家" : n;
+            return n == null || n.isEmpty()
+                    ? Messages.get(Mp.class, "default_player_name") : n;
         } catch (Throwable t) {
-            return "玩家";
+            return Messages.get(Mp.class, "default_player_name");
         }
+    }
+
+    /** 本机游戏版本名（manifest 缺失时用 ?）。 */
+    private static String gameVersionName() {
+        return Game.version == null || Game.version.isEmpty() ? "?" : Game.version;
+    }
+
+    /** 玩家名为空时使用本地化的默认名字，避免 UI 出现 null。 */
+    private static String displayName(String name) {
+        return name == null || name.trim().isEmpty()
+                ? Messages.get(Mp.class, "default_player_name") : name;
     }
 
     private static String localIp() {
@@ -1799,6 +1969,8 @@ public class Mp {
         public static final int PONG = 23;    // 双向：延迟回应
         /** RTT_INFO：各访客延迟列表。 */
         public static final int RTT_INFO = 24; // 房主 → 访客：各访客到房主的延迟（访客 /list 用）
+        /** VERSION：联机协议版本 + 游戏版本（双向，连接后立即发送）。 */
+        public static final int VERSION = 25;  // 双向：版本握手
     }
 
         /** HERO 帧载荷：id + 职业。 */
@@ -1836,7 +2008,9 @@ public class Mp {
         HeroPayload p = new HeroPayload();
         p.id = di.readInt();
         int o = di.readInt();
-        if (o < 0 || o >= HeroClass.values().length) throw new IOException("非法职业序号 " + o);
+        if (o < 0 || o >= HeroClass.values().length) {
+            throw new IOException(Messages.get(Mp.class, "error_bad_class_ordinal", o));
+        }
         p.cls = HeroClass.values()[o];
         return p;
     }
@@ -1880,7 +2054,11 @@ public class Mp {
     public static ChatPayload decodeChat(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
         ChatPayload p = new ChatPayload();
-        byte[] nb = new byte[di.readInt()];
+        int nameLen = di.readInt();
+        if (nameLen < 0 || nameLen > data.length - 4) {
+            throw new IOException(Messages.get(Mp.class, "error_bad_chat_length", nameLen));
+        }
+        byte[] nb = new byte[nameLen];
         di.readFully(nb);
         p.name = new String(nb, "UTF-8");
         byte[] tb = new byte[data.length - 4 - nb.length];
@@ -1917,7 +2095,9 @@ public class Mp {
     public static RttInfoPayload decodeRttInfo(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
         int count = di.readInt();
-        if (count < 0 || count > MAX_PLAYERS) throw new IOException("非法延迟记录数 " + count);
+        if (count < 0 || count > MAX_PLAYERS) {
+            throw new IOException(Messages.get(Mp.class, "error_bad_rtt_count", count));
+        }
         RttInfoPayload p = new RttInfoPayload();
         p.recs = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {

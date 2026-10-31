@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.multiplayer;
 
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -28,7 +29,8 @@ public class WndPlayerList extends Window {
      * 玩家列表窗口（/list）。
      */
     public WndPlayerList() {
-        RenderedTextBlock title = PixelScene.renderTextBlock("玩家列表", 9);
+        RenderedTextBlock title = PixelScene.renderTextBlock(
+                Messages.get(WndPlayerList.class, "title"), 9);
         title.hardlight(TITLE_COLOR);
         title.setPos(0f, 0f);
         title.maxWidth(WIDTH);
@@ -60,9 +62,10 @@ public class WndPlayerList extends Window {
                 rowGizmos.add(unknown);
             }
 
-            String label = (info.name == null || info.name.isEmpty()) ? "玩家" : info.name;
-            if (info.isSelf) label += "（我）";
-            if (info.isHost) label += " [房主]";
+            String label = (info.name == null || info.name.isEmpty())
+                    ? Messages.get(WndPlayerList.class, "default_name") : info.name;
+            if (info.isSelf) label += Messages.get(WndPlayerList.class, "self_suffix");
+            if (info.isHost) label += " " + Messages.get(WndPlayerList.class, "host_suffix");
             RenderedTextBlock name = PixelScene.renderTextBlock(label, 7);
             name.maxWidth(WIDTH - 70);
             name.setPos(16f, y + 2f);
@@ -84,10 +87,10 @@ public class WndPlayerList extends Window {
     }
 
     private String statusText(Mp.PlayerInfo info) {
-        if (info.isSelf) return "本机";
+        if (info.isSelf) return Messages.get(WndPlayerList.class, "local");
         if (info.rttMs >= 0) return info.rttMs + " ms";
-        if (info.timeout) return "超时";
-        return "测量中…";
+        if (info.timeout) return Messages.get(WndPlayerList.class, "timeout");
+        return Messages.get(WndPlayerList.class, "measuring");
     }
 
     @Override

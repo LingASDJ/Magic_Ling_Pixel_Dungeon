@@ -295,7 +295,7 @@ public class StartScene extends PixelScene {
 			// 联机补丁：访客连接中禁止单独进入游戏（新档/旧档都拦）
 			if (MultiplayerImpl.getService().isClientConnected()) {
 				ShatteredPixelDungeon.scene().add(
-					new WndMessage("联机中，无法单独进入游戏\n请等待房主同步进度"));
+					new WndMessage(Messages.get(StartScene.class, "mp_blocked")));
 				return;
 			}
 			if (newGame) {
