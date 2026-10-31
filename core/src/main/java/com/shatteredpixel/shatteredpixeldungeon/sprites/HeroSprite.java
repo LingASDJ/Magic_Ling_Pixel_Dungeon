@@ -49,13 +49,21 @@ public class HeroSprite extends CharSprite {
 	public Animation fly;
 	public Animation read;
 
+	// 联机补丁：支持任意 Hero 的精灵（远端幽灵），不硬编码 Dungeon.hero
+	private Hero owner;
+
 	public HeroSprite() {
+		this(Dungeon.hero);
+	}
+
+	public HeroSprite(Hero owner) {
 		super();
-		
-		texture( Dungeon.hero.heroClass.spritesheet() );
+		this.owner = owner;
+
+		texture( owner.heroClass.spritesheet() );
 		updateArmor();
-		
-		link( Dungeon.hero );
+
+		link( owner );
 
 		if (ch.isAlive())
 			idle();
@@ -70,7 +78,8 @@ public class HeroSprite extends CharSprite {
 	
 	public void updateArmor() {
 
-		TextureFilm film = new TextureFilm( tiers(), Dungeon.hero.tier(), FRAME_WIDTH, FRAME_HEIGHT );
+		Hero h = owner != null ? owner : Dungeon.hero;
+		TextureFilm film = new TextureFilm( tiers(), h.tier(), FRAME_WIDTH, FRAME_HEIGHT );
 		
 		idle = new Animation( 1, true );
 		idle.frames( film, 0, 0, 0, 1, 0, 0, 1, 1 );
@@ -95,16 +104,17 @@ public class HeroSprite extends CharSprite {
 		read = new Animation( 20, false );
 		read.frames( film, 19, 20, 20, 20, 20, 20, 20, 20, 20, 19 );
 		
-		if (Dungeon.hero.isAlive())
+		if (h.isAlive())
 			idle();
 		else
 			die();
 	}
-	
+
 	@Override
 	public void place( int p ) {
 		super.place( p );
-		if (Game.scene() instanceof GameScene) Camera.main.panFollow(this, 5f);
+		// 联机补丁：只有本地英雄的精灵才允许拉动相机；远端幽灵不能抢对方视角
+		if (owner == Dungeon.hero && Game.scene() instanceof GameScene) Camera.main.panFollow(this, 5f);
 	}
 
 	@Override
@@ -113,7 +123,7 @@ public class HeroSprite extends CharSprite {
 		if (ch != null && ch.flying) {
 			play( fly );
 		}
-		Camera.main.panFollow(this, 20f);
+		if (owner == Dungeon.hero) Camera.main.panFollow(this, 20f);
 	}
 
 	@Override
@@ -128,7 +138,7 @@ public class HeroSprite extends CharSprite {
 	public void jump( int from, int to, float height, float duration,  Callback callback ) {
 		super.jump( from, to, height, duration, callback );
 		play( fly );
-		Camera.main.panFollow(this, 20f);
+		if (owner == Dungeon.hero) Camera.main.panFollow(this, 20f);
 	}
 
 	public synchronized void read() {

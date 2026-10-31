@@ -123,6 +123,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
+import com.shatteredpixel.shatteredpixeldungeon.services.multiplayer.MultiplayerImpl;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiscardedItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
@@ -515,6 +517,7 @@ public class GameScene extends PixelScene {
 
 	@Override
 	public synchronized void onPause() {
+		MultiplayerImpl.getService().onGamePause();   // 联机：保存访客英雄
 		try {
 			Dungeon.saveAll();
 			Badges.saveGlobal();
@@ -539,6 +542,7 @@ public class GameScene extends PixelScene {
 
 	@Override
 	public synchronized void update() {
+		MultiplayerImpl.getService().tick(this);      // 联机：位置/聊天/回标题检测
 		lastOffset = null;
 
 		//TODO 临时更换素材策略 应用于吃豆人
@@ -2404,6 +2408,11 @@ public class GameScene extends PixelScene {
 	}
 
 	public static void examineCell( Integer cell ) {
+		// 联机：格子上有远端玩家幽灵时，直接显示对方的英雄详情（与看自己一致）
+		if (Mp.get().examineRemote(cell)) {
+			return;
+		}
+
 		if (cell == null
 				|| cell < 0
 				|| cell > Dungeon.level.length()
