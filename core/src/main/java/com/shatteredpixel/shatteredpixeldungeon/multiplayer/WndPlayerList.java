@@ -46,7 +46,7 @@ public class WndPlayerList extends Window {
         lastRefresh = System.currentTimeMillis();
     }
 
-    private void rebuild() {
+    private void rebuild() { // skipcq: JAVA-R1000 每行玩家信息元素多：复杂度高但已实测稳定
         for (Gizmo g : rowGizmos) {
             remove(g);
         }

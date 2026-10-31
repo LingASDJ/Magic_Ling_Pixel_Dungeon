@@ -96,6 +96,11 @@ public class WndHero extends WndTabbed {
 		this(Dungeon.hero);
 	}
 
+	/**
+	 * 查看指定英雄的详情窗口。
+	 *
+	 * @param hero 要展示的英雄；联机时传远端玩家的只读副本，其余场景等价于 {@link #WndHero()}。
+	 */
 	public WndHero(Hero hero) {
 		super();
 

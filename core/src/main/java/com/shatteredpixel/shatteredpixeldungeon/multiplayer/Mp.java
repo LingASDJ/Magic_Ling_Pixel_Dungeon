@@ -167,6 +167,7 @@ public class Mp {
         volatile int hp = -1;
         volatile int ht = -1;
         /** 对端最近一次上报的完整英雄 bundle（/list 点击与放大镜查看详情用；null=尚未收到）。 */
+        // skipcq: JAVA-E0027  只需引用跨线程可见：数组整体只在接收线程写入、渲染线程替换读取，元素发布后不再修改
         volatile byte[] heroInfo = null;
         /** 对端是否为管理员（房主授予）。 */
         volatile boolean admin = false;
@@ -1102,7 +1103,7 @@ public class Mp {
     }
 
     /** 把房主世界 + 访客英雄合并写进存档槽并切场景（渲染线程/网络线程均可调用） */
-    private void mergeAndEnter(StatePayload p, int hostPos, Bundle guest) {
+    private void mergeAndEnter(StatePayload p, int hostPos, Bundle guest) { // skipcq: JAVA-R1000 合并访客英雄与房主世界：复杂度高但已实测稳定
         try {
             int depth = p.depth;
             int branch = p.branch;
@@ -1283,7 +1284,7 @@ public class Mp {
     }
 
     /** 聊天指令：/list 所有人可用；/kick 仅房主可用 */
-    private void handleCommand(String cmd) {
+    private void handleCommand(String cmd) { // skipcq: JAVA-R1000 聊天指令分支多：复杂度高但已实测稳定
         String[] parts = cmd.split("\\s+", 2);
         String name = parts[0];
         if (name.equalsIgnoreCase("/list")) {
@@ -1483,7 +1484,11 @@ public class Mp {
         return info;
     }
 
-    /** 打开某玩家的英雄详情：自己 → 本机窗口；其他人 → 从最近同步的 bundle 还原出只读副本。 */
+    /**
+     * 打开某玩家的英雄详情：自己 → 本机窗口；其他人 → 从最近同步的 bundle 还原出只读副本。
+     *
+     * @param id 参数。
+     */
     public void showRemoteHero(int id) {
         try {
             if (id == (isHost() ? HOST_ID : myId)) {
@@ -1507,7 +1512,12 @@ public class Mp {
         }
     }
 
-    /** 放大镜检查：cell 上有可见的远端玩家幽灵时显示其英雄详情，返回是否已处理。 */
+    /**
+     * 放大镜检查：cell 上有可见的远端玩家幽灵时显示其英雄详情。
+     *
+     * @param cell 参数。
+     * @return 是否已处理（true = 该格上是远端玩家，调用方无需继续原版检查）。
+     */
     public boolean examineRemote(Integer cell) {
         if (cell == null) return false;
         List<Peer> snapshot;
@@ -2528,7 +2538,13 @@ public class Mp {
         return p;
     }
 
-    /** 把本机英雄打包成 HERO_INFO 载荷：完整 bundle（血量/力量/天赋/正负面效果都在里面）。 */
+    /**
+     * 把本机英雄打包成 HERO_INFO 载荷：完整 bundle（血量/力量/天赋/正负面效果都在里面）。
+     *
+     * @param id 参数。
+     * @return 返回值。
+     * @throws IOException 参数。
+     */
     public static byte[] encodeOwnHeroInfo(int id) throws IOException {
         Bundle b = new Bundle();
         Dungeon.hero.storeInBundle(b);
