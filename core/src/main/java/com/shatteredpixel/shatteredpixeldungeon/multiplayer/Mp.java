@@ -345,6 +345,7 @@ public class Mp {
                 final String msg = Messages.get(Mp.class, "msg_connect_failed", detail);
                 status = msg;
                 connected = false;
+                running = false;   // 连接失败：让版本握手超时线程直接退出，避免 5 秒后覆盖失败原因
                 Game.runOnRenderThread(() -> {
                     if (ShatteredPixelDungeon.scene() != null) {
                         ShatteredPixelDungeon.scene().add(new WndMessage(msg));
