@@ -142,12 +142,6 @@ public class Mp {
         DataInputStream in;
         DataOutputStream out;
         volatile String name = Messages.get(Mp.class, "default_player_name");
-        /** 对端联机协议版本（-1=尚未握手）。 */
-        int protocolVersion = -1;
-        /** 对端游戏版本号（manifest/Android versionCode）。 */
-        int gameVersionCode = 0;
-        /** 对端游戏版本名（如 0.9.7.2）。 */
-        String gameVersion = "";
         /** 是否已完成版本握手且双方兼容。 */
         volatile boolean versionOk = false;
         /** 是否已处理过 VERSION（成功或失败）。 */
@@ -575,9 +569,6 @@ public class Mp {
                         p.versionChecked = true;
                     }
                     VersionPayload vp = decodeVersion(data);
-                    p.protocolVersion = vp.protocolVersion;
-                    p.gameVersionCode = vp.gameVersionCode;
-                    p.gameVersion = vp.gameVersion;
                     if (vp.protocolVersion == MP_PROTOCOL_VERSION
                             && vp.gameVersionCode == Game.versionCode) {
                         p.versionOk = true;
