@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.DemonLord;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
@@ -614,6 +615,11 @@ public class YogReal extends Boss {
             Badges.BOSSRUSH();
             Statistics.questScores[4] += 30000;
             Dungeon.win( BossRushBloodGold.class );
+
+            if(hero.heroClass == HeroClass.DUELIST && !Dungeon.isDLC(Conducts.Conduct.DEV)){
+                SPDSettings.unlockItem("avatars_duelist_6");
+            }
+
             Dungeon.deleteGame( GamesInProgress.curSlot, true );
             GameScene.scene.add(new Delayer(0.1f){
                 @Override

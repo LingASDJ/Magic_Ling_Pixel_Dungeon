@@ -20,7 +20,7 @@ public class KusumiMagicGirlSprites extends MobSprite {
 
         texture( Assets.Sprites.KUSUMI_MG);
 
-        TextureFilm ren = new TextureFilm(this.texture, 16, 18);
+        TextureFilm ren = new TextureFilm(this.texture, 17, 19);
 
         idle = new Animation(12, true);
         idle.frames(ren,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1);

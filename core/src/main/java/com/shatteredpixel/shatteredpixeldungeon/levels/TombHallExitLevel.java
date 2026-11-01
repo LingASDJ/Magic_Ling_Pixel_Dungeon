@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.TombFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
@@ -87,14 +88,11 @@ public class TombHallExitLevel extends Level {
         LevelTransition entrance = new LevelTransition(this, enter, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(entrance);
 
-        for(int cellId = 381; cellId <= 383; cellId++){
-            LevelTransition exit = new LevelTransition(this, cellId, LevelTransition.Type.REGULAR_ENTRANCE);
-            transitions.add(exit);
-        }
 
-        CustomTilemap vis = new townBehind();
-        vis.pos(0, 0);
-        customTiles.add(vis);
+
+        LevelTransition exit = new LevelTransition(this, 382, LevelTransition.Type.REGULAR_ENTRANCE);
+        exit.set(7, 22, 10, 23);
+        transitions.add(exit);
 
         CustomTilemap via = new townAbove();
         via.pos(0, 0);
@@ -206,6 +204,11 @@ public class TombHallExitLevel extends Level {
 
     }
 
+    public static int[] Long_Life = new int[]{
+            266,234,
+            260,224,
+    };
+
     public static class townAbove extends CustomTilemap {
 
         {
@@ -226,6 +229,28 @@ public class TombHallExitLevel extends Level {
 
             v.map(data, tileW);
             return v;
+        }
+
+        @Override
+        public String name(int tileX, int tileY) {
+            int checkTiledID = tileY*WIDTH + tileX;
+            for (int i : Long_Life) {
+                if (i == checkTiledID) {
+                    return Messages.get(this, "long_life_lanter");
+                }
+            }
+            return super.desc(tileX,tileY);
+        }
+
+        @Override
+        public String desc(int tileX, int tileY) {
+            int checkTiledID = tileY*WIDTH + tileX;
+            for (int i : Long_Life) {
+                if (i == checkTiledID) {
+                    return Messages.get(this, "long_life_lanter_desc");
+                }
+            }
+            return super.desc(tileX,tileY);
         }
 
     }

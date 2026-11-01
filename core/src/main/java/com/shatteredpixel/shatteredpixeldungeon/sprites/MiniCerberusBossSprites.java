@@ -17,7 +17,7 @@ public class MiniCerberusBossSprites extends MobSprite {
         idle = new Animation( 12, true );
         idle.frames( frames, 0,1,2,3,4,5,6,7,8);
 
-        run = new Animation( 12, true );
+        run = new Animation( 20, true );
         run.frames( frames, 9,10,11,12,13,14 );
 
         die = new Animation( 12, false );

@@ -660,6 +660,7 @@ public class ItemSpriteSheet {
 
     public static final int	WRALIPS			 = ARTIFACTS+32;
     public static final int	DM100RELEY				 = ARTIFACTS+35;
+    public static final int ARTIFACT_PHANTOM_CLOAK = ARTIFACTS+36;
     static{
         assignItemRect(ARTIFACT_CLOAK,      9,  15);
         assignItemRect(ARTIFACT_ARMBAND,    16, 13);
@@ -691,6 +692,7 @@ public class ItemSpriteSheet {
         assignItemRect(MIME_THREE,          15, 16);
         assignItemRect(WRALIPS, 14, 12);
         assignItemRect(DM100RELEY, 15, 13);
+        assignItemRect(ARTIFACT_PHANTOM_CLOAK, 14, 16);
     }
 
     //16 free slots

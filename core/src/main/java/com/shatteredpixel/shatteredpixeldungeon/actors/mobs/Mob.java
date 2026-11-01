@@ -35,9 +35,39 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.DeathBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GoodLuck;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HellBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PropBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Revealed;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SmokeAlly;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroAction;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -53,6 +83,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.DemonFodder;
+import com.shatteredpixel.shatteredpixeldungeon.custom.buffs.ZeroDefense;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
@@ -82,6 +113,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
@@ -574,6 +606,15 @@ public abstract class Mob extends Char {
 		}
 
 		return state.act( enemyInFOV, justAlerted );
+	}
+
+	@Override
+	public int drRoll() {
+		int dr = super.drRoll();
+		if(buff(ZeroDefense.class) != null){
+			dr = 0;
+		}
+		return dr;
 	}
 
 	boolean hasZapMethod = false;
@@ -1324,6 +1365,14 @@ public abstract class Mob extends Char {
     @Override
 	public void die( Object cause ) {
 		discovered = true;
+		// 在super.die()前读取，此时伏击状态和本次伤害的溢出值仍然有效。
+		if (alignment == Alignment.ENEMY) {
+			Talent.onAmbushKill(
+					Dungeon.hero,
+					this,
+					lastDamageOverkill()
+			);
+		}
 
 		if (cause == Chasm.class){
 			//50% chance to round up, 50% to round down
@@ -1353,6 +1402,20 @@ public abstract class Mob extends Char {
 				if (hero.hasTalent(Talent.IRON_WILL)) {
 					Buff.affect(hero, Barrier.class).setShield(1 + hero.pointsInTalent(Talent.IRON_WILL));
 				}
+			}
+    		//片影惊鸿的击杀登记
+			// 近战攻击的伤害来源通常记录为英雄，因此需要同时检查当前动作和攻击武器；
+			// *投掷过程中，thrownWeapon会暂时保存正在使用的投掷武器。
+			boolean meleeOrThrownWeaponKill =
+					cause instanceof MeleeWeapon
+							|| cause instanceof MissileWeapon
+							|| Dungeon.hero.belongings.thrownWeapon instanceof MissileWeapon
+							|| (Dungeon.hero.curAction instanceof HeroAction.Attack
+							&& Dungeon.hero.belongings.attackingWeapon()
+							instanceof MeleeWeapon);
+
+			if (meleeOrThrownWeaponKill) {
+				Talent.onEnemyKilledByHero(Dungeon.hero);
 			}
 
 			if (cause == Dungeon.hero || cause instanceof Weapon || cause instanceof Weapon.Enchantment){

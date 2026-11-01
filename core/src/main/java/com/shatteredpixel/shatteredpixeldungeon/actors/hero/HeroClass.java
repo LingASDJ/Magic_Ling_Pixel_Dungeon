@@ -125,7 +125,7 @@ public enum HeroClass {
 
 	WARRIOR( HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
 	MAGE( HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK, HeroSubClass.OLDBATTLEMAGE),
-	ROGUE( HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ),
+	ROGUE( HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER,HeroSubClass.PHANTOM_HUNTER ),
 	HUNTRESS( HeroSubClass.SNIPER, HeroSubClass.WARDEN ),
 	DUELIST( HeroSubClass.CHAMPION, HeroSubClass.MONK ),
 	SPELLSWORD(HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR);
@@ -217,7 +217,7 @@ public enum HeroClass {
 		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
 		if (!Dungeon.isDLC(Conducts.Conduct.SEED)) {
-			SPDSettings.unlockItem("avatars_duelist_6");
+
 			if (Dungeon.isChallenged(Challenges.AQUAPHOBIA)) {
 				new WaterSoul().quantity(4).identify().collect();
 			}
