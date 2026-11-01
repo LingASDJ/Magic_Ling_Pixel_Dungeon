@@ -304,7 +304,7 @@ public enum HeroClass {
 			new TestBooks().quantity(1).identify().collect();
 
 			new ScrollOfFlameCursed().quantity(50).identify().collect();
-
+			 SPDSettings.unlockItem("avatars_duelist_6");
 			Dungeon.gold = 600000000;
 			hero.STR = 30;
 			hero.lvl = 30;
