@@ -576,7 +576,6 @@ public class Assets {
 
 
 		public static final String SMLF = "splashes/smallleaf_portraits.png";
-		public static final String SMLS = "splashes/card_smallleaf_portraits.png";
 
 		public static final String BLUECJ = "splashes/blue_cj.png";
 
