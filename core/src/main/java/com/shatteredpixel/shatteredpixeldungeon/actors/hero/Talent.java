@@ -29,22 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower;
@@ -123,8 +108,7 @@ public enum Talent {
 	//Battlemage T3
 	EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3),MAGIC_ABSORB(60,3),
 	//Battlemage T3-Old
-	REPOWER_ATTACK(220,3),CHARGE_MAGIC(221,3),
-	SHIELDING_BLOCK(222,3),
+	REPOWER_ATTACK(220,3),CHARGE_MAGIC(221,3), SHIELDING_BLOCK(222,3),
 
 	//Warlock T3
 	SOUL_EATER(46, 3), SOUL_SIPHON(47, 3), NECROMANCERS_MINIONS(48, 3),
@@ -145,6 +129,8 @@ public enum Talent {
 	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), BOUNTY_HUNTER(77, 3),
 	//Freerunner T3
 	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3),
+	//PHANTOM_HUNTER T3
+	PHANTOM_WALK(172, 3), PHANTOM_FLASH(173, 3), BLOOD_MIST(174, 3),FIEND_CHOKE(175, 3),
 	//Smoke Bomb T4
 	HASTY_RETREAT(81, 4), BODY_REPLACEMENT(82, 4), SHADOW_STEP(83, 4),
 	//Death Mark T4
@@ -255,6 +241,172 @@ public enum Talent {
 			super.restoreFromBundle(bundle);
 			barrierInc = bundle.getFloat( BARRIER_INC );
 		}
+	}
+	/**
+	 * 片影惊鸿的延迟结算标记。
+	 * 击杀发生在攻击伤害结算过程中，而普通攻击随后还会执行显形清算。
+	 * 如果当场发放隐身，这次攻击可能马上把刚获得的隐身解除。
+	 * 因此击杀时只记录天赋等级，等Invisibility.dispel()执行完毕后再统一发放奖励。
+	 * 一回合的持续时间是兜底，用于处理没有经过显形清算的特殊击杀路径。
+	 */
+	public static class PhantomFlashTracker extends FlavourBuff {
+		// 本次击杀登记的天赋等级，决定是否额外获得极速和净化屏障。
+		int points = 0;
+
+		@Override
+		public boolean act() {
+			applyPendingPhantomFlash(target);
+			return true;
+		}
+
+		private static final String POINTS = "points";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(POINTS, points);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			points = bundle.getInt(POINTS);
+		}
+	}
+	//血雾掩身
+	//继承ShieldBuff，它会优先吸收伤害，并在耗尽时自动移除。
+	public static class BloodMistShield extends ShieldBuff {
+
+		{
+			type = buffType.POSITIVE;
+		}
+		// 天赋等级1/2/3分别对应护盾上限15/20/25。
+		public static int cap(Hero hero) {
+			return 10 + 5 * hero.pointsInTalent(BLOOD_MIST);
+		}
+		// 裁剪护盾增量，避免当前护盾值超过血雾掩身上限
+		@Override
+		public void incShield(int amount) {
+			if (target instanceof Hero) {
+				int room = Math.max(0, cap((Hero) target) - shielding());
+				amount = Math.min(amount, room);
+			}
+
+			if (amount > 0) {
+				super.incShield(amount);
+			}
+		}
+		//图标，染色与文本
+		@Override
+		public int icon() {
+			return BuffIndicator.ARMOR;
+		}
+
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(0.9f, 0.15f, 0.15f);
+		}
+
+		@Override
+		public String iconTextDisplay() {
+			return Integer.toString(shielding());
+		}
+
+		@Override
+		public String name() {
+			return Messages.get(Talent.class, "blood_mist.shield_name");
+		}
+
+		@Override
+		public String desc() {
+			return Messages.get(
+					Talent.class,
+					"blood_mist.shield_desc",
+					shielding()
+			);
+		}
+	}
+	/**
+	 * 血雾掩身的伏击击杀入口。
+	 * overkill是扣除护甲和护盾后、生命值被限制到0之前的真实溢出伤害。
+	 * 只有英雄处于伏击状态并亲手击杀敌人时，才会把溢出伤害转化为护盾。
+	 */
+	public static void onAmbushKill(
+			Hero hero,
+			Mob enemy,
+			int overkill
+	) {
+		if (hero == null
+				|| !hero.isAlive()
+				|| hero.subClass != HeroSubClass.PHANTOM_HUNTER
+				|| overkill <= 0) {
+			return;
+		}
+
+		int points = hero.pointsInTalent(BLOOD_MIST);
+
+		if (points <= 0 || !enemy.surprisedBy(hero)) {
+			return;
+		}
+
+		BloodMistShield shield =
+				Buff.affect(hero, BloodMistShield.class);
+		// incShield()会按护盾上限裁剪，因此实际获得量可能小于溢出伤害。
+		int before = shield.shielding();
+		shield.incShield(overkill);
+		int gained = shield.shielding() - before;
+
+		if (gained > 0) {
+			hero.sprite.showStatusWithIcon(
+					CharSprite.POSITIVE,
+					Integer.toString(gained),
+					FloatingText.SHIELDING
+			);
+		}
+	}
+	/**
+	 * 厉鬼扼喉：修正伏击时的武器基础伤害区间。
+	 * +1/+2/+3时：
+	 * - 伤害下限分别提高10%/15%/20%；
+	 * - 伤害上限固定提高10%。
+	 * rolled是武器原本随机出的伤害值。
+	 * 通过它原本在[min,max]区间中的位置，把本次掷点等比例映射到新区间，
+	 * 因此不会改变武器原有随机分布。
+	 */
+	public static int ghostGripDamageRoll(
+			Hero hero,
+			int rolled,
+			int min,
+			int max
+	) {
+		int points = hero.pointsInTalent(FIEND_CHOKE);
+
+		if (hero.subClass != HeroSubClass.PHANTOM_HUNTER
+				|| points <= 0
+				|| rolled <= 0) {
+			return rolled;
+		}
+
+		// 1/2/3点分别对应下限+10%/15%/20%。
+		float lowerBonus = 0.05f * (points + 1);
+		float upperBonus = 0.10f;
+
+		int newMin = Math.round(min * (1f + lowerBonus));
+		int newMax = Math.round(max * (1f + upperBonus));
+
+		// 区间很短时，下限加成可能超过上限加成，此时两者取相同值。
+		newMin = Math.min(newMin, newMax);
+
+		// 武器伤害区间只有单一数值时，直接应用固定10%的上限加成。
+		if (max <= min) {
+			return Math.round(rolled * (1f + upperBonus));
+		}
+
+		// 计算本次伤害在原始区间中的相对位置。
+		float position = (rolled - min) / (float) (max - min);
+
+		// 把相同位置映射到修正后的区间。
+		return Math.round(newMin + position * (newMax - newMin));
 	}
 	public static class BountyHunterTracker extends FlavourBuff{};
 	public static class RejuvenatingStepsCooldown extends FlavourBuff{
@@ -907,6 +1059,64 @@ public enum Talent {
 
 		return dmg;
 	}
+	/**
+	 * 登记一次符合条件的近战或投掷武器击杀。
+	 * 但这里不直接发放效果，只保存片影惊鸿等级，
+	 * 避免随后进行的显形结算清除刚获得的隐身。
+	 */
+	public static void onEnemyKilledByHero(Hero hero) {
+
+		if (hero == null
+				|| hero.subClass != HeroSubClass.PHANTOM_HUNTER) {
+			return;
+		}
+
+		int points = hero.pointsInTalent(PHANTOM_FLASH);
+
+		if (points <= 0) {
+			return;
+		}
+
+		PhantomFlashTracker tracker =
+				Buff.affect(hero, PhantomFlashTracker.class, 1f);
+		// 同一回合多次击杀时保留较高等级，避免低等级数据覆盖已经登记的奖励。
+		tracker.points = Math.max(tracker.points, points);
+	}
+	/**
+	 * 在显形清算结束后发放片影惊鸿奖励。
+	 * 标记读取后立即移除，确保一次击杀只结算一次。
+	 */
+	public static void applyPendingPhantomFlash(Char ch) {
+
+		if (!(ch instanceof Hero)) {
+			return;
+		}
+
+		Hero hero = (Hero) ch;
+		PhantomFlashTracker tracker =
+				hero.buff(PhantomFlashTracker.class);
+
+		if (tracker == null) {
+			return;
+		}
+
+		int points = tracker.points;
+		tracker.detach();
+
+		if (points <= 0) {
+			return;
+		}
+
+		Buff.prolong(hero, Invisibility.class, 2f);
+
+		if (points >= 2) {
+			Buff.prolong(hero, Haste.class, 2f);
+		}
+
+		if (points >= 3) {
+			Buff.prolong(hero, BlobImmunity.class, 10f);
+		}
+	}
 
 	public static class ProvokedAngerTracker extends FlavourBuff{
 		{ type = Buff.buffType.POSITIVE; }
@@ -1079,6 +1289,9 @@ public enum Talent {
 				break;
 			case FREERUNNER:
 				Collections.addAll(tierTalents, EVASIVE_ARMOR, PROJECTILE_MOMENTUM, SPEEDY_STEALTH);
+				break;
+			case PHANTOM_HUNTER:
+				Collections.addAll(tierTalents, PHANTOM_WALK, PHANTOM_FLASH, BLOOD_MIST,FIEND_CHOKE);
 				break;
 			case SNIPER:
 				Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES);

@@ -35,6 +35,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireacti
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.seedCustom;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.youNoItem;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.FIEND_CHOKE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 import static java.lang.Math.min;
 
@@ -995,6 +996,20 @@ public class Hero extends Char {
 	@Override
 	public int drRoll() {
 		int dr = super.drRoll();
+		/*
+		 * 血雾掩身：护盾存在时，提供0~当前护盾值的护甲减伤。
+		 * 标准攻击流程中drRoll()只参与物理伤害；
+		 * 部分直接调用drRoll()的自定义伤害来源也会应用这项减伤。
+		 */
+		Talent.BloodMistShield bloodMist =
+				buff(Talent.BloodMistShield.class);
+
+		if (bloodMist != null && bloodMist.shielding() > 0) {
+			dr += Random.NormalIntRange(
+					0,
+					bloodMist.shielding()
+			);
+		}
 		// 自然之庇：女猎手站在草中时获得额外护甲。
 		// +1获得0-1护甲，+2获得0-2护甲。
 		if (heroClass == HeroClass.HUNTRESS
@@ -1069,6 +1084,20 @@ public class Hero extends Char {
 			if (RingOfForce.unarmedGetsWeaponAugment(this)){
 				dmg = ((Weapon)belongings.attackingWeapon()).augment.damageFactor(dmg);
 			}
+		}
+		//厉鬼扼喉的触发条件判定
+		if (!RingOfForce.fightingUnarmed(this)
+				&& enemy instanceof Mob
+				&& enemy.alignment == Alignment.ENEMY
+				&& ((Mob) enemy).surprisedBy(this)
+				&& hasTalent(FIEND_CHOKE)) {
+
+			dmg = Talent.ghostGripDamageRoll(
+					this,
+					dmg,
+					wep.min(),
+					wep.max()
+			);
 		}
 
 		PhysicalEmpower emp = buff(PhysicalEmpower.class);

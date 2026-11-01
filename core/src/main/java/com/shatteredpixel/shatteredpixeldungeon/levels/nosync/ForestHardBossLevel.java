@@ -169,7 +169,7 @@ public class ForestHardBossLevel extends Level {
         } else {
             if(locked){
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if (mob.alignment == Char.Alignment.ALLY) {
+                    if (mob.alignment != Char.Alignment.ENEMY) {
                         mob.die(null);
                     }
                 }

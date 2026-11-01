@@ -79,6 +79,9 @@ import java.util.ArrayList;
 
 public class PrisonLevel extends RegularLevel {
 
+	private static final float HIRO_ENTRY_CHANCE = 0.1f;
+	private static final int HIRO_PITY_ATTEMPTS = 5;
+
 	{
 		color1 = 0x6a723d;
 		color2 = 0x88924c;
@@ -314,32 +317,61 @@ public class PrisonLevel extends RegularLevel {
 				});
 			return false;
 		} else if (transition.type == LevelTransition.Type.REGULAR_EXIT && Dungeon.depth == 9) {
-			if(Random.Float() <=0.1f && !Statistics.enterHiro){
+
+			if (!Statistics.enterHiro) {
 				TengusMask tengusMask = Dungeon.hero.belongings.getItem(TengusMask.class);
-				if(tengusMask != null){
-					TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-					if (timeFreeze != null) timeFreeze.disarmPresses();
-					Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-					if (timeBubble != null) timeBubble.disarmPresses();
-					InterlevelScene.mode = InterlevelScene.Mode.HIRO;
-					InterlevelScene.curTransition = new LevelTransition();
-					InterlevelScene.curTransition.destDepth = 0;
-					InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
-					InterlevelScene.curTransition.destBranch = 5;
-					InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_ENTRANCE;
-					InterlevelScene.curTransition.centerCell = -1;
-					Game.switchScene(InterlevelScene.class);
-					Statistics.enterHiro = true;
-					return false;
-				} else {
-					return super.activateTransition(hero,transition);
+
+				if (tengusMask != null) {
+					Statistics.hiroAttempts = Math.min(
+							HIRO_PITY_ATTEMPTS,
+							Statistics.hiroAttempts + 1);
+
+					boolean guaranteed = Statistics.hiroAttempts >= HIRO_PITY_ATTEMPTS;
+
+					if (guaranteed || Random.Float() <= HIRO_ENTRY_CHANCE) {
+
+						TimekeepersHourglass.timeFreeze timeFreeze =
+								Dungeon.hero.buff(
+										TimekeepersHourglass.timeFreeze.class
+								);
+
+						if (timeFreeze != null) {
+							timeFreeze.disarmPresses();
+						}
+
+						Swiftthistle.TimeBubble timeBubble =
+								Dungeon.hero.buff(
+										Swiftthistle.TimeBubble.class
+								);
+
+						if (timeBubble != null) {
+							timeBubble.disarmPresses();
+						}
+
+						InterlevelScene.mode = InterlevelScene.Mode.HIRO;
+						InterlevelScene.curTransition = new LevelTransition();
+						InterlevelScene.curTransition.destDepth = 0;
+						InterlevelScene.curTransition.destType =
+								LevelTransition.Type.REGULAR_ENTRANCE;
+						InterlevelScene.curTransition.destBranch = 5;
+						InterlevelScene.curTransition.type =
+								LevelTransition.Type.REGULAR_ENTRANCE;
+						InterlevelScene.curTransition.centerCell = -1;
+
+						Game.switchScene(InterlevelScene.class);
+
+						Statistics.enterHiro = true;
+						return false;
+					}
 				}
-            } else {
-                return super.activateTransition(hero,transition);
 			}
+
+			return super.activateTransition(hero, transition);
+
 		} else {
-			return super.activateTransition(hero,transition);
+			return super.activateTransition(hero, transition);
 		}
+
 		return false;
 	}
 

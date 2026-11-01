@@ -125,7 +125,7 @@ public class InterlevelScene extends PixelScene {
 		inGameScene = true;
 	}
 
-	private static final int NUM_TIPS = 98;
+	private static final int NUM_TIPS = 99;
 
 	private static ArrayList<Integer> tipset;
 	private RenderedTextBlock tip;
@@ -437,7 +437,7 @@ public class InterlevelScene extends PixelScene {
 
 			if (hero.belongings.getItem(DreamSeed.class) != null && (!bossLevel() || Statistics.bossRushMode && !RushBossLevel())) {
 				if(Random.NormalIntRange(0,100)>=50){
-					Item randomitem = Generator.random();
+					Item randomitem = Generator.randomUsingDefaults();
 					level.drop(randomitem,level.entrance()+1);
 				} else {
 					Mob w = Reflection.newInstance(MobSpawner.getMobRotation(Math.min(depth+Random.Int(3),24)).get(0));

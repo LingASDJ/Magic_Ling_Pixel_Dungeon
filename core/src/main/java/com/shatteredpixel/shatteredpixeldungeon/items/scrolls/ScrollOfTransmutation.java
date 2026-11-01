@@ -81,6 +81,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	@Override
 	protected boolean usableOnItem(Item item) {
 		if (BrokenRing.isBind(item)) return false;
+		if(item.noTRScroll) return false;
 		if(item instanceof WandOfAnmy) return false;
 		if(item instanceof MeleeWeapon) {
 

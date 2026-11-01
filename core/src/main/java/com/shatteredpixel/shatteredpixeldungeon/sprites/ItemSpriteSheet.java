@@ -660,6 +660,7 @@ public class ItemSpriteSheet {
 
     public static final int	WRALIPS			 = ARTIFACTS+32;
     public static final int	DM100RELEY				 = ARTIFACTS+35;
+    public static final int ARTIFACT_PHANTOM_CLOAK = ARTIFACTS+36;
     static{
         assignItemRect(ARTIFACT_CLOAK,      9,  15);
         assignItemRect(ARTIFACT_ARMBAND,    16, 13);
@@ -691,6 +692,7 @@ public class ItemSpriteSheet {
         assignItemRect(MIME_THREE,          15, 16);
         assignItemRect(WRALIPS, 14, 12);
         assignItemRect(DM100RELEY, 15, 13);
+        assignItemRect(ARTIFACT_PHANTOM_CLOAK, 14, 16);
     }
 
     //16 free slots
@@ -1854,26 +1856,26 @@ public class ItemSpriteSheet {
     private static final int DSN_F5  = DSN_BASE + 5;
     private static final int DSN_F6  = DSN_BASE + 6;
     private static final int DSN_F7  = xy(1, 70);
-    private static final int DSN_F8  = DSN_F7 + 8;
-    private static final int DSN_F9  = DSN_F7 + 9;
-    private static final int DSN_F10 = DSN_F7 + 10;
-    private static final int DSN_F11 = DSN_F7 + 11;
-    private static final int DSN_F12 = DSN_F7 + 12;
-    private static final int DSN_F13 = DSN_F7 + 13;
+    private static final int DSN_F8  = DSN_F7 + 1;
+    private static final int DSN_F9  = DSN_F7 + 2;
+    private static final int DSN_F10 = DSN_F7 + 3;
+    private static final int DSN_F11 = DSN_F7 + 4;
+    private static final int DSN_F12 = DSN_F7 + 5;
+    private static final int DSN_F13 = DSN_F7 + 6;
     private static final int DSN_F14 = xy(1, 71);
-    private static final int DSN_F15 = DSN_F14 + 15;
-    private static final int DSN_F16 = DSN_F14 + 16;
-    private static final int DSN_F17 = DSN_F14 + 17;
-    private static final int DSN_F18 = DSN_F14 + 18;
-    private static final int DSN_F19 = DSN_F14 + 19;
-    private static final int DSN_F20 = DSN_F14 + 20;
+    private static final int DSN_F15 = DSN_F14 + 1;
+    private static final int DSN_F16 = DSN_F14 + 2;
+    private static final int DSN_F17 = DSN_F14 + 3;
+    private static final int DSN_F18 = DSN_F14 + 4;
+    private static final int DSN_F19 = DSN_F14 + 5;
+    private static final int DSN_F20 = DSN_F14 + 6;
     private static final int DSN_F21 = xy(1, 72);
-    private static final int DSN_F22 = DSN_F21 + 22;
-    private static final int DSN_F23 = DSN_F21 + 23;
-    private static final int DSN_F24 = DSN_F21 + 24;
-    private static final int DSN_F25 = DSN_F21 + 25;
-    private static final int DSN_F26 = DSN_F21 + 26;
-    private static final int DSN_F27 = DSN_F21 + 27;
+    private static final int DSN_F22 = DSN_F21 + 1;
+    private static final int DSN_F23 = DSN_F21 + 2;
+    private static final int DSN_F24 = DSN_F21 + 3;
+    private static final int DSN_F25 = DSN_F21 + 4;
+    private static final int DSN_F26 = DSN_F21 + 5;
+    private static final int DSN_F27 = DSN_F21 + 6;
 
     private static final int SRL_BASE = xy(13, 67);
     private static final int SRL_F0  = SRL_BASE;

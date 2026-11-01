@@ -34,6 +34,7 @@ public class ScrollOfGolems extends ExoticInventoryScroll {
         if(hero!=null){
             identify();
         }
+        noTRScroll = true;
     }
 
     @Override
