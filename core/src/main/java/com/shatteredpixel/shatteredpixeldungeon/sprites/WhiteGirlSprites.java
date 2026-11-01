@@ -12,9 +12,9 @@ public class WhiteGirlSprites extends MobSprite {
     public WhiteGirlSprites() {
         texture( Assets.Sprites.WHITE );
 
-        TextureFilm textureFilm = new TextureFilm(this.texture, 16, 16);
-        idle = new MovieClip.Animation(1, true);
-        idle.frames(textureFilm, 0,1,2);
+        TextureFilm textureFilm = new TextureFilm(this.texture, 18, 21);
+        idle = new MovieClip.Animation(6, true);
+        idle.frames(textureFilm, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1);
 
         run = new MovieClip.Animation(10, true);
         run.frames(textureFilm, 0);
@@ -23,10 +23,10 @@ public class WhiteGirlSprites extends MobSprite {
         die.frames(textureFilm, 0);
 
         go = new MovieClip.Animation(8, false);
-        go.frames(textureFilm, 3,4,5,6,7);
+        go.frames(textureFilm, 0);
 
-        sleep = new MovieClip.Animation(8, true);
-        sleep.frames(textureFilm, 11,12,13,14,15);
+        sleep = new MovieClip.Animation(6, true);
+        sleep.frames(textureFilm, 2,3,4,5,6,7,8,9,10);
 
         play(this.idle);
     }

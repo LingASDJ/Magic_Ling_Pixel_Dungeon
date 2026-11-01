@@ -9,10 +9,10 @@ public class ATRISprite extends MobSprite {
 
         texture( Assets.Sprites.ATRI );
 
-        TextureFilm ren = new TextureFilm(this.texture, 16, 16);
+        TextureFilm ren = new TextureFilm(this.texture, 15, 17);
 
-        idle = new MovieClip.Animation(2, true);
-        idle.frames(ren, 0, 0, 1, 1,9,9,10,10,1, 1,9,9,10,10,1, 1,9,9,10,10,1, 1,9,9,10,10,1, 1,9,9,10,10,1, 1,9,9,10,10,1, 1,9,9,10,10,1, 1,9,9,10,10, 1,9,9,10,10,2,3,4,5,6,7,8);
+        idle = new MovieClip.Animation(4, true);
+        idle.frames(ren, 0,1,2,3,4);
 
         run = new MovieClip.Animation(10, true);
         run.frames(ren, 0);
