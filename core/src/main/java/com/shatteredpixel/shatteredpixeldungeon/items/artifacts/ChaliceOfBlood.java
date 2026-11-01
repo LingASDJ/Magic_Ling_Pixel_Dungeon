@@ -180,18 +180,26 @@ public class ChaliceOfBlood extends Artifact {
 
 	@Override
 	public void charge(Hero target, float amount) {
-		//grants 5 turns of healing up-front
+		// 由神器充能调用
+		// 间隔10-0.9*圣杯等级回合后回5滴血，回5血在回血量——heal的定义处体现
 		float healDelay = 10f - level()*0.9f;
+		// 将间隔除以神器充能的强度（比如说充能n个回合、获得n个回合的充能……这里n就是amount）
 		healDelay /= amount;
 
 		float heal = 5f/healDelay;
+		// 将回血量的小数位拿出来投骰子，当骰出的小数小于回血量的小数位时回血量加1
+		// 这里是处理回血量的小数部分，因为血量不存在小数，这一步实际上是将回血量的小数部分等价代换为概率回1滴血
+		// 加完1之后会在后面把小数部分截断掉不要了
 		if (Random.Float() < heal%1){
 			heal++;
 		}
+		// 回血量大于1且当前血量小于血上限时回血
 		if (heal >= 1f && target.HP < target.HT) {
+			// 截断回血量的小数部分并进行回血
 			target.HP = Math.min(target.HT, target.HP + (int)heal);
+			// 显示回血量
 			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString((int)heal), FloatingText.HEALING);
-
+			// 回满血之后停止睡觉
 			if (target.HP == target.HT && target instanceof Hero) {
 				((Hero) target).resting = false;
 			}
