@@ -44,38 +44,38 @@ public class WndMultiplayer extends Window {
         add(nameText);
         pos = nameText.bottom() + 4f;
 
-        RedButton host = new RedButton(Messages.get(WndMultiplayer.class, "host")) {
+        RedButton hostServer = new RedButton(Messages.get(WndMultiplayer.class, "host_server")) {
             @Override
             protected void onClick() {
-                Mp.get().host(Mp.DEFAULT_PORT);
+                Mp.get().hostViaServer(Mp.defaultServerAddress());
                 refresh();
             }
         };
-        add(host);
-        host.setRect(0f, pos, WIDTH, BTN_HEIGHT);
+        add(hostServer);
+        hostServer.setRect(0f, pos, WIDTH, BTN_HEIGHT);
         pos += BTN_HEIGHT + GAP;
 
-        RedButton join = new RedButton(Messages.get(WndMultiplayer.class, "join")) {
+        RedButton joinServer = new RedButton(Messages.get(WndMultiplayer.class, "join_server")) {
             @Override
             protected void onClick() {
                 ShatteredPixelDungeon.scene().addToFront(new WndTextInput(
-                        Messages.get(WndMultiplayer.class, "join_title"),
-                        Messages.get(WndMultiplayer.class, "join_prompt"),
-                        "", 40, false,
+                        Messages.get(WndMultiplayer.class, "room_code_title"),
+                        Messages.get(WndMultiplayer.class, "room_code_prompt"),
+                        "", 6, false,
                         Messages.get(WndMultiplayer.class, "connect"),
                         Messages.get(WndMultiplayer.class, "cancel")) {
                     @Override
-                    public void onSelect(boolean positive, String text) {
+                    public void onSelect(boolean positive, String code) {
                         if (positive) {
-                            Mp.get().join(text, Mp.DEFAULT_PORT);
+                            Mp.get().joinViaServer(Mp.defaultServerAddress(), code);
                             refresh();
                         }
                     }
                 });
             }
         };
-        add(join);
-        join.setRect(0f, pos, WIDTH, BTN_HEIGHT);
+        add(joinServer);
+        joinServer.setRect(0f, pos, WIDTH, BTN_HEIGHT);
         pos += BTN_HEIGHT + GAP;
 
         RedButton stop = new RedButton(Messages.get(WndMultiplayer.class, "disconnect")) {

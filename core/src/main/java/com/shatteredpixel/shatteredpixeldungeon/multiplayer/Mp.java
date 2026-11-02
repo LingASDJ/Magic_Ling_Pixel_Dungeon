@@ -76,10 +76,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -104,6 +107,20 @@ public class Mp {
 
     /** 默认联机端口。 */
     public static final int DEFAULT_PORT = 28771;
+    /** 正式版固定服务器地址：玩家不需要手动输入。 */
+    public static final String DEFAULT_SERVER_ADDRESS = "47.109.62.104";
+
+    /**
+     * 默认服务器地址；可用 {@code -Dmlpd.server=...} 覆盖（仅供本地测试）。
+     *
+     * @return 服务器地址。
+     */
+    public static String defaultServerAddress() {
+        String override = System.getProperty("mlpd.server");
+        if (override != null && !override.trim().isEmpty()) return override.trim();
+        return DEFAULT_SERVER_ADDRESS;
+    }
+
     /**
      * 联机模块版本号：显示在联机菜单右下角，并记录在根目录《更新日志.txt》。
      * 不得随意迭代：仅在用户明确指示“更新至某某版本”时修改，同时追加更新日志。
@@ -287,8 +304,26 @@ public class Mp {
     private boolean guestWorldActive = false;
     /** 访客英雄档存在但读不出来：首次加入前先备份旧档，避免直接覆盖丢数据 */
     private boolean guestHeroUnreadable = false;
+    /** 访客最近一次在本机世界中的位置（内存缓存；房主退出/重进时优先于可能滞后的英雄档） */
+    private volatile int lastGuestPos = -1;
+    private volatile int lastGuestDepth = -1;
+    private volatile int lastGuestBranch = -1;
+    private volatile long lastGuestWorldSeed = Long.MIN_VALUE;
+    /** 访客本次会话每层探图缓存：depth_branch -> Bundle{visited,mapped}。 */
+    private final HashMap<Integer, Bundle> guestExplored = new HashMap<>();
+    private long lastExploredSnapshot = 0L;
 
     private String myName;                    // 本机玩家名（联机窗口可设置，mp_name.txt 持久化）
+    /** 是否服务器模式（A 模式：经大厅配对，房主权威不变）。 */
+    private volatile boolean serverMode = false;
+    /** 服务器地址（不含端口）。 */
+    private volatile String serverAddress = null;
+    /** 服务器数据端口（房主从 ROOM 响应获得）。 */
+    private volatile int serverDataPort = DEFAULT_PORT + 1;
+    /** 当前房间号（房主开房成功后 / 访客加入时）。 */
+    private volatile String roomCode = null;
+    /** 服务器模式：大厅控制连接（房主）或等待配对连接（访客）。 */
+    private volatile Socket lobbySocket;
         /** 聊天输入框是否打开（防止按键重入）。 */
     public volatile boolean chatOpen = false;
     private StyledButton chatButton;          // 局内聊天按钮（Mp 自己挂在 GameScene 上）
@@ -339,15 +374,13 @@ public class Mp {
                             status = Messages.get(Mp.class, "status_room_full_host", MAX_PLAYERS);
                             continue;
                         }
-                        Peer p = setupPeer(s);
-                        p.id = nextGuestId++;
-                        peers.add(p);
-                        sendTo(p, Proto.HELLO, getMyName().getBytes("UTF-8"));   // 房主也把自己的名字发过去
-                        try { sendTo(p, Proto.ASSIGN, encodeInt(p.id)); } catch (IOException ignored) {}
-                        try { sendTo(p, Proto.VERSION, encodeVersion()); } catch (IOException ignored) {}
-                        scheduleHandshakeTimeout(p);
-                        connected = true;
-                        status = Messages.get(Mp.class, "status_players_online", peers.size());
+                        try {
+                            addHostedPeer(s, nextGuestId);
+                            nextGuestId++;
+                        } catch (IOException e) {
+                            try { s.close(); } catch (IOException ignored) {}
+                            status = Messages.get(Mp.class, "status_host_failed", e.getMessage());
+                        }
                     }
                 }
             } catch (Throwable t) {
@@ -385,16 +418,7 @@ public class Mp {
                 // skipcq: JAVA-S1011  同上：联机协议为明文 TCP，与房主端保持一致
                 Socket s = new Socket();
                 s.connect(new InetSocketAddress(host, port), 8000);
-                synchronized (peers) {
-                    Peer hp = setupPeer(s);
-                    hp.id = HOST_ID;   // 访客侧唯一固定的房主 peer
-                    peers.add(hp);
-                    scheduleHandshakeTimeout(hp);
-                }
-                connected = true;
-                sendToAll(Proto.HELLO, getMyName().getBytes("UTF-8"));
-                sendToAll(Proto.VERSION, encodeVersion());
-                status = Messages.get(Mp.class, "status_connected_waiting");
+                addClientPeer(s);
             } catch (Throwable t) {
                 String detail = (t.getMessage() != null && !t.getMessage().isEmpty())
                         ? t.getMessage() : t.getClass().getSimpleName();
@@ -413,6 +437,352 @@ public class Mp {
         worker.start();
     }
 
+    // ---------------------------------------------------------------- 服务器模式（A 模式）
+
+    /**
+     * 服务器模式开房：连接大厅服务器，创建房间并等待访客。
+     * 游戏世界仍由本机（房主）模拟，现有帧协议不变。
+     *
+     * @param address 服务器 IP/域名，可带端口（默认 28771）。
+     */
+    public synchronized void hostViaServer(String address) {
+        final String raw = address == null ? "" : address.trim();
+        if (raw.isEmpty()) {
+            status = Messages.get(Mp.class, "error_empty_address");
+            return;
+        }
+        final String[] hp = parseServerAddress(raw, DEFAULT_PORT);
+        final String host = hp[0];
+        final int port = Integer.parseInt(hp[1]);
+        disconnect();
+        serverMode = true;
+        serverAddress = host;
+        roomCode = null;
+        role = Role.HOST;
+        running = true;
+        status = Messages.get(Mp.class, "status_server_creating");
+        worker = new Thread(() -> runHostViaServer(host, port), "mp-lobby-host");
+        worker.setDaemon(true);
+        worker.start();
+    }
+
+    /**
+     * 服务器模式加入：连接大厅服务器，输入 6 位房间号等待房主配对。
+     *
+     * @param address 服务器 IP/域名，可带端口（默认 28771）。
+     * @param code 6 位房间号。
+     */
+    public synchronized void joinViaServer(String address, String code) {
+        final String raw = address == null ? "" : address.trim();
+        final String room = code == null ? "" : code.trim();
+        if (raw.isEmpty()) {
+            status = Messages.get(Mp.class, "error_empty_address");
+            return;
+        }
+        if (!room.matches("\\d{6}")) {
+            status = Messages.get(Mp.class, "room_code_invalid");
+            return;
+        }
+        final String[] hp = parseServerAddress(raw, DEFAULT_PORT);
+        final String host = hp[0];
+        final int port = Integer.parseInt(hp[1]);
+        disconnect();
+        serverMode = true;
+        serverAddress = host;
+        roomCode = room;
+        role = Role.CLIENT;
+        localAdmin = false;
+        running = true;
+        status = Messages.get(Mp.class, "status_server_join", room);
+        worker = new Thread(() -> runJoinViaServer(host, port, room), "mp-lobby-join");
+        worker.setDaemon(true);
+        worker.start();
+    }
+
+    /**
+     * 当前是否处于服务器模式（A 模式大厅配对）。
+     *
+     * @return 是否服务器模式。
+     */
+    public boolean isServerMode() {
+        return serverMode;
+    }
+
+    /**
+     * 当前房间号（房主开房成功 / 访客加入后）。
+     *
+     * @return 6 位房间号；未进入服务器模式时为 null。
+     */
+    public String getRoomCode() {
+        return roomCode;
+    }
+
+    /** 房主侧：连接大厅、创建房间、接收 GUEST 并建立数据连接。 */
+    private void runHostViaServer(String host, int port) {
+        Socket control = null;
+        try {
+            control = new Socket();
+            control.connect(new InetSocketAddress(host, port), 8000);
+            control.setTcpNoDelay(true);
+            lobbySocket = control;
+            DataOutputStream out = new DataOutputStream(control.getOutputStream());
+            String name = getMyName().replace('\r', ' ').replace('\n', ' ').trim();
+            if (name.isEmpty()) name = "host";
+            writeControlLine(out, "CREATE " + name);
+            control.setSoTimeout(10000);
+            String response = readControlLine(control.getInputStream());
+            if (response == null) throw new IOException(Messages.get(Mp.class, "server_room_closed"));
+            if (response.startsWith("ERR ")) throw new IOException(response);
+            if (!response.startsWith("ROOM ")) {
+                throw new IOException(Messages.get(Mp.class, "server_err_protocol", response));
+            }
+            String[] parts = response.split("\\s+");
+            if (parts.length < 3) {
+                throw new IOException(Messages.get(Mp.class, "server_err_protocol", response));
+            }
+            roomCode = parts[1];
+            serverDataPort = Integer.parseInt(parts[2]);
+            control.setSoTimeout(0);
+            status = Messages.get(Mp.class, "status_server_room", roomCode);
+            startLobbyHeartbeat(control, out);
+            while (running && lobbySocket == control) {
+                String line = readControlLine(control.getInputStream());
+                if (line == null) break;
+                if (line.startsWith("GUEST ")) {
+                    String[] guest = line.split("\\s+");
+                    if (guest.length >= 3) {
+                        try {
+                            int id = Integer.parseInt(guest[1]);
+                            final String token = guest[2];
+                            Thread t = new Thread(() -> connectHostData(id, token), "mp-server-data");
+                            t.setDaemon(true);
+                            t.start();
+                        } catch (NumberFormatException ignored) {}
+                    }
+                } else if ("PONG".equals(line)) {
+                    // 心跳回应，无需处理。
+                } else if (line.startsWith("ERR ")) {
+                    status = serverErrorText(line);
+                }
+            }
+            if (running && lobbySocket == control) {
+                lobbySocket = null;
+                handleServerRoomLost(Messages.get(Mp.class, "server_room_closed"));
+            }
+        } catch (Throwable t) {
+            if (running) {
+                String detail = (t.getMessage() != null && !t.getMessage().isEmpty())
+                        ? t.getMessage() : t.getClass().getSimpleName();
+                final String msg = detail.startsWith("ERR ")
+                        ? serverErrorText(detail)
+                        : Messages.get(Mp.class, "server_err_connect");
+                lobbySocket = null;
+                handleServerRoomLost(msg);
+            }
+        } finally {
+            if (lobbySocket == control) lobbySocket = null;
+            if (control != null) {
+                try { control.close(); } catch (IOException ignored) {}
+            }
+        }
+    }
+
+    /** 访客侧：连接大厅、等待 WAIT/PAIRED，然后按直连流程接入房主 peer。 */
+    private void runJoinViaServer(String host, int port, String room) {
+        Socket s = null;
+        try {
+            s = new Socket();
+            s.connect(new InetSocketAddress(host, port), 8000);
+            s.setTcpNoDelay(true);
+            lobbySocket = s;
+            DataOutputStream out = new DataOutputStream(s.getOutputStream());
+            writeControlLine(out, "JOIN " + room);
+            s.setSoTimeout(40000);   // 服务器等待房主建数据连接默认 30 秒，客户端留一点余量
+            boolean paired = false;
+            while (running && lobbySocket == s) {
+                String line = readControlLine(s.getInputStream());
+                if (line == null) throw new IOException(Messages.get(Mp.class, "server_room_closed"));
+                if ("WAIT".equals(line)) {
+                    status = Messages.get(Mp.class, "status_server_waiting_host");
+                } else if ("PAIRED".equals(line)) {
+                    paired = true;
+                    break;
+                } else if (line.startsWith("ERR ")) {
+                    throw new IOException(line);
+                }
+            }
+            if (!running || lobbySocket != s) return;
+            if (!paired) throw new IOException(Messages.get(Mp.class, "server_room_closed"));
+            s.setSoTimeout(0);
+            addClientPeer(s);
+            lobbySocket = null;
+            s = null;   // 连接所有权已交给房主 peer
+        } catch (Throwable t) {
+            if (running) {
+                String detail = (t.getMessage() != null && !t.getMessage().isEmpty())
+                        ? t.getMessage() : t.getClass().getSimpleName();
+                final String msg = detail.startsWith("ERR ")
+                        ? serverErrorText(detail)
+                        : Messages.get(Mp.class, "server_err_connect");
+                status = msg;
+                connected = false;
+                running = false;   // 与直连 join 一致：避免版本握手超时覆盖失败原因
+                Game.runOnRenderThread(() -> {
+                    if (ShatteredPixelDungeon.scene() != null) {
+                        ShatteredPixelDungeon.scene().add(new WndMessage(msg));
+                    }
+                });
+            }
+        } finally {
+            if (lobbySocket == s) lobbySocket = null;
+            if (s != null) {
+                try { s.close(); } catch (IOException ignored) {}
+            }
+        }
+    }
+
+    /** 房主侧：收到 GUEST 后连接服务器数据端口，配对成功后登记为访客 peer。 */
+    private void connectHostData(int id, String token) {
+        Socket data = null;
+        try {
+            if (!serverMode || !running || serverAddress == null || roomCode == null) return;
+            data = new Socket();
+            data.connect(new InetSocketAddress(serverAddress, serverDataPort), 8000);
+            data.setTcpNoDelay(true);
+            DataOutputStream out = new DataOutputStream(data.getOutputStream());
+            writeControlLine(out, "DATA " + roomCode + " " + id + " " + token);
+            data.setSoTimeout(10000);
+            String response = readControlLine(data.getInputStream());
+            if (!"OK".equals(response)) {
+                throw new IOException(response == null ? "no response" : response);
+            }
+            data.setSoTimeout(0);
+            synchronized (peers) {
+                if (!running || !serverMode || peers.size() >= MAX_PLAYERS - 1) {
+                    try { data.close(); } catch (IOException ignored) {}
+                    return;
+                }
+            }
+            addHostedPeer(data, id);
+            data = null;   // 连接所有权已交给访客 peer
+        } catch (Throwable t) {
+            if (running && serverMode) {
+                String detail = (t.getMessage() != null && !t.getMessage().isEmpty())
+                        ? t.getMessage() : t.getClass().getSimpleName();
+                status = detail.startsWith("ERR ")
+                        ? serverErrorText(detail)
+                        : Messages.get(Mp.class, "server_err_data");
+            }
+        } finally {
+            if (data != null) {
+                try { data.close(); } catch (IOException ignored) {}
+            }
+        }
+    }
+
+    /** 房主控制连接心跳：每 15 秒发 PING；发送失败则关闭控制连接，由读线程收尾。 */
+    private void startLobbyHeartbeat(final Socket control, final DataOutputStream out) {
+        Thread t = new Thread(() -> {
+            while (running && lobbySocket == control) {
+                try {
+                    Thread.sleep(15000L);
+                } catch (InterruptedException e) {
+                    return;
+                }
+                if (!running || lobbySocket != control) return;
+                try {
+                    writeControlLine(out, "PING");
+                } catch (IOException e) {
+                    try { control.close(); } catch (IOException ignored) {}
+                    return;
+                }
+            }
+        }, "mp-lobby-heartbeat");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    /** 服务器房间/控制连接丢失：房主回到未联机状态并提示。 */
+    private void handleServerRoomLost(final String msg) {
+        if (!serverMode) return;
+        running = false;
+        final String reason = msg;
+        Game.runOnRenderThread(() -> {
+            if (role != Role.HOST) return;
+            disconnect();
+            status = reason;
+            if (ShatteredPixelDungeon.scene() != null) {
+                ShatteredPixelDungeon.scene().add(new WndMessage(reason));
+            }
+        });
+    }
+
+    private static String serverErrorText(String line) {
+        String code = line == null ? "" : line.trim();
+        if (code.startsWith("ERR ")) code = code.substring(4).trim();
+        switch (code) {
+            case "NOT_FOUND":
+                return Messages.get(Mp.class, "server_err_not_found");
+            case "FULL":
+                return Messages.get(Mp.class, "server_err_full", MAX_PLAYERS);
+            case "ROOM_CLOSED":
+                return Messages.get(Mp.class, "server_err_closed");
+            case "TIMEOUT":
+                return Messages.get(Mp.class, "server_err_timeout");
+            case "BUSY":
+                return Messages.get(Mp.class, "server_err_busy");
+            case "RATE_LIMIT":
+                return Messages.get(Mp.class, "server_err_rate");
+            default:
+                return Messages.get(Mp.class, "server_err_protocol", line == null ? "" : line);
+        }
+    }
+
+    /**
+     * 解析服务器地址，支持 {@code host} 或 {@code host:port}。
+     *
+     * @param address 原始地址。
+     * @param defaultPort 未写端口时的默认端口。
+     * @return 下标 0=主机名，1=端口字符串。
+     */
+    private static String[] parseServerAddress(String address, int defaultPort) {
+        String host = address == null ? "" : address.trim();
+        int port = defaultPort;
+        int idx = host.lastIndexOf(':');
+        if (idx > 0 && idx < host.length() - 1) {
+            String p = host.substring(idx + 1).trim();
+            if (p.matches("\\d{1,5}")) {
+                int value = Integer.parseInt(p);
+                if (value > 0 && value <= 65535) {
+                    port = value;
+                    host = host.substring(0, idx).trim();
+                }
+            }
+        }
+        return new String[]{host, Integer.toString(port)};
+    }
+
+    private static void writeControlLine(DataOutputStream out, String line) throws IOException {
+        synchronized (out) {
+            out.write((line + "\n").getBytes("UTF-8"));
+            out.flush();
+        }
+    }
+
+    private static String readControlLine(InputStream in) throws IOException {
+        java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream(64);
+        while (true) {
+            int b = in.read();
+            if (b < 0) return buffer.size() == 0 ? null : buffer.toString("UTF-8");
+            if (b == '\n') {
+                String s = buffer.toString("UTF-8");
+                return s.endsWith("\r") ? s.substring(0, s.length() - 1) : s;
+            }
+            if (buffer.size() > 1024) throw new IOException("control line too long");
+            buffer.write(b);
+        }
+    }
+
     private Peer setupPeer(Socket s) throws IOException {
         Peer p = new Peer();
         p.sock = s;
@@ -423,6 +793,55 @@ public class Mp {
         recv.setDaemon(true);
         recv.start();
         return p;
+    }
+
+    /**
+     * 房主侧：把一条已建立的连接登记为访客 peer，并发送 HELLO/ASSIGN/VERSION。
+     * 局域网 accept 与服务器模式 DATA 配对共用。
+     *
+     * @param s 已建立的对端连接。
+     * @param id 房主分配的访客 id。
+     * @throws IOException 初始化或发送握手帧失败。
+     */
+    private void addHostedPeer(Socket s, int id) throws IOException {
+        Peer p = setupPeer(s);
+        p.id = id;
+        synchronized (peers) {
+            peers.add(p);
+        }
+        try {
+            sendTo(p, Proto.HELLO, getMyName().getBytes("UTF-8"));   // 房主也把自己的名字发过去
+            sendTo(p, Proto.ASSIGN, encodeInt(p.id));
+            sendTo(p, Proto.VERSION, encodeVersion());
+        } catch (IOException e) {
+            synchronized (peers) {
+                peers.remove(p);
+            }
+            try { s.close(); } catch (IOException ignored) {}
+            throw e;
+        }
+        scheduleHandshakeTimeout(p);
+        connected = true;
+        status = Messages.get(Mp.class, "status_players_online", peers.size());
+    }
+
+    /**
+     * 访客侧：把与房主（直连或服务器配对）的连接登记为 peer(0)，并发送 HELLO/VERSION。
+     *
+     * @param s 已建立的房主连接。
+     * @throws IOException 初始化或发送握手帧失败。
+     */
+    private void addClientPeer(Socket s) throws IOException {
+        Peer hp = setupPeer(s);
+        hp.id = HOST_ID;   // 访客侧唯一固定的房主 peer
+        synchronized (peers) {
+            peers.add(hp);
+        }
+        scheduleHandshakeTimeout(hp);
+        connected = true;
+        sendToAll(Proto.HELLO, getMyName().getBytes("UTF-8"));
+        sendToAll(Proto.VERSION, encodeVersion());
+        status = Messages.get(Mp.class, "status_connected_waiting");
     }
 
     /** 版本握手超时：对方在 HANDSHAKE_TIMEOUT_MS 内没有发来兼容的 VERSION 就断开。 */
@@ -471,6 +890,10 @@ public class Mp {
         hostWorldKey = null;
         localDeathAnnounced = false;
         enteringNewWorld = false;
+        synchronized (guestExplored) {
+            guestExplored.clear();
+        }
+        lastExploredSnapshot = 0L;
         chatOpen = false;
         pendingState = null;
         final WndHeroClassSelect w = classWindow;
@@ -495,8 +918,14 @@ public class Mp {
             peers.clear();
         }
         try { if (server != null) server.close(); } catch (IOException ignored) {}
+        try { if (lobbySocket != null) lobbySocket.close(); } catch (IOException ignored) {}
         try { if (worker != null) worker.interrupt(); } catch (Throwable ignored) {}
         server = null;
+        lobbySocket = null;
+        serverMode = false;
+        serverAddress = null;
+        serverDataPort = DEFAULT_PORT + 1;
+        roomCode = null;
         lastScene = null;
         role = Role.NONE;
         status = Messages.get(Mp.class, "status_disconnected");
@@ -756,6 +1185,8 @@ public class Mp {
                 }
                 case Proto.KICK: {
                     Game.runOnRenderThread(() -> {
+                        // 房主退出存档：先落盘访客英雄，避免切场景后 hero 状态不可用导致位置/背包丢失
+                        if (guestWorldActive) saveGuestHero();
                         if (Game.scene() instanceof GameScene) {
                             status = Messages.get(Mp.class, "status_host_left_save");
                             ShatteredPixelDungeon.switchScene(TitleScene.class);
@@ -1126,6 +1557,7 @@ public class Mp {
             // 同进程重连/房主换档跟随时 Dungeon.hero 还是旧英雄，往返会把快捷栏物品位置全部丢掉。
             Bundle game = Bundle.read(new ByteArrayInputStream(p.game));
             Bundle heroBundle = guestHeroPart(guest);
+            loadGuestExplored(guest);
             keepSafeBuffs(heroBundle);                   // 只保留饥饿/自然回血，其余 buff 可能引用上个世界的对象
 
             // 英雄与其 buff 的 Actor 时间归零：访客档保存的是未归一的实时时间，
@@ -1137,14 +1569,18 @@ public class Mp {
             }
             heroBundle.put("buffs", buffs);
 
-            // 位置：同种子同层的布局相同，恢复访客上次离开的位置；不同层/新英雄只能跟房主走
-            int pos = hostPos;
-            if (guest.contains(MP_DEPTH) && guest.contains(MP_BRANCH)) {
+            // 位置：本层有访客存档才恢复自己的位置；本层没有存档（或新访客）则用本层入口
+            int pos = -1;
+            boolean hasPosInfo = guest.contains(MP_DEPTH) && guest.contains(MP_BRANCH);
+            if (hasPosInfo && guest.getInt(MP_DEPTH) == depth && guest.getInt(MP_BRANCH) == branch) {
                 int savedPos = heroBundle.getInt("pos");
-                if (guest.getInt(MP_DEPTH) == depth && guest.getInt(MP_BRANCH) == branch
-                        && savedPos >= 0) {
-                    pos = savedPos;
-                }
+                if (savedPos >= 0) pos = savedPos;
+            }
+            // 同进程内房主退出再进入时，内存里的最后位置比可能滞后的英雄档更可靠
+            if (role == Role.CLIENT && lastGuestWorldSeed == worldSeed
+                    && lastGuestDepth == depth && lastGuestBranch == branch
+                    && lastGuestPos >= 0) {
+                pos = lastGuestPos;
             }
             heroBundle.put("pos", pos);
 
@@ -1187,26 +1623,28 @@ public class Mp {
 
             FileUtils.bundleToFile(GamesInProgress.gameFile(slot), game);
 
-            // 层档里只有房主的探图记录：把访客上次会话自己探过的 visited/mapped 合并进去
+            // 房主层档里只有房主的探图记录：先清空，再合并访客自己的 visited/mapped
             Bundle levelFile = Bundle.read(new ByteArrayInputStream(p.level));
-            if (guest.contains(MP_EXPLORED + depth + "_" + branch)) {
-                Bundle vis = guest.getBundle(MP_EXPLORED + depth + "_" + branch);
-                Level lv = (Level) levelFile.get("level");
-                if (lv != null) {
+            Level lv = (Level) levelFile.get("level");
+            if (lv != null) {
+                if (lv.visited != null) Arrays.fill(lv.visited, false);
+                if (lv.mapped != null) Arrays.fill(lv.mapped, false);
+                if (guest.contains(MP_EXPLORED + depth + "_" + branch)) {
+                    Bundle vis = guest.getBundle(MP_EXPLORED + depth + "_" + branch);
                     boolean[] v = vis.getBooleanArray("visited");
-                    if (v != null) {
+                    if (v != null && lv.visited != null) {
                         for (int i = 0; i < v.length && i < lv.visited.length; i++) {
                             if (v[i]) lv.visited[i] = true;
                         }
                     }
                     boolean[] m = vis.getBooleanArray("mapped");
-                    if (m != null) {
+                    if (m != null && lv.mapped != null) {
                         for (int i = 0; i < m.length && i < lv.mapped.length; i++) {
                             if (m[i]) lv.mapped[i] = true;
                         }
                     }
-                    levelFile.put("level", lv);
                 }
+                levelFile.put("level", lv);
             }
             FileUtils.bundleToFile(GamesInProgress.depthFile(slot, depth, branch), levelFile);
 
@@ -1520,6 +1958,8 @@ public class Mp {
      */
     public boolean examineRemote(Integer cell) {
         if (cell == null) return false;
+        // 自己脚下交给原版检查：这里可能有重叠的地面物品，不能让远端英雄详情抢走点击
+        if (Dungeon.hero != null && cell == Dungeon.hero.pos) return false;
         List<Peer> snapshot;
         synchronized (peers) {
             snapshot = new ArrayList<>(peers);
@@ -1625,7 +2065,7 @@ public class Mp {
     }
 
     /** 访客英雄专用存档：存在就读，不存在返回 null（由 applyState 弹职业选择窗口） */
-    private Bundle loadGuestHeroBundle() {
+    private synchronized Bundle loadGuestHeroBundle() {
         guestHeroUnreadable = false;
         String file = mpHeroFile();
         if (file == null) return null;
@@ -1786,7 +2226,7 @@ public class Mp {
     }
 
     /** 把访客英雄 bundle 落盘（按世界种子分档；剔除 buff，避免跨世界引用）；返回是否成功 */
-    private boolean saveGuestHeroBundle(Bundle b) {
+    private synchronized boolean saveGuestHeroBundle(Bundle b) {
         String file = mpHeroFile();
         if (file == null) {
             status = Messages.get(Mp.class, "guest_hero_not_in_world");
@@ -1821,13 +2261,73 @@ public class Mp {
         }
     }
 
+    /** 记录当前楼层的探图到缓存（每层一份；跨楼层/重连保留访客自己的视野）。 */
+    private void snapshotExplored() {
+        if (role != Role.CLIENT || Dungeon.level == null) return;
+        boolean[] v = Dungeon.level.visited;
+        boolean[] m = Dungeon.level.mapped;
+        if (v == null || m == null) return;
+        Bundle vis = new Bundle();
+        vis.put("visited", v.clone());
+        vis.put("mapped", m.clone());
+        synchronized (guestExplored) {
+            guestExplored.put(Dungeon.depth + 1000 * Dungeon.branch, vis);
+        }
+    }
+
+    /** 从访客英雄档恢复各层探图缓存。 */
+    private void loadGuestExplored(Bundle guest) {
+        synchronized (guestExplored) {
+            guestExplored.clear();
+            if (guest == null) return;
+            for (String key : guest.getKeys()) {
+                if (!key.startsWith(MP_EXPLORED)) continue;
+                try {
+                    String suffix = key.substring(MP_EXPLORED.length());
+                    int sep = suffix.indexOf('_');
+                    if (sep <= 0) continue;
+                    int d = Integer.parseInt(suffix.substring(0, sep));
+                    int b = Integer.parseInt(suffix.substring(sep + 1));
+                    Bundle vis = guest.getBundle(key);
+                    if (vis != null) guestExplored.put(d + 1000 * b, vis);
+                } catch (Throwable ignored) {}
+            }
+        }
+    }
+
+    /** 把缓存中当前楼层的探图合并进 Dungeon.level，并刷新迷雾。 */
+    private void applyExploredToLevel() {
+        if (role != Role.CLIENT || Dungeon.level == null || Dungeon.hero == null) return;
+        Bundle vis;
+        synchronized (guestExplored) {
+            vis = guestExplored.get(Dungeon.depth + 1000 * Dungeon.branch);
+        }
+        if (vis == null) return;
+        boolean[] v = vis.getBooleanArray("visited");
+        boolean[] m = vis.getBooleanArray("mapped");
+        if (v != null && Dungeon.level.visited != null) {
+            for (int i = 0; i < v.length && i < Dungeon.level.visited.length; i++) {
+                if (v[i]) Dungeon.level.visited[i] = true;
+            }
+        }
+        if (m != null && Dungeon.level.mapped != null) {
+            for (int i = 0; i < m.length && i < Dungeon.level.mapped.length; i++) {
+                if (m[i]) Dungeon.level.mapped[i] = true;
+            }
+        }
+        try {
+            Dungeon.observe();
+            GameScene.updateFog();
+        } catch (Throwable ignored) {}
+    }
+
     /** GameScene.onPause 调用：切场景/关闭窗口前保存访客英雄（不清理临时世界） */
     public void onGamePause() {
         if (role == Role.CLIENT && guestWorldActive && !enteringNewWorld) saveGuestHero();
     }
 
     /** 把当前访客英雄状态落盘（跨会话保留背包/血量/充能）；返回是否成功 */
-    private boolean saveGuestHero() {
+    private synchronized boolean saveGuestHero() {
         if (!guestWorldActive || worldSeed == Long.MIN_VALUE) return false;
         Hero h = Dungeon.hero;
         if (h == null) return false;
@@ -1839,12 +2339,12 @@ public class Mp {
             Bundle qs = new Bundle();
             Dungeon.quickslot.storePlaceholders(qs);    // 快捷栏占位符 + 槽位技能选择
             b.put(MP_QUICKSLOT, qs);
-            if (Dungeon.level != null) {
-                // 探图数据（visited/mapped）按层留档：房主存档里只有房主自己的探索记录
-                Bundle vis = new Bundle();
-                vis.put("visited", Dungeon.level.visited);
-                vis.put("mapped", Dungeon.level.mapped);
-                b.put(MP_EXPLORED + Dungeon.depth + "_" + Dungeon.branch, vis);
+            // 探图数据（visited/mapped）按层留档：房主存档里只有房主自己的探索记录
+            snapshotExplored();
+            synchronized (guestExplored) {
+                for (Integer code : guestExplored.keySet()) {
+                    b.put(MP_EXPLORED + code % 1000 + "_" + code / 1000, guestExplored.get(code));
+                }
             }
             return saveGuestHeroBundle(b);
         } catch (Throwable t) {
@@ -1908,6 +2408,10 @@ public class Mp {
         if (role == Role.CLIENT && Dungeon.hero != null && Dungeon.level != null
                 && !enteringNewWorld) {
             guestWorldActive = true;
+            lastGuestPos = Dungeon.hero.pos;
+            lastGuestDepth = Dungeon.depth;
+            lastGuestBranch = Dungeon.branch;
+            lastGuestWorldSeed = worldSeed;
             // 访客在死亡后点“重新开始”会进入本地新档；检测到不在房主世界（槽 99/种子）就退出联机
             if (worldSeed != Long.MIN_VALUE
                     && (GamesInProgress.curSlot != GUEST_TEMP_SLOT || Dungeon.seed != worldSeed)) {
@@ -1928,7 +2432,10 @@ public class Mp {
             lastScene = gs;
             enteringNewWorld = false;                   // 已进入新场景，恢复正常同步/存档
             chatButton = null;                          // 新场景重新挂按钮（旧按钮随旧场景销毁）
-            if (role == Role.CLIENT) saveGuestHero();   // 换层/重进场景时落盘访客英雄
+            if (role == Role.CLIENT) {
+                applyExploredToLevel();                 // 先恢复本层自己的探图
+                saveGuestHero();                        // 换层/重进场景时落盘访客英雄
+            }
             synchronized (peers) {
                 for (Peer p : peers) {
                     p.remote = null;
@@ -1947,6 +2454,15 @@ public class Mp {
 
         if (enteringNewWorld) {
             return;   // 等待新世界 STATE/场景切换，暂停旧世界的外发同步
+        }
+
+        // 每秒记录一次当前层探图，跨楼层/断线重连时恢复访客自己的视野
+        if (role == Role.CLIENT && Dungeon.level != null) {
+            long exploreNow = System.currentTimeMillis();
+            if (exploreNow - lastExploredSnapshot > 1000L) {
+                lastExploredSnapshot = exploreNow;
+                snapshotExplored();
+            }
         }
 
         updateChatButton(gs);
@@ -2144,9 +2660,12 @@ public class Mp {
             // 访客退出存档（主动或被踢）：先保存自己的英雄，再清理临时世界；连接保持
             boolean ok = !guestWorldActive || saveGuestHero();
             if (ok) {
-                clearGuestTempSlot();
-                guestWorldActive = false;
-                worldSeed = Long.MIN_VALUE;
+                // 正在应用新房主 STATE 时不要清临时槽/种子，否则可能把刚恢复的世界又清掉
+                if (!enteringNewWorld) {
+                    clearGuestTempSlot();
+                    guestWorldActive = false;
+                    worldSeed = Long.MIN_VALUE;
+                }
                 status = Messages.get(Mp.class, "status_client_exit_save");
             } else {
                 status = Messages.get(Mp.class, "status_client_exit_save_failed");

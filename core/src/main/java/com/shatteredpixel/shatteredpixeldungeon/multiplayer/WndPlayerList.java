@@ -60,6 +60,8 @@ public class WndPlayerList extends Window {
             PointerArea rowClick = new PointerArea(0, y, WIDTH, ROW_HEIGHT) {
                 @Override
                 protected void onClick(PointerEvent event) {
+                    // 先关闭列表：否则详情窗口关闭后列表仍留在底层，会再次拦截点击/重复打开旧详情
+                    hide();
                     Mp.get().showRemoteHero(pid);
                 }
             };
