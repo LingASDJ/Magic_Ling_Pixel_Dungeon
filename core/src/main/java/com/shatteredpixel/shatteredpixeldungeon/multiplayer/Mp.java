@@ -69,6 +69,7 @@ import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Bundlable;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
 
 import java.io.ByteArrayInputStream;
@@ -312,6 +313,8 @@ public class Mp {
     /** 访客本次会话每层探图缓存：depth_branch -> Bundle{visited,mapped}。 */
     private final HashMap<Integer, Bundle> guestExplored = new HashMap<>();
     private long lastExploredSnapshot = 0L;
+    /** Android 端最后一次看到的本地英雄血量（用于兜底触发受击红屏）。 */
+    private int lastHeroHp = -1;
 
     private String myName;                    // 本机玩家名（联机窗口可设置，mp_name.txt 持久化）
     /** 是否服务器模式（A 模式：经大厅配对，房主权威不变）。 */
@@ -894,6 +897,7 @@ public class Mp {
             guestExplored.clear();
         }
         lastExploredSnapshot = 0L;
+        lastHeroHp = -1;
         chatOpen = false;
         pendingState = null;
         final WndHeroClassSelect w = classWindow;
@@ -2261,6 +2265,27 @@ public class Mp {
         }
     }
 
+    /**
+     * Android 端低血量受击整屏红光兜底。
+     * 原版 Hero.takeDamage 在 Actor 线程直接调用 GameScene.flash；部分 Android 环境下
+     * 该路径可能不生效。这里在渲染线程按同样的伤害/血量公式补一次红屏。
+     */
+    private void androidLowHpFlash() {
+        if (!DeviceCompat.isAndroid() || Dungeon.hero == null) return;
+        int hp = Dungeon.hero.HP;
+        int ht = Dungeon.hero.HT;
+        if (lastHeroHp > 0 && hp > 0 && hp < lastHeroHp && ht > 0) {
+            float percentDMG = (lastHeroHp - hp) / (float) lastHeroHp;
+            float percentHP = hp / (float) ht;
+            float intensity = 0.25f * (percentDMG * percentDMG) / percentHP;
+            if (intensity >= 0.05f) {
+                intensity = Math.min(1f / 3f, intensity);
+                GameScene.flash((int) (0xFF * intensity) << 16);
+            }
+        }
+        lastHeroHp = hp;
+    }
+
     /** 记录当前楼层的探图到缓存（每层一份；跨楼层/重连保留访客自己的视野）。 */
     private void snapshotExplored() {
         if (role != Role.CLIENT || Dungeon.level == null) return;
@@ -2431,6 +2456,7 @@ public class Mp {
         if (gs != lastScene) {
             lastScene = gs;
             enteringNewWorld = false;                   // 已进入新场景，恢复正常同步/存档
+            lastHeroHp = Dungeon.hero != null ? Dungeon.hero.HP : -1;
             chatButton = null;                          // 新场景重新挂按钮（旧按钮随旧场景销毁）
             if (role == Role.CLIENT) {
                 applyExploredToLevel();                 // 先恢复本层自己的探图
@@ -2455,6 +2481,8 @@ public class Mp {
         if (enteringNewWorld) {
             return;   // 等待新世界 STATE/场景切换，暂停旧世界的外发同步
         }
+
+        androidLowHpFlash();
 
         // 每秒记录一次当前层探图，跨楼层/断线重连时恢复访客自己的视野
         if (role == Role.CLIENT && Dungeon.level != null) {
