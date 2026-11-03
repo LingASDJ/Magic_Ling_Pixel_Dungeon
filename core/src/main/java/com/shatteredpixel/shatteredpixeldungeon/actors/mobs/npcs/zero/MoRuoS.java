@@ -35,15 +35,27 @@ public class MoRuoS extends NTNPC {
         super.restoreFromBundle(bundle);
         first = bundle.getBoolean(FIRST);
     }
-    private static String[] TXT_RANDOM = {
-            Messages.get(MoRuoS.class,"roll1"),
-            Messages.get(MoRuoS.class,"roll2"),
-            Messages.get(MoRuoS.class,"roll3"),
-            Messages.get(MoRuoS.class,"roll4"),
-            Messages.get(MoRuoS.class,"roll5",Dungeon.hero.name()),
-            Messages.get(MoRuoS.class,"roll6"),
-            Messages.get(MoRuoS.class,"roll7"),
-    };
+    /**
+     * 随机台词改为交互时再构建：类加载时 Dungeon.hero / Messages 可能尚未就绪，
+     * 访客加载房主第 0 层时会在静态初始化中崩溃（NoClassDefFoundError）。
+     */
+    private static String[] txtRandom() {
+        String heroName = "";
+        try {
+            if (Dungeon.hero != null) heroName = Dungeon.hero.name();
+        } catch (Throwable ignored) {
+            // 名称不可用时退回空串，不能因为一句随机台词让整个 NPC 类初始化失败
+        }
+        return new String[]{
+                Messages.get(MoRuoS.class, "roll1"),
+                Messages.get(MoRuoS.class, "roll2"),
+                Messages.get(MoRuoS.class, "roll3"),
+                Messages.get(MoRuoS.class, "roll4"),
+                Messages.get(MoRuoS.class, "roll5", heroName),
+                Messages.get(MoRuoS.class, "roll6"),
+                Messages.get(MoRuoS.class, "roll7"),
+        };
+    }
 
     @Override
     public boolean interact(Char c) {
@@ -60,7 +72,8 @@ public class MoRuoS extends NTNPC {
             });
             first=false;
         }else {
-            yell(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
+            String[] texts = txtRandom();
+            yell(texts[Random.Int(texts.length)]);
         }
 
         return true;

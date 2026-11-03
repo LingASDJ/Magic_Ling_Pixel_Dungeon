@@ -19,6 +19,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.WndMultiplayer;
+import com.shatteredpixel.shatteredpixeldungeon.services.multiplayer.MultiplayerImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GudaziSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
@@ -80,8 +82,15 @@ public class TitleScene extends PixelScene {
 		}
 	}
 
+	// 联机补丁：每帧通知 Mp 检测"退出存档回标题"（踢访客/保存访客英雄等）
 	@Override
-	public void create() {
+	public synchronized void update() {
+		super.update();
+		MultiplayerImpl.getService().tickTitle(this);
+	}
+
+	@Override
+	public void create() { // skipcq: JAVA-R1000 作者原有的大方法，本 PR 仅追加联机按钮
 		super.create();
 
 		TexturePackScene.loadCustomTexture();
@@ -526,6 +535,28 @@ public class TitleScene extends PixelScene {
 		if (Badges.isUnlocked(Badges.Badge.VICTORY) && !SPDSettings.victoryNagged()) {
 			SPDSettings.victoryNagged(true);
 			add(new WndVictoryCongrats());
+		}
+
+		// 联机补丁：「联机」按钮并入「开始游戏」这一行——把「开始游戏」缩短出「联机」的宽度，
+		// 两者合计仍占满原按钮组的整行宽度（右边界与下方各行对齐），不再向右溢出、显得突兀。
+		StyledButton btnMp = new StyledButton(Chrome.Type.GREY_BUTTON_TR,
+				Messages.get(TitleScene.class, "mp"), 8){
+			@Override
+			protected void onClick() {
+				ShatteredPixelDungeon.scene().add(new WndMultiplayer());
+			}
+		};
+		add(btnMp);
+		// 宽度：目标 32（原 64 的一半）；文字确实放不下时适度加宽，最多 48
+		float mpWidth = Math.min(48f, Math.max(32f, btnMp.reqWidth() + 10f));
+		float rowRight = btnPlay.right();                    // 原按钮组这一行的右边界
+		float playWidth = btnPlay.width() - mpWidth - 2f;    // 缩短量 = 联机按钮宽 + 2px 间隙
+		if (playWidth < 40f) playWidth = 40f;                // 极端窄屏兜底，避免把开始按钮压没
+		btnPlay.setRect(btnPlay.x, btnPlay.y, playWidth, btnPlay.height());
+		btnMp.setRect(btnPlay.right() + 2f, btnPlay.top(), mpWidth, 20f);
+		if (btnMp.right() > rowRight) {
+			// 兜底：无论如何不超出原按钮组右边界（屏幕上也不会溢出）
+			btnMp.setRect(rowRight - mpWidth, btnMp.top(), mpWidth, 20f);
 		}
 
 		fadeIn();
