@@ -85,6 +85,10 @@ public class OldSunShadow extends Item {
         curUser.subClass = way;
         Talent.initSubclassTalents(curUser);
 
+        if (way == HeroSubClass.OLDBATTLEMAGE) {
+            Badges.recordOldBattlemageChoice();
+        }
+
         if (way == HeroSubClass.ASSASSIN && curUser.invisible > 0){
             Buff.affect(curUser, Preparation.class);
         }

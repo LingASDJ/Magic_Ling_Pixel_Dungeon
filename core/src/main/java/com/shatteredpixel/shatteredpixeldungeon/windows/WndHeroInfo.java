@@ -294,20 +294,38 @@ public class WndHeroInfo extends WndTabbed {
 
 			subClsDescs = new RenderedTextBlock[subClasses.length];
 			subClsInfos = new IconButton[subClasses.length];
+			//隐藏未解锁职业信息
+			for (int i = 0; i < subClasses.length; i++) {
 
-			for (int i = 0; i < subClasses.length; i++){
-				subClsDescs[i] = PixelScene.renderTextBlock(subClasses[i].shortDesc(), 6);
-				int finalI = i;
-				subClsInfos[i] = new IconButton( Icons.get(Icons.INFO) ){
+				final HeroSubClass subClass = subClasses[i];
+
+				final boolean phantomLocked =
+						subClass == HeroSubClass.PHANTOM_HUNTER && !Badges.isPhantomHunterUnlocked();
+				final boolean oldBattlemageLocked =
+						subClass == HeroSubClass.OLDBATTLEMAGE && !Badges.isOldBattlemageUnlocked();
+				final boolean locked = phantomLocked || oldBattlemageLocked;
+				final String lockedDescription = phantomLocked
+						? "phantom_hunter_locked_desc"
+						: "old_battlemage_locked_desc";
+
+				String description = locked
+						? Messages.get(
+						WndChooseSubclass.class,
+						phantomLocked ? "phantom_hunter_locked" : "old_battlemage_locked")
+						: subClass.shortDesc();
+				subClsDescs[i] = PixelScene.renderTextBlock(description, 6);
+
+				subClsInfos[i] = new IconButton(Icons.get(Icons.INFO)) {
 					@Override
 					protected void onClick() {
-						Game.scene().addToFront(new WndInfoSubclass(cls, subClasses[finalI]));
-					}
+						if (locked) {
+							Game.scene().addToFront(new WndMessage(
+									Messages.get(WndChooseSubclass.class, lockedDescription)));
+							return;
+						}
+						Game.scene().addToFront(new WndInfoSubclass(cls, subClass));}
 				};
-				
-				if(subClasses[i] == HeroSubClass.OLDBATTLEMAGE){
-					continue;
-				}
+
 				add(subClsDescs[i]);
 				add(subClsInfos[i]);
 			}

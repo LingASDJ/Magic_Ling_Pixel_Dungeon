@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseSubclass;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.PathFinder;
@@ -108,6 +109,26 @@ public class TengusMask extends Item {
 	}
 	
 	public void choose( HeroSubClass way ) {
+		//禁用职业无法选择
+		if (way == HeroSubClass.PHANTOM_HUNTER
+				&& !Badges.isPhantomHunterUnlocked()) {
+
+			GameScene.show(new WndMessage(
+					Messages.get(
+							WndChooseSubclass.class,
+							"phantom_hunter_locked_desc")));
+			return;
+		}
+
+		if (way == HeroSubClass.OLDBATTLEMAGE
+				&& !Badges.isOldBattlemageUnlocked()) {
+
+			GameScene.show(new WndMessage(
+					Messages.get(
+							WndChooseSubclass.class,
+							"old_battlemage_locked_desc")));
+			return;
+		}
 		
 		detach( curUser.belongings.backpack );
 		Catalog.countUse( getClass() );

@@ -457,6 +457,7 @@ public class FiveYearsThreePlot {
         private void process_to_1() {
             diagulewindow.hideAll();
             hero.interrupt();
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.AVRT));
             diagulewindow.setLeftName("???");
             diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages1",hero.name()));
         }
@@ -531,6 +532,7 @@ public class FiveYearsThreePlot {
         private void process_to_1() {
             diagulewindow.hideAll();
             hero.interrupt();
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.AVRT));
             diagulewindow.setLeftName(Messages.get(ArchettoNewYears.class, "name"));
             diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages3",hero.name()));
         }
@@ -610,6 +612,7 @@ public class FiveYearsThreePlot {
         private void process_to_1() {
             diagulewindow.hideAll();
             hero.interrupt();
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.AVRT));
             diagulewindow.setLeftName(Messages.get(ArchettoNewYears.class, "name"));
             diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages6"));
         }
@@ -678,6 +681,7 @@ public class FiveYearsThreePlot {
         private void process_to_1() {
             diagulewindow.hideAll();
             hero.interrupt();
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.AVRT));
             diagulewindow.setLeftName(Messages.get(ArchettoNewYears.class, "name"));
             diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages7",hero.name()));
         }
@@ -757,6 +761,7 @@ public class FiveYearsThreePlot {
         private void process_to_1() {
             diagulewindow.hideAll();
             hero.interrupt();
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.AVRT));
             diagulewindow.setLeftName(Messages.get(ArchettoNewYears.class, "name"));
             diagulewindow.changeText(Messages.get(ArchettoNewYears.class, "messages10"));
         }

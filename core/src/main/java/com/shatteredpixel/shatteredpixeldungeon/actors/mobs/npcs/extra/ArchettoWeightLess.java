@@ -2,10 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfAwareness;
@@ -140,7 +137,7 @@ public class ArchettoWeightLess extends FiveYearsNPC {
             Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot2, false)));
             first = false;
         /**@param 法师对话 */
-        } else if(secnod && tengusMask != null && hero.heroClass == HeroClass.MAGE) {
+        } else if(secnod && tengusMask != null && hero.heroClass == HeroClass.MAGE && !Badges.isOldBattlemageUnlocked()) {
             Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot3, false)));
             secnod = false;
         /**@param 未崩坏前礼物交易对话 */
