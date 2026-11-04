@@ -5,13 +5,18 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.FileUtils;
 
 import java.io.StringWriter;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -20,7 +25,36 @@ import javax.net.ssl.X509TrustManager;
 
 public class DailyServiceImpl extends DailyService {
 
-    private static final String API_BASE = "https://mlpddailybeta.spldream.com/MLPD/api/v1/daily";
+    /**
+     * Server is fixed, like the multiplayer lobby. Can be overridden for local
+     * testing with -Dmlpd.daily=http://127.0.0.1:28774/MLPD/api/v1/daily.
+     */
+    private static final String DEFAULT_API_BASE = "http://47.109.62.104:28773/MLPD/api/v1/daily";
+    private static final long CACHE_TTL = 10 * 60 * 1000L;
+
+    private static DailySeedData cachedSeed;
+    private static long cachedAt;
+
+    private static String apiBase() {
+        try {
+            String override = System.getProperty("mlpd.daily");
+            if (override != null && !override.trim().isEmpty()) {
+                return override.trim();
+            }
+        } catch (Throwable ignored) {
+        }
+        return DEFAULT_API_BASE;
+    }
+
+    private static synchronized DailySeedData cachedResult() {
+        if (cachedSeed == null) return null;
+        if (System.currentTimeMillis() - cachedAt > CACHE_TTL) return null;
+        String today = DailyUtils.todayUtc();
+        if (cachedSeed.date != null && !cachedSeed.date.isEmpty() && !cachedSeed.date.equals(today)) {
+            return null;
+        }
+        return cachedSeed;
+    }
 
     private static void setupSSL() {
         try {
@@ -62,26 +96,44 @@ public class DailyServiceImpl extends DailyService {
 
     @Override
     public void fetchTodaySeed(DailyResultCallback<DailySeedData> callback) {
-        String url = API_BASE + "/today";
+        DailySeedData cached = cachedResult();
+        if (cached != null) {
+            callback.onSuccess(cached);
+            return;
+        }
+
+        String url = apiBase() + "/today";
 
         httpGet(url, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
                 try {
                     JsonValue root = jsonReader.parse(httpResponse.getResultAsString());
-                    if ( root.getInt("code") != 0) {
+                    if (root.getInt("code") != 0) {
                         callback.onFailure("服务器错误: " + root.getInt("code"));
                         return;
                     }
 
                     JsonValue data = root.get("data");
                     DailySeedData result = new DailySeedData();
-                    result.date = data.getString("date");
-                    // 优先使用 code（9字母编码），回退到 seed（long数值）
-                    if (data.has("code")) {
+                    result.date = data.getString("date", DailyUtils.todayUtc());
+                    // A1: the server sends the numeric daily seed, which is
+                    // intentionally outside the user-enterable code range.
+                    if (data.has("seed")) {
+                        result.seed = data.getLong("seed");
+                    } else if (data.has("code")) {
                         result.seed = DungeonSeed.convertFromCode(data.getString("code"));
                     } else {
-                        result.seed = data.getLong("seed");
+                        callback.onFailure("服务器未返回种子");
+                        return;
+                    }
+                    result.difficulty = data.getString("difficulty", "NORMAL");
+                    result.challenges = data.getInt("challenges", 0);
+                    result.challengeCount = data.getInt("challengeCount", 0);
+
+                    synchronized (DailyServiceImpl.class) {
+                        cachedSeed = result;
+                        cachedAt = System.currentTimeMillis();
                     }
                     callback.onSuccess(result);
                 } catch (Exception e) {
@@ -89,32 +141,89 @@ public class DailyServiceImpl extends DailyService {
                 }
             }
 
-            @Override public void failed(Throwable t) { callback.onFailure(t.getMessage()); }
+            @Override public void failed(Throwable t) { callback.onFailure(t == null ? "网络错误" : t.getMessage()); }
             @Override public void cancelled()        { callback.onFailure("已取消"); }
         });
     }
 
     @Override
     public void submitScore(Bundle bundle, DailyResultCallback<SubmitResultData> callback) {
-        String url = API_BASE + "/submit";
+        if (bundle == null) {
+            callback.onFailure("没有可提交的每日成绩");
+            return;
+        }
+
+        // Original SPD rule: replays are unranked and must not be submitted.
+        if (Dungeon.dailyReplay) {
+            try {
+                FileUtils.overwriteFile(Dungeon.TEMP_FILE, 1);
+            } catch (Throwable ignored) {
+            }
+            DailyConfig.restore();
+            return;
+        }
+
+        String url = apiBase() + "/submit";
 
         try {
-            // ============================================
-            // 修复：Bundle.toString() 直接输出标准 JSON
-            // ============================================
             String gameData = bundle.toString();
 
-            // ============================================
-            // 修复：JsonWriter 必须 close() 后才能获取内容
-            // ============================================
+            String playerName = "";
+            try {
+                playerName = Mp.get().getMyName();
+            } catch (Throwable ignored) {
+            }
+            if (playerName == null) playerName = "";
+            playerName = playerName.trim();
+            if (playerName.isEmpty()) {
+                try {
+                    Bundle hero = bundle.getBundle("hero");
+                    if (hero != null) playerName = hero.getString("name");
+                } catch (Throwable ignored) {
+                }
+            }
+            if (playerName == null || playerName.trim().isEmpty()) {
+                playerName = "冒险者";
+            }
+
+            String playerId = DailyIdentity.getPlayerId();
+
+            String date = bundle.getString("custom_seed");
+            if (date == null || date.isEmpty()) date = DailyConfig.getCurrentDate();
+            if (date == null || date.isEmpty()) date = DailyUtils.todayUtc();
+
+            long seed = bundle.getLong("seed");
+            int challenges = bundle.getInt("challenges");
+            if (challenges == 0) challenges = DailyConfig.getCurrentChallenges();
+
+            String difficulty = DailyConfig.getCurrentDifficulty();
+            try {
+                String[] conduct = bundle.getStringArray("conduct");
+                if (conduct != null) {
+                    for (String c : conduct) {
+                        if ("NORMAL".equalsIgnoreCase(c) || "HARD".equalsIgnoreCase(c)) {
+                            difficulty = c.toUpperCase(Locale.ROOT);
+                        }
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+            if (difficulty == null || difficulty.isEmpty()) difficulty = "NORMAL";
+
             StringWriter stringWriter = new StringWriter();
             JsonWriter jsonWriter = new JsonWriter(stringWriter);
             jsonWriter.setOutputType(JsonWriter.OutputType.json);
             jsonWriter.object();
-            jsonWriter.set("playerName", bundle.getString("player_name"));
+            jsonWriter.set("playerId", playerId);
+            jsonWriter.set("playerName", playerName);
+            jsonWriter.set("date", date);
+            jsonWriter.set("seed", Long.toString(seed));
+            jsonWriter.set("difficulty", difficulty);
+            jsonWriter.set("challenges", challenges);
+            jsonWriter.set("replay", false);
             jsonWriter.set("gameData", gameData);
             jsonWriter.pop();
-            jsonWriter.close();  // <-- 关键：必须 close()！
+            jsonWriter.close();
 
             String jsonBody = stringWriter.toString();
 
@@ -133,23 +242,46 @@ public class DailyServiceImpl extends DailyService {
                             d.totalPlayers = data.getInt("totalPlayers");
                             result.data = d;
                         }
+                        if (result.code == 1001) {
+                            // Already submitted (or a replay was rejected): the
+                            // local temp snapshot is no longer useful.
+                            try {
+                                FileUtils.overwriteFile(Dungeon.TEMP_FILE, 1);
+                            } catch (Throwable ignored) {
+                            }
+                        }
+                        DailyConfig.restore();
                         callback.onSuccess(result);
                     } catch (Exception e) {
+                        DailyConfig.restore();
                         callback.onFailure("解析失败: " + e.getMessage());
                     }
                 }
 
-                @Override public void failed(Throwable t) { callback.onFailure(t.getMessage()); }
-                @Override public void cancelled()        { callback.onFailure("已取消"); }
+                @Override public void failed(Throwable t) {
+                    DailyConfig.restore();
+                    callback.onFailure(t == null ? "网络错误" : t.getMessage());
+                }
+                @Override public void cancelled() {
+                    DailyConfig.restore();
+                    callback.onFailure("已取消");
+                }
             });
         } catch (Exception e) {
+            DailyConfig.restore();
             callback.onFailure("序列化失败: " + e.getMessage());
         }
     }
 
     @Override
     public void fetchLeaderboard(String date, DailyResultCallback<LeaderboardData> callback) {
-        String url = API_BASE + "/leaderboard?date=" + date;
+        fetchLeaderboard(date, 1, 20, callback);
+    }
+
+    @Override
+    public void fetchLeaderboard(String date, int page, int pageSize,
+                                 DailyResultCallback<LeaderboardData> callback) {
+        String url = apiBase() + "/leaderboard?date=" + date + "&page=" + page + "&pageSize=" + pageSize;
 
         httpGet(url, new Net.HttpResponseListener() {
             @Override
@@ -166,23 +298,39 @@ public class DailyServiceImpl extends DailyService {
                     result.data = new LeaderboardData.Data();
                     LeaderboardData.Data d = result.data;
 
-                    d.date = data.getString("date");
-                    d.totalPlayers = data.getInt("totalPlayers");
-                    d.page = data.getInt("page");
-                    d.pageSize = data.getInt("pageSize");
+                    d.date = data.getString("date", date);
+                    d.totalPlayers = data.getInt("totalPlayers", 0);
+                    d.page = data.getInt("page", page);
+                    d.pageSize = data.getInt("pageSize", pageSize);
                     d.myRank = data.getInt("myRank", 0);
                     d.myScore = data.getInt("myScore", 0);
 
-                    d.entries = new java.util.ArrayList<>();
-                    for (JsonValue entry : data.get("entries")) {
-                        LeaderboardData.Entry e = new LeaderboardData.Entry();
-                        e.rank = entry.getInt("rank");
-                        e.playerName = entry.getString("playerName");
-                        e.heroClass = HeroClass.valueOf((entry.getString("heroClass")));
-                        e.score = entry.getInt("score");
-                        e.won = entry.getBoolean("won");
-                        e.depth = entry.getInt("depth");
-                        d.entries.add(e);
+                    d.entries = new ArrayList<>();
+                    JsonValue entries = data.get("entries");
+                    if (entries != null) {
+                        for (JsonValue entry : entries) {
+                            LeaderboardData.Entry e = new LeaderboardData.Entry();
+                            e.rank = entry.getInt("rank");
+                            e.date = entry.getString("date", date);
+                            e.playerId = entry.getString("playerId", "");
+                            e.playerName = entry.getString("playerName", "");
+                            try {
+                                e.heroClass = HeroClass.valueOf(entry.getString("heroClass", "WARRIOR"));
+                            } catch (Throwable ignored) {
+                                e.heroClass = HeroClass.WARRIOR;
+                            }
+                            e.heroLevel = entry.getInt("heroLevel", 1);
+                            e.armorTier = entry.getInt("armorTier", 0);
+                            e.score = entry.getInt("score", 0);
+                            e.won = entry.getBoolean("won", false);
+                            e.depth = entry.getInt("depth", 0);
+                            e.challenges = entry.getInt("challenges", 0);
+                            e.challengeCount = entry.getInt("challengeCount", 0);
+                            e.difficulty = entry.getInt("difficulty", 1);
+                            e.version = entry.getString("version", "");
+                            e.gameData = entry.getString("gameData", "");
+                            d.entries.add(e);
+                        }
                     }
                     callback.onSuccess(result);
                 } catch (Exception e) {
@@ -190,7 +338,7 @@ public class DailyServiceImpl extends DailyService {
                 }
             }
 
-            @Override public void failed(Throwable t) { callback.onFailure(t.getMessage()); }
+            @Override public void failed(Throwable t) { callback.onFailure(t == null ? "网络错误" : t.getMessage()); }
             @Override public void cancelled()        { callback.onFailure("已取消"); }
         });
     }

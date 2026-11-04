@@ -38,9 +38,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.WndMultiplayer;
+import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyConfig;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailySeedData;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyService;
+import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyUtils;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.SubmitResultData;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FourYearsAnimation;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
@@ -527,6 +531,12 @@ public class HeroSelectScene extends PixelScene {
 			protected void onClick() {
 				super.onClick();
 
+				if (Mp.get().connected) {
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+							Messages.get(HeroSelectScene.class, "daily_mp_blocked")));
+					return;
+				}
+
 				if (!Badges.isUnlocked(Badges.Badge.VICTORY) && !DeviceCompat.isDebug()){
 					ShatteredPixelDungeon.scene().addToFront( new WndTitledMessage(
 							Icons.get(Icons.CALENDAR),
@@ -541,7 +551,7 @@ public class HeroSelectScene extends PixelScene {
 					return;
 				}
 
-				long diff = (SPDSettings.lastDaily() + DAY) - Game.realTime;
+				final long diff = (SPDSettings.lastDaily() + DAY) - Game.realTime;
 				if (diff > 24*HOUR){
 					ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroSelectScene.class, "daily_unavailable_long", (diff / DAY)+1)));
 					return;
@@ -554,14 +564,36 @@ public class HeroSelectScene extends PixelScene {
 					}
 				}
 
-				if( FileUtils.fileLength(Dungeon.TEMP_FILE) > 1 ){
-					showReuploadContent(diff);
-				}else {
-					showDailyContent(diff);
-				}
+				// The server is authoritative for today's seed and daily
+				// difficulty/challenge configuration.
+				DailyImpl.getService().fetchTodaySeed(new DailyService.DailyResultCallback<DailySeedData>() {
+					@Override
+					public void onSuccess(DailySeedData result) {
+						Game.runOnRenderThread(new Callback() {
+							@Override
+							public void call() {
+								if (FileUtils.fileLength(Dungeon.TEMP_FILE) > 1) {
+									showReuploadContent(diff, result);
+								} else {
+									showDailyContent(diff, result);
+								}
+							}
+						});
+					}
+
+					@Override
+					public void onFailure(String error) {
+						Game.runOnRenderThread(new Callback() {
+							@Override
+							public void call() {
+								ShatteredPixelDungeon.scene().addToFront(new WndError(error));
+							}
+						});
+					}
+				});
 			}
 
-			private void showReuploadContent(long diff){
+			private void showReuploadContent(long diff, DailySeedData data){
 				ShatteredPixelDungeon.scene().addToFront(new WndOptions(
 						Messages.get(HeroSelectScene.class,"record_title"),
 						Messages.get(HeroSelectScene.class,"record_desc"),
@@ -615,83 +647,100 @@ public class HeroSelectScene extends PixelScene {
 								}
 							});
 						}else if(index==1){
-							showDailyContent(diff);
+							showDailyContent(diff, data);
 						}
 					}
 
 					@Override
 					public void onBackPressed() {
 						super.onBackPressed();
-						showDailyContent(diff);
+						showDailyContent(diff, data);
 					}
 				});
 			}
 
-			private void showDailyContent(long diff){
-				Image icon = Icons.get(Icons.CALENDAR);
-				if (diff <= 0)  icon.hardlight(0.5f, 1f, 2f);
-				else            icon.hardlight(1f, 0.5f, 2f);
+			private void showDailyContent(long diff, DailySeedData data){
+				// Restore the original daily-hunt character icon in the dialog
+				// header (the calendar icon was not visible for the author).
+				Image icon = new PinkLingSprite();
+				long serverDay = DailyUtils.parseUtcDay(data.date);
+				long last = SPDSettings.lastDaily();
+
+				if (serverDay >= 0 && last - serverDay > DAY) {
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+							Messages.get(HeroSelectScene.class, "daily_unavailable_long",
+									(last - serverDay) / DAY)));
+					return;
+				}
+
+				boolean replay = serverDay >= 0 ? last >= serverDay : diff > 0;
+
+				String body = Messages.get(HeroSelectScene.class, "daily_config",
+						replay ? Messages.get(HeroSelectScene.class, "daily_repeat")
+								: Messages.get(HeroSelectScene.class, "daily_desc"),
+						DailyUtils.difficultyName(data.difficulty),
+						data.challengeCount,
+						DailyUtils.challengeNames(data.challenges));
 
 				ShatteredPixelDungeon.scene().addToFront(new WndOptions(
-						new PinkLingSprite(),
+						icon,
 						Messages.get(HeroSelectScene.class, "daily"),
-						diff > 0 ?
-								Messages.get(HeroSelectScene.class, "daily_repeat") :
-								Messages.get(HeroSelectScene.class, "daily_desc"),
+						body,
 						Messages.get(HeroSelectScene.class, "daily_yes"),
 						Messages.get(HeroSelectScene.class, "daily_leaderboard"),
+						Messages.get(WndMultiplayer.class, "set_name"),
 						Messages.get(HeroSelectScene.class, "daily_no")){
 
 
 					@Override
 					protected void onSelect(int index) {
 						if (index == 0){
-							if (diff <= 0) {
-								long time = Game.realTime - (Game.realTime % DAY);
+							long serverDay = DailyUtils.parseUtcDay(data.date);
+							long last = SPDSettings.lastDaily();
+							boolean replay = serverDay >= 0 ? last >= serverDay : diff > 0;
 
-								//earliest possible daily for v3.0.1 is Mar 01 2025
-								//which is 20,148 days days after Jan 1 1970
-								time = Math.max(time, 20_148 * DAY);
-
+							if (!replay) {
+								long time = serverDay >= 0
+										? serverDay
+										: Math.max(Game.realTime - (Game.realTime % DAY), 20_148 * DAY);
 								SPDSettings.lastDaily(time);
 								Dungeon.dailyReplay = false;
 							} else {
 								Dungeon.dailyReplay = true;
 							}
 
-							DailyImpl.getService().fetchTodaySeed(new DailyService.DailyResultCallback<DailySeedData>() {
+							DailyConfig.apply(data);
+							Dungeon.overrideSeed = -1; // server-issued daily seed must win
+							Dungeon.seed = data.seed;
+							Dungeon.customSeedText = data.date == null ? "" : data.date;
+
+							Dungeon.hero = null;
+							Dungeon.daily = true;
+							ActionIndicator.clearAction();
+							InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+
+							Game.switchScene( InterlevelScene.class );
+						} else if (index == 1) {
+							DailyRankingsScene.date = data.date == null
+									? DailyUtils.todayUtc()
+									: data.date;
+							ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
+						} else if (index == 2) {
+							// Same persistent name as multiplayer (Mp.setName also
+							// sends HELLO to connected peers).
+							ShatteredPixelDungeon.scene().addToFront(new WndTextInput(
+									Messages.get(WndMultiplayer.class, "set_name"),
+									Messages.get(WndMultiplayer.class, "name_prompt"),
+									Mp.get().getMyName(), 16, false,
+									Messages.get(WndMultiplayer.class, "ok"),
+									Messages.get(WndMultiplayer.class, "cancel")) {
 								@Override
-								public void onSuccess(DailySeedData result) {
-									Dungeon.seed = result.seed;
-									Dungeon.customSeedText = result.date;
-
-									Dungeon.hero = null;
-									Dungeon.daily = true;
-									ActionIndicator.clearAction();
-									InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-
-									Game.switchScene( InterlevelScene.class );
-								}
-
-								@Override
-								public void onFailure(String error) {
-									Game.runOnRenderThread(new Callback() {
-											@Override
-											public void call() {
-												   ShatteredPixelDungeon.scene().addToFront(new WndError(error));
-											}
-										}
-									);
-
+								public void onSelect(boolean positive, String text) {
+									if (positive && text != null && !text.trim().isEmpty()) {
+										Mp.get().setName(text.trim());
+									}
 								}
 							});
-						} else if (index == 1) {
-							DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
-							format.setTimeZone(TimeZone.getTimeZone("UTC"));
-							String date = format.format(new Date(Game.realTime));
-							//ShatteredPixelDungeon.scene().addToFront(new WndLeaderboard(date));
-							ShatteredPixelDungeon.scene().addToFront(new WndError("内部排行榜正在建设，敬请期待，已自动跳转到网页测试端。"));
-							ShatteredPixelDungeon.platform.openURI("https://mlpddailybeta.spldream.com/leaderboard");
 						}
 					}
 
@@ -732,11 +781,13 @@ public class HeroSelectScene extends PixelScene {
 			}
 		};
 		dailyButton.leftJustify = true;
-		dailyButton.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
+		// Wide enough that clicking the "每日狩猎"/countdown text works too,
+		// not just the small icon at the far left.
+		dailyButton.setSize( 64, BUTTON_HEIGHT );
 		dailyButton.setPos(startBtn.x, startBtn.y + BUTTON_HEIGHT);
 		dailyButton.icon(new Image(new PinkLingSprite()));
-		//add(dailyButton);
-		//buttons.add(dailyButton);
+		add(dailyButton);
+		buttons.add(dailyButton);
 
 		IconButton Rename = new IconButton(Icons.get(RENAME_OFF)){
 			@Override

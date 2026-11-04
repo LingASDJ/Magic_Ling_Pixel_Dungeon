@@ -1,0 +1,18 @@
+{
+  "name": "mlpd-daily-server",
+  "version": "1.0.0",
+  "description": "Shattered Pixel Dungeon MLPD Daily Challenge Server",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sql.js": "^1.10.3",
+    "cors": "^2.8.5"
+  },
+  "keywords": ["spd", "mlpd", "daily", "leaderboard"],
+  "author": "",
+  "license": "GPL-3.0"
+}

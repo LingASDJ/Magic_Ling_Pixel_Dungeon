@@ -198,14 +198,18 @@ public class WndGame extends Window {
 
 		boolean shouldRestart = Dungeon.hero == null || !Dungeon.hero.isAlive();
 
-		addButton(curBtn = new RedButton(Messages.get(this, shouldRestart ? "start" : "restart" )) {
-			@Override
-			protected void onClick() {
-				super.onClick();
-				GameScene.show(new WndRestart());
-			}
-		});
-		curBtn.icon(Icons.get( shouldRestart ? Icons.ENTER : Icons.CHANGES ));
+		// Daily runs must not open the "life restart simulator" (WndRestart):
+		// it resets the profile/save and is not valid in a fixed-seed run.
+		if (!Dungeon.daily) {
+			addButton(curBtn = new RedButton(Messages.get(this, shouldRestart ? "start" : "restart" )) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					GameScene.show(new WndRestart());
+				}
+			});
+			curBtn.icon(Icons.get( shouldRestart ? Icons.ENTER : Icons.CHANGES ));
+		}
 
 		// Restart
 		if (shouldRestart) {

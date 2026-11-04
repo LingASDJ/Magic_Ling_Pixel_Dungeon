@@ -4,7 +4,16 @@ package com.shatteredpixel.shatteredpixeldungeon.services.daily;
 public abstract class DailyService {
     public abstract void fetchTodaySeed(DailyResultCallback<DailySeedData> callback);
     public abstract void submitScore(com.watabou.utils.Bundle bundle, DailyResultCallback<SubmitResultData> callback);
-    public abstract void fetchLeaderboard(String date, DailyResultCallback<LeaderboardData> callback);
+
+    /**
+     * Backwards-compatible overload: first page, 20 entries.
+     */
+    public void fetchLeaderboard(String date, DailyResultCallback<LeaderboardData> callback) {
+        fetchLeaderboard(date, 1, 20, callback);
+    }
+
+    public abstract void fetchLeaderboard(String date, int page, int pageSize,
+                                          DailyResultCallback<LeaderboardData> callback);
 
     public static abstract class DailyResultCallback<T> {
         public abstract void onSuccess(T result);
