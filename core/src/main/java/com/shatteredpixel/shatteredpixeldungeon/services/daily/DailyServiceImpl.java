@@ -311,6 +311,7 @@ public class DailyServiceImpl extends DailyService {
                         for (JsonValue entry : entries) {
                             LeaderboardData.Entry e = new LeaderboardData.Entry();
                             e.rank = entry.getInt("rank");
+                            e.date = entry.getString("date", date);
                             e.playerId = entry.getString("playerId", "");
                             e.playerName = entry.getString("playerName", "");
                             try {
@@ -326,6 +327,8 @@ public class DailyServiceImpl extends DailyService {
                             e.challenges = entry.getInt("challenges", 0);
                             e.challengeCount = entry.getInt("challengeCount", 0);
                             e.difficulty = entry.getInt("difficulty", 1);
+                            e.version = entry.getString("version", "");
+                            e.gameData = entry.getString("gameData", "");
                             d.entries.add(e);
                         }
                     }

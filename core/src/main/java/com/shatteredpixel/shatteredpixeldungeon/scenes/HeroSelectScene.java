@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.WndMultiplayer;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyConfig;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailySeedData;
@@ -659,7 +660,9 @@ public class HeroSelectScene extends PixelScene {
 			}
 
 			private void showDailyContent(long diff, DailySeedData data){
-				Image icon = Icons.get(Icons.CALENDAR);
+				// Restore the original daily-hunt character icon in the dialog
+				// header (the calendar icon was not visible for the author).
+				Image icon = new PinkLingSprite();
 				long serverDay = DailyUtils.parseUtcDay(data.date);
 				long last = SPDSettings.lastDaily();
 
@@ -671,8 +674,6 @@ public class HeroSelectScene extends PixelScene {
 				}
 
 				boolean replay = serverDay >= 0 ? last >= serverDay : diff > 0;
-				if (replay) icon.hardlight(1f, 0.5f, 2f);
-				else        icon.hardlight(0.5f, 1f, 2f);
 
 				String body = Messages.get(HeroSelectScene.class, "daily_config",
 						replay ? Messages.get(HeroSelectScene.class, "daily_repeat")
@@ -687,6 +688,7 @@ public class HeroSelectScene extends PixelScene {
 						body,
 						Messages.get(HeroSelectScene.class, "daily_yes"),
 						Messages.get(HeroSelectScene.class, "daily_leaderboard"),
+						Messages.get(WndMultiplayer.class, "set_name"),
 						Messages.get(HeroSelectScene.class, "daily_no")){
 
 
@@ -723,6 +725,22 @@ public class HeroSelectScene extends PixelScene {
 									? DailyUtils.todayUtc()
 									: data.date;
 							ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
+						} else if (index == 2) {
+							// Same persistent name as multiplayer (Mp.setName also
+							// sends HELLO to connected peers).
+							ShatteredPixelDungeon.scene().addToFront(new WndTextInput(
+									Messages.get(WndMultiplayer.class, "set_name"),
+									Messages.get(WndMultiplayer.class, "name_prompt"),
+									Mp.get().getMyName(), 16, false,
+									Messages.get(WndMultiplayer.class, "ok"),
+									Messages.get(WndMultiplayer.class, "cancel")) {
+								@Override
+								public void onSelect(boolean positive, String text) {
+									if (positive && text != null && !text.trim().isEmpty()) {
+										Mp.get().setName(text.trim());
+									}
+								}
+							});
 						}
 					}
 

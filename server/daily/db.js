@@ -223,10 +223,10 @@ function getLeaderboard(date, page = 1, pageSize = 20, filters = {}) {
   const dataParams = [...params, pageSize, offset];
   const stmt = db.prepare(`
     SELECT
-      player_name, player_id, hero_class, hero_subclass, hero_level, armor_tier,
+      date, player_name, player_id, hero_class, hero_subclass, hero_level, armor_tier,
       score, won, depth, duration, enemies_slain, gold_collected, food_eaten,
       items_crafted, challenges, str, version, seed, custom_seed, game_mode,
-      difficulty, mode, challenge_tier, daily_replay, created_at
+      difficulty, mode, challenge_tier, daily_replay, game_data, created_at
     FROM daily_scores
     ${whereSql}
     ORDER BY score DESC, id ASC
@@ -240,6 +240,7 @@ function getLeaderboard(date, page = 1, pageSize = 20, filters = {}) {
     const row = stmt.getAsObject();
     entries.push({
       rank: offset + index + 1,
+      date: row.date,
       playerId: row.player_id || '',
       playerName: row.player_name,
       heroClass: row.hero_class,
@@ -264,6 +265,7 @@ function getLeaderboard(date, page = 1, pageSize = 20, filters = {}) {
       difficulty: row.difficulty,
       mode: row.mode,
       dailyReplay: row.daily_replay === 1,
+      gameData: row.game_data || '',
       createdAt: row.created_at
     });
     index++;

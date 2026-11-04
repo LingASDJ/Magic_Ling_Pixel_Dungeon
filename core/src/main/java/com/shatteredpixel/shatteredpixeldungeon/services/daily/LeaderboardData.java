@@ -20,6 +20,7 @@ public class LeaderboardData {
 
     public static class Entry {
         public int rank;
+        public String date = "";
         public String playerId = "";
         public String playerName;
         public HeroClass heroClass;
@@ -31,6 +32,9 @@ public class LeaderboardData {
         public int challenges;
         public int challengeCount;
         public int difficulty;
+        public String version = "";
+        /** Full daily-run snapshot JSON (rankings game-data format). */
+        public String gameData = "";
     }
 
     public boolean isSuccess() {

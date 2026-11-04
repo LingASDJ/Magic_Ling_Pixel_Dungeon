@@ -72,6 +72,9 @@ PORT=28773 node app.js     # 默认端口 28773
 
 ### GET `/leaderboard?date=yyyy-MM-dd&page=1&pageSize=20`
 
+> 每条 entry 还包含完整 `gameData`（每日快照 JSON），供游戏内“日志排行榜”风格的详情窗口还原
+> 英雄属性、天赋、物品和快捷栏。分页条数较大时响应会明显变大。
+
 ```json
 {
   "code": 0,
