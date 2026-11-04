@@ -849,6 +849,7 @@ public class Assets {
 		public static final String GRAVERAT	= "sprites/tumulus/rat_graveyard.png";
 		public static final String WORM	= "sprites/tumulus/tomb_worm.png";
 		public static final String ROGER	= "sprites/tumulus/boss/roger.png";
+		public static final String LICH	= "sprites/tumulus/boss/lich.png";
 		public static final String WORM_WHYHUMAN	= "sprites/tumulus/worm_whyhuman.png";
 		public static final String WISP	= "sprites/tumulus/wisp.png";
 		public static final String NECRO_SCOUT	= "sprites/tumulus/necro_scout.png";
