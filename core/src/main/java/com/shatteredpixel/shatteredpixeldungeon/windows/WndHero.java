@@ -255,7 +255,15 @@ public class WndHero extends WndTabbed {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					clipboard.setContents(DungeonSeed.convertToCode(Dungeon.seed));
+					String seedText;
+					if (Dungeon.daily || !Dungeon.customSeedText.isEmpty()) {
+						// Daily seeds are intentionally outside the user-enterable
+						// code range; show/copy the date instead.
+						seedText = Dungeon.customSeedText;
+					} else {
+						seedText = DungeonSeed.convertToCode(Dungeon.seed);
+					}
+					clipboard.setContents(seedText);
 					GLog.i(Messages.get(HeroStat.class, "copy_success"));
 				}
 
@@ -345,7 +353,17 @@ public class WndHero extends WndTabbed {
 
 			statSlot( Messages.get(this, "gold"), Statistics.goldCollected );
 			statSlot( Messages.get(this, "depth"), Statistics.deepestFloor );
-			statSlot( Messages.get(HeroStat.class, "seed_dungeon"), DungeonSeed.convertToCode(Dungeon.seed));
+			if (Dungeon.daily) {
+				// Official daily-run handling: the daily seed is a timestamp above
+				// DungeonSeed.TOTAL_SEEDS and cannot be converted to a code.
+				statSlot( Messages.get(this, Dungeon.dailyReplay ? "replay_for" : "daily_for"),
+						"_" + Dungeon.customSeedText + "_" );
+			} else if (!Dungeon.customSeedText.isEmpty()) {
+				statSlot( Messages.get(this, "custom_seed"), "_" + Dungeon.customSeedText + "_" );
+			} else {
+				statSlot( Messages.get(HeroStat.class, "seed_dungeon"),
+						DungeonSeed.convertToCode(Dungeon.seed) );
+			}
 
 
 			statSlot(Messages.get(HeroStat.class, "challenges_type"), SPDSettings.challenges());

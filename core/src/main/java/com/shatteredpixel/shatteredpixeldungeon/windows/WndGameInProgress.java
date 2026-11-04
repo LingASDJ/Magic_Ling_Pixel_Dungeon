@@ -75,6 +75,17 @@ public class WndGameInProgress extends Window {
 		}
 		return allChallengesDesc.toString();
 	}
+
+	private static String safeSeedText(GamesInProgress.Info info, long seed) {
+		if (info != null && info.customSeed != null && !info.customSeed.isEmpty()) {
+			return info.customSeed;
+		}
+		try {
+			return DungeonSeed.convertToCode(seed);
+		} catch (IllegalArgumentException e) {
+			return String.valueOf(seed);
+		}
+	}
 	
 	public WndGameInProgress(final int slot){
 		clipboard = Gdx.app.getClipboard();
@@ -135,7 +146,7 @@ public class WndGameInProgress extends Window {
 						Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(slot));
 						String ing =
 								Messages.get(WndGameInProgress.class,"gameversion") +(info.version == 0 ? "NULL": info.version)+"\n\n"+
-										Messages.get(WndGameInProgress.class,"gameseed")+ DungeonSeed.convertToCode(bundle.getLong("seed"))+"\n\n"+
+										Messages.get(WndGameInProgress.class,"gameseed")+ safeSeedText(info, bundle.getLong("seed"))+"\n\n"+
 										Messages.get(WndGameInProgress.class,"gamegold") + bundle.getInt("gold") +"\n\n"+
 										Messages.get(WndGameInProgress.class,"gamenayzi") + bundle.getInt("naiyaziCollected")+
 										Messages.get(WndGameInProgress.class,"gamenayzis") +"\n\n"+
@@ -157,7 +168,7 @@ public class WndGameInProgress extends Window {
 						Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(slot));
 						String ing =
 								Messages.get(WndGameInProgress.class,"gameversion") + Game.version+"\n\n"+
-										Messages.get(WndGameInProgress.class,"gameseed")+ DungeonSeed.convertToCode(bundle.getLong("seed"))+"\n\n"+
+										Messages.get(WndGameInProgress.class,"gameseed")+ safeSeedText(info, bundle.getLong("seed"))+"\n\n"+
 										Messages.get(WndGameInProgress.class,"gamegold") + bundle.getInt("gold") +"\n\n"+
 										Messages.get(WndGameInProgress.class,"gamenayzi") + bundle.getInt("naiyaziCollected")+
 										Messages.get(WndGameInProgress.class,"gamenayzis") +"\n\n"+
@@ -179,9 +190,9 @@ public class WndGameInProgress extends Window {
 			protected void onClick() {
 				super.onClick();
 
-				clipboard.setContents(M.L(WndGameInProgress.class, "seed_copy",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,info.challenges,ChallengesDesc(info,slot)));
+				clipboard.setContents(M.L(WndGameInProgress.class, "seed_copy",safeSeedText(info, info.seed),info.challenges,ChallengesDesc(info,slot)));
 
-				Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMessage(M.L(WndGameInProgress.class, "seed_copied",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,info.challenges, ChallengesDesc(info,slot)))));
+				Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMessage(M.L(WndGameInProgress.class, "seed_copied",safeSeedText(info, info.seed),info.challenges, ChallengesDesc(info,slot)))));
 			}
 		};
 		add(buttonSeed);
@@ -219,7 +230,10 @@ public class WndGameInProgress extends Window {
 		statSlot( Messages.get(this, "gold"), info.goldCollected );
 		statSlot( Messages.get(this, "depth"), info.maxDepth );
 
-		if (!info.customSeed.isEmpty()){
+		if (info.daily) {
+			statSlot( Messages.get(this, info.dailyReplay ? "replay_for" : "daily_for"),
+					"_" + info.customSeed + "_" );
+		} else if (!info.customSeed.isEmpty()){
 			statSlot( Messages.get(this, "custom_seed"), "_" + info.customSeed + "_" );
 		} else {
 			statSlot( Messages.get(this, "dungeon_seed"), DungeonSeed.convertToCode(info.seed) );
