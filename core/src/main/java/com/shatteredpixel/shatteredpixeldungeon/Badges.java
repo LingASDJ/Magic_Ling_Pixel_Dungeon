@@ -1029,6 +1029,15 @@ public class Badges {
 		UNLOCK_ROGUE                ( 2 ),
 		UNLOCK_HUNTRESS             ( 3 ),
 
+		//特殊子职业解锁
+		UNLOCK_BATTLEMAGE(121),
+		UNLOCK_PHANTOM_HUNTER(122),
+		//用于记录往日投影专属职业的隐藏进度
+		OLDBATTLEMAGE_RECORD_TRACKER,
+		//用于记录盗贼双职业游玩记录的隐藏进度
+		ASSASSIN_RECORD_TRACKER,
+		FREERUNNER_RECORD_TRACKER,
+
 		MONSTERS_SLAIN_1            ( 4 ),
 		MONSTERS_SLAIN_2            ( 5 ),
 		GOLD_COLLECTED_1            ( 6 ),
@@ -1367,6 +1376,8 @@ public class Badges {
 			{Badge.GHOSTDAGE,Badge.DAGETO},
 			{Badge.HIGH_SCORE_1, Badge.HIGH_SCORE_2, Badge.HIGH_SCORE_3, Badge.HIGH_SCORE_4, Badge.HIGH_SCORE_5},
 			{Badge.READ_BOOK_ONE, Badge.READ_BOOK_TWO, Badge.READ_BOOK_THREE, Badge.READ_BOOK_FOUR},
+			{Badge.UNLOCK_MAGE, Badge.UNLOCK_BATTLEMAGE},
+			{Badge.UNLOCK_ROGUE, Badge.UNLOCK_PHANTOM_HUNTER},
 	};
 
 	private static final Badge[][] metaBadgeReplacements = new Badge[][]{
@@ -1526,6 +1537,100 @@ public class Badges {
 				list.addAll(Arrays.asList(badges).subList(0, i));
 				break;
 			}
+		}
+	}
+
+	public static boolean isPhantomHunterUnlocked() {
+		loadGlobal();
+
+		if (isUnlocked(Badge.UNLOCK_PHANTOM_HUNTER)) {
+			return true;
+		}
+
+		// 兼容旧版本：尽量从当前仍保留的排行榜记录中补录。
+		if (Rankings.INSTANCE.hasRecordWithSubclass(
+				HeroClass.ROGUE,
+				HeroSubClass.ASSASSIN
+		)) {
+			addGlobal(Badge.ASSASSIN_RECORD_TRACKER);
+		}
+
+		if (Rankings.INSTANCE.hasRecordWithSubclass(
+				HeroClass.ROGUE,
+				HeroSubClass.FREERUNNER
+		)) {
+			addGlobal(Badge.FREERUNNER_RECORD_TRACKER);
+		}
+
+		if (isUnlocked(Badge.ASSASSIN_RECORD_TRACKER)
+				&& isUnlocked(Badge.FREERUNNER_RECORD_TRACKER)) {
+
+			displayBadge(Badge.UNLOCK_PHANTOM_HUNTER);
+			return true;
+		}
+
+		return false;
+	}
+
+	public static boolean isOldBattlemageUnlocked() {
+		loadGlobal();
+
+		if (isUnlocked(Badge.UNLOCK_BATTLEMAGE)) {
+			return true;
+		}
+
+		// 兼容旧版本：已使用往日投影的玩家可从历史记录补录。
+		if (Rankings.INSTANCE.hasRecordWithSubclass(
+				HeroClass.MAGE,
+				HeroSubClass.OLDBATTLEMAGE
+		)) {
+			addGlobal(Badge.OLDBATTLEMAGE_RECORD_TRACKER);
+		}
+
+		if (isUnlocked(Badge.OLDBATTLEMAGE_RECORD_TRACKER)) {
+			displayBadge(Badge.UNLOCK_BATTLEMAGE);
+			return true;
+		}
+
+		return false;
+	}
+
+	public static void recordOldBattlemageChoice() {
+		loadGlobal();
+		addGlobal(Badge.OLDBATTLEMAGE_RECORD_TRACKER);
+
+		if (!isUnlocked(Badge.UNLOCK_BATTLEMAGE)) {
+			displayBadge(Badge.UNLOCK_BATTLEMAGE);
+		}
+	}
+
+	/**
+	 * 记录盗贼子职业的对局。
+	 * 无论胜利、死亡还是中途结算，只要生成了排行榜记录就写入。
+	 */
+	public static void recordRogueSubclass(
+			HeroClass heroClass,
+			HeroSubClass subClass
+	) {
+		if (heroClass != HeroClass.ROGUE) {
+			return;
+		}
+
+		loadGlobal();
+
+		if (subClass == HeroSubClass.ASSASSIN) {
+			addGlobal(Badge.ASSASSIN_RECORD_TRACKER);
+		}
+
+		if (subClass == HeroSubClass.FREERUNNER) {
+			addGlobal(Badge.FREERUNNER_RECORD_TRACKER);
+		}
+
+		if (isUnlocked(Badge.ASSASSIN_RECORD_TRACKER)
+				&& isUnlocked(Badge.FREERUNNER_RECORD_TRACKER)
+				&& !isUnlocked(Badge.UNLOCK_PHANTOM_HUNTER)) {
+
+			displayBadge(Badge.UNLOCK_PHANTOM_HUNTER);
 		}
 	}
 }

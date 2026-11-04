@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
@@ -81,6 +82,7 @@ public class ArchettoWeightLessPlot extends Plot {
         diagulewindow.removeSkip();
         diagulewindow.hideAll();
         hero.interrupt();
+        diagulewindow.setMainAvatar(new Image(Assets.Splashes.AVRT));
         diagulewindow.setLeftName(Messages.get(ArchettoWeightLess.class, "name"));
         diagulewindow.changeText(Messages.get(ArchettoWeightLess.class, "messages1"));
     }
@@ -169,6 +171,7 @@ public class ArchettoWeightLessPlot extends Plot {
             diagulewindow.removeSkip();
             diagulewindow.hideAll();
             hero.interrupt();
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.AVRT));
             diagulewindow.setLeftName(Messages.get(ArchettoWeightLess.class, "name"));
             diagulewindow.changeText(Messages.get(ArchettoWeightLess.class, "messages6"));
             Buff.affect(hero, TimeStasis.class, 100f);
@@ -250,6 +253,7 @@ public class ArchettoWeightLessPlot extends Plot {
         private void process_to_1() {
             diagulewindow.hideAll();
             hero.interrupt();
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.AVRT));
             diagulewindow.setLeftName(Messages.get(ArchettoWeightLess.class, "name"));
             diagulewindow.changeText(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
         }
@@ -308,6 +312,7 @@ public class ArchettoWeightLessPlot extends Plot {
         private void process_to_1() {
             diagulewindow.hideAll();
             hero.interrupt();
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.AVRT));
             diagulewindow.setLeftName(Messages.get(ArchettoWeightLess.class, "name"));
             diagulewindow.changeText(Messages.get(ArchettoWeightLess.class,"go"));
         }
@@ -366,6 +371,7 @@ public class ArchettoWeightLessPlot extends Plot {
         private void process_to_1() {
             diagulewindow.hideAll();
             hero.interrupt();
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.AVRT));
             diagulewindow.setLeftName(Messages.get(ArchettoWeightLess.class, "name"));
             diagulewindow.changeText("………………");
         }

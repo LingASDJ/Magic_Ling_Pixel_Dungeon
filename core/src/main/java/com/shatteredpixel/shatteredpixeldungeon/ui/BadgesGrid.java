@@ -38,6 +38,10 @@ public class BadgesGrid extends Component {
 
 	public BadgesGrid( boolean global ){
 		super();
+		if (global) {
+			Badges.isOldBattlemageUnlocked();
+			Badges.isPhantomHunterUnlocked();
+		}
 		isGlobalMode = global;
 		badgeButtons = new ArrayList<>();
 
@@ -62,7 +66,10 @@ public class BadgesGrid extends Component {
 		if (global) {
 			ArrayList<Badges.Badge> lockedBadges = new ArrayList<>();
 			for (Badges.Badge badge : Badges.Badge.values()) {
-				if (badge.type != Badges.BadgeType.HIDDEN && !Badges.isUnlocked(badge)) {
+				if (badge != Badges.Badge.UNLOCK_BATTLEMAGE
+						&& badge != Badges.Badge.UNLOCK_PHANTOM_HUNTER
+						&& badge.type != Badges.BadgeType.HIDDEN
+						&& !Badges.isUnlocked(badge)) {
 					lockedBadges.add(badge);
 				}
 			}

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -60,21 +61,47 @@ public class WndChooseSubclass extends Window {
 		float pos = message.bottom() + 3*GAP;
 
 		for (HeroSubClass subCls : hero.heroClass.subClasses()){
-			if(subCls == HeroSubClass.OLDBATTLEMAGE) continue;
-			RedButton btnCls = new RedButton( subCls.shortDesc(), 6 ) {
+			//转职界面
+			final boolean phantomLocked =
+					subCls == HeroSubClass.PHANTOM_HUNTER && !Badges.isPhantomHunterUnlocked();
+			//未解锁职业封锁
+			final boolean oldBattlemageLocked =
+					subCls == HeroSubClass.OLDBATTLEMAGE && !Badges.isOldBattlemageUnlocked();
+
+			final boolean locked = phantomLocked || oldBattlemageLocked;
+			final String lockedDescription = phantomLocked
+					? "phantom_hunter_locked_desc"
+					: "old_battlemage_locked_desc";
+			String buttonText = locked
+					? Messages.get(
+					WndChooseSubclass.class,
+					phantomLocked ? "phantom_hunter_locked" : "old_battlemage_locked")
+					: subCls.shortDesc();
+
+			RedButton btnCls = new RedButton(buttonText, 6) {
 				@Override
 				protected void onClick() {
+					if (locked) {
+						GameScene.show(new WndMessage(
+								Messages.get(WndChooseSubclass.class, lockedDescription)));
+						return;
+					}
+
 					GameScene.show(new WndOptions(new HeroIcon(subCls),
 							Messages.titleCase(subCls.title()),
 							Messages.get(WndChooseSubclass.this, "are_you_sure"),
 							Messages.get(WndChooseSubclass.this, "yes"),
-							Messages.get(WndChooseSubclass.this, "no")){
+							Messages.get(WndChooseSubclass.this, "no")
+					){
 						@Override
 						protected void onSelect(int index) {
 							hide();
-							if (index == 0 && WndChooseSubclass.this.parent != null){
+
+							if (index == 0
+									&& WndChooseSubclass.this.parent != null) {
+
 								WndChooseSubclass.this.hide();
-								tome.choose( subCls );
+								tome.choose(subCls);
 							}
 						}
 					});
@@ -86,9 +113,14 @@ public class WndChooseSubclass extends Window {
 			btnCls.setRect( 0, pos, WIDTH-20, btnCls.reqHeight()+2);
 			add( btnCls );
 
-			IconButton clsInfo = new IconButton(Icons.get(Icons.INFO)){
+			IconButton clsInfo = new IconButton(Icons.get(Icons.INFO)) {
 				@Override
 				protected void onClick() {
+					if (locked) {
+						GameScene.show(new WndMessage(
+								Messages.get(WndChooseSubclass.class, lockedDescription)));
+						return;
+					}
 					GameScene.show(new WndInfoSubclass(Dungeon.hero.heroClass, subCls));
 				}
 			};

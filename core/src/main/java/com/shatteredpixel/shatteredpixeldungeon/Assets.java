@@ -592,6 +592,8 @@ public class Assets {
 
 		public static final String BZMR = "splashes/bzmdr_portraits.png";
 
+		public static final String AVRT = "splashes/avrt_portraits.png";
+
 		//WhiteYan Boss Emoji
 		public static final String WY_HAPPY = "splashes/peach/whiteyan_happy.png";
 		public static final String WY_NOLAN = "splashes/peach/whiteyan_nolang.png";
@@ -834,7 +836,7 @@ public class Assets {
 
 		public static final String KEEPERKINGBOT	= "sprites/npc/autoshop.png";
 
-		public static final String ARCHETTO	= "sprites/npc/avrt_princess.png";
+		public static final String ARCHETTO	= "sprites/npc/avrt_traveler.png";
 
 		//TOMB
 

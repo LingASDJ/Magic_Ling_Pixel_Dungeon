@@ -29,6 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.custom.CollectRankings;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -204,6 +206,7 @@ public enum Rankings {
 
 
         Badges.validateGamesPlayed();
+        Badges.recordRogueSubclass(rec.heroClass, hero.subClass);
 
         save();
     }
@@ -420,6 +423,65 @@ public enum Rankings {
             Dungeon.customSeedText = "";
             Dungeon.daily = Dungeon.dailyReplay = false;
         }
+    }
+    /**
+     * 检查历史记录中是否存在指定职业和子职业的通关。
+     */
+    public boolean hasRecordWithSubclass(
+            HeroClass heroClass,
+            HeroSubClass subClass
+    ) {
+        load();
+
+        // 检查普通排行榜
+        for (Record record : records) {
+            if (recordHasSubclass(record, heroClass, subClass)) {
+                return true;
+            }
+        }
+
+        // 检查收藏记录
+        CollectRankings collected = CollectRankings.INSTANCE;
+        collected.load();
+
+        for (Record record : collected.records.values()) {
+            if (recordHasSubclass(record, heroClass, subClass)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean recordHasSubclass(
+            Record record,
+            HeroClass heroClass,
+            HeroSubClass subClass
+    ) {
+        if (record.gameData == null
+                || !record.gameData.contains(HERO)) {
+            return false;
+        }
+
+        Bundle heroData = record.gameData.getBundle(HERO);
+
+        if (heroData == null
+                || !heroData.contains("subClass")) {
+            return false;
+        }
+
+        HeroClass savedClass = heroData.getEnum(
+                "class",
+                HeroClass.class
+        );
+
+        HeroSubClass savedSubClass = heroData.getEnum(
+                "subClass",
+                HeroSubClass.class
+        );
+
+        return savedClass == heroClass
+                && savedSubClass == subClass;
     }
 
     public void save() {
