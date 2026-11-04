@@ -72,6 +72,13 @@ public class WndRestart extends Window {
             protected void onClick() {
                 super.onClick();
 
+                // Safety net: a daily run has a fixed seed and must not be
+                // restarted through the profile/save reset path.
+                if (Dungeon.daily) {
+                    hide();
+                    return;
+                }
+
                 if( !cbs.get(4).checked() && GamesInProgress.checkAll().size() >= GamesInProgress.MAX_SLOTS ){
                     add( new WndError( Messages.get(WndRestart.class,"error") ) {
                         public void onBackPressed() {

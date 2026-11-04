@@ -397,27 +397,31 @@ public class GameScene extends PixelScene {
 		gameOver.show( 0x000000, 2f );
 		scene.showBanner( gameOver );
 
-		StyledButton restart = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(StartScene.class, "new"), 9){
-			@Override
-			protected void onClick() {
-				GameScene.show(new WndRestart());
-			}
+		// Daily runs must not offer the "new game / restart simulator" path.
+		StyledButton restart = null;
+		if (!Dungeon.daily) {
+			restart = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(StartScene.class, "new"), 9){
+				@Override
+				protected void onClick() {
+					GameScene.show(new WndRestart());
+				}
 
-			@Override
-			public void update() {
-				alpha(gameOver.am);
-				super.update();
-			}
-		};
-		restart.icon(Icons.get(Icons.ENTER));
-		restart.alpha(0);
-		restart.camera = uiCamera;
-		restart.setSize(Math.max(80, restart.reqWidth()), 20);
-		restart.setPos(
-				align(uiCamera, (restart.camera.width - restart.width()) / 2),
-				align(uiCamera, (restart.camera.height - restart.height()) / 2 + restart.height()/2 + 16)
-		);
-		scene.add(restart);
+				@Override
+				public void update() {
+					alpha(gameOver.am);
+					super.update();
+				}
+			};
+			restart.icon(Icons.get(Icons.ENTER));
+			restart.alpha(0);
+			restart.camera = uiCamera;
+			restart.setSize(Math.max(80, restart.reqWidth()), 20);
+			restart.setPos(
+					align(uiCamera, (restart.camera.width - restart.width()) / 2),
+					align(uiCamera, (restart.camera.height - restart.height()) / 2 + restart.height()/2 + 16)
+			);
+			scene.add(restart);
+		}
 
 		StyledButton menu = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(WndKeyBindings.class, "menu"), 9){
 			@Override
@@ -437,7 +441,9 @@ public class GameScene extends PixelScene {
 		menu.setSize(Math.max(80, menu.reqWidth()), 20);
 		menu.setPos(
 				align(uiCamera, (menu.camera.width - menu.width()) / 2),
-				restart.bottom() + 10
+				restart != null
+						? restart.bottom() + 10
+						: align(uiCamera, (menu.camera.height - menu.height()) / 2 + menu.height()/2 + 16)
 		);
 		scene.add(menu);
 
