@@ -368,7 +368,9 @@ public class DailyRankingsScene extends PixelScene {
 
         @Override
         protected void onClick() {
-            ShatteredPixelDungeon.scene().addToFront(new WndLeaderboardEntry(entry));
+            if (!WndLeaderboardEntry.open(entry)) {
+                ShatteredPixelDungeon.scene().addToFront(new WndLeaderboardEntry(entry));
+            }
         }
     }
 }
