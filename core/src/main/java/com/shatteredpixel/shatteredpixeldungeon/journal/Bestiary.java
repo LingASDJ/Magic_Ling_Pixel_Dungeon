@@ -61,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.YogSou
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruitsLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.DiedClearElemet;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.LichKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.Artillerist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.BoomSkull;
@@ -236,6 +237,7 @@ public enum Bestiary {
 	TUMULUS,
 	TUMULUS_BOSS,
 	CHURCH,
+	CORRIDOR,
 
 	UNIVERSAL,
 	QUEST,
@@ -468,6 +470,14 @@ public enum Bestiary {
 
 						NecroCavalry.class, Aggregatus.class, NecroWarlock.class,
 						HighNecromancer.class}
+
+						: new Class<?>[]{Rat.class}
+		);
+
+		CORRIDOR.addEntities(
+				DeviceCompat.isDebug() || DeviceCompat.isMDP()
+						? new Class<?>[]{
+						LichKing.class}
 
 						: new Class<?>[]{Rat.class}
 		);

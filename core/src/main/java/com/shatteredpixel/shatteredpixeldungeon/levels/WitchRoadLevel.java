@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.LichKing;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Tilemap;
@@ -115,7 +116,10 @@ public class WitchRoadLevel extends Level {
 
     @Override
     protected void createMobs() {
-
+        LichKing lichKing = new LichKing();
+        lichKing.pos = 19;
+        lichKing.state = lichKing.SLEEPING;
+        mobs.add(lichKing);
     }
 
     @Override
