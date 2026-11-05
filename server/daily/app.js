@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const https = require('https');
+const fs = require('fs');
 const path = require('path');
 const { initDatabase } = require('./db');
 const dailyRouter = require('./routes/daily');
@@ -29,14 +31,29 @@ async function startServer() {
   try {
     await initDatabase();
 
-    app.listen(PORT, () => {
+    // HTTPS is required by the Android client. Default: self-signed cert in tls/.
+    // Set DAILY_TLS=false only for local HTTP testing.
+    const useTls = process.env.DAILY_TLS !== 'false';
+    const scheme = useTls ? 'https' : 'http';
+    const onListening = () => {
       console.log(`========================================`);
       console.log(`  MLPD Daily Challenge Server`);
       console.log(`========================================`);
-      console.log(`  服务已启动: http://localhost:${PORT}`);
+      console.log(`  服务已启动: ${scheme}://localhost:${PORT}`);
       console.log(`  API 路径:   /MLPD/api/v1/daily`);
       console.log(`========================================`);
-    });
+    };
+
+    if (useTls) {
+      const keyPath = process.env.DAILY_TLS_KEY || path.join(__dirname, 'tls', 'key.pem');
+      const certPath = process.env.DAILY_TLS_CERT || path.join(__dirname, 'tls', 'cert.pem');
+      https.createServer({
+        key: fs.readFileSync(keyPath),
+        cert: fs.readFileSync(certPath)
+      }, app).listen(PORT, onListening);
+    } else {
+      app.listen(PORT, onListening);
+    }
   } catch (e) {
     console.error('启动失败:', e);
     process.exit(1);

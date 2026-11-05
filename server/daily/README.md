@@ -7,11 +7,20 @@
 ```bash
 cd server/daily
 npm install --omit=dev     # 首次运行；仓库内也可直接使用已安装的 node_modules
-PORT=28773 node app.js     # 默认端口 28773
+PORT=28773 node app.js     # 默认端口 28773，默认 HTTPS
 ```
 
 - Node.js >= 14（推荐 18+）
-- 普通 HTTP；客户端地址固定为 `http://47.109.62.104:28773/MLPD/api/v1/daily`
+- **HTTPS 为默认**；客户端地址固定为 `https://47.109.62.104:28773/MLPD/api/v1/daily`
+- 证书默认读取 `tls/key.pem` / `tls/cert.pem`，未提供时可用同目录自签证书（客户端已有 trust-all）
+- 生成自签证书：
+  ```bash
+  mkdir -p tls
+  openssl req -x509 -newkey rsa:2048 -nodes -keyout tls/key.pem -out tls/cert.pem \
+    -days 3650 -subj "/CN=47.109.62.104" -addext "subjectAltName=IP:47.109.62.104"
+  ```
+- 仅本地 HTTP 调试：`DAILY_TLS=false PORT=28773 node app.js`（Android 客户端不能使用 HTTP）
+- 可用 `DAILY_TLS_KEY` / `DAILY_TLS_CERT` 指定其他证书路径
 - 数据库：`daily.db`（sql.js/SQLite），目录必须可写；`DAILY_DB` 环境变量可覆盖路径
 - 旧数据库会自动 `ALTER TABLE` 补齐字段，不会清空已有数据
 

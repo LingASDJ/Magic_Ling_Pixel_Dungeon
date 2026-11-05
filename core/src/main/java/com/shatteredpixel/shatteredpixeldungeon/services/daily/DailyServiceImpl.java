@@ -26,10 +26,12 @@ import javax.net.ssl.X509TrustManager;
 public class DailyServiceImpl extends DailyService {
 
     /**
-     * Server is fixed, like the multiplayer lobby. Can be overridden for local
-     * testing with -Dmlpd.daily=http://127.0.0.1:28774/MLPD/api/v1/daily.
+     * Server is fixed, like the multiplayer lobby. HTTPS is required on Android;
+     * the desktop client uses the same URL and the existing trust-all setup handles
+     * the server's self-signed certificate. Can be overridden for local testing with
+     * -Dmlpd.daily=https://127.0.0.1:28774/MLPD/api/v1/daily.
      */
-    private static final String DEFAULT_API_BASE = "http://47.109.62.104:28773/MLPD/api/v1/daily";
+    private static final String DEFAULT_API_BASE = "https://47.109.62.104:28773/MLPD/api/v1/daily";
     private static final long CACHE_TTL = 10 * 60 * 1000L;
 
     private static DailySeedData cachedSeed;
