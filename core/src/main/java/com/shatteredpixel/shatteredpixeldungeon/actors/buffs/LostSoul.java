@@ -74,8 +74,9 @@ public class LostSoul extends Buff {
                 BuffIndicator.refreshHero();
             }
 
+            //保持每回合刷新，失魂层数增加时状态栏计数才会同步
             spend(TICK);
-            return super.act();
+            return true;
         }
 
         public int getCount() {

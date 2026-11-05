@@ -126,7 +126,8 @@ public class FrostBurning extends Buff implements Hero.Doom {
 
         spend( TICK );
         //引燃会冻住霜火的倒计时：既不延长也不缩短，等引燃掉光才继续走
-        if (target.buff(Ignite.class) == null) left -= TICK;
+        //苦难：巫妖在场且携带失魂时，霜火的持续时间同样不再减少
+        if (target.buff(Ignite.class) == null && !agonyFrozen()) left -= TICK;
 
         if (left <= 0 ) {
             detach();

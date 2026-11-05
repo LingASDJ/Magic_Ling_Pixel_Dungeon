@@ -99,7 +99,10 @@ public class Bleeding extends Buff {
 
 		if (target.isAlive()) {
 
-			level = Random.NormalFloat(level / 2f, level);
+			//苦难：巫妖在场且携带失魂时，流血不会随回合衰减
+			if (!agonyFrozen()) {
+				level = Random.NormalFloat(level / 2f, level);
+			}
 			int dmg = Math.round(level);
 
 			if (dmg > 0) {

@@ -104,8 +104,8 @@ public class Poison extends Buff implements Hero.Doom {
 			
 			target.damage( (int)(left / 3) + 1, this, Char.DamageType.Element );
 			spend( TICK );
-			
-			if ((left -= TICK) <= 0) {
+			//苦难：巫妖在场且携带失魂时，中毒的持续时间不再减少
+			if (!agonyFrozen() && (left -= TICK) <= 0) {
 				detach();
 			}
 			

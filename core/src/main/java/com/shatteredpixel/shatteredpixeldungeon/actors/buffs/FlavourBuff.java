@@ -34,6 +34,11 @@ public class FlavourBuff extends Buff {
 
 	@Override
 	public boolean act() {
+		//苦难：巫妖在场且目标携带失魂时，负面状态不会自然结束
+		if (agonyFrozen()) {
+			spend(TICK);
+			return true;
+		}
 		detach();
 		return true;
 	}

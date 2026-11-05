@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.LichKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.StarDust;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -53,6 +54,18 @@ public class Buff extends Actor {
 	// 决定该buff显示时其公告的方式，现在也被用作净化的依据
 	public enum buffType {POSITIVE, NEGATIVE, NEUTRAL}
 	public buffType type = buffType.NEUTRAL;
+
+	/**
+	 * 苦难：巫妖在场时，携带失魂的单位身上的负面效果不会随时间结束（仍可被净化）。
+	 * 持续时间型状态（{@link FlavourBuff}）在 act() 中据此续期。
+	 */
+	public boolean agonyFrozen() {
+		if (type != buffType.NEGATIVE) return false;
+		if (target == null || !target.isAlive()) return false;
+		if (this instanceof LostSoul) return false;
+		if (target.buff(LostSoul.class) == null) return false;
+		return LichKing.isLichAlive();
+	}
 
 	// 该buff是否公告其名称
 	public boolean announced = false;

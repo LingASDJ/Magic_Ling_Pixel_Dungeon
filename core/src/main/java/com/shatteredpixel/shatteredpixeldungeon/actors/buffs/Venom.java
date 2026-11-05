@@ -90,7 +90,8 @@ public class Venom extends Buff implements Hero.Doom {
             }
 
             spend( TICK );
-            if ((left -= TICK) <= 0) {
+            //苦难：巫妖在场且携带失魂时，毒液的持续时间不再减少
+            if (!agonyFrozen() && (left -= TICK) <= 0) {
                 detach();
             }
         } else {

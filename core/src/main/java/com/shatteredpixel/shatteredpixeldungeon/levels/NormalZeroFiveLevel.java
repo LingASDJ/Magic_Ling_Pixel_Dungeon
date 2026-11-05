@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourg
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
@@ -587,6 +588,12 @@ public class NormalZeroFiveLevel extends Level {
         ArchettoNewYears archettoNewYears = new ArchettoNewYears();
         archettoNewYears.pos = 593;
         mobs.add(archettoNewYears);
+
+        //远拓石碑
+        if(Badges.isUnlocked(Badges.Badge.VICTORY) || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP()){
+            drop( new Food(),566).type = Heap.Type.WHITETOMB;
+        }
+
 
         if (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL)
                 || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP()) {
