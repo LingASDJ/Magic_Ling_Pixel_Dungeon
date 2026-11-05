@@ -174,6 +174,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoMob;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoPlant;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoTrap;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndLeaderboard;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
@@ -399,29 +400,33 @@ public class GameScene extends PixelScene {
 
 		// Daily runs must not offer the "new game / restart simulator" path.
 		StyledButton restart = null;
-		if (!Dungeon.daily) {
-			restart = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(StartScene.class, "new"), 9){
-				@Override
-				protected void onClick() {
-					GameScene.show(new WndRestart());
-				}
+		restart = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(StartScene.class, "new"), 9){
+			@Override
+			protected void onClick() {
+				GameScene.show(new WndRestart());
+			}
 
-				@Override
-				public void update() {
-					alpha(gameOver.am);
-					super.update();
-				}
-			};
-			restart.icon(Icons.get(Icons.ENTER));
-			restart.alpha(0);
-			restart.camera = uiCamera;
-			restart.setSize(Math.max(80, restart.reqWidth()), 20);
-			restart.setPos(
-					align(uiCamera, (restart.camera.width - restart.width()) / 2),
-					align(uiCamera, (restart.camera.height - restart.height()) / 2 + restart.height()/2 + 16)
-			);
-			scene.add(restart);
+			@Override
+			public void update() {
+				alpha(gameOver.am);
+				super.update();
+			}
+		};
+		restart.icon(Icons.get(Icons.ENTER));
+		restart.alpha(0);
+		restart.camera = uiCamera;
+		restart.setSize(Math.max(80, restart.reqWidth()), 20);
+		restart.setPos(
+				align(uiCamera, (restart.camera.width - restart.width()) / 2),
+				align(uiCamera, (restart.camera.height - restart.height()) / 2 + restart.height()/2 + 16)
+		);
+		if (Dungeon.daily) {
+			restart.active = false;
+			restart.alpha(0.6f);
+			restart.text(Messages.get(WndLeaderboard.class, "daily_end"));
 		}
+		scene.add(restart);
+
 
 		StyledButton menu = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(WndKeyBindings.class, "menu"), 9){
 			@Override
