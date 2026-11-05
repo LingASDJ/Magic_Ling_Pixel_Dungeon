@@ -71,6 +71,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.GhostTemplate;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.fiveyears.BzmdrNewYears;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.SpawnEvil;
@@ -422,7 +423,8 @@ public class GameScene extends PixelScene {
 		);
 		if (Dungeon.daily) {
 			restart.active = false;
-			restart.alpha(0.6f);
+			restart.icon(new PinkLingSprite());
+			restart.alpha(0.8f);
 			restart.text(Messages.get(WndLeaderboard.class, "daily_end"));
 		}
 		scene.add(restart);

@@ -117,7 +117,7 @@ public class WndChallenges extends Window {
 			if (i > index && i % 3 == 0) {
 				pos += GAP;
 			}
-			ChallengeInfo info = new ChallengeInfo(foundChallangeIcon(i), challenge, false,
+			ChallengeInfo info = new ChallengeInfo(ChallengeIcons.icon(i), challenge, false,
 					null);
 
 			ChallengeButton cb = info.check;
@@ -455,47 +455,6 @@ public class WndChallenges extends Window {
 			height = BTN_HEIGHT * 2;
 		}
 
-	}
-
-	private Image foundChallangeIcon(int i) {
-		switch (Challenges.NAME_IDS[i]) {
-			case "no_food":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_1, new ItemSprite.Glowing(0xFF0000));
-			case "no_armor":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_2, new ItemSprite.Glowing(0x8f8f8f));
-			case "no_healing":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_3, new ItemSprite.Glowing(0xff0000));
-			case "no_herbalism":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_4);
-			case "swarm_intelligence":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_5, new ItemSprite.Glowing(0xffff00));
-			case "darkness":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_6, new ItemSprite.Glowing(0x8f8f8f));
-			case "no_scrolls":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_7, new ItemSprite.Glowing(0x00dd00));
-			case "aquaphobia":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_8, new ItemSprite.Glowing(0xac89cc));
-			case "champion_enemies":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_9, new ItemSprite.Glowing(0x333333));
-			case "rlpt":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_10, new ItemSprite.Glowing(0xc6cc6c));
-			case "sbsg":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_11, new ItemSprite.Glowing(0x3b1051));
-			case "exsg":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_12, new ItemSprite.Glowing(0xd1ce9f));
-			case "stronger_bosses":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_13, new ItemSprite.Glowing(0xff0000));
-			case "dhxd":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_15, new ItemSprite.Glowing(0x384976));
-			case "morelevel":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_16, new ItemSprite.Glowing(0x98bc76));
-			case "cs":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17, new ItemSprite.Glowing(0x08bed5));
-			case "blood_died":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14, new ItemSprite.Glowing(Window.GDX_COLOR));
-			default:
-				return Icons.get(Icons.PREFS);
-		}
 	}
 
 	private boolean isChallengeValueValid(int value) {

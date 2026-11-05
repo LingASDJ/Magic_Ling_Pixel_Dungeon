@@ -40,7 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
 import com.shatteredpixel.shatteredpixeldungeon.multiplayer.WndMultiplayer;
-import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyConfig;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailySeedData;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyService;
@@ -60,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDailyConfig;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLC;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
@@ -660,9 +660,6 @@ public class HeroSelectScene extends PixelScene {
 			}
 
 			private void showDailyContent(long diff, DailySeedData data){
-				// Restore the original daily-hunt character icon in the dialog
-				// header (the calendar icon was not visible for the author).
-				Image icon = new PinkLingSprite();
 				long serverDay = DailyUtils.parseUtcDay(data.date);
 				long last = SPDSettings.lastDaily();
 
@@ -673,82 +670,8 @@ public class HeroSelectScene extends PixelScene {
 					return;
 				}
 
-				boolean replay = serverDay >= 0 ? last >= serverDay : diff > 0;
-
-				String body = Messages.get(HeroSelectScene.class, "daily_config",
-						replay ? Messages.get(HeroSelectScene.class, "daily_repeat")
-								: Messages.get(HeroSelectScene.class, "daily_desc"),
-						DailyUtils.difficultyName(data.difficulty),
-						data.challengeCount,
-						DailyUtils.challengeNames(data.challenges));
-
-				ShatteredPixelDungeon.scene().addToFront(new WndOptions(
-						icon,
-						Messages.get(HeroSelectScene.class, "daily"),
-						body,
-						Messages.get(HeroSelectScene.class, "daily_yes"),
-						Messages.get(HeroSelectScene.class, "daily_leaderboard"),
-						Messages.get(WndMultiplayer.class, "set_name"),
-						Messages.get(HeroSelectScene.class, "daily_no")){
-
-
-					@Override
-					protected void onSelect(int index) {
-						if (index == 0){
-							long serverDay = DailyUtils.parseUtcDay(data.date);
-							long last = SPDSettings.lastDaily();
-							boolean replay = serverDay >= 0 ? last >= serverDay : diff > 0;
-
-							if (!replay) {
-								long time = serverDay >= 0
-										? serverDay
-										: Math.max(Game.realTime - (Game.realTime % DAY), 20_148 * DAY);
-								SPDSettings.lastDaily(time);
-								Dungeon.dailyReplay = false;
-							} else {
-								Dungeon.dailyReplay = true;
-							}
-
-							DailyConfig.apply(data);
-							Dungeon.overrideSeed = -1; // server-issued daily seed must win
-							Dungeon.seed = data.seed;
-							Dungeon.customSeedText = data.date == null ? "" : data.date;
-
-							Dungeon.hero = null;
-							Dungeon.daily = true;
-							ActionIndicator.clearAction();
-							InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-
-							Game.switchScene( InterlevelScene.class );
-						} else if (index == 1) {
-							DailyRankingsScene.date = data.date == null
-									? DailyUtils.todayUtc()
-									: data.date;
-							ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
-						} else if (index == 2) {
-							// Same persistent name as multiplayer (Mp.setName also
-							// sends HELLO to connected peers).
-							ShatteredPixelDungeon.scene().addToFront(new WndTextInput(
-									Messages.get(WndMultiplayer.class, "set_name"),
-									Messages.get(WndMultiplayer.class, "name_prompt"),
-									Mp.get().getMyName(), 16, false,
-									Messages.get(WndMultiplayer.class, "ok"),
-									Messages.get(WndMultiplayer.class, "cancel")) {
-								@Override
-								public void onSelect(boolean positive, String text) {
-									if (positive && text != null && !text.trim().isEmpty()) {
-										Mp.get().setName(text.trim());
-									}
-								}
-							});
-						}
-					}
-
-					@Override
-					public void onBackPressed() {
-						super.onBackPressed();
-					}
-				});
+				// 图形化配置预览：难度徽章 + 挑战图标 + 开始/重玩
+				ShatteredPixelDungeon.scene().addToFront(new WndDailyConfig(data, diff));
 			}
 
 			private long timeToUpdate = 0;

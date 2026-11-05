@@ -117,8 +117,8 @@ public class WitchRoadLevel extends Level {
     @Override
     protected void createMobs() {
         LichKing lichKing = new LichKing();
-        lichKing.pos = 19;
-        lichKing.state = lichKing.SLEEPING;
+        lichKing.pos = 58;
+        lichKing.state = lichKing.WANDERING;
         mobs.add(lichKing);
     }
 

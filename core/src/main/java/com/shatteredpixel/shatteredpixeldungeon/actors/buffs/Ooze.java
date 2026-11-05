@@ -106,9 +106,12 @@ public class Ooze extends Buff {
 				GLog.n( Messages.get(this, "ondeath") );
 			}
 			spend( TICK );
-			left -= TICK;
-			if (left <= 0){
-				detach();
+			//苦难：巫妖在场且携带失魂时，腐蚀淤泥的持续时间不再减少
+			if (!agonyFrozen()) {
+				left -= TICK;
+				if (left <= 0){
+					detach();
+				}
 			}
 		} else {
 			detach();

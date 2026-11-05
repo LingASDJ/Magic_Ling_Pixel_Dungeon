@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BuffsOringinForWeapon.PreventTombWraithSpawn;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -54,8 +55,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
+import com.shatteredpixel.shatteredpixeldungeon.levels.NormalZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.YuanTaStoneScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -134,10 +137,15 @@ public class Heap implements Bundlable {
 				Wraith.spawnAround( hero.pos,null );
 			break;
 		case WHITETOMB:
-			ScrollOfTeleportation.appear( hero,hero.pos+5 );
-			new PotionOfLiquidFlame().quantity(1).identify().collect();
-			GLog.n(Messages.get(this,"warning"));
-			Statistics.ankhToExit = true;
+			if(level instanceof NormalZeroFiveLevel){
+				ShatteredPixelDungeon.switchScene(YuanTaStoneScene.class);
+			} else {
+				ScrollOfTeleportation.appear( hero,hero.pos+5 );
+				new PotionOfLiquidFlame().quantity(1).identify().collect();
+				GLog.n(Messages.get(this,"warning"));
+				Statistics.ankhToExit = true;
+			}
+
 			break;
 		case TELECRYSTL:
 			ScrollOfTeleportation.appear( hero,level.entrance );
@@ -161,15 +169,17 @@ public class Heap implements Bundlable {
 			}
 			Sample.INSTANCE.play( Assets.Sounds.CURSED );
 		}
-
-		type = Type.HEAP;
-		ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(hero, 1);
-		if (bonus != null && !bonus.isEmpty()) {
-			items.addAll(0, bonus);
-			RingOfWealth.showFlareForBonusDrop(sprite);
+		boolean isYTS = level instanceof NormalZeroFiveLevel;
+		if(!isYTS){
+			type = Type.HEAP;
+			ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(hero, 1);
+			if (bonus != null && !bonus.isEmpty()) {
+				items.addAll(0, bonus);
+				RingOfWealth.showFlareForBonusDrop(sprite);
+			}
+			sprite.link();
+			sprite.drop();
 		}
-		sprite.link();
-		sprite.drop();
 	}
 	
 	public Heap setHauntedIfCursed(){
@@ -432,6 +442,7 @@ public class Heap implements Bundlable {
 
 	@Override
 	public String toString(){
+		boolean isYTS = level instanceof NormalZeroFiveLevel;
 		switch(type){
 			case FOR_SALE:
 				Item i = peek();
@@ -472,7 +483,7 @@ public class Heap implements Bundlable {
 			case TOMB:
 				return Messages.get(this, "tomb");
 			case WHITETOMB:
-				return Messages.get(this, "wtomb");
+				return isYTS ? Messages.get(this, "yt") : Messages.get(this, "wtomb");
 			case SKELETON:
 				return Messages.get(this, "skeleton");
 			case BLACK:
@@ -485,6 +496,7 @@ public class Heap implements Bundlable {
 	}
 
 	public String info(){
+		boolean isYTS = level instanceof NormalZeroFiveLevel;
 		switch(type){
 			case CHEST:case TELECRYSTL:
 				return Messages.get(this, "chest_desc");
@@ -506,7 +518,7 @@ public class Heap implements Bundlable {
 			case TOMB:
 				return Messages.get(this, "tomb_desc");
 			case WHITETOMB:
-				return Messages.get(this, "wtomb_desc");
+				return isYTS ? Messages.get(this, "yt_desc") : Messages.get(this, "wtomb_desc");
 			case BLACK:
 				return Messages.get(this, "black_chest_desc");
 			case SKELETON:
