@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -9,9 +8,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -27,16 +28,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Revealed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaReal;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.timing.VirtualActor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.custom.buffs.AbsoluteBlindness;
+import com.shatteredpixel.shatteredpixeldungeon.custom.buffs.ZeroDefense;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BeamCustom;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ScanningBeam;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
@@ -60,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.RogerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
@@ -70,12 +74,35 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 public class Roger extends Boss {
 
-    public static int damageREF = 5 + Statistics.spawnersTombTownAlive;
+    /** 战吼固定减伤：5 + X（X = 已探索楼层中未摧毁的死亡晶塔数）。 */
+    public static int warCryDR() {
+        return 5 + Statistics.spawnersTombTownAlive;
+    }
+
+    /**
+     * 千军辟易：罗杰存活时，其敌人（非 ENEMY 阵营）的移动/攻击速度系数。
+     * 英雄不是 Mob，不受影响。
+     */
+    public static float enemySlowFactor(Mob mob) {
+        if (mob == null || mob.alignment == Char.Alignment.ENEMY) return 1f;
+        if (!isRogerAlive()) return 1f;
+        float slow = (50f + 10f * Statistics.spawnersTombTownAlive) / 100f;
+        return Math.max(0.1f, 1f - slow);
+    }
+
+    public static boolean isRogerAlive() {
+        if (Dungeon.level == null) return false;
+        for (Mob mob : Dungeon.level.mobs) {
+            if (mob instanceof Roger && mob.isAlive()) return true;
+        }
+        return false;
+    }
 
     {
         initProperty();
@@ -101,24 +128,29 @@ public class Roger extends Boss {
         Dungeon.level.unseal();
     }
 
-    private int StopAG;
+    private int StopAG = 0;
+    private boolean warCryTriggered = false;
+    private int noMeleeTurns = 0;
 
     @Override
     protected boolean act() {
-        if(state != SLEEPING){
+        if (state != SLEEPING) {
+            //战吼：冷却结束立刻再次释放
             damage_reflection();
             AllEnemyPY();
             getAGP();
-            if(StopAG>=6){
+
+            //怒气：连续6回合没有获得怒气后，每回合-1
+            if (StopAG >= 6) {
                 getAG(-1);
-                StopAG = 0;
             }
             StopAG++;
-        }
-        //处理负面药水投掷倒计时Buff
-        ThrowPotionWarning throwBuff = buff(ThrowPotionWarning.class);
-        if (throwBuff != null){
-            throwBuff.processThrow(this);
+
+            //掠袭：连续3回合没有成功近战命中，下一次移动距离加倍
+            noMeleeTurns++;
+            if (noMeleeTurns >= 3 && !doubleMoveNext && !inDoubleMove) {
+                doubleMoveNext = true;
+            }
         }
         return super.act();
     }
@@ -134,16 +166,6 @@ public class Roger extends Boss {
             Buff.affect(this,AngerPock.class).set(0, 1);
         }
     }
-
-    public void castRasetsu() {
-        if(enemy != null){
-        }
-    }
-
-    /**
-     * 斩击后的0防御
-     */
-    public static class NoDr extends FlavourBuff{};
 
     //禁止复制药水
     public static final List<Class<? extends Potion>> BAN_POTIONS = new ArrayList<>();
@@ -216,62 +238,97 @@ public class Roger extends Boss {
 
     public static class ThrowPotionWarning extends FlavourBuff {
         public Class<? extends Potion> potionCls;
-        private static final String POTION_CLS = "potion_cls";
+        private float scale = 1f;
+        private int targetCell = -1;
+        private boolean warned = false;
 
-        public void setPotion(Class<? extends Potion> cls){
-            potionCls = cls;
+        private static final String POTION_CLS = "potion_cls";
+        private static final String SCALE = "scale";
+        private static final String TARGET_CELL = "target_cell";
+        private static final String WARNED = "warned";
+
+        public void setPotion(Class<? extends Potion> cls, float scale, int targetCell){
+            this.potionCls = cls;
+            this.scale = scale;
+            this.targetCell = targetCell;
         }
 
-        public void processThrow(Roger roger){
-            spend(TICK);
-            if (roger.enemy != null){
-                final int fromCell = roger.pos;
-                final int targetCell = roger.enemy.pos;
+        @Override
+        public boolean act() {
+            Roger roger = target instanceof Roger ? (Roger) target : null;
+            if (roger == null || !roger.isAlive()) {
+                detach();
+                return true;
+            }
+
+            //第一回合预警，第二回合投掷
+            if (!warned) {
+                warned = true;
+                spend(TICK);
+                return true;
+            }
+
+            //复制品扔向罗杰当前的敌人（英雄），而不是英雄原本的投掷落点
+            int cell = (roger.enemy != null && roger.enemy.isAlive())
+                    ? roger.enemy.pos : -1;
+            if (cell < 0 && Dungeon.hero != null && Dungeon.hero.isAlive()) {
+                cell = Dungeon.hero.pos;
+            }
+
+            if (cell >= 0 && potionCls != null) {
                 try {
                     final Potion pot = potionCls.newInstance();
-                    roger.sprite.turnTo(fromCell, targetCell);
+                    final Roger owner = roger;
+                    final int targetPos = cell;
+                    final float s = scale;
+                    roger.sprite.turnTo(roger.pos, targetPos);
                     ((MissileSprite) roger.sprite.parent.recycle(MissileSprite.class))
-                            .reset(fromCell, targetCell, pot, new Callback() {
+                            .reset(roger.pos, targetPos, pot, new Callback() {
                                 @Override
                                 public void call() {
-                                    // 飞行结束，药水爆炸
-                                    pot.shatter(targetCell);
-                                    // 添加5回合免疫Buff
-                                    Class<? extends FlavourBuff> immune = POTION_IMMUNE_MAP.get(potionCls);
-                                    if (immune != null) {
-                                        Buff.affect(roger, immune, 5f);
-                                    }
+                                    //复制品只产生 (50+5X)% 效果
+                                    owner.shatterScaled(pot, targetPos, s);
                                     Sample.INSTANCE.play(Assets.Sounds.HIT);
                                 }
                             });
                     Sample.INSTANCE.play(Assets.Sounds.ATK_SPIRITBOW);
                 } catch (Exception ignored) {
-
                 }
-                detach();
             }
+            detach();
+            return true;
         }
 
         @Override
         public void storeInBundle(Bundle bundle) {
             super.storeInBundle(bundle);
-            bundle.put(POTION_CLS, potionCls.getName());
+            bundle.put(POTION_CLS, potionCls == null ? "" : potionCls.getName());
+            bundle.put(SCALE, scale);
+            bundle.put(TARGET_CELL, targetCell);
+            bundle.put(WARNED, warned);
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void restoreFromBundle(Bundle bundle) {
             super.restoreFromBundle(bundle);
             try {
                 potionCls = (Class<? extends Potion>) Class.forName(bundle.getString(POTION_CLS));
-            }catch (Exception ignored){}
+            } catch (Exception ignored) {
+            }
+            scale = bundle.contains(SCALE) ? bundle.getFloat(SCALE) : 1f;
+            targetCell = bundle.getInt(TARGET_CELL);
+            warned = bundle.getBoolean(WARNED);
         }
     }
 
 
     /**
-     * 外部调用入口：Hero使用药水后触发此方法
+     * 外部调用入口：英雄使用药水（drink = 饮用，thrown = 投掷）。
      */
-    public void onHeroUsePotion(Potion usedPotion){
+    public void onHeroUsePotion(Potion usedPotion, boolean thrown, int targetCell){
+        if (!isAlive() || state == SLEEPING) return;
+
         Class<? extends Potion> potCls = usedPotion.getClass();
         //禁止复制
         for (Class<?> ban : BAN_POTIONS){
@@ -279,27 +336,71 @@ public class Roger extends Boss {
         }
 
         int X = Statistics.spawnersTombTownAlive;
-        float baseScale = (50f + 5f * X) / 100f;
+        float scale = (50f + 5f * X) / 100f;
+        boolean negative = isNegativePotion(potCls);
+        boolean positive = isPositivePotion(potCls);
+        if (!negative && !positive) return;
 
-        //正向药水：自身生效
-        for (Class<?> pos : POSITIVE_POTIONS){
-            if (pos.isAssignableFrom(potCls)){
-                applyScaledPotionEffect(this, usedPotion, baseScale);
-                return;
+        if (thrown) {
+            //复制“投掷”这一使用方式：预警一回合后把复制品扔向英雄本人
+            ThrowPotionWarning warn = Buff.affect(this, ThrowPotionWarning.class);
+            warn.setPotion(potCls, scale, -1);
+        } else {
+            //复制“饮用”这一使用方式：罗杰自己喝下复制品
+            if (negative) {
+                shatterScaled(usedPotion, pos, scale);
+            } else {
+                applyScaledPotionEffect(this, usedPotion, scale);
             }
         }
-        //负面药水：预警一回合后投掷
-        for (Class<?> neg : NEGATIVE_POTIONS){
-            if (neg.isAssignableFrom(potCls)){
-                ThrowPotionWarning warn = Buff.affect(this, ThrowPotionWarning.class, 5f);
-                warn.setPotion(potCls);
-                return;
+
+        //复制品会造成负面效果时，罗杰获得对应免疫5回合
+        if (negative) {
+            Class<? extends FlavourBuff> immune = POTION_IMMUNE_MAP.get(potCls);
+            if (immune != null) {
+                Buff.affect(this, immune, 5f);
+            }
+        }
+    }
+
+    private static boolean isNegativePotion(Class<?> cls) {
+        for (Class<?> neg : NEGATIVE_POTIONS) {
+            if (neg.isAssignableFrom(cls)) return true;
+        }
+        return false;
+    }
+
+    private static boolean isPositivePotion(Class<?> cls) {
+        for (Class<?> pos : POSITIVE_POTIONS) {
+            if (pos.isAssignableFrom(cls)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * 按比例缩放药水产生的区域效果：先记录场上同类 Blob 的总体积，
+     * 再让药水正常炸开，最后把本次新增的体积乘以 scale。
+     */
+    private void shatterScaled(Potion potion, int cell, float scale) {
+        Map<Class<? extends Blob>, Integer> before = new HashMap<>();
+        for (Blob b : Dungeon.level.blobs.values()) {
+            before.put(b.getClass(), b.volume);
+        }
+
+        potion.shatter(cell);
+
+        for (Blob b : Dungeon.level.blobs.values()) {
+            Integer old = before.get(b.getClass());
+            if (old == null) {
+                b.volume = Math.max(1, Math.round(b.volume * scale));
+            } else if (b.volume > old) {
+                b.volume = old + Math.max(1, Math.round((b.volume - old) * scale));
             }
         }
     }
 
     /**
-     * 给目标施加按比例削弱的药水效果
+     * 给目标施加按比例削弱的药水效果（正向药水 / 罗杰自己饮用复制品）。
      */
     private void applyScaledPotionEffect(Char target, Potion origin, float scale){
         if (origin instanceof PotionOfHaste){
@@ -318,7 +419,12 @@ public class Roger extends Boss {
                 Buff.affect(target, MindVision.class, MindVision.DURATION * scale );
             }
         }else if (origin instanceof PotionOfInvisibility){
-            Buff.affect(target, Invisibility.class, Invisibility.DURATION * scale );
+            if (Dungeon.isChallenged(EXSG)) {
+                Buff.detach(target, Invisibility.class);
+                Buff.affect(target, Revealed.class, Revealed.DURATION * scale);
+            } else {
+                Buff.affect(target, Invisibility.class, Invisibility.DURATION * scale );
+            }
         }else if (origin instanceof PotionOfLevitation){
             Buff.affect(target, Levitation.class, Levitation.DURATION * scale );
         }else if (origin instanceof PotionOfLightningShiledX){
@@ -328,12 +434,21 @@ public class Roger extends Boss {
 
 
     private void damage_reflection(){
+        if (state == SLEEPING) return;
         if(buff(DamageREFCD.class) == null){
-            Buff.affect(this,DamageREFCD.class,28f);
-            Buff.affect(this,DamageREF.class,8f);
-            sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
-            Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
+            triggerWarCry();
         }
+    }
+
+    private void triggerWarCry(){
+        if (!isAlive() || buff(DamageREFCD.class) != null) return;
+
+        Buff.affect(this, DamageREFCD.class, 28f);
+        Buff.affect(this, DamageREF.class, 8f);
+        if (sprite != null) {
+            sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.3f, 3);
+        }
+        Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
     }
 
     /**
@@ -345,7 +460,12 @@ public class Roger extends Boss {
         Buff.affect(this, Paralysis.class,8f);
     }
 
-    public static class DamageREFCD extends FlavourBuff{}
+    public static class DamageREFCD extends FlavourBuff{
+        @Override
+        public String desc() {
+            return Messages.get(this, "desc", (int) visualcooldown());
+        }
+    }
 
     public static class DamageREF extends FlavourBuff{
         @Override
@@ -360,17 +480,18 @@ public class Roger extends Boss {
 
         @Override
         public String desc() {
-            return Messages.get(this,"desc",damageREF,(int)visualcooldown());
+            return Messages.get(this,"desc", warCryDR(), (int)visualcooldown());
         }
     }
 
     @Override
     public float attackDelay() {
-        if(enemy != null){
-            return enemy.buff(BreakDamage.class) != null ? 0.5f : super.attackDelay();
-        } else {
-            return super.attackDelay();
+        float delay = super.attackDelay();
+        //嗜血：攻击处于裂伤或流血状态的目标时，攻击速度+50%
+        if (enemy != null && (enemy.buff(BreakDamage.class) != null || enemy.buff(Bleeding.class) != null)) {
+            delay /= 1.5f;
         }
+        return delay;
     }
 
     /**
@@ -379,7 +500,7 @@ public class Roger extends Boss {
     private void getAG(int s){
         AngerPock angerPock = buff(AngerPock.class);
         if(angerPock != null){
-            angerPock.level += s;
+            angerPock.level = Math.max(0, Math.min(100, angerPock.level + s));
             if(s > 0){
                 StopAG = 0;
             }
@@ -389,24 +510,25 @@ public class Roger extends Boss {
     @Override
     public int attackProc(Char enemy, int damage) {
         int X = Statistics.spawnersTombTownAlive;
-        float ratio = (float) damage / enemy.HT;
-        float rawTurns = (50f + 5f * X) * ratio;
-        int duration = (int) Math.ceil(rawTurns);
+        float ratio = (float) damage / Math.max(1, enemy.HT);
+        int duration = (int) Math.ceil((50f + 5f * X) * ratio);
         if (duration < 1) duration = 1;
-        Buff.affect(enemy, BreakDamage.class).set(duration, 1);
+        //裂伤：多次近战命中会叠加剩余时长
+        Buff.affect(enemy, BreakDamage.class).stack(duration);
         getAG(6);
+        noMeleeTurns = 0;
         return super.attackProc(enemy, damage);
     }
 
     @Override
     public void damage(int dmg, Object src, DamageType type) {
-        if(buff(DamageREF.class) != null){
-            dmg -= damageREF;
+        //战吼：固定伤害减免（真实伤害无视）
+        if(buff(DamageREF.class) != null && type != DamageType.REAL){
+            dmg = Math.max(0, dmg - warCryDR());
         }
-        if(type != DamageType.MAGIC){
-            getAG(4);
-        } else {
-            getAG(2);
+        //怒气：被攻击命中+4，法术攻击减半
+        if (src instanceof Char && src != this) {
+            getAG(type == DamageType.MAGIC ? 2 : 4);
         }
 
         super.damage(dmg, src, type);
@@ -414,16 +536,17 @@ public class Roger extends Boss {
 
     public static class BreakDamage extends Buff {
         {
-            type = buffType.POSITIVE;
+            type = buffType.NEGATIVE;
+            announced = true;
         }
 
         public int level = 0;
-        private int interval = 1;
+        private int maxLevel = 0;
 
         @Override
         public boolean act() {
             if (target.isAlive()) {
-                spend( interval );
+                spend( TICK );
                 if (--level <= 0) {
                     detach();
                 }
@@ -437,12 +560,25 @@ public class Roger extends Boss {
             return level;
         }
 
-        public void set( int value, int time ) {
-            if (level <= value) {
-                level = value;
-                interval = time;
-                spend(time - cooldown() - 1);
-            }
+        /**
+         * 叠加裂伤：多次近战命中会延长剩余时长（上限60回合）。
+         */
+        public void stack(int value) {
+            if (value < 1) value = 1;
+            level = Math.min(level + value, 200);
+            maxLevel = Math.max(maxLevel, level);
+        }
+
+        /**
+         * 兼容旧调用：语义与 {@link #stack(int)} 相同。
+         */
+        public void set(int value, int time) {
+            stack(value);
+        }
+
+        /** 移动触发时的真实伤害：基础1点，剩余时长每6回合+1。 */
+        public int moveDamage() {
+            return 1 + level / 6;
         }
 
         @Override
@@ -452,11 +588,7 @@ public class Roger extends Boss {
 
         @Override
         public float iconFadePercent() {
-            if (target instanceof Hero){
-                float max = ((Hero) target).lvl;
-                return Math.max(0, (max-level)/max);
-            }
-            return 0;
+            return maxLevel <= 0 ? 1f : Math.max(0, (maxLevel - level) / (float) maxLevel);
         }
 
         @Override
@@ -466,24 +598,24 @@ public class Roger extends Boss {
 
         @Override
         public String desc() {
-            return Messages.get(this, "desc", level, dispTurns(visualcooldown()));
+            return Messages.get(this, "desc", 1 + level / 6, level);
         }
 
         private static final String LEVEL       = "level";
-        private static final String INTERVAL    = "interval";
+        private static final String MAX_LEVEL   = "max_level";
 
         @Override
         public void storeInBundle( Bundle bundle ) {
             super.storeInBundle( bundle );
-            bundle.put( INTERVAL, interval );
             bundle.put( LEVEL, level );
+            bundle.put( MAX_LEVEL, maxLevel );
         }
 
         @Override
         public void restoreFromBundle( Bundle bundle ) {
             super.restoreFromBundle( bundle );
-            interval = bundle.getInt( INTERVAL );
             level = bundle.getInt( LEVEL );
+            maxLevel = bundle.contains(MAX_LEVEL) ? bundle.getInt(MAX_LEVEL) : level;
         }
     }
 
@@ -572,14 +704,10 @@ public class Roger extends Boss {
                 if (level < 0) {
                     detach();
                 }
-                if(level >= 100){
-                    if(target instanceof Roger){
-                        if(((Roger) target).enemy != null){
-                            Buff.affect(target, LuoShaSlash.class).setTarget(((Roger) target).enemy.pos);
-                        } else {
-                            Buff.affect(target, LuoShaSlash.class).setTarget(180);
-                        }
-                    }
+                //怒气满100时释放罗刹斩（同一时间只会有一个）
+                if(level >= 100 && target instanceof Roger
+                        && target.buff(LuoShaSlash.class) == null){
+                    Buff.affect(target, LuoShaSlash.class);
                 }
             } else {
                 detach();
@@ -653,19 +781,11 @@ public class Roger extends Boss {
                 }
             }
         }
-    }
-
-    /**
-     * 防御
-     * @return
-     */
-    @Override
-    public int drRoll() {
-        int dr =  super.drRoll();
-        if(buff(NoDr.class)!=null){
-            dr = 0;
+        //战斗开始时立刻战吼
+        if (!warCryTriggered) {
+            warCryTriggered = true;
+            triggerWarCry();
         }
-        return dr;
     }
 
     public int defenseFuckAttack;
@@ -686,6 +806,7 @@ public class Roger extends Boss {
     protected boolean getCloser(int target) {
         if (doubleMoveNext && !rooted && !inDoubleMove && target != pos) {
             doubleMoveNext = false;
+            noMeleeTurns = 0;
             inDoubleMove = true;
 
             boolean moved1 = super.getCloser(target);
@@ -721,231 +842,303 @@ public class Roger extends Boss {
         doubleMoveNext = bundle.getBoolean(DOUBLE_MOVE);
     }
 
-    public static class LuoShaSlash extends Buff implements ScanningBeam.OnCollide {
-        // Buff总剩余回合：固定8轮攻击
-        private int totalTurnLeft = 8;
-        // true = 当前回合绘制预警标记
-        private boolean warningFrame = true;
-        // 当前这一组斩击锁定的玩家格子（一旦生成就固定，不跟随移动）
-        private int lockedHeroCell = -1;
-        // 当前回合3条斩击角度
-        private final List<Float> currentAngles = new ArrayList<>();
+    /**
+     * 罗刹：11回合绝对失明，之后10次有预警的贯穿斩击。
+     * 每次斩击贯穿整张地图的一条直线（横/竖/斜），命中英雄造成3倍基础伤害，
+     * 非英雄单位即死；结束后清空怒气并陷入15回合虚弱与破防。
+     */
+    public static class LuoShaSlash extends Buff {
 
-        // 可选角度池
-        private static final float[] BASE_ANGLES = {0f, 45f, 90f, 135f, 180f, 225f, 270f, 315f};
-        private static final int WARNING_COLOR = 0xFF2222;
-        private static final float BEAM_RANGE = 15f;
+        private static final int TOTAL_SLASHES = 10;
+        private static final int BLIND_TURNS = 11;
+        //10次斩击使用10个互不相同的角度（0~162度，每18度一条线）
+        private static final int[] ANGLES = {0, 18, 36, 54, 72, 90, 108, 126, 144, 162};
 
-        public LuoShaSlash setTarget(int heroCell) {
-            // 第一次挂上buff直接锁定第一组的目标并生成角度
-            lockedHeroCell = heroCell;
-            regenerateSafeAngleSet();
-            return this;
-        }
+        private int slashesLeft = TOTAL_SLASHES;
+        private int blindLeft = BLIND_TURNS;
+        private boolean warning = false;
+        private int lockedCell = -1;
+        private int angle = 0;
+        private int[] line = new int[0];
+        private boolean started = false;
+        //尚未使用的角度，确保10次斩击角度不重复
+        private final ArrayList<Integer> remainingAngles = new ArrayList<>();
 
-        @Override
-        public void storeInBundle(Bundle b) {
-            super.storeInBundle(b);
-            b.put("totalTurn", totalTurnLeft);
-            b.put("warningFrame", warningFrame);
-            b.put("lockedHeroCell", lockedHeroCell);
-            float[] angles = new float[currentAngles.size()];
-            for (int i = 0; i < angles.length; i++) angles[i] = currentAngles.get(i);
-            b.put("angles", angles);
-        }
-
-        @Override
-        public void restoreFromBundle(Bundle b) {
-            super.restoreFromBundle(b);
-            totalTurnLeft = b.getInt("totalTurn");
-            warningFrame = b.getBoolean("warningFrame");
-            lockedHeroCell = b.getInt("lockedHeroCell");
-            currentAngles.clear();
-            float[] arr = b.getFloatArray("angles");
-            for (float a : arr) currentAngles.add(a);
+        {
+            type = buffType.NEGATIVE;
+            announced = true;
+            for (int a : ANGLES) {
+                remainingAngles.add(a);
+            }
+            Random.shuffle(remainingAngles);
         }
 
         @Override
         public boolean act() {
             spend(TICK);
 
-            if (warningFrame) {
-                // 绘制预警，使用【锁定的旧坐标】，不读取新hero位置
-                renderWarningBeams();
-                warningFrame = false;
-            } else {
-                // 发射激光，依然使用同一个锁定坐标！
-                fireRealSlashBeams();
-                totalTurnLeft--;
+            if (!started) {
+                started = true;
+                if (target instanceof Roger) {
+                    if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
+                        Buff.affect(Dungeon.hero, AbsoluteBlindness.class).addLeft(BLIND_TURNS);
+                    }
+                    Camera.main.shake(1.5f, 0.4f);
+                }
+            }
 
-                if (totalTurnLeft <= 0) {
-                    diactivate();
+            //失明期间只倒计时，不进行斩击
+            if (blindLeft > 0) {
+                blindLeft--;
+                return true;
+            }
+
+            if (warning) {
+                fireSlash();
+                warning = false;
+                slashesLeft--;
+                if (slashesLeft <= 0) {
                     detach();
                     return true;
                 }
-                // ===== 准备下一轮攻击：重新锁定【此刻新的玩家位置】+生成新角度 =====
-                lockedHeroCell = hero.pos;
-                regenerateSafeAngleSet();
-                warningFrame = true;
+                prepareNext();
+            } else {
+                renderWarning();
+                warning = true;
             }
+
             return true;
+        }
+
+        private void prepareNext() {
+            Char hero = Dungeon.hero;
+            lockedCell = hero != null && hero.isAlive() ? hero.pos
+                    : (target != null ? target.pos : -1);
+            if (lockedCell < 0) {
+                return;
+            }
+
+            //从尚未使用的角度里挑一个，保证10次斩击角度互不相同；
+            //若该角度会把英雄所有可走的相邻格都封死，则换一个角度。
+            for (int attempt = 0; attempt < ANGLES.length; attempt++) {
+                if (remainingAngles.isEmpty()) {
+                    for (int a : ANGLES) {
+                        remainingAngles.add(a);
+                    }
+                }
+                int idx = Random.Int(remainingAngles.size());
+                int a = remainingAngles.remove(idx);
+
+                int[] candidate = computeLine(lockedCell, a);
+                if (hasEscape(lockedCell, candidate)) {
+                    angle = a;
+                    line = candidate;
+                    return;
+                }
+                //不安全，放回去换个角度
+                remainingAngles.add(a);
+            }
+
+            //极端情况（英雄被地形围死）：退回水平线
+            angle = 0;
+            line = computeLine(lockedCell, 0);
+        }
+
+        /**
+         * 检查英雄周围是否至少有一个可走、未被斩击线覆盖的空格。
+         * 保证玩家总能在预警回合移动到安全区域。
+         */
+        private boolean hasEscape(int heroCell, int[] slashLine) {
+            HashSet<Integer> covered = new HashSet<>();
+            for (int cell : slashLine) {
+                covered.add(cell);
+            }
+
+            int w = Dungeon.level.width();
+            int heroX = heroCell % w;
+            int heroY = heroCell / w;
+
+            for (int[] d : new int[][]{{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{1,-1},{-1,1},{1,1}}) {
+                int x = heroX + d[0];
+                int y = heroY + d[1];
+                if (x < 0 || x >= w || y < 0 || y >= Dungeon.level.height()) continue;
+
+                int cell = y * w + x;
+                if (!Dungeon.level.passable[cell] || Dungeon.level.solid[cell]) continue;
+                if (Actor.findChar(cell) != null) continue;
+                if (!covered.contains(cell)) return true;
+            }
+            return false;
+        }
+
+        private void renderWarning() {
+            if (line.length == 0) return;
+            if (target == null || target.sprite == null || target.sprite.parent == null) return;
+
+            PointF from = lineEnd(lockedCell, angle, -1f);
+            PointF to = lineEnd(lockedCell, angle, 1f);
+
+            //粗线：多层平行光束叠加，预警更醒目
+            for (int i = -2; i <= 2; i++) {
+                addBeamLayer(from, to, i * 2.2f, i == 0 ? Window.CBLACK : Window.CYELLOW, 0.9f);
+            }
+            //沿线火花
+            for (int cell : line) {
+                CellEmitter.center(cell).burst(Speck.factory(Speck.LIGHT), 1);
+            }
+
+            Camera.main.shake(0.7f, 0.08f);
+            Sample.INSTANCE.play(Assets.Sounds.SCAN, 0.8f);
+        }
+
+        private void fireSlash() {
+            if (line.length == 0) return;
+            if (target == null || target.sprite == null || target.sprite.parent == null) return;
+
+            PointF from = lineEnd(lockedCell, angle, -1f);
+            PointF to = lineEnd(lockedCell, angle, 1f);
+
+            //斩击本体：更粗更亮的红色光束
+            for (int i = -3; i <= 3; i++) {
+                addBeamLayer(from, to, i * 2.2f, i == 0 ? 0xFFFFFF : 0xFF1010, 1.2f);
+            }
+
+            Camera.main.shake(2.2f, 0.35f);
+            Sample.INSTANCE.play(Assets.Sounds.SCAN, 1.4f);
+
+            for (int cell : line) {
+                Char ch = Actor.findChar(cell);
+                if (ch == null || ch == target || !ch.isAlive()) continue;
+
+                if (ch == Dungeon.hero) {
+                    ch.damage(target.damageRoll() * 3, LuoShaSlash.class, DamageType.PHYSICAL);
+                    ch.sprite.flash();
+                    CellEmitter.center(cell).burst(RainbowParticle.BURST, Random.IntRange(6, 10));
+                    if (!ch.isAlive()) {
+                        Dungeon.fail(getClass());
+                    }
+                } else {
+                    //非英雄单位即死
+                    ch.die(true);
+                    CellEmitter.center(cell).burst(RainbowParticle.BURST, Random.IntRange(4, 8));
+                }
+            }
+        }
+
+        private void addBeamLayer(PointF from, PointF to, float offset, int color, float lifespan) {
+            float dx = to.x - from.x;
+            float dy = to.y - from.y;
+            float len = (float) Math.sqrt(dx * dx + dy * dy);
+            if (len <= 0f) return;
+
+            float nx = -dy / len * offset;
+            float ny = dx / len * offset;
+
+            BeamCustom beam = new BeamCustom(
+                    new PointF(from.x + nx, from.y + ny),
+                    new PointF(to.x + nx, to.y + ny),
+                    Effects.Type.DEATH_RAY).setLifespan(lifespan).setColor(color);
+            target.sprite.parent.add(beam);
+        }
+
+        /** 斩击线在地图外的两个端点（世界坐标），用于绘制任意角度的贯穿光束。 */
+        private PointF lineEnd(int cell, int angleDeg, float sign) {
+            int w = Dungeon.level.width();
+            int h = Dungeon.level.height();
+            float cx = cell % w + 0.5f;
+            float cy = cell / w + 0.5f;
+            double rad = Math.toRadians(angleDeg);
+            float len = (w + h) * 1.2f;
+
+            return new PointF(
+                    (cx + (float) Math.cos(rad) * len * sign) * DungeonTilemap.SIZE,
+                    (cy + (float) Math.sin(rad) * len * sign) * DungeonTilemap.SIZE);
+        }
+
+        /** 计算穿过指定格子的贯穿直线，支持任意角度（0~162度）。 */
+        private static int[] computeLine(int cell, int angleDeg) {
+            int w = Dungeon.level.width();
+            int h = Dungeon.level.height();
+            float cx = cell % w + 0.5f;
+            float cy = cell / w + 0.5f;
+            double rad = Math.toRadians(angleDeg);
+            float dx = (float) Math.cos(rad);
+            float dy = (float) Math.sin(rad);
+
+            HashSet<Integer> cells = new HashSet<>();
+            int max = w + h;
+            for (int t = -max; t <= max; t++) {
+                int gx = Math.round(cx + dx * t);
+                int gy = Math.round(cy + dy * t);
+                if (gx >= 0 && gx < w && gy >= 0 && gy < h) {
+                    cells.add(gy * w + gx);
+                }
+            }
+
+            int[] result = new int[cells.size()];
+            int i = 0;
+            for (int c : cells) {
+                result[i++] = c;
+            }
+            return result;
         }
 
         @Override
         public void detach() {
             super.detach();
+            if (target == null) return;
             Buff.affect(target, Weakness.class, 15f);
-            Buff.affect(target, NoDr.class, 15f);
-            AngerPock s = target.buff(AngerPock.class);
-            if(s != null){
-                s.level = 0;
+            Buff.affect(target, ZeroDefense.class, 15f);
+            AngerPock ag = target.buff(AngerPock.class);
+            if (ag != null) {
+                ag.level = 0;
             }
         }
 
-        /**
-         * 根据【lockedHeroCell锁定点】生成安全角度组
-         */
-        private void regenerateSafeAngleSet() {
-            int w = Dungeon.level.width();
-            int hx = lockedHeroCell % w;
-            int hy = lockedHeroCell / w;
-            boolean validSet = false;
+        private static final String SLASHES = "slashes";
+        private static final String BLIND = "blind";
+        private static final String WARNING = "warning";
+        private static final String LOCKED = "locked";
+        private static final String ANGLE = "angle";
+        private static final String STARTED = "started";
+        private static final String ANGLES_LEFT = "angles_left";
 
-            while (!validSet) {
-                currentAngles.clear();
-                List<Float> pool = new ArrayList<>();
-                for (float a : BASE_ANGLES) pool.add(a);
-                Random.shuffle(pool);
-                currentAngles.add(pool.get(0));
-                currentAngles.add(pool.get(1));
-                currentAngles.add(pool.get(2));
+        @Override
+        public void storeInBundle(Bundle b) {
+            super.storeInBundle(b);
+            b.put(SLASHES, slashesLeft);
+            b.put(BLIND, blindLeft);
+            b.put(WARNING, warning);
+            b.put(LOCKED, lockedCell);
+            b.put(ANGLE, angle);
+            b.put(STARTED, started);
 
-                int safeCount = 0;
-                int[][] dir8 = {{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{1,-1},{-1,1},{1,1}};
-                for(int[] d : dir8){
-                    int nx = hx + d[0];
-                    int ny = hy + d[1];
-                    boolean blocked = checkCellBlockedByAnyBeam(hx, hy, nx, ny, currentAngles);
-                    if (!blocked) safeCount++;
-                }
-                if(safeCount >= 1){
-                    validSet = true;
-                }
+            int[] left = new int[remainingAngles.size()];
+            for (int i = 0; i < left.length; i++) {
+                left[i] = remainingAngles.get(i);
             }
-        }
-
-        private boolean checkCellBlockedByAnyBeam(int sx, int sy, int tx, int ty, List<Float> angles){
-            for(float ang : angles){
-                double rad = Math.toRadians(ang);
-                double dx = tx - sx;
-                double dy = ty - sy;
-                double beamDx = Math.cos(rad);
-                double beamDy = Math.sin(rad);
-                double cross = dx * beamDy - dy * beamDx;
-                if(Math.abs(cross) < 0.35f){
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         * 预警标记：全程使用锁定的旧坐标，不会跟随玩家移动
-         */
-        protected void renderWarningBeams() {
-            int w = Dungeon.level.width();
-            int h = Dungeon.level.height();
-            int hx = lockedHeroCell % w;
-            int hy = lockedHeroCell / w;
-
-            for (float angle : currentAngles) {
-                double rad = Math.toRadians(angle);
-                float dirX = (float) Math.cos(rad);
-                float dirY = (float) Math.sin(rad);
-
-                // 光束起点（地图外侧）格子坐标
-                float spawnX = (float) (hx + 0.5 - dirX * BEAM_RANGE);
-                float spawnY = (float) (hy + 0.5 - dirY * BEAM_RANGE);
-                // 光束终点 = 锁定玩家格子中心
-                float endX = hx;
-                float endY = hy;
-
-                PointF startWorld = new PointF(spawnX, spawnY)
-                        .offset(0.5f, 0.5f)
-                        .scale(DungeonTilemap.SIZE);
-
-                PointF endWorld = new PointF(endX, endY)
-                        .offset(0.5f, 0.5f)
-                        .scale(DungeonTilemap.SIZE);
-
-                BeamCustom beam = new BeamCustom(startWorld, endWorld, Effects.Type.DEATH_RAY)
-                        .setLifespan(0.7f)
-                        .setColor(0xD471FF);
-
-                target.sprite.parent.add(beam);
-            }
-        }
-
-        /**
-         * 发射激光：和预警使用**完全同一个锁定坐标**
-         */
-        protected void fireRealSlashBeams() {
-            int w = Dungeon.level.width();
-            int hx = lockedHeroCell % w;
-            int hy = lockedHeroCell / w;
-
-            ScanningBeam.setCollide(this);
-            for(float angle : currentAngles){
-                double rad = Math.toRadians(angle);
-                float dirX = (float)Math.cos(rad);
-                float dirY = (float)Math.sin(rad);
-
-                float spawnX = (float)(hx + 0.5 - dirX * BEAM_RANGE);
-                float spawnY = (float)(hy + 0.5 - dirY * BEAM_RANGE);
-                float speedX = dirX * 11f;
-                float speedY = dirY * 11f;
-
-                target.sprite.parent.add(new ScanningBeam(Effects.Type.BLUE_RAY, BallisticaReal.STOP_TARGET,
-                        new ScanningBeam.BeamData()
-                                .setPosition(spawnX, spawnY, angle, 16f)
-                                .setSpeed(speedX, speedY, 0f)
-                                .setTime(0.2f, 1.2f, 0.4f)
-                ).setDiameter(2.8f));
-            }
-
-            VirtualActor.delay(1.5f, ()->{
-                Camera.main.shake(1.5f, 0.25f);
-            });
-            Camera.main.shake(1.2f, 80f);
+            b.put(ANGLES_LEFT, left);
         }
 
         @Override
-        public int onHitProc(Char ch) {
-            if(ch instanceof Roger) return 0;
-            ch.damage(target.damageRoll()*3, LuoShaSlash.class,DamageType.PHYSICAL);
-            ch.sprite.centerEmitter().burst(RainbowParticle.BURST, Random.IntRange(6,11));
-            ch.sprite.flash();
+        public void restoreFromBundle(Bundle b) {
+            super.restoreFromBundle(b);
+            slashesLeft = b.getInt(SLASHES);
+            blindLeft = b.getInt(BLIND);
+            warning = b.getBoolean(WARNING);
+            lockedCell = b.getInt(LOCKED);
+            angle = b.getInt(ANGLE);
+            started = b.getBoolean(STARTED);
 
-            if(ch == hero){
-                Sample.INSTANCE.play(Assets.Sounds.SCAN, Random.Float(1.0f,1.4f));
-                if(!ch.isAlive()) Dungeon.fail(getClass());
-            } else {
-                //非英雄单位即刻死亡喵
-                ch.die(true);
+            if (b.contains(ANGLES_LEFT)) {
+                remainingAngles.clear();
+                for (int a : b.getIntArray(ANGLES_LEFT)) {
+                    remainingAngles.add(a);
+                }
             }
-            return 1;
-        }
-
-        @Override
-        public int cellProc(int i) {
-            if (i < 0 || i >= Dungeon.level.length()){
-                return 0;
+            if (lockedCell >= 0) {
+                line = computeLine(lockedCell, angle);
             }
-            if(Dungeon.level.flamable[i]){
-                Dungeon.level.destroy(i);
-                GameScene.updateMap(i);
-            }
-            return 0;
         }
     }
 }

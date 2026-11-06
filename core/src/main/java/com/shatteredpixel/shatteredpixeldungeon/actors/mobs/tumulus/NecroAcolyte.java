@@ -175,6 +175,17 @@ public class NecroAcolyte extends Mob {
         summonCooldown = 20;
     }
 
+    private void RevengeChance(){
+//        if(Random.Float() <= 0.05f ){
+//            HighNecromancer highNecromancer = new HighNecromancer();
+//            highNecromancer.pos = pos;
+//            highNecromancer.state = WANDERING;
+//            GameScene.add(highNecromancer);
+//            highNecromancer.sprite.emitter().burst(ChallengeParticle.FACTORY, 10);
+//            highNecromancer.yell(Messages.get(this,"revenge"));
+//        }
+    }
+
     // 死亡时清除所有自己召唤的鬼火
     @Override
     public void die(Object cause) {
@@ -184,6 +195,7 @@ public class NecroAcolyte extends Mob {
                 ((WispDead) a).die(null);
             }
         }
+        RevengeChance();
         super.die(cause);
     }
     

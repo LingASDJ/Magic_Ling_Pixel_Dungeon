@@ -285,11 +285,6 @@ public class Potion extends Item {
 
 	@Override
 	public int throwPos(Hero user, int dst) {
-		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-			if (mob instanceof Roger) {
-				((Roger) mob).onHeroUsePotion(Potion.this);
-			}
-		}
 		return super.throwPos(user, dst);
 	}
 
@@ -330,7 +325,7 @@ public class Potion extends Item {
 
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
 			if (mob instanceof Roger) {
-				((Roger) mob).onHeroUsePotion(this);
+				((Roger) mob).onHeroUsePotion(this, false, hero.pos);
 			}
 		}
 
@@ -354,6 +349,13 @@ public class Potion extends Item {
 	
 	@Override
 	protected void onThrow( int cell ) {
+		//药水真正落地时通知罗杰复制一次（投掷方式）
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+			if (mob instanceof Roger) {
+				((Roger) mob).onHeroUsePotion(this, true, cell);
+			}
+		}
+
 		if (Dungeon.level.map[cell] == Terrain.WELL || Dungeon.level.pit[cell]) {
 			
 			super.onThrow( cell );

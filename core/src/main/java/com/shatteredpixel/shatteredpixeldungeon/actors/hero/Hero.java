@@ -3582,13 +3582,18 @@ public class Hero extends Char {
 
 		if(buff(Roger.BreakDamage.class)!=null){
 			Roger.BreakDamage buff = buff(Roger.BreakDamage.class);
+			//裂伤：基础1点真伤，剩余时长每6回合额外+1；移动会额外消耗1回合
+			int dmg = buff.moveDamage();
 			buff.level--;
-			damage(1,this,DamageType.REAL);
+			if (buff.level <= 0) {
+				buff.detach();
+			}
+			damage(dmg,this,DamageType.REAL);
 			Splash.at( sprite.center(), -PointF.PI / 2, PointF.PI / 6,
-					sprite.blood(), Math.min( 10 / HT, 10 ) );
+					sprite.blood(), Math.min( 10, 1 + HT / 10 ) );
 			if (!isAlive()) {
 				Dungeon.fail( this );
-				GLog.n( Messages.get(Roger.BreakDamage.class, "ondeath") );
+				GLog.n( Messages.get(Roger.BreakDamage.class, "death") );
 			}
 		}
 

@@ -60,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDailyConfig;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDailyLoading;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLC;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
@@ -527,9 +528,16 @@ public class HeroSelectScene extends PixelScene {
 			private static final long HOUR = 60 * MINUTE;
 			private static final long DAY = 24 * HOUR;
 
+			//请求进行中的缓冲窗口；非null时阻止重复点击
+			private WndDailyLoading loading;
+
 			@Override
 			protected void onClick() {
 				super.onClick();
+
+				if (loading != null) {
+					return;
+				}
 
 				if (Mp.get().connected) {
 					ShatteredPixelDungeon.scene().addToFront(new WndMessage(
@@ -564,6 +572,17 @@ public class HeroSelectScene extends PixelScene {
 					}
 				}
 
+				// 缓冲窗口：避免网络较慢时看起来没有反应
+				loading = new WndDailyLoading(new Callback() {
+					@Override
+					public void call() {
+						loading = null;
+						ShatteredPixelDungeon.scene().addToFront(new WndError(
+								Messages.get(HeroSelectScene.class, "daily_error")));
+					}
+				});
+				ShatteredPixelDungeon.scene().addToFront(loading);
+
 				// The server is authoritative for today's seed and daily
 				// difficulty/challenge configuration.
 				DailyImpl.getService().fetchTodaySeed(new DailyService.DailyResultCallback<DailySeedData>() {
@@ -572,6 +591,10 @@ public class HeroSelectScene extends PixelScene {
 						Game.runOnRenderThread(new Callback() {
 							@Override
 							public void call() {
+								if (loading != null) {
+									loading.hide();
+									loading = null;
+								}
 								if (FileUtils.fileLength(Dungeon.TEMP_FILE) > 1) {
 									showReuploadContent(diff, result);
 								} else {
@@ -586,6 +609,10 @@ public class HeroSelectScene extends PixelScene {
 						Game.runOnRenderThread(new Callback() {
 							@Override
 							public void call() {
+								if (loading != null) {
+									loading.hide();
+									loading = null;
+								}
 								ShatteredPixelDungeon.scene().addToFront(new WndError(error));
 							}
 						});
