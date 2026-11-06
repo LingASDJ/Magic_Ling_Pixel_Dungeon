@@ -20,6 +20,15 @@ import java.util.Date;
 public class AndroidGameRecords {
 
     public static FirebaseAnalytics mFirebaseAnalyticsRecords = AndroidLauncher.mFirebaseAnalyticsRecords;
+
+    private static String safeSeed() {
+        try {
+            return DungeonSeed.convertToCode(Dungeon.seed);
+        } catch (IllegalArgumentException e) {
+            return String.valueOf(Dungeon.seed);
+        }
+    }
+
     public static void GameRecordChallenges(boolean win) {
         Bundle params = new Bundle();
 
@@ -53,7 +62,7 @@ public class AndroidGameRecords {
         params.putString("游戏模式", GameMode());
         params.putString("胜利情况", win ? "胜利" : "失败");
         params.putString("是否返程", String.valueOf(Statistics.ascended));
-        params.putString("地图种子", DungeonSeed.convertToCode(Dungeon.seed));
+        params.putString("地图种子", safeSeed());
         params.putString("游戏版本", String.valueOf(Game.version));
 
         params.putString("吃豆人积分", String.valueOf(Statistics.getPacManScore));
@@ -65,7 +74,7 @@ public class AndroidGameRecords {
 
     public static void GudaziGoldCount(int gold) {
         Bundle params = new Bundle();
-        params.putString("地图种子", DungeonSeed.convertToCode(Dungeon.seed));
+        params.putString("地图种子", safeSeed());
         params.putString("游戏版本", String.valueOf(Game.version));
         params.putString("金币收取", String.valueOf(gold));
         mFirebaseAnalyticsRecords.logEvent("古达子收取的金币量", params);
@@ -99,14 +108,14 @@ public class AndroidGameRecords {
 
     public static void ZQJRecord() {
         Bundle params = new Bundle();
-        params.putString("地图种子", DungeonSeed.convertToCode(Dungeon.seed));
+        params.putString("地图种子", safeSeed());
         params.putString("游戏版本", String.valueOf(Game.version));
         mFirebaseAnalyticsRecords.logEvent("中秋节真结局达成次数", params);
     }
 
     public static void AbyssRecord() {
         Bundle params = new Bundle();
-        params.putString("地图种子", DungeonSeed.convertToCode(Dungeon.seed));
+        params.putString("地图种子", safeSeed());
         params.putString("游戏版本", String.valueOf(Game.version));
         mFirebaseAnalyticsRecords.logEvent("渊落古堡真结局达成次数", params);
     }
