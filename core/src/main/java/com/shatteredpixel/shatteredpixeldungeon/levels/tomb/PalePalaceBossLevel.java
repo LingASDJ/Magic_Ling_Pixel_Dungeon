@@ -7,11 +7,18 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Random;
 
@@ -47,13 +54,13 @@ public class PalePalaceBossLevel extends Level {
             S, S, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, S, S,
             S, S, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, S, S,
             S, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, S,
-            S, W, W, W, W, W, W, W, W, W, W, W, R, W, W, W, W, W, W, W, W, W, W, W, S,
+            S, W, W, W, W, W, W, W, W, W, W, W, P, W, W, W, W, W, W, W, W, W, W, W, S,
             W, W, W, W, W, W, W, W, W, P, P, W, P, W, P, P, W, W, W, W, W, W, W, W, W,
             W, W, W, W, W, W, P, P, P, P, P, P, P, P, P, P, P, P, P, W, W, W, W, W, W,
             W, W, W, W, W, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, W, W, W, W, W,
             W, W, W, W, W, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, W, W, W, W, W,
             W, W, W, W, W, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, W, W, W, W, W,
-            W, W, W, W, W, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, W, W, W, W, W,
+            W, W, W, W, W, P, P, P, P, P, P, P, R, P, P, P, P, P, P, P, W, W, W, W, W,
             W, W, W, W, W, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, W, W, W, W, W,
             W, W, W, W, W, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, W, W, W, W, W,
             W, W, W, W, W, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, W, W, W, W, W,
@@ -73,11 +80,11 @@ public class PalePalaceBossLevel extends Level {
         setSize(WIDTH, HEIGHT);
         map = code_map.clone();
 
-        int enter = 28;
+        int enter = 712;
         LevelTransition entrance = new LevelTransition(this, enter, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(entrance);
 
-        int entra = 294;
+        int entra = 462;
         LevelTransition exit = new LevelTransition(this, entra, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(exit);
 
@@ -170,6 +177,28 @@ public class PalePalaceBossLevel extends Level {
             return v;
         }
 
+    }
+
+
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        if(Dungeon.depth == 20 && Statistics.Tomb_Reach && transition.type == LevelTransition.Type.REGULAR_ENTRANCE){
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+            InterlevelScene.curTransition = new LevelTransition();
+            InterlevelScene.curTransition.destDepth = 20;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+            InterlevelScene.curTransition.destBranch = 1;
+            InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+            InterlevelScene.curTransition.centerCell = -1;
+            Game.switchScene(InterlevelScene.class);
+            return false;
+        } else {
+            return super.activateTransition(hero,transition);
+        }
     }
 
 }

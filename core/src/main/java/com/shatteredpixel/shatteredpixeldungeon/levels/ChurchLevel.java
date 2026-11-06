@@ -221,6 +221,7 @@ public class ChurchLevel extends RegularLevel {
             }
         }
     }
+
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
         if(Dungeon.depth == 16 && Statistics.Tomb_Reach && transition.type == LevelTransition.Type.REGULAR_ENTRANCE){
@@ -234,6 +235,20 @@ public class ChurchLevel extends RegularLevel {
             InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
             InterlevelScene.curTransition.destBranch = 1;
             InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+            InterlevelScene.curTransition.centerCell = -1;
+            Game.switchScene(InterlevelScene.class);
+            return false;
+        } else if(Dungeon.depth == 19 && Statistics.Tomb_Reach && transition.type == LevelTransition.Type.REGULAR_EXIT){
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            InterlevelScene.curTransition = new LevelTransition();
+            InterlevelScene.curTransition.destDepth = 20;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_EXIT;
+            InterlevelScene.curTransition.destBranch = 1;
+            InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_ENTRANCE;
             InterlevelScene.curTransition.centerCell = -1;
             Game.switchScene(InterlevelScene.class);
             return false;

@@ -1,16 +1,25 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.LichKing;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 
 public class WitchRoadLevel extends Level {
 
     private static final int WIDTH = 13;
-    private static final int HEIGHT = 35;
+    private static final int HEIGHT = 37;
 
     //TODO 等待正式音乐到达
     @Override
@@ -53,7 +62,9 @@ public class WitchRoadLevel extends Level {
             25, 20, 20, 20, 5, 5, 5, 5, 5, 20, 20, 20, 25,
             25, 20, 20, 20, 5, 5, 5, 5, 5, 20, 20, 20, 25,
             25, 20, 20, 20, 5, 5, 5, 5, 5, 20, 20, 20, 25,
-            25, 20, 20, 20, 5, 5, 17, 5, 5, 20, 20, 20, 25
+            25, 20, 20, 20, 5, 5, 5, 5, 5, 20, 20, 20, 25,
+            25, 20, 20, 20, 5, 5, 5, 5, 5, 20, 20, 20, 25,
+            25, 20, 20, 20, 5, 5, 17, 5, 5, 20, 20, 20, 25,
     };
 
     private int codeToTerrain(int code){
@@ -86,7 +97,7 @@ public class WitchRoadLevel extends Level {
     }
 
     private static final int EXIT = 19;
-    private static final int ENTRANCE = 409;
+    private static final int ENTRANCE = 461;
 
     @Override
     protected boolean build() {
@@ -143,7 +154,7 @@ public class WitchRoadLevel extends Level {
             texture = Assets.Environment.TOMB_ROAD;
 
             tileW = 13;
-            tileH = 35;
+            tileH = 37;
         }
 
         final int TEX_WIDTH = 13*16;
@@ -167,7 +178,7 @@ public class WitchRoadLevel extends Level {
             texture = Assets.Environment.TOMB_ROAD;
 
             tileW = 13;
-            tileH = 35;
+            tileH = 37;
         }
 
         final int TEX_WIDTH = 13*16;
@@ -183,6 +194,41 @@ public class WitchRoadLevel extends Level {
             return v;
         }
 
+    }
+
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        if(Dungeon.depth == 20 && Statistics.Tomb_Reach && transition.type == LevelTransition.Type.REGULAR_ENTRANCE){
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+            InterlevelScene.curTransition = new LevelTransition();
+            InterlevelScene.curTransition.destDepth = depth - 1;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+            InterlevelScene.curTransition.destBranch = 0;
+            InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+            InterlevelScene.curTransition.centerCell = -1;
+            Game.switchScene(InterlevelScene.class);
+            return false;
+        } else if(Dungeon.depth == 20 && Statistics.Tomb_Reach && transition.type == LevelTransition.Type.REGULAR_EXIT){
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            InterlevelScene.curTransition = new LevelTransition();
+            InterlevelScene.curTransition.destDepth = 20;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
+            InterlevelScene.curTransition.destBranch = 0;
+            InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_ENTRANCE;
+            InterlevelScene.curTransition.centerCell = -1;
+            Game.switchScene(InterlevelScene.class);
+            return false;
+        } else {
+            return super.activateTransition(hero,transition);
+        }
     }
 
 }

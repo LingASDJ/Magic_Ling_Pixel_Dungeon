@@ -1067,25 +1067,9 @@ public abstract class Mob extends Char {
 		}
 	}
 
-	private boolean isRogerAlive = false;
 	@Override
 	public float speed() {
-		return super.speed() * AscensionChallenge.enemySpeedModifier(this) * checkRogerAlive();
-	}
-	private float checkRogerAlive(){
-		float ds = 1;
-		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-			if (mob instanceof Roger) {
-				isRogerAlive = true;
-				break;
-			}
-		}
-		if(isRogerAlive){
-			if(alignment != Alignment.ENEMY){
-				ds = (100-(float) (50 + 10 * Statistics.spawnersTombTownAlive) )/100;
-			}
-		}
-		return ds;
+		return super.speed() * AscensionChallenge.enemySpeedModifier(this) * Roger.enemySlowFactor(this);
 	}
 
 	public final boolean surprisedBy( Char enemy ){
@@ -1130,11 +1114,16 @@ public abstract class Mob extends Char {
 			}
 		}
 
+		//千军辟易：罗杰在场时，其敌人的攻击速度同样降低
+		float rogerSlow = Roger.enemySlowFactor(this);
+		if (rogerSlow < 1f) {
+			delay /= rogerSlow;
+		}
+
 		return delay;
 	}
 
-    protected boolean doAttack( Char enemy ) {
-
+	protected boolean doAttack( Char enemy ) {
         if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
 			sprite.attack( enemy.pos );
 			return false;

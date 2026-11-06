@@ -738,6 +738,17 @@ public class MobSpawner extends Actor {
 						NecroArcher.class, NecroGuard.class
 						, NecroGuard.class, NecroAcolyte.class, NecroAcolyte.class ));
 				break;
+			case 18:
+				res = new ArrayList<>(Arrays.asList(
+						NecroArcher.class, NecroGuard.class, NecroGuard.class
+						, NecroGuard.class, NecroAcolyte.class, NecroAcolyte.class ));
+				break;
+			case 19:
+				res = new ArrayList<>(Arrays.asList(
+						NecroArcher.class, NecroGuard.class,NecroArcher.class,NecroArcher.class
+						,NecroGuard.class, NecroAcolyte.class, NecroAcolyte.class
+				));
+				break;
 			default:
 				//非Tomb专属深度复用普通池
 				res = getNormalMobPool(depth);
