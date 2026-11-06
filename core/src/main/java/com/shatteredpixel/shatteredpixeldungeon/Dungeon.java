@@ -1061,8 +1061,8 @@ public class Dungeon {
 			updateLevelExplored();
 			Statistics.gameWon = false;
 			if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
-				takeDailySnapshot( cause, false );
 				Rankings.INSTANCE.submit(false, cause);
+				takeDailySnapshot( cause, false );
 				GameRecordChallenges(false);
 			}
 		}
@@ -1075,8 +1075,8 @@ public class Dungeon {
 
 		hero.belongings.identify();
 		if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
-			takeDailySnapshot( cause, true );
 			Rankings.INSTANCE.submit(true, cause);
+			takeDailySnapshot( cause, true );
 			GameRecordChallenges(true);
 		}
 	}
