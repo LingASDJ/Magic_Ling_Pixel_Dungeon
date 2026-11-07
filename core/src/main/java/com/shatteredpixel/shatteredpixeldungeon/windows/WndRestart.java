@@ -107,7 +107,7 @@ public class WndRestart extends Window {
                 info = GamesInProgress.check( GamesInProgress.curSlot );
                 saveCustomSeed = heroAlive ? info.customSeed : SPDSettings.customSeed();
                 saveSeed = heroAlive ? info.seed : Dungeon.seed;
-                nextSeed = cbs.get(0).checked() ? DungeonSeed.convertToCode( saveCustomSeed.isEmpty() ? saveSeed : DungeonSeed.convertFromText( saveCustomSeed ) ) : "";
+                nextSeed = cbs.get(0).checked() ? DungeonSeed.convertToCodeSafe( saveCustomSeed.isEmpty() ? saveSeed : DungeonSeed.convertFromText( saveCustomSeed ) ) : "";
                 nextHero = cbs.get(1).checked() ? ( heroAlive ? info.heroClass : Dungeon.hero.heroClass ) : Dungeon.hero.heroClass;
                 nextChallenges = cbs.get(2).checked() ? ( heroAlive ? info.challenges : SPDSettings.challenges() ) : 0;
                 if (cbs.get(3).checked()) {

@@ -81,7 +81,7 @@ public class WndGameInProgress extends Window {
 			return info.customSeed;
 		}
 		try {
-			return DungeonSeed.convertToCode(seed);
+			return DungeonSeed.convertToCodeSafe(seed);
 		} catch (IllegalArgumentException e) {
 			return String.valueOf(seed);
 		}
@@ -223,7 +223,7 @@ public class WndGameInProgress extends Window {
 		} else if (!info.customSeed.isEmpty()){
 			statSlot( Messages.get(this, "custom_seed"), "_" + info.customSeed + "_" );
 		} else {
-			statSlot( Messages.get(this, "dungeon_seed"), DungeonSeed.convertToCode(info.seed) );
+			statSlot( Messages.get(this, "dungeon_seed"), DungeonSeed.convertToCodeSafe(info.seed) );
 		}
 		
 		pos += GAP;

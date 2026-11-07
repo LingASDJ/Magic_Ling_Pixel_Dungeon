@@ -290,7 +290,7 @@ public class WndRanking extends WndTabbed {
 					} else if (!Dungeon.customSeedText.isEmpty()) {
 						pos = statSlot(this, Messages.get(this, "custom_seed"), "_" + Dungeon.customSeedText + "_", pos);
 					} else {
-						pos = statSlot(this, Messages.get(this, "seed"), DungeonSeed.convertToCode(Dungeon.seed), pos);
+						pos = statSlot(this, Messages.get(this, "seed"), DungeonSeed.convertToCodeSafe(Dungeon.seed), pos);
 					}
 				} else {
 					pos += GAP + 5;
@@ -326,9 +326,9 @@ public class WndRanking extends WndTabbed {
 								super.onSelect(index);
 								boolean seedType = (Dungeon.challenges & Challenges.MOREROOM) != 0;
 								if (index == 0){
-									SPDSettings.customSeed(DungeonSeed.convertToCode(Dungeon.seed));
+									SPDSettings.customSeed(DungeonSeed.convertToCodeSafe(Dungeon.seed));
 									icon.hardlight(1f, 1.5f, 0.67f);
-									clipboard.setContents(M.L(WndGameInProgress.class, "seed_copy",record.customSeed.isEmpty() ? DungeonSeed.convertToCode(Dungeon.seed) : record.customSeed,(seedType ? "B" : "A"),record.version));
+									clipboard.setContents(M.L(WndGameInProgress.class, "seed_copy",record.customSeed.isEmpty() ? DungeonSeed.convertToCodeSafe(Dungeon.seed) : record.customSeed,(seedType ? "B" : "A"),record.version));
 								}
 							}
 						});

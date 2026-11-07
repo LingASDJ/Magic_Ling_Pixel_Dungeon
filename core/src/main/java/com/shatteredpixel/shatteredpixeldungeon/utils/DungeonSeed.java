@@ -73,6 +73,19 @@ public class DungeonSeed {
 		return result;
 	}
 
+	/**
+	 * Safe variant of {@link #convertToCode(long)} for display/analytics.
+	 * Daily seeds are intentionally outside [0, TOTAL_SEEDS); return the numeric
+	 * value for those instead of crashing the calling screen.
+	 */
+	public static String convertToCodeSafe( long seed ){
+		try {
+			return convertToCode(seed);
+		} catch (IllegalArgumentException e){
+			return String.valueOf(seed);
+		}
+	}
+
 	//Takes a long value and converts it to the equivalent seed code
 	public static String convertToCode( long seed ){
 		if (seed < 0 || seed >= TOTAL_SEEDS) {
