@@ -742,8 +742,6 @@ public class Hero extends Char {
 				return heroClass == HeroClass.HUNTRESS ? normalSkin(armor) : 13;
 			case 5:
 				return 14;
-			case 6:
-				return 15;
 		}
 
         return normalSkin(armor);

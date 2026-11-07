@@ -22,7 +22,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -46,6 +45,7 @@ public class WndDailyConfig extends Window {
     private static final int TILE_SIZE = 40;
     private static final int TILE_GAP = 3;
     private static final int COLS = 3;
+    private static final int PER_PAGE = COLS * 2;
 
     private static final long HOUR = 3600_000L;
     private static final long DAY = 24 * HOUR;
@@ -56,13 +56,20 @@ public class WndDailyConfig extends Window {
 
     private final DailySeedData data;
     private final long diff;
+    private final int page;
+    private final int pageCount;
     private final boolean replay;
 
     public WndDailyConfig(DailySeedData data, long diff) {
+        this(data, diff, 0);
+    }
+
+    private WndDailyConfig(DailySeedData data, long diff, int page) {
         super();
 
         this.data = data;
         this.diff = diff;
+        this.page = page;
 
         long serverDay = DailyUtils.parseUtcDay(data.date);
         this.replay = serverDay >= 0
@@ -70,6 +77,7 @@ public class WndDailyConfig extends Window {
                 : diff > 0;
 
         List<Integer> challenges = challengeIndices(data.challenges);
+        this.pageCount = Math.max(1, (challenges.size() + PER_PAGE - 1) / PER_PAGE);
 
         int width = Math.min(WIDTH_MAX, (int) PixelScene.uiCamera.width - 12);
         float innerW = width - MARGIN * 2f;
@@ -147,15 +155,12 @@ public class WndDailyConfig extends Window {
         add(hint);
         pos += hint.height() + 3;
 
-        float maxHeight = PixelScene.uiCamera.height * 0.88f;
+        // ===== 挑战图标网格（分页，每页 3x2） =====
+        int start = page * PER_PAGE;
+        int end = Math.min(challenges.size(), start + PER_PAGE);
+        int visible = Math.max(0, end - start);
 
-        // 挑战网格滚动区域（resize 后需要重新布局，见构造末尾）
-        ScrollPane pane = null;
-        float gridTop = 0;
-        float gridH = 0;
-
-        // ===== 挑战图标网格（ScrollPane 滚动） =====
-        if (challenges.isEmpty()) {
+        if (visible == 0) {
             RenderedTextBlock none = PixelScene.renderTextBlock(Messages.get(this, "no_challenges"), 7);
             none.hardlight(0x9D9D9D);
             none.maxWidth((int) innerW);
@@ -164,33 +169,59 @@ public class WndDailyConfig extends Window {
             add(none);
             pos += 20;
         } else {
-            int rows = (challenges.size() + COLS - 1) / COLS;
-            float tileW = (innerW - 2 - (COLS - 1) * TILE_GAP) / COLS;
-            float contentH = rows * (TILE_SIZE + TILE_GAP) - TILE_GAP;
+            int rows = (visible + COLS - 1) / COLS;
+            float tileW = (innerW - (COLS - 1) * TILE_GAP) / COLS;
 
-            //底部固定按钮占用的高度，用于给滚动区域限高
-            float footerH = 16 + 2 + 16 + MARGIN;
-            float maxGridH = Math.max(TILE_SIZE, maxHeight - pos - footerH);
-            gridH = Math.min(contentH, maxGridH);
-            gridTop = pos;
-
-            Component content = new Component();
-            pane = new ScrollPane(content);
-
-            for (int i = 0; i < challenges.size(); i++) {
-                ChallengeTile tile = new ChallengeTile(challenges.get(i), pane);
+            for (int i = 0; i < visible; i++) {
+                ChallengeTile tile = new ChallengeTile(challenges.get(start + i));
                 tile.setRect(
-                        (i % COLS) * (tileW + TILE_GAP),
-                        (i / COLS) * (TILE_SIZE + TILE_GAP),
+                        MARGIN + (i % COLS) * (tileW + TILE_GAP),
+                        pos + (i / COLS) * (TILE_SIZE + TILE_GAP),
                         tileW, TILE_SIZE);
-                content.add(tile);
+                add(tile);
             }
-            content.setSize(innerW - 2, contentH);
 
-            add(pane);
-            pane.setRect(MARGIN, pos, innerW, gridH);
+            pos += rows * (TILE_SIZE + TILE_GAP) - TILE_GAP;
+        }
 
-            pos += gridH;
+        // ===== 分页控件（挑战超过一页时，居中放在网格下方） =====
+        if (pageCount > 1) {
+            pos += 3;
+            float navW = 14 + 4 + 24 + 4 + 14;
+            float navX = MARGIN + (innerW - navW) / 2f;
+
+            IconButton prev = new IconButton(Icons.get(Icons.LEFTBUTTON)) {
+                @Override
+                protected void onClick() {
+                    super.onClick();
+                    openPage(page - 1);
+                }
+            };
+            prev.setSize(14, 14);
+            prev.setPos(navX, pos);
+            PixelScene.align(prev);
+            add(prev);
+
+            RenderedTextBlock pageText = PixelScene.renderTextBlock(
+                    Messages.get(this, "page", page + 1, pageCount), 6);
+            pageText.hardlight(0xBBBBBB);
+            pageText.setPos(navX + 18 + (24 - pageText.width()) / 2f, pos + 4);
+            PixelScene.align(pageText);
+            add(pageText);
+
+            IconButton next = new IconButton(Icons.get(Icons.RIGHTBUTTON)) {
+                @Override
+                protected void onClick() {
+                    super.onClick();
+                    openPage(page + 1);
+                }
+            };
+            next.setSize(14, 14);
+            next.setPos(navX + navW - 14, pos);
+            PixelScene.align(next);
+            add(next);
+
+            pos += 17;
         }
 
         pos += 4;
@@ -265,12 +296,6 @@ public class WndDailyConfig extends Window {
         pos += 16;
 
         resize(width, (int) (pos + MARGIN));
-
-        //resize 会重新定位窗口相机，ScrollPane 的内容相机需要据此重新计算，
-        //否则滚动内容会偏移到窗口外（无裁剪地绘制）。
-        if (pane != null) {
-            pane.setRect(MARGIN, gridTop, innerW, gridH);
-        }
     }
 
     // ====================== 挑战相关 ======================
@@ -283,6 +308,13 @@ public class WndDailyConfig extends Window {
             }
         }
         return result;
+    }
+
+    private void openPage(int target) {
+        if (target < 0 || target >= pageCount || target == page) return;
+        WndDailyConfig next = new WndDailyConfig(data, diff, target);
+        hide();
+        ShatteredPixelDungeon.scene().addToFront(next);
     }
 
     // ====================== 开始每日挑战 ======================
@@ -358,18 +390,16 @@ public class WndDailyConfig extends Window {
         }
     }
 
-    /** 单个挑战图标卡片：点击查看名称与说明；拖动滚动时不误触。 */
+    /** 单个挑战图标卡片：点击查看名称与说明。 */
     private class ChallengeTile extends Button {
 
         private final int index;
-        private final ScrollPane owner;
         private final NinePatch bg;
         private final Image icon;
 
-        ChallengeTile(int index, ScrollPane owner) {
+        ChallengeTile(int index) {
             super();
             this.index = index;
-            this.owner = owner;
 
             bg = Chrome.get(Chrome.Type.GREY_BUTTON_TR);
             addToBack(bg);
@@ -404,11 +434,6 @@ public class WndDailyConfig extends Window {
 
         @Override
         protected void onClick() {
-            //拖动滚动后抬手不应触发挑战详情
-            if (owner != null && owner.wasDragging()) {
-                return;
-            }
-
             ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
                     ChallengeIcons.icon(index),
                     Messages.titleCase(Messages.get(Challenges.class, Challenges.NAME_IDS[index])),

@@ -31,7 +31,7 @@ public class DailyServiceImpl extends DailyService {
      * dailymlpd.spldream.com certificate; Apache is not involved. Trust-all is
      * kept for older clients and can be removed after the domain URL has been
      * verified on every platform. Can be overridden for local testing with
-     * -Dmlpd.daily=https://127.0.0.1:28774/MLPD/api/v1/daily.
+     * -Dmlpd.daily=https://127.0.0.1:28773/MLPD/api/v1/daily.
      */
     private static final String DEFAULT_API_BASE = "https://dailymlpd.spldream.com:28773/MLPD/api/v1/daily";
     private static final long CACHE_TTL = 10 * 60 * 1000L;

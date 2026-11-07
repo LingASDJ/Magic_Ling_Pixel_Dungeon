@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class UnlessFlower extends Ankh {
     }
 
 
-    public static class UnlessFlowerTime extends Buff {
+    public static class UnlessFlowerTime extends Buff implements Hero.Doom {
 
         {
             type = buffType.POSITIVE;
@@ -106,6 +107,14 @@ public class UnlessFlower extends Ankh {
             interval = bundle.getInt( INTERVAL );
             level = bundle.getInt( LEVEL );
         }
+
+
+        @Override
+        public void onDeath() {
+            Dungeon.fail( this );
+            GLog.n( Messages.get(this, "ondeath") );
+        }
+
     }
 
 }

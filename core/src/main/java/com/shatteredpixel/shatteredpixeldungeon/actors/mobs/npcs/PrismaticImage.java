@@ -101,7 +101,7 @@ public class PrismaticImage extends NPC {
 		}
 		
 		// 只在实际护甲变化时更新外观，皮肤切换不触发镜像重绘
-		int realTier = hero.normalSkin( hero.belongings.armor() );
+		int realTier = hero.tier();
 		if (realTier != armTier){
 			armTier = realTier;
 			((PrismaticSprite)sprite).updateArmor( armTier );
@@ -245,7 +245,7 @@ public class PrismaticImage extends NPC {
 		Actor targetActor = Actor.findById(heroID);
 		if (targetActor instanceof Hero) {
 			hero = (Hero) targetActor;
-			armTier = hero.normalSkin( hero.belongings.armor() );
+			armTier = hero.tier();
 		} else {
 			hero = null;
 			armTier = 1;
