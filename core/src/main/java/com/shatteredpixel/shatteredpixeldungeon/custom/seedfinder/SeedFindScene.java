@@ -10,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -60,7 +59,7 @@ public class SeedFindScene extends PixelScene {
     /** 文本输入解析出的查询目标（含纯等级通配，如 "+4"），启动查种时并入 targets */
     private static ArrayList<WantedTarget> textTargets = null;
     // 查种不需要选角色：角色不影响地形与奖励生成，固定用战士（与旧版一致）
-    public static int currentFloor = Constants.MAX_DEPTH;
+    public static int currentFloor = 24;
     public void create() {
         super.create();
 
@@ -301,14 +300,14 @@ public class SeedFindScene extends PixelScene {
                 Component content = sp.content();
                 float xPos = (PICKER_W - 5 * BTN_SIZE - GAP * 8) / 2f;
                 float each = GAP * 2 + BTN_SIZE;
-                for (int i = 0; i < 26; ++i) {
+                for (int i = 0; i < 27; ++i) {
                     StyledButton btn = floorBtn(i);
                     btn.setRect(xPos + (i % 5) * each, (i / 5) * each, BTN_SIZE, BTN_SIZE);
                     PixelScene.align(btn);
                     content.add(btn);
                 }
 
-                int rows = (26 - 1) / 5 + 1;
+                int rows = 26 / 5 + 1;
                 float contentHeight = rows * each - GAP * 2;
                 content.setSize(PICKER_W, contentHeight);
                 sp.setRect(0, 0, PICKER_W, contentHeight);
@@ -319,14 +318,14 @@ public class SeedFindScene extends PixelScene {
             }
 
             private StyledButton floorBtn(int i) {
-                final int j = i + 1;
-                return new StyledButton(Chrome.Type.GEM, String.valueOf(j), 8) {
+                // 魔绫地牢楼层从0层开始，按钮直接显示深度值
+                return new StyledButton(Chrome.Type.GEM, String.valueOf(i), 8) {
                     {
                         hotArea.blockLevel = PointerArea.NEVER_BLOCK;
                     }
                     @Override
                     protected void onClick() {
-                        selectedFloor = j;
+                        selectedFloor = i;
                         confirm.text(Messages.get(SeedFindScene.class, "confirm_floor", selectedFloor));
                     }
                 };
