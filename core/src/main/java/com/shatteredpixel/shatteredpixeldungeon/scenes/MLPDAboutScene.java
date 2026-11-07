@@ -141,6 +141,10 @@ public class MLPDAboutScene extends PixelScene {
                 left = 64;
                 top = 48;
                 break;    
+            case "knox":
+                left = 80;
+                top = 48;
+                break;
         }
         return new Image(Assets.Interfaces.ABOUT_ICONS,left,top,16,16);
     }
@@ -276,6 +280,15 @@ public class MLPDAboutScene extends PixelScene {
                 null);
         code5.setRect(code4.right(), code1.bottom()+10, colWidth/3f, 0);
         content.add(code5);
+
+        CreditsBlock code6 = new CreditsBlock(true,0x8A5CF6,
+                "",
+                About_Icons("knox"),
+                "knox",
+                null,
+                null);
+        code6.setRect(code3.x, code1.bottom()+10, colWidth/3f, 0);
+        content.add(code6);
 
 
         //*** 测试协力团队 ***
