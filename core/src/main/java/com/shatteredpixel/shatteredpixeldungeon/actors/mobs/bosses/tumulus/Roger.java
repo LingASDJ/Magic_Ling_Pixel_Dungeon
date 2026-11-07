@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ParalyticGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -50,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibili
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.shatteredpixel.shatteredpixeldungeon.levels.tomb.RogerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
@@ -65,9 +67,10 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
@@ -110,6 +113,8 @@ public class Roger extends Boss {
         initBaseStatus(15, 30, 30, 15, 400, 0, 10);
         initStatus(30);
         spriteClass = RogerSprite.class;
+        immunities.add(ToxicGas.class);
+        immunities.add(ParalyticGas.class);
     }
 
     @Override
@@ -126,6 +131,10 @@ public class Roger extends Boss {
     @Override
     public void die(Object cause) {
         super.die(cause);
+        //记录罗杰已被击败，避免关卡在移动/读档时再次生成
+        if (Dungeon.level instanceof RogerBossLevel) {
+            ((RogerBossLevel) Dungeon.level).onRogerDefeated();
+        }
         Dungeon.level.unseal();
     }
 
@@ -135,6 +144,15 @@ public class Roger extends Boss {
 
     @Override
     protected boolean act() {
+        //开场动画可能被窗口调整/读档中断：确保罗杰最终可见并完成登场
+        if (sprite != null && !sprite.visible) {
+            sprite.visible = true;
+        }
+        if (!BossHealthBar.isAssigned()) {
+            //交由渲染线程执行，避免在Actor同步块内添加UI/Actor
+            Game.runOnRenderThread(this::notice);
+        }
+
         //罗刹斩期间罗杰自身不再移动、不进行普通攻击，只维持斩击
         if (buff(LuoShaSlash.class) != null) {
             spend(TICK);
@@ -533,10 +551,8 @@ public class Roger extends Boss {
         if(buff(DamageREF.class) != null && type != DamageType.REAL){
             dmg = Math.max(0, dmg - warCryDR());
         }
-        //怒气：被攻击命中+4，法术攻击减半
-        if (src instanceof Char && src != this) {
-            getAG(6);
-        }
+
+        getAG(6);
 
         super.damage(dmg, src, type);
     }
@@ -857,12 +873,15 @@ public class Roger extends Boss {
     public static class LuoShaSlash extends Buff {
 
         private static final int TOTAL_SLASHES = 10;
-        private static final int BLIND_TURNS = 11;
+        //失明与斩击同时开始、同时结束：每条线预警1回合+斩击1回合，共20回合
+        private static final int BLIND_TURNS = TOTAL_SLASHES * 2;
         //10次斩击使用10个互不相同的角度（0~162度，每18度一条线）
         private static final int[] ANGLES = {0, 18, 36, 54, 72, 90, 108, 126, 144, 162};
 
         private int slashesLeft = TOTAL_SLASHES;
         private boolean warning = false;
+        //失明黑幕（覆盖全屏，不改地图数据，英雄仍可正常移动）
+        private ColorBlock blackout = null;
         private int lockedCell = -1;
         private int angle = 0;
         private int[] line = new int[0];
@@ -889,11 +908,7 @@ public class Roger extends Boss {
                 if (target instanceof Roger) {
                     if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
                         Buff.affect(Dungeon.hero, AbsoluteBlindness.class)
-                                .addLeft(BLIND_TURNS - 1f);
-                        BArray.setFalse(Dungeon.level.visited);
-                        BArray.setFalse(Dungeon.level.mapped);
-                        Dungeon.level.addVisuals();
-                        Dungeon.observe();
+                                .addLeft(BLIND_TURNS);
                     }
                     Camera.main.shake(1.5f, 0.4f);
                 }
@@ -905,6 +920,7 @@ public class Roger extends Boss {
             }
 
             if (warning) {
+                //斩出上一条锁定线；本回合不再预警，给玩家留出移动间隔
                 fireSlash();
                 warning = false;
                 slashesLeft--;
@@ -912,6 +928,8 @@ public class Roger extends Boss {
                     detach();
                     return true;
                 }
+            } else {
+                //只用这一回合预警下一条线，下一回合才斩出
                 prepareNext();
                 renderWarning();
                 warning = true;
@@ -1002,6 +1020,10 @@ public class Roger extends Boss {
         }
 
         private void fireSlash() {
+            //极端情况下上一条线可能为空：按锁定格补算
+            if (line.length == 0 && lockedCell >= 0) {
+                line = computeLine(lockedCell, angle);
+            }
             if (line.length == 0) return;
             if (target == null || target.sprite == null || target.sprite.parent == null) return;
 
@@ -1021,7 +1043,8 @@ public class Roger extends Boss {
                 if (ch == null || ch == target || !ch.isAlive()) continue;
 
                 if (ch == Dungeon.hero) {
-                    ch.damage(target.damageRoll() * 3, LuoShaSlash.class, DamageType.PHYSICAL);
+                    int dmg = Math.max(1, target.damageRoll() * 3);
+                    ch.damage(dmg, LuoShaSlash.class, DamageType.PHYSICAL);
                     ch.sprite.flash();
                     CellEmitter.center(cell).burst(RainbowParticle.BURST, Random.IntRange(6, 10));
                     if (!ch.isAlive()) {
@@ -1067,35 +1090,41 @@ public class Roger extends Boss {
 
         /** 计算穿过指定格子的贯穿直线，支持任意角度（0~162度）。 */
         private static int[] computeLine(int cell, int angleDeg) {
-            int w = Dungeon.level.width();
-            int h = Dungeon.level.height();
-            float cx = cell % w + 0.5f;
-            float cy = cell / w + 0.5f;
-            double rad = Math.toRadians(angleDeg);
-            float dx = (float) Math.cos(rad);
-            float dy = (float) Math.sin(rad);
+            if(Dungeon.level != null){
+                int w = Dungeon.level.width();
+                int h = Dungeon.level.height();
+                float cx = cell % w + 0.5f;
+                float cy = cell / w + 0.5f;
+                double rad = Math.toRadians(angleDeg);
+                float dx = (float) Math.cos(rad);
+                float dy = (float) Math.sin(rad);
 
-            HashSet<Integer> cells = new HashSet<>();
-            int max = w + h;
-            for (int t = -max; t <= max; t++) {
-                int gx = Math.round(cx + dx * t);
-                int gy = Math.round(cy + dy * t);
-                if (gx >= 0 && gx < w && gy >= 0 && gy < h) {
-                    cells.add(gy * w + gx);
+                HashSet<Integer> cells = new HashSet<>();
+                int max = w + h;
+                for (int t = -max; t <= max; t++) {
+                    //用floor保证t=0时正好落在锁定格(格坐标+0.5之后取整)
+                    int gx = (int) Math.floor(cx + dx * t);
+                    int gy = (int) Math.floor(cy + dy * t);
+                    if (gx >= 0 && gx < w && gy >= 0 && gy < h) {
+                        cells.add(gy * w + gx);
+                    }
                 }
-            }
 
-            int[] result = new int[cells.size()];
-            int i = 0;
-            for (int c : cells) {
-                result[i++] = c;
+                int[] result = new int[cells.size()];
+                int i = 0;
+                for (int c : cells) {
+                    result[i++] = c;
+                }
+                return result;
+            } else {
+                return new int[0];
             }
-            return result;
         }
 
         @Override
         public void detach() {
             super.detach();
+
             if (target == null) return;
             Buff.affect(target, Weakness.class, 15f);
             Buff.affect(target, ZeroDefense.class, 15f);
