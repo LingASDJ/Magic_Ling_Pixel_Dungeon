@@ -3,7 +3,8 @@ const router = express.Router();
 const {
   generateDailyConfig,
   getTodayString,
-  parseUtcDay
+  parseUtcDay,
+  ALLOW_FUTURE_DATES
 } = require('../utils/seed');
 const { extractGameInfo } = require('../utils/bundle');
 const {
@@ -24,8 +25,15 @@ function fail(res, code, message) {
 router.get('/today', (req, res) => {
   try {
     const date = req.query.date ? String(req.query.date) : getTodayString();
-    if (parseUtcDay(date) == null) {
+    const day = parseUtcDay(date);
+    if (day == null) {
       return fail(res, -1, '日期格式错误');
+    }
+    // Do not expose future daily seeds through the public endpoint. Admins can
+    // temporarily set MLPD_DAILY_ALLOW_FUTURE_DATES=true for diagnostics.
+    const todayDay = parseUtcDay(getTodayString());
+    if (!ALLOW_FUTURE_DATES && todayDay != null && day > todayDay) {
+      return fail(res, 1002, '日期不合法');
     }
     const config = generateDailyConfig(date);
     res.json({ code: 0, message: 'ok', data: config });
