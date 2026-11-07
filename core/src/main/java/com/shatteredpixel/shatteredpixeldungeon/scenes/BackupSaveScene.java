@@ -1073,7 +1073,7 @@ public class BackupSaveScene extends PixelScene {
             return info.customSeed;
         }
         try {
-            return DungeonSeed.convertToCode(info.seed);
+            return DungeonSeed.convertToCodeSafe(info.seed);
         } catch (IllegalArgumentException e) {
             return String.valueOf(info.seed);
         }

@@ -261,7 +261,7 @@ public class WndHero extends WndTabbed {
 						// code range; show/copy the date instead.
 						seedText = Dungeon.customSeedText;
 					} else {
-						seedText = DungeonSeed.convertToCode(Dungeon.seed);
+						seedText = DungeonSeed.convertToCodeSafe(Dungeon.seed);
 					}
 					clipboard.setContents(seedText);
 					GLog.i(Messages.get(HeroStat.class, "copy_success"));
@@ -362,7 +362,7 @@ public class WndHero extends WndTabbed {
 				statSlot( Messages.get(this, "custom_seed"), "_" + Dungeon.customSeedText + "_" );
 			} else {
 				statSlot( Messages.get(HeroStat.class, "seed_dungeon"),
-						DungeonSeed.convertToCode(Dungeon.seed) );
+						DungeonSeed.convertToCodeSafe(Dungeon.seed) );
 			}
 
 
