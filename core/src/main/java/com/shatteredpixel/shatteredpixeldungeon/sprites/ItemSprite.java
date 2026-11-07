@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.levels.NormalZeroFiveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -360,7 +361,7 @@ public class ItemSprite extends MovieClip {
 			case TOMB:
 				return view( ItemSpriteSheet.TOMB, null );
 			case WHITETOMB:
-				return view( ItemSpriteSheet.GRAVE, null );
+				return view( Dungeon.level instanceof NormalZeroFiveLevel ? ItemSpriteSheet.STELE : ItemSpriteSheet.GRAVE, null );
 			case SKELETON:
 				return view( ItemSpriteSheet.BONES, null );
 			case REMAINS:
