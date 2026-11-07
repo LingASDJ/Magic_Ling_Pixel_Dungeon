@@ -271,6 +271,8 @@ public class ItemSpriteSheet {
     }
 
 
+    public static final int STELE  =                               xy(1, 7);
+
     //16 free slots
 
     private static final int WEP_TIER1      =                               xy(18, 1);   //8 slots
