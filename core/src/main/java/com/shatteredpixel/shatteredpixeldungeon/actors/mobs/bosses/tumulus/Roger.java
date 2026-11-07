@@ -67,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
@@ -134,6 +135,12 @@ public class Roger extends Boss {
 
     @Override
     protected boolean act() {
+        //罗刹斩期间罗杰自身不再移动、不进行普通攻击，只维持斩击
+        if (buff(LuoShaSlash.class) != null) {
+            spend(TICK);
+            return true;
+        }
+
         if (state != SLEEPING) {
             //战吼：冷却结束立刻再次释放
             damage_reflection();
@@ -515,7 +522,7 @@ public class Roger extends Boss {
         if (duration < 1) duration = 1;
         //裂伤：多次近战命中会叠加剩余时长
         Buff.affect(enemy, BreakDamage.class).stack(duration);
-        getAG(6);
+        getAG(8);
         noMeleeTurns = 0;
         return super.attackProc(enemy, damage);
     }
@@ -528,7 +535,7 @@ public class Roger extends Boss {
         }
         //怒气：被攻击命中+4，法术攻击减半
         if (src instanceof Char && src != this) {
-            getAG(type == DamageType.MAGIC ? 2 : 4);
+            getAG(6);
         }
 
         super.damage(dmg, src, type);
@@ -855,7 +862,6 @@ public class Roger extends Boss {
         private static final int[] ANGLES = {0, 18, 36, 54, 72, 90, 108, 126, 144, 162};
 
         private int slashesLeft = TOTAL_SLASHES;
-        private int blindLeft = BLIND_TURNS;
         private boolean warning = false;
         private int lockedCell = -1;
         private int angle = 0;
@@ -879,17 +885,22 @@ public class Roger extends Boss {
 
             if (!started) {
                 started = true;
+                //失明与斩击同时开始；罗杰在此期间停止移动与普通攻击
                 if (target instanceof Roger) {
                     if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
-                        Buff.affect(Dungeon.hero, AbsoluteBlindness.class).addLeft(BLIND_TURNS);
+                        Buff.affect(Dungeon.hero, AbsoluteBlindness.class)
+                                .addLeft(BLIND_TURNS - 1f);
+                        BArray.setFalse(Dungeon.level.visited);
+                        BArray.setFalse(Dungeon.level.mapped);
+                        Dungeon.level.addVisuals();
+                        Dungeon.observe();
                     }
                     Camera.main.shake(1.5f, 0.4f);
                 }
-            }
-
-            //失明期间只倒计时，不进行斩击
-            if (blindLeft > 0) {
-                blindLeft--;
+                //第一回合先预警第一条线，下一回合斩出并预警下一条
+                prepareNext();
+                renderWarning();
+                warning = true;
                 return true;
             }
 
@@ -902,7 +913,6 @@ public class Roger extends Boss {
                     return true;
                 }
                 prepareNext();
-            } else {
                 renderWarning();
                 warning = true;
             }
@@ -1096,7 +1106,6 @@ public class Roger extends Boss {
         }
 
         private static final String SLASHES = "slashes";
-        private static final String BLIND = "blind";
         private static final String WARNING = "warning";
         private static final String LOCKED = "locked";
         private static final String ANGLE = "angle";
@@ -1107,7 +1116,6 @@ public class Roger extends Boss {
         public void storeInBundle(Bundle b) {
             super.storeInBundle(b);
             b.put(SLASHES, slashesLeft);
-            b.put(BLIND, blindLeft);
             b.put(WARNING, warning);
             b.put(LOCKED, lockedCell);
             b.put(ANGLE, angle);
@@ -1124,7 +1132,6 @@ public class Roger extends Boss {
         public void restoreFromBundle(Bundle b) {
             super.restoreFromBundle(b);
             slashesLeft = b.getInt(SLASHES);
-            blindLeft = b.getInt(BLIND);
             warning = b.getBoolean(WARNING);
             lockedCell = b.getInt(LOCKED);
             angle = b.getInt(ANGLE);
