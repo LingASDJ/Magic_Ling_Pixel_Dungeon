@@ -201,17 +201,6 @@ public class WndGameInProgress extends Window {
 		btnX = multiLine?2:btnGameInfo.right()+2;
 		buttonSeed.setRect(btnX, pos, buttonSeed.reqWidth() + 1, 18);
 
-//		RedButton btDLC = new RedButton( Messages.get(this, "dlc") ) {
-//			@Override
-//			protected void onClick() {
-//				//
-//			}
-//		};
-//		btDLC.icon(new ItemSprite(ItemSpriteSheet.DIFFCULTBOOT));
-//		btDLC.alpha(0.7f);
-//		btDLC.setRect( 80, title.y, 40 , 18 );
-//		//add( btDLC );
-
 		pos = buttonSeed.bottom() + GAP;
 		
 		pos += GAP;
@@ -223,8 +212,6 @@ public class WndGameInProgress extends Window {
 		if (info.shld > 0)  statSlot( Messages.get(this, "health"), info.hp + "+" + info.shld + "/" + info.ht );
 		else                statSlot( Messages.get(this, "health"), (info.hp) + "/" + info.ht );
 		statSlot( Messages.get(this, "exp"), info.exp + "/" + Hero.maxExp(info.level) );
-
-		//tatSlot( Messages.get(this, "icehp"), (info.icehp) + "/" + 100 );
 		
 		pos += GAP;
 		statSlot( Messages.get(this, "gold"), info.goldCollected );

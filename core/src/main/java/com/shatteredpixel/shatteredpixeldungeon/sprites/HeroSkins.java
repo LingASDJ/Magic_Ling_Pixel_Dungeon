@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.watabou.noosa.Image;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
@@ -166,7 +167,7 @@ public final class HeroSkins {
                 result.add(Integer.parseInt(k.substring(prefix.length())));
             }
         }
-        java.util.Collections.sort(result);
+        Collections.sort(result);
         return result;
     }
 

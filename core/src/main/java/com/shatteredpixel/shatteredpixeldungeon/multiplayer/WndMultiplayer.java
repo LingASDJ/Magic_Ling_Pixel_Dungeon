@@ -1,61 +1,78 @@
 package com.shatteredpixel.shatteredpixeldungeon.multiplayer;
 
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
+import com.watabou.noosa.Gizmo;
+import com.watabou.noosa.Image;
 
-/** 联机窗口：开房/加入/断开/名字设置/状态显示。 */
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 联机控制窗口：图形化显示连接状态、房间号与玩家列表，并提供开房/加入/断开/改名操作。
+ */
 public class WndMultiplayer extends Window {
 
     private static final int WIDTH = 150;
-    private static final int BTN_HEIGHT = 18;
+    private static final int BTN_H = 16;
+    private static final int ROW_H = 16;
     private static final int GAP = 2;
 
-    private RenderedTextBlock status;
-    private RenderedTextBlock nameText;
+    private final RenderedTextBlock title;
+    private final RenderedTextBlock status;
+    private final RenderedTextBlock room;
+    private final RenderedTextBlock playersLabel;
+    private final List<Gizmo> rows = new ArrayList<>();
 
-    /**
-     * 联机窗口：开房/加入/断开/名字设置/状态显示。
-     */
+    private final RedButton hostBtn;
+    private final RedButton joinBtn;
+    private final StyledButton disconnectBtn;
+    private final StyledButton nameBtn;
+    private final RedButton closeBtn;
+    private final RenderedTextBlock credit;
+    private final RenderedTextBlock version;
+
+    private long lastRefresh = 0L;
+
     public WndMultiplayer() {
-        float pos = 0f;
+        super();
 
-        RenderedTextBlock title = PixelScene.renderTextBlock(
-                Messages.get(WndMultiplayer.class, "title"), 9);
+        title = PixelScene.renderTextBlock(Messages.get(WndMultiplayer.class, "title"), 9);
         title.hardlight(TITLE_COLOR);
-        title.setPos(0f, pos);
         title.maxWidth(WIDTH);
+        title.setPos(0f, 0f);
         add(title);
-        pos = title.bottom() + 4f;
 
-        status = PixelScene.renderTextBlock(6);
-        status.text(Mp.get().status, WIDTH);
-        status.setPos(0f, pos);
+        status = PixelScene.renderTextBlock(7);
+        status.maxWidth(WIDTH);
         add(status);
-        pos = status.bottom() + 4f;
 
-        nameText = PixelScene.renderTextBlock(6);
-        nameText.text(Messages.get(WndMultiplayer.class, "name_label", Mp.get().getMyName()), WIDTH);
-        nameText.setPos(0f, pos);
-        add(nameText);
-        pos = nameText.bottom() + 4f;
+        room = PixelScene.renderTextBlock(7);
+        room.maxWidth(WIDTH);
+        add(room);
 
-        RedButton hostServer = new RedButton(Messages.get(WndMultiplayer.class, "host_server")) {
+        playersLabel = PixelScene.renderTextBlock(6);
+        playersLabel.hardlight(0x9D9D9D);
+        playersLabel.maxWidth(WIDTH);
+        add(playersLabel);
+
+        hostBtn = new RedButton(Messages.get(WndMultiplayer.class, "host_server"), 7) {
             @Override
             protected void onClick() {
                 Mp.get().hostViaServer(Mp.defaultServerAddress());
-                refresh();
+                rebuild();
             }
         };
-        add(hostServer);
-        hostServer.setRect(0f, pos, WIDTH, BTN_HEIGHT);
-        pos += BTN_HEIGHT + GAP;
+        add(hostBtn);
 
-        RedButton joinServer = new RedButton(Messages.get(WndMultiplayer.class, "join_server")) {
+        joinBtn = new RedButton(Messages.get(WndMultiplayer.class, "join_server"), 7) {
             @Override
             protected void onClick() {
                 ShatteredPixelDungeon.scene().addToFront(new WndTextInput(
@@ -68,28 +85,27 @@ public class WndMultiplayer extends Window {
                     public void onSelect(boolean positive, String code) {
                         if (positive) {
                             Mp.get().joinViaServer(Mp.defaultServerAddress(), code);
-                            refresh();
+                            rebuild();
                         }
                     }
                 });
             }
         };
-        add(joinServer);
-        joinServer.setRect(0f, pos, WIDTH, BTN_HEIGHT);
-        pos += BTN_HEIGHT + GAP;
+        add(joinBtn);
 
-        RedButton stop = new RedButton(Messages.get(WndMultiplayer.class, "disconnect")) {
+        disconnectBtn = new StyledButton(Chrome.Type.RED_BUTTON,
+                Messages.get(WndMultiplayer.class, "disconnect"), 6) {
             @Override
             protected void onClick() {
                 Mp.get().disconnect();
-                refresh();
+                rebuild();
             }
         };
-        add(stop);
-        stop.setRect(0f, pos, WIDTH, BTN_HEIGHT);
-        pos += BTN_HEIGHT + GAP;
+        disconnectBtn.textColor(0xDDDDDD);
+        add(disconnectBtn);
 
-        RedButton setName = new RedButton(Messages.get(WndMultiplayer.class, "set_name")) {
+        nameBtn = new StyledButton(Chrome.Type.RED_BUTTON,
+                Messages.get(WndMultiplayer.class, "set_name"), 6) {
             @Override
             protected void onClick() {
                 ShatteredPixelDungeon.scene().addToFront(new WndTextInput(
@@ -102,59 +118,149 @@ public class WndMultiplayer extends Window {
                     public void onSelect(boolean positive, String text) {
                         if (positive && text != null && !text.trim().isEmpty()) {
                             Mp.get().setName(text.trim());
-                            refresh();
+                            rebuild();
                         }
                     }
                 });
             }
         };
-        add(setName);
-        setName.setRect(0f, pos, WIDTH, BTN_HEIGHT);
-        pos += BTN_HEIGHT + GAP;
+        nameBtn.textColor(0xDDDDDD);
+        add(nameBtn);
 
-        RedButton close = new RedButton(Messages.get(WndMultiplayer.class, "close")) {
+        closeBtn = new RedButton(Messages.get(WndMultiplayer.class, "close"), 7) {
             @Override
             protected void onClick() {
                 hide();
             }
         };
-        add(close);
-        close.setRect(0f, pos, WIDTH, BTN_HEIGHT);
-        pos += BTN_HEIGHT + 4f;
+        add(closeBtn);
 
-        RenderedTextBlock credit = PixelScene.renderTextBlock(5);
-        credit.text(Messages.get(WndMultiplayer.class, "credit"), WIDTH);
+        credit = PixelScene.renderTextBlock(Messages.get(WndMultiplayer.class, "credit"), 5);
         credit.alpha(0.6f);
-        credit.setPos(0f, pos);
         add(credit);
 
-        // 版本号：署名右侧、菜单右下角
-        RenderedTextBlock version = PixelScene.renderTextBlock(5);
-        version.text(Mp.MP_VERSION);
+        version = PixelScene.renderTextBlock(Mp.MP_VERSION, 5);
         version.alpha(0.6f);
-        version.setPos(WIDTH - version.width() - 2f, credit.top());
         add(version);
 
-        pos = credit.bottom() + 2f;
-
-        resize(WIDTH, (int) pos);
+        rebuild();
     }
 
-    private void refresh() {
-        if (status != null) {
-            status.text(Mp.get().status, WIDTH);
+    private void rebuild() {
+        for (Gizmo g : rows) {
+            remove(g);
         }
-        if (nameText != null) {
-            nameText.text(Messages.get(WndMultiplayer.class, "name_label", Mp.get().getMyName()), WIDTH);
+        rows.clear();
+
+        boolean connected = Mp.get().connected;
+        status.text(Mp.get().status, WIDTH);
+        status.hardlight(connected ? 0x7FD07F : 0xBBBBBB);
+        status.setPos(0f, title.bottom() + 4f);
+
+        float y = status.bottom() + 4f;
+
+        String code = Mp.get().getRoomCode();
+        boolean hasRoom = code != null && !code.isEmpty();
+        room.text(hasRoom
+                ? Messages.get(WndMultiplayer.class, "room_label", code)
+                : Messages.get(WndMultiplayer.class, "room_none"), WIDTH);
+        room.hardlight(hasRoom ? 0xFFD700 : 0x808080);
+        room.setPos(0f, y);
+        y = room.bottom() + 4f;
+
+        List<Mp.PlayerInfo> players = Mp.get().getPlayerList();
+        playersLabel.text(Messages.get(WndMultiplayer.class, "players_label",
+                players.size(), Mp.MAX_PLAYERS), WIDTH);
+        playersLabel.setPos(0f, y);
+        y = playersLabel.bottom() + 2f;
+
+        for (Mp.PlayerInfo info : players) {
+            if (info.heroClass != null) {
+                Image icon = new Image(info.heroClass.spritesheet(), 0, 0, 12, 15);
+                icon.setPos(0f, y + 1f);
+                add(icon);
+                rows.add(icon);
+            } else {
+                RenderedTextBlock unknown = PixelScene.renderTextBlock("?", 8);
+                unknown.setPos(2f, y + 2f);
+                add(unknown);
+                rows.add(unknown);
+            }
+
+            String nameStr = (info.name == null || info.name.isEmpty())
+                    ? Messages.get(WndPlayerList.class, "default_name") : info.name;
+            if (info.isSelf) {
+                nameStr += Messages.get(WndPlayerList.class, "self_suffix");
+            }
+            RenderedTextBlock name = PixelScene.renderTextBlock(nameStr, 7);
+            name.maxWidth(WIDTH - 62);
+            name.hardlight(info.isSelf ? 0xFFD700 : 0xFFFFFF);
+            name.setPos(16f, y + 1f);
+            add(name);
+            rows.add(name);
+
+            RenderedTextBlock rtt = PixelScene.renderTextBlock(
+                    info.rttMs >= 0 ? info.rttMs + " ms"
+                            : Messages.get(WndPlayerList.class, "local"), 6);
+            rtt.hardlight(0x9D9D9D);
+            rtt.setPos(WIDTH - rtt.width() - 2f, y + 2f);
+            add(rtt);
+            rows.add(rtt);
+
+            if (info.isHost) {
+                RenderedTextBlock hostTag = PixelScene.renderTextBlock(
+                        Messages.get(WndPlayerList.class, "host_suffix"), 6);
+                hostTag.hardlight(0xFF8844);
+                hostTag.setPos(WIDTH - rtt.width() - hostTag.width() - 7f, y + 2f);
+                add(hostTag);
+                rows.add(hostTag);
+            }
+
+            y += ROW_H + 1f;
+        }
+
+        if (players.isEmpty()) {
+            RenderedTextBlock none = PixelScene.renderTextBlock(
+                    Messages.get(WndMultiplayer.class, "no_players"), 6);
+            none.hardlight(0x808080);
+            none.setPos(0f, y + 2f);
+            add(none);
+            rows.add(none);
+            y += 14f;
+        }
+
+        y += 3f;
+
+        float half = (WIDTH - GAP) / 2f;
+        hostBtn.setRect(0f, y, half, BTN_H);
+        joinBtn.setRect(half + GAP, y, half, BTN_H);
+        y += BTN_H + GAP;
+
+        disconnectBtn.setRect(0f, y, half, BTN_H);
+        nameBtn.setRect(half + GAP, y, half, BTN_H);
+        y += BTN_H + GAP;
+
+        closeBtn.setRect(0f, y, WIDTH, BTN_H);
+        y += BTN_H + 4f;
+
+        credit.setPos(0f, y);
+        version.setPos(WIDTH - version.width() - 2f, y);
+        y += credit.height() + 2f;
+
+        int newHeight = (int) y;
+        if (newHeight != height) {
+            resize(WIDTH, newHeight);
         }
     }
 
     @Override
-    /**
-     * 每帧刷新界面状态。
-     */
     public void update() {
         super.update();
-        refresh();
+
+        long now = System.currentTimeMillis();
+        if (now - lastRefresh >= 1000L) {
+            lastRefresh = now;
+            rebuild();
+        }
     }
 }
