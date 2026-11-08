@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.custom.Gift;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.AllSearchHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
@@ -228,14 +229,23 @@ public class WndGame extends Window {
 			curBtn.icon(Icons.get(Icons.RANKINGS));
 		}
 
-		// Main menu
-		addButton(curBtn = new RedButton(Messages.get(this, "menu")) {
+		// Main menu / return to multiplayer room
+		addButton(curBtn = new RedButton(Messages.get(this,
+				Mp.get().isInRoom() ? "return_room" : "menu")) {
 			@Override
 			protected void onClick() {
 				try {
 					Dungeon.saveAll();
 				} catch (IOException e) {
 					ShatteredPixelDungeon.reportException(e);
+				}
+				if (Mp.get().isInRoom()) {
+					if (Mp.get().isHost()) {
+						Mp.get().hostReturnToRoom();
+					} else {
+						Mp.get().clientReturnToRoom();
+					}
+					return;
 				}
 				Game.switchScene(TitleScene.class);
 			}

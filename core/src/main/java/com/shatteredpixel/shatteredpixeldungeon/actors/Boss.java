@@ -156,6 +156,16 @@ abstract public class Boss extends Mob {
                 int count = holiday ? 2 : 1;
                 Dungeon.level.drop(new IceCyanBlueSquareCoin(normal * count),pos);
             }
+
+            // 每日挑战首次（记入排行榜）的额外钴币奖励：
+            // 第15层 Boss 掉落 150，第25层 Boss 掉落 120；再次挑战不奖励。
+            if (Dungeon.daily && !Dungeon.dailyReplay && Dungeon.branch == 0) {
+                if (Dungeon.depth == 15) {
+                    Dungeon.level.drop(new IceCyanBlueSquareCoin(150), pos);
+                } else if (Dungeon.depth == 25) {
+                    Dungeon.level.drop(new IceCyanBlueSquareCoin(120), pos);
+                }
+            }
     }
 
     @Override

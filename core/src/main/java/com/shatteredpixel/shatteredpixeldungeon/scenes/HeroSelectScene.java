@@ -39,7 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
-import com.shatteredpixel.shatteredpixeldungeon.multiplayer.WndMultiplayer;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.MpRoomScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailySeedData;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyService;
@@ -269,6 +269,24 @@ public class HeroSelectScene extends PixelScene {
 				super.onClick();
 
 				if (GamesInProgress.selectedClass == null) return;
+
+				// 联机房间的新档配置：只记录职业/种子/挑战，不直接开局，
+				// 返回房间后由房主点「开始游戏」统一开局。
+				if (Mp.get().isRoomNewGameConfig()) {
+					if (Mp.get().finishRoomNewGameConfig(GamesInProgress.selectedClass)) {
+						StartScene.roomSelectMode = false;
+						ShatteredPixelDungeon.switchNoFade(MpRoomScene.class);
+					}
+					return;
+				}
+
+				// 普通新档：清掉上一次每日挑战遗留的全局标记。否则在每日挑战
+				// 中途回标题后再开新档，Dungeon.init() 会再次走每日分支，把新档
+				// 标记成“每日狩猎”并显示每日日期。
+				Dungeon.daily = false;
+				Dungeon.dailyReplay = false;
+				Dungeon.overrideSeed = -1;
+				Dungeon.customSeedText = "";
 
 				Dungeon.hero = null;
 				ActionIndicator.action = null;
@@ -539,7 +557,9 @@ public class HeroSelectScene extends PixelScene {
 					return;
 				}
 
-				if (Mp.get().connected) {
+				// 房主单独在房间里时 connected 仍为 false，必须同时判断“在房间中”，
+				// 否则会从联机房间的新档配置流程里启动每日挑战。
+				if (Mp.get().connected || Mp.get().isInRoom()) {
 					ShatteredPixelDungeon.scene().addToFront(new WndMessage(
 							Messages.get(HeroSelectScene.class, "daily_mp_blocked")));
 					return;
@@ -897,6 +917,12 @@ public class HeroSelectScene extends PixelScene {
 
 	@Override
 	public void onBackPressed() {
+		// 联机房间的新档配置：返回存档选择，而不是回标题（连接仍保持）
+		if (Mp.get().isRoomNewGameConfig()) {
+			Mp.get().cancelRoomNewGameConfig();
+			ShatteredPixelDungeon.switchScene(StartScene.class);
+			return;
+		}
 		ShatteredPixelDungeon.switchScene(TitleScene.class);
 	}
 

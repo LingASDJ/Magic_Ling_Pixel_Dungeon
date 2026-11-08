@@ -58,6 +58,7 @@ public enum CollectRankings {
     }
 
     public boolean isRecordCollected(Rankings.Record record){
+        if (records == null) return false;
         return records.containsKey( record.gameID );
     }
 

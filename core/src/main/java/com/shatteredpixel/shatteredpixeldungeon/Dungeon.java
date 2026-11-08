@@ -73,6 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LinkLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
@@ -451,6 +452,13 @@ public class Dungeon {
 		level.create();
 		GameAPI.CodeCallback_OnLevelCreation( level );
 
+		// 联机：标记本次是首次生成的新楼层，供 Mp 在该层切换完成后保存初始层档
+		if (!(level instanceof DeadEndLevel)) {
+			Mp.get().markFreshLevel(depth, branch);
+		} else {
+			Mp.get().clearFreshLevel();
+		}
+
 		if (branch == 0) Statistics.qualifiedForNoKilling = !bossLevel();
 		Statistics.qualifiedForBossChallengeBadge = false;
 
@@ -721,6 +729,8 @@ public class Dungeon {
 			/*This only catches IO errors. Yes, this means things can go wrong, and they can go wrong catastrophically.
 			But when they do the user will get a nice 'report this issue' dialogue, and I can fix the bug.*/
 		}
+
+		Mp.get().onLevelSwitched(level);
 	}
 
 	public static void dropToChasm( Item item ) {
@@ -1009,6 +1019,7 @@ public class Dungeon {
 
 		Dungeon.level = null;
 		Actor.clear();
+		Mp.get().clearFreshLevel();   // 读旧层档不是新生成，避免误抓初始快照
 
 		Bundle bundle = FileUtils.bundleFromFile( GamesInProgress.depthFile( save, depth, branch ));
 

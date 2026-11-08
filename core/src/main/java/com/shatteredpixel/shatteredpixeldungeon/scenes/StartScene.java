@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.MpRoomScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.multiplayer.MultiplayerImpl;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
@@ -46,14 +48,35 @@ import com.watabou.noosa.NinePatch;
 import java.util.ArrayList;
 
 public class StartScene extends PixelScene {
-	
+
 	private static final int SLOT_WIDTH = 120;
 	private static final int SLOT_HEIGHT = 30;
-	
+
+	/** 联机房间「选择存档」模式：点击存档只回房间，不启动游戏。 */
+	public static boolean roomSelectMode = false;
+
+	/** 从联机房间进入存档选择。 */
+	public static void openRoomSelect() {
+		roomSelectMode = true;
+		ShatteredPixelDungeon.switchNoFade(StartScene.class);
+	}
+
+	/** 关闭房间选档模式并返回房间。 */
+	private static void closeRoomSelect() {
+		roomSelectMode = false;
+		Mp.get().cancelRoomSaveSelect();
+		ShatteredPixelDungeon.switchNoFade(MpRoomScene.class);
+	}
+
 	@Override
 	public void create() {
 		super.create();
-		
+
+		// 联机房间已断开时，清掉可能残留的选档模式，避免影响单机开始游戏
+		if (roomSelectMode && !Mp.get().isInRoom()) {
+			roomSelectMode = false;
+		}
+
 		Badges.loadGlobal();
 		Journal.loadGlobal();
 		
@@ -66,11 +89,21 @@ public class StartScene extends PixelScene {
 		archs.setSize( w, h );
 		add( archs );
 		
-		ExitButton btnExit = new ExitButton();
+		ExitButton btnExit = new ExitButton() {
+			@Override
+			protected void onClick() {
+				if (roomSelectMode) {
+					closeRoomSelect();
+				} else {
+					super.onClick();
+				}
+			}
+		};
 		btnExit.setPos( w - btnExit.width(), 0 );
 		add( btnExit );
-		
-		IconTitle title = new IconTitle( Icons.ENTER.get(), Messages.get(this, "title"));
+
+		IconTitle title = new IconTitle( Icons.ENTER.get(), Messages.get(this,
+				roomSelectMode ? "title_room" : "title"));
 		title.setSize(200, 0);
 		title.setPos(
 				(w - title.reqWidth()) / 2f,
@@ -111,15 +144,21 @@ public class StartScene extends PixelScene {
 			add(newGame);
 		}
 		
-		GamesInProgress.curSlot = 0;
-		
+		if (!roomSelectMode) {
+			GamesInProgress.curSlot = 0;
+		}
+
 		fadeIn();
-		
+
 	}
-	
+
 	@Override
 	protected void onBackPressed() {
-		ShatteredPixelDungeon.switchNoFade( TitleScene.class );
+		if (roomSelectMode) {
+			closeRoomSelect();
+		} else {
+			ShatteredPixelDungeon.switchNoFade( TitleScene.class );
+		}
 	}
 	
 	private static class SaveSlotButton extends Button {
@@ -296,6 +335,20 @@ public class StartScene extends PixelScene {
 			if (MultiplayerImpl.getService().isClientConnected()) {
 				ShatteredPixelDungeon.scene().add(
 					new WndMessage(Messages.get(StartScene.class, "mp_blocked")));
+				return;
+			}
+			// 房间选档模式：已有档直接记录并回房间；空档先进入原版新建游戏
+			// 界面（选职业/种子/挑战等），设置完成后由 HeroSelectScene 返回房间。
+			if (roomSelectMode) {
+				if (newGame) {
+					Mp.get().beginRoomNewGameConfig(slot);
+					GamesInProgress.curSlot = slot;
+					ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
+					return;
+				}
+				Mp.get().selectRoomSave(slot);
+				roomSelectMode = false;
+				ShatteredPixelDungeon.switchNoFade(MpRoomScene.class);
 				return;
 			}
 			if (newGame) {

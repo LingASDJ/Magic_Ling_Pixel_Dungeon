@@ -35,13 +35,17 @@ public class WndHeroClassSelect extends Window {
 
         float pos = 0f;
 
+        float width = MpUi.px(WIDTH);
+        float btnHeight = MpUi.px(BTN_HEIGHT);
+        float gap = MpUi.px(GAP);
+
         RenderedTextBlock title = PixelScene.renderTextBlock(
-                Messages.get(WndHeroClassSelect.class, "title"), 9);
+                Messages.get(WndHeroClassSelect.class, "title"), MpUi.font(9));
         title.hardlight(TITLE_COLOR);
         title.setPos(0f, pos);
-        title.maxWidth(WIDTH);
+        title.maxWidth((int) width);
         add(title);
-        pos = title.bottom() + 4f;
+        pos = title.bottom() + MpUi.px(4f);
 
         for (HeroClass cls : HeroClass.values()) {
             RedButton btn = new RedButton(Messages.titleCase(cls.title())) {
@@ -59,13 +63,15 @@ public class WndHeroClassSelect extends Window {
                     WndHeroClassSelect.this.onSelect.accept(cls);
                 }
             };
-            btn.icon(new Image(cls.spritesheet(), 0, 0, 12, 15));
+            Image icon = new Image(cls.spritesheet(), 0, 0, 12, 15);
+            icon.scale.set(MpUi.scale());
+            btn.icon(icon);
             add(btn);
-            btn.setRect(0f, pos, WIDTH, BTN_HEIGHT);
-            pos += BTN_HEIGHT + GAP;
+            btn.setRect(0f, pos, width, btnHeight);
+            pos += btnHeight + gap;
         }
 
-        resize(WIDTH, (int) (pos - GAP));
+        resize((int) width, (int) (pos - gap));
     }
 
     @Override

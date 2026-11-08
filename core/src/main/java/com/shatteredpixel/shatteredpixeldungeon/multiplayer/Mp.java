@@ -7,6 +7,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.Rankings;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -61,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -71,6 +74,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
+import net.iharder.Base64;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -83,9 +87,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * 联机核心：房主/访客状态机、帧协议与多人同步。
@@ -126,7 +133,7 @@ public class Mp {
      * 联机模块版本号：显示在联机菜单右下角，并记录在根目录《更新日志.txt》。
      * 不得随意迭代：仅在用户明确指示“更新至某某版本”时修改，同时追加更新日志。
      */
-    public static final String MP_VERSION = "v0.1.1";
+    public static final String MP_VERSION = "v0.2.0";
     /** 最大人数：1 房主 + 3 访客（推荐上限，理由见 PROGRESS §10 多人适配） */
     public static final int MAX_PLAYERS = 4;
 
@@ -134,13 +141,19 @@ public class Mp {
      * 联机协议版本。线协议（帧类型/载荷格式）改动时必须递增；
      * 双方版本不一致会拒绝连接，避免旧版本用不兼容的存档/协议混连。
      */
-    public static final int MP_PROTOCOL_VERSION = 6;
+    public static final int MP_PROTOCOL_VERSION = 14;
 
     /** 连续多少个 PING 收不到 PONG 就判定连接中断（每 3 秒一次，约 15 秒） */
     private static final int PING_MISS_LIMIT = 5;
 
     /** 版本握手超时（毫秒）：超时视为对方版本过旧或未完成握手。 */
     private static final long HANDSHAKE_TIMEOUT_MS = 5000L;
+
+    /** 他人最高分对局详情请求超时（毫秒）。 */
+    private static final long PROFILE_REQUEST_TIMEOUT_MS = 5000L;
+
+    /** 个人资料/房间状态中携带的徽章数量上限（防御异常数据）。 */
+    private static final int MAX_PROFILE_BADGES = 256;
 
     /** 幽灵头顶血量条尺寸。 */
     private static final float HP_BAR_WIDTH = 16f;
@@ -189,6 +202,14 @@ public class Mp {
         volatile byte[] heroInfo = null;
         /** 对端是否为管理员（房主授予）。 */
         volatile boolean admin = false;
+        /** 对端资料：UUID（入房后由 PROFILE 帧上报）。 */
+        volatile String uuid = "";
+        /** 对端佩戴的徽章（最多 3 枚，入房后由 PROFILE 帧上报）。 */
+        volatile List<Badges.Badge> badges = Collections.emptyList();
+        /** 对端已拥有的全部徽章（个人主页徽章页用；由 PROFILE 帧上报）。 */
+        volatile List<Badges.Badge> allBadges = Collections.emptyList();
+        /** 对端历史最高分（含每日挑战；由 PROFILE 帧上报）。 */
+        volatile int highestScore = 0;
         /** 房主开始新游戏导致的断开（不重复播报普通断线）。 */
         volatile boolean worldEnded = false;
         /** 房主换档后等待该访客保存旧英雄并回 WORLD_READY。 */
@@ -262,6 +283,113 @@ public class Mp {
         public List<RttRec> recs;
     }
 
+    /** 房间内一名玩家的只读快照（开局前使用，不依赖 Dungeon.hero）。 */
+    public static class RoomPlayerInfo {
+        /** 玩家 id（房主为 0）。 */
+        public final int id;
+        /** 玩家名。 */
+        public final String name;
+        /** 房间内选择的职业；null=尚未选择。 */
+        public final HeroClass heroClass;
+        /** 是否房主。 */
+        public final boolean isHost;
+        /** 展示用 UUID（与每日挑战一致）。 */
+        public final String uuid;
+        /** 佩戴的徽章（0~3 枚）。 */
+        public final List<Badges.Badge> badges;
+        /** 已拥有的全部徽章（个人主页徽章页用）。 */
+        public final List<Badges.Badge> allBadges;
+        /** 是否管理员（房主也可由 localAdmin 标记；通常访客使用）。 */
+        public final boolean isAdmin;
+        /** 历史最高分（含每日挑战）。 */
+        public final int highestScore;
+
+        RoomPlayerInfo(int id, String name, HeroClass heroClass, boolean isHost,
+                       String uuid, List<Badges.Badge> badges, List<Badges.Badge> allBadges,
+                       boolean isAdmin, int highestScore) {
+            this.id = id;
+            this.name = name;
+            this.heroClass = heroClass;
+            this.isHost = isHost;
+            this.uuid = uuid == null ? "" : uuid;
+            this.badges = badges == null
+                    ? Collections.emptyList()
+                    : Collections.unmodifiableList(new ArrayList<>(badges));
+            this.allBadges = allBadges == null
+                    ? Collections.emptyList()
+                    : Collections.unmodifiableList(new ArrayList<>(allBadges));
+            this.isAdmin = isAdmin;
+            this.highestScore = highestScore;
+        }
+
+        RoomPlayerInfo(int id, String name, HeroClass heroClass, boolean isHost) {
+            this(id, name, heroClass, isHost, "", Collections.emptyList(),
+                    Collections.emptyList(), false, 0);
+        }
+    }
+
+    /** 房间当前选择的存档。 */
+    public static class RoomSaveInfo {
+        /** 是否已选择存档。 */
+        public final boolean selected;
+        /** 存档槽位（未选择时为 -1）。 */
+        public final int slot;
+        /** 世界种子（未选择时为 Long.MIN_VALUE）。 */
+        public final long seed;
+        /** 是否新档（尚未写入磁盘）。 */
+        public final boolean isNew;
+        /** 房主在该房间使用的职业；已有存档时来自存档。 */
+        public final HeroClass hostClass;
+        /** 层数（已有存档时来自存档）。 */
+        public final int depth;
+        /** 英雄等级（已有存档时来自存档）。 */
+        public final int level;
+        /** 是否已经开过一局（用于「继续对局」文案）。 */
+        public final boolean started;
+
+        RoomSaveInfo(boolean selected, int slot, long seed, boolean isNew,
+                     HeroClass hostClass, int depth, int level, boolean started) {
+            this.selected = selected;
+            this.slot = slot;
+            this.seed = seed;
+            this.isNew = isNew;
+            this.hostClass = hostClass;
+            this.depth = depth;
+            this.level = level;
+            this.started = started;
+        }
+    }
+
+    /** 大厅房间列表的一行。 */
+    public static class RoomListing {
+        /** 6 位房间号。 */
+        public final String code;
+        /** 当前人数（含房主）。 */
+        public final int players;
+        /** 人数上限。 */
+        public final int maxPlayers;
+        /** 房主名。 */
+        public final String hostName;
+        /** 房间是否设置了密码。 */
+        public final boolean locked;
+
+        RoomListing(String code, int players, int maxPlayers, String hostName,
+                    boolean locked) {
+            this.code = code;
+            this.players = players;
+            this.maxPlayers = maxPlayers;
+            this.hostName = hostName;
+            this.locked = locked;
+        }
+
+        RoomListing(String code, int players, int maxPlayers, String hostName) {
+            this(code, players, maxPlayers, hostName, false);
+        }
+    }
+
+    private static final RoomSaveInfo EMPTY_ROOM_SAVE =
+            new RoomSaveInfo(false, -1, Long.MIN_VALUE, false, null, 0, 1, false);
+
     private final List<Peer> peers = new ArrayList<>();
 
     private GameScene lastScene;
@@ -301,8 +429,21 @@ public class Mp {
     private static final String MP_QUICKSLOT = "mp_quickslot";
     /** 访客英雄档里保存的探图数据（visited/mapped 按层分键）：临时世界退出即删，探图必须自己留档 */
     private static final String MP_EXPLORED = "mp_explored_";
+    /** STATE 的 game bundle 里附带的“初始世界包”：第0层初始 game.dat + 各层初始层档。 */
+    private static final String MP_INIT_WORLD = "mp_init_world";
+    /** 房主存档目录下的初始快照子目录。 */
+    private static final String MP_INIT_DIR = "mp_init";
+    /** 访客自己的持久世界目录前缀（按房主世界种子分档）。 */
+    private static final String MP_WORLD_PREFIX = "mp_world_";
+    private static final String MP_INIT_GAME = "game";
+    private static final String MP_INIT_LEVELS = "levels";
     /** 当前 Dungeon.hero 是否属于已进入的联机世界（防止把单人或过期英雄写入访客档） */
     private boolean guestWorldActive = false;
+    /** 访客当前使用的是否为“从房主初始快照创建的持久世界”（断线不删，存到 mp_world_<seed>/）。 */
+    private boolean guestWorldPersistent = false;
+    /** 房主首次生成楼层时暂存深度/分支；switchLevel 完成后由 onLevelSwitched 消费。 */
+    private int pendingFreshDepth = -1;
+    private int pendingFreshBranch = -1;
     /** 访客英雄档存在但读不出来：首次加入前先备份旧档，避免直接覆盖丢数据 */
     private boolean guestHeroUnreadable = false;
     /** 访客最近一次在本机世界中的位置（内存缓存；房主退出/重进时优先于可能滞后的英雄档） */
@@ -321,15 +462,81 @@ public class Mp {
     private volatile boolean serverMode = false;
     /** 服务器地址（不含端口）。 */
     private volatile String serverAddress = null;
-    /** 服务器数据端口（房主从 ROOM 响应获得）。 */
-    private volatile int serverDataPort = DEFAULT_PORT + 1;
+    /** 服务器数据端口（房主从 ROOM 响应获得；初值用字面量避免单例早于常量初始化）。 */
+    private volatile int serverDataPort = 28772;
     /** 当前房间号（房主开房成功后 / 访客加入时）。 */
     private volatile String roomCode = null;
+    /** 房主设置的房间密码；空串=无密码（只影响之后加入的访客）。 */
+    private volatile String roomPassword = "";
     /** 服务器模式：大厅控制连接（房主）或等待配对连接（访客）。 */
     private volatile Socket lobbySocket;
+    /** 房主控制连接的输出流（与心跳共用，避免并发写字节交错）。 */
+    private volatile DataOutputStream lobbyOut;
+
+    // ---------------------------------------------------------------- 房间预开局状态（大厅/房间界面）
+
+    /** 房间当前存档快照（直接 new，不能引用靠后的 static 常量：Mp 单例在类顶部先初始化）。 */
+    private volatile RoomSaveInfo roomSave =
+            new RoomSaveInfo(false, -1, Long.MIN_VALUE, false, null, 0, 1, false);
+    /** 房间玩家列表快照（房主端权威，访客端来自 ROOM_STATE）。 */
+    private volatile List<RoomPlayerInfo> roomRoster = Collections.emptyList();
+    /** 房间 UI 版本号：变化时场景重建列表/刷新按钮。 */
+    private final AtomicInteger roomUiVersion = new AtomicInteger();
+    /** 房主端：roster/存档变化后需要广播。 */
+    private volatile boolean roomStateDirty = false;
+    private volatile long lastRoomStateSent = 0L;
+    /** 房间场景 PING 计时（GameScene 之外也要保活）。 */
+    private volatile long lastRoomPingTime = 0L;
+    /** 房主在房间内选择的职业（新档用）。 */
+    private volatile HeroClass hostRoomClass = null;
+    /** 访客自己在房间内选择的职业（新档/无存档时用）。 */
+    private volatile HeroClass guestRoomClass = null;
+    /** guestRoomClass 对应的存档种子，避免误用到别的世界。 */
+    private volatile long guestRoomClassSeed = Long.MIN_VALUE;
+    /** 访客在该世界种子下已有英雄档：锁定选择英雄。 */
+    private volatile boolean guestRoomHeroLocked = false;
+    private volatile long guestLockCacheSeed = Long.MIN_VALUE;
+    private volatile boolean guestLockCacheValid = false;
+    private volatile HeroClass guestLockCacheClass = null;
+    /** 最近一次发给房主的房间职业，避免 ROOM_STATE 周期重发时刷屏。 */
+    private volatile long lastRoomHeroSentSeed = Long.MIN_VALUE;
+    private volatile HeroClass lastRoomHeroSent = null;
+    /** 房间模式：正在选择存档（StartScene）。 */
+    private volatile boolean selectingRoomSave = false;
+    /** 房间模式：正在为新档配置职业/种子；>=0 表示待写入的存档槽。 */
+    private volatile int roomNewGameSlot = -1;
+    /** 新建档在 Dungeon.init() 后需要复位的 overrideSeed。 */
+    private volatile boolean roomSeedPending = false;
+    /** 新建档首次进入 GameScene 时需要落盘一次。 */
+    private volatile boolean pendingRoomSaveWrite = false;
+    /** 房间列表缓存与请求状态。 */
+    private volatile List<RoomListing> roomList = Collections.emptyList();
+    private final AtomicInteger roomListVersion = new AtomicInteger();
+    private volatile boolean roomListLoading = false;
+    private volatile String roomListError = null;
+    private volatile long lastRoomListRequest = 0L;
+    /** 访客端：上一次 ROOM_STATE 的内容签名，避免每 2 秒重建 UI。 */
+    private volatile String roomStateSignature = "";
+
+    // ---------------------------------------------------------------- 个人资料（个人设置/个人主页）
+
+    /** 本机资料（懒加载；大厅与房间共用）。 */
+    private volatile MpProfile myProfile = null;
+    /** 访客端：本机资料有变化，等待发给房主。 */
+    private volatile boolean profileDirty = true;
+    private volatile long lastProfileSent = 0L;
+    /** 按需请求的最高分对局记录（targetId → Record；null 表示已确认无记录）。 */
+    private final Object profileLock = new Object();
+    private final HashMap<Integer, Rankings.Record> profileRecords = new HashMap<>();
+    private final HashSet<Integer> profileRecordsLoaded = new HashSet<>();
+    private final HashMap<Integer, Long> profileRequestAt = new HashMap<>();
+    /** 待联机大厅显示的提示（避免场景切换竞态导致弹窗丢失）。 */
+    private volatile String pendingLobbyMessage = null;
         /** 聊天输入框是否打开（防止按键重入）。 */
     public volatile boolean chatOpen = false;
     private StyledButton chatButton;          // 局内聊天按钮（Mp 自己挂在 GameScene 上）
+    /** ROOM_EVENT 事件：某玩家已返回房间。 */
+    static final int ROOM_EVENT_RETURNED = 1;
 
     // ---------------------------------------------------------------- 开房
 
@@ -476,8 +683,20 @@ public class Mp {
      * @param code 6 位房间号。
      */
     public synchronized void joinViaServer(String address, String code) {
+        joinViaServer(address, code, "");
+    }
+
+    /**
+     * 服务器模式加入（带房间密码；空字符串=无密码）。
+     *
+     * @param address 服务器 IP/域名，可带端口（默认 28771）。
+     * @param code 6 位房间号。
+     * @param password 房间密码，可为空。
+     */
+    public synchronized void joinViaServer(String address, String code, String password) {
         final String raw = address == null ? "" : address.trim();
         final String room = code == null ? "" : code.trim();
+        final String pass = password == null ? "" : password.trim();
         if (raw.isEmpty()) {
             status = Messages.get(Mp.class, "error_empty_address");
             return;
@@ -497,7 +716,8 @@ public class Mp {
         localAdmin = false;
         running = true;
         status = Messages.get(Mp.class, "status_server_join", room);
-        worker = new Thread(() -> runJoinViaServer(host, port, room), "mp-lobby-join");
+        final String joinPassword = pass;
+        worker = new Thread(() -> runJoinViaServer(host, port, room, joinPassword), "mp-lobby-join");
         worker.setDaemon(true);
         worker.start();
     }
@@ -520,6 +740,1378 @@ public class Mp {
         return roomCode;
     }
 
+    /**
+     * 当前是否在一个已建立的服务器房间里（大厅/房间/对局中均可）。
+     *
+     * @return 是否在房间中。
+     */
+    public boolean isInRoom() {
+        return serverMode && roomCode != null && role != Role.NONE;
+    }
+
+    /**
+     * 当前房间密码（仅房主有效；空串=无密码）。
+     *
+     * @return 房间密码。
+     */
+    public String getRoomPassword() {
+        return roomPassword;
+    }
+
+    /**
+     * 房主设置/清除房间密码；空字符串表示无密码。只影响之后加入的访客。
+     *
+     * @param password 新密码。
+     */
+    public void setRoomPassword(String password) {
+        if (!isHost()) return;
+        String clean = password == null ? "" : password.replace('\r', ' ').replace('\n', ' ').trim();
+        if (clean.length() > 32) clean = clean.substring(0, 32);
+        roomPassword = clean;
+        Socket control = lobbySocket;
+        DataOutputStream out = lobbyOut;
+        if (control != null && !control.isClosed() && out != null) {
+            try {
+                writeControlLine(out, clean.isEmpty() ? "PASSWORD" : "PASSWORD " + clean);
+            } catch (Throwable ignored) {}
+        }
+        roomUiVersion.incrementAndGet();
+    }
+
+    // ---------------------------------------------------------------- 大厅房间列表
+
+    /**
+     * 请求大厅房间列表；2 秒内重复调用会被忽略，内部单线程请求，不阻塞 UI。
+     */
+    public void requestRoomList() {
+        requestRoomList(defaultServerAddress());
+    }
+
+    /**
+     * 请求指定服务器的房间列表。
+     *
+     * @param address 服务器地址（可带端口）。
+     */
+    public void requestRoomList(String address) {
+        final String raw = address == null ? "" : address.trim();
+        if (raw.isEmpty()) return;
+        long now = System.currentTimeMillis();
+        synchronized (this) {
+            if (roomListLoading || now - lastRoomListRequest < 2000L) return;
+            roomListLoading = true;
+            lastRoomListRequest = now;
+        }
+        Thread t = new Thread(() -> fetchRoomList(raw), "mp-room-list");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    /** 后台线程：一次 LIST 查询，解析 ROOMS/ROOM/END。 */
+    private void fetchRoomList(String address) {
+        List<RoomListing> result = new ArrayList<>();
+        String error = null;
+        Socket s = null;
+        try {
+            String[] hp = parseServerAddress(address, DEFAULT_PORT);
+            s = new Socket();
+            s.connect(new InetSocketAddress(hp[0], Integer.parseInt(hp[1])), 3000);
+            s.setSoTimeout(3000);
+            DataOutputStream out = new DataOutputStream(s.getOutputStream());
+            writeControlLine(out, "LIST");
+            InputStream in = s.getInputStream();
+            String header = readControlLine(in);
+            if (header == null) throw new IOException("no response");
+            if (header.startsWith("ERR ")) {
+                error = "BAD_REQUEST".equals(header.substring(4).trim())
+                        ? Messages.get(Mp.class, "room_list_failed")
+                        : serverErrorText(header);
+            } else if (header.startsWith("ROOMS ")) {
+                int count;
+                try {
+                    count = Integer.parseInt(header.substring("ROOMS ".length()).trim());
+                } catch (NumberFormatException e) {
+                    throw new IOException("bad room count");
+                }
+                if (count < 0 || count > 10000) throw new IOException("bad room count");
+                for (int i = 0; i < count; i++) {
+                    String line = readControlLine(in);
+                    if (line == null || "END".equals(line)) break;
+                    if (!line.startsWith("ROOM ")) continue;
+                    String[] p = line.split("\\s+", 6);
+                    if (p.length < 5) continue;
+                    try {
+                        int players = Integer.parseInt(p[2]);
+                        int max = Integer.parseInt(p[3]);
+                        if (p.length >= 6) {
+                            result.add(new RoomListing(p[1], players, max, p[5],
+                                    "1".equals(p[4])));
+                        } else {
+                            // 兼容旧服务器：没有 locked 字段
+                            result.add(new RoomListing(p[1], players, max, p[4]));
+                        }
+                    } catch (NumberFormatException ignored) {
+                        // 跳过异常行
+                    }
+                }
+            } else {
+                throw new IOException(header);
+            }
+        } catch (Throwable t) {
+            error = Messages.get(Mp.class, "room_list_failed");
+        } finally {
+            if (s != null) {
+                try { s.close(); } catch (IOException ignored) {}
+            }
+            roomList = Collections.unmodifiableList(result);
+            roomListError = error;
+            roomListLoading = false;
+            roomListVersion.incrementAndGet();
+        }
+    }
+
+    /**
+     * 最近一次房间列表快照。
+     *
+     * @return 只读列表。
+     */
+    public List<RoomListing> getRoomList() {
+        return roomList;
+    }
+
+    /**
+     * 房间列表版本号（每次请求完成递增）。
+     *
+     * @return 版本号。
+     */
+    public int getRoomListVersion() {
+        return roomListVersion.get();
+    }
+
+    /**
+     * 房间列表是否正在请求。
+     *
+     * @return 是否请求中。
+     */
+    public boolean isRoomListLoading() {
+        return roomListLoading;
+    }
+
+    /**
+     * 房间列表最近一次错误（null=成功）。
+     *
+     * @return 错误文案。
+     */
+    public String getRoomListError() {
+        return roomListError;
+    }
+
+    // ---------------------------------------------------------------- 房间预开局状态
+
+    /**
+     * 房间当前存档快照。
+     *
+     * @return 存档快照。
+     */
+    public RoomSaveInfo getRoomSave() {
+        return roomSave;
+    }
+
+    /**
+     * 房间玩家列表快照。
+     *
+     * @return 只读玩家列表。
+     */
+    public List<RoomPlayerInfo> getRoomRoster() {
+        return roomRoster;
+    }
+
+    /**
+     * 房间 UI 版本号：roster/存档/职业变化时递增，场景据此重建。
+     *
+     * @return 版本号。
+     */
+    public int getRoomUiVersion() {
+        return roomUiVersion.get();
+    }
+
+    // ---------------------------------------------------------------- 个人资料（个人设置/个人主页）
+
+    /**
+     * 本机资料（懒加载；大厅与房间共用）。
+     *
+     * @return 本机资料。
+     */
+    public MpProfile getMyProfile() {
+        MpProfile profile = myProfile;
+        if (profile == null) {
+            synchronized (this) {
+                profile = myProfile;
+                if (profile == null) {
+                    profile = MpProfile.load();
+                    myProfile = profile;
+                }
+            }
+        }
+        return profile;
+    }
+
+    /** 本机在房间/大厅的个人主页快照。 */
+    public RoomPlayerInfo getLocalProfileInfo() {
+        MpProfile profile = getMyProfile();
+        return new RoomPlayerInfo(role == Role.CLIENT && myId >= 0 ? myId : HOST_ID,
+                getMyName(), getMyRoomHeroClass(), role == Role.HOST,
+                profile.getUuid(), profile.getBadges(), profile.getAllBadges(),
+                localAdmin, profile.getHighestScore());
+    }
+
+    /** 是否某 id 就是本机玩家（大厅未联机时视为自己，仅用于个人资料窗口）。 */
+    public boolean isSelfProfileId(int id) {
+        if (role == Role.HOST) return id == HOST_ID;
+        if (role == Role.CLIENT) return myId >= 0 && id == myId;
+        return true;
+    }
+
+    /**
+     * 房间内某玩家的资料快照；自己始终读取本机最新资料。
+     *
+     * @param id 玩家 id。
+     * @return 资料；不在房间内/未知 id 返回 null。
+     */
+    public RoomPlayerInfo getRoomPlayerProfile(int id) {
+        if (isSelfProfileId(id)) {
+            MpProfile profile = getMyProfile();
+            return new RoomPlayerInfo(id, getMyName(), getMyRoomHeroClass(),
+                    role == Role.HOST, profile.getUuid(), profile.getBadges(),
+                    profile.getAllBadges(), localAdmin, profile.getHighestScore());
+        }
+        for (RoomPlayerInfo p : roomRoster) {
+            if (p.id == id) return p;
+        }
+        return null;
+    }
+
+    /** 本机资料变化（改徽章等）：房主刷新房间状态，访客等待下次 tick 上报。 */
+    public void onLocalProfileChanged() {
+        profileDirty = true;
+        if (isHost()) {
+            roomStateDirty = true;
+            roomUiVersion.incrementAndGet();
+            if (isInRoom()) flushRoomStateIfNeeded();
+        }
+    }
+
+    /** 访客把本机资料同步给房主（最多每 2 秒或资料变化时）。 */
+    public void flushProfileIfNeeded() {
+        if (role != Role.CLIENT || !isInRoom()) return;
+        long now = System.currentTimeMillis();
+        if (!profileDirty && now - lastProfileSent < 2000L) return;
+        MpProfile profile = getMyProfile();
+        try {
+            sendToAll(Proto.PROFILE, encodeProfile(myId, profile.getUuid(),
+                    profile.getBadges(), profile.getAllBadges(), profile.getHighestScore()));
+            profileDirty = false;
+            lastProfileSent = now;
+        } catch (Throwable ignored) {}
+    }
+
+    /**
+     * 按需请求某玩家的历史最高分对局详情。
+     *
+     * @param targetId 目标玩家 id（不能是自己）。
+     */
+    public void requestProfileRecord(int targetId) {
+        if (isSelfProfileId(targetId)) return;
+        long now = System.currentTimeMillis();
+        synchronized (profileLock) {
+            Long started = profileRequestAt.get(targetId);
+            if (profileRecordsLoaded.contains(targetId) && started == null) return;
+            if (started != null && now - started < PROFILE_REQUEST_TIMEOUT_MS) return;
+            profileRecords.remove(targetId);
+            profileRecordsLoaded.remove(targetId);
+            profileRequestAt.put(targetId, now);
+        }
+        try {
+            if (isHost()) {
+                Peer target = findPeerById(targetId);
+                if (target != null) {
+                    sendTo(target, Proto.PROFILE_REQ, encodeProfileReq(targetId, HOST_ID));
+                }
+            } else {
+                sendToAll(Proto.PROFILE_REQ, encodeProfileReq(targetId, myId));
+            }
+        } catch (Throwable ignored) {}
+    }
+
+    /** 某玩家的最高分记录是否已返回（含“无记录”结果）。 */
+    public boolean isProfileRecordLoaded(int targetId) {
+        synchronized (profileLock) {
+            return profileRecordsLoaded.contains(targetId);
+        }
+    }
+
+    /** 已返回的最高分记录；null 表示该玩家没有历史记录或尚未返回。 */
+    public Rankings.Record getProfileRecord(int targetId) {
+        synchronized (profileLock) {
+            return profileRecords.get(targetId);
+        }
+    }
+
+    /** 请求是否已超过 5 秒仍未返回。 */
+    public boolean isProfileRequestTimedOut(int targetId) {
+        synchronized (profileLock) {
+            Long started = profileRequestAt.get(targetId);
+            return started != null && System.currentTimeMillis() - started >= PROFILE_REQUEST_TIMEOUT_MS;
+        }
+    }
+
+    /** 关闭详情窗口时取消未完成的请求。 */
+    public void cancelProfileRequest(int targetId) {
+        synchronized (profileLock) {
+            profileRequestAt.remove(targetId);
+        }
+    }
+
+    /** 房主：收到访客的 PROFILE，更新该 peer 的资料并刷新房间状态。 */
+    private void applyPeerProfile(Peer p, byte[] data) {
+        try {
+            ProfilePayload pp = decodeProfile(data);
+            p.uuid = pp.uuid;
+            p.badges = Collections.unmodifiableList(new ArrayList<>(pp.badges));
+            p.allBadges = Collections.unmodifiableList(new ArrayList<>(pp.allBadges));
+            p.highestScore = pp.highestScore;
+            roomStateDirty = true;
+            roomUiVersion.incrementAndGet();
+        } catch (IOException ignored) {}
+    }
+
+    /** 房主：处理最高分详情请求（自己直接回；访客请求转发给目标访客）。 */
+    private void handleProfileRequest(Peer from, ProfileReqPayload req) {
+        int requester = from == null ? HOST_ID : from.id;
+        int target = req.targetId;
+        if (target == HOST_ID) {
+            sendProfileRecord(requester, HOST_ID, ownRecordBytes());
+            return;
+        }
+        Peer targetPeer = findPeerById(target);
+        if (targetPeer == null) return;   // 目标不在房间，忽略
+        try {
+            sendTo(targetPeer, Proto.PROFILE_REQ, encodeProfileReq(target, requester));
+        } catch (Throwable ignored) {}
+    }
+
+    /** 访客：房主转发来的详情请求；只有目标是自己时才回应。 */
+    private void handleGuestProfileRequest(Peer from, ProfileReqPayload req) {
+        if (from == null || from.id != HOST_ID) return;   // 只接受房主转发的请求
+        if (req.targetId != myId) return;
+        try {
+            sendTo(from, Proto.PROFILE_DATA,
+                    encodeProfileData(myId, req.requesterId, ownRecordBytes()));
+        } catch (Throwable ignored) {}
+    }
+
+    /** PROFILE_DATA 路由：房主回给请求者，请求者保存结果。 */
+    private void handleProfileData(Peer from, ProfileDataPayload pd, byte[] raw) {
+        if (isHost()) {
+            // 只接受目标玩家本人发来的记录，防止伪造他人资料
+            if (from == null || from.id != pd.targetId) return;
+            if (pd.requesterId == HOST_ID) {
+                storeProfileRecord(pd.targetId, pd.data);
+            } else {
+                Peer requester = findPeerById(pd.requesterId);
+                if (requester != null) {
+                    try { sendTo(requester, Proto.PROFILE_DATA, raw); } catch (Throwable ignored) {}
+                }
+            }
+        } else {
+            if (from == null || from.id != HOST_ID) return;   // 只信任房主转发的数据
+            if (pd.requesterId == myId) {
+                storeProfileRecord(pd.targetId, pd.data);
+            }
+        }
+    }
+
+    /** 把某玩家的最高分记录发给请求者；请求者=房主时直接本地保存。 */
+    private void sendProfileRecord(int requesterId, int targetId, byte[] data) {
+        if (requesterId == HOST_ID) {
+            storeProfileRecord(targetId, data);
+            return;
+        }
+        Peer requester = findPeerById(requesterId);
+        if (requester == null) return;
+        try {
+            sendTo(requester, Proto.PROFILE_DATA,
+                    encodeProfileData(targetId, requesterId, data));
+        } catch (Throwable ignored) {}
+    }
+
+    /** 本机最高分记录的网络字节（无记录时为空数组）。 */
+    private byte[] ownRecordBytes() {
+        Rankings.Record record = MpProfile.bestRecord();
+        if (record == null) return new byte[0];
+        try {
+            return MpProfile.encodeRecord(record);
+        } catch (IOException e) {
+            return new byte[0];
+        }
+    }
+
+    /** 保存按需取回的最高分记录（空字节=确认无记录）。 */
+    private void storeProfileRecord(int targetId, byte[] data) {
+        Rankings.Record record = null;
+        if (data != null && data.length > 0) {
+            try { record = MpProfile.decodeRecord(data); } catch (Throwable ignored) {}
+        }
+        synchronized (profileLock) {
+            profileRecords.put(targetId, record);
+            profileRecordsLoaded.add(targetId);
+            profileRequestAt.remove(targetId);
+        }
+    }
+
+    /**
+     * 本机在房间内使用的职业（房主=存档职业或自选；访客=存档职业或自选）。
+     *
+     * @return 职业；null=未选择。
+     */
+    public HeroClass getMyRoomHeroClass() {
+        if (isHost()) return effectiveHostClass();
+        return guestRoomHeroLocked ? guestLockCacheClass : guestRoomClass;
+    }
+
+    /**
+     * 访客是否因该世界已有英雄档而无法改职业。
+     *
+     * @return 是否锁定。
+     */
+    public boolean isGuestHeroLocked() {
+        return role == Role.CLIENT && guestRoomHeroLocked;
+    }
+
+    /**
+     * 房主「开始游戏」是否可用。
+     *
+     * @return 是否可用。
+     */
+    public boolean canHostStartGame() {
+        return isHost() && isInRoom() && roomSave.selected
+                && roomSave.seed != Long.MIN_VALUE
+                && (!roomSave.isNew || hostRoomClass != null);
+    }
+
+    /**
+     * 是否正在房间的存档选择界面。
+     *
+     * @return 是否选档中。
+     */
+    public boolean isSelectingRoomSave() {
+        return selectingRoomSave;
+    }
+
+    /** 进入房间选档模式（StartScene 读取）。 */
+    public void beginRoomSaveSelect() {
+        selectingRoomSave = true;
+    }
+
+    /** 取消房间选档（返回房间）。 */
+    public void cancelRoomSaveSelect() {
+        selectingRoomSave = false;
+        roomNewGameSlot = -1;
+    }
+
+    /**
+     * StartScene 房间模式：选择某个存档槽位。
+     *
+     * <p>已有档读取 slot/seed/职业/层数；空档生成随机种子并记录为待创建新档。</p>
+     *
+     * @param slot 存档槽位。
+     */
+    public void selectRoomSave(int slot) {
+        if (!isHost() || !serverMode) return;
+        roomNewGameSlot = -1;
+        GamesInProgress.setUnknown(slot);
+        GamesInProgress.Info info = GamesInProgress.check(slot);
+        if (info != null) {
+            if (info.seed < 0) {
+                status = Messages.get(Mp.class, "room_save_invalid");
+                selectingRoomSave = false;
+                return;
+            }
+            hostSelectExistingRoomSave(info);
+        } else {
+            hostSelectNewRoomSave(slot);
+        }
+        selectingRoomSave = false;
+    }
+
+    /**
+     * 房主选择已有存档（由 StartScene 调用）。
+     *
+     * @param info 存档信息。
+     */
+    public void hostSelectExistingRoomSave(GamesInProgress.Info info) {
+        if (!isHost() || info == null) return;
+        long oldSeed = roomSave.selected ? roomSave.seed : Long.MIN_VALUE;
+        roomSave = new RoomSaveInfo(true, info.slot, info.seed, false,
+                info.heroClass, info.depth, info.level, false);
+        if (oldSeed != info.seed) clearPeerRoomClasses();
+        roomStateDirty = true;
+        roomUiVersion.incrementAndGet();
+    }
+
+    /**
+     * 房主选择空存档位，生成随机种子（真正写盘在首次进入 GameScene 时）。
+     *
+     * @param slot 空槽位。
+     */
+    public void hostSelectNewRoomSave(int slot) {
+        if (!isHost()) return;
+        long seed = DungeonSeed.randomSeed();
+        long oldSeed = roomSave.selected ? roomSave.seed : Long.MIN_VALUE;
+        roomSave = new RoomSaveInfo(true, slot, seed, true,
+                hostRoomClass, 0, 1, false);
+        if (oldSeed != seed) clearPeerRoomClasses();
+        roomStateDirty = true;
+        roomUiVersion.incrementAndGet();
+    }
+
+    /**
+     * 房间「选择存档」中点了空槽：进入原版新建游戏界面配置职业/种子/挑战。
+     *
+     * @param slot 空槽位。
+     */
+    public void beginRoomNewGameConfig(int slot) {
+        if (!isHost() || !serverMode) return;
+        roomNewGameSlot = slot;
+        selectingRoomSave = true;
+    }
+
+    /** 是否正在房间的新档配置界面（HeroSelectScene）。 */
+    public boolean isRoomNewGameConfig() {
+        return roomNewGameSlot >= 0;
+    }
+
+    /** 取消房间新档配置（从新建界面返回选档界面时调用）。 */
+    public void cancelRoomNewGameConfig() {
+        roomNewGameSlot = -1;
+    }
+
+    /**
+     * 原版新建游戏界面点开始时调用：记录职业与种子并返回房间，而不是直接开局。
+     *
+     * <p>挑战/难度/娱乐模式等设置由 SPDSettings 保存，真正开局（房间「开始游戏」）
+     * 时 {@code Dungeon.init()} 会读取当前值。</p>
+     *
+     * @param cls 房主选择的职业。
+     * @return 是否成功记录。
+     */
+    public boolean finishRoomNewGameConfig(HeroClass cls) {
+        if (!isHost() || !serverMode || cls == null || roomNewGameSlot < 0) return false;
+        int slot = roomNewGameSlot;
+        String custom = SPDSettings.customSeed();
+        long seed;
+        if (custom != null && !custom.trim().isEmpty()) {
+            seed = DungeonSeed.convertFromText(custom.trim());
+        } else {
+            seed = DungeonSeed.randomSeed();
+        }
+        if (seed < 0) seed = DungeonSeed.randomSeed();
+        long oldSeed = roomSave.selected ? roomSave.seed : Long.MIN_VALUE;
+        hostRoomClass = cls;
+        roomSave = new RoomSaveInfo(true, slot, seed, true, cls, 0, 1, false);
+        if (oldSeed != seed) clearPeerRoomClasses();
+        roomNewGameSlot = -1;
+        selectingRoomSave = false;
+        roomStateDirty = true;
+        roomUiVersion.incrementAndGet();
+        flushRoomStateIfNeeded();
+        return true;
+    }
+
+    /**
+     * 房主在房间内选择职业（已有存档时锁定）。
+     *
+     * @param cls 职业。
+     */
+    public void hostChooseRoomHero(HeroClass cls) {
+        if (!isHost() || cls == null) return;
+        if (roomSave.selected && !roomSave.isNew) {
+            status = Messages.get(Mp.class, "room_hero_locked");
+            return;
+        }
+        hostRoomClass = cls;
+        roomStateDirty = true;
+        roomUiVersion.incrementAndGet();
+        flushRoomStateIfNeeded();
+    }
+
+    /**
+     * 访客在房间内选择职业（已有该世界英雄档时锁定）。
+     *
+     * @param cls 职业。
+     */
+    public void guestChooseRoomHero(HeroClass cls) {
+        if (role != Role.CLIENT || cls == null) return;
+        if (guestRoomHeroLocked) {
+            status = Messages.get(Mp.class, "room_hero_locked");
+            return;
+        }
+        guestRoomClass = cls;
+        if (roomSave.selected) guestRoomClassSeed = roomSave.seed;
+        lastRoomHeroSentSeed = Long.MIN_VALUE;
+        lastRoomHeroSent = null;
+        roomUiVersion.incrementAndGet();
+        guestSyncHeroForRoom();
+    }
+
+    /**
+     * 访客是否可以从房间直接进入已有对局（房主仍在游戏中且有本地世界存档）。
+     *
+     * @return 是否可进入。
+     */
+    public boolean canGuestEnterFromRoom() {
+        if (role != Role.CLIENT || !isInRoom()) return false;
+        RoomSaveInfo save = roomSave;
+        return save.selected && !save.isNew && save.seed != Long.MIN_VALUE
+                && hasGuestWorldForSeed(save.seed);
+    }
+
+    /**
+     * 访客在房主仍对局时从房间进入自己的持久世界（不等待房主重新发 STATE）。
+     */
+    public void guestEnterFromRoom() {
+        if (role != Role.CLIENT || !isInRoom()) return;
+        RoomSaveInfo save = roomSave;
+        if (!save.selected || save.isNew || save.seed == Long.MIN_VALUE) {
+            status = Messages.get(Mp.class, "room_start_no_save");
+            return;
+        }
+        if (!hasGuestWorldForSeed(save.seed)) {
+            status = Messages.get(Mp.class, "room_enter_no_local_world");
+            return;
+        }
+        long previousSeed = worldSeed;
+        worldSeed = save.seed;
+        Bundle guest = loadGuestHeroBundle();
+        if (guest == null) guest = loadGuestHeroFromWorld();
+        if (guest == null) {
+            worldSeed = previousSeed;
+            status = Messages.get(Mp.class, "room_enter_no_local_world");
+            return;
+        }
+        if (!enterGuestWorld(guest, false)) {
+            worldSeed = previousSeed;
+        }
+    }
+
+    /**
+     * 访客根据当前房间存档同步英雄：已有该世界英雄档则锁定，否则把房间选择发给房主。
+     */
+    public void guestSyncHeroForRoom() {
+        if (role != Role.CLIENT || !serverMode) return;
+        RoomSaveInfo save = roomSave;
+        if (!save.selected || save.seed == Long.MIN_VALUE) {
+            if (guestRoomHeroLocked) {
+                guestRoomHeroLocked = false;
+                guestLockCacheValid = false;
+                roomUiVersion.incrementAndGet();
+            }
+            // 还没选存档也可以先把房间内选的职业发给房主显示
+            if (guestRoomClass != null && myId >= 0
+                    && (lastRoomHeroSentSeed != Long.MIN_VALUE || lastRoomHeroSent != guestRoomClass)) {
+                try {
+                    sendToAll(Proto.HERO, encodeHero(myId, guestRoomClass));
+                } catch (Throwable ignored) {}
+                lastRoomHeroSentSeed = Long.MIN_VALUE;
+                lastRoomHeroSent = guestRoomClass;
+            }
+            return;
+        }
+        long seed = save.seed;
+        if (!guestLockCacheValid || guestLockCacheSeed != seed) {
+            guestLockCacheSeed = seed;
+            guestLockCacheValid = true;
+            boolean has = hasGuestHeroFile(seed);
+            guestLockCacheClass = has ? guestHeroClassForSeed(seed) : null;
+            guestRoomHeroLocked = has;
+            guestRoomClassSeed = seed;
+            if (has) {
+                lastRoomHeroSentSeed = Long.MIN_VALUE;
+                lastRoomHeroSent = null;
+            }
+            roomUiVersion.incrementAndGet();
+        }
+        HeroClass cls = guestRoomHeroLocked ? guestLockCacheClass : guestRoomClass;
+        if (cls != null && myId >= 0
+                && (lastRoomHeroSentSeed != seed || lastRoomHeroSent != cls)) {
+            try {
+                sendToAll(Proto.HERO, encodeHero(myId, cls));
+            } catch (Throwable ignored) {}
+            lastRoomHeroSentSeed = seed;
+            lastRoomHeroSent = cls;
+        }
+    }
+
+    /** 访客本机在该世界种子下是否有英雄档（含 .bak）。 */
+    private boolean hasGuestHeroFile(long seed) {
+        String file = mpHeroFile(seed);
+        if (file == null) return false;
+        try {
+            FileHandle f = FileUtils.getFileHandle(file);
+            if (f.exists() && f.length() > 1) return true;
+            FileHandle bak = FileUtils.getFileHandle(file + ".bak");
+            return bak.exists() && bak.length() > 1;
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    /** 只读取指定世界种子的访客英雄职业（不修改 worldSeed）。 */
+    private HeroClass guestHeroClassForSeed(long seed) {
+        Bundle b = loadGuestHeroBundleForSeed(seed);
+        if (b == null) return null;
+        try {
+            Bundle hero = guestHeroPart(b);
+            if (hero != null && hero.contains("class")) {
+                return hero.getEnum("class", HeroClass.class);
+            }
+        } catch (Throwable ignored) {}
+        return null;
+    }
+
+    /** 只读指定种子的访客英雄档（主档损坏时回退 .bak）。 */
+    private Bundle loadGuestHeroBundleForSeed(long seed) {
+        String file = mpHeroFile(seed);
+        if (file == null) return null;
+        try {
+            FileHandle f = FileUtils.getFileHandle(file);
+            if (f.exists()) {
+                Bundle b = FileUtils.bundleFromFile(file);
+                if (b != null && guestHeroPart(b) != null) return b;
+            }
+        } catch (Throwable ignored) {}
+        try {
+            FileHandle bak = FileUtils.getFileHandle(file + ".bak");
+            if (bak.exists()) {
+                Bundle b = FileUtils.bundleFromFile(file + ".bak");
+                if (b != null && guestHeroPart(b) != null) return b;
+            }
+        } catch (Throwable ignored) {}
+        return null;
+    }
+
+    /** 房主清除所有 peer 的旧职业（换存档种子后由 ROOM_STATE 触发重发）。 */
+    private void clearPeerRoomClasses() {
+        synchronized (peers) {
+            for (Peer p : peers) {
+                p.heroClass = null;
+            }
+        }
+        roomUiVersion.incrementAndGet();
+    }
+
+    /** 房主实际生效的职业：已有存档=存档职业，新档=房间选择。 */
+    private HeroClass effectiveHostClass() {
+        if (roomSave.selected && !roomSave.isNew) return roomSave.hostClass;
+        return hostRoomClass;
+    }
+
+    /** 房主构建权威 roster（自己 + 所有 peer）。 */
+    private List<RoomPlayerInfo> buildRoomRoster() {
+        List<RoomPlayerInfo> list = new ArrayList<>();
+        MpProfile profile = getMyProfile();
+        list.add(new RoomPlayerInfo(HOST_ID, getMyName(), effectiveHostClass(), true,
+                profile.getUuid(), profile.getBadges(), profile.getAllBadges(),
+                localAdmin, profile.getHighestScore()));
+        List<Peer> snapshot;
+        synchronized (peers) {
+            snapshot = new ArrayList<>(peers);
+        }
+        for (Peer p : snapshot) {
+            if (p.id <= 0) continue;
+            list.add(new RoomPlayerInfo(p.id, displayName(p.name), p.heroClass, false,
+                    p.uuid, p.badges, p.allBadges, p.admin, p.highestScore));
+        }
+        return list;
+    }
+
+    /** 房主：把当前 roster/存档广播给所有已完成握手的访客。 */
+    private void broadcastRoomState() {
+        if (role != Role.HOST || !serverMode) return;
+        List<RoomPlayerInfo> roster = buildRoomRoster();
+        roomRoster = Collections.unmodifiableList(roster);
+        byte[] payload;
+        try {
+            payload = encodeRoomState(roomSave, roster);
+        } catch (IOException e) {
+            status = Messages.get(Mp.class, "room_state_encode_failed");
+            return;
+        }
+        List<Peer> snapshot;
+        synchronized (peers) {
+            snapshot = new ArrayList<>(peers);
+        }
+        for (Peer p : snapshot) {
+            if (!p.versionOk) continue;
+            try { sendTo(p, Proto.ROOM_STATE, payload); } catch (Throwable ignored) {}
+        }
+        roomStateDirty = false;
+        lastRoomStateSent = System.currentTimeMillis();
+    }
+
+    /** 房主：有变化或每 2 秒补发房间状态。 */
+    public void flushRoomStateIfNeeded() {
+        if (role != Role.HOST || !serverMode) return;
+        long now = System.currentTimeMillis();
+        if (roomStateDirty || now - lastRoomStateSent >= 2000L) {
+            broadcastRoomState();
+        }
+    }
+
+    /** 房间场景每帧调用：房间状态补发 + 访客英雄同步 + PING 保活。 */
+    public void tickRoom() {
+        if (!serverMode) return;
+        if (role == Role.HOST) flushRoomStateIfNeeded();
+        if (role == Role.CLIENT) {
+            guestSyncHeroForRoom();
+            flushProfileIfNeeded();
+        }
+        tickPing();
+    }
+
+    /**
+     * 房主开始/继续对局（从房间场景调用）。
+     *
+     * @return 是否成功发起。
+     */
+    public boolean startGameFromRoom() {
+        if (!isHost() || !isInRoom()) return false;
+        RoomSaveInfo save = roomSave;
+        if (!save.selected || save.seed == Long.MIN_VALUE) {
+            status = Messages.get(Mp.class, "room_start_no_save");
+            return false;
+        }
+        HeroClass hostCls = effectiveHostClass();
+        if (save.isNew && hostCls == null) {
+            status = Messages.get(Mp.class, "room_start_no_hero");
+            return false;
+        }
+        roomSave = new RoomSaveInfo(true, save.slot, save.seed, save.isNew,
+                save.hostClass, save.depth, save.level, true);
+        synchronized (peers) {
+            for (Peer p : peers) {
+                p.gotState = false;
+                p.worldResetPending = false;
+            }
+        }
+        GamesInProgress.curSlot = save.slot;
+        GamesInProgress.selectedClass = hostCls;
+        Dungeon.hero = null;
+        ActionIndicator.action = null;
+        if (save.isNew) {
+            Dungeon.daily = false;
+            Dungeon.dailyReplay = false;
+            Dungeon.overrideSeed = save.seed;
+            roomSeedPending = true;
+            pendingRoomSaveWrite = true;
+            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+        } else {
+            Dungeon.overrideSeed = -1;
+            roomSeedPending = false;
+            pendingRoomSaveWrite = false;
+            InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
+        }
+        roomStateDirty = true;
+        roomUiVersion.incrementAndGet();
+        broadcastRoomState();
+        Game.switchScene(InterlevelScene.class);
+        return true;
+    }
+
+    /** InterlevelScene 在 Dungeon.init() 之后调用：复位一次性新档种子覆盖。 */
+    public void onHostSeedConsumed() {
+        if (roomSeedPending) {
+            Dungeon.overrideSeed = -1;
+            roomSeedPending = false;
+        }
+    }
+
+    /** 房主侧：用磁盘存档刷新房间存档快照（新档首次落盘后 isNew→false）。 */
+    private void refreshRoomSaveAfterGame() {
+        RoomSaveInfo save = roomSave;
+        if (!save.selected) return;
+        GamesInProgress.setUnknown(save.slot);
+        GamesInProgress.Info info = GamesInProgress.check(save.slot);
+        if (info != null) {
+            roomSave = new RoomSaveInfo(true, save.slot, info.seed, false,
+                    info.heroClass, info.depth, info.level, true);
+        } else {
+            roomSave = new RoomSaveInfo(true, save.slot, save.seed, save.isNew,
+                    save.hostClass, save.depth, save.level, true);
+        }
+        roomStateDirty = true;
+        roomUiVersion.incrementAndGet();
+    }
+
+    /** 房主从对局返回房间：保存、通知访客回房间、重置 STATE 标记。 */
+    public void hostReturnToRoom() {
+        if (!isHost() || !isInRoom()) return;
+        systemNotice(Messages.get(Mp.class, "notice_returned_room", getMyName()));
+        try {
+            if (Dungeon.hero != null && Dungeon.level != null) Dungeon.saveAll();
+        } catch (Throwable ignored) {}
+        refreshRoomSaveAfterGame();
+        List<Peer> snapshot;
+        synchronized (peers) {
+            snapshot = new ArrayList<>(peers);
+            for (Peer p : peers) {
+                p.worldResetPending = false;
+                p.remote = null;
+                p.remoteSprite = null;
+                p.nameLabel = null;
+                p.hpBg = null;
+                p.hpFill = null;
+                p.remotePos = -1;
+                p.remoteDepth = -1;
+                p.remoteBranch = -1;
+                p.remoteStale = false;
+            }
+        }
+        for (Peer p : snapshot) {
+            try { sendTo(p, Proto.KICK, new byte[0]); } catch (Throwable ignored) {}
+        }
+        hostWorldKey = null;
+        lastScene = null;
+        lastSentPos = -1;
+        roomStateDirty = true;
+        broadcastRoomState();
+        if (!(Game.scene() instanceof MpRoomScene)) {
+            ShatteredPixelDungeon.switchScene(MpRoomScene.class);
+        }
+    }
+
+    /** 访客从对局返回房间：保存英雄/世界、清理临时槽，然后回房间等待房主。 */
+    public void clientReturnToRoom() {
+        clientReturnToRoom(true);
+    }
+
+    /**
+     * 访客从对局返回房间。
+     *
+     * @param announce 是否在事件栏播报「已返回房间」（房主已统一播报时传 false）。
+     */
+    private void clientReturnToRoom(boolean announce) {
+        if (role != Role.CLIENT || !isInRoom()) {
+            if (Game.scene() instanceof GameScene) {
+                ShatteredPixelDungeon.switchScene(TitleScene.class);
+            }
+            return;
+        }
+        if (Game.scene() instanceof MpRoomScene) {
+            guestSyncHeroForRoom();
+            return;
+        }
+        // 通知房主/其他玩家：自己已回到房间（房主会转发）
+        try {
+            sendToAll(Proto.ROOM_EVENT, encodeRoomEvent(myId, ROOM_EVENT_RETURNED));
+        } catch (Throwable ignored) {}
+        if (announce) {
+            systemNotice(Messages.get(Mp.class, "notice_returned_room", getMyName()));
+        }
+        pendingState = null;
+        final WndHeroClassSelect w = classWindow;
+        classWindow = null;
+        if (w != null) w.hide();
+        boolean ok = !guestWorldActive || saveGuestHero();
+        if (ok) {
+            saveGuestWorldFromSlot();
+            if (!enteringNewWorld) {
+                clearGuestTempSlot();
+                guestWorldActive = false;
+                guestWorldPersistent = false;
+                worldSeed = Long.MIN_VALUE;
+            }
+        } else {
+            status = Messages.get(Mp.class, "status_client_exit_save_failed");
+        }
+        enteringNewWorld = false;
+        lastScene = null;
+        lastSentPos = -1;
+        // 刚保存了该世界的英雄档：强制重新检查，否则同种子下会继续沿用“无存档”缓存
+        guestLockCacheValid = false;
+        guestLockCacheSeed = Long.MIN_VALUE;
+        guestSyncHeroForRoom();
+        ShatteredPixelDungeon.switchScene(MpRoomScene.class);
+    }
+
+    /** ROOM_STATE 编解码：房主 roster + 当前存档。 */
+    static byte[] encodeRoomState(RoomSaveInfo save, List<RoomPlayerInfo> players) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(256);
+        DataOutputStream dos = new DataOutputStream(bos);
+        dos.writeInt(3);
+        dos.writeBoolean(save.selected);
+        dos.writeBoolean(save.isNew);
+        dos.writeBoolean(save.started);
+        dos.writeInt(save.slot);
+        dos.writeLong(save.seed);
+        dos.writeInt(save.depth);
+        dos.writeInt(save.level);
+        dos.writeInt(players.size());
+        for (RoomPlayerInfo p : players) {
+            dos.writeInt(p.id);
+            dos.writeBoolean(p.isHost);
+            dos.writeInt(p.heroClass == null ? -1 : p.heroClass.ordinal());
+            writeNetString(dos, p.name, 128);
+            writeNetString(dos, p.uuid, 64);
+            int badgeCount = p.badges == null ? 0
+                    : Math.min(MpProfile.MAX_BADGES, p.badges.size());
+            dos.writeInt(badgeCount);
+            for (int i = 0; i < badgeCount; i++) {
+                writeNetString(dos, p.badges.get(i).name(), 64);
+            }
+            int allBadgeCount = p.allBadges == null ? 0
+                    : Math.min(MAX_PROFILE_BADGES, p.allBadges.size());
+            dos.writeInt(allBadgeCount);
+            for (int i = 0; i < allBadgeCount; i++) {
+                writeNetString(dos, p.allBadges.get(i).name(), 64);
+            }
+            dos.writeBoolean(p.isAdmin);
+            dos.writeInt(Math.max(0, p.highestScore));
+        }
+        dos.flush();
+        return bos.toByteArray();
+    }
+
+    /** 写带长度前缀的 UTF-8 字符串（超长截断）。 */
+    static void writeNetString(DataOutputStream dos, String value, int maxBytes) throws IOException {
+        byte[] bytes = (value == null ? "" : value).getBytes("UTF-8");
+        if (bytes.length > maxBytes) {
+            byte[] cut = new byte[maxBytes];
+            System.arraycopy(bytes, 0, cut, 0, maxBytes);
+            bytes = cut;
+        }
+        dos.writeInt(bytes.length);
+        dos.write(bytes);
+    }
+
+    /** 读带长度前缀的 UTF-8 字符串（长度上限防御）。 */
+    static String readNetString(DataInputStream di, int maxBytes) throws IOException {
+        int length = di.readInt();
+        if (length < 0 || length > maxBytes || length > di.available()) {
+            throw new IOException("bad string length");
+        }
+        byte[] bytes = new byte[length];
+        di.readFully(bytes);
+        return new String(bytes, "UTF-8");
+    }
+
+    /** ROOM_STATE 解码结果。 */
+    static class RoomStatePayload {
+        RoomSaveInfo save;
+        List<RoomPlayerInfo> players;
+    }
+
+    /** ROOM_EVENT 帧载荷：谁（id）做了什么（event）。 */
+    static class RoomEventPayload {
+        int id;
+        int event;
+    }
+
+    /** 编码 ROOM_EVENT 帧：玩家 id + 事件类型。 */
+    static byte[] encodeRoomEvent(int id, int event) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+        DataOutputStream dos = new DataOutputStream(bos);
+        dos.writeInt(id);
+        dos.writeInt(event);
+        dos.flush();
+        return bos.toByteArray();
+    }
+
+    /** 解码 ROOM_EVENT 帧。 */
+    static RoomEventPayload decodeRoomEvent(byte[] data) throws IOException {
+        DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
+        RoomEventPayload p = new RoomEventPayload();
+        p.id = di.readInt();
+        p.event = di.readInt();
+        return p;
+    }
+
+    /** PROFILE 帧载荷：个人资料摘要（UUID/徽章/最高分）。 */
+    static class ProfilePayload {
+        int id;
+        String uuid = "";
+        List<Badges.Badge> badges = Collections.emptyList();
+        List<Badges.Badge> allBadges = Collections.emptyList();
+        int highestScore;
+    }
+
+    /** PROFILE_REQ 帧载荷：目标玩家 + 请求者。 */
+    static class ProfileReqPayload {
+        int targetId;
+        int requesterId;
+    }
+
+    /** PROFILE_DATA 帧载荷：目标玩家 + 请求者 + 排行榜记录 bundle 字节（0 长度=无记录）。 */
+    static class ProfileDataPayload {
+        int targetId;
+        int requesterId;
+        byte[] data = new byte[0];
+    }
+
+    /** 编码 PROFILE 帧。 */
+    static byte[] encodeProfile(int id, String uuid, List<Badges.Badge> badges,
+                                List<Badges.Badge> allBadges, int highestScore)
+            throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(256);
+        DataOutputStream dos = new DataOutputStream(bos);
+        dos.writeInt(id);
+        writeNetString(dos, uuid, 64);
+        int count = badges == null ? 0 : Math.min(MpProfile.MAX_BADGES, badges.size());
+        dos.writeInt(count);
+        for (int i = 0; i < count; i++) {
+            writeNetString(dos, badges.get(i).name(), 64);
+        }
+        int allCount = allBadges == null ? 0 : Math.min(MAX_PROFILE_BADGES, allBadges.size());
+        dos.writeInt(allCount);
+        for (int i = 0; i < allCount; i++) {
+            writeNetString(dos, allBadges.get(i).name(), 64);
+        }
+        dos.writeInt(Math.max(0, highestScore));
+        dos.flush();
+        return bos.toByteArray();
+    }
+
+    /** 解码 PROFILE 帧。 */
+    static ProfilePayload decodeProfile(byte[] data) throws IOException {
+        DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
+        ProfilePayload p = new ProfilePayload();
+        p.id = di.readInt();
+        p.uuid = readNetString(di, 64);
+        int count = di.readInt();
+        if (count < 0 || count > MpProfile.MAX_BADGES) {
+            throw new IOException("bad profile badge count");
+        }
+        List<Badges.Badge> badges = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            String name = readNetString(di, 64);
+            try {
+                badges.add(Badges.Badge.valueOf(name));
+            } catch (IllegalArgumentException ignored) {}
+        }
+        p.badges = badges;
+        int allCount = di.readInt();
+        if (allCount < 0 || allCount > MAX_PROFILE_BADGES) {
+            throw new IOException("bad profile all badge count");
+        }
+        List<Badges.Badge> all = new ArrayList<>();
+        for (int i = 0; i < allCount; i++) {
+            String name = readNetString(di, 64);
+            try {
+                all.add(Badges.Badge.valueOf(name));
+            } catch (IllegalArgumentException ignored) {}
+        }
+        p.allBadges = all;
+        p.highestScore = Math.max(0, di.readInt());
+        return p;
+    }
+
+    /** 编码 PROFILE_REQ 帧。 */
+    static byte[] encodeProfileReq(int targetId, int requesterId) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+        DataOutputStream dos = new DataOutputStream(bos);
+        dos.writeInt(targetId);
+        dos.writeInt(requesterId);
+        dos.flush();
+        return bos.toByteArray();
+    }
+
+    /** 解码 PROFILE_REQ 帧。 */
+    static ProfileReqPayload decodeProfileReq(byte[] data) throws IOException {
+        DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
+        ProfileReqPayload p = new ProfileReqPayload();
+        p.targetId = di.readInt();
+        p.requesterId = di.readInt();
+        return p;
+    }
+
+    /** 编码 PROFILE_DATA 帧。 */
+    static byte[] encodeProfileData(int targetId, int requesterId, byte[] record)
+            throws IOException {
+        byte[] body = record == null ? new byte[0] : record;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(12 + body.length);
+        DataOutputStream dos = new DataOutputStream(bos);
+        dos.writeInt(targetId);
+        dos.writeInt(requesterId);
+        dos.writeInt(body.length);
+        if (body.length > 0) dos.write(body);
+        dos.flush();
+        return bos.toByteArray();
+    }
+
+    /** 解码 PROFILE_DATA 帧。 */
+    static ProfileDataPayload decodeProfileData(byte[] data) throws IOException {
+        DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
+        ProfileDataPayload p = new ProfileDataPayload();
+        p.targetId = di.readInt();
+        p.requesterId = di.readInt();
+        int length = di.readInt();
+        if (length < 0 || length > 4 * 1024 * 1024 || length > di.available()) {
+            throw new IOException("bad profile record length");
+        }
+        byte[] body = new byte[length];
+        if (length > 0) di.readFully(body);
+        p.data = body;
+        return p;
+    }
+
+    static RoomStatePayload decodeRoomState(byte[] data) throws IOException {
+        DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
+        int format = di.readInt();
+        if (format != 1 && format != 2 && format != 3) {
+            throw new IOException("bad room state format");
+        }
+        boolean selected = di.readBoolean();
+        boolean isNew = di.readBoolean();
+        boolean started = di.readBoolean();
+        int slot = di.readInt();
+        long seed = di.readLong();
+        int depth = di.readInt();
+        int level = di.readInt();
+        int count = di.readInt();
+        if (count < 1 || count > MAX_PLAYERS) throw new IOException("bad room player count");
+        List<RoomPlayerInfo> players = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            int id = di.readInt();
+            boolean isHost = di.readBoolean();
+            int ord = di.readInt();
+            HeroClass cls = null;
+            if (ord >= 0) {
+                if (ord >= HeroClass.values().length) throw new IOException("bad class ordinal");
+                cls = HeroClass.values()[ord];
+            }
+            String name = readNetString(di, 128);
+            String uuid = "";
+            List<Badges.Badge> badges = Collections.emptyList();
+            List<Badges.Badge> allBadges = Collections.emptyList();
+            boolean isAdmin = false;
+            int highestScore = 0;
+            if (format >= 2) {
+                uuid = readNetString(di, 64);
+                int badgeCount = di.readInt();
+                if (badgeCount < 0 || badgeCount > MpProfile.MAX_BADGES) {
+                    throw new IOException("bad badge count");
+                }
+                List<Badges.Badge> list = new ArrayList<>();
+                for (int b = 0; b < badgeCount; b++) {
+                    String badgeName = readNetString(di, 64);
+                    try {
+                        list.add(Badges.Badge.valueOf(badgeName));
+                    } catch (IllegalArgumentException ignored) {}
+                }
+                badges = list;
+                if (format >= 3) {
+                    int allCount = di.readInt();
+                    if (allCount < 0 || allCount > MAX_PROFILE_BADGES) {
+                        throw new IOException("bad all badge count");
+                    }
+                    List<Badges.Badge> all = new ArrayList<>();
+                    for (int b = 0; b < allCount; b++) {
+                        String badgeName = readNetString(di, 64);
+                        try {
+                            all.add(Badges.Badge.valueOf(badgeName));
+                        } catch (IllegalArgumentException ignored) {}
+                    }
+                    allBadges = all;
+                }
+                isAdmin = di.readBoolean();
+                highestScore = Math.max(0, di.readInt());
+            }
+            players.add(new RoomPlayerInfo(id, name, cls, isHost,
+                    uuid, badges, allBadges, isAdmin, highestScore));
+        }
+        HeroClass hostCls = null;
+        for (RoomPlayerInfo p : players) {
+            if (p.isHost) {
+                hostCls = p.heroClass;
+                break;
+            }
+        }
+        RoomStatePayload out = new RoomStatePayload();
+        out.save = new RoomSaveInfo(selected, slot, seed, isNew, hostCls, depth, level, started);
+        out.players = players;
+        return out;
+    }
+
+    /** 访客：应用房主广播的房间状态。 */
+    private void applyRoomState(byte[] data) {
+        RoomStatePayload p;
+        try {
+            p = decodeRoomState(data);
+        } catch (IOException e) {
+            status = Messages.get(Mp.class, "room_state_decode_failed", e.getMessage());
+            return;
+        }
+        long oldSeed = roomSave.selected ? roomSave.seed : Long.MIN_VALUE;
+        roomSave = p.save;
+        roomRoster = Collections.unmodifiableList(p.players);
+        if (oldSeed != roomSave.seed) {
+            guestLockCacheValid = false;
+            lastRoomHeroSentSeed = Long.MIN_VALUE;
+            lastRoomHeroSent = null;
+            if (guestRoomHeroLocked) guestRoomHeroLocked = false;
+        }
+        if (myId >= 0) {
+            boolean mineHasClass = false;
+            for (RoomPlayerInfo r : p.players) {
+                if (r.id == myId) {
+                    mineHasClass = r.heroClass != null;
+                    break;
+                }
+            }
+            if (!mineHasClass) {
+                lastRoomHeroSentSeed = Long.MIN_VALUE;
+                lastRoomHeroSent = null;
+            }
+        }
+        String sig = roomStateSignature(p.save, p.players);
+        if (!sig.equals(roomStateSignature)) {
+            roomStateSignature = sig;
+            roomUiVersion.incrementAndGet();
+        }
+        guestSyncHeroForRoom();
+    }
+
+    /** 房间状态内容签名（用于判断是否需要刷新 UI）。 */
+    private static String roomStateSignature(RoomSaveInfo save, List<RoomPlayerInfo> players) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(save.selected).append('|').append(save.isNew).append('|')
+                .append(save.slot).append('|').append(save.seed).append('|')
+                .append(save.depth).append('|').append(save.level).append('|')
+                .append(save.started).append('|')
+                .append(save.hostClass == null ? -1 : save.hostClass.ordinal()).append('\n');
+        for (RoomPlayerInfo p : players) {
+            sb.append(p.id).append('|').append(p.isHost).append('|')
+                    .append(p.heroClass == null ? -1 : p.heroClass.ordinal()).append('|')
+                    .append(p.name).append('|').append(p.uuid).append('|')
+                    .append(p.isAdmin).append('|').append(p.highestScore).append('|');
+            if (p.badges != null) {
+                for (Badges.Badge badge : p.badges) sb.append(badge.name()).append(',');
+            }
+            sb.append('|');
+            if (p.allBadges != null) {
+                for (Badges.Badge badge : p.allBadges) sb.append(badge.name()).append(',');
+            }
+            sb.append('\n');
+        }
+        return sb.toString();
+    }
+
+    /** 访客：本机在房间内选择的职业（已被存档锁定时返回 null，走存档优先逻辑）。 */
+    private HeroClass roomHeroClassForWorld(long seed) {
+        if (role != Role.CLIENT) return null;
+        if (guestRoomHeroLocked) return null;
+        return guestRoomClass;
+    }
+
     /** 房主侧：连接大厅、创建房间、接收 GUEST 并建立数据连接。 */
     private void runHostViaServer(String host, int port) {
         Socket control = null;
@@ -529,6 +2121,7 @@ public class Mp {
             control.setTcpNoDelay(true);
             lobbySocket = control;
             DataOutputStream out = new DataOutputStream(control.getOutputStream());
+            lobbyOut = out;
             String name = getMyName().replace('\r', ' ').replace('\n', ' ').trim();
             if (name.isEmpty()) name = "host";
             writeControlLine(out, "CREATE " + name);
@@ -545,6 +2138,7 @@ public class Mp {
             }
             roomCode = parts[1];
             serverDataPort = Integer.parseInt(parts[2]);
+            roomUiVersion.incrementAndGet();
             control.setSoTimeout(0);
             status = Messages.get(Mp.class, "status_server_room", roomCode);
             startLobbyHeartbeat(control, out);
@@ -570,6 +2164,7 @@ public class Mp {
             }
             if (running && lobbySocket == control) {
                 lobbySocket = null;
+                lobbyOut = null;
                 handleServerRoomLost(Messages.get(Mp.class, "server_room_closed"));
             }
         } catch (Throwable t) {
@@ -580,10 +2175,11 @@ public class Mp {
                         ? serverErrorText(detail)
                         : Messages.get(Mp.class, "server_err_connect");
                 lobbySocket = null;
+                lobbyOut = null;
                 handleServerRoomLost(msg);
             }
         } finally {
-            if (lobbySocket == control) lobbySocket = null;
+            if (lobbySocket == control) { lobbySocket = null; lobbyOut = null; }
             if (control != null) {
                 try { control.close(); } catch (IOException ignored) {}
             }
@@ -591,7 +2187,7 @@ public class Mp {
     }
 
     /** 访客侧：连接大厅、等待 WAIT/PAIRED，然后按直连流程接入房主 peer。 */
-    private void runJoinViaServer(String host, int port, String room) {
+    private void runJoinViaServer(String host, int port, String room, String password) {
         Socket s = null;
         try {
             s = new Socket();
@@ -599,7 +2195,8 @@ public class Mp {
             s.setTcpNoDelay(true);
             lobbySocket = s;
             DataOutputStream out = new DataOutputStream(s.getOutputStream());
-            writeControlLine(out, "JOIN " + room);
+            writeControlLine(out, password == null || password.isEmpty()
+                    ? "JOIN " + room : "JOIN " + room + " " + password);
             s.setSoTimeout(40000);   // 服务器等待房主建数据连接默认 30 秒，客户端留一点余量
             boolean paired = false;
             while (running && lobbySocket == s) {
@@ -631,9 +2228,8 @@ public class Mp {
                 connected = false;
                 running = false;   // 与直连 join 一致：避免版本握手超时覆盖失败原因
                 Game.runOnRenderThread(() -> {
-                    if (ShatteredPixelDungeon.scene() != null) {
-                        ShatteredPixelDungeon.scene().add(new WndMessage(msg));
-                    }
+                    disconnect();
+                    showLobbyMessage(msg);
                 });
             }
         } finally {
@@ -712,11 +2308,11 @@ public class Mp {
         final String reason = msg;
         Game.runOnRenderThread(() -> {
             if (role != Role.HOST) return;
+            try {
+                if (Dungeon.hero != null && Dungeon.level != null) Dungeon.saveAll();
+            } catch (Throwable ignored) {}
             disconnect();
-            status = reason;
-            if (ShatteredPixelDungeon.scene() != null) {
-                ShatteredPixelDungeon.scene().add(new WndMessage(reason));
-            }
+            showLobbyMessage(reason);
         });
     }
 
@@ -736,6 +2332,8 @@ public class Mp {
                 return Messages.get(Mp.class, "server_err_busy");
             case "RATE_LIMIT":
                 return Messages.get(Mp.class, "server_err_rate");
+            case "PASSWORD":
+                return Messages.get(Mp.class, "server_err_password");
             default:
                 return Messages.get(Mp.class, "server_err_protocol", line == null ? "" : line);
         }
@@ -825,6 +2423,8 @@ public class Mp {
         }
         scheduleHandshakeTimeout(p);
         connected = true;
+        roomStateDirty = true;
+        roomUiVersion.incrementAndGet();
         status = Messages.get(Mp.class, "status_players_online", peers.size());
     }
 
@@ -842,6 +2442,8 @@ public class Mp {
         }
         scheduleHandshakeTimeout(hp);
         connected = true;
+        profileDirty = true;
+        lastProfileSent = 0L;
         sendToAll(Proto.HELLO, getMyName().getBytes("UTF-8"));
         sendToAll(Proto.VERSION, encodeVersion());
         status = Messages.get(Mp.class, "status_connected_waiting");
@@ -878,10 +2480,13 @@ public class Mp {
      */
     public synchronized void disconnect() {
         if (role == Role.CLIENT) {
+            // 持久世界先写回 mp_world_<seed>/，再清理隐藏临时槽
+            if (guestWorldActive) saveGuestWorldNow();
             // 断开前先保存访客英雄；只有确认保存成功，才清理临时世界
             boolean ok = !guestWorldActive || saveGuestHero();
             if (ok) clearGuestTempSlot();
             guestWorldActive = false;
+            guestWorldPersistent = false;
             guestHeroUnreadable = false;
             worldSeed = Long.MIN_VALUE;
         }
@@ -926,10 +2531,34 @@ public class Mp {
         try { if (worker != null) worker.interrupt(); } catch (Throwable ignored) {}
         server = null;
         lobbySocket = null;
+        lobbyOut = null;
         serverMode = false;
         serverAddress = null;
         serverDataPort = DEFAULT_PORT + 1;
         roomCode = null;
+        roomPassword = "";
+        if (roomSeedPending) {
+            Dungeon.overrideSeed = -1;
+            roomSeedPending = false;
+        }
+        pendingRoomSaveWrite = false;
+        selectingRoomSave = false;
+        roomNewGameSlot = -1;
+        roomSave = EMPTY_ROOM_SAVE;
+        roomRoster = Collections.emptyList();
+        roomStateDirty = false;
+        lastRoomStateSent = 0L;
+        hostRoomClass = null;
+        guestRoomClass = null;
+        guestRoomClassSeed = Long.MIN_VALUE;
+        guestRoomHeroLocked = false;
+        guestLockCacheValid = false;
+        guestLockCacheSeed = Long.MIN_VALUE;
+        guestLockCacheClass = null;
+        lastRoomHeroSentSeed = Long.MIN_VALUE;
+        lastRoomHeroSent = null;
+        roomStateSignature = "";
+        roomUiVersion.incrementAndGet();
         lastScene = null;
         role = Role.NONE;
         status = Messages.get(Mp.class, "status_disconnected");
@@ -950,6 +2579,10 @@ public class Mp {
                 try { if (p.sock != null) p.sock.close(); } catch (IOException ignored) {}
                 // 访客侧：host peer 断开就是连接结束，不能被其他访客占位 peer 骗成"还连着"
                 connected = hostLost ? false : !peers.isEmpty();
+                if (isHost()) {
+                    roomStateDirty = true;
+                    roomUiVersion.incrementAndGet();
+                }
                 if (p.worldEnded) {
                     // 房主开始新游戏导致的断开：保留房主侧的状态提示，不逐人播报普通断线
                 } else if (p.versionError != null) {
@@ -1015,8 +2648,33 @@ public class Mp {
         Game.runOnRenderThread(() -> {
             if (role != Role.CLIENT) return;
             disconnect();
-            showTitleMessage(reason);
+            showLobbyMessage(reason);
         });
+    }
+
+    /** 回到联机大厅并弹出提示（若已经在大厅则直接弹；待显示提示由大厅场景消费）。 */
+    private void showLobbyMessage(final String msg) {
+        status = msg;
+        pendingLobbyMessage = msg;
+        if (Game.scene() != null && !(Game.scene() instanceof MpLobbyScene)) {
+            ShatteredPixelDungeon.switchNoFade(MpLobbyScene.class);
+        } else if (Game.scene() != null) {
+            String m = consumeLobbyMessage();
+            if (m != null) {
+                ShatteredPixelDungeon.scene().add(new WndMessage(m));
+            }
+        }
+    }
+
+    /**
+     * 取出待显示的大厅提示（由 MpLobbyScene 每帧调用，显示后清空）。
+     *
+     * @return 提示文案；null=没有。
+     */
+    public String consumeLobbyMessage() {
+        String msg = pendingLobbyMessage;
+        pendingLobbyMessage = null;
+        return msg;
     }
 
     /** 回到标题界面并弹出提示（若已经在标题界面则直接弹） */
@@ -1108,6 +2766,8 @@ public class Mp {
                         if (isHost() && p.id > 0) {
                             // 把新玩家的 id+名字广播给其他访客（访客据此渲染幽灵与名牌）
                             sendToOthers(p, Proto.JOIN, encodeJoin(p.id, name));
+                            roomStateDirty = true;
+                            roomUiVersion.incrementAndGet();
                         }
                     }
                     break;
@@ -1121,6 +2781,10 @@ public class Mp {
                     if (vp.protocolVersion == MP_PROTOCOL_VERSION
                             && vp.gameVersionCode == Game.versionCode) {
                         p.versionOk = true;
+                        if (isHost()) {
+                            roomStateDirty = true;
+                            roomUiVersion.incrementAndGet();
+                        }
                     } else {
                         p.versionError = Messages.get(Mp.class, "version_mismatch",
                                 gameVersionName(), MP_PROTOCOL_VERSION,
@@ -1151,7 +2815,7 @@ public class Mp {
                         // 某访客的第一条位置包 = 他已真正进入游戏（选完职业、载入存档）
                         if (pp.pos > 0 && !p.joinedGame) {
                             p.joinedGame = true;
-                            systemNotice(Messages.get(Mp.class, "notice_player_joined", displayName(p.name)));
+                            systemNotice(Messages.get(Mp.class, "notice_entered_game", displayName(p.name)));
                         }
                     } else {
                         Peer pp2 = peerFor(pp.id);
@@ -1161,7 +2825,7 @@ public class Mp {
                         // 其他访客的第一条位置包（房主转发的 POS）= 他进入了游戏
                         if (pp.pos > 0 && pp.id != HOST_ID && pp.id != myId && !pp2.joinedGame) {
                             pp2.joinedGame = true;
-                            systemNotice(Messages.get(Mp.class, "notice_player_joined", displayName(pp2.name)));
+                            systemNotice(Messages.get(Mp.class, "notice_entered_game", displayName(pp2.name)));
                         }
                     }
                     break;
@@ -1171,9 +2835,51 @@ public class Mp {
                     if (isHost()) {
                         p.heroClass = hp.cls;
                         sendToOthers(p, Proto.HERO, data);   // 转发职业给其他访客
+                        roomStateDirty = true;
+                        roomUiVersion.incrementAndGet();
                     } else {
                         peerFor(hp.id).heroClass = hp.cls;
                     }
+                    break;
+                }
+                case Proto.ROOM_STATE: {
+                    if (role == Role.CLIENT) applyRoomState(data);
+                    break;
+                }
+                case Proto.ROOM_EVENT: {
+                    RoomEventPayload ev = decodeRoomEvent(data);
+                    String evName;
+                    if (isHost()) {
+                        // 房主以发送方 peer 为准，防止伪造；并转发给其他访客
+                        evName = displayName(p.name);
+                        ev.id = p.id;
+                        try {
+                            sendToOthers(p, Proto.ROOM_EVENT, encodeRoomEvent(p.id, ev.event));
+                        } catch (Throwable ignored) {}
+                    } else {
+                        evName = displayName(peerFor(ev.id).name);
+                    }
+                    if (ev.event == ROOM_EVENT_RETURNED) {
+                        systemNotice(Messages.get(Mp.class, "notice_returned_room", evName));
+                    }
+                    break;
+                }
+                case Proto.PROFILE: {
+                    if (isHost()) applyPeerProfile(p, data);
+                    break;
+                }
+                case Proto.PROFILE_REQ: {
+                    ProfileReqPayload req = decodeProfileReq(data);
+                    if (isHost()) {
+                        handleProfileRequest(p, req);
+                    } else {
+                        handleGuestProfileRequest(p, req);
+                    }
+                    break;
+                }
+                case Proto.PROFILE_DATA: {
+                    ProfileDataPayload pd = decodeProfileData(data);
+                    handleProfileData(p, pd, data);
                     break;
                 }
                 case Proto.CHAT: {
@@ -1188,13 +2894,12 @@ public class Mp {
                     break;
                 }
                 case Proto.KICK: {
+                    // 房主退出对局：访客保存后回房间，连接保持；房主再点「继续对局」时随 STATE 重进
                     Game.runOnRenderThread(() -> {
-                        // 房主退出存档：先落盘访客英雄，避免切场景后 hero 状态不可用导致位置/背包丢失
-                        if (guestWorldActive) saveGuestHero();
-                        if (Game.scene() instanceof GameScene) {
-                            status = Messages.get(Mp.class, "status_host_left_save");
-                            ShatteredPixelDungeon.switchScene(TitleScene.class);
-                        }
+                        Peer hp = peerFor(HOST_ID);
+                        systemNotice(Messages.get(Mp.class, "notice_returned_room",
+                                displayName(hp.name)));
+                        clientReturnToRoom(false);
                     });
                     break;
                 }
@@ -1211,24 +2916,11 @@ public class Mp {
                     break;
                 }
                 case Proto.KICKED: {
-                    // 被房主 /kick：先切回标题（让 GameScene 正常收尾），再断开并提示
+                    // 被房主 /kick：断开并回联机大厅提示
                     kickedByHost = true;
                     Game.runOnRenderThread(() -> {
-                        if (Game.scene() != null && !(Game.scene() instanceof TitleScene)) {
-                            ShatteredPixelDungeon.switchScene(TitleScene.class, new Game.SceneChangeCallback() {
-                                @Override
-                                public void beforeCreate() {}
-
-                                @Override
-                                public void afterCreate() {
-                                    disconnect();
-                                    showTitleMessage(Messages.get(Mp.class, "reason_kicked"));
-                                }
-                            });
-                        } else {
-                            disconnect();
-                            showTitleMessage(Messages.get(Mp.class, "reason_kicked"));
-                        }
+                        disconnect();
+                        showLobbyMessage(Messages.get(Mp.class, "reason_kicked"));
                     });
                     break;
                 }
@@ -1341,6 +3033,7 @@ public class Mp {
                         }
                         if (guestWorldActive && worldSeed != Long.MIN_VALUE) {
                             saveGuestHero();
+                            saveGuestWorldNow();   // 房主换档前把旧世界完整写回
                         }
                         enteringNewWorld = true;
                         guestWorldActive = false;
@@ -1393,6 +3086,10 @@ public class Mp {
                                 }
                                 pp.remote = null;
                                 systemNotice(Messages.get(Mp.class, "notice_player_left", displayName(pp.name)));
+                                if (isHost()) {
+                                    roomStateDirty = true;
+                                    roomUiVersion.incrementAndGet();
+                                }
                             }
                         }
                     });
@@ -1446,6 +3143,16 @@ public class Mp {
         }
     }
 
+    /** 按 id 查找已有 peer（不存在时返回 null，不创建占位 peer）。 */
+    private Peer findPeerById(int id) {
+        synchronized (peers) {
+            for (Peer p : peers) {
+                if (p.id == id) return p;
+            }
+        }
+        return null;
+    }
+
     /** 客户端收到房主的进度：世界来自房主、英雄换成访客自己的，然后像"继续游戏"一样读档 */
     private void applyState(byte[] data) { // skipcq: JAVA-R1000 应用房主 STATE，复杂度高但已实测稳定
         StatePayload p;
@@ -1456,11 +3163,13 @@ public class Mp {
             return;
         }
         try {
-            // 自动跟随新房主世界：先把旧世界英雄落盘，再切种子；旧场景暂停时不再重复保存
+            // 自动跟随新房主世界：先把旧世界英雄/持久世界落盘，再切种子；旧场景暂停时不再重复保存
             if (guestWorldActive && worldSeed != Long.MIN_VALUE) {
                 saveGuestHero();
+                saveGuestWorldFromSlot();   // 只复制已落盘的世界，避免网络线程调用 Dungeon.saveAll
             }
             guestWorldActive = false;
+            guestWorldPersistent = false;
             enteringNewWorld = true;
             Bundle game = Bundle.read(new ByteArrayInputStream(p.game));
             worldSeed = game.getLong("seed");   // 房主世界的种子（访客英雄按世界分档）
@@ -1472,6 +3181,10 @@ public class Mp {
             int hostPos = hostHero.getInt("pos");                             // 访客英雄出生在房主当前位置
 
             Bundle guest = loadGuestHeroBundle();
+            if (guest == null && hasGuestWorld()) {
+                // 持久世界还在，但英雄档丢了：从世界档的 game.dat 里恢复
+                guest = loadGuestHeroFromWorld();
+            }
             Bundle guestHero = guestHeroPart(guest);
             if (guestHero != null && guestHero.contains("class")) {
                 // 已有英雄存档：直接告诉房主自己的职业（房主渲染访客幽灵外观用，并转发给其他访客）
@@ -1480,7 +3193,43 @@ public class Mp {
                 } catch (Throwable ignored) {}
             }
             if (guest == null) {
-                // 首次加入：先弹职业选择窗口，选定后继续
+                // 房间内已选职业：直接用该职业创建访客英雄，不再弹职业窗口
+                final HeroClass roomCls = roomHeroClassForWorld(worldSeed);
+                if (roomCls != null) {
+                    if (pendingState == null) {
+                        pendingState = p;
+                        status = Messages.get(Mp.class, "status_choose_class");
+                        final StatePayload fp = p;
+                        final int fpos = hostPos;
+                        Game.runOnRenderThread(() -> {
+                            if (!connected) return;
+                            StatePayload latest = pendingState != null ? pendingState : fp;
+                            pendingState = null;
+                            try {
+                                int latestPos = fpos;
+                                try {
+                                    latestPos = Bundle.read(new ByteArrayInputStream(latest.game))
+                                            .getBundle("hero").getInt("pos");
+                                } catch (Throwable ignored) {}
+                                backupUnreadableGuestHero();
+                                Bundle b = newGuestHeroBundle(roomCls);
+                                if (!saveGuestHeroBundle(b)) {
+                                    status = Messages.get(Mp.class, "status_save_new_hero_failed");
+                                }
+                                try {
+                                    sendToAll(Proto.HERO, encodeHero(myId, roomCls));
+                                } catch (Throwable ignored) {}
+                                mergeAndEnter(latest, latestPos, b);
+                            } catch (Throwable t) {
+                                status = Messages.get(Mp.class, "status_create_hero_failed", t.getMessage());
+                            }
+                        });
+                    } else {
+                        pendingState = p;
+                    }
+                    return;
+                }
+                // 没有房间职业（房主随时开始、访客还没选）：弹职业选择窗口兜底
                 if (pendingState == null) {
                     pendingState = p;
                     status = Messages.get(Mp.class, guestHeroUnreadable
@@ -1497,6 +3246,10 @@ public class Mp {
                                 pendingState = null;
                                 classWindow = null;
                                 if (cls == null) {
+                                    // 房间内取消：留在房间等待房主，不退出联机
+                                    if (Game.scene() instanceof MpRoomScene) {
+                                        return;
+                                    }
                                     disconnect();               // 取消选择 = 取消本次加入
                                     Game.runOnRenderThread(() -> {
                                         if (Game.scene() instanceof GameScene) {
@@ -1560,6 +3313,21 @@ public class Mp {
             // 往返会经 Item.restoreFromBundle 重链快捷栏，而它只在 Dungeon.hero == null 时生效，
             // 同进程重连/房主换档跟随时 Dungeon.hero 还是旧英雄，往返会把快捷栏物品位置全部丢掉。
             Bundle game = Bundle.read(new ByteArrayInputStream(p.game));
+
+            // 已有自己的持久世界：直接进入，不再用房主当前层覆盖
+            if (initSaveEnabled() && hasGuestWorld() && enterGuestWorld(guest, false)) {
+                return;
+            }
+            // 新房客/旧世界档：如果房主带有第0层初始世界包，就从第0层开始自己玩
+            // 已有持久世界但本次进入失败时不要用它覆盖，避免丢档
+            Bundle initWorld = game.getBundle(MP_INIT_WORLD);
+            if (initSaveEnabled() && !hasGuestWorld() && !initWorld.isNull()
+                    && createGuestWorldFromInit(initWorld, guest)
+                    && enterGuestWorld(guest, true)) {
+                return;
+            }
+            game.remove(MP_INIT_WORLD);
+
             Bundle heroBundle = guestHeroPart(guest);
             loadGuestExplored(guest);
             keepSafeBuffs(heroBundle);                   // 只保留饥饿/自然回血，其余 buff 可能引用上个世界的对象
@@ -1706,6 +3474,13 @@ public class Mp {
         } catch (Throwable ignored) {}
         if (connected) {
             try { sendToAll(Proto.HELLO, myName.getBytes("UTF-8")); } catch (Throwable ignored) {}
+        }
+        if (isHost()) {
+            roomStateDirty = true;
+            roomUiVersion.incrementAndGet();
+            if (isInRoom()) flushRoomStateIfNeeded();
+        } else {
+            profileDirty = true;
         }
     }
 
@@ -2031,12 +3806,402 @@ public class Mp {
         });
     }
 
+    // ---------------------------------------------------------------- 初始世界快照 / 访客持久世界（稳定版实验）
+
+    /** 初始快照/访客持久世界开关：本地测试可用 -Dmlpd.initsave=false 退回旧逻辑。 */
+    private static boolean initSaveEnabled() {
+        return !"false".equalsIgnoreCase(System.getProperty("mlpd.initsave"));
+    }
+
+    /** Dungeon.newLevel 首次生成楼层后调用：记录待抓取的层。 */
+    public void markFreshLevel(int depth, int branch) {
+        pendingFreshDepth = depth;
+        pendingFreshBranch = branch;
+    }
+
+    /** 读取旧层档/生成失败时调用：避免把旧层误当成新生成层。 */
+    public void clearFreshLevel() {
+        pendingFreshDepth = -1;
+        pendingFreshBranch = -1;
+    }
+
+    /** Dungeon.switchLevel 完成后调用：首次生成的新层保存一份“刚进层”的初始档。 */
+    public void onLevelSwitched(Level level) {
+        int depth = pendingFreshDepth;
+        int branch = pendingFreshBranch;
+        pendingFreshDepth = -1;
+        pendingFreshBranch = -1;
+        if (level == null || depth < 0) return;
+        if (!initSaveEnabled()) return;
+        if (role == Role.CLIENT) return;                       // 访客本地生成的层不写房主快照
+        if (Dungeon.depth != depth || Dungeon.branch != branch) return;
+        int slot = GamesInProgress.curSlot;
+        if (slot <= 0 || slot == GUEST_TEMP_SLOT) return;      // 只抓普通存档槽
+        captureInitialLevel(level, depth, branch, slot);
+    }
+
+    /** 保存某层刚生成、尚未探索的状态；第0层额外保存初始 game.dat。 */
+    private void captureInitialLevel(Level level, int depth, int branch, int slot) {
+        try {
+            String dir = GamesInProgress.gameFolder(slot) + "/" + MP_INIT_DIR;
+            if (depth == 0 && branch == 0 && FileUtils.dirExists(dir)) {
+                // 新开档：清掉上一次世界留下的初始快照
+                FileUtils.deleteDir(dir);
+            }
+            FileUtils.getFileHandle(dir).mkdirs();
+            if (depth == 0 && branch == 0) {
+                Bundle meta = new Bundle();
+                meta.put("seed", Dungeon.seed);
+                meta.put("version", Game.versionCode);
+                FileUtils.bundleToFile(dir + "/meta.dat", meta);
+            }
+
+            Bundle b = new Bundle();
+            boolean[] visited = level.visited;
+            boolean[] mapped = level.mapped;
+            // 初始层档不保存房主的探图；访客进入后自己重新探索
+            level.visited = visited == null ? null : new boolean[visited.length];
+            level.mapped = mapped == null ? null : new boolean[mapped.length];
+            try {
+                b.put("level", level);
+            } finally {
+                level.visited = visited;
+                level.mapped = mapped;
+            }
+            FileUtils.bundleToFile(initLevelFile(dir, depth, branch), b);
+
+            if (depth == 0 && branch == 0) {
+                FileHandle game = FileUtils.getFileHandle(GamesInProgress.gameFile(slot));
+                if (game.exists()) {
+                    FileHandle dst = FileUtils.getFileHandle(dir + "/game.dat");
+                    if (dst.exists()) dst.delete();
+                    game.copyTo(dst);
+                }
+            }
+        } catch (Throwable ignored) {
+            // 快照失败不影响正常游戏；房主没有快照时访客会退回原来的“跟随当前层”逻辑
+        }
+    }
+
+    /** 打包房主的初始世界：初始 game.dat + 所有已抓取的层档；没有第0层快照时返回 null。 */
+    private Bundle buildInitWorldPack(int slot) {
+        if (!initSaveEnabled()) return null;
+        try {
+            String dir = GamesInProgress.gameFolder(slot) + "/" + MP_INIT_DIR;
+            if (!FileUtils.dirExists(dir)) return null;
+            Bundle meta = FileUtils.bundleFromFile(dir + "/meta.dat");
+            if (meta == null || meta.getLong("seed") != Dungeon.seed
+                    || meta.getInt("version") != Game.versionCode) return null;
+            FileHandle initGame = FileUtils.getFileHandle(dir + "/game.dat");
+            FileHandle init0 = FileUtils.getFileHandle(initLevelFile(dir, 0, 0));
+            if (!initGame.exists() || !init0.exists()) return null;
+
+            String initGameB64 = Base64.encodeBytes(initGame.readBytes());
+            long total = initGameB64.length();
+            Bundle levels = new Bundle();
+            for (String file : FileUtils.filesInDir(dir)) {
+                if (!file.startsWith("depth") || !file.endsWith(".dat")) continue;
+                int code = levelCodeFromFile(file);
+                if (code < 0) continue;
+                byte[] bytes = FileUtils.getFileHandle(dir + "/" + file).readBytes();
+                String b64 = Base64.encodeBytes(bytes);
+                total += b64.length();
+                if (total > 40_000_000L) return null;   // 避免 STATE 超过 MAX_FRAME
+                levels.put(String.valueOf(code), b64);
+            }
+            if (levels.getKeys().isEmpty()) return null;
+
+            Bundle pack = new Bundle();
+            pack.put(MP_INIT_GAME, initGameB64);
+            pack.put(MP_INIT_LEVELS, levels);
+            return pack;
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    private String initLevelFile(String dir, int depth, int branch) {
+        return dir + "/" + levelFileName(depth, branch);
+    }
+
+    private String levelFileName(int depth, int branch) {
+        return branch == 0 ? "depth" + depth + ".dat"
+                : "depth" + depth + "-branch" + branch + ".dat";
+    }
+
+    /** 从 depthN.dat / depthN-branchB.dat 解析出 depth + 1000*branch。 */
+    private int levelCodeFromFile(String file) {
+        try {
+            String name = file.substring(0, file.length() - 4);
+            int branch = 0;
+            int bi = name.indexOf("-branch");
+            if (bi >= 0) {
+                branch = Integer.parseInt(name.substring(bi + 7));
+                name = name.substring(0, bi);
+            }
+            if (!name.startsWith("depth")) return -1;
+            return Integer.parseInt(name.substring(5)) + 1000 * branch;
+        } catch (Throwable t) {
+            return -1;
+        }
+    }
+
+    /** 访客自己的持久世界目录（按房主世界种子分档）。 */
+    private String guestWorldDirForSeed(long seed) {
+        if (seed == Long.MIN_VALUE) return null;
+        return MP_WORLD_PREFIX + seed;
+    }
+
+    private String guestWorldDir() {
+        return guestWorldDirForSeed(worldSeed);
+    }
+
+    private boolean hasGuestWorldForSeed(long seed) {
+        String dir = guestWorldDirForSeed(seed);
+        return dir != null && FileUtils.dirExists(dir)
+                && FileUtils.fileLength(dir + "/game.dat") > 1;
+    }
+
+    private boolean hasGuestWorld() {
+        return hasGuestWorldForSeed(worldSeed);
+    }
+
+    /** 持久世界还在、但 mp_hero 丢失时，从世界档的 game.dat 恢复英雄档。 */
+    private Bundle loadGuestHeroFromWorld() {
+        try {
+            String dir = guestWorldDir();
+            if (dir == null) return null;
+            Bundle world = FileUtils.bundleFromFile(dir + "/game.dat");
+            if (world == null || !world.contains("hero")) return null;
+            Bundle hero = world.getBundle("hero");
+            if (hero.isNull() || !hero.contains("class")) return null;
+            Bundle b = new Bundle();
+            b.put(MP_HERO, hero);
+            b.put(MP_DEPTH, world.getInt("depth"));
+            b.put(MP_BRANCH, world.getInt("branch"));
+            saveGuestHeroBundle(b);
+            return b;
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    /** 用房主初始世界包创建访客自己的持久世界，从第0层开始。 */
+    private boolean createGuestWorldFromInit(Bundle init, Bundle guest) {
+        try {
+            if (init == null || init.isNull()) return false;
+            String gameB64 = init.getString(MP_INIT_GAME);
+            Bundle levels = init.getBundle(MP_INIT_LEVELS);
+            if (gameB64 == null || levels.isNull() || !levels.contains("0")) return false;
+            if (hasGuestWorld()) return false;   // 不覆盖已有的持久世界
+            Bundle world = Bundle.read(new ByteArrayInputStream(Base64.decode(gameB64)));
+            Bundle heroBundle = guestHeroPart(guest);
+            if (heroBundle == null) return false;
+
+            synchronized (guestExplored) { guestExplored.clear(); }   // 新世界：不继承旧探图
+            keepSafeBuffs(heroBundle);
+            heroBundle.put("time", 0f);
+            ArrayList<Bundlable> buffs = new ArrayList<>(heroBundle.getCollection("buffs"));
+            for (Bundlable x : buffs) {
+                if (x instanceof Buff) ((Buff) x).clearTime();
+            }
+            heroBundle.put("buffs", buffs);
+            putGuestHero(world, guest, heroBundle, -1);
+            world.remove("placeholders");
+            world.remove("placements");
+            world.remove("slot_actions");
+            if (guest.contains(MP_QUICKSLOT)) {
+                Bundle qs = guest.getBundle(MP_QUICKSLOT);
+                world.put("placeholders", qs.getCollection("placeholders"));
+                world.put("placements", qs.getBooleanArray("placements"));
+                if (qs.contains("slot_actions")) {
+                    world.put("slot_actions", qs.getStringArray("slot_actions"));
+                }
+            }
+
+            world.put("depth", 0);
+            world.put("branch", 0);
+            int[] codes = new int[levels.getKeys().size()];
+            int n = 0;
+            for (String key : levels.getKeys()) {
+                codes[n++] = Integer.parseInt(key);
+            }
+            world.put("generated_levels", codes);
+            world.remove(MP_INIT_WORLD);
+
+            String dir = guestWorldDir();
+            if (dir == null) return false;
+            if (FileUtils.dirExists(dir)) FileUtils.deleteDir(dir);
+            FileUtils.getFileHandle(dir).mkdirs();
+            FileUtils.bundleToFile(dir + "/game.dat", world);
+            for (String key : levels.getKeys()) {
+                int code = Integer.parseInt(key);
+                byte[] bytes = Base64.decode(levels.getString(key));
+                FileUtils.getFileHandle(dir + "/" + levelFileName(code % 1000, code / 1000))
+                        .writeBytes(bytes, false);
+            }
+            return true;
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    /** 把访客英雄写回世界 game bundle；兼容旧版平铺英雄档（没有 __className）。 */
+    private void putGuestHero(Bundle world, Bundle guest, Bundle hero, int pos) {
+        if (hero == null) return;
+        if (hero != guest) {
+            hero.put("pos", pos);
+            world.put("hero", hero);
+        } else {
+            Hero h = new Hero();
+            h.restoreFromBundle(guest);
+            h.pos = pos;
+            world.put("hero", h);
+        }
+    }
+
+    /** 把访客持久世界复制到隐藏临时槽，并像“继续游戏”一样进入。 */
+    private boolean enterGuestWorld(Bundle guest, boolean freshWorld) {
+        try {
+            String dir = guestWorldDir();
+            if (dir == null || !hasGuestWorld()) return false;
+            Bundle world = FileUtils.bundleFromFile(dir + "/game.dat");
+            if (world == null || !world.contains("hero") || world.getLong("seed") != worldSeed) {
+                return false;
+            }
+
+            if (freshWorld) {
+                synchronized (guestExplored) { guestExplored.clear(); }
+            }
+            Bundle hero = guestHeroPart(guest);
+            if (hero != null) {
+                if (!freshWorld) loadGuestExplored(guest);
+                keepSafeBuffs(hero);
+                hero.put("time", 0f);
+                ArrayList<Bundlable> buffs = new ArrayList<>(hero.getCollection("buffs"));
+                for (Bundlable x : buffs) {
+                    if (x instanceof Buff) ((Buff) x).clearTime();
+                }
+                hero.put("buffs", buffs);
+
+                int depth = world.getInt("depth");
+                int branch = world.getInt("branch");
+                boolean depthFromHero = false;
+                if (!freshWorld && guest != null
+                        && guest.contains(MP_DEPTH) && guest.contains(MP_BRANCH)) {
+                    int gd = guest.getInt(MP_DEPTH);
+                    int gb = guest.getInt(MP_BRANCH);
+                    if ((gd != depth || gb != branch)
+                            && FileUtils.getFileHandle(dir + "/" + levelFileName(gd, gb)).exists()) {
+                        // 英雄档比 game.dat 新（例如异常退出）：以英雄档的最后楼层为准
+                        depth = gd;
+                        branch = gb;
+                        depthFromHero = true;
+                        world.put("depth", depth);
+                        world.put("branch", branch);
+                    }
+                }
+                int pos = -1;
+                if (!freshWorld && guest != null
+                        && guest.contains(MP_DEPTH) && guest.getInt(MP_DEPTH) == depth
+                        && guest.getInt(MP_BRANCH) == branch
+                        && hero.contains("pos") && hero.getInt("pos") >= 0) {
+                    pos = hero.getInt("pos");
+                } else if (!freshWorld && !depthFromHero) {
+                    Bundle oldHero = world.getBundle("hero");
+                    if (!oldHero.isNull() && oldHero.contains("pos")) pos = oldHero.getInt("pos");
+                }
+
+                if (guest.contains(MP_QUICKSLOT)) {
+                    world.remove("placeholders");
+                    world.remove("placements");
+                    world.remove("slot_actions");
+                    Bundle qs = guest.getBundle(MP_QUICKSLOT);
+                    world.put("placeholders", qs.getCollection("placeholders"));
+                    world.put("placements", qs.getBooleanArray("placements"));
+                    if (qs.contains("slot_actions")) {
+                        world.put("slot_actions", qs.getStringArray("slot_actions"));
+                    }
+                }
+                putGuestHero(world, guest, hero, pos);
+                FileUtils.bundleToFile(dir + "/game.dat", world);
+            }
+
+            copyGuestWorldToSlot(dir);
+            guestWorldPersistent = true;
+            final int slot = GUEST_TEMP_SLOT;
+            Game.runOnRenderThread(() -> {
+                GamesInProgress.curSlot = slot;
+                ActionIndicator.action = null;
+                InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
+                ShatteredPixelDungeon.switchScene(InterlevelScene.class);
+            });
+            status = Messages.get(Mp.class, "status_entered_game");
+            return true;
+        } catch (Throwable t) {
+            status = Messages.get(Mp.class, "status_enter_game_failed", t.getMessage());
+            return false;
+        }
+    }
+
+    /** 持久世界目录 -> 隐藏槽 game99（清空旧槽后复制 game.dat 与所有层档）。 */
+    private void copyGuestWorldToSlot(String dir) throws IOException {
+        String slotDir = GamesInProgress.gameFolder(GUEST_TEMP_SLOT);
+        if (FileUtils.dirExists(slotDir)) FileUtils.deleteDir(slotDir);
+        FileUtils.getFileHandle(slotDir).mkdirs();
+        for (String file : FileUtils.filesInDir(dir)) {
+            if (!file.equals("game.dat") && !file.startsWith("depth")) continue;
+            FileHandle src = FileUtils.getFileHandle(dir + "/" + file);
+            FileHandle dst = FileUtils.getFileHandle(slotDir + "/" + file);
+            if (dst.exists()) dst.delete();
+            src.copyTo(dst);
+        }
+        GamesInProgress.setUnknown(GUEST_TEMP_SLOT);
+    }
+
+    /** 隐藏槽 game99 -> 持久世界目录（断线/退出前用）。 */
+    private void saveGuestWorldFromSlot() {
+        if (!guestWorldPersistent) return;
+        if (GamesInProgress.curSlot != GUEST_TEMP_SLOT) return;
+        String dir = guestWorldDir();
+        if (dir == null) return;
+        try {
+            String slotDir = GamesInProgress.gameFolder(GUEST_TEMP_SLOT);
+            if (!FileUtils.dirExists(slotDir)) return;
+            if (FileUtils.dirExists(dir)) FileUtils.deleteDir(dir);
+            FileUtils.getFileHandle(dir).mkdirs();
+            for (String file : FileUtils.filesInDir(slotDir)) {
+                if (!file.equals("game.dat") && !file.startsWith("depth")) continue;
+                FileHandle src = FileUtils.getFileHandle(slotDir + "/" + file);
+                FileHandle dst = FileUtils.getFileHandle(dir + "/" + file);
+                if (dst.exists()) dst.delete();
+                src.copyTo(dst);
+            }
+        } catch (Throwable ignored) {}
+    }
+
+    /** 先把当前游戏写盘，再复制到持久世界目录（断线/关窗口前用）。 */
+    private void saveGuestWorldNow() {
+        if (!guestWorldPersistent) return;
+        if (GamesInProgress.curSlot != GUEST_TEMP_SLOT) return;
+        try {
+            if (Dungeon.hero != null && Dungeon.level != null) Dungeon.saveAll();
+        } catch (Throwable ignored) {}
+        saveGuestWorldFromSlot();
+    }
+
     // ---------------------------------------------------------------- 访客英雄独立存档
 
     /** 访客英雄按"世界种子"分档的文件名：房主开新档=新种子=新英雄；回旧档=恢复旧英雄 */
     private String mpHeroFile() {
         if (worldSeed == Long.MIN_VALUE) return null;   // 还没收到房主世界，禁止写"无效种子"档
-        return "mp_hero_" + worldSeed + ".dat";
+        return mpHeroFile(worldSeed);
+    }
+
+    /** 指定世界种子的访客英雄档文件名（房间阶段只读检查用）。 */
+    private static String mpHeroFile(long seed) {
+        if (seed == Long.MIN_VALUE || seed < 0) return null;
+        return "mp_hero_" + seed + ".dat";
     }
 
     /** 取访客英雄档里的英雄子 bundle（新格式嵌套带类名；兼容旧版平铺格式） */
@@ -2346,9 +4511,12 @@ public class Mp {
         } catch (Throwable ignored) {}
     }
 
-    /** GameScene.onPause 调用：切场景/关闭窗口前保存访客英雄（不清理临时世界） */
+    /** GameScene.onPause 调用：切场景/关闭窗口前保存访客英雄和持久世界（不清理临时世界） */
     public void onGamePause() {
-        if (role == Role.CLIENT && guestWorldActive && !enteringNewWorld) saveGuestHero();
+        if (role == Role.CLIENT && guestWorldActive && !enteringNewWorld) {
+            saveGuestHero();
+            saveGuestWorldNow();
+        }
     }
 
     /** 把当前访客英雄状态落盘（跨会话保留背包/血量/充能）；返回是否成功 */
@@ -2399,12 +4567,31 @@ public class Mp {
 
     // ---------------------------------------------------------------- 每帧
 
+    /** 房主新建档首次进入 GameScene 后落盘，并把房间存档标记为已有档。 */
+    private void tickPendingRoomSave() {
+        if (!pendingRoomSaveWrite) return;
+        if (Dungeon.hero == null || Dungeon.level == null) return;
+        try {
+            Dungeon.saveAll();
+        } catch (Throwable ignored) {}
+        pendingRoomSaveWrite = false;
+        refreshRoomSaveAfterGame();
+        roomStateDirty = true;
+        broadcastRoomState();
+    }
+
     /**
      * 由 GameScene.update() 每帧调用（渲染线程）
      *
      * @param gs 参数。
      */
     public void tick(GameScene gs) { // skipcq: JAVA-R1000 联机每帧主循环，复杂度高但已实测稳定
+        // 房主新建档首次进入 GameScene：立即落盘一次，房间里的存档从“新档”变成“已有档”。
+        // 必须在 !connected 提前返回之前执行——房主可能没有访客，connected 仍为 false。
+        if (role == Role.HOST) {
+            tickPendingRoomSave();
+            flushRoomStateIfNeeded();
+        }
         // 房主在死亡后点“重新开始”会直接进入新档（不经过 TitleScene）；
         // 世界标识变化时断开旧访客，避免跨世界同层幽灵。未连接时只更新标识。
         if (role == Role.HOST && Dungeon.hero != null && Dungeon.level != null) {
@@ -2461,6 +4648,7 @@ public class Mp {
             if (role == Role.CLIENT) {
                 applyExploredToLevel();                 // 先恢复本层自己的探图
                 saveGuestHero();                        // 换层/重进场景时落盘访客英雄
+                saveGuestWorldFromSlot();               // 持久世界同步到 mp_world_<seed>/
             }
             synchronized (peers) {
                 for (Peer p : peers) {
@@ -2520,6 +4708,16 @@ public class Mp {
                     int slot = GamesInProgress.curSlot;
                     byte[] game = FileUtils.getFileHandle(GamesInProgress.gameFile(slot)).readBytes();
                     byte[] level = FileUtils.getFileHandle(GamesInProgress.depthFile(slot, Dungeon.depth, Dungeon.branch)).readBytes();
+                    // 房主有第0层初始快照时，把初始世界包附在 game bundle 里发给新访客
+                    try {
+                        Bundle initPack = buildInitWorldPack(slot);
+                        if (initPack != null) {
+                            Bundle gb = Bundle.read(new ByteArrayInputStream(game));
+                            gb.put(MP_INIT_WORLD, initPack);
+                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                            if (Bundle.write(gb, bos)) game = bos.toByteArray();
+                        }
+                    } catch (Throwable ignored) {}
                     byte[] payload = encodeState(Dungeon.depth, Dungeon.branch, game, level);
                     synchronized (peers) {
                         for (Peer p : peers) {
@@ -2589,71 +4787,74 @@ public class Mp {
             }
         }
 
-        // 每 3 秒测一次延迟：房主测所有访客并广播 RTT_INFO；访客测房主
-        long pingNow = System.currentTimeMillis();
-        if (pingNow - lastPingTime > 3000L) {
-            lastPingTime = pingNow;
-            List<Peer> snapshot;
-            synchronized (peers) { snapshot = new ArrayList<>(peers); }
-            if (role == Role.HOST) {
-                // 先把上一轮缓存的延迟广播给所有访客（访客 /list 显示其他访客用）
-                List<RttRec> infos = new ArrayList<>();
-                for (Peer p : snapshot) {
-                    if (p.id <= 0) continue;
-                    RttRec r = new RttRec();
-                    r.id = p.id;
-                    r.rttMs = p.rttMs;
-                    r.timeout = p.pingTimeout;
-                    infos.add(r);
-                }
-                if (!infos.isEmpty()) {
-                    try { sendToAll(Proto.RTT_INFO, encodeRttInfo(infos)); } catch (Throwable ignored) {}
-                }
-                for (Peer p : snapshot) {
-                    if (p.id <= 0 || !p.versionOk) continue;
-                    if (p.pingSentAt > 0 && pingNow - p.pingSentAt > 2500L) {
-                        p.pingTimeout = true;
-                        p.rttMs = -1;
-                        p.pingMisses.incrementAndGet();
-                        if (p.pingMisses.get() >= PING_MISS_LIMIT) {
-                            // 连续多个心跳无回应：判定该访客掉线，关闭 socket。
-                            // 清理与"断开了连接"提示统一由 recvLoop 完成，避免重复提示。
-                            try { if (p.sock != null) p.sock.close(); } catch (IOException ignored) {}
-                            continue;
-                        }
-                    }
-                    try {
-                        p.pingToken = (int) (pingNow & 0x7fffffff);
-                        p.pingSentAt = pingNow;
-                        sendTo(p, Proto.PING, encodeInt(p.pingToken));
-                    } catch (Throwable ignored) {}
-                }
-            } else if (role == Role.CLIENT) {
-                Peer hp = null;
-                for (Peer p : snapshot) {
-                    if (p.id == HOST_ID) { hp = p; break; }
-                }
-                if (hp != null && hp.versionOk) {
-                    if (hp.pingSentAt > 0 && pingNow - hp.pingSentAt > 2500L) {
-                        hp.pingTimeout = true;
-                        hp.rttMs = -1;
-                        hp.pingMisses.incrementAndGet();
-                        if (hp.pingMisses.get() >= PING_MISS_LIMIT) {
-                            // 连续多个心跳无回应：网络状态不佳，回标题并弹窗说明原因
-                            handleHostLost(Messages.get(Mp.class, "reason_network"));
-                            return;
-                        }
-                    }
-                    try {
-                        hp.pingToken = (int) (pingNow & 0x7fffffff);
-                        hp.pingSentAt = pingNow;
-                        sendTo(hp, Proto.PING, encodeInt(hp.pingToken));
-                    } catch (Throwable ignored) {}
-                }
-            }
-        }
+        tickPing();
 
         syncRemote(gs);
+    }
+
+    /** 每 3 秒测一次延迟：房主测所有访客并广播 RTT_INFO；访客测房主。房间/对局共用。 */
+    private void tickPing() {
+        long pingNow = System.currentTimeMillis();
+        if (pingNow - lastPingTime <= 3000L) return;
+        lastPingTime = pingNow;
+        List<Peer> snapshot;
+        synchronized (peers) { snapshot = new ArrayList<>(peers); }
+        if (role == Role.HOST) {
+            // 先把上一轮缓存的延迟广播给所有访客（访客 /list 显示其他访客用）
+            List<RttRec> infos = new ArrayList<>();
+            for (Peer p : snapshot) {
+                if (p.id <= 0) continue;
+                RttRec r = new RttRec();
+                r.id = p.id;
+                r.rttMs = p.rttMs;
+                r.timeout = p.pingTimeout;
+                infos.add(r);
+            }
+            if (!infos.isEmpty()) {
+                try { sendToAll(Proto.RTT_INFO, encodeRttInfo(infos)); } catch (Throwable ignored) {}
+            }
+            for (Peer p : snapshot) {
+                if (p.id <= 0 || !p.versionOk) continue;
+                if (p.pingSentAt > 0 && pingNow - p.pingSentAt > 2500L) {
+                    p.pingTimeout = true;
+                    p.rttMs = -1;
+                    p.pingMisses.incrementAndGet();
+                    if (p.pingMisses.get() >= PING_MISS_LIMIT) {
+                        // 连续多个心跳无回应：判定该访客掉线，关闭 socket。
+                        // 清理与"断开了连接"提示统一由 recvLoop 完成，避免重复提示。
+                        try { if (p.sock != null) p.sock.close(); } catch (IOException ignored) {}
+                        continue;
+                    }
+                }
+                try {
+                    p.pingToken = (int) (pingNow & 0x7fffffff);
+                    p.pingSentAt = pingNow;
+                    sendTo(p, Proto.PING, encodeInt(p.pingToken));
+                } catch (Throwable ignored) {}
+            }
+        } else if (role == Role.CLIENT) {
+            Peer hp = null;
+            for (Peer p : snapshot) {
+                if (p.id == HOST_ID) { hp = p; break; }
+            }
+            if (hp != null && hp.versionOk) {
+                if (hp.pingSentAt > 0 && pingNow - hp.pingSentAt > 2500L) {
+                    hp.pingTimeout = true;
+                    hp.rttMs = -1;
+                    hp.pingMisses.incrementAndGet();
+                    if (hp.pingMisses.get() >= PING_MISS_LIMIT) {
+                        // 连续多个心跳无回应：网络状态不佳，回大厅/标题并弹窗说明原因
+                        handleHostLost(Messages.get(Mp.class, "reason_network"));
+                        return;
+                    }
+                }
+                try {
+                    hp.pingToken = (int) (pingNow & 0x7fffffff);
+                    hp.pingSentAt = pingNow;
+                    sendTo(hp, Proto.PING, encodeInt(hp.pingToken));
+                } catch (Throwable ignored) {}
+            }
+        }
     }
 
     /**
@@ -2663,6 +4864,15 @@ public class Mp {
      */
     public void tickTitle(TitleScene ts) {
         if (!connected || lastScene == null) return;
+        // 联机房间存在时，退出对局回房间而不是停在标题（兜底；正常路径在 WndGame 里已经处理）
+        if (isInRoom()) {
+            if (isHost()) {
+                hostReturnToRoom();
+            } else {
+                clientReturnToRoom();
+            }
+            return;
+        }
         lastScene = null;
         lastSentPos = -1;
         synchronized (peers) {
@@ -2685,13 +4895,15 @@ public class Mp {
             sendToAll(Proto.KICK, new byte[0]);
             status = Messages.get(Mp.class, "status_host_exit_save");
         } else {
-            // 访客退出存档（主动或被踢）：先保存自己的英雄，再清理临时世界；连接保持
+            // 访客退出存档（主动或被踢）：先保存自己的英雄和持久世界，再清理临时世界；连接保持
             boolean ok = !guestWorldActive || saveGuestHero();
             if (ok) {
                 // 正在应用新房主 STATE 时不要清临时槽/种子，否则可能把刚恢复的世界又清掉
                 if (!enteringNewWorld) {
+                    saveGuestWorldFromSlot();   // 持久世界写回 mp_world_<seed>/
                     clearGuestTempSlot();
                     guestWorldActive = false;
+                    guestWorldPersistent = false;
                     worldSeed = Long.MIN_VALUE;
                 }
                 status = Messages.get(Mp.class, "status_client_exit_save");
@@ -3249,8 +5461,8 @@ public class Mp {
         public static final int HERO = 4;   // 带 id 的职业通知（房主转发给其他访客）
         /** CHAT：聊天（房主转发）。 */
         public static final int CHAT = 5;   // 名字+内容 编码，房主转发
-        /** KICK：房主退出存档，访客回标题（连接保持）。 */
-        public static final int KICK = 6;   // 房主 → 访客：房主退出存档，回标题（连接保持）
+        /** KICK：房主退出对局，访客回房间（连接保持）。 */
+        public static final int KICK = 6;   // 房主 → 访客：房主退出对局，回房间（连接保持）
         /** ASSIGN：房主给新访客分配 id。 */
         public static final int ASSIGN = 7; // 房主 → 新访客：分配 id
         /** JOIN：新玩家加入（id + 名字）。 */
@@ -3284,6 +5496,16 @@ public class Mp {
         public static final int WORLD_READY = 31; // 访客 → 房主：新世界就绪
         /** HERO_INFO：完整英雄 bundle（id + bundle 字节）；用于 /list 点击与放大镜查看玩家详情。 */
         public static final int HERO_INFO = 32;   // 双向：英雄详情同步（房主转发）
+        /** ROOM_STATE：房主 → 访客的房间快照（roster + 选中存档）。 */
+        public static final int ROOM_STATE = 40;  // 房主 → 访客：开局前房间状态
+        /** ROOM_EVENT：房间事件（如某玩家已返回房间）；房主转发。 */
+        public static final int ROOM_EVENT = 41;  // 双向：房间事件（房主转发）
+        /** PROFILE：个人资料摘要（UUID/佩戴徽章/最高分）；访客 → 房主。 */
+        public static final int PROFILE = 42;     // 访客 → 房主：资料摘要
+        /** PROFILE_REQ：按需请求某玩家的最高分对局详情。 */
+        public static final int PROFILE_REQ = 43; // 请求者 → 房主 → 目标玩家
+        /** PROFILE_DATA：目标玩家的最高分对局记录；经房主路由。 */
+        public static final int PROFILE_DATA = 44; // 目标玩家 → 房主 → 请求者
     }
 
         /** HERO 帧载荷：id + 职业。 */

@@ -35,13 +35,13 @@ public class WndPlayerList extends Window {
      */
     public WndPlayerList() {
         RenderedTextBlock title = PixelScene.renderTextBlock(
-                Messages.get(WndPlayerList.class, "title"), 9);
+                Messages.get(WndPlayerList.class, "title"), MpUi.font(9));
         title.hardlight(TITLE_COLOR);
         title.setPos(0f, 0f);
-        title.maxWidth(WIDTH);
+        title.maxWidth(MpUi.i(WIDTH));
         add(title);
 
-        top = title.bottom() + 4f;
+        top = title.bottom() + MpUi.px(4f);
         rebuild();
         lastRefresh = System.currentTimeMillis();
     }
@@ -49,6 +49,7 @@ public class WndPlayerList extends Window {
     private void rebuild() { // skipcq: JAVA-R1000 每行玩家信息元素多：复杂度高但已实测稳定
         for (Gizmo g : rowGizmos) {
             remove(g);
+            g.destroy();   // PointerArea 必须 destroy 才会移除全局监听，避免关闭后误点
         }
         rowGizmos.clear();
 
@@ -57,7 +58,7 @@ public class WndPlayerList extends Window {
         for (Mp.PlayerInfo info : list) {
             // 整行可点击：查看该玩家的英雄详情（与看自己一致）
             final int pid = info.id;
-            PointerArea rowClick = new PointerArea(0, y, WIDTH, ROW_HEIGHT) {
+            PointerArea rowClick = new PointerArea(0, y, MpUi.i(WIDTH), MpUi.i(ROW_HEIGHT)) {
                 @Override
                 protected void onClick(PointerEvent event) {
                     // 先关闭列表：否则详情窗口关闭后列表仍留在底层，会再次拦截点击/重复打开旧详情
@@ -70,12 +71,13 @@ public class WndPlayerList extends Window {
 
             if (info.heroClass != null) {
                 Image icon = new Image(info.heroClass.spritesheet(), 0, 0, 12, 15);
-                icon.setPos(0f, y + 1f);
+                icon.scale.set(MpUi.scale());
+                icon.setPos(0f, y + MpUi.px(1f));
                 add(icon);
                 rowGizmos.add(icon);
             } else {
-                RenderedTextBlock unknown = PixelScene.renderTextBlock("?", 8);
-                unknown.setPos(3f, y + 3f);
+                RenderedTextBlock unknown = PixelScene.renderTextBlock("?", MpUi.font(8));
+                unknown.setPos(MpUi.px(3f), y + MpUi.px(3f));
                 add(unknown);
                 rowGizmos.add(unknown);
             }
@@ -83,10 +85,10 @@ public class WndPlayerList extends Window {
             String baseName = (info.name == null || info.name.isEmpty())
                     ? Messages.get(WndPlayerList.class, "default_name") : info.name;
             if (info.isSelf) baseName += Messages.get(WndPlayerList.class, "self_suffix");
-            RenderedTextBlock name = PixelScene.renderTextBlock(baseName, 7);
-            name.maxWidth(WIDTH - 120);
+            RenderedTextBlock name = PixelScene.renderTextBlock(baseName, MpUi.font(7));
+            name.maxWidth(MpUi.i(WIDTH - 120));
             name.hardlight(0xFFFFFFFF);
-            name.setPos(16f, y + 1f);
+            name.setPos(MpUi.px(16f), y + MpUi.px(1f));
             add(name);
             rowGizmos.add(name);
 
@@ -96,21 +98,23 @@ public class WndPlayerList extends Window {
             int roleColor = info.isHost ? 0xFFFF4444
                     : (info.isAdmin ? 0xFFFFD700 : 0xFFFFFFFF);
             RenderedTextBlock role = PixelScene.renderTextBlock(
-                    Messages.get(WndPlayerList.class, roleKey), 7);
+                    Messages.get(WndPlayerList.class, roleKey), MpUi.font(7));
             role.hardlight(roleColor);
-            role.setPos(16f + name.width() + 3f, y + 1f);
+            role.setPos(MpUi.px(16f) + name.width() + MpUi.px(3f), y + MpUi.px(1f));
             add(role);
             rowGizmos.add(role);
 
-            RenderedTextBlock state = PixelScene.renderTextBlock(statusText(info), 6);
-            state.setPos(WIDTH - state.width() - 2f, y + 2f);
+            RenderedTextBlock state = PixelScene.renderTextBlock(statusText(info), MpUi.font(6));
+            state.setPos(MpUi.i(WIDTH) - state.width() - MpUi.px(2f), y + MpUi.px(2f));
             add(state);
             rowGizmos.add(state);
 
             // 血量条（第二行）：背景 + 按比例填充 + 数值
-            float barX = 16f;
-            float barY = y + 16f;
-            ColorBlock hpBg = new ColorBlock(HP_BAR_WIDTH, HP_BAR_HEIGHT, 0xCC330000);
+            float barX = MpUi.px(16f);
+            float barY = y + MpUi.px(16f);
+            float hpBarWidth = MpUi.px(HP_BAR_WIDTH);
+            float hpBarHeight = MpUi.px(HP_BAR_HEIGHT);
+            ColorBlock hpBg = new ColorBlock(hpBarWidth, hpBarHeight, 0xCC330000);
             hpBg.setPos(barX, barY);
             add(hpBg);
             rowGizmos.add(hpBg);
@@ -118,15 +122,15 @@ public class WndPlayerList extends Window {
             if (hasHp) {
                 float ratio = Math.max(0f, Math.min(1f, info.hp / (float) info.ht));
                 ColorBlock hpFill = new ColorBlock(
-                        HP_BAR_WIDTH * ratio, HP_BAR_HEIGHT, 0xFF44CC44);
+                        hpBarWidth * ratio, hpBarHeight, 0xFF44CC44);
                 hpFill.setPos(barX, barY);
                 add(hpFill);
                 rowGizmos.add(hpFill);
             }
             RenderedTextBlock hpText = PixelScene.renderTextBlock(
                     hasHp ? Messages.get(WndPlayerList.class, "hp_value", info.hp, info.ht)
-                            : Messages.get(WndPlayerList.class, "floor_unknown"), 6);
-            hpText.setPos(barX + HP_BAR_WIDTH + 4f, y + 14f);
+                            : Messages.get(WndPlayerList.class, "floor_unknown"), MpUi.font(6));
+            hpText.setPos(barX + hpBarWidth + MpUi.px(4f), y + MpUi.px(14f));
             add(hpText);
             rowGizmos.add(hpText);
 
@@ -134,25 +138,26 @@ public class WndPlayerList extends Window {
             String floorText = info.depth > 0
                     ? Messages.get(WndPlayerList.class, "floor", info.depth)
                     : Messages.get(WndPlayerList.class, "floor_unknown");
-            RenderedTextBlock floor = PixelScene.renderTextBlock(floorText, 6);
-            floor.setPos(WIDTH - floor.width() - 2f, y + 14f);
+            RenderedTextBlock floor = PixelScene.renderTextBlock(floorText, MpUi.font(6));
+            floor.setPos(MpUi.i(WIDTH) - floor.width() - MpUi.px(2f), y + MpUi.px(14f));
             add(floor);
             rowGizmos.add(floor);
 
-            y += ROW_HEIGHT + GAP;
+            y += MpUi.i(ROW_HEIGHT) + MpUi.px(GAP);
         }
 
         // 底部提示：点击玩家行查看英雄详情
         RenderedTextBlock hint = PixelScene.renderTextBlock(
-                Messages.get(WndPlayerList.class, "click_hint"), 6);
+                Messages.get(WndPlayerList.class, "click_hint"), MpUi.font(6));
         hint.hardlight(0x808080);
-        hint.setPos(0f, y + 2f);
+        hint.setPos(0f, y + MpUi.px(2f));
         add(hint);
         rowGizmos.add(hint);
 
-        int newHeight = (int) Math.max(top + ROW_HEIGHT, y + hint.height() + 2f);
+        int newHeight = (int) Math.max(top + MpUi.i(ROW_HEIGHT),
+                y + hint.height() + MpUi.px(2f));
         if (newHeight != height) {
-            resize(WIDTH, newHeight);
+            resize(MpUi.i(WIDTH), newHeight);
         }
     }
 
