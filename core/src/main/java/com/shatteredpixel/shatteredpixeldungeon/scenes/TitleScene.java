@@ -19,7 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.multiplayer.WndMultiplayer;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.MpLobbyScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyConfig;
 import com.shatteredpixel.shatteredpixeldungeon.services.multiplayer.MultiplayerImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
@@ -548,7 +548,7 @@ public class TitleScene extends PixelScene {
 				Messages.get(TitleScene.class, "mp"), 8){
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.scene().add(new WndMultiplayer());
+				ShatteredPixelDungeon.switchNoFade(MpLobbyScene.class);
 			}
 		};
 		add(btnMp);

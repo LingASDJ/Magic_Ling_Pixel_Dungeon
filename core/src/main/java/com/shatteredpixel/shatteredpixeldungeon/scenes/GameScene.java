@@ -125,6 +125,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
+import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyUtils;
 import com.shatteredpixel.shatteredpixeldungeon.services.multiplayer.MultiplayerImpl;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiscardedItemSprite;
@@ -404,6 +405,19 @@ public class GameScene extends PixelScene {
 		restart = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(StartScene.class, "new"), 9){
 			@Override
 			protected void onClick() {
+				if (Dungeon.daily) {
+					if (Dungeon.dailyReplay) {
+						// 再次挑战（成绩不进排行榜）：按普通结束回主界面
+						ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+					} else {
+						// 首次挑战：直接打开当天的在线每日排行榜
+						String date = Dungeon.customSeedText;
+						DailyRankingsScene.date = date == null || date.isEmpty()
+								? DailyUtils.todayUtc() : date;
+						ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
+					}
+					return;
+				}
 				GameScene.show(new WndRestart());
 			}
 
@@ -422,7 +436,7 @@ public class GameScene extends PixelScene {
 				align(uiCamera, (restart.camera.height - restart.height()) / 2 + restart.height()/2 + 16)
 		);
 		if (Dungeon.daily) {
-			restart.active = false;
+			restart.active = true;   // 狩猎结束现在是可点击按钮
 			restart.icon(new PinkLingSprite());
 			restart.alpha(0.8f);
 			restart.text(Messages.get(WndLeaderboard.class, "daily_end"));
