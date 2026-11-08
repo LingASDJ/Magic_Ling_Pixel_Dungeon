@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
@@ -44,19 +45,39 @@ public class TalentsPane extends ScrollPane {
 	ColorBlock sep;
 	ColorBlock blocker;
 	RenderedTextBlock blockText;
+	private final Hero owner;
 
 	public TalentsPane(TalentButton.Mode mode) {
-		this(mode, Dungeon.hero.talents);
+		this(mode, Dungeon.hero, Dungeon.hero.talents, false);
 	}
 
 	public TalentsPane(TalentButton.Mode mode, ArrayList<LinkedHashMap<Talent, Integer>> talents) {
-		super(new Component());
+		this(mode, Dungeon.hero, talents, false);
+	}
 
-		Ratmogrify.useRatroicEnergy = Dungeon.hero != null && Dungeon.hero.armorAbility instanceof Ratmogrify;
+	/**
+	 * 展示指定英雄的天赋（联机查看他人英雄时使用）。
+	 *
+	 * @param mode 天赋按钮模式（远程只读用 INFO）
+	 * @param owner 要展示的英雄
+	 */
+	public TalentsPane(TalentButton.Mode mode, Hero owner) {
+		this(mode, owner, owner != null ? owner.talents : new ArrayList<>(), true);
+	}
+
+	private TalentsPane(TalentButton.Mode mode, Hero owner,
+						ArrayList<LinkedHashMap<Talent, Integer>> talents,
+						boolean ownerTiers) {
+		super(new Component());
+		this.owner = owner != null ? owner : Dungeon.hero;
+		ArrayList<LinkedHashMap<Talent, Integer>> shownTalents =
+				talents != null ? talents : new ArrayList<>();
+
+		Ratmogrify.useRatroicEnergy = this.owner != null && this.owner.armorAbility instanceof Ratmogrify;
 
 		int tiersAvailable = 1;
 
-		if (mode == TalentButton.Mode.INFO) {
+		if (mode == TalentButton.Mode.INFO && !ownerTiers) {
 			if (!Badges.isUnlocked(Badges.Badge.LEVEL_REACHED_1)) {
 				tiersAvailable = 1;
 			} else if (!Badges.isUnlocked(Badges.Badge.LEVEL_REACHED_2) || !Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_2)) {
@@ -66,24 +87,24 @@ public class TalentsPane extends ScrollPane {
 			} else {
 				tiersAvailable = Talent.MAX_TALENT_TIERS;
 			}
-		} else {
+		} else if (this.owner != null) {
 			while (tiersAvailable < Talent.MAX_TALENT_TIERS
-					&& Dungeon.hero.lvl + 1 >= Talent.tierLevelThresholds[tiersAvailable + 1]) {
+					&& this.owner.lvl + 1 >= Talent.tierLevelThresholds[tiersAvailable + 1]) {
 				tiersAvailable++;
 			}
-			if (tiersAvailable > 2 && Dungeon.hero.subClass == HeroSubClass.NONE) {
+			if (tiersAvailable > 2 && this.owner.subClass == HeroSubClass.NONE) {
 				tiersAvailable = 2;
-			} else if (tiersAvailable > 3 && Dungeon.hero.armorAbility == null) {
+			} else if (tiersAvailable > 3 && this.owner.armorAbility == null) {
 				tiersAvailable = 3;
 			}
 		}
 
-		tiersAvailable = Math.min(tiersAvailable, talents.size());
+		tiersAvailable = Math.min(tiersAvailable, shownTalents.size());
 
-		for (int i = 0; i < Math.min(tiersAvailable, talents.size()); i++) {
-			if (talents.get(i).isEmpty()) continue;
+		for (int i = 0; i < Math.min(tiersAvailable, shownTalents.size()); i++) {
+			if (shownTalents.get(i).isEmpty()) continue;
 
-			TalentTierPane pane = new TalentTierPane(talents.get(i), i + 1, mode);
+			TalentTierPane pane = new TalentTierPane(shownTalents.get(i), i + 1, mode, this.owner);
 			panes.add(pane);
 			content.add(pane);
 
@@ -157,6 +178,7 @@ public class TalentsPane extends ScrollPane {
 	public static class TalentTierPane extends Component {
 
 		private int tier;
+		private final Hero owner;
 
 		public RenderedTextBlock title;
 		ArrayList<TalentButton> buttons;
@@ -164,9 +186,15 @@ public class TalentsPane extends ScrollPane {
 		ArrayList<Image> stars = new ArrayList<>();
 
 		public TalentTierPane(LinkedHashMap<Talent, Integer> talents, int tier, TalentButton.Mode mode) {
+			this(talents, tier, mode, Dungeon.hero);
+		}
+
+		public TalentTierPane(LinkedHashMap<Talent, Integer> talents, int tier,
+							  TalentButton.Mode mode, Hero owner) {
 			super();
 
 			this.tier = tier;
+			this.owner = owner != null ? owner : Dungeon.hero;
 
 			title = PixelScene.renderTextBlock(Messages.titleCase(Messages.get(TalentsPane.class, "tier", tier)), 9);
 			title.hardlight(Window.TITLE_COLOR);
@@ -200,9 +228,9 @@ public class TalentsPane extends ScrollPane {
 				stars.clear();
 			}
 
-			int totStars = Talent.tierLevelThresholds[tier + 1] - Talent.tierLevelThresholds[tier] + Dungeon.hero.bonusTalentPoints(tier);
-			int openStars = Dungeon.hero.talentPointsAvailable(tier);
-			int usedStars = Dungeon.hero.talentPointsSpent(tier);
+			int totStars = Talent.tierLevelThresholds[tier + 1] - Talent.tierLevelThresholds[tier] + owner.bonusTalentPoints(tier);
+			int openStars = owner.talentPointsAvailable(tier);
+			int usedStars = owner.talentPointsSpent(tier);
 			for (int i = 0; i < totStars; i++) {
 				Image im = new Speck().image(Speck.STAR);
 				stars.add(im);

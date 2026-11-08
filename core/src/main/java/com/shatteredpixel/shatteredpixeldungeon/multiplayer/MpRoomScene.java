@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.multiplayer;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -12,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
@@ -21,6 +23,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.PointerArea;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
@@ -48,6 +51,8 @@ public class MpRoomScene extends PixelScene {
     private RedButton btnHero;
     private RedButton btnPassword;
     private RedButton btnWait;
+    private StyledButton btnChat;
+    private MpGameLog roomLog;
     private int lastUiVersion = -1;
     private String lastCode = null;
     private String lastSave = null;
@@ -58,6 +63,8 @@ public class MpRoomScene extends PixelScene {
     public void create() {
         super.create();
         PixelScene.uiCamera.visible = false;
+        // 从对局返回房间时切回大厅主题音乐；房间内继续沿用大厅音乐
+        Music.INSTANCE.play(Assets.Music.THEME, true);
 
         int w = Camera.main.width;
         int h = Camera.main.height;
@@ -79,6 +86,17 @@ public class MpRoomScene extends PixelScene {
         };
         back.setPos(0, 0);
         add(back);
+
+        // 房间内聊天入口：放在返回键右侧，房间内没有其他玩家时置灰
+        btnChat = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "") {
+            @Override
+            protected void onClick() {
+                Mp.get().openChat();
+            }
+        };
+        btnChat.icon(MpChatWindow.chatIcon());
+        btnChat.setRect(back.right() + 2f, 0f, 20f, 20f);
+        add(btnChat);
 
         contentW = Math.min(contentWidth, w - MpUi.px(24f));
         contentX = (w - contentW) / 2f;
@@ -171,6 +189,10 @@ public class MpRoomScene extends PixelScene {
         statusText.setPos(contentX, buttonsY - MpUi.px(22f));
         statusText.alpha(0.75f);
         add(statusText);
+
+        // 房间左下角联机日志：放在按钮行上方、状态文字上方，最新消息在底部
+        roomLog = new MpGameLog(0f, buttonsY - MpUi.px(30f), 3);
+        addToFront(roomLog);
 
         refreshAll();
         fadeIn();
@@ -292,6 +314,9 @@ public class MpRoomScene extends PixelScene {
     }
 
     private void refreshButtons() {
+        if (btnChat != null) {
+            btnChat.enable(Mp.get().connected);
+        }
         Mp.RoomSaveInfo save = Mp.get().getRoomSave();
         if (btnStart != null) {
             boolean can = Mp.get().canHostStartGame();

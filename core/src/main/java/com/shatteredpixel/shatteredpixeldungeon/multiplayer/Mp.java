@@ -64,10 +64,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
@@ -87,10 +85,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -532,9 +532,90 @@ public class Mp {
     private final HashMap<Integer, Long> profileRequestAt = new HashMap<>();
     /** 待联机大厅显示的提示（避免场景切换竞态导致弹窗丢失）。 */
     private volatile String pendingLobbyMessage = null;
-        /** 聊天输入框是否打开（防止按键重入）。 */
+    /** 聊天窗口是否打开（防止按键重入）。 */
     public volatile boolean chatOpen = false;
+    private volatile MpChatWindow chatWindow;
     private StyledButton chatButton;          // 局内聊天按钮（Mp 自己挂在 GameScene 上）
+
+    // ---------------------------------------------------------------- 聊天记录（仅本机内存）
+
+    /** 聊天记录最多保留的条数。 */
+    public static final int CHAT_MAX_LINES = 200;
+    /** 自己发送的聊天。 */
+    public static final int CHAT_TYPE_SELF = 0;
+    /** 其他玩家发送的聊天。 */
+    public static final int CHAT_TYPE_OTHER = 1;
+    /** 系统/特殊事件（命令反馈等）。 */
+    public static final int CHAT_TYPE_SYSTEM = 2;
+
+    /** 一条聊天记录。 */
+    public static final class ChatLine {
+        /** 单调递增的序号（用于窗口增量刷新）。 */
+        public final long id;
+        /** 发送者名字。 */
+        public final String name;
+        /** 聊天内容。 */
+        public final String text;
+        /** 本机时间 HH:mm:ss。 */
+        public final String time;
+        /** 类型：{@link #CHAT_TYPE_SELF}/{@link #CHAT_TYPE_OTHER}/{@link #CHAT_TYPE_SYSTEM}。 */
+        public final int type;
+
+        ChatLine(long id, String name, String text, String time, int type) {
+            this.id = id;
+            this.name = name;
+            this.text = text;
+            this.time = time;
+            this.type = type;
+        }
+    }
+
+    private final ArrayList<ChatLine> chatLines = new ArrayList<>();
+    private long chatNextId = 1L;
+    /** 聊天记录版本号：窗口每帧比较它决定是否刷新。 */
+    private volatile long chatVersion = 0L;
+
+    // ---------------------------------------------------------------- 左上角联机日志（聊天 + 联机消息）
+
+    /** 左上角联机日志最多保留的条数。 */
+    public static final int MPLOG_MAX_LINES = 5;
+    /** 普通联机信息（白色）。 */
+    public static final int MPLOG_INFO = 0;
+    /** 特殊联机事件（金色）。 */
+    public static final int MPLOG_EVENT = 1;
+    /** 错误/负面消息（红色）。 */
+    public static final int MPLOG_NEGATIVE = 2;
+    /** 正面消息（绿色）。 */
+    public static final int MPLOG_POSITIVE = 3;
+    /** 警告（橙色）。 */
+    public static final int MPLOG_WARNING = 4;
+    /** 自己发送的聊天（粉色）。 */
+    public static final int MPLOG_CHAT_SELF = 10;
+    /** 其他玩家的聊天（紫色）。 */
+    public static final int MPLOG_CHAT_OTHER = 11;
+    /** 系统聊天（金色）。 */
+    public static final int MPLOG_CHAT_SYSTEM = 12;
+
+    /** 一条左上角联机日志。 */
+    public static final class MpLogLine {
+        /** 单调递增序号。 */
+        public final long id;
+        /** 显示文本。 */
+        public final String text;
+        /** 颜色类型。 */
+        public final int type;
+
+        MpLogLine(long id, String text, int type) {
+            this.id = id;
+            this.text = text;
+            this.type = type;
+        }
+    }
+
+    private final ArrayList<MpLogLine> mpLogLines = new ArrayList<>();
+    private long mpLogNextId = 1L;
+    private volatile long mpLogVersion = 0L;
+    private MpGameLog mpLogPane;
     /** ROOM_EVENT 事件：某玩家已返回房间。 */
     static final int ROOM_EVENT_RETURNED = 1;
 
@@ -2503,7 +2584,9 @@ public class Mp {
         }
         lastExploredSnapshot = 0L;
         lastHeroHp = -1;
-        chatOpen = false;
+        closeChatWindow();
+        clearChatHistory();
+        clearMpLog();
         pendingState = null;
         final WndHeroClassSelect w = classWindow;
         classWindow = null;
@@ -2697,35 +2780,23 @@ public class Mp {
         }
     }
 
-    /** 系统事件提示：写入联机状态栏 + 游戏事件栏（白色），任意线程可用 */
+    /** 系统事件提示：写入联机状态栏 + 左上角联机日志（金色），任意线程可用 */
     private void systemNotice(final String text) {
         status = text;
-        try {
-            Game.runOnRenderThread(() -> GLog.info(text));
-        } catch (Throwable t) {
-            GLog.info(text);
-        }
+        addMpLogLine(text, MPLOG_EVENT);
     }
 
-    /** 死亡提示：写入联机状态栏 + 游戏事件栏（红色），任意线程可用 */
+    /** 死亡提示：写入联机状态栏 + 左上角联机日志（红色），任意线程可用 */
     private void deathNotice(final String text) {
         status = text;
-        try {
-            Game.runOnRenderThread(() -> GLog.negative(text));
-        } catch (Throwable t) {
-            GLog.negative(text);
-        }
+        addMpLogLine(text, MPLOG_NEGATIVE);
     }
 
     /** 房主进入新档：让旧访客先保存旧英雄，回 WORLD_READY 后再发新世界 STATE（自动跟随）。 */
     private void restartWorldForGuests() {
         final String msg = Messages.get(Mp.class, "host_new_game_sync");
         status = msg;
-        try {
-            Game.runOnRenderThread(() -> GLog.yellow(msg));
-        } catch (Throwable t) {
-            GLog.yellow(msg);
-        }
+        addMpLogLine(msg, MPLOG_WARNING);
         List<Peer> snapshot;
         synchronized (peers) {
             snapshot = new ArrayList<>(peers);
@@ -2884,10 +2955,8 @@ public class Mp {
                 }
                 case Proto.CHAT: {
                     ChatPayload cp = decodeChat(data);
-                    if (!cp.text.trim().isEmpty()) {
-                        final String line = "[" + cp.name + "] " + cp.text.trim();
-                        Game.runOnRenderThread(() -> GLog.pink(line));   // 聊天消息进事件栏（亮紫）
-                    }
+                    addChatLine(cp.name, cp.text,
+                            isServerChatName(cp.name) ? CHAT_TYPE_SYSTEM : CHAT_TYPE_OTHER);
                     if (isHost()) {
                         sendToOthers(p, Proto.CHAT, data);   // 房主把聊天转发给其他访客
                     }
@@ -3039,7 +3108,7 @@ public class Mp {
                         guestWorldActive = false;
                         worldSeed = Long.MIN_VALUE;
                         status = Messages.get(Mp.class, "host_new_game_sync");
-                        GLog.yellow(status);
+                        addMpLogLine(status, MPLOG_WARNING);
                         try { sendToAll(Proto.WORLD_READY, new byte[0]); } catch (Throwable ignored) {}
                     });
                     break;
@@ -3395,28 +3464,35 @@ public class Mp {
 
             FileUtils.bundleToFile(GamesInProgress.gameFile(slot), game);
 
-            // 房主层档里只有房主的探图记录：先清空，再合并访客自己的 visited/mapped
+            // 房主层档里只有房主的探图记录：先清空，再合并访客自己的 visited/mapped。
+            // 这里必须直接操作嵌套 bundle，不能 (Level) levelFile.get("level")：
+            // 反序列化 Level 会同时恢复 mobs/blobs 等，某些自定义怪物的 restore 流程会访问
+            // Dungeon.level，而访客此时还没有进入世界（Dungeon.level == null），
+            // 手机上曾复现为 "Attempt to invoke virtual method Level.length() on a null object reference"。
             Bundle levelFile = Bundle.read(new ByteArrayInputStream(p.level));
-            Level lv = (Level) levelFile.get("level");
-            if (lv != null) {
-                if (lv.visited != null) Arrays.fill(lv.visited, false);
-                if (lv.mapped != null) Arrays.fill(lv.mapped, false);
+            Bundle levelBundle = levelFile.getBundle("level");
+            if (levelBundle != null && !levelBundle.isNull()) {
+                boolean[] visited = levelBundle.getBooleanArray("visited");
+                boolean[] mapped = levelBundle.getBooleanArray("mapped");
+                if (visited != null) Arrays.fill(visited, false);
+                if (mapped != null) Arrays.fill(mapped, false);
                 if (guest.contains(MP_EXPLORED + depth + "_" + branch)) {
                     Bundle vis = guest.getBundle(MP_EXPLORED + depth + "_" + branch);
                     boolean[] v = vis.getBooleanArray("visited");
-                    if (v != null && lv.visited != null) {
-                        for (int i = 0; i < v.length && i < lv.visited.length; i++) {
-                            if (v[i]) lv.visited[i] = true;
+                    if (v != null && visited != null) {
+                        for (int i = 0; i < v.length && i < visited.length; i++) {
+                            if (v[i]) visited[i] = true;
                         }
                     }
                     boolean[] m = vis.getBooleanArray("mapped");
-                    if (m != null && lv.mapped != null) {
-                        for (int i = 0; i < m.length && i < lv.mapped.length; i++) {
-                            if (m[i]) lv.mapped[i] = true;
+                    if (m != null && mapped != null) {
+                        for (int i = 0; i < m.length && i < mapped.length; i++) {
+                            if (m[i]) mapped[i] = true;
                         }
                     }
                 }
-                levelFile.put("level", lv);
+                if (visited != null) levelBundle.put("visited", visited);
+                if (mapped != null) levelBundle.put("mapped", mapped);
             }
             FileUtils.bundleToFile(GamesInProgress.depthFile(slot, depth, branch), levelFile);
 
@@ -3485,7 +3561,7 @@ public class Mp {
     }
 
     /**
-     * 发送聊天消息（本地也回显到事件栏，亮紫色）；"/" 开头交给指令处理
+     * 发送聊天消息（先写入本机聊天记录，再发给其他玩家）；"/" 开头交给指令处理
      *
      * @param text 参数。
      */
@@ -3496,8 +3572,110 @@ public class Mp {
             handleCommand(msg);
             return;
         }
-        GLog.pink("[" + getMyName() + "] " + msg);
+        addChatLine(getMyName(), msg, CHAT_TYPE_SELF);
         try { sendToAll(Proto.CHAT, encodeChat(getMyName(), msg)); } catch (Throwable ignored) {}
+    }
+
+    /** 追加一条聊天记录（线程安全；超过上限丢弃最旧的）。 */
+    private void addChatLine(String name, String text, int type) {
+        if (text == null) return;
+        String msg = text.trim();
+        if (msg.isEmpty()) return;
+        String displayName = name == null || name.trim().isEmpty() ? "?" : name.trim();
+        String time = chatLocalTime();
+        synchronized (chatLines) {
+            chatLines.add(new ChatLine(chatNextId++, displayName, msg, time, type));
+            while (chatLines.size() > CHAT_MAX_LINES) {
+                chatLines.remove(0);
+            }
+            chatVersion++;
+        }
+        // 左上角联机日志同时显示聊天（时间只取 HH:mm，避免占用过多宽度）
+        int logType = type == CHAT_TYPE_SELF ? MPLOG_CHAT_SELF
+                : type == CHAT_TYPE_SYSTEM ? MPLOG_CHAT_SYSTEM : MPLOG_CHAT_OTHER;
+        String shortTime = time.length() > 5 ? time.substring(0, 5) : time;
+        addMpLogLine("[" + shortTime + "] " + displayName + ": " + msg, logType);
+    }
+
+    /** 追加一条左上角联机日志（线程安全；超过上限丢弃最旧的）。 */
+    private void addMpLogLine(String text, int type) {
+        if (text == null) return;
+        String msg = text.trim();
+        if (msg.isEmpty()) return;
+        // 左上角区域较小，长消息截断；完整内容仍在聊天窗口里
+        if (msg.length() > 90) {
+            msg = msg.substring(0, 87) + "...";
+        }
+        synchronized (mpLogLines) {
+            mpLogLines.add(new MpLogLine(mpLogNextId++, msg, type));
+            while (mpLogLines.size() > MPLOG_MAX_LINES) {
+                mpLogLines.remove(0);
+            }
+            mpLogVersion++;
+        }
+    }
+
+    /**
+     * 获取左上角联机日志快照。
+     *
+     * @return 返回值。
+     */
+    public List<MpLogLine> getMpLogLines() {
+        synchronized (mpLogLines) {
+            return new ArrayList<>(mpLogLines);
+        }
+    }
+
+    /** 左上角联机日志版本号。 */
+    public long getMpLogVersion() {
+        return mpLogVersion;
+    }
+
+    /** 清空左上角联机日志。 */
+    public void clearMpLog() {
+        synchronized (mpLogLines) {
+            mpLogLines.clear();
+            mpLogVersion++;
+        }
+    }
+
+    /**
+     * 获取聊天记录快照（窗口渲染用）。
+     *
+     * @return 返回值。
+     */
+    public List<ChatLine> getChatLines() {
+        synchronized (chatLines) {
+            return new ArrayList<>(chatLines);
+        }
+    }
+
+    /** 聊天记录版本号；窗口用它判断是否需要刷新。 */
+    public long getChatVersion() {
+        return chatVersion;
+    }
+
+    /** 清空本机聊天记录（离开房间/断开连接时）。 */
+    public void clearChatHistory() {
+        synchronized (chatLines) {
+            chatLines.clear();
+            chatVersion++;
+        }
+    }
+
+    /** 本机时间，格式 HH:mm:ss。 */
+    private static String chatLocalTime() {
+        Calendar c = Calendar.getInstance();
+        return String.format(Locale.US, "%02d:%02d:%02d",
+                c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND));
+    }
+
+    /** 是否是房主代发的系统聊天（用于显示为金色）。 */
+    private static boolean isServerChatName(String name) {
+        if (name == null) return false;
+        String n = name.trim();
+        return n.equals(Messages.get(Mp.class, "server_name"))
+                || n.equals("系统") || n.equals("Server") || n.equals("系統");
     }
 
     /** 聊天指令：/list 所有人可用；/kick 仅房主可用 */
@@ -3514,23 +3692,23 @@ public class Mp {
         }
         if (name.equalsIgnoreCase("/kick")) {
             if (!canUseHostCommands()) {
-                GLog.n(Messages.get(Mp.class, "cmd_host_only"));
+                addMpLogLine(Messages.get(Mp.class, "cmd_host_only"), MPLOG_NEGATIVE);
                 return;
             }
             if (parts.length < 2 || parts[1].trim().isEmpty()) {
-                GLog.n(Messages.get(Mp.class, "cmd_kick_usage"));
+                addMpLogLine(Messages.get(Mp.class, "cmd_kick_usage"), MPLOG_NEGATIVE);
                 return;
             }
             if (role != Role.HOST) {
                 // 管理员访客没有直连其他访客的 socket，把指令转给房主执行
                 try { sendToAll(Proto.CMD, cmd.trim().getBytes("UTF-8")); } catch (Throwable ignored) {}
-                GLog.n(Messages.get(Mp.class, "cmd_sent_to_host", cmd.trim()));
+                addMpLogLine(Messages.get(Mp.class, "cmd_sent_to_host", cmd.trim()), MPLOG_EVENT);
                 return;
             }
             String targetName = parts[1].trim();
             Peer target = findPeerByName(targetName);
             if (target == null) {
-                GLog.n(Messages.get(Mp.class, "cmd_kick_not_found", targetName));
+                addMpLogLine(Messages.get(Mp.class, "cmd_kick_not_found", targetName), MPLOG_NEGATIVE);
                 return;
             }
             kickPeer(target);
@@ -3538,25 +3716,26 @@ public class Mp {
         }
         if (name.equalsIgnoreCase("/op") || name.equalsIgnoreCase("/dop")) {
             if (role != Role.HOST) {
-                GLog.n(Messages.get(Mp.class, "cmd_host_only"));
+                addMpLogLine(Messages.get(Mp.class, "cmd_host_only"), MPLOG_NEGATIVE);
                 return;
             }
             boolean grant = name.equalsIgnoreCase("/op");
             if (parts.length < 2 || parts[1].trim().isEmpty()) {
-                GLog.n(Messages.get(Mp.class, grant ? "cmd_op_usage" : "cmd_dop_usage"));
+                addMpLogLine(Messages.get(Mp.class, grant ? "cmd_op_usage" : "cmd_dop_usage"), MPLOG_NEGATIVE);
                 return;
             }
             String targetName = parts[1].trim();
             Peer target = findPeerByName(targetName);
             if (target == null) {
-                GLog.n(Messages.get(Mp.class, "cmd_kick_not_found", targetName));
+                addMpLogLine(Messages.get(Mp.class, "cmd_kick_not_found", targetName), MPLOG_NEGATIVE);
                 return;
             }
             setPeerAdmin(target, grant);
             return;
         }
-        GLog.n(Messages.get(Mp.class,
-                role == Role.HOST || localAdmin ? "cmd_unknown_host" : "cmd_unknown_client"));
+        addMpLogLine(Messages.get(Mp.class,
+                role == Role.HOST || localAdmin ? "cmd_unknown_host" : "cmd_unknown_client"),
+                MPLOG_NEGATIVE);
     }
 
     /** 本机是否可以使用房主命令（房主或房主授予的管理员）。 */
@@ -3577,15 +3756,16 @@ public class Mp {
     /** 房主授予/撤销管理员并广播给所有客户端。 */
     private void setPeerAdmin(Peer target, boolean grant) {
         if (target.admin == grant) {
-            GLog.n(Messages.get(Mp.class,
-                    grant ? "cmd_op_already" : "cmd_dop_not_admin", displayName(target.name)));
+            addMpLogLine(Messages.get(Mp.class,
+                    grant ? "cmd_op_already" : "cmd_dop_not_admin", displayName(target.name)),
+                    MPLOG_WARNING);
             return;
         }
         target.admin = grant;
         try { sendToAll(Proto.ADMIN, encodeAdmin(target.id, grant)); } catch (Throwable ignored) {}
         String msg = Messages.get(Mp.class,
                 grant ? "cmd_op_done" : "cmd_dop_done", displayName(target.name));
-        GLog.n(msg);
+        addMpLogLine(msg, MPLOG_EVENT);
         status = msg;
     }
 
@@ -3627,7 +3807,7 @@ public class Mp {
         try { if (p.sock != null) p.sock.close(); } catch (Throwable ignored) {}
         final String msg = Messages.get(Mp.class, "cmd_kick_done", displayName(p.name));
         status = msg;
-        Game.runOnRenderThread(() -> GLog.n(msg));
+        addMpLogLine(msg, MPLOG_EVENT);
     }
 
     /**
@@ -3753,18 +3933,21 @@ public class Mp {
         return false;
     }
 
-    /** 联机时在 GameScene 右上角挂"聊天"按钮；每个场景只建一次 */
+    /** 联机时在 GameScene 左侧挂方形聊天按钮；每个场景只建一次 */
     private void updateChatButton(GameScene gs) {
         if (chatButton == null) {
-            chatButton = new StyledButton(Chrome.Type.GREY_BUTTON_TR,
-                    Messages.get(Mp.class, "chat_button"), 8) {
+            chatButton = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "") {
                 @Override
                 protected void onClick() {
                     openChat();
                 }
             };
+            chatButton.icon(MpChatWindow.chatIcon());
             chatButton.camera = PixelScene.uiCamera;
-            chatButton.setRect(PixelScene.uiCamera.width - 32f, 36f, 32f, 16f);
+            // 左侧菜单/页面指示按钮占到 y≈99，聊天按钮放到其下方并贴住左边缘；
+            // 极矮屏幕（大界面模式）下再向上收，避免跑出屏幕
+            float chatY = Math.min(104f, Math.max(0f, PixelScene.uiCamera.height - 24f));
+            chatButton.setRect(0f, chatY, 20f, 20f);
             gs.addToFront(chatButton);
         }
         chatButton.visible = true;
@@ -3778,32 +3961,59 @@ public class Mp {
         }
     }
 
-    /** T 键 / 聊天按钮：打开聊天输入框（仅在 GameScene 有效） */
+    /** 联机时在 GameScene 左上角挂联机日志；每个场景只建一次 */
+    private void updateMpLogPane(GameScene gs) {
+        if (mpLogPane == null) {
+            mpLogPane = new MpGameLog();
+            // GameScene 的 Camera.main 是世界相机；HUD 文本必须走 uiCamera，
+            // 否则日志会画在地图坐标系里，表现为“局内看不到联机日志”。
+            mpLogPane.camera = PixelScene.uiCamera;
+            gs.addToFront(mpLogPane);
+        }
+        mpLogPane.visible = true;
+    }
+
+    private void hideMpLogPane() {
+        if (mpLogPane != null) {
+            mpLogPane.visible = false;
+        }
+    }
+
+    /** T 键 / 聊天按钮：打开聊天窗口（房间与对局内都可用） */
     public void openChat() {
         if (!connected || chatOpen) return;
-        if (!(Game.scene() instanceof GameScene)) return;
+        if (!(Game.scene() instanceof GameScene) && !(Game.scene() instanceof MpRoomScene)) return;
         chatOpen = true;
         Game.runOnRenderThread(() -> {
+            MpChatWindow w = null;
             try {
-                WndTextInput w = new WndTextInput(
-                        Messages.get(Mp.class, "chat_title"),
-                        Messages.get(Mp.class, "chat_prompt", displayName(peer)),
-                        "", 200, false,
-                        Messages.get(Mp.class, "chat_send"),
-                        Messages.get(Mp.class, "chat_cancel")) {
-                    @Override
-                    public void onSelect(boolean positive, String text) {
-                        chatOpen = false;
-                        if (positive) sendChat(text);
-                    }
-                };
+                w = new MpChatWindow(() -> {
+                    chatOpen = false;
+                    chatWindow = null;
+                });
+                chatWindow = w;
                 ShatteredPixelDungeon.scene().addToFront(w);
                 status = Messages.get(Mp.class, "chat_open");
             } catch (Throwable t) {
+                if (w != null) w.destroy();
                 chatOpen = false;
+                chatWindow = null;
                 status = Messages.get(Mp.class, "chat_open_failed", t.getMessage());
             }
         });
+    }
+
+    /** 关闭聊天窗口（断开连接/离开房间时）。 */
+    private void closeChatWindow() {
+        final MpChatWindow w = chatWindow;
+        chatWindow = null;
+        chatOpen = false;
+        if (w != null) {
+            Game.runOnRenderThread(() -> {
+                if (w.parent != null) w.hide();
+                else w.destroy();
+            });
+        }
     }
 
     // ---------------------------------------------------------------- 初始世界快照 / 访客持久世界（稳定版实验）
@@ -4607,6 +4817,7 @@ public class Mp {
         }
         if (!connected) {
             hideChatButton();
+            hideMpLogPane();
             return;
         }
 
@@ -4645,6 +4856,7 @@ public class Mp {
             enteringNewWorld = false;                   // 已进入新场景，恢复正常同步/存档
             lastHeroHp = Dungeon.hero != null ? Dungeon.hero.HP : -1;
             chatButton = null;                          // 新场景重新挂按钮（旧按钮随旧场景销毁）
+            mpLogPane = null;                           // 左上角联机日志随旧场景销毁
             if (role == Role.CLIENT) {
                 applyExploredToLevel();                 // 先恢复本层自己的探图
                 saveGuestHero();                        // 换层/重进场景时落盘访客英雄
@@ -4682,6 +4894,7 @@ public class Mp {
         }
 
         updateChatButton(gs);
+        updateMpLogPane(gs);
 
         // 房主侧：给每个还没收到进度的访客发 STATE（新加入的访客也会在这里补发）
         if (role == Role.HOST && Dungeon.hero != null && Dungeon.level != null) {

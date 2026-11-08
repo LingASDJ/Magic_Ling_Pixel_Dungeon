@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.multiplayer;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -14,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.NinePatch;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ public class MpLobbyScene extends PixelScene {
     public void create() {
         super.create();
         PixelScene.uiCamera.visible = false;
+        Music.INSTANCE.play(Assets.Music.THEME, true);
 
         int w = Camera.main.width;
         int h = Camera.main.height;
