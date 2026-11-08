@@ -113,6 +113,22 @@ public abstract class Wand extends Item {
 		bones = true;
 	}
 
+	private Char casterOverride;
+
+	public Char caster() {
+		return casterOverride != null
+				? casterOverride
+				: curUser;
+	}
+
+	public void setCasterOverride(Char caster) {
+		casterOverride = caster;
+	}
+
+	public Char source() {
+		return caster();
+	}
+
 	public void fx( Ballistica bolt, Char caster, Callback callback ) {
 		MagicMissile.boltFromChar( caster.sprite.parent,
 				MagicMissile.MAGIC_MISSILE,
@@ -310,11 +326,6 @@ public abstract class Wand extends Item {
 			desc += "\n\n" + Messages.get(Wand.class, "not_cursed");
 		}
 
-		if (Dungeon.hero != null && Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE){
-			if (Dungeon.hero.hasTalent(Talent.EMPOWERED_STRIKE)) {
-				desc += "\n\n" + Messages.get(this, "bmage_desc",Dungeon.hero.className(),Messages.get(MagesStaff.class,"bd_desc"));
-			}
-		}
 
 		if (Dungeon.hero != null && Dungeon.hero.subClass == HeroSubClass.OLDBATTLEMAGE){
 			desc += "\n\n" + Messages.get(this, "bmage_desc",Dungeon.hero.className(),Messages.get(MagesStaff.class,"bk_desc"));
@@ -476,7 +487,18 @@ public abstract class Wand extends Item {
 		particle.radiateXY(0.5f);
 	}
 
-	protected void wandUsed() {
+	protected void wandUsed(Char spellTarget) {
+		Talent.onBattlemageSpellCast(Dungeon.hero);
+		//双重存在buff
+		//同时存在“魔力充裕”“双重存在”时，优先消耗“魔力充裕”
+		boolean abundantFreeCast =
+				curUser.buff(AbundantMagic.class) != null
+						&& !(this instanceof WandOfMagicMissile);
+
+		boolean doubleExistenceFreeCast =
+				!abundantFreeCast
+						&& Talent.consumeDoubleExistence();
+
 		if (!isIdentified()) {
 			float uses = Math.min( availableUsesToID, Talent.itemIDSpeedFactor(Dungeon.hero, this) );
 			availableUsesToID -= uses;
@@ -511,24 +533,6 @@ public abstract class Wand extends Item {
 		int chargesUse = cursed ? 1 : chargesPerCast();
 
 		curCharges -= chargesUse;
-		Dungeon.hero.chargesUsed += chargesUse;
-
-		if ( Dungeon.hero.hasTalent( Talent.MYSTICAL_CHARGE )
-				&& charger != null && charger.target == Dungeon.hero){
-			for ( Mob mob : Dungeon.level.mobs.toArray( new Mob[0] ) ){
-				if ( mob instanceof MageHand ) {
-					MageHand mageHand = ( MageHand ) mob;
-					Wand wand = mageHand.magesStaff != null ? mageHand.magesStaff.wand : mageHand.equippedWand;
-					int talentPoint = 5 - Dungeon.hero.pointsInTalent( Talent.MYSTICAL_CHARGE );
-					if(wand != null){
-						while ( wand.curCharges < wand.maxCharges && Dungeon.hero.chargesUsed >= talentPoint ){
-							Dungeon.hero.chargesUsed -= talentPoint;
-							wand.curCharges += 1;
-						}
-					}
-				}
-			}
-		}
 
 		//remove magic charge at a higher priority, if we are benefiting from it are and not the
 		//wand that just applied it
@@ -555,14 +559,19 @@ public abstract class Wand extends Item {
 		Invisibility.dispel();
 		updateQuickslot();
 
-		if(curUser.buff(AbundantMagic.class)!= null &&!( this instanceof WandOfMagicMissile) ){
+		if (doubleExistenceFreeCast) {curUser.spendAndNext(0f);
+		} else if (curUser.buff(AbundantMagic.class) != null && !(this instanceof WandOfMagicMissile)) {
 			curUser.spendAndNext(0f);
 			curUser.buff(AbundantMagic.class).detach();
 		} else {
-			curUser.spendAndNext( TIME_TO_ZAP );
+			curUser.spendAndNext(TIME_TO_ZAP);
 		}
-
-
+		if (!doubleExistenceFreeCast
+				&& spellTarget != null
+				&& spellTarget.isAlive()
+				&& spellTarget.alignment == Char.Alignment.ENEMY) {
+			MageHand.tryFollowUpCast(spellTarget);
+		}
 	}
 
 	@Override
@@ -803,7 +812,13 @@ public abstract class Wand extends Item {
 								new Callback() {
 									@Override
 									public void call() {
-										curWand.wandUsed();
+										Char spellTarget = Actor.findChar(target);
+
+										if (spellTarget == null) {
+											spellTarget = Actor.findChar(shot.collisionPos);
+										}
+
+										curWand.wandUsed(spellTarget);
 									}
 								});
 					} else {
@@ -818,11 +833,21 @@ public abstract class Wand extends Item {
 												@Override
 												public void call() {
 													WondrousResin.forcePositive = false;
-													curWand.wandUsed();
+													Char spellTarget = Actor.findChar(target);
+
+													if (spellTarget == null) {
+														spellTarget = Actor.findChar(shot.collisionPos);
+													}
+													curWand.wandUsed(spellTarget);
 												}
 											});
 								} else {
-									curWand.wandUsed();
+									Char spellTarget = Actor.findChar(target);
+
+									if (spellTarget == null) {
+										spellTarget = Actor.findChar(shot.collisionPos);
+									}
+									curWand.wandUsed(spellTarget);
 								}
 							}
 						});

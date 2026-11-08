@@ -82,7 +82,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.Mag
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.AncientStats;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BloodLoss;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.MagicAbsorb;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.OozeStatueDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.QuestGold;
@@ -1553,13 +1552,6 @@ public class Hero extends Char {
 			}
 		}
 
-
-		if(hasTalent(Talent.MAGIC_ABSORB)){
-			if(buff(MagicAbsorb.class) == null){
-				Buff.affect(hero, MagicAbsorb.class).set(100, 1);
-			}
-		}
-
 		if(level instanceof NewZeroFiveLevel || level instanceof NormalZeroFiveLevel){
 			for (Mob mob : level.mobs.toArray(new Mob[0])) {
 				if(mob instanceof WhiteLingLand){
@@ -2487,34 +2479,6 @@ public class Hero extends Char {
 		if(hasTalent(Talent.MAGICDAMAGE_MELEE)){
 			// 法尔塔娅：+1=6%，+2=12% 额外魔法伤害
 			enemy.damage((int) (damage * 0.06f * hero.pointsInTalent(Talent.MAGICDAMAGE_MELEE)), this, DamageType.MAGIC);
-		}
-
-
-
-		if(hasTalent(Talent.MAGIC_ABSORB)){
-			MagicAbsorb buff = hero.buff(MagicAbsorb.class);
-			if(buff != null){
-				buff.downAbsord(hero.pointsInTalent(Talent.MAGIC_ABSORB));
-			}
-		}
-
-		if(hasTalent(Talent.EMPOWERED_STRIKE)){
-			MagesStaff staff = hero.belongings.getItem(MagesStaff.class);
-			if(staff == null){
-				for (Mob mob : level.mobs.toArray(new Mob[0])){
-					if (mob instanceof MageHand) {
-						staff = ((MageHand) mob).magesStaff;
-					}
-				}
-			}
-
-			if (staff != null && hero.subClass == HeroSubClass.BATTLEMAGE) {
-				int battleMageLevel = hero.pointsInTalent(Talent.EMPOWERED_STRIKE);
-				float triggerChance = min(1.0f, battleMageLevel * 0.33f);
-				if (Random.Float() < triggerChance) {
-					staff.wand.onHit(staff, hero, enemy, damage);
-				}
-			}
 		}
 
 		if (hero.belongings.weapon() instanceof Break) {

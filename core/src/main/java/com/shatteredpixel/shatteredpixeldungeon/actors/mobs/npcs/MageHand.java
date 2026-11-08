@@ -2,72 +2,57 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.MageHandControlBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.MagicAbsorb;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.PacmanHollowActorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MageHandSprite;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
-import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
+/**
+ * 敕灵天女召唤出的法师之手。
+ * <p>场景中的 MageHand 只维护当前存活实体的运行状态；跨消散保存的装备由
+ * MageHandControl 负责。实体存在时，装备会临时绑定在实体字段中，避免同一件
+ * 法杖同时被控制器和实体重复存档。</p>
+ */
 public class MageHand extends DirectableAlly {
 
+    /**
+     * 让英雄获得法师之手视野范围的常驻标记。
+     */
     public static class HandWareness extends FlavourBuff {
         public int distance = 2;
         {
@@ -83,70 +68,36 @@ public class MageHand extends DirectableAlly {
         }
     }
 
-    public static final float AGGRESSION_ON_ATTACK = 5f;
-    public static final float AGGRESSION_ON_DAMAGE = 1f;
-
+    // 法师之手仅负责跟随，不主动寻找敌人。
     {
         spriteClass = MageHandSprite.class;
         flying = true;
         properties.add(Property.UNKNOWN);
         immunities.add(Blob.class);
-        immunities.add(Buff.class);
         viewDistance = 10;
         WANDERING = new Wandering();
     }
 
+    /**
+     * 纯跟随状态。法师之手不会切换到 HUNTING，也不会自主施法。
+     */
     private class Wandering extends Mob.Wandering {
 
         @Override
         public boolean act(boolean enemyInFOV, boolean justAlerted) {
 
-            if (enemyInFOV
-                    && attacksAutomatically
-                    && !movingToDefendPos
-                    && (defendingPos == -1
-                    || !Dungeon.level.heroFOV[defendingPos]
-                    || canAttack(enemy))) {
-
-                enemySeen = true;
-
-                notice();
-                alerted = true;
-                state = HUNTING;
-                target = enemy.pos;
-
-            } else {
-
                 enemySeen = false;
 
                 int oldPos = pos;
-                target = defendingPos != -1 ? defendingPos : hero.pos;
+                target = hero.pos;
 
-                // 检查目标位置是否有效
-                if (target < 0 || target >= Dungeon.level.length()) {
-                    // 如果目标位置无效，重置目标位置
-                    target = hero.pos;
-                    if (target < 0 || target >= Dungeon.level.length()) {
-                        // 如果英雄位置也无效，就不移动
-                        spend(TICK);
-                        return true;
-                    }
-                }
-
-                //always move towards the hero when wandering
-                if (getCloser(target)) {
-                    spend(1 / speed());
-                    if (pos == defendingPos) movingToDefendPos = false;
-                    return moveSprite(oldPos, pos);
-                } else {
-                    //if it can't move closer to defending pos, then give up and defend current position
-                    if (movingToDefendPos) {
-                        defendingPos = pos;
-                        movingToDefendPos = false;
-                    }
-                    spend(TICK);
-                }
+            if (getCloser(target)) {
+                spend(1 / speed());
+                return moveSprite(oldPos, pos);
+            } else {
+                spend(TICK);
             }
+
             return true;
         }
 
@@ -159,89 +110,102 @@ public class MageHand extends DirectableAlly {
 
     @Override
     public void aggro(Char ch) {
-        enemy = ch;
-        state = HUNTING;
+        // 旧控制器攻击功能已删除，任何仇恨变化都立即回到跟随状态。
+        enemy = null;
+        target = hero.pos;
+        state = WANDERING;
     }
 
     @Override
-    public void damage(int dmg, Object src, DamageType type) {
-        // 法师之手无敌：不受到任何伤害
-        HP = HT;
-        applyAggression(AGGRESSION_ON_DAMAGE);
-        // 传送到英雄身边
-        teleportNearHero();
+    protected Char chooseEnemy() {
+        // 禁止基类 AI 自动选择敌人。
+        return null;
     }
 
-    private static void applyAggression(float duration) {
-        if (hero == null || hero.buff(PotionOfCleansing.Cleanse.class) != null) {
+    /**
+     * 每次受到伤害事件消耗 1 点装备法杖的整数充能。
+     * 没有装备或充能已经耗尽时，再次受到伤害时，法师之手直接消散并进入冷却。
+     */
+    @Override
+    public void damage(int dmg, Object src, DamageType type) {
+        Wand wand = getEquippedWandRuntime();
+
+        if (wand == null || wand.curCharges <= 0) {
+            dissipate();
             return;
         }
-        Buff.prolong(hero, StoneOfAggression.Aggression.class, duration);
+
+        wand.curCharges--;
+        wand.updateQuickslot();
+
+        if (wand.curCharges <= 0) {
+            dissipate();
+        }
     }
 
-    // 尝试传送到英雄周围5x5区域
-    private void teleportNearHero() {
-        int heroPos = hero.pos;
-        int width = Dungeon.level.width();
-        ArrayList<Integer> validPositions = new ArrayList<>();
+    private boolean dissipated = false;
 
-        // 获取5x5区域内的有效位置
-        for (int i = -2; i <= 2; i++) {
-            for (int j = -2; j <= 2; j++) {
-                int newPos = heroPos + i + j * width;
+    /**
+     * 移除当前实体并把装备交还给控制器。
+     * 消散不是普通死亡，因此不掉落装备，也不会触发原死亡掉落逻辑。
+     */
+    private void dissipate() {
+        if (dissipated) {
+            return;
+        }
+        dissipated = true;
 
-                // 防止 i、j 偏移把坐标绕到行的另一侧
-                if (i != 0 && (newPos % width) != (heroPos % width) + i) {
-                    continue;
-                }
+        MageHandControl control =
+                hero.belongings.getItem(MageHandControl.class);
 
-                // 检查位置是否有效
-                if (isHeroValidTeleportPosition(newPos)) {
-                    validPositions.add(newPos);
-                }
-            }
+        if (control != null) {
+            control.storedMageStaff = magesStaff;
+            control.storedWand = equippedWand;
+            control.mageHand = null;
+            control.updateQuickslot();
         }
 
-        // 如果找到有效位置，随机选择一个传送
-        if (!validPositions.isEmpty()) {
-            int targetPos = Random.element(validPositions);
-            ScrollOfTeleportation.appear(this, targetPos);
+        Buff.detach(hero, MageHandControlBuff.class);
+
+        Actor.remove(this);
+        Dungeon.level.mobs.remove(this);
+        HP = 0;
+
+        if (sprite != null) {
+            sprite.killAndErase();
         }
 
-    }
+        Buff.affect(hero, SummonCooldown.class, SummonCooldown.DURATION);
 
-    private boolean isHeroValidTeleportPosition(int pos) {
-        return pos >= 0
-                && pos < Dungeon.level.length()
-                && !Dungeon.level.solid[pos]
-                && !Dungeon.level.pit[pos]
-                && Actor.findChar(pos) == null;
+        GLog.w(Messages.get(this, "vanished"));
     }
 
     @Override
     public String description() {
         String desc = super.description();
 
+        // 实体存在时，法杖暂时保存在法师之手身上，因此详情直接读取实体字段。
         if(magesStaff != null){
             desc += "\n\n" + Messages.get(this, "desc_staff", magesStaff.name());
-            desc += "\n" + Messages.get(this, "desc_colddown", 1);
         }
 
         if(equippedWand != null){
             desc += "\n\n" + Messages.get(this, "desc_equipped_wand", equippedWand.name());
             desc += "\n" + Messages.get(this, "desc_charges", equippedWand.curCharges, equippedWand.maxCharges);
-            desc += "\n" + Messages.get(this, "desc_colddown", wandCooldown);
         }
 
         return desc;
     }
 
-    // 在MageHand类中添加以下常量
+    // 法师之手自行推进法杖充能时使用的曲线参数。
     private static final float BASE_CHARGE_DELAY = 10f;
     private static final float SCALING_CHARGE_ADDITION = 40f;
     private static final float NORMAL_SCALE_FACTOR = 0.875f;
 
-    // 修改充能相关方法
+    /**
+     * 法师之手每次行动都会自行推进装备法杖的充能。
+     * 这里不使用 Wand.Charger，避免与普通充能系统重复结算。
+     */
     @Override
     public void spend(float time) {
         super.spend(time);
@@ -288,11 +252,21 @@ public class MageHand extends DirectableAlly {
         }
     }
 
+    /**
+     * 返回法师之手法杖的充能倍率。
+     */
     private float getChargeMultiplier() {
         float multiplier = 1f;
+        //灵能加速
+        int points = hero.pointsInTalent(
+                Talent.PSIONIC_ACCELERATION
+        );
 
-        // 检查是否有充能相关的buff
-        for (Recharging bonus : buffs(Recharging.class)) {
+        // +1 = 150%，+2 = 200%，+3 = 250%
+        multiplier += 0.5f * points;
+
+        // 英雄充能相关的buff（与灵能加速加算）
+        for (Recharging bonus : hero.buffs(Recharging.class)) {
             if (bonus != null && bonus.remainder() > 0f) {
                 multiplier += 0.25f * bonus.remainder();
             }
@@ -301,11 +275,10 @@ public class MageHand extends DirectableAlly {
         return multiplier;
     }
 
+    // 当前存活实体的临时装备引用；消散时会转移到控制器。
     public Wand equippedWand = null;
 
     public MagesStaff magesStaff = null;
-
-    private int wandCooldown = 0;
 
     public MageHand(){
         super();
@@ -315,109 +288,31 @@ public class MageHand extends DirectableAlly {
         }
     }
 
+    /**
+     * 仅在实体仍存在时直接绑定法杖，主要用于兼容旧调用路径。
+     * 正常控制器装卸应优先经过 MageHandControl。
+     */
     public void equipWand(Wand wand) {
-        this.equippedWand = wand;
+        if (equippedWand != null) {
+            equippedWand.stopCharging();
+        }
+
+        wand.stopCharging();
         wand.partialCharge = 0f;
-        wand.charge(this);
+
+        this.equippedWand = wand;
         GLog.i(Messages.get(this, "wand_equipped", wand.name()));
     }
-
-    public void unequipWand() {
-        if (equippedWand != null) {
-            GLog.i(Messages.get(this, "wand_unequipped", equippedWand.name()));
+    // 返回本次实际可施法的法杖，老魔杖优先于普通法杖字段。
+    private Wand getEquippedWandRuntime() {
+        if (magesStaff != null && magesStaff.wand != null) {
+            return magesStaff.wand;
         }
-        this.equippedWand = null;
+
+        return equippedWand;
     }
 
-    public void equipMageStaff(MagesStaff magesStaff) {
-        this.magesStaff = magesStaff;
-        GLog.i(Messages.get(this, "wand_equipped", magesStaff.name()));
-    }
-
-    public void unequipMageStaff() {
-        if (magesStaff != null) {
-            GLog.i(Messages.get(this, "wand_unequipped", magesStaff.name()));
-        }
-        this.magesStaff = null;
-    }
-
-    @Override
-    protected boolean canAttack(Char enemy) {
-        if (hero != null) {
-            // 如果装备了法师之杖，优先检查近战攻击
-            if (magesStaff != null) {
-                // 检查是否可以近战攻击
-                if (Dungeon.level.adjacent(pos, enemy.pos)) {
-                    return true;
-                }
-                // 如果不能近战攻击，再检查法杖攻击
-                Wand mwand = magesStaff.wand;
-                if (mwand != null && wandCooldown == 0) {
-                    if (mwand.curCharges > 0) {
-                        Ballistica attack = new Ballistica(pos, enemy.pos, 10);
-                        if (!isHeroInAttackPath(attack)) {
-                            return attack.collisionPos == enemy.pos;
-                        }
-                    }
-                }
-            }
-            // 如果没有装备法师之杖，检查普通法杖
-            else if (equippedWand != null && wandCooldown == 0) {
-                if (equippedWand.curCharges > 0) {
-                    Ballistica attack = new Ballistica(pos, enemy.pos, 10);
-                    if (!isHeroInAttackPath(attack)) {
-                        return attack.collisionPos == enemy.pos;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    protected boolean doAttack(Char enemy) {
-        if (hero != null) {
-            // 如果装备了法师之杖，优先进行近战攻击
-            if (magesStaff != null) {
-                Wand mwand = magesStaff.wand;
-                // 如果法杖有充能且不在冷却中，优先远程攻击
-                if (Dungeon.level.adjacent(pos, enemy.pos)) {
-                    return super.doAttack(enemy);
-                }
-                if (mwand != null && wandCooldown == 0 && mwand.curCharges > 0) {
-                    Ballistica attack = new Ballistica(pos, enemy.pos, 10);
-                    if (isHeroInAttackPath(attack)) {
-                        return tryMoveToBetterPosition(enemy);
-                    }
-                    if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
-                        sprite.zap(enemy.pos);
-                        return false;
-                    } else {
-                        zap();
-                        return true;
-                    }
-                }
-            }
-            // 如果没有装备法师之杖，使用普通法杖攻击
-            else if (equippedWand != null && wandCooldown == 0) {
-                if (equippedWand.curCharges > 0) {
-                    Ballistica attack = new Ballistica(pos, enemy.pos, 10);
-                    if (isHeroInAttackPath(attack)) {
-                        return tryMoveToBetterPosition(enemy);
-                    }
-                    if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
-                        sprite.zap(enemy.pos);
-                        return false;
-                    } else {
-                        zap();
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
+    // 普通弹道会避开英雄，防止法师之手误伤英雄。
     private boolean isHeroInAttackPath(Ballistica attack) {
         for (int i = 0; i < attack.path.size(); i++) {
             int p = attack.path.get(i);
@@ -428,52 +323,19 @@ public class MageHand extends DirectableAlly {
         return false;
     }
 
-    public boolean hasWand() {
-        return equippedWand != null;
-    }
-
-    public boolean hasMageStaff() {
-        return magesStaff != null;
-    }
-
     public Wand getEquippedWand() {
         return equippedWand;
-    }
-
-    public MagesStaff getEquippedMageStaff() {
-        return magesStaff;
     }
 
     public Wand getEquippedMageStaffWand() {
         return magesStaff.wand;
     }
 
+    /**
+     * 维持控制器、视野 Buff 和显隐状态，然后交给跟随状态机。
+     */
     @Override
     protected boolean act() {
-        if (wandCooldown > 0) {
-            wandCooldown--;
-        }
-
-        boolean hasEnemy = false;
-        for (Char ch : Actor.chars()) {
-            if (ch != null && ch.alignment == Alignment.ENEMY && fieldOfView != null
-                    && fieldOfView.length > ch.pos && fieldOfView[ch.pos]) {
-                hasEnemy = true;
-                break;
-            }
-        }
-
-        if (!hasEnemy) {
-            for (Char ch : Actor.chars()) {
-                if (ch instanceof WandOfWarding.Ward) {
-                    if(((WandOfWarding.Ward) ch).handSummon){
-                        ch.die(null);
-                    }
-                }
-            }
-            clearDefensingPos();
-        }
-
         MageHandControlBuff buff = hero.buff(MageHandControlBuff.class);
         if (buff == null) {
             Buff.affect(hero, MageHandControlBuff.class);
@@ -494,6 +356,8 @@ public class MageHand extends DirectableAlly {
     }
 
     public void gainCharge(float charge) {
+        // 外部充能先累积到 partialCharge，再由完整的 1 点转成整数充能。
+        // 老魔杖的充能由其内部 wand 字段结算，不在这里重复处理。
         if (equippedWand != null && equippedWand.curCharges < equippedWand.maxCharges) {
             equippedWand.partialCharge += charge;
             while (equippedWand.partialCharge >= 1f && equippedWand.curCharges < equippedWand.maxCharges) {
@@ -508,12 +372,48 @@ public class MageHand extends DirectableAlly {
     }
 
 
+    /**
+     * 施法动画结束后的统一回调。
+     * 实际使用的法杖和目标来自 pending 字段，而不是回调时的当前装备，
+     * 以免动画期间换装备或目标引用变化造成漏结算。
+     */
     public void onZapComplete() {
-        zap();
+        if (pendingWand != null && pendingTarget != null) {
+            castPendingWand();
+        }
+
+        pendingWand = null;
+        pendingTarget = null;
+        pendingFollowUp = false;
+
         next();
     }
 
+    // 使用发起施法时保存的法杖和目标完成一次追加施法。
+    private void castPendingWand() {
+        Wand wand = pendingWand;
+        Char target = pendingTarget;
 
+        if (wand == null || target == null) {
+            return;
+        }
+
+        int chargeCost = Math.max(1, wand.chargesPerCast());
+
+        if (wand.curCharges < chargeCost) {
+            return;
+        }
+
+        enemy = target;
+        this.target = target.pos;
+
+        finishHandWandCast(wand);
+    }
+
+
+    /**
+     * 旧调用路径的兼容入口。新追加施法优先使用 pending 事务。
+     */
     private void zap() {
         if (magesStaff != null && enemy != null) {
             if (magesStaff.wand.curCharges > 0) {
@@ -527,18 +427,72 @@ public class MageHand extends DirectableAlly {
     }
 
     private void zapWithMagesStaff() {
-        Wand mwand = magesStaff.wand;
-        executeWandEffect(mwand);
-        mwand.curCharges -= Math.max(1, mwand.chargesPerCast());
-        finalizeWandUse();
+        // 兼容入口同样复用统一结算方法，避免普通法杖和老魔杖出现两套规则。
+        if (magesStaff != null
+                && magesStaff.wand != null) {
+            finishHandWandCast(magesStaff.wand);
+        }
     }
 
     private void zapWithEquippedWand() {
-        executeWandEffect(equippedWand);
-        equippedWand.curCharges -= Math.max(1, equippedWand.chargesPerCast());
+        finishHandWandCast(equippedWand);
+    }
+
+    /**
+     * 统一完成法杖效果、扣除充能、刷新控制器并触发法师之手施法天赋。
+     * 普通法杖和老魔杖都经过这里，确保两边的结算一致。
+     */
+    private void finishHandWandCast(Wand wand) {
+        runHandWandEffect(wand);
+
+        int chargeCost = Math.max(1, wand.chargesPerCast());
+        wand.curCharges = Math.max(0, wand.curCharges - chargeCost);
+        wand.updateQuickslot();
+
+        MageHandControl control =
+                hero.belongings.getItem(MageHandControl.class);
+
+        if (control != null && control.mageHand == this) {
+            control.updateQuickslot();
+        }
+
         finalizeWandUse();
     }
 
+    private Wand pendingWand;
+    private Char pendingTarget;
+    private boolean pendingFollowUp;
+
+    /**
+     * 在法师之手施法期间临时替换法杖的实际来源。
+     * 魔弹法杖额外关闭只属于英雄的特殊联动。
+     */
+    private void runHandWandEffect(Wand wand) {
+        WandOfMagicMissile magicMissile = null;
+
+        if (wand instanceof WandOfMagicMissile) {
+            magicMissile = (WandOfMagicMissile) wand;
+            magicMissile.castByMageHand = true;
+        }
+
+        wand.setCasterOverride(this);
+
+        try {
+            executeWandEffect(wand);
+        } finally {
+            wand.setCasterOverride(null);
+
+            if (magicMissile != null) {
+                magicMissile.castByMageHand = false;
+            }
+        }
+    }
+
+    /**
+     * 按法杖类型分派实际效果：
+     * 哨卫法杖需要特殊落点处理，诅咒法杖走诅咒施法，
+     * 锥形等特殊法杖使用 AI 施法入口，其余走普通 onZap。
+     */
     private void executeWandEffect(Wand wand) {
         if (wand instanceof WandOfWarding && enemy != null) {
             // 获取敌人周围半径2的所有位置
@@ -628,72 +582,47 @@ public class MageHand extends DirectableAlly {
 
 
     private boolean isSpecialWand(Wand wand) {
+        // 这些法杖需要 AI 施法入口来生成锥形或持续区域效果，
+        // 不能统一调用普通 onZap。
         return wand instanceof WandOfFireblast ||
                 wand instanceof WandOfBlueFuck ||
                 wand instanceof WandOfScale ||
                 wand instanceof WandOfRegrowth || wand instanceof WandOfHightHunderStorm;
     }
 
+    // 每次成功的法师之手施法都要推进相关 T3 天赋。
     private void finalizeWandUse() {
-        wandCooldown = 3;
-        spend(1f);
+        Talent.onMageHandSpellCast(this);
+        Talent.onBattlemageSpellCast(this);
     }
 
-
-    @Override
-    public int attackSkill(Char target) {
-        int acc = hero.lvl + 9;
-        if (equippedWand != null) {
-            acc += equippedWand.level();
-        }
-        return acc;
-    }
-
-    @Override
-    public int damageRoll() {
-        if (magesStaff != null) {
-            return magesStaff.damageRoll(this);
-        } else if (equippedWand != null) {
-            return equippedWand.buffedLvl();
-        }
-        return Random.NormalIntRange(1, 3);
-    }
-
-    @Override
-    public int attackProc(Char enemy, int damage) {
-        damage = super.attackProc(enemy, damage);
-        if (magesStaff != null) {
-            damage = magesStaff.proc(this, enemy, damage);
-            applyAggression(AGGRESSION_ON_ATTACK);
-            if(hero.hasTalent(Talent.MAGIC_ABSORB)){
-                MagicAbsorb buff = hero.buff(MagicAbsorb.class);
-                if(buff != null){
-                    buff.downAbsord(hero.pointsInTalent(Talent.MAGIC_ABSORB));
-                }
-            }
-        } else if (equippedWand != null) {
-            damage += equippedWand.level();
-        }
-        return damage;
-    }
-
+    //在消息记录中提示召唤成功。
     public void sayAppeared(){
-        yell(Messages.get(this, "appear"));
+        GLog.p(Messages.get(this, "summoned"));
     }
 
+    // 只有存活实体自己携带装备时，才需要在这份 Bundle 中写入它们。
     private static final String WAND =        "wand";
     private static final String MAGE_STAFF = "mage_staff";
-    private static final String WAND_COOLDOWN = "wand_cooldown";
 
+    /**
+     * 保存当前存活实体身上的装备。
+     * <p>消散后的装备会先转交给 MageHandControl，因此正常情况下这里只负责
+     * “实体仍存在”这一种存档状态，避免同一件法杖被保存两次。</p>
+     */
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle(bundle);
 
         if (equippedWand != null)  bundle.put( WAND,equippedWand );
         if(magesStaff != null) bundle.put( MAGE_STAFF, magesStaff );
-        bundle.put( WAND_COOLDOWN, wandCooldown );
     }
 
+    /**
+     * 恢复实体时重新取得它临时携带的装备。
+     * <p>读档会重新创建对象图，旧 Wand.Charger 可能还指向反序列化前的引用，
+     * 因此这里停止旧充能链接；实际充能继续由 MageHand.spend() 手动推进。</p>
+     */
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle(bundle);
@@ -702,275 +631,53 @@ public class MageHand extends DirectableAlly {
             equippedWand = (Wand) bundle.get( WAND );
         if (bundle.contains(MAGE_STAFF))
             magesStaff = (MagesStaff) bundle.get( MAGE_STAFF );
-        wandCooldown = bundle.getInt( WAND_COOLDOWN );
 
         // 读档后重新链接法杖到法师之手
         if (equippedWand != null) {
-            equippedWand.charge(this);
+            equippedWand.stopCharging();
         }
+
         if (magesStaff != null && magesStaff.wand != null) {
-            magesStaff.wand.charge(this);
-        }
-    }
-
-    public static class HandShield extends FlavourBuff {
-
-        {
-            type = buffType.POSITIVE;
-        }
-
-        private int level = 0;
-        private int interval = 1;
-
-
-        @Override
-        public boolean act() {
-            super.act();
-            if(--interval <= 0){
-                detach();
-            }
-            return true;
-        }
-
-        public void set( int value, int ints) {
-            if (level <= value) {
-                level = value;
-                interval = ints;
-                spend(ints - cooldown() - 1);
-            }
-        }
-
-        @Override
-        public int icon() {
-            return BuffIndicator.ARMOR;
-        }
-
-        @Override
-        public String desc() {
-            return Messages.get(this, "desc", level, dispTurns(visualcooldown()));
-        }
-
-        private static final String LEVEL	    = "level";
-        private static final String INTERVAL    = "interval";
-
-        @Override
-        public void storeInBundle( Bundle bundle ) {
-            super.storeInBundle( bundle );
-            bundle.put( INTERVAL, interval );
-            bundle.put( LEVEL, level );
-        }
-
-        @Override
-        public void restoreFromBundle( Bundle bundle ) {
-            super.restoreFromBundle( bundle );
-            interval = bundle.getInt( INTERVAL );
-            level = bundle.getInt( LEVEL );
-        }
-
-        //These two methods allow for multiple instances of barkskin to stack in terms of duration
-        // but only the stronger bonus is applied
-
-        public static int currentLevel(Char ch ){
-            int level = 0;
-            for (HandShield b : ch.buffs(HandShield.class)){
-                level = Math.max(level, b.level);
-            }
-            return level;
-        }
-    }
-
-    // 尝试移动到更好的位置以避免误伤英雄并攻击敌人
-    private boolean tryMoveToBetterPosition(Char enemy) {
-        // 检查周围8个方向，并添加边界检查
-        int[] neighborOffsets = new int[]{
-                -1, 1,
-                -Dungeon.level.width(), Dungeon.level.width(),
-                -Dungeon.level.width() - 1, -Dungeon.level.width() + 1,
-                Dungeon.level.width() - 1, Dungeon.level.width() + 1
-        };
-
-        // 计算每个候选位置的评分
-        ArrayList<Integer> bestCandidates = new ArrayList<>();
-        float bestScore = Float.NEGATIVE_INFINITY;
-
-        for (int offset : neighborOffsets) {
-            int newPos = pos + offset;
-
-            // 添加边界检查，确保 newPos 在有效范围内
-            if (newPos < 0 || newPos >= Dungeon.level.length()) {
-                continue;
-            }
-
-            // 检查位置是否可通行且没有其他角色
-            if (Dungeon.level.passable[newPos] && Actor.findChar(newPos) == null) {
-                Ballistica attack = new Ballistica(newPos, enemy.pos, MagicMissile.WARD);
-                if (!isHeroInAttackPath(attack) && attack.collisionPos == enemy.pos) {
-                    // 计算这个位置的评分
-                    float score = evaluatePosition(newPos, enemy);
-
-                    // 如果评分更高，则清空之前的最佳候选
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestCandidates.clear();
-                        bestCandidates.add(newPos);
-                    }
-                    // 如果评分相同，则添加到候选列表
-                    else if (score == bestScore) {
-                        bestCandidates.add(newPos);
-                    }
-                }
-            }
-        }
-
-        // 如果找到了合适的位置，移动过去
-        if (!bestCandidates.isEmpty()) {
-            int newPos = Random.element(bestCandidates);
-            move(newPos);
-            spend(1 / speed());
-            return true;
-        }
-
-        // 如果找不到合适的位置，就移动到英雄附近但不挡住英雄
-        ArrayList<Integer> heroNeighbors = new ArrayList<>();
-        int heroPos = hero.pos;
-
-        // 同样添加边界检查
-        for (int offset : neighborOffsets) {
-            int newPos = heroPos + offset;
-
-            // 添加边界检查，确保 newPos 在有效范围内
-            if (newPos < 0 || newPos >= Dungeon.level.length()) {
-                continue;
-            }
-
-            if (Dungeon.level.passable[newPos] && Actor.findChar(newPos) == null && newPos != pos) {
-                heroNeighbors.add(newPos);
-            }
-        }
-
-        if (!heroNeighbors.isEmpty()) {
-            int newPos = Random.element(heroNeighbors);
-            move(newPos);
-            spend(1 / speed());
-            return true;
-        }
-
-        return false;
-    }
-
-    // 评估位置的优劣
-    private float evaluatePosition(int position, Char enemy) {
-        float score = 0;
-
-        // 距离英雄的距离（不要太远也不要太近）
-        float distanceToHero = Dungeon.level.distance(position, hero.pos);
-        if (distanceToHero < 3) {
-            score += 10; // 离英雄近一点好
-        } else if (distanceToHero > 6) {
-            score -= 5; // 离英雄太远不好
-        }
-
-        // 距离敌人的距离
-        float distanceToEnemy = Dungeon.level.distance(position, enemy.pos);
-        score -= distanceToEnemy; // 距离敌人越近越好
-
-        // 检查这个位置是否能攻击到多个敌人
-        int enemiesInRange = 0;
-        for (Char ch : Actor.chars()) {
-            if (ch.alignment == Alignment.ENEMY && fieldOfView[ch.pos]) {
-                Ballistica attack = new Ballistica(position, ch.pos, MagicMissile.WARD);
-                if (!isHeroInAttackPath(attack) && attack.collisionPos == ch.pos) {
-                    enemiesInRange++;
-                }
-            }
-        }
-        score += enemiesInRange * 5; // 能攻击到多个敌人加分
-
-        // 检查这个位置是否安全（不容易被攻击）
-        int enemiesThreateningPosition = 0;
-        for (Char ch : Actor.chars()) {
-            if (ch.alignment == Alignment.ENEMY && fieldOfView[ch.pos]) {
-                Ballistica attack = new Ballistica(ch.pos, position, Ballistica.PROJECTILE);
-                if (attack.collisionPos == position) {
-                    enemiesThreateningPosition++;
-                }
-            }
-        }
-        score -= enemiesThreateningPosition * 3; // 容易被攻击的位置减分
-
-        return score;
-    }
-
-    @Override
-    public void die( Object cause ) {
-        super.die(cause);
-
-        // 死亡时将装备归还到玩家脚下（能拾取就直接拾取，否则掉落）
-        boolean hadEquipment = false;
-        if (magesStaff != null) {
-            if(Dungeon.level instanceof PacmanHollowActorLevel){
-                magesStaff.keptThoughLostInvent = true;
-            }
-            hadEquipment = true;
-            if (!magesStaff.doPickUp(hero)) {
-                Dungeon.level.drop(magesStaff, hero.pos).sprite.drop();
-            }
-            magesStaff = null;
-        }
-        if (equippedWand != null) {
-            if(Dungeon.level instanceof PacmanHollowActorLevel){
-                equippedWand.keptThoughLostInvent = true;
-            }
-            hadEquipment = true;
-            if (!equippedWand.doPickUp(hero)) {
-                Dungeon.level.drop(equippedWand, hero.pos).sprite.drop();
-            }
-            equippedWand = null;
-        }
-
-        // 断开控制器链接
-        MageHandControl mageHandControl = hero.belongings.getItem(MageHandControl.class);
-        if (mageHandControl != null) {
-            mageHandControl.mageHand = null;
-        }
-        Buff.detach(hero, MageHandControlBuff.class);
-
-        // 提醒玩家
-        if (hadEquipment) {
-            GLog.w(Messages.get(this, "vanished_with_gear"));
-        } else {
-            GLog.w(Messages.get(this, "vanished"));
+            magesStaff.wand.stopCharging();
         }
     }
 
     /**
-     * 真正释放法师之手（由玩家主动使用时调用），归还装备。
+     * 死亡入口统一转交消散流程。
+     * <p>法师之手不会走普通怪物掉落，装备会回到 MageHandControl。</p>
      */
-    public void release() {
-        if (magesStaff != null) {
-            if (!magesStaff.doPickUp(hero)) {
-                Dungeon.level.drop(magesStaff, hero.pos).sprite.drop();
-            }
-            magesStaff = null;
+    @Override
+    public void die( Object cause ) {
+        dissipate();
+    }
+
+    /**
+     * 法师之手消散后的重新召唤冷却。
+     * <p>Buff 的剩余时间就是冷却时间，图标使用 TIME 并按时长逐渐淡出。</p>
+     */
+    public static class SummonCooldown extends FlavourBuff {
+        public static final float DURATION = 10f;
+
+        @Override
+        public int icon() {
+            return BuffIndicator.TIME;
         }
-        if (equippedWand != null) {
-            if (!equippedWand.doPickUp(hero)) {
-                Dungeon.level.drop(equippedWand, hero.pos).sprite.drop();
-            }
-            equippedWand = null;
-        }
-        MageHandControl mageHandControl = hero.belongings.getItem(MageHandControl.class);
-        if (mageHandControl != null) {
-            mageHandControl.mageHand = null;
-        }
-        Buff.detach(hero, MageHandControlBuff.class);
-        Actor.remove(this);
-        Dungeon.level.mobs.remove(this);
-        if (sprite != null) {
-            sprite.killAndErase();
+
+        @Override
+        public float iconFadePercent() {
+            return GameMath.gate(
+                    0,
+                    visualcooldown() / DURATION,
+                    1
+            );
         }
     }
 
+    /**
+     * 法师之手的装备窗口。
+     * <p>窗口通过 MageHandControl 读写装备，所以即使场景中的法师之手已经消散，
+     * 玩家仍可查看、取出或更换控制器中保存的法杖。</p>
+     */
     private static class WndMageHand extends Window {
 
         private static final int BTN_SIZE  = 32;
@@ -978,10 +685,9 @@ public class MageHand extends DirectableAlly {
         private static final int WIDTH     = 116;
 
         private ItemButton btnWand;
-        private StyledButton btnAction1;
         public MageHand.MageHandControl magesStaffcontrol;
-        WndMageHand(final MageHand hand){
-            magesStaffcontrol = Dungeon.hero.belongings.getItem(MageHand.MageHandControl.class);
+        WndMageHand(final MageHandControl control){
+            magesStaffcontrol = control;
             IconTitle titlebar = new IconTitle();
             titlebar.icon( new ItemSprite(ItemSpriteSheet.MAGES_STAFF) );
             titlebar.label( Messages.get(this, "title") );
@@ -998,21 +704,30 @@ public class MageHand extends DirectableAlly {
             btnWand = new ItemButton(){
                 @Override
                 protected void onClick() {
-                    if (hand.hasMageStaff()){
-                        MagesStaff currentStaff = hand.getEquippedMageStaff();
+                    // 点击已有装备时先尝试放回背包，再清空控制器中的对应槽位。
+                    // 背包放不下时才掉落到英雄脚下。
+                        if (control.getMageStaff() != null) {
+                        MagesStaff currentStaff = control.getMageStaff();
                         item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
-                        if (!currentStaff.doPickUp(hero)){
+
+                        if (!currentStaff.doPickUp(hero)) {
                             Dungeon.level.drop(currentStaff, hero.pos);
                         }
-                        hand.unequipMageStaff();
-                    } else if (hand.hasWand()){
-                        Wand currentWand = hand.getEquippedWand();
+
+                        control.equipMageStaff(null);
+
+                    } else if (control.getWand() != null) {
+                        Wand currentWand = control.getWand();
                         item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
-                        if (!currentWand.doPickUp(hero)){
+
+                        if (!currentWand.doPickUp(hero)) {
                             Dungeon.level.drop(currentWand, hero.pos);
                         }
-                        hand.unequipWand();
+
+                        control.equipWand(null);
+
                     } else {
+                        // 两个槽位都为空时，按物品类型分别放入普通法杖或老魔杖。
                         GameScene.selectItem(new WndBag.ItemSelector() {
                             @Override
                             public String textPrompt() {
@@ -1041,15 +756,15 @@ public class MageHand extends DirectableAlly {
                                     GLog.w( Messages.get(WndMageHand.class, "cant_unidentified"));
                                     hide();
                                 } else {
-                                    if(item instanceof MagesStaff){
-                                        hand.equipMageStaff((MagesStaff) item);
-                                        item(hand.getEquippedMageStaff());
-                                        item.detach(hero.belongings.backpack);
+                                    if (item instanceof MagesStaff) {
+                                        control.equipMageStaff((MagesStaff) item);
+                                        item(control.getMageStaff());
                                     } else {
-                                        hand.equipWand((Wand) item);
-                                        item(hand.getEquippedWand());
-                                        item.detach(hero.belongings.backpack);
+                                        control.equipWand((Wand) item);
+                                        item(control.getWand());
                                     }
+
+                                    item.detach(hero.belongings.backpack);
                                 }
                             }
                         });
@@ -1070,44 +785,175 @@ public class MageHand extends DirectableAlly {
             float wandX = 25;
             btnWand.setRect( wandX, message.top() + message.height() + GAP, BTN_SIZE, BTN_SIZE );
 
-            // 左侧按钮
-            btnAction1 = new StyledButton(Chrome.Type.TOAST,Messages.get(this,"attack"),7) {
-                @Override
-                protected void onClick() {
-                    if(magesStaffcontrol != null){
-                        magesStaffcontrol.execute(Dungeon.hero, MageHandControl.AC_TARGET_ENEMY);
-                    }
-                    hide();
-                }
-            };
-            btnAction1.textBelowIcon = true;
-            btnAction1.icon(new BuffIcon(BuffIndicator.CHALLENGE,true));
-            btnAction1.setRect(btnWand.right()+GAP, message.top() + message.height() + GAP, BTN_SIZE, BTN_SIZE);
-
-            if(hand.hasMageStaff()){
-                btnWand.item(hand.getEquippedMageStaff());
-            } else if (hand.hasWand()) {
-                btnWand.item(hand.getEquippedWand());
+            if (control.getMageStaff() != null) {
+                btnWand.item(control.getMageStaff());
+            } else if (control.getWand() != null) {
+                btnWand.item(control.getWand());
             } else {
-                btnWand.item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
+                btnWand.item(
+                        new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER)
+                );
             }
 
             add( btnWand );
-            add( btnAction1 );
             //add( btnAction2 );
 
             resize(WIDTH, (int)(btnWand.bottom() + 2));
         }
     }
 
+    /**
+     * 法师之手的永久控制器和装备容器。
+     * <p>控制器本身是背包中的物品，不会随法师之手消散。场景实体存在时，
+     * 法师之手存在时，实际装备临时放在 MageHand 上；法师之手消散后，装备再转存到 storedWand /storedMageStaff，从而保证无论实体是否在场都只有一份有效存档。
+     */
     public static class MageHandControl extends Item {
         public static final String AC_HAND = "HAND";
-        public static final String AC_DIRECT = "DIRECT";
         public static final String AC_SUMMON_HAND = "SUMMON_HAND";
-        public static final String AC_TARGET_ENEMY = "TARGET_ENEMY";
+        private static final String STORED_WAND = "stored_wand";
+        private static final String STORED_MAGE_STAFF = "stored_mage_staff";
 
+        public Wand storedWand;
+        public MagesStaff storedMageStaff;
         public MageHand mageHand = null;
 
+        /**
+         * 保存控制器自己的离线装备槽。
+         * 法师之手存在时，装备位于实体字段中，此处通常为空。
+         */
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+
+            if (storedWand != null) {
+                bundle.put(STORED_WAND, storedWand);
+            }
+
+            if (storedMageStaff != null) {
+                bundle.put(STORED_MAGE_STAFF, storedMageStaff);
+            }
+        }
+
+        // 只恢复控制器保存的离线装备；实体装备由 MageHand 自己恢复。
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+
+            if (bundle.contains(STORED_WAND)) {
+                storedWand = (Wand) bundle.get(STORED_WAND);
+            }
+
+            if (bundle.contains(STORED_MAGE_STAFF)) {
+                storedMageStaff =
+                        (MagesStaff) bundle.get(STORED_MAGE_STAFF);
+            }
+        }
+
+        /**
+         * 返回当前实际装备的普通法杖。
+         * 实体在场时读取实体，实体不在场时读取控制器。调用者不需要关心装备当前位于哪一侧。
+         */
+        public Wand getWand() {
+            return mageHand != null
+                    ? mageHand.equippedWand
+                    : storedWand;
+        }
+
+        // 老魔杖与普通法杖使用同一套“实体优先、控制器兜底”的读取规则。
+        public MagesStaff getMageStaff() {
+            return mageHand != null
+                    ? mageHand.magesStaff
+                    : storedMageStaff;
+        }
+
+        /**
+         * 召唤实体时把控制器保存的装备交给实体。
+         * 交接完成后清空控制器中的槽位，并停止已有的 Wand.Charger，防止同一根法杖同时被两套对象引用和充能。
+         */
+        public void bindStoredGear(MageHand hand) {
+            hand.equippedWand = storedWand;
+            hand.magesStaff = storedMageStaff;
+
+            storedWand = null;
+            storedMageStaff = null;
+
+            if (hand.equippedWand != null) {
+                hand.equippedWand.stopCharging();
+            }
+
+            if (hand.magesStaff != null
+                    && hand.magesStaff.wand != null) {
+                hand.magesStaff.wand.stopCharging();
+            }
+            updateQuickslot();
+        }
+
+        /**
+         * 法师之手消散时把仍装备在法师之手上的物品转回控制器。
+         * 这里只负责转移引用；随后会由消散流程移出场景。
+         */
+        public void storeGearFrom(MageHand hand) {
+            storedWand = hand.equippedWand;
+            storedMageStaff = hand.magesStaff;
+
+            hand.equippedWand = null;
+            hand.magesStaff = null;
+        }
+
+        /**
+         * 更换普通法杖。
+         * 普通法杖和老魔杖共用一个逻辑装备位，因此装备普通法杖会清空老魔杖槽位
+         */
+        public void equipWand(Wand wand) {
+            Wand oldWand = getWand();
+
+            if (oldWand != null && oldWand != wand) {
+                oldWand.stopCharging();
+            }
+
+            if (mageHand != null) {
+                mageHand.equippedWand = wand;
+                mageHand.magesStaff = null;
+            } else {
+                storedWand = wand;
+                storedMageStaff = null;
+            }
+
+            if (wand != null) {
+                wand.stopCharging();
+            }
+
+            updateQuickslot();
+        }
+
+        /**
+         * 更换老魔杖
+         * 老魔杖同样占用唯一的装备位，装备后会清空普通法杖槽位。
+         */
+        public void equipMageStaff(MagesStaff staff) {
+            MagesStaff oldStaff = getMageStaff();
+
+            if (oldStaff != null && oldStaff != staff
+                    && oldStaff.wand != null) {
+                oldStaff.wand.stopCharging();
+            }
+
+            if (mageHand != null) {
+                mageHand.magesStaff = staff;
+                mageHand.equippedWand = null;
+            } else {
+                storedMageStaff = staff;
+                storedWand = null;
+            }
+
+            if (staff != null && staff.wand != null) {
+                staff.wand.stopCharging();
+            }
+
+            updateQuickslot();
+        }
+
+        // 控制器是唯一物品，使用固定的背包图标。
         {
             unique = true;
             image = ItemSpriteSheet.WAND_HAND_CONTROL;
@@ -1115,38 +961,39 @@ public class MageHand extends DirectableAlly {
 
         @Override
         public String defaultAction(){
-            if(mageHand!=null){
-                return AC_DIRECT;
-            } else {
-                return AC_SUMMON_HAND;
-            }
+            return AC_SUMMON_HAND;
         }
 
+        // 法师之手不在场时显示暗红色微光，提示控制器仍保存着已装备的法杖。
         @Override
         public ItemSprite.Glowing glowing() {
 
             return mageHand != null ? null : new ItemSprite.Glowing(0x880000, 1f) ;
         }
 
+        // 控制器本身不是装备强化目标。
         @Override
         public boolean isUpgradable() {
             return false;
         }
 
+        /**
+         * 快捷栏状态显示当前装备法杖的充能。
+         * 统一通过 getMageStaff()/getWand() 读取，所以换装或消散后仍然正确。
+         */
         @Override
         public String status() {
-            if(mageHand != null){
-                if (mageHand.magesStaff != null && mageHand.magesStaff.wand != null) {
-                    return mageHand.magesStaff.wand.curCharges + "/" + mageHand.magesStaff.wand.maxCharges;
-                } else if (mageHand.equippedWand != null) {
-                    return mageHand.equippedWand.curCharges + "/" + mageHand.equippedWand.maxCharges;
-                }
-            }
+            MagesStaff staff = getMageStaff();
+            if (staff != null && staff.wand != null) {return staff.wand.curCharges + "/" + staff.wand.maxCharges;}
+            Wand wand = getWand();
+            if (wand != null) {return wand.curCharges + "/" + wand.maxCharges;}
+
             return "";
         }
 
 
 
+        // 控制器始终可见、可识别，不需要鉴定。
         @Override
         public boolean isIdentified() {
             return true;
@@ -1154,28 +1001,24 @@ public class MageHand extends DirectableAlly {
 
         @Override
         public ArrayList<String> actions(Hero hero) {
+            // HAND 只打开装备窗口；SUMMON_HAND 才执行召唤流程。
             ArrayList<String> actions = super.actions(hero);
             actions.add(AC_HAND);
-            actions.add(AC_DIRECT);
             actions.add(AC_SUMMON_HAND);
-            actions.add(AC_TARGET_ENEMY);
             return actions;
         }
 
+        /**
+         * 处理装备窗口和召唤动作。
+         * 召唤顺序分成四步：复用场上实体、检查冷却、寻找出生点、创建并绑定装备。这样读档后即使控制器尚未建立链接，也不会重复生成。
+         */
         @Override
         public void execute(Hero hero, String action) {
             super.execute(hero, action);
 
             switch (action) {
                 case AC_HAND:
-                    if(mageHand != null){
-                        GameScene.show(new WndMageHand(mageHand));
-                    }
-                    break;
-                case AC_DIRECT:
-                    if(mageHand != null){
-                        GameScene.selectCell(handDirector);
-                    }
+                    GameScene.show(new WndMageHand(this));
                     break;
                 case AC_SUMMON_HAND:
                     // 先检查当前楼层是否已经存在法师之手（可能是读档后未链接的情况）
@@ -1189,118 +1032,213 @@ public class MageHand extends DirectableAlly {
                     if (existingHand != null) {
                         // 链接到已存在的手，避免重复创建
                         MageHandControl.this.mageHand = existingHand;
-                        GameScene.show(new WndMageHand(existingHand));
+                        GameScene.show(new WndMageHand(this));
                         break;
                     }
 
-                    ArrayList<Integer> spawnPoints2 = new ArrayList<>();
-                    for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-                        int p = hero.pos + PathFinder.NEIGHBOURS8[i];
-                        if (Actor.findChar(p) == null
-                                && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])
-                                && !(PathFinder.distance[p] == Integer.MAX_VALUE)) {
-                            spawnPoints2.add(p);
-                        }
+                    //召唤冷却检查
+                    if (hero.buff(SummonCooldown.class) != null) {
+                        GLog.w(Messages.get(
+                                MageHand.class,
+                                "summon_cooldown",
+                                (int) hero.buff(SummonCooldown.class).visualcooldown()
+                        ));
+                        break;
                     }
 
-                    if (MageHandControl.this.mageHand == null) {
+                    ArrayList<Integer> spawnPoints =
+                            findMageHandSpawnPoints(hero.pos);
 
-                        if (spawnPoints2.size() > 0) {
-                            MageHand newHand = new MageHand();
-                            newHand.pos = Random.element(spawnPoints2);
-                            MageHandControl.this.mageHand = newHand;
-                            GameScene.add(newHand, 1f);
-                            Dungeon.level.occupyCell(newHand);
-                            Bestiary.setSeen(newHand.getClass());
-                            CellEmitter.get(newHand.pos).start(ShaftParticle.FACTORY, 0.3f, 4);
-                            CellEmitter.get(newHand.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
-
-                            hero.spend(1f);
-                            hero.busy();
-                            hero.sprite.operate(hero.pos);
-
-                            if (newHand.equippedWand != null) {
-                                newHand.equipWand(newHand.equippedWand);
-                                newHand.yell(Messages.get(MageHand.class, "appear"));
-                                Sample.INSTANCE.play(Assets.Sounds.MASTERY);
-                                newHand.sayAppeared();
-                            }
-
-                            Invisibility.dispel(hero);
-                            Talent.onArtifactUsed(hero);
-                            updateQuickslot();
-                        }
-                    } else {
-                        GLog.w(Messages.get(MageHand.class, "already_exists"));
+                    if (spawnPoints.isEmpty()) {
+                        GLog.w(Messages.get(MageHand.class, "no_space"));
+                        break;
                     }
-                    break;
-                case AC_TARGET_ENEMY:
-                    if(mageHand != null){
-                            GameScene.selectCell(enemySelector);
-                    }
+
+                    MageHand newHand = new MageHand();
+                    newHand.pos = Random.element(spawnPoints);
+
+                    mageHand = newHand;
+                    bindStoredGear(newHand);
+
+                    GameScene.add(newHand, 1f);
+                    Dungeon.level.occupyCell(newHand);
+                    Bestiary.setSeen(MageHand.class);
+
+                    hero.spend(1f);
+                    hero.busy();
+                    hero.sprite.operate(hero.pos);
+
+                    newHand.sayAppeared();
+
+                    Invisibility.dispel(hero);
+                    Talent.onArtifactUsed(hero);
+                    updateQuickslot();
+
                     break;
             }
         }
+    }
+    /**
+     * 寻找法师之手可用的召唤位置。
+     * <p>先收集英雄周围两格内的所有可站立位置；如果存在八方向相邻格，
+     * 优先使用相邻格，否则才使用半径两格的位置。这样既保持召唤位置稳定，
+     * 也在英雄被围住时提供退路。</p>
+     */
+    private static ArrayList<Integer> findMageHandSpawnPoints(int center) {
+        ArrayList<Integer> adjacent = new ArrayList<>();
+        ArrayList<Integer> nearby = new ArrayList<>();
 
-        public CellSelector.Listener handDirector = new CellSelector.Listener() {
-            @Override
-            public void onSelect(Integer cell) {
-                if (cell == null) return;
+        int width = Dungeon.level.width();
 
-                boolean isVisible = Dungeon.level.heroFOV[cell];
+        for (int y = -2; y <= 2; y++) {
+            for (int x = -2; x <= 2; x++) {
+                if (x == 0 && y == 0) {
+                    continue;
+                }
 
-                if (isVisible) {
-                    boolean isInBounds = cell < Dungeon.level.length();
-                    Char enemy = Actor.findChar(cell);
+                int cell = center + x + y * width;
 
-                    if ((Dungeon.level.map[cell] == Terrain.CHASM || Dungeon.level.passable[cell]) && isInBounds && enemy == null) {
-                        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                            if (mob instanceof MageHand) {
-                                ScrollOfTeleportation.appear(mob, cell);
-                            }
-                        }
-                        curUser.spend(Actor.TICK);
-                        curUser.busy();
-                        curUser.sprite.operate(curUser.pos);
-                        Sample.INSTANCE.play(Assets.Sounds.READ);
-                        Emitter e = curUser.sprite.centerEmitter();
-                        e.pos(e.x - 2, e.y - 6, 4, 4);
-                        e.start(Speck.factory(Speck.STAR), 0.05f, 20);
-                    } else {
-                        GLog.w(Messages.get(MageHand.class, "invalid_target"));
-                    }
+                if (cell < 0 || cell >= Dungeon.level.length()) {
+                    continue;
+                }
+
+                // 防止从地图左边界绕到右边界
+                if (Dungeon.level.trueDistance(cell, center) > 2.5f) {
+                    continue;
+                }
+
+                if (Actor.findChar(cell) != null
+                        || !Dungeon.level.passable[cell]
+                        || Dungeon.level.pit[cell]
+                        || Dungeon.level.solid[cell]) {
+                    continue;
+                }
+
+                if (PathFinder.distance[cell] == Integer.MAX_VALUE) {
+                    continue;
+                }
+
+                if (Dungeon.level.adjacent(cell, center)) {
+                    adjacent.add(cell);
                 } else {
-                    GLog.w(Messages.get(MageHand.class, "out_of_range"));
+                    nearby.add(cell);
                 }
             }
+        }
 
-            @Override
-            public String prompt() {
-                return "\"" + Messages.get(DriedRose.GhostHero.class, "direct_prompt") + "\"";
-            }
-        };
-
-        public CellSelector.Listener enemySelector = new CellSelector.Listener(){
-
-            @Override
-            public void onSelect(Integer cell) {
-                if (cell == null) return;
-
-                Sample.INSTANCE.play( Assets.Sounds.GHOST );
-
-                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if (mob instanceof MageHand) {
-                        ((MageHand) mob).directTocell(cell);
-                    }
-                }
-
-            }
-
-            @Override
-            public String prompt() {
-                return  "\"" + Messages.get(DriedRose.GhostHero.class, "direct_prompt") + "\"";
-            }
-        };
+        // 相邻格可用时优先选择相邻格，否则回退到两格范围内的其他位置。
+        return adjacent.isEmpty() ? nearby : adjacent;
     }
 
+    /**
+     * 请求法师之手对英雄刚刚命中的敌人追加施法。
+     * <p>本方法只做条件检查并创建 pending 事务，真正的伤害和充能扣除会在
+     * 施法动画结束后的 onZapComplete() 中完成。这样目标、法杖和充能消耗
+     * 都对应发起追击的那一刻，不会因动画期间换装而改变。</p>
+     *
+     * @return 是否成功登记了一次追加施法
+     */
+    public static boolean tryFollowUpCast(Char target) {
+        if (target == null
+                || !target.isAlive()
+                || target.alignment != Alignment.ENEMY) {
+            return false;
+        }
+
+        MageHand hand = null;
+
+        for (Mob mob : Dungeon.level.mobs) {
+            if (mob instanceof MageHand && mob.isAlive()) {
+                hand = (MageHand) mob;
+                break;
+            }
+        }
+
+        if (hand == null) {
+            return false;
+        }
+
+        Wand wand;
+
+        if (hand.magesStaff != null
+                && hand.magesStaff.wand != null) {
+            wand = hand.magesStaff.wand;
+        } else {
+            wand = hand.equippedWand;
+        }
+
+        if (wand == null
+                || wand.curCharges
+                < Math.max(1, wand.chargesPerCast())) {
+            return false;
+        }
+
+        if (!hasHandLineOfFire(hand, target, wand)) {
+            return false;
+        }
+
+        hand.pendingWand = wand;
+        hand.pendingTarget = target;
+        hand.pendingFollowUp = true;
+
+        // 兼容旧施法路径：动画入口仍通过 enemy/target 找到当前目标。
+        hand.enemy = target;
+        hand.target = target.pos;
+
+        if (hand.sprite != null
+                && (hand.sprite.visible || target.sprite.visible)) {
+            hand.sprite.zap(target.pos);
+        } else {
+            hand.zap();
+        }
+
+        return true;
+    }
+
+    /**
+     * 判断法师之手能否安全地把法术送到目标。
+     * <p>不同法杖使用不同弹道判定：解离需要穿透路径，锥形法杖使用普通直线，
+     * 其他法杖则要求弹道确实命中目标且不穿过英雄。</p>
+     */
+    private static boolean hasHandLineOfFire(
+            MageHand hand,
+            Char target,
+            Wand wand
+    ) {
+        if (wand instanceof WandOfDisintegration) {
+            // 解离必须允许弹道继续穿透，因此使用 WONT_STOP 检查目标是否在射线上。
+            Ballistica ray = new Ballistica(
+                    hand.pos,
+                    target.pos,
+                    Ballistica.WONT_STOP
+            );
+
+            return ray.path.contains(target.pos);
+        }
+
+        if (wand instanceof WandOfFireblast
+                || wand instanceof WandOfScale
+                || wand instanceof WandOfRegrowth
+                || wand instanceof WandOfBlueFuck) {
+
+            // 锥形法杖的 AI 效果由落点方向决定，只要直线能到达目标即可。
+            Ballistica direct = new Ballistica(
+                    hand.pos,
+                    target.pos,
+                    Ballistica.MAGIC_BOLT
+            );
+
+            return direct.collisionPos == target.pos;
+        }
+
+        // 普通法杖要求弹道最终停在目标，并且英雄不在同一条攻击路径上。
+        Ballistica normal = new Ballistica(
+                hand.pos,
+                target.pos,
+                Ballistica.MAGIC_BOLT
+        );
+
+        return normal.collisionPos == target.pos
+                && !hand.isHeroInAttackPath(normal);
+    }
 }

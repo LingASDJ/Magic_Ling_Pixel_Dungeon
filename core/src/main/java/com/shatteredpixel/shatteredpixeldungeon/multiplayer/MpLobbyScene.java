@@ -209,7 +209,6 @@ public class MpLobbyScene extends PixelScene {
             return;
         }
         if (Mp.get().role != Mp.Role.NONE) {
-            Mp.get().clearReconnect();
             Mp.get().disconnect();
         }
         ShatteredPixelDungeon.switchNoFade(TitleScene.class);

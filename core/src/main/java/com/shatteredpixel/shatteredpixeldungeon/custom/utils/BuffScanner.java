@@ -288,7 +288,6 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.DragonWall.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.FoundChest.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.MageHandControlBuff.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.MagicAbsorb.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.OozeStatueDead.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.OozeStatueDead.OozeStatueDeadStats.class);
@@ -304,6 +303,7 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.CombinedLethalityAbilityTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.CounterAbilityTacker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.DeadlyFollowupTracker.class);
+        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.DoubleExistenceTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.EmpoweredStrikeTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.FollowupStrikeTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ImprovisedProjectileCooldown.class);
@@ -317,6 +317,8 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.PreciseAssaultTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ProtectiveShadowsTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ProvokedAngerTracker.class);
+        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.PsionicStrideHeroCooldown.class);
+        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.PsionicStrideHandCooldown.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.RejuvenatingStepsCooldown.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.RejuvenatingStepsFurrow.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.RestoredAgilityTracker.class);
@@ -454,8 +456,8 @@ public class BuffScanner {
 //        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Roger.ThrowPotionWarning.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.Gorgon.Petrification.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.minigame.Ghost_Pink.RecordOtherGhost.class);
-        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand.HandShield.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand.HandWareness.class);
+        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand.SummonCooldown.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage.MirrorInvis.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.normal.DogDogMusic.CicreStats.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rare.VeryColdRat.DeadBombTime.class);

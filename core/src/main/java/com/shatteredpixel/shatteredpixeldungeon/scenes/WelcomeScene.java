@@ -37,8 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlu
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
-import com.shatteredpixel.shatteredpixeldungeon.multiplayer.MpProfileScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;

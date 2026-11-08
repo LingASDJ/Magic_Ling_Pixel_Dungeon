@@ -25,20 +25,15 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -48,8 +43,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseSubclass;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -151,47 +144,15 @@ public class TengusMask extends Item {
 		if (way == HeroSubClass.ASSASSIN && curUser.invisible > 0){
 			Buff.affect(curUser, Preparation.class);
 		}
+		if (way == HeroSubClass.BATTLEMAGE) {
+			MageHand.MageHandControl control =
+					new MageHand.MageHandControl();
 
-		if(way == HeroSubClass.BATTLEMAGE){
-			ArrayList<Integer> spawnPoints = new ArrayList<>();
-			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-				int p = hero.pos + PathFinder.NEIGHBOURS8[i];
-				if (Actor.findChar(p) == null
-						&& (Dungeon.level.passable[p] || Dungeon.level.avoid[p])
-						&& !(PathFinder.distance[p] == Integer.MAX_VALUE)) {
-					spawnPoints.add(p);
-				}
-			}
-
-            MageHand.MageHandControl mageHandControl = new MageHand.MageHandControl();
-            mageHandControl.collect();
-
-			if (spawnPoints.size() > 0) {
-				MageHand mageHand = new MageHand();
-				mageHand.pos = Random.element(spawnPoints);
-				GameScene.add(mageHand, 1f);
-				Dungeon.level.occupyCell(mageHand);
-
-				Bestiary.setSeen(mageHand.getClass());
-
-				CellEmitter.get(mageHand.pos).start(ShaftParticle.FACTORY, 0.3f, 4);
-				CellEmitter.get(mageHand.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
-
-				hero.spend(1f);
-				hero.busy();
-				hero.sprite.operate(hero.pos);
-
-				if (mageHand.equippedWand != null) {
-					mageHand.equipWand(mageHand.equippedWand);
-					mageHand.yell(Messages.get(MageHand.class, "appear"));
-					Sample.INSTANCE.play(Assets.Sounds.MASTERY);
-					mageHand.sayAppeared();
-				}
-
-				Invisibility.dispel(hero);
-				Talent.onArtifactUsed(hero);
-				updateQuickslot();
-			}
+			control.collect();
+			control.execute(
+					hero,
+					MageHand.MageHandControl.AC_SUMMON_HAND
+			);
 		}
 		
 		curUser.sprite.operate( curUser.pos );
