@@ -25,6 +25,28 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 /** MultiplayerService 的默认实现，委托给 multiplayer.Mp 单例。 */
 public class MultiplayerServiceImpl extends MultiplayerService {
 
+    /** Android 前台保活服务的桥接；桌面端不注册，调用为空操作。 */
+    public interface KeepAliveListener {
+        void setKeepAlive(boolean active);
+    }
+
+    private static volatile KeepAliveListener keepAliveListener;
+
+    /** 注册 Android 前台保活服务回调（仅 Android 启动器调用）。 */
+    public static void setKeepAliveListener(KeepAliveListener listener) {
+        keepAliveListener = listener;
+    }
+
+    /** 通知平台更新前台保活状态；未注册监听器时无操作。 */
+    public static void updateKeepAlive(boolean active) {
+        KeepAliveListener listener = keepAliveListener;
+        if (listener != null) {
+            try {
+                listener.setKeepAlive(active);
+            } catch (Throwable ignored) {}
+        }
+    }
+
 	/**
 	 * GameScene 每帧调用：委托给联机核心。
 	 *
@@ -49,6 +71,16 @@ public class MultiplayerServiceImpl extends MultiplayerService {
 	@Override
 	public void onGamePause() {
 		Mp.get().onGamePause();
+	}
+
+	@Override
+	public void onAppPaused() {
+		Mp.get().onAppPaused();
+	}
+
+	@Override
+	public void onAppResumed() {
+		Mp.get().onAppResumed();
 	}
 
 	/**
