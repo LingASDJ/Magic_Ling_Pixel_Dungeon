@@ -93,10 +93,18 @@ public class WandOfHightHunderStorm extends DamageWand {
     @Override
     public void onZap(Ballistica bolt) {
 
-        for (Char ch : affected.toArray(new Char[0])){
-            if (ch != curUser && ch.alignment == curUser.alignment && ch.pos != bolt.collisionPos){
+        Char caster = source();
+
+        for (Char ch : affected.toArray(new Char[0])) {
+
+            if (ch != caster
+                    && ch.alignment == caster.alignment
+                    && ch.pos != bolt.collisionPos) {
+
                 affected.remove(ch);
-            } else if (ch.buff(WandOfLightning.LightningCharge.class) != null){
+
+            } else if (ch.buff(WandOfLightning.LightningCharge.class) != null) {
+
                 affected.remove(ch);
             }
         }
@@ -139,7 +147,7 @@ public class WandOfHightHunderStorm extends DamageWand {
                 continue;
             }
             wandProc(ch, chargesPerCast());
-            if (ch == curUser) {
+            if (ch == caster) {
                 ch.damage(Math.round(damageRoll() * multipler * 0.25f), this , Char.DamageType.Element);
             } else {
                 ch.damage(Math.round(damageRoll() * multipler), this , Char.DamageType.Element);
@@ -160,14 +168,18 @@ public class WandOfHightHunderStorm extends DamageWand {
 
     @Override
     public void onAIZap(Ballistica bolt) {
-        if (curUser == null) {
+        Char caster = source();
+
+        if (caster == null) {
             return;
         }
 
-        for (Char ch : affected.toArray(new Char[0])){
-            if (ch != curUser && ch.alignment == curUser.alignment && ch.pos != bolt.collisionPos){
+        for (Char ch : affected.toArray(new Char[0])) {
+            if (ch != caster && ch.alignment == caster.alignment && ch.pos != bolt.collisionPos) {
                 affected.remove(ch);
-            } else if (ch.buff(WandOfLightning.LightningCharge.class) != null){
+            } else if (ch.buff(
+                    WandOfLightning.LightningCharge.class
+            ) != null) {
                 affected.remove(ch);
             }
         }
@@ -269,10 +281,10 @@ public class WandOfHightHunderStorm extends DamageWand {
 
         int dist = Dungeon.level.water[ch.pos] ? 2 : 1;
 
-        if(curUser != null){
-            if (curUser.buff(WandOfLightning.LightningCharge.class) != null){
-                dist++;
-            }
+        Char caster = source();
+
+        if (caster != null && caster.buff(WandOfLightning.LightningCharge.class) != null) {
+            dist++;
         }
 
         ArrayList<Char> hitThisArc = new ArrayList<>();

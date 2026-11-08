@@ -21,11 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.watabou.utils.Bundle;
 
 public abstract class ShieldBuff extends Buff {
@@ -58,11 +54,6 @@ public abstract class ShieldBuff extends Buff {
 		if (target != null) {
 			target.needsShieldUpdate = true;
 
-			if(hero.hasTalent(Talent.EXCESS_CHARGE)){
-				if(target == hero){
-					Buff.affect(target, MageHand.HandShield.class).set(shield/2, hero.pointsInTalent(Talent.EXCESS_CHARGE)*3+1);
-				}
-			}
 		}
 	}
 	

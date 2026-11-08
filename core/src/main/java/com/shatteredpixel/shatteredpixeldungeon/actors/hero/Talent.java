@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbili
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
@@ -106,7 +107,7 @@ public enum Talent {
 	//Mage T3
 	DESPERATE_POWER(41, 3), ALLY_WARP(42, 3),
 	//Battlemage T3
-	EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3),MAGIC_ABSORB(60,3),
+	PSIONIC_STRIDE(43, 3), RECURRING_CYCLE(44, 3), DOUBLE_EXISTENCE(45, 3),PSIONIC_ACCELERATION(60,3),
 	//Battlemage T3-Old
 	REPOWER_ATTACK(220,3),CHARGE_MAGIC(221,3), SHIELDING_BLOCK(222,3),
 
@@ -241,6 +242,159 @@ public enum Talent {
 			super.restoreFromBundle(bundle);
 			barrierInc = bundle.getFloat( BARRIER_INC );
 		}
+	}
+	//灵能步伐冷却实现
+	public static class PsionicStrideHeroCooldown extends FlavourBuff {
+		@Override
+		public int icon() {
+			return BuffIndicator.TIME;
+		}
+
+		@Override
+		public float iconFadePercent() {
+			float cooldown = 35f - 5f *
+					Dungeon.hero.pointsInTalent(PSIONIC_STRIDE);
+			return GameMath.gate(0, visualcooldown() / cooldown, 1);
+		}
+	}
+
+	public static class PsionicStrideHandCooldown extends PsionicStrideHeroCooldown {
+	}
+	//灵能步伐效果实现
+	public static void onBattlemageSpellCast(Char caster) {
+		Hero owner = Dungeon.hero;
+
+		if (owner == null
+				|| owner.subClass != HeroSubClass.BATTLEMAGE
+				|| caster == null) {
+			return;
+		}
+
+		int points = owner.pointsInTalent(PSIONIC_STRIDE);
+		if (points <= 0) {
+			return;
+		}
+
+		float cooldown = 35f - 5f * points;
+
+		if (caster == owner) {
+			if (owner.buff(PsionicStrideHeroCooldown.class) != null) {
+				return;
+			}
+			Buff.affect(owner, PsionicStrideHeroCooldown.class, cooldown);
+		} else if (caster instanceof MageHand) {
+			if (owner.buff(PsionicStrideHandCooldown.class) != null) {
+				return;
+			}
+			Buff.affect(owner, PsionicStrideHandCooldown.class, cooldown);
+		} else {
+			return;
+		}
+
+		Buff.affect(owner, Haste.class, points);
+
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+			if (mob instanceof MageHand) {
+				Buff.affect(mob, Haste.class, points);
+				break;
+			}
+		}
+	}
+	//循环往复的施法计数器
+	public static class RecurringCycleCounter extends CounterBuff {
+		{
+			revivePersists = true;
+		}
+	}
+	public static void onMageHandSpellCast(MageHand hand) {
+		Hero owner = Dungeon.hero;
+
+		if (owner == null || owner.subClass != HeroSubClass.BATTLEMAGE || hand == null) {
+			return;
+		}
+
+		int recurringPoints = owner.pointsInTalent(RECURRING_CYCLE);
+		if (recurringPoints > 0) {
+			RecurringCycleCounter counter = Buff.affect(owner, RecurringCycleCounter.class);
+
+			counter.countUp(1f);
+			while (counter.count() >= 4f) {
+				counter.countDown(4f);
+				Buff.affect(owner, Recharging.class, recurringPoints);
+			}
+		}
+		int doubleExistencePoints = owner.pointsInTalent(DOUBLE_EXISTENCE);
+
+		if (doubleExistencePoints > 0) {
+			DoubleExistenceTracker tracker =
+					Buff.affect(
+							owner,
+							DoubleExistenceTracker.class
+					);
+
+			// 已经准备好时不继续累计，避免储存多次免费施法
+			if (!tracker.isReady()) {
+				tracker.countUp(1f);
+			}
+		}
+	}
+	//双重存在buff实现
+	public static class DoubleExistenceTracker extends CounterBuff {
+		{
+			revivePersists = true;
+			type = buffType.POSITIVE;
+		}
+
+		public int threshold() {
+			int points = Dungeon.hero.pointsInTalent(DOUBLE_EXISTENCE);
+			// +1 = 3次，+2 = 2次，+3 = 1次
+			return points > 0 ? 4 - points : Integer.MAX_VALUE;
+		}
+
+		public boolean isReady() {
+			return count() >= threshold();
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.DOUBLE_EXISTENCE;
+		}
+
+		@Override
+		public String desc() {
+			if (isReady()) {
+				return Messages.get(
+						this,
+						"desc_ready"
+				);
+			} else {
+				return Messages.get(
+						this,
+						"desc_progress",
+						(int) count(),
+						threshold()
+				);
+			}
+		}
+	}
+	//双重存在buff消耗
+	public static boolean consumeDoubleExistence() {
+		Hero owner = Dungeon.hero;
+
+		if (owner == null
+				|| owner.pointsInTalent(DOUBLE_EXISTENCE) <= 0) {
+			return false;
+		}
+
+		DoubleExistenceTracker tracker =
+				owner.buff(DoubleExistenceTracker.class);
+
+		if (tracker == null || !tracker.isReady()) {
+			return false;
+		}
+
+		tracker.detach();
+		return true;
 	}
 	/**
 	 * 片影惊鸿的延迟结算标记。
@@ -1276,7 +1430,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, VENT_NOPLACE);
 				break;
 			case BATTLEMAGE:
-				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE, MAGIC_ABSORB);
+				Collections.addAll(tierTalents, PSIONIC_STRIDE, RECURRING_CYCLE, DOUBLE_EXISTENCE, PSIONIC_ACCELERATION);
 				break;
 			case OLDBATTLEMAGE:
 				Collections.addAll(tierTalents,REPOWER_ATTACK,CHARGE_MAGIC,SHIELDING_BLOCK);
@@ -1365,6 +1519,9 @@ public enum Talent {
 
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
 	static{
+		renamedTalents.put("MYSTICAL_CHARGE",           "RECURRING_CYCLE");
+		renamedTalents.put("EXCESS_CHARGE",             "DOUBLE_EXISTENCE");
+		renamedTalents.put("MAGIC_ABSORB",              "PSIONIC_ACCELERATION");
 		//v2.2.0
 		renamedTalents.put("RESTORED_WILLPOWER",        "LIQUID_WILLPOWER");
 		renamedTalents.put("ENERGIZING_UPGRADE",        "INSCRIBED_POWER");

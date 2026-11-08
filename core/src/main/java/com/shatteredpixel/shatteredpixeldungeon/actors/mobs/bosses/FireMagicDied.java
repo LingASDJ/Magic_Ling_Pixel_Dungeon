@@ -596,7 +596,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 //化解也算一次完整使用，进入长冷却
                 redLotusCooldown = Random.NormalIntRange(40, 80);
                 sprite.showStatus(CharSprite.NEUTRAL, Messages.get(this, "redlotus_save"));
-                yell(Messages.get(this, "redlotus_save"));
+                GLog.n(Messages.get(this, "redlotus_save"));
             } else if (redLotusCharge <= 0){
                 releaseRedLotus();
             }
@@ -826,9 +826,9 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         Sample.INSTANCE.play(Assets.Sounds.BURNING);
         ((FireMagicGirlSprite) sprite).cast(enemy.pos);
         if(Random.Float()>0.5f){
-            yell(Messages.get(this, "redlotus_1"));
+            GLog.n(Messages.get(this, "redlotus_1"));
         } else {
-            GLog.n(Messages.get(this, "redlotus_2"));
+            yell(Messages.get(this, "redlotus_2"));
         }
 
         return true;

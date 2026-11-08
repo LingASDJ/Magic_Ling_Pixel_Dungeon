@@ -952,7 +952,7 @@ public abstract class Char extends Actor {
 	public int drRoll() {
 		int dr = 0;
 
-		dr += Random.NormalIntRange( 0 , Barkskin.currentLevel(this) + MageHand.HandShield.currentLevel(this) + MarigoldBuff.currentDefense(this));
+		dr += Random.NormalIntRange( 0 , Barkskin.currentLevel(this) + MarigoldBuff.currentDefense(this));
 
 		return dr;
 	}

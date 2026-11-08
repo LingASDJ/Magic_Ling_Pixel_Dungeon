@@ -29,9 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SentryRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -45,21 +43,10 @@ public class PotionOfHaste extends Potion {
 	@Override
 	public void apply(Hero hero) {
 		identify();
-		boolean blood = false;
+
 		if(Dungeon.isChallenged(EXSG)) {
-			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-				if (mob instanceof SentryRoom.Sentry) {
-					blood = true;
-				}
-			}
-			if(blood){
-				GLog.w( Messages.get(this, "energetic") );
-				Buff.prolong( hero, Haste.class, Haste.DURATION);
-				SpellSprite.show(hero, SpellSprite.HASTE, 1, 1, 0);
-			} else {
-				Buff.affect(hero, Cripple.class, 8f);
-				GLog.n( Messages.get(this, "energy_speed") );
-			}
+			Buff.affect(hero, Cripple.class, 8f);
+			GLog.n(Messages.get(this, "energy_speed"));
 		} else {
 			GLog.w( Messages.get(this, "energetic") );
 			Buff.prolong( hero, Haste.class, Haste.DURATION);

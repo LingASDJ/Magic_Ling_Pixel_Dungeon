@@ -249,14 +249,6 @@ public class MagesStaff extends MeleeWeapon {
 			wand.onHit(this, attacker, defender, damage);
 		}
 
-		if (wand != null && hero.subClass == HeroSubClass.BATTLEMAGE) {
-			int battleMageLevel = hero.pointsInTalent(Talent.EMPOWERED_STRIKE);
-			float triggerChance = Math.min(1.0f, battleMageLevel * 0.33f);
-			if (Random.Float() < triggerChance) {
-				wand.onHit(this, hero, defender, damage);
-			}
-		}
-
 		if (empoweredStrike != null){
 			if (!empoweredStrike.delayedDetach) empoweredStrike.detach();
 			if (!(defender instanceof Mob) || !((Mob) defender).surprisedBy(attacker)){
@@ -269,11 +261,6 @@ public class MagesStaff extends MeleeWeapon {
 	@Override
 	public int reachFactor(Char owner) {
 		int reach = super.reachFactor(owner);
-		if (owner instanceof Hero
-				&& wand instanceof WandOfDisintegration
-				&& ((Hero)owner).subClass == HeroSubClass.BATTLEMAGE && Dungeon.hero.hasTalent(Talent.EMPOWERED_STRIKE)){
-			reach += Math.round(Wand.procChanceMultiplier(owner));
-		}
 
 		if (owner instanceof Hero
 				&& wand instanceof WandOfDisintegration

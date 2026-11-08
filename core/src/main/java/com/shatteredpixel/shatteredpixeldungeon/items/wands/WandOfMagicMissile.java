@@ -65,20 +65,21 @@ public class WandOfMagicMissile extends DamageWand {
 			wandProc(ch, chargesPerCast());
 			ch.damage(damageRoll(), this);
 
-			if(curUser.buff(AbundantMagic.class)== null){
-				Buff.append(curUser, AbundantMagic.class,5f);
-			}
+			if (!castByMageHand) {
+				if (curUser.buff(AbundantMagic.class) == null) {
+					Buff.append(curUser, AbundantMagic.class, 5f);
+				}
 
-			Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f) );
+				Sample.INSTANCE.play(Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f));
 
-			ch.sprite.burst(0xFFFFFFFF, buffedLvl() / 2 + 2);
+				ch.sprite.burst(0xFFFFFFFF, buffedLvl() / 2 + 2);
+				//apply the magic charge buff if we have another wand in inventory of a lower level, or already have the buff
 
-			//apply the magic charge buff if we have another wand in inventory of a lower level, or already have the buff
-
-			for (Wand.Charger wandCharger : curUser.buffs(Wand.Charger.class)){
-				if (wandCharger.wand().buffedLvl() < buffedLvl() || curUser.buff(MagicCharge.class) != null){
-					Buff.prolong(curUser, MagicCharge.class, MagicCharge.DURATION).setup(this);
-					break;
+				for (Wand.Charger wandCharger : curUser.buffs(Wand.Charger.class)) {
+					if (wandCharger.wand().buffedLvl() < buffedLvl() || curUser.buff(MagicCharge.class) != null) {
+						Buff.prolong(curUser, MagicCharge.class, MagicCharge.DURATION).setup(this);
+						break;
+					}
 				}
 			}
 
@@ -179,4 +180,6 @@ public class WandOfMagicMissile extends DamageWand {
 			return new ArrayList<>(); //yup, no dropping this one
 		}
 	}
+	//法师之手的魔弹法杖特效屏蔽
+	public boolean castByMageHand = false;
 }

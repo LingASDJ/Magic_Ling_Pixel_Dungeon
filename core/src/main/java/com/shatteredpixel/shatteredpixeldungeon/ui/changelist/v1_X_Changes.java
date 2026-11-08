@@ -109,7 +109,7 @@ public class v1_X_Changes {
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);
 
-		changes.addButton(new ChangeButton( new TalentIcon(Talent.EMPOWERED_STRIKE), "T3 Talent Redesigns",
+		changes.addButton(new ChangeButton( new TalentIcon(Talent.PSIONIC_STRIDE), "T3 Talent Redesigns",
 				"I've made some pretty significant changes to three T3 talents that were either unpopular or too simplistic:\n\n" +
 				"_- Empowered Strike_ now gives a little less direct staff damage, but also boosts the staff's on-hit effect. This should make it more interesting while still encouraging staff melee play.\n" +
 				"_- Excess Charge_ now triggers when the Mage's staff is zapped at full charge, instead of on-hit, but the barrier effect is a bit stronger. This should encourage a mix of staff melee and zapping, instead of just pure melee at full charge.\n\n" +

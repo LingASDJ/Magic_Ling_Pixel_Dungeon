@@ -159,6 +159,8 @@ public class BuffIndicator extends Component {
 	public static final int PACMAN_GAME = 124;
 	public static final int BOX_GAME = 125;
 
+	public static final int DOUBLE_EXISTENCE = 137;
+
 
 	public static final int ALL_SEARCH = 144;
 	public static final int BASE_STATUS = 145;
