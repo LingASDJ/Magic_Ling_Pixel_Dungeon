@@ -179,11 +179,14 @@ public class WndRanking extends WndTabbed {
 		public StatsTab() {
 			super();
 
-			String name = Dungeon.hero.className();
+			String name = Dungeon.hero == null ? "" : Dungeon.hero.className();
 			IconTitle title = new IconTitle();
 			Image customAvatar = com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins.avatarFor(record.heroClass, record.skin);
 			title.icon(customAvatar != null ? customAvatar : HeroSprite.avatar(record.heroClass, record.armorTier));
-			if (Dungeon.hero.name().equals(Dungeon.hero.className())) {
+			if (Dungeon.hero == null) {
+				// 对局数据无法还原时显示错误占位，避免用 null hero 崩溃
+				title.label(Messages.get(WndRanking.class, "error"));
+			} else if (Dungeon.hero.name().equals(Dungeon.hero.className())) {
 				title.label(Messages.get(this, "title", Dungeon.hero.lvl, name).toUpperCase(Locale.ENGLISH));
 			} else {
 				String csname = Dungeon.hero.name() +

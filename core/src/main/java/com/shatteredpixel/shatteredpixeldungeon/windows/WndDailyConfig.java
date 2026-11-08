@@ -4,11 +4,13 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
-import com.shatteredpixel.shatteredpixeldungeon.multiplayer.WndMultiplayer;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.WndHeroClassSelect;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.DailyRankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -258,16 +260,16 @@ public class WndDailyConfig extends Window {
         add(leaderboard);
 
         StyledButton setName = new StyledButton(Chrome.Type.GREY_BUTTON_TR,
-                Messages.get(WndMultiplayer.class, "set_name"), 6) {
+                Messages.get(Mp.class, "set_name"), 6) {
             @Override
             protected void onClick() {
                 super.onClick();
                 ShatteredPixelDungeon.scene().addToFront(new WndTextInput(
-                        Messages.get(WndMultiplayer.class, "set_name"),
-                        Messages.get(WndMultiplayer.class, "name_prompt"),
+                        Messages.get(Mp.class, "set_name"),
+                        Messages.get(Mp.class, "name_prompt"),
                         Mp.get().getMyName(), 16, false,
-                        Messages.get(WndMultiplayer.class, "ok"),
-                        Messages.get(WndMultiplayer.class, "cancel")) {
+                        Messages.get(Mp.class, "ok"),
+                        Messages.get(Mp.class, "cancel")) {
                     @Override
                     public void onSelect(boolean positive, String text) {
                         if (positive && text != null && !text.trim().isEmpty()) {
@@ -319,7 +321,21 @@ public class WndDailyConfig extends Window {
 
     // ====================== 开始每日挑战 ======================
 
+    /**
+     * 点击开始后先弹出与联机一致的职业选择窗口，选定职业再进入每日挑战；
+     * 取消选择则回到本配置窗口。职业选择会写入 {@link GamesInProgress#selectedClass}，
+     * {@code Dungeon.init()} 用它创建英雄，不再依赖主界面当前选中的英雄。
+     */
     private void startDaily() {
+        ShatteredPixelDungeon.scene().addToFront(new WndHeroClassSelect(cls -> {
+            if (cls == null) return;   // 取消：保留每日配置窗口
+            beginDaily(cls);
+        }));
+    }
+
+    private void beginDaily(HeroClass cls) {
+        GamesInProgress.selectedClass = cls;
+
         long serverDay = DailyUtils.parseUtcDay(data.date);
         long last = SPDSettings.lastDaily();
         boolean isReplay = serverDay >= 0 ? last >= serverDay : diff > 0;

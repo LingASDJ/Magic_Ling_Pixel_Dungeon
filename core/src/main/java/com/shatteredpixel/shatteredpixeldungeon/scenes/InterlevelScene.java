@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -460,6 +461,7 @@ public class InterlevelScene extends PixelScene {
 		if (hero == null) {
 			Mob.clearHeldAllies();
 			Dungeon.init();
+			Mp.get().onHostSeedConsumed();   // 联机新房档：Dungeon.init 后立即复位一次性种子覆盖
 			GameLog.wipe();
 
 			Level level = Dungeon.newLevel();
