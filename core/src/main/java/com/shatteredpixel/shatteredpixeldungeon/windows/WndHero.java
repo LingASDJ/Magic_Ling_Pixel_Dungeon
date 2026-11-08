@@ -532,7 +532,10 @@ public class WndHero extends WndTabbed {
 		@Override
 		protected void createChildren() {
 			super.createChildren();
-			pane = new TalentsPane(TalentButton.Mode.UPGRADE);
+			// 查看自己时允许升级；查看远端玩家时只读，并展示对方的英雄档
+			TalentButton.Mode mode = (Dungeon.hero != null && hero == Dungeon.hero)
+					? TalentButton.Mode.UPGRADE : TalentButton.Mode.INFO;
+			pane = new TalentsPane(mode, hero);
 			add(pane);
 		}
 
