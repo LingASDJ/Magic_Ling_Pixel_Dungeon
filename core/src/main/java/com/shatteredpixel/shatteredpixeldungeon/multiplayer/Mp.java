@@ -13,7 +13,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.services.multiplayer.MultiplayerServiceImpl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
@@ -92,9 +91,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -401,9 +397,7 @@ public class Mp {
     private int lastSentPos = -1;
     private long lastSendTime = 0L;
     private long lastHeroSave = 0L;
-    private volatile long lastPingTime = 0L;
-    /** 独立心跳线程：不依赖渲染线程，切后台时仍保持 PING/PONG。 */
-    private volatile ScheduledExecutorService heartbeatExec;
+    private long lastPingTime = 0L;
     private long lastStatsTime = 0L;
     private long lastHeroInfoTime = 0L;
     private volatile boolean kickedByHost = false;
@@ -474,21 +468,6 @@ public class Mp {
     private volatile String roomCode = null;
     /** 房主设置的房间密码；空串=无密码（只影响之后加入的访客）。 */
     private volatile String roomPassword = "";
-    /** 访客断线/切后台回前台时用于自动重连的服务器/房间信息。 */
-    private volatile String reconnectAddress = null;
-    private volatile String reconnectRoom = null;
-    private volatile String reconnectPassword = "";
-    private volatile boolean reconnectAllowed = false;
-    private volatile long lastReconnectAttempt = 0L;
-    /** 房主控制断线后的 RESUME 信息（服务器宽限期内有效）。 */
-    private volatile String hostReconnectAddress = null;
-    private volatile String hostRoomCode = null;
-    private volatile String hostResumeToken = null;
-    private volatile boolean hostReconnectAllowed = false;
-    /** 当前 App 是否在后台（由 AndroidLauncher 通知）。 */
-    private volatile boolean appPaused = false;
-    /** 上一次通知平台的前台保活状态（避免每帧跨线程回调）。 */
-    private volatile boolean keepAliveActive = false;
     /** 服务器模式：大厅控制连接（房主）或等待配对连接（访客）。 */
     private volatile Socket lobbySocket;
     /** 房主控制连接的输出流（与心跳共用，避免并发写字节交错）。 */
@@ -652,7 +631,6 @@ public class Mp {
         role = Role.HOST;
         status = Messages.get(Mp.class, "status_hosting", port);
         running = true;
-        startHeartbeat();
         worker = new Thread(() -> {
             try {
                 // skipcq: JAVA-S1011  局域网游戏数据走明文 TCP，不传账号/敏感信息；TLS 会破坏联机协议兼容性
@@ -718,7 +696,6 @@ public class Mp {
         localAdmin = false;
         status = Messages.get(Mp.class, "status_connecting", address);
         running = true;
-        startHeartbeat();
         worker = new Thread(() -> {
             try {
                 String host = address.trim();
@@ -772,43 +749,10 @@ public class Mp {
         serverMode = true;
         serverAddress = host;
         roomCode = null;
-        hostReconnectAddress = raw;
-        hostRoomCode = null;
-        hostResumeToken = null;
-        hostReconnectAllowed = true;
         role = Role.HOST;
         running = true;
-        startHeartbeat();
         status = Messages.get(Mp.class, "status_server_creating");
         worker = new Thread(() -> runHostViaServer(host, port), "mp-lobby-host");
-        worker.setDaemon(true);
-        worker.start();
-    }
-
-    /** 房主控制断线后在服务器宽限期内 RESUME 原房间。 */
-    private synchronized void resumeHostViaServer(String address, String room,
-                                                   String token) {
-        final String raw = address == null ? "" : address.trim();
-        final String code = room == null ? "" : room.trim();
-        final String resumeToken = token == null ? "" : token.trim();
-        if (raw.isEmpty() || !code.matches("\\d{6}") || resumeToken.isEmpty()) return;
-        final String[] hp = parseServerAddress(raw, DEFAULT_PORT);
-        final String host = hp[0];
-        final int port = Integer.parseInt(hp[1]);
-        disconnect();
-        serverMode = true;
-        serverAddress = host;
-        roomCode = code;
-        hostReconnectAddress = raw;
-        hostRoomCode = code;
-        hostResumeToken = resumeToken;
-        hostReconnectAllowed = true;
-        role = Role.HOST;
-        running = true;
-        startHeartbeat();
-        status = Messages.get(Mp.class, "status_server_creating");
-        worker = new Thread(() -> runHostViaServer(host, port, code, resumeToken),
-                "mp-lobby-resume");
         worker.setDaemon(true);
         worker.start();
     }
@@ -850,14 +794,8 @@ public class Mp {
         serverAddress = host;
         roomCode = room;
         role = Role.CLIENT;
-        reconnectAddress = raw;
-        reconnectRoom = room;
-        reconnectPassword = pass;
-        reconnectAllowed = true;
-        lastReconnectAttempt = 0L;
         localAdmin = false;
         running = true;
-        startHeartbeat();
         status = Messages.get(Mp.class, "status_server_join", room);
         final String joinPassword = pass;
         worker = new Thread(() -> runJoinViaServer(host, port, room, joinPassword), "mp-lobby-join");
@@ -1713,7 +1651,6 @@ public class Mp {
     /** 房间场景每帧调用：房间状态补发 + 访客英雄同步 + PING 保活。 */
     public void tickRoom() {
         if (!serverMode) return;
-        updateKeepAliveState();
         if (role == Role.HOST) flushRoomStateIfNeeded();
         if (role == Role.CLIENT) {
             guestSyncHeroForRoom();
@@ -2258,12 +2195,6 @@ public class Mp {
 
     /** 房主侧：连接大厅、创建房间、接收 GUEST 并建立数据连接。 */
     private void runHostViaServer(String host, int port) {
-        runHostViaServer(host, port, null, null);
-    }
-
-    /** 房主侧：CREATE 新房间（resumeRoom=null）或 RESUME 宽限期内的旧房间。 */
-    private void runHostViaServer(String host, int port,
-                                  String resumeRoom, String resumeToken) {
         Socket control = null;
         try {
             control = new Socket();
@@ -2274,8 +2205,7 @@ public class Mp {
             lobbyOut = out;
             String name = getMyName().replace('\r', ' ').replace('\n', ' ').trim();
             if (name.isEmpty()) name = "host";
-            writeControlLine(out, resumeRoom == null ? "CREATE " + name
-                    : "RESUME " + resumeRoom + " " + resumeToken);
+            writeControlLine(out, "CREATE " + name);
             control.setSoTimeout(10000);
             String response = readControlLine(control.getInputStream());
             if (response == null) throw new IOException(Messages.get(Mp.class, "server_room_closed"));
@@ -2289,9 +2219,6 @@ public class Mp {
             }
             roomCode = parts[1];
             serverDataPort = Integer.parseInt(parts[2]);
-            hostRoomCode = parts[1];
-            hostResumeToken = parts.length >= 4 ? parts[3] : resumeToken;
-            hostReconnectAllowed = true;
             roomUiVersion.incrementAndGet();
             control.setSoTimeout(0);
             status = Messages.get(Mp.class, "status_server_room", roomCode);
@@ -2325,10 +2252,6 @@ public class Mp {
             if (running) {
                 String detail = (t.getMessage() != null && !t.getMessage().isEmpty())
                         ? t.getMessage() : t.getClass().getSimpleName();
-                if (detail.startsWith("ERR NOT_FOUND")
-                        || detail.startsWith("ERR ROOM_CLOSED")) {
-                    hostReconnectAllowed = false;
-                }
                 final String msg = detail.startsWith("ERR ")
                         ? serverErrorText(detail)
                         : Messages.get(Mp.class, "server_err_connect");
@@ -2648,9 +2571,6 @@ public class Mp {
             guestHeroUnreadable = false;
             worldSeed = Long.MIN_VALUE;
         }
-        stopHeartbeat();
-        keepAliveActive = false;
-        MultiplayerServiceImpl.updateKeepAlive(false);
         kickedByHost = false;
         lastPingTime = 0L;
         lastStatsTime = 0L;
@@ -4809,47 +4729,6 @@ public class Mp {
         }
     }
 
-    /** App 切后台：保留连接，由独立心跳线程继续维持 PING。 */
-    public void onAppPaused() {
-        appPaused = true;
-        if (role != Role.NONE) startHeartbeat();
-    }
-
-    /** App 回前台：立即补心跳；访客若已断线则尝试自动重连。 */
-    public void onAppResumed() {
-        appPaused = false;
-        lastPingTime = 0L;
-        if (role != Role.NONE && connected) {
-            startHeartbeat();
-            tickPing();
-            return;
-        }
-        long now = System.currentTimeMillis();
-        if (hostReconnectAllowed && hostRoomCode != null && hostResumeToken != null
-                && now - lastReconnectAttempt >= 10_000L) {
-            lastReconnectAttempt = now;
-            resumeHostViaServer(hostReconnectAddress, hostRoomCode, hostResumeToken);
-            return;
-        }
-        if (reconnectAllowed && reconnectRoom != null && reconnectAddress != null
-                && now - lastReconnectAttempt >= 10_000L) {
-            lastReconnectAttempt = now;
-            joinViaServer(reconnectAddress, reconnectRoom, reconnectPassword);
-        }
-    }
-
-    /** 玩家主动离开房间/大厅时清除自动重连信息。 */
-    public void clearReconnect() {
-        reconnectAllowed = false;
-        reconnectAddress = null;
-        reconnectRoom = null;
-        reconnectPassword = "";
-        hostReconnectAllowed = false;
-        hostReconnectAddress = null;
-        hostRoomCode = null;
-        hostResumeToken = null;
-    }
-
     /** 把当前访客英雄状态落盘（跨会话保留背包/血量/充能）；返回是否成功 */
     private synchronized boolean saveGuestHero() {
         if (!guestWorldActive || worldSeed == Long.MIN_VALUE) return false;
@@ -4917,7 +4796,6 @@ public class Mp {
      * @param gs 参数。
      */
     public void tick(GameScene gs) { // skipcq: JAVA-R1000 联机每帧主循环，复杂度高但已实测稳定
-        updateKeepAliveState();
         // 房主新建档首次进入 GameScene：立即落盘一次，房间里的存档从“新档”变成“已有档”。
         // 必须在 !connected 提前返回之前执行——房主可能没有访客，connected 仍为 false。
         if (role == Role.HOST) {
@@ -5127,43 +5005,8 @@ public class Mp {
         syncRemote(gs);
     }
 
-    /** 启动独立心跳线程（幂等）；后台/暂停时仍能保持连接。 */
-    private synchronized void startHeartbeat() {
-        if (heartbeatExec != null) return;
-        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor(r -> {
-            Thread t = new Thread(r, "mp-heartbeat");
-            t.setDaemon(true);
-            return t;
-        });
-        heartbeatExec = exec;
-        exec.scheduleWithFixedDelay(() -> {
-            try {
-                tickPing();
-            } catch (Throwable ignored) {
-                // 心跳线程不能因单次异常退出
-            }
-        }, 1, 1, TimeUnit.SECONDS);
-    }
-
-    /** 通知平台：是否需要在后台保持进程/网络（Android 前台服务）。 */
-    private void updateKeepAliveState() {
-        boolean active = isInRoom() || (connected && role != Role.NONE);
-        if (active != keepAliveActive) {
-            keepAliveActive = active;
-            MultiplayerServiceImpl.updateKeepAlive(active);
-        }
-    }
-
-    /** 停止独立心跳线程。 */
-    private synchronized void stopHeartbeat() {
-        ScheduledExecutorService exec = heartbeatExec;
-        heartbeatExec = null;
-        if (exec != null) exec.shutdownNow();
-    }
-
     /** 每 3 秒测一次延迟：房主测所有访客并广播 RTT_INFO；访客测房主。房间/对局共用。 */
-    private synchronized void tickPing() {
-        if (!running || role == Role.NONE) return;
+    private void tickPing() {
         long pingNow = System.currentTimeMillis();
         if (pingNow - lastPingTime <= 3000L) return;
         lastPingTime = pingNow;
@@ -5233,7 +5076,6 @@ public class Mp {
      * @param ts 参数。
      */
     public void tickTitle(TitleScene ts) {
-        updateKeepAliveState();
         if (!connected || lastScene == null) return;
         // 联机房间存在时，退出对局回房间而不是停在标题（兜底；正常路径在 WndGame 里已经处理）
         if (isInRoom()) {

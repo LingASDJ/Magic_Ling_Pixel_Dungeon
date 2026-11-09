@@ -39,12 +39,6 @@ public abstract class MultiplayerService {
 	/** GameScene.onPause 开头调用（保存访客英雄等） */
 	public abstract void onGamePause();
 
-	/** App 切到后台：保持连接并让独立心跳继续工作。 */
-	public abstract void onAppPaused();
-
-	/** App 回到前台：立即补一次心跳/检查连接。 */
-	public abstract void onAppResumed();
-
 	/** StartScene 用来拦截"联机中单独进游戏" */
 	public abstract boolean isClientConnected();
 }

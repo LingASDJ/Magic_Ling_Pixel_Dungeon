@@ -244,7 +244,6 @@ public class MpRoomScene extends PixelScene {
     }
 
     private void leaveRoom() {
-        Mp.get().clearReconnect();
         Mp.get().disconnect();
         ShatteredPixelDungeon.switchNoFade(MpLobbyScene.class);
     }
