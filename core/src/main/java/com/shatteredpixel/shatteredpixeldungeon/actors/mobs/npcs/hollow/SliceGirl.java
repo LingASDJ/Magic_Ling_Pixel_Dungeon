@@ -24,6 +24,8 @@ public class SliceGirl extends NTNPC {
     public boolean first=true;
     public boolean secnod=true;
     public boolean rd = true;
+    /** 29层告别对话已开始，精灵正在淡出；阻止重复对话 */
+    public boolean leaving = false;
 
     private static final String FIRST = "first";
     private static final String SECNOD = "secnod";
@@ -48,6 +50,13 @@ public class SliceGirl extends NTNPC {
     @Override
     protected boolean act() {
 
+        // rd=false 表示29层的告别剧情已经结束；旧存档可能只剩一个
+        // 没有精灵的残留 NPC，这里顺手清理掉，避免继续对话崩溃。
+        if (!rd || sprite == null || sprite.parent == null) {
+            destroy();
+            return true;
+        }
+
         throwItem();
 
         sprite.turnTo( pos, Dungeon.hero.pos );
@@ -62,6 +71,22 @@ public class SliceGirl extends NTNPC {
 
     @Override
     public boolean interact(Char c) {
+
+        // 兼容旧存档：29层告别后精灵已被移除，但 NPC 还留在 mobs 列表里。
+        // 此时再对话会在 SliceDogPlot 中访问已经脱离场景的 sprite.parent。
+        if (sprite == null || sprite.parent == null || !isAlive()) {
+            destroy();
+            return false;
+        }
+
+        if (!rd) {
+            destroy();
+            return false;
+        }
+
+        if (leaving) {
+            return false;
+        }
 
         sprite.turnTo(pos, Dungeon.hero.pos);
         SlicePlot plot = new SlicePlot();

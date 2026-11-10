@@ -1052,6 +1052,8 @@ public class SeedFindScene extends PixelScene {
         }
         SeedFinder.SeedFinding = false;
         SeedFinder.running = false;
+        // 查种结束/中断后复位一次性种子覆盖，防止空种子栏被最后一次测试的种子污染
+        Dungeon.overrideSeed = -1;
 
     }
 

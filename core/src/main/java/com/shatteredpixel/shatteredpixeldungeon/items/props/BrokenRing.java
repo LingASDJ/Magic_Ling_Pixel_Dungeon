@@ -48,6 +48,24 @@ public class BrokenRing extends Prop {
                 || item instanceof BrokenRingMiscBind;
     }
 
+    // 自动封锁：把装备从栏位卸下交给伴生物，但不消耗英雄的回合。
+    // 自动封锁发生在英雄行动流程中，若这里调用会 spend 的普通 doUnequip，
+    // 每次封锁都会白送敌人一回合，极端情况下会被连续攻击。
+    public static void unequipSilently(Hero hero, EquipableItem item) {
+        if (item == null) return;
+
+        float timeBefore = hero.cooldown();
+        boolean wasCursed = item.cursed;
+        item.cursed = false;
+        try {
+            item.doUnequip(hero, false, false);
+        } finally {
+            item.cursed = wasCursed;
+            // doUnequip(..., single=false) 只调用 hero.spend()，把这段时间补回来即可。
+            hero.spendConstant(timeBefore - hero.cooldown());
+        }
+    }
+
     // 玩家点“卸下以解除束缚”：本体收回背包；背包满了则掉在地上
     public static void releaseBind(Hero hero, Item bind) {
         Item real = takeBound(hero, bind);

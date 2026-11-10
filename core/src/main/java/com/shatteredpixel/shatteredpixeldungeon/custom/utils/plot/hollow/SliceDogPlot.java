@@ -90,11 +90,20 @@ public class SliceDogPlot extends Plot {
         diagulewindow.changeText(Messages.get(SliceDogPlot.class, "message3"));
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if (mob instanceof SliceGirl) {
+                ((SliceGirl) mob).leaving = true;
+                ((SliceGirl) mob).rd = false;
+                if (mob.sprite == null || mob.sprite.parent == null) {
+                    mob.destroy();
+                    continue;
+                }
                 ((SliceGirlSprite)mob.sprite).leapPrep(hero.pos+4);
                 mob.sprite.parent.add( new AlphaTweener( mob.sprite, 0, 3f ) {
                     @Override
                     protected void onComplete() {
                         mob.sprite.killAndErase();
+                        // 光杀掉精灵还不够：NPC 本身仍在 mobs 列表里，
+                        // 会留下一个看不见但能继续对话的“幽寂”，再次对话还会崩溃。
+                        mob.destroy();
                         hero.spendAndNext(1);
                         hero.sprite.operate(hero.pos);
                     }

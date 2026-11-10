@@ -1142,6 +1142,7 @@ public class Badges {
 		BOSS_SLAIN_3_BERSERKER,
 		BOSS_SLAIN_3_WARLOCK,
 		BOSS_SLAIN_3_BATTLEMAGE,
+		BOSS_SLAIN_3_OLD_BATTLEMAGE,
 		BOSS_SLAIN_3_FREERUNNER,
 		BOSS_SLAIN_3_ASSASSIN,
 		BOSS_SLAIN_3_SNIPER,
@@ -1456,6 +1457,8 @@ public class Badges {
 		thirdBossSubclassBadges.put(HeroSubClass.BERSERKER, Badge.BOSS_SLAIN_3_BERSERKER);
 		thirdBossSubclassBadges.put(HeroSubClass.GLADIATOR, Badge.BOSS_SLAIN_3_GLADIATOR);
 		thirdBossSubclassBadges.put(HeroSubClass.BATTLEMAGE, Badge.BOSS_SLAIN_3_BATTLEMAGE);
+		thirdBossSubclassBadges.put(HeroSubClass.OLDBATTLEMAGE, Badge.BOSS_SLAIN_3_OLD_BATTLEMAGE);
+
 		thirdBossSubclassBadges.put(HeroSubClass.WARLOCK, Badge.BOSS_SLAIN_3_WARLOCK);
 		thirdBossSubclassBadges.put(HeroSubClass.ASSASSIN, Badge.BOSS_SLAIN_3_ASSASSIN);
 		thirdBossSubclassBadges.put(HeroSubClass.FREERUNNER, Badge.BOSS_SLAIN_3_FREERUNNER);

@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 //铲子
@@ -111,6 +112,14 @@ public class Shovel extends MeleeWeapon{
             GLog.w(Messages.get(this,"fail_to_find_treasure_0"));
             return;
         }
+        // Pick a safe cell before spending charge. Never drop the chest onto a
+        // shop (FOR_SALE/FOR_ICE/FOR_RUSH) or another chest heap: changing that
+        // heap's type to CHEST would make the goods underneath free.
+        int chestCell = findChestCell(hero.pos);
+        if (chestCell == -1) {
+            GLog.w(Messages.get(this,"no_space"));
+            return;
+        }
         // 先扣充能：beforeAbilityUsed 会按 baseChargeUse 的返回值扣掉对应充能
         beforeAbilityUsed(hero, null);
         // 播放使用动作，并消耗一个回合
@@ -129,8 +138,8 @@ public class Shovel extends MeleeWeapon{
         // 生成一件宝箱物品
         Item reward = genChestItem(golden);
         GLog.b(Messages.get(this,"success_to_find_treasure"));
-        // 放到英雄脚下
-        Heap heap = Dungeon.level.drop(reward, hero.pos);
+        // 放到英雄脚下；若脚下是商店商品/已有宝箱，则放到附近的安全格
+        Heap heap = Dungeon.level.drop(reward, chestCell);
         // 决定箱子的皮肤与描述
         if (golden) {
             heap.type = Heap.Type.GOLDEN_CHEST;
@@ -148,6 +157,47 @@ public class Shovel extends MeleeWeapon{
     }
 
     // ========== 一些详细实现 ==========
+
+    // 找一个可以安全放置宝箱的格子：普通地面或普通物品堆，不能是商店商品、
+    // 已有宝箱等特殊堆，否则改堆类型会让下面的商品变成免费拾取。
+    private int findChestCell(int origin) {
+        if (canPlaceChest(origin)) {
+            return origin;
+        }
+
+        // 先找英雄周围 8 格，避免宝箱被放到远处
+        for (int i : PathFinder.NEIGHBOURS8) {
+            int cell = origin + i;
+            if (canPlaceChest(cell) && Actor.findChar(cell) == null) {
+                return cell;
+            }
+        }
+
+        // 邻格都被占用时，找最近的可用格
+        int best = -1;
+        int bestDist = Integer.MAX_VALUE;
+        for (int cell = 0; cell < Dungeon.level.length(); cell++) {
+            if (canPlaceChest(cell) && Actor.findChar(cell) == null) {
+                int dist = Dungeon.level.distance(origin, cell);
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    best = cell;
+                }
+            }
+        }
+        return best;
+    }
+
+    private boolean canPlaceChest(int cell) {
+        if (cell < 0 || cell >= Dungeon.level.length()) {
+            return false;
+        }
+        if (!Dungeon.level.passable[cell]) {
+            return false;
+        }
+        Heap heap = Dungeon.level.heaps.get(cell);
+        return heap == null || heap.type == Heap.Type.HEAP;
+    }
 
     // 加入贵重判定的物品生成，最终就用这个
     private Item genChestItem(boolean golden){

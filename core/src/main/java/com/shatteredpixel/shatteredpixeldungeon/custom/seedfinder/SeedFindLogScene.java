@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
@@ -38,6 +39,9 @@ public class SeedFindLogScene extends PixelScene {
 
     public static boolean powerMode = false;
     public static SeedResult lastResult = null;
+    /** 上一次成功查种结果的种子码，供复制按钮使用 */
+    public static String lastSeedCode = "";
+    private RedButton btnCopy;
     public static int searchedFloors = 15;
     /** 当前运行中的协调器（统一新版查种实现），供停止与进度轮询 */
     private static SeedFinderCoordinator legacyCoordinator = null;
@@ -89,6 +93,7 @@ public class SeedFindLogScene extends PixelScene {
         list = new ScrollPane(new Component());
         add(list);
         content = list.content();
+        addCopySeedButton();
 
         // 查找进行中：恢复显示状态
         if (thread != null && thread.isAlive()) {
@@ -101,6 +106,11 @@ public class SeedFindLogScene extends PixelScene {
             }
             list.setRect(0, 0, w, h);
             list.scrollTo(0, 0);
+
+            // 上一次结果仍可复制时启用复制按钮（按钮常驻，仅按可用性变暗）
+            if (lastSeedCode != null && !lastSeedCode.isEmpty()) {
+                btnCopy.enable(true);
+            }
 
             // 重建进度文本，避免静态引用失效
             if (r == null) {
@@ -115,6 +125,7 @@ public class SeedFindLogScene extends PixelScene {
         s = null;
         r = null;
         txt = null;
+        lastSeedCode = "";
 
         ShatteredPixelDungeon.scene().addToFront(wndTextInput = new WndTextInput(
                 Messages.get(this, "title"),
@@ -162,6 +173,7 @@ public class SeedFindLogScene extends PixelScene {
                     }
 
                     content.clear();
+                    lastSeedCode = "";
 
                     // 初始化进度文本，杜绝abc残留
                     r = PixelScene.renderTextBlock(Messages.get(SeedFinder.class, "seedfinder"), 7);
@@ -256,6 +268,8 @@ public class SeedFindLogScene extends PixelScene {
                                 } catch (Exception e) {
                                     resCode = finalRes.seedStr;
                                 }
+                                lastSeedCode = resCode;
+                                if (btnCopy != null) btnCopy.enable(true);
                                 msg.append(Messages.get(SeedFindLogScene.class, "found_seed"))
                                         .append(resCode).append(" (").append(finalRes.seedStr).append(")\n");
                                 msg.append(Messages.get(SeedFindLogScene.class, "code"))
@@ -274,10 +288,27 @@ public class SeedFindLogScene extends PixelScene {
                                 msg.append("\n").append(Messages.get(SeedFindLogScene.class, "scroll_full_log"));
 
                                 String winTitle = Messages.get(SeedFindLogScene.class, "window_title");
-                                ShatteredPixelDungeon.scene().addToFront(new WndError(Icons.CATALOG, winTitle, msg.toString()));
-                                SPDSettings.customSeed(finalRes.seedStr);
+                                WndError resultWindow = new WndError(Icons.CATALOG, winTitle, msg.toString());
+                                // 结果窗口自带一个“复制”按钮，避免结果窗口的遮罩挡住场景左上角按钮
+                                RedButton copyBtn = new RedButton(Messages.get(SeedFindScene.class, "copy_yes"), 8) {
+                                    @Override
+                                    protected void onClick() {
+                                        if (lastSeedCode != null && !lastSeedCode.isEmpty()) {
+                                            SPDSettings.customSeed(lastSeedCode);
+                                            if (parent instanceof Window) {
+                                                ((Window) parent).hide();
+                                            }
+                                        }
+                                    }
+                                };
+                                copyBtn.setRect(0, 0, 0, 18);
+                                resultWindow.addToBottom(copyBtn, 2, 2);
+                                ShatteredPixelDungeon.scene().addToFront(resultWindow);
+                                // 不自动写入自定义种子栏：查种只是查询，是否使用应由玩家决定。
                                 // 保存记录提示（旧版功能：成功查种后询问是否保存，最多 5 条）
                                 // promptSaveRecord(finalRes);
+                            } else {
+                                lastSeedCode = "";
                             }
                         });
                     });
@@ -344,6 +375,32 @@ public class SeedFindLogScene extends PixelScene {
 
         r.text(text);
         r.setPos(uiCamera.width / 3f, uiCamera.height / 3f);
+    }
+
+    /** 老查种界面的“复制种子码”按钮：只有玩家显式点击后才写入自定义种子栏 */
+    private void addCopySeedButton() {
+        btnCopy = new RedButton(Messages.get(SeedFindScene.class, "copy_yes"), 8) {
+            @Override
+            protected void onClick() {
+                if (lastSeedCode == null || lastSeedCode.isEmpty()) return;
+
+                addToFront(new WndOptions(Icons.get(Icons.RENAME_ON),
+                        Messages.get(SeedFindScene.class, "copy_title"),
+                        Messages.get(SeedFindScene.class, "copy_body"),
+                        Messages.get(SeedFindScene.class, "copy_yes"),
+                        Messages.get(SeedFindScene.class, "copy_no")) {
+                    @Override
+                    protected void onSelect(int index) {
+                        if (index == 0) {
+                            SPDSettings.customSeed(lastSeedCode);
+                        }
+                    }
+                });
+            }
+        };
+        addToFront(btnCopy);
+        btnCopy.setRect(0, 0, 44, 18);
+        btnCopy.enable(true);
     }
 
     /**

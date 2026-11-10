@@ -420,6 +420,9 @@ public class SeedFinder implements Runnable {
             Dungeon.depth = 0;
             Dungeon.branch = 0;
             Dungeon.level = null;
+            // 一次性种子覆盖必须在这里复位，否则查种结束后空种子栏会继续沿用
+            // 最后一次测试的固定种子。
+            Dungeon.overrideSeed = -1;
         }
     }
 
@@ -730,6 +733,9 @@ public class SeedFinder implements Runnable {
             addTextItems("【 " + Messages.get(SeedFinder.class, "others") +    " 】", others, builder);
             result.append(builder);
         }
+        // 日志生成期间同样使用了 overrideSeed，生成完毕后必须复位，
+        // 避免“只看种子日志”后新游戏空种子栏仍被固定种子覆盖。
+        Dungeon.overrideSeed = -1;
         return result.toString();
     }
 

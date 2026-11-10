@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder;
 
 import com.badlogic.gdx.Gdx;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -9,10 +10,13 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SeedFinderScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
@@ -31,6 +35,8 @@ public class SeedALRLogScene extends PixelScene {
     public Thread thread;
     public Component contentx;
     public WndTextInput wndTextInput;
+    private RedButton btnCopy;
+    private String lastSeedCode = "";
 
     @Override
     public void create() {
@@ -56,6 +62,8 @@ public class SeedALRLogScene extends PixelScene {
 
         contentx = list.content();
         contentx.clear();
+        lastSeedCode = "";
+        addCopySeedButton();
 
         ShatteredPixelDungeon.scene().addToFront( wndTextInput = new WndTextInput(Messages.get(this, "title"), Messages.get(this, "body"), Messages.get(this, "initial_value", SPDSettings.seedfinderFloors()), 1000, true, Messages.get(this, "clear"),null) {
             @Override
@@ -64,6 +72,11 @@ public class SeedALRLogScene extends PixelScene {
 
                     text = DungeonSeed.formatText(text);
                     long seed = DungeonSeed.convertFromText(text);
+                    if (seed >= 0) {
+                        lastSeedCode = DungeonSeed.convertToCode(seed);
+                    } else {
+                        lastSeedCode = "";
+                    }
 
                     contentx = list.content();
                     contentx.clear();
@@ -92,13 +105,13 @@ public class SeedALRLogScene extends PixelScene {
                                 list.setRect( 0, 0, w, h );
                                 list.scrollTo(0, 0);
                             }
+                            if (btnCopy != null) bringToFront(btnCopy);
 
                         });
                     });
                     thread.start();
-                    SPDSettings.customSeed(String.valueOf(seed));
                 } else {
-                    SPDSettings.customSeed("");
+                    lastSeedCode = "";
                     ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
                 }
             }
@@ -109,6 +122,7 @@ public class SeedALRLogScene extends PixelScene {
             protected void onClick() {
                 stop = true;
                 if (thread!= null && thread.isAlive())thread.interrupt();
+                Dungeon.overrideSeed = -1;
                 ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
                 System.gc();
             }
@@ -123,6 +137,7 @@ public class SeedALRLogScene extends PixelScene {
     protected void onBackPressed() {
         stop = true;
         if (thread != null && thread.isAlive()) thread.interrupt();
+        Dungeon.overrideSeed = -1;
         ShatteredPixelDungeon.switchScene(SeedFinderScene.class);
     }
 
@@ -130,7 +145,34 @@ public class SeedALRLogScene extends PixelScene {
     public void destroy() {
         stop = true;
         if (thread != null && thread.isAlive()) thread.interrupt();
+        Dungeon.overrideSeed = -1;
         super.destroy();
+    }
+
+    /** 复制当前查询到的种子码到自定义种子栏（需玩家显式确认） */
+    private void addCopySeedButton() {
+        btnCopy = new RedButton(Messages.get(SeedFindScene.class, "copy_yes"), 8) {
+            @Override
+            protected void onClick() {
+                if (lastSeedCode == null || lastSeedCode.isEmpty()) return;
+
+                addToFront(new WndOptions(Icons.get(Icons.RENAME_ON),
+                        Messages.get(SeedFindScene.class, "copy_title"),
+                        Messages.get(SeedFindScene.class, "copy_body"),
+                        Messages.get(SeedFindScene.class, "copy_yes"),
+                        Messages.get(SeedFindScene.class, "copy_no")) {
+                    @Override
+                    protected void onSelect(int index) {
+                        if (index == 0) {
+                            SPDSettings.customSeed(lastSeedCode);
+                        }
+                    }
+                });
+            }
+        };
+        addToFront(btnCopy);
+        btnCopy.setRect(0, 0, 44, 18);
+        btnCopy.enable(true);
     }
 
     public static class CreditsBlock extends Component {

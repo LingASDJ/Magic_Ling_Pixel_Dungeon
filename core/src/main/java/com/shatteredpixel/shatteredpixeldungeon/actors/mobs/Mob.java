@@ -556,8 +556,10 @@ public abstract class Mob extends Char {
 
 		viewDistance = (int) ((8 + ex2View) * exView);
 
-		if(hero.buff(ElectricalSmoke.SmokingAlloy.class) == null && buff(SmokeAlly.class) !=null ) {
-			buff(SmokeAlly.class).detach();
+		if(hero.buff(ElectricalSmoke.SmokingAlloy.class) == null) {
+			for (SmokeAlly ally : buffs(SmokeAlly.class)) {
+				ally.detach();
+			}
 		}
 
 		if(hero.buff(ElectricalSmoke.SmokingAlloy.class)!=null){

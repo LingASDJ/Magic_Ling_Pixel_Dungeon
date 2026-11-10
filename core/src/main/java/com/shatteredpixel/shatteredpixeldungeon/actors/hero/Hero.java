@@ -1460,10 +1460,7 @@ public class Hero extends Char {
 			// 通用栏位：只要不是伴生物就束缚（需识别所有伴生物，包括被放进通配栏位的戒指/神器伴生物）
 			if (belongings.misc() != null && !BrokenRing.isBind(belongings.misc())) {
 				KindofMisc misc = belongings.misc();
-				boolean wasCursed = misc.cursed;
-				misc.cursed = false;
-				misc.doUnequip(this, false);
-				misc.cursed = wasCursed;
+				BrokenRing.unequipSilently(hero, misc);
 				BrokenRingMiscBind bind = new BrokenRingMiscBind();
 				bind.mimic(misc);
 				belongings.misc = bind;
@@ -1472,10 +1469,7 @@ public class Hero extends Char {
 			if (HT * 0.6f >= HP) {
 				if (belongings.artifact() != null && !(belongings.artifact() instanceof BrokenRingArtifactBind)) {
 					Artifact artifact = belongings.artifact();
-					boolean wasCursed = artifact.cursed;
-					artifact.cursed = false;
-					artifact.doUnequip(this, false);
-					artifact.cursed = wasCursed;
+					BrokenRing.unequipSilently(hero, artifact);
 					BrokenRingArtifactBind bind = new BrokenRingArtifactBind();
 					bind.mimic(artifact);
 					belongings.artifact = bind;
@@ -1484,10 +1478,7 @@ public class Hero extends Char {
 			if (HT * 0.4f >= HP) {
 				if (belongings.ring() != null && !(belongings.ring() instanceof BrokenRingRingBind)) {
 					Ring ring = belongings.ring();
-					boolean wasCursed = ring.cursed;
-					ring.cursed = false;
-					ring.doUnequip(this, false);
-					ring.cursed = wasCursed;
+					BrokenRing.unequipSilently(hero, ring);
 					BrokenRingRingBind bind = new BrokenRingRingBind();
 					bind.mimic(ring);
 					belongings.ring = bind;
@@ -1496,10 +1487,7 @@ public class Hero extends Char {
 			if (HT * 0.2f >= HP) {
 				if (belongings.armor() != null && !(belongings.armor() instanceof BrokenRingArmorBind)) {
 					Armor armor = belongings.armor();
-					boolean wasCursed = armor.cursed;
-					armor.cursed = false;
-					armor.doUnequip(this, false);
-					armor.cursed = wasCursed;
+					BrokenRing.unequipSilently(hero, armor);
 					BrokenRingArmorBind bind = new BrokenRingArmorBind();
 					bind.mimic(armor);
 					belongings.armor = bind;

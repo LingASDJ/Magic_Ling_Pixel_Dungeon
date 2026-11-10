@@ -120,9 +120,13 @@ public class DogDogMusic extends FiveYearsNPC {
         }
 
         @Override
-        public boolean doEquip(Hero hero) {
-            Buff.affect(hero, CicreStats.class,12345678f);
-            return super.doEquip(hero);
+        public void activate(Char ch) {
+            super.activate(ch);
+            // 轻音铃铛的主手/副手装备都会走 activate；放到这里而不是 doEquip，
+            // 否则通过“副手装备”再切到主手时不会获得轻音律动。
+            if (ch instanceof Hero) {
+                Buff.affect(ch, CicreStats.class, 12345678f);
+            }
         }
 
         @Override
@@ -137,6 +141,10 @@ public class DogDogMusic extends FiveYearsNPC {
         @Override
         public int proc(Char attacker, Char defender, int damage) {
             CicreStats cicreStats = attacker.buff(CicreStats.class);
+            // 兜底：旧存档/异常路径下轻音律动可能缺失，确保铃铛实际攻击时一定生效
+            if (cicreStats == null && attacker instanceof Hero) {
+                cicreStats = Buff.affect(attacker, CicreStats.class, 12345678f);
+            }
 
             int dmg = Random.IntRange(1, 18 + (buffedLvl() * 3));
 

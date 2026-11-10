@@ -123,7 +123,7 @@ public class CapeOfThorns extends Artifact {
 					Buff.affect(hero,ThornsTime.class);
 					int[] color = {0x660000,0x00CC00,0xCCCC00,0xF78C6C,0x89DDFF,0x147DAD,0xC3E88D,0xEE9D22,0xBB50A8,0xFF0000};
 					if(charge >= 100){
-						GameScene.flash(0xFF0000,true);
+						GameScene.flash(0xAA0000,true);
 					} else if( charge >= 10){
 						GameScene.flash(color[charge/10],true);
 					}

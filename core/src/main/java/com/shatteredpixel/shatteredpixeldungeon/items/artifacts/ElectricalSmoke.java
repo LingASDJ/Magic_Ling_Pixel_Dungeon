@@ -254,9 +254,45 @@ public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
 
     @Override
     public boolean doUnequip(Hero hero,boolean collect, boolean single) {
-        if(hero.buff(Smoking.class)!=null) hero.buff(Smoking.class).detach();
-        if(!cursed && super.doUnequip(hero,collect,single)) hero.withElectricalSmoke = false;
-        return super.doUnequip(hero,collect,single);
+        // Detach the active smoking buff before the artifact passive is removed,
+        // otherwise Smoking.act can run with no SmokingAlloy buff and crash.
+        if (canUnequip(hero) && hero.buff(Smoking.class) != null) {
+            hero.buff(Smoking.class).detach();
+        }
+
+        // Only call the superclass once. Calling it twice spent two turns and
+        // could leave the artifact's passive buff in an inconsistent state.
+        boolean unequipped = super.doUnequip(hero, collect, single);
+        if (!unequipped) {
+            return false;
+        }
+
+        if(!cursed) hero.withElectricalSmoke = false;
+
+        // Immediately undo the pacifying effect instead of waiting for every
+        // animal to take its next turn. This also cleans up any SmokeAlly buff
+        // that was restored from a save after the vape had been removed.
+        clearSmokeAllies();
+
+        return true;
+    }
+
+    private void clearSmokeAllies() {
+        if (Dungeon.level == null || Dungeon.level.mobs == null) {
+            return;
+        }
+        for (Mob m : new ArrayList<>(Dungeon.level.mobs)) {
+            SmokeAlly ally = m.buff(SmokeAlly.class);
+            if (ally != null) {
+                ally.detach();
+            }
+        }
+    }
+
+    private boolean isEquippedInSlot() {
+        Hero hero = Dungeon.hero;
+        return hero != null
+                && (hero.belongings.artifact == this || hero.belongings.misc == this);
     }
 
     @Override
@@ -369,6 +405,15 @@ public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
 
         @Override
         public boolean act() {
+
+            // Safety net for old saves or any other path that removed the vape
+            // without detaching its passive buff. Without this the buff would
+            // keep reapplying SmokeAlly to every animal forever.
+            if (!isEquippedInSlot()) {
+                clearSmokeAllies();
+                detach();
+                return true;
+            }
 
             for(Mob m : Dungeon.level.mobs){
                 if(m.isAnimal){
