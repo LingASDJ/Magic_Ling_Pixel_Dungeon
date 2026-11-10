@@ -118,7 +118,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.MiniBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.SkyGooBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.spical.GalaxyKeyBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
@@ -1850,30 +1850,27 @@ public class GameScene extends PixelScene {
 
 				int points = Dungeon.hero.pointsInTalent(Talent.ROGUES_FORESIGHT);
 
-				int reqSecrets =
-						Dungeon.level.feeling == Level.Feeling.SECRETS ? 2 : 1;
-
-				ArrayList<Integer> secretDoors = new ArrayList<>();
+				ArrayList<Integer> hiddenRoomDoors = new ArrayList<>();
 
 				for (Room room : ((RegularLevel) Dungeon.level).rooms()) {
-					if (room instanceof SecretRoom) {
-						reqSecrets--;
+					if (!(room instanceof SpecialRoom)) {
+						continue;
+					}
 
-						Room.Door door = ((SecretRoom) room).entrance();
+					Room.Door door = ((SpecialRoom) room).entrance();
 
-						if (door != null && door.type == Room.Door.Type.HIDDEN) {
-							int cell = Dungeon.level.pointToCell(door);
+					if (door != null && door.type == Room.Door.Type.HIDDEN) {
+						int cell = Dungeon.level.pointToCell(door);
 
-							if (Dungeon.level.map[cell] == Terrain.SECRET_DOOR
-									&& !secretDoors.contains(cell)) {
-								secretDoors.add(cell);
-							}
+						if (Dungeon.level.map[cell] == Terrain.SECRET_DOOR
+								&& !hiddenRoomDoors.contains(cell)) {
+							hiddenRoomDoors.add(cell);
 						}
 					}
 				}
 
 				// 这个楼层确实存在密室时才处理。
-				if (reqSecrets <= 0 && !secretDoors.isEmpty()) {
+				if (!hiddenRoomDoors.isEmpty()) {
 
 					// 使用楼层种子，读档后不会重新抽取结果。
 					Random.pushGenerator(Dungeon.seedCurDepth());
@@ -1893,7 +1890,7 @@ public class GameScene extends PixelScene {
 							float revealChance = points >= 2 ? 0.5f : 0.25f;
 
 							if (Random.Float() < revealChance) {
-								int cell = Random.element(secretDoors);
+								int cell = Random.element(hiddenRoomDoors);
 								int oldValue = Dungeon.level.map[cell];
 
 								// 揭示秘密门，但不展示密室内部。

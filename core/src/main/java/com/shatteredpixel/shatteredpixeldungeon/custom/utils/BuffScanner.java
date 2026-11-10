@@ -297,6 +297,7 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.SliceDeadBless.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.AggressiveBarrierCooldown.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.BloodRiverDealy.class);
+        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.BloodlineBoonShield.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.BountyHunterTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.CachedRationsDropped.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.CombinedEnergyAbilityTracker.class);

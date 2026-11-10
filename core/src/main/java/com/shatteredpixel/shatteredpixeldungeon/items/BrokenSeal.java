@@ -215,6 +215,17 @@ public class BrokenSeal extends Item {
 
 		@Override
 		public synchronized boolean act() {
+			//血脉加护增加护盾回复量
+			Hero hero = (Hero) target;
+			int points = hero.pointsInTalent(Talent.BLOODLINE_BOON);
+
+			if (points > 0) {
+				int room = Math.max(0, maxShield() - shielding());
+				if (room > 0) {
+					incShield(Math.min(points, room));
+				}
+			}
+
 			if (shielding() < maxShield()) {
 				partialShield += 1/30f;
 			}

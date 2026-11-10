@@ -88,9 +88,9 @@ public enum Talent {
 	//Warrior T2
 	IRON_STOMACH(4), LIQUID_WILLPOWER(5), RUNIC_TRANSFERENCE(6), LETHAL_MOMENTUM(7), IMPROVISED_PROJECTILES(8),
 	//Warrior T3
-	HOLD_FAST(9, 3), STRONGMAN(10, 3),
+	HOLD_FAST(9, 3), BLOODLINE_BOON(177, 3),
 	//Berserker T3
-	ENDLESS_RAGE(11, 3), PAIN_SCAR(12, 3), FANATICISM_MAGIC(13, 3),
+	ENDLESS_RAGE(11, 3), PAIN_SCAR(12, 3), FANATICISM_MAGIC(13, 3),  STRONGMAN(10, 3),
 	//Gladiator T3
 	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), VENT_NOPLACE(16, 3),
 	//Heroic Leap T4
@@ -828,6 +828,12 @@ public enum Talent {
 			Buff.affect(hero, BrokenSeal.WarriorShield.class);
 		}
 
+		// 其他职业通过蜕变秘卷获得血脉加护时，附加独立的恢复护盾。
+		if (talent == BLOODLINE_BOON
+				&& hero.heroClass != HeroClass.WARRIOR) {
+			Buff.affect(hero, BloodlineBoonShield.class);
+		}
+
 		if (talent == VETERANS_INTUITION && hero.pointsInTalent(VETERANS_INTUITION) == 2){
 			if (hero.belongings.armor() != null && !ShardOfOblivion.passiveIDDisabled())  {
 				hero.belongings.armor.identify();
@@ -888,6 +894,50 @@ public enum Talent {
 				Dungeon.level.drop(toGive, hero.pos).sprite.drop();
 			}
 		}
+	}
+	//血脉加护护盾
+	public static class BloodlineBoonShield extends ShieldBuff {
+
+		@Override
+		public boolean act() {
+			Hero hero = (Hero) target;
+			int points = hero.pointsInTalent(BLOODLINE_BOON);
+
+			if (points <= 0) {
+				detach();
+				return true;
+			}
+
+			int cap = 2 + 2 * points; // 4 / 6 / 8
+
+			if (shielding() > cap) {
+				decShield(shielding() - cap);
+			}
+
+			if (shielding() < cap) {
+				incShield(1);
+			}
+
+			spend(TICK);
+			return true;
+		}
+
+		@Override
+		public int absorbDamage(int dmg) {
+			if (shielding() <= 0) {
+				return dmg;
+			}
+
+			if (shielding() >= dmg) {
+				decShield(dmg);
+				return 0;
+			}
+
+			int remaining = dmg - shielding();
+			decShield(shielding());
+			return remaining;
+		}
+
 	}
 
 	public static class CachedRationsDropped extends CounterBuff{{revivePersists = true;}};
@@ -1381,7 +1431,7 @@ public enum Talent {
 		//tier 3
 		switch (cls){
 			case WARRIOR: default:
-				Collections.addAll(tierTalents, HOLD_FAST, STRONGMAN);
+				Collections.addAll(tierTalents, HOLD_FAST, BLOODLINE_BOON);
 				break;
 			case MAGE:
 				Collections.addAll(tierTalents, DESPERATE_POWER, ALLY_WARP);
@@ -1424,7 +1474,7 @@ public enum Talent {
 		//tier 3
 		switch (cls){
 			case BERSERKER: default:
-				Collections.addAll(tierTalents, ENDLESS_RAGE, PAIN_SCAR, FANATICISM_MAGIC);
+				Collections.addAll(tierTalents, ENDLESS_RAGE, PAIN_SCAR, FANATICISM_MAGIC,STRONGMAN);
 				break;
 			case GLADIATOR:
 				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, VENT_NOPLACE);
