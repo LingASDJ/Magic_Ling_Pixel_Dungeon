@@ -54,10 +54,10 @@ public class MpLobbyScene extends PixelScene {
         int w = Camera.main.width;
         int h = Camera.main.height;
         margin = MpUi.i(6);
-        btnHeight = MpUi.i(24);
+        btnHeight = MpUi.i(64);
         gap = MpUi.i(4);
         rowHeight = MpUi.i(66);
-        listWidth = MpUi.px(220f);
+        listWidth = MpUi.px(280f);
 
         Archs archs = new Archs();
         archs.setSize(w, h);
@@ -74,7 +74,7 @@ public class MpLobbyScene extends PixelScene {
 
         nameText = PixelScene.renderTextBlock(MpUi.font(11));
         nameText.maxWidth(w - margin * 2);
-        nameText.setPos(margin, MpUi.px(30));
+        nameText.setPos(margin, MpUi.px(40));
         add(nameText);
 
         btnHost = new RedButton(Messages.get(MpLobbyScene.class, "host_room"), MpUi.font(11)) {

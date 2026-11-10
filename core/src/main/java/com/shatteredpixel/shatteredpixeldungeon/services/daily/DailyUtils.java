@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -62,8 +63,43 @@ public class DailyUtils {
      * remains authoritative for the actual daily date).
      */
     public static String todayUtc() {
+        return formatUtcDay(System.currentTimeMillis());
+    }
+
+    /** Formats a UTC timestamp as yyyy-MM-dd. */
+    public static String formatUtcDay(long millis) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return format.format(new Date());
+        return format.format(new Date(millis));
+    }
+
+    /**
+     * Shifts a yyyy-MM-dd UTC date by a number of days. Invalid input falls back
+     * to today's UTC date.
+     */
+    public static String shiftUtcDay(String date, int days) {
+        long day = parseUtcDay(date);
+        if (day < 0) {
+            day = parseUtcDay(todayUtc());
+        }
+        if (day < 0) {
+            return todayUtc();
+        }
+        return formatUtcDay(day + days * 86_400_000L);
+    }
+
+    /** Returns the Monday of the UTC week containing the given yyyy-MM-dd date. */
+    public static String startOfUtcWeek(String date) {
+        long day = parseUtcDay(date);
+        if (day < 0) {
+            day = parseUtcDay(todayUtc());
+        }
+        if (day < 0) {
+            return todayUtc();
+        }
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.ROOT);
+        calendar.setTimeInMillis(day);
+        int offset = (calendar.get(Calendar.DAY_OF_WEEK) + 5) % 7; // Monday = 0
+        return formatUtcDay(day - offset * 86_400_000L);
     }
 }
