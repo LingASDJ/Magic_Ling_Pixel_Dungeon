@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 public class WndHeroClassSelect extends Window {
 
     private static final int WIDTH = 150;
-    private static final int BTN_HEIGHT = 20;
+    private static final int BTN_HEIGHT = 32;
     private static final int GAP = 2;
 
     private final Consumer<HeroClass> onSelect;
@@ -35,20 +35,20 @@ public class WndHeroClassSelect extends Window {
 
         float pos = 0f;
 
-        float width = MpUi.px(WIDTH);
+        float width = 80;
         float btnHeight = MpUi.px(BTN_HEIGHT);
         float gap = MpUi.px(GAP);
 
-        RenderedTextBlock title = PixelScene.renderTextBlock(
-                Messages.get(WndHeroClassSelect.class, "title"), MpUi.font(9));
+        RenderedTextBlock title = PixelScene.renderTextBlock( 6);
         title.hardlight(TITLE_COLOR);
         title.setPos(0f, pos);
         title.maxWidth((int) width);
+        title.text( Messages.get(WndHeroClassSelect.class, "title"));
         add(title);
         pos = title.bottom() + MpUi.px(4f);
 
         for (HeroClass cls : HeroClass.values()) {
-            RedButton btn = new RedButton(Messages.titleCase(cls.title())) {
+            RedButton btn = new RedButton(Messages.titleCase(cls.title()),6) {
                 @Override
                 protected void onClick() {
                     // 法尔塔娅（剑士）是 v1.0.0 的预载资源：正式上线前不可选。

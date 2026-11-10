@@ -20,8 +20,19 @@ public class Smoking extends Buff {
     public boolean act(){
         spend(TICK);
 
-        if(Dungeon.hero.buff(ElectricalSmoke.SmokingAlloy.class).smoke != null && (Dungeon.hero.belongings.artifact == artifact || Dungeon.hero.belongings.misc == artifact)) {
-            artifact = Dungeon.hero.buff(ElectricalSmoke.SmokingAlloy.class).smoke;
+        ElectricalSmoke.SmokingAlloy alloy = Dungeon.hero.buff(ElectricalSmoke.SmokingAlloy.class);
+        if (alloy == null || alloy.smoke == null) {
+            detach();
+            return true;
+        }
+
+        if(Dungeon.hero.belongings.artifact == artifact || Dungeon.hero.belongings.misc == artifact) {
+            artifact = alloy.smoke;
+        }
+
+        if (artifact == null) {
+            detach();
+            return true;
         }
 
         Buff.affect(Dungeon.hero, Stamina.class,1f);

@@ -525,8 +525,17 @@ public class CelestialBrush extends Artifact implements Item.ThanksItem {
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
+
+        // Artifact.restoreFromBundle() clamps the saved charge using chargeCap at
+        // that moment, which is still the initial value (2) because the level has
+        // not been applied to our dynamic cap yet. Re-apply the real saved charge
+        // after computing the level-based cap, otherwise charge above 2 is lost.
         chargeCap = 2 + level();
-        if (charge > chargeCap) charge = chargeCap;
+        if (bundle.contains(CHARGE)) {
+            charge = Math.min(chargeCap, bundle.getInt(CHARGE));
+        }
         image();
     }
+
+    private static final String CHARGE = "charge";
 }

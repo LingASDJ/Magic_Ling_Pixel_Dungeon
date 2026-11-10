@@ -54,7 +54,6 @@ public class WndDailyConfig extends Window {
 
     private static final int COLOR_NORMAL = 0x2E8B57;
     private static final int COLOR_HARD = 0xC0392B;
-    private static final int COLOR_CHALLENGE = 0x3F5E8C;
 
     private final DailySeedData data;
     private final long diff;
@@ -135,15 +134,8 @@ public class WndDailyConfig extends Window {
                 hard ? COLOR_HARD : COLOR_NORMAL);
         add(diffBadge);
 
-        Badge challengeBadge = new Badge(
-                Messages.get(this, "challenges") + " · " + Messages.get(this, "count", data.challengeCount),
-                COLOR_CHALLENGE);
-        add(challengeBadge);
-
-        float badgeGroupW = diffBadge.width() + 3 + challengeBadge.width();
-        float badgeX = badgeGroupW <= innerW ? MARGIN + (innerW - badgeGroupW) / 2f : MARGIN;
+        float badgeX = MARGIN + (innerW - diffBadge.width()) / 2f;
         diffBadge.setPos(badgeX, pos);
-        challengeBadge.setPos(diffBadge.right() + 3, pos);
 
         pos += 14;
 

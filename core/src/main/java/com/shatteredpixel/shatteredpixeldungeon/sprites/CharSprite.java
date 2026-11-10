@@ -925,6 +925,11 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	public void kill() {
 		super.kill();
 
+		// Aura effects are not children of the sprite; they live in the scene's
+		// FX layer and are positioned at the sprite. If they are not cleared here
+		// they stay behind when the sprite is rebuilt (e.g. switching skins).
+		clearAura();
+
 		hideEmo();
 
 		for( State s : State.values()){

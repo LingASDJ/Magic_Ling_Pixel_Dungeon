@@ -76,7 +76,7 @@ public class WndScoreBreakdown extends Window {
             pos = statSlot(content, Messages.get(this, "win_multiplier"), Statistics.winMultiplier + "x", pos, false);
         }
 
-        if(Statistics.seedCustom){
+        if(Statistics.seedCustom && !Dungeon.daily){
             pos = statSlot(content, Messages.get(this, "seed_multiplier"), "0.5" + "x", pos, false);
         }
 
