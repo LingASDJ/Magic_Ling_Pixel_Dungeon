@@ -611,6 +611,7 @@ public class SpiritBow extends Weapon {
 			return terrain == Terrain.EMPTY
 					|| terrain == Terrain.EMPTY_DECO
 					|| terrain == Terrain.EMBERS
+					|| terrain == Terrain.GRASS
 					|| terrain == Terrain.HIGH_GRASS
 					|| terrain == Terrain.FURROWED_GRASS;
 		}
