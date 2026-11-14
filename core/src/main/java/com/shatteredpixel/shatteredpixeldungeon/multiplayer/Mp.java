@@ -64,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
+import com.shatteredpixel.shatteredpixeldungeon.utils.PreviewMode;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.ColorBlock;
@@ -3428,8 +3429,17 @@ public class Mp {
             if (heroBundle != guest) {
                 game.put("hero", heroBundle);            // 新格式：嵌套子 bundle 自带类名，直接放回
             } else {
-                Hero g = new Hero();                     // 旧格式平铺档：往返一次补类名（快捷栏物品位置可能丢一次）
-                g.restoreFromBundle(guest);
+                // 旧格式平铺档：往返一次补类名（快捷栏物品位置可能丢一次）。
+                // 只读恢复访客档，不能触发房主本机的徽章/技能按钮副作用。
+                // 这里可能运行在网络线程，只用按线程隔离的 PreviewMode，
+                // 不交换全局 Badges.local（避免与渲染线程的徽章更新竞争）。
+                Hero g = new Hero();
+                PreviewMode.begin();
+                try {
+                    g.restoreFromBundle(guest);
+                } finally {
+                    PreviewMode.end();
+                }
                 game.put("hero", g);
             }
 
@@ -3902,7 +3912,17 @@ public class Mp {
             }
             Bundle b = Bundle.read(new ByteArrayInputStream(data));
             Hero h = new Hero();
-            h.restoreFromBundle(b);
+            // 只读预览：恢复远端英雄会重走存储恢复流程，必须屏蔽
+            // 徽章解锁/全局皮肤/ActionIndicator 技能按钮/快捷栏等副作用，
+            // 否则查看队友详情会给自己发成就，且战士怒气按钮会指向无精灵的副本。
+            PreviewMode.begin();
+            Badges.beginPreview();
+            try {
+                h.restoreFromBundle(b);
+            } finally {
+                Badges.endPreview();
+                PreviewMode.end();
+            }
             GameScene.show(new WndHero(h));
         } catch (Throwable t) {
             status = Messages.get(Mp.class, "hero_info_failed", t.getMessage());
@@ -4263,8 +4283,15 @@ public class Mp {
             hero.put("pos", pos);
             world.put("hero", hero);
         } else {
+            // 只读恢复访客档，避免把访客物品当成本机拾取（徽章/天赋/快捷键）。
+            // 该路径可能运行在网络线程，只用按线程隔离的 PreviewMode。
             Hero h = new Hero();
-            h.restoreFromBundle(guest);
+            PreviewMode.begin();
+            try {
+                h.restoreFromBundle(guest);
+            } finally {
+                PreviewMode.end();
+            }
             h.pos = pos;
             world.put("hero", h);
         }
