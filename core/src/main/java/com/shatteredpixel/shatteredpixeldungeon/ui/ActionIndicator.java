@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.utils.PreviewMode;
 import com.watabou.input.GameAction;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Visual;
@@ -153,6 +154,9 @@ public class ActionIndicator extends Tag {
 
 	public static void setAction(Action action){
 		synchronized (ActionIndicator.class) {
+			// Restoring another player's hero re-runs buff restore code; its
+			// action buttons belong to that copy, never to the local HUD.
+			if (PreviewMode.active()) return;
 			ActionIndicator.action = action;
 			refresh();
 		}
@@ -164,6 +168,7 @@ public class ActionIndicator extends Tag {
 
 	public static void clearAction(Action action){
 		synchronized (ActionIndicator.class) {
+			if (PreviewMode.active()) return;
 			if (action == null || ActionIndicator.action == action) {
 				ActionIndicator.action = null;
 			}
@@ -172,6 +177,7 @@ public class ActionIndicator extends Tag {
 
 	public static void refresh(){
 		synchronized (ActionIndicator.class) {
+			if (PreviewMode.active()) return;
 			if (instance != null) {
 				instance.needsRefresh = true;
 			}

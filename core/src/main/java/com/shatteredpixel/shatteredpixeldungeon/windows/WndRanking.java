@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.Clipboard;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
@@ -41,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.CollectRankings;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
@@ -59,12 +61,14 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentsPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
+import com.shatteredpixel.shatteredpixeldungeon.utils.PreviewMode;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.DeviceCompat;
 
 import java.text.NumberFormat;
@@ -80,6 +84,22 @@ public class WndRanking extends WndTabbed {
 	private String gameID;
 	private Rankings.Record record;
 	Clipboard clipboard;
+
+	// 查看他人记录时，原版排行榜详情会把 Dungeon/Statistics/Badges.local
+	// 临时换成记录里的数据。窗口关闭时必须恢复本机会话状态，否则查看别人
+	// 的详情会污染自己的统计、徽章与当前对局状态。
+	private Hero savedHero;
+	private Bundle savedStats;
+	private int savedChallenges;
+	private Conducts.ConductStorage savedDlcs;
+	private int savedInitialVersion;
+	private long savedSeed;
+	private String savedCustomSeedText = "";
+	private boolean savedDaily;
+	private boolean savedDailyReplay;
+	private Level savedLevel;
+	private boolean previewOpen = false;
+	private boolean badgesPreviewOpen = false;
 	private String seedType(){
 		String seed;
 		if(Dungeon.isChallenged(MOREROOM)){
@@ -103,26 +123,95 @@ public class WndRanking extends WndTabbed {
 		this.gameID = rec.gameID;
 		this.record = rec;
 
+		// 记录里的英雄/统计/徽章是“展示数据”，不是本机状态。
+		// 快照本机会话，加载期间禁止徽章解锁与技能按钮副作用，
+		// 窗口销毁时再完整恢复（分数明细/复制种子在窗口打开期间仍读记录的
+		// 全局字段，所以不能提前恢复）。
+		saveSessionState();
+		PreviewMode.begin();
+		Badges.beginPreview();
+		previewOpen = true;
+		badgesPreviewOpen = true;
+
+		boolean created = false;
 		try {
-			Badges.loadGlobal();
-			Rankings.INSTANCE.loadGameData( rec );
-			// 每日/周榜详情：以服务器榜单记录的成绩为准，避免详情页重算
-			// 与列表行出现一分两值（旧记录/版本差异时尤其明显）。
-			if ( rec.authoritativeScore >= 0 ) {
-				rec.score = rec.authoritativeScore;
-				Statistics.totalScore = rec.authoritativeScore;
+			try {
+				Badges.loadGlobal();
+				Rankings.INSTANCE.loadGameData( rec );
+				// 每日/周榜详情：以服务器榜单记录的成绩为准，避免详情页重算
+				// 与列表行出现一分两值（旧记录/版本差异时尤其明显）。
+				if ( rec.authoritativeScore >= 0 ) {
+					rec.score = rec.authoritativeScore;
+					Statistics.totalScore = rec.authoritativeScore;
+				}
+				// Old daily snapshots have no badge bundle; rebuild the run's
+				// achievements from the snapshot statistics for the badges tab.
+				if ( rec.reconstructBadges ) {
+					Badges.reconstructLocalFromRecord( rec.depth, rec.win );
+				}
+				createControls();
+			} catch ( Exception e ) {
+				Game.reportException( new RuntimeException("Rankings Display Failed!",e));
+				Dungeon.hero = null;
+				createControls();
 			}
-			// Old daily snapshots have no badge bundle; rebuild the run's
-			// achievements from the snapshot statistics for the badges tab.
-			if ( rec.reconstructBadges ) {
-				Badges.reconstructLocalFromRecord( rec.depth, rec.win );
+			created = true;
+		} finally {
+			if (!created) {
+				endPreview();
 			}
-			createControls();
-		} catch ( Exception e ) {
-			Game.reportException( new RuntimeException("Rankings Display Failed!",e));
-			Dungeon.hero = null;
-			createControls();
 		}
+		// The badges tab is built in createControls(); from here on the local
+		// badge set is no longer needed, so put the player's own set back
+		// immediately (a lifecycle save must never capture the record's badges).
+		endBadgesPreview();
+	}
+
+	/** 保存加载记录前的本机会话状态。 */
+	private void saveSessionState() {
+		savedHero = Dungeon.hero;
+		savedStats = new Bundle();
+		Statistics.storeInBundle(savedStats);
+		savedChallenges = Dungeon.challenges;
+		savedDlcs = Dungeon.dlcs;
+		savedInitialVersion = Dungeon.initialVersion;
+		savedSeed = Dungeon.seed;
+		savedCustomSeedText = Dungeon.customSeedText;
+		savedDaily = Dungeon.daily;
+		savedDailyReplay = Dungeon.dailyReplay;
+		savedLevel = Dungeon.level;
+	}
+
+	/** 恢复查看记录前的本机会话状态。 */
+	private void restoreSessionState() {
+		Dungeon.hero = savedHero;
+		if (savedStats != null) {
+			Statistics.restoreFromBundle(savedStats);
+		}
+		Dungeon.challenges = savedChallenges;
+		Dungeon.dlcs = savedDlcs;
+		Dungeon.initialVersion = savedInitialVersion;
+		Dungeon.seed = savedSeed;
+		Dungeon.customSeedText = savedCustomSeedText;
+		Dungeon.daily = savedDaily;
+		Dungeon.dailyReplay = savedDailyReplay;
+		Dungeon.level = savedLevel;
+	}
+
+	/** 恢复本机徽章集合；重复调用安全。 */
+	private void endBadgesPreview() {
+		if (!badgesPreviewOpen) return;
+		badgesPreviewOpen = false;
+		Badges.endPreview();
+	}
+
+	/** 结束只读预览并恢复本机状态；重复调用安全。 */
+	private void endPreview() {
+		endBadgesPreview();
+		if (!previewOpen) return;
+		previewOpen = false;
+		PreviewMode.end();
+		restoreSessionState();
 	}
 
 	@Override
@@ -131,6 +220,7 @@ public class WndRanking extends WndTabbed {
 		if (INSTANCE == this){
 			INSTANCE = null;
 		}
+		endPreview();
 	}
 
 	private void createControls() {

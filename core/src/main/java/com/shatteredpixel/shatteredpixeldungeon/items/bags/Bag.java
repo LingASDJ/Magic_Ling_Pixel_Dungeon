@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.utils.PreviewMode;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuickBag;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -80,16 +81,21 @@ public class Bag extends Item implements Iterable<Item> {
 		grabItems(container);
 
 		//if there are any quickslot placeholders that match items in this bag, assign them
-		for (Item item : items) {
-			Dungeon.quickslot.replacePlaceholder(item);
+		//(never while previewing another player: those are not our items)
+		if (!PreviewMode.active()) {
+			for (Item item : items) {
+				Dungeon.quickslot.replacePlaceholder(item);
+			}
 		}
 
 		if (super.collect( container )) {
-			
+
 			owner = container.owner;
-			
-			Badges.validateAllBagsBought( this );
-			
+
+			if (!PreviewMode.active()) {
+				Badges.validateAllBagsBought( this );
+			}
+
 			return true;
 		} else {
 			return false;

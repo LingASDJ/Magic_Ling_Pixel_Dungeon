@@ -277,6 +277,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.utils.PreviewMode;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WinAllSearchStatus;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndIceTradeItem;
@@ -3407,8 +3408,8 @@ public class Hero extends Char {
 
 		heroClass = bundle.getEnum(CLASS, HeroClass.class);
 		subClass = bundle.getEnum(SUBCLASS, HeroSubClass.class);
-		// 恢复存档时保存的皮肤，覆盖全局设置
-		if (bundle.contains(SKIN)) {
+		// 恢复存档时保存的皮肤，覆盖全局设置；预览他人英雄/记录时不能改本机设置
+		if (bundle.contains(SKIN) && !PreviewMode.active()) {
 			SPDSettings.setHeroSkin(heroClass.ordinal(), bundle.getInt(SKIN));
 		}
 		armorAbility = (ArmorAbility) bundle.get(ABILITY);

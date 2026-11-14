@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.PreviewMode;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundlable;
@@ -354,7 +355,9 @@ public class Item implements Bundlable {
 				if (isSimilar( item )) {
 					item.merge( this );
 					item.updateQuickslot();
-					if (hero != null && hero.isAlive()) {
+					// 预览他人英雄时会重走物品恢复流程：不能把对方的物品
+					// 当成本机拾取（会解锁徽章/天赋/图鉴）。
+					if (!PreviewMode.active() && hero != null && hero.isAlive()) {
 						Badges.validateItemLevelAquired( this );
 						Talent.onItemCollected(hero, item);
 						if (isIdentified()) Catalog.setSeen(getClass());
@@ -381,14 +384,16 @@ public class Item implements Bundlable {
 			}
 		}
 
-		if (hero != null && hero.isAlive()) {
+		if (!PreviewMode.active() && hero != null && hero.isAlive()) {
 			Badges.validateItemLevelAquired( this );
 			Talent.onItemCollected( hero, this );
 			if (isIdentified()) Catalog.setSeen(getClass());
 		}
 
 		items.add( this );
-		Dungeon.quickslot.replacePlaceholder(this);
+		if (!PreviewMode.active()) {
+			Dungeon.quickslot.replacePlaceholder(this);
+		}
 		Collections.sort( items, itemComparator );
 		updateQuickslot();
 		return true;

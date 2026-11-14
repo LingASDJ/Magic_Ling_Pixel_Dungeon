@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.utils.PreviewMode;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
 
@@ -121,7 +122,36 @@ public class Badges {
 	// badges for display.
 	private static boolean silentValidation = false;
 
+	// Read-only display of another player's hero/record. While a preview is
+	// active the local badge set is swapped for a throwaway copy, and all
+	// global unlocks/banners are suppressed, so viewing someone else cannot
+	// change the local player's profile.
+	private static int previewDepth = 0;
+	private static HashSet<Badge> previewSavedLocal = null;
+
 	private static boolean saveNeeded = false;
+
+	/**
+	 * Starts a read-only preview: badges validated while it is active are
+	 * collected into a disposable copy of {@link #local} and never unlock
+	 * global badges. Must be paired with {@link #endPreview()}.
+	 */
+	public static void beginPreview() {
+		if (previewDepth++ == 0) {
+			previewSavedLocal = local;
+			local = new HashSet<>(local);
+		}
+	}
+
+	/** Ends a read-only preview and restores the player's own badge set. */
+	public static void endPreview() {
+		if (previewDepth > 0 && --previewDepth == 0) {
+			if (previewSavedLocal != null) {
+				local = previewSavedLocal;
+				previewSavedLocal = null;
+			}
+		}
+	}
 
 	public static void reset() {
 		local.clear();
@@ -144,6 +174,9 @@ public class Badges {
 	public static HashSet<Badge> restore( Bundle bundle ) {
 		HashSet<Badge> badges = new HashSet<>();
 		if (bundle == null) return badges;
+		// Empty bundles (e.g. an old daily snapshot replaced with an empty
+		// "badges" bundle for reconstruction) have no array key at all.
+		if (!bundle.contains( BADGES )) return badges;
 
 		String[] names = bundle.getStringArray( BADGES );
 		if (names == null) return badges;
@@ -706,7 +739,7 @@ public class Badges {
 	}
 
 	public static void unlock( Badge badge ){
-		if (silentValidation) return;
+		if (silentValidation || PreviewMode.active()) return;
 		if (!isUnlocked(badge)){
 			global.add( badge );
 			saveNeeded = true;
@@ -807,7 +840,7 @@ public class Badges {
 				break;
 		}
 		local.add( badge );
-		if (!global.contains( badge )) {
+		if (!silentValidation && !PreviewMode.active() && !global.contains( badge )) {
 			global.add( badge );
 			saveNeeded = true;
 		}
@@ -1343,7 +1376,7 @@ public class Badges {
 
 	private static void displayBadge( Badge badge ) {
 
-		if (silentValidation) {
+		if (silentValidation || PreviewMode.active()) {
 			return;
 		}
 
@@ -1387,7 +1420,7 @@ public class Badges {
 	}
 
 	public static void addGlobal( Badge badge ){
-		if (silentValidation) return;
+		if (silentValidation || PreviewMode.active()) return;
 		if (!global.contains(badge)){
 			global.add( badge );
 			saveNeeded = true;
