@@ -18,7 +18,7 @@ public class NecroArcherSprite extends MobSprite {
         idle = new Animation( 9, true );
         idle.frames( frames, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,3,4);
 
-        attack = new Animation( 12, false );
+        attack = new Animation( 20, false );
         attack.frames( frames, 5,6,7,8,0 );
 
         run = new Animation( 12, true );

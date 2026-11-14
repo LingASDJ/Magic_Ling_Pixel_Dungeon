@@ -507,6 +507,7 @@ public class Assets {
 		public static final String RAY      = "sounds/ray.mp3";
 		public static final String BEACON   = "sounds/beacon.mp3";
 		public static final String TELEPORT = "sounds/teleport.mp3";
+		public static final String ROAR = "sounds/monster_roar.mp3";
 
 		public static final String DOG_ANAGY = "sounds/dog_growl.ogg";
 
@@ -530,11 +531,12 @@ public class Assets {
 		public static final String SHEEP    = "sounds/sheep.mp3";
 		public static final String ANSDOSHIP    = "sounds/ansdoship.mp3";
 		public static final String MINE    = "sounds/mine.mp3";
+		public static final String SCREAM = "sounds/ghost_scream.mp3";
 
 		public static final String DOGWOOF    = "sounds/puppy_bark.ogg";
 
 		public static final String[] all = new String[]{
-				CLICK, BADGE, GOLD,
+				CLICK, BADGE, GOLD,ROAR,SCREAM,
 
 				OPEN, UNLOCK, ITEM, DEWDROP, STEP, WATER, GRASS, TRAMPLE, STURDY,
 
@@ -853,7 +855,7 @@ public class Assets {
 		public static final String WORM	= "sprites/tumulus/tomb_worm.png";
 		public static final String ROGER	= "sprites/tumulus/boss/roger.png";
 		public static final String LICH	= "sprites/tumulus/boss/lich.png";
-		public static final String WORM_WHYHUMAN	= "sprites/tumulus/worm_whyhuman.png";
+		public static final String WORM_WHYHUMAN	= "sprites/tumulus/cadaver.png";
 		public static final String WISP	= "sprites/tumulus/wisp.png";
 		public static final String NECRO_SCOUT	= "sprites/tumulus/necro_scout.png";
 		public static final String NECRO_PIONEER	= "sprites/tumulus/nec_striker.png";

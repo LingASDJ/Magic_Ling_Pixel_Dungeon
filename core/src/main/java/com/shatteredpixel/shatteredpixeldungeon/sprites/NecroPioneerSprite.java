@@ -18,10 +18,10 @@ public class NecroPioneerSprite extends MobSprite {
         run = new Animation( 12, true );
         run.frames( frames, 10,11,12,13,14,15,16);
 
-        attack = new Animation( 12, false );
+        attack = new Animation( 20, false );
         attack.frames( frames, 17,18,19,20,21);
 
-        zap = new Animation( 12, false );
+        zap = new Animation( 20, false );
         zap.frames( frames,  22,23,24,25,26);
 
         die = new Animation( 12, false );

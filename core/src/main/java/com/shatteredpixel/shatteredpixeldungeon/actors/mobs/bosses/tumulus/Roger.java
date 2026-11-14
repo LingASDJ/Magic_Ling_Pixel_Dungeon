@@ -473,7 +473,7 @@ public class Roger extends Boss {
         if (sprite != null) {
             sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.3f, 3);
         }
-        Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
+        Sample.INSTANCE.play(Assets.Sounds.ROAR);
     }
 
     /**
@@ -1030,13 +1030,13 @@ public class Roger extends Boss {
             PointF from = lineEnd(lockedCell, angle, -1f);
             PointF to = lineEnd(lockedCell, angle, 1f);
 
-            //斩击本体：更粗更亮的红色光束
+            //斩击本体：更粗更亮的蓝色光束
             for (int i = -3; i <= 3; i++) {
-                addBeamLayer(from, to, i * 2.2f, i == 0 ? 0xFFFFFF : 0xFF1010, 1.2f);
+                addBeamLayer(from, to, i * 2.2f, i == 0 ? 0xFFFFFF : 0x0FFFFF, 1.2f);
             }
 
             Camera.main.shake(2.2f, 0.35f);
-            Sample.INSTANCE.play(Assets.Sounds.SCAN, 1.4f);
+            Sample.INSTANCE.play(Assets.Sounds.HIT_SLASH, 1.4f);
 
             for (int cell : line) {
                 Char ch = Actor.findChar(cell);

@@ -20,14 +20,14 @@ public class AggregatusSprite extends MobSprite {
         run = new Animation( 10, true );
         run.frames( frames, 8, 9, 10, 11, 12, 13, 14 );
 
-        attack = new Animation( 14, false );
+        attack = new Animation( 16, false );
         attack.frames( frames, 15, 16, 17, 18 );
 
-        zap = new Animation( 14, false );
+        zap = new Animation( 16, false );
         zap.frames( frames, 15, 16, 17, 18 );
 
         die = new Animation( 14, false );
-        die.frames( frames, 19, 20, 21, 22 );
+        die.frames( frames, 19, 20, 21, 22, 23 );
 
         play( idle );
     }
@@ -42,7 +42,7 @@ public class AggregatusSprite extends MobSprite {
                 this,
                 cell,
                 () -> ((Aggregatus)ch).onZapComplete());
-        Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
+        Sample.INSTANCE.play( Assets.Sounds.SCREAM );
     }
 
     @Override

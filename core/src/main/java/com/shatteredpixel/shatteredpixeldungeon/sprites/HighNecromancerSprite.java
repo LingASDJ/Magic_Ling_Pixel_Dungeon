@@ -27,13 +27,13 @@ public class HighNecromancerSprite extends MobSprite {
         run = new Animation( 14, true );
         run.frames( film, 6,7,8,9,10,11,12,13 );
 
-        attack = new Animation( 14, false );
+        attack = new Animation( 20, false );
         attack.frames( film, 19,20,21,22,23 );
 
-        zap = new Animation( 14, false );
+        zap = new Animation( 20, false );
         zap.frames( film, 14,15,16,17,18 );
 
-        charging= new Animation( 14, true);
+        charging= new Animation( 20, true);
         charging.frames( film, 14,15,16,17,18 );
 
         die = new Animation( 14, false );

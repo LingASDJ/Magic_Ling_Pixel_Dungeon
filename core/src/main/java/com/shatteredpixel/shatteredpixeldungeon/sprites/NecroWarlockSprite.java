@@ -17,10 +17,10 @@ public class NecroWarlockSprite extends MobSprite {
         run = new Animation(14, true);
         run.frames(frames, 4,5,6,7,8,9,10,11);
 
-        attack = new Animation(14, false);
+        attack = new Animation(16, false);
         attack.frames(frames, 12,13,14,15);
 
-        zap = new Animation(14, false);
+        zap = new Animation(16, false);
         zap.frames(frames, 15, 16, 17, 18);
 
         die = new Animation(14, false);
