@@ -414,6 +414,7 @@ public class GameScene extends PixelScene {
 						String date = Dungeon.customSeedText;
 						DailyRankingsScene.date = date == null || date.isEmpty()
 								? DailyUtils.todayUtc() : date;
+						DailyRankingsScene.replayMode = false;
 						ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
 					}
 					return;

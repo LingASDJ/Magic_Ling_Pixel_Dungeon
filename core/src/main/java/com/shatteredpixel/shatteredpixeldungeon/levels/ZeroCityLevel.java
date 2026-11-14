@@ -544,7 +544,9 @@ public class ZeroCityLevel extends Level {
 
         PaswordBadges.loadGlobal();
 
-        if (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL) || DeviceCompat.isDesktop_Dev()) {
+        // 每日挑战禁用商人领主（罗恩）提供的特殊模式。
+        if (!Dungeon.daily
+                && (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL) || DeviceCompat.isDesktop_Dev())) {
             WaloKe npc14 = new WaloKe();
             npc14.pos = 479;
             mobs.add(npc14);

@@ -47,6 +47,7 @@ public class WndLeaderboardEntry extends Window {
 
         Bundle data;
         Bundle stats;
+        boolean reconstructBadges;
         try {
             data = Bundle.fromString(entry.gameData);
             if (data == null || data.isNull()) return null;
@@ -65,10 +66,18 @@ public class WndLeaderboardEntry extends Window {
             // is flat, so clone it as the stats bundle and add empty extras.
             stats = Bundle.fromString(data.toString());
             data.put("stats", stats);
-            data.put("badges", new Bundle());
+
+            // New daily snapshots carry the run's badges. Old snapshots do not,
+            // so the detail window reconstructs them from the statistics.
+            reconstructBadges = !(data.contains("badges")
+                    && data.getBundle("badges").contains("badges"));
+            if (reconstructBadges) {
+                data.put("badges", new Bundle());
+            }
+
             data.put("handlers", new Bundle());
             data.put("daily", true);
-            data.put("daily_replay", false);
+            data.put("daily_replay", entry.replay);
         } catch (Throwable t) {
             return null;
         }
@@ -81,6 +90,9 @@ public class WndLeaderboardEntry extends Window {
         rec.gameData = data;
         rec.win = entry.won;
         rec.score = entry.score;
+        // Keep the leaderboard row's score authoritative: the detail window
+        // must show exactly the same number as the list.
+        rec.authoritativeScore = entry.score;
         rec.heroClass = entry.heroClass == null ? HeroClass.WARRIOR : entry.heroClass;
         rec.armorTier = entry.armorTier;
         rec.herolevel = entry.heroLevel;
@@ -90,6 +102,7 @@ public class WndLeaderboardEntry extends Window {
         rec.date = date;
         rec.version = entry.version == null ? "" : entry.version;
         rec.gameID = (entry.playerId == null ? "" : entry.playerId) + "-" + date;
+        rec.reconstructBadges = reconstructBadges;
         return rec;
     }
 

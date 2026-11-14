@@ -34,6 +34,10 @@ public class GameRules {
      * BossRush模式
      */
     public static void BossRush() {
+        // 每日挑战禁用特殊模式（Boss Rush / 随机怪物 Rush）。
+        if (Dungeon.daily || Dungeon.dailyReplay) {
+            return;
+        }
         Game.runOnRenderThread(new Callback() {
             @Override
             public void call() {
@@ -131,6 +135,10 @@ public class GameRules {
      * RandMode模式
      */
     public static void RandMode() {
+        // 每日挑战禁用特殊模式（Boss Rush / 随机怪物 Rush）。
+        if (Dungeon.daily || Dungeon.dailyReplay) {
+            return;
+        }
         Game.runOnRenderThread(new Callback() {
             @Override
             public void call() {
