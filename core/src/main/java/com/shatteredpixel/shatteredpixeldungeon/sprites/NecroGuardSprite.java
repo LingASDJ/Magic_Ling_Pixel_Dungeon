@@ -18,7 +18,7 @@ public class NecroGuardSprite extends MobSprite {
         run = new Animation( 14, true );
         run.frames( frames, 6,7,8,9,10,11,12,13);
 
-        attack = new Animation( 14, false );
+        attack = new Animation( 16, false );
         attack.frames( frames, 14,15,16,17);
 
         die = new Animation( 14, false );

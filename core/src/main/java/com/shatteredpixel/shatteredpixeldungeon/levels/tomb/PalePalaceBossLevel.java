@@ -2,7 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.tomb;
 
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ENTRANCE;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EXIT;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -39,7 +39,7 @@ public class PalePalaceBossLevel extends Level {
     private static final int S = CHASM;
     private static final int W = SIGN;
     private static final int P = EMPTY_SP;
-    private static final int R = ENTRANCE;
+    private static final int R = EXIT	;
 
     private static final int[] code_map = {
             S, S, S, S, S, S, S, S, S, S, S, W, W, W, S, S, S, S, S, S, S, S, S, S, S,
@@ -55,7 +55,7 @@ public class PalePalaceBossLevel extends Level {
             S, S, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, S, S,
             S, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, S,
             S, W, W, W, W, W, W, W, W, W, W, W, P, W, W, W, W, W, W, W, W, W, W, W, S,
-            W, W, W, W, W, W, W, W, W, P, P, W, P, W, P, P, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, P, P, P, P, P, P, P, W, W, W, W, W, W, W, W, W,
             W, W, W, W, W, W, P, P, P, P, P, P, P, P, P, P, P, P, P, W, W, W, W, W, W,
             W, W, W, W, W, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, W, W, W, W, W,
             W, W, W, W, W, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, W, W, W, W, W,
@@ -80,11 +80,11 @@ public class PalePalaceBossLevel extends Level {
         setSize(WIDTH, HEIGHT);
         map = code_map.clone();
 
-        int enter = 712;
+        int enter = 462;
         LevelTransition entrance = new LevelTransition(this, enter, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(entrance);
 
-        int entra = 462;
+        int entra = 712;
         LevelTransition exit = new LevelTransition(this, entra, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(exit);
 

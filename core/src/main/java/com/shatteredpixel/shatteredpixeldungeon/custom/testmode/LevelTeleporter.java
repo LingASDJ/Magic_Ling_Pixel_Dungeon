@@ -406,7 +406,7 @@ public class LevelTeleporter extends TestItem {
     public static class DepthButton extends StyledButton{
         private int depth;
         public DepthButton(int depth){
-            super(Chrome.Type.GEM, String.valueOf(depth), 8);
+            super(Chrome.Type.TOAST, String.valueOf(depth), 8);
             this.depth = depth;
         }
 

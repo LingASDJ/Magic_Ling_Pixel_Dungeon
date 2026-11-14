@@ -18,7 +18,7 @@ public class WormSprite extends MobSprite {
         run = new Animation( 10, true );
         run.frames( frames, 7,8,9,10,11,12 );
 
-        attack = new Animation( 14, false );
+        attack = new Animation( 16, false );
         attack.frames( frames, 13,14,15,16);
 
         die = new Animation( 14, false );

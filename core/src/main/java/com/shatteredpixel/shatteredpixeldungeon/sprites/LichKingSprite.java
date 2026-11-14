@@ -25,13 +25,13 @@ public class LichKingSprite extends MobSprite {
         run = new Animation( 9, true );
         run.frames( frames, 6,7,8,9,10,11);
 
-        attack = new Animation( 11, false );
+        attack = new Animation( 20, false );
         attack.frames( frames, 12,13,14,15,16 );
 
         die = new Animation( 11, false );
         die.frames( frames, 22,23,24,25,26,27,28 );
 
-        zap= new Animation( 11, false );
+        zap= new Animation( 20, false );
         zap.frames( frames, 17,18,19,20,21);
 
         play( idle );

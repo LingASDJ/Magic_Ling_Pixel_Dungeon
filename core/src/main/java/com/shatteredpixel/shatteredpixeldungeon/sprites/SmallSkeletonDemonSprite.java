@@ -18,7 +18,7 @@ public class SmallSkeletonDemonSprite extends MobSprite {
         run = new Animation( 12, true );
         run.frames( frames,  15,16,17,18,19,20);
 
-        attack = new Animation( 12, false );
+        attack = new Animation( 16, false );
         attack.frames( frames, 21,22,23,24);
 
         die = new Animation( 24, false );
