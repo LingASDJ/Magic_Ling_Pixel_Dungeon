@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyImpl;
@@ -35,6 +36,9 @@ public class DailyRankingsScene extends PixelScene {
 
     public static String date = "";
 
+    /** true = 重玩榜（每名玩家每天最高分），false = 正常每日榜。 */
+    public static boolean replayMode = false;
+
     private static final int PAGE_SIZE = 20;
     private static final float ROW_HEIGHT = 16;
     private static final float MAX_ROW_WIDTH = 160;
@@ -52,6 +56,7 @@ public class DailyRankingsScene extends PixelScene {
     private IconButton refreshBtn;
     private IconButton exitBtn;
     private RedButton weeklyBtn;
+    private RedButton replayBtn;
 
     private int viewWidth;
     private int requestId = 0;
@@ -80,7 +85,8 @@ public class DailyRankingsScene extends PixelScene {
         archs.setSize(w, h);
         add(archs);
 
-        title = new IconTitle(Icons.CALENDAR.get(), Messages.get(this, "title"));
+        title = new IconTitle(Icons.CALENDAR.get(),
+                Messages.get(this, replayMode ? "replay_title" : "title"));
         title.setRect(0, 0, w, 0);
         title.setPos((w - title.reqWidth()) / 2f, 2);
         add(title);
@@ -94,6 +100,16 @@ public class DailyRankingsScene extends PixelScene {
         };
         weeklyBtn.setRect(4, 2, 42, 16);
         add(weeklyBtn);
+
+        replayBtn = new RedButton(Messages.get(this, replayMode ? "daily" : "replay"), 7) {
+            @Override
+            protected void onClick() {
+                replayMode = !replayMode;
+                ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
+            }
+        };
+        replayBtn.setRect(50, 2, 42, 16);
+        add(replayBtn);
 
         dateText = PixelScene.renderTextBlock(Messages.get(this, "date", date), 6);
         dateText.hardlight(0x888888);
@@ -163,13 +179,18 @@ public class DailyRankingsScene extends PixelScene {
                 loadPage();
             }
         };
-        refreshBtn.setRect(0, 2, 16, 16);
+        refreshBtn.setRect(96, 2, 16, 16);
         add(refreshBtn);
 
         exitBtn = new IconButton(Icons.get(Icons.EXIT)) {
             @Override
             protected void onClick() {
-                ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class);
+                if (replayMode) {
+                    replayMode = false;
+                    ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
+                } else {
+                    ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class);
+                }
             }
         };
         exitBtn.setRect(w - 20, 2, 16, 16);
@@ -180,7 +201,12 @@ public class DailyRankingsScene extends PixelScene {
 
     @Override
     public void onBackPressed() {
-        ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class);
+        if (replayMode) {
+            replayMode = false;
+            ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
+        } else {
+            ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class);
+        }
     }
 
     private void updateDateHeader() {
@@ -225,7 +251,7 @@ public class DailyRankingsScene extends PixelScene {
         prevBtn.visible = currentPage > 1;
         nextBtn.visible = currentPage < totalPage;
 
-        DailyImpl.getService().fetchLeaderboard(date, currentPage, PAGE_SIZE,
+        fetchPage(
                 new DailyService.DailyResultCallback<LeaderboardData>() {
                     @Override
                     public void onSuccess(LeaderboardData result) {
@@ -255,6 +281,14 @@ public class DailyRankingsScene extends PixelScene {
                         });
                     }
                 });
+    }
+
+    private void fetchPage(DailyService.DailyResultCallback<LeaderboardData> callback) {
+        if (replayMode) {
+            DailyImpl.getService().fetchReplayLeaderboard(date, currentPage, PAGE_SIZE, callback);
+        } else {
+            DailyImpl.getService().fetchLeaderboard(date, currentPage, PAGE_SIZE, callback);
+        }
     }
 
     private void applyResult(LeaderboardData result) {
@@ -317,6 +351,7 @@ public class DailyRankingsScene extends PixelScene {
         private BitmapText level;
         private ColorBlock background;
         private ColorBlock rankBg;
+        private Image medal;
         private Flare flare;
 
         Record(LeaderboardData.Entry entry) {
@@ -344,9 +379,9 @@ public class DailyRankingsScene extends PixelScene {
                 background.alpha(bgAlpha);
                 addToBack(background);
 
-                rankBg.visible = true;
-                rankBg.color(rankColor);
-                rankBg.alpha(0.95f);
+                // 前三名用金/银/铜奖牌作为名次底图，名次数字叠在奖牌上。
+                medal.visible = true;
+                medal.frame(16 * (entry.rank - 1), 0, 16, 16);
 
                 flare.visible = true;
                 flare.color(rankColor, true);
@@ -380,6 +415,7 @@ public class DailyRankingsScene extends PixelScene {
             } else {
                 color = entry.won ? 0xFFFF88 : 0xDDDDDD;
             }
+            // 前三名的数字叠在奖牌上，统一使用白色（与原样式一致）。
             position.hardlight(entry.rank <= 3 ? 0xFFFFFF : color);
             name.hardlight(color);
             score.hardlight(color);
@@ -400,6 +436,10 @@ public class DailyRankingsScene extends PixelScene {
             rankBg = new ColorBlock(0, 0, 0xFFFFFF);
             rankBg.visible = false;
             add(rankBg);
+
+            medal = new Image(Assets.Interfaces.RANKING_BADGES);
+            medal.visible = false;
+            add(medal);
 
             position = new BitmapText(PixelScene.pixelFont);
             add(position);
@@ -448,10 +488,12 @@ public class DailyRankingsScene extends PixelScene {
             position.y = centerY - position.height() / 2f + 1;
             PixelScene.align(position);
 
-            if (rankBg.visible) {
-                rankBg.x = x + 20;
-                rankBg.y = centerY - 7;
-                rankBg.size(14, 14);
+            if (medal.visible) {
+                // 奖牌 PNG 每格右侧有透明留白、圆章偏上，整体向右下微调，
+                // 使圆章中心与名次数字对齐。
+                medal.x = x + 21;
+                medal.y = centerY - 6;
+                PixelScene.align(medal);
             }
 
             if (flare.visible) {

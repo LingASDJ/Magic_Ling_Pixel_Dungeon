@@ -58,6 +58,8 @@ public class MpRoomScene extends PixelScene {
     private String lastSave = null;
     private float contentX;
     private float contentW;
+    /** 房间号文本的起始 y：竖屏时放到返回/聊天按钮下方，避免遮挡。 */
+    private float topTextY;
 
     @Override
     public void create() {
@@ -68,11 +70,12 @@ public class MpRoomScene extends PixelScene {
 
         int w = Camera.main.width;
         int h = Camera.main.height;
-        margin = MpUi.i(6);
+        margin = Math.max(1, Math.round(MpUi.sideMargin()));
         gap = MpUi.i(4);
         btnHeight = MpUi.i(30);
         rowHeight = MpUi.i(54);
-        contentWidth = MpUi.px(260f);
+        // 竖屏铺满屏幕宽度，横屏保持原设计宽度
+        contentWidth = MpUi.contentWidth(260f);
 
         Archs archs = new Archs();
         archs.setSize(w, h);
@@ -98,7 +101,11 @@ public class MpRoomScene extends PixelScene {
         btnChat.setRect(back.right() + 2f, 0f, 20f, 20f);
         add(btnChat);
 
-        contentW = Math.min(contentWidth, w - MpUi.px(24f));
+        // 竖屏缩放后房间号文本会变高，放到顶部按钮下方，避免遮住返回/聊天按钮；
+        // 横屏保持原来的 26 设计像素位置。
+        topTextY = Math.max(MpUi.px(26f), back.bottom() + MpUi.px(2f));
+
+        contentW = contentWidth;
         contentX = (w - contentW) / 2f;
 
         codeText = PixelScene.renderTextBlock(MpUi.font(14));
@@ -265,8 +272,8 @@ public class MpRoomScene extends PixelScene {
             codeText.text(Messages.get(MpRoomScene.class, "room_code", code));
         }
         // RenderedTextBlock 的 width 在首次 layout 后才有效；先 setPos 触发 layout 再居中
-        codeText.setPos(0, MpUi.px(26f));
-        codeText.setPos(contentX + (contentW - codeText.width()) / 2f, MpUi.px(26f));
+        codeText.setPos(0, topTextY);
+        codeText.setPos(contentX + (contentW - codeText.width()) / 2f, topTextY);
         align(codeText);
     }
 

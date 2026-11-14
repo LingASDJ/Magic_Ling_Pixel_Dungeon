@@ -595,8 +595,10 @@ public class NormalZeroFiveLevel extends Level {
         }
 
 
-        if (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL)
-                || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP()) {
+        // 每日挑战禁用商人领主（罗恩）提供的特殊模式。
+        if (!Dungeon.daily
+                && (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL)
+                || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP())) {
             WaloKe shopking = new WaloKe();
             shopking.pos = 545;
             mobs.add(shopking);

@@ -157,16 +157,6 @@ public class DailyServiceImpl extends DailyService {
             return;
         }
 
-        // Original SPD rule: replays are unranked and must not be submitted.
-        if (Dungeon.dailyReplay) {
-            try {
-                FileUtils.overwriteFile(Dungeon.TEMP_FILE, 1);
-            } catch (Throwable ignored) {
-            }
-            DailyConfig.restore();
-            return;
-        }
-
         String url = apiBase() + "/submit";
 
         try {
@@ -224,7 +214,8 @@ public class DailyServiceImpl extends DailyService {
             jsonWriter.set("seed", Long.toString(seed));
             jsonWriter.set("difficulty", difficulty);
             jsonWriter.set("challenges", challenges);
-            jsonWriter.set("replay", false);
+            // 重玩成绩不再丢弃：服务端会写入单独的重玩榜（每人每天最高分）。
+            jsonWriter.set("replay", Dungeon.dailyReplay);
             jsonWriter.set("gameData", gameData);
             jsonWriter.pop();
             jsonWriter.close();
@@ -247,8 +238,8 @@ public class DailyServiceImpl extends DailyService {
                             result.data = d;
                         }
                         if (result.code == 1001) {
-                            // Already submitted (or a replay was rejected): the
-                            // local temp snapshot is no longer useful.
+                            // Already submitted: the local temp snapshot is no
+                            // longer useful.
                             try {
                                 FileUtils.overwriteFile(Dungeon.TEMP_FILE, 1);
                             } catch (Throwable ignored) {
@@ -286,7 +277,27 @@ public class DailyServiceImpl extends DailyService {
     public void fetchLeaderboard(String date, int page, int pageSize,
                                  DailyResultCallback<LeaderboardData> callback) {
         String url = apiBase() + "/leaderboard?date=" + date + "&page=" + page + "&pageSize=" + pageSize;
+        fetchLeaderboardUrl(url, date, page, pageSize, callback);
+    }
 
+    @Override
+    public void fetchWeeklyLeaderboard(String weekStart, int page, int pageSize,
+                                       DailyResultCallback<LeaderboardData> callback) {
+        String url = apiBase() + "/weekly?weekStart=" + weekStart
+                + "&page=" + page + "&pageSize=" + pageSize;
+        fetchLeaderboardUrl(url, weekStart, page, pageSize, callback);
+    }
+
+    @Override
+    public void fetchReplayLeaderboard(String date, int page, int pageSize,
+                                       DailyResultCallback<LeaderboardData> callback) {
+        String url = apiBase() + "/replay?date=" + date
+                + "&page=" + page + "&pageSize=" + pageSize;
+        fetchLeaderboardUrl(url, date, page, pageSize, callback);
+    }
+
+    private void fetchLeaderboardUrl(String url, String fallbackDate, int page, int pageSize,
+                                     DailyResultCallback<LeaderboardData> callback) {
         httpGet(url, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
@@ -302,7 +313,9 @@ public class DailyServiceImpl extends DailyService {
                     result.data = new LeaderboardData.Data();
                     LeaderboardData.Data d = result.data;
 
-                    d.date = data.getString("date", date);
+                    d.date = data.getString("date", fallbackDate);
+                    d.weekStart = data.getString("weekStart", "");
+                    d.weekEnd = data.getString("weekEnd", "");
                     d.totalPlayers = data.getInt("totalPlayers", 0);
                     d.page = data.getInt("page", page);
                     d.pageSize = data.getInt("pageSize", pageSize);
@@ -315,7 +328,7 @@ public class DailyServiceImpl extends DailyService {
                         for (JsonValue entry : entries) {
                             LeaderboardData.Entry e = new LeaderboardData.Entry();
                             e.rank = entry.getInt("rank");
-                            e.date = entry.getString("date", date);
+                            e.date = entry.getString("date", fallbackDate);
                             e.playerId = entry.getString("playerId", "");
                             e.playerName = entry.getString("playerName", "");
                             try {
@@ -333,6 +346,12 @@ public class DailyServiceImpl extends DailyService {
                             e.difficulty = entry.getInt("difficulty", 1);
                             e.version = entry.getString("version", "");
                             e.gameData = entry.getString("gameData", "");
+                            e.replay = entry.getBoolean("replay",
+                                    entry.getBoolean("dailyReplay", false));
+                            e.runs = entry.getInt("runs", 0);
+                            e.gold = entry.getInt("gold", 0);
+                            e.silver = entry.getInt("silver", 0);
+                            e.bronze = entry.getInt("bronze", 0);
                             d.entries.add(e);
                         }
                     }

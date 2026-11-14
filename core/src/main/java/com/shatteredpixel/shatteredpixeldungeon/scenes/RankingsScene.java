@@ -48,7 +48,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndDailies;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndRanking;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats;
 import com.watabou.noosa.BitmapText;
@@ -148,29 +147,7 @@ public class RankingsScene extends PixelScene {
 		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
 		add( btnExit );
 
-		int left = 0;
-
-		if (Rankings.INSTANCE.latestDaily != null) {
-			IconButton btnDailies = new IconButton(Icons.CALENDAR.get()) {
-				@Override
-				protected void onClick() {
-					ShatteredPixelDungeon.scene().addToFront(new WndDailies());
-				}
-
-				@Override
-				protected void onPointerUp() {
-					icon.hardlight(0.5f, 1f, 2f);
-				}
-			};
-			btnDailies.icon().hardlight(0.5f, 1f, 2f);
-			btnDailies.setRect( left, 0, 16, 20 );
-			left += 16;
-			add(btnDailies);
-		}
-
-		if (Dungeon.daily){
-			addToFront(new WndDailies());
-		} else if (Badges.isUnlocked(Badges.Badge.VICTORY) && !SPDSettings.victoryNagged()) {
+		if (!Dungeon.daily && Badges.isUnlocked(Badges.Badge.VICTORY) && !SPDSettings.victoryNagged()) {
 			SPDSettings.victoryNagged(true);
 			add(new WndVictoryCongrats());
 		}
@@ -181,7 +158,7 @@ public class RankingsScene extends PixelScene {
 	@Override
 	public void destroy() {
 		super.destroy();
-		//so that opening daily records does not trigger WndDailies opening on future visits
+		// 离开记录界面时清掉每日标记。
 		Dungeon.daily = Dungeon.dailyReplay = false;
 	}
 

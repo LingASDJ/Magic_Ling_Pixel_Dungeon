@@ -231,6 +231,9 @@ public class Assets {
 		public static final String SGoo_Title  = "interfaces/bosslogo/skygoo-title.png";
 		public static final String SCORE_BAR   = "interfaces/scoreboard.png";
 
+		// 每日/周榜前三名奖牌（48x16，三等分：金/银/铜）
+		public static final String RANKING_BADGES = "interfaces/ranking_badges.png";
+
 		public static final String DIZF_Title  = "interfaces/bosslogo/dizzfar-title.png";
 		public static final String DIZF_Slain  = "interfaces/bosslogo/dizzfar-slain.png";
 

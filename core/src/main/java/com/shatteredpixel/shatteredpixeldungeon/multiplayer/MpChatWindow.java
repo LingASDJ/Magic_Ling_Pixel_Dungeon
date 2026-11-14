@@ -16,7 +16,6 @@ import com.watabou.input.PointerEvent;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextInput;
 import com.watabou.noosa.ui.Component;
-import com.watabou.utils.DeviceCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +29,8 @@ import java.util.List;
  */
 public class MpChatWindow extends Window {
 
-    /** 横屏窗口设计宽度。 */
+    /** 横屏窗口设计宽度；竖屏会自动铺满屏幕宽度。 */
     private static final float WIDTH_LANDSCAPE = 240f;
-    /** 竖屏窗口设计宽度。 */
-    private static final float WIDTH_PORTRAIT = 150f;
     /** 消息区设计高度。 */
     private static final float LIST_HEIGHT = 110f;
     /** 输入行设计高度。 */
@@ -81,7 +78,8 @@ public class MpChatWindow extends Window {
         super();
         this.onClose = onClose;
 
-        float width = MpUi.px(PixelScene.landscape() ? WIDTH_LANDSCAPE : WIDTH_PORTRAIT);
+        // 横屏保持设计宽度；竖屏铺满屏幕宽度（只留很小的两侧留白）
+        float width = MpUi.windowWidth(WIDTH_LANDSCAPE, chrome.marginHor());
         float margin = MpUi.px(MARGIN);
         float closeSize = MpUi.px(CLOSE_SIZE);
 
@@ -112,7 +110,8 @@ public class MpChatWindow extends Window {
 
         float rowY = listTop + listHeight + MpUi.px(4f);
         int textSize = Math.max(6, (int) PixelScene.uiCamera.zoom * MpUi.font(8));
-        input = new TextInput(Chrome.get(Chrome.Type.SCROLL), false, textSize) {
+        // 作者要求：聊天界面不要用 Scroll（卷轴）样式，输入框改用普通窗口样式。
+        input = new TextInput(Chrome.get(Chrome.Type.WINDOW), false, textSize) {
             @Override
             public void enterPressed() {
                 sendMessage();
@@ -159,16 +158,11 @@ public class MpChatWindow extends Window {
         sendBtn.setRect(margin + inputWidth + MpUi.px(4f), rowY,
                 MpUi.px(SEND_WIDTH), inputHeight);
 
+        // Window.resize 会把窗口居中到游戏画面正中央（局内/局外都适用）。
+        // 这里不再对 Android 做“贴顶”偏移，避免聊天窗口位置随屏幕比例变化而偏移。
         resize((int) Math.ceil(width),
                 (int) Math.ceil(rowY + inputHeight + margin));
-        if (DeviceCompat.isAndroid()) {
-            // 手机端软键盘会覆盖屏幕下半部分：把窗口贴到屏幕顶部，
-            // 避免像 WndTextInput 那样整体上移 45 像素后顶部跑出屏幕。
-            float top = camera.y / camera.zoom;
-            offset(0, Math.round(MpUi.px(2f) - top));
-            boundOffsetWithMargin(Math.max(1, MpUi.i(2f)));
-        }
-        // Window.resize/offset 会移动窗口内部 camera；输入框和滚动区需要按最终位置重排一次
+        // Window.resize 会移动窗口内部 camera；输入框和滚动区需要按最终位置重排一次
         list.setRect(margin, listTop, width - margin * 2, listHeight);
         input.setRect(margin, rowY, inputWidth, inputHeight);
         sendBtn.setRect(margin + inputWidth + MpUi.px(4f), rowY,

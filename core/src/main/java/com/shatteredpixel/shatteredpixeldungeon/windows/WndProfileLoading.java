@@ -17,13 +17,15 @@ public class WndProfileLoading extends Window {
     public WndProfileLoading() {
         super();
 
+        // 竖屏铺满屏幕宽度，横屏保持设计宽度
+        float width = MpUi.windowWidth(WIDTH, chrome.marginHor());
         RenderedTextBlock text = PixelScene.renderTextBlock(
                 Messages.get(WndProfileLoading.class, "text"), MpUi.font(8));
-        text.maxWidth(MpUi.i(WIDTH) - MpUi.i(MARGIN) * 2);
+        text.maxWidth((int) (width - MpUi.i(MARGIN) * 2));
         text.align(RenderedTextBlock.CENTER_ALIGN);
         text.setPos(MpUi.px(MARGIN), MpUi.px(MARGIN));
         add(text);
 
-        resize(MpUi.i(WIDTH), (int) Math.ceil(text.bottom() + MpUi.px(MARGIN)));
+        resize((int) Math.ceil(width), (int) Math.ceil(text.bottom() + MpUi.px(MARGIN)));
     }
 }

@@ -35,7 +35,9 @@ public class WndHeroClassSelect extends Window {
 
         float pos = 0f;
 
-        float width = 80;
+        // 竖屏铺满屏幕宽度，横屏保持设计宽度
+        // （作者最新版把宽度收窄到 80；本工程保留竖屏适配，按钮高度沿用作者的 32）
+        float width = MpUi.windowWidth(WIDTH, chrome.marginHor());
         float btnHeight = MpUi.px(BTN_HEIGHT);
         float gap = MpUi.px(GAP);
 
@@ -71,7 +73,7 @@ public class WndHeroClassSelect extends Window {
             pos += btnHeight + gap;
         }
 
-        resize((int) width, (int) (pos - gap));
+        resize((int) Math.ceil(width), (int) (pos - gap));
     }
 
     @Override

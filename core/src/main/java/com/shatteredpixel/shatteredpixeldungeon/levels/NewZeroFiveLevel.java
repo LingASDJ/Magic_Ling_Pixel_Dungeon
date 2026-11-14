@@ -408,8 +408,11 @@ public class NewZeroFiveLevel extends Level {
         lanFire.pos = 807;
         mobs.add(lanFire);
 
-        if (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL)
-                || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP()) {
+        // 每日挑战禁用商人领主（罗恩）：他会出售 Boss Rush / 随机怪物 Rush
+        // 两个特殊模式，不能计入每日排行榜。
+        if (!Dungeon.daily
+                && (Badges.isUnlocked(Badges.Badge.KILL_FIREGIRL)
+                || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP())) {
             WaloKe shopking = new WaloKe();
             shopking.pos = 545;
             mobs.add(shopking);

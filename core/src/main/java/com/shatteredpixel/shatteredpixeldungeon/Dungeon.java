@@ -1098,6 +1098,10 @@ public class Dungeon {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
 		Bundle snapshot = new Bundle();
 		snapshot.put(HERO, hero);
+		// 记录本局获得的徽章，排行榜详情页的“成就”页需要它。
+		Bundle badges = new Bundle();
+		Badges.saveLocal(badges);
+		snapshot.put("badges", badges);
 		Statistics.storeInBundle(snapshot);
 		Dungeon.dlcs.storeInBundle(snapshot);
 		snapshot.put(CHALLENGES, challenges);
