@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
@@ -260,6 +261,85 @@ public class WeeklyRankingsScene extends PixelScene {
         prevPageBtn.visible = false;
         nextPageBtn.visible = false;
 
+        // Prefer the server-side weekly board (one aggregated entry per
+        // player). Older deployments without /weekly fall back to fetching
+        // the seven daily boards and merging them locally.
+        fetchWeeklyPage(1, generation);
+    }
+
+    private void fetchWeeklyPage(final int page, final int generation) {
+        if (generation != fetchGeneration) return;
+
+        DailyImpl.getService().fetchWeeklyLeaderboard(weekStart, page, FETCH_PAGE_SIZE,
+                new DailyService.DailyResultCallback<LeaderboardData>() {
+                    @Override
+                    public void onSuccess(LeaderboardData result) {
+                        if (generation != fetchGeneration) return;
+
+                        if (result == null || result.data == null || result.data.entries == null) {
+                            startLegacyFetch(generation);
+                            return;
+                        }
+
+                        mergeWeekly(result.data.entries);
+
+                        int size = result.data.pageSize > 0
+                                ? result.data.pageSize : FETCH_PAGE_SIZE;
+                        if (page * size < result.data.totalPlayers
+                                && page < MAX_FETCH_PAGES) {
+                            fetchWeeklyPage(page + 1, generation);
+                            return;
+                        }
+                        finishFetch(generation);
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        if (generation == fetchGeneration) {
+                            startLegacyFetch(generation);
+                        }
+                    }
+                });
+    }
+
+    private void mergeWeekly(List<LeaderboardData.Entry> list) {
+        if (list == null) return;
+        for (LeaderboardData.Entry entry : list) {
+            if (entry == null) continue;
+            String key = weeklyKey(entry);
+            WeeklyEntry weekly = byPlayer.get(key);
+            if (weekly == null) {
+                weekly = new WeeklyEntry(entry);
+                byPlayer.put(key, weekly);
+                entries.add(weekly);
+            } else {
+                weekly.mergeBest(entry);
+            }
+            weekly.runs = Math.max(weekly.runs, entry.runs);
+            weekly.gold = Math.max(weekly.gold, entry.gold);
+            weekly.silver = Math.max(weekly.silver, entry.silver);
+            weekly.bronze = Math.max(weekly.bronze, entry.bronze);
+        }
+    }
+
+    private void startLegacyFetch(final int generation) {
+        if (generation != fetchGeneration) return;
+
+        entries.clear();
+        byPlayer.clear();
+        daysDone = 0;
+        daysFailed = 0;
+        loading = true;
+
+        statusText.visible = true;
+        statusText.text(Messages.get(this, "loading"));
+        pane.visible = false;
+        content.clear();
+        content.setRect(0, 0, Camera.main.width, 0);
+        pageText.text("");
+        prevPageBtn.visible = false;
+        nextPageBtn.visible = false;
+
         fetchDay(0, generation);
     }
 
@@ -373,23 +453,26 @@ public class WeeklyRankingsScene extends PixelScene {
         });
     }
 
+    private String weeklyKey(LeaderboardData.Entry entry) {
+        return entry.playerId != null && !entry.playerId.isEmpty()
+                ? "id:" + entry.playerId
+                : "name:" + (entry.playerName == null ? "" : entry.playerName)
+                + "|" + (entry.heroClass == null ? "" : entry.heroClass.name());
+    }
+
     private void merge(List<LeaderboardData.Entry> list, String day) {
         if (list == null) return;
         for (LeaderboardData.Entry entry : list) {
             if (entry == null) continue;
-            String key = entry.playerId != null && !entry.playerId.isEmpty()
-                    ? "id:" + entry.playerId
-                    : "name:" + (entry.playerName == null ? "" : entry.playerName)
-                    + "|" + (entry.heroClass == null ? "" : entry.heroClass.name());
+            String key = weeklyKey(entry);
 
             WeeklyEntry weekly = byPlayer.get(key);
             if (weekly == null) {
                 weekly = new WeeklyEntry(entry);
                 byPlayer.put(key, weekly);
                 entries.add(weekly);
-            } else if (entry.score > weekly.best.score
-                    || (entry.score == weekly.best.score && entry.depth > weekly.best.depth)) {
-                weekly.best = entry;
+            } else {
+                weekly.mergeBest(entry);
             }
 
             // 同一玩家同一天只算一把，避免分页重复计数
@@ -456,6 +539,13 @@ public class WeeklyRankingsScene extends PixelScene {
         WeeklyEntry(LeaderboardData.Entry entry) {
             best = entry;
         }
+
+        void mergeBest(LeaderboardData.Entry entry) {
+            if (entry.score > best.score
+                    || (entry.score == best.score && entry.depth > best.depth)) {
+                best = entry;
+            }
+        }
     }
 
     private class WeeklyRecord extends Button {
@@ -473,6 +563,7 @@ public class WeeklyRankingsScene extends PixelScene {
         private Image classIcon;
         private ColorBlock background;
         private ColorBlock rankBg;
+        private Image medal;
         private ColorBlock accent;
         private ColorBlock avatarBg;
         private ColorBlock scoreBg;
@@ -512,9 +603,9 @@ public class WeeklyRankingsScene extends PixelScene {
             accent.color(accentColor);
 
             if (podium) {
-                rankBg.visible = true;
-                rankBg.color(rankColor);
-                rankBg.alpha(0.95f);
+                // 前三名用金/银/铜奖牌作为名次底图，名次数字叠在奖牌上。
+                medal.visible = true;
+                medal.frame(16 * (rank - 1), 0, 16, 16);
                 flare.visible = true;
                 flare.color(rankColor, true);
                 flare.alpha(0.75f);
@@ -527,6 +618,7 @@ public class WeeklyRankingsScene extends PixelScene {
                     : rank == 2 ? 0xF5F8FF
                     : rank == 3 ? 0xFFD2A8
                     : 0xDDDDDD;
+            // 前三名的数字叠在奖牌上，统一使用白色（与原样式一致）。
             rankText.hardlight(rank <= 3 ? 0xFFFFFF : color);
             name.hardlight(color);
             score.hardlight(color);
@@ -577,6 +669,10 @@ public class WeeklyRankingsScene extends PixelScene {
             rankBg = new ColorBlock(0, 0, 0xFFFFFF);
             rankBg.visible = false;
             add(rankBg);
+
+            medal = new Image(Assets.Interfaces.RANKING_BADGES);
+            medal.visible = false;
+            add(medal);
 
             rankText = PixelScene.renderTextBlock(7);
             add(rankText);
@@ -640,12 +736,16 @@ public class WeeklyRankingsScene extends PixelScene {
             if (podium) {
                 float badge = 22;
                 rankW = badge;
-                rankBg.x = cardX + 7;
-                rankBg.y = centerY - badge / 2f;
-                rankBg.size(badge, badge);
-                rankText.setPos(rankBg.x + (badge - rankText.width()) / 2f,
+                rankText.setPos(cardX + 7 + (badge - rankText.width()) / 2f,
                         centerY - rankText.height() / 2f + 1);
-                flare.x = rankBg.x + badge / 2f;
+                if (medal.visible) {
+                    // 奖牌 PNG 每格右侧有透明留白、圆章偏上，整体向右下微调，
+                    // 使圆章中心与名次数字对齐。
+                    medal.x = cardX + 7 + (badge - medal.width()) / 2f + 2;
+                    medal.y = centerY - medal.height() / 2f + 3;
+                    PixelScene.align(medal);
+                }
+                flare.x = cardX + 7 + badge / 2f;
                 flare.y = centerY;
 
                 avatarBg.x = cardX + 36;

@@ -250,9 +250,12 @@ public class ZeroLevel extends Level {
     };
 
     protected void createMobs() {
-        WaloKe god1= new WaloKe();
-        god1.pos = 1202;
-        mobs.add(god1);
+        // 每日挑战禁用商人领主（罗恩）提供的特殊模式。
+        if (!Dungeon.daily) {
+            WaloKe god1= new WaloKe();
+            god1.pos = 1202;
+            mobs.add(god1);
+        }
 
         BzmdrLand god2= new BzmdrLand();
         god2.pos = 669;

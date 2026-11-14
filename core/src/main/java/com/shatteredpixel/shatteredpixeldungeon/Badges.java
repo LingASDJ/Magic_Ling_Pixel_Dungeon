@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
@@ -114,6 +115,11 @@ public class Badges {
 
 	public static HashSet<Badge> global;
 	private static HashSet<Badge> local = new HashSet<>();
+
+	// While true, badge validators only collect into `local`: no global
+	// unlocks, no banners, no log messages. Used when reconstructing a record's
+	// badges for display.
+	private static boolean silentValidation = false;
 
 	private static boolean saveNeeded = false;
 
@@ -700,6 +706,7 @@ public class Badges {
 	}
 
 	public static void unlock( Badge badge ){
+		if (silentValidation) return;
 		if (!isUnlocked(badge)){
 			global.add( badge );
 			saveNeeded = true;
@@ -1008,6 +1015,67 @@ public class Badges {
 		displayBadge( badge );
 	}
 
+	/**
+	 * Rebuilds the per-run badge set for old daily snapshots that did not store
+	 * badges. Only uses information present in the snapshot (hero, statistics,
+	 * items, depth, win flag). Never unlocks global badges or shows banners, so
+	 * viewing another player's record cannot change the local player's profile.
+	 */
+	public static void reconstructLocalFromRecord( int depth, boolean won ) {
+
+		silentValidation = true;
+		try {
+			try { validateLevelReached(); } catch (Throwable ignored) {}
+			try { validateMonstersSlain(); } catch (Throwable ignored) {}
+			try { validateGoldCollected(); } catch (Throwable ignored) {}
+			try { validateFoodEaten(); } catch (Throwable ignored) {}
+			try { validateStrengthAttained(); } catch (Throwable ignored) {}
+			try { validateItemsCrafted(); } catch (Throwable ignored) {}
+			try { validatePiranhasKilled(); } catch (Throwable ignored) {}
+			try { valiReadBooks(); } catch (Throwable ignored) {}
+			try { nyzvalidateGoldCollected(); } catch (Throwable ignored) {}
+			try { GhostDageCollected(); } catch (Throwable ignored) {}
+			try { validateAncityProgress(); } catch (Throwable ignored) {}
+			try { validateNoKilling(); } catch (Throwable ignored) {}
+			try { validateChampion(Challenges.activeChallenges()); } catch (Throwable ignored) {}
+
+			if (Dungeon.hero == null) return;
+
+			int reach = Math.max(depth, Statistics.deepestFloor);
+			if (reach >= 5) {
+				local.add(Badge.BOSS_SLAIN_1);
+				Badge classBadge = firstBossClassBadges.get(Dungeon.hero.heroClass);
+				if (classBadge != null) local.add(classBadge);
+			}
+			if (reach >= 10) local.add(Badge.BOSS_SLAIN_2);
+			if (reach >= 15) {
+				local.add(Badge.BOSS_SLAIN_3);
+				Badge subclassBadge = thirdBossSubclassBadges.get(Dungeon.hero.subClass);
+				if (subclassBadge != null) local.add(subclassBadge);
+			}
+			if (reach >= 20) local.add(Badge.BOSS_SLAIN_4);
+
+			if (won) {
+				local.add(Badge.VICTORY);
+				Badge victoryBadge = victoryClassBadges.get(Dungeon.hero.heroClass);
+				if (victoryBadge != null) local.add(victoryBadge);
+			}
+			if (Statistics.amuletObtained) {
+				local.add(Badge.HAPPY_END);
+			}
+
+			for (Item item : Dungeon.hero.belongings) {
+				if (item == null) continue;
+				try { validateItemLevelAquired(item); } catch (Throwable ignored) {}
+				if (item instanceof Bag) {
+					try { validateAllBagsBought(item); } catch (Throwable ignored) {}
+				}
+			}
+		} finally {
+			silentValidation = false;
+		}
+	}
+
 	public enum BadgeType {
 		HIDDEN, //internal badges used for data tracking
 		LOCAL,  //unlocked on a per-run basis and added to overall player profile
@@ -1275,6 +1343,10 @@ public class Badges {
 
 	private static void displayBadge( Badge badge ) {
 
+		if (silentValidation) {
+			return;
+		}
+
 		if (badge == null) {
 			return;
 		}
@@ -1315,6 +1387,7 @@ public class Badges {
 	}
 
 	public static void addGlobal( Badge badge ){
+		if (silentValidation) return;
 		if (!global.contains(badge)){
 			global.add( badge );
 			saveNeeded = true;

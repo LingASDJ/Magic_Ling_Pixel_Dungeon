@@ -10,6 +10,9 @@ public class LeaderboardData {
 
     public static class Data {
         public String date;
+        /** Weekly boards only: Monday/Sunday of the requested week. */
+        public String weekStart = "";
+        public String weekEnd = "";
         public int totalPlayers;
         public int page;
         public int pageSize;
@@ -35,6 +38,13 @@ public class LeaderboardData {
         public String version = "";
         /** Full daily-run snapshot JSON (rankings game-data format). */
         public String gameData = "";
+        /** Replay board entry marker. */
+        public boolean replay;
+        /** Weekly boards only: number of days played and podium finishes. */
+        public int runs;
+        public int gold;
+        public int silver;
+        public int bronze;
     }
 
     public boolean isSuccess() {

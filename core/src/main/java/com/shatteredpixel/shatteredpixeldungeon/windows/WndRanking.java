@@ -106,6 +106,17 @@ public class WndRanking extends WndTabbed {
 		try {
 			Badges.loadGlobal();
 			Rankings.INSTANCE.loadGameData( rec );
+			// 每日/周榜详情：以服务器榜单记录的成绩为准，避免详情页重算
+			// 与列表行出现一分两值（旧记录/版本差异时尤其明显）。
+			if ( rec.authoritativeScore >= 0 ) {
+				rec.score = rec.authoritativeScore;
+				Statistics.totalScore = rec.authoritativeScore;
+			}
+			// Old daily snapshots have no badge bundle; rebuild the run's
+			// achievements from the snapshot statistics for the badges tab.
+			if ( rec.reconstructBadges ) {
+				Badges.reconstructLocalFromRecord( rec.depth, rec.win );
+			}
 			createControls();
 		} catch ( Exception e ) {
 			Game.reportException( new RuntimeException("Rankings Display Failed!",e));
@@ -389,7 +400,9 @@ public class WndRanking extends WndTabbed {
 				Dungeon.hero.talents.remove(Dungeon.hero.talents.size()-1);
 			}
 
-			TalentsPane p = new TalentsPane(TalentButton.Mode.INFO);
+			// 使用排行榜记录英雄自身的等级/职业/护甲技能决定天赋层数，
+			// 不再依赖观看者本机的徽章进度（否则查看他人记录时只会显示第 1 层）。
+			TalentsPane p = new TalentsPane(TalentButton.Mode.INFO, Dungeon.hero);
 			add(p);
 			p.setPos(0, 0);
 			p.setSize(WIDTH, HEIGHT);

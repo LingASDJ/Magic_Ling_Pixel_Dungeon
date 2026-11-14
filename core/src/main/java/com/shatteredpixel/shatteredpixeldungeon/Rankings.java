@@ -55,7 +55,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
@@ -87,9 +86,6 @@ public enum Rankings {
     public static final String CUSTOM_SEED = "custom_seed";
     public static final String DAILY = "daily";
     public static final String DAILY_REPLAY = "daily_replay";
-    public static final String LATEST_DAILY = "latest_daily";
-    public static final String DAILY_HISTORY_DATES = "daily_history_dates";
-    public static final String DAILY_HISTORY_SCORES = "daily_history_scores";
     private static final Comparator<Record> scoreComparator = new Comparator<Rankings.Record>() {
         @Override
         public int compare( Record lhs, Record rhs ) {
@@ -112,9 +108,6 @@ public enum Rankings {
     //The number of runs which are only present locally, not in the cloud
     public int localTotal;
     public int localWon;
-    public Record latestDaily;
-    public Record latestDailyReplay = null; //not stored, only meant to be temp
-    public LinkedHashMap<Long, Integer> dailyScoreHistory = new LinkedHashMap<>();
 
     public void submit(boolean win, Object cause) {
 
@@ -163,22 +156,6 @@ public enum Rankings {
         } else {
             rec.gameID = UUID.randomUUID().toString();
         }
-
-//        if (rec.daily) {
-//            if (Dungeon.dailyReplay) {
-//                latestDailyReplay = rec;
-//                return;
-//            }
-//
-//            latestDaily = rec;
-//            if (Dungeon.seed <= DungeonSeed.TOTAL_SEEDS) {
-//                dailyScoreHistory.put(Dungeon.seed, rec.score);
-//            } else {
-//                dailyScoreHistory.put(Dungeon.seed - DungeonSeed.TOTAL_SEEDS, rec.score);
-//            }
-//            save();
-//            return;
-//        }
 
         records.add(rec);
 
@@ -394,10 +371,13 @@ public enum Rankings {
         Potion.restore(handler);
         Ring.restore(handler);
 
-        Badges.loadLocal(data.getBundle(BADGES));
-
         hero = (Hero) data.get(HERO);
         hero.belongings.identify();
+
+        // Load the record's badges after restoring the hero: restoring bags
+        // triggers validateAllBagsBought(), which would otherwise leave a lone
+        // "ALL_BAGS_BOUGHT" badge in an otherwise empty record.
+        Badges.loadLocal(data.getBundle(BADGES));
 
         Statistics.restoreFromBundle(data.getBundle(STATS));
 
@@ -408,11 +388,9 @@ public enum Rankings {
 
         Dungeon.initialVersion = data.getInt(GAME_VERSION);
 
-        if (Dungeon.initialVersion <= ShatteredPixelDungeon.v1_2_3) {
-            Statistics.gameWon = rec.win;
-        }
-        rec.score = calculateScore();
-
+        // 必须在 calculateScore() 之前恢复每日标记：每日挑战使用自定义种子，
+        // seedCustom 在统计中是 true；若此时 Dungeon.daily 仍为 false，
+        // 详情窗口会把每日成绩按 0.5 的种子惩罚重新计算成一半。
         if (rec.gameData.contains(SEED)) {
             Dungeon.seed = rec.gameData.getLong(SEED);
             Dungeon.customSeedText = rec.gameData.getString(CUSTOM_SEED);
@@ -423,6 +401,11 @@ public enum Rankings {
             Dungeon.customSeedText = "";
             Dungeon.daily = Dungeon.dailyReplay = false;
         }
+
+        if (Dungeon.initialVersion <= ShatteredPixelDungeon.v1_2_3) {
+            Statistics.gameWon = rec.win;
+        }
+        rec.score = calculateScore();
     }
     /**
      * 检查历史记录中是否存在指定职业和子职业的通关。
@@ -491,19 +474,6 @@ public enum Rankings {
         bundle.put(TOTAL, totalNumber);
         bundle.put(WON, wonNumber);
 
-        bundle.put(LATEST_DAILY, latestDaily);
-
-        long[] dates = new long[dailyScoreHistory.size()];
-        int[] scores = new int[dailyScoreHistory.size()];
-        int i = 0;
-        for (Long l : dailyScoreHistory.keySet()) {
-            dates[i] = l;
-            scores[i] = dailyScoreHistory.get(l);
-            i++;
-        }
-        bundle.put(DAILY_HISTORY_DATES, dates);
-        bundle.put(DAILY_HISTORY_SCORES, scores);
-
         try {
             FileUtils.bundleToFile(RANKINGS_FILE, bundle);
         } catch (IOException e) {
@@ -539,23 +509,6 @@ public enum Rankings {
                     if (rec.win) {
                         wonNumber++;
                     }
-                }
-            }
-
-            if (bundle.contains(LATEST_DAILY)) {
-                latestDaily = (Record) bundle.get(LATEST_DAILY);
-
-                dailyScoreHistory.clear();
-                int[] scores = bundle.getIntArray(DAILY_HISTORY_SCORES);
-                int i = 0;
-                long latestDate = 0;
-                for (long date : bundle.getLongArray(DAILY_HISTORY_DATES)) {
-                    dailyScoreHistory.put(date, scores[i]);
-                    if (date > latestDate) latestDate = date;
-                    i++;
-                }
-                if (latestDate > SPDSettings.lastDaily()) {
-                    SPDSettings.lastDaily(latestDate);
                 }
             }
 
@@ -596,6 +549,13 @@ public enum Rankings {
 
         //Note this is for summary purposes, visible score should be re-calculated from game data
         public int score;
+        // Daily/weekly leaderboard entries: the server-recorded score is
+        // authoritative and must match the row exactly. < 0 means unavailable
+        // (local ranking records keep the re-calculated score).
+        public int authoritativeScore = -1;
+        // Old daily snapshots have no badge bundle; the detail window rebuilds
+        // the per-run badges from the snapshot statistics instead.
+        public boolean reconstructBadges;
 
         public boolean SRushMode;
         public boolean SRandMode;
