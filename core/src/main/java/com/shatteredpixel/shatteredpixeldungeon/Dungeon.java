@@ -1097,12 +1097,18 @@ public class Dungeon {
 
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
 		Bundle snapshot = new Bundle();
+		// 每日成绩必须使用“每日”口径重新计算（不应用自定义种子 0.5 倍惩罚），
+		// 不能依赖 Dungeon.daily 在 Rankings.submit() 计算分数时仍为 true。
+		// 旧客户端在这里提交过一半的分数，服务端需要按组件重新校准。
+		Rankings.INSTANCE.calculateScore(true);
 		snapshot.put(HERO, hero);
 		// 记录本局获得的徽章，排行榜详情页的“成就”页需要它。
 		Bundle badges = new Bundle();
 		Badges.saveLocal(badges);
 		snapshot.put("badges", badges);
 		Statistics.storeInBundle(snapshot);
+		snapshot.put(DAILY, true);
+		snapshot.put(DAILY_REPLAY, dailyReplay);
 		Dungeon.dlcs.storeInBundle(snapshot);
 		snapshot.put(CHALLENGES, challenges);
 		snapshot.put("date", format.format(new Date(Game.realTime)));

@@ -194,6 +194,19 @@ public enum Rankings {
 
     //assumes a ranking is loaded, or game is ending
     public int calculateScore() {
+        return calculateScore(Dungeon.daily);
+    }
+
+    /**
+     * Calculates the run score.
+     *
+     * @param dailyRun true for a daily challenge run. The custom-seed 0.5x
+     *                 penalty must not apply to daily runs; passing it
+     *                 explicitly lets the daily snapshot force the correct
+     *                 formula even if {@code Dungeon.daily} was cleared by
+     *                 accident (old clients used to submit half scores).
+     */
+    public int calculateScore(boolean dailyRun) {
 
         if (Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3) {
             Statistics.progressScore = hero.lvl * Statistics.deepestFloor * 65;
@@ -256,7 +269,7 @@ public enum Rankings {
 
         Statistics.totalScore *= Statistics.winMultiplier * Statistics.chalMultiplier;
 
-        Statistics.totalScore *= Statistics.seedCustom && !Dungeon.daily ? 0.5f : 1;
+        Statistics.totalScore *= Statistics.seedCustom && !dailyRun ? 0.5f : 1;
 
         Statistics.totalScore *= DifficultyScore();
 

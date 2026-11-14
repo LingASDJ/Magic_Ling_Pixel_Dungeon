@@ -125,8 +125,101 @@ function extractGameInfo(gameData) {
   return result;
 }
 
+/**
+ * Recomputes the final daily score from the statistics components stored in a
+ * daily snapshot (Rankings.calculateScore() order, minus the custom-seed 0.5
+ * penalty which does not apply to daily runs).
+ *
+ * @param {string|object} gameData - Bundle.toString() JSON, or parsed object
+ * @param {number} difficulty - 2 = HARD (x2.5), 0 = EASY (x0.5), otherwise x1
+ * @returns {number} expected final score, or 0 when the snapshot has no
+ *                   score components (old/invalid data)
+ */
+function expectedDailyScore(gameData, difficulty) {
+  const bundle = parseBundle(gameData);
+
+  // Only trust a snapshot that carries the complete score component set.
+  // Old snapshots (pre-1.3 scoring, or truncated data) would otherwise be
+  // "recomputed" from zeros and could overwrite a correct stored score.
+  const REQUIRED = [
+    'prog_score', 'tres_score', 'expl_score', 'tot_boss', 'tot_quest',
+    'win_mult', 'chal_mult'
+  ];
+  for (const key of REQUIRED) {
+    if (bundle[key] == null) return 0;
+  }
+
+  const base = num(bundle.prog_score, 0)
+      + num(bundle.tres_score, 0)
+      + num(bundle.expl_score, 0)
+      + num(bundle.tot_boss, 0)
+      + num(bundle.tot_quest, 0);
+  if (base <= 0) return 0;
+
+  // The snapshot's conduct list is more reliable than the DB column for old
+  // rows; fall back to the server's daily difficulty when it is absent.
+  let diff = Number(difficulty) === 2 ? 2.5
+      : (Number(difficulty) === 0 ? 0.5 : 1);
+  if (Array.isArray(bundle.conduct)) {
+    const conduct = bundle.conduct.map(v => str(v).toUpperCase());
+    if (conduct.includes('HARD')) diff = 2.5;
+    else if (conduct.includes('EASY')) diff = 0.5;
+    else if (conduct.includes('NORMAL')) diff = 1;
+  }
+
+  // Mirror Rankings.calculateScore()'s int/float arithmetic exactly: the
+  // client uses 32-bit floats and truncates after every compound assignment,
+  // so using doubles + a single Math.round would be a few points off.
+  const f = Math.fround;
+  const win = f(num(bundle.win_mult, 1));
+  const chal = f(num(bundle.chal_mult, 1));
+
+  let score = base;
+  // totalScore *= winMultiplier * chalMultiplier;
+  score = Math.trunc(f(score * f(win * chal)));
+  // daily runs: no custom-seed 0.5x penalty
+  // totalScore *= DifficultyScore();
+  score = Math.trunc(f(score * f(diff)));
+
+  // int totalProps = (int)(badMultiplier + goodMultiplier);
+  const props = Math.trunc(f(f(num(bundle.bad_mult, 0)) + f(num(bundle.good_mult, 0))));
+  if (props !== 0) score *= props;
+
+  return Math.max(0, score);
+}
+
+/**
+ * Returns the authoritative daily score for a snapshot.
+ *
+ * The score components, multipliers and conduct stored in the snapshot are the
+ * source of truth, not the client-supplied `total_score`: old clients applied
+ * the 0.5 custom-seed penalty to daily runs (leaderboard showed half of the
+ * real score), and a stale/incorrect total must not survive on the board.
+ * When the snapshot does not carry a complete component set we keep the
+ * stored value (old data / unknown format).
+ *
+ * @param {number} storedScore
+ * @param {string|object} gameData
+ * @param {number} difficulty
+ * @returns {number} corrected score
+ */
+function reconcileDailyScore(storedScore, gameData, difficulty) {
+  const stored = Math.max(0, int(storedScore, 0));
+  const expected = expectedDailyScore(gameData, difficulty);
+  if (expected <= 0) return stored;
+
+  // Keep the client's exact integer when it already agrees with the formula
+  // (Java truncates each multiplication step, JS rounds once, so a few points
+  // of difference are expected).
+  const tolerance = Math.max(5, Math.round(expected * 0.002));
+  if (Math.abs(stored - expected) <= tolerance) return stored;
+  return expected;
+}
+
 module.exports = {
   parseBundle,
   extractGameInfo,
+  expectedDailyScore,
+  reconcileDailyScore,
   popcount
 };

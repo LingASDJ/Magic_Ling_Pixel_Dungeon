@@ -57,6 +57,33 @@ function getTodayString(date = new Date()) {
 }
 
 /**
+ * Shifts a yyyy-MM-dd UTC date by a number of days.
+ * Returns null for malformed dates.
+ * @param {string} dateStr
+ * @param {number} days
+ * @returns {string|null}
+ */
+function shiftUtcDay(dateStr, days) {
+  const day = parseUtcDay(dateStr);
+  if (day == null) return null;
+  return getTodayString(new Date(day + days * 86400000));
+}
+
+/**
+ * Returns the Monday (UTC) of the week containing the given yyyy-MM-dd date.
+ * Returns null for malformed dates.
+ * @param {string} dateStr
+ * @returns {string|null}
+ */
+function startOfUtcWeek(dateStr) {
+  const day = parseUtcDay(dateStr);
+  if (day == null) return null;
+  const dow = new Date(day).getUTCDay(); // 0 = Sunday
+  const offset = (dow + 6) % 7;          // Monday = 0
+  return getTodayString(new Date(day - offset * 86400000));
+}
+
+/**
  * Parses yyyy-MM-dd as a UTC day and returns its epoch milliseconds.
  * Returns null for malformed or impossible dates.
  * @param {string} dateStr
@@ -183,6 +210,8 @@ module.exports = {
   CHALLENGE_IDS,
   getTodayString,
   parseUtcDay,
+  shiftUtcDay,
+  startOfUtcWeek,
   generateLegacyDailySeed,
   generateDailySeedV2,
   generateDailySeed,
