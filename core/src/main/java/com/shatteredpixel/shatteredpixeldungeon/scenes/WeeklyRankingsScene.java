@@ -46,7 +46,11 @@ public class WeeklyRankingsScene extends PixelScene {
     private static final int MAX_FETCH_PAGES = 20;
     private static final float ROW_HEIGHT = 26;
     private static final float PODIUM_HEIGHT = 52;
-    private static final float MAX_ROW_WIDTH = 184;
+    private static final float ROW_GAP = 2;
+    private static final float ROW_MARGIN = 4;
+
+    /** 顶部按钮行高：标题必须从这一行下方开始，避免窄屏与按钮重叠。 */
+    private static final float TOP_BAR_BOTTOM = 20;
 
     private IconTitle title;
     private RenderedTextBlock rangeText;
@@ -97,9 +101,10 @@ public class WeeklyRankingsScene extends PixelScene {
         headerBg.alpha(0.45f);
         add(headerBg);
 
+        // 标题放在顶部按钮行下方，手机窄屏上不会与返回/刷新按钮重叠。
         title = new IconTitle(Icons.RANKINGS.get(), Messages.get(this, "title"));
         title.setRect(0, 0, w, 0);
-        title.setPos((w - title.reqWidth()) / 2f, 2);
+        title.setPos((w - title.reqWidth()) / 2f, TOP_BAR_BOTTOM);
         add(title);
 
         navBg = new ColorBlock(0, 0, 0x122333);
@@ -505,21 +510,30 @@ public class WeeklyRankingsScene extends PixelScene {
         pane.visible = true;
         content.clear();
         int width = Camera.main.width;
-        float rowWidth = Math.min(MAX_ROW_WIDTH, width - 8);
-        float left = (width - rowWidth) / 2f;
+        // 列表铺满可用宽度，手机端不再因固定窄宽度而显示不全。
+        float rowWidth = width - ROW_MARGIN * 2;
+        float left = ROW_MARGIN;
 
         int start = (currentPage - 1) * PAGE_SIZE;
         int end = Math.min(entries.size(), start + PAGE_SIZE);
         float y = 0;
         for (int i = start; i < end; i++) {
             WeeklyEntry entry = entries.get(i);
-            float rowH = currentPage == 1 && entry.rank <= 3 ? PODIUM_HEIGHT : ROW_HEIGHT;
+            float baseH = currentPage == 1 && entry.rank <= 3 ? PODIUM_HEIGHT : ROW_HEIGHT;
             WeeklyRecord row = new WeeklyRecord(entry);
-            row.setRect(left, y, rowWidth, rowH);
+            row.setRect(left, y, rowWidth, baseH);
+            float required = row.requiredHeight(baseH);
+            if (required > baseH) {
+                row.setRect(left, y, rowWidth, required);
+            }
             content.add(row);
-            y += rowH + 2;
+            y += row.height() + ROW_GAP;
         }
-        content.setRect(0, 0, width, y);
+        content.setRect(0, 0, width, Math.max(1, y));
+
+        // 每行 WeeklyRecord 都是 Button，会把自己的 hotArea 注册到指针监听队列前面；
+        // 重新提升 ScrollPane 控制器，保证在行上也能拖动滚动。
+        pane.refreshPointerPriority();
 
         pageText.text(Messages.get(this, "page", currentPage, totalPage));
         pageText.setPos(width / 2f - pageText.width() / 2f, pageText.top());
@@ -554,10 +568,8 @@ public class WeeklyRankingsScene extends PixelScene {
 
         private RenderedTextBlock rankText;
         private RenderedTextBlock name;
-        private RenderedTextBlock goldText;
-        private RenderedTextBlock silverText;
-        private RenderedTextBlock bronzeText;
-        private RenderedTextBlock runsText;
+        /** 副信息（金/银/铜次数 + 参赛天数）合成一行，窄屏自动换行。 */
+        private RenderedTextBlock meta;
         private BitmapText score;
         private RenderedTextBlock scoreBig;
         private Image classIcon;
@@ -576,23 +588,23 @@ public class WeeklyRankingsScene extends PixelScene {
             this.rank = weekly.rank;
             this.podium = rank <= 3;
 
-            int bgColor = 0x0B1622;
-            float bgAlpha = 0.45f;
-            int accentColor = 0x45637D;
+            int bgColor = 0x16232E;
+            float bgAlpha = 0.72f;
+            int accentColor = 0x4A6B88;
             int rankColor = 0;
             if (rank == 1) {
                 bgColor = 0xFFD166;
-                bgAlpha = 0.18f;
+                bgAlpha = 0.28f;
                 accentColor = 0xFFD700;
                 rankColor = 0xFFD700;
             } else if (rank == 2) {
                 bgColor = 0xD8DEE9;
-                bgAlpha = 0.15f;
+                bgAlpha = 0.22f;
                 accentColor = 0xC0C0C0;
                 rankColor = 0xC0C0C0;
             } else if (rank == 3) {
                 bgColor = 0xE09A5B;
-                bgAlpha = 0.17f;
+                bgAlpha = 0.25f;
                 accentColor = 0xCD7F32;
                 rankColor = 0xCD7F32;
             }
@@ -611,9 +623,9 @@ public class WeeklyRankingsScene extends PixelScene {
                 flare.alpha(0.75f);
             }
 
-            rankText.text(rank <= 3
-                    ? Integer.toString(rank)
-                    : Messages.get(WeeklyRankingsScene.this, "rank_n", rank));
+            // 名次列统一用数字，前三名数字叠在奖牌上；比“第 N 名”更省宽度，
+            // 手机端可以把更多空间留给玩家名字。
+            rankText.text(Integer.toString(rank));
             int color = rank == 1 ? 0xFFF0A0
                     : rank == 2 ? 0xF5F8FF
                     : rank == 3 ? 0xFFD2A8
@@ -623,10 +635,6 @@ public class WeeklyRankingsScene extends PixelScene {
             name.hardlight(color);
             score.hardlight(color);
             scoreBig.hardlight(color);
-            goldText.hardlight(0xFFD700);
-            silverText.hardlight(0xC0C0C0);
-            bronzeText.hardlight(0xCD7F32);
-            runsText.hardlight(0xAAAAAA);
 
             name.text(weekly.best.playerName == null ? "" : weekly.best.playerName);
             score.text(Integer.toString(weekly.best.score));
@@ -635,19 +643,26 @@ public class WeeklyRankingsScene extends PixelScene {
             score.visible = !podium;
             scoreBig.visible = podium;
 
-            goldText.visible = weekly.gold > 0;
-            silverText.visible = weekly.silver > 0;
-            bronzeText.visible = weekly.bronze > 0;
-            if (goldText.visible) {
-                goldText.text(Messages.get(WeeklyRankingsScene.this, "medal_gold", weekly.gold));
+            StringBuilder metaText = new StringBuilder();
+            if (weekly.gold > 0) {
+                metaText.append("<#FFD700>")
+                        .append(Messages.get(WeeklyRankingsScene.this, "medal_gold", weekly.gold))
+                        .append("<RGB> ");
             }
-            if (silverText.visible) {
-                silverText.text(Messages.get(WeeklyRankingsScene.this, "medal_silver", weekly.silver));
+            if (weekly.silver > 0) {
+                metaText.append("<#C0C0C0>")
+                        .append(Messages.get(WeeklyRankingsScene.this, "medal_silver", weekly.silver))
+                        .append("<RGB> ");
             }
-            if (bronzeText.visible) {
-                bronzeText.text(Messages.get(WeeklyRankingsScene.this, "medal_bronze", weekly.bronze));
+            if (weekly.bronze > 0) {
+                metaText.append("<#CD7F32>")
+                        .append(Messages.get(WeeklyRankingsScene.this, "medal_bronze", weekly.bronze))
+                        .append("<RGB> ");
             }
-            runsText.text(Messages.get(WeeklyRankingsScene.this, "runs_week", weekly.runs));
+            metaText.append("<#AAAAAA>")
+                    .append(Messages.get(WeeklyRankingsScene.this, "runs_week", weekly.runs))
+                    .append("<RGB>");
+            meta.text(metaText.toString());
 
             HeroClass cls = weekly.best.heroClass == null
                     ? HeroClass.WARRIOR : weekly.best.heroClass;
@@ -687,23 +702,11 @@ public class WeeklyRankingsScene extends PixelScene {
             name = PixelScene.renderTextBlock(7);
             add(name);
 
-            goldText = PixelScene.renderTextBlock(6);
-            goldText.visible = false;
-            add(goldText);
+            meta = PixelScene.renderTextBlock(6);
+            add(meta);
 
-            silverText = PixelScene.renderTextBlock(6);
-            silverText.visible = false;
-            add(silverText);
-
-            bronzeText = PixelScene.renderTextBlock(6);
-            bronzeText.visible = false;
-            add(bronzeText);
-
-            runsText = PixelScene.renderTextBlock(6);
-            add(runsText);
-
-            scoreBg = new ColorBlock(0, 0, 0x142333);
-            scoreBg.alpha(0.9f);
+            scoreBg = new ColorBlock(0, 0, 0x1B2C3B);
+            scoreBg.alpha(0.95f);
             add(scoreBg);
 
             score = new BitmapText(PixelScene.pixelFont);
@@ -783,36 +786,26 @@ public class WeeklyRankingsScene extends PixelScene {
                 PixelScene.align(score);
             }
 
-            name.maxWidth((int) Math.max(1, scoreBg.x - textX - 3));
-            name.setPos(0, 0);
-            float groupH = name.height() + 1 + runsText.height();
+            int textWidth = (int) Math.max(1, scoreBg.x - textX - 3);
+            name.maxWidth(textWidth);
+            meta.maxWidth(textWidth);
+            float groupH = name.height() + 1 + meta.height();
             float top = centerY - groupH / 2f;
             name.setPos(textX, top);
+            meta.setPos(textX, top + name.height() + 1);
             PixelScene.align(name);
+            PixelScene.align(meta);
+        }
 
-            float metaX = textX;
-            float metaY = top + name.height() + 1;
-            if (goldText.visible) {
-                goldText.setPos(metaX, metaY);
-                metaX += goldText.width() + 3;
-            }
-            if (silverText.visible) {
-                silverText.setPos(metaX, metaY);
-                metaX += silverText.width() + 3;
-            }
-            if (bronzeText.visible) {
-                bronzeText.setPos(metaX, metaY);
-                metaX += bronzeText.width() + 3;
-            }
-            runsText.setPos(metaX + (metaX > textX ? 2 : 0), metaY);
-            PixelScene.align(goldText);
-            PixelScene.align(silverText);
-            PixelScene.align(bronzeText);
-            PixelScene.align(runsText);
+        /** 名字/副信息在窄屏上会换行，返回该行实际需要的高度。 */
+        private float requiredHeight(float base) {
+            return Math.max(base, name.height() + 1 + meta.height() + 8);
         }
 
         @Override
         protected void onClick() {
+            // 拖动滚动后松手不再误触发详情。
+            if (pane.wasDragging()) return;
             if (!WndLeaderboardEntry.open(weekly.best)) {
                 ShatteredPixelDungeon.scene().addToFront(new WndLeaderboardEntry(weekly.best));
             }
