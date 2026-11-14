@@ -53,11 +53,13 @@ public class MpLobbyScene extends PixelScene {
 
         int w = Camera.main.width;
         int h = Camera.main.height;
-        margin = MpUi.i(6);
+        margin = Math.max(1, Math.round(MpUi.sideMargin()));
+        // 作者 v0.9.8.x 最新 UI：放大开局按钮并加宽房间列表
         btnHeight = MpUi.i(64);
         gap = MpUi.i(4);
         rowHeight = MpUi.i(66);
-        listWidth = MpUi.px(280f);
+        // 竖屏铺满屏幕宽度，横屏保持原设计宽度
+        listWidth = MpUi.contentWidth(280f);
 
         Archs archs = new Archs();
         archs.setSize(w, h);
@@ -102,21 +104,47 @@ public class MpLobbyScene extends PixelScene {
         };
         add(btnJoin);
 
-        float y = MpUi.px(2);
-        float right = w - margin;
+        float y = Math.max(1f, MpUi.px(2f));
         // 显式宽度：reqWidth() 在首次布局前可能为 0，直接使用会让文字溢出按钮边框
         // 顺序（左→右）：个人设置 / 加入房间 / 开房
-        float hostW = MpUi.px(52f);
-        float joinW = MpUi.px(82f);
-        float profileW = MpUi.px(82f);
-        btnHost.setRect(right - hostW, y, hostW, btnHeight);
-        right = btnHost.left() - gap;
-        btnJoin.setRect(right - joinW, y, joinW, btnHeight);
-        right = btnJoin.left() - gap;
-        btnProfile.setRect(right - profileW, y, profileW, btnHeight);
+        float topRowBottom;
+        if (MpUi.portrait()) {
+            // 竖屏：按钮放在返回键右侧，宽度按“返回键右侧剩余宽度”三等分，
+            // 高度按屏幕高度取比例；不写死像素，适配不同宽高比的安卓设备，
+            // 同时保证按钮足够大且不会压住左上角返回键。
+            float rowGap = Math.max(MpUi.px(4f), 2f);
+            float rowLeft = back.right() + rowGap;
+            float rowRight = w - margin;
+            float rowWidth = Math.max(MpUi.px(60f), rowRight - rowLeft);
+            float rowHeight = Math.max(btnHeight, Math.round(h * 0.06f));
+            float bw = (rowWidth - gap * 2f) / 3f;
+            btnProfile.setRect(rowLeft, y, bw, rowHeight);
+            btnJoin.setRect(rowLeft + bw + gap, y, bw, rowHeight);
+            btnHost.setRect(rowLeft + (bw + gap) * 2f, y, bw, rowHeight);
+            topRowBottom = y + rowHeight;
+        } else {
+            float right = w - margin;
+            float hostW = MpUi.px(52f);
+            float joinW = MpUi.px(82f);
+            float profileW = MpUi.px(82f);
+            btnHost.setRect(right - hostW, y, hostW, btnHeight);
+            right = btnHost.left() - gap;
+            btnJoin.setRect(right - joinW, y, joinW, btnHeight);
+            right = btnJoin.left() - gap;
+            btnProfile.setRect(right - profileW, y, profileW, btnHeight);
+            topRowBottom = y + btnHeight;
+        }
 
-        float listTop = Math.max(MpUi.px(72f), nameText.bottom() + MpUi.px(10f));
-        float listW = Math.min(listWidth, w - MpUi.px(24f));
+        // 名字放在返回键/按钮行下方，避免竖屏缩小时与左上角返回键重叠
+        float nameY = Math.max(MpUi.px(40f), back.bottom() + MpUi.px(2f));
+        nameY = Math.max(nameY, topRowBottom + MpUi.px(2f));
+        nameText.setPos(margin, nameY);
+
+        float listTop = nameText.bottom() + MpUi.px(10f);
+        if (!MpUi.portrait()) {
+            listTop = Math.max(MpUi.px(72f), listTop);
+        }
+        float listW = listWidth;
         float listX = (w - listW) / 2f;
         NinePatch panel = Chrome.get(Chrome.Type.WINDOW);
         panel.size(listW, h - listTop - MpUi.px(26f));
@@ -212,6 +240,7 @@ public class MpLobbyScene extends PixelScene {
             return;
         }
         if (Mp.get().role != Mp.Role.NONE) {
+            Mp.get().clearReconnect();
             Mp.get().disconnect();
         }
         ShatteredPixelDungeon.switchNoFade(TitleScene.class);
