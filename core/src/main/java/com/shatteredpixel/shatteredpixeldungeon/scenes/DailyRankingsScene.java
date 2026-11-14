@@ -40,8 +40,13 @@ public class DailyRankingsScene extends PixelScene {
     public static boolean replayMode = false;
 
     private static final int PAGE_SIZE = 20;
-    private static final float ROW_HEIGHT = 16;
-    private static final float MAX_ROW_WIDTH = 160;
+    private static final float ROW_HEIGHT = 26;
+    private static final float ROW_GAP = 2;
+    private static final float ROW_MARGIN = 4;
+    private static final float META_HEIGHT = 10;
+
+    /** 顶部按钮行高：标题必须从这一行下方开始，避免窄屏与按钮重叠。 */
+    private static final float TOP_BAR_BOTTOM = 20;
 
     private IconTitle title;
     private RenderedTextBlock dateText;
@@ -85,12 +90,8 @@ public class DailyRankingsScene extends PixelScene {
         archs.setSize(w, h);
         add(archs);
 
-        title = new IconTitle(Icons.CALENDAR.get(),
-                Messages.get(this, replayMode ? "replay_title" : "title"));
-        title.setRect(0, 0, w, 0);
-        title.setPos((w - title.reqWidth()) / 2f, 2);
-        add(title);
-
+        // 顶部操作按钮单独占一行：标题统一放到这一行下面，
+        // 避免手机窄屏上标题与返回/刷新/周榜/重玩榜按钮重叠。
         weeklyBtn = new RedButton(Messages.get(this, "weekly"), 7) {
             @Override
             protected void onClick() {
@@ -110,6 +111,35 @@ public class DailyRankingsScene extends PixelScene {
         };
         replayBtn.setRect(50, 2, 42, 16);
         add(replayBtn);
+
+        refreshBtn = new IconButton(NetIcons.get(NetIcons.GLOBE)) {
+            @Override
+            protected void onClick() {
+                loadPage();
+            }
+        };
+        refreshBtn.setRect(96, 2, 16, 16);
+        add(refreshBtn);
+
+        exitBtn = new IconButton(Icons.get(Icons.EXIT)) {
+            @Override
+            protected void onClick() {
+                if (replayMode) {
+                    replayMode = false;
+                    ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
+                } else {
+                    ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class);
+                }
+            }
+        };
+        exitBtn.setRect(w - 20, 2, 16, 16);
+        add(exitBtn);
+
+        title = new IconTitle(Icons.CALENDAR.get(),
+                Messages.get(this, replayMode ? "replay_title" : "title"));
+        title.setRect(0, 0, w, 0);
+        title.setPos((w - title.reqWidth()) / 2f, TOP_BAR_BOTTOM);
+        add(title);
 
         dateText = PixelScene.renderTextBlock(Messages.get(this, "date", date), 6);
         dateText.hardlight(0x888888);
@@ -172,29 +202,6 @@ public class DailyRankingsScene extends PixelScene {
         };
         nextBtn.setRect(w - 20, h - 18, 16, 16);
         add(nextBtn);
-
-        refreshBtn = new IconButton(NetIcons.get(NetIcons.GLOBE)) {
-            @Override
-            protected void onClick() {
-                loadPage();
-            }
-        };
-        refreshBtn.setRect(96, 2, 16, 16);
-        add(refreshBtn);
-
-        exitBtn = new IconButton(Icons.get(Icons.EXIT)) {
-            @Override
-            protected void onClick() {
-                if (replayMode) {
-                    replayMode = false;
-                    ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
-                } else {
-                    ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class);
-                }
-            }
-        };
-        exitBtn.setRect(w - 20, 2, 16, 16);
-        add(exitBtn);
 
         loadPage();
     }
@@ -322,15 +329,24 @@ public class DailyRankingsScene extends PixelScene {
         content.clear();
         float y = 0;
         int width = Camera.main.width;
-        float rowWidth = Math.min(MAX_ROW_WIDTH, width - 8);
-        float left = (width - rowWidth) / 2f;
+        // 列表铺满可用宽度，不再使用居中的窄数据条；手机端名字/分数不会被裁掉。
+        float rowWidth = width - ROW_MARGIN * 2;
+        float left = ROW_MARGIN;
         for (LeaderboardData.Entry entry : entries) {
             Record row = new Record(entry);
             row.setRect(left, y, rowWidth, ROW_HEIGHT);
+            float required = row.requiredHeight();
+            if (required > ROW_HEIGHT) {
+                row.setRect(left, y, rowWidth, required);
+            }
             content.add(row);
-            y += ROW_HEIGHT;
+            y += row.height() + ROW_GAP;
         }
-        content.setRect(0, 0, width, y);
+        content.setRect(0, 0, width, Math.max(1, y));
+
+        // 每行 Record 都是 Button，构造/销毁时会把自己的 hotArea 重新注册到
+        // 指针监听队列前面；这里重新提升 ScrollPane 的控制器，保证在行上也能拖动滚动。
+        pane.refreshPointerPriority();
 
         pageText.text(Messages.get(this, "page", currentPage, totalPage));
         pageText.setPos(width / 2f - pageText.width() / 2f, pageText.top());
@@ -341,6 +357,7 @@ public class DailyRankingsScene extends PixelScene {
     private class Record extends Button {
 
         private final LeaderboardData.Entry entry;
+        private final boolean top3;
 
         private BitmapText position;
         private RenderedTextBlock name;
@@ -350,35 +367,45 @@ public class DailyRankingsScene extends PixelScene {
         private Image classIcon;
         private BitmapText level;
         private ColorBlock background;
-        private ColorBlock rankBg;
+        private ColorBlock accent;
+        private ColorBlock avatarBg;
+        private ColorBlock scoreBg;
         private Image medal;
         private Flare flare;
 
         Record(LeaderboardData.Entry entry) {
             super();
             this.entry = entry;
+            this.top3 = entry.rank >= 1 && entry.rank <= 3;
 
-            int bgColor = 0;
-            float bgAlpha = 0f;
+            int bgColor = 0x16232E;
+            float bgAlpha = 0.72f;
+            int accentColor = 0x4A6B88;
             int rankColor = 0;
             if (entry.rank == 1) {
                 bgColor = 0xFFD166;
-                bgAlpha = 0.30f;
+                bgAlpha = 0.28f;
+                accentColor = 0xFFD700;
                 rankColor = 0xFFD700;
             } else if (entry.rank == 2) {
                 bgColor = 0xD8DEE9;
-                bgAlpha = 0.24f;
+                bgAlpha = 0.22f;
+                accentColor = 0xC0C0C0;
                 rankColor = 0xC0C0C0;
             } else if (entry.rank == 3) {
                 bgColor = 0xE09A5B;
-                bgAlpha = 0.28f;
+                bgAlpha = 0.25f;
+                accentColor = 0xCD7F32;
                 rankColor = 0xCD7F32;
             }
-            if (bgColor != 0) {
-                background = new ColorBlock(0, 0, bgColor);
-                background.alpha(bgAlpha);
-                addToBack(background);
 
+            background = new ColorBlock(0, 0, bgColor);
+            background.alpha(bgAlpha);
+            addToBack(background);
+
+            accent.color(accentColor);
+
+            if (top3) {
                 // 前三名用金/银/铜奖牌作为名次底图，名次数字叠在奖牌上。
                 medal.visible = true;
                 medal.frame(16 * (entry.rank - 1), 0, 16, 16);
@@ -404,6 +431,8 @@ public class DailyRankingsScene extends PixelScene {
 
             classIcon.copy(Icons.get(entry.heroClass));
             steps.copy(Icons.get(Icons.STAIRS));
+            // 副信息行高度只有 10，缩小原版 16×16 的楼梯图标。
+            steps.scale.set(10f / 16f);
 
             int color;
             if (entry.rank == 1) {
@@ -416,7 +445,7 @@ public class DailyRankingsScene extends PixelScene {
                 color = entry.won ? 0xFFFF88 : 0xDDDDDD;
             }
             // 前三名的数字叠在奖牌上，统一使用白色（与原样式一致）。
-            position.hardlight(entry.rank <= 3 ? 0xFFFFFF : color);
+            position.hardlight(top3 ? 0xFFFFFF : color);
             name.hardlight(color);
             score.hardlight(color);
             depth.hardlight(color);
@@ -433,10 +462,6 @@ public class DailyRankingsScene extends PixelScene {
             flare.visible = false;
             add(flare);
 
-            rankBg = new ColorBlock(0, 0, 0xFFFFFF);
-            rankBg.visible = false;
-            add(rankBg);
-
             medal = new Image(Assets.Interfaces.RANKING_BADGES);
             medal.visible = false;
             add(medal);
@@ -444,11 +469,18 @@ public class DailyRankingsScene extends PixelScene {
             position = new BitmapText(PixelScene.pixelFont);
             add(position);
 
-            name = PixelScene.renderTextBlock(6);
-            add(name);
+            avatarBg = new ColorBlock(0, 0, 0x0A121A);
+            avatarBg.alpha(0.9f);
+            add(avatarBg);
 
-            score = new BitmapText(PixelScene.pixelFont);
-            add(score);
+            classIcon = new Image();
+            add(classIcon);
+
+            level = new BitmapText(PixelScene.pixelFont);
+            add(level);
+
+            name = PixelScene.renderTextBlock(7);
+            add(name);
 
             steps = new Image();
             add(steps);
@@ -456,11 +488,20 @@ public class DailyRankingsScene extends PixelScene {
             depth = new BitmapText(PixelScene.pixelFont);
             add(depth);
 
-            classIcon = new Image();
-            add(classIcon);
+            scoreBg = new ColorBlock(0, 0, 0x1B2C3B);
+            scoreBg.alpha(0.95f);
+            add(scoreBg);
 
-            level = new BitmapText(PixelScene.pixelFont);
-            add(level);
+            score = new BitmapText(PixelScene.pixelFont);
+            add(score);
+
+            accent = new ColorBlock(0, 0, 0x45637D);
+            add(accent);
+        }
+
+        /** 名字可能因窄屏换行，返回该行实际需要的高度。 */
+        private float requiredHeight() {
+            return Math.max(ROW_HEIGHT, name.height() + 1 + META_HEIGHT + 4);
         }
 
         @Override
@@ -470,56 +511,78 @@ public class DailyRankingsScene extends PixelScene {
             float centerY = y + height / 2f;
 
             if (background != null) {
-                background.x = x;
-                background.y = y;
-                background.size(width, height);
+                background.x = x + 1;
+                background.y = y + 1;
+                background.size(width - 2, height - 2);
             }
+            accent.x = x + 1;
+            accent.y = y + 1;
+            accent.size(3, height - 2);
 
-            // Hero class icon at the very front of the row.
-            classIcon.x = x + 2 + (16 - classIcon.width()) / 2f;
-            classIcon.y = centerY - classIcon.height() / 2f;
-            PixelScene.align(classIcon);
-
-            level.x = classIcon.x + (classIcon.width - level.width()) / 2f;
-            level.y = classIcon.y + (classIcon.height - level.height()) / 2f + 1;
-            PixelScene.align(level);
-
-            position.x = x + 20 + (14 - position.width()) / 2f;
+            // 名次区域（20 宽）：前三名画奖牌，数字叠在奖牌上。
+            float rankX = x + 2;
+            float rankW = 20;
+            position.x = rankX + (rankW - position.width()) / 2f;
             position.y = centerY - position.height() / 2f + 1;
             PixelScene.align(position);
 
             if (medal.visible) {
                 // 奖牌 PNG 每格右侧有透明留白、圆章偏上，整体向右下微调，
                 // 使圆章中心与名次数字对齐。
-                medal.x = x + 21;
+                medal.x = rankX + (rankW - medal.width()) / 2f + 2;
                 medal.y = centerY - 6;
                 PixelScene.align(medal);
             }
 
             if (flare.visible) {
-                flare.x = x + 27;
+                flare.x = rankX + rankW / 2f;
                 flare.y = centerY;
             }
 
-            steps.x = x + width - 30 + (16 - steps.width()) / 2f;
-            steps.y = centerY - steps.height() / 2f;
-            PixelScene.align(steps);
+            // 职业图标 + 等级。
+            float iconX = rankX + rankW + 2;
+            avatarBg.x = iconX - 1;
+            avatarBg.y = centerY - 9;
+            avatarBg.size(18, 18);
 
-            depth.x = steps.x + (steps.width - depth.width()) / 2f;
-            depth.y = steps.y + (steps.height - depth.height()) / 2f + 1;
-            PixelScene.align(depth);
+            classIcon.setPos(iconX, centerY - classIcon.height() / 2f);
+            PixelScene.align(classIcon);
 
-            score.x = x + width - 34 - score.width();
+            level.x = iconX + (classIcon.width() - level.width()) / 2f;
+            level.y = classIcon.y + (classIcon.height() - level.height()) / 2f + 1;
+            PixelScene.align(level);
+
+            float textX = iconX + classIcon.width() + 3;
+
+            // 分数固定右侧，先测量分数块，名字/副信息在剩余空间内换行。
+            score.x = x + width - 6 - score.width();
             score.y = centerY - score.height() / 2f + 1;
             PixelScene.align(score);
 
-            name.maxWidth((int) Math.max(1, score.x - (x + 36)));
-            name.setPos(x + 36, centerY - name.height() / 2f + 1);
+            scoreBg.x = score.x - 4;
+            scoreBg.y = centerY - 7;
+            scoreBg.size(score.width() + 8, 14);
+
+            name.maxWidth((int) Math.max(1, scoreBg.x - textX - 3));
+            float groupH = name.height() + 1 + META_HEIGHT;
+            float top = centerY - groupH / 2f;
+            name.setPos(textX, top);
             PixelScene.align(name);
+
+            // 副信息：楼梯图标 + 深度，位于名字下一行。
+            float metaY = top + name.height() + 1;
+            steps.setPos(textX, metaY);
+            PixelScene.align(steps);
+
+            depth.x = textX + (10 - depth.width()) / 2f;
+            depth.y = metaY + (10 - depth.height()) / 2f + 1;
+            PixelScene.align(depth);
         }
 
         @Override
         protected void onClick() {
+            // 拖动滚动后松手不再误触发详情。
+            if (pane.wasDragging()) return;
             if (!WndLeaderboardEntry.open(entry)) {
                 ShatteredPixelDungeon.scene().addToFront(new WndLeaderboardEntry(entry));
             }
