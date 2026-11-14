@@ -73,11 +73,13 @@ public class WndBadgeSelect extends Window {
             }
         }
 
+        // 竖屏铺满屏幕宽度，横屏保持设计宽度
+        float width = MpUi.windowWidth(WIDTH, chrome.marginHor());
         float pos = I(MARGIN);
         RenderedTextBlock title = PixelScene.renderTextBlock(
                 Messages.get(WndBadgeSelect.class, "title"), F(9));
         title.hardlight(TITLE_COLOR);
-        title.maxWidth(I(WIDTH) - I(MARGIN) * 2);
+        title.maxWidth((int) (width - I(MARGIN) * 2));
         title.setPos(I(MARGIN), pos);
         add(title);
         pos = title.bottom() + P(2);
@@ -88,7 +90,7 @@ public class WndBadgeSelect extends Window {
                 Messages.get(WndBadgeSelect.class, "selected_count",
                         selected.size(), MpProfile.MAX_BADGES), F(7));
         countText.hardlight(0xAAAAAA);
-        countText.maxWidth(I(WIDTH) - I(MARGIN) * 2);
+        countText.maxWidth((int) (width - I(MARGIN) * 2));
         countText.setPos(I(MARGIN), pos);
         add(countText);
         pos = countText.bottom() + P(4);
@@ -107,11 +109,11 @@ public class WndBadgeSelect extends Window {
             }
         };
         add(pane);
-        pane.setRect(I(MARGIN), paneTop, I(WIDTH) - I(MARGIN) * 2, I(LIST_HEIGHT));
+        pane.setRect(I(MARGIN), paneTop, width - I(MARGIN) * 2, I(LIST_HEIGHT));
         rebuildRows();
         pos += I(LIST_HEIGHT) + P(GAP);
 
-        float bw = (I(WIDTH) - I(MARGIN) * 2 - P(GAP)) / 2f;
+        float bw = (width - I(MARGIN) * 2 - P(GAP)) / 2f;
         RedButton btnCancel = new RedButton(
                 Messages.get(WndBadgeSelect.class, "cancel"), F(8)) {
             @Override
@@ -139,10 +141,11 @@ public class WndBadgeSelect extends Window {
         add(btnConfirm);
 
         updateCount();
-        resize(I(WIDTH), (int) Math.ceil(pos + I(BTN_HEIGHT) + I(MARGIN)));
+        resize((int) Math.ceil(width),
+                (int) Math.ceil(pos + I(BTN_HEIGHT) + I(MARGIN)));
         // Window.resize 会移动窗口内部 camera；ScrollPane 的独立 content camera
         // 必须在最终窗口位置重新布局一次，否则内容会偏移到窗口外。
-        pane.setRect(I(MARGIN), paneTop, I(WIDTH) - I(MARGIN) * 2, I(LIST_HEIGHT));
+        pane.setRect(I(MARGIN), paneTop, width - I(MARGIN) * 2, I(LIST_HEIGHT));
     }
 
     @Override
