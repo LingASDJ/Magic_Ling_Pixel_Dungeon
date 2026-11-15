@@ -42,7 +42,7 @@ public class RingOfArcana extends Ring {
 			}
 			return info;
 		} else {
-			return Messages.get(this, "typical_stats", Messages.decimalFormat("#.##", 22.5f));
+			return Messages.get(this, "typical_stats", Messages.decimalFormat("#.##",  17.5f));
 		}
 	}
 
@@ -63,7 +63,5 @@ public class RingOfArcana extends Ring {
 	public class Arcana extends RingBuff {
 	}
 
-	private static float Multiplier(int n){
-		return (float)(Math.pow(1.125, n)+0.1*n);
-	}
+	private static float Multiplier(int n){return (float)Math.pow(1.175f, n);}
 }
