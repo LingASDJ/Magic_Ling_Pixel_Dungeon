@@ -401,8 +401,12 @@ public class GameScene extends PixelScene {
 		scene.showBanner( gameOver );
 
 		// Daily runs must not offer the "new game / restart simulator" path.
+		// 联机模式：不打开人生模拟器/新存档；改为在同一存档第 0 层以新英雄重生。
+		final boolean multiplayer = Mp.get().isInRoom();
 		StyledButton restart = null;
-		restart = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(StartScene.class, "new"), 9){
+		restart = new StyledButton(Chrome.Type.GREY_BUTTON_TR,
+				multiplayer ? Messages.get(GameScene.class, "rebirth")
+						: Messages.get(StartScene.class, "new"), 9){
 			@Override
 			protected void onClick() {
 				if (Dungeon.daily) {
@@ -416,6 +420,13 @@ public class GameScene extends PixelScene {
 								? DailyUtils.todayUtc() : date;
 						DailyRankingsScene.replayMode = false;
 						ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
+					}
+					return;
+				}
+				if (multiplayer) {
+					if (!Mp.get().rebirthInCurrentWorld()) {
+						GameScene.show(new WndMessage(
+								Messages.get(GameScene.class, "rebirth_failed")));
 					}
 					return;
 				}
