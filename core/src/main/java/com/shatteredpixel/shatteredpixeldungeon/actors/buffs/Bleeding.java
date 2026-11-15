@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.DamageContext;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -47,6 +49,7 @@ public class Bleeding extends Buff {
 
 	//used in specific cases where the source of the bleed is important for death logic
 	private Class source;
+	private int sourceHeroId = -1;
 
 	public float level(){
 		return level;
@@ -54,12 +57,14 @@ public class Bleeding extends Buff {
 
 	private static final String LEVEL	= "level";
 	private static final String SOURCE	= "source";
+	private static final String SOURCE_HERO_ID = "source_hero_id";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( LEVEL, level );
 		bundle.put( SOURCE, source );
+		bundle.put( SOURCE_HERO_ID, sourceHeroId );
 	}
 
 	@Override
@@ -67,6 +72,9 @@ public class Bleeding extends Buff {
 		super.restoreFromBundle( bundle );
 		level = bundle.getFloat( LEVEL );
 		source = bundle.getClass( SOURCE );
+		sourceHeroId = bundle.contains( SOURCE_HERO_ID )
+				? bundle.getInt( SOURCE_HERO_ID )
+				: -1;
 	}
 
 	public void set( float level ) {
@@ -77,6 +85,20 @@ public class Bleeding extends Buff {
 		if (this.level < level) {
 			this.level = Math.max(this.level, level);
 			this.source = source;
+			sourceHeroId = -1;
+		}
+	}
+
+	public void setWithHero( float level, Hero sourceHero ) {
+		setWithHero( level, null, sourceHero );
+	}
+
+	public void setWithHero( float level, Class source, Hero sourceHero ) {
+		float previousLevel = this.level;
+		set( level, source );
+
+		if (this.level > previousLevel && sourceHero != null) {
+			sourceHeroId = sourceHero.id();
 		}
 	}
 
@@ -107,7 +129,12 @@ public class Bleeding extends Buff {
 
 			if (dmg > 0) {
 
-				target.damage( dmg, this );
+				target.damageWithSource(
+						dmg,
+						this,
+						null,
+						DamageContext.heroById( sourceHeroId )
+				);
 				if (target.sprite.visible) {
 					Splash.at( target.sprite.center(), -PointF.PI / 2, PointF.PI / 6,
 							target.sprite.blood(), Math.min( 10 * dmg / target.HT, 10 ) );

@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -36,34 +37,47 @@ import com.watabou.utils.Bundle;
 public class Poison extends Buff implements Hero.Doom {
 	public static final float DURATION = 4f;
 	protected float left;
+	private int sourceHeroId = -1;
 
 	public float GetPoisonLevel(){
 		return left;
 	}
 	
 	private static final String LEFT	= "left";
+	private static final String SOURCE_HERO_ID = "source_hero_id";
 
 	{
 		type = buffType.NEGATIVE;
 		announced = true;
 	}
 
-	
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( LEFT, left );
-		
+		bundle.put(SOURCE_HERO_ID, sourceHeroId);
 	}
-	
+
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		left = bundle.getFloat( LEFT );
+		sourceHeroId = bundle.getInt(SOURCE_HERO_ID);
 	}
-	
+
 	public void set( float duration ) {
 		this.left = Math.max(duration, left);
+	}
+
+	public void setWithHero(float duration, Hero sourceHero) {
+		float previousLeft = left;
+		set(duration);
+
+		// 只有这次毒更强、实际覆盖了旧毒时才替换来源。
+		if (left > previousLeft && sourceHero != null) {
+			sourceHeroId = sourceHero.id();
+		}
 	}
 
 	public void extend( float duration ) {
@@ -101,22 +115,29 @@ public class Poison extends Buff implements Hero.Doom {
 	@Override
 	public boolean act() {
 		if (target.isAlive()) {
-			
-			target.damage( (int)(left / 3) + 1, this, Char.DamageType.Element );
-			spend( TICK );
+
+			Hero sourceHero = null;
+
+			if (sourceHeroId > 0) {
+				Actor source = Actor.findById(sourceHeroId);
+
+				if (source instanceof Hero) {
+					sourceHero = (Hero) source;
+				}
+			}
+
+			target.damageWithSource((int) (left / 3) + 1, this, Char.DamageType.Element, sourceHero);
+			spend(TICK);
 			//苦难：巫妖在场且携带失魂时，中毒的持续时间不再减少
 			if (!agonyFrozen() && (left -= TICK) <= 0) {
 				detach();
 			}
-			
 		} else {
-			
 			detach();
-			
 		}
-		
+
 		return true;
-	}
+		}
 
 	@Override
 	public void onDeath() {

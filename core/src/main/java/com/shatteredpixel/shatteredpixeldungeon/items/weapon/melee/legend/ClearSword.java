@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -53,7 +54,10 @@ public class ClearSword extends MeleeWeapon implements Item.LengedsItem {
         int level = buffedLvl();
 
         if (Random.Int(100) < (15 + 2 * level)) {
-            Buff.affect(defender, Bleeding.class).set(damage * 0.1f);
+            Buff.affect(defender, Bleeding.class).setWithHero(
+                    damage * 0.1f,
+                    Talent.phantomFlashDamageSource(attacker)
+            );
         }
 
         if (attacker instanceof Hero) {

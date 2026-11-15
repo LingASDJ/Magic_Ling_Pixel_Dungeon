@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Tomahawk extends MissileWeapon {
@@ -52,7 +53,10 @@ public class Tomahawk extends MissileWeapon {
 	
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
-		Buff.affect( defender, Bleeding.class ).set( Math.round(damage*0.6f) );
+		Buff.affect( defender, Bleeding.class ).setWithHero(
+				Math.round(damage * 0.6f),
+				Talent.phantomFlashDamageSource(attacker)
+		);
 		return super.proc( attacker, defender, damage );
 	}
 }

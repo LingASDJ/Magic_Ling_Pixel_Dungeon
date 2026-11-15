@@ -379,7 +379,7 @@ public class CloakOfShadows extends Artifact {
 
 		@Override
 		public float iconFadePercent() {
-			float duration = stealthTurnsPerCharge(target,chargesSpentThisUse);
+			float duration = stealthTurnsPerCharge(target);
 			return Math.max(0f, (duration - turnsToCost) / duration);
 		}
 		//记录隐身时间
@@ -416,7 +416,7 @@ public class CloakOfShadows extends Artifact {
 		private boolean refundedThisUse = false;
 		/**
 		 * 结算幽冥漫步的充能返还。
-		 * 天赋+1/+2/+3分别需要本次累计消耗4/3/2点充能。
+		 * +3需要本次累计消耗2点充能。
 		 * 达到门槛后返还1点，但神器已经满充能时不继续增加。
 		 */
 		private void refundIfEligible() {
@@ -429,13 +429,9 @@ public class CloakOfShadows extends Artifact {
 			Hero hero = (Hero) target;
 			int points = hero.pointsInTalent(Talent.PHANTOM_WALK);
 
-			int requiredCharges = 5 - points;
-			// 1点需要4，2点需要3，3点需要2
-
-			if (points > 0
-					&& chargesSpentThisUse >= requiredCharges
+			if (points >= 3
+					&& chargesSpentThisUse >= 2
 					&& charge < chargeCap) {
-
 				charge++;
 				updateQuickslot();
 			}
@@ -500,7 +496,7 @@ public class CloakOfShadows extends Artifact {
 						GLog.p(Messages.get(this, "levelup"));
 						
 					}
-					turnsToCost = stealthTurnsPerCharge(target,chargesSpentThisUse);
+					turnsToCost = stealthTurnsPerCharge(target);
 				}
 				updateQuickslot();
 			}
@@ -555,16 +551,13 @@ public class CloakOfShadows extends Artifact {
 		}
 	}
 		//幽冥/隐身斗篷时，每点充能5/4回合隐身
-	protected int stealthTurnsPerCharge(Char wearer, int chargesSpentThisUse) {
+	protected int stealthTurnsPerCharge(Char wearer) {
 		int duration = phantomMode ? 5 : 4;
-
-		if (phantomMode && wearer instanceof Hero) {
-			int points = ((Hero) wearer).pointsInTalent(Talent.PHANTOM_WALK);
-
-			if (points > 0) {
-				// 本次已消耗1点，就为下一段增加1回合
-				duration += chargesSpentThisUse;
-			}
+		//幽冥漫步+1，幽冥斗篷每点充能6回合隐身
+		if (phantomMode
+				&& wearer instanceof Hero
+				&& ((Hero) wearer).hasTalent(Talent.PHANTOM_WALK)) {
+			duration = 6;
 		}
 
 		return duration;
@@ -582,5 +575,9 @@ public class CloakOfShadows extends Artifact {
 		return phantomMode
 				? Messages.get(this, "phantom_desc")
 				: super.desc();
+	}
+
+	public boolean isPhantomMode() {
+		return phantomMode;
 	}
 }

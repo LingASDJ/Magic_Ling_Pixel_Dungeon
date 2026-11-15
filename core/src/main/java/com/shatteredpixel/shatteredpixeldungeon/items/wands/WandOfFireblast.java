@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -161,7 +162,11 @@ public class WandOfFireblast extends DamageWand {
 			wandProc(ch, chargesPerCast());
 			ch.damage(damageRoll(), this);
 			if (ch.isAlive()) {
-				Buff.affect(ch, Burning.class).reignite(ch);
+				Buff.affect(ch, Burning.class).reigniteWithHero(
+						ch,
+						8f,
+						Talent.phantomFlashDamageSource(this)
+				);
 				switch (chargesPerCast()) {
 					case 1:
 						break; //no effects
@@ -239,7 +244,11 @@ public class WandOfFireblast extends DamageWand {
             wandProc(ch, chargesPerCast());
             ch.damage(damageRoll(), this);
             if (ch.isAlive()) {
-                Buff.affect(ch, Burning.class).reignite(ch);
+                Buff.affect(ch, Burning.class).reigniteWithHero(
+                        ch,
+                        8f,
+                        Talent.phantomFlashDamageSource(this)
+                );
                 switch (chargesPerCast()) {
                     case 1:
                         break; //no effects

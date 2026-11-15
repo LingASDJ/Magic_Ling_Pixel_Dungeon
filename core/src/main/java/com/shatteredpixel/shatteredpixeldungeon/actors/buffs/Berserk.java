@@ -50,6 +50,10 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 		type = buffType.POSITIVE;
 	}
 
+	private float retaliationDamage = 0f;
+	private static final String RETALIATION_DAMAGE =
+			"retaliation_damage";
+
 	private enum State{
 		NORMAL, BERSERK, RECOVERING
 	}
@@ -78,25 +82,6 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 		power = Math.max( 0 , power - reduce);
 	}
 
-	public int WandBuffedLvl(){
-		int lvl = 0;
-		if(Dungeon.hero.hasTalent(Talent.FANATICISM_MAGIC)){
-			switch (Dungeon.hero.pointsInTalent(Talent.FANATICISM_MAGIC)){
-				case 2:
-					for(float i = power;i>=0.75f;i-=0.75f){
-						lvl++;
-					}
-					break;
-				case 3:
-					for(float i = power;i>=0.5f;i-=0.5f){
-						lvl++;
-					}
-					break;
-			}
-		}
-		return lvl;
-	}
-
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
@@ -105,6 +90,7 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 		bundle.put(POWER_BUFFER, powerLossBuffer);
 		bundle.put(LEVEL_RECOVERY, levelRecovery);
 		bundle.put(TURN_RECOVERY, turnRecovery);
+		bundle.put(RETALIATION_DAMAGE, retaliationDamage);
 	}
 
 	@Override
@@ -120,6 +106,9 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 		if (power >= 1f && state == State.NORMAL){
 			ActionIndicator.setAction(this);
 		}
+		retaliationDamage = bundle.contains(RETALIATION_DAMAGE)
+				? bundle.getFloat(RETALIATION_DAMAGE)
+				: 0f;
 	}
 
 	@Override
@@ -369,5 +358,90 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 				}
 		}
 		
+	}
+	/**+1：每达到阈值一次，增加 1% 怒气；
+	 +2：增加 2%；
+	 +3：增加 3%；
+	 一次受到大量伤害并跨过多个阈值时，会一次增加多档；
+	 未达到阈值的零头会保留到下一次受伤；
+	 */
+	public void addRetaliationRage(int damage) {
+		if (state != State.NORMAL || target == null) {
+			return;
+		}
+
+		Hero hero = (Hero) target;
+		int points = hero.pointsInTalent(
+				Talent.FURIOUS_RETALIATION
+		);
+
+		if (points <= 0) {
+			return;
+		}
+
+		int regionNumber = (Dungeon.depth - 1) / 5 + 1;
+		int damagePerGain = Math.max(1, regionNumber - 1);
+
+		retaliationDamage += damage;
+
+		int gainedStacks =
+				(int) (retaliationDamage / damagePerGain);
+
+		if (gainedStacks <= 0) {
+			return;
+		}
+
+		retaliationDamage -= gainedStacks * damagePerGain;
+
+		float maxPower = hero.pointsInTalent(
+				Talent.ENDLESS_RAGE
+		) > 0
+				? 1.25f + 0.25f * hero.pointsInTalent(
+				Talent.ENDLESS_RAGE
+		)
+				: 1f;
+
+		power = Math.min(
+				maxPower,
+				power + 0.01f * points * gainedStacks
+		);
+
+		if (power >= maxPower) {
+			retaliationDamage = 0f;
+		}
+
+		powerLossBuffer = 3;
+		BuffIndicator.refreshHero();
+
+		if (power >= 1f) {
+			ActionIndicator.setAction(this);
+		}
+	}
+	//暴走铠身的虚拟等级计算
+	public int equipmentBuffedLvl() {
+		Hero hero = (Hero) target;
+		int points = hero.pointsInTalent(
+				Talent.RAMPAGE_ARMOR
+		);
+
+		if (points <= 0) {
+			return 0;
+		}
+
+		float threshold;
+
+		switch (points) {
+			case 1:
+				threshold = 0.85f;
+				break;
+			case 2:
+				threshold = 0.70f;
+				break;
+			case 3: default:
+				threshold = 0.55f;
+				break;
+		}
+
+		return (int) ((power + 0.0001f) / threshold);
 	}
 }

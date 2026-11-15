@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.DamageContext;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -60,10 +61,12 @@ public class Burning extends Buff implements Hero.Doom {
 	private float left;
 	private boolean acted = false; //whether the debuff has done any damage at all yet
 	private int burnIncrement = 0; //for tracking burning of hero items
+	private int sourceHeroId = -1;
 	
 	private static final String LEFT	= "left";
 	private static final String ACTED	= "acted";
 	private static final String BURN	= "burnIncrement";
+	private static final String SOURCE_HERO_ID = "source_hero_id";
 
 	{
 		type = buffType.NEGATIVE;
@@ -76,6 +79,7 @@ public class Burning extends Buff implements Hero.Doom {
 		bundle.put( LEFT, left );
 		bundle.put( ACTED, acted );
 		bundle.put( BURN, burnIncrement );
+		bundle.put( SOURCE_HERO_ID, sourceHeroId );
 	}
 	
 	@Override
@@ -84,6 +88,9 @@ public class Burning extends Buff implements Hero.Doom {
 		left = bundle.getFloat( LEFT );
 		acted = bundle.getBoolean( ACTED );
 		burnIncrement = bundle.getInt( BURN );
+		sourceHeroId = bundle.contains( SOURCE_HERO_ID )
+				? bundle.getInt( SOURCE_HERO_ID )
+				: -1;
 	}
 
 	@Override
@@ -102,6 +109,7 @@ public class Burning extends Buff implements Hero.Doom {
 
 			acted = true;
 			int damage = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
+			Hero sourceHero = DamageContext.heroById( sourceHeroId );
 			Buff.detach( target, Chill.class);
 
 			if (target instanceof Hero
@@ -110,7 +118,12 @@ public class Burning extends Buff implements Hero.Doom {
 				
 				Hero hero = (Hero)target;
 
-				hero.damage( damage, this , Char.DamageType.Element);
+				hero.damageWithSource(
+						damage,
+						this,
+						Char.DamageType.Element,
+						sourceHero
+				);
 				burnIncrement++;
 
 				//at 4+ turns, there is a (turns-3)/3 chance an item burns
@@ -141,7 +154,12 @@ public class Burning extends Buff implements Hero.Doom {
 				}
 				
 			} else {
-				target.damage( damage, this, Char.DamageType.Element );
+				target.damageWithSource(
+						damage,
+						this,
+						Char.DamageType.Element,
+						sourceHero
+				);
 			}
 
 			if (target instanceof Thief && ((Thief) target).item != null) {
@@ -186,6 +204,8 @@ public class Burning extends Buff implements Hero.Doom {
 	}
 
 	public void reignite( Char ch, float duration ) {
+		boolean refreshed = left < duration;
+
 		if (ch.isImmune(Burning.class)){
 			if (ch instanceof Hero
 					&& ((Hero) ch).belongings.armor() != null
@@ -202,8 +222,22 @@ public class Burning extends Buff implements Hero.Doom {
 				}
 			}
 		}
-		if (left < duration) left = duration;
+		if (refreshed) {
+			left = duration;
+			sourceHeroId = -1;
+		}
 		acted = false;
+	}
+
+	public void reigniteWithHero( Char ch, float duration, Hero sourceHero ) {
+		boolean refreshed = left < duration;
+		reignite( ch, duration );
+
+		if (refreshed) {
+			sourceHeroId = sourceHero != null
+					? sourceHero.id()
+					: -1;
+		}
 	}
 
 	/**
@@ -214,6 +248,7 @@ public class Burning extends Buff implements Hero.Doom {
 	public void setLeft( float duration ) {
 		left = duration;
 		acted = false;
+		sourceHeroId = -1;
 	}
 	
 	@Override

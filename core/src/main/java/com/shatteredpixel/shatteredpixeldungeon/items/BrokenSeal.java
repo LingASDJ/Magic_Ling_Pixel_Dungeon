@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -219,7 +220,7 @@ public class BrokenSeal extends Item {
 			Hero hero = (Hero) target;
 			int points = hero.pointsInTalent(Talent.BLOODLINE_BOON);
 
-			if (points > 0) {
+			if (points > 0 && hero.heroClass == HeroClass.WARRIOR) {
 				int room = Math.max(0, maxShield() - shielding());
 				if (room > 0) {
 					incShield(Math.min(points, room));
@@ -255,12 +256,23 @@ public class BrokenSeal extends Item {
 
 		public synchronized int maxShield() {
 			//metamorphed iron will logic
+			if (armor != null
+					&& armor.isEquipped((Hero) target)
+					&& armor.checkSeal() != null) {
 
-			if (armor != null && armor.isEquipped((Hero)target) && armor.checkSeal() != null) {
-				return armor.checkSeal().maxShield(armor.tier, armor.level());
-			} else {
-				return 0;
+				Hero hero = (Hero) target;
+
+				int cap = armor.checkSeal().maxShield(
+						armor.tier,
+						armor.level()
+				);
+
+				cap += BrokenSeal.bloodlineShieldBonus(hero);
+
+				return cap;
 			}
+
+			return 0;
 		}
 
 		@Override
@@ -277,5 +289,16 @@ public class BrokenSeal extends Item {
 			}
 			return dmg;
 		}
+	}
+
+	public static int bloodlineShieldBonus(Hero hero) {
+		if (hero == null
+				|| hero.heroClass != HeroClass.WARRIOR) {
+			return 0;
+		}
+
+		return 4 * hero.pointsInTalent(
+				Talent.BLOODLINE_BOON
+		);
 	}
 }

@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -41,7 +42,11 @@ public class FiveRen extends MeleeWeapon {
                 return super.proc(attacker, defender, damage);
             case 5:case 6:case 7:
                 if (Random.Int(10)==1) {
-                    Buff.affect(defender, Corrosion.class).set(5f, Dungeon.depth/3);
+                    Buff.affect(defender, Corrosion.class).setWithHero(
+                            5f,
+                            Dungeon.depth / 3,
+                            Talent.phantomFlashDamageSource(attacker)
+                    );
                     if (Dungeon.level.heroFOV[defender.pos]) {
                         defender.sprite.centerEmitter().start(Speck.factory(Speck.HEART), 0.2f, 5);
                         Sample.INSTANCE.play(Assets.Sounds.CHARMS);

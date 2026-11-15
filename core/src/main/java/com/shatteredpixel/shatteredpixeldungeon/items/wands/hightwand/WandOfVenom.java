@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.VenomGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -71,7 +72,11 @@ public class WandOfVenom extends DamageWand {
         VenomGas gas = Blob.seed(bolt.collisionPos, 50 + 10 * buffedLvl(),  VenomGas.class);
         //gas.setLevel(this);
         CellEmitter.get(bolt.collisionPos).burst(Speck.factory(Speck.CORROSION), 10 );
-        gas.setWandlvl(buffedLvl(), getClass());
+        gas.setWandlvlWithHero(
+                buffedLvl(),
+                getClass(),
+                Talent.phantomFlashDamageSource(this)
+        );
         GameScene.add(gas);
         Sample.INSTANCE.play(Assets.Sounds.GAS);
 

@@ -90,9 +90,9 @@ public enum Talent {
 	//Warrior T3
 	HOLD_FAST(9, 3), BLOODLINE_BOON(177, 3),
 	//Berserker T3
-	ENDLESS_RAGE(11, 3), PAIN_SCAR(12, 3), FANATICISM_MAGIC(13, 3),  STRONGMAN(10, 3),
+	ENDLESS_RAGE(11, 3), FURIOUS_RETALIATION(12, 3), RAMPAGE_ARMOR(13, 3),  STRONGMAN(10, 3),
 	//Gladiator T3
-	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), VENT_NOPLACE(16, 3),
+	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3),FINAL_STRIKE(16, 3),COMBO_PREMEDITATION(178, 3),
 	//Heroic Leap T4
 	BODY_SLAM(17, 4), IMPACT_WAVE(18, 4), DOUBLE_JUMP(19, 4),
 	//Shockwave T4
@@ -521,8 +521,7 @@ public enum Talent {
 	/**
 	 * 厉鬼扼喉：修正伏击时的武器基础伤害区间。
 	 * +1/+2/+3时：
-	 * - 伤害下限分别提高10%/15%/20%；
-	 * - 伤害上限固定提高10%。
+	 * - 伏击修正分别提高10%/15%/20%；
 	 * rolled是武器原本随机出的伤害值。
 	 * 通过它原本在[min,max]区间中的位置，把本次掷点等比例映射到新区间，
 	 * 因此不会改变武器原有随机分布。
@@ -541,9 +540,9 @@ public enum Talent {
 			return rolled;
 		}
 
-		// 1/2/3点分别对应下限+10%/15%/20%。
+		// 1/2/3点分别对应+10%/15%/20%。
 		float lowerBonus = 0.05f * (points + 1);
-		float upperBonus = 0.10f;
+		float upperBonus = 0.05f * (points + 1);
 
 		int newMin = Math.round(min * (1f + lowerBonus));
 		int newMax = Math.round(max * (1f + upperBonus));
@@ -908,7 +907,7 @@ public enum Talent {
 				return true;
 			}
 
-			int cap = 2 + 2 * points; // 4 / 6 / 8
+			int cap = 4 + 2 * points; // 6 / 8 / 10
 
 			if (shielding() > cap) {
 				decShield(shielding() - cap);
@@ -938,6 +937,22 @@ public enum Talent {
 			return remaining;
 		}
 
+	}
+	//巨力buff
+	public static class MightyStrength extends FlavourBuff {
+		{
+			type = buffType.POSITIVE;
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.WEAPON;
+		}
+
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(1f, 0.45f, 0.15f);
+		}
 	}
 
 	public static class CachedRationsDropped extends CounterBuff{{revivePersists = true;}};
@@ -1321,6 +1336,100 @@ public enum Talent {
 			Buff.prolong(hero, BlobImmunity.class, 10f);
 		}
 	}
+	//片影惊鸿的全伤害加成buff
+	public static class PhantomFlashDamage extends FlavourBuff {
+
+		float damageBonus = 0f;
+
+		public void addStack(int points) {
+			damageBonus += 0.03f * (points + 1);
+			spend(5f);
+		}
+		@Override
+		public int icon() {
+			return BuffIndicator.WEAPON;
+		}
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(0.55f, 0.25f, 0.85f);
+		}
+		@Override
+		public String desc() {
+			return Messages.get(
+					this,
+					"desc",
+					Math.round(damageBonus * 100f),
+					dispTurns()
+			);
+		}
+
+		private static final String DAMAGE_BONUS = "damage_bonus";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(DAMAGE_BONUS, damageBonus);
+		}
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			damageBonus = bundle.getFloat(DAMAGE_BONUS);
+		}
+	}
+
+	public static Hero phantomFlashDamageSource(Object src) {
+		if (src instanceof Hero) {
+			return (Hero) src;
+		}
+		if (src instanceof Wand
+				&& ((Wand) src).caster() instanceof Hero) {
+			return (Hero) ((Wand) src).caster();
+		}
+
+		return null;
+	}
+
+	public static float phantomFlashDamageMultiplier(Hero hero) {
+		if (hero == null || hero.subClass != HeroSubClass.PHANTOM_HUNTER) {
+			return 1f;
+		}
+
+		PhantomFlashDamage buff =
+				hero.buff(PhantomFlashDamage.class);
+
+		return buff == null ? 1f : 1f + buff.damageBonus;
+	}
+	//片影惊鸿的击杀判定方法
+	public static void onPhantomFlashKill(Hero hero) {
+		if (hero == null
+				|| hero.subClass != HeroSubClass.PHANTOM_HUNTER) {
+			return;
+		}
+
+		int points = hero.pointsInTalent(PHANTOM_FLASH);
+
+		if (points <= 0) {
+			return;
+		}
+
+		PhantomFlashDamage buff =
+				Buff.affect(hero, PhantomFlashDamage.class);
+
+		buff.addStack(points);
+	}
+
+	public static boolean isHeroKillSource(Hero hero, Object cause) {
+		if (cause == hero) {
+			return true;
+		}
+
+		if (cause instanceof Wand) {
+			return ((Wand) cause).caster() == hero;
+		}
+
+		return cause instanceof MeleeWeapon
+				|| cause instanceof MissileWeapon;
+	}
 
 	public static class ProvokedAngerTracker extends FlavourBuff{
 		{ type = Buff.buffType.POSITIVE; }
@@ -1474,10 +1583,10 @@ public enum Talent {
 		//tier 3
 		switch (cls){
 			case BERSERKER: default:
-				Collections.addAll(tierTalents, ENDLESS_RAGE, PAIN_SCAR, FANATICISM_MAGIC,STRONGMAN);
+				Collections.addAll(tierTalents, ENDLESS_RAGE, FURIOUS_RETALIATION, RAMPAGE_ARMOR, STRONGMAN);
 				break;
 			case GLADIATOR:
-				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, VENT_NOPLACE);
+				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, FINAL_STRIKE,COMBO_PREMEDITATION);
 				break;
 			case BATTLEMAGE:
 				Collections.addAll(tierTalents, PSIONIC_STRIDE, RECURRING_CYCLE, DOUBLE_EXISTENCE, PSIONIC_ACCELERATION);
@@ -1572,6 +1681,7 @@ public enum Talent {
 		renamedTalents.put("MYSTICAL_CHARGE",           "RECURRING_CYCLE");
 		renamedTalents.put("EXCESS_CHARGE",             "DOUBLE_EXISTENCE");
 		renamedTalents.put("MAGIC_ABSORB",              "PSIONIC_ACCELERATION");
+		renamedTalents.put("FANATICISM_MAGIC",          "RAMPAGE_ARMOR");
 		//v2.2.0
 		renamedTalents.put("RESTORED_WILLPOWER",        "LIQUID_WILLPOWER");
 		renamedTalents.put("ENERGIZING_UPGRADE",        "INSCRIBED_POWER");

@@ -304,7 +304,10 @@ public class Dart extends MissileWeapon {
 				// 应用选中的效果
 				for (Class<?> effect : selectedEffects) {
 					if (effect == Poison.class) {
-						Buff.affect(defender, Poison.class).set(duration);
+						Hero sourceHero = attacker instanceof Hero
+								? (Hero) attacker
+								: null;
+						Buff.affect(defender, Poison.class).setWithHero(duration, sourceHero);
 					} else if (effect == Blindness.class) {
 						Buff.prolong(defender, Blindness.class, duration);
 					} else if (effect == Frost.class) {
