@@ -428,7 +428,7 @@ public class AncientMysteryCityBossLevel extends Level{
 
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
         //特别情况下 部分玩家可能会把门烧了 灰烬也可以作为检查点
-        if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
+        if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue || map[getBossDoor] == Terrain.FURROWED_GRASS && isTrue) {
             progress();
         }
 
