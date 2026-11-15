@@ -115,7 +115,7 @@ public class WeeklyRankingsScene extends PixelScene {
         rangeText.hardlight(0x888888);
         add(rangeText);
 
-        prevWeekBtn = new IconButton(Icons.get(Icons.LEFTARROW)) {
+        prevWeekBtn = new IconButton(Icons.get(Icons.LEFTBUTTON)) {
             @Override
             protected void onClick() {
                 changeWeek(-1);
@@ -124,7 +124,7 @@ public class WeeklyRankingsScene extends PixelScene {
         prevWeekBtn.setSize(14, 14);
         add(prevWeekBtn);
 
-        nextWeekBtn = new IconButton(Icons.get(Icons.RIGHTARROW)) {
+        nextWeekBtn = new IconButton(Icons.get(Icons.RIGHTBUTTON)) {
             @Override
             protected void onClick() {
                 changeWeek(1);
@@ -676,7 +676,7 @@ public class WeeklyRankingsScene extends PixelScene {
             accent = new ColorBlock(0, 0, 0x45637D);
             add(accent);
 
-            flare = new Flare(6, 13);
+            flare = new Flare(6, 16);
             flare.angularSpeed = 45;
             flare.visible = false;
             add(flare);
