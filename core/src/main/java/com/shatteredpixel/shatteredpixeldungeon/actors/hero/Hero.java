@@ -262,6 +262,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.AlchemyScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -599,7 +600,12 @@ public class Hero extends Char {
 			((Doom)cause).onDeath();
 		}
 
-		Dungeon.deleteGame(GamesInProgress.curSlot, true);
+		// 联机模式：死亡不删除存档。玩家可从死亡界面选择“重生”，
+		// 在同一存档槽/种子下从第 0 层重新开始（见 Mp.rebirthInCurrentWorld）。
+		// 每日挑战保持原规则（固定种子，不允许重生）。
+		if (!(Mp.get().isInRoom() && !Dungeon.daily)) {
+			Dungeon.deleteGame(GamesInProgress.curSlot, true);
+		}
 	}
 
 	public static void preview( GamesInProgress.Info info, Bundle bundle ) {
