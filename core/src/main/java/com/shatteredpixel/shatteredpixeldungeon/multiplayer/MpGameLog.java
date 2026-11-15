@@ -144,7 +144,7 @@ public class MpGameLog extends Component {
             case Mp.MPLOG_CHAT_SELF:
                 return Window.Pink_COLOR;
             case Mp.MPLOG_CHAT_OTHER:
-                return 0xB06BE0;
+                return 0x4FC3F7;
             case Mp.MPLOG_CHAT_SYSTEM:
             case Mp.MPLOG_EVENT:
                 return 0xFFD700;
