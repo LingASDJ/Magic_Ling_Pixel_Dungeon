@@ -85,10 +85,16 @@ public class Shovel extends MeleeWeapon{
             @Override
             protected boolean act() {
                 if (!def.isAlive() && killGaveExp(def) && dropRoll()) {
-                    Heap heap = Dungeon.level.drop(Generator.random(), def.pos);
-                    heap.setHauntedIfCursed();
-                    heap.type = Heap.Type.SKELETON;
-                    heap.sprite.view( heap );
+                    // 击杀点可能是商店商品或其他特殊堆（宝箱、坟墓等），
+                    // 直接改堆类型会让下面的商品变成免费拾取；这时把骸骨挪到附近的安全格。
+                    // 骸骨只是额外掉落，找不到相邻安全格就跳过，不放到远处。
+                    int cell = findSafeContainerCell(def.pos, false);
+                    if (cell != -1) {
+                        Heap heap = Dungeon.level.drop(Generator.random(), cell);
+                        heap.setHauntedIfCursed();
+                        heap.type = Heap.Type.SKELETON;
+                        heap.sprite.view( heap );
+                    }
                 }
                 Actor.remove(this);
                 return true;
@@ -115,7 +121,7 @@ public class Shovel extends MeleeWeapon{
         // Pick a safe cell before spending charge. Never drop the chest onto a
         // shop (FOR_SALE/FOR_ICE/FOR_RUSH) or another chest heap: changing that
         // heap's type to CHEST would make the goods underneath free.
-        int chestCell = findChestCell(hero.pos);
+        int chestCell = findSafeContainerCell(hero.pos, true);
         if (chestCell == -1) {
             GLog.w(Messages.get(this,"no_space"));
             return;
@@ -158,26 +164,32 @@ public class Shovel extends MeleeWeapon{
 
     // ========== 一些详细实现 ==========
 
-    // 找一个可以安全放置宝箱的格子：普通地面或普通物品堆，不能是商店商品、
-    // 已有宝箱等特殊堆，否则改堆类型会让下面的商品变成免费拾取。
-    private int findChestCell(int origin) {
-        if (canPlaceChest(origin)) {
+    // 找一个可以安全放置容器（宝箱/骸骨）的格子：普通地面或普通物品堆，
+    // 不能是商店商品、已有宝箱等特殊堆，否则改堆类型会让下面的商品变成免费拾取。
+    // searchWholeLevel 为 true 时邻格不可用会继续在全层找（武技宝箱必须放下）；
+    // 为 false 时只考虑原地和邻格，找不到就返回 -1（骸骨不值得被丢到远处）。
+    private int findSafeContainerCell(int origin, boolean searchWholeLevel) {
+        if (canPlaceContainer(origin)) {
             return origin;
         }
 
-        // 先找英雄周围 8 格，避免宝箱被放到远处
+        // 先找周围 8 格，避免容器被放到远处
         for (int i : PathFinder.NEIGHBOURS8) {
             int cell = origin + i;
-            if (canPlaceChest(cell) && Actor.findChar(cell) == null) {
+            if (canPlaceContainer(cell) && Actor.findChar(cell) == null) {
                 return cell;
             }
+        }
+
+        if (!searchWholeLevel) {
+            return -1;
         }
 
         // 邻格都被占用时，找最近的可用格
         int best = -1;
         int bestDist = Integer.MAX_VALUE;
         for (int cell = 0; cell < Dungeon.level.length(); cell++) {
-            if (canPlaceChest(cell) && Actor.findChar(cell) == null) {
+            if (canPlaceContainer(cell) && Actor.findChar(cell) == null) {
                 int dist = Dungeon.level.distance(origin, cell);
                 if (dist < bestDist) {
                     bestDist = dist;
@@ -188,7 +200,7 @@ public class Shovel extends MeleeWeapon{
         return best;
     }
 
-    private boolean canPlaceChest(int cell) {
+    private boolean canPlaceContainer(int cell) {
         if (cell < 0 || cell >= Dungeon.level.length()) {
             return false;
         }
