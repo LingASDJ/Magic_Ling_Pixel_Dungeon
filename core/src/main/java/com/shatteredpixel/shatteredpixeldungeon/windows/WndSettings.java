@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -1267,6 +1268,7 @@ public class WndSettings extends WndTabbed {
 
 		CheckBox chkFireBase;
 		CheckBox chkMpChat;
+		RedButton btnClearMp;
 
 		@Override
 		protected void createChildren() {
@@ -1322,6 +1324,32 @@ public class WndSettings extends WndTabbed {
 			};
 			chkMpChat.checked(SPDSettings.mpChatBubble());
 			add(chkMpChat);
+
+			// 手动清理历史多人缓存（保留当前世界/房间选中种子的档）
+			btnClearMp = new RedButton(Messages.get(this, "clear_mp_cache")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					if (ShatteredPixelDungeon.scene() == null) return;
+					ShatteredPixelDungeon.scene().add(new WndOptions(
+							Icons.get(Icons.WARNING),
+							Messages.get(DataTab.this, "clear_mp_title"),
+							Messages.get(DataTab.this, "clear_mp_desc"),
+							Messages.get(DataTab.this, "clear_mp_confirm"),
+							Messages.get(DataTab.this, "cancel")){
+						@Override
+						protected void onSelect(int index) {
+							if (index != 0) return;
+							int removed = Mp.get().clearGuestStorage();
+							if (ShatteredPixelDungeon.scene() != null) {
+								ShatteredPixelDungeon.scene().add(new WndMessage(
+										Messages.get(DataTab.this, "clear_mp_done", removed)));
+							}
+						}
+					});
+				}
+			};
+			add(btnClearMp);
 		}
 
 		@Override
@@ -1354,6 +1382,9 @@ public class WndSettings extends WndTabbed {
 			// 多人聊天气泡开关始终显示（桌面/手机都可用）
 			chkMpChat.setRect(0, pos + GAP, width, BTN_HEIGHT);
 			pos = chkMpChat.bottom();
+
+			btnClearMp.setRect(0, pos + GAP, width, BTN_HEIGHT);
+			pos = btnClearMp.bottom();
 
 			height = pos;
 

@@ -5320,11 +5320,18 @@ public class Mp {
                 Long seed = null;
                 if (f.isDirectory()) {
                     if (name.startsWith(MP_WORLD_PREFIX)) {
+                        Long worldSeed = parseMpSeed(name.substring(MP_WORLD_PREFIX.length()));
                         if (FileUtils.fileLength(name + "/game.dat") <= 1) {
-                            FileUtils.deleteDir(name);   // 残缺的世界目录直接清掉
+                            // 残缺的世界目录直接清掉；对应英雄档一并清理（当前/选中种子除外）
+                            if (worldSeed != null && worldSeed != this.worldSeed
+                                    && !(roomSave.selected && roomSave.seed == worldSeed)) {
+                                deleteMpSeed(worldSeed);
+                            } else {
+                                FileUtils.deleteDir(name);
+                            }
                             continue;
                         }
-                        seed = parseMpSeed(name.substring(MP_WORLD_PREFIX.length()));
+                        seed = worldSeed;
                     }
                 } else {
                     if (name.endsWith(".bak")) name = name.substring(0, name.length() - 4);
@@ -5362,6 +5369,11 @@ public class Mp {
         }
     }
 
+    /** 启动/回标题时触发一次多人缓存清理（不影响联机状态）。 */
+    public void cleanupMultiplayerStorageOnStartup() {
+        cleanupMultiplayerStorage();
+    }
+
     /** 删除某个房主世界种子对应的访客英雄档与持久世界。 */
     private static void deleteMpSeed(long seed) {
         if (FileUtils.dirExists(MP_WORLD_PREFIX + seed)) {
@@ -5380,6 +5392,41 @@ public class Mp {
         } catch (Throwable t) {
             return null;
         }
+    }
+
+    /**
+     * 手动清理多人缓存：删除除当前世界/房间选中种子外的所有 mp_world_* 与 mp_hero_*，
+     * 用于一次性清掉历史测试/失效房主世界。
+     *
+     * @return 删除的文件/目录数量。
+     */
+    public synchronized int clearGuestStorage() {
+        int deleted = 0;
+        long keep = worldSeed;
+        long room = roomSave.selected ? roomSave.seed : Long.MIN_VALUE;
+        try {
+            for (FileHandle f : FileUtils.getFileHandle("").list()) {
+                String name = f.name();
+                if (f.isDirectory()) {
+                    if (!name.startsWith(MP_WORLD_PREFIX)) continue;
+                    Long seed = parseMpSeed(name.substring(MP_WORLD_PREFIX.length()));
+                    if (seed != null && (seed == keep || seed == room)) continue;
+                    if (FileUtils.deleteDir(name)) deleted++;
+                } else {
+                    String base = name;
+                    if (base.endsWith(".bak") || base.endsWith(".tmp")) {
+                        base = base.substring(0, base.length() - 4);
+                    }
+                    if (!base.startsWith("mp_hero_") || !base.endsWith(".dat")) continue;
+                    Long seed = parseMpSeed(base.substring("mp_hero_".length(), base.length() - 4));
+                    if (seed != null && (seed == keep || seed == room)) continue;
+                    if (f.delete()) deleted++;
+                }
+            }
+        } catch (Throwable ignored) {
+            // 手动清理失败不抛异常；调用方只展示删除数量
+        }
+        return deleted;
     }
 
     // ---------------------------------------------------------------- 每帧
