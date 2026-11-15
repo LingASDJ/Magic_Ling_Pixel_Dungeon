@@ -170,7 +170,10 @@ public class Heap implements Bundlable {
 			Sample.INSTANCE.play( Assets.Sounds.CURSED );
 		}
 		boolean isYTS = level instanceof NormalZeroFiveLevel;
-		if(!isYTS){
+		// NormalZeroFiveLevel 的白色墓碑是元塔传送石碑，打开后需要保持原样；
+		// 其他容器（例如铲子挖出的宝箱、骸骨、坟墓）必须正常变成普通物品堆，
+		// 否则 0 层挖出的箱子永远无法打开/拾取。
+		if(!(isYTS && type == Type.WHITETOMB)){
 			type = Type.HEAP;
 			ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(hero, 1);
 			if (bonus != null && !bonus.isEmpty()) {
