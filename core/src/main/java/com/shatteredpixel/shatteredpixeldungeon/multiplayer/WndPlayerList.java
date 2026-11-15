@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.multiplayer;
 
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.input.PointerEvent;
@@ -73,8 +74,15 @@ public class WndPlayerList extends Window {
             rowGizmos.add(rowClick);
 
             if (info.heroClass != null) {
-                Image icon = new Image(info.heroClass.spritesheet(), 0, 0, 12, 15);
-                icon.scale.set(MpUi.scale());
+                Image icon = HeroSkins.listAvatar(info.heroClass, info.skin, info.tier);
+                if (icon == null) {
+                    icon = new Image(info.heroClass.spritesheet(), 0, 0, 12, 15);
+                    icon.scale.set(MpUi.scale());
+                } else {
+                    // 皮肤头像尺寸不一（普通 12×15、特殊 20×22 / 28×19）：统一缩放到行高内
+                    float fit = Math.min(12f / icon.width(), 15f / icon.height());
+                    icon.scale.set(MpUi.scale() * fit);
+                }
                 icon.setPos(0f, y + MpUi.px(1f));
                 add(icon);
                 rowGizmos.add(icon);

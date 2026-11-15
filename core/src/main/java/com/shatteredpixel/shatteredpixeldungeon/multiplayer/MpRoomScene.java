@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.StartScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
@@ -440,8 +441,15 @@ public class MpRoomScene extends PixelScene {
             name.maxWidth(MpUi.i(220f));
             cls.text(classTitle(info.heroClass));
             if (info.heroClass != null) {
-                hero = new Image(info.heroClass.spritesheet(), 0, 0, 12, 15);
-                hero.scale.set(MpUi.scale());
+                hero = HeroSkins.listAvatar(info.heroClass, info.skin);
+                if (hero == null) {
+                    hero = new Image(info.heroClass.spritesheet(), 0, 0, 12, 15);
+                    hero.scale.set(MpUi.scale());
+                } else {
+                    // 皮肤头像尺寸不一：统一缩放到行内 12×15 的小图区域
+                    float fit = Math.min(12f / hero.width(), 15f / hero.height());
+                    hero.scale.set(MpUi.scale() * fit);
+                }
                 add(hero);
             }
             if (info.badges != null) {

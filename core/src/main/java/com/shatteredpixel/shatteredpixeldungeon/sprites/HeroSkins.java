@@ -4,6 +4,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.MovieClip.Animation;
+import com.watabou.noosa.TextureFilm;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -154,7 +156,7 @@ public final class HeroSkins {
 
     /** 当前英雄是否使用了注册的特殊 sprite 皮肤。 */
     public static boolean isCustomSkin(Hero hero) {
-        SkinDef def = get(hero.heroClass, hero.heroClass.GetSkin());
+        SkinDef def = get(hero.heroClass, hero.skinIndex());
         return def != null && def.spriteFactory != null;
     }
 
@@ -175,16 +177,31 @@ public final class HeroSkins {
 
     /** 为当前英雄创建游戏内 sprite。未注册特殊 sprite 时返回默认 HeroSprite。 */
     public static HeroSprite createSprite(Hero hero) {
-        SkinDef def = get(hero.heroClass, hero.heroClass.GetSkin());
+        SkinDef def = get(hero.heroClass, hero.skinIndex());
         if (def != null && def.spriteFactory != null) {
             return def.spriteFactory.get();
         }
-        return new HeroSprite();
+        return new HeroSprite(hero);
+    }
+
+    /**
+     * 为远端幽灵/克隆体创建 sprite：按该英雄自己的 skinIndex 映射，
+     * 自定义皮肤使用注册的纹理与帧布局，普通皮肤交给 HeroSprite（tier 已按皮肤映射）。
+     *
+     * @param hero 远端或预览英雄。
+     * @return 对应皮肤的精灵。
+     */
+    public static HeroSprite createRemoteSprite(Hero hero) {
+        SkinDef def = get(hero.heroClass, hero.skinIndex());
+        if (def != null && def.texturePath != null && def.frameW > 0 && def.frameH > 0) {
+            return new RemoteHeroSprite(hero, def);
+        }
+        return new HeroSprite(hero);
     }
 
     /** 当前英雄的小头像；非特殊头像返回 null。 */
     public static Image customAvatar(Hero hero) {
-        return avatarFor(hero.heroClass, hero.heroClass.GetSkin());
+        return avatarFor(hero.heroClass, hero.skinIndex());
     }
 
     /** 按 (职业, skinIndex) 获取小头像；无特殊头像返回 null。 */
@@ -196,7 +213,111 @@ public final class HeroSkins {
         return null;
     }
 
+    /**
+     * 联机房间/玩家列表行用的小头像：特殊皮肤优先用注册头像，
+     * 普通皮肤按 skinIndex 映射到职业精灵的对应 tier 帧。
+     *
+     * @param cls 职业；null 时返回 null。
+     * @param skinIndex 皮肤索引（-1=未知，按默认皮肤处理）。
+     * @return 头像图片；调用方负责缩放。
+     */
+    public static Image listAvatar(HeroClass cls, int skinIndex) {
+        return listAvatar(cls, skinIndex, -1);
+    }
+
+    /**
+     * 带护甲外观的联机头像：tier>=0 时直接使用对端同步的精灵 tier（默认皮肤也能显示护甲），
+     * 否则退回按皮肤映射的 tier。
+     *
+     * @param cls 职业。
+     * @param skinIndex 皮肤索引。
+     * @param tier 对端精灵 tier；-1=未知。
+     * @return 头像图片；调用方负责缩放。
+     */
+    public static Image listAvatar(HeroClass cls, int skinIndex, int tier) {
+        if (cls == null) return null;
+        Image custom = avatarFor(cls, skinIndex);
+        if (custom != null) return custom;
+        return HeroSprite.avatar(cls, tier >= 0 ? tier : listSkinTier(skinIndex));
+    }
+
+    /** 皮肤索引对应的精灵 tier（与皮肤选择界面的缩略图映射保持一致）。 */
+    private static int listSkinTier(int skinIndex) {
+        switch (skinIndex) {
+            case 1:  return 9;
+            case 2:  return 11;
+            case 3:  return 10;
+            case 4:  return 13;
+            case 5:  return 14;
+            default: return 0;
+        }
+    }
+
     // ===================== 已注册的皮肤 =====================
+
+    /**
+     * 按 {@link SkinDef} 的纹理/帧布局渲染的 HeroSprite，用于远端幽灵与克隆体。
+     * 构造时先走默认 HeroSprite 初始化，再套用自定义皮肤纹理/帧；普通皮肤不受影响。
+     */
+    public static class RemoteHeroSprite extends HeroSprite {
+
+        private final Hero owner;
+        private final SkinDef def;
+
+        public RemoteHeroSprite(Hero owner, SkinDef def) {
+            super(owner);   // 此时 def 尚未赋值，父类 updateArmor 会先走默认逻辑
+            this.owner = owner;
+            this.def = def;
+            updateArmor();
+        }
+
+        @Override
+        public void updateArmor() {
+            if (def == null || def.texturePath == null
+                    || def.frameW <= 0 || def.frameH <= 0
+                    || def.idleFrames == null || def.idleFrames.length == 0
+                    || def.runFrames == null || def.runFrames.length == 0
+                    || def.dieFrames == null || def.dieFrames.length == 0
+                    || def.attackFrames == null || def.attackFrames.length == 0) {
+                super.updateArmor();
+                return;
+            }
+
+            texture(def.texturePath);
+            TextureFilm film = new TextureFilm(def.texturePath, def.frameW, def.frameH);
+
+            idle = new Animation(def.idleFps, true);
+            idle.frames(film, box(def.idleFrames));
+
+            run = new Animation(def.runFps, true);
+            run.frames(film, box(def.runFrames));
+
+            die = new Animation(def.dieFps, false);
+            die.frames(film, box(def.dieFrames));
+
+            attack = new Animation(def.attackFps, false);
+            attack.frames(film, box(def.attackFrames));
+
+            zap = attack.clone();
+            operate = attack.clone();
+            read = attack.clone();
+            fly = new Animation(1, true);
+            fly.frames(film, def.idleFrames[0]);
+
+            if (owner.isAlive()) {
+                idle();
+            } else {
+                die();
+            }
+        }
+
+        /** 将 int[] 装箱为 Object[]，供 Animation.frames(TextureFilm, Object...) 使用。 */
+        private static Object[] box(int[] arr) {
+            Object[] result = new Object[arr.length];
+            for (int i = 0; i < arr.length; i++) result[i] = arr[i];
+            return result;
+        }
+    }
 
     static {
         // ---- 大立绘皮肤（普通 sprite，仅预览图不同） ----
