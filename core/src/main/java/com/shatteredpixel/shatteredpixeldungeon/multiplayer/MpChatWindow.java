@@ -47,7 +47,7 @@ public class MpChatWindow extends Window {
     /** 自己发送的消息：粉色。 */
     private static final int COLOR_SELF = Window.Pink_COLOR;
     /** 其他玩家：紫色。 */
-    private static final int COLOR_OTHER = 0xB06BE0;
+    private static final int COLOR_OTHER = 0x4FC3F7;
     /** 特殊事件/系统提示：金色。 */
     private static final int COLOR_SYSTEM = 0xFFD700;
 
@@ -116,7 +116,7 @@ public class MpChatWindow extends Window {
         float rowY = listTop + listHeight + MpUi.px(4f);
         int textSize = Math.max(6, (int) PixelScene.uiCamera.zoom * MpUi.font(8));
         // 作者要求：聊天界面不要用 Scroll（卷轴）样式，输入框改用普通窗口样式。
-        input = new TextInput(Chrome.get(Chrome.Type.WINDOW), false, textSize) {
+        input = new TextInput(Chrome.get(Chrome.Type.TOAST_WHITE), false, textSize) {
             @Override
             public void enterPressed() {
                 sendMessage();
