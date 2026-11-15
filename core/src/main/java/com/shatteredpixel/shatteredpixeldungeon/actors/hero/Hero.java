@@ -1351,6 +1351,12 @@ public class Hero extends Char {
 
 	@Override
 	public void spend( float time ) {
+		// 手起刀落：击杀后的这次行动不消耗回合。普通攻击在 onAttackComplete 中已处理，
+		// 这里再兜底处理武技击杀（武技回调直接调用 spend/spendAndNext，不经过 onAttackComplete）。
+		if (buff(Talent.LethalMomentumTracker.class) != null) {
+			buff(Talent.LethalMomentumTracker.class).detach();
+			time = 0f;
+		}
 		super.spend(time);
 	}
 
@@ -1376,6 +1382,12 @@ public class Hero extends Char {
 	@Override
 	public boolean act() {
 		actedThisTurn = false;
+
+		// 手起刀落只对击杀的那一次行动生效；若击杀动作本身已经不消耗回合
+		// （例如顺劈类武技直接调用 next()），清理残留标记，避免影响后续移动/攻击。
+		if (buff(Talent.LethalMomentumTracker.class) != null) {
+			buff(Talent.LethalMomentumTracker.class).detach();
+		}
 
 		PropBuff propBuffbuff = buff(PropBuff.class);
 		if (propBuffbuff != null) {

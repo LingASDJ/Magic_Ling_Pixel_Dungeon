@@ -93,14 +93,13 @@ public class MerchantSword extends MeleeWeapon{
 
                 // attack第二个参数是倍数，第三个extraDamage=0，不再单独追加固定伤害
                 if (hero.attack(enemy, finalMulti, 0, Char.INFINITE_ACCURACY)) {
-                    if (!(enemy instanceof Wraith)) {
+                    // 只有真正击杀时才触发武技击杀联动（夺命余势/金币掉落）；
+                    // 命中但未击杀时不能触发。
+                    if (!(enemy instanceof Wraith) && !enemy.isAlive()) {
                         onAbilityKill(hero, enemy);
                         int explorer = Dungeon.depth / 5;
                         int value = Random.IntRange(explorer < 1 ? 20 : explorer * 20, explorer < 1 ? 35 : explorer  * 35);
-                        if(!enemy.isAlive()){
-                            Dungeon.level.drop(new Gold(value), enemy.pos).sprite.drop();
-                        }
-
+                        Dungeon.level.drop(new Gold(value), enemy.pos).sprite.drop();
                     }
                     Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
                 }

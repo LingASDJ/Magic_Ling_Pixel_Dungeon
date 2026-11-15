@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.spdtomlpd.TragicCode;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -124,7 +123,7 @@ public class LifeTreeSword extends MeleeWeapon {
         }
 
         LifeTreant ally = new LifeTreant();
-        ally.setLevel(this,buffedLvl());
+        ally.setLevel(buffedLvl());
         ally.pos = pos;
         GameScene.add(ally);
         ally.HP = ally.HT;
@@ -166,7 +165,8 @@ public class LifeTreeSword extends MeleeWeapon {
 
     public static class LifeTreant extends Mob {
 
-        public MeleeWeapon weapon;
+        // 召唤时快照的武器等级，只用于计算食人花自身属性，不能写回英雄的剑
+        private int weaponLevel = 0;
 
         {
             alignment = Alignment.ALLY;
@@ -176,13 +176,31 @@ public class LifeTreeSword extends MeleeWeapon {
             immunities.add(ToxicGas.class);
 
             properties.add(Property.ACIDIC);
-            weapon = (MeleeWeapon) Dungeon.hero.belongings.weapon();
         }
 
-        public void setLevel(Weapon weapon,int lvl) {
-            weapon.level = lvl;
+        public void setLevel(int lvl) {
+            weaponLevel = lvl;
             HT = 15 + lvl * 4;
             defenseSkill = 6 + lvl;
+        }
+
+        private static final String WEAPON_LEVEL = "weapon_level";
+
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put(WEAPON_LEVEL, weaponLevel);
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+            if (bundle.contains(WEAPON_LEVEL)) {
+                weaponLevel = bundle.getInt(WEAPON_LEVEL);
+            } else {
+                // 旧存档没有记录召唤时的武器等级，从生命上限反推
+                weaponLevel = Math.max(0, (HT - 15) / 4);
+            }
         }
 
         @Override
@@ -195,17 +213,17 @@ public class LifeTreeSword extends MeleeWeapon {
 
         @Override
         public int damageRoll() {
-            return Random.NormalIntRange(4 + weapon.level, 9 + weapon.level);
+            return Random.NormalIntRange(4 + weaponLevel, 9 + weaponLevel);
         }
 
         @Override
         public int attackSkill(Char target) {
-            return 10 + weapon.level * 3;
+            return 10 + weaponLevel * 3;
         }
 
         @Override
         public int drRoll() {
-            return Random.NormalIntRange(1, 3 + weapon.level/2);
+            return Random.NormalIntRange(1, 3 + weaponLevel/2);
         }
 
         @Override

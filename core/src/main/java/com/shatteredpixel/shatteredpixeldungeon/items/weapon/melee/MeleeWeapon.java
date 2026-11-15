@@ -290,7 +290,11 @@ public class MeleeWeapon extends Weapon {
 	}
 
 	public static void onAbilityKill( Hero hero, Char killed ){
-		if (killed.alignment == Char.Alignment.ENEMY && hero.hasTalent(Talent.LETHAL_HASTE)){
+		// 只有在目标确实死亡时才算武技击杀；避免命中但未击杀时误触发夺命余势等联动
+		if (killed == null || killed.isAlive() || killed.alignment != Char.Alignment.ENEMY){
+			return;
+		}
+		if (hero.hasTalent(Talent.LETHAL_HASTE)){
 			//effectively 3/5 turns of greater haste
 			Buff.affect(hero, GreaterHaste.class).set(2 + 2*hero.pointsInTalent(Talent.LETHAL_HASTE));
 		}
