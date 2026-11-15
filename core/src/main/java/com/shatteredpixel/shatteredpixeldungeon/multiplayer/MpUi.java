@@ -7,8 +7,11 @@ import com.watabou.noosa.Camera;
  * 联机自定义 UI 的等比缩放工具。
  *
  * <p>大厅/房间/个人主页等界面最初按桌面虚拟宽度约 480 设计；手机端
- * {@link Camera#main} 的虚拟宽度通常只有 270~400，直接使用固定尺寸会显得臃肿。
+ * UI 相机的虚拟宽度通常只有 270~400，直接使用固定尺寸会显得臃肿。
  * 这里按可用宽度相对 480 等比缩小，最大不超过 1（桌面保持原样）。</p>
+ *
+ * <p>所有尺寸都基于 {@link PixelScene#uiCamera}，不能使用局内的世界相机
+ * {@link Camera#main}：世界相机会随玩家双指缩放改变宽高，导致弹窗尺寸不稳定。</p>
  */
 public final class MpUi {
 
@@ -31,8 +34,8 @@ public final class MpUi {
      * 竖屏使用更小的设计基准，避免手机上所有控件被 480 宽基准压得过小。</p>
      */
     public static float scale() {
-        float width = Camera.main != null ? Camera.main.width : DESIGN_WIDTH;
-        float height = Camera.main != null ? Camera.main.height : DESIGN_HEIGHT;
+        float width = screenWidth();
+        float height = screenHeight();
         float designWidth = portrait() ? DESIGN_WIDTH_PORTRAIT : DESIGN_WIDTH;
         float designHeight = portrait() ? DESIGN_HEIGHT_PORTRAIT : DESIGN_HEIGHT;
         float scale = Math.min(width / designWidth, height / designHeight);
@@ -66,13 +69,20 @@ public final class MpUi {
         return !PixelScene.landscape();
     }
 
-    /** 当前游戏画面的虚拟宽度。 */
+    /** 当前游戏画面的虚拟宽度。
+     *
+     * <p>必须使用 UI 相机（{@link PixelScene#uiCamera}）而不是 {@link Camera#main}：
+     * 局内的 main 是世界相机，玩家双指缩放会改变它的 width/height，
+     * 用它会算出不同的缩放系数，表现为同一个弹窗有时很大、有时正常。</p>
+     */
     public static float screenWidth() {
+        if (PixelScene.uiCamera != null) return PixelScene.uiCamera.width;
         return Camera.main != null ? Camera.main.width : DESIGN_WIDTH;
     }
 
-    /** 当前游戏画面的虚拟高度。 */
+    /** 当前游戏画面的虚拟高度（使用 UI 相机，理由见 {@link #screenWidth()}）。 */
     public static float screenHeight() {
+        if (PixelScene.uiCamera != null) return PixelScene.uiCamera.height;
         return Camera.main != null ? Camera.main.height : DESIGN_HEIGHT;
     }
 
@@ -111,5 +121,19 @@ public final class MpUi {
                 screenWidth() - chromeMarginHor - sideMargin() * 2f);
         if (portrait()) return available;
         return Math.min(px(designWidth), available);
+    }
+
+    /**
+     * 窗口内容可用的最大高度：屏幕高度扣掉窗口边框（chrome）与上下留白。
+     *
+     * <p>聊天/玩家列表这类高度随内容变化的弹窗用它做上限，避免在小屏、
+     * 横竖屏切换或异常缩放下超出屏幕。</p>
+     *
+     * @param chromeMarginVer 窗口 chrome 的上下边距和（虚拟像素）
+     * @return 实际可用的窗口内容高度（虚拟像素）
+     */
+    public static float windowHeightLimit(float chromeMarginVer) {
+        return Math.max(px(40f),
+                screenHeight() - chromeMarginVer - sideMargin() * 2f);
     }
 }

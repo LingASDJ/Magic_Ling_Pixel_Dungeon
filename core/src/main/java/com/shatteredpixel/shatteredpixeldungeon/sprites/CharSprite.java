@@ -196,6 +196,19 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		ch.updateSpriteState();
 	}
 
+	/**
+	 * 移除 link() 时为非本机角色自动创建的内置血条（{@link CharHealthIndicator}）。
+	 *
+	 * <p>联机远端玩家的幽灵由多人模块自己绘制血条；如果保留内置血条，
+	 * 远端玩家受伤时头顶会同时出现两条血条。此方法只供联机幽灵使用。</p>
+	 */
+	public void removeHealthIndicator() {
+		if (health != null) {
+			health.killAndErase();
+			health = null;
+		}
+	}
+
 	@Override
 	public void destroy() {
 		super.destroy();

@@ -5187,6 +5187,9 @@ public class Mp {
                     p.remote.HT = p.ht;
                 }
                 p.remoteSprite = new HeroSprite(p.remote);
+                // HeroSprite/CharSprite 会为非本机角色自动创建内置血条；
+                // 联机幽灵已有自己的血条（hpBg/hpFill），移除内置血条避免受伤时出现两条。
+                p.remoteSprite.removeHealthIndicator();
                 gs.addToFront(p.remoteSprite);
             } catch (Throwable t) {
                 status = Messages.get(Mp.class, "status_spawn_peer_failed", t.getMessage());

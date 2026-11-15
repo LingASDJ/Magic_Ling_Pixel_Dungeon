@@ -159,6 +159,11 @@ public class WndPlayerList extends Window {
 
         int newHeight = (int) Math.max(top + MpUi.i(ROW_HEIGHT),
                 y + hint.height() + MpUi.px(2f));
+        // 高度上限：正常最多 4 人不会触发，用于小屏/横竖屏切换时兜底，
+        // 避免玩家名单窗口超出屏幕；但至少要保留标题和第一行。
+        int minHeight = (int) Math.ceil(top + MpUi.i(ROW_HEIGHT));
+        newHeight = Math.max(minHeight, Math.min(newHeight,
+                (int) Math.floor(MpUi.windowHeightLimit(chrome.marginVer()))));
         if (newHeight != height) {
             resize((int) Math.ceil(width), newHeight);
         }

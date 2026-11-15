@@ -103,6 +103,11 @@ public class MpChatWindow extends Window {
         listTop = Math.max(title.bottom(), close.bottom()) + MpUi.px(3f);
         listHeight = MpUi.px(LIST_HEIGHT);
         float inputHeight = Math.max(MpUi.px(INPUT_HEIGHT), 18f);
+        // 高度上限：小屏/异常缩放下收缩消息区，保证窗口整体不超出屏幕。
+        // 消息区最少保留 20 设计像素，避免输入框被压到标题下面。
+        float maxListHeight = MpUi.windowHeightLimit(chrome.marginVer())
+                - listTop - MpUi.px(4f) - inputHeight - margin;
+        listHeight = Math.min(listHeight, Math.max(MpUi.px(20f), maxListHeight));
         list = new ScrollPane(new Component());
         content = list.content();
         add(list);
