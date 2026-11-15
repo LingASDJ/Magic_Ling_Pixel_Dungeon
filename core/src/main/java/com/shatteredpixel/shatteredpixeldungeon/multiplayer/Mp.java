@@ -169,6 +169,9 @@ public class Mp {
     /** 版本握手超时（毫秒）：超时视为对方版本过旧或未完成握手。 */
     private static final long HANDSHAKE_TIMEOUT_MS = 5000L;
 
+    /** 房主进入新档后，等待访客在弹窗点击“确认”的最长时间（毫秒）。 */
+    private static final long WORLD_RESET_CONFIRM_TIMEOUT_MS = 300_000L;
+
     /** 他人最高分对局详情请求超时（毫秒）。 */
     private static final long PROFILE_REQUEST_TIMEOUT_MS = 5000L;
 
@@ -479,7 +482,7 @@ public class Mp {
 
     private StatePayload pendingState;        // 选职业期间暂存的最新 STATE
     private WndHeroClassSelect classWindow;   // 职业选择窗口（断连时自动关掉）
-    private volatile WndMessage hostDeathPopup;   // 房主死亡弹窗（进入新档时关掉）
+    private volatile WndHostNewGame hostNewGamePrompt;   // 房主进入新档：等待访客确认
         /** 玩家名持久化文件名。 */
     public static final String MP_NAME_FILE = "mp_name.txt";
 
@@ -705,6 +708,8 @@ public class Mp {
     private MpGameLog mpLogPane;
     /** ROOM_EVENT 事件：某玩家已返回房间。 */
     static final int ROOM_EVENT_RETURNED = 1;
+    /** ROOM_EVENT 事件：某玩家已从第 0 层重生（事件 id = 该玩家）。 */
+    static final int ROOM_EVENT_REBIRTH = 2;
 
     // ---------------------------------------------------------------- 开房
 
@@ -1842,6 +1847,63 @@ public class Mp {
         }
     }
 
+    /**
+     * 联机死亡后的“重生”：保留当前存档槽与种子，在第 0 层以全新英雄重新开始。
+     *
+     * <p>房主：访客留在原地，只通知其关闭“等待房主新游戏”的弹窗；
+     * 访客：在本地同一房主世界种子的第 0 层重生，保持连接。</p>
+     *
+     * @return 是否成功发起
+     */
+    public boolean rebirthInCurrentWorld() {
+        if (!isInRoom() || Dungeon.daily) return false;
+        HeroClass cls = Dungeon.hero != null
+                ? Dungeon.hero.heroClass : GamesInProgress.selectedClass;
+        if (cls == null) return false;
+        long seed = Dungeon.seed;
+        if (seed < 0) return false;
+        int slot = GamesInProgress.curSlot;
+        if (slot <= 0) return false;
+
+        // 保留本局的挑战/DLC/难度，Dungeon.init() 会从 SPDSettings 重新读取
+        SPDSettings.challenges(Dungeon.challenges);
+        SPDSettings.dlc(Dungeon.dlcs);
+        SPDSettings.difficulty(Dungeon.difficultys);
+
+        GamesInProgress.selectedClass = cls;
+        GamesInProgress.curSlot = slot;
+        Dungeon.hero = null;
+        ActionIndicator.action = null;
+        Dungeon.overrideSeed = seed;
+        roomSeedPending = true;
+        pendingState = null;
+
+        if (role == Role.CLIENT) {
+            synchronized (guestExplored) {
+                guestExplored.clear();   // 新开局不继承上个英雄的探图
+            }
+            lastGuestPos = -1;
+            lastGuestDepth = -1;
+            lastGuestBranch = -1;
+            lastExploredSnapshot = 0L;
+            notifyRebirth(myId);
+        } else if (isHost()) {
+            notifyRebirth(HOST_ID);
+        }
+        lastSentPos = -1;
+
+        InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+        Game.switchScene(InterlevelScene.class);
+        return true;
+    }
+
+    /** 通知其他玩家：某玩家已从第 0 层重生。 */
+    private void notifyRebirth(int id) {
+        try {
+            sendToAll(Proto.ROOM_EVENT, encodeRoomEvent(id, ROOM_EVENT_REBIRTH));
+        } catch (Throwable ignored) {}
+    }
+
     /** 房主侧：用磁盘存档刷新房间存档快照（新档首次落盘后 isNew→false）。 */
     private void refreshRoomSaveAfterGame() {
         RoomSaveInfo save = roomSave;
@@ -2735,10 +2797,10 @@ public class Mp {
         if (w != null) {
             Game.runOnRenderThread(w::hide);        // 选职业期间断连，顺手把窗口关掉
         }
-        final WndMessage popup = hostDeathPopup;
-        hostDeathPopup = null;
-        if (popup != null) {
-            Game.runOnRenderThread(popup::hide);
+        final WndHostNewGame prompt = hostNewGamePrompt;
+        hostNewGamePrompt = null;
+        if (prompt != null) {
+            Game.runOnRenderThread(prompt::hide);
         }
         running = false;
         connected = false;
@@ -3050,6 +3112,24 @@ public class Mp {
         }
     }
 
+    /** 访客在“房主进入新档”弹窗点击确认：保存旧世界并请求房主发送新 STATE。 */
+    private void confirmHostNewGame() {
+        hostNewGamePrompt = null;
+        if (role != Role.CLIENT) return;
+        // 先保存旧世界的访客英雄；临时槽由新 STATE 的 mergeAndEnter 覆盖/清理，
+        // 这里不能清槽（会重置 curSlot，旧场景可能误存到普通槽）
+        if (guestWorldActive && worldSeed != Long.MIN_VALUE) {
+            saveGuestHero();
+            saveGuestWorldNow();   // 房主换档前把旧世界完整写回
+        }
+        enteringNewWorld = true;
+        guestWorldActive = false;
+        worldSeed = Long.MIN_VALUE;
+        status = Messages.get(Mp.class, "host_new_game_sync");
+        addMpLogLine(status, MPLOG_WARNING);
+        try { sendToAll(Proto.WORLD_READY, new byte[0]); } catch (Throwable ignored) {}
+    }
+
     /**
      * 版本握手完成前仍允许处理的帧（连接控制/握手，不涉及游戏世界状态）。
      *
@@ -3171,6 +3251,8 @@ public class Mp {
                     }
                     if (ev.event == ROOM_EVENT_RETURNED) {
                         systemNotice(Messages.get(Mp.class, "notice_returned_room", evName));
+                    } else if (ev.event == ROOM_EVENT_REBIRTH) {
+                        systemNotice(Messages.get(Mp.class, "notice_player_rebirth", evName));
                     }
                     break;
                 }
@@ -3327,39 +3409,26 @@ public class Mp {
                         sendToOthers(p, Proto.DEATH, encodeDeath(dp.id, dp.kind, dp.name));
                     } else if (dp.id != myId) {
                         Peer dead = peerFor(dp.id);
-                        final String text = deathNoticeText(dp, dead.name, false);
-                        deathNotice(text);
-                        if (dp.id == HOST_ID) {
-                            final String popup = text + "\n" + Messages.get(Mp.class, "host_died_popup_wait");
-                            Game.runOnRenderThread(() -> {
-                                if (ShatteredPixelDungeon.scene() != null) {
-                                    hostDeathPopup = new WndMessage(popup);
-                                    ShatteredPixelDungeon.scene().add(hostDeathPopup);
-                                }
-                            });
-                        }
+                        deathNotice(deathNoticeText(dp, dead.name, false));
                     }
                     break;
                 }
                 case Proto.WORLD_RESET: {
-                    enteringNewWorld = true;   // recv 线程立刻停止旧世界同步；保存旧英雄交给渲染线程
+                    enteringNewWorld = true;   // 暂停旧世界同步，等访客点“确认”
                     Game.runOnRenderThread(() -> {
-                        // 先保存旧世界的访客英雄；临时槽由新 STATE 的 mergeAndEnter 覆盖/清理，
-                        // 这里不能清槽（会重置 curSlot，旧场景可能误存到普通槽）
-                        if (hostDeathPopup != null) {
-                            hostDeathPopup.hide();
-                            hostDeathPopup = null;
+                        if (role != Role.CLIENT) return;
+                        if (hostNewGamePrompt != null) return;   // 已弹窗，等待确认
+                        if (ShatteredPixelDungeon.scene() == null) {
+                            // 没有可显示弹窗的场景：保持原自动跟随
+                            confirmHostNewGame();
+                            return;
                         }
-                        if (guestWorldActive && worldSeed != Long.MIN_VALUE) {
-                            saveGuestHero();
-                            saveGuestWorldNow();   // 房主换档前把旧世界完整写回
+                        hostNewGamePrompt = new WndHostNewGame(Mp.this::confirmHostNewGame);
+                        if (ShatteredPixelDungeon.scene() instanceof GameScene) {
+                            GameScene.show(hostNewGamePrompt);
+                        } else {
+                            ShatteredPixelDungeon.scene().addToFront(hostNewGamePrompt);
                         }
-                        enteringNewWorld = true;
-                        guestWorldActive = false;
-                        worldSeed = Long.MIN_VALUE;
-                        status = Messages.get(Mp.class, "host_new_game_sync");
-                        addMpLogLine(status, MPLOG_WARNING);
-                        try { sendToAll(Proto.WORLD_READY, new byte[0]); } catch (Throwable ignored) {}
                     });
                     break;
                 }
@@ -5466,7 +5535,7 @@ public class Mp {
             long resetNow = System.currentTimeMillis();
             synchronized (peers) {
                 for (Peer p : peers) {
-                    if (p.worldResetPending && resetNow - p.worldResetAt > 5000L) {
+                    if (p.worldResetPending && resetNow - p.worldResetAt > WORLD_RESET_CONFIRM_TIMEOUT_MS) {
                         p.worldResetPending = false;
                         p.worldEnded = true;
                         try { if (p.sock != null) p.sock.close(); } catch (IOException ignored) {}

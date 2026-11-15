@@ -201,7 +201,9 @@ public class WndGame extends Window {
 
 		// Daily runs must not open the "life restart simulator" (WndRestart):
 		// it resets the profile/save and is not valid in a fixed-seed run.
-		if (!Dungeon.daily) {
+		// 联机模式同样不提供：死亡界面的“重生”会在同一存档第 0 层重新开始。
+		boolean restartButtonAdded = false;
+		if (!Dungeon.daily && !Mp.get().isInRoom()) {
 			addButton(curBtn = new RedButton(Messages.get(this, shouldRestart ? "start" : "restart" )) {
 				@Override
 				protected void onClick() {
@@ -210,11 +212,13 @@ public class WndGame extends Window {
 				}
 			});
 			curBtn.icon(Icons.get( shouldRestart ? Icons.ENTER : Icons.CHANGES ));
+			restartButtonAdded = true;
 		}
 
 		// Restart
 		if (shouldRestart) {
-			curBtn.textColor(Window.TITLE_COLOR);
+			// 只给“开始/重新开始”按钮上标题色；联机/每日没有该按钮时不要误染上一个按钮
+			if (restartButtonAdded) curBtn.textColor(Window.TITLE_COLOR);
 			addButton( curBtn = new RedButton( Messages.get(this, "rankings") ) {
 				@Override
 				protected void onClick() {
