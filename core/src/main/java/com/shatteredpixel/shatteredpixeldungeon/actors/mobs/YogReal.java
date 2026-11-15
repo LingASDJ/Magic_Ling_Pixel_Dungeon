@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SKINITEM;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
@@ -618,6 +619,7 @@ public class YogReal extends Boss {
 
             if(hero.heroClass == HeroClass.DUELIST && !Dungeon.isDLC(Conducts.Conduct.DEV)){
                 SPDSettings.unlockItem("avatars_duelist_6");
+                GLog.p(Messages.get(SKINITEM.SKIN_DF.class,"unlocked_crs"));
             }
 
             Dungeon.deleteGame( GamesInProgress.curSlot, true );

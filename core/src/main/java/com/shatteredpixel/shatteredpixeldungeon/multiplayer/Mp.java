@@ -502,6 +502,8 @@ public class Mp {
     private static final String MP_INIT_DIR = "mp_init";
     /** 访客自己的持久世界目录前缀（按房主世界种子分档）。 */
     private static final String MP_WORLD_PREFIX = "mp_world_";
+    /** 访客端保留的最近房主世界数量；更早的 mp_hero_/mp_world_ 视为失效并清理。 */
+    private static final int MP_KEEP_SEEDS = 4;
     private static final String MP_INIT_GAME = "game";
     private static final String MP_INIT_LEVELS = "levels";
     /** 当前 Dungeon.hero 是否属于已进入的联机世界（防止把单人或过期英雄写入访客档） */
@@ -713,6 +715,7 @@ public class Mp {
      */
     public synchronized void host(int port) {
         disconnect();
+        cleanupMultiplayerStorage();
         role = Role.HOST;
         status = Messages.get(Mp.class, "status_hosting", port);
         running = true;
@@ -777,6 +780,7 @@ public class Mp {
      */
     public synchronized void join(String address, int defaultPort) {
         disconnect();
+        cleanupMultiplayerStorage();
         role = Role.CLIENT;
         localAdmin = false;
         status = Messages.get(Mp.class, "status_connecting", address);
@@ -831,6 +835,7 @@ public class Mp {
         final String host = hp[0];
         final int port = Integer.parseInt(hp[1]);
         disconnect();
+        cleanupMultiplayerStorage();
         serverMode = true;
         serverAddress = host;
         roomCode = null;
@@ -875,6 +880,7 @@ public class Mp {
         final String host = hp[0];
         final int port = Integer.parseInt(hp[1]);
         disconnect();
+        cleanupMultiplayerStorage();
         serverMode = true;
         serverAddress = host;
         roomCode = room;
@@ -5213,6 +5219,97 @@ public class Mp {
             GamesInProgress.curSlot = 0;
         } catch (Throwable t) {
             status = Messages.get(Mp.class, "temp_slot_cleanup_failed", t.getMessage());
+        }
+    }
+
+    // ---------------------------------------------------------------- 多人存档清理
+
+    /**
+     * 每次进入联机前清理失效的多人存档：
+     * 1) 删除访客临时槽 game99（崩溃/强退后残留）；
+     * 2) 只保留最近 {@link #MP_KEEP_SEEDS} 个房主世界种子（当前世界、房间选中种子的强制保留），
+     *    清理更早的 mp_hero_<seed>.dat(.bak) 与 mp_world_<seed>/；
+     * 3) 普通存档已删除时，清掉残留的 mp_init 初始快照。
+     */
+    private synchronized void cleanupMultiplayerStorage() {
+        try {
+            // 1) 访客临时槽只应存在于一次对局中
+            String temp = GamesInProgress.gameFolder(GUEST_TEMP_SLOT);
+            if (("game" + GUEST_TEMP_SLOT).equals(temp) && FileUtils.dirExists(temp)) {
+                FileUtils.deleteDir(temp);
+            }
+            GamesInProgress.setUnknown(GUEST_TEMP_SLOT);
+            if (GamesInProgress.curSlot == GUEST_TEMP_SLOT) {
+                GamesInProgress.curSlot = 0;
+            }
+
+            // 2) 收集 mp_hero_<seed> / mp_world_<seed> 的最近修改时间
+            HashMap<Long, Long> lastWrite = new HashMap<>();
+            for (FileHandle f : FileUtils.getFileHandle("").list()) {
+                if (f == null) continue;
+                String name = f.name();
+                Long seed = null;
+                if (f.isDirectory()) {
+                    if (name.startsWith(MP_WORLD_PREFIX)) {
+                        if (FileUtils.fileLength(name + "/game.dat") <= 1) {
+                            FileUtils.deleteDir(name);   // 残缺的世界目录直接清掉
+                            continue;
+                        }
+                        seed = parseMpSeed(name.substring(MP_WORLD_PREFIX.length()));
+                    }
+                } else {
+                    if (name.endsWith(".bak")) name = name.substring(0, name.length() - 4);
+                    if (name.startsWith("mp_hero_") && name.endsWith(".dat")) {
+                        if (f.length() <= 1) {
+                            f.delete();   // 空/损坏的英雄档
+                            continue;
+                        }
+                        seed = parseMpSeed(name.substring("mp_hero_".length(), name.length() - 4));
+                    }
+                }
+                if (seed == null) continue;
+                Long prev = lastWrite.get(seed);
+                if (prev == null || f.lastModified() > prev) lastWrite.put(seed, f.lastModified());
+            }
+
+            ArrayList<Long> seeds = new ArrayList<>(lastWrite.keySet());
+            Collections.sort(seeds, (a, b) -> Long.compare(lastWrite.get(b), lastWrite.get(a)));
+            HashSet<Long> keep = new HashSet<>();
+            for (int i = 0; i < seeds.size() && i < MP_KEEP_SEEDS; i++) keep.add(seeds.get(i));
+            if (worldSeed != Long.MIN_VALUE) keep.add(worldSeed);
+            if (roomSave.selected && roomSave.seed != Long.MIN_VALUE) keep.add(roomSave.seed);
+            for (Long seed : seeds) {
+                if (!keep.contains(seed)) deleteMpSeed(seed);
+            }
+
+            // 3) 普通存档已删除时，清掉残留的房主初始快照 mp_init
+            for (int slot = 1; slot <= GamesInProgress.MAX_SLOTS; slot++) {
+                if (GamesInProgress.gameExists(slot)) continue;
+                String initDir = GamesInProgress.gameFolder(slot) + "/" + MP_INIT_DIR;
+                if (FileUtils.dirExists(initDir)) FileUtils.deleteDir(initDir);
+            }
+        } catch (Throwable ignored) {
+            // 清理失败不影响联机；下次进入联机还会再尝试
+        }
+    }
+
+    /** 删除某个房主世界种子对应的访客英雄档与持久世界。 */
+    private static void deleteMpSeed(long seed) {
+        if (FileUtils.dirExists(MP_WORLD_PREFIX + seed)) {
+            FileUtils.deleteDir(MP_WORLD_PREFIX + seed);
+        }
+        FileUtils.deleteFile("mp_hero_" + seed + ".dat");
+        FileUtils.deleteFile("mp_hero_" + seed + ".dat.bak");
+        FileUtils.deleteFile("mp_hero_" + seed + ".dat.tmp");
+    }
+
+    /** 解析 mp_hero_<seed> / mp_world_<seed> 里的种子；非法或非正数返回 null。 */
+    private static Long parseMpSeed(String value) {
+        try {
+            long seed = Long.parseLong(value.trim());
+            return seed > 0 ? seed : null;
+        } catch (Throwable t) {
+            return null;
         }
     }
 
