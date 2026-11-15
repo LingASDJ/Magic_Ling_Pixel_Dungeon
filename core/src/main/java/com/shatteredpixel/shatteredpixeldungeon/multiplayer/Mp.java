@@ -10,31 +10,44 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HellBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Venom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BloodLoss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spellsoword.MagicPower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ArcaneBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShrapnelBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
@@ -51,28 +64,34 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ImperialExorc
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CrossReback;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MagicFlyBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
-import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.utils.PreviewMode;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.Bundlable;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
+
 import net.iharder.Base64;
 
 import java.io.ByteArrayInputStream;
@@ -93,7 +112,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 /**
  * 联机核心：房主/访客状态机、帧协议与多人同步。
@@ -142,7 +160,7 @@ public class Mp {
      * 联机协议版本。线协议（帧类型/载荷格式）改动时必须递增；
      * 双方版本不一致会拒绝连接，避免旧版本用不兼容的存档/协议混连。
      */
-    public static final int MP_PROTOCOL_VERSION = 14;
+    public static final int MP_PROTOCOL_VERSION = 16;
 
     /** 连续多少个 PING 收不到 PONG 就判定连接中断（每 3 秒一次，约 15 秒） */
     private static final int PING_MISS_LIMIT = 5;
@@ -155,6 +173,32 @@ public class Mp {
 
     /** 个人资料/房间状态中携带的徽章数量上限（防御异常数据）。 */
     private static final int MAX_PROFILE_BADGES = 256;
+
+    /** 死因名称（凶手/状态/物品名）的最大长度，防止异常数据撑大帧。 */
+    private static final int MAX_DEATH_CAUSE_NAME = 64;
+
+    /** 死因类型：未知（只播报“死亡”）。 */
+    public static final int DEATH_CAUSE_UNKNOWN = 0;
+    /** 死因类型：被某个角色（怪物/召唤物/弹体）击杀，name=凶手名。 */
+    public static final int DEATH_CAUSE_SLAIN = 1;
+    /** 死因类型：被烧死。 */
+    public static final int DEATH_CAUSE_BURNED = 2;
+    /** 死因类型：被冻死。 */
+    public static final int DEATH_CAUSE_FROZEN = 3;
+    /** 死因类型：中毒/毒气。 */
+    public static final int DEATH_CAUSE_POISONED = 4;
+    /** 死因类型：失血。 */
+    public static final int DEATH_CAUSE_BLED = 5;
+    /** 死因类型：饥饿。 */
+    public static final int DEATH_CAUSE_STARVED = 6;
+    /** 死因类型：电击。 */
+    public static final int DEATH_CAUSE_SHOCKED = 7;
+    /** 死因类型：坠落。 */
+    public static final int DEATH_CAUSE_FELL = 8;
+    /** 死因类型：爆炸。 */
+    public static final int DEATH_CAUSE_EXPLODED = 9;
+    /** 死因类型：其他有名字的原因（陷阱/状态/物品等），name=原因名。 */
+    public static final int DEATH_CAUSE_NAMED = 10;
 
     /** 幽灵头顶血量条尺寸。 */
     private static final float HP_BAR_WIDTH = 16f;
@@ -282,6 +326,16 @@ public class Mp {
     public static class RttInfoPayload {
         /** 延迟记录列表。 */
         public List<RttRec> recs;
+    }
+
+    /** DEATH 帧载荷：死亡玩家 id + 死因类型 + 死因名称。 */
+    public static class DeathPayload {
+        /** 死亡玩家 id（房主为 0）。 */
+        public int id;
+        /** 死因类型，见 {@code DEATH_CAUSE_*}。 */
+        public int kind = DEATH_CAUSE_UNKNOWN;
+        /** 死因名称（已本地化；不需要名称的类型为空串）。 */
+        public String name = "";
     }
 
     /** 房间内一名玩家的只读快照（开局前使用，不依赖 Dungeon.hero）。 */
@@ -537,6 +591,21 @@ public class Mp {
     public volatile boolean chatOpen = false;
     private volatile MpChatWindow chatWindow;
     private StyledButton chatButton;          // 局内聊天按钮（Mp 自己挂在 GameScene 上）
+    /** 聊天按钮右下角的未读条数角标（背景 + 数字）。 */
+    private ColorBlock chatUnreadBadgeBg;
+    private RenderedTextBlock chatUnreadBadge;
+    /** 角标当前显示的文本，避免每帧重建文本。 */
+    private String chatUnreadBadgeText = "";
+    /** 聊天窗口关闭时收到的未读消息条数（自己的消息不计入）。 */
+    private final AtomicInteger unreadChat = new AtomicInteger();
+    /** 上一次统计未读时用的英雄对象：换新档/重新开始后清空未读。 */
+    private Hero lastChatHeroForUnread;
+    /** 玩家列表按钮右上角的在线人数角标（绿色气泡，常亮）。 */
+    private ColorBlock playerCountBadgeBg;
+    private RenderedTextBlock playerCountBadge;
+    private String playerCountBadgeText = "";
+
+    private StyledButton playListButton;
 
     // ---------------------------------------------------------------- 聊天记录（仅本机内存）
 
@@ -1677,6 +1746,22 @@ public class Mp {
             status = Messages.get(Mp.class, "room_start_no_hero");
             return false;
         }
+        if (!save.isNew) {
+            // 存档可能在房间外已被删除（例如上一局死亡）：按同槽同种子的新档重新开始，
+            // 避免进入 CONTINUE 后 GamesInProgress.check() 返回 null 导致崩溃。
+            GamesInProgress.setUnknown(save.slot);
+            if (GamesInProgress.check(save.slot) == null) {
+                if (hostCls != null) hostRoomClass = hostCls;
+                save = new RoomSaveInfo(true, save.slot, save.seed, true,
+                        hostCls, 0, 1, false);
+                roomSave = save;
+                roomStateDirty = true;
+                if (hostCls == null) {
+                    status = Messages.get(Mp.class, "room_start_no_hero");
+                    return false;
+                }
+            }
+        }
         roomSave = new RoomSaveInfo(true, save.slot, save.seed, save.isNew,
                 save.hostClass, save.depth, save.level, true);
         synchronized (peers) {
@@ -1705,6 +1790,7 @@ public class Mp {
         roomStateDirty = true;
         roomUiVersion.incrementAndGet();
         broadcastRoomState();
+        unreadChat.set(0);   // 新对局从 0 开始计未读，房间里的聊天不算局内未读
         Game.switchScene(InterlevelScene.class);
         return true;
     }
@@ -1726,9 +1812,16 @@ public class Mp {
         if (info != null) {
             roomSave = new RoomSaveInfo(true, save.slot, info.seed, false,
                     info.heroClass, info.depth, info.level, true);
+        } else if (!save.isNew) {
+            // 上一局死亡会删除存档（Dungeon.deleteGame）：同槽同种子转为新档，
+            // 否则房间仍显示「继续对局」，点下去会在 InterlevelScene 读到空档崩溃。
+            if (save.hostClass != null) hostRoomClass = save.hostClass;
+            roomSave = new RoomSaveInfo(true, save.slot, save.seed, true,
+                    save.hostClass, 0, 1, false);
         } else {
+            // 新档还没落盘（或创建失败）：保持原状态，等待房主重新开始
             roomSave = new RoomSaveInfo(true, save.slot, save.seed, save.isNew,
-                    save.hostClass, save.depth, save.level, true);
+                    save.hostClass, save.depth, save.level, save.started);
         }
         roomStateDirty = true;
         roomUiVersion.incrementAndGet();
@@ -1737,6 +1830,7 @@ public class Mp {
     /** 房主从对局返回房间：保存、通知访客回房间、重置 STATE 标记。 */
     public void hostReturnToRoom() {
         if (!isHost() || !isInRoom()) return;
+        unreadChat.set(0);
         systemNotice(Messages.get(Mp.class, "notice_returned_room", getMyName()));
         try {
             if (Dungeon.hero != null && Dungeon.level != null) Dungeon.saveAll();
@@ -1782,6 +1876,7 @@ public class Mp {
      * @param announce 是否在事件栏播报「已返回房间」（房主已统一播报时传 false）。
      */
     private void clientReturnToRoom(boolean announce) {
+        unreadChat.set(0);
         if (role != Role.CLIENT || !isInRoom()) {
             if (Game.scene() instanceof GameScene) {
                 ShatteredPixelDungeon.switchScene(TitleScene.class);
@@ -2793,6 +2888,103 @@ public class Mp {
         addMpLogLine(text, MPLOG_NEGATIVE);
     }
 
+    /**
+     * 把英雄的真实死因对象归类成可联网的死因：类型 + 名称。
+     * 由 {@link Hero#lastDeathCause} 写入，只在死亡瞬间读取（此时对象仍然有效）。
+     *
+     * @param cause 导致英雄死亡的对象（怪物/状态/陷阱/爆炸物等，可为 null）。
+     * @return 死因载荷（id 由调用方填写）。
+     */
+    private static DeathPayload deathCauseOf(Object cause) {
+        DeathPayload dp = new DeathPayload();
+        if (cause == null) return dp;
+        if (cause instanceof Char) {
+            if (cause == Dungeon.hero) return dp;   // 自己造成的伤害不把玩家列为凶手
+            dp.kind = DEATH_CAUSE_SLAIN;
+            dp.name = safeDeathCauseName(((Char) cause).name());
+            if (dp.name.isEmpty()) dp.kind = DEATH_CAUSE_UNKNOWN;
+            return dp;
+        }
+        if (cause instanceof Chasm) {
+            dp.kind = DEATH_CAUSE_FELL;
+        } else if (cause instanceof FrostBurning) {
+            dp.kind = DEATH_CAUSE_FROZEN;
+        } else if (cause instanceof Burning || cause instanceof HellBurning
+                || cause instanceof HalomethaneBurning) {
+            dp.kind = DEATH_CAUSE_BURNED;
+        } else if (cause instanceof Poison || cause instanceof Venom
+                || cause instanceof ToxicGas || cause instanceof CrivusFruits.DiedBlobs) {
+            dp.kind = DEATH_CAUSE_POISONED;
+        } else if (cause instanceof Bleeding || cause instanceof BloodLoss) {
+            dp.kind = DEATH_CAUSE_BLED;
+        } else if (cause instanceof Hunger) {
+            dp.kind = DEATH_CAUSE_STARVED;
+        } else if (cause instanceof Electricity || cause instanceof CrossReback.Electricity) {
+            dp.kind = DEATH_CAUSE_SHOCKED;
+        } else if (cause instanceof Bomb || cause instanceof ArcaneBomb || cause instanceof ShrapnelBomb) {
+            dp.kind = DEATH_CAUSE_EXPLODED;
+        } else {
+            // 长尾原因（陷阱、状态、物品、特殊剧情等）：用原因自己的名字播报“死于X”
+            dp.name = safeDeathCauseName(Messages.get(cause, "name"));
+            if (!dp.name.isEmpty()) dp.kind = DEATH_CAUSE_NAMED;
+        }
+        return dp;
+    }
+
+    /**
+     * 按死因生成死亡播报（泰拉瑞亚文案）。
+     *
+     * @param dp 死因载荷。
+     * @param playerName 死亡玩家名（self=true 时忽略）。
+     * @param self 是否为本机玩家。
+     * @return 完整播报文本。
+     */
+    private static String deathNoticeText(DeathPayload dp, String playerName, boolean self) {
+        int kind = dp.kind;
+        String causeName = safeDeathCauseName(dp.name);
+        if ((kind == DEATH_CAUSE_SLAIN || kind == DEATH_CAUSE_NAMED) && causeName.isEmpty()) {
+            kind = DEATH_CAUSE_UNKNOWN;   // 网络数据缺名称时退回通用文案
+        }
+        String key = deathNoticeKey(kind, self);
+        if (kind == DEATH_CAUSE_SLAIN || kind == DEATH_CAUSE_NAMED) {
+            return self
+                    ? Messages.get(Mp.class, key, causeName)
+                    : Messages.get(Mp.class, key, displayName(playerName), causeName);
+        }
+        return self
+                ? Messages.get(Mp.class, key)
+                : Messages.get(Mp.class, key, displayName(playerName));
+    }
+
+    /** 死因类型对应的文案键（区分自己/他人；自己用“你”的句式，英文语法才正确）。 */
+    private static String deathNoticeKey(int kind, boolean self) {
+        String suffix;
+        switch (kind) {
+            case DEATH_CAUSE_SLAIN:    suffix = "slain"; break;
+            case DEATH_CAUSE_BURNED:   suffix = "burned"; break;
+            case DEATH_CAUSE_FROZEN:   suffix = "frozen"; break;
+            case DEATH_CAUSE_POISONED: suffix = "poisoned"; break;
+            case DEATH_CAUSE_BLED:     suffix = "bled"; break;
+            case DEATH_CAUSE_STARVED:  suffix = "starved"; break;
+            case DEATH_CAUSE_SHOCKED:  suffix = "shocked"; break;
+            case DEATH_CAUSE_FELL:     suffix = "fell"; break;
+            case DEATH_CAUSE_EXPLODED: suffix = "exploded"; break;
+            case DEATH_CAUSE_NAMED:    suffix = "named"; break;
+            default:
+                return self ? "notice_self_died" : "notice_player_died";
+        }
+        return self ? "death_self_" + suffix : "death_player_" + suffix;
+    }
+
+    /** 清洗死因名称：去掉换行、限制长度，并过滤 Messages 的缺失占位串。 */
+    private static String safeDeathCauseName(String name) {
+        if (name == null) return "";
+        String n = name.replace('\r', ' ').replace('\n', ' ').trim();
+        if (n.isEmpty() || n.startsWith("Ms:") || n.startsWith("!!!NO TEXT FOUND!!!")) return "";
+        if (n.length() > MAX_DEATH_CAUSE_NAME) n = n.substring(0, MAX_DEATH_CAUSE_NAME);
+        return n;
+    }
+
     /** 房主进入新档：让旧访客先保存旧英雄，回 WORLD_READY 后再发新世界 STATE（自动跟随）。 */
     private void restartWorldForGuests() {
         final String msg = Messages.get(Mp.class, "host_new_game_sync");
@@ -3073,15 +3265,18 @@ public class Mp {
                     break;
                 }
                 case Proto.DEATH: {
-                    int did = decodeInt(data);
+                    DeathPayload dp = decodeDeath(data);
                     if (isHost()) {
-                        deathNotice(Messages.get(Mp.class, "notice_player_died", displayName(p.name)));
-                        sendToOthers(p, Proto.DEATH, encodeInt(p.id));
-                    } else if (did != myId) {
-                        Peer dp = peerFor(did);
-                        deathNotice(Messages.get(Mp.class, "notice_player_died", displayName(dp.name)));
-                        if (did == HOST_ID) {
-                            final String popup = Messages.get(Mp.class, "host_died_popup");
+                        // 以发送方为准，防止访客伪造别人的死讯
+                        dp.id = p.id;
+                        deathNotice(deathNoticeText(dp, p.name, false));
+                        sendToOthers(p, Proto.DEATH, encodeDeath(dp.id, dp.kind, dp.name));
+                    } else if (dp.id != myId) {
+                        Peer dead = peerFor(dp.id);
+                        final String text = deathNoticeText(dp, dead.name, false);
+                        deathNotice(text);
+                        if (dp.id == HOST_ID) {
+                            final String popup = text + "\n" + Messages.get(Mp.class, "host_died_popup_wait");
                             Game.runOnRenderThread(() -> {
                                 if (ShatteredPixelDungeon.scene() != null) {
                                     hostDeathPopup = new WndMessage(popup);
@@ -3362,6 +3557,7 @@ public class Mp {
 
     /** 把房主世界 + 访客英雄合并写进存档槽并切场景（渲染线程/网络线程均可调用） */
     private void mergeAndEnter(StatePayload p, int hostPos, Bundle guest) { // skipcq: JAVA-R1000 合并访客英雄与房主世界：复杂度高但已实测稳定
+        unreadChat.set(0);   // 进入对局后重新计未读
         try {
             int depth = p.depth;
             int branch = p.branch;
@@ -3600,6 +3796,10 @@ public class Mp {
             }
             chatVersion++;
         }
+        // 聊天窗口关闭时收到的他人/系统消息计为未读（自己的消息不算）
+        if (type != CHAT_TYPE_SELF && !chatOpen) {
+            unreadChat.incrementAndGet();
+        }
         // 左上角联机日志同时显示聊天（时间只取 HH:mm，避免占用过多宽度）
         int logType = type == CHAT_TYPE_SELF ? MPLOG_CHAT_SELF
                 : type == CHAT_TYPE_SYSTEM ? MPLOG_CHAT_SYSTEM : MPLOG_CHAT_OTHER;
@@ -3667,6 +3867,7 @@ public class Mp {
 
     /** 清空本机聊天记录（离开房间/断开连接时）。 */
     public void clearChatHistory() {
+        unreadChat.set(0);
         synchronized (chatLines) {
             chatLines.clear();
             chatVersion++;
@@ -3956,7 +4157,7 @@ public class Mp {
     /** 联机时在 GameScene 左侧挂方形聊天按钮；每个场景只建一次 */
     private void updateChatButton(GameScene gs) {
         if (chatButton == null) {
-            chatButton = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "") {
+            chatButton = new StyledButton(Chrome.Type.BLANK, "") {
                 @Override
                 protected void onClick() {
                     openChat();
@@ -3969,16 +4170,137 @@ public class Mp {
             float chatY = Math.min(104f, Math.max(0f, PixelScene.uiCamera.height - 24f));
             chatButton.setRect(0f, chatY, 20f, 20f);
             gs.addToFront(chatButton);
+
+            // 未读角标：画在按钮右下角并略微外探，像通知角标
+            chatUnreadBadgeBg = new ColorBlock(1f, 1f, 0xFFD32F2F);
+            chatUnreadBadgeBg.camera = PixelScene.uiCamera;
+            chatUnreadBadgeBg.visible = false;
+            gs.addToFront(chatUnreadBadgeBg);
+            chatUnreadBadge = PixelScene.renderTextBlock(7);
+            chatUnreadBadge.camera = PixelScene.uiCamera;
+            chatUnreadBadge.hardlight(0xFFFFFF);
+            chatUnreadBadge.visible = false;
+            gs.addToFront(chatUnreadBadge);
+            chatUnreadBadgeText = "";
+
+            playListButton = new StyledButton(Chrome.Type.BLANK, "") {
+                @Override
+                protected void onClick() {
+                    Game.runOnRenderThread(() -> {
+                        if (ShatteredPixelDungeon.scene() != null) {
+                            ShatteredPixelDungeon.scene().add(new WndPlayerList());
+                        }
+                    });
+                }
+            };
+            playListButton.icon(NetIcons.get(NetIcons.PLAYERS));
+            playListButton.camera = PixelScene.uiCamera;
+            // 左侧菜单/页面指示按钮占到 y≈99，聊天按钮放到其下方并贴住左边缘；
+            // 极矮屏幕（大界面模式）下再向上收，避免跑出屏幕
+            playListButton.setRect(0f, chatButton.bottom()+4, 20f, 20f);
+            gs.addToFront(playListButton);
+
+            // 在线人数角标：绿色气泡，画在玩家列表按钮右上角，常亮
+            playerCountBadgeBg = new ColorBlock(1f, 1f, 0xFF2E7D32);
+            playerCountBadgeBg.camera = PixelScene.uiCamera;
+            playerCountBadgeBg.visible = false;
+            gs.addToFront(playerCountBadgeBg);
+            playerCountBadge = PixelScene.renderTextBlock(7);
+            playerCountBadge.camera = PixelScene.uiCamera;
+            playerCountBadge.hardlight(0xFFFFFF);
+            playerCountBadge.visible = false;
+            gs.addToFront(playerCountBadge);
+            playerCountBadgeText = "";
         }
         chatButton.visible = true;
         chatButton.active = true;
+        refreshChatUnreadBadge();
+        refreshPlayerCountBadge();
+    }
+
+    /** 刷新聊天按钮的未读角标与闪烁状态（每帧由 updateChatButton 调用）。 */
+    private void refreshChatUnreadBadge() {
+        if (chatButton == null || chatUnreadBadge == null || chatUnreadBadgeBg == null) return;
+        if (chatOpen) {
+            // 聊天窗口打开时消息都算已读；顺带清掉打开瞬间的竞态计数
+            unreadChat.set(0);
+        }
+        int unread = unreadChat.get();
+        boolean show = unread > 0;
+        chatUnreadBadge.visible = show;
+        chatUnreadBadgeBg.visible = show;
+        if (!show) {
+            chatUnreadBadgeText = "";
+            chatButton.alpha(1f);
+            return;
+        }
+        String label = unread > 99 ? "99+" : Integer.toString(unread);
+        if (!label.equals(chatUnreadBadgeText)) {
+            chatUnreadBadgeText = label;
+            chatUnreadBadge.text(label);
+        }
+        float bw = chatUnreadBadge.width() + 3f;
+        float bh = chatUnreadBadge.height() + 2f;
+        float bx = chatButton.x + chatButton.width() - bw + 1f;
+        float by = chatButton.y + chatButton.height() - bh + 1f;
+        chatUnreadBadgeBg.size(bw, bh);
+        chatUnreadBadgeBg.setPos(bx, by);
+        chatUnreadBadge.setPos(bx + 1.5f, by + 1f);
+        // 持续闪烁按钮本体；角标保持常亮，保证条数始终可读
+        boolean blinkOn = (System.currentTimeMillis() % 900L) < 600L;
+        chatButton.alpha(blinkOn ? 1f : 0.35f);
+    }
+
+    /** 刷新玩家列表按钮的在线人数角标（绿色气泡，常亮，每帧由 updateChatButton 调用）。 */
+    private void refreshPlayerCountBadge() {
+        if (playListButton == null || playerCountBadge == null || playerCountBadgeBg == null) return;
+        int count = onlinePlayerCount();
+        String label = Integer.toString(count);
+        if (!label.equals(playerCountBadgeText)) {
+            playerCountBadgeText = label;
+            playerCountBadge.text(label);
+        }
+        float bw = playerCountBadge.width() + 3f;
+        float bh = playerCountBadge.height() + 2f;
+        float bx = playListButton.x + playListButton.width() - bw + 1f;
+        float by = playListButton.y + 1f;
+        playerCountBadgeBg.size(bw, bh);
+        playerCountBadgeBg.setPos(bx, by);
+        playerCountBadge.setPos(bx + 1.5f, by + 1f);
+        playerCountBadgeBg.visible = true;
+        playerCountBadge.visible = true;
+    }
+
+    /** 当前联机在线人数（含自己；房主/访客两侧 peer 列表含义不同，按角色排除自己）。 */
+    private int onlinePlayerCount() {
+        int count = 1;   // 自己
+        HashSet<Integer> seen = new HashSet<>();
+        synchronized (peers) {
+            for (Peer p : peers) {
+                if (p.id < 0) continue;
+                if (role == Role.HOST && p.id == HOST_ID) continue;       // 房主侧不应出现自己
+                if (role == Role.CLIENT && p.id == myId) continue;        // 访客侧可能残留自己的占位 peer
+                if (seen.add(p.id)) count++;
+            }
+        }
+        return count;
     }
 
     private void hideChatButton() {
         if (chatButton != null) {
             chatButton.visible = false;
             chatButton.active = false;
+            chatButton.alpha(1f);
         }
+        if(playListButton != null){
+            playListButton.visible = false;
+            playListButton.active = false;
+            playListButton.alpha(1f);
+        }
+        if (chatUnreadBadge != null) chatUnreadBadge.visible = false;
+        if (chatUnreadBadgeBg != null) chatUnreadBadgeBg.visible = false;
+        if (playerCountBadge != null) playerCountBadge.visible = false;
+        if (playerCountBadgeBg != null) playerCountBadgeBg.visible = false;
     }
 
     /** 联机时在 GameScene 左上角挂联机日志；每个场景只建一次 */
@@ -4003,6 +4325,7 @@ public class Mp {
     public void openChat() {
         if (!connected || chatOpen) return;
         if (!(Game.scene() instanceof GameScene) && !(Game.scene() instanceof MpRoomScene)) return;
+        unreadChat.set(0);   // 打开聊天即视为读完，角标随之隐藏
         chatOpen = true;
         Game.runOnRenderThread(() -> {
             MpChatWindow w = null;
@@ -4848,6 +5171,12 @@ public class Mp {
             return;
         }
 
+        // 换新档/死亡后“重新开始”会创建新 Hero：未读属于上一局，清零
+        if (Dungeon.hero != null && Dungeon.hero != lastChatHeroForUnread) {
+            lastChatHeroForUnread = Dungeon.hero;
+            unreadChat.set(0);
+        }
+
         // T 键 / 局内聊天按钮都收敛在 Mp 里，GameScene 只需每帧调用 tick
         if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             openChat();
@@ -4883,6 +5212,13 @@ public class Mp {
             enteringNewWorld = false;                   // 已进入新场景，恢复正常同步/存档
             lastHeroHp = Dungeon.hero != null ? Dungeon.hero.HP : -1;
             chatButton = null;                          // 新场景重新挂按钮（旧按钮随旧场景销毁）
+            chatUnreadBadge = null;                     // 角标随旧场景销毁，进新场景时重建
+            chatUnreadBadgeBg = null;
+            chatUnreadBadgeText = "";
+            playListButton = null;
+            playerCountBadge = null;
+            playerCountBadgeBg = null;
+            playerCountBadgeText = "";
             mpLogPane = null;                           // 左上角联机日志随旧场景销毁
             if (role == Role.CLIENT) {
                 applyExploredToLevel();                 // 先恢复本层自己的探图
@@ -4991,10 +5327,13 @@ public class Mp {
             } else if (!localDeathAnnounced) {
                 localDeathAnnounced = true;
                 int did = isHost() ? HOST_ID : myId;
+                DeathPayload dp = deathCauseOf(Hero.lastDeathCause);
+                Hero.lastDeathCause = null;   // 死因只播报一次，避免长期持有怪物/状态对象
+                dp.id = did;
                 if (did >= 0) {
-                    try { sendToAll(Proto.DEATH, encodeInt(did)); } catch (Throwable ignored) {}
+                    try { sendToAll(Proto.DEATH, encodeDeath(dp.id, dp.kind, dp.name)); } catch (Throwable ignored) {}
                 }
-                deathNotice(Messages.get(Mp.class, "notice_self_died"));
+                deathNotice(deathNoticeText(dp, null, true));
             }
             long now = System.currentTimeMillis();
             if (role == Role.CLIENT && now - lastHeroSave > 30_000L) {
@@ -5731,7 +6070,7 @@ public class Mp {
         public static final int ADMIN = 27;    // 房主 → 所有人：管理员身份
         /** CMD：管理员访客发给房主的指令；房主 → 仅管理员可用。 */
         public static final int CMD = 28;      // 访客 → 房主：管理员指令
-        /** DEATH：某玩家死亡（id）；房主转发给其他访客。 */
+        /** DEATH：某玩家死亡（id + 死因类型/名称）；房主转发给其他访客。 */
         public static final int DEATH = 29;    // 双向：死亡播报
         /** WORLD_RESET：房主进入新档，旧访客先保存旧英雄并回 WORLD_READY。 */
         public static final int WORLD_RESET = 30; // 房主 → 访客：准备进入新世界
@@ -5910,6 +6249,50 @@ public class Mp {
      */
     public static int decodeInt(byte[] data) throws IOException {
         return new DataInputStream(new ByteArrayInputStream(data)).readInt();
+    }
+
+    /**
+     * 编码 DEATH 帧：id + 死因类型 + 死因名称（UTF-8，2 字节长度前缀）。
+     * 解码端按实际可用字节容错，只有 id 的旧格式会被当作“未知死因”。
+     *
+     * @param id 死亡玩家 id。
+     * @param kind 死因类型。
+     * @param name 死因名称（可为空）。
+     * @return 载荷字节。
+     */
+    public static byte[] encodeDeath(int id, int kind, String name) throws IOException {
+        byte[] nb = safeDeathCauseName(name).getBytes("UTF-8");
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(7 + nb.length);
+        DataOutputStream dos = new DataOutputStream(bos);
+        dos.writeInt(id);
+        dos.writeByte(kind);
+        dos.writeShort(nb.length);
+        dos.write(nb);
+        dos.flush();
+        return bos.toByteArray();
+    }
+
+    /**
+     * 解码 DEATH 帧；兼容只有 id 的旧载荷（视为未知死因）。
+     *
+     * @param data 载荷字节。
+     * @return 死因载荷。
+     */
+    public static DeathPayload decodeDeath(byte[] data) throws IOException {
+        DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
+        DeathPayload p = new DeathPayload();
+        p.id = di.readInt();
+        if (di.available() >= 3) {
+            p.kind = di.readByte();
+            int len = di.readUnsignedShort();
+            int readable = Math.min(len, di.available());
+            if (readable > 0) {
+                byte[] nb = new byte[readable];
+                di.readFully(nb);
+                p.name = safeDeathCauseName(new String(nb, "UTF-8"));
+            }
+        }
+        return p;
     }
 
     /**
