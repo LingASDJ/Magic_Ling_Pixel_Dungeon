@@ -344,6 +344,21 @@ public class Hero extends Char {
 	private static final float HUNGER_FOR_SEARCH	= 6f;
 
 	public HeroClass heroClass = HeroClass.ROGUE;
+	/**
+	 * 皮肤索引覆盖：-1 = 使用该职业当前设置（本地英雄）；
+	 * 远端幽灵/只读预览英雄在这里保存对方的真实皮肤，避免读到本机设置。
+	 */
+	public int skin = -1;
+	/**
+	 * 精灵 tier 覆盖：-1 = 按本机皮肤/护甲计算；
+	 * 联机幽灵用它显示对方真实的护甲外观（护甲本身不随网络同步）。
+	 */
+	public int tierOverride = -1;
+
+	/** 实际生效的皮肤索引：有覆盖用覆盖，否则用职业当前设置。 */
+	public int skinIndex() {
+		return skin >= 0 ? skin : heroClass.GetSkin();
+	}
 	public HeroSubClass subClass = HeroSubClass.NONE;
 	public ArmorAbility armorAbility = null;
 	public ArrayList<LinkedHashMap<Talent, Integer>> talents = new ArrayList<>();
@@ -736,10 +751,13 @@ public class Hero extends Char {
 	}
 
 	public int tier() {
+		// 联机幽灵：直接使用对端同步过来的 tier（已含皮肤/护甲信息）
+		if (tierOverride >= 0) return tierOverride;
+
 		Armor armor = belongings.armor();
 
 		//皮肤策略
-		switch (hero.heroClass.GetSkin()){
+		switch (skinIndex()){
 			case 1:
 				return 9;
 			case 2:
@@ -3353,7 +3371,7 @@ public class Hero extends Char {
 
 		bundle.put(CLASS, heroClass);
 		bundle.put(SUBCLASS, subClass);
-		bundle.put(SKIN, heroClass.GetSkin());
+		bundle.put(SKIN, skinIndex());
 		bundle.put(ABILITY, armorAbility);
 		Talent.storeTalentsInBundle(bundle, this);
 
@@ -3394,9 +3412,16 @@ public class Hero extends Char {
 
 		heroClass = bundle.getEnum(CLASS, HeroClass.class);
 		subClass = bundle.getEnum(SUBCLASS, HeroSubClass.class);
-		// 恢复存档时保存的皮肤，覆盖全局设置；预览他人英雄/记录时不能改本机设置
-		if (bundle.contains(SKIN) && !PreviewMode.active()) {
-			SPDSettings.setHeroSkin(heroClass.ordinal(), bundle.getInt(SKIN));
+		// 恢复存档时保存的皮肤：本地英雄覆盖全局设置；预览他人英雄/记录时只记录到 skin，
+		// 不能改本机设置，也不能让预览副本反过来覆盖本机皮肤。
+		if (bundle.contains(SKIN)) {
+			int savedSkin = bundle.getInt(SKIN);
+			if (PreviewMode.active()) {
+				skin = savedSkin;
+			} else {
+				SPDSettings.setHeroSkin(heroClass.ordinal(), savedSkin);
+				skin = -1;
+			}
 		}
 		armorAbility = (ArmorAbility) bundle.get(ABILITY);
 		Talent.restoreTalentsFromBundle(bundle, this);

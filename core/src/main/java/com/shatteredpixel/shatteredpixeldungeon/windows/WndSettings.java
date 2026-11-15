@@ -1266,6 +1266,7 @@ public class WndSettings extends WndTabbed {
 		CheckBox chkWifi;
 
 		CheckBox chkFireBase;
+		CheckBox chkMpChat;
 
 		@Override
 		protected void createChildren() {
@@ -1310,6 +1311,17 @@ public class WndSettings extends WndTabbed {
 			if (chkWifi != null){
 				add(chkFireBase);
 			}
+
+			// 多人聊天气泡：关闭后局内左上角联机日志不再显示聊天内容
+			chkMpChat = new CheckBox(Messages.get(this, "mp_chat_bubble")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.mpChatBubble(checked());
+				}
+			};
+			chkMpChat.checked(SPDSettings.mpChatBubble());
+			add(chkMpChat);
 		}
 
 		@Override
@@ -1334,13 +1346,14 @@ public class WndSettings extends WndTabbed {
 
 			if (chkWifi != null){
 				chkWifi.setRect(0, pos + GAP, width, BTN_HEIGHT);
-				chkFireBase.setRect(0, chkWifi.bottom(), width, BTN_HEIGHT);
 				pos = chkWifi.bottom();
-			} else {
+				chkFireBase.setRect(0, pos + GAP, width, BTN_HEIGHT);
 				pos = chkFireBase.bottom();
 			}
 
-
+			// 多人聊天气泡开关始终显示（桌面/手机都可用）
+			chkMpChat.setRect(0, pos + GAP, width, BTN_HEIGHT);
+			pos = chkMpChat.bottom();
 
 			height = pos;
 

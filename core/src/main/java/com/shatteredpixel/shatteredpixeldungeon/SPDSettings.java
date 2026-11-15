@@ -609,6 +609,8 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_UPDATES	= "updates";
 	public static final String KEY_BETAS	= "betas";
 	public static final String KEY_WIFI     = "wifi";
+	/** 多人聊天气泡：是否在局内左上角联机日志显示聊天内容。 */
+	public static final String KEY_MP_CHAT_BUBBLE = "mp_chat_bubble";
 
 	public static final String KEY_NEWS_LAST_READ = "news_last_read";
 
@@ -644,6 +646,16 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean WiFi(){
 		return getBoolean(KEY_WIFI, true);
+	}
+
+	/** 是否在局内左上角联机日志中显示聊天内容。 */
+	public static void mpChatBubble(boolean value){
+		put(KEY_MP_CHAT_BUBBLE, value);
+	}
+
+	/** 是否在局内左上角联机日志中显示聊天内容（默认开启）。 */
+	public static boolean mpChatBubble(){
+		return getBoolean(KEY_MP_CHAT_BUBBLE, true);
 	}
 
 	public static void updatenewsLastRead(long updatelastRead){

@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.multiplayer;
 
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -36,6 +37,8 @@ public class MpGameLog extends Component {
     /** 半透明底衬，保证手机端在明亮/复杂地图上也能看清。 */
     private final ColorBlock bg;
     private long lastVersion = -1L;
+    /** 上一次刷新时的「多人聊天气泡」开关：切换后立即重建，隐藏/恢复聊天行。 */
+    private boolean lastChatBubble;
 
     /** 对局内左上角日志：从 y=40 向下排列，最多 5 条。 */
     public MpGameLog() {
@@ -66,6 +69,7 @@ public class MpGameLog extends Component {
         }
         add(bg);
         lastVersion = Mp.get().getMpLogVersion();
+        lastChatBubble = SPDSettings.mpChatBubble();
         refresh();
     }
 
@@ -73,8 +77,10 @@ public class MpGameLog extends Component {
     public void update() {
         super.update();
         long version = Mp.get().getMpLogVersion();
-        if (version != lastVersion) {
+        boolean chatBubble = SPDSettings.mpChatBubble();
+        if (version != lastVersion || chatBubble != lastChatBubble) {
             lastVersion = version;
+            lastChatBubble = chatBubble;
             refresh();
         }
     }
@@ -88,6 +94,14 @@ public class MpGameLog extends Component {
         blocks.clear();
 
         List<Mp.MpLogLine> lines = Mp.get().getMpLogLines();
+        if (!lastChatBubble) {
+            // 关闭「多人聊天气泡」：过滤聊天行，只保留系统/联机事件
+            List<Mp.MpLogLine> visible = new ArrayList<>();
+            for (Mp.MpLogLine line : lines) {
+                if (!isChatLine(line.type)) visible.add(line);
+            }
+            lines = visible;
+        }
         if (lines.size() > maxEntries) {
             lines = new ArrayList<>(lines.subList(lines.size() - maxEntries, lines.size()));
         }
@@ -137,6 +151,13 @@ public class MpGameLog extends Component {
             bg.size(width + 4f, (bottom - top) + 4f);
             bg.visible = true;
         }
+    }
+
+    /** 是否为聊天行（自己的/别人的/服务器系统聊天），受「多人聊天气泡」开关控制。 */
+    private static boolean isChatLine(int type) {
+        return type == Mp.MPLOG_CHAT_SELF
+                || type == Mp.MPLOG_CHAT_OTHER
+                || type == Mp.MPLOG_CHAT_SYSTEM;
     }
 
     private static int colorFor(int type) {
