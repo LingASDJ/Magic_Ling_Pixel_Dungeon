@@ -28,6 +28,7 @@ import com.watabou.utils.Callback;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import java.util.Map;
 public class GameRules {
 
     /**
@@ -172,119 +173,163 @@ public class GameRules {
     }
 
     public static String BannersRules() {
-        final Calendar calendar = Calendar.getInstance();
-        String banners;
-        int month = calendar.get(Calendar.MONTH);
-        Solar date = Solar.fromDate(calendar.getTime());
-        Lunar lunar = date.getLunar();
+        Calendar calendar = Calendar.getInstance();
+        Solar solar = Solar.fromDate(calendar.getTime());
+        Lunar lunar = solar.getLunar();
 
-        if(SPDSettings.isCustomBanner()){
-            switch (SPDSettings.CustomBanner_Text()) {
-                case "复活": case "RH":
-                    banners = Assets.Interfaces.BANNERS_EA;
-                    break;
-                case "圣诞": case "CS":
-                    banners = Assets.Interfaces.BANNERS_SD;
-                    break;
-                case "端午": case "DBF":
-                    banners = Assets.Interfaces.BANNERS_DW;
-                    break;
-                case "元宵": case "LR":
-                    banners = Assets.Interfaces.BANNERS_YX;
-                    break;
-                case "七夕": case "QX":
-                    banners = Assets.Interfaces.BANNERS_QX;
-                    break;
-                case "生日": case "BR":
-                    banners = Assets.Interfaces.BANNERS_BD;
-                    break;
-                case "清明": case "QF":
-                    banners = Assets.Interfaces.BANNERS_QM;
-                    break;
-                case "万圣": case "HW":
-                    banners = Assets.Interfaces.BANNERS_HL;
-                    break;
-                case "春节": case "SF":
-                    banners = Assets.Interfaces.BANNERS_CJ;
-                    break;
-                case "夏季": case "SS":
-                    banners = Assets.Interfaces.BANNERS_SM;
-                    break;
-                case "冬季": case "WR":
-                    banners = Assets.Interfaces.BANNERS_WT;
-                    break;
-                case "秋季": case "AT":
-                    banners = Assets.Interfaces.BANNERS_AT;
-                    break;
-                case "春季": case "SR":
-                    banners = Assets.Interfaces.BANNERS_SR;
-                    break;
-                case "劳动": case "LD":
-                    banners = Assets.Interfaces.BANNERS_LD;
-                    break;
-                case "中元": case "ZY":
-                    banners = Assets.Interfaces.BANNERS_ZY;
-                    break;
-                case "国庆": case "GQ":
-                    banners = Assets.Interfaces.BANNERS_GQ;
-                    break;
-                case "重阳": case "CY":
-                    banners = Assets.Interfaces.BANNERS_CY;
-                    break;
-                case "中秋": case "ZQ":
-                    banners = Assets.Interfaces.BANNERS_ZQ;
-                    break;
-               case "碎生": case "BX":
-                    banners = Assets.Interfaces.BANNERS_BX;
-                    break;
-                default:
-                    banners = Assets.Interfaces.BANNERS;
-                    break;
-            }
-        } else {
-            if(Holiday.getCurrentHoliday()  == Holiday.SHATTEREDPD_BIRTHDAY && RegularLevel.chinaHoliday == null ){
-                banners = Assets.Interfaces.BANNERS_SP;
-            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.YX) {
-                if (!SPDSettings.ClassUI()) {
-                    banners = Assets.Interfaces.BANNERS_YX;
-                } else {
-                    banners = Assets.Interfaces.BANNERS_BD;
-                }
-            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ) {
-                banners = Assets.Interfaces.BANNERS_CJ;
-            }  else if (RegularLevel.holiday == RegularLevel.WestHoliday.EASTER) {
-                banners = Assets.Interfaces.BANNERS_EA;
-            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.QMJ) {
-                banners = Assets.Interfaces.BANNERS_QM;
-            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.DWJ) {
-                banners = Assets.Interfaces.BANNERS_DW;
-            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZYJ) {
-                banners = Assets.Interfaces.BANNERS_ZY;
-            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.QXJ) {
-                banners = Assets.Interfaces.BANNERS_QX;
-            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.GQJ) {
-                banners = Assets.Interfaces.BANNERS_GQ;
-            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZQJ) {
-                banners = Assets.Interfaces.BANNERS_ZQ;
-            } else if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CYJ) {
-                banners = Assets.Interfaces.BANNERS_CY;
-            } else if (RegularLevel.holiday == RegularLevel.WestHoliday.XMAS) {
-                banners = Assets.Interfaces.BANNERS_SD;
-            } else  if (4 == month) {
-                //四季主题
-               banners = Assets.Interfaces.BANNERS_LD;
-            } else if (month == 2 || month == 3 ) { // 春季：3, 4, 5月
-                banners = Assets.Interfaces.BANNERS_SR;
-            } else if (month == 5 || month == 6 || month == 7) { // 夏季：6, 7, 8月
-                banners = Assets.Interfaces.BANNERS_SM;
-            } else if (month == 8 || month == 9 || month == 10) { // 秋季：9, 10, 11月
-                banners = Assets.Interfaces.BANNERS_AT;
-            } else { // 冬季：12, 1, 2月
-                banners = Assets.Interfaces.BANNERS_WT;
-            }
+        // 1. 自定义横幅
+        if (SPDSettings.isCustomBanner()) {
+            return getCustomBanner(SPDSettings.CustomBanner_Text());
         }
 
-        return banners;
+        // 2. 碎 PD 生日（原逻辑保留）
+        if (Holiday.getCurrentHoliday() == Holiday.SHATTEREDPD_BIRTHDAY
+                && RegularLevel.chinaHoliday == null) {
+            return Assets.Interfaces.BANNERS_SP;
+        }
+
+        // 3. 原有中外节日
+        String holidayBanner = getHolidayBanner();
+        if (holidayBanner != null) {
+            return holidayBanner;
+        }
+
+        // 4. 劳动节：公历 5 月 1 日（原特殊规则保留）
+        if (solar.getMonth() == 5 && solar.getDay() == 1) {
+            return Assets.Interfaces.BANNERS_LD;
+        }
+
+        // 5. 按二十四节气“四立”划分四季
+        return getSeasonBannerByJieQi(lunar);
+    }
+
+    /**
+     * 用四立节气判定四季横幅（按整天比较）
+     */
+    private static String getSeasonBannerByJieQi(Lunar lunar) {
+        Map<String, Solar> table = lunar.getJieQiTable();
+        String today = lunar.getSolar().toYmd();
+
+        Solar liChun = pick(table, "立春", "LI_CHUN");
+        Solar liXia  = table.get("立夏");
+        Solar liQiu  = table.get("立秋");
+        Solar liDong = table.get("立冬");
+
+        if (inRange(today, liChun, liXia)) {   // 立春 ~ 立夏前
+            return Assets.Interfaces.BANNERS_SR;
+        }
+        if (inRange(today, liXia, liQiu)) {    // 立夏 ~ 立秋前
+            return Assets.Interfaces.BANNERS_SM;
+        }
+        if (inRange(today, liQiu, liDong)) {    // 立秋 ~ 立冬前
+            return Assets.Interfaces.BANNERS_AT;
+        }
+        return Assets.Interfaces.BANNERS_WT;    // 立冬 ~ 次年立春前
+    }
+
+    /** 取节气，兼容中文名与英文别名两种 key */
+    private static Solar pick(Map<String, Solar> table, String zhKey, String enKey) {
+        Solar s = table.get(zhKey);
+        return s != null ? s : table.get(enKey);
+    }
+
+    /** [start, end) 日期区间判断，边界为 null 时视为不限制 */
+    private static boolean inRange(String today, Solar start, Solar end) {
+        if (start != null && today.compareTo(start.toYmd()) < 0) {
+            return false;
+        }
+        if (end != null && today.compareTo(end.toYmd()) >= 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /** 自定义横幅映射（原 switch 逻辑平移为 Map） */
+    private static String getCustomBanner(String key) {
+        Map<String, String> map = Map.ofEntries(
+                Map.entry("复活", Assets.Interfaces.BANNERS_EA),
+                Map.entry("RH", Assets.Interfaces.BANNERS_EA),
+                Map.entry("圣诞", Assets.Interfaces.BANNERS_SD),
+                Map.entry("CS", Assets.Interfaces.BANNERS_SD),
+                Map.entry("端午", Assets.Interfaces.BANNERS_DW),
+                Map.entry("DBF", Assets.Interfaces.BANNERS_DW),
+                Map.entry("元宵", Assets.Interfaces.BANNERS_YX),
+                Map.entry("LR", Assets.Interfaces.BANNERS_YX),
+                Map.entry("七夕", Assets.Interfaces.BANNERS_QX),
+                Map.entry("QX", Assets.Interfaces.BANNERS_QX),
+                Map.entry("生日", Assets.Interfaces.BANNERS_BD),
+                Map.entry("BR", Assets.Interfaces.BANNERS_BD),
+                Map.entry("清明", Assets.Interfaces.BANNERS_QM),
+                Map.entry("QF", Assets.Interfaces.BANNERS_QM),
+                Map.entry("万圣", Assets.Interfaces.BANNERS_HL),
+                Map.entry("HW", Assets.Interfaces.BANNERS_HL),
+                Map.entry("春节", Assets.Interfaces.BANNERS_CJ),
+                Map.entry("SF", Assets.Interfaces.BANNERS_CJ),
+                Map.entry("夏季", Assets.Interfaces.BANNERS_SM),
+                Map.entry("SS", Assets.Interfaces.BANNERS_SM),
+                Map.entry("冬季", Assets.Interfaces.BANNERS_WT),
+                Map.entry("WR", Assets.Interfaces.BANNERS_WT),
+                Map.entry("秋季", Assets.Interfaces.BANNERS_AT),
+                Map.entry("AT", Assets.Interfaces.BANNERS_AT),
+                Map.entry("春季", Assets.Interfaces.BANNERS_SR),
+                Map.entry("SR", Assets.Interfaces.BANNERS_SR),
+                Map.entry("劳动", Assets.Interfaces.BANNERS_LD),
+                Map.entry("LD", Assets.Interfaces.BANNERS_LD),
+                Map.entry("中元", Assets.Interfaces.BANNERS_ZY),
+                Map.entry("ZY", Assets.Interfaces.BANNERS_ZY),
+                Map.entry("国庆", Assets.Interfaces.BANNERS_GQ),
+                Map.entry("GQ", Assets.Interfaces.BANNERS_GQ),
+                Map.entry("重阳", Assets.Interfaces.BANNERS_CY),
+                Map.entry("CY", Assets.Interfaces.BANNERS_CY),
+                Map.entry("中秋", Assets.Interfaces.BANNERS_ZQ),
+                Map.entry("ZQ", Assets.Interfaces.BANNERS_ZQ),
+                Map.entry("碎生", Assets.Interfaces.BANNERS_BX),
+                Map.entry("BX", Assets.Interfaces.BANNERS_BX)
+        );
+        return map.getOrDefault(key, Assets.Interfaces.BANNERS);
+    }
+
+    /** 原有中外节日横幅，无匹配返回 null */
+    private static String getHolidayBanner() {
+        if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.YX) {
+            return SPDSettings.ClassUI()
+                    ? Assets.Interfaces.BANNERS_BD
+                    : Assets.Interfaces.BANNERS_YX;
+        }
+        if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CJ) {
+            return Assets.Interfaces.BANNERS_CJ;
+        }
+        if (RegularLevel.holiday == RegularLevel.WestHoliday.EASTER) {
+            return Assets.Interfaces.BANNERS_EA;
+        }
+        if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.QMJ) {
+            return Assets.Interfaces.BANNERS_QM;
+        }
+        if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.DWJ) {
+            return Assets.Interfaces.BANNERS_DW;
+        }
+        if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZYJ) {
+            return Assets.Interfaces.BANNERS_ZY;
+        }
+        if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.QXJ) {
+            return Assets.Interfaces.BANNERS_QX;
+        }
+        if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.GQJ) {
+            return Assets.Interfaces.BANNERS_GQ;
+        }
+        if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.ZQJ) {
+            return Assets.Interfaces.BANNERS_ZQ;
+        }
+        if (RegularLevel.chinaHoliday == RegularLevel.ChinaHoliday.CYJ) {
+            return Assets.Interfaces.BANNERS_CY;
+        }
+        if (RegularLevel.holiday == RegularLevel.WestHoliday.HWEEN) {
+            return Assets.Interfaces.BANNERS_HL;
+        }
+        if (RegularLevel.holiday == RegularLevel.WestHoliday.XMAS) {
+            return Assets.Interfaces.BANNERS_SD;
+        }
+        return null;
     }
 
     public static void PropsScore() {
