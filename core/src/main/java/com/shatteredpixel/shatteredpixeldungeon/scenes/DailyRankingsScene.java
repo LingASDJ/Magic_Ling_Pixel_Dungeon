@@ -457,7 +457,7 @@ public class DailyRankingsScene extends PixelScene {
         protected void createChildren() {
             super.createChildren();
 
-            flare = new Flare(6, 11);
+            flare = new Flare(6, 16);
             flare.angularSpeed = 45;
             flare.visible = false;
             add(flare);
