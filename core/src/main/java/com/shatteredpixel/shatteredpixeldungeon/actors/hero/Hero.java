@@ -374,7 +374,6 @@ public class Hero extends Char {
 		this.resistHealth += value;
 	}
 
-	private int originalHT = 20;
     private boolean chargeAnmy = false;
 
 	public int lvl = 1;
@@ -393,8 +392,6 @@ public class Hero extends Char {
 	public void updateHT( boolean boostHP ){
 		if (hero == null) return;
 		int curHT = HT;
-
-		originalHT = 20 + 5*(lvl-1);
 
 		HT = 20 + 5*(lvl-1) + HTBoost;
 		float multiplier = RingOfMight.HTMultiplier(this);
@@ -469,9 +466,12 @@ public class Hero extends Char {
 				strBonus -= 2;
 			}
 		}
-
-
-		return STR + strBonus;
+		int totalStrength = STR + strBonus;
+		//巨力buff
+		if (buff(Talent.MightyStrength.class) != null) {
+			totalStrength *= 2;
+		}
+		return totalStrength;
 	}
 	private static final String CAKEUSED = "cakeused";
 	public boolean resting = false;
@@ -778,8 +778,20 @@ public class Hero extends Char {
 		Invisibility.dispel();
 		belongings.thrownWeapon = null;
 
-		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
-			Buff.affect( this, Combo.class ).hit(enemy);
+		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy) {
+			Combo combo = buff(Combo.class);
+			boolean noCombo = combo == null || combo.getComboCount() == 0;
+			combo = Buff.affect(this, Combo.class);
+			if (noCombo) {
+				int points = pointsInTalent(
+						Talent.COMBO_PREMEDITATION
+				);
+				for (int i = 0; i < points; i++) {
+					combo.hit(enemy);
+				}
+			}
+			// 普通攻击原本获得的 +1 连击
+			combo.hit(enemy);
 		}
 
 		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
@@ -2717,58 +2729,6 @@ public class Hero extends Char {
 			}
 		}
 
-
-		if(hasTalent(Talent.PAIN_SCAR) && HP+ shielding() -dmg<=0){
-			int point = pointsInTalent(Talent.PAIN_SCAR);
-			float ber = 0;
-
-			if(buff(Berserk.class)!=null)
-				ber = buff(Berserk.class).getPower();
-
-			Ankh ankh = null;
-			for (Ankh i : belongings.getAllItems(Ankh.class)) {
-				if (ankh == null || i.isBlessed()) {
-					ankh = i;
-				}
-			}
-
-			boolean canResist = false;
-
-			switch (point){
-
-				case 1:
-					if(ber>=0.2f&&(originalHT-resistHealth)>20) {
-						canResist = true;
-					}
-					break;
-
-				case 2:
-
-					if(ber>=0.15f&&(originalHT-resistHealth)>15) {
-						canResist = true;
-					}
-					break;
-
-				case 3:
-
-					if(ber>=0.1f&&(originalHT-resistHealth)>10) {
-						canResist = true;
-					}
-					break;
-			}
-
-			int RH = resistHealth;
-
-			if(ankh != null && canResist){
-				WarriorDead();
-				return;
-			} else if (canResist) {
-				WarriorHPLimit();
-			}
-			if(RH < resistHealth) return;
-
-		}
-
 		int preHP = HP + shielding();
 
 		int preTrueHP = HP;
@@ -2782,6 +2742,14 @@ public class Hero extends Char {
 		if(belongings.getItem(ArmorScalesOfBzmdr.class)!=null) effectiveDamage -= (int) getZone();
 
 		if (effectiveDamage <= 0) return;
+		//盛怒反击的承受伤害计算
+		if (type == DamageType.PHYSICAL
+				&& subClass == HeroSubClass.BERSERKER
+				&& hasTalent(Talent.FURIOUS_RETALIATION)) {
+
+			Buff.affect(this, Berserk.class)
+					.addRetaliationRage(effectiveDamage);
+		}
 
 		int trueDamage=preTrueHP-HP;
 
@@ -3332,11 +3300,21 @@ public class Hero extends Char {
 
 			int points = pointsInTalent(Talent.SILENT_STEPS);
 
-			// +1：等级/4
-			// +2：等级/2
-			stealth += lvl / (points == 1 ? 4f : 2f);
+			// +1：等级/6
+			// +2：等级/4
+			stealth += lvl / (points == 1 ? 6f : 4f);
 		}
+		//幽冥漫步+2：幽冥斗篷在装备时提供12点潜行值
+		if (pointsInTalent(Talent.PHANTOM_WALK) >= 2) {
+			CloakOfShadows cloak =
+					belongings.getItem(CloakOfShadows.class);
 
+			if (cloak != null
+					&& cloak.isEquipped(this)
+					&& cloak.isPhantomMode()) {
+				stealth += 12f;
+			}
+		}
 		if (belongings.armor() != null) {
 			stealth = belongings.armor().stealthFactor(this, stealth);
 		}
@@ -3908,8 +3886,20 @@ public class Hero extends Char {
 
 		spend( freeAction ? 0f : attackDelay() );
 
-		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
-			Buff.affect( this, Combo.class ).hit(enemy);
+		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy) {
+			Combo combo = buff(Combo.class);
+			boolean noCombo = combo == null || combo.getComboCount() == 0;
+			combo = Buff.affect(this, Combo.class);
+			if (noCombo) {
+				int points = pointsInTalent(
+						Talent.COMBO_PREMEDITATION
+				);
+				for (int i = 0; i < points; i++) {
+					combo.hit(enemy);
+				}
+			}
+			// 普通攻击原本获得的 +1 连击
+			combo.hit(enemy);
 		}
 
 		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
@@ -4325,7 +4315,6 @@ public class Hero extends Char {
 			}
 		}
 
-		resistHealth *= 0.8f;
 		updateHT(false);
 	}
 
@@ -4384,89 +4373,6 @@ public class Hero extends Char {
 		}
 		return base + extra;
 	}
-
-	private boolean warriorDeathWindowShown = false;
-
-	private void WarriorDead() {
-		if (warriorDeathWindowShown) {
-			return;
-		}
-
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				if (warriorDeathWindowShown) {
-					return;
-				}
-
-				GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.ANKH),
-						Messages.get(Talent.PAIN_SCAR,"title"),
-						Messages.get(Talent.PAIN_SCAR,"desc"),
-						Messages.get(Talent.PAIN_SCAR,"prompt"),
-						Messages.get(Talent.PAIN_SCAR,"cancel")){
-					@Override
-					public void onBackPressed() {}
-
-					@Override
-					protected void onSelect(int index){
-						super.onSelect(index);
-						if( index == 0 ){
-							Buff buff = buff(Berserk.class);
-							if(buff != null){
-								switch(pointsInTalent(Talent.PAIN_SCAR)){
-									case 1:
-										HT -= 20;
-										buff(Berserk.class).reducePower(0.2f);
-										GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
-										resistHealth +=20;
-										break;
-									case 2:
-										HT -= 15;
-										buff(Berserk.class).reducePower(0.15f);
-										GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
-										resistHealth += 15;
-										break;
-									case 3:
-										HT -= 10;
-										buff(Berserk.class).reducePower(0.1f);
-										GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
-										resistHealth += 10;
-										break;
-								}
-							}
-						} else if(index == 1 ){
-							die(false);
-						}
-						warriorDeathWindowShown = false;
-					}
-				});
-				warriorDeathWindowShown = true;
-			}
-		});
-	}
-
-	private void WarriorHPLimit(){
-		switch(pointsInTalent(Talent.PAIN_SCAR)){
-			case 1:
-				HT -= 20;
-				buff(Berserk.class).reducePower(0.2f);
-				GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
-				resistHealth +=20;
-				return;
-			case 2:
-				HT -= 15;
-				buff(Berserk.class).reducePower(0.15f);
-				GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
-				resistHealth += 15;
-				return;
-			case 3:
-				HT -= 10;
-				buff(Berserk.class).reducePower(0.1f);
-				GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
-				resistHealth += 10;
-        }
-	}
-
 
 	public void FireAngry(Char ch){
 		if(ch instanceof MagicGirlDead){

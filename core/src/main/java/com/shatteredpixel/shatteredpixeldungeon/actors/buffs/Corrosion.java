@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.DamageContext;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -40,10 +41,12 @@ public class Corrosion extends Buff implements Hero.Doom {
 
 	//used in specific cases where the source of the corrosion is important for death logic
 	private Class source;
+	private int sourceHeroId = -1;
 
 	private static final String DAMAGE	= "damage";
 	private static final String LEFT	= "left";
 	private static final String SOURCE	= "source";
+	private static final String SOURCE_HERO_ID = "source_hero_id";
 
 	{
 		type = buffType.NEGATIVE;
@@ -56,6 +59,7 @@ public class Corrosion extends Buff implements Hero.Doom {
 		bundle.put( DAMAGE, damage );
 		bundle.put( LEFT, left );
 		bundle.put( SOURCE, source);
+		bundle.put( SOURCE_HERO_ID, sourceHeroId );
 	}
 
 	@Override
@@ -64,6 +68,9 @@ public class Corrosion extends Buff implements Hero.Doom {
 		damage = bundle.getFloat( DAMAGE );
 		left = bundle.getFloat( LEFT );
 		source = bundle.getClass( SOURCE );
+		sourceHeroId = bundle.contains( SOURCE_HERO_ID )
+				? bundle.getInt( SOURCE_HERO_ID )
+				: -1;
 	}
 
 	public void set(float duration, int damage){
@@ -74,6 +81,19 @@ public class Corrosion extends Buff implements Hero.Doom {
 		this.left = Math.max(duration, left);
 		if (this.damage < damage) this.damage = damage;
 		this.source = source;
+		sourceHeroId = -1;
+	}
+
+	public void setWithHero(float duration, int damage, Hero sourceHero) {
+		setWithHero(duration, damage, null, sourceHero);
+	}
+
+	public void setWithHero(float duration, int damage, Class source, Hero sourceHero) {
+		set(duration, damage, source);
+
+		if (sourceHero != null) {
+			sourceHeroId = sourceHero.id();
+		}
 	}
 	
 	@Override
@@ -99,7 +119,12 @@ public class Corrosion extends Buff implements Hero.Doom {
 	@Override
 	public boolean act() {
 		if (target.isAlive()) {
-			target.damage((int)damage, this, Char.DamageType.Element);
+			target.damageWithSource(
+					(int)damage,
+					this,
+					Char.DamageType.Element,
+					DamageContext.heroById(sourceHeroId)
+			);
 			if (damage < (Dungeon.scalingDepth()/2)+2) {
 				damage++;
 			} else {

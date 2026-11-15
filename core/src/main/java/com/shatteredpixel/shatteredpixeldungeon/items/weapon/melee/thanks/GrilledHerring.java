@@ -37,7 +37,10 @@ public class GrilledHerring extends MeleeWeapon implements Item.ThanksItem {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         if(eatFish<=0){
-            Buff.affect( defender, Bleeding.class ).set((damage/2f));
+            Buff.affect( defender, Bleeding.class ).setWithHero(
+                    damage / 2f,
+                    Talent.phantomFlashDamageSource(attacker)
+            );
         }
         return super.proc(attacker, defender, damage);
     }

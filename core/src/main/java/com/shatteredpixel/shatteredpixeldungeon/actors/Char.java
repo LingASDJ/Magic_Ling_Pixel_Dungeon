@@ -1071,11 +1071,18 @@ public abstract class Char extends Actor {
 		return cachedShield;
 	}
 
-	public void damage( int dmg, Object src){
-		damage(dmg,src, null);
+	public void damage(int dmg, Object src) {
+		damage(dmg, src, null);
 	}
 
-	public void damage( int dmg, Object src, DamageType type ) {
+	public void damage(int dmg, Object src, DamageType type) {
+		Hero sourceHero = DamageContext.sourceHero();
+
+		if (sourceHero == null) {
+			sourceHero = Talent.phantomFlashDamageSource(src);
+		}
+
+		lastDamageSourceHero = sourceHero;
 		//重置lastDamageOverkill，使溢出伤害为0时，不会错误的转化为血雾缭绕
 		lastDamageOverkill = 0;
 
@@ -1140,6 +1147,14 @@ public abstract class Char extends Actor {
 		}
 		if (this.buff(MagicalSleep.class) != null){
 			Buff.detach(this, MagicalSleep.class);
+		}
+		//片影惊鸿的伤害增益
+		if (sourceHero != null
+				&& this != sourceHero
+				&& alignment == Alignment.ENEMY) {
+			dmg = Math.round(
+					dmg * Talent.phantomFlashDamageMultiplier(sourceHero)
+			);
 		}
 		if (this.buff(Doom.class) != null && !isImmune(Doom.class)){
 			dmg *= 1.67f;
@@ -1392,6 +1407,27 @@ public abstract class Char extends Actor {
 		} else if (HP == 0 && buff(DeathMark.DeathMarkTracker.class) != null){
 			DeathMark.processFearTheReaper(this);
 		}
+	}
+
+	public final void damageWithSource(
+			int dmg,
+			Object src,
+			DamageType type,
+			Hero sourceHero
+	) {
+		Hero previous = DamageContext.push(sourceHero);
+
+		try {
+			damage(dmg, src, type); // 仍会进入 Mob/Boss 的 damage 重写
+		} finally {
+			DamageContext.restore(previous);
+		}
+	}
+
+	private Hero lastDamageSourceHero;
+
+	public Hero lastDamageSourceHero() {
+		return lastDamageSourceHero;
 	}
 	// 当前伤害结算产生的溢出值。
 	private int lastDamageOverkill = 0;

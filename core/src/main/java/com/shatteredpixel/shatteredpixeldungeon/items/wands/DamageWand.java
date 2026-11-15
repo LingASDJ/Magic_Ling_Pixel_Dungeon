@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
@@ -75,12 +74,6 @@ public abstract class DamageWand extends Wand{
 			if(Random.Int(1,10)<=1){
 				dmg = 0;
 				GLog.n(Messages.get(TerrorDoll.class,"terror"));
-			}
-		}
-		if(Dungeon.hero.hasTalent(Talent.FANATICISM_MAGIC)){
-			if (dmg > 0){
-				Berserk berserk = Buff.affect(Dungeon.hero, Berserk.class);
-				berserk.damage(dmg/2);
 			}
 		}
 

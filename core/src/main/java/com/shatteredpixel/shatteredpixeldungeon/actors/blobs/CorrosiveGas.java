@@ -24,8 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.DamageContext;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -38,6 +40,7 @@ public class CorrosiveGas extends Blob {
 
 	//used in specific cases where the source of the corrosion is important for death logic
 	private Class source;
+	private int sourceHeroId = -1;
 
 	@Override
 	protected void evolve() {
@@ -46,6 +49,7 @@ public class CorrosiveGas extends Blob {
 		if (volume == 0){
 			strength = 0;
 			source = null;
+			sourceHeroId = -1;
 		} else {
 			Char ch;
 			int cell;
@@ -55,7 +59,12 @@ public class CorrosiveGas extends Blob {
 					cell = i + j*Dungeon.level.width();
 					if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
 						if (!ch.isImmune(this.getClass()))
-							Buff.affect(ch, Corrosion.class).set(2f, strength, source);
+							Buff.affect(ch, Corrosion.class).setWithHero(
+									2f,
+									strength,
+									source,
+									DamageContext.heroById(sourceHeroId)
+							);
 					}
 				}
 			}
@@ -67,21 +76,30 @@ public class CorrosiveGas extends Blob {
 	}
 
 	public CorrosiveGas setStrength(int str, Class source){
+		return setStrengthWithHero(str, source, null);
+	}
+
+	public CorrosiveGas setStrengthWithHero(int str, Class source, Hero sourceHero){
 		if (str > strength) {
 			strength = str;
 			this.source = source;
+			sourceHeroId = sourceHero != null ? sourceHero.id() : -1;
 		}
 		return this;
 	}
 
 	private static final String STRENGTH = "strength";
 	private static final String SOURCE	= "source";
+	private static final String SOURCE_HERO_ID = "source_hero_id";
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		strength = bundle.getInt( STRENGTH );
 		source = bundle.getClass( SOURCE );
+		sourceHeroId = bundle.contains(SOURCE_HERO_ID)
+				? bundle.getInt(SOURCE_HERO_ID)
+				: -1;
 	}
 
 	@Override
@@ -89,6 +107,7 @@ public class CorrosiveGas extends Blob {
 		super.storeInBundle(bundle);
 		bundle.put( STRENGTH, strength );
 		bundle.put( SOURCE, source );
+		bundle.put( SOURCE_HERO_ID, sourceHeroId );
 	}
 
 	@Override

@@ -3,9 +3,11 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.DamageContext;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -17,6 +19,7 @@ public class VenomGas extends Blob {
 
     public int wandlvl = 0;
     private LinkedHashMap<Char,Integer> targets = new LinkedHashMap<>();
+    private int sourceHeroId = -1;
 
     @Override
     protected void evolve() {
@@ -37,7 +40,12 @@ public class VenomGas extends Blob {
                         else
                             targets.put( ch, targets.get( ch ) + 1 );
 
-                        ch.damage( damage + targets.get( ch ), this, Char.DamageType.Element);
+                        ch.damageWithSource(
+                                damage + targets.get(ch),
+                                this,
+                                Char.DamageType.Element,
+                                DamageContext.heroById(sourceHeroId)
+                        );
 
                         if(ch.venodamage >= (damage) *8) {
                             if(ch.buff(Blindness.class) == null) {
@@ -61,11 +69,15 @@ public class VenomGas extends Blob {
 
     private static final String WANDLVL = "wandlvl";
     private static final String SOURCE	= "source";
+    private static final String SOURCE_HERO_ID = "source_hero_id";
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         wandlvl = bundle.getInt(WANDLVL);
         source = bundle.getClass( SOURCE );
+        sourceHeroId = bundle.contains(SOURCE_HERO_ID)
+                ? bundle.getInt(SOURCE_HERO_ID)
+                : -1;
     }
 
     @Override
@@ -73,6 +85,7 @@ public class VenomGas extends Blob {
         super.storeInBundle(bundle);
         bundle.put(WANDLVL, wandlvl );
         bundle.put( SOURCE, source );
+        bundle.put( SOURCE_HERO_ID, sourceHeroId );
     }
 
     @Override
@@ -89,9 +102,14 @@ public class VenomGas extends Blob {
 
     private Class source;
     public VenomGas setWandlvl(int lvl, Class source){
+        return setWandlvlWithHero(lvl, source, null);
+    }
+
+    public VenomGas setWandlvlWithHero(int lvl, Class source, Hero sourceHero){
         if (lvl > wandlvl) {
             wandlvl = lvl;
             this.source = source;
+            sourceHeroId = sourceHero != null ? sourceHero.id() : -1;
         }
         return this;
     }

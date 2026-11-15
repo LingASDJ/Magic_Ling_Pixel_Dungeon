@@ -1356,6 +1356,14 @@ public abstract class Mob extends Char {
     @Override
 	public void die( Object cause ) {
 		discovered = true;
+		// 片影惊鸿的击杀登记
+		// 不限击杀方式的全伤害增益
+		// 不限敌人/友军：只要是英雄造成的最后一击，就叠加增伤。
+		Hero phantomKiller = lastDamageSourceHero();
+
+		if (phantomKiller != null) {
+			Talent.onPhantomFlashKill(phantomKiller);
+		}
 		// 在super.die()前读取，此时伏击状态和本次伤害的溢出值仍然有效。
 		if (alignment == Alignment.ENEMY) {
 			Talent.onAmbushKill(
@@ -1394,7 +1402,8 @@ public abstract class Mob extends Char {
 					Buff.affect(hero, Barrier.class).setShield(1 + hero.pointsInTalent(Talent.IRON_WILL));
 				}
 			}
-    		//片影惊鸿的击杀登记
+			// 片影惊鸿的击杀登记
+			// 限近战或投掷武器击杀的限制的增益
 			// 近战攻击的伤害来源通常记录为英雄，因此需要同时检查当前动作和攻击武器；
 			// *投掷过程中，thrownWeapon会暂时保存正在使用的投掷武器。
 			boolean meleeOrThrownWeaponKill =

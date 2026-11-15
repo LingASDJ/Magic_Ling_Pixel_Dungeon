@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WorstBlizzard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -312,7 +313,11 @@ public class ElementalBlast extends ArmorAbility {
 									//*** Wand of Fireblast ***
 								} else if (finalWandCls == WandOfFireblast.class) {
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect(mob, Burning.class).reignite(mob);
+										Buff.affect(mob, Burning.class).reigniteWithHero(
+												mob,
+												8f,
+												hero
+										);
 									}
 
 									//*** Wand of GodIce ***
@@ -324,7 +329,11 @@ public class ElementalBlast extends ArmorAbility {
 									//*** Wand of Corrosion ***
 								} else if (finalWandCls == WandOfCorrosion.class) {
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect(mob, Corrosion.class).set(4, Math.round(6 * effectMulti));
+										Buff.affect(mob, Corrosion.class).setWithHero(
+												4,
+												Math.round(6 * effectMulti),
+												hero
+										);
 										charsHit++;
 									}
 

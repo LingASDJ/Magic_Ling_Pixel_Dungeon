@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
@@ -283,7 +284,10 @@ public class BloodthirstyThorn extends MeleeWeapon {
 
         //恐惧和流血
         if(level()>=0 && Random.Float()>0.45f){
-            Buff.affect(defender, Bleeding.class).set(level());
+            Buff.affect(defender, Bleeding.class).setWithHero(
+                    level(),
+                    Talent.phantomFlashDamageSource(attacker)
+            );
             Buff.affect(defender, Terror.class, level() );
         }
         return super.proc(attacker, defender, damage);

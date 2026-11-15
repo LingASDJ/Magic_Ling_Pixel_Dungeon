@@ -44,7 +44,10 @@ public class JunglePoison extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(defender, Poison.class).extend(2*level()+3);
+        Hero sourceHero = attacker instanceof Hero
+                ? (Hero) attacker
+                : null;
+        Buff.affect(defender, Poison.class).setWithHero(2*level()+3, sourceHero);
 
         Poison enemypoison = defender.buff(Poison.class);
         if (enemypoison != null) {
@@ -102,7 +105,7 @@ public class JunglePoison extends MeleeWeapon {
                                     public void call() {
                                         Buff.affect(ch, Roots.class, duration);
                                         Buff.affect(ch, Weakness.class, duration);
-                                        Buff.affect(ch, Poison.class).set(poisonStacks);
+                                        Buff.affect(ch, Poison.class).setWithHero(poisonStacks, hero);
                                         hero.spendAndNext(hero.attackDelay());
                                     }
                                 }));

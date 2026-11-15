@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -132,7 +133,10 @@ public class SpikedChakram extends MeleeWeapon {
                 if (hit) {
                     int dealt = damageRoll(hero);
                     if (dealt > 0) {
-                        Buff.affect(enemy, Bleeding.class).set(Math.round(dealt * 0.5f));
+                        Buff.affect(enemy, Bleeding.class).setWithHero(
+                                Math.round(dealt * 0.5f),
+                                hero
+                        );
                     }
                     Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
                 }

@@ -887,7 +887,7 @@ public class EndingBlade extends MeleeWeapon {
                 Char ch = Actor.findChar(pos);
                 if (ch != null && !(ch instanceof NPC) && ch.alignment != Char.Alignment.ALLY) {
                     Buff.affect(ch, Burning.class).reignite(ch, 2.0f);
-                    Buff.affect(ch, Poison.class).set(2 + duration);
+                    Buff.affect(ch, Poison.class).setWithHero(2 + duration, Dungeon.hero);
 
                     Buff.affect(ch, DeathCurseTracker.class).set(duration + 1);
                 }

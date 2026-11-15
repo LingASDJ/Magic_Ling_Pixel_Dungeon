@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -26,9 +27,12 @@ public class HaloBlazing extends Weapon.Enchantment {
 
             float powerMulti = Math.max(1f, procChance);
 
-            if (defender.buff(HalomethaneBurning.class) != null){
+            if (defender.buff(HalomethaneBurning.class) != null) {
+                Hero sourceHero = attacker instanceof Hero
+                        ? (Hero) attacker
+                        : null;
                 Buff.affect(defender, HalomethaneBurning.class).reignite(defender, 8f);
-                Buff.affect(defender, Poison.class).set(4f);
+                Buff.affect(defender, Poison.class).setWithHero(4f, sourceHero);
                 int burnDamage = Random.NormalIntRange( 1, 3 + Dungeon.depth/4 );
                 defender.damage( Math.round(burnDamage * 0.67f), this );
             } else {
@@ -37,7 +41,10 @@ public class HaloBlazing extends Weapon.Enchantment {
             }
             //鬼磷附魔受奥术之戒影响实现
             if (powerMulti > 0) {
-                Buff.affect(defender, Poison.class).set(4f + powerMulti);
+                Hero sourceHero = attacker instanceof Hero
+                        ? (Hero) attacker
+                        : null;
+                Buff.affect(defender, Poison.class).setWithHero(4f + powerMulti,sourceHero);
                 int burnDamage = Random.NormalIntRange( 1, 3 + Dungeon.depth/4 );
                 burnDamage = Math.round(burnDamage * 0.67f * powerMulti);
                 if (burnDamage > 0) {

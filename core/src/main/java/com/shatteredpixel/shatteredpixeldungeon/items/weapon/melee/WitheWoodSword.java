@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
@@ -74,7 +75,11 @@ public class WitheWoodSword extends MeleeWeapon {
 			case 4:case 5:
 				Buff.prolong(defender, Vertigo.class, 12f+level);
 				Buff.prolong(defender, Terror.class, 12f+level);
-				Buff.affect(defender, Burning.class).reignite(defender,5f+level);
+				Buff.affect(defender, Burning.class).reigniteWithHero(
+						defender,
+						5f + level,
+						Talent.phantomFlashDamageSource(attacker)
+				);
 				//Over Level 3,Not Debuff
 				return super.proc( attacker, defender, damage );
 		}

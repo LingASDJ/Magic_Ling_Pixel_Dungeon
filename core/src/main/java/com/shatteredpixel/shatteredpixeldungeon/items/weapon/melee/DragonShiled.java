@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -20,7 +21,11 @@ public class DragonShiled extends MeleeWeapon {
     public int proc(Char attacker, Char defender, int damage ) {
         switch (Random.Int(6)) {
             case 4: case 5:
-                Buff.affect(defender, Burning.class).reignite(defender);
+                Buff.affect(defender, Burning.class).reigniteWithHero(
+                        defender,
+                        8f,
+                        Talent.phantomFlashDamageSource(attacker)
+                );
                 return super.proc( attacker, defender, damage );
             default:
                 return super.proc( attacker, defender, damage );

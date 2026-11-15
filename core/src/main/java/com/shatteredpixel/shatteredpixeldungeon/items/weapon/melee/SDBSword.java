@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -180,7 +181,7 @@ public class SDBSword extends MeleeWeapon {
                     // 附加流血效果
                     int bleedTurns = followDmg / 3;
                     if (bleedTurns > 0) {
-                        Buff.affect(ch, Bleeding.class).set(bleedTurns);
+                        Buff.affect(ch, Bleeding.class).setWithHero(bleedTurns, hero);
                     }
                     hero.spend(1f);
                 }
@@ -210,7 +211,10 @@ public class SDBSword extends MeleeWeapon {
         if (Dungeon.level.distance(defender.pos, Dungeon.hero.pos) <= 1) {
             int poisonTurns = damage / 3;
             if (poisonTurns > 0) {
-                Buff.affect(defender, Poison.class).set(poisonTurns);
+                Hero sourceHero = attacker instanceof Hero
+                        ? (Hero) attacker
+                        : null;
+                Buff.affect(defender, Poison.class).setWithHero(poisonTurns, sourceHero);
             }
         } else if (Dungeon.level.distance(defender.pos, Dungeon.hero.pos) >= 2) {
             defender.damage(damage, this, Char.DamageType.MAGIC);
@@ -218,7 +222,10 @@ public class SDBSword extends MeleeWeapon {
 
             int bleedTurns = damage / 3;
             if (bleedTurns > 0) {
-                Buff.affect(defender, Bleeding.class).set(bleedTurns);
+                Buff.affect(defender, Bleeding.class).setWithHero(
+                        bleedTurns,
+                        Talent.phantomFlashDamageSource(attacker)
+                );
             }
             return 0;
         }

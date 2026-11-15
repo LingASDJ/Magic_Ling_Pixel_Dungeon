@@ -28,12 +28,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BlessAWP;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GameAPI;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -511,16 +509,32 @@ public class Armor extends EquipableItem {
 	//other things can equip these, for now we assume only the hero can be affected by levelling debuffs
 	@Override
 	public int buffedLvl() {
-		if(hero != null){
-			if(hero.buff(BlessAWP.ArmorGetReady.class)!=null && hero.belongings.armor() == this){
-				return super.buffedLvl()+1;
-			}
-		}
-		if ((isEquipped( hero ) || hero.belongings.contains( this )) &&  hero != null){
-			return super.buffedLvl();
-		} else {
+		Hero hero = Dungeon.hero;
+
+		if (hero == null
+				|| (!isEquipped(hero)
+				&& !hero.belongings.contains(this))) {
 			return level();
 		}
+
+		int lvl = super.buffedLvl();
+
+		if (hero.buff(BlessAWP.ArmorGetReady.class) != null
+				&& hero.belongings.armor() == this) {
+			lvl += 1;
+		}
+
+		if (hero.belongings.armor() == this
+				&& hero.subClass == HeroSubClass.BERSERKER) {
+
+			Berserk berserk = hero.buff(Berserk.class);
+
+			if (berserk != null) {
+				lvl += berserk.equipmentBuffedLvl();
+			}
+		}
+
+		return lvl;
 	}
 
 	@Override
@@ -636,7 +650,8 @@ public class Armor extends EquipableItem {
 		} else if (cursedKnown && cursed) {
 			info += "\n\n" + Messages.get(Armor.class, "cursed");
 		} else if (seal != null) {
-			info += "\n\n" + Messages.get(Armor.class, "seal_attached", seal.maxShield(tier, level()));
+			int shieldAmount = seal.maxShield(tier, level()) + BrokenSeal.bloodlineShieldBonus(Dungeon.hero);
+			info += "\n\n" + Messages.get(Armor.class, "seal_attached", shieldAmount);
 			Glyph g=seal.getGlyph();
 			if (g!=null){
 				info+="\n\n" +  Messages.capitalize(Messages.get(Armor.class, "inscribed", g.name()));

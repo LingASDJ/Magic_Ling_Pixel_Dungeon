@@ -313,8 +313,10 @@ public class BuffScanner {
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.LethalMomentumTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.LiquidAgilACCTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.LiquidAgilEVATracker.class);
+        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.MightyStrength.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.NatureBerriesDropped.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.PatientStrikeTracker.class);
+        buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.PhantomFlashDamage.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.PreciseAssaultTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ProtectiveShadowsTracker.class);
         buffClasses.add(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ProvokedAngerTracker.class);
