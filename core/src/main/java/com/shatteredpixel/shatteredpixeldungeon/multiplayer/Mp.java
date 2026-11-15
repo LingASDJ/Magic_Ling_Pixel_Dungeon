@@ -77,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -160,7 +161,7 @@ public class Mp {
      * 联机协议版本。线协议（帧类型/载荷格式）改动时必须递增；
      * 双方版本不一致会拒绝连接，避免旧版本用不兼容的存档/协议混连。
      */
-    public static final int MP_PROTOCOL_VERSION = 16;
+    public static final int MP_PROTOCOL_VERSION = 17;
 
     /** 连续多少个 PING 收不到 PONG 就判定连接中断（每 3 秒一次，约 15 秒） */
     private static final int PING_MISS_LIMIT = 5;
@@ -264,6 +265,10 @@ public class Mp {
         ColorBlock hpBg;
         ColorBlock hpFill;
         HeroClass heroClass;                 // 对端职业（房主侧=访客的 HERO 帧；访客侧=房主 STATE 里捕获）
+        volatile int skin = -1;              // 对端皮肤 ID（HERO/ROOM_STATE 同步；-1=未知）
+        volatile int tier = -1;              // 对端精灵 tier（STATS 同步；含护甲外观；-1=未知）
+        /** 职业/皮肤变化：渲染线程下一帧重建幽灵精灵（网络线程只置位）。 */
+        volatile boolean spriteDirty = false;
         boolean gotState = false;            // 房主侧：是否已给该访客发过 STATE
         Hero remote;
         HeroSprite remoteSprite;
@@ -291,6 +296,10 @@ public class Mp {
         public String name;
         /** 职业。 */
         public HeroClass heroClass;
+        /** 皮肤索引（-1=未知）。 */
+        public int skin = -1;
+        /** 精灵 tier（含护甲外观；-1=未知）。 */
+        public int tier = -1;
         /** 是否房主。 */
         public boolean isHost;
         /** 是否自己。 */
@@ -346,6 +355,8 @@ public class Mp {
         public final String name;
         /** 房间内选择的职业；null=尚未选择。 */
         public final HeroClass heroClass;
+        /** 皮肤索引（-1=未知，显示时按职业当前设置兜底）。 */
+        public final int skin;
         /** 是否房主。 */
         public final boolean isHost;
         /** 展示用 UUID（与每日挑战一致）。 */
@@ -359,12 +370,13 @@ public class Mp {
         /** 历史最高分（含每日挑战）。 */
         public final int highestScore;
 
-        RoomPlayerInfo(int id, String name, HeroClass heroClass, boolean isHost,
+        RoomPlayerInfo(int id, String name, HeroClass heroClass, int skin, boolean isHost,
                        String uuid, List<Badges.Badge> badges, List<Badges.Badge> allBadges,
                        boolean isAdmin, int highestScore) {
             this.id = id;
             this.name = name;
             this.heroClass = heroClass;
+            this.skin = skin;
             this.isHost = isHost;
             this.uuid = uuid == null ? "" : uuid;
             this.badges = badges == null
@@ -378,7 +390,7 @@ public class Mp {
         }
 
         RoomPlayerInfo(int id, String name, HeroClass heroClass, boolean isHost) {
-            this(id, name, heroClass, isHost, "", Collections.emptyList(),
+            this(id, name, heroClass, -1, isHost, "", Collections.emptyList(),
                     Collections.emptyList(), false, 0);
         }
     }
@@ -490,6 +502,8 @@ public class Mp {
     private static final String MP_INIT_DIR = "mp_init";
     /** 访客自己的持久世界目录前缀（按房主世界种子分档）。 */
     private static final String MP_WORLD_PREFIX = "mp_world_";
+    /** 访客端保留的最近房主世界数量；更早的 mp_hero_/mp_world_ 视为失效并清理。 */
+    private static final int MP_KEEP_SEEDS = 4;
     private static final String MP_INIT_GAME = "game";
     private static final String MP_INIT_LEVELS = "levels";
     /** 当前 Dungeon.hero 是否属于已进入的联机世界（防止把单人或过期英雄写入访客档） */
@@ -600,6 +614,9 @@ public class Mp {
     private final AtomicInteger unreadChat = new AtomicInteger();
     /** 上一次统计未读时用的英雄对象：换新档/重新开始后清空未读。 */
     private Hero lastChatHeroForUnread;
+    /** 上一次广播的职业/皮肤，用于局内改皮肤时补发 HERO 帧。 */
+    private int lastSentSkin = Integer.MIN_VALUE;
+    private HeroClass lastSentSkinClass;
     /** 玩家列表按钮右上角的在线人数角标（绿色气泡，常亮）。 */
     private ColorBlock playerCountBadgeBg;
     private RenderedTextBlock playerCountBadge;
@@ -698,6 +715,7 @@ public class Mp {
      */
     public synchronized void host(int port) {
         disconnect();
+        cleanupMultiplayerStorage();
         role = Role.HOST;
         status = Messages.get(Mp.class, "status_hosting", port);
         running = true;
@@ -762,6 +780,7 @@ public class Mp {
      */
     public synchronized void join(String address, int defaultPort) {
         disconnect();
+        cleanupMultiplayerStorage();
         role = Role.CLIENT;
         localAdmin = false;
         status = Messages.get(Mp.class, "status_connecting", address);
@@ -816,6 +835,7 @@ public class Mp {
         final String host = hp[0];
         final int port = Integer.parseInt(hp[1]);
         disconnect();
+        cleanupMultiplayerStorage();
         serverMode = true;
         serverAddress = host;
         roomCode = null;
@@ -860,6 +880,7 @@ public class Mp {
         final String host = hp[0];
         final int port = Integer.parseInt(hp[1]);
         disconnect();
+        cleanupMultiplayerStorage();
         serverMode = true;
         serverAddress = host;
         roomCode = room;
@@ -1110,7 +1131,7 @@ public class Mp {
     public RoomPlayerInfo getLocalProfileInfo() {
         MpProfile profile = getMyProfile();
         return new RoomPlayerInfo(role == Role.CLIENT && myId >= 0 ? myId : HOST_ID,
-                getMyName(), getMyRoomHeroClass(), role == Role.HOST,
+                getMyName(), getMyRoomHeroClass(), mySkinIndex(), role == Role.HOST,
                 profile.getUuid(), profile.getBadges(), profile.getAllBadges(),
                 localAdmin, profile.getHighestScore());
     }
@@ -1131,7 +1152,7 @@ public class Mp {
     public RoomPlayerInfo getRoomPlayerProfile(int id) {
         if (isSelfProfileId(id)) {
             MpProfile profile = getMyProfile();
-            return new RoomPlayerInfo(id, getMyName(), getMyRoomHeroClass(),
+            return new RoomPlayerInfo(id, getMyName(), getMyRoomHeroClass(), mySkinIndex(),
                     role == Role.HOST, profile.getUuid(), profile.getBadges(),
                     profile.getAllBadges(), localAdmin, profile.getHighestScore());
         }
@@ -1327,6 +1348,24 @@ public class Mp {
     public HeroClass getMyRoomHeroClass() {
         if (isHost()) return effectiveHostClass();
         return guestRoomHeroLocked ? guestLockCacheClass : guestRoomClass;
+    }
+
+    /** 本机当前皮肤：有英雄用英雄的 skinIndex；房间里还没英雄则用所选职业的设置。 */
+    private int mySkinIndex() {
+        HeroClass cls = getMyRoomHeroClass();
+        if (Dungeon.hero != null) {
+            if (cls == null || Dungeon.hero.heroClass == cls) return Dungeon.hero.skinIndex();
+            return cls.GetSkin();   // 房间已换职业：皮肤应对应房间职业，而不是上一局英雄
+        }
+        return cls != null ? cls.GetSkin() : 0;
+    }
+
+    /** 指定职业的本机皮肤（房间内选职业/建新档时用）。 */
+    private int skinForClass(HeroClass cls) {
+        if (Dungeon.hero != null && Dungeon.hero.heroClass == cls) {
+            return Dungeon.hero.skinIndex();
+        }
+        return cls != null ? cls.GetSkin() : 0;
     }
 
     /**
@@ -1570,7 +1609,7 @@ public class Mp {
             if (guestRoomClass != null && myId >= 0
                     && (lastRoomHeroSentSeed != Long.MIN_VALUE || lastRoomHeroSent != guestRoomClass)) {
                 try {
-                    sendToAll(Proto.HERO, encodeHero(myId, guestRoomClass));
+                    sendToAll(Proto.HERO, encodeHero(myId, guestRoomClass, skinForClass(guestRoomClass)));
                 } catch (Throwable ignored) {}
                 lastRoomHeroSentSeed = Long.MIN_VALUE;
                 lastRoomHeroSent = guestRoomClass;
@@ -1595,7 +1634,7 @@ public class Mp {
         if (cls != null && myId >= 0
                 && (lastRoomHeroSentSeed != seed || lastRoomHeroSent != cls)) {
             try {
-                sendToAll(Proto.HERO, encodeHero(myId, cls));
+                sendToAll(Proto.HERO, encodeHero(myId, cls, skinForClass(cls)));
             } catch (Throwable ignored) {}
             lastRoomHeroSentSeed = seed;
             lastRoomHeroSent = cls;
@@ -1670,7 +1709,7 @@ public class Mp {
     private List<RoomPlayerInfo> buildRoomRoster() {
         List<RoomPlayerInfo> list = new ArrayList<>();
         MpProfile profile = getMyProfile();
-        list.add(new RoomPlayerInfo(HOST_ID, getMyName(), effectiveHostClass(), true,
+        list.add(new RoomPlayerInfo(HOST_ID, getMyName(), effectiveHostClass(), mySkinIndex(), true,
                 profile.getUuid(), profile.getBadges(), profile.getAllBadges(),
                 localAdmin, profile.getHighestScore()));
         List<Peer> snapshot;
@@ -1679,7 +1718,7 @@ public class Mp {
         }
         for (Peer p : snapshot) {
             if (p.id <= 0) continue;
-            list.add(new RoomPlayerInfo(p.id, displayName(p.name), p.heroClass, false,
+            list.add(new RoomPlayerInfo(p.id, displayName(p.name), p.heroClass, p.skin, false,
                     p.uuid, p.badges, p.allBadges, p.admin, p.highestScore));
         }
         return list;
@@ -1924,7 +1963,7 @@ public class Mp {
     static byte[] encodeRoomState(RoomSaveInfo save, List<RoomPlayerInfo> players) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(256);
         DataOutputStream dos = new DataOutputStream(bos);
-        dos.writeInt(3);
+        dos.writeInt(4);
         dos.writeBoolean(save.selected);
         dos.writeBoolean(save.isNew);
         dos.writeBoolean(save.started);
@@ -1937,6 +1976,7 @@ public class Mp {
             dos.writeInt(p.id);
             dos.writeBoolean(p.isHost);
             dos.writeInt(p.heroClass == null ? -1 : p.heroClass.ordinal());
+            dos.writeInt(p.skin);
             writeNetString(dos, p.name, 128);
             writeNetString(dos, p.uuid, 64);
             int badgeCount = p.badges == null ? 0
@@ -2143,7 +2183,7 @@ public class Mp {
     static RoomStatePayload decodeRoomState(byte[] data) throws IOException {
         DataInputStream di = new DataInputStream(new ByteArrayInputStream(data));
         int format = di.readInt();
-        if (format != 1 && format != 2 && format != 3) {
+        if (format < 1 || format > 4) {
             throw new IOException("bad room state format");
         }
         boolean selected = di.readBoolean();
@@ -2165,6 +2205,7 @@ public class Mp {
                 if (ord >= HeroClass.values().length) throw new IOException("bad class ordinal");
                 cls = HeroClass.values()[ord];
             }
+            int skin = format >= 4 ? di.readInt() : -1;
             String name = readNetString(di, 128);
             String uuid = "";
             List<Badges.Badge> badges = Collections.emptyList();
@@ -2202,7 +2243,7 @@ public class Mp {
                 isAdmin = di.readBoolean();
                 highestScore = Math.max(0, di.readInt());
             }
-            players.add(new RoomPlayerInfo(id, name, cls, isHost,
+            players.add(new RoomPlayerInfo(id, name, cls, skin, isHost,
                     uuid, badges, allBadges, isAdmin, highestScore));
         }
         HeroClass hostCls = null;
@@ -2230,6 +2271,10 @@ public class Mp {
         long oldSeed = roomSave.selected ? roomSave.seed : Long.MIN_VALUE;
         roomSave = p.save;
         roomRoster = Collections.unmodifiableList(p.players);
+        for (RoomPlayerInfo r : p.players) {
+            if (r.id == myId) continue;
+            applyPeerIdentity(peerFor(r.id), r.heroClass, r.skin);
+        }
         if (oldSeed != roomSave.seed) {
             guestLockCacheValid = false;
             lastRoomHeroSentSeed = Long.MIN_VALUE;
@@ -2268,6 +2313,7 @@ public class Mp {
         for (RoomPlayerInfo p : players) {
             sb.append(p.id).append('|').append(p.isHost).append('|')
                     .append(p.heroClass == null ? -1 : p.heroClass.ordinal()).append('|')
+                    .append(p.skin).append('|')
                     .append(p.name).append('|').append(p.uuid).append('|')
                     .append(p.isAdmin).append('|').append(p.highestScore).append('|');
             if (p.badges != null) {
@@ -3097,12 +3143,12 @@ public class Mp {
                 case Proto.HERO: {
                     HeroPayload hp = decodeHero(data);
                     if (isHost()) {
-                        p.heroClass = hp.cls;
-                        sendToOthers(p, Proto.HERO, data);   // 转发职业给其他访客
+                        applyPeerIdentity(p, hp.cls, hp.skin);
+                        sendToOthers(p, Proto.HERO, data);   // 转发职业/皮肤给其他访客
                         roomStateDirty = true;
                         roomUiVersion.incrementAndGet();
                     } else {
-                        peerFor(hp.id).heroClass = hp.cls;
+                        applyPeerIdentity(peerFor(hp.id), hp.cls, hp.skin);
                     }
                     break;
                 }
@@ -3215,21 +3261,29 @@ public class Mp {
                 case Proto.STATS: {
                     StatsPayload sp = decodeStats(data);
                     if (isHost()) {
-                        // 房主以发送方 id 为准，防止访客伪造其他人的血量
+                        // 房主以发送方 id 为准，防止访客伪造其他人的血量/外观
                         p.hp = clampStat(sp.hp);
                         p.ht = clampStat(sp.ht);
+                        boolean tierChanged = sp.tier >= 0 && p.tier != clampTier(sp.tier);
+                        if (sp.tier >= 0) p.tier = clampTier(sp.tier);
+                        if (tierChanged) p.spriteDirty = true;
                         if (p.remote != null) {
                             p.remote.HP = p.hp;
                             p.remote.HT = p.ht;
+                            if (sp.tier >= 0) p.remote.tierOverride = clampTier(sp.tier);
                         }
-                        sendToOthers(p, Proto.STATS, encodeStats(p.id, p.hp, p.ht));
+                        sendToOthers(p, Proto.STATS, encodeStats(p.id, p.hp, p.ht, p.tier));
                     } else if (sp.id != myId) {
                         Peer tp = peerFor(sp.id);
                         tp.hp = clampStat(sp.hp);
                         tp.ht = clampStat(sp.ht);
+                        boolean tierChanged = sp.tier >= 0 && tp.tier != clampTier(sp.tier);
+                        if (sp.tier >= 0) tp.tier = clampTier(sp.tier);
+                        if (tierChanged) tp.spriteDirty = true;
                         if (tp.remote != null) {
                             tp.remote.HP = tp.hp;
                             tp.remote.HT = tp.ht;
+                            if (sp.tier >= 0) tp.remote.tierOverride = clampTier(sp.tier);
                         }
                     }
                     break;
@@ -3441,7 +3495,10 @@ public class Mp {
             Bundle hostHero = game.getBundle("hero");
             if (hostHero.contains("class")) {
                 // 远端幽灵用房主的外观（Hero.CLASS = "class"）；访客侧 id=0 的 peer 就是房主
-                peerFor(HOST_ID).heroClass = hostHero.getEnum("class", HeroClass.class);
+                Peer hostPeer = peerFor(HOST_ID);
+                hostPeer.heroClass = hostHero.getEnum("class", HeroClass.class);
+                hostPeer.skin = hostHero.contains("skin")
+                        ? hostHero.getInt("skin") : hostPeer.heroClass.GetSkin();
             }
             int hostPos = hostHero.getInt("pos");                             // 访客英雄出生在房主当前位置
 
@@ -3452,9 +3509,11 @@ public class Mp {
             }
             Bundle guestHero = guestHeroPart(guest);
             if (guestHero != null && guestHero.contains("class")) {
-                // 已有英雄存档：直接告诉房主自己的职业（房主渲染访客幽灵外观用，并转发给其他访客）
+                // 已有英雄存档：直接告诉房主自己的职业与皮肤（房主渲染访客幽灵外观用，并转发给其他访客）
+                HeroClass ghCls = guestHero.getEnum("class", HeroClass.class);
+                int ghSkin = guestHero.contains("skin") ? guestHero.getInt("skin") : skinForClass(ghCls);
                 try {
-                    sendToAll(Proto.HERO, encodeHero(myId, guestHero.getEnum("class", HeroClass.class)));
+                    sendToAll(Proto.HERO, encodeHero(myId, ghCls, ghSkin));
                 } catch (Throwable ignored) {}
             }
             if (guest == null) {
@@ -3482,7 +3541,7 @@ public class Mp {
                                     status = Messages.get(Mp.class, "status_save_new_hero_failed");
                                 }
                                 try {
-                                    sendToAll(Proto.HERO, encodeHero(myId, roomCls));
+                                    sendToAll(Proto.HERO, encodeHero(myId, roomCls, skinForClass(roomCls)));
                                 } catch (Throwable ignored) {}
                                 mergeAndEnter(latest, latestPos, b);
                             } catch (Throwable t) {
@@ -3534,7 +3593,7 @@ public class Mp {
                                     status = Messages.get(Mp.class, "status_save_new_hero_failed");
                                 }
                                 try {
-                                    sendToAll(Proto.HERO, encodeHero(myId, cls));   // 通知房主自己的职业
+                                    sendToAll(Proto.HERO, encodeHero(myId, cls, skinForClass(cls)));   // 通知房主自己的职业
                                 } catch (Throwable ignored) {}
                                 mergeAndEnter(latest, latestPos, b);
                             } catch (Throwable t) {
@@ -3801,10 +3860,13 @@ public class Mp {
             unreadChat.incrementAndGet();
         }
         // 左上角联机日志同时显示聊天（时间只取 HH:mm，避免占用过多宽度）
-        int logType = type == CHAT_TYPE_SELF ? MPLOG_CHAT_SELF
-                : type == CHAT_TYPE_SYSTEM ? MPLOG_CHAT_SYSTEM : MPLOG_CHAT_OTHER;
-        String shortTime = time.length() > 5 ? time.substring(0, 5) : time;
-        addMpLogLine("[" + shortTime + "] " + displayName + ": " + msg, logType);
+        // 关闭「多人聊天气泡」后只记录到聊天窗口，不再写入左上角日志
+        if (SPDSettings.mpChatBubble()) {
+            int logType = type == CHAT_TYPE_SELF ? MPLOG_CHAT_SELF
+                    : type == CHAT_TYPE_SYSTEM ? MPLOG_CHAT_SYSTEM : MPLOG_CHAT_OTHER;
+            String shortTime = time.length() > 5 ? time.substring(0, 5) : time;
+            addMpLogLine("[" + shortTime + "] " + displayName + ": " + msg, logType);
+        }
     }
 
     /** 追加一条左上角联机日志（线程安全；超过上限丢弃最旧的）。 */
@@ -4073,6 +4135,8 @@ public class Mp {
         info.branch = Dungeon.hero != null ? Dungeon.branch : 0;
         info.hp = Dungeon.hero != null ? Dungeon.hero.HP : -1;
         info.ht = Dungeon.hero != null ? Dungeon.hero.HT : -1;
+        info.skin = mySkinIndex();
+        info.tier = Dungeon.hero != null ? Dungeon.hero.tier() : -1;
         info.isAdmin = role == Role.CLIENT && localAdmin;
     }
 
@@ -4081,6 +4145,8 @@ public class Mp {
         info.id = p.id;
         info.name = p.name;
         info.heroClass = p.heroClass;
+        info.skin = p.skin;
+        info.tier = p.tier;
         info.isHost = isHost || p.id == HOST_ID;
         info.rttMs = p.rttMs;
         info.timeout = p.pingTimeout;
@@ -4212,8 +4278,13 @@ public class Mp {
             gs.addToFront(playerCountBadge);
             playerCountBadgeText = "";
         }
+
         chatButton.visible = true;
         chatButton.active = true;
+
+        playListButton.active = true;
+        playListButton.visible = true;
+
         refreshChatUnreadBadge();
         refreshPlayerCountBadge();
     }
@@ -4336,6 +4407,9 @@ public class Mp {
                 });
                 chatWindow = w;
                 ShatteredPixelDungeon.scene().addToFront(w);
+                if (DeviceCompat.isAndroid()) {
+                    placeChatWindowForAndroidIme(w);
+                }
                 status = Messages.get(Mp.class, "chat_open");
             } catch (Throwable t) {
                 if (w != null) w.destroy();
@@ -4344,6 +4418,29 @@ public class Mp {
                 status = Messages.get(Mp.class, "chat_open_failed", t.getMessage());
             }
         });
+    }
+
+    /**
+     * Android：软键盘会占用屏幕下半部分，聊天窗口默认居中会挡住输入框/发送按钮。
+     * 打开时把窗口整体上移到屏幕上半区，保证输入框始终在键盘上方。
+     *
+     * @param w 刚创建的聊天窗口。
+     */
+    private static void placeChatWindowForAndroidIme(MpChatWindow w) {
+        if (w == null || w.camera == null || w.camera.zoom <= 0f) return;
+        float margin = Game.height * 0.04f;
+        float winH = w.camera.screenHeight();
+        float targetBottom = Game.height * 0.45f;
+        if (winH > targetBottom - margin) {
+            // 窗口比半屏还高：优先保证顶部完整可见
+            targetBottom = margin + winH;
+        }
+        float currentBottom = w.camera.y + winH;
+        int shift = Math.round((targetBottom - currentBottom) / w.camera.zoom);
+        if (shift < 0) {
+            // 新窗口 offset 为 0，直接按屏幕像素换算成 Window 的偏移单位向上移
+            w.offset(0, shift);
+        }
     }
 
     /** 关闭聊天窗口（断开连接/离开房间时）。 */
@@ -5125,6 +5222,97 @@ public class Mp {
         }
     }
 
+    // ---------------------------------------------------------------- 多人存档清理
+
+    /**
+     * 每次进入联机前清理失效的多人存档：
+     * 1) 删除访客临时槽 game99（崩溃/强退后残留）；
+     * 2) 只保留最近 {@link #MP_KEEP_SEEDS} 个房主世界种子（当前世界、房间选中种子的强制保留），
+     *    清理更早的 mp_hero_<seed>.dat(.bak) 与 mp_world_<seed>/；
+     * 3) 普通存档已删除时，清掉残留的 mp_init 初始快照。
+     */
+    private synchronized void cleanupMultiplayerStorage() {
+        try {
+            // 1) 访客临时槽只应存在于一次对局中
+            String temp = GamesInProgress.gameFolder(GUEST_TEMP_SLOT);
+            if (("game" + GUEST_TEMP_SLOT).equals(temp) && FileUtils.dirExists(temp)) {
+                FileUtils.deleteDir(temp);
+            }
+            GamesInProgress.setUnknown(GUEST_TEMP_SLOT);
+            if (GamesInProgress.curSlot == GUEST_TEMP_SLOT) {
+                GamesInProgress.curSlot = 0;
+            }
+
+            // 2) 收集 mp_hero_<seed> / mp_world_<seed> 的最近修改时间
+            HashMap<Long, Long> lastWrite = new HashMap<>();
+            for (FileHandle f : FileUtils.getFileHandle("").list()) {
+                if (f == null) continue;
+                String name = f.name();
+                Long seed = null;
+                if (f.isDirectory()) {
+                    if (name.startsWith(MP_WORLD_PREFIX)) {
+                        if (FileUtils.fileLength(name + "/game.dat") <= 1) {
+                            FileUtils.deleteDir(name);   // 残缺的世界目录直接清掉
+                            continue;
+                        }
+                        seed = parseMpSeed(name.substring(MP_WORLD_PREFIX.length()));
+                    }
+                } else {
+                    if (name.endsWith(".bak")) name = name.substring(0, name.length() - 4);
+                    if (name.startsWith("mp_hero_") && name.endsWith(".dat")) {
+                        if (f.length() <= 1) {
+                            f.delete();   // 空/损坏的英雄档
+                            continue;
+                        }
+                        seed = parseMpSeed(name.substring("mp_hero_".length(), name.length() - 4));
+                    }
+                }
+                if (seed == null) continue;
+                Long prev = lastWrite.get(seed);
+                if (prev == null || f.lastModified() > prev) lastWrite.put(seed, f.lastModified());
+            }
+
+            ArrayList<Long> seeds = new ArrayList<>(lastWrite.keySet());
+            Collections.sort(seeds, (a, b) -> Long.compare(lastWrite.get(b), lastWrite.get(a)));
+            HashSet<Long> keep = new HashSet<>();
+            for (int i = 0; i < seeds.size() && i < MP_KEEP_SEEDS; i++) keep.add(seeds.get(i));
+            if (worldSeed != Long.MIN_VALUE) keep.add(worldSeed);
+            if (roomSave.selected && roomSave.seed != Long.MIN_VALUE) keep.add(roomSave.seed);
+            for (Long seed : seeds) {
+                if (!keep.contains(seed)) deleteMpSeed(seed);
+            }
+
+            // 3) 普通存档已删除时，清掉残留的房主初始快照 mp_init
+            for (int slot = 1; slot <= GamesInProgress.MAX_SLOTS; slot++) {
+                if (GamesInProgress.gameExists(slot)) continue;
+                String initDir = GamesInProgress.gameFolder(slot) + "/" + MP_INIT_DIR;
+                if (FileUtils.dirExists(initDir)) FileUtils.deleteDir(initDir);
+            }
+        } catch (Throwable ignored) {
+            // 清理失败不影响联机；下次进入联机还会再尝试
+        }
+    }
+
+    /** 删除某个房主世界种子对应的访客英雄档与持久世界。 */
+    private static void deleteMpSeed(long seed) {
+        if (FileUtils.dirExists(MP_WORLD_PREFIX + seed)) {
+            FileUtils.deleteDir(MP_WORLD_PREFIX + seed);
+        }
+        FileUtils.deleteFile("mp_hero_" + seed + ".dat");
+        FileUtils.deleteFile("mp_hero_" + seed + ".dat.bak");
+        FileUtils.deleteFile("mp_hero_" + seed + ".dat.tmp");
+    }
+
+    /** 解析 mp_hero_<seed> / mp_world_<seed> 里的种子；非法或非正数返回 null。 */
+    private static Long parseMpSeed(String value) {
+        try {
+            long seed = Long.parseLong(value.trim());
+            return seed > 0 ? seed : null;
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
     // ---------------------------------------------------------------- 每帧
 
     /** 房主新建档首次进入 GameScene 后落盘，并把房间存档标记为已有档。 */
@@ -5175,6 +5363,19 @@ public class Mp {
         if (Dungeon.hero != null && Dungeon.hero != lastChatHeroForUnread) {
             lastChatHeroForUnread = Dungeon.hero;
             unreadChat.set(0);
+        }
+
+        // 局内改皮肤/换职业：补发 HERO，让其他玩家即时更新幽灵外观
+        if (Dungeon.hero != null) {
+            int sid = isHost() ? HOST_ID : myId;
+            int skin = Dungeon.hero.skinIndex();
+            if (sid >= 0 && (skin != lastSentSkin || Dungeon.hero.heroClass != lastSentSkinClass)) {
+                lastSentSkin = skin;
+                lastSentSkinClass = Dungeon.hero.heroClass;
+                try {
+                    sendToAll(Proto.HERO, encodeHero(sid, Dungeon.hero.heroClass, skin));
+                } catch (Throwable ignored) {}
+            }
         }
 
         // T 键 / 局内聊天按钮都收敛在 Mp 里，GameScene 只需每帧调用 tick
@@ -5353,7 +5554,8 @@ public class Mp {
                 lastStatsTime = now;
                 int sid = isHost() ? HOST_ID : myId;
                 if (sid >= 0) {
-                    try { sendToAll(Proto.STATS, encodeStats(sid, Dungeon.hero.HP, Dungeon.hero.HT)); } catch (Throwable ignored) {}
+                    try { sendToAll(Proto.STATS, encodeStats(sid, Dungeon.hero.HP, Dungeon.hero.HT,
+                            Dungeon.hero.tier())); } catch (Throwable ignored) {}
                 }
             }
             // 每 3 秒同步一次完整英雄信息（/list 点击与放大镜查看玩家详情用）
@@ -5502,7 +5704,29 @@ public class Mp {
         }
     }
 
+    /** 更新对端职业/皮肤；变化时标记渲染线程重建幽灵精灵（可在网络线程调用）。 */
+    private static void applyPeerIdentity(Peer p, HeroClass cls, int skin) {
+        boolean changed = p.heroClass != cls || (skin >= 0 && p.skin != skin);
+        p.heroClass = cls;
+        if (skin >= 0) p.skin = skin;
+        if (changed) p.spriteDirty = true;
+    }
+
+    /** 职业/皮肤变化：销毁当前幽灵精灵，下一次 syncPeer 按新外观重建。 */
+    private static void resetPeerSprite(Peer p) {
+        if (p.remoteSprite != null) {
+            try { p.remoteSprite.killAndErase(); } catch (Throwable ignored) {}
+            p.remoteSprite = null;
+        }
+        p.remote = null;
+    }
+
     private void syncPeer(GameScene gs, Peer p) { // skipcq: JAVA-R1000 同步远端幽灵，复杂度高但已实测稳定
+        if (p.spriteDirty) {
+            p.spriteDirty = false;
+            resetPeerSprite(p);
+        }
+
         if (p.remotePos <= 0) return;
 
         // 远端坐标若属于另一层/支线，套到本层会穿墙乱跳：不创建也不移动
@@ -5520,12 +5744,14 @@ public class Mp {
                     }
                 };
                 p.remote.heroClass = remoteClass(p);
+                p.remote.skin = p.skin;   // 远端皮肤：-1 时回退到本机该职业设置
+                p.remote.tierOverride = p.tier;   // 远端护甲外观：-1 时按默认无甲
                 p.remote.pos = p.remotePos;
                 if (p.hp >= 0 && p.ht > 0) {
                     p.remote.HP = p.hp;
                     p.remote.HT = p.ht;
                 }
-                p.remoteSprite = new HeroSprite(p.remote);
+                p.remoteSprite = HeroSkins.createRemoteSprite(p.remote);
                 // HeroSprite/CharSprite 会为非本机角色自动创建内置血条；
                 // 联机幽灵已有自己的血条（hpBg/hpFill），移除内置血条避免受伤时出现两条。
                 p.remoteSprite.removeHealthIndicator();
@@ -5644,7 +5870,7 @@ public class Mp {
         public String gameVersion;
     }
 
-        /** STATS 帧载荷：玩家 id + 当前血量 + 血量上限。 */
+        /** STATS 帧载荷：玩家 id + 当前血量 + 血量上限 + 精灵 tier（护甲外观）。 */
     public static class StatsPayload {
         /** 玩家 id。 */
         public int id;
@@ -5652,6 +5878,8 @@ public class Mp {
         public int hp;
         /** 血量上限。 */
         public int ht;
+        /** 精灵 tier（含护甲外观；-1=旧载荷未携带）。 */
+        public int tier = -1;
     }
 
         /** HERO_INFO 帧载荷：玩家 id + 完整英雄 bundle 字节。 */
@@ -5809,26 +6037,28 @@ public class Mp {
     }
 
     /**
-     * 编码 STATS 帧：玩家 id + 当前血量 + 血量上限。
+     * 编码 STATS 帧：玩家 id + 当前血量 + 血量上限 + 精灵 tier。
      *
-     * @param id 参数。
-     * @param hp 参数。
-     * @param ht 参数。
+     * @param id 玩家 id。
+     * @param hp 当前血量。
+     * @param ht 血量上限。
+     * @param tier 精灵 tier（护甲外观；-1=未知）。
      * @return 返回值。
      * @throws IOException 参数。
      */
-    public static byte[] encodeStats(int id, int hp, int ht) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(12);
+    public static byte[] encodeStats(int id, int hp, int ht, int tier) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(16);
         DataOutputStream dos = new DataOutputStream(bos);
         dos.writeInt(id);
         dos.writeInt(hp);
         dos.writeInt(ht);
+        dos.writeInt(tier);
         dos.flush();
         return bos.toByteArray();
     }
 
     /**
-     * 解码 STATS 帧。
+     * 解码 STATS 帧；兼容只有 id/hp/ht 的旧载荷（tier=-1）。
      *
      * @param data 参数。
      * @return 返回值。
@@ -5840,6 +6070,9 @@ public class Mp {
         p.id = di.readInt();
         p.hp = di.readInt();
         p.ht = di.readInt();
+        if (di.available() >= 4) {
+            p.tier = di.readInt();
+        }
         return p;
     }
 
@@ -6013,6 +6246,11 @@ public class Mp {
         return Math.max(0, Math.min(v, 99999));
     }
 
+    /** 精灵 tier 夹到有效范围，防止异常网络数据导致精灵取帧越界。 */
+    private static int clampTier(int v) {
+        return Math.max(0, Math.min(v, 15));
+    }
+
     private static String localIp() {
         try {
             java.util.Enumeration<java.net.NetworkInterface> nets = java.net.NetworkInterface.getNetworkInterfaces();
@@ -6090,34 +6328,38 @@ public class Mp {
         public static final int PROFILE_DATA = 44; // 目标玩家 → 房主 → 请求者
     }
 
-        /** HERO 帧载荷：id + 职业。 */
+        /** HERO 帧载荷：id + 职业 + 皮肤。 */
     public static class HeroPayload {
         /** 标识 id。 */
         public int id;
         /** 职业。 */
         public HeroClass cls;
+        /** 皮肤索引（-1=旧载荷未携带）。 */
+        public int skin = -1;
     }
 
     /**
-     * 编码 HERO 帧：id + 职业序数。
+     * 编码 HERO 帧：id + 职业序数 + 皮肤索引。
      *
-     * @param id 参数。
-     * @param cls 参数。
-     * @return 返回值。
+     * @param id 玩家 id。
+     * @param cls 职业。
+     * @param skin 皮肤索引（-1=未知）。
+     * @return 载荷字节。
      */
-    public static byte[] encodeHero(int id, HeroClass cls) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+    public static byte[] encodeHero(int id, HeroClass cls, int skin) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(12);
         DataOutputStream dos = new DataOutputStream(bos);
         dos.writeInt(id);
         dos.writeInt(cls == null ? -1 : cls.ordinal());
+        dos.writeInt(skin);
         dos.flush();
         return bos.toByteArray();
     }
 
     /**
-     * 解码 HERO 帧。
+     * 解码 HERO 帧；兼容只有 id + 职业的旧载荷（skin=-1）。
      *
-     * @param data 参数。
+     * @param data 载荷字节。
      * @return 返回值。
      */
     public static HeroPayload decodeHero(byte[] data) throws IOException {
@@ -6129,6 +6371,9 @@ public class Mp {
             throw new IOException(Messages.get(Mp.class, "error_bad_class_ordinal", o));
         }
         p.cls = HeroClass.values()[o];
+        if (di.available() >= 4) {
+            p.skin = di.readInt();
+        }
         return p;
     }
 

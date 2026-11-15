@@ -185,4 +185,14 @@ public class SKINITEM extends Item {
         }
     }
 
+    public static class SKIN_DF extends SKINITEM {
+        {
+            image = ItemSpriteSheet.SOMETHING;
+        }
+        @Override
+        public int iceCoinValue() {
+            return 0;
+        }
+    }
+
 }

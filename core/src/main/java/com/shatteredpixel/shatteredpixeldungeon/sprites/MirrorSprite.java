@@ -48,7 +48,7 @@ public class MirrorSprite extends MobSprite {
 
 	private static HeroSkins.SkinDef currentSkinDef() {
 		if (Dungeon.hero == null) return null;
-		return HeroSkins.get(Dungeon.hero.heroClass, Dungeon.hero.heroClass.GetSkin());
+		return HeroSkins.get(Dungeon.hero.heroClass, Dungeon.hero.skinIndex());
 	}
 
 	/** 将 int[] 装箱为 Object[]，供 Animation.frames(TextureFilm, Object...) 使用。 */
