@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
 import com.shatteredpixel.shatteredpixeldungeon.multiplayer.MpLobbyScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyConfig;
 import com.shatteredpixel.shatteredpixeldungeon.services.multiplayer.MultiplayerImpl;
@@ -93,6 +94,9 @@ public class TitleScene extends PixelScene {
 	@Override
 	public void create() { // skipcq: JAVA-R1000 作者原有的大方法，本 PR 仅追加联机按钮
 		super.create();
+
+		// 启动/回标题时清理失效的多人缓存（game99、超期世界、孤立快照）
+		Mp.get().cleanupMultiplayerStorageOnStartup();
 
 		// If a daily run was abandoned (or the app restarted mid-daily), put the
 		// player's normal difficulty/challenge settings back.
