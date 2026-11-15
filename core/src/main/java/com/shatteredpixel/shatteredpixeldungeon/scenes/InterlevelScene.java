@@ -170,7 +170,10 @@ public class InterlevelScene extends PixelScene {
 				scrollSpeed = 0;
 				break;
 			case CONTINUE:
-				loadingDepth = GamesInProgress.check(GamesInProgress.curSlot).depth;
+				// 存档可能已被删除（例如上一局死亡后联机房间仍残留旧快照），
+				// 这里只负责选择加载图；真正读档失败会在 STATIC 阶段弹出错误窗，不能在这里空指针崩溃。
+				GamesInProgress.Info continueInfo = GamesInProgress.check(GamesInProgress.curSlot);
+				loadingDepth = continueInfo != null ? continueInfo.depth : Dungeon.depth;
 				scrollSpeed = 5;
 				break;
 			case DESCEND:

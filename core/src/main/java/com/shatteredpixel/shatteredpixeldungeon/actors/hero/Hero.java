@@ -497,6 +497,13 @@ public class Hero extends Char {
 	//and thread coordination implications if that method calls buff(...) frequently
 	private Berserk berserk;
 
+	/**
+	 * 本机英雄最后一次真实死亡的死因对象（联机死亡播报用）。
+	 * 由 {@link #die(Object)} 在真正死亡时写入，Mp 读取后解析成“死因”文案；
+	 * 新建英雄时清空，避免把上一局的死因带进新档。
+	 */
+	public static Object lastDeathCause = null;
+
 	public Hero() {
 		super();
 
@@ -506,6 +513,7 @@ public class Hero extends Char {
 		belongings = new Belongings(this);
 
 		visibleEnemies = new ArrayList<>();
+		lastDeathCause = null;
 	}
 
 	public static void reallyDie( Object cause ) {
@@ -3827,6 +3835,7 @@ public class Hero extends Char {
 		}
 
 		Actor.fixTime();
+		lastDeathCause = cause;
 		super.die( cause );
 		reallyDie( cause );
 	}

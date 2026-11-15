@@ -338,7 +338,7 @@ public class MpChatWindow extends Window {
             chatIconPixmap = pm;
         }
         Image icon = new Image(chatIconPixmap);
-        icon.hardlight(0xFFD700);
+        icon.hardlight(0xFFFFFFFF);
         return icon;
     }
 }
