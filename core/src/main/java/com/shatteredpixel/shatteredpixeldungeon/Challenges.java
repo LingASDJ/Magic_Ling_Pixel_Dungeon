@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DeepRedFlower;
 import com.shatteredpixel.shatteredpixeldungeon.levels.UnlessEndFlowerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.watabou.utils.DeviceCompat;
 
 public class Challenges {
 	public static final int NO_FOOD = 1;
@@ -104,5 +105,27 @@ public class Challenges {
 		}
 
 		return chCount;
+	}
+
+	/** 本机是否已解锁挑战选择（与原版 HeroSelectScene 的判定保持一致）。 */
+	public static boolean unlocked() {
+		return DeviceCompat.isDebug()
+				|| Badges.isUnlocked(Badges.Badge.VICTORY)
+				|| Badges.isUnlocked(Badges.Badge.HOLLOWCITY)
+				|| Badges.isUnlocked(Badges.Badge.HAPPY_END)
+				|| Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_4);
+	}
+
+	/**
+	 * 修复被联机临时规则污染的挑战设置。
+	 *
+	 * <p>未通关的玩家本不该拥有任何挑战；若全局设置里仍有残留位，
+	 * 说明旧版本/异常流程写入过房主挑战。这里静默清零，
+	 * 避免玩家在未解锁时被永久锁在无法关闭的挑战状态。</p>
+	 */
+	public static void repairLockedSettings() {
+		if (!unlocked() && SPDSettings.challenges() != 0) {
+			SPDSettings.challenges(0);
+		}
 	}
 }

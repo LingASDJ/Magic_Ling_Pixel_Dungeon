@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.multiplayer.Mp;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -105,22 +106,35 @@ public class WndRestart extends Window {
 
                 heroAlive = Dungeon.hero.isAlive();
                 info = GamesInProgress.check( GamesInProgress.curSlot );
-                saveCustomSeed = heroAlive ? info.customSeed : SPDSettings.customSeed();
-                saveSeed = heroAlive ? info.seed : Dungeon.seed;
-                nextSeed = cbs.get(0).checked() ? DungeonSeed.convertToCodeSafe( saveCustomSeed.isEmpty() ? saveSeed : DungeonSeed.convertFromText( saveCustomSeed ) ) : "";
-                nextHero = cbs.get(1).checked() ? ( heroAlive ? info.heroClass : Dungeon.hero.heroClass ) : Dungeon.hero.heroClass;
-                nextChallenges = cbs.get(2).checked() ? ( heroAlive ? info.challenges : SPDSettings.challenges() ) : 0;
-                if (cbs.get(3).checked()) {
-                    nextDifficulty = ( heroAlive ? info.dlcs : SPDSettings.dlc() );
-                } else {
+                // 访客隐藏槽 game99 属于房主世界：它的挑战/DLC/种子不能写回本机设置，
+                // 否则会污染访客自己的单机新档。这里按本机默认规则重开。
+                boolean guestWorld = Mp.isGuestTempSlot( GamesInProgress.curSlot );
+                if (guestWorld) {
+                    nextSeed = "";
+                    nextHero = Dungeon.hero.heroClass;
+                    nextChallenges = 0;
                     nextDifficulty = new Conducts.ConductStorage();
                     nextDifficulty.conducts.add(Conducts.Conduct.NORMAL);
+                } else {
+                    saveCustomSeed = heroAlive ? info.customSeed : SPDSettings.customSeed();
+                    saveSeed = heroAlive ? info.seed : Dungeon.seed;
+                    nextSeed = cbs.get(0).checked() ? DungeonSeed.convertToCodeSafe( saveCustomSeed.isEmpty() ? saveSeed : DungeonSeed.convertFromText( saveCustomSeed ) ) : "";
+                    nextHero = cbs.get(1).checked() ? ( heroAlive ? info.heroClass : Dungeon.hero.heroClass ) : Dungeon.hero.heroClass;
+                    nextChallenges = cbs.get(2).checked() ? ( heroAlive ? info.challenges : SPDSettings.challenges() ) : 0;
+                    if (cbs.get(3).checked()) {
+                        nextDifficulty = ( heroAlive ? info.dlcs : SPDSettings.dlc() );
+                    } else {
+                        nextDifficulty = new Conducts.ConductStorage();
+                        nextDifficulty.conducts.add(Conducts.Conduct.NORMAL);
+                    }
                 }
 
-                SPDSettings.customSeed( nextSeed );
                 GamesInProgress.selectedClass = nextHero;
-                SPDSettings.challenges( nextChallenges );
-                SPDSettings.dlc( nextDifficulty );
+                if (!guestWorld) {
+                    SPDSettings.customSeed( nextSeed );
+                    SPDSettings.challenges( nextChallenges );
+                    SPDSettings.dlc( nextDifficulty );
+                }
 
                 try {
                     if( cbs.get(4).checked() && !shouldRestart )

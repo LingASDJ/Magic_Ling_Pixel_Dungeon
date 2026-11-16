@@ -326,6 +326,60 @@ public class PixelScene extends Scene {
 		}
 	}
 
+	/**
+	 * 弹窗始终位于场景最上层。
+	 *
+	 * <p>场景内的玩家列表、联机幽灵、聊天按钮等元素会动态增删；若它们晚于弹窗
+	 * 加入场景，就会画在弹窗之上。这里统一把 {@link Window} 提升到成员末尾：
+	 * 新增弹窗直接置顶，新增普通元素后重新把所有已有弹窗按原顺序置顶。</p>
+	 */
+	@Override
+	public synchronized Gizmo add( Gizmo g ) {
+		Gizmo result = (g instanceof Window) ? super.addToFront( g ) : super.add( g );
+		raiseWindows();
+		return result;
+	}
+
+	@Override
+	public synchronized Gizmo addToFront( Gizmo g ) {
+		Gizmo result = super.addToFront( g );
+		raiseWindows();
+		return result;
+	}
+
+	@Override
+	public synchronized Gizmo bringToFront( Gizmo g ) {
+		Gizmo result = super.bringToFront( g );
+		if (result != null) {
+			raiseWindows();
+		}
+		return result;
+	}
+
+	/** 把场景内所有弹窗按原有相对顺序移到成员列表末尾（即绘制在最上层）。 */
+	private void raiseWindows() {
+		int lastWindow = -1;
+		int lastOther = -1;
+		for (int i = 0; i < length; i++) {
+			Gizmo g = members.get( i );
+			if (g == null) continue;
+			if (g instanceof Window) {
+				lastWindow = i;
+			} else {
+				lastOther = i;
+			}
+		}
+		if (lastWindow < 0 || lastWindow > lastOther) return;
+
+		ArrayList<Gizmo> windows = new ArrayList<>();
+		for (int i = 0; i < members.size(); i++) {
+			Gizmo g = members.get( i );
+			if (g instanceof Window) windows.add( g );
+		}
+		members.removeAll( windows );
+		members.addAll( windows );
+	}
+
 	public static boolean landscape(){
 		return SPDSettings.interfaceSize() > 0 || Game.width > Game.height;
 	}

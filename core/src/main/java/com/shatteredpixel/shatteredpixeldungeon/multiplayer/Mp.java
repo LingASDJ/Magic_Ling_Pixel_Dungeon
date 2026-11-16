@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
+import com.shatteredpixel.shatteredpixeldungeon.Difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
@@ -104,10 +106,12 @@ import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -430,6 +434,30 @@ public class Mp {
         }
     }
 
+    /** 一个访客世界缓存（mp_world_<seed>/ + mp_hero_<seed>.dat）。 */
+    public static class GuestCacheInfo {
+        /** 房主世界种子。 */
+        public final long seed;
+        /** 当时的房主名；旧缓存可能为空。 */
+        public String hostName;
+        /** 访客所选英雄职业；旧缓存可能为空。 */
+        public HeroClass heroClass;
+        /** 创建时间（毫秒）；旧缓存回退为文件修改时间。 */
+        public long createdAt;
+        /** 最近游玩时间（毫秒）。 */
+        public long lastPlayed;
+        /** 是否有持久世界目录。 */
+        public boolean hasWorld;
+        /** 是否有访客英雄档。 */
+        public boolean hasHero;
+        /** 是否是当前世界/房间选中种子（不可删除）。 */
+        public boolean current;
+
+        GuestCacheInfo(long seed) {
+            this.seed = seed;
+        }
+    }
+
     /** 大厅房间列表的一行。 */
     public static class RoomListing {
         /** 6 位房间号。 */
@@ -490,6 +518,11 @@ public class Mp {
 
     /** 访客联机临时世界槽位：故意放在普通存档 1..MAX_SLOTS 之外，主界面永远不会列出 */
     private static final int GUEST_TEMP_SLOT = 99;
+
+    /** 是否为访客专用的隐藏临时槽（不是玩家自己的存档）。 */
+    public static boolean isGuestTempSlot(int slot) {
+        return slot == GUEST_TEMP_SLOT;
+    }
     /** 访客英雄档里英雄子 bundle 的键：嵌套写入（自带类名），可直接放回游戏存档 */
     private static final String MP_HERO = "hero";
     /** 访客英雄档里记录的所在层/分支（重连时校验上次位置是否仍可用） */
@@ -499,6 +532,13 @@ public class Mp {
     private static final String MP_QUICKSLOT = "mp_quickslot";
     /** 访客英雄档里保存的探图数据（visited/mapped 按层分键）：临时世界退出即删，探图必须自己留档 */
     private static final String MP_EXPLORED = "mp_explored_";
+    /** 访客缓存元数据：房主名、创建时间、最近游玩时间、英雄职业（写在 mp_hero_<seed>.dat 顶层）。 */
+    private static final String MP_CACHE_HOST = "mp_cache_host";
+    private static final String MP_CACHE_CREATED = "mp_cache_created";
+    private static final String MP_CACHE_PLAYED = "mp_cache_played";
+    private static final String MP_CACHE_HERO = "mp_cache_hero";
+    /** 大同步线的楼层快照目录前缀；稳定线不存在，删除缓存时一并清理。 */
+    private static final String MP_SYNC_PREFIX = "mp_sync_";
     /** STATE 的 game bundle 里附带的“初始世界包”：第0层初始 game.dat + 各层初始层档。 */
     private static final String MP_INIT_WORLD = "mp_init_world";
     /** 房主存档目录下的初始快照子目录。 */
@@ -577,6 +617,13 @@ public class Mp {
     private volatile boolean selectingRoomSave = false;
     /** 房间模式：正在为新档配置职业/种子；>=0 表示待写入的存档槽。 */
     private volatile int roomNewGameSlot = -1;
+    /** 房间新档配置：进入 HeroSelectScene 前的本机规则快照，配置结束后恢复。 */
+    private volatile Bundle roomRulesBackup = null;
+    /** 房间新档配置：房主在 HeroSelectScene 里实际选择的规则（只用于本房间，不写全局）。 */
+    private volatile boolean roomRulesCaptured = false;
+    private volatile int roomRulesChallenges = 0;
+    private volatile Conducts.ConductStorage roomRulesDlcs = null;
+    private volatile Difficulty.HardStorage roomRulesDifficulty = null;
     /** 新建档在 Dungeon.init() 后需要复位的 overrideSeed。 */
     private volatile boolean roomSeedPending = false;
     /** 新建档首次进入 GameScene 时需要落盘一次。 */
@@ -1411,6 +1458,8 @@ public class Mp {
     public void cancelRoomSaveSelect() {
         selectingRoomSave = false;
         roomNewGameSlot = -1;
+        restoreRoomRulesBackup();
+        clearRoomRulesCapture();
     }
 
     /**
@@ -1423,6 +1472,8 @@ public class Mp {
     public void selectRoomSave(int slot) {
         if (!isHost() || !serverMode) return;
         roomNewGameSlot = -1;
+        restoreRoomRulesBackup();
+        clearRoomRulesCapture();
         GamesInProgress.setUnknown(slot);
         GamesInProgress.Info info = GamesInProgress.check(slot);
         if (info != null) {
@@ -1445,6 +1496,8 @@ public class Mp {
      */
     public void hostSelectExistingRoomSave(GamesInProgress.Info info) {
         if (!isHost() || info == null) return;
+        restoreRoomRulesBackup();
+        clearRoomRulesCapture();
         long oldSeed = roomSave.selected ? roomSave.seed : Long.MIN_VALUE;
         roomSave = new RoomSaveInfo(true, info.slot, info.seed, false,
                 info.heroClass, info.depth, info.level, false);
@@ -1460,6 +1513,8 @@ public class Mp {
      */
     public void hostSelectNewRoomSave(int slot) {
         if (!isHost()) return;
+        restoreRoomRulesBackup();
+        clearRoomRulesCapture();
         long seed = DungeonSeed.randomSeed();
         long oldSeed = roomSave.selected ? roomSave.seed : Long.MIN_VALUE;
         roomSave = new RoomSaveInfo(true, slot, seed, true,
@@ -1478,6 +1533,11 @@ public class Mp {
         if (!isHost() || !serverMode) return;
         roomNewGameSlot = slot;
         selectingRoomSave = true;
+        // 房间新档配置借用原版 HeroSelectScene，而它会直接写 SPDSettings。
+        // 先快照本机规则，配置完成后恢复；房间实际规则只保存在本房间会话里。
+        restoreRoomRulesBackup();
+        roomRulesBackup = SPDSettings.saveGameRules();
+        clearRoomRulesCapture();
     }
 
     /** 是否正在房间的新档配置界面（HeroSelectScene）。 */
@@ -1488,6 +1548,25 @@ public class Mp {
     /** 取消房间新档配置（从新建界面返回选档界面时调用）。 */
     public void cancelRoomNewGameConfig() {
         roomNewGameSlot = -1;
+        restoreRoomRulesBackup();
+        clearRoomRulesCapture();
+    }
+
+    /** 恢复房间新档配置前的本机规则快照。 */
+    private void restoreRoomRulesBackup() {
+        Bundle backup = roomRulesBackup;
+        roomRulesBackup = null;
+        if (backup != null) {
+            SPDSettings.restoreGameRules(backup);
+        }
+    }
+
+    /** 清除本房间捕获的临时规则（不影响本机 SPDSettings）。 */
+    private void clearRoomRulesCapture() {
+        roomRulesCaptured = false;
+        roomRulesChallenges = 0;
+        roomRulesDlcs = null;
+        roomRulesDifficulty = null;
     }
 
     /**
@@ -1502,7 +1581,14 @@ public class Mp {
     public boolean finishRoomNewGameConfig(HeroClass cls) {
         if (!isHost() || !serverMode || cls == null || roomNewGameSlot < 0) return false;
         int slot = roomNewGameSlot;
+        // 先读取 HeroSelectScene 刚写入的规则，再恢复本机原有设置；
+        // 这些规则只在本房间开局时通过 Dungeon.setNextInitRules 生效。
+        roomRulesChallenges = SPDSettings.challenges();
+        roomRulesDlcs = SPDSettings.dlc();
+        roomRulesDifficulty = SPDSettings.difficulty();
+        roomRulesCaptured = true;
         String custom = SPDSettings.customSeed();
+        restoreRoomRulesBackup();
         long seed;
         if (custom != null && !custom.trim().isEmpty()) {
             seed = DungeonSeed.convertFromText(custom.trim());
@@ -1835,6 +1921,12 @@ public class Mp {
         roomUiVersion.incrementAndGet();
         broadcastRoomState();
         unreadChat.set(0);   // 新对局从 0 开始计未读，房间里的聊天不算局内未读
+        // 房间新档的挑战/DLC/难度只覆盖本局 Dungeon.init()；已有存档从档内读取。
+        if (save.isNew && roomRulesCaptured) {
+            Dungeon.setNextInitRules(roomRulesChallenges, roomRulesDlcs, roomRulesDifficulty);
+        } else {
+            Dungeon.clearNextInitRules();
+        }
         Game.switchScene(InterlevelScene.class);
         return true;
     }
@@ -1865,10 +1957,9 @@ public class Mp {
         int slot = GamesInProgress.curSlot;
         if (slot <= 0) return false;
 
-        // 保留本局的挑战/DLC/难度，Dungeon.init() 会从 SPDSettings 重新读取
-        SPDSettings.challenges(Dungeon.challenges);
-        SPDSettings.dlc(Dungeon.dlcs);
-        SPDSettings.difficulty(Dungeon.difficultys);
+        // 保留本局的挑战/DLC/难度，但绝不写入全局 SPDSettings：
+        // 只覆盖下一次 Dungeon.init()，否则访客会把房主规则带回自己的单机档。
+        Dungeon.setNextInitRules(Dungeon.challenges, Dungeon.dlcs, Dungeon.difficultys);
 
         GamesInProgress.selectedClass = cls;
         GamesInProgress.curSlot = slot;
@@ -2831,6 +2922,9 @@ public class Mp {
         pendingRoomSaveWrite = false;
         selectingRoomSave = false;
         roomNewGameSlot = -1;
+        restoreRoomRulesBackup();
+        clearRoomRulesCapture();
+        Dungeon.clearNextInitRules();
         roomSave = EMPTY_ROOM_SAVE;
         roomRoster = Collections.emptyList();
         roomStateDirty = false;
@@ -4795,6 +4889,7 @@ public class Mp {
             if (world == null || !world.contains("hero") || world.getLong("seed") != worldSeed) {
                 return false;
             }
+            touchGuestCacheMeta(guest);
 
             if (freshWorld) {
                 synchronized (guestExplored) { guestExplored.clear(); }
@@ -5132,16 +5227,20 @@ public class Mp {
             FileHandle f = FileUtils.getFileHandle(file);
             // 覆盖前保留上一份**可用**档案：写入中断/校验失败时可回退。
             // 主档本身已损坏时不要拿它覆盖旧的 .bak。
+            Bundle old = null;
             if (f.exists()) {
                 try {
-                    Bundle old = FileUtils.bundleFromFile(file);
+                    old = FileUtils.bundleFromFile(file);
                     if (old != null && guestHeroPart(old) != null) {
                         FileHandle bak = FileUtils.getFileHandle(file + ".bak");
                         if (bak.exists()) bak.delete();
                         f.copyTo(bak);
+                    } else {
+                        old = null;
                     }
                 } catch (Throwable ignored) {}
             }
+            applyGuestCacheMeta(b, old, f);
             FileUtils.bundleToFile(file, b);
             // 读回校验：只有确认落盘的英雄档完整，调用方才允许清理临时世界
             Bundle check = FileUtils.bundleFromFile(file);
@@ -5154,6 +5253,75 @@ public class Mp {
             status = Messages.get(Mp.class, "guest_hero_save_failed", t.getMessage());
             return false;
         }
+    }
+
+    /**
+     * 给访客英雄档补上缓存元数据（房主名/创建时间/最近游玩/职业）。
+     *
+     * <p>元数据写在英雄档顶层，不额外创建文件；旧档第一次重写时会自动补齐。
+     * 创建时间优先沿用旧值，旧档没有记录时用文件修改时间近似。</p>
+     */
+    private void applyGuestCacheMeta(Bundle b, Bundle old, FileHandle file) {
+        if (b == null) return;
+        try {
+            long now = System.currentTimeMillis();
+            long created = b.getLong(MP_CACHE_CREATED);
+            if (created <= 0 && old != null) created = old.getLong(MP_CACHE_CREATED);
+            if (created <= 0) {
+                created = file != null && file.exists() ? file.lastModified() : now;
+            }
+            b.put(MP_CACHE_CREATED, created);
+            b.put(MP_CACHE_PLAYED, now);
+
+            String host = currentHostName();
+            if (host == null || host.trim().isEmpty()) {
+                host = old != null ? old.getString(MP_CACHE_HOST) : null;
+            }
+            if (host != null && !host.trim().isEmpty()) {
+                b.put(MP_CACHE_HOST, host.trim());
+            }
+
+            HeroClass cls = heroClassFromBundle(b);
+            if (cls != null) b.put(MP_CACHE_HERO, cls.name());
+        } catch (Throwable ignored) {}
+    }
+
+    /** 当前房主名（访客侧）；不在联机/未知时返回 null。 */
+    private String currentHostName() {
+        if (role != Role.CLIENT) return null;
+        Peer host = peerFor(HOST_ID);
+        if (host == null || host.name == null) return null;
+        String name = displayName(host.name).trim();
+        return name.isEmpty() ? null : name;
+    }
+
+    /** 从访客英雄档/世界档里取英雄职业。 */
+    private HeroClass heroClassFromBundle(Bundle b) {
+        try {
+            Bundle hero = guestHeroPart(b);
+            if (hero != null && hero.contains("class")) {
+                return hero.getEnum("class", HeroClass.class);
+            }
+        } catch (Throwable ignored) {}
+        return null;
+    }
+
+    /**
+     * 访客进入一个已有持久世界时更新缓存元数据（不重写英雄内容）。
+     * 这样旧版缓存第一次被再次进入后，列表里就能显示房主名/最近游玩时间。
+     */
+    private synchronized void touchGuestCacheMeta(Bundle heroFile) {
+        if (heroFile == null || worldSeed == Long.MIN_VALUE) return;
+        String file = mpHeroFile();
+        if (file == null) return;
+        try {
+            FileHandle f = FileUtils.getFileHandle(file);
+            if (!f.exists()) return;
+            Bundle b = FileUtils.bundleFromFile(file);
+            if (b == null || guestHeroPart(b) == null) return;
+            applyGuestCacheMeta(b, b, f);
+            FileUtils.bundleToFile(file, b);
+        } catch (Throwable ignored) {}
     }
 
     /**
@@ -5294,6 +5462,192 @@ public class Mp {
     // ---------------------------------------------------------------- 多人存档清理
 
     /**
+     * 列出本机所有访客世界缓存（mp_world_<seed>/ + mp_hero_<seed>.dat）。
+     *
+     * <p>新缓存直接读英雄档顶层的元数据；旧缓存回退为英雄/世界档里的职业
+     * 与文件修改时间，房主名未知。返回结果按最近游玩/创建时间倒序。</p>
+     */
+    public synchronized List<GuestCacheInfo> listGuestCaches() {
+        HashMap<Long, GuestCacheInfo> map = new HashMap<>();
+        try {
+            FileHandle[] files = FileUtils.getFileHandle("").list();
+            if (files != null) {
+                for (FileHandle f : files) {
+                    if (f == null) continue;
+                    String name = f.name();
+                    if (f.isDirectory()) {
+                        if (!name.startsWith(MP_WORLD_PREFIX)) continue;
+                        Long seed = parseMpSeed(name.substring(MP_WORLD_PREFIX.length()));
+                        if (seed == null) continue;
+                        GuestCacheInfo info = map.get(seed);
+                        if (info == null) {
+                            info = new GuestCacheInfo(seed);
+                            map.put(seed, info);
+                        }
+                        if (FileUtils.fileLength(name + "/game.dat") > 1) {
+                            info.hasWorld = true;
+                            try {
+                                Bundle world = FileUtils.bundleFromFile(name + "/game.dat");
+                                if (world != null) {
+                                    HeroClass cls = heroClassFromBundle(world);
+                                    if (cls != null) info.heroClass = cls;
+                                }
+                            } catch (Throwable ignored) {}
+                        }
+                        long mt = f.lastModified();
+                        if (mt > info.lastPlayed) info.lastPlayed = mt;
+                        if (info.createdAt <= 0) info.createdAt = mt;
+                    } else {
+                        Long seed = mpHeroSeedFromFile(name);
+                        if (seed == null) continue;
+                        GuestCacheInfo info = map.get(seed);
+                        if (info == null) {
+                            info = new GuestCacheInfo(seed);
+                            map.put(seed, info);
+                        }
+                        info.hasHero = true;
+                        long mt = f.lastModified();
+                        if (mt > info.lastPlayed) info.lastPlayed = mt;
+                        if (info.createdAt <= 0) info.createdAt = mt;
+                    }
+                }
+            }
+        } catch (Throwable ignored) {
+            // 列表失败时返回已收集到的部分，不影响打开窗口
+        }
+
+        for (GuestCacheInfo info : map.values()) {
+            Bundle heroFile = loadGuestCacheHeroBundle(info.seed);
+            if (heroFile != null) {
+                info.hasHero = true;
+                String host = heroFile.getString(MP_CACHE_HOST);
+                if (host != null && !host.trim().isEmpty()) info.hostName = host.trim();
+                long created = heroFile.getLong(MP_CACHE_CREATED);
+                if (created > 0) info.createdAt = created;
+                long played = heroFile.getLong(MP_CACHE_PLAYED);
+                if (played > info.lastPlayed) info.lastPlayed = played;
+                HeroClass cls = heroClassFromBundle(heroFile);
+                if (cls != null) info.heroClass = cls;
+            }
+            info.current = isProtectedGuestCache(info.seed);
+        }
+
+        ArrayList<GuestCacheInfo> list = new ArrayList<>(map.values());
+        list.sort((a, b) -> {
+            int c = Long.compare(b.lastPlayed, a.lastPlayed);
+            if (c == 0) c = Long.compare(b.createdAt, a.createdAt);
+            if (c == 0) c = Long.compare(b.seed, a.seed);
+            return c;
+        });
+        return list;
+    }
+
+    /** 删除一个访客世界缓存；当前世界/房间选中种子受保护，返回 0。 */
+    public synchronized int deleteGuestCache(long seed) {
+        if (seed <= 0 || isProtectedGuestCache(seed)) return 0;
+        return deleteMpSeed(seed);
+    }
+
+    /**
+     * 从缓存世界的 game.dat 构建排行榜详情记录，供 {@code WndRanking} 使用。
+     *
+     * <p>普通游戏存档把统计/物品 handler 的键放在顶层，而排行榜详情要求
+     * {@code stats}/{@code handlers} 子 bundle；这里克隆整份存档补齐这两个子
+     * bundle（多余键会被忽略），并转换 init_ver → game_version。</p>
+     *
+     * @return 记录；世界档缺失/损坏时返回 null。
+     */
+    public synchronized Rankings.Record buildGuestCacheRecord(GuestCacheInfo info) {
+        if (info == null) return null;
+        String dir = guestWorldDirForSeed(info.seed);
+        if (dir == null || !FileUtils.dirExists(dir)) return null;
+        try {
+            if (FileUtils.fileLength(dir + "/game.dat") <= 1) return null;
+            Bundle data = FileUtils.bundleFromFile(dir + "/game.dat");
+            if (data == null || data.isNull()) return null;
+            Bundle hero = data.getBundle(Rankings.HERO);
+            if (hero == null || hero.isNull() || !hero.contains("class")) return null;
+
+            String raw = data.toString();
+            data.put(Rankings.STATS, Bundle.fromString(raw));
+            data.put(Rankings.HANDLERS, Bundle.fromString(raw));
+            if (!data.contains(Rankings.GAME_VERSION)) {
+                int initVer = data.getInt("init_ver");
+                if (initVer <= 0) initVer = data.getInt("version");
+                data.put(Rankings.GAME_VERSION, initVer);
+            }
+            if (!data.contains(Rankings.BADGES) || data.getBundle(Rankings.BADGES).isNull()) {
+                data.put(Rankings.BADGES, new Bundle());
+            }
+            if (!data.contains(Rankings.CHALLENGES)) data.put(Rankings.CHALLENGES, 0);
+            if (!data.contains(Rankings.DAILY)) data.put(Rankings.DAILY, false);
+            if (!data.contains(Rankings.DAILY_REPLAY)) data.put(Rankings.DAILY_REPLAY, false);
+            if (!data.contains(Rankings.CUSTOM_SEED)) data.put(Rankings.CUSTOM_SEED, "");
+            if (!data.contains("seed")) data.put("seed", info.seed);
+
+            GamesInProgress.Info preview = new GamesInProgress.Info();
+            Dungeon.preview(preview, data);
+
+            Rankings.Record rec = new Rankings.Record();
+            rec.gameData = data;
+            rec.heroClass = preview.heroClass != null ? preview.heroClass : info.heroClass;
+            rec.armorTier = preview.armorTier;
+            rec.skin = preview.skin;
+            rec.herolevel = preview.level;
+            rec.depth = preview.depth;
+            rec.win = data.getBoolean("won");
+            rec.customSeed = data.getString(Rankings.CUSTOM_SEED);
+            rec.daily = false;
+            rec.ascending = false;
+            rec.reconstructBadges = false;
+            rec.date = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT)
+                    .format(new Date(info.createdAt > 0 ? info.createdAt : System.currentTimeMillis()));
+            rec.version = Game.version == null ? "" : ("v" + Game.version);
+            rec.gameID = "mpcache-" + info.seed + "-" + info.createdAt;
+            return rec;
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    /** 当前世界或房间选中种子不可删除。 */
+    private boolean isProtectedGuestCache(long seed) {
+        return seed == worldSeed || (roomSave.selected && roomSave.seed == seed);
+    }
+
+    /** 从 mp_hero_<seed>.dat / .bak 读取缓存元数据。 */
+    private Bundle loadGuestCacheHeroBundle(long seed) {
+        String file = mpHeroFile(seed);
+        if (file == null) return null;
+        try {
+            FileHandle f = FileUtils.getFileHandle(file);
+            if (f.exists()) {
+                Bundle b = FileUtils.bundleFromFile(file);
+                if (b != null && guestHeroPart(b) != null) return b;
+            }
+        } catch (Throwable ignored) {}
+        try {
+            FileHandle bak = FileUtils.getFileHandle(file + ".bak");
+            if (bak.exists()) {
+                Bundle b = FileUtils.bundleFromFile(file + ".bak");
+                if (b != null && guestHeroPart(b) != null) return b;
+            }
+        } catch (Throwable ignored) {}
+        return null;
+    }
+
+    /**
+     * 从 mp_hero_<seed>.dat(.bak/.tmp/.corrupt-*) 文件名解析种子。
+     * 旧版无种子的 mp_hero.dat 不匹配（缺少下划线后的数字）。
+     */
+    private static Long mpHeroSeedFromFile(String name) {
+        if (name == null || !name.startsWith("mp_hero_")) return null;
+        int dot = name.indexOf(".dat");
+        if (dot < 0) return null;
+        return parseMpSeed(name.substring("mp_hero_".length(), dot));
+    }
+
+    /**
      * 每次进入联机前清理失效的多人存档：
      * 1) 删除访客临时槽 game99（崩溃/强退后残留）；
      * 2) 只保留最近 {@link #MP_KEEP_SEEDS} 个房主世界种子（当前世界、房间选中种子的强制保留），
@@ -5364,6 +5718,12 @@ public class Mp {
                 String initDir = GamesInProgress.gameFolder(slot) + "/" + MP_INIT_DIR;
                 if (FileUtils.dirExists(initDir)) FileUtils.deleteDir(initDir);
             }
+
+            // 4) 旧协议无种子英雄档：当前版本已不再读取，清掉避免残留在目录里
+            FileHandle legacyHero = FileUtils.getFileHandle("mp_hero.dat");
+            if (legacyHero.exists()) legacyHero.delete();
+            FileHandle legacyHeroBak = FileUtils.getFileHandle("mp_hero.dat.bak");
+            if (legacyHeroBak.exists()) legacyHeroBak.delete();
         } catch (Throwable ignored) {
             // 清理失败不影响联机；下次进入联机还会再尝试
         }
@@ -5375,13 +5735,29 @@ public class Mp {
     }
 
     /** 删除某个房主世界种子对应的访客英雄档与持久世界。 */
-    private static void deleteMpSeed(long seed) {
-        if (FileUtils.dirExists(MP_WORLD_PREFIX + seed)) {
-            FileUtils.deleteDir(MP_WORLD_PREFIX + seed);
-        }
-        FileUtils.deleteFile("mp_hero_" + seed + ".dat");
-        FileUtils.deleteFile("mp_hero_" + seed + ".dat.bak");
-        FileUtils.deleteFile("mp_hero_" + seed + ".dat.tmp");
+    private static int deleteMpSeed(long seed) {
+        int deleted = 0;
+        try {
+            if (FileUtils.dirExists(MP_WORLD_PREFIX + seed)) {
+                if (FileUtils.deleteDir(MP_WORLD_PREFIX + seed)) deleted++;
+            }
+            if (FileUtils.dirExists(MP_SYNC_PREFIX + seed)) {
+                if (FileUtils.deleteDir(MP_SYNC_PREFIX + seed)) deleted++;
+            }
+            FileHandle[] files = FileUtils.getFileHandle("").list();
+            if (files != null) {
+                for (FileHandle f : files) {
+                    if (f == null || f.isDirectory()) continue;
+                    String name = f.name();
+                    Long fileSeed = mpHeroSeedFromFile(name);
+                    if ((fileSeed != null && fileSeed == seed)
+                            || name.equals("mp_cache_" + seed + ".dat")) {
+                        if (f.delete()) deleted++;
+                    }
+                }
+            }
+        } catch (Throwable ignored) {}
+        return deleted;
     }
 
     /** 解析 mp_hero_<seed> / mp_world_<seed> 里的种子；非法或非正数返回 null。 */
@@ -5395,37 +5771,24 @@ public class Mp {
     }
 
     /**
-     * 手动清理多人缓存：删除除当前世界/房间选中种子外的所有 mp_world_* 与 mp_hero_*，
-     * 用于一次性清掉历史测试/失效房主世界。
+     * 手动清理多人缓存：删除除当前世界/房间选中种子外的所有访客世界缓存。
+     * 新界面按条目删除时使用 {@link #deleteGuestCache(long)}。
      *
      * @return 删除的文件/目录数量。
      */
     public synchronized int clearGuestStorage() {
         int deleted = 0;
-        long keep = worldSeed;
-        long room = roomSave.selected ? roomSave.seed : Long.MIN_VALUE;
-        try {
-            for (FileHandle f : FileUtils.getFileHandle("").list()) {
-                String name = f.name();
-                if (f.isDirectory()) {
-                    if (!name.startsWith(MP_WORLD_PREFIX)) continue;
-                    Long seed = parseMpSeed(name.substring(MP_WORLD_PREFIX.length()));
-                    if (seed != null && (seed == keep || seed == room)) continue;
-                    if (FileUtils.deleteDir(name)) deleted++;
-                } else {
-                    String base = name;
-                    if (base.endsWith(".bak") || base.endsWith(".tmp")) {
-                        base = base.substring(0, base.length() - 4);
-                    }
-                    if (!base.startsWith("mp_hero_") || !base.endsWith(".dat")) continue;
-                    Long seed = parseMpSeed(base.substring("mp_hero_".length(), base.length() - 4));
-                    if (seed != null && (seed == keep || seed == room)) continue;
-                    if (f.delete()) deleted++;
-                }
-            }
-        } catch (Throwable ignored) {
-            // 手动清理失败不抛异常；调用方只展示删除数量
+        for (GuestCacheInfo info : listGuestCaches()) {
+            if (info.current) continue;
+            deleted += deleteMpSeed(info.seed);
         }
+        // 旧协议遗留的无种子英雄档，不属于任何世界，清全部时一并移除。
+        try {
+            FileHandle legacy = FileUtils.getFileHandle("mp_hero.dat");
+            if (legacy.exists() && legacy.delete()) deleted++;
+            FileHandle legacyBak = FileUtils.getFileHandle("mp_hero.dat.bak");
+            if (legacyBak.exists() && legacyBak.delete()) deleted++;
+        } catch (Throwable ignored) {}
         return deleted;
     }
 
@@ -5871,7 +6234,7 @@ public class Mp {
                 // HeroSprite/CharSprite 会为非本机角色自动创建内置血条；
                 // 联机幽灵已有自己的血条（hpBg/hpFill），移除内置血条避免受伤时出现两条。
                 p.remoteSprite.removeHealthIndicator();
-                gs.addToFront(p.remoteSprite);
+                gs.addRemotePlayerSprite(p.remoteSprite);
             } catch (Throwable t) {
                 status = Messages.get(Mp.class, "status_spawn_peer_failed", t.getMessage());
                 p.remote = null;
@@ -5911,13 +6274,13 @@ public class Mp {
         if (p.nameLabel == null) {
             p.nameLabel = PixelScene.renderTextBlock(6);
             p.nameLabel.text(p.name);
-            gs.addToFront(p.nameLabel);
+            gs.addRemotePlayerOverlay(p.nameLabel);
         }
         if (p.hpBg == null) {
             p.hpBg = new ColorBlock(HP_BAR_WIDTH, HP_BAR_HEIGHT, 0xCC330000);
             p.hpFill = new ColorBlock(HP_BAR_WIDTH, HP_BAR_HEIGHT, 0xFF44CC44);
-            gs.addToFront(p.hpBg);
-            gs.addToFront(p.hpFill);
+            gs.addRemotePlayerOverlay(p.hpBg);
+            gs.addRemotePlayerOverlay(p.hpFill);
         }
         float barY = p.remoteSprite.y - HP_BAR_HEIGHT - 2f;
         boolean showHp = inFov && p.hp >= 0 && p.ht > 0;

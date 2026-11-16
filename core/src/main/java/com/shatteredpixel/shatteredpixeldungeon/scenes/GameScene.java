@@ -857,6 +857,19 @@ public class GameScene extends PixelScene {
 		sprite.link( mob );
 	}
 
+	/**
+	 * 联机远端玩家幽灵：放入世界层（本地英雄同一层），
+	 * 保证背包、菜单、快捷栏、弹窗等 UI 始终绘制在幽灵之上。
+	 */
+	public void addRemotePlayerSprite( Gizmo g ) {
+		mobs.add( g );
+	}
+
+	/** 联机远端玩家的名字/血条：放入血条层，位于世界层之上、UI 与弹窗之下。 */
+	public void addRemotePlayerOverlay( Gizmo g ) {
+		healthIndicators.add( g );
+	}
+
 	private synchronized void prompt( String text ) {
 
 		if (prompt != null) {

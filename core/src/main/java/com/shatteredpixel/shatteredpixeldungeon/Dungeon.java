@@ -344,6 +344,35 @@ public class Dungeon {
 
 	public static int challenges;
 	public static int mobsToChampion;
+
+	// 一次性覆盖下一次 Dungeon.init() 读取的挑战/DLC/难度。
+	// 联机重生、房间新档等临时规则只影响本局，不写入 SPDSettings。
+	private static boolean initRulesOverride = false;
+	private static int initRulesChallenges = 0;
+	private static Conducts.ConductStorage initRulesDlcs = null;
+	private static Difficulty.HardStorage initRulesDifficulty = null;
+
+	/**
+	 * 覆盖下一次 {@link #init()} 读取的挑战/DLC/难度。
+	 *
+	 * <p>只对下一次初始化生效并自动清除；调用方不得借此修改
+	 * {@link SPDSettings}，否则会污染玩家之后的单机新档。</p>
+	 */
+	public static void setNextInitRules(int challenges,
+			Conducts.ConductStorage dlcs,
+			Difficulty.HardStorage difficultys) {
+		initRulesOverride = true;
+		initRulesChallenges = challenges;
+		initRulesDlcs = dlcs;
+		initRulesDifficulty = difficultys;
+	}
+
+	/** 清除尚未消费的 init 规则覆盖（离开联机/取消开局时调用）。 */
+	public static void clearNextInitRules() {
+		initRulesOverride = false;
+		initRulesDlcs = null;
+		initRulesDifficulty = null;
+	}
 	private static final String GENERATED_LEVELS = "generated_levels";
 	private static final String GOLD = "gold";
 	private static final String ENERGY		= "energy";
@@ -907,13 +936,24 @@ public class Dungeon {
 	public static void init() {
 
 		initialVersion = version = Game.versionCode;
-		challenges = SPDSettings.challenges();
+		if (initRulesOverride) {
+			challenges = initRulesChallenges;
+			dlcs = initRulesDlcs != null
+					? initRulesDlcs
+					: new Conducts.ConductStorage(SPDSettings.dlc());
+			difficultys = initRulesDifficulty != null
+					? initRulesDifficulty
+					: new Difficulty.HardStorage(SPDSettings.difficulty());
+			clearNextInitRules();
+		} else {
+			challenges = SPDSettings.challenges();
 
-		//娱乐模式
-		dlcs =  new Conducts.ConductStorage(SPDSettings.dlc());
+			//娱乐模式
+			dlcs =  new Conducts.ConductStorage(SPDSettings.dlc());
 
-		//难度模式
-		difficultys = new Difficulty.HardStorage(SPDSettings.difficulty());
+			//难度模式
+			difficultys = new Difficulty.HardStorage(SPDSettings.difficulty());
+		}
 
 		//TitleScene.Reusable = false;
 
