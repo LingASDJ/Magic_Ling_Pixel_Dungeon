@@ -124,7 +124,7 @@ public class DogDogMusic extends FiveYearsNPC {
             super.activate(ch);
             // 轻音铃铛的主手/副手装备都会走 activate；放到这里而不是 doEquip，
             // 否则通过“副手装备”再切到主手时不会获得轻音律动。
-            if (ch instanceof Hero) {
+            if (ch instanceof Hero && Dungeon.hero != null) {
                 Buff.affect(ch, CicreStats.class, 12345678f);
             }
         }
