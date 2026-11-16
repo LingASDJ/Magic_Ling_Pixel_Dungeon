@@ -86,7 +86,7 @@ public enum Rankings {
     public static final String CUSTOM_SEED = "custom_seed";
     public static final String DAILY = "daily";
     public static final String DAILY_REPLAY = "daily_replay";
-    private static final Comparator<Record> scoreComparator = new Comparator<Rankings.Record>() {
+    public static final Comparator<Record> scoreComparator = new Comparator<Rankings.Record>() {
         @Override
         public int compare( Record lhs, Record rhs ) {
             int result = (int)Math.signum( rhs.score - lhs.score );
