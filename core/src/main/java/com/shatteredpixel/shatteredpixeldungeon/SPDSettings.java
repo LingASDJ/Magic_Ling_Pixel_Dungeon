@@ -769,6 +769,33 @@ public class SPDSettings extends GameSettings {
 		return getCundlable(KEY_DIFFICULTY, new Difficulty.HardStorage());
 	}
 
+	/**
+	 * 保存“新游戏规则”快照（挑战/DLC/难度/自定义种子）。
+	 *
+	 * <p>联机房间、重生、访客世界等临时对局规则不得永久写入本机设置；
+	 * 需要借用 SPDSettings 的 UI 流程时，先用本方法快照，结束后
+	 * {@link #restoreGameRules(Bundle)} 恢复。</p>
+	 */
+	public static Bundle saveGameRules() {
+		Bundle b = new Bundle();
+		b.put("challenges", challenges());
+		b.put("dlc", dlc());
+		b.put("difficulty", difficulty());
+		b.put("customSeed", customSeed());
+		return b;
+	}
+
+	/** 恢复 {@link #saveGameRules()} 保存的新游戏规则快照。 */
+	public static void restoreGameRules(Bundle b) {
+		if (b == null) return;
+		challenges(b.getInt("challenges"));
+		Conducts.ConductStorage d = (Conducts.ConductStorage) b.get("dlc");
+		if (d != null) dlc(d);
+		Difficulty.HardStorage h = (Difficulty.HardStorage) b.get("difficulty");
+		if (h != null) difficulty(h);
+		customSeed(b.getString("customSeed"));
+	}
+
 	public static void ClassPage(boolean value) {
 		put(KEY_PAGE, value);
 	}

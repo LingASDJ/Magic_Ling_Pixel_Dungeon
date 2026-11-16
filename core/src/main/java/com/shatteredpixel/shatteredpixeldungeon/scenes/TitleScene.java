@@ -7,6 +7,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane.asset;
 import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
@@ -102,6 +103,9 @@ public class TitleScene extends PixelScene {
 		// player's normal difficulty/challenge settings back.
 		DailyConfig.restoreIfNeeded();
 
+		// 联机临时规则不得写回本机：清掉未消费的规则覆盖。
+		Dungeon.clearNextInitRules();
+
 		TexturePackScene.loadCustomTexture();
 
 		Calendar calendar = Calendar.getInstance();
@@ -109,6 +113,9 @@ public class TitleScene extends PixelScene {
 		Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
 
 		Badges.loadGlobal();
+		// 修正旧版本残留的“未通关却有挑战”状态（否则挑战按钮被锁死，
+		// 玩家无法关闭）。必须在 Badges.loadGlobal() 之后判断解锁状态。
+		Challenges.repairLockedSettings();
 		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
 
 		if(!NTP_LINK){

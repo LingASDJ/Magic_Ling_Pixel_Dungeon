@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.ui.Icons.RENAME_OFF;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GameRules;
@@ -286,6 +287,7 @@ public class HeroSelectScene extends PixelScene {
 				Dungeon.daily = false;
 				Dungeon.dailyReplay = false;
 				Dungeon.overrideSeed = -1;
+				Dungeon.clearNextInitRules();   // 普通新档不得继承联机房间的临时规则
 				Dungeon.customSeedText = "";
 
 				Dungeon.hero = null;
@@ -349,7 +351,7 @@ public class HeroSelectScene extends PixelScene {
 				Icons.get( SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON :Icons.CHALLENGE_OFF)){
 			@Override
 			protected void onClick() {
-				if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY) ||Badges.isUnlocked(Badges.Badge.HOLLOWCITY) ||  Badges.isUnlocked(Badges.Badge.HAPPY_END) || Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_4)) {
+				if (Challenges.unlocked()) {
 					ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true,null) {
 						public void onBackPressed() {
 							super.onBackPressed();
