@@ -60,9 +60,9 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLC;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDailyConfig;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDailyLoading;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLC;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
@@ -98,7 +98,6 @@ import com.watabou.utils.Random;
 import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -541,7 +540,7 @@ public class HeroSelectScene extends PixelScene {
 		buttons.add(seedButton);
 		add(seedButton);
 
-		StyledButton dailyButton = new StyledButton(Chrome.Type.BLANK, Messages.get(HeroSelectScene.class, "daily"), 6){
+		StyledButton dailyButton = new StyledButton(Chrome.Type.GREY_BUTTON, Messages.get(HeroSelectScene.class, "daily"), 7){
 
 			private static final long SECOND = 1000;
 			private static final long MINUTE = 60 * SECOND;
@@ -756,7 +755,7 @@ public class HeroSelectScene extends PixelScene {
 		// Wide enough that clicking the "每日狩猎"/countdown text works too,
 		// not just the small icon at the far left.
 		dailyButton.setSize( 64, BUTTON_HEIGHT );
-		dailyButton.setPos(startBtn.x, startBtn.y + BUTTON_HEIGHT);
+		dailyButton.setPos(startBtn.x + 5, startBtn.y + BUTTON_HEIGHT + 5);
 		dailyButton.icon(new Image(new PinkLingSprite()));
 		add(dailyButton);
 		buttons.add(dailyButton);
