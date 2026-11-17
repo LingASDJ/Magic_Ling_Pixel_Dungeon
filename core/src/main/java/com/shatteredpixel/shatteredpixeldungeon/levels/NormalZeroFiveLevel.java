@@ -590,7 +590,7 @@ public class NormalZeroFiveLevel extends Level {
         mobs.add(archettoNewYears);
 
         //远拓石碑
-        if(Badges.isUnlocked(Badges.Badge.VICTORY) || DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP()){
+        if(DeviceCompat.isDesktop_Dev() || DeviceCompat.isMDP()){
             drop( new Food(),566).type = Heap.Type.WHITETOMB;
         }
 
