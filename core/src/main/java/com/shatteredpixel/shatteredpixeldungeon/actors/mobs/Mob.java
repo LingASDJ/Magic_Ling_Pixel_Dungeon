@@ -598,7 +598,7 @@ public abstract class Mob extends Char {
 
         enemy = chooseEnemy();
 
-        boolean enemyInFOV = enemy != null && enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
+        boolean enemyInFOV = enemy != null && enemy.isAlive() && inFov(enemy) && enemy.invisible <= 0;
 
 		//prevents action, but still updates enemy seen status
 		if (buff(Feint.AfterImage.FeintConfusion.class) != null){
@@ -624,6 +624,19 @@ public abstract class Mob extends Char {
 	boolean hasGetCloserOverride = false;
 	boolean hasGetonZapComplete = false;
 	boolean hasCall = false;
+    /**
+     * 安全地判断某个 Char 是否在视野内。
+     * 某些临时/已销毁的 Char 可能 pos = -1（例如正在被推拽、或刚刚移除），
+     * 直接读 fieldOfView[pos] 会触发 ArrayIndexOutOfBoundsException。
+     */
+    private boolean inFov(Char ch) {
+        return ch != null
+                && fieldOfView != null
+                && ch.pos >= 0
+                && ch.pos < fieldOfView.length
+                && inFov(ch);
+    }
+
     protected Char chooseEnemy() {
 
 		Class<?> clazz = getClass();
@@ -674,7 +687,7 @@ public abstract class Mob extends Char {
 						&& mob.alignment != Alignment.NEUTRAL
 						&& !mob.isInvulnerable(getClass())
 						&& mob instanceof MyCoreHeart
-						&& fieldOfView[mob.pos]) {
+						&& inFov(mob)) {
 					return mob;
 				}
 			}
@@ -703,7 +716,7 @@ public abstract class Mob extends Char {
 				return enemy;
 			}
 			for (Char ch : Actor.chars()) {
-				if (ch != this && fieldOfView[ch.pos] &&
+				if (ch != this && inFov(ch) &&
 						ch.buff(StoneOfAggression.Aggression.class) != null) {
 					state = HUNTING;
 					return ch;
@@ -744,7 +757,7 @@ public abstract class Mob extends Char {
 				//try to find an enemy mob to attack first.
 				for (Mob mob : Dungeon.level.mobs)
 					if (mob.alignment == Alignment.ENEMY && mob != this
-							&& fieldOfView[mob.pos] && mob.invisible <= 0) {
+							&& inFov(mob) && mob.invisible <= 0) {
 						enemies.add(mob);
 					}
 
@@ -752,13 +765,13 @@ public abstract class Mob extends Char {
 					//try to find ally mobs to attack second.
 					for (Mob mob : Dungeon.level.mobs)
 						if (mob.alignment == Alignment.ALLY && mob != this
-								&& fieldOfView[mob.pos] && mob.invisible <= 0) {
+								&& inFov(mob) && mob.invisible <= 0) {
                             enemies.add(mob);
                         }
 
                     if (enemies.isEmpty()) {
                         //try to find the hero third
-                        if (fieldOfView[hero.pos] && hero.invisible <= 0) {
+                        if (inFov(hero) && hero.invisible <= 0) {
                             enemies.add(hero);
                         }
                     }
@@ -770,7 +783,7 @@ public abstract class Mob extends Char {
                 for (Mob mob : Dungeon.level.mobs)
                     if (mob.alignment == Alignment.ENEMY &&
 							!(mob instanceof TowerMachineBad || mob instanceof TowerGodsBad || mob instanceof TowerTimeBad || mob instanceof TowerMindBad)
-							&& fieldOfView[mob.pos]
+							&& inFov(mob)
                             && mob.invisible <= 0 && !mob.isInvulnerable(getClass()))
                         //intelligent allies do not target mobs which are passive, wandering, or asleep
                         if (!intelligentAlly ||
@@ -781,28 +794,28 @@ public abstract class Mob extends Char {
                 //if we are an enemy...
             } else if (alignment == Alignment.ENEMY) {
 				for (Mob mob : Dungeon.level.mobs)
-					if (mob instanceof DemonFodder && fieldOfView[mob.pos] && mob.invisible <= 0)
+					if (mob instanceof DemonFodder && inFov(mob) && mob.invisible <= 0)
 						enemies.add(mob);
 
 				//如果没有找到DemonFodder，再寻找其他目标
 				if (enemies.isEmpty()) {
 					//look for ally mobs to attack
 					for (Mob mob : Dungeon.level.mobs)
-						if (mob.alignment == Alignment.ALLY && fieldOfView[mob.pos] && mob.invisible <= 0)
+						if (mob.alignment == Alignment.ALLY && inFov(mob) && mob.invisible <= 0)
 							enemies.add(mob);
 
 					//and look for the hero
-					if (fieldOfView[hero.pos] && hero.invisible <= 0) {
+					if (inFov(hero) && hero.invisible <= 0) {
 						enemies.add(hero);
 					}
 				}
 				//look for ally mobs to attack
 				for (Mob mob : Dungeon.level.mobs)
-					if (mob.alignment == Alignment.ALLY && fieldOfView[mob.pos] && mob.invisible <= 0)
+					if (mob.alignment == Alignment.ALLY && inFov(mob) && mob.invisible <= 0)
 						enemies.add(mob);
 
 				//and look for the hero
-				if (fieldOfView[hero.pos] && hero.invisible <= 0) {
+				if (inFov(hero) && hero.invisible <= 0) {
 					enemies.add(hero);
 				}
 
@@ -1083,7 +1096,7 @@ public abstract class Mob extends Char {
 		int s = Dungeon.depth/5;
 		PropBuff props = hero.buff(PropBuff.class);
 
-		return enemy == hero && (enemy.invisible > 0 || !enemySeen || fieldOfView != null && fieldOfView.length == Dungeon.level.length() && !fieldOfView[enemy.pos]) && (!attacking || enemy.canSurpriseAttack()) ||props != null && props.timeG >= 13 - s;
+		return enemy == hero && (enemy.invisible > 0 || !enemySeen || fieldOfView != null && fieldOfView.length == Dungeon.level.length() && !inFov(enemy)) && (!attacking || enemy.canSurpriseAttack()) ||props != null && props.timeG >= 13 - s;
 
 
 	}
@@ -1622,7 +1635,7 @@ public abstract class Mob extends Char {
 				float closestHostileDist = Float.POSITIVE_INFINITY;
 
 				for (Char ch : Actor.chars()){
-					if (fieldOfView[ch.pos] && ch.invisible == 0 && ch.alignment != alignment && ch.alignment != Alignment.NEUTRAL){
+					if (inFov(ch) && ch.invisible == 0 && ch.alignment != alignment && ch.alignment != Alignment.NEUTRAL){
 						float chDist = ch.stealth() + distance(ch);
 						//flying characters are naturally stealthy
 						if (ch.flying && distance(ch) >= 2){

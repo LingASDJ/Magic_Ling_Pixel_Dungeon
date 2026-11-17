@@ -149,7 +149,7 @@ public class vm0_9_X_Changes {
         changes.addButton(new ChangeButton(new Image(Icons.get(Icons.NEWS)), "后续开发预告",
                 "失落古墓外传正在稳步推进开发，更多场景、怪物、专属武器与剧情内容将陆续放出，敬请期待后续版本情报！"));
 
-        changes = new ChangeInfo("v0.9.8.0", true, "");
+        changes = new ChangeInfo("v0.9.8.0-1", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -299,7 +299,9 @@ public class vm0_9_X_Changes {
                                 "_-_ 修复了盗贼T2天赋“地形感知”不能检测魔绫新增隐藏房间的异常\n" +
                                         "_-_ 修复萨卡班甲鱼楼层在极端情况下的无法正常开始游戏\n" +
                                         "_-_ 修复手起刀落天赋部分情况下无效\n"+
-                                        "_-_ 修复排行榜分数排序异常，并优化分数显示进行了优化。")));
+                                        "_-_ 修复排行榜分数排序异常，并优化分数显示进行了优化。\n" +
+                                        "_-_ 修复联机模式的各种问题\n" +
+                                        "_-_ 修复一些罕见错误")));
 
         changes.addButton(new ChangeButton( new TalentIcon(Talent.PSIONIC_STRIDE), "敕灵天女-天赋重做",
                 "多样打击——灵能步伐\n" +
@@ -313,6 +315,9 @@ public class vm0_9_X_Changes {
                         "\n" +
                         "魔力汲取——灵能加速\n" +
                         "灵能加速：法师之手上的法杖获得额外50/100/150%充能速度。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_HAND_CONTROL), ("法师之手控制器-V2"),
+                ("界面大修，更加直观和好用。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项优化"),
                 ("_-_ 【药水癔症】：缚足药剂不再会在本层存在血色哨位时恢复极速药剂的效果\n" +
