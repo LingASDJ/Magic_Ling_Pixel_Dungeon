@@ -66,6 +66,13 @@ public class DailyRankingsScene extends PixelScene {
     private int viewWidth;
     private int requestId = 0;
 
+    /**
+     * 场景正在离开/已销毁。每日榜的请求是异步的，回调可能在本场景 destroy()
+     * 之后才被投递到渲染线程；此时 content/pane 的成员列表已被回收（Group.destroy()
+     * 会把 members 置 null），再往里 add(row) 就会 NPE。
+     */
+    private boolean leaving = false;
+
     private int currentPage = 1;
     private int totalPlayers = 0;
     private int totalPage = 1;
@@ -96,7 +103,7 @@ public class DailyRankingsScene extends PixelScene {
             @Override
             protected void onClick() {
                 WeeklyRankingsScene.weekOffset = 0;
-                ShatteredPixelDungeon.switchNoFade(WeeklyRankingsScene.class);
+                leaveTo(WeeklyRankingsScene.class);
             }
         };
         weeklyBtn.setRect(4, 2, 42, 16);
@@ -106,7 +113,7 @@ public class DailyRankingsScene extends PixelScene {
             @Override
             protected void onClick() {
                 replayMode = !replayMode;
-                ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
+                leaveTo(DailyRankingsScene.class);
             }
         };
         replayBtn.setRect(50, 2, 42, 16);
@@ -124,12 +131,7 @@ public class DailyRankingsScene extends PixelScene {
         exitBtn = new IconButton(Icons.get(Icons.EXIT)) {
             @Override
             protected void onClick() {
-                if (replayMode) {
-                    replayMode = false;
-                    ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
-                } else {
-                    ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class);
-                }
+                leaveScene();
             }
         };
         exitBtn.setRect(w - 20, 2, 16, 16);
@@ -208,12 +210,38 @@ public class DailyRankingsScene extends PixelScene {
 
     @Override
     public void onBackPressed() {
+        leaveScene();
+    }
+
+    /** 离开场景：先标记失效，保证之后到达的异步回调被丢弃。 */
+    private void leaveScene() {
         if (replayMode) {
             replayMode = false;
-            ShatteredPixelDungeon.switchNoFade(DailyRankingsScene.class);
+            leaveTo(DailyRankingsScene.class);
         } else {
-            ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class);
+            leaveTo(HeroSelectScene.class);
         }
+    }
+
+    /** 标记本场景失效后切换场景，避免旧请求在 destroy() 后回写 UI。 */
+    private void leaveTo(Class<? extends PixelScene> sceneClass) {
+        leaving = true;
+        requestId++;
+        ShatteredPixelDungeon.switchNoFade(sceneClass);
+    }
+
+    @Override
+    public void destroy() {
+        // 所有离开路径（返回、退出按钮、切周榜/重玩榜、Activity 销毁）最终都会走到这里，
+        // 在这里置位可以兜住漏掉 leaveScene() 的路径。
+        leaving = true;
+        requestId++;
+        super.destroy();
+    }
+
+    /** 场景是否仍然存活、可以安全操作自己的 UI。 */
+    private boolean isSceneAlive() {
+        return !leaving && Game.scene() == this;
     }
 
     private void updateDateHeader() {
@@ -249,6 +277,8 @@ public class DailyRankingsScene extends PixelScene {
     }
 
     private void loadPage() {
+        if (!isSceneAlive()) return;
+
         final int request = ++requestId;
         statusText.visible = true;
         statusText.text(Messages.get(this, "loading"));
@@ -265,7 +295,7 @@ public class DailyRankingsScene extends PixelScene {
                         Game.runOnRenderThread(new Callback() {
                             @Override
                             public void call() {
-                                if (request != requestId) return;
+                                if (request != requestId || !isSceneAlive()) return;
                                 applyResult(result);
                             }
                         });
@@ -276,7 +306,7 @@ public class DailyRankingsScene extends PixelScene {
                         Game.runOnRenderThread(new Callback() {
                             @Override
                             public void call() {
-                                if (request != requestId) return;
+                                if (request != requestId || !isSceneAlive()) return;
                                 statusText.visible = true;
                                 statusText.text(Messages.get(DailyRankingsScene.this, "load_failed"));
                                 statusText.setPos(8, dateText.bottom() + 6);
@@ -299,6 +329,10 @@ public class DailyRankingsScene extends PixelScene {
     }
 
     private void applyResult(LeaderboardData result) {
+        // 双保险：即使有回调绕过了 requestId 检查，也不能操作已销毁场景的 UI
+        // （Group.destroy() 会把成员的 members 置为 null，再 add 就会 NPE）。
+        if (!isSceneAlive()) return;
+
         if (result == null || result.data == null) {
             statusText.visible = true;
             statusText.text(Messages.get(this, "load_failed"));
