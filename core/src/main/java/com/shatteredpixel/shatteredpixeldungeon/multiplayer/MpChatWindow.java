@@ -177,6 +177,35 @@ public class MpChatWindow extends Window {
         refreshMessages(true);
     }
 
+    /**
+     * 窗口整体上移/下移后，必须按新的窗口相机位置重排聊天记录与输入框。
+     *
+     * <p>安卓软键盘弹起时 {@code Mp.openChat()} 会调用 {@code offset(0, shift)} 把窗口移到
+     * 屏幕上半区。聊天记录（{@link ScrollPane} 的内容相机）和输入框（libGDX 的
+     * {@code TextField}）都是按“窗口相机屏幕坐标”定位的，不会随 {@code Window} 的 chrome
+     * 一起移动；如果不重新 layout，输入框背景会移走而里面的文字留在原处，表现为
+     * “输入框里看不到自己打的字”，聊天记录也会画到窗口外面。</p>
+     */
+    @Override
+    public void offset(int xOffset, int yOffset) {
+        super.offset(xOffset, yOffset);
+        relayoutContent();
+    }
+
+    /** 按当前窗口相机位置重新摆放聊天记录、输入框和发送按钮。 */
+    private void relayoutContent() {
+        // setRect 会触发各自的 layout()，用新的 camera 重新换算屏幕坐标
+        if (list != null) {
+            list.setRect(list.x, list.y, list.width(), list.height());
+        }
+        if (input != null) {
+            input.setRect(input.x, input.y, input.width(), input.height());
+        }
+        if (sendBtn != null) {
+            sendBtn.setRect(sendBtn.x, sendBtn.y, sendBtn.width(), sendBtn.height());
+        }
+    }
+
     @Override
     public void update() {
         super.update();
