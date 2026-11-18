@@ -213,10 +213,10 @@ public class vm0_9_X_Changes {
         img.frame(0, 0, 28, 22);
         img.scale.set(0.8f);
         changes.addButton(new ChangeButton(img, ("新皮肤：缚命猩红"),
-                ("混沌无序笼罩世界，教会计划落空之后，“世界” 把所有人标定为高危实体。她早已不在意这份定论。命运的桎梏锁不住她，她踏猩红而行，亲手撕碎这场缄默的审判。\n\n获得方式：通关任意难度的BossRush(除开发者模式)")));
+                ("混沌无序笼罩世界，教会计划落空之后，“世界” 把所有人标定为高危实体。她早已不在意这份定论。命运的桎梏锁不住她，她踏猩红而行，亲手撕碎这场缄默的审判。\n\n获得方式：使用 _艾诺琳娜_ 通关任意难度的BossRush(除开发者模式)")));
 
         changes.addButton(new ChangeButton( new Image(Assets.Interfaces.HERO_ICONS,32,16,16,16), ("极影铃虹-第三转职"),
-                (       "幽冥猎手：" +
+                ("幽冥猎手：\n\n" +
                         "_-_ 幽冥之力将暗影斗篷强化为幽冥斗篷，其可以提供更强大持久的隐身能力。\n" +
                         "_-_ 相比暗影斗篷，幽冥斗篷每点充能最大持续回合提升至5，且受到神器充能效果时，每回合回复的充能提升至0.5。\n" +
                         "_-_ 幽冥斗篷的使用不再消耗时间。\n\n" +
@@ -317,7 +317,7 @@ public class vm0_9_X_Changes {
                         "灵能加速：法师之手上的法杖获得额外50/100/150%充能速度。"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_HAND_CONTROL), ("法师之手控制器-V2"),
-                ("界面大修，更加直观和好用。")));
+                ("法师之手控制器界面大修，更加直观和好用。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项优化"),
                 ("_-_ 【药水癔症】：缚足药剂不再会在本层存在血色哨位时恢复极速药剂的效果\n" +
