@@ -214,7 +214,13 @@ public class WeeklyRankingsScene extends PixelScene {
     }
 
     private boolean isSceneAlive() {
-        return !leaving && ShatteredPixelDungeon.scene() instanceof WeeklyRankingsScene;
+        // 用场景实例身份而不是 instanceof：连续切换周榜时，另一个
+        // WeeklyRankingsScene 成为当前场景并不代表本实例仍然有效。
+        // 同时确认列表 UI 仍挂在场景上，避免 destroy() 后成员表被回收再写 UI。
+        return !leaving
+                && ShatteredPixelDungeon.scene() == this
+                && pane != null && pane.parent != null
+                && content != null;
     }
 
     private void updateWeekHeader() {
@@ -248,6 +254,8 @@ public class WeeklyRankingsScene extends PixelScene {
     }
 
     private void loadWeek() {
+        if (!isSceneAlive()) return;
+
         final int generation = ++fetchGeneration;
         loading = true;
         daysDone = 0;
@@ -716,6 +724,11 @@ public class WeeklyRankingsScene extends PixelScene {
             add(scoreBig);
         }
 
+        /** 名字/副信息至少保留的宽度：低于该值时 RenderedTextBlock 会逐字换行。 */
+        private static final int MIN_TEXT_WIDTH = 32;
+        /** 行宽低于该值时，压缩前三名的奖牌/头像区域，给名字让出空间。 */
+        private static final float COMPACT_WIDTH = 150;
+
         @Override
         protected void layout() {
             super.layout();
@@ -733,30 +746,34 @@ public class WeeklyRankingsScene extends PixelScene {
             float cardX = x + 1;
             float rankW;
             float textX;
-            float scoreW = podium ? scoreBig.width() : score.width();
-            float scoreX = x + width - 6 - scoreW;
+            // 省电模式/窄屏下主相机宽度会接近最小值；此时前三名固定预留的
+            // 奖牌 + 头像区域加上大号分数，会把名字挤到只剩 1~2 个字宽，
+            // RenderedTextBlock 就会逐字换行（看起来像竖排）。
+            boolean compact = width < COMPACT_WIDTH;
 
             if (podium) {
-                float badge = 22;
+                float badge = compact ? 18 : 22;
+                float badgeX = cardX + (compact ? 3 : 7);
                 rankW = badge;
-                rankText.setPos(cardX + 7 + (badge - rankText.width()) / 2f,
+                rankText.setPos(badgeX + (badge - rankText.width()) / 2f,
                         centerY - rankText.height() / 2f + 1);
                 if (medal.visible) {
                     // 奖牌 PNG 每格右侧有透明留白、圆章偏上，整体向右下微调，
                     // 使圆章中心与名次数字对齐。
-                    medal.x = cardX + 7 + (badge - medal.width()) / 2f + 2;
+                    medal.x = badgeX + (badge - medal.width()) / 2f + 2;
                     medal.y = centerY - medal.height() / 2f + 3;
                     PixelScene.align(medal);
                 }
-                flare.x = cardX + 7 + badge / 2f;
+                flare.x = badgeX + badge / 2f;
                 flare.y = centerY;
 
-                avatarBg.x = cardX + 36;
-                avatarBg.y = centerY - 10;
-                avatarBg.size(20, 20);
-                classIcon.x = avatarBg.x + (20 - classIcon.width()) / 2f;
-                classIcon.y = avatarBg.y + (20 - classIcon.height()) / 2f;
-                textX = cardX + 61;
+                float avatarSize = compact ? 16 : 20;
+                avatarBg.x = badgeX + badge + (compact ? 4 : 7);
+                avatarBg.y = centerY - avatarSize / 2f;
+                avatarBg.size(avatarSize, avatarSize);
+                classIcon.x = avatarBg.x + (avatarSize - classIcon.width()) / 2f;
+                classIcon.y = avatarBg.y + (avatarSize - classIcon.height()) / 2f;
+                textX = avatarBg.x + avatarSize + (compact ? 3 : 5);
             } else {
                 rankW = Math.max(22, rankText.width() + 6);
                 rankText.setPos(cardX + (rankW - rankText.width()) / 2f,
@@ -773,10 +790,24 @@ public class WeeklyRankingsScene extends PixelScene {
             PixelScene.align(rankText);
             PixelScene.align(classIcon);
 
+            // 前三名默认用大号分数；若大号分数会把名字挤得过窄，
+            // 该行改用普通号分数，保证名字/副信息仍有可读宽度。
+            boolean useBigScore = podium;
+            if (useBigScore) {
+                float bigScoreBgX = (x + width - 6 - scoreBig.width()) - 4;
+                if (bigScoreBgX - textX - 3 < MIN_TEXT_WIDTH) {
+                    useBigScore = false;
+                }
+            }
+            float scoreW = useBigScore ? scoreBig.width() : score.width();
+            float scoreX = x + width - 6 - scoreW;
+
             scoreBg.x = scoreX - 4;
             scoreBg.y = centerY - 7;
             scoreBg.size(scoreW + 8, 14);
-            if (podium) {
+            score.visible = !useBigScore;
+            scoreBig.visible = useBigScore;
+            if (useBigScore) {
                 scoreBig.x = scoreX;
                 scoreBig.y = centerY - scoreBig.height() / 2f + 1;
                 PixelScene.align(scoreBig);
@@ -786,7 +817,9 @@ public class WeeklyRankingsScene extends PixelScene {
                 PixelScene.align(score);
             }
 
-            int textWidth = (int) Math.max(1, scoreBg.x - textX - 3);
+            // 极端窄屏下仍保留最小宽度；宁可轻微压到分数底色，
+            // 也不要把每个字拆成单独一行。
+            int textWidth = (int) Math.max(MIN_TEXT_WIDTH, scoreBg.x - textX - 3);
             name.maxWidth(textWidth);
             meta.maxWidth(textWidth);
             float groupH = name.height() + 1 + meta.height();
