@@ -624,18 +624,19 @@ public abstract class Mob extends Char {
 	boolean hasGetCloserOverride = false;
 	boolean hasGetonZapComplete = false;
 	boolean hasCall = false;
-    /**
-     * 安全地判断某个 Char 是否在视野内。
-     * 某些临时/已销毁的 Char 可能 pos = -1（例如正在被推拽、或刚刚移除），
-     * 直接读 fieldOfView[pos] 会触发 ArrayIndexOutOfBoundsException。
-     */
-    private boolean inFov(Char ch) {
-        return ch != null
-                && fieldOfView != null
-                && ch.pos >= 0
-                && ch.pos < fieldOfView.length
-                && inFov(ch);
-    }
+	/**
+	 * 安全地判断某个 Char 是否在视野内。
+	 * 某些临时/已销毁的 Char 可能 pos = -1（例如正在被推拽、或刚刚移除），
+	 * 直接读 fieldOfView[pos] 会触发 ArrayIndexOutOfBoundsException。
+	 * 解决类似于火龙的问题
+	 */
+	private boolean inFov(Char ch) {
+		return ch != null
+				&& fieldOfView != null
+				&& ch.pos >= 0
+				&& ch.pos < fieldOfView.length
+				&& fieldOfView[ch.pos];
+	}
 
     protected Char chooseEnemy() {
 
