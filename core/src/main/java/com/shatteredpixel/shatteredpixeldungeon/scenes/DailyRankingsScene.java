@@ -241,7 +241,13 @@ public class DailyRankingsScene extends PixelScene {
 
     /** 场景是否仍然存活、可以安全操作自己的 UI。 */
     private boolean isSceneAlive() {
-        return !leaving && Game.scene() == this;
+        // 除场景身份外，再确认列表 UI 还挂在场景上：Group.destroy() 会把成员
+        // 全部销毁并把 members 置 null，此时即使 Game.scene() 的切换尚未完成，
+        // 也不能再调用 content.add()，否则会再次触发 ArrayList.add 的 NPE。
+        return !leaving
+                && Game.scene() == this
+                && pane != null && pane.parent != null
+                && content != null;
     }
 
     private void updateDateHeader() {
@@ -389,6 +395,9 @@ public class DailyRankingsScene extends PixelScene {
     }
 
     private class Record extends Button {
+
+        /** 名字至少保留的宽度：低于该值时 RenderedTextBlock 会逐字换行。 */
+        private static final int MIN_TEXT_WIDTH = 32;
 
         private final LeaderboardData.Entry entry;
         private final boolean top3;
@@ -597,7 +606,9 @@ public class DailyRankingsScene extends PixelScene {
             scoreBg.y = centerY - 7;
             scoreBg.size(score.width() + 8, 14);
 
-            name.maxWidth((int) Math.max(1, scoreBg.x - textX - 3));
+            // 窄屏/省电模式下行宽会接近最小值；保留一个最小名字宽度，
+            // 避免 RenderedTextBlock 把每个字拆成单独一行。
+            name.maxWidth((int) Math.max(MIN_TEXT_WIDTH, scoreBg.x - textX - 3));
             float groupH = name.height() + 1 + META_HEIGHT;
             float top = centerY - groupH / 2f;
             name.setPos(textX, top);
