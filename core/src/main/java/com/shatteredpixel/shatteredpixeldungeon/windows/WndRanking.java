@@ -58,10 +58,12 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentsPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.utils.PreviewMode;
+import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -72,6 +74,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.DeviceCompat;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class WndRanking extends WndTabbed {
@@ -100,6 +103,9 @@ public class WndRanking extends WndTabbed {
     private Level savedLevel;
     private boolean previewOpen = false;
     private boolean badgesPreviewOpen = false;
+
+    // 物品页的滚动面板，用来区分“拖动滚动”与“点击查看物品”
+    private ScrollPane itemScroll;
 
     private String seedType() {
         String seed;
@@ -252,7 +258,7 @@ public class WndRanking extends WndTabbed {
 
         if (Dungeon.hero != null) {
             Icons[] icons = {
-                Icons.RANKINGS, Icons.TALENT, Icons.BACKPACK_LRG, Icons.BADGES, Icons.CHANGES
+                Icons.RANKINGS, Icons.TALENT, Icons.BACKPACK_LRG, Icons.BADGES, Icons.CHALLENGE_ON
             };
             Group[] pages = {
                 new StatsTab(), new TalentsTab(), new ItemsTab(), new BadgesTab(), null
@@ -664,68 +670,100 @@ public class WndRanking extends WndTabbed {
 
     private class ItemsTab extends Group {
 
+        // 快捷栏格子固定尺寸并按列换行：槽位数量增加后不再被压缩成一排，
+        // 也不会出现数量/等级文字互相叠在一起的情况。
+        private static final int QUICK_COLS = 4;
+        private static final int QUICK_W = 27;
+        private static final int QUICK_H = 23;
+        private static final int QUICK_GAP = 1;
+
         private float pos;
 
         public ItemsTab() {
             super();
 
+            // 本页在 createControls() 中是先构造、后加入窗口的，
+            // 构造期还没有父级，必须先把窗口相机绑定到本页，
+            // 否则 ScrollPane 首次布局时 camera() 为 null 会抛异常。
+            camera = WndRanking.this.camera;
+
+            // 物品与快捷栏的总高度可能超过窗口，用滚动面板承载，避免内容被裁掉
+            ScrollPane pane = new ScrollPane(new Component());
+            itemScroll = pane;
+            Component content = pane.content();
+            add(pane);
+            pane.setRect(0, 0, WIDTH, HEIGHT);
+
             Belongings stuff = Dungeon.hero.belongings;
             if (stuff.weapon != null) {
-                addItem(stuff.weapon);
+                addItem(content, stuff.weapon);
             }
             if (stuff.armor != null) {
-                addItem(stuff.armor);
+                addItem(content, stuff.armor);
             }
             if (stuff.artifact != null) {
-                addItem(stuff.artifact);
+                addItem(content, stuff.artifact);
             }
             if (stuff.misc != null) {
-                addItem(stuff.misc);
+                addItem(content, stuff.misc);
             }
             if (stuff.ring != null) {
-                addItem(stuff.ring);
+                addItem(content, stuff.ring);
             }
 
-            pos = 0;
-
-            int slotsActive = 0;
-            for (int i = 0; i < QuickSlot.SIZE; i++) {
-                if (Dungeon.quickslot.isNonePlaceholder(i)) {
-                    slotsActive++;
-                }
-            }
-
+            // 饰品与快捷栏物品放在同一组，沿用旧版顺序（饰品排在最前）
+            ArrayList<Item> quickItems = new ArrayList<>();
             Trinket trinket = stuff.getItem(Trinket.class);
             if (trinket != null) {
-                slotsActive++;
+                quickItems.add(trinket);
             }
-
-            float slotWidth = Math.min(28, ((WIDTH - slotsActive + 1) / (float) slotsActive));
-
-            for (int i = -1; i < QuickSlot.SIZE; i++) {
-                Item item = null;
-                if (i == -1) {
-                    item = trinket;
-                } else if (Dungeon.quickslot.isNonePlaceholder(i)) {
-                    item = Dungeon.quickslot.getItem(i);
-                }
-                if (item != null) {
-                    QuickSlotButton slot = new QuickSlotButton(item);
-
-                    slot.setRect(pos, 120, slotWidth, 23);
-                    PixelScene.align(slot);
-
-                    add(slot);
-
-                    pos += slotWidth + 1;
+            for (int i = 0; i < QuickSlot.SIZE; i++) {
+                if (Dungeon.quickslot.isNonePlaceholder(i)) {
+                    quickItems.add(Dungeon.quickslot.getItem(i));
                 }
             }
+            addQuickSlots(content, quickItems);
+
+            content.setSize(WIDTH, pos + 2);
+            // 内容尺寸变化后重新布局，刷新滚动条状态
+            pane.setRect(0, 0, WIDTH, HEIGHT);
+            pane.scrollTo(0, 0);
+            // 让滚动控制器先于内部按钮接收事件，拖动滚动时不会触发物品点击
+            pane.refreshPointerPriority();
         }
 
-        private void addItem(Item item) {
+        /** 快捷栏以固定尺寸的网格展示，每行最多 QUICK_COLS 个。 */
+        private void addQuickSlots(Component parent, ArrayList<Item> items) {
+            if (items.isEmpty()) {
+                return;
+            }
+
+            int cols = Math.min(QUICK_COLS, items.size());
+
+            for (int i = 0; i < items.size(); i++) {
+                QuickSlotButton slot = new QuickSlotButton(items.get(i));
+
+                int col = i % cols;
+                int row = i / cols;
+
+                slot.setRect(
+                        col * (QUICK_W + QUICK_GAP),
+                        pos + row * (QUICK_H + QUICK_GAP),
+                        QUICK_W,
+                        QUICK_H);
+                PixelScene.align(slot);
+
+                parent.add(slot);
+            }
+
+            int rows = (items.size() + cols - 1) / cols;
+            pos += rows * QUICK_H + (rows - 1) * QUICK_GAP;
+        }
+
+        private void addItem(Component parent, Item item) {
             ItemButton slot = new ItemButton(item);
-            slot.setRect(0, pos, width, ItemButton.HEIGHT);
-            add(slot);
+            slot.setRect(0, pos, WIDTH, ItemButton.HEIGHT);
+            parent.add(slot);
 
             pos += slot.height() + 1;
         }
@@ -847,6 +885,9 @@ public class WndRanking extends WndTabbed {
 
         @Override
         protected void onClick() {
+            if (itemScroll != null && itemScroll.wasDragging()) {
+                return;
+            }
             Game.scene().add(new WndInfoItem(item));
         }
     }
@@ -885,6 +926,25 @@ public class WndRanking extends WndTabbed {
             bg.size(width(), height());
 
             super.layout();
+
+            // 格子比原来窄，数量文字（如 1005/52）可能超出边界，
+            // 按实际宽度继续缩小，避免压到相邻格子
+            fitText(status);
+        }
+
+        /** 按当前格子宽度收缩 BitmapText，仅在文字仍超宽时生效。 */
+        private void fitText(BitmapText txt) {
+            if (txt == null || txt.text() == null) {
+                return;
+            }
+            txt.measure();
+            float textWidth = txt.width();
+            float maxWidth = width() - 2;
+            if (textWidth <= 0 || maxWidth <= 0 || textWidth <= maxWidth) {
+                return;
+            }
+            float scale = Math.max(0.5f, Math.min(txt.scale.x, maxWidth / textWidth));
+            txt.scale.set(PixelScene.align(scale));
         }
 
         @Override
@@ -899,6 +959,9 @@ public class WndRanking extends WndTabbed {
 
         @Override
         protected void onClick() {
+            if (itemScroll != null && itemScroll.wasDragging()) {
+                return;
+            }
             Game.scene().add(new WndInfoItem(item));
         }
     }
