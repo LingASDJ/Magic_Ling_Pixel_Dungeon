@@ -3,8 +3,10 @@
  *
  * Covers the 2026-11-12 row that exposed the bug: an old client applied the
  * 0.5 custom-seed penalty to a daily run and stored 29,017,816 while the
- * snapshot components produce 58,035,638. Also verifies that the startup
- * migration repairs an existing database (v2 marker).
+ * snapshot components produce 61,662,868. The fixture also covers the prop
+ * multiplier fix: bad_mult 6.5 + good_mult 2.0 must be applied as 8.5x, not
+ * truncated to 8x (old clients scored 58,035,640). Also verifies that the
+ * startup migration repairs an existing database (versioned marker).
  *
  * Run with: node test-score.js
  */
@@ -31,7 +33,7 @@ const componentGameData = {
   total_score: 29017816
 };
 
-const EXPECTED = 58035640; // matches the client's int/float calculation exactly
+const EXPECTED = 61662868; // components * 8.5 (prop multiplier kept as a float)
 
 // 1. Pure reconciliation.
 assert.strictEqual(expectedDailyScore(componentGameData, 2), EXPECTED);
@@ -80,6 +82,21 @@ try { fs.unlinkSync(dbPath); } catch (e) { /* ignore */ }
   assert.strictEqual(board.entries.length, 1);
   assert.strictEqual(board.entries[0].score, EXPECTED,
       'startup migration must repair the stored score');
+
+  // 3. Upgrade path of a live database: v2 already ran (marker present) and
+  //    left the old truncated-prop score behind, v3 has not run yet. Rewind the
+  //    row to the v2 value, drop only the v3 marker, restart, and expect the
+  //    prop-multiplier repair to bring it to the float-multiplier score.
+  {
+    const upgrade = new SQL.Database(fs.readFileSync(dbPath));
+    upgrade.run('UPDATE daily_scores SET score = ? WHERE id = 1', [58035640]);
+    upgrade.run("DELETE FROM meta WHERE key = 'daily_score_repair_v3'");
+    fs.writeFileSync(dbPath, Buffer.from(upgrade.export()));
+    upgrade.close();
+  }
+  await db.initDatabase();
+  assert.strictEqual(db.getLeaderboard('2026-11-12', 1, 20).entries[0].score, EXPECTED,
+      'v3 migration must re-score rows written by the old truncated formula');
 
   console.log('test-score: OK');
   try { fs.unlinkSync(dbPath); } catch (e) { /* ignore */ }

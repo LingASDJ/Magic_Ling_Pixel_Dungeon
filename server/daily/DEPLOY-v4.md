@@ -55,6 +55,11 @@
 
 ## 验证
 
+> 注（2026-11-20）：之后客户端修复了藏品倍率按整数截断的问题，服务端同步改为
+> 浮点倍率计分，并新增 `daily_score_repair_v3` 迁移。部署含该修复的版本后，
+> 下面的 2026-11-12 行会重算为 `61,662,868`（不再是 v4 的 `58,035,640`），
+> 判定公式见 README「分数修正」。
+
 ```powershell
 # 2026-11-12 日榜：knox-小刻 应显示 58035640
 curl.exe -k "https://dailymlpd.spldream.com:28773/MLPD/api/v1/daily/leaderboard?date=2026-11-12&page=1&pageSize=5"

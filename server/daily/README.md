@@ -221,6 +221,11 @@ PORT=28773 node app.js     # 默认端口 28773，默认 HTTPS
 - 历史数据：服务启动时 `initDatabase()` 会执行一次 `daily_score_repair_v2` 迁移，
   扫描 `daily_scores` 与 `replay_scores`，把所有含完整分项的行修正为重新计算的分数；
   完成后在 `meta` 表写入标记，不会重复执行（即使之前跑过 v1 迁移也会再跑一次）。
+- 藏品倍率修正：客户端 `Rankings.calculateScore()` 以前把藏品倍率
+  `(int)(bad_mult + good_mult)` 截断成整数（界面显示 3.7x，实际只按 3x 结算）。
+  修复后倍率按浮点参与计分，服务端 `expectedDailyScore()` 同步改为浮点倍率并四舍五入。
+  已按旧公式写入的历史分数由 `daily_score_repair_v3` 迁移按快照分项再重算一次
+  （浮点倍率不小于截断值，因此只会持平或上调）。
 - 缺少完整分项的旧快照保持原值，避免把未知格式算成 0。
 
 ## 数据库
@@ -235,4 +240,4 @@ PORT=28773 node app.js     # 默认端口 28773，默认 HTTPS
 `replay_scores` 表保存重玩成绩：字段与 `daily_scores` 基本一致，
 唯一索引 `(date, player_id)` 保证每名玩家每天只有一条，提交更高分时原地更新。
 
-`meta` 表记录一次性迁移标记（`daily_score_repair_v1` / `daily_score_repair_v2`）。
+`meta` 表记录一次性迁移标记（`daily_score_repair_v1` / `daily_score_repair_v2` / `daily_score_repair_v3`）。

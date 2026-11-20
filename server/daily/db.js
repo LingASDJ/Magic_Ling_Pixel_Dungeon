@@ -112,6 +112,7 @@ async function initDatabase() {
   db.run('CREATE INDEX IF NOT EXISTS idx_replay_scores_date_score ON replay_scores(date, score DESC)');
 
   repairLegacyDailyScores();
+  repairPropMultiplierScores();
 
   saveToDisk();
   console.log('[DB] 数据库初始化完成');
@@ -145,6 +146,38 @@ function repairLegacyDailyScores() {
   const sample = dailyUpdates.concat(replayUpdates).slice(0, 5)
       .map(u => `${u.id}:${u.oldScore}->${u.newScore}`).join(', ');
   console.log(`[DB] 旧分数修复(v2): daily=${dailyUpdates.length} replay=${replayUpdates.length}`
+      + (sample ? `，前几行: ${sample}` : ''));
+}
+
+/**
+ * One-time repair after the prop-multiplier fix.
+ *
+ * v2 wrote historical scores with the old formula, which truncated the
+ * collection multiplier to an integer: `(int)(bad + good)`. The client now
+ * applies the multiplier as a float, exactly as WndScoreBreakdown displays it
+ * (e.g. 3.7x instead of 3x), so rows repaired by v2 would again disagree with
+ * the in-game breakdown. Every row with a complete component set is
+ * recalculated once more from the same snapshot. A float multiplier is never
+ * smaller than its truncation, so this repair can only keep or raise scores.
+ */
+function repairPropMultiplierScores() {
+  db.run('CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT)');
+
+  const marker = db.prepare("SELECT value FROM meta WHERE key = 'daily_score_repair_v3' LIMIT 1");
+  marker.step();
+  const done = marker.getAsObject();
+  marker.free();
+  if (done && done.value) return;
+
+  const dailyUpdates = repairScoreTable('daily_scores');
+  const replayUpdates = repairScoreTable('replay_scores');
+
+  db.run('INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)',
+      ['daily_score_repair_v3', new Date().toISOString()]);
+
+  const sample = dailyUpdates.concat(replayUpdates).slice(0, 5)
+      .map(u => `${u.id}:${u.oldScore}->${u.newScore}`).join(', ');
+  console.log(`[DB] 藏品倍率分数修复(v3): daily=${dailyUpdates.length} replay=${replayUpdates.length}`
       + (sample ? `，前几行: ${sample}` : ''));
 }
 

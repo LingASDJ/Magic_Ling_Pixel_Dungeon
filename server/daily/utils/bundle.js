@@ -181,9 +181,12 @@ function expectedDailyScore(gameData, difficulty) {
   // totalScore *= DifficultyScore();
   score = Math.trunc(f(score * f(diff)));
 
-  // int totalProps = (int)(badMultiplier + goodMultiplier);
-  const props = Math.trunc(f(f(num(bundle.bad_mult, 0)) + f(num(bundle.good_mult, 0))));
-  if (props !== 0) score *= props;
+  // float totalProps = badMultiplier + goodMultiplier;
+  // 藏品倍率按件累加为小数（正面 0.2x、混沌 0.25x、负面 0.5x），客户端用浮点
+  // 倍率计分并四舍五入到整分；这里不能再截断成整数，否则每日榜会把客户端
+  // 按 3.7x 算出的分数"纠正"回 3x，造成榜单与游戏内结算明细不一致。
+  const props = f(f(num(bundle.bad_mult, 0)) + f(num(bundle.good_mult, 0)));
+  if (props > 0) score = Math.round(f(score * props));
 
   return Math.max(0, score);
 }
