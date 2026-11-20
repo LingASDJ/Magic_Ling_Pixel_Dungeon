@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 //断生者
 //四阶，力量需求17
-//初始6-24，成长2-6，精准1.2
+//初始6-24，成长2-7，精准1.2
 //每次命中都会让敌人一分为二：本体与分身各继承当前生命值与生命上限的一半。
 //武技：腰斩，消耗2充能，对目标造成130%必中伤害，对与目标相连的所有敌人造成100%必中伤害，如果腰斩击杀了1个单位，获得1充能。每次释放至多获得1次充能。
 
@@ -54,7 +54,7 @@ public class LifeCutter extends MeleeWeapon {
     }
 
     @Override
-    public int max(int lvl) { return 24 + lvl * 6; }
+    public int max(int lvl) { return 24 + lvl * 7; }
 
     @Override
     public int min(int lvl) { return 6 + lvl * 2; }

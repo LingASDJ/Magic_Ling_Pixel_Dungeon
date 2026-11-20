@@ -262,6 +262,6 @@ public class Shovel extends MeleeWeapon{
 
     @Override
     public String statsInfo() {
-        return Messages.get(this, "stats_desc", 20 + 3 * buffedLvl());
+        return Messages.get(this, "stats_desc", 20 + 3 * buffedVisiblyUpgraded());
     }
 }

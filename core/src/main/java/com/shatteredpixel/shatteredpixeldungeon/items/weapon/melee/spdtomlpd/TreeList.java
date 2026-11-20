@@ -85,7 +85,7 @@ public class TreeList extends MeleeWeapon {
     }
 
     public String desc() {
-        return Messages.get(this, "desc", 20+2*buffedLvl(),2 + buffedLvl()/5);
+        return Messages.get(this, "desc", 20+2*buffedVisiblyUpgraded(),2 + buffedVisiblyUpgraded()/5);
     }
 
     @Override

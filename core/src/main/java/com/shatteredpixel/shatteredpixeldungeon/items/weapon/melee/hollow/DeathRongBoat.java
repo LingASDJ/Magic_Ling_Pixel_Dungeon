@@ -28,7 +28,7 @@ public class DeathRongBoat extends MeleeWeapon {
     }
 
     public String desc() {
-        int damageReduction = Math.max(0, 25 - buffedLvl());
+        int damageReduction = Math.max(0, 25 - buffedVisiblyUpgraded());
         return Messages.get(this, "desc", damageReduction);
     }
 

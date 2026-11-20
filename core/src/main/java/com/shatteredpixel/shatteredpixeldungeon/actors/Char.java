@@ -1202,7 +1202,7 @@ public abstract class Char extends Actor {
 
 		Artifact artR = hero.belongings.artifact instanceof CapeOfThorns ? hero.belongings.artifact : null;
 		artR = hero.belongings.misc instanceof CapeOfThorns ? (Artifact) hero.belongings.misc : artR;
-		if(artR != null && artR.cursed && src != hero){
+		if(artR != null && artR.cursed && src != hero && this ==hero ){
 			Buff.affect( hero, Bleeding.class ).set( (float) dmg /5 );
 		} else if(thornsTime != null){
 			Artifact art = thornsTime.getEquippedArtifact();

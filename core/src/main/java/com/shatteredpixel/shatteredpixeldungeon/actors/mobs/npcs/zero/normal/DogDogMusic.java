@@ -116,7 +116,7 @@ public class DogDogMusic extends FiveYearsNPC {
 
         @Override
         public String desc() {
-            return Messages.get(this,"desc",1,18 + (level() * 3 ));
+            return Messages.get(this,"desc",1,18 + (buffedVisiblyUpgraded() * 3 ));
         }
 
         @Override
