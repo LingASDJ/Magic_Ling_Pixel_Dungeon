@@ -6,15 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.KusumiMagicGirl;
@@ -28,7 +20,7 @@ import com.watabou.utils.Callback;
 //晨星
 //四阶，力量需求16
 //初始4-20，成长1-5
-//这把武器的攻击会轮流给予敌人2+0.3*等级（向下取整）回合的虚弱、易伤、晕眩、失明。
+//这把武器的攻击会轮流给予敌人2+0.3*等级（向下取整）回合的虚弱、易伤、失明、麻痹。
 //寒光四射的单手钉头锤，也许是因此得名。
 //武技：苍茫天星，消耗2充能，对目标单位施加晨星的所有效果，随后对目标造成必中伤害，并使目标身上的所有负面效果延长3回合。
 // 目标身上的每一个负面效果都会使本次伤害额外+5%。
@@ -74,13 +66,13 @@ public class MorningStar extends MeleeWeapon {
                 break;
             }
             case 2:{
-                // 眩晕
-                Buff.affect(defender, Vertigo.class, theDuration());
+                // 失明
+                Buff.affect(defender, Blindness.class, theDuration());
                 break;
             }
             case 3:{
-                // 失明
-                Buff.affect(defender, Blindness.class, theDuration());
+                // 麻痹
+                Buff.affect(defender, Paralysis.class, theDuration());
                 break;
             }
         }

@@ -44,7 +44,7 @@ public class MerchantSword extends MeleeWeapon{
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc" , 10 + (buffedLvl() * 5));
+        return Messages.get(this, "desc" , 10 + (buffedVisiblyUpgraded() * 5));
     }
 
     @Override

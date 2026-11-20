@@ -52,7 +52,7 @@ public class TragicCode extends MeleeWeapon {
             @Override
             protected boolean act() {
                 if (!def.isAlive()) {
-                    float identifyChance = 0.10f + (0.05f * buffedLvl());
+                    float identifyChance = 0.20f + (0.05f * buffedLvl());
 
                     if (Random.Float() < identifyChance) {
                         ArrayList<Item> unidentified = new ArrayList<>();
