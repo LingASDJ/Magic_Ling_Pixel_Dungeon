@@ -273,9 +273,13 @@ public enum Rankings {
 
         Statistics.totalScore *= DifficultyScore();
 
-        int totalProps = (int) (Statistics.badMultiplier + Statistics.goodMultiplier);
-        if(totalProps != 0){
-            Statistics.totalScore *= totalProps;
+        // 藏品倍率是按件累加的小数（正面 0.2x、混沌 0.25x、负面 0.5x），
+        // 必须用浮点倍率参与计分，不能截断成整数：
+        // 截断会让 WndScoreBreakdown 显示的 3.7x 实际只按 3x 结算，丢掉 0.7 倍。
+        // 与界面展示保持一致（界面显示的就是这个和），最终分数四舍五入到整分。
+        float totalProps = Statistics.badMultiplier + Statistics.goodMultiplier;
+        if(totalProps > 0){
+            Statistics.totalScore = Math.round(Statistics.totalScore * totalProps);
         }
 
         return Statistics.totalScore;

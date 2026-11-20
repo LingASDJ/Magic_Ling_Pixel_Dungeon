@@ -88,10 +88,30 @@ public class RankingsScene extends PixelScene {
         for (Rankings.Record record : Rankings.INSTANCE.records) {
             Rankings.INSTANCE.loadGameData(record);
         }
-        // 使用项目原生scoreComparator进行降序排序
+
+        // 排序前保存新记录对象引用，不要存下标
+        Rankings.Record newlyAddedRecord = null;
+        if (Rankings.INSTANCE.lastRecord >= 0
+                && Rankings.INSTANCE.lastRecord < Rankings.INSTANCE.records.size()) {
+            newlyAddedRecord = Rankings.INSTANCE.records.get(Rankings.INSTANCE.lastRecord);
+        }
+
+        // 使用项目原生scoreComparator进行降序排序【这一行完全保留，分数依旧高到低】
         Collections.sort(Rankings.INSTANCE.records, Rankings.scoreComparator);
-        // 排序之后lastRecord数组下标失效，关闭新记录闪光特效，避免标记错位
-        Rankings.INSTANCE.lastRecord = -1;
+
+        // 排序后重新查找对象的新下标，不再写死‑1
+        if (newlyAddedRecord != null) {
+            int newIdx = -1;
+            for (int i = 0; i < Rankings.INSTANCE.records.size(); i++) {
+                if (Rankings.INSTANCE.records.get(i) == newlyAddedRecord) {
+                    newIdx = i;
+                    break;
+                }
+            }
+            Rankings.INSTANCE.lastRecord = newIdx;
+        } else {
+            Rankings.INSTANCE.lastRecord = -1;
+        }
         // =========修复结束==========
 
         IconTitle title = new IconTitle(Icons.RANKINGS.get(), Messages.get(this, "title"));

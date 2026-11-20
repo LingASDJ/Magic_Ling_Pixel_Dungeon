@@ -107,12 +107,16 @@ public class WndScoreBreakdown extends Window {
                     scoreB += 0.5f;
                 }
             }
-            pos = statSlot(content, Messages.get(this, "bad_prop"), String.format("%.1f", scoreB) + "x", pos, false);
-            pos = statSlot(content, Messages.get(this, "good_prop"), String.format("%.1f", score) + "x", pos, false);
-            pos = statSlot(content, Messages.get(this, "chaos_prop"), String.format("%.1f", scoreC) + "x", pos, false);
+            pos = statSlot(content, Messages.get(this, "bad_prop"), multiplierText(scoreB), pos, false);
+            pos = statSlot(content, Messages.get(this, "good_prop"), multiplierText(score), pos, false);
+            pos = statSlot(content, Messages.get(this, "chaos_prop"), multiplierText(scoreC), pos, false);
             pos = addInfo(content, Messages.get(this, "prop_desc"), pos);
         } else {
-            pos = statSlot(content, Messages.get(this, "total_props"), (Statistics.badMultiplier + Statistics.goodMultiplier) + "x", pos, false);
+            // 显示的就是计分实际使用的倍率：小数照实显示，无藏品时按 1x
+            // （calculateScore 在倍率为 0 时不乘，等同 1x）。
+            float totalProps = Statistics.badMultiplier + Statistics.goodMultiplier;
+            pos = statSlot(content, Messages.get(this, "total_props"),
+                    multiplierText(totalProps > 0 ? totalProps : 1f), pos, false);
             pos = addInfo(content, Messages.get(this, "prop_desc"), pos);
         }
 
@@ -148,6 +152,22 @@ public class WndScoreBreakdown extends Window {
 
         content.setSize(WIDTH, pos + 2);
         pane.scrollTo(0, 0);
+    }
+
+    /**
+     * 倍率文本：最多两位小数并去掉末尾的 0，避免浮点噪声（3.6999998 显示成
+     * "3.7x"），同时保证 0.25 这类步进不被 %.1f 舍成 "0.3x"。
+     * 显示值与 calculateScore() 实际使用的倍率一致。
+     */
+    private static String multiplierText(float value) {
+        String text = String.format(Locale.US, "%.2f", value);
+        while (text.endsWith("0")) {
+            text = text.substring(0, text.length() - 1);
+        }
+        if (text.endsWith(".")) {
+            text = text.substring(0, text.length() - 1);
+        }
+        return text + "x";
     }
 
     private float statSlot(Group parent, String label, String value, float pos, boolean highlight ) {
