@@ -42,7 +42,7 @@ import com.watabou.noosa.audio.Sample;
 public class MolotovCocktail extends Brew {
 
     // —— 数值常量，方便后续调平衡 ——
-    public static final int BREW_COST    = 2;   // 炼金能量
+    public static final int BREW_COST    = 2;   // 炼金能量需求
     public static final int OUT_QUANTITY = 4;   // 一次合成产出
 
     {
@@ -70,5 +70,11 @@ public class MolotovCocktail extends Brew {
             output      = MolotovCocktail.class;
             outQuantity = OUT_QUANTITY;
         }
+    }
+
+    // 禁止变成炼金能量
+    @Override
+    public int energyVal() {
+        return 0;
     }
 }
