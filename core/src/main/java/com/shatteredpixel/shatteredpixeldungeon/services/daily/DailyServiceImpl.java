@@ -276,24 +276,112 @@ public class DailyServiceImpl extends DailyService {
     @Override
     public void fetchLeaderboard(String date, int page, int pageSize,
                                  DailyResultCallback<LeaderboardData> callback) {
-        String url = apiBase() + "/leaderboard?date=" + date + "&page=" + page + "&pageSize=" + pageSize;
+        fetchLeaderboard(date, page, pageSize, false, callback);
+    }
+
+    @Override
+    public void fetchLeaderboard(String date, int page, int pageSize, boolean summary,
+                                 DailyResultCallback<LeaderboardData> callback) {
+        String url = apiBase() + "/leaderboard?date=" + date
+                + "&page=" + page + "&pageSize=" + pageSize + summaryParam(summary);
         fetchLeaderboardUrl(url, date, page, pageSize, callback);
     }
 
     @Override
     public void fetchWeeklyLeaderboard(String weekStart, int page, int pageSize,
                                        DailyResultCallback<LeaderboardData> callback) {
+        fetchWeeklyLeaderboard(weekStart, page, pageSize, false, callback);
+    }
+
+    @Override
+    public void fetchWeeklyLeaderboard(String weekStart, int page, int pageSize, boolean summary,
+                                       DailyResultCallback<LeaderboardData> callback) {
         String url = apiBase() + "/weekly?weekStart=" + weekStart
-                + "&page=" + page + "&pageSize=" + pageSize;
+                + "&page=" + page + "&pageSize=" + pageSize + summaryParam(summary);
         fetchLeaderboardUrl(url, weekStart, page, pageSize, callback);
     }
 
     @Override
     public void fetchReplayLeaderboard(String date, int page, int pageSize,
                                        DailyResultCallback<LeaderboardData> callback) {
+        fetchReplayLeaderboard(date, page, pageSize, false, callback);
+    }
+
+    @Override
+    public void fetchReplayLeaderboard(String date, int page, int pageSize, boolean summary,
+                                       DailyResultCallback<LeaderboardData> callback) {
         String url = apiBase() + "/replay?date=" + date
-                + "&page=" + page + "&pageSize=" + pageSize;
+                + "&page=" + page + "&pageSize=" + pageSize + summaryParam(summary);
         fetchLeaderboardUrl(url, date, page, pageSize, callback);
+    }
+
+    private static String summaryParam(boolean summary) {
+        return summary ? "&summary=1" : "";
+    }
+
+    @Override
+    public void fetchLeaderboardEntry(int id, boolean replay,
+                                      DailyResultCallback<LeaderboardData.Entry> callback) {
+        if (id <= 0) {
+            callback.onFailure("无效的记录");
+            return;
+        }
+        String url = apiBase() + "/entry?id=" + id
+                + "&source=" + (replay ? "replay" : "daily");
+        httpGet(url, new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                try {
+                    JsonValue root = jsonReader.parse(httpResponse.getResultAsString());
+                    if (root.getInt("code") != 0) {
+                        callback.onFailure(root.getString("message", "服务器错误"));
+                        return;
+                    }
+                    JsonValue data = root.get("data");
+                    if (data == null || data.isNull()) {
+                        callback.onFailure("记录不存在");
+                        return;
+                    }
+                    callback.onSuccess(parseEntry(data, ""));
+                } catch (Exception e) {
+                    callback.onFailure("解析失败: " + e.getMessage());
+                }
+            }
+
+            @Override public void failed(Throwable t) { callback.onFailure(t == null ? "网络错误" : t.getMessage()); }
+            @Override public void cancelled()        { callback.onFailure("已取消"); }
+        });
+    }
+
+    private static LeaderboardData.Entry parseEntry(JsonValue entry, String fallbackDate) {
+        LeaderboardData.Entry e = new LeaderboardData.Entry();
+        e.id = entry.getInt("id", 0);
+        e.rank = entry.getInt("rank", 0);
+        e.date = entry.getString("date", fallbackDate);
+        e.playerId = entry.getString("playerId", "");
+        e.playerName = entry.getString("playerName", "");
+        try {
+            e.heroClass = HeroClass.valueOf(entry.getString("heroClass", "WARRIOR"));
+        } catch (Throwable ignored) {
+            e.heroClass = HeroClass.WARRIOR;
+        }
+        e.heroLevel = entry.getInt("heroLevel", 1);
+        e.armorTier = entry.getInt("armorTier", 0);
+        e.score = entry.getInt("score", 0);
+        e.won = entry.getBoolean("won", false);
+        e.depth = entry.getInt("depth", 0);
+        e.challenges = entry.getInt("challenges", 0);
+        e.challengeCount = entry.getInt("challengeCount", 0);
+        e.difficulty = entry.getInt("difficulty", 1);
+        e.version = entry.getString("version", "");
+        e.gameData = entry.getString("gameData", "");
+        e.replay = entry.getBoolean("replay",
+                entry.getBoolean("dailyReplay", false));
+        e.runs = entry.getInt("runs", 0);
+        e.gold = entry.getInt("gold", 0);
+        e.silver = entry.getInt("silver", 0);
+        e.bronze = entry.getInt("bronze", 0);
+        return e;
     }
 
     private void fetchLeaderboardUrl(String url, String fallbackDate, int page, int pageSize,
@@ -326,33 +414,7 @@ public class DailyServiceImpl extends DailyService {
                     JsonValue entries = data.get("entries");
                     if (entries != null) {
                         for (JsonValue entry : entries) {
-                            LeaderboardData.Entry e = new LeaderboardData.Entry();
-                            e.rank = entry.getInt("rank");
-                            e.date = entry.getString("date", fallbackDate);
-                            e.playerId = entry.getString("playerId", "");
-                            e.playerName = entry.getString("playerName", "");
-                            try {
-                                e.heroClass = HeroClass.valueOf(entry.getString("heroClass", "WARRIOR"));
-                            } catch (Throwable ignored) {
-                                e.heroClass = HeroClass.WARRIOR;
-                            }
-                            e.heroLevel = entry.getInt("heroLevel", 1);
-                            e.armorTier = entry.getInt("armorTier", 0);
-                            e.score = entry.getInt("score", 0);
-                            e.won = entry.getBoolean("won", false);
-                            e.depth = entry.getInt("depth", 0);
-                            e.challenges = entry.getInt("challenges", 0);
-                            e.challengeCount = entry.getInt("challengeCount", 0);
-                            e.difficulty = entry.getInt("difficulty", 1);
-                            e.version = entry.getString("version", "");
-                            e.gameData = entry.getString("gameData", "");
-                            e.replay = entry.getBoolean("replay",
-                                    entry.getBoolean("dailyReplay", false));
-                            e.runs = entry.getInt("runs", 0);
-                            e.gold = entry.getInt("gold", 0);
-                            e.silver = entry.getInt("silver", 0);
-                            e.bronze = entry.getInt("bronze", 0);
-                            d.entries.add(e);
+                            d.entries.add(parseEntry(entry, fallbackDate));
                         }
                     }
                     callback.onSuccess(result);

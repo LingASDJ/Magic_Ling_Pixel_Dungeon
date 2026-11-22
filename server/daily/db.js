@@ -1,10 +1,96 @@
 const fs = require('fs');
 const path = require('path');
 const { reconcileDailyScore } = require('./utils/bundle');
+const { getTodayString, startOfUtcWeek } = require('./utils/seed');
 
 let db = null;
 // Allow tests / deployments to point at a different database file.
 const dbPath = process.env.DAILY_DB || path.join(__dirname, 'daily.db');
+
+// Weekly aggregation cache. The list contains summary entries only (no
+// game_data); page requests fetch snapshots for their own rows. Past weeks are
+// immutable and cached indefinitely; the current week uses a short TTL.
+const weeklyCache = new Map();
+const MAX_CACHED_WEEKS = 12;
+const WEEKLY_CACHE_TTL_MS = 30 * 1000;
+
+// Columns needed by every leaderboard entry. game_data is deliberately not in
+// this list: it is fetched lazily for the current page / detail window only.
+const ENTRY_COLUMNS_BASE = `
+  id, date, player_name, player_id, hero_class, hero_subclass, hero_level, armor_tier,
+  score, won, depth, duration, enemies_slain, gold_collected, food_eaten,
+  items_crafted, challenges, str, version, seed, custom_seed, game_mode,
+  difficulty, mode, challenge_tier, created_at
+`;
+// replay_scores never had the legacy daily_replay column.
+const REPLAY_ENTRY_COLUMNS = ENTRY_COLUMNS_BASE;
+const ENTRY_COLUMNS = ENTRY_COLUMNS_BASE + ', daily_replay';
+
+function weeklyCachePut(weekStart, value) {
+  weeklyCache.delete(weekStart);
+  weeklyCache.set(weekStart, value);
+  while (weeklyCache.size > MAX_CACHED_WEEKS) {
+    const oldest = weeklyCache.keys().next().value;
+    weeklyCache.delete(oldest);
+  }
+}
+
+function noteWeeklyWrite(date) {
+  // The current week is served from a short-lived cache, so a same-day submit
+  // may take up to WEEKLY_CACHE_TTL_MS to appear. Backfilled/past-week scores
+  // must invalidate immediately because past weeks are otherwise cached
+  // indefinitely.
+  const day = String(date);
+  if (day >= getTodayString()) return;
+  try {
+    weeklyCache.delete(startOfUtcWeek(day));
+  } catch (e) {
+    weeklyCache.clear();
+  }
+}
+
+/**
+ * Converts a database row into the public leaderboard entry shape.
+ * @param {object} row
+ * @param {number} rank
+ * @param {object} [extra] extra fields (weekly runs/medals, replay marker)
+ * @param {boolean} [includeGameData]
+ */
+function mapEntryRow(row, rank, extra, includeGameData = true) {
+  const entry = {
+    id: row.id,
+    rank,
+    date: row.date,
+    playerId: row.player_id || '',
+    playerName: row.player_name,
+    heroClass: row.hero_class,
+    heroSubClass: row.hero_subclass,
+    heroLevel: row.hero_level,
+    armorTier: row.armor_tier,
+    score: row.score,
+    won: row.won === 1,
+    depth: row.depth,
+    duration: row.duration,
+    enemiesSlain: row.enemies_slain,
+    goldCollected: row.gold_collected,
+    foodEaten: row.food_eaten,
+    itemsCrafted: row.items_crafted,
+    challenges: row.challenges,
+    challengeCount: row.challenge_tier,
+    str: row.str,
+    version: row.version,
+    seed: row.seed,
+    customSeed: row.custom_seed,
+    gameMode: row.game_mode,
+    difficulty: row.difficulty,
+    mode: row.mode,
+    dailyReplay: row.daily_replay === 1,
+    gameData: includeGameData ? (row.game_data || '') : '',
+    createdAt: row.created_at
+  };
+  if (extra) Object.assign(entry, extra);
+  return entry;
+}
 
 // Complete column list used for ALTER TABLE compatibility with old databases.
 const ALL_COLUMNS = [
@@ -212,8 +298,10 @@ function repairScoreTable(table) {
 }
 
 function saveToDisk() {
+  // db.export() returns a Uint8Array; Node's writeFileSync accepts it directly.
+  // Avoid Buffer.from(data), which copies the whole database in memory.
   const data = db.export();
-  fs.writeFileSync(dbPath, Buffer.from(data));
+  fs.writeFileSync(dbPath, data);
 }
 
 /**
@@ -269,6 +357,7 @@ function submitScore(date, playerName, gameInfo, difficulty, mode, challengeTier
 
   const result = db.exec('SELECT last_insert_rowid() as id');
   const id = result[0].values[0][0];
+  noteWeeklyWrite(date);
   saveToDisk();
   return id;
 }
@@ -326,7 +415,7 @@ function getPlayerRank(date, score, id, filters = {}) {
   return row.rank + 1;
 }
 
-function getLeaderboard(date, page = 1, pageSize = 20, filters = {}) {
+function getLeaderboard(date, page = 1, pageSize = 20, filters = {}, includeGameData = true) {
   const offset = (page - 1) * pageSize;
 
   let whereSql = 'WHERE date = ?';
@@ -354,11 +443,7 @@ function getLeaderboard(date, page = 1, pageSize = 20, filters = {}) {
 
   const dataParams = [...params, pageSize, offset];
   const stmt = db.prepare(`
-    SELECT
-      date, player_name, player_id, hero_class, hero_subclass, hero_level, armor_tier,
-      score, won, depth, duration, enemies_slain, gold_collected, food_eaten,
-      items_crafted, challenges, str, version, seed, custom_seed, game_mode,
-      difficulty, mode, challenge_tier, daily_replay, game_data, created_at
+    SELECT ${ENTRY_COLUMNS}${includeGameData ? ', game_data' : ''}
     FROM daily_scores
     ${whereSql}
     ORDER BY score DESC, id ASC
@@ -370,36 +455,7 @@ function getLeaderboard(date, page = 1, pageSize = 20, filters = {}) {
   let index = 0;
   while (stmt.step()) {
     const row = stmt.getAsObject();
-    entries.push({
-      rank: offset + index + 1,
-      date: row.date,
-      playerId: row.player_id || '',
-      playerName: row.player_name,
-      heroClass: row.hero_class,
-      heroSubClass: row.hero_subclass,
-      heroLevel: row.hero_level,
-      armorTier: row.armor_tier,
-      score: row.score,
-      won: row.won === 1,
-      depth: row.depth,
-      duration: row.duration,
-      enemiesSlain: row.enemies_slain,
-      goldCollected: row.gold_collected,
-      foodEaten: row.food_eaten,
-      itemsCrafted: row.items_crafted,
-      challenges: row.challenges,
-      challengeCount: row.challenge_tier,
-      str: row.str,
-      version: row.version,
-      seed: row.seed,
-      customSeed: row.custom_seed,
-      gameMode: row.game_mode,
-      difficulty: row.difficulty,
-      mode: row.mode,
-      dailyReplay: row.daily_replay === 1,
-      gameData: row.game_data || '',
-      createdAt: row.created_at
-    });
+    entries.push(mapEntryRow(row, offset + index + 1, null, includeGameData));
     index++;
   }
   stmt.free();
@@ -408,22 +464,28 @@ function getLeaderboard(date, page = 1, pageSize = 20, filters = {}) {
 }
 
 /**
- * Weekly leaderboard: each player's best run in [weekStart, weekEnd] (UTC).
- * Ties are broken by depth and then by the earlier submission, matching the
- * daily board's ordering. Counts how many days the player placed 1st/2nd/3rd.
+ * Aggregates one UTC week without touching game_data.
+ *
+ * The result is cached: past weeks are immutable, while the current week uses
+ * a short TTL so recent submissions appear within WEEKLY_CACHE_TTL_MS.
+ * summary.list contains one entry per player (already globally ranked), without
+ * game_data.
  *
  * @param {string} weekStart yyyy-MM-dd (Monday)
- * @param {string} weekEnd yyyy-MM-dd (Sunday)
- * @param {number} page 1-based
- * @param {number} pageSize
+ * @param {string} weekEnd yyyy-MM-dd (Sunday, or today for the current week)
+ * @returns {{weekEnd: string, total: number, list: Array<object>}}
  */
-function getWeeklyLeaderboard(weekStart, weekEnd, page = 1, pageSize = 20) {
+function getWeeklySummary(weekStart, weekEnd) {
+  const today = getTodayString();
+  const currentWeek = weekEnd >= today;
+  const cached = weeklyCache.get(weekStart);
+  if (cached && cached.weekEnd === weekEnd
+      && (!currentWeek || Date.now() - cached.builtAt < WEEKLY_CACHE_TTL_MS)) {
+    return cached;
+  }
+
   const stmt = db.prepare(`
-    SELECT
-      id, date, player_name, player_id, hero_class, hero_subclass, hero_level, armor_tier,
-      score, won, depth, duration, enemies_slain, gold_collected, food_eaten,
-      items_crafted, challenges, str, version, seed, custom_seed, game_mode,
-      difficulty, mode, challenge_tier, daily_replay, game_data, created_at
+    SELECT ${ENTRY_COLUMNS}
     FROM daily_scores
     WHERE date >= ? AND date <= ? AND daily_replay = 0
     ORDER BY date ASC, score DESC, id ASC
@@ -473,56 +535,73 @@ function getWeeklyLeaderboard(weekStart, weekEnd, page = 1, pageSize = 20) {
   }
   stmt.free();
 
-  const list = Array.from(players.values());
+  const list = Array.from(players.values()).map(player => mapEntryRow(
+      player.best,
+      0,
+      {
+        runs: player.dates.size,
+        gold: player.gold,
+        silver: player.silver,
+        bronze: player.bronze
+      },
+      false));
+
   list.sort((a, b) => {
-    if (a.best.score !== b.best.score) return b.best.score - a.best.score;
-    if (a.best.depth !== b.best.depth) return b.best.depth - a.best.depth;
-    const an = (a.best.player_name || '').toLowerCase();
-    const bn = (b.best.player_name || '').toLowerCase();
+    if (a.score !== b.score) return b.score - a.score;
+    if (a.depth !== b.depth) return b.depth - a.depth;
+    const an = (a.playerName || '').toLowerCase();
+    const bn = (b.playerName || '').toLowerCase();
     return an < bn ? -1 : (an > bn ? 1 : 0);
   });
-
-  const total = list.length;
-  const offset = (page - 1) * pageSize;
-  const entries = list.slice(offset, offset + pageSize).map((player, index) => {
-    const row = player.best;
-    return {
-      rank: offset + index + 1,
-      date: row.date,
-      playerId: row.player_id || '',
-      playerName: row.player_name,
-      heroClass: row.hero_class,
-      heroSubClass: row.hero_subclass,
-      heroLevel: row.hero_level,
-      armorTier: row.armor_tier,
-      score: row.score,
-      won: row.won === 1,
-      depth: row.depth,
-      duration: row.duration,
-      enemiesSlain: row.enemies_slain,
-      goldCollected: row.gold_collected,
-      foodEaten: row.food_eaten,
-      itemsCrafted: row.items_crafted,
-      challenges: row.challenges,
-      challengeCount: row.challenge_tier,
-      str: row.str,
-      version: row.version,
-      seed: row.seed,
-      customSeed: row.custom_seed,
-      gameMode: row.game_mode,
-      difficulty: row.difficulty,
-      mode: row.mode,
-      dailyReplay: row.daily_replay === 1,
-      gameData: row.game_data || '',
-      createdAt: row.created_at,
-      runs: player.dates.size,
-      gold: player.gold,
-      silver: player.silver,
-      bronze: player.bronze
-    };
+  list.forEach((entry, index) => {
+    entry.rank = index + 1;
   });
 
-  return { total, entries };
+  const summary = { weekEnd, total: list.length, list, builtAt: Date.now() };
+  weeklyCachePut(weekStart, summary);
+  return summary;
+}
+
+/**
+ * Weekly leaderboard: each player's best run in [weekStart, weekEnd] (UTC).
+ * Ties are broken by depth and then by the earlier submission, matching the
+ * daily board's ordering. Counts how many days the player placed 1st/2nd/3rd.
+ *
+ * The page is sliced from the cached summary; game_data is fetched only for
+ * the rows on this page (or skipped entirely in summary mode).
+ *
+ * @param {string} weekStart yyyy-MM-dd (Monday)
+ * @param {string} weekEnd yyyy-MM-dd (Sunday)
+ * @param {number} page 1-based
+ * @param {number} pageSize
+ * @param {boolean} [includeGameData=true]
+ */
+function getWeeklyLeaderboard(weekStart, weekEnd, page = 1, pageSize = 20,
+                              includeGameData = true) {
+  const summary = getWeeklySummary(weekStart, weekEnd);
+  const offset = (page - 1) * pageSize;
+  const entries = summary.list
+      .slice(offset, offset + pageSize)
+      .map(entry => Object.assign({}, entry));
+
+  if (includeGameData && entries.length > 0) {
+    const ids = entries.map(entry => entry.id);
+    const placeholders = ids.map(() => '?').join(',');
+    const stmt = db.prepare(
+        `SELECT id, game_data FROM daily_scores WHERE id IN (${placeholders})`);
+    stmt.bind(ids);
+    const gameDataById = new Map();
+    while (stmt.step()) {
+      const row = stmt.getAsObject();
+      gameDataById.set(row.id, row.game_data || '');
+    }
+    stmt.free();
+    for (const entry of entries) {
+      entry.gameData = gameDataById.get(entry.id) || '';
+    }
+  }
+
+  return { total: summary.total, entries };
 }
 
 /**
@@ -623,7 +702,7 @@ function submitReplayScore(date, playerName, gameInfo, difficulty, mode, challen
   return { id, score, updated: true };
 }
 
-function getReplayLeaderboard(date, page = 1, pageSize = 20) {
+function getReplayLeaderboard(date, page = 1, pageSize = 20, includeGameData = true) {
   const offset = (page - 1) * pageSize;
 
   const countStmt = db.prepare('SELECT COUNT(*) as total FROM replay_scores WHERE date = ?');
@@ -633,11 +712,7 @@ function getReplayLeaderboard(date, page = 1, pageSize = 20) {
   countStmt.free();
 
   const stmt = db.prepare(`
-    SELECT
-      date, player_name, player_id, hero_class, hero_subclass, hero_level, armor_tier,
-      score, won, depth, duration, enemies_slain, gold_collected, food_eaten,
-      items_crafted, challenges, str, version, seed, custom_seed, game_mode,
-      difficulty, mode, challenge_tier, game_data, created_at
+    SELECT ${REPLAY_ENTRY_COLUMNS}${includeGameData ? ', game_data' : ''}
     FROM replay_scores
     WHERE date = ?
     ORDER BY score DESC, id ASC
@@ -649,42 +724,35 @@ function getReplayLeaderboard(date, page = 1, pageSize = 20) {
   let index = 0;
   while (stmt.step()) {
     const row = stmt.getAsObject();
-    entries.push({
-      rank: offset + index + 1,
-      date: row.date,
-      playerId: row.player_id || '',
-      playerName: row.player_name,
-      heroClass: row.hero_class,
-      heroSubClass: row.hero_subclass,
-      heroLevel: row.hero_level,
-      armorTier: row.armor_tier,
-      score: row.score,
-      won: row.won === 1,
-      depth: row.depth,
-      duration: row.duration,
-      enemiesSlain: row.enemies_slain,
-      goldCollected: row.gold_collected,
-      foodEaten: row.food_eaten,
-      itemsCrafted: row.items_crafted,
-      challenges: row.challenges,
-      challengeCount: row.challenge_tier,
-      str: row.str,
-      version: row.version,
-      seed: row.seed,
-      customSeed: row.custom_seed,
-      gameMode: row.game_mode,
-      difficulty: row.difficulty,
-      mode: row.mode,
-      replay: true,
-      dailyReplay: true,
-      gameData: row.game_data || '',
-      createdAt: row.created_at
-    });
+    entries.push(mapEntryRow(row, offset + index + 1,
+        { replay: true, dailyReplay: true }, includeGameData));
     index++;
   }
   stmt.free();
 
   return { total, entries };
+}
+
+/**
+ * Fetches one leaderboard row with its full game_data for the detail window.
+ * @param {number} id row id
+ * @param {'daily'|'replay'} source
+ * @returns {object|null}
+ */
+function getLeaderboardEntry(id, source = 'daily') {
+  const table = source === 'replay' ? 'replay_scores' : 'daily_scores';
+  const columns = source === 'replay' ? REPLAY_ENTRY_COLUMNS : ENTRY_COLUMNS;
+  const stmt = db.prepare(
+      `SELECT ${columns}, game_data FROM ${table} WHERE id = ? LIMIT 1`);
+  stmt.bind([id]);
+  let entry = null;
+  if (stmt.step()) {
+    const row = stmt.getAsObject();
+    entry = mapEntryRow(row, 0,
+        source === 'replay' ? { replay: true, dailyReplay: true } : null, true);
+  }
+  stmt.free();
+  return entry;
 }
 
 function getReplayPlayerRank(date, score, id) {
@@ -716,6 +784,7 @@ module.exports = {
   getPlayerRank,
   getLeaderboard,
   getWeeklyLeaderboard,
+  getLeaderboardEntry,
   submitReplayScore,
   getReplayLeaderboard,
   getReplayPlayerRank,

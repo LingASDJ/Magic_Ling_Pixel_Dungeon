@@ -100,8 +100,13 @@ PORT=28773 node app.js     # 默认端口 28773，默认 HTTPS
 
 ### GET `/leaderboard?date=yyyy-MM-dd&page=1&pageSize=20`
 
-> 每条 entry 还包含完整 `gameData`（每日快照 JSON），供游戏内“日志排行榜”风格的详情窗口还原
-> 英雄属性、天赋、物品和快捷栏。分页条数较大时响应会明显变大。
+> **新客户端应带 `summary=1`**：列表只返回摘要字段，`gameData` 为空；用户点开详情时再调用
+> `GET /entry?id=<entry.id>&source=daily|replay` 取单条完整快照。这样周榜/日榜列表的响应
+> 从“每人一份快照”降到几百字节/条。
+>
+> 不传 `summary` 的旧客户端保持原行为：每条 entry 仍包含完整 `gameData`（每日快照 JSON），
+> 供游戏内“日志排行榜”风格的详情窗口还原英雄属性、天赋、物品和快捷栏。分页条数较大时
+> 响应会明显变大。
 
 ```json
 {
@@ -208,6 +213,33 @@ PORT=28773 node app.js     # 默认端口 28773，默认 HTTPS
 
 > 客户端 `WeeklyRankingsScene` 优先请求 `/weekly`；旧服务端没有该接口时会自动回退到
 > 逐日拉取 7 份日榜并在本地合并。
+>
+> 新客户端只请求当前显示页（`pageSize=20`），并带 `summary=1`；服务端按页从周榜缓存
+> 切片，不再把整周所有玩家和快照读一遍。
+
+### GET `/entry?id=<rowId>&source=daily|replay`
+
+按行 id 取单条完整记录（含 `gameData`），供新客户端的详情窗口按需加载。
+`source` 默认 `daily`；重玩榜记录传 `source=replay`。列表 entry 中的 `id` 字段
+就是这里的 `id`（周榜取本周最佳那一局的 id）。
+
+```json
+{
+  "code": 0,
+  "message": "ok",
+  "data": {
+    "id": 123,
+    "date": "2026-11-15",
+    "playerName": "冒险者",
+    "score": 123456,
+    "gameData": "{完整快照 JSON}"
+  }
+}
+```
+
+- 记录不存在时返回 `code: -1`。
+- 新服务端对 `/leaderboard`、`/weekly`、`/replay` 支持 `summary=1`；
+  不带该参数的旧客户端仍返回完整 `gameData`。
 
 ## 分数修正
 
@@ -227,6 +259,19 @@ PORT=28773 node app.js     # 默认端口 28773，默认 HTTPS
   已按旧公式写入的历史分数由 `daily_score_repair_v3` 迁移按快照分项再重算一次
   （浮点倍率不小于截断值，因此只会持平或上调）。
 - 缺少完整分项的旧快照保持原值，避免把未知格式算成 0。
+
+## 性能与缓存
+
+- 周榜聚合结果按 `weekStart` 缓存在内存里（最多 12 周，只存摘要、不存 `gameData`）。
+  过去周榜不可变、永久缓存；当前周缓存 30 秒，同一天的新成绩最多延迟 30 秒出现在周榜。
+  对过去日期的补交会立即让对应周缓存失效。
+- 周榜查询先只读排行榜窄字段，分页后再按本页的 row id 取 `game_data`；
+  旧客户端仍能拿到完整详情，新客户端用 `summary=1` + `/entry` 完全跳过列表快照。
+- 周榜客户端每次只请求当前页（20 条），不再一次拉完整周榜。
+- 榜单 GET 响应带 `Cache-Control`：过去日榜/周榜可缓存 1 天，当天 30 秒；
+  重玩榜因为可能被更高分覆盖，始终 30 秒。
+- `daily_scores.game_data` 仍保存在原表；后续可考虑拆分/压缩，以控制数据库体积
+  和 `sql.js` 全量落盘成本。
 
 ## 数据库
 

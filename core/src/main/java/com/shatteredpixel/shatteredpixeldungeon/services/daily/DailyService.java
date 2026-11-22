@@ -16,6 +16,15 @@ public abstract class DailyService {
                                           DailyResultCallback<LeaderboardData> callback);
 
     /**
+     * Summary variants omit the full game_data snapshot from list entries.
+     * Old servers ignore the extra parameter and keep returning full data.
+     */
+    public void fetchLeaderboard(String date, int page, int pageSize, boolean summary,
+                                 DailyResultCallback<LeaderboardData> callback) {
+        fetchLeaderboard(date, page, pageSize, callback);
+    }
+
+    /**
      * Weekly board: server-side aggregation of the week containing `weekStart`
      * (Monday..Sunday UTC). Each entry is the player's best run of the week.
      */
@@ -26,6 +35,11 @@ public abstract class DailyService {
     public abstract void fetchWeeklyLeaderboard(String weekStart, int page, int pageSize,
                                                 DailyResultCallback<LeaderboardData> callback);
 
+    public void fetchWeeklyLeaderboard(String weekStart, int page, int pageSize, boolean summary,
+                                       DailyResultCallback<LeaderboardData> callback) {
+        fetchWeeklyLeaderboard(weekStart, page, pageSize, callback);
+    }
+
     /** 重玩榜：每名玩家每天只保留最高分的一条重玩记录。 */
     public void fetchReplayLeaderboard(String date, DailyResultCallback<LeaderboardData> callback) {
         fetchReplayLeaderboard(date, 1, 20, callback);
@@ -33,6 +47,20 @@ public abstract class DailyService {
 
     public abstract void fetchReplayLeaderboard(String date, int page, int pageSize,
                                                 DailyResultCallback<LeaderboardData> callback);
+
+    public void fetchReplayLeaderboard(String date, int page, int pageSize, boolean summary,
+                                       DailyResultCallback<LeaderboardData> callback) {
+        fetchReplayLeaderboard(date, page, pageSize, callback);
+    }
+
+    /**
+     * Fetches one list entry with its full game_data for the detail window.
+     * Servers without /entry fall back to the summary/compact window.
+     */
+    public void fetchLeaderboardEntry(int id, boolean replay,
+                                      DailyResultCallback<LeaderboardData.Entry> callback) {
+        callback.onFailure("unsupported");
+    }
 
     public static abstract class DailyResultCallback<T> {
         public abstract void onSuccess(T result);

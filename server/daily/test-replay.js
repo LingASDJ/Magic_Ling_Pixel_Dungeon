@@ -53,6 +53,15 @@ function info(score, depth) {
       'best replay score only'
   );
 
+  const summary = db.getReplayLeaderboard(date, 1, 20, false);
+  assert.strictEqual(summary.entries[0].gameData, '', 'replay summary omits gameData');
+  assert.ok(summary.entries[0].id > 0, 'replay summary carries row id');
+  const full = db.getReplayLeaderboard(date, 1, 20, true);
+  assert.strictEqual(full.entries[0].gameData, '{}', 'replay full mode keeps gameData');
+  const detail = db.getLeaderboardEntry(full.entries[0].id, 'replay');
+  assert.ok(detail && detail.replay === true && detail.gameData === '{}',
+      'replay detail endpoint');
+
   assert.strictEqual(db.getReplayTotalPlayers(date), 2);
   assert.strictEqual(db.getReplayPlayerRank(date, 800, bestA.id), 1);
 

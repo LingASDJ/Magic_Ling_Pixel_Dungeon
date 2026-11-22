@@ -22,6 +22,8 @@ public class LeaderboardData {
     }
 
     public static class Entry {
+        /** Row id used by the lazy /entry detail endpoint. */
+        public int id;
         public int rank;
         public String date = "";
         public String playerId = "";

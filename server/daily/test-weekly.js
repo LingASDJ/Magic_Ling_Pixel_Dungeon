@@ -75,6 +75,26 @@ function submit(name, id, score, depth, date, difficulty) {
   const page2 = db.getWeeklyLeaderboard('2026-11-09', '2026-11-15', 2, 2);
   assert.deepStrictEqual(page2.entries.map(e => e.rank), [3, 4], 'weekly pagination');
 
+  // Summary mode omits game_data but keeps ids for the lazy detail endpoint.
+  const summary = db.getWeeklyLeaderboard('2026-11-09', '2026-11-15', 1, 20, false);
+  assert.strictEqual(summary.entries[0].gameData, '', 'weekly summary omits gameData');
+  assert.ok(summary.entries[0].id > 0, 'weekly summary carries row id');
+  const weeklyFull = db.getWeeklyLeaderboard('2026-11-09', '2026-11-15', 1, 20, true);
+  assert.strictEqual(weeklyFull.entries[0].gameData, '{}', 'weekly full mode keeps gameData');
+  const detail = db.getLeaderboardEntry(weeklyFull.entries[0].id, 'daily');
+  assert.ok(detail && detail.gameData === '{}', 'detail returns the snapshot');
+  assert.strictEqual(detail.playerName, weeklyFull.entries[0].playerName, 'detail metadata');
+
+  const dailySummary = db.getLeaderboard('2026-11-09', 1, 20, {}, false);
+  assert.strictEqual(dailySummary.entries[0].gameData, '');
+  assert.ok(dailySummary.entries[0].id > 0, 'daily summary carries row id');
+
+  // A new submission must invalidate the cached week.
+  submit('A', 'p1', 900, 10, '2026-11-11', 2);
+  const refreshed = db.getWeeklyLeaderboard('2026-11-09', '2026-11-15', 1, 20, false);
+  assert.strictEqual(refreshed.entries[0].playerName, 'A');
+  assert.strictEqual(refreshed.entries[0].score, 900, 'weekly cache invalidated on submit');
+
   // Legacy half-score repair: full = base * win * chal * HARD(2.5).
   const snapshot = {
     prog_score: 50000,
