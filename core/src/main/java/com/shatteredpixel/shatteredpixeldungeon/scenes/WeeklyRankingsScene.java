@@ -74,11 +74,14 @@ public class WeeklyRankingsScene extends PixelScene {
 
     private int currentPage = 1;
     private int totalPage = 1;
+    private int totalPlayers = 0;
     private int fetchGeneration = 0;
     private volatile int daysDone = 0;
     private volatile int daysFailed = 0;
     private boolean loading = false;
     private boolean leaving = false;
+    /** true = 服务端按页返回；false = 旧服务端逐日拉取后在本地合并。 */
+    private boolean serverPaged = true;
 
     private final List<WeeklyEntry> entries = new ArrayList<>();
     private final Map<String, WeeklyEntry> byPlayer = new HashMap<>();
@@ -145,10 +148,7 @@ public class WeeklyRankingsScene extends PixelScene {
         prevPageBtn = new IconButton(Icons.get(Icons.LEFTARROW)) {
             @Override
             protected void onClick() {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderPage();
-                }
+                goToPage(currentPage - 1);
             }
         };
         prevPageBtn.setRect(4, h - 18, 16, 16);
@@ -161,10 +161,7 @@ public class WeeklyRankingsScene extends PixelScene {
         nextPageBtn = new IconButton(Icons.get(Icons.RIGHTARROW)) {
             @Override
             protected void onClick() {
-                if (currentPage < totalPage) {
-                    currentPage++;
-                    renderPage();
-                }
+                goToPage(currentPage + 1);
             }
         };
         nextPageBtn.setRect(w - 20, h - 18, 16, 16);
@@ -258,6 +255,8 @@ public class WeeklyRankingsScene extends PixelScene {
 
         final int generation = ++fetchGeneration;
         loading = true;
+        serverPaged = true;
+        totalPlayers = 0;
         daysDone = 0;
         daysFailed = 0;
         currentPage = 1;
@@ -275,15 +274,18 @@ public class WeeklyRankingsScene extends PixelScene {
         nextPageBtn.visible = false;
 
         // Prefer the server-side weekly board (one aggregated entry per
-        // player). Older deployments without /weekly fall back to fetching
-        // the seven daily boards and merging them locally.
+        // player). Only the current page is requested; older deployments
+        // without /weekly fall back to fetching the seven daily boards and
+        // merging them locally.
         fetchWeeklyPage(1, generation);
     }
 
     private void fetchWeeklyPage(final int page, final int generation) {
         if (generation != fetchGeneration) return;
 
-        DailyImpl.getService().fetchWeeklyLeaderboard(weekStart, page, FETCH_PAGE_SIZE,
+        // summary=1 omits the full game_data snapshot. Old servers ignore the
+        // parameter and return full entries, which still works.
+        DailyImpl.getService().fetchWeeklyLeaderboard(weekStart, page, PAGE_SIZE, true,
                 new DailyService.DailyResultCallback<LeaderboardData>() {
                     @Override
                     public void onSuccess(LeaderboardData result) {
@@ -294,25 +296,88 @@ public class WeeklyRankingsScene extends PixelScene {
                             return;
                         }
 
-                        mergeWeekly(result.data.entries);
-
-                        int size = result.data.pageSize > 0
-                                ? result.data.pageSize : FETCH_PAGE_SIZE;
-                        if (page * size < result.data.totalPlayers
-                                && page < MAX_FETCH_PAGES) {
-                            fetchWeeklyPage(page + 1, generation);
-                            return;
-                        }
-                        finishFetch(generation);
+                        applyServerPage(result.data, generation);
                     }
 
                     @Override
                     public void onFailure(String error) {
-                        if (generation == fetchGeneration) {
-                            startLegacyFetch(generation);
-                        }
+                        if (generation != fetchGeneration) return;
+                        // startLegacyFetch touches scene UI, so run it on the
+                        // render thread like the other result callbacks.
+                        Game.runOnRenderThread(new Callback() {
+                            @Override
+                            public void call() {
+                                if (generation == fetchGeneration && isSceneAlive()) {
+                                    startLegacyFetch(generation);
+                                }
+                            }
+                        });
                     }
                 });
+    }
+
+    /** Renders one page returned by the server-side weekly aggregation. */
+    private void applyServerPage(final LeaderboardData.Data data, final int generation) {
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                if (generation != fetchGeneration || !isSceneAlive()) return;
+
+                serverPaged = true;
+                totalPlayers = data.totalPlayers;
+                int size = data.pageSize > 0 ? data.pageSize : PAGE_SIZE;
+                totalPage = Math.max(1, (totalPlayers + size - 1) / size);
+                currentPage = data.page > 0 ? data.page : currentPage;
+                if (currentPage > totalPage) currentPage = totalPage;
+                if (currentPage < 1) currentPage = 1;
+
+                entries.clear();
+                byPlayer.clear();
+                if (data.entries != null) {
+                    for (LeaderboardData.Entry entry : data.entries) {
+                        if (entry == null) continue;
+                        entries.add(new WeeklyEntry(entry));
+                    }
+                }
+
+                loading = false;
+                daysDone = 7;
+                daysFailed = 0;
+
+                if (entries.isEmpty()) {
+                    statusText.visible = true;
+                    statusText.text(Messages.get(WeeklyRankingsScene.this, "empty"));
+                    pane.visible = false;
+                    pageText.text("");
+                    prevPageBtn.visible = false;
+                    nextPageBtn.visible = false;
+                } else {
+                    statusText.visible = false;
+                    renderPage();
+                }
+            }
+        });
+    }
+
+    private void goToPage(int page) {
+        if (!isSceneAlive() || loading) return;
+        if (page < 1 || page > totalPage) return;
+
+        if (!serverPaged) {
+            currentPage = page;
+            renderPage();
+            return;
+        }
+
+        currentPage = page;
+        final int generation = ++fetchGeneration;
+        loading = true;
+        statusText.visible = true;
+        statusText.text(Messages.get(this, "loading"));
+        pane.visible = false;
+        prevPageBtn.visible = false;
+        nextPageBtn.visible = false;
+        fetchWeeklyPage(page, generation);
     }
 
     private void mergeWeekly(List<LeaderboardData.Entry> list) {
@@ -338,6 +403,8 @@ public class WeeklyRankingsScene extends PixelScene {
     private void startLegacyFetch(final int generation) {
         if (generation != fetchGeneration) return;
 
+        serverPaged = false;
+        totalPlayers = 0;
         entries.clear();
         byPlayer.clear();
         daysDone = 0;
@@ -522,7 +589,7 @@ public class WeeklyRankingsScene extends PixelScene {
         float rowWidth = width - ROW_MARGIN * 2;
         float left = ROW_MARGIN;
 
-        int start = (currentPage - 1) * PAGE_SIZE;
+        int start = serverPaged ? 0 : (currentPage - 1) * PAGE_SIZE;
         int end = Math.min(entries.size(), start + PAGE_SIZE);
         float y = 0;
         for (int i = start; i < end; i++) {
@@ -560,6 +627,11 @@ public class WeeklyRankingsScene extends PixelScene {
 
         WeeklyEntry(LeaderboardData.Entry entry) {
             best = entry;
+            rank = entry.rank;
+            runs = entry.runs;
+            gold = entry.gold;
+            silver = entry.silver;
+            bronze = entry.bronze;
         }
 
         void mergeBest(LeaderboardData.Entry entry) {
@@ -839,9 +911,7 @@ public class WeeklyRankingsScene extends PixelScene {
         protected void onClick() {
             // 拖动滚动后松手不再误触发详情。
             if (pane.wasDragging()) return;
-            if (!WndLeaderboardEntry.open(weekly.best)) {
-                ShatteredPixelDungeon.scene().addToFront(new WndLeaderboardEntry(weekly.best));
-            }
+            WndLeaderboardEntry.openOrFetch(weekly.best, false);
         }
     }
 }

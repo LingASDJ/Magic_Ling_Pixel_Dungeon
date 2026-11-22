@@ -6,13 +6,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.custom.CollectRankings;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyImpl;
+import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyService;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.DailyUtils;
 import com.shatteredpixel.shatteredpixeldungeon.services.daily.LeaderboardData;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 
 /**
  * Player details for a daily leaderboard entry. The UUID is deliberately not
@@ -39,6 +44,93 @@ public class WndLeaderboardEntry extends Window {
             return true;
         } catch (Throwable t) {
             return false;
+        }
+    }
+
+    private static final java.util.HashSet<String> loadingKeys = new java.util.HashSet<>();
+
+    /**
+     * Opens the full detail window. New servers omit game_data from list
+     * responses; in that case the snapshot is fetched lazily by row id. Old
+     * servers already include game_data, so no extra request is made.
+     */
+    public static void openOrFetch(final LeaderboardData.Entry entry, final boolean replay) {
+        if (entry == null) return;
+        if (entry.gameData != null && !entry.gameData.isEmpty()) {
+            if (!open(entry)) showCompact(entry);
+            return;
+        }
+        if (entry.id <= 0) {
+            // No row id (old server / malformed response): use the compact window.
+            showCompact(entry);
+            return;
+        }
+
+        final String key = entry.id + ":" + replay;
+        synchronized (loadingKeys) {
+            if (!loadingKeys.add(key)) return;
+        }
+
+        final com.watabou.noosa.Scene ownerScene = ShatteredPixelDungeon.scene();
+        if (ownerScene == null) {
+            synchronized (loadingKeys) { loadingKeys.remove(key); }
+            return;
+        }
+        final Window loading = new WndTitledMessage(Icons.get(Icons.INFO),
+                Messages.get(WndLeaderboardEntry.class, "loading"),
+                Messages.get(WndLeaderboardEntry.class, "loading"));
+        ownerScene.addToFront(loading);
+
+        DailyImpl.getService().fetchLeaderboardEntry(entry.id, replay,
+                new DailyService.DailyResultCallback<LeaderboardData.Entry>() {
+                    @Override
+                    public void onSuccess(final LeaderboardData.Entry data) {
+                        Game.runOnRenderThread(new Callback() {
+                            @Override
+                            public void call() {
+                                synchronized (loadingKeys) { loadingKeys.remove(key); }
+                                if (loading.parent == null
+                                        || ShatteredPixelDungeon.scene() != ownerScene) return;
+                                loading.hide();
+                                if (data == null || data.gameData == null
+                                        || data.gameData.isEmpty()) {
+                                    showCompact(entry);
+                                    return;
+                                }
+                                // Cache the snapshot on the list entry so a second
+                                // click opens the full window without another request.
+                                entry.gameData = data.gameData;
+                                if (!open(entry)) showCompact(entry);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(final String error) {
+                        Game.runOnRenderThread(new Callback() {
+                            @Override
+                            public void call() {
+                                synchronized (loadingKeys) { loadingKeys.remove(key); }
+                                if (loading.parent == null
+                                        || ShatteredPixelDungeon.scene() != ownerScene) return;
+                                loading.hide();
+                                if (ShatteredPixelDungeon.scene() != null) {
+                                    ShatteredPixelDungeon.scene().addToFront(
+                                            new WndTitledMessage(Icons.get(Icons.WARNING),
+                                                    Messages.get(WndLeaderboardEntry.class,
+                                                            "load_failed"),
+                                                    Messages.get(WndLeaderboardEntry.class,
+                                                            "no_data")));
+                                }
+                            }
+                        });
+                    }
+                });
+    }
+
+    private static void showCompact(LeaderboardData.Entry entry) {
+        if (ShatteredPixelDungeon.scene() != null) {
+            ShatteredPixelDungeon.scene().addToFront(new WndLeaderboardEntry(entry));
         }
     }
 

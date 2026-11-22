@@ -16,6 +16,7 @@ const {
   getPlayerRank,
   getLeaderboard,
   getWeeklyLeaderboard,
+  getLeaderboardEntry,
   submitReplayScore,
   getReplayLeaderboard,
   getReplayPlayerRank,
@@ -24,6 +25,21 @@ const {
 
 function fail(res, code, message) {
   return res.json({ code, message, data: null });
+}
+
+/**
+ * The game client asks for list summaries (`summary=1`); older clients omit
+ * the parameter and keep receiving full game_data for backwards compatibility.
+ */
+function wantsSummary(req) {
+  const value = String(req.query.summary == null ? '' : req.query.summary).toLowerCase();
+  return value === '1' || value === 'true' || String(req.query.fields || '') === 'summary';
+}
+
+function setBoardCache(res, immutable) {
+  res.set('Cache-Control', immutable
+      ? 'public, max-age=86400, immutable'
+      : 'public, max-age=30');
 }
 
 /**
@@ -210,7 +226,9 @@ router.get('/leaderboard', (req, res) => {
     if (pageSize < 1) pageSize = 1;
     if (pageSize > 100) pageSize = 100;
 
-    const { total, entries } = getLeaderboard(date, page, pageSize, {});
+    const { total, entries } = getLeaderboard(
+        date, page, pageSize, {}, !wantsSummary(req));
+    setBoardCache(res, date < getTodayString());
 
     res.json({
       code: 0,
@@ -265,7 +283,9 @@ router.get('/weekly', (req, res) => {
     if (pageSize < 1) pageSize = 1;
     if (pageSize > 100) pageSize = 100;
 
-    const { total, entries } = getWeeklyLeaderboard(weekStart, weekEnd, page, pageSize);
+    const { total, entries } = getWeeklyLeaderboard(
+        weekStart, weekEnd, page, pageSize, !wantsSummary(req));
+    setBoardCache(res, weekEnd < getTodayString());
 
     res.json({
       code: 0,
@@ -309,7 +329,11 @@ router.get('/replay', (req, res) => {
     if (pageSize < 1) pageSize = 1;
     if (pageSize > 100) pageSize = 100;
 
-    const { total, entries } = getReplayLeaderboard(date, page, pageSize);
+    const { total, entries } = getReplayLeaderboard(
+        date, page, pageSize, !wantsSummary(req));
+    // Replay rows can still be updated by a later, higher replay score, so they
+    // are not treated as immutable even for past dates.
+    setBoardCache(res, false);
 
     res.json({
       code: 0,
@@ -326,6 +350,32 @@ router.get('/replay', (req, res) => {
     });
   } catch (e) {
     console.error('获取重玩榜失败:', e);
+    fail(res, -1, '服务器错误');
+  }
+});
+
+/**
+ * GET /entry?id=<rowId>&source=daily|replay
+ *
+ * Lazy detail endpoint for the game client. List responses (summary=1) omit
+ * game_data, so the detail window fetches one snapshot on demand.
+ */
+router.get('/entry', (req, res) => {
+  try {
+    const id = Number.parseInt(String(req.query.id == null ? '' : req.query.id), 10);
+    if (!Number.isInteger(id) || id <= 0) {
+      return fail(res, -1, '参数不完整: 缺少 id');
+    }
+    const source = String(req.query.source || '') === 'replay' ? 'replay' : 'daily';
+    const entry = getLeaderboardEntry(id, source);
+    if (!entry) {
+      return fail(res, -1, '记录不存在');
+    }
+    const today = getTodayString();
+    setBoardCache(res, source !== 'replay' && entry.date < today);
+    res.json({ code: 0, message: 'ok', data: entry });
+  } catch (e) {
+    console.error('获取排行榜详情失败:', e);
     fail(res, -1, '服务器错误');
   }
 });
