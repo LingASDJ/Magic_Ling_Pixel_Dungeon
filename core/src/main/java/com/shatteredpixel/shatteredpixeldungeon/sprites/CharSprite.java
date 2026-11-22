@@ -211,6 +211,11 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	@Override
 	public void destroy() {
+		// 销毁精灵时也要清掉头顶血条，避免残留
+		if (health != null) {
+			health.killAndErase();
+			health = null;
+		}
 		super.destroy();
 		if (ch != null && ch.sprite == this){
 			ch.sprite = null;

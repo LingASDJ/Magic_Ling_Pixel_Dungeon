@@ -875,6 +875,11 @@ public class Assets {
 		public static final String NECRO_WARLOCK	= "sprites/tumulus/necro_warlock.png";
 
 		public static final String EGRET	= "sprites/tumulus/boss/egret.png";
+		public static final String WHITEFLOWER	= "sprites/tumulus/boss/whiteflower.png";
+		public static final String NECRO_WARRIOR	= "sprites/tumulus/boss/necro_warrior.png";
+		public static final String NECRO_PREDATOR	= "sprites/tumulus/boss/necro_predator.png";
+		public static final String BLAZING_WRAITH	= "sprites/tumulus/boss/blazing_wraith.png";
+		public static final String ENERGY_CORE	= "sprites/tumulus/boss/energy_core.png";
 
 		//BOSS
 		public static final String FRDG	= "sprites/boss/fireDragon.png";
