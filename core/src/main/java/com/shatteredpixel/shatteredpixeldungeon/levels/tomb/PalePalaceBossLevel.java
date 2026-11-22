@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Egret;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -80,12 +81,12 @@ public class PalePalaceBossLevel extends Level {
         setSize(WIDTH, HEIGHT);
         map = code_map.clone();
 
-        int enter = 462;
-        LevelTransition entrance = new LevelTransition(this, enter, LevelTransition.Type.REGULAR_EXIT);
+        int enter = 712;
+        LevelTransition entrance = new LevelTransition(this, enter, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(entrance);
 
-        int entra = 712;
-        LevelTransition exit = new LevelTransition(this, entra, LevelTransition.Type.REGULAR_ENTRANCE);
+        int entra = 462;
+        LevelTransition exit = new LevelTransition(this, entra, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(exit);
 
         CustomTilemap vis = new townBehind();
@@ -101,7 +102,9 @@ public class PalePalaceBossLevel extends Level {
 
     @Override
     protected void createMobs() {
-
+        Egret whiteMagicGirl = new Egret();
+        whiteMagicGirl.pos = 312;
+        mobs.add(whiteMagicGirl);
     }
 
     @Override
