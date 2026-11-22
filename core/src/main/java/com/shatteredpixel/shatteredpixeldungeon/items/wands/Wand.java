@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Silenced;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -163,6 +164,13 @@ public abstract class Wand extends Item {
 			
 			curUser = hero;
 			curItem = this;
+
+			// 禁魔（纯白之花）：无法使用法杖施法
+			if (hero.buff(Silenced.class) != null) {
+				GLog.w( Messages.get(Silenced.class, "blocked") );
+				return;
+			}
+
 			GameScene.selectCell( zapper );
 			
 		}

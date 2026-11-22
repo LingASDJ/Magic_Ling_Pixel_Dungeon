@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Egret;
 import com.shatteredpixel.shatteredpixeldungeon.custom.CollectRankings;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -40,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.tomb.PalePalaceBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.watabou.noosa.Game;
@@ -127,7 +129,12 @@ public enum Rankings {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
 		rec.date = format.format(new Date(Game.realTime));
 
-        rec.cause = cause instanceof Class ? (Class) cause : cause.getClass();
+        // 在白鹭 Boss 层死亡时，无论死于白鹭、召唤物还是纯白之花，统一显示为白鹭的傀儡
+        if (!win && Dungeon.level instanceof PalePalaceBossLevel) {
+            rec.cause = Egret.class;
+        } else {
+            rec.cause = cause instanceof Class ? (Class) cause : cause.getClass();
+        }
         rec.win = win;
         rec.heroClass	= hero.heroClass;
 		rec.armorTier	= hero.tier();

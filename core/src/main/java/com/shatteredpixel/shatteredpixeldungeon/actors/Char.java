@@ -1559,6 +1559,17 @@ public abstract class Char extends Actor {
 	}
 
 	public void die( Object src ) {
+		// 广播死亡事件：供依赖“任意单位死亡”的 Boss 机制使用。
+		for (Char ch : Actor.chars().toArray(new Char[0])) {
+			if (ch != this && ch instanceof DeathListener) {
+				try {
+					((DeathListener) ch).onCharDeath(this);
+				} catch (RuntimeException ignored) {
+					// 监听器异常不能阻断正常死亡流程
+				}
+			}
+		}
+
 		destroy();
 		if(sprite != null){
 			if (src != Chasm.class) {
