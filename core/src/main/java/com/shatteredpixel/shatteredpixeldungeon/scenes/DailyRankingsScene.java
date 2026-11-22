@@ -327,10 +327,13 @@ public class DailyRankingsScene extends PixelScene {
     }
 
     private void fetchPage(DailyService.DailyResultCallback<LeaderboardData> callback) {
+        // Ask for summaries only; the detail window fetches one snapshot on demand.
         if (replayMode) {
-            DailyImpl.getService().fetchReplayLeaderboard(date, currentPage, PAGE_SIZE, callback);
+            DailyImpl.getService().fetchReplayLeaderboard(
+                    date, currentPage, PAGE_SIZE, true, callback);
         } else {
-            DailyImpl.getService().fetchLeaderboard(date, currentPage, PAGE_SIZE, callback);
+            DailyImpl.getService().fetchLeaderboard(
+                    date, currentPage, PAGE_SIZE, true, callback);
         }
     }
 
@@ -628,9 +631,7 @@ public class DailyRankingsScene extends PixelScene {
         protected void onClick() {
             // 拖动滚动后松手不再误触发详情。
             if (pane.wasDragging()) return;
-            if (!WndLeaderboardEntry.open(entry)) {
-                ShatteredPixelDungeon.scene().addToFront(new WndLeaderboardEntry(entry));
-            }
+            WndLeaderboardEntry.openOrFetch(entry, replayMode);
         }
     }
 }
