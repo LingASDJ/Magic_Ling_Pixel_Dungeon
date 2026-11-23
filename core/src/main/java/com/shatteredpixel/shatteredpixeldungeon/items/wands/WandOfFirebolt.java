@@ -36,7 +36,7 @@ public class WandOfFirebolt extends DamageWand {
         Char ch = Actor.findChar( bolt.collisionPos );
         if (ch != null) {
 
-            processSoulMark(ch, chargesPerCast());
+            wandProc(ch, chargesPerCast());
             ch.damage(damageRoll(), this);
 
             Buff.affect( ch, HalomethaneBurning.class ).reignite( ch );

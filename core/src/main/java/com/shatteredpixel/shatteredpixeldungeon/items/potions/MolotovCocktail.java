@@ -60,6 +60,11 @@ public class MolotovCocktail extends Brew {
         BlazeZone.spawn(cell);
     }
 
+    @Override
+    public int energyVal() {
+        return 0;
+    }
+
     // ---------- 配方：酒精合剂 ×1 + 液火药剂 ×1 + 2能量 = 4瓶 ----------
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

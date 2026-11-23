@@ -49,7 +49,7 @@ public class WandOfGodIce extends DamageWand {
 
         Char ch = Actor.findChar(beam.collisionPos);
         if (ch != null){
-            processSoulMark(ch, chargesPerCast());
+            wandProc(ch, chargesPerCast());
             ch.damage(affectTarget(ch),this);
         }
 

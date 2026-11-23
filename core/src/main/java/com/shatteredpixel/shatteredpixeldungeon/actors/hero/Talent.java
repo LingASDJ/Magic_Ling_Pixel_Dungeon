@@ -109,10 +109,10 @@ public enum Talent {
 	//Battlemage T3
 	PSIONIC_STRIDE(43, 3), RECURRING_CYCLE(44, 3), DOUBLE_EXISTENCE(45, 3),PSIONIC_ACCELERATION(60,3),
 	//Battlemage T3-Old
-	REPOWER_ATTACK(220,3),CHARGE_MAGIC(221,3), SHIELDING_BLOCK(222,3),
+	REPOWER_ATTACK(220,3),CHARGE_MAGIC(221,3), SHIELDING_BLOCK(222,3),ARCANE_CORRECTION(223, 3),
 
 	//Warlock T3
-	SOUL_EATER(46, 3), SOUL_SIPHON(47, 3), NECROMANCERS_MINIONS(48, 3),
+	SOUL_EATER(46, 3), SOUL_SIPHON(47, 3), NECROMANCERS_MINIONS(48, 3),DEMON_PLAGUE(179, 3),
 	//Elemental Blast T4
 	BLAST_RADIUS(49, 4), ELEMENTAL_POWER(50, 4), REACTIVE_BARRIER(51, 4),
 	//Wild Magic T4
@@ -252,7 +252,7 @@ public enum Talent {
 
 		@Override
 		public float iconFadePercent() {
-			float cooldown = 35f - 5f *
+			float cooldown = 30f - 5f *
 					Dungeon.hero.pointsInTalent(PSIONIC_STRIDE);
 			return GameMath.gate(0, visualcooldown() / cooldown, 1);
 		}
@@ -275,7 +275,7 @@ public enum Talent {
 			return;
 		}
 
-		float cooldown = 35f - 5f * points;
+		float cooldown = 30f - 5f * points;
 
 		if (caster == owner) {
 			if (owner.buff(PsionicStrideHeroCooldown.class) != null) {
@@ -291,11 +291,11 @@ public enum Talent {
 			return;
 		}
 
-		Buff.affect(owner, Haste.class, points);
+		Buff.affect(owner, Haste.class, points + 1f);
 
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 			if (mob instanceof MageHand) {
-				Buff.affect(mob, Haste.class, points);
+				Buff.affect(mob, Haste.class, points + 1f);
 				break;
 			}
 		}
@@ -306,32 +306,43 @@ public enum Talent {
 			revivePersists = true;
 		}
 	}
+	//循环往复的魔力护盾计数器
+	public static void onMageHandChargeLost(int amount) {
+		Hero owner = Dungeon.hero;
+
+		if (owner == null
+				|| owner.subClass != HeroSubClass.BATTLEMAGE
+				|| amount <= 0) {
+			return;
+		}
+
+		int points = owner.pointsInTalent(RECURRING_CYCLE);
+		if (points <= 0) {
+			return;
+		}
+
+		RecurringCycleCounter counter =
+				Buff.affect(owner, RecurringCycleCounter.class);
+
+		counter.countUp(amount);
+
+		while (counter.count() >= 4f) {
+			counter.countDown(4f);
+			Buff.affect(owner, Recharging.class, 2f * points);
+		}
+	}
+	//双重存在
 	public static void onMageHandSpellCast(MageHand hand) {
 		Hero owner = Dungeon.hero;
 
 		if (owner == null || owner.subClass != HeroSubClass.BATTLEMAGE || hand == null) {
 			return;
 		}
-
-		int recurringPoints = owner.pointsInTalent(RECURRING_CYCLE);
-		if (recurringPoints > 0) {
-			RecurringCycleCounter counter = Buff.affect(owner, RecurringCycleCounter.class);
-
-			counter.countUp(1f);
-			while (counter.count() >= 4f) {
-				counter.countDown(4f);
-				Buff.affect(owner, Recharging.class, recurringPoints);
-			}
-		}
 		int doubleExistencePoints = owner.pointsInTalent(DOUBLE_EXISTENCE);
 
-		if (doubleExistencePoints > 0) {
+		if (doubleExistencePoints >= 1) {
 			DoubleExistenceTracker tracker =
-					Buff.affect(
-							owner,
-							DoubleExistenceTracker.class
-					);
-
+					Buff.affect(owner, DoubleExistenceTracker.class);
 			// 已经准备好时不继续累计，避免储存多次免费施法
 			if (!tracker.isReady()) {
 				tracker.countUp(1f);
@@ -346,9 +357,7 @@ public enum Talent {
 		}
 
 		public int threshold() {
-			int points = Dungeon.hero.pointsInTalent(DOUBLE_EXISTENCE);
-			// +1 = 3次，+2 = 2次，+3 = 1次
-			return points > 0 ? 4 - points : Integer.MAX_VALUE;
+			return 1;
 		}
 
 		public boolean isReady() {
@@ -395,6 +404,282 @@ public enum Talent {
 
 		tracker.detach();
 		return true;
+	}
+	//双重存在+2效果
+	public static void onMageHandCooldownStarted(float cooldown) {
+		Hero hero = Dungeon.hero;
+
+		if (hero == null
+				|| cooldown <= 0f
+				|| hero.pointsInTalent(DOUBLE_EXISTENCE) < 2) {
+			return;
+		}
+
+		float wandCharge = 0.15f * cooldown;
+		restoreChargesToCarriedWands(hero, wandCharge);
+
+		int shield = Math.round(3f * cooldown);
+		Buff.affect(hero, Barrier.class).incShield(shield);
+	}
+	private static void restoreChargesToCarriedWands(Hero hero, float amount) {
+		ArrayList<Wand> restored = new ArrayList<>();
+
+		// 背包和普通法杖装备位
+		for (Wand wand : hero.belongings.getAllItems(Wand.class)) {
+			restoreWandChargeOnce(restored, wand, amount);
+		}
+
+		// 主手、副手以及背包中的老魔杖
+		for (MagesStaff staff : hero.belongings.getAllItems(MagesStaff.class)) {
+			if (staff.wand != null) {
+				restoreWandChargeOnce(restored, staff.wand, amount);
+			}
+		}
+	}
+
+	private static void restoreWandChargeOnce(
+			ArrayList<Wand> restored,
+			Wand wand,
+			float amount
+	) {
+		if (wand == null) {
+			return;
+		}
+
+		for (Wand existing : restored) {
+			if (existing == wand) {
+				return;
+			}
+		}
+
+		restored.add(wand);
+		restoreWandCharge(wand, amount);
+	}
+	private static void restoreWandCharge(Wand wand, float amount) {
+		if (wand == null || wand.curCharges >= wand.maxCharges) {
+			return;
+		}
+
+		wand.partialCharge += amount;
+
+		while (wand.partialCharge >= 1f
+				&& wand.curCharges < wand.maxCharges) {
+			wand.partialCharge -= 1f;
+			wand.curCharges++;
+		}
+
+		if (wand.curCharges >= wand.maxCharges) {
+			wand.partialCharge = 0f;
+		}
+
+		wand.updateQuickslot();
+	}
+	//灵能加速的施法标记
+	public static class PsionicAccelerationCoverBuff extends Buff {
+		{
+			type = buffType.POSITIVE;
+		}
+	}
+	public static void onMageHandCoveredHero() {
+		Hero hero = Dungeon.hero;
+
+		if (hero == null
+				|| hero.pointsInTalent(PSIONIC_ACCELERATION) < 2) {
+			return;
+		}
+
+		Buff.affect(hero, PsionicAccelerationCoverBuff.class);
+	}
+	// 恶魔瘟疫的强化次数存储
+	public static class DemonPlagueTracker extends CounterBuff {
+		public static final float MAX_STACKS = 2f;
+
+		{
+			revivePersists = true;
+			type = buffType.POSITIVE;
+		}
+
+		public int stacks() {
+			return Math.min((int) MAX_STACKS, (int) count());
+		}
+
+		public void addStack() {
+			if (count() < MAX_STACKS) {
+				countUp(1f);
+			}
+		}
+
+		public boolean consumeStack() {
+			if (count() < 1f) {
+				return false;
+			}
+			countDown(1f);
+			return true;
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.DEATH;
+		}
+
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(0.65f, 0.2f, 1f);
+		}
+
+		@Override
+		public String desc() {
+			return Messages.get(
+					this,
+					"desc",
+					Math.round(demonPlagueMultiplier(Dungeon.hero) * 100f),
+					stacks()
+			);
+		}
+	}
+
+	public static float demonPlagueMultiplier(Hero owner) {
+		if (owner == null) {
+			return 1f;
+		}
+
+		int points = owner.pointsInTalent(DEMON_PLAGUE);
+		return points <= 0 ? 1f : 1f + 0.5f * points;
+	}
+
+	public static int demonPlagueEffectCount(float multiplier) {
+		return multiplier <= 1f ? 1 : (int) Math.ceil(multiplier);
+	}
+
+	// 消耗一次存储，返回本次应使用的倍率。没有存储时返回1倍。
+	public static float consumeDemonPlagueMultiplier(Hero owner) {
+		if (owner == null
+				|| owner.subClass != HeroSubClass.WARLOCK
+				|| !owner.hasTalent(DEMON_PLAGUE)) {
+			return 1f;
+		}
+
+		DemonPlagueTracker tracker =
+				owner.buff(DemonPlagueTracker.class);
+
+		if (tracker == null || !tracker.consumeStack()) {
+			return 1f;
+		}
+
+		float multiplier = demonPlagueMultiplier(owner);
+
+		// 最后一层用完后移除图标
+		if (tracker.stacks() <= 0) {
+			tracker.detach();
+		}
+
+		return multiplier;
+	}
+
+	// 标记单位死亡后，扩散标记并储存一次强化
+	public static void onDemonPlagueMarkedDeath(Hero owner, int deathPos) {
+		if (owner == null || owner.subClass != HeroSubClass.WARLOCK || deathPos < 0) {
+			return;
+		}
+		int points = owner.pointsInTalent(DEMON_PLAGUE);
+		if (points <= 0) {
+			return;
+		}
+		Buff.affect(owner, DemonPlagueTracker.class).addStack();
+		int radius = points;
+		int width = Dungeon.level.width();
+		int height = Dungeon.level.height();
+		int centerX = deathPos % width;
+		int centerY = deathPos / width;
+		for (int y = Math.max(0, centerY - radius);
+			 y <= Math.min(height - 1, centerY + radius);
+			 y++) {
+
+			for (int x = Math.max(0, centerX - radius);
+				 x <= Math.min(width - 1, centerX + radius);
+				 x++) {
+
+				Char ch = Actor.findChar(y * width + x);
+				if (ch != null && ch.isAlive()) {SoulMark.prolong(ch, SoulMark.class, SoulMark.DURATION);
+				}
+			}
+		}
+	}
+	// 魔能矫正
+	public static class ArcaneCorrection extends FlavourBuff {
+		private int accuracyBonus = 0;
+		{
+			type = buffType.POSITIVE;
+		}
+
+		public int accuracyBonus() {
+			return accuracyBonus;
+		}
+
+		public void gainStacks(Hero owner, int times) {
+			int points = owner.pointsInTalent(ARCANE_CORRECTION);
+			if (points <= 0 || times <= 0) {
+				return;
+			}
+			int perStack = 10 * points;
+			int cap = 20 * points;
+			accuracyBonus = Math.min(cap, accuracyBonus + perStack * times);
+			// 4/6/8回合，重复触发时刷新而不是延长
+			float duration = 2f + 2f * points;
+			timeToNow();
+			spendConstant(duration * target.resist(getClass()));
+		}
+
+		private static final String ACCURACY_BONUS =
+				"accuracy_bonus";
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(ACCURACY_BONUS, accuracyBonus);
+		}
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			accuracyBonus = bundle.getInt(ACCURACY_BONUS);
+		}
+		@Override
+		public int icon() {
+			return BuffIndicator.MARK;
+		}
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(137 / 255f, 0f, 1f);
+		}
+		@Override
+		public String desc() {
+			return Messages.get(
+					this,
+					"desc",
+					accuracyBonus,
+					dispTurns()
+			);
+		}
+	}
+
+	public static void onArcaneCorrectionWandUsed(Hero owner, boolean castFromMagesStaff) {
+		if (owner == null || owner.subClass != HeroSubClass.OLDBATTLEMAGE) {
+			return;
+		}
+		int points = owner.pointsInTalent(ARCANE_CORRECTION);
+		if (points <= 0) {
+			return;
+		}
+		ArcaneCorrection buff = Buff.affect(owner, ArcaneCorrection.class);
+		// 普通法杖叠1次，老魔杖施法额外叠加1次
+		buff.gainStacks(owner, castFromMagesStaff ? 2 : 1);
+	}
+
+	public static int arcaneCorrectionAccuracy(Hero owner) {
+		if (owner == null) {
+			return 0;
+		}
+		ArcaneCorrection buff = owner.buff(ArcaneCorrection.class);
+		return buff == null ? 0 : buff.accuracyBonus();
 	}
 	/**
 	 * 片影惊鸿的延迟结算标记。
@@ -1339,12 +1624,32 @@ public enum Talent {
 	//片影惊鸿的全伤害加成buff
 	public static class PhantomFlashDamage extends FlavourBuff {
 
+		private static final int MAX_STACKS = 3;
+
 		float damageBonus = 0f;
 
 		public void addStack(int points) {
-			damageBonus += 0.03f * (points + 1);
-			spend(5f);
+			float stackBonus = 0.03f * (points + 2);
+			float maxBonus = stackBonus * MAX_STACKS;
+			boolean wasFull = damageBonus >= maxBonus - 0.0001f;
+			damageBonus = Math.min(damageBonus + stackBonus, maxBonus);
+			if (wasFull) {
+				// 已满三层：将持续时间刷新为 15 回合
+				spend(15f - cooldown());
+			} else {
+				// 尚未满层：每次触发增加 5 回合
+				spend(5f);
+			}
 		}
+
+		private float effectiveDamageBonus() {
+			int points = target instanceof Hero
+					? ((Hero)target).pointsInTalent(PHANTOM_FLASH)
+					: 1;
+			float maxBonus = 0.03f * (points + 2) * MAX_STACKS;
+			return Math.min(damageBonus, maxBonus);
+		}
+
 		@Override
 		public int icon() {
 			return BuffIndicator.WEAPON;
@@ -1358,7 +1663,7 @@ public enum Talent {
 			return Messages.get(
 					this,
 					"desc",
-					Math.round(damageBonus * 100f),
+					Math.round(effectiveDamageBonus() * 100f),
 					dispTurns()
 			);
 		}
@@ -1397,7 +1702,11 @@ public enum Talent {
 		PhantomFlashDamage buff =
 				hero.buff(PhantomFlashDamage.class);
 
-		return buff == null ? 1f : 1f + buff.damageBonus;
+		if (buff == null) {
+			return 1f;
+		}
+
+		return 1f + buff.effectiveDamageBonus();
 	}
 	//片影惊鸿的击杀判定方法
 	public static void onPhantomFlashKill(Hero hero) {
@@ -1592,10 +1901,10 @@ public enum Talent {
 				Collections.addAll(tierTalents, PSIONIC_STRIDE, RECURRING_CYCLE, DOUBLE_EXISTENCE, PSIONIC_ACCELERATION);
 				break;
 			case OLDBATTLEMAGE:
-				Collections.addAll(tierTalents,REPOWER_ATTACK,CHARGE_MAGIC,SHIELDING_BLOCK);
+				Collections.addAll(tierTalents, REPOWER_ATTACK,CHARGE_MAGIC,SHIELDING_BLOCK,ARCANE_CORRECTION);
 				break;
 			case WARLOCK:
-				Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS);
+				Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS,DEMON_PLAGUE);
 				break;
 			case ASSASSIN:
 				Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, BOUNTY_HUNTER);
