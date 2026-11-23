@@ -280,7 +280,7 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
                         m.damage((int) (damage * 1.25f),this);
                     }
                     if(Dungeon.hero.subClass == HeroSubClass.WARLOCK){
-                        SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
+                        Wand.wandProc(m, wand.buffedLvl(), 1);
                     }
                     damaged = true;
                 }
@@ -297,7 +297,7 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
                     }
                     damaged = true;
                     if(Dungeon.hero.subClass == HeroSubClass.WARLOCK) {
-                        SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
+                        Wand.wandProc(m, wand.buffedLvl(), 1);
                     }
                 }
 
@@ -313,7 +313,7 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
                     }
                     damaged = true;
                     if(Dungeon.hero.subClass == HeroSubClass.WARLOCK) {
-                        SoulMark.prolong(m, SoulMark.class, SoulMark.DURATION + wand.buffedLvl());
+                        Wand.wandProc(m, wand.buffedLvl(), 1);
                     }
                 }
             }

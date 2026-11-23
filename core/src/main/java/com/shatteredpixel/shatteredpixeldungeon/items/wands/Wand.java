@@ -379,7 +379,35 @@ public abstract class Wand extends Item {
 		int level = super.level();
 		if (curseInfusionBonus) level += 1 + level/6;
 		level += resinBonus;
+		level += psionicAccelerationCoverLevelBonus();
 		return level;
+	}
+
+	private int psionicAccelerationCoverLevelBonus() {
+		Hero hero = Dungeon.hero;
+
+		if (hero == null
+				|| hero.buff(Talent.PsionicAccelerationCoverBuff.class) == null
+				|| hero.pointsInTalent(Talent.PSIONIC_ACCELERATION) < 2
+				|| !isCarriedByHero(hero)) {
+			return 0;
+		}
+
+		return hero.pointsInTalent(Talent.PSIONIC_ACCELERATION) - 1;
+	}
+
+	private boolean isCarriedByHero(Hero hero) {
+		if (hero.belongings.contains(this)) {
+			return true;
+		}
+
+		for (MagesStaff staff : hero.belongings.getAllItems(MagesStaff.class)) {
+			if (staff.wand == this) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 	
 	@Override
@@ -487,7 +515,9 @@ public abstract class Wand extends Item {
 	}
 
 	protected void wandUsed(Char spellTarget) {
+		boolean castFromMagesStaff = charger != null && charger.target == Dungeon.hero && !Dungeon.hero.belongings.contains(this);
 		Talent.onBattlemageSpellCast(Dungeon.hero);
+		Talent.onArcaneCorrectionWandUsed(Dungeon.hero, castFromMagesStaff);
 		//双重存在buff
 		//同时存在“魔力充裕”“双重存在”时，优先消耗“魔力充裕”
 		boolean abundantFreeCast =
@@ -519,10 +549,14 @@ public abstract class Wand extends Item {
 			}
 		}
 
-		//inside staff
-		if (charger != null && charger.target == Dungeon.hero && !Dungeon.hero.belongings.contains(this)){
-			if (Dungeon.hero.hasTalent(Talent.SHIELDING_BLOCK) && curCharges >= maxCharges){
-				int shieldToGive = Math.round(buffedLvl()*0.67f*Dungeon.hero.pointsInTalent(Talent.SHIELDING_BLOCK));
+		if (Dungeon.hero.hasTalent(Talent.SHIELDING_BLOCK)
+				&& curCharges >= maxCharges) {
+			int points = Dungeon.hero.pointsInTalent(Talent.SHIELDING_BLOCK);
+			// 每点天赋等级使每级升级提供1点护盾
+			int shieldToGive = Math.max(0, buffedLvl()) * points;
+			// 通过老魔杖施法时，护盾翻倍
+			if (castFromMagesStaff) {shieldToGive *= 2;}
+			if (shieldToGive > 0) {
 				Buff.affect(Dungeon.hero, Barrier.class).setShield(shieldToGive);
 				Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
 			}
@@ -565,11 +599,22 @@ public abstract class Wand extends Item {
 		} else {
 			curUser.spendAndNext(TIME_TO_ZAP);
 		}
-		if (!doubleExistenceFreeCast
-				&& spellTarget != null
-				&& spellTarget.isAlive()
-				&& spellTarget.alignment == Char.Alignment.ENEMY) {
-			MageHand.tryFollowUpCast(spellTarget);
+		if (abundantFreeCast || doubleExistenceFreeCast) {
+			// 魔能充盈、双重存在属于不消耗回合的施法，不触发法师之手追击。
+			MageHand.cancelPlayerSpellCast();
+		} else {
+			// 使用本次施法真实命中的目标列表，而不是玩家最初指定的格子。
+			MageHand.finishPlayerSpellCast(this);
+		}
+		clearPsionicAccelerationCoverBuff();
+	}
+
+	public static void clearPsionicAccelerationCoverBuff() {
+		if (Dungeon.hero != null) {
+			Buff.detach(
+					Dungeon.hero,
+					Talent.PsionicAccelerationCoverBuff.class
+			);
 		}
 	}
 
@@ -805,6 +850,7 @@ public abstract class Wand extends Item {
 						if (!curWand.cursedKnown){
 							GLog.n(Messages.get(Wand.class, "curse_discover", curWand.name()));
 						}
+						MageHand.beginPlayerSpellCast(curWand);
 						CursedWand.cursedZap(curWand,
 								curUser,
 								new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT),
@@ -823,6 +869,8 @@ public abstract class Wand extends Item {
 					} else {
 						curWand.fx(shot, new Callback() {
 							public void call() {
+								// 从法杖真正开始结算效果时记录命中，动画结束前不提前选目标。
+								MageHand.beginPlayerSpellCast(curWand);
 								curWand.onZap(shot);
 								if (Random.Float() < WondrousResin.extraCurseEffectChance()){
 									WondrousResin.forcePositive = true;
