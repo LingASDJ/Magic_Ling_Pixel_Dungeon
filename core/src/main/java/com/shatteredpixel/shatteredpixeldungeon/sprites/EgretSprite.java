@@ -50,7 +50,7 @@ public class EgretSprite extends MobSprite {
         zapParalysis.frames( frames, 24,25,26,27);
 
         spurnShieldNuptial = new Animation(12, false );
-        spurnShieldNuptial.frames( frames, 28,29,30,31,32,33,34,35);
+        spurnShieldNuptial.frames( frames, 28,29,30,31,32,0);
 
         baneDeadEnemy = new Animation(12, false );
         baneDeadEnemy.frames( frames,  4,5,6,7,8,0);
