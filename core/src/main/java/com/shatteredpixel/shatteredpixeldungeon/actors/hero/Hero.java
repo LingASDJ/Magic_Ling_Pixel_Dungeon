@@ -828,6 +828,7 @@ public class Hero extends Char {
 	@Override
 	public int attackSkill( Char target ) {
 		KindOfWeapon wep = belongings.attackingWeapon();
+		int flatAccuracyBonus = Talent.arcaneCorrectionAccuracy(this);
 
 		float accuracy = 1;
 
@@ -896,15 +897,15 @@ public class Hero extends Char {
         if(belongings.getItem(TerrorDoll.class) != null || belongings.getItem(TerrorDollB.class) != null) accuracy *= 0.75f;
 
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ) {
-			return CustomPlayer.baseAccuracy;
+			return CustomPlayer.baseAccuracy + flatAccuracyBonus;
 		}
 
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
-			return  CustomPlayer.baseAccuracy;
+			return  CustomPlayer.baseAccuracy + flatAccuracyBonus;
 		} else if  (!RingOfForce.fightingUnarmed(this)) {
-			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
+			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target )) + flatAccuracyBonus;
 		} else {
-			return (int)(attackSkill * accuracy);
+			return (int)(attackSkill * accuracy) + flatAccuracyBonus;
 		}
 	}
 
@@ -2770,6 +2771,12 @@ public class Hero extends Char {
 		int preTrueHP = HP;
 
 		if (src instanceof Hunger) preHP -= shielding();
+
+		// 掩护会完全抵消本次伤害，必须在 super.damage() 前拦截。
+		if (dmg > 0 && MageHand.coverHero(this, src)) {
+			return;
+		}
+
 		super.damage( dmg, src , type);
 		int postHP = HP + shielding();
 		if (src instanceof Hunger) postHP -= shielding();
@@ -2778,6 +2785,7 @@ public class Hero extends Char {
 		if(belongings.getItem(ArmorScalesOfBzmdr.class)!=null) effectiveDamage -= (int) getZone();
 
 		if (effectiveDamage <= 0) return;
+
 		//盛怒反击的承受伤害计算
 		if (type == DamageType.PHYSICAL
 				&& subClass == HeroSubClass.BERSERKER

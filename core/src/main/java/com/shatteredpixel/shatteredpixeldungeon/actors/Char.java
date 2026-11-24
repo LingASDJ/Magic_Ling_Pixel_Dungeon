@@ -455,6 +455,12 @@ public abstract class Char extends Actor {
 		boolean kill = false;
 		// 空保护
 		if (enemy == null) return false;
+
+		// 玩家主动攻击时立即让待命的法师之手出现，不依赖视野扫描。
+		if (this == Dungeon.hero){
+			MageHand.onHeroAttack((Hero)this);
+		}
+
 		// 是视野外战斗标记 ,用于动画控制,通过一张布尔表实现pos自然是发起攻击者的位置,enemy.pos是被攻击者的位置,也就是战斗双方有一方处于英雄视野内则播放战斗动画
 		boolean visibleFight = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[enemy.pos];
 		//  判断目标对自身这个攻击类型是无敌的
@@ -1032,8 +1038,10 @@ public abstract class Char extends Actor {
 			}
 		}
 
-		if(Statistics.BzmdrCJMobSpeed!=0){
-			speed *= 1+Statistics.BzmdrCJMobSpeed;
+		if (this instanceof Mob
+				&& alignment == Alignment.ENEMY
+				&& Statistics.BzmdrCJMobSpeed != 0f) {
+			speed *= 1f + Statistics.BzmdrCJMobSpeed;
 		}
 
 		if ( buff( Cripple.class ) != null ) speed /= 2f;
@@ -1089,6 +1097,9 @@ public abstract class Char extends Actor {
 		if (!isAlive() || dmg < 0) {
 			return;
 		}
+
+		// 玩家法杖施法期间记录真实命中目标，供法师之手选择追加施法对象。
+		MageHand.recordSpellHit(this, src);
 
 		String str = "";
 
@@ -1559,6 +1570,17 @@ public abstract class Char extends Actor {
 	}
 
 	public void die( Object src ) {
+		// 广播死亡事件：供依赖“任意单位死亡”的 Boss 机制使用。
+		for (Char ch : Actor.chars().toArray(new Char[0])) {
+			if (ch != this && ch instanceof DeathListener) {
+				try {
+					((DeathListener) ch).onCharDeath(this);
+				} catch (RuntimeException ignored) {
+					// 监听器异常不能阻断正常死亡流程
+				}
+			}
+		}
+
 		destroy();
 		if(sprite != null){
 			if (src != Chasm.class) {

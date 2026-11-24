@@ -25,6 +25,19 @@ public class VirtualActor extends Visual {
         Dungeon.hero.sprite.parent.add(d);
     }
 
+    /**
+     * 直接挂一个视觉计时器，从当前帧立刻开始计时。
+     * 与 {@link #delay(float, Callback)} 不同，不会先等 Actor 的下一次行动。
+     */
+    public static void delayVisual(float time, Callback callback) {
+        if (Dungeon.hero == null || Dungeon.hero.sprite == null
+                || Dungeon.hero.sprite.parent == null) {
+            if (callback != null) callback.call();
+            return;
+        }
+        addDelayerVisual(time, callback);
+    }
+
     public void reset(float delay, Callback callback){
         revive();
         lasting = delay;

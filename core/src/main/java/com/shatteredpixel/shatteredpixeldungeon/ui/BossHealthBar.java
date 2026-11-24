@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Egret;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -211,7 +212,14 @@ public class BossHealthBar extends Component {
 
 		int paneSize = large ? 30 : 16;
 		skull.x = bar.x + (paneSize - skull.width())/2f;
-		skull.y = bar.y + (paneSize - skull.height())/2f;
+
+		if (boss instanceof Egret && large) {
+			skull.y = bar.y + (paneSize - skull.height())/2f - 7;
+		} else {
+			skull.y = bar.y + (paneSize - skull.height())/2f;
+		}
+
+
 
 		// layout完成再次置顶buff
 		forceBuffTopLayer();

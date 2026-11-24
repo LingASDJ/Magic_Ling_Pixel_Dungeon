@@ -109,6 +109,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.extra.ScrollOfSoul
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -1243,8 +1244,11 @@ public abstract class Mob extends Char {
 				restoration = Math.round(restoration * 0.4f* hero.pointsInTalent(Talent.SOUL_SIPHON)/3f);
 			}
 			if (restoration > 0) {
-				Buff.affect(hero, Hunger.class).affectHunger(restoration* hero.pointsInTalent(Talent.SOUL_EATER)/3f);
-				hero.HP = (int) Math.ceil(Math.min(hero.HT, hero.HP + (restoration * 0.4f)));
+				float demonPlague = Talent.consumeDemonPlagueMultiplier(hero);
+				// 本次物理伤害致死时，让死亡结算复用同一层倍率
+				if (damage >= HP + shielding()) {demonPlagueDeathMultiplier = demonPlague;}
+				Buff.affect(hero, Hunger.class).affectHunger(restoration* hero.pointsInTalent(Talent.SOUL_EATER)/3f* demonPlague);
+				hero.HP = (int) Math.ceil(Math.min(hero.HT, hero.HP + (restoration * 0.4f * demonPlague)));
 				hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
 			}
 		}
@@ -1256,6 +1260,43 @@ public abstract class Mob extends Char {
 		return enemy == ch;
 	}
 	protected float lootChance = 0;
+	//灵魂分食怨灵爪牙的友军伤害辅助方法
+	private Char friendlyDamageSource(Object src) {
+		Char source = null;
+
+		if (src instanceof Char) {
+			source = (Char) src;
+		} else if (src instanceof Wand) {
+			source = ((Wand) src).caster();
+		}
+
+		if (source == null
+				|| source == hero
+				|| source.alignment != Alignment.ALLY) {
+			return null;
+		}
+		return source;
+	}
+
+	private void tryApplySoulSiphonMark(int damage, Char source) {
+		if (hero == null
+				|| hero.subClass != HeroSubClass.WARLOCK
+				|| damage <= 0
+				|| !isAlive()
+				|| source == this
+				|| source.alignment == alignment) {
+			return;
+		}
+		int points = hero.pointsInTalent(Talent.SOUL_SIPHON);
+		if (points <= 0) {
+			return;
+		}
+		// +1：伤害值×0.33%
+		// +2：伤害值×0.66%
+		// +3：伤害值×1%
+		float chance = Math.min(1f, damage * points / 300f);
+		if (Random.Float() < chance) {SoulMark.prolong(this, SoulMark.class, SoulMark.DURATION);}
+	}
 
 	@Override
 	public void damage(int dmg, Object src, DamageType type) {
@@ -1284,6 +1325,15 @@ public abstract class Mob extends Char {
 			float atkMul = 1f + upgradeSoul.attackDamageMulti / 100f;
 			atkMul = Math.min(1.9f, atkMul);
 			dmg *= atkMul;
+		}
+
+		Char friendlySource = friendlyDamageSource(src);
+		if (friendlySource != null
+				&& friendlySource != this
+				&& friendlySource.alignment != alignment) {
+			int minionPoints = hero.pointsInTalent(Talent.NECROMANCERS_MINIONS);
+			if (minionPoints > 0) {dmg = Math.round(dmg * (1f + 0.2f * minionPoints));}
+			tryApplySoulSiphonMark(dmg, friendlySource);
 		}
 
 		if (state == SLEEPING) {
@@ -1387,7 +1437,7 @@ public abstract class Mob extends Char {
 			);
 		}
 
-		if (cause == Chasm.class){
+		if (cause == Chasm.class) {
 			//50% chance to round up, 50% to round down
 			if (EXP % 2 == 1) EXP += Random.Int(2);
 			EXP /= 2;
@@ -1405,9 +1455,9 @@ public abstract class Mob extends Char {
 			}
 		}
 
-		if(Dungeon.level.feeling == Level.Feeling.SKYCITY && alignment == Alignment.ENEMY){
+		if (Dungeon.level.feeling == Level.Feeling.SKYCITY && alignment == Alignment.ENEMY) {
 			rollToDropLoot();
-		} else if (alignment == Alignment.ENEMY){
+		} else if (alignment == Alignment.ENEMY) {
 			rollToDropLoot();
 
 			if (cause == hero) {
@@ -1432,43 +1482,56 @@ public abstract class Mob extends Char {
 				Talent.onEnemyKilledByHero(Dungeon.hero);
 			}
 
-			if (cause == Dungeon.hero || cause instanceof Weapon || cause instanceof Weapon.Enchantment){
+			if (cause == Dungeon.hero || cause instanceof Weapon || cause instanceof Weapon.Enchantment) {
 				if (Dungeon.hero.hasTalent(Talent.LETHAL_MOMENTUM)
-						&& Random.Float() < 0.34f + 0.33f* Dungeon.hero.pointsInTalent(Talent.LETHAL_MOMENTUM)){
+						&& Random.Float() < 0.34f + 0.33f * Dungeon.hero.pointsInTalent(Talent.LETHAL_MOMENTUM)) {
 					Buff.affect(Dungeon.hero, Talent.LethalMomentumTracker.class, 0f);
 				}
 				if (Dungeon.hero.heroClass != HeroClass.DUELIST
 						&& Dungeon.hero.hasTalent(Talent.LETHAL_HASTE)
-						&& Dungeon.hero.buff(Talent.LethalHasteCooldown.class) == null){
+						&& Dungeon.hero.buff(Talent.LethalHasteCooldown.class) == null) {
 					Buff.affect(Dungeon.hero, Talent.LethalHasteCooldown.class, 100f);
-					Buff.affect(Dungeon.hero, GreaterHaste.class).set(2 + 2*Dungeon.hero.pointsInTalent(Talent.LETHAL_HASTE));
+					Buff.affect(Dungeon.hero, GreaterHaste.class).set(2 + 2 * Dungeon.hero.pointsInTalent(Talent.LETHAL_HASTE));
 				}
 			}
 
 		}
 
 		if (hero.isAlive() && !Dungeon.level.heroFOV[pos]) {
-			GLog.i( Messages.get(this, "died") );
+			GLog.i(Messages.get(this, "died"));
 		}
 
 		boolean soulMarked = buff(SoulMark.class) != null;
 
-		super.die( cause );
+		super.die(cause);
 
+		int wraithPoints = hero.pointsInTalent(Talent.NECROMANCERS_MINIONS);
 		if (!(this instanceof Wraith)
 				&& soulMarked
-				&& Random.Float() < (0.4f* hero.pointsInTalent(Talent.NECROMANCERS_MINIONS)/3f)){
-			Wraith w = Wraith.spawnAt(pos, Wraith.class);
-			if (w != null) {
-				Buff.affect(w, Corruption.class);
-				if (Dungeon.level.heroFOV[pos]) {
-					CellEmitter.get(pos).burst(ShadowParticle.CURSE, 6);
-					Sample.INSTANCE.play(Assets.Sounds.CURSED);
+				&& wraithPoints > 0) {
+			float demonPlague = resolveDemonPlagueDeathMultiplier();
+			float wraithChance = Math.min(1f, 0.4f * wraithPoints / 3f * demonPlague);
+			if (Random.Float() < wraithChance) {
+				int wraithCount = Talent.demonPlagueEffectCount(demonPlague);
+				for (int i = 0; i < wraithCount; i++) {
+					Wraith w = Wraith.spawnAt(pos, Wraith.class);
+					if (w != null) {
+						Buff.affect(w, Corruption.class);
+						if (Dungeon.level.heroFOV[pos]) {
+						    CellEmitter.get(pos).burst(ShadowParticle.CURSE, 6);
+							Sample.INSTANCE.play(Assets.Sounds.CURSED
+							);
+						}
+					}
 				}
 			}
 		}
+
+		if (soulMarked) {
+		    Talent.onDemonPlagueMarkedDeath(hero, pos);
+		}
 	}
-	
+
 	public void rollToDropLoot(){
 
 		if (lanterfireactive && hero.lanterfire <= 25) {
@@ -1524,9 +1587,15 @@ public abstract class Mob extends Char {
 		}
 
 		//soul eater talent
-		if (buff(SoulMark.class) != null &&
-				Random.Int(10) < hero.pointsInTalent(Talent.SOUL_EATER)){
-			Talent.onFoodEaten(hero, 0, null);
+		int soulEaterPoints = hero.pointsInTalent(Talent.SOUL_EATER);
+		if (buff(SoulMark.class) != null && soulEaterPoints > 0) {
+			float demonPlague = resolveDemonPlagueDeathMultiplier();
+			float foodChance = Math.min(1f, 0.1f * soulEaterPoints * demonPlague);
+			if (Random.Float() < foodChance) {
+				int foodCount = Talent.demonPlagueEffectCount(demonPlague);
+				for (int i = 0; i < foodCount; i++) {Talent.onFoodEaten(hero, 0, null);
+				}
+			}
 		}
 
 	}
@@ -2046,5 +2115,16 @@ public abstract class Mob extends Char {
 		}
 	}
 
+	private float demonPlagueDeathMultiplier = -1f;
+
+	private float resolveDemonPlagueDeathMultiplier() {
+		if (demonPlagueDeathMultiplier < 0f) {
+			demonPlagueDeathMultiplier = buff(SoulMark.class) != null
+					? Talent.consumeDemonPlagueMultiplier(hero)
+					: 1f;
+		}
+
+		return demonPlagueDeathMultiplier;
+	}
 
 }

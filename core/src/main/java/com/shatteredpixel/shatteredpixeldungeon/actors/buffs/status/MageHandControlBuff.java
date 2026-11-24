@@ -4,22 +4,22 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MageHand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 
 /**
  * 法师之手控制器的常驻状态 buff。
- * <p>它随英雄存档一起保存，是“法师之手是否存在 / 是否跟随到新楼层”的权威状态，
- * 类似戒指通过 RingBuff 把运行状态挂在英雄身上。实体本身只负责战斗与跟随，
- * 即使实体被销毁、被遗留在旧楼层，这个 buff 仍然存在并可把装备收回控制器。</p>
+ * <p>它随英雄存档一起保存，负责维护控制器、实体链接、待命充能和冷却状态。
+ * 实体既可以由玩家主动攻击立即召出，也会在扫描到有效战斗目标时自动出现。</p>
  */
 public class MageHandControlBuff extends Buff implements ActionIndicator.Action {
 
     private static final String LAST_DEPTH = "last_depth";
     private static final String LAST_BRANCH = "last_branch";
+    private static final String QUIET_TURNS = "quiet_turns";
 
     public MageHand.MageHandControl magesStaffcontrol;
 
@@ -27,8 +27,8 @@ public class MageHandControlBuff extends Buff implements ActionIndicator.Action 
     private int lastDepth = Integer.MIN_VALUE;
     private int lastBranch = Integer.MIN_VALUE;
 
-    /** 换层后是否还需要尝试把法师之手召回。 */
-    private boolean restoreDue = false;
+    // 没有敌人后先保留实体一回合，避免战斗刚结束就立刻闪烁消失。
+    private int quietTurns = 0;
 
     {
         type = buffType.POSITIVE;
@@ -51,11 +51,11 @@ public class MageHandControlBuff extends Buff implements ActionIndicator.Action 
             magesStaffcontrol = hero.belongings.getItem(MageHand.MageHandControl.class);
         }
 
-        // 换层检测：只有真正换了楼层才自动召回，避免战斗或读档时凭空召唤。
+        // 记录楼层只用于识别遗留在旧楼层的实体，不再据此自动生成法师之手。
         if (lastDepth != Dungeon.depth || lastBranch != Dungeon.branch) {
             lastDepth = Dungeon.depth;
             lastBranch = Dungeon.branch;
-            restoreDue = true;
+            quietTurns = 0;
         }
 
         if (magesStaffcontrol != null) {
@@ -71,13 +71,39 @@ public class MageHandControlBuff extends Buff implements ActionIndicator.Action 
 
             if (handInLevel != null) {
                 magesStaffcontrol.mageHand = handInLevel;
-                restoreDue = false;
-            } else if (restoreDue && hero.buff(MageHand.SummonCooldown.class) == null) {
-                restoreDue = false;
-                if (magesStaffcontrol.summonHand(hero, false)) {
-                    GLog.i(Messages.get(MageHand.class, "auto_summoned"));
-                } else {
-                    GLog.w(Messages.get(MageHand.class, "no_space_auto"));
+
+                /*
+                 * 敌人消失后先让实体停留 1 个行动回合，再回到控制器待命。
+                 * 有待结算追击时绝不待命，避免打断尚在飞行的协同施法。
+                 */
+                if (MageHand.hasActiveCombat(hero)
+                        || handInLevel.hasPendingCast()) {
+                    quietTurns = 0;
+                } else if (++quietTurns > 1) {
+                    handInLevel.standby();
+                    quietTurns = 0;
+                }
+            } else {
+                quietTurns = 0;
+
+                /*
+                 * 自动扫描出现与玩家攻击触发并存。控制器仍会像虹卫一样在战斗
+                 * 开始时把待命实体放回场上，但不会在没有法杖或冷却期间出现。
+                 */
+                if (hero.buff(MageHand.SummonCooldown.class) == null) {
+                    if (MageHand.hasActiveCombat(hero)) {
+                        MageHand.ensureCombatHand(hero);
+                        handInLevel = MageHand.MageHandControl.findHandInCurrentLevel();
+                    }
+
+                    /*
+                     * 没有实体且不在冷却时，控制器中的法杖继续充能。
+                     * 如果刚因没有空位而召唤失败，也保持待命充能。
+                     */
+                    Wand standbyWand = magesStaffcontrol.getActiveWand();
+                    if (handInLevel == null && standbyWand != null) {
+                        MageHand.chargeStandbyWand(standbyWand);
+                    }
                 }
             }
 
@@ -94,6 +120,7 @@ public class MageHandControlBuff extends Buff implements ActionIndicator.Action 
         super.storeInBundle(bundle);
         bundle.put(LAST_DEPTH, lastDepth);
         bundle.put(LAST_BRANCH, lastBranch);
+        bundle.put(QUIET_TURNS, quietTurns);
     }
 
     @Override
@@ -101,9 +128,10 @@ public class MageHandControlBuff extends Buff implements ActionIndicator.Action 
         super.restoreFromBundle(bundle);
         lastDepth = bundle.getInt(LAST_DEPTH);
         lastBranch = bundle.getInt(LAST_BRANCH);
-        // 读档后不自动召唤：当前层已有的手会在下一次 act 重新链接，
-        // 没有手则等玩家主动召唤，避免读档瞬间刷出一只新手。
-        restoreDue = false;
+        if (bundle.contains(QUIET_TURNS)) {
+            quietTurns = bundle.getInt(QUIET_TURNS);
+        }
+        // 读档后延迟到下一次 act 再根据战斗状态决定是否自动出现。
     }
 
     @Override

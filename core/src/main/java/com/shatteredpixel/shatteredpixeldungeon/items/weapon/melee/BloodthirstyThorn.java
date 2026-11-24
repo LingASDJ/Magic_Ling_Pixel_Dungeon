@@ -242,7 +242,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
 
     @Override
     public int min(int lvl) {
-        if (lvl > 10) {
+        if (level() > 10) {
             return 0;
         }
         return 2 + lvl * 2;
@@ -250,7 +250,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        if (lvl > 10) {
+        if (level() > 10) {
             return 0;
         }
         return 6 + lvl * 4;
