@@ -105,6 +105,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLev
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DwarfGeneralBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ForestPoisonBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.tomb.PalePalaceBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LaveCavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
@@ -2110,6 +2111,11 @@ public class GameScene extends PixelScene {
 				bossSlain.show(Window.G_COLOR, 0.3f, 5f);
 				scene.showBanner(bossSlain);
 			}
+			if(level instanceof PalePalaceBossLevel) {
+				bossSlain.texture(Assets.Interfaces.EGRET_TITLE);
+				bossSlain.show(0x37E3D0, 0.3f, 5f);
+				scene.showBanner(bossSlain);
+			}
 			if(level instanceof ForestHardBossLevel) {
 				bossSlain.texture(Assets.Interfaces.QliPhothEX_Title);
 				bossSlain.show(Window.R_COLOR, 0.3f, 5f);
@@ -2182,6 +2188,12 @@ public class GameScene extends PixelScene {
 			Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.BOSS_SLAIN ) );
 			bossSlain.show( 0xFFFFFF, 0.3f, 5f );
 			scene.showBanner( bossSlain );
+
+			if (level instanceof PalePalaceBossLevel) {
+				bossSlain.texture(Assets.Interfaces.EGRET_CLEAR);
+				bossSlain.show(0x37E3D0, 0.3f, 5f);
+				scene.showBanner(bossSlain);
+			}
 
 			if(Statistics.bossRushMode){
 				switch (Dungeon.depth) {
