@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.DeathListener;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WhiteFlower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WhiteFlowerWarning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -23,9 +24,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.tumulus.Wisp;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.timing.VirtualActor;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.tomb.PalePalaceBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -37,6 +37,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -59,10 +60,13 @@ public class Egret extends Boss implements DeathListener {
     private boolean introPending = false;
     private boolean introYellDone = false;
 
+    /** 到王座后等待玩家靠近对话，对话结束前不施法 */
+    private boolean awaitingDialogue = false;
+
     /** 炽烈亡魂出场累计的永久防御加成 */
     private int drBonus = 0;
 
-    private float grudgeChance = 0f;
+    private float grudgeChance = 0.5f;
     private boolean deathMarriageLock = false;
     private boolean resolvingDeaths = false;
 
@@ -110,8 +114,13 @@ public class Egret extends Boss implements DeathListener {
             return true;
         }
 
+        if (awaitingDialogue) {
+            spend(TICK);
+            return true;
+        }
+
         // 读档/开场兜底：确保 Boss 血条与封门最终完成
-        if (!BossHealthBar.isAssigned() && state != SLEEPING
+        if (!awaitingDialogue && !BossHealthBar.isAssigned() && state != SLEEPING
                 && Dungeon.hero != null && Dungeon.hero.sprite != null) {
             notice();
         }
@@ -200,6 +209,30 @@ public class Egret extends Boss implements DeathListener {
         introPending = pending;
     }
 
+    /** 对话阶段：到王座后等待玩家，对话结束前不施法。 */
+    public void setAwaitingDialogue(boolean awaiting) {
+        awaitingDialogue = awaiting;
+    }
+
+    public boolean isAwaitingDialogue() {
+        return awaitingDialogue;
+    }
+
+    /** 对话结束、白鹭被激怒后才正式进入 Boss 战。 */
+    public void startBossFight() {
+        if (!BossHealthBar.isAssigned()) {
+            notice();
+        }
+    }
+
+    /** 对话结束，被激怒并从王座下来。 */
+    public void enrage() {
+        awaitingDialogue = false;
+        state = HUNTING;
+        yell(Messages.get(this, "yell_enrage"));
+        Camera.main.shake(0.6f, 2f);
+    }
+
     /** 不会进行普通攻击。 */
     @Override
     protected boolean canAttack(Char enemy) {
@@ -234,9 +267,8 @@ public class Egret extends Boss implements DeathListener {
         if (Dungeon.level instanceof PalePalaceBossLevel) {
             ((PalePalaceBossLevel) Dungeon.level).onEgretDefeated();
         }
-        if (Dungeon.level != null) {
-            Dungeon.level.unseal();
-        }
+        Dungeon.level.unseal();
+        GameScene.bossSlain();
     }
 
     @Override
@@ -275,7 +307,7 @@ public class Egret extends Boss implements DeathListener {
         // 50% 韧性
         dmg = Math.max(1, Math.round(dmg * 0.5f));
 
-        boolean willMarry = !casting && !deathMarriageLock && dmg >= 80;
+        boolean willMarry = !awaitingDialogue && !deathMarriageLock && dmg >= 80;
         if (willMarry) {
             dmg = 80;
         }
@@ -302,7 +334,7 @@ public class Egret extends Boss implements DeathListener {
 
         if (taken > 0 && isAlive()) {
             // 被动4：百相质询之因
-            grudgeChance += 0.10f;
+            grudgeChance += 0.50f;
             if (Random.Float() < grudgeChance) {
                 spawnGrudgeWisp();
                 grudgeChance = 0f;
@@ -323,7 +355,8 @@ public class Egret extends Boss implements DeathListener {
 
     @Override
     public void onCharDeath(Char dead) {
-        if (dead == null || dead == this || !isAlive() || resolvingDeaths) {
+        if (dead == null || dead == this || dead instanceof HolyBall
+                || !isAlive() || resolvingDeaths) {
             return;
         }
 
@@ -449,6 +482,9 @@ public class Egret extends Boss implements DeathListener {
             castTurns = 2;
             castTargetId = -1;
             castLinkedTriple = countAlive(NecroWarrior.class) >= 2;
+
+            // 施法开始生成一轮纯白之花
+            spawnFlowers(2 + Random.Int(4));
         } finally {
             deathMarriageLock = false;
         }
@@ -774,10 +810,16 @@ public class Egret extends Boss implements DeathListener {
     /* ===== 主动3：黎明颠倒之辉 ===== */
 
     private boolean startDawn(boolean fromRepulse, boolean forceTriple) {
+        boolean hadFriendly = hasFriendlyDawnTarget();
         Char target = chooseDawnTarget();
 
-        if (target == null) {
+        // 没有可被选中的友方单位时，额外召唤一个死灵勇士；
+        // 这个召唤与对玩家的吸取施法可以同时发生。
+        if (!hadFriendly) {
             summonWarrior();
+        }
+
+        if (target == null) {
             if (!fromRepulse) {
                 Buff.affect(this, DawnCooldown.class, DawnCooldown.DURATION);
             }
@@ -788,23 +830,109 @@ public class Egret extends Boss implements DeathListener {
             yell(Messages.get(this, "yell_dawn"));
         }
 
-        if (forceTriple || target == Dungeon.hero) {
+        if (target == Dungeon.hero) {
+            // 先与玩家交换位置，再施法吸取
+            if (!swapWithHero((Hero) target)) {
+                if (!fromRepulse) {
+                    Buff.affect(this, DawnCooldown.class, DawnCooldown.DURATION);
+                }
+                return false;
+            }
             spawnTripleBlessing();
+
+            casting = true;
+            castType = Cast.DAWN;
+            castTurns = 2;
+            castTargetId = target.id();
+            castLinkedTriple = true;
+
+            // 施法开始也生成一轮纯白之花
+            spawnFlowers(2 + Random.Int(4));
+
+            if (sprite instanceof EgretSprite) {
+                ((EgretSprite) sprite).castStart();
+            }
+        } else {
+            // 非玩家目标：不施法，直接吸取 50 点生命
+            drainLife(target, 50);
+            if (forceTriple) {
+                spawnTripleBlessing();
+            }
         }
 
-        casting = true;
-        castType = Cast.DAWN;
-        castTurns = 2;
-        castTargetId = target.id();
-        castLinkedTriple = forceTriple || target == Dungeon.hero;
-
-        if (sprite instanceof EgretSprite) {
-            ((EgretSprite) sprite).castStart();
-        }
         if (!fromRepulse) {
             Buff.affect(this, DawnCooldown.class, DawnCooldown.DURATION);
         }
         return true;
+    }
+
+    /** 是否存在可被黎明选中的友方单位（排除玩家）。 */
+    private boolean hasFriendlyDawnTarget() {
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob == this || !mob.isAlive() || mob.pos < 0) {
+                continue;
+            }
+            if (mob.alignment != alignment) {
+                continue;
+            }
+            if (mob.HP < 50 || mob.isInvulnerable(getClass())) {
+                continue;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /** 与玩家交换位置，使用 ScrollOfTeleportation 走正常传送流程。 */
+    private boolean swapWithHero(Hero hero) {
+        int heroPos = hero.pos;
+        int egretPos = pos;
+
+        int temp = findSwapCell(egretPos, heroPos);
+        if (temp < 0) {
+            return false;
+        }
+
+        // Egret → 临时格；Hero → Egret 原位；Egret → Hero 原位
+        if (!ScrollOfTeleportation.teleportToLocation(this, temp)) {
+            return false;
+        }
+        if (!ScrollOfTeleportation.teleportToLocation(hero, egretPos)) {
+            ScrollOfTeleportation.teleportToLocation(this, heroPos);
+            return false;
+        }
+        if (!ScrollOfTeleportation.teleportToLocation(this, heroPos)) {
+            return false;
+        }
+        return true;
+    }
+
+    private int findSwapCell(int egretPos, int heroPos) {
+        for (int d : PathFinder.NEIGHBOURS8) {
+            int cell = egretPos + d;
+            if (cell == heroPos) {
+                continue;
+            }
+            if (isSwapCell(cell)) {
+                return cell;
+            }
+        }
+        for (int d : PathFinder.NEIGHBOURS8) {
+            int cell = heroPos + d;
+            if (cell == egretPos) {
+                continue;
+            }
+            if (isSwapCell(cell)) {
+                return cell;
+            }
+        }
+        return -1;
+    }
+
+    private boolean isSwapCell(int cell) {
+        return cell >= 0 && cell < Dungeon.level.length()
+                && (Dungeon.level.passable[cell] || Dungeon.level.avoid[cell])
+                && Actor.findChar(cell) == null;
     }
 
     private Char chooseDawnTarget() {
@@ -868,7 +996,9 @@ public class Egret extends Boss implements DeathListener {
             }
         }
 
-        HP = Math.min(HT, HP + Math.max(1, Math.round(HT * 0.03f)));
+        // 施法结束也生成一轮纯白之花
+        spawnFlowers(2 + Random.Int(4));
+
         if (sprite instanceof EgretSprite) {
             ((EgretSprite) sprite).castSuccess();
         }
@@ -888,6 +1018,7 @@ public class Egret extends Boss implements DeathListener {
         }
         resetCasting();
         clearHolyBalls();
+        spawnFlowers(2 + Random.Int(4));
         if (sprite instanceof EgretSprite) {
             ((EgretSprite) sprite).castFail();
         }
@@ -939,6 +1070,7 @@ public class Egret extends Boss implements DeathListener {
             Dungeon.level.blobs.remove(WhiteFlower.class);
             Actor.remove(flowers);
         }
+        WhiteFlowerWarning.clearAll();
     }
 
     private void spawnGrudgeWisp() {
@@ -1096,7 +1228,7 @@ public class Egret extends Boss implements DeathListener {
             type = buffType.POSITIVE;
         }
 
-        public static final float DURATION = 12f;
+        public static final float DURATION = 8f;
 
         @Override
         public int icon() {
@@ -1121,7 +1253,7 @@ public class Egret extends Boss implements DeathListener {
             type = buffType.POSITIVE;
         }
 
-        public static final float DURATION = 8f;
+        public static final float DURATION = 5f;
 
         @Override
         public int icon() {
@@ -1146,7 +1278,7 @@ public class Egret extends Boss implements DeathListener {
             type = buffType.POSITIVE;
         }
 
-        public static final float DURATION = 12f;
+        public static final float DURATION = 8f;
 
         @Override
         public int icon() {
@@ -1171,7 +1303,7 @@ public class Egret extends Boss implements DeathListener {
             type = buffType.POSITIVE;
         }
 
-        public static final float DURATION = 12f;
+        public static final float DURATION = 8f;
 
         @Override
         public int icon() {

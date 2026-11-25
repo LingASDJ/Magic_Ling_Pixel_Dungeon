@@ -208,18 +208,6 @@ public abstract class Mob extends Char {
 		}
 
 
-		if (enemy != null && enemy == Dungeon.hero) {
-			if (properties.contains(Property.NECRO)) {
-				DeathBuff death = enemy.buff(DeathBuff.class);
-				if (death != null) {
-					float percentLost = damage / (float) enemy.HT * 100;
-					death.onDamageTaken(percentLost);
-				} else {
-					Buff.affect(enemy, DeathBuff.class).set((3), 5);
-				}
-			}
-		}
-
 		if(Dungeon.isChallenged(CS)){
 			if(properties.contains(Property.UNDEAD)){
 				if(Statistics.gameNight){

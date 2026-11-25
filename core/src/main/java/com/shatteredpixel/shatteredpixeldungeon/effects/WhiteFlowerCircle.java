@@ -45,51 +45,36 @@ public class WhiteFlowerCircle extends Group {
 
     private void build() {
         final int n = 8;
-        float[] vx = new float[n];
-        float[] vy = new float[n];
-        float[] ix = new float[n];
-        float[] iy = new float[n];
+        final int petalColor = 0xFFFFFFFF;
+        final int edgeColor = 0xFFBFF7F2;
+        final int coreColor = 0xFF37E3D0;
 
         for (int i = 0; i < n; i++) {
             double a = Math.toRadians(i * 45);
-            vx[i] = (float) Math.cos(a) * radius;
-            vy[i] = (float) Math.sin(a) * radius;
-            ix[i] = (float) Math.cos(a) * radius * 0.56f;
-            iy[i] = (float) Math.sin(a) * radius * 0.56f;
+            float dx = (float) Math.cos(a);
+            float dy = (float) Math.sin(a);
+
+            // 花瓣：从花心向外展开的菱形，而不是魔法阵线条
+            float baseX = dx * radius * 0.15f;
+            float baseY = dy * radius * 0.15f;
+            float tipX = dx * radius * 1.30f;
+            float tipY = dy * radius * 1.30f;
+
+            float midX = (baseX + tipX) * 0.5f;
+            float midY = (baseY + tipY) * 0.5f;
+            float wide = radius * 0.42f;
+            float sideX = -dy * wide;
+            float sideY = dx * wide;
+
+            addLine(baseX, baseY, tipX, tipY, petalColor);
+            addLine(baseX, baseY, midX + sideX, midY + sideY, edgeColor);
+            addLine(midX + sideX, midY + sideY, tipX, tipY, edgeColor);
+            addLine(baseX, baseY, midX - sideX, midY - sideY, edgeColor);
+            addLine(midX - sideX, midY - sideY, tipX, tipY, edgeColor);
         }
 
-        final int outerColor = 0xFF72A2A8;
-        final int starColor = 0xFF37E3D0;
-        final int innerColor = 0xFFFFFFFF;
-        final int swordColor = 0xFF37E3D0;
-        final int coreColor = 0xFFE8FBFF;
-
-        for (int i = 0; i < n; i++) {
-            int next = (i + 1) % n;
-            int star = (i + 3) % n;
-
-            // 八芒星
-            addLine(vx[i], vy[i], vx[star], vy[star], starColor);
-            // 外八边形
-            addLine(vx[i], vy[i], vx[next], vy[next], outerColor);
-            // 内八边形
-            addLine(ix[i], iy[i], ix[next], iy[next], innerColor);
-
-            // 八条剑形花瓣：内圈向外延伸，并在尖端画两片短翼
-            float tx = vx[i] * 1.36f;
-            float ty = vy[i] * 1.36f;
-            addLine(ix[i], iy[i], tx, ty, swordColor);
-
-            float px = vx[i] / radius * 3.2f;
-            float py = vy[i] / radius * 3.2f;
-            float wx = -py;
-            float wy = px;
-            addLine(tx, ty, tx + wx, ty + wy, swordColor);
-            addLine(tx, ty, tx - wx, ty - wy, swordColor);
-        }
-
-        // 中心菱形
-        float c = radius * 0.15f;
+        // 花心
+        float c = radius * 0.16f;
         addLine(0, -c, c, 0, coreColor);
         addLine(c, 0, 0, c, coreColor);
         addLine(0, c, -c, 0, coreColor);

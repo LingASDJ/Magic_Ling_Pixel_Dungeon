@@ -29,7 +29,8 @@ public class DeathBuff extends ElementalBuff {
      * 受到伤害增幅：每2%死亡侵蚀 → 受到伤害+1%，上限100侵蚀=+50%承受伤害
      */
     public float damageBonus() {
-        return level / 200f;
+        // 每 2% 死亡损伤 +1% 受到伤害，100% = +50%
+        return (level / 2) / 100f;
     }
 
     @Override
@@ -46,14 +47,13 @@ public class DeathBuff extends ElementalBuff {
     public void onDamageTaken(float percentHP) {
         if (isLocked) return;
 
-        int gain = Math.round(percentHP / 3f);
+        int gain = Math.max(0, (int) (percentHP / 3f));
         int oldLevel = level;
         level = Math.min(CAP, level + gain);
 
-        decayTimer = 0;
-
-        // 只有数值真正上涨时才弹出文字
+        // 只有真正增加了死亡损伤，才重置 72 回合衰减计时
         if (level > oldLevel) {
+            decayTimer = 0;
             target.sprite.showStatusWithIcon(CharSprite.NEGATIVE, String.valueOf(level), IconFloatingText.DEATH);
         }
 
@@ -92,13 +92,15 @@ public class DeathBuff extends ElementalBuff {
             return true;
         }
 
-        // 锁定状态处理
+        // 锁定状态处理：满 108 回合后，下一次行动归零
         if (isLocked) {
             lockTimer--;
-            if (lockTimer <= 0) {
+            if (lockTimer < 0) {
                 level = 0;
                 isLocked = false;
                 decayTimer = 0;
+                detach();
+                return true;
             }
             spend(1);
             return true;
