@@ -32,7 +32,9 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EgretSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -1029,7 +1031,7 @@ public class Egret extends Boss implements DeathListener {
         for (int id : holyBalls) {
             Actor a = Actor.findById(id);
             if (a instanceof HolyBall) {
-                ((HolyBall) a).die(true);
+                ((HolyBall) a).dissolve();
             }
         }
         holyBalls.clear();
@@ -1097,6 +1099,16 @@ public class Egret extends Boss implements DeathListener {
         public static final float DURATION = 12f;
 
         @Override
+        public int icon() {
+            return BuffIndicator.TIME;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(0xFF5555);
+        }
+
+        @Override
         public float iconFadePercent() {
             return Math.max(0, (DURATION - visualcooldown()) / DURATION);
         }
@@ -1110,6 +1122,16 @@ public class Egret extends Boss implements DeathListener {
         }
 
         public static final float DURATION = 8f;
+
+        @Override
+        public int icon() {
+            return BuffIndicator.TIME;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(0xFFFFFF);
+        }
 
         @Override
         public float iconFadePercent() {
@@ -1127,6 +1149,16 @@ public class Egret extends Boss implements DeathListener {
         public static final float DURATION = 12f;
 
         @Override
+        public int icon() {
+            return BuffIndicator.TIME;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(0x37E3D0);
+        }
+
+        @Override
         public float iconFadePercent() {
             return Math.max(0, (DURATION - visualcooldown()) / DURATION);
         }
@@ -1140,6 +1172,16 @@ public class Egret extends Boss implements DeathListener {
         }
 
         public static final float DURATION = 12f;
+
+        @Override
+        public int icon() {
+            return BuffIndicator.TIME;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(0xAA66FF);
+        }
 
         @Override
         public float iconFadePercent() {

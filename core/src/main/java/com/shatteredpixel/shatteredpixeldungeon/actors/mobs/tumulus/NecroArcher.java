@@ -51,6 +51,7 @@ public class NecroArcher extends Mob {
     private int comboCount = 0;
     private Char comboEnemy = null;
     private boolean isComboing = false;   // 标记动画正在播放
+    private int comboWait = 0;            // 等待动画回调的回合数，防止回调丢失后卡死
 
     private static final String KNOCKBACK_CD = "knockback_cooldown";
     private static final String LEGION_SPAWN = "legion_spawn";
@@ -101,9 +102,18 @@ public class NecroArcher extends Mob {
         }
         if (knockbackCooldown > 0) knockbackCooldown--;
 
-        // ★ 连击动画进行中，阻止其他动作，但保持调度（无延迟）
+        // 连击动画进行中：正常情况下由 onAttackComplete 收尾。
+        // 如果动画回调因拾取/打断丢失，isComboing 会一直为 true，
+        // 此时绝不能用 spend(0)，否则 Actor 会零时间无限循环。
         if (isComboing) {
-            spend(0); // 立即再次调度 act，但 isComboing 为 true，不会执行额外动作
+            if (++comboWait >= 2) {
+                // 等了一个完整回合仍没有动画回调，视为丢失，强制收尾
+                isComboing = false;
+                comboCount = 0;
+                comboEnemy = null;
+                comboWait = 0;
+            }
+            spend(TICK);
             return true;
         }
 
@@ -121,7 +131,14 @@ public class NecroArcher extends Mob {
         // 如果已经在连击过程中（由 onAttackComplete 驱动），直接发起攻击，不再重新计算
         if (comboCount > 0) {
             isComboing = true;
-            return super.doAttack(enemy);
+            comboWait = 0;
+            boolean result = super.doAttack(enemy);
+            if (!result) {
+                isComboing = false;
+                comboCount = 0;
+                comboEnemy = null;
+            }
+            return result;
         }
 
         // 计算连击数
@@ -141,7 +158,14 @@ public class NecroArcher extends Mob {
         comboCount = strikeTimes;
         comboEnemy = enemy;
         isComboing = true;
-        return super.doAttack(enemy);
+        comboWait = 0;
+        boolean result = super.doAttack(enemy);
+        if (!result) {
+            isComboing = false;
+            comboCount = 0;
+            comboEnemy = null;
+        }
+        return result;
     }
 
     // ---------- onAttackComplete 覆盖 ----------
@@ -162,11 +186,18 @@ public class NecroArcher extends Mob {
 
             // 发起下一次攻击（播放动画，并在完成后再次调用 onAttackComplete）
             isComboing = true;
-            super.doAttack(comboEnemy);
+            comboWait = 0;
+            if (!super.doAttack(comboEnemy)) {
+                isComboing = false;
+                comboCount = 0;
+                comboEnemy = null;
+                spend(TICK);
+            }
         } else {
             // 连击结束或目标死亡，清除状态
             comboCount = 0;
             comboEnemy = null;
+            comboWait = 0;
         }
     }
 
@@ -224,6 +255,7 @@ public class NecroArcher extends Mob {
         comboCount = 0;
         comboEnemy = null;
         isComboing = false;
+        comboWait = 0;
     }
 
     public boolean hasNearbyAllies() {

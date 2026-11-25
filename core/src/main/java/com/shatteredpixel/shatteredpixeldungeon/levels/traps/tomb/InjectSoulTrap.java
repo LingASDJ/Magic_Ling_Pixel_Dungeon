@@ -62,21 +62,18 @@ public class InjectSoulTrap extends Trap {
                 ShatteredPixelDungeon.scene().add(new Beam.DeathRayS(DungeonTilemap.tileCenterToWorld(pos), target.sprite.center()));
             }
 
-            if(target.properties.contains(Char.Property.UNDEAD) && target != hero){
+            if (target == hero) {
+                // 玩家不会被秒杀，只积累 20% 死亡侵蚀
+                DeathBuff deathBuff = hero.buff(DeathBuff.class);
+                if (deathBuff == null) {
+                    deathBuff = Buff.affect(hero, DeathBuff.class);
+                }
+                deathBuff.getDeath(20);
+            } else if (target.properties.contains(Char.Property.UNDEAD)) {
                 target.HP = target.HT;
                 target.sprite.emitter().burst( Speck.factory( Speck.HEALING ), target.HT );
             } else {
                 target.die(true);
-            }
-
-            if (target == hero){
-                DeathBuff deathBuff = hero.buff(DeathBuff.class);
-                if(deathBuff != null){
-                    deathBuff.getDeath(20);
-                } else {
-                    Buff.affect(hero, DeathBuff.class).set((3), 5);
-                }
-
             }
         }
 

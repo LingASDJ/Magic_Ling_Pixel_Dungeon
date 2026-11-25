@@ -223,6 +223,8 @@ public class Assets {
 		//Boss 贴图
 		public static final String QliPhothEX_Title  = "interfaces/bosslogo/qliphoth-title-ex.png";
 		public static final String QliPhoth_Title  = "interfaces/bosslogo/qliphoth-title.png";
+		public static final String EGRET_TITLE = "interfaces/bosslogo/egret-title.png";
+		public static final String EGRET_CLEAR = "interfaces/bosslogo/egret-clear.png";
 		public static final String QliPhoth_Clear  = "interfaces/bosslogo/qliphoth-clear.png";
 
 		public static final String DMOR_Title  = "interfaces/bosslogo/dm300or-title.png";

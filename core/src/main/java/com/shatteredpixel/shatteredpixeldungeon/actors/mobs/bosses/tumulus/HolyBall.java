@@ -21,14 +21,8 @@ import com.watabou.utils.Bundle;
 /**
  * 三圣祝福之礼生成的圣光球。
  *
- * <ul>
- *     <li>红球：需要被 1 次近战攻击打破。</li>
- *     <li>绿球：需要被 1 次投掷攻击打破。</li>
- *     <li>蓝球：需要被 1 次法杖攻击打破。</li>
- * </ul>
- *
- * <p>球不可移动、不会行动、也不参与 AI；被正确方式命中时立即碎裂并通知白鹭。
- * 碎裂不会走 {@code die()}，因此不会触发白鹭的死亡被动。</p>
+ * <p>只有匹配的攻击方式才能击破：红球近战、绿球投掷、蓝球法杖。
+ * 其他来源一律视为无敌，不会掉血、不会碎裂，也不会触发死亡被动。</p>
  */
 public class HolyBall extends Mob {
 
@@ -100,10 +94,13 @@ public class HolyBall extends Mob {
                 owner = (Egret) a;
             }
         }
+
         if (broken || owner == null || !owner.isAlive()) {
-           die(true);
+            // 施法结束/白鹭死亡时安静消失，不算被打破
+            dissolve();
             return true;
         }
+
         spend(TICK);
         return true;
     }
@@ -131,9 +128,15 @@ public class HolyBall extends Mob {
                     && Dungeon.hero.belongings.attackingWeapon() instanceof MeleeWeapon));
         }
 
-        if (correct) {
-            die(true);
+        if (!correct) {
+            // 不匹配的来源不显示闪避，直接按无敌处理
+            if (sprite != null) {
+                sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
+            }
+            return;
         }
+
+        shatter();
     }
 
     @Override
@@ -174,24 +177,50 @@ public class HolyBall extends Mob {
         }
     }
 
+    /** 被正确方式击破：通知白鹭并移除。 */
+    private void shatter() {
+        if (broken) {
+            return;
+        }
+        broken = true;
+
+        if (sprite != null) {
+            sprite.removeHealthIndicator();
+            CellEmitter.get(pos).burst(Speck.factory(Speck.LIGHT), 10);
+            sprite.die();
+        }
+        Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+
+        Egret o = owner;
+        int color = colorType;
+        Dungeon.level.mobs.remove(this);
+        Actor.remove(this);
+
+        if (o != null) {
+            o.onHolyBallBroken(color);
+        }
+    }
+
+    /** 安静消失：施法结束、白鹭死亡或清场时使用，不算击破。 */
+    public void dissolve() {
+        if (broken) {
+            return;
+        }
+        broken = true;
+
+        if (sprite != null) {
+            sprite.removeHealthIndicator();
+            sprite.killAndErase();
+        }
+        Dungeon.level.mobs.remove(this);
+        Actor.remove(this);
+    }
+
     @Override
     public void die(Object cause) {
-       super.die(cause);
-       if (broken) {
-           return;
-       }
-       broken = true;
-       int color = colorType;
-       Egret o = owner;
-       if (o != null) {
-           o.onHolyBallBroken(color);
-       }
-       Sample.INSTANCE.play(Assets.Sounds.SHATTER);
-       if (sprite != null) {
-           sprite.removeHealthIndicator();
-           CellEmitter.get(pos).burst(Speck.factory(Speck.LIGHT), 10);
-           sprite.die();
-       }
+        // 圣光球不是普通单位：任何死亡路径都只做安静消失，
+        // 不触发死亡广播，也不计入三圣击破。
+        dissolve();
     }
 
     @Override
