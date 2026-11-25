@@ -76,10 +76,4 @@ public class MolotovCocktail extends Brew {
             outQuantity = OUT_QUANTITY;
         }
     }
-
-    // 禁止变成炼金能量
-    @Override
-    public int energyVal() {
-        return 0;
-    }
 }

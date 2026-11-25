@@ -576,6 +576,7 @@ public class Assets {
 
 
 		public static final String FAYINA_0 = "splashes/firedragon/guard_npc_portraits(0).png";
+		public static final String EGRET_0 = "splashes/tombs/egret/egret_portraits(0).png";
 		public static final String FAYINA_1 = "splashes/firedragon/guard_npc_portraits(1).png";
 		public static final String FAYINA_2 = "splashes/firedragon/guard_npc_portraits(2).png";
 		public static final String FAYINA_3 = "splashes/firedragon/guard_npc_portraits(3).png";

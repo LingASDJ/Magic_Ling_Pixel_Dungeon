@@ -187,14 +187,15 @@ public class HolyBall extends Mob {
         if (sprite != null) {
             sprite.removeHealthIndicator();
             CellEmitter.get(pos).burst(Speck.factory(Speck.LIGHT), 10);
-            sprite.die();
         }
         Sample.INSTANCE.play(Assets.Sounds.SHATTER);
 
         Egret o = owner;
         int color = colorType;
+
+        // 必须走 super.die，才能正常清理精灵与血条
+        super.die(null);
         Dungeon.level.mobs.remove(this);
-        Actor.remove(this);
 
         if (o != null) {
             o.onHolyBallBroken(color);
@@ -208,19 +209,21 @@ public class HolyBall extends Mob {
         }
         broken = true;
 
-        if (sprite != null) {
-            sprite.removeHealthIndicator();
-            sprite.killAndErase();
-        }
+        // 必须走 super.die，才能正常清理精灵与血条
+        super.die(null);
         Dungeon.level.mobs.remove(this);
-        Actor.remove(this);
     }
 
     @Override
     public void die(Object cause) {
-        // 圣光球不是普通单位：任何死亡路径都只做安静消失，
-        // 不触发死亡广播，也不计入三圣击破。
-        dissolve();
+        if (broken) {
+            return;
+        }
+        broken = true;
+
+        // 必须走 super.die，才能正常清理精灵与血条
+        super.die(cause);
+        Dungeon.level.mobs.remove(this);
     }
 
     @Override

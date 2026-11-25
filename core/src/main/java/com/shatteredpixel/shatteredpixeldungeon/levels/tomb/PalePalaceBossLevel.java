@@ -10,10 +10,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Egret;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.EgretPlot;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.timing.VirtualActor;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.DeadLaser;
@@ -31,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
@@ -104,6 +107,13 @@ public class PalePalaceBossLevel extends Level {
     private long introStartTime = 0L;
     private WhiteFlowerCircle introFlower = null;
 
+    private boolean awaitingDialogue = false;
+    private boolean dialogueStarted = false;
+    private boolean dialogueDone = false;
+
+    /** 暂时关闭对话，直接开始 Boss 战。恢复对话时改回 true。 */
+    private static final boolean DIALOGUE_ENABLED = false;
+
     //TODO 等待正式音乐到达
     @Override
     public void playLevelMusic(){
@@ -135,6 +145,16 @@ public class PalePalaceBossLevel extends Level {
         if (introStarted && !hasEgret() && !bossDefeated
                 && introStartTime > 0L && Game.realTime - introStartTime > 4000L) {
             Game.runOnRenderThread(this::spawnEgretFallback);
+        }
+
+        // 白鹭在 throne 等待对话，玩家靠近后开始
+        if (DIALOGUE_ENABLED && awaitingDialogue
+                && !dialogueStarted && !dialogueDone && !bossDefeated) {
+            Egret egret = findEgret();
+            if (egret != null
+                    && Dungeon.level.distance(Dungeon.hero.pos, egret.pos) <= 1) {
+                startDialogue();
+            }
         }
     }
 
@@ -283,11 +303,19 @@ public class PalePalaceBossLevel extends Level {
         Egret egret = spawnEgretAt(BOSS_SPAWN);
         if (egret != null) {
             egret.setIntroPending(false);
+            if (DIALOGUE_ENABLED && !dialogueDone) {
+                awaitingDialogue = true;
+                egret.setAwaitingDialogue(true);
+            }
             if (egret.sprite != null) {
                 egret.sprite.alpha(1f);
             }
-            egret.notice();
             unlockHero();
+            if (DIALOGUE_ENABLED) {
+                tryStartDialogue();
+            } else {
+                startBossImmediately(egret);
+            }
         }
     }
 
@@ -297,6 +325,11 @@ public class PalePalaceBossLevel extends Level {
         }
 
         egret.setIntroPending(false);
+
+        if (DIALOGUE_ENABLED && !dialogueDone) {
+            awaitingDialogue = true;
+            egret.setAwaitingDialogue(true);
+        }
 
         // 场景尚未创建精灵时不能走 teleport（appear 会直接访问 sprite）
         if (egret.sprite == null) {
@@ -315,8 +348,113 @@ public class PalePalaceBossLevel extends Level {
         }
 
         egret.sprite.alpha(1f);
-        egret.notice();
         unlockHero();
+        if (DIALOGUE_ENABLED) {
+            tryStartDialogue();
+        } else {
+            startBossImmediately(egret);
+        }
+    }
+
+    private void tryStartDialogue() {
+        if (!DIALOGUE_ENABLED || !awaitingDialogue
+                || dialogueStarted || dialogueDone || bossDefeated) {
+            return;
+        }
+
+        Egret egret = findEgret();
+        if (egret == null || Dungeon.hero == null || !Dungeon.hero.isAlive()) {
+            return;
+        }
+
+        if (Dungeon.level.distance(Dungeon.hero.pos, egret.pos) <= 1) {
+            startDialogue();
+        }
+    }
+
+    private void startDialogue() {
+        if (!DIALOGUE_ENABLED || !awaitingDialogue
+                || dialogueStarted || dialogueDone || bossDefeated) {
+            return;
+        }
+        dialogueStarted = true;
+
+        Game.runOnRenderThread(() -> {
+            if (Dungeon.level == this && awaitingDialogue && !dialogueDone) {
+                GameScene.show(new WndDialog(new EgretPlot(this::finishDialogue), false));
+            }
+        });
+    }
+
+    private void finishDialogue() {
+        if (dialogueDone) {
+            return;
+        }
+        dialogueDone = true;
+        awaitingDialogue = false;
+
+        Egret egret = findEgret();
+        if (egret != null) {
+            egret.setAwaitingDialogue(false);
+            egret.enrage();
+            moveEgretToFront(egret);
+            egret.startBossFight();
+        }
+        unlockHero();
+    }
+
+    /** 对话暂时关闭时，白鹭到王座后直接进入 Boss 战。 */
+    private void startBossImmediately(Egret egret) {
+        if (egret == null || !egret.isAlive()) {
+            return;
+        }
+
+        awaitingDialogue = false;
+        dialogueStarted = false;
+        dialogueDone = true;
+
+        egret.setAwaitingDialogue(false);
+        egret.startBossFight();
+        unlockHero();
+    }
+
+    private void moveEgretToFront(Egret egret) {
+        int front = 512;
+        if (front >= length() || solid[front] || !passable[front] || Actor.findChar(front) != null) {
+            front = findDialogueFrontCell();
+        }
+
+        if (front < 0) {
+            return;
+        }
+
+        if (!ScrollOfTeleportation.teleportToLocation(egret, front)) {
+            egret.pos = front;
+            if (egret.sprite != null) {
+                egret.sprite.place(front);
+            }
+            Dungeon.level.occupyCell(egret);
+        }
+
+        if (egret.sprite != null) {
+            egret.sprite.alpha(1f);
+        }
+    }
+
+    private int findDialogueFrontCell() {
+        int origin = BOSS_SPAWN + width();
+        for (int r = 1; r <= 6; r++) {
+            for (int cell = 0; cell < length(); cell++) {
+                if (distance(origin, cell) != r) {
+                    continue;
+                }
+                if (solid[cell] || !passable[cell] || Actor.findChar(cell) != null) {
+                    continue;
+                }
+                return cell;
+            }
+        }
+        return -1;
     }
 
     /** 白鹭到达王座后立刻解除出场期间的玩家回合锁定。 */
@@ -362,6 +500,8 @@ public class PalePalaceBossLevel extends Level {
     private static final String INTRO_KEY = "egret_intro";
     private static final String DEFEATED_KEY = "egret_defeated";
     private static final String STATUS_KEY = "egret_status";
+    private static final String AWAITING_DIALOGUE_KEY = "egret_awaiting_dialogue";
+    private static final String DIALOGUE_DONE_KEY = "egret_dialogue_done";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -369,6 +509,8 @@ public class PalePalaceBossLevel extends Level {
         bundle.put(INTRO_KEY, introStarted);
         bundle.put(DEFEATED_KEY, bossDefeated);
         bundle.put(STATUS_KEY, status);
+        bundle.put(AWAITING_DIALOGUE_KEY, awaitingDialogue);
+        bundle.put(DIALOGUE_DONE_KEY, dialogueDone);
     }
 
     @Override
@@ -377,9 +519,30 @@ public class PalePalaceBossLevel extends Level {
         introStarted = bundle.getBoolean(INTRO_KEY);
         bossDefeated = bundle.getBoolean(DEFEATED_KEY);
         status = bundle.getInt(STATUS_KEY);
+        awaitingDialogue = bundle.contains(AWAITING_DIALOGUE_KEY)
+                && bundle.getBoolean(AWAITING_DIALOGUE_KEY);
+        dialogueDone = bundle.contains(DIALOGUE_DONE_KEY)
+                && bundle.getBoolean(DIALOGUE_DONE_KEY);
+        dialogueStarted = false;
+
+        if (!DIALOGUE_ENABLED) {
+            awaitingDialogue = false;
+            dialogueDone = true;
+        }
 
         if (introStarted && !bossDefeated && !hasEgret()) {
             Game.runOnRenderThread(this::spawnEgretFallback);
+        } else if (introStarted && !bossDefeated && !DIALOGUE_ENABLED) {
+            Egret egret = findEgret();
+            if (egret != null) {
+                startBossImmediately(egret);
+            }
+        } else if (introStarted && !bossDefeated && awaitingDialogue && !dialogueDone) {
+            Egret egret = findEgret();
+            if (egret != null) {
+                egret.setAwaitingDialogue(true);
+            }
+            Game.runOnRenderThread(this::tryStartDialogue);
         }
     }
 

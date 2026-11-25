@@ -5,7 +5,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Silenced;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.tumulus.Egret;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -15,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
@@ -23,8 +23,7 @@ import java.util.HashMap;
 /**
  * 纯白之花（希声奔赴之花）。
  *
- * <p>出现 1 回合后绽放：对同格玩家造成 20~60 点魔法伤害、施加 7 回合禁魔，
- * 并使白鹭获得等同于伤害值的护盾。不可拾取，也不参与选敌/掉落/死亡逻辑。</p>
+ * <p>花朵本体是 Blob；爆炸范围由 {@link WhiteFlowerWarning} 额外提供 3x3 预警。</p>
  */
 public class WhiteFlower extends Blob {
 
@@ -32,7 +31,7 @@ public class WhiteFlower extends Blob {
 
     private int[] age;
 
-    /** 每一格的白色魔法阵外观。 */
+    /** 每一格的白色花朵外观。 */
     private final HashMap<Integer, WhiteFlowerMark> marks = new HashMap<>();
 
     @Override
@@ -52,10 +51,13 @@ public class WhiteFlower extends Blob {
             Dungeon.level.blobs.put(WhiteFlower.class, flower);
             GameScene.add(flower);
         }
-        flower.addFlower(cell);
+        if (flower.addFlower(cell)) {
+            // 爆炸范围预警
+            WhiteFlowerWarning.reveal(cell);
+        }
     }
 
-    private void addFlower(int cell) {
+    private boolean addFlower(int cell) {
         if (cur == null) {
             cur = new int[Dungeon.level.length()];
             off = new int[cur.length];
@@ -71,7 +73,9 @@ public class WhiteFlower extends Blob {
             volume += 1;
             area.union(cell % Dungeon.level.width(), cell / Dungeon.level.width());
             createMark(cell);
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -86,38 +90,85 @@ public class WhiteFlower extends Blob {
                 age[cell]++;
                 if (age[cell] >= 1) {
                     bloom(cell);
+                    cur[cell] = 0;
                     off[cell] = 0;
                     age[cell] = 0;
                 } else {
                     off[cell] = cur[cell];
-                    volume += off[cell];
                 }
             } else {
                 off[cell] = 0;
                 age[cell] = 0;
             }
         }
+
+        volume = 0;
+        for (int cell = 0; cell < cur.length; cell++) {
+            if (cur[cell] > 0) {
+                volume++;
+            }
+        }
     }
 
     private void bloom(int cell) {
         removeMark(cell);
+        WhiteFlowerWarning.hide(cell);
 
-        Hero hero = Dungeon.hero;
-        if (hero != null && hero.isAlive() && hero.pos == cell) {
-            int dmg = Random.NormalIntRange(20, 60);
-            hero.damage(dmg, this, Char.DamageType.MAGIC);
-            Buff.affect(hero, Silenced.class, 7f);
-
-            for (Char ch : Actor.chars()) {
-                if (ch instanceof Egret && ch.isAlive()) {
-                    ((Egret) ch).gainShield(dmg);
-                }
+        Egret egret = null;
+        for (Char ch : Actor.chars()) {
+            if (ch instanceof Egret && ch.isAlive()) {
+                egret = (Egret) ch;
+                break;
             }
+        }
+
+        // 同格敌人：完整伤害 + 禁魔 + 护盾
+        Char same = Actor.findChar(cell);
+        if (isEnemy(same, egret)) {
+            int dmg = Random.NormalIntRange(20, 60);
+            damageEnemy(same, dmg, egret, true);
+        }
+
+        // 周围 8 格敌人：50% 伤害，不禁魔，正常给护盾
+        for (int d : PathFinder.NEIGHBOURS8) {
+            int adj = cell + d;
+            if (adj < 0 || adj >= Dungeon.level.length()) {
+                continue;
+            }
+
+            Char ch = Actor.findChar(adj);
+            if (!isEnemy(ch, egret)) {
+                continue;
+            }
+
+            int dmg = Math.max(1, Math.round(Random.NormalIntRange(20, 60) * 0.5f));
+            damageEnemy(ch, dmg, egret, false);
         }
 
         if (Dungeon.level.heroFOV[cell]) {
             CellEmitter.get(cell).burst(Speck.factory(Speck.LIGHT), 8);
             CellEmitter.get(cell).burst(Speck.factory(Speck.STAR), 3);
+        }
+    }
+
+    private boolean isEnemy(Char ch, Egret egret) {
+        return ch != null
+                && egret != null
+                && ch.isAlive()
+                && ch.alignment != egret.alignment
+                && ch.alignment != Char.Alignment.NEUTRAL;
+    }
+
+    private void damageEnemy(Char ch, int dmg, Egret egret, boolean silence) {
+        int before = ch.HP;
+        ch.damage(dmg, this, Char.DamageType.MAGIC);
+        int dealt = Math.max(0, before - ch.HP);
+
+        if (silence) {
+            Buff.affect(ch, Silenced.class, 7f);
+        }
+        if (egret != null && dealt > 0) {
+            egret.gainShield(dealt);
         }
     }
 
@@ -155,6 +206,7 @@ public class WhiteFlower extends Blob {
     public void fullyClear() {
         super.fullyClear();
         clearMarks();
+        WhiteFlowerWarning.clearAll();
     }
 
     @Override
