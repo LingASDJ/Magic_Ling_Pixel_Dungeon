@@ -11,6 +11,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourg
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CityPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.tomb.DeadTowerRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DistortionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PitfallTrap;
@@ -34,6 +36,8 @@ import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class ChurchLevel extends RegularLevel {
 
@@ -62,6 +66,16 @@ public class ChurchLevel extends RegularLevel {
         if (forceMax) return 6;
         //2 to 3, average 2.33
         return 3 + Random.chances(new float[]{2, 1});
+    }
+
+    @Override
+    protected ArrayList<Room> initRooms() {
+        ArrayList<Room> initRooms = super.initRooms();
+
+        // 死亡晶塔：古墓 11~19 层都应有
+        initRooms.add(new DeadTowerRoom());
+
+        return initRooms;
     }
 
     @Override

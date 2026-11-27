@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.tomb.DeadTowerRoom;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -701,7 +702,16 @@ public class RogerBossLevel extends Level {
 
     @Override
     protected void createMobs() {
-
+        // 死亡晶塔：古墓 11~19 层都应有
+        DeadTowerRoom.DeadTower tower = new DeadTowerRoom.DeadTower();
+        int cell = randomRespawnCell(null);
+        if (cell == entrance()) {
+            cell = randomRespawnCell(null);
+        }
+        if (cell != -1 && cell != entrance()) {
+            tower.pos = cell;
+            mobs.add(tower);
+        }
     }
 
     @Override
