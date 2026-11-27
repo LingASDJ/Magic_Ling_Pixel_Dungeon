@@ -505,7 +505,13 @@ public class InterlevelScene extends PixelScene {
 		Dungeon.saveAll();
 
 		Level level;
-		Dungeon.depth++;
+		if (Dungeon.depth == 19 && Dungeon.branch == 0 && Statistics.Tomb_Reach) {
+			// 19 层坠落应进入 20-a 的 miniboss 层，而不是直接到 20 层
+			Dungeon.depth = 20;
+			Dungeon.branch = 1;
+		} else {
+			Dungeon.depth++;
+		}
 		if (Dungeon.levelHasBeenGenerated(Dungeon.depth, Dungeon.branch)) {
 			level = Dungeon.loadLevel( GamesInProgress.curSlot );
 		} else {

@@ -35,12 +35,9 @@ public class HolyBall extends Mob {
     private int ownerId = -1;
     private boolean broken = false;
     private int ownerWait = 0;
-    /** 无论通过哪种方式召出，都只存在 2 回合。 */
-    private int lifetime = 2;
 
     private static final String COLOR = "color";
     private static final String OWNER = "owner";
-    private static final String LIFETIME = "lifetime";
 
     public HolyBall() {
         spriteClass = HolyBallRedSprite.class;
@@ -100,12 +97,6 @@ public class HolyBall extends Mob {
         }
 
         if (broken) {
-            dissolve();
-            return true;
-        }
-
-        // 圣光球最多存在 2 回合；即使没有对应施法收尾也会自然消失
-        if (--lifetime <= 0) {
             dissolve();
             return true;
         }
@@ -186,7 +177,6 @@ public class HolyBall extends Mob {
         super.storeInBundle(bundle);
         bundle.put(COLOR, colorType);
         bundle.put(OWNER, owner == null ? ownerId : owner.id());
-        bundle.put(LIFETIME, lifetime);
     }
 
     @Override
@@ -196,9 +186,6 @@ public class HolyBall extends Mob {
         spriteClass = spriteClassFor(colorType);
         if (bundle.contains(OWNER)) {
             ownerId = bundle.getInt(OWNER);
-        }
-        if (bundle.contains(LIFETIME)) {
-            lifetime = bundle.getInt(LIFETIME);
         }
         if (ownerId >= 0) {
             Actor a = Actor.findById(ownerId);
