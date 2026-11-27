@@ -116,7 +116,15 @@ public class ReclaimTrap extends TargetedSpell {
 	@Override
 	public ItemSprite.Glowing glowing() {
 		if (storedTrap != null){
-			return COLORS[Reflection.newInstance(storedTrap).color];
+			try {
+				int color = Reflection.newInstance(storedTrap).color;
+				if (color < 0 || color >= COLORS.length) {
+					return null;
+				}
+				return COLORS[color];
+			} catch (RuntimeException e) {
+				return null;
+			}
 		}
 		return null;
 	}

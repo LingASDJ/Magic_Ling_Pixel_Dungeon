@@ -87,6 +87,8 @@ public class Egret extends Boss implements DeathListener {
     private final HashSet<Integer> holyBalls = new HashSet<>();
     private final boolean[] ballBroken = new boolean[3];
     private int ballsRemaining = 0;
+    /** 三圣球最多保留 2 个白鹭回合；只用于没有施法收尾的召出路径。 */
+    private int holyBallTurns = 0;
 
     {
         initProperty();
@@ -117,6 +119,12 @@ public class Egret extends Boss implements DeathListener {
         if (awaitingDialogue) {
             spend(TICK);
             return true;
+        }
+
+        if (holyBallTurns > 0) {
+            if (--holyBallTurns <= 0) {
+                clearHolyBalls();
+            }
         }
 
         // 读档/开场兜底：确保 Boss 血条与封门最终完成
@@ -857,6 +865,7 @@ public class Egret extends Boss implements DeathListener {
             drainLife(target, 50);
             if (forceTriple) {
                 spawnTripleBlessing();
+                holyBallTurns = 2;
             }
         }
 
@@ -993,6 +1002,7 @@ public class Egret extends Boss implements DeathListener {
             Ascend();
             if (linkedTriple) {
                 spawnTripleBlessing();
+                holyBallTurns = 2;
             }
         }
 
@@ -1168,6 +1178,7 @@ public class Egret extends Boss implements DeathListener {
         }
         holyBalls.clear();
         ballsRemaining = 0;
+        holyBallTurns = 0;
     }
 
     private int cellAt(int x, int y) {
@@ -1209,16 +1220,32 @@ public class Egret extends Boss implements DeathListener {
     }
 
     private static final String DR_BONUS = "dr_bonus";
+    private static final String HOLY_BALL_TURNS = "holy_ball_turns";
+
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(DR_BONUS, drBonus);
+        bundle.put(HOLY_BALL_TURNS, holyBallTurns);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         drBonus = bundle.getInt(DR_BONUS);
+        if (bundle.contains(HOLY_BALL_TURNS)) {
+            holyBallTurns = bundle.getInt(HOLY_BALL_TURNS);
+        }
+
+        // 圣光球是独立 Mob，读完档后重建引用，避免 clearHolyBalls 找不到它们
+        if (Dungeon.level != null) {
+            for (Mob mob : Dungeon.level.mobs) {
+                if (mob instanceof HolyBall && mob.isAlive()) {
+                    holyBalls.add(mob.id());
+                    ballsRemaining++;
+                }
+            }
+        }
     }
 
     /** 抵抗敌厄之拒的冷却：只计时，不显示 icon。 */
