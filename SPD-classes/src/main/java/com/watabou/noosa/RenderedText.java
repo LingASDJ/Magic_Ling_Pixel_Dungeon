@@ -153,6 +153,21 @@ public class RenderedText extends Image {
 		}
 	}
 
+	/**
+	 * Shader 底层钩子：返回绘制本段文字所使用的脚本。
+	 * 默认使用标准脚本；子类可以返回自定义的 {@link ShaderScript}。
+	 */
+	protected NoosaScript script() {
+		return NoosaScript.get();
+	}
+
+	/**
+	 * Shader 底层钩子：在使用脚本正式绘制之前写入自定义 uniform。
+	 * 此时 uModel / uColorM / uColorA / camera 已经设置完毕。
+	 */
+	protected void prepareShader( NoosaScript script ) {
+	}
+
 	//implements regular PD rendering within a libGDX batch so that our rendering logic
 	//can interface with the freetype font generator
 	//some copypasta from BitmapText here
@@ -166,7 +181,7 @@ public class RenderedText extends Image {
 
 		@Override
 		public void draw(Texture texture, float[] spriteVertices, int offset, int count) {
-			Visual v = textBeingRendered;
+			RenderedText v = textBeingRendered;
 
 			FloatBuffer toOpenGL;
 			if (buffers.containsKey(count/20)){
@@ -209,7 +224,7 @@ public class RenderedText extends Image {
 
 			((Buffer)toOpenGL).position(0);
 
-			NoosaScript script = NoosaScript.get();
+			NoosaScript script = v.script();
 
 			texture.bind();
 			com.watabou.glwrap.Texture.clear();
@@ -220,6 +235,8 @@ public class RenderedText extends Image {
 			script.lighting(
 					v.rm, v.gm, v.bm, v.am,
 					v.ra, v.ga, v.ba, v.aa );
+
+			v.prepareShader( script );
 
 			script.drawQuadSet( toOpenGL, count/20 );
 		}

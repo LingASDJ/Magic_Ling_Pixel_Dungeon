@@ -151,7 +151,7 @@ public class SKINITEM extends Item {
         }
         @Override
         public int iceCoinValue() {
-            return 1500;
+            return 500;
         }
     }
 

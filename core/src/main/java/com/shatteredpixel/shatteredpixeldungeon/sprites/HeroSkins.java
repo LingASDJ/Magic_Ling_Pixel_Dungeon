@@ -3,8 +3,8 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TextEffect;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.MovieClip.Animation;
 import com.watabou.noosa.TextureFilm;
 
 import java.util.ArrayList;
@@ -42,6 +42,12 @@ public final class HeroSkins {
         public final Supplier<HeroSprite> spriteFactory;
         /** 小头像工厂；null 表示用默认 tier-based 头像 */
         public final Supplier<Image> avatarFactory;
+
+        /**
+         * 皮肤选择界面标题文字的艺术字效果，默认 NORMAL。
+         * 只有特殊皮肤才按需设置（例如群星契约用 GALAXY）。
+         */
+        public TextEffect titleEffect = TextEffect.NORMAL;
 
         // ---- 自定义 sprite 纹理与帧布局（供 MirrorSprite/PrismaticSprite 等克隆体使用） ----
         /** 游戏内精灵纹理路径；null 表示用默认职业 spritesheet */
@@ -97,6 +103,12 @@ public final class HeroSkins {
         public static SkinDef splash(String path, int w, int h) {
             return new SkinDef(path, w, h, null, null, null, 0, 0, null, null, null, null,
                     1, 20, 8, 15);
+        }
+
+        /** 链式配置标题艺术字效果，例如 SkinDef.splash(...).titleEffect(TextEffect.GALAXY)。 */
+        public SkinDef titleEffect(TextEffect effect) {
+            this.titleEffect = effect == null ? TextEffect.NORMAL : effect;
+            return this;
         }
 
         /** 注册大立绘 + 特殊 sprite + 头像的完整构造器。 */
@@ -357,6 +369,22 @@ public final class HeroSkins {
                 new int[]{12, 13, 14, 15, 16},
                 new int[]{17, 18, 19, 20, 21},
                 6, 20, 8, 15
-        ));
+        ).titleEffect(TextEffect.FIRE));
+
+        register(HeroClass.HUNTRESS, 4, SkinDef.full(
+                "splashes/skin/huntress_stellar_covenant.png", 80, 112,
+                GalaxyLinkSprite::new,
+                () -> {
+                    Image img = new Image(Assets.Sprites.GALAXYLINK);
+                    img.frame(0, 0, 26, 17);
+                    return img;
+                },
+                Assets.Sprites.GALAXYLINK, 28, 19,
+                new int[]{0,1,2,3,4,0,1,2,3,4,0,1,2,3,4,0,1,2,3,4,5,5,6,7,7,7},
+                new int[]{8,9,10,11,12,13},
+                new int[]{14,15,16,17,18,19},
+                new int[]{20,21,22,23,24},
+                4, 20, 8, 15
+        ).titleEffect(TextEffect.GALAXY));
     }
 }

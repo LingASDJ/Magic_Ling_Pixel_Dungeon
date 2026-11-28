@@ -15,11 +15,13 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSkins;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.EffectTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollingGridPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TextEffect;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
@@ -613,25 +615,31 @@ public class WndSelectSkin extends Window {
 
     private static class SkinInfo extends Component {
 
-        private RenderedTextBlock titleText;
+        private EffectTextBlock titleText;
 
         public SkinInfo() {
             super();
 
             if(Game.width > Game.height ){
-                titleText = PixelScene.renderTextBlock("", 16);
+                titleText = new EffectTextBlock("", 16 * defaultZoom);
+                titleText.zoom(1 / (float) defaultZoom);
                 titleText.setTextDirection(RenderedTextBlock.VERTICAL);
                 titleText.maxHeight(100);
                 titleText.setVerticalLetterSpacing(16f);
                 titleText.setVerticalColumnSpacing(6f);
             } else {
-                titleText = PixelScene.renderTextBlock("", 9);
+                titleText = new EffectTextBlock("", 9 * defaultZoom);
+                titleText.zoom(1 / (float) defaultZoom);
                 titleText.setWidth(titleText.width());
             }
             add(titleText);
         }
 
         public void setSkin(HeroClass heroClass, int skinIndex) {
+            // 标题艺术字效果由每个皮肤自己配置，普通皮肤默认 NORMAL
+            HeroSkins.SkinDef def = HeroSkins.get(heroClass, skinIndex);
+            titleText.setEffect(def != null ? def.titleEffect : TextEffect.NORMAL);
+
             // skinIndex 0 是默认皮肤
             if (skinIndex == 0) {
                 String defaultName = Messages.get(HeroClass.class, heroClass.name().toLowerCase());
