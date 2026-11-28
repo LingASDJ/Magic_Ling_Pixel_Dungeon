@@ -192,6 +192,14 @@ public class RenderedTextBlock extends Component {
 		return maxWidth;
 	}
 
+	/**
+	 * Shader 底层扩展点：创建一个单词实例。
+	 * 子类可以返回带有自定义 shader 效果的 RenderedText 子类。
+	 */
+	protected RenderedText newWord( String text, int size ){
+		return new RenderedText( text, size );
+	}
+
 	private synchronized void build(){
 		if (tokens == null) return;
 
@@ -253,7 +261,7 @@ public class RenderedTextBlock extends Component {
 				words.add(SPACE);
 
 			} else {
-				RenderedText word = new RenderedText(str, size);
+				RenderedText word = newWord(str, size);
 
 				if ( currentCustomColor != -1 ) word.hardlight(currentCustomColor);
 				else if (highlighting) word.hardlight(hightlightColor);
