@@ -379,7 +379,7 @@ public final class HeroSkins {
                     img.frame(0, 0, 26, 17);
                     return img;
                 },
-                Assets.Sprites.GALAXYLINK, 28, 19,
+                Assets.Sprites.GALAXYLINK, 26, 17,
                 new int[]{0,1,2,3,4,0,1,2,3,4,0,1,2,3,4,0,1,2,3,4,5,5,6,7,7,7},
                 new int[]{8,9,10,11,12,13},
                 new int[]{14,15,16,17,18,19},
